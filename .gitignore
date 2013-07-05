@@ -1,0 +1,14 @@
+### Folders ###
+dist
+node_modules
+.tmp
+
+### Files ###
+._*
+.DS_Store
+.project
+.cache
+*.sublime-project
+*.sublime-workspace
+*.sass-cache
+*.log
