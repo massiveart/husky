@@ -2,6 +2,10 @@
     'use strict';
 
     Husky.Ui.DataGrid = function(element, options) {
+        this.name = 'Husky.Ui.DataGrid';
+
+        Husky.DEBUG && console.log(this.name, "create instance");
+
         this.options = options;
         this.$element = $(element);
         this.$list = null;
@@ -22,6 +26,8 @@
     $.extend(Husky.Ui.DataGrid.prototype, Husky.Events, {
 
         loadData: function(url) {
+            Husky.DEBUG && console.log(this.name, "loadData");
+
             Husky.Util.ajax({
                 url: url || this.options.url,
                 success: function(data) {

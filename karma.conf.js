@@ -10,6 +10,10 @@ basePath = '';
 files = [
     JASMINE,
     JASMINE_ADAPTER,
+
+    'bower_components/jquery/jquery.js',
+    'node_modules/sinon/lib/sinon.js',
+
     'js/*.js', 
     'js/**/*.js', 
     'tests/*.js', 
@@ -19,7 +23,7 @@ files = [
 
 // test results reporter to use
 // possible values: 'dots', 'progress', 'junit'
-reporters = ['progress'];
+reporters = ['dots'];
 
 
 // web server port

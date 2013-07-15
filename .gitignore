@@ -1,7 +1,9 @@
 ### Folders ###
 dist
 node_modules
+bower_components
 components
+coverage
 .tmp
 .sass-cache
 
