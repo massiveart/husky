@@ -17,6 +17,10 @@ module.exports = function(grunt) {
             compass: {
                 files: ['scss/{,*/}*.{scss,sass}'],
                 tasks: ['compass:dev']
+            },
+            jshint: {
+                files: ['js/{,*/}*.{js,js}'],
+                tasks: ['jshint']
             }
         },
         jshint: {
@@ -36,7 +40,8 @@ module.exports = function(grunt) {
                     sassDir: 'scss',
                     cssDir: '.tmp/css',
                     generatedImagesDir: '.tmp/img/',
-                    imagesDir: '/img'
+                    imagesDir: '/img',
+                    outputStyle: 'compact'
                 }
             }
         },
@@ -50,8 +55,6 @@ module.exports = function(grunt) {
     // grunt.registerTask('build', ['']);
 
     grunt.registerTask('default', [
-        'jshint',
-        'compass',
-        'test'
+        'watch'
     ]);
 };

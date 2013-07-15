@@ -1,9 +1,12 @@
 ### Folders ###
 dist
 node_modules
+components
 .tmp
+.sass-cache
 
 ### Files ###
+_*
 ._*
 .DS_Store
 .project
