@@ -59,8 +59,8 @@ if (typeof jQuery === "undefined" &&
     var Husky = {
         version: '0.1.0',
 
-        ui: {},
-        util: {},
+        Ui: {},
+        Util: {},
 
         $: function () {
             if (typeof Zepto !== 'undefined') {

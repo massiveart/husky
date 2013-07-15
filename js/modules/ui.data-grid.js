@@ -1,11 +1,16 @@
 (function($, window, document, undefined) {
     'use strict';
 
-    Husky.ui.list = function(element, options) {
-        var defaultOptions = 
-        this.options = options
+    Husky.Ui.DataGrid = function(element, options) {
+        this.options = options;
         this.$element = $(element);
         this.$list = null;
+
+        // sample column mapping
+        this.options.columnMapping = {
+            tile: { display: 'Title', width: '20%', sortable: true },
+            date: { display: 'Last edit date', width: '20%', sortable: false }
+        }
 
         this.data = null;
 
@@ -14,10 +19,10 @@
         }
     };
 
-    $.extend(Husky.ui.list.prototype, Husky.Events, {
+    $.extend(Husky.Ui.DataGrid.prototype, Husky.Events, {
 
         loadData: function(url) {
-            Husky.util.ajax({
+            Husky.Util.ajax({
                 url: url || this.options.url,
                 success: function(data) {
                     this.data = data;
@@ -26,7 +31,7 @@
                 }.bind(this)
             });
 
-            // this.data = '[{ "column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}, { "column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3" }]';
+            // this.data = '{ page: 1, total: 200, page_siz: 20, date: [{ "column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}, { "column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3" }] }';
         },
 
         prepareView: function() {
@@ -50,7 +55,7 @@
                         tblRow += '<td>' + value + '</td>';
                     });
 
-                    tblBody += '<tr>' + tblRow + '</tr>';                 
+                    tblBody += '<tr>' + tblRow + '</tr>';
                 });
 
                 $list.append(tblBody);
@@ -66,7 +71,7 @@
 
     $.fn.huskyList = function(options) {
         options = $.extend({}, $.fn.huskyList.defaults, typeof options == 'object' && options);
-        new Husky.ui.list(this, options);
+        new Husky.Ui.DataGrid(this, options);
 
         return this;
     };
@@ -75,4 +80,4 @@
         listType: 'table'
     };
 
-})(Husky.$, window, document);
+})(Husky.$, this, this.document);
