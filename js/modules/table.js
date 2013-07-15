@@ -14,13 +14,13 @@
         }
     };
 
-    Husky.ui.list.prototype = {
+    $.extend(Husky.ui.list.prototype, Husky.Events, {
 
         loadData: function(url) {
             Husky.util.ajax({
                 url: url || this.options.url,
                 success: function(data) {
-                    this.data = $.parseJSON(data);
+                    this.data = data;
                     this.prepareView();
                     this.render();
                 }.bind(this)
@@ -62,17 +62,17 @@
         render: function() {
             this.$element.html(this.$list);
         }
-    };
+    });
 
     $.fn.huskyList = function(options) {
-        return this.each(function() {
-            options = $.extend({}, $.fn.huskyList.defaults, typeof options == 'object' && options);
-            new Husky.ui.list(this, options);
-        });
+        options = $.extend({}, $.fn.huskyList.defaults, typeof options == 'object' && options);
+        new Husky.ui.list(this, options);
+
+        return this;
     };
 
     $.fn.huskyList.defaults = {
         listType: 'table'
     };
 
-})(window.jQuery, window, document);
+})(Husky.$, window, document);

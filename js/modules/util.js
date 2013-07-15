@@ -9,4 +9,4 @@
         return $.ajax(options);
     };
 
-})(window.jQuery, window, document);
+})(Husky.$, this, this.document);
