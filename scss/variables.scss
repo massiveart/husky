@@ -1,0 +1,46 @@
+/* 
+ * -------------------------------------------------
+ * Variables
+ * -------------------------------------------------
+ */
+
+
+/*
+ * GLOBAL VARIABLES
+ * ------------------------
+ */
+
+
+/*
+ * Main Colors
+ */
+
+$black: #000;
+$grayLight: #999;
+$grayLighter: #ccc;
+
+/*
+ * Typography
+ */
+$sansFontFamily: Helvetica, Arial, sans-serif;
+
+$baseFontSize: 14px;
+$smallFontSize: 12px;
+$baseFontFamily: $sansFontFamily;
+$baseLineHeight: 20px;
+
+$headingsFontFamily: inherit;
+$headingsFontWeight: bold;
+$headingsColor: inherit;
+
+
+/*
+ * MODULE VARIABLES
+ * ------------------------
+ */
+
+
+/*
+ * Buttons
+ */
+ $btnBorderRadius: 4px;

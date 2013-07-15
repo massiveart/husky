@@ -1,0 +1,42 @@
+/* 
+ * -------------------------------------------------
+ * Tables
+ * -------------------------------------------------
+ */
+
+table {
+    max-width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.table {
+    th, 
+    td {
+        text-align: left;
+        padding: 8px;
+        vertical-align: top;   
+    }
+
+    tr {
+        border-bottom: 1px solid $grayLighter;
+    }
+
+    thead {
+        th {
+            vertical-align: bottom;
+        }
+
+        tr {
+            border-bottom: 2px solid $grayLight;
+        }
+    }
+
+    &.hoverable {
+        tr {
+            &:hover > td {
+                background-color: #fff;
+            }
+        }
+    }
+}
