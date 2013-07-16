@@ -1,13 +1,10 @@
-/* 
- * -------------------------------------------------
- * Utility classes
- * -------------------------------------------------
- */
+//
+// Utility Classes
+// --------------------------------------------------
 
 
-/*
- * Helper Classes
- */
+// Helper classes
+// -------------------------
 .pull-right {
     float: right;
 }
@@ -22,4 +19,43 @@
 
 .invisible {
     visibility: hidden;
+}
+
+
+// Margin shorthands
+// -------------------------
+
+
+// margins 5px
+.m-top-5 {
+    margin-top: 5px !important;
+}
+
+.m-bottom-5 {
+    margin-bottom: 5px !important;
+}
+
+.m-right-5 {
+    margin-right: 5px !important;
+}
+
+.m-left-5 {
+    margin-left: 5px !important;
+}
+
+// margins 10px
+.m-top-10 {
+    margin-top: 10px !important;
+}
+
+.m-bottom-10 {
+    margin-bottom: 10px !important;
+}
+
+.m-right-10 {
+    margin-right: 10px !important;
+}
+
+.m-left-10 {
+    margin-left: 10px !important;
 }

@@ -1,0 +1,21 @@
+//
+// Core Styling
+// --------------------------------------------------
+
+
+@import "compass/css3/box-sizing";
+
+* {
+    @include box-sizing(border-box);
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-size: $baseFontSize;
+    color: $baseFontColor;
+    overflow: hidden;
+}

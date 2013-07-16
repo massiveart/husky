@@ -1,0 +1,165 @@
+//
+// Navigation
+// --------------------------------------------------
+
+
+@import "compass/css3/transition";
+
+$navigationHeight: 600px;
+
+$navigationColumnExpandedWidth: 250px;
+$navigationCollapsedWidth: 50px;
+
+.navigation {
+    position: fixed;
+    top: 20px;
+    left: 0;
+    top: 50%;
+    margin-top: - $navigationHeight / 2;
+    height: $navigationHeight;
+    box-shadow: 10px 10px 0 0 rgba(0, 0, 0, .4);
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+}
+
+@media (max-height: $navigationHeight) { 
+    .navigation {
+        top: 0;
+        margin-top: 0;
+    }
+}
+
+.navigation-column {
+    width: 0;
+    height: $navigationHeight;
+    overflow: hidden;
+    position: relative;
+    float: left;
+    background-color: #fff;
+    @include transition(width 0.3s ease-in-out);
+
+    &:first-child {
+        width: 250px;
+        background-color: $navigationMainColumnColor;
+        @include transition(width 0.3s ease-in-out);
+
+        &:hover {
+            width: $navigationColumnExpandedWidth !important;
+        }
+
+        &.is-collapsed {
+            width: $navigationCollapsedWidth;
+            overflow: hidden;
+        }
+
+        li {
+            width: $navigationColumnExpandedWidth;
+            color: $grayLighter;
+            
+            &.is-active {
+                background-color: $navigationMainColumnColorActive;
+            }
+
+            [class^="glyphicons"] {
+                color: #fff;
+            }
+        }
+
+        .navigation-footer {
+            height: 60px;
+            background-color: transparent;
+        }
+    }
+
+    &.is-expanded {
+        width: $navigationColumnExpandedWidth;
+    }
+
+    li {
+        width: $navigationColumnExpandedWidth;
+        position: relative;
+        padding: 15px 10px;
+        color: #000;
+        cursor: pointer;
+
+        [class^="glyphicons"] {
+            padding: 10px 10px 0 10px;
+            position: relative;
+            top: -5px;
+            margin-right: 20px;
+            font-size: 22px;
+        }
+
+        &.is-active {
+            font-weight: bold;
+            background-color: $navigationColumnColorActive;
+            color: $black;
+
+            [class^="glyphicons"] {
+                color: #000;
+            }
+        }
+
+        &.has-children {
+            font-family: "Glyphicons";
+            &::after {
+                content: "\e224";
+                font-size: 12px;
+                display: block;
+                float: right;
+            }
+        }
+    }
+
+    a {
+        color: $grayLighter;
+    }
+}
+
+.navigation-header {
+    background-color: $accentColor;
+    color: #000 !important;
+    cursor: auto !important;
+}
+
+.navigation-footer {
+    width: $navigationColumnExpandedWidth;
+    height: 50px;
+    position: absolute !important;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    padding: 15px 10px;
+    padding-bottom: 5px !important;
+    cursor: auto !important;
+    background-color: #F1F1F1;
+
+    .navigation-setting {
+        font-size: 12px;
+
+        [class^="glyphicons"] {
+            margin: 0;
+            padding-bottom: 10px;
+            font-size: 16px;
+        }
+    }
+}
+
+.navigation-entries {
+    height: $navigationHeight - 50px;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+.navigation-entry-name {
+    max-width: $navigationColumnExpandedWidth - 50px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: $baseFontFamily;
+}

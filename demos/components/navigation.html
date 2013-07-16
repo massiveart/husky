@@ -3,69 +3,130 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        <link rel="stylesheet" href="../../.tmp/css/husky.css">
-    </head>
-    <body>
-        <div id="main">
-            <h1>This is the title of this list</h1>
-            <table class="table hoverable">
-                <thead>
-                    <tr>
-                      <th>Table Header</th>
-                      <th>Table Header</th>
-                      <th>Table Header</th>
-                      <th>Table Header</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td>Content Goes Here</td>
-                      <td>This is longer content Donec id elit non mi porta gravida at eget metus.</td>
-                      <td>Content Goes Here</td>
-                      <td>Content Goes Here</td>
-                    </tr>
-                    <tr>
-                      <td>Content Goes Here</td>
-                      <td>This is longer Content Goes Here Donec id elit non mi porta gravida at eget metus.</td>
-                      <td>Content Goes Here</td>
-                      <td>Content Goes Here</td>
-                    </tr>
-                    <tr>
-                      <td>Content Goes Here</td>
-                      <td>This is longer Content Goes Here Donec id elit non mi porta gravida at eget metus.</td>
-                      <td>Content Goes Here</td>
-                      <td>Content Goes Here</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="pagination">
-                <ul>
-                    <li><a href="#">First</a></li>
-                    <li><a href="#">Prev</a></li>
-                <ul>
-                <ul>
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                <ul>
-                <ul>
-                    <li><a href="#">Next</a></li>
-                    <li><a href="#">Last</a></li>
-                <ul>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../.tmp/css/husky.css">
+</head>
+<body>
+    <div id="main">
+        <div class="navigation">
+
+            <div class="navigation-column">
+                <ul class="navigation-entries">
+                    <li class="navigation-header">
+                        <span>Sulu</span>
+                    </li>
+                    <li class="has-children">
+                        <span class="glyphicons star"></span>
+                        <span class="navigation-entry-name">Dashboard</span>
+                    </li>
+                    <li class="has-children">
+                        <span class="glyphicons globe"></span>
+                        <span class="navigation-entry-name">Global</span>
+                    </li>
+                    <li class="has-children">
+                        <span class="glyphicons camera"></span>
+                        <span class="navigation-entry-name">Media</span>
+                    </li>
+                    <li class="navigation-footer">
+                        <div class="avatar round pull-left">
+                            <img src="http://lorempixel.com/people/30/30" alt="avatar"/>
+                            <span>John Doe</span>
+                        </div>
+                        <a class="avatar-logout pull-right m-top-10" href="#">Log out</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="navigation-column">    
+                <ul class="navigation-entries">
+                    <li class="has-children">
+                        <span class="navigation-entry-name">Events</span>
+                    </li>
+                    <li class="has-children is-active">
+                        <span class="navigation-entry-name">Kurzer text</span>
+                    </li>
+                    <li class="has-children">
+                        <span class="navigation-entry-name">Das ist ein sehr langer Text der so lang ist</span>
+                    </li>
+                    <li class="has-children">
+                        <span class="navigation-entry-name">Events</span>
+                    </li>
+                    <li class="has-children is-active">
+                        <span class="navigation-entry-name">Kurzer text</span>
+                    </li>
+                    <li class="has-children">
+                        <span class="navigation-entry-name">Das ist ein sehr langer Text der so lang ist</span>
+                    </li>
+                    <li class="has-children">
+                        <span class="navigation-entry-name">Events</span>
+                    </li>
+                    <li class="has-children is-active">
+                        <span class="navigation-entry-name">Kurzer text</span>
+                    </li>
+                    <li class="has-children">
+                        <span class="navigation-entry-name">Das ist ein sehr langer Text der so lang ist</span>
+                    </li>
+                    <li class="has-children">
+                        <span class="navigation-entry-name">Events</span>
+                    </li>
+                    <li class="has-children is-active">
+                        <span class="navigation-entry-name">Kurzer text</span>
+                    </li>
+                    <li class="has-children">
+                        <span class="navigation-entry-name">Das ist ein sehr langer Text der so lang ist</span>
+                    </li>
+                    <li class="has-children">
+                        <span class="navigation-entry-name">Events</span>
+                    </li>
+                    <li class="has-children is-active">
+                        <span class="navigation-entry-name">Kurzer text</span>
+                    </li>
+                    <li class="has-children">
+                        <span class="navigation-entry-name">Das ist ein sehr langer Text der so lang ist</span>
+                    </li>
+                </ul>
+                <div class="navigation-footer">
+                    <div class="navigation-setting pull-right">
+                        <span>Edit</span>
+                        <span class="glyphicons cogwheel m-left-5"></span>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
 
-        <script src="../../bower_components/jquery/jquery.js"></script>
-        
-        <script src="../../js/husky.js"></script>
-        <script src="../../js/modules/util.js"></script>
-        <script src="../../js/modules/navigation.js"></script>
+
+    <script src="../../bower_components/jquery/jquery.js"></script>
+    
+    <script src="../../js/husky.js"></script>
+    <script src="../../js/modules/util.js"></script>
+    <script src="../../js/modules/ui.navigation.js"></script>
+
+    <script type="text/javascript">
+        window.addEventListener('load', function() {
+            $('.navigation .navigation-column').on('click', 'li:not(.navigation-header, .navigation-footer)', function(event) {
+                if ($(event.currentTarget).hasClass('is-active')) {
+                    $(event.currentTarget).removeClass('is-active');
+                } else {
+                    $('.navigation .navigation-column li').removeClass('is-active');
+                    $(event.currentTarget).addClass('is-active');
+
+                    $('.navigation-column').eq($(event.currentTarget).parents('.navigation-column').index() + 1).addClass('is-expanded');
+                }
+
+                if ($(event.currentTarget).parents('.navigation-column').index() > 0) {
+                    $('.navigation-column').eq(0).addClass('is-collapsed');
+                } else {
+                    $('.navigation-column').eq(0).removeClass('is-collapsed');
+                }
+            }.bind(this));
+        }, false);
+    </script>
 </body>
 </html>

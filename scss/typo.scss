@@ -1,12 +1,10 @@
-/* 
- * -------------------------------------------------
- * Typography
- * -------------------------------------------------
- */
+//
+// Typography
+// --------------------------------------------------
 
- /*
-  * Base Font-Definitions
-  */
+
+// Base font definitions
+// -------------------------
 body {
     font-size: $baseFontSize;
     font-family: $baseFontFamily;
@@ -14,9 +12,9 @@ body {
     background-color: #eee; // TODO: remove;
 }
 
- /*
-  * Headings
-  */
+
+// Heading
+// -------------------------
 h1, 
 h2, 
 h3, 

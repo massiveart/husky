@@ -1,27 +1,35 @@
-/* 
- * -------------------------------------------------
- * Variables
- * -------------------------------------------------
- */
+//
+// Variables
+// --------------------------------------------------
 
 
-/*
- * GLOBAL VARIABLES
- * ------------------------
- */
+
+// Global values
+// --------------------------------------------------
 
 
-/*
- * Main Colors
- */
+// Base colors
+// -------------------------
 
+// Shades of grey
+// -------------------------
 $black: #000;
 $grayLight: #999;
 $grayLighter: #ccc;
 
-/*
- * Typography
- */
+
+// Accent colors
+// -------------------------
+$accentColor: #41DDE0;
+
+
+// Font Colors
+// -------------------------
+$baseFontColor: $black;
+
+
+// Typography
+// -------------------------
 $sansFontFamily: Helvetica, Arial, sans-serif;
 
 $baseFontSize: 14px;
@@ -34,13 +42,18 @@ $headingsFontWeight: bold;
 $headingsColor: inherit;
 
 
-/*
- * MODULE VARIABLES
- * ------------------------
- */
+// Module specific values
+// --------------------------------------------------
 
 
-/*
- * Buttons
- */
+// Buttons
+// -------------------------
  $btnBorderRadius: 4px;
+
+
+// Navigation
+// -------------------------
+$navigationColumnColorActive: #E0E0E0;
+
+$navigationMainColumnColor: #333333;
+$navigationMainColumnColorActive: #fff;
