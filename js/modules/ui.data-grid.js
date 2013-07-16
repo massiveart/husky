@@ -1,8 +1,10 @@
 (function($, window, document, undefined) {
     'use strict';
 
+    var moduleName = 'Husky.Ui.DataGrid';
+
     Husky.Ui.DataGrid = function(element, options) {
-        this.name = 'Husky.Ui.DataGrid';
+        this.name = moduleName;
 
         Husky.DEBUG && console.log(this.name, "create instance");
 
@@ -76,8 +78,17 @@
     });
 
     $.fn.huskyList = function(options) {
+        var $element = $(this);
+
         options = $.extend({}, $.fn.huskyList.defaults, typeof options == 'object' && options);
-        new Husky.Ui.DataGrid(this, options);
+
+        // return if this plugin has a module instance
+        if (!!$element.data(moduleName)) {
+            return this;
+        }
+
+        // store the module instance into the jQuery data property
+        $element.data(moduleName, new Husky.Ui.DataGrid(this, options));
 
         return this;
     };
