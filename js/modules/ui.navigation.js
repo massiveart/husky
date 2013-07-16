@@ -1,8 +1,10 @@
 (function($, window, document, undefined) {
     'use strict';
 
+    var moduleName = 'Husky.Ui.Navigation';
+
     Husky.Ui.Navigation = function(element, options) {
-        this.name = 'Husky.Ui.Navigation';
+        this.name = moduleName;
 
         Husky.DEBUG && console.log(this.name, "create instance");
 
@@ -22,12 +24,12 @@
         options = $.extend({}, $.fn.huskyNavigation.defaults, typeof options == 'object' && options);
 
         // return if this plugin has a module instance
-        if (!!$element.data(this.name)) {
+        if (!!$element.data(moduleName)) {
             return this;
         }
 
         // store the module instance into the jQuery data property
-        $element.data(this.name, new Husky.Ui.Navigation(this, options));
+        $element.data(moduleName, new Husky.Ui.Navigation(this, options));
 
         return this;
     };
