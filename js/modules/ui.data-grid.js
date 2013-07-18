@@ -269,14 +269,18 @@
         },
 
         preparePaginationNextNavigation: function() {
+            console.log(this.configs.page);
             return this.templates.paginationNextNavigation({
-                next: this.options.pagination.next
+                next: this.options.pagination.next,
+                selectedPage: this.configs.page,
+                pageSize: this.configs.pagesLength
             });
         },
 
         preparePaginationPrevNavigation: function() {
             return this.templates.paginationPrevNavigation({
-                prev: this.options.pagination.prev
+                prev: this.options.pagination.prev,
+                selectedPage: this.configs.page
             });
         },
 
@@ -331,7 +335,6 @@
         },
 
         removeLoader: function() {
-            console.log('tets');
             return this.$dataGrid.removeClass('is-loading');
         },
 
@@ -352,31 +355,34 @@
 
             // Pagination
             paginationPrevNavigation: function(data) {
-                var prev, first;
+                var prev, first, selectedPage;
 
                 data = data || {};
                 prev = data['prev'] || 'Previous';
                 first = data['first'] || 'First';
+                selectedPage = ~~data['selectedPage'];
 
                 return [
                     '<ul>',
-                        '<li class="pagination-first page" data-page="0">', first, '</li>',
-                        '<li class="pagination-prev page" data-page="', this.currentPage--, '">', prev, '</li>',
+                        '<li class="pagination-first page" data-page="1">', first, '</li>',
+                        '<li class="pagination-prev page" data-page="', selectedPage - 1, '">', prev, '</li>',
                     '</ul>'
                 ].join('')
             },
 
             paginationNextNavigation: function(data) {
-                var next, last;
+                var next, last, pageSize, selectedPage;
 
                 data = data || {};
                 next = data['next'] || 'Next';
                 last = data['last'] || 'Last';
+                pageSize = data['pageSize'];
+                selectedPage = ~~data['selectedPage'];
 
                 return [
                     '<ul>',
-                        '<li class="pagination-next page" data-page="', this.currentPage++, '">', next, '</li>',
-                        '<li class="pagination-last page" data-page="', this.pageSize, '">', last, '</li>',
+                        '<li class="pagination-next page" data-page="', selectedPage + 1, '">', next, '</li>',
+                        '<li class="pagination-last page" data-page="', pageSize, '">', last, '</li>',
                     '</ul>'
                 ].join('')
             },
