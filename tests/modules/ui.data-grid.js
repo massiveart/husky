@@ -13,7 +13,7 @@ describe("Husky.UI.DataGrid", function() {
     });
 
     it("Create instance", function() {
-        var dataGrid = new Husky.Ui.DataGrid($dataGrid, {
+        var dataGrid = $($dataGrid).huskyDataGrid({
             url: '/data'
         });
 
