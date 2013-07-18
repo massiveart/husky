@@ -49,16 +49,16 @@
                 <ul>
                     <li><a href="#">First</a></li>
                     <li><a href="#">Prev</a></li>
-                <ul>
+                </ul>
                 <ul>
                     <li><a href="#">1</a></li>
                     <li><a href="#">2</a></li>
                     <li><a href="#">3</a></li>
-                <ul>
+                </ul>
                 <ul>
                     <li><a href="#">Next</a></li>
                     <li><a href="#">Last</a></li>
-                <ul>
+                </ul>
             </div>
         </div>
 
@@ -79,21 +79,30 @@
                 server = sinon.fakeServer.create();
 
                 server.respondWith('GET', '/user', [200, { 'Content-Type': 'application/json' }, 
-                  '{"page_size": "10", "head": [{ "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "Head 3" }], "rows": [{ "id": "1", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "1", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "1", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "1", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }] }'
+                  '{"pageSize": "4", "page": "1", "pagesLength": "56", "head": [{ "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "Head 3" }], "rows": [{ "id": "1", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "2", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "3", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "4", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }] }'
                   ]);
 
-                server.respondWith('GET', '/user/1/10', [200, { 'Content-Type': 'application/json' }, 
+                server.respondWith('GET', '/user/2', [200, { 'Content-Type': 'application/json' }, 
+                  '{"pageSize": "4", "page": "2", "pagesLength": "56", "head": [{ "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "Head 3" }], "rows": [{ "id": "1", "columns": [{ "content": "Tschau" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "2", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "3", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "4", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }] }'
+                  ]);
+
+                server.respondWith('GET', '/user/1', [200, { 'Content-Type': 'application/json' }, 
                   '{"page_size": "10", "rows": [{ "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}] }'
                   ]);
 
                 var dataGrid = $('#js-data-grid').huskyDataGrid({
                     url: '/user',
                     pagination: true,
-                    pageSize: 10,
+                    showPages: 4,
+                    pageSize: 6,
                     selectItems: true
                 });
 
-                console.log(dataGrid.data('Husky.Ui.DataGrid'));
+                dataGrid.data('Husky.Ui.DataGrid').on('data-grid:page:changed', function() {
+                    setTimeout(function() {
+                      server.respond();
+                    }, 500);
+                });
 
                 server.respond();
             });
