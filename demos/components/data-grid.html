@@ -78,29 +78,26 @@
             $(document).ready(function() {
                 server = sinon.fakeServer.create();
 
-                server.respondWith('GET', '/user', [200, { 'Content-Type': 'application/json' }, 
-                  '{"pageSize": "4", "page": "1", "pagesLength": "56", "head": [{ "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "Head 3" }], "rows": [{ "id": "1", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "2", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "3", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "4", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }] }'
-                  ]);
+                server.respondWith('GET', '/contacts?pageSize=4', [200, { 'Content-Type': 'application/json' },
+                    '{"pageSize": "4", "page": "1", "total": "56", "head": [{ "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "Head 3" }], "rows": [{ "id": "1", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "2", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "3", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "4", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }] }'
+                ]);
 
-                server.respondWith('GET', '/user/2', [200, { 'Content-Type': 'application/json' }, 
-                  '{"pageSize": "4", "page": "2", "pagesLength": "56", "head": [{ "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "Head 3" }], "rows": [{ "id": "1", "columns": [{ "content": "Tschau" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "2", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "3", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "4", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }] }'
-                  ]);
+                server.respondWith('GET', '/contacts?pageSize=4&page=2', [200, { 'Content-Type': 'application/json' },
+                    '{"pageSize": "4", "page": "2", "total": "56", "head": [{ "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "Head 3" }], "rows": [{ "id": "1", "columns": [{ "content": "Tschau" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "2", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "3", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "4", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }] }'
+                ]);
 
-                server.respondWith('GET', '/user/1', [200, { 'Content-Type': 'application/json' }, 
-                  '{"page_size": "10", "rows": [{ "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}, { "id": "1", "columns": [{"column_1": "cell_1", "column_2": "cell_2", "column_3": "cell_3"}]}] }'
-                  ]);
 
                 var dataGrid = $('#js-data-grid').huskyDataGrid({
-                    url: '/user',
+                    url: '/contacts',
                     pagination: true,
-                    showPages: 4,
-                    pageSize: 6,
+                    showPages: 6,
+                    pageSize: 4,
                     selectItems: true
                 });
 
                 dataGrid.data('Husky.Ui.DataGrid').on('data-grid:page:changed', function() {
                     setTimeout(function() {
-                      server.respond();
+                        server.respond();
                     }, 500);
                 });
 
