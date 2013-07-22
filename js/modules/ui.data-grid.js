@@ -68,29 +68,6 @@
             });
         },
 
-        update: function(params) {
-            Husky.DEBUG && console.log(this.name, 'update');
-
-            Husky.Util.ajax({
-                url: this.getUrl(params),
-                data: params.data,
-                success: function(response) {
-                    Husky.DEBUG && console.log(this.name, 'update', 'success');
-
-                    this.data = response;
-                    this.setConfigs();
-
-                    this.prepare()
-                        .appendPagination()
-                        .render();
-
-                    if (typeof params.success === 'function') {
-                        params.success(response);
-                    }
-                }.bind(this)
-            });
-        },
-
         setConfigs: function() {
             this.configs = {};
             this.configs.total = this.data.total;
@@ -142,7 +119,7 @@
         },
 
         prepareTableHead: function() {
-            var tblColumns, tblColumnClass, tblColumnWidth, headData;
+            var tblColumns, tblCellClass, tblColumnWidth, headData;
 
             tblColumns = [];
             headData = this.options.tableHead || this.data.head;
@@ -155,20 +132,22 @@
                 '</th>');
 
             headData.forEach(function(column) {
-                tblColumnClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
+                tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
                 tblColumnWidth = ((!!column.width) ? ' width="' + column.width + 'px"' : '');
 
-                tblColumns.push('<th' + tblColumnClass + tblColumnWidth + '>' + column.content + '</th>');
+                tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
             });
 
             return '<tr>' + tblColumns.join('') + '</tr>';
         },
 
         prepareTableRows: function() {
-            var tblRows, tblColumns, tblColumnClass, tblRowId;
+            var tblRows, tblColumns, tblCellClass, 
+                tblCellClasses, tblRowId, tblCellContent;
 
             tblRows = [];
             tblColumns = [];
+            tblCellClasses = [];
             this.allItemIds = [];
 
             this.data.rows.forEach(function(row) {
@@ -182,12 +161,19 @@
                 this.options.selectItems && tblColumns.push('<td>', this.templates.checkbox(), '</td>');
 
                 row.columns.forEach(function(column) {
-                    tblColumnClass = ((!!column.class) ? ' class="' + tblColumnClass + '"' : '');
+                    tblCellClasses = [];
+                    tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column.content;
+                    
+                    // prepare table cell classes
+                    !!column.class && tblCellClasses.push(column.class);
+                    !!column.thumb && tblCellClasses.push('thumb');
+                    
+                    tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
-                    tblColumns.push('<td ' + tblColumnClass + '>' + column.content + '</td>');
+                    tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
                 }.bind(this));
 
-                tblRows.push('<tr ' + tblRowId + '>' + tblColumns.join('') + '</tr>');
+                tblRows.push('<tr' + tblRowId + '>' + tblColumns.join('') + '</tr>');
             }.bind(this));
 
             return tblRows.join('');
@@ -390,14 +376,12 @@
                 var prev, first, selectedPage;
 
                 data = data || {};
-                prev = data['prev'] || 'Previous';
-                first = data['first'] || 'First';
                 selectedPage = ~~data['selectedPage'];
 
                 return [
                     '<ul>',
-                        '<li class="pagination-first page" data-page="1">', first, '</li>',
-                        '<li class="pagination-prev page" data-page="', selectedPage - 1, '">', prev, '</li>',
+                        '<li class="pagination-first page" data-page="1"></li>',
+                        '<li class="pagination-prev page" data-page="', selectedPage - 1, '">', 'Previous', '</li>',
                     '</ul>'
                 ].join('')
             },
@@ -414,7 +398,7 @@
                 return [
                     '<ul>',
                         '<li class="pagination-next page" data-page="', selectedPage + 1, '">', next, '</li>',
-                        '<li class="pagination-last page" data-page="', pageSize, '">', last, '</li>',
+                        '<li class="pagination-last page" data-page="', pageSize, '"></li>',
                     '</ul>'
                 ].join('')
             },

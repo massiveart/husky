@@ -23,10 +23,17 @@ table {
     thead {
         th {
             vertical-align: bottom;
+            font-weight: normal;
         }
 
         tr {
             border-bottom: 2px solid $grayLight;
+        }
+    }
+
+    tbody {
+        td {
+            vertical-align: middle;
         }
     }
 
@@ -36,6 +43,14 @@ table {
             &:hover > td {
                 background-color: #fff;
             }
+        }
+    }
+
+    .thumb {
+        text-align: center;
+
+        img {
+            vertical-align: middle;
         }
     }
 }
