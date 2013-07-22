@@ -1,0 +1,60 @@
+//
+// Form Elements
+// --------------------------------------------------
+
+
+// Text Inputs
+// -------------------------
+input {
+    &.input-text {
+    	box-shadow: inset 0 0 0 1px $inputBorderColor;
+
+        &:focus {
+            box-shadow: inset 0 0 0 1px $highlightColor;
+            outline: 0;
+        }
+
+        &.has-error {
+            box-shadow: inset 0 0 0 1px $errorColor;
+        }
+    }
+}
+
+
+// Checkboxes
+// -------------------------
+.custom-checkbox {
+	$checkboxSize : 14px;
+
+	width: $checkboxSize;
+	height: $checkboxSize;
+	vertical-align: top;
+	opacity: 0;
+
+	&:checked,
+	&.is-checked {
+		& + .custom-checkbox-icon {
+			&::after {
+				content: "Y";
+				display: inline;
+			}
+		}
+	}
+
+	& + .custom-checkbox-icon {
+		display: inline-block;
+		width: $checkboxSize;
+		height: $checkboxSize;
+		margin-left: -$checkboxSize;
+
+		border: 1px solid $inputBorderColor;
+		background-color: #fff;
+		font-family: 'Glyphs'
+	}
+}
+
+// Labels
+// -------------------------
+label {
+	color: $labelColor;
+}

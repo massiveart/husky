@@ -1,27 +1,27 @@
-/* 
- * -------------------------------------------------
- * Variables
- * -------------------------------------------------
- */
+//
+// Variables
+// --------------------------------------------------
 
 
-/*
- * GLOBAL VARIABLES
- * ------------------------
- */
+// Global values
+// --------------------------------------------------
 
 
-/*
- * Main Colors
- */
-
+// Base Colors
+// -------------------------
 $black: #000;
 $grayLight: #999;
 $grayLighter: #ccc;
 
-/*
- * Typography
- */
+
+// Accent colors
+// -------------------------
+$highlightColor: #00aeff;
+$errorColor: #e60000;
+
+
+// Typography
+// -------------------------
 $sansFontFamily: Helvetica, Arial, sans-serif;
 
 $baseFontSize: 14px;
@@ -34,13 +34,16 @@ $headingsFontWeight: bold;
 $headingsColor: inherit;
 
 
-/*
- * MODULE VARIABLES
- * ------------------------
- */
+// Componenet values
+// --------------------------------------------------
 
 
-/*
- * Buttons
- */
+// Buttons
+// -------------------------
  $btnBorderRadius: 4px;
+
+
+// Form Elements
+// -------------------------
+$inputBorderColor: $grayLighter;
+$labelColor: $grayLighter;

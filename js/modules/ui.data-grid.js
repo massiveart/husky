@@ -52,8 +52,6 @@
             if (params.page > 1) {
                 url += '&page=' + params.page;
             }
-
-            console.log(url);
             return url;
         },
 
@@ -156,7 +154,7 @@
             this.options.selectItems &&
             tblColumns.push(
                 '<th class="select-all">',
-                    this.templates.checkbox({ id: 'select-all' }), ' All',
+                    this.templates.checkbox({ id: 'select-all' }),
                 '</th>');
 
             headData.forEach(function(column) {
@@ -251,6 +249,7 @@
 
         //
         // Pagination
+        // TODO: create pagination module
         //
         appendPagination: function() {
             if (this.options.pagination) {
@@ -282,7 +281,6 @@
         },
 
         preparePaginationNextNavigation: function() {
-            console.log(this.configs.page);
             return this.templates.paginationNextNavigation({
                 next: this.options.pagination.next,
                 selectedPage: this.configs.page,
@@ -362,9 +360,8 @@
                 name = (!!data['name']) ? ' name="' + data['name'] + '"' : '';
 
                 return [
-                    '<span class="custom-checkbox">',
-                        '<input', id, name, ' type="checkbox"/>',
-                    '</span>'
+                    '<input', id, name, ' type="checkbox" class="custom-checkbox"/>',
+                    '<span class="custom-checkbox-icon"></span>'
                 ].join('')
             },
 
