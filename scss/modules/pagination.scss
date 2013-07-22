@@ -13,6 +13,8 @@
         & > li {
             font-size: $smallFontSize;
             display: inline-block;
+            margin-right: 5px;
+            cursor: pointer;
             & > a {
                 text-decoration: none;
                 color: $black;

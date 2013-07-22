@@ -12,7 +12,7 @@ files = [
     JASMINE_ADAPTER,
 
     'bower_components/jquery/jquery.js',
-    'node_modules/sinon/lib/sinon.js',
+    'node_modules/sinon/pkg/sinon.js',
 
     'js/*.js', 
     'js/**/*.js', 

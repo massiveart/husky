@@ -13,9 +13,9 @@
         <link rel="stylesheet" href="../../.tmp/css/husky.css">
     </head>
     <body>
-        <div id="main">
-            <h1>This is the title of this list</h1>
-            <table class="table hoverable">
+        <div>
+            <h1>This is a static table</h1>
+            <table class="table">
                 <thead>
                     <tr>
                       <th>Table Header</th>
@@ -49,23 +49,61 @@
                 <ul>
                     <li><a href="#">First</a></li>
                     <li><a href="#">Prev</a></li>
-                <ul>
+                </ul>
                 <ul>
                     <li><a href="#">1</a></li>
                     <li><a href="#">2</a></li>
                     <li><a href="#">3</a></li>
-                <ul>
+                </ul>
                 <ul>
                     <li><a href="#">Next</a></li>
                     <li><a href="#">Last</a></li>
-                <ul>
+                </ul>
             </div>
         </div>
 
+        <div id="js-data-grid"></div>
+
+        <script src="../../node_modules/sinon/pkg/sinon.js"></script>
         <script src="../../bower_components/jquery/jquery.js"></script>
-        
+
         <script src="../../js/husky.js"></script>
         <script src="../../js/modules/util.js"></script>
-        <script src="../../js/modules/table.js"></script>
+        <script src="../../js/modules/ui.data-grid.js"></script>
+
+        <script>
+            Husky.DEBUG = true;
+
+            var server;
+            $(document).ready(function() {
+                server = sinon.fakeServer.create();
+
+                server.respondWith('GET', '/contacts?pageSize=4', [200, { 'Content-Type': 'application/json' },
+                    '{"pageSize": "4", "page": "1", "total": "56", "head": [{ "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "Head 3" }], "rows": [{ "id": "1", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "2", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "3", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "4", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }] }'
+                ]);
+
+                server.respondWith('GET', '/contacts?pageSize=4&page=2', [200, { 'Content-Type': 'application/json' },
+                    '{"pageSize": "4", "page": "2", "total": "56", "head": [{ "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "Head 3" }], "rows": [{ "id": "1", "columns": [{ "content": "Tschau" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "2", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "3", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "4", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }] }'
+                ]);
+
+
+                var dataGrid = $('#js-data-grid').huskyDataGrid({
+                    url: '/contacts',
+                    pagination: true,
+                    showPages: 6,
+                    pageSize: 4,
+                    selectItems: true
+                });
+
+                dataGrid.data('Husky.Ui.DataGrid').on('data-grid:page:changed', function() {
+                    setTimeout(function() {
+                        server.respond();
+                    }, 500);
+                });
+
+                server.respond();
+            });
+
+        </script>
 </body>
 </html>
