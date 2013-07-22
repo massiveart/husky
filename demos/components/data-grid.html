@@ -95,7 +95,7 @@
                     selectItems: true
                 });
 
-                dataGrid.data('Husky.Ui.DataGrid').on('data-grid:page:changed', function() {
+                dataGrid.data('Husky.Ui.DataGrid').on('data-grid:page:change', function() {
                     setTimeout(function() {
                         server.respond();
                     }, 500);

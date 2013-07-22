@@ -24,24 +24,29 @@ input {
 // Checkboxes
 // -------------------------
 .custom-checkbox {
-	$checkboxSize : 14px;
+	$checkboxSize: 14px;
+	$checkboxIconFont: 'Glyphicons';
+	$checkboxIcon: "\e207";
 
 	width: $checkboxSize;
 	height: $checkboxSize;
 	vertical-align: top;
 	opacity: 0;
+	cursor: pointer;
 
 	&:checked,
 	&.is-checked {
 		& + .custom-checkbox-icon {
 			&::after {
-				content: "Y";
-				display: inline;
+				content: $checkboxIcon;
+				position: relative;
+				top: -3px;
 			}
 		}
 	}
 
 	& + .custom-checkbox-icon {
+		// custom checkbox styling
 		display: inline-block;
 		width: $checkboxSize;
 		height: $checkboxSize;
@@ -49,7 +54,9 @@ input {
 
 		border: 1px solid $inputBorderColor;
 		background-color: #fff;
-		font-family: 'Glyphs'
+		font-family: $checkboxIconFont;
+		font-size: 12px;
+		text-align: center;
 	}
 }
 

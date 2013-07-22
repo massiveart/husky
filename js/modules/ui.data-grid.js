@@ -20,31 +20,21 @@
         this.allItemIds = [];
         this.selectedItemIds = [];
 
-        // sample column mapping
-        this.options.columnMapping = {
-            tile: { display: 'Title', width: '20%', sortable: true },
-            date: { display: 'Last edit date', width: '20%', sortable: false }
-        };
-
         this.data = null;
         this.options.pagination = this.options.pagination || !!this.options.url;
 
         if (!!this.options.url) {
             this.load({
-                url: this.options.url,
-                success: function(response) {
-                    this.data = response;
-                    this.setConfigs();
-
-                    this.prepare()
-                        .appendPagination()
-                        .render();
-                }.bind(this)
+                url: this.options.url
             });
         }
     };
 
     $.extend(Husky.Ui.DataGrid.prototype, Husky.Events, {
+        // private event dispatcher
+        vent: (function() {
+            return $.extend({}, Husky.Events);
+        })(),
 
         getUrl: function(params) {
             var url = params.url + '?pageSize=' + this.options.pageSize
@@ -63,6 +53,13 @@
                 data: params.data,
                 success: function(response) {
                     Husky.DEBUG && console.log(this.name, 'load', 'success');
+
+                    this.data = response;
+                    this.setConfigs();
+
+                    this.prepare()
+                        .appendPagination()
+                        .render();
 
                     if (typeof params.success === 'function') {
                         params.success(response);
@@ -196,6 +193,11 @@
             return tblRows.join('');
         },
 
+        resetItemSelection: function() {
+            this.allItemIds = [];
+            this.selectedItemIds = [];
+        },
+
         selectItem: function(event) {
             Husky.DEBUG && console.log(this.name, 'selectItem');
 
@@ -208,6 +210,11 @@
                 $element
                     .removeClass('is-selected')
                     .find('td:first-child input[type="checkbox"]')
+                    .prop('checked', false);
+
+                // uncheck 'Select All'-checkbox
+                $('th.select-all')
+                    .find('input[type="checkbox"]')
                     .prop('checked', false);
 
                 this.selectedItemIds.splice(this.selectedItemIds.indexOf(itemId), 1);
@@ -228,7 +235,7 @@
 
             event.stopPropagation();
 
-            if (this.selectedItemIds === this.allItemIds) {
+            if (Husky.Util.compare(this.selectedItemIds, this.allItemIds)) {
 
                 this.$dataGrid
                     .find('input[type="checkbox"]')
@@ -242,7 +249,7 @@
                     .find('input[type="checkbox"]')
                     .prop('checked', true);
 
-                this.selectedItemIds = this.allItemIds;
+                this.selectedItemIds = this.allItemIds.slice(0);
                 this.trigger('data-grid:all:select', this.selectedItemIds);
             }
         },
@@ -306,7 +313,7 @@
 
             this.addLoader();
 
-            this.update({
+            this.load({
                 url: this.options.url,
                 page: page,
                 success: function() {
@@ -314,7 +321,8 @@
                 }.bind(this)
             });
 
-            this.trigger('data-grid:page:changed', page);
+            this.trigger('data-grid:page:change', null);
+            this.vent.trigger('data-grid:update', null);
         },
 
         changePageSize: function() {
@@ -334,8 +342,20 @@
             }
         },
 
+        bindCustomEvents: function() {
+            this.vent.off();
+
+            this.vent.on('data-grid:update', this.updateHandler.bind(this));
+        },
+
+        updateHandler: function() {
+            this.resetItemSelection();
+        },
+
         render: function() {
             this.$element.html(this.$dataGrid);
+
+            this.bindCustomEvents();
             this.bindDOMEvents();
         },
 
