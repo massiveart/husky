@@ -21,6 +21,8 @@ $bgNavigationMainColumn: $baseColor;
 $colorNavigationMainColumn: #999;
 $colorNavigationMainColumnHover: #000;
 
+$borderColorNavigationMainColumnSelected: #ccc;
+
 $bgNavigationEntryHover: #E0E0E0;
 $bgNavigationMainColumnEntryHover: #FFF;
 
@@ -37,14 +39,11 @@ $navigationIconFont: $baseIconFont;
 
 .navigation {
     white-space: nowrap;
-    overflow: hidden;
 
     position: fixed;
     top: 50%;
     left: 0;
     margin-top: -$navigationColumnHeight / 2;
-
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, .25);
 }
 
 @media all and (max-height: $navigationColumnHeight) {
@@ -65,6 +64,7 @@ $navigationIconFont: $baseIconFont;
 
     border-right: 1px solid $bgNavigationEntryHover;
     background-color: $bgNavigationColumn;
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, .25);
 
     &:first-child {
         border-right: 0;
@@ -76,6 +76,10 @@ $navigationIconFont: $baseIconFont;
             &.selected {
                 color: $colorNavigationMainColumnHover;
                 background-color: $bgNavigationMainColumnEntryHover;
+            }
+
+            &.selected {
+                box-shadow: inset 3px 0 0 0 $borderColorNavigationMainColumnSelected;
             }
         }
     }
