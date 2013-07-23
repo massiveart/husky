@@ -32,11 +32,11 @@
             server = sinon.fakeServer.create();
 
             server.respondWith('GET', 'navigation', [200, { 'Content-Type': 'application/json' },
-                '{ "header": { "title": "Ivoclar Vivadent", "type": "logo", "thumb": "http://lorempixel.com/32/32" }, "entries": [{ "title": "Dashboard", "icon": "true", "id": "dashboard", "hasChildren": "true", "uri": "dashboard" }, { "title": "Portals", "icon": "true", "id": "portals", "hasChildren": "true", "uri": "portals" }, { "title": "Search", "icon": "true", "id": "dashboard", "hasChildren": "true", "type": "search" }] }'
+                '{ "header": { "title": "Ivoclar Vivadent", "type": "logo", "thumb": "http://lorempixel.com/32/32" }, "entries": [{ "title": "Dashboard", "icon": "true", "id": "dashboard", "hasChildren": "true", "uri": "dashboard" }, { "title": "Portals", "icon": "true", "id": "portals", "hasChildren": "true", "uri": "portals" }] }'
             ]);
 
             server.respondWith('GET', 'navigation/dashboard', [200, { 'Content-Type': 'application/json' },
-                '{ "entries": [{ "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Contact", "id": "contact", "hasChildren": "true", "uri": "contact" }] }'
+                '{ "entries": [{ "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Contact", "id": "contact", "hasChildren": "true", "uri": "contact" }] }'
             ]);
 
             server.respondWith('GET', 'navigation/portals', [200, { 'Content-Type': 'application/json' },
@@ -48,13 +48,14 @@
             ]);
 
             var navigation = $('#navigation').huskyNavigation({
-                url: 'navigation'
+                url: 'navigation',
+                collapse: true
             });
 
             navigation.data('Husky.Ui.Navigation').on('navigation:entry:select', function() {
                 setTimeout(function() {
                     server.respond();
-                }, 500);
+                }, 100);
             });
 
             server.respond();

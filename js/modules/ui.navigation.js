@@ -13,7 +13,9 @@
         this.configs = {};
 
         this.$element = $(element);
-        this.$navigation = $('<ul/>');
+        this.$navigation = $('<ul/>', {
+            class: 'navigation'
+        });
 
         this.currentColumnIdx = 0;
         this.lastColumnIdx = 0;
@@ -83,8 +85,9 @@
             var $column;
 
             $column = $('<li/>', {
-                'id': 'column_' + this.currentColumnIdx,
-                'data-column-id': this.currentColumnIdx
+                'id': 'column-' + this.currentColumnIdx,
+                'data-column-id': this.currentColumnIdx,
+                'class': 'navigation-column'
             });
 
             $column.append(this.prepareColumnEntries());
@@ -94,11 +97,14 @@
 
         prepareColumnEntries: function() {
             var $columnEntriesList, columnEntries, columnEntryClass, 
-                columnEntryClasses, columnEntryUri, columnEntryHasChildren;
+                columnEntryClasses, columnEntryUri, columnEntryHasChildren, 
+                columnEntryIcon, columnEntryTitle;
 
             columnEntries = [];
 
-            $columnEntriesList = $('<ul/>');
+            $columnEntriesList = $('<ul/>', {
+                class: 'navigation-enties'
+            });
 
             if (!!this.columnEntries) {
                 this.columnEntries.forEach(function(entry) {
@@ -115,8 +121,15 @@
                     columnEntryUri = (!!entry.uri) ? ' data-uri="' + entry.uri + '"' : '';
                     columnEntryHasChildren = (!!entry.hasChildren && entry.hasChildren === 'true') ? ' data-has-children="true"' : '';
 
+                    // prepare title
+                    columnEntryTitle = 'title="' + entry.title + '"';
+
+                    // prepare icon
+                    columnEntryIcon = (entry.icon === 'true') ? '<span class="icon-' + entry.id + '"></span>' : '';
+
                     columnEntries.push(
-                        '<li ', columnEntryClass, columnEntryUri, columnEntryHasChildren, '>', 
+                        '<li ', columnEntryTitle, columnEntryClass, columnEntryUri, columnEntryHasChildren, '>',
+                            columnEntryIcon,
                             entry.title,
                         '</li>'
                     );
@@ -137,7 +150,7 @@
                 this.currentColumnIdx === this.lastColumnIdx) {
 
                 for (i = this.currentColumnIdx; i <= this.lastColumnIdx; i++) {
-                    $column = this.$navigation.find('#column_' + i);
+                    $column = this.$navigation.find('#column-' + i);
 
                     if ($column.size()) {
                         $column.remove();
@@ -151,20 +164,33 @@
         selectEntry: function(event) {
             Husky.DEBUG && console.log(this.name, 'selectEntry');
 
-            var $element, $elementParent, $elementColumn;
+            var $element, $elementParent, $elementColumn, $firstColumn;
 
             $element = $(event.currentTarget),
             $elementColumn = $element.parent().parent();
+            $firstColumn = $('#column-0');
 
             this.lastColumnIdx = this.currentColumnIdx;
             this.currentColumnIdx = $elementColumn.data('column-id');
 
+            if (this.currentColumnIdx > 0) {
+                $firstColumn.addClass('collapsed');
+            } else {
+                $firstColumn.removeClass('collapsed');
+            }
+
             if ($element.data('has-children') && !!$element.data('uri')) {
+
+                $elementColumn
+                    .find('.selected')
+                    .removeClass('selected');
+
+                $element.addClass('selected');
+
                 this.load({
                     url: this.options.url,
                     uri: $element.data('uri'),
                     success: function() {
-                        $element.addClass('selected');
                         this.addColumn();
                     }.bind(this)
                 });
@@ -174,7 +200,7 @@
         },
 
         bindDOMEvents: function() {
-            this.$element.on('click', '.navigation-column-entry', this.selectEntry.bind(this));
+            this.$element.on('click', '.navigation-column-entry:not(.selected)', this.selectEntry.bind(this));
         },
 
         render: function() {
@@ -200,6 +226,9 @@
         return this;
     };
 
-    $.fn.huskyNavigation.defaults = {};
+    $.fn.huskyNavigation.defaults = {
+        url: '',
+        collapse: false 
+    };
 
 })(Husky.$, this, this.document);

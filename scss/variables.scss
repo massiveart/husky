@@ -8,14 +8,16 @@
 // --------------------------------------------------
 
 
-// Base colors
-// -------------------------
-
 // Shades of grey
 // -------------------------
 $black: #000;
 $grayLight: #999;
 $grayLighter: #ccc;
+
+
+// Base colors
+// -------------------------
+$baseColor: #333333;
 
 
 // Accent colors
@@ -40,6 +42,8 @@ $baseLineHeight: 20px;
 $headingsFontFamily: inherit;
 $headingsFontWeight: bold;
 $headingsColor: inherit;
+
+$baseIconFont: "Glyphicons";
 
 
 // Module specific values

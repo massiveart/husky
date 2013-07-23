@@ -3,30 +3,51 @@
 // --------------------------------------------------
 
 
+// Imports
 @import "compass/css3/transition";
 
-$navigationHeight: 600px;
 
-$navigationColumnExpandedWidth: 250px;
-$navigationCollapsedWidth: 50px;
+// Sizes
+$navigationColumnWidth: 250px;
+$navigationColumnHeight: 700px;
 
-.navigation {
-    position: fixed;
-    top: 20px;
-    left: 0;
-    top: 50%;
-    margin-top: - $navigationHeight / 2;
-    height: $navigationHeight;
-    box-shadow: 10px 10px 0 0 rgba(0, 0, 0, .4);
+$navigationEntryHeight: 50px;
 
-    ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
+
+// Colors
+$bgNavigationColumn: #FFF;
+$bgNavigationMainColumn: $baseColor;
+
+$colorNavigationMainColumn: #999;
+$colorNavigationMainColumnHover: #000;
+
+$bgNavigationEntryHover: #E0E0E0;
+$bgNavigationMainColumnEntryHover: #FFF;
+
+// Fonts 
+$navigationIconFont: $baseIconFont;
+
+
+.navigation,
+.navigation ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-@media (max-height: $navigationHeight) { 
+.navigation {
+    white-space: nowrap;
+    overflow: hidden;
+
+    position: fixed;
+    top: 50%;
+    left: 0;
+    margin-top: -$navigationColumnHeight / 2;
+
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, .25);
+}
+
+@media all and (max-height: $navigationColumnHeight) {
     .navigation {
         top: 0;
         margin-top: 0;
@@ -34,132 +55,84 @@ $navigationCollapsedWidth: 50px;
 }
 
 .navigation-column {
-    width: 0;
-    height: $navigationHeight;
-    overflow: hidden;
-    position: relative;
-    float: left;
-    background-color: #fff;
-    @include transition(width 0.3s ease-in-out);
+    @include transition(width 0.4s ease-in-out);
+
+    display: inline-block;
+    vertical-align: top;
+
+    width: $navigationColumnWidth;
+    height: $navigationColumnHeight;
+
+    border-right: 1px solid $bgNavigationEntryHover;
+    background-color: $bgNavigationColumn;
 
     &:first-child {
-        width: 250px;
-        background-color: $navigationMainColumnColor;
-        @include transition(width 0.3s ease-in-out);
+        border-right: 0;
+        color: $colorNavigationMainColumn;
+        background-color: $bgNavigationMainColumn;
 
-        &:hover {
-            width: $navigationColumnExpandedWidth !important;
-        }
-
-        &.is-collapsed {
-            width: $navigationCollapsedWidth;
-            overflow: hidden;
-        }
-
-        li {
-            width: $navigationColumnExpandedWidth;
-            color: $grayLighter;
-            
-            &.is-active {
-                background-color: $navigationMainColumnColorActive;
-            }
-
-            [class^="glyphicons"] {
-                color: #fff;
-            }
-        }
-
-        .navigation-footer {
-            height: 60px;
-            background-color: transparent;
-        }
-    }
-
-    &.is-expanded {
-        width: $navigationColumnExpandedWidth;
-    }
-
-    li {
-        width: $navigationColumnExpandedWidth;
-        position: relative;
-        padding: 15px 10px;
-        color: #000;
-        cursor: pointer;
-
-        [class^="glyphicons"] {
-            padding: 10px 10px 0 10px;
-            position: relative;
-            top: -5px;
-            margin-right: 20px;
-            font-size: 22px;
-        }
-
-        &.is-active {
-            font-weight: bold;
-            background-color: $navigationColumnColorActive;
-            color: $black;
-
-            [class^="glyphicons"] {
-                color: #000;
-            }
-        }
-
-        &.has-children {
-            font-family: "Glyphicons";
-            &::after {
-                content: "\e224";
-                font-size: 12px;
-                display: block;
-                float: right;
+        .navigation-column-entry {
+            &:hover,
+            &.selected {
+                color: $colorNavigationMainColumnHover;
+                background-color: $bgNavigationMainColumnEntryHover;
             }
         }
     }
 
-    a {
-        color: $grayLighter;
+    &.collapsed {
+        width: 50px;
     }
 }
 
-.navigation-header {
-    background-color: $accentColor;
-    color: #000 !important;
-    cursor: auto !important;
-}
-
-.navigation-footer {
-    width: $navigationColumnExpandedWidth;
-    height: 50px;
-    position: absolute !important;
-    bottom: 0;
-    left: 0;
-    z-index: 5;
-    padding: 15px 10px;
-    padding-bottom: 5px !important;
-    cursor: auto !important;
-    background-color: #F1F1F1;
-
-    .navigation-setting {
-        font-size: 12px;
-
-        [class^="glyphicons"] {
-            margin: 0;
-            padding-bottom: 10px;
-            font-size: 16px;
-        }
-    }
-}
-
-.navigation-entries {
-    height: $navigationHeight - 50px;
+.navigation-enties {
+    height: 100%;
     overflow: auto;
-    overflow-x: hidden;
 }
 
-.navigation-entry-name {
-    max-width: $navigationColumnExpandedWidth - 50px;
-    display: inline-block;
-    white-space: nowrap;
+.navigation-column-entry {
+    padding: 0 10px;
+    width: 100%;
+    height: $navigationEntryHeight;
+    line-height: $navigationEntryHeight;
     overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
-    font-family: $baseFontFamily;
+    cursor: pointer;
+
+    &:hover,
+    &.selected {
+        background-color: $bgNavigationEntryHover;
+        box-shadow: inset 1px 0 0 0 #FFF;
+    }
+
+    &.selected {
+        font-weight: bold;
+        cursor: default;
+    }
+
+    &[data-has-children="true"] {
+        &::after {
+            content: "\e224";
+            display: inline-block;
+            float: right;
+            font-size: 12px;
+            font-family: $navigationIconFont;
+            font-weight: normal;
+        }
+    }
+
+    [class*="icon-"] {
+        display: inline-block;
+        margin: 0 15px 0 5px;
+        padding: 0;
+        float: left;
+        font-size: 20px;
+        font-family: $navigationIconFont;
+
+        &::after {
+            content: "";
+            display: block;
+        }
+    }
 }
