@@ -14,94 +14,10 @@
 </head>
 <body>
     <div id="main">
-        <div class="navigation">
-
-            <div class="navigation-column">
-                <ul class="navigation-entries">
-                    <li class="navigation-header">
-                        <span>Sulu</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="glyphicons star"></span>
-                        <span class="navigation-entry-name">Dashboard</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="glyphicons globe"></span>
-                        <span class="navigation-entry-name">Global</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="glyphicons camera"></span>
-                        <span class="navigation-entry-name">Media</span>
-                    </li>
-                    <li class="navigation-footer">
-                        <div class="avatar round pull-left">
-                            <img src="http://lorempixel.com/people/30/30" alt="avatar"/>
-                            <span>John Doe</span>
-                        </div>
-                        <a class="avatar-logout pull-right m-top-10" href="#">Log out</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="navigation-column">    
-                <ul class="navigation-entries">
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Events</span>
-                    </li>
-                    <li class="has-children is-active">
-                        <span class="navigation-entry-name">Kurzer text</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Das ist ein sehr langer Text der so lang ist</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Events</span>
-                    </li>
-                    <li class="has-children is-active">
-                        <span class="navigation-entry-name">Kurzer text</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Das ist ein sehr langer Text der so lang ist</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Events</span>
-                    </li>
-                    <li class="has-children is-active">
-                        <span class="navigation-entry-name">Kurzer text</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Das ist ein sehr langer Text der so lang ist</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Events</span>
-                    </li>
-                    <li class="has-children is-active">
-                        <span class="navigation-entry-name">Kurzer text</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Das ist ein sehr langer Text der so lang ist</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Events</span>
-                    </li>
-                    <li class="has-children is-active">
-                        <span class="navigation-entry-name">Kurzer text</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Das ist ein sehr langer Text der so lang ist</span>
-                    </li>
-                </ul>
-                <div class="navigation-footer">
-                    <div class="navigation-setting pull-right">
-                        <span>Edit</span>
-                        <span class="glyphicons cogwheel m-left-5"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div id="navigation"></div>
     </div>
 
-
+    <script src="../../node_modules/sinon/pkg/sinon.js"></script>
     <script src="../../bower_components/jquery/jquery.js"></script>
     
     <script src="../../js/husky.js"></script>
@@ -109,24 +25,41 @@
     <script src="../../js/modules/ui.navigation.js"></script>
 
     <script type="text/javascript">
-        window.addEventListener('load', function() {
-            $('.navigation .navigation-column').on('click', 'li:not(.navigation-header, .navigation-footer)', function(event) {
-                if ($(event.currentTarget).hasClass('is-active')) {
-                    $(event.currentTarget).removeClass('is-active');
-                } else {
-                    $('.navigation .navigation-column li').removeClass('is-active');
-                    $(event.currentTarget).addClass('is-active');
+        Husky.DEBUG = true;
 
-                    $('.navigation-column').eq($(event.currentTarget).parents('.navigation-column').index() + 1).addClass('is-expanded');
-                }
+        var server;
+        $(document).ready(function() {
+            server = sinon.fakeServer.create();
 
-                if ($(event.currentTarget).parents('.navigation-column').index() > 0) {
-                    $('.navigation-column').eq(0).addClass('is-collapsed');
-                } else {
-                    $('.navigation-column').eq(0).removeClass('is-collapsed');
-                }
-            }.bind(this));
-        }, false);
+            server.respondWith('GET', 'navigation', [200, { 'Content-Type': 'application/json' },
+                '{ "header": { "title": "Ivoclar Vivadent", "type": "logo", "thumb": "http://lorempixel.com/32/32" }, "entries": [{ "title": "Dashboard", "icon": "true", "id": "dashboard", "hasChildren": "true", "uri": "dashboard" }, { "title": "Portals", "icon": "true", "id": "portals", "hasChildren": "true", "uri": "portals" }, { "title": "Search", "icon": "true", "id": "dashboard", "hasChildren": "true", "type": "search" }] }'
+            ]);
+
+            server.respondWith('GET', 'navigation/dashboard', [200, { 'Content-Type': 'application/json' },
+                '{ "entries": [{ "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Contact", "id": "contact", "hasChildren": "true", "uri": "contact" }] }'
+            ]);
+
+            server.respondWith('GET', 'navigation/portals', [200, { 'Content-Type': 'application/json' },
+                '{ "entries": [{ "title": "Deutschland", "id": "de", "hasChildren": "true", "uri": "portals/de" }, { "title": "Schweiz", "id": "ch", "hasChildren": "true", "uri": "contact" }] }'
+            ]);
+
+            server.respondWith('GET', 'navigation/portals/de', [200, { 'Content-Type': 'application/json' },
+                '{ "entries": [{ "title": "Land der Deutschen", "id": "de", "hasChildren": "true", "uri": "products" }, { "title": "Voll deutsch", "id": "boom", "hasChildren": "true", "uri": "contact" }] }'
+            ]);
+
+            var navigation = $('#navigation').huskyNavigation({
+                url: 'navigation'
+            });
+
+            navigation.data('Husky.Ui.Navigation').on('navigation:entry:select', function() {
+                setTimeout(function() {
+                    server.respond();
+                }, 500);
+            });
+
+            server.respond();
+        });
     </script>
+
 </body>
 </html>
