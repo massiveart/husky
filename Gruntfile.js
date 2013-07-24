@@ -2,14 +2,22 @@
 
 module.exports = function(grunt) {
 
-    // load grunt tasks
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-compass');
-    grunt.loadNpmTasks('grunt-karma');
+    // load all grunt tasks
+    require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
     // project configuration
     grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
+
+        meta: {
+            banner: '/* <%= pkg.name %> v<%= pkg.version %>\n' +
+                    ' * <%= pkg.homepage %> \n' +
+                    ' * Copyright (c) <%= grunt.template.today("yyyy") %>' +
+                    ' <%= pkg.author.name %>\n' +
+                    ' * Licensed under MIT.\n' + 
+                    ' */\n\n'
+        },
+
         watch: {
             options: {
                 nospawn: true
@@ -34,17 +42,58 @@ module.exports = function(grunt) {
                 autoWatch: true
             }
         },
+        clean: {
+            dist: ['dist'],
+            temp: ['dist/temp']
+        },
         compass: {
             dev: {
                 options: {
                     sassDir: 'scss',
                     cssDir: '.tmp/css',
+                    fontsDir: 'fonts/',
                     generatedImagesDir: '.tmp/img/',
                     imagesDir: '/img',
                     outputStyle: 'compact'
                 }
             }
         },
+        concat: {
+            options: { banner: '<%= meta.banner %>' },
+            dist: {
+                src: ['js/{,*/}*.js'],
+                dest: 'dist/<%= pkg.name %>.js'
+            }
+        },
+        cssmin: {
+            options: { banner: '<%= meta.banner %>' },
+            compress: {
+                files: {
+                    'dist/<%= pkg.name %>.min.css': ['.tmp/css/{,*/}*.css']
+                }
+            }
+        },
+        uglify: {
+            build: {
+                files: {
+                    'dist/temp/<%= pkg.name %>.min.js': [
+                    'js/{,*/}*.js']
+                }
+            }
+        },
+        copy: {
+            dist: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: './',
+                    dest: 'dist',
+                    src: [
+                        'fonts/{,*/}*'
+                    ]
+                }]
+            }
+        }
     });
 
     // register tasks
@@ -52,7 +101,14 @@ module.exports = function(grunt) {
         'karma'
     ]);
 
-    // grunt.registerTask('build', ['']);
+    grunt.registerTask('build', [
+        'clean:dist',
+        'uglify',
+        'concat',
+        'compass',
+        'cssmin',
+        'copy:dist'
+    ]);
 
     grunt.registerTask('default', [
         'watch'
