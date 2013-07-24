@@ -21,8 +21,6 @@ $bgNavigationMainColumn: $baseColor;
 $colorNavigationMainColumn: #999;
 $colorNavigationMainColumnHover: #000;
 
-$borderColorNavigationMainColumnSelected: #ccc;
-
 $bgNavigationEntryHover: #E0E0E0;
 $bgNavigationMainColumnEntryHover: #FFF;
 
@@ -38,19 +36,13 @@ $navigationIconFont: $baseIconFont;
 }
 
 .navigation {
+    height: 100%;
+    padding: 100px 0 50px;
     white-space: nowrap;
 
     position: fixed;
-    top: 50%;
+    top: 0;
     left: 0;
-    margin-top: -$navigationColumnHeight / 2;
-}
-
-@media all and (max-height: $navigationColumnHeight) {
-    .navigation {
-        top: 0;
-        margin-top: 0;
-    }
 }
 
 .navigation-column {
@@ -60,7 +52,7 @@ $navigationIconFont: $baseIconFont;
     vertical-align: top;
 
     width: $navigationColumnWidth;
-    height: $navigationColumnHeight;
+    height: 100%;
 
     border-right: 1px solid $bgNavigationEntryHover;
     background-color: $bgNavigationColumn;
@@ -77,10 +69,6 @@ $navigationIconFont: $baseIconFont;
                 color: $colorNavigationMainColumnHover;
                 background-color: $bgNavigationMainColumnEntryHover;
             }
-
-            &.selected {
-                box-shadow: inset 3px 0 0 0 $borderColorNavigationMainColumnSelected;
-            }
         }
     }
 
@@ -89,7 +77,7 @@ $navigationIconFont: $baseIconFont;
     }
 }
 
-.navigation-enties {
+.navigation-entries {
     height: 100%;
     overflow: auto;
 }
@@ -110,20 +98,21 @@ $navigationIconFont: $baseIconFont;
         box-shadow: inset 1px 0 0 0 #FFF;
     }
 
+    &::after {
+        content: "\e224";
+        display: inline-block;
+        float: right;
+        font-size: 12px;
+        font-family: $navigationIconFont;
+        font-weight: normal;
+    }
+
     &.selected {
-        font-weight: bold;
         cursor: default;
     }
 
     &[data-has-children="true"] {
-        &::after {
-            content: "\e224";
-            display: inline-block;
-            float: right;
-            font-size: 12px;
-            font-family: $navigationIconFont;
-            font-weight: normal;
-        }
+        font-weight: bold;
     }
 
     [class*="icon-"] {

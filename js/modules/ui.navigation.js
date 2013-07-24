@@ -57,12 +57,13 @@
             Husky.Util.ajax({
                 url: this.getUrl(params),
                 success: function(data) {
+                    console.log(data);
                     Husky.DEBUG && console.log(this.name, 'load', 'success');
 
                     this.data = data;
 
                     this.columnHeader = this.data.header || null;
-                    this.columnEntries = this.data.entries || null;
+                    this.columnEntries = this.data.sub.entries || null;
 
                     if (typeof params.success === 'function') {
                         params.success(this.data);
@@ -72,12 +73,7 @@
         },
 
         prepareNavigation: function() {
-            var i;
-
-            for (i = -1; i < this.currentColumnIdx; i++) {
-                this.$navigation.append(this.prepareNavigationColumn());
-            }
-
+            this.$navigation.append(this.prepareNavigationColumn());
             return this;
         },
 
@@ -98,16 +94,26 @@
         prepareColumnEntries: function() {
             var $columnEntriesList, columnEntries, columnEntryClass, 
                 columnEntryClasses, columnEntryUri, columnEntryHasChildren, 
-                columnEntryIcon, columnEntryTitle;
+                columnEntryIcon, columnEntryTitle, entryModel,
+                columnEntryId;
 
             columnEntries = [];
 
             $columnEntriesList = $('<ul/>', {
-                class: 'navigation-enties'
+                class: 'navigation-entries'
             });
 
             if (!!this.columnEntries) {
+                if (!!this.entriesCollection) {
+                    delete this.entriesCollection;
+                }
+
+                this.entriesCollection = new this.collections.entries();
+
                 this.columnEntries.forEach(function(entry) {
+                    
+                    entryModel = this.models.entry(entry);
+                    this.entriesCollection.add(entryModel);
 
                     // prepare classes
                     columnEntryClasses = [];
@@ -127,12 +133,16 @@
                     // prepare icon
                     columnEntryIcon = (entry.icon === 'true') ? '<span class="icon-' + entry.id + '"></span>' : '';
 
+                    // prepare id
+                    columnEntryId = 'id="' + entryModel.get('id') + '"';
+
                     columnEntries.push(
-                        '<li ', columnEntryTitle, columnEntryClass, columnEntryUri, columnEntryHasChildren, '>',
+                        '<li ', columnEntryId, columnEntryTitle, columnEntryClass, columnEntryUri, columnEntryHasChildren, '>',
                             columnEntryIcon,
                             entry.title,
                         '</li>'
                     );
+
                 }.bind(this));
 
                 $columnEntriesList.append(columnEntries.join(''));
@@ -179,7 +189,7 @@
                 $firstColumn.removeClass('collapsed');
             }
 
-            if ($element.data('has-children') && !!$element.data('uri')) {
+            if ($element.data('has-children')) {
 
                 $elementColumn
                     .find('.selected')
@@ -187,13 +197,19 @@
 
                 $element.addClass('selected');
 
-                this.load({
-                    url: this.options.url,
-                    uri: $element.data('uri'),
-                    success: function() {
-                        this.addColumn();
-                    }.bind(this)
-                });
+                if (!this.entriesCollection.get($element.attr('id')).get('sub')) {
+                    this.load({
+                        url: this.options.url,
+                        uri: this.entriesCollection.get($element.attr('id')).get('action'),
+                        success: function() {
+                            this.addColumn();
+                        }.bind(this)
+                    });
+                } else {
+                    // this.columnHeader = this.data.header || null;
+                    this.columnEntries = this.entriesCollection.get($element.attr('id')).get('sub').entries;
+                    this.addColumn();
+                }
 
                 this.trigger('navigation:entry:select');
             }
@@ -207,6 +223,39 @@
             this.$element.html(this.$navigation);
 
             this.bindDOMEvents();
+        },
+
+        collections: {
+            entries: function() {
+                return $.extend({}, Husky.Collection);    
+            }
+        },
+
+        models: {
+            entry: function(data) {
+                var defaults = {
+                    // defaults
+                    title: '',
+                    hasChildren: false
+                };
+
+                return $.extend({}, Husky.Model, defaults, data);  
+            }
+        },
+
+        template: {
+            search: function(data) {
+                data = data || {};
+
+                data.action = data.action || '';
+                data.icon = data.icon || '';
+
+                return [
+                    '<form action="', data.action, '">',
+                        '<input type="text" class="search" autofill="false" placeholder="Search ..."></input>',
+                    '</form>'
+                ].join();
+            }
         }
     });
 

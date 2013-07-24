@@ -31,8 +31,12 @@
         $(document).ready(function() {
             server = sinon.fakeServer.create();
 
+            // server.respondWith('GET', 'navigation', [200, { 'Content-Type': 'application/json' },
+            //     '{ "entries": [{ "title": "Hallo", "id": "test",  "hasChildren": "true", "action": "test", "sub": { "entries": [{ "title": "Products", "hasChildren": "true", "action": "products" }, { "title": "Products", "hasChildren": "true", "action": "products" }, { "title": "Products", "hasChildren": "true", "action": "products" }, { "title": "Products", "hasChildren": "true", "action": "products" }, { "title": "Products", "hasChildren": "true", "action": "products" }] } }, { "title": "Voll deutsch", "id": "boom", "action": "dashboard", "hasChildren": "true" }] }'
+            // ]);
+
             server.respondWith('GET', 'navigation', [200, { 'Content-Type': 'application/json' },
-                '{ "header": { "title": "Ivoclar Vivadent", "type": "logo", "thumb": "http://lorempixel.com/32/32" }, "entries": [{ "title": "Dashboard", "icon": "true", "id": "dashboard", "hasChildren": "true", "uri": "dashboard" }, { "title": "Portals", "icon": "true", "id": "portals", "hasChildren": "true", "uri": "portals" }] }'
+                '{"title":"Root","hasChildren":"true","id":"51efc3a54f881","sub":{"entries":[{"title":"Settings","hasChildren":"true","id":"51efc3a54f89a","sub":{"entries":[{"title":"Translate","hasChildren":false,"id":"51efc3a54f8b0"}]}}]}}'
             ]);
 
             server.respondWith('GET', 'navigation/dashboard', [200, { 'Content-Type': 'application/json' },
@@ -44,7 +48,15 @@
             ]);
 
             server.respondWith('GET', 'navigation/portals/de', [200, { 'Content-Type': 'application/json' },
-                '{ "entries": [{ "title": "Land der Deutschen", "id": "de", "hasChildren": "true", "uri": "products" }, { "title": "Voll deutsch", "id": "boom", "hasChildren": "true", "uri": "contact" }] }'
+                '{ "entries": [{ "title": "Land der Deutschen", "id": "land_deutschen", "hasChildren": "true", "uri": "portals/de/land_deutschen" }, { "title": "Voll deutsch", "id": "boom", "hasChildren": "true", "uri": "contact" }] }'
+            ]);
+
+            server.respondWith('GET', 'navigation/portals/de/land_deutschen', [200, { 'Content-Type': 'application/json' },
+                '{ "entries": [{ "title": "Hallo", "id": "hallo", "hasChildren": "true", "uri": "portals/de/land_deutschen/hallo" }, { "title": "Voll deutsch", "id": "boom", "hasChildren": "true", "uri": "contact" }] }'
+            ]);
+
+            server.respondWith('GET', 'navigation/portals/de/land_deutschen/hallo', [200, { 'Content-Type': 'application/json' },
+                '{ "entries": [{ "title": "Tschau", "id": "de", "hasChildren": "true", "uri": "test" }, { "title": "Voll deutsch", "id": "boom", "hasChildren": "true", "uri": "contact" }] }'
             ]);
 
             var navigation = $('#navigation').huskyNavigation({

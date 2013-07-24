@@ -76,10 +76,9 @@ if (typeof jQuery === "undefined" &&
     Husky.DEBUG = false;
     
 
-    /*
-     * Backbone Events
-     * https://github.com/jashkenas/backbone/blob/ddefd21167c27d98fd1eb05a44e330a2313055f6/backbone.js#L76-167
-     */
+
+    // Backbone Events
+    // https://github.com/jashkenas/backbone/blob/ddefd21167c27d98fd1eb05a44e330a2313055f6/backbone.js#L76-167
 
     // Regular expression used to split event strings
     var eventSplitter = /\s+/;
@@ -172,6 +171,33 @@ if (typeof jQuery === "undefined" &&
                 }
             }
 
+            return this;
+        }
+    };
+
+    // Simplified Backbone Collection
+    Husky.Collection = {
+        byId: {},
+        objs: [],
+
+        add: function(obj) {
+            this.byId[obj.id] = obj;
+            this.objs.push(obj);
+        },
+
+        get: function(obj) {
+            return this.byId[obj.id || obj];
+        }
+    };
+
+    // Simplified Backbone Model
+    Husky.Model = {
+        get: function(attr) {
+            return this[attr];
+        },
+
+        set: function(attr, value) {
+            !!value && (this[attr] = value);
             return this;
         }
     };
