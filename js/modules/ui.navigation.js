@@ -118,7 +118,7 @@
                     // prepare classes
                     columnEntryClasses = [];
 
-                    !!entry.class && columnEntrieClasses.push(entry.class);
+                    !!entry.class && columnEntryClasses.push(entry.class);
                     columnEntryClasses.push('navigation-column-entry');
 
                     columnEntryClass = ' class="' + columnEntryClasses.join(' ') + '"';
@@ -174,9 +174,9 @@
         selectEntry: function(event) {
             Husky.DEBUG && console.log(this.name, 'selectEntry');
 
-            var $element, $elementParent, $elementColumn, $firstColumn;
+            var $element, $elementColumn, $firstColumn;
 
-            $element = $(event.currentTarget),
+            $element = $(event.currentTarget);
             $elementColumn = $element.parent().parent();
             $firstColumn = $('#column-0');
 
