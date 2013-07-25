@@ -54,10 +54,6 @@ module.exports = function(grunt) {
                     sassDir: 'scss/',
                     specify: ['scss/husky.scss'],
                     cssDir: '.tmp/',
-                    fontsDir: 'fonts/', // Todo fix font paths
-                    generatedImagesDir: '.tmp/img/',
-                    imagesDir: '/img',
-                    httpFontsDir: 'fonts',
                     require: ['animation'],
                     relativeAssets: false
                 }

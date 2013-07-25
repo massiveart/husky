@@ -31,16 +31,12 @@
         $(document).ready(function() {
             server = sinon.fakeServer.create();
 
-            // server.respondWith('GET', 'navigation', [200, { 'Content-Type': 'application/json' },
-            //     '{ "entries": [{ "title": "Hallo", "id": "test",  "hasChildren": "true", "action": "test", "sub": { "entries": [{ "title": "Products", "hasChildren": "true", "action": "products" }, { "title": "Products", "hasChildren": "true", "action": "products" }, { "title": "Products", "hasChildren": "true", "action": "products" }, { "title": "Products", "hasChildren": "true", "action": "products" }, { "title": "Products", "hasChildren": "true", "action": "products" }] } }, { "title": "Voll deutsch", "id": "boom", "action": "dashboard", "hasChildren": "true" }] }'
-            // ]);
-
             server.respondWith('GET', 'navigation', [200, { 'Content-Type': 'application/json' },
-                '{"title":"Root","hasChildren": true,"id":"51efc3a54f881","sub":{"entries":[{"title":"Settings","hasChildren": true,"id":"51efc3a54f89a","sub":{"entries":[{"title":"Translate","hasChildren":false,"id":"51efc3a54f8b0"}]}}]}}'
+                '{"title":"Root","hasChildren": true,"id":"51efc3a54f881","sub":{"entries":[{"title":"Settings","hasChildren": true,"id":"51efc3a54f89a","sub":{"entries":[{"title":"Translate","hasChildren":true,"id":"51efc3a54f8b0","action":"dashboard"}]}}]}}'
             ]);
 
             server.respondWith('GET', 'navigation/dashboard', [200, { 'Content-Type': 'application/json' },
-                '{ "entries": [{ "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Contact", "id": "contact", "hasChildren": "true", "uri": "contact" }] }'
+                '{ "sub": { "entries": [{ "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Contact", "id": "contact", "hasChildren": "true", "uri": "contact" }] }}'
             ]);
 
             server.respondWith('GET', 'navigation/portals', [200, { 'Content-Type': 'application/json' },
@@ -67,7 +63,7 @@
             navigation.data('Husky.Ui.Navigation').on('navigation:entry:select', function() {
                 setTimeout(function() {
                     server.respond();
-                }, 100);
+                }, 1000);
             });
 
             server.respond();

@@ -13,7 +13,8 @@
         this.configs = {};
 
         this.$element = $(element);
-        this.$navigation = $('<ul/>', {
+
+        this.$navigation = $('<div/>', {
             class: 'navigation'
         });
 
@@ -73,7 +74,13 @@
         },
 
         prepareNavigation: function() {
-            this.$navigation.append(this.prepareNavigationColumn());
+            this.$navigationColumns = $('<ul/>', {
+                class: 'navigation-columns'
+            });
+
+            this.$navigationColumns.append(this.prepareNavigationColumn());
+            this.$navigation.append(this.$navigationColumns);
+
             return this;
         },
 
@@ -158,7 +165,7 @@
                 this.currentColumnIdx === this.lastColumnIdx) {
 
                 for (i = this.currentColumnIdx; i <= this.lastColumnIdx; i++) {
-                    $column = this.$navigation.find('#column-' + i);
+                    $column = this.$navigationColumns.find('#column-' + i);
 
                     if ($column.size()) {
                         $column.remove();
@@ -166,17 +173,21 @@
                 }
             }
 
-            this.$navigation.append(this.prepareNavigationColumn());
+            this.$navigationColumns.append(this.prepareNavigationColumn());
         },
 
         selectEntry: function(event) {
             Husky.DEBUG && console.log(this.name, 'selectEntry');
 
-            var $element, $elementColumn, $firstColumn;
+            var $element, $elementColumn, $firstColumn, 
+                $elementId, entryModel;
 
             $element = $(event.currentTarget);
+            $elementId = $element.attr('id');
             $elementColumn = $element.parent().parent();
             $firstColumn = $('#column-0');
+
+            entryModel = this.entriesCollection.get($elementId);
 
             this.lastColumnIdx = this.currentColumnIdx;
             this.currentColumnIdx = $elementColumn.data('column-id');
@@ -187,20 +198,21 @@
                 $firstColumn.removeClass('collapsed');
             }
 
-            if ($element.data('has-children')) {
-
+            if (!!entryModel && entryModel.get('hasChildren')) {
                 $elementColumn
                     .find('.selected')
                     .removeClass('selected');
 
                 $element.addClass('selected');
 
-                if (!this.entriesCollection.get($element.attr('id')).get('sub')) {
+                if (!entryModel.get('sub')) {
+                    this.addLoader($element);
                     this.load({
                         url: this.options.url,
                         uri: this.entriesCollection.get($element.attr('id')).get('action'),
                         success: function() {
                             this.addColumn();
+                            this.hideLoader($element);
                         }.bind(this)
                     });
                 } else {
@@ -221,6 +233,14 @@
             this.$element.html(this.$navigation);
 
             this.bindDOMEvents();
+        },
+
+        addLoader: function($elem) {
+            $elem.addClass('loading');
+        },
+
+        hideLoader: function($elem) {
+            $elem.removeClass('loading');
         },
 
         collections: {
