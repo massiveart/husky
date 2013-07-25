@@ -4,7 +4,9 @@
 
 
 // Imports
+@import "compass/css3/transform";
 @import "compass/css3/transition";
+@import "animation";
 
 
 // Sizes
@@ -28,6 +30,19 @@ $bgNavigationMainColumnEntryHover: #FFF;
 $navigationIconFont: $baseIconFont;
 
 
+// Animations
+@include keyframes(foldOut) {
+    0% {
+        @include transform3d(rotate3d(0, 1, 0, 100deg));
+    }
+    100% {
+        @include transform3d(rotate3d(0, 1, 0, 0deg));
+    }
+}
+
+
+
+
 .navigation,
 .navigation ul {
     margin: 0;
@@ -36,6 +51,8 @@ $navigationIconFont: $baseIconFont;
 }
 
 .navigation {
+    @include perspective(600px);
+
     height: 100%;
     padding: 100px 0 50px;
     white-space: nowrap;
@@ -47,6 +64,11 @@ $navigationIconFont: $baseIconFont;
 
 .navigation-column {
     @include transition(width 0.4s ease-in-out);
+    @include animation(foldOut .5s 1);
+    @include transform3d(rotate3d(0, 1, 0, 0deg));
+    @include backface-visibility(hidden);
+
+    @include transform-origin(0, 50%);
 
     display: inline-block;
     vertical-align: top;
@@ -56,7 +78,7 @@ $navigationIconFont: $baseIconFont;
 
     border-right: 1px solid $bgNavigationEntryHover;
     background-color: $bgNavigationColumn;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, .25);
+    box-shadow: 0 5px 0 rgba(0, 0, 0, .25);
 
     &:first-child {
         border-right: 0;
@@ -70,6 +92,10 @@ $navigationIconFont: $baseIconFont;
                 background-color: $bgNavigationMainColumnEntryHover;
             }
         }
+    }
+
+    &:last-child {
+        box-shadow: 5px 5px 0 rgba(0, 0, 0, .25);
     }
 
     &.collapsed {

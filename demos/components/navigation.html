@@ -36,7 +36,7 @@
             // ]);
 
             server.respondWith('GET', 'navigation', [200, { 'Content-Type': 'application/json' },
-                '{"title":"Root","hasChildren":"true","id":"51efc3a54f881","sub":{"entries":[{"title":"Settings","hasChildren":"true","id":"51efc3a54f89a","sub":{"entries":[{"title":"Translate","hasChildren":false,"id":"51efc3a54f8b0"}]}}]}}'
+                '{"title":"Root","hasChildren": true,"id":"51efc3a54f881","sub":{"entries":[{"title":"Settings","hasChildren": true,"id":"51efc3a54f89a","sub":{"entries":[{"title":"Translate","hasChildren":false,"id":"51efc3a54f8b0"}]}}]}}'
             ]);
 
             server.respondWith('GET', 'navigation/dashboard', [200, { 'Content-Type': 'application/json' },

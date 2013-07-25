@@ -10,11 +10,13 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
 
         meta: {
-            banner: '/* <%= pkg.name %> v<%= pkg.version %>\n' +
+            banner: '/* \n' + 
+                    ' * <%= pkg.name %> v<%= pkg.version %>\n' +
                     ' * <%= pkg.homepage %> \n' +
-                    ' * Copyright (c) <%= grunt.template.today("yyyy") %>' +
-                    ' <%= pkg.author.name %>\n' +
-                    ' * Licensed under MIT.\n' + 
+                    ' * (c) <%= pkg.author.company %>\n' +
+                    ' * \n' +
+                    ' * This source file is subject to the MIT license that is bundled\n' + 
+                    ' * with this source code in the file LICENSE.\n' + 
                     ' */\n\n'
         },
 
@@ -54,7 +56,8 @@ module.exports = function(grunt) {
                     fontsDir: 'fonts/',
                     generatedImagesDir: '.tmp/img/',
                     imagesDir: '/img',
-                    outputStyle: 'compact'
+                    outputStyle: 'compact',
+                    require: ['animation']
                 }
             }
         },
@@ -76,7 +79,7 @@ module.exports = function(grunt) {
         uglify: {
             build: {
                 files: {
-                    'dist/temp/<%= pkg.name %>.min.js': [
+                    'dist/<%= pkg.name %>.min.js': [
                     'js/{,*/}*.js']
                 }
             }
