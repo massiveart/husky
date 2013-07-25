@@ -51,13 +51,15 @@ module.exports = function(grunt) {
         compass: {
             dev: {
                 options: {
-                    sassDir: 'scss',
-                    cssDir: '.tmp/css',
-                    fontsDir: 'fonts/',
+                    sassDir: 'scss/',
+                    specify: ['scss/husky.scss'],
+                    cssDir: '.tmp/',
+                    fontsDir: 'fonts/', // Todo fix font paths
                     generatedImagesDir: '.tmp/img/',
                     imagesDir: '/img',
-                    outputStyle: 'compact',
-                    require: ['animation']
+                    httpFontsDir: 'fonts',
+                    require: ['animation'],
+                    relativeAssets: false
                 }
             }
         },
@@ -72,7 +74,7 @@ module.exports = function(grunt) {
             options: { banner: '<%= meta.banner %>' },
             compress: {
                 files: {
-                    'dist/<%= pkg.name %>.min.css': ['.tmp/css/{,*/}*.css']
+                    'dist/<%= pkg.name %>.min.css': ['.tmp/{,*/}*.css']
                 }
             }
         },
@@ -85,6 +87,17 @@ module.exports = function(grunt) {
             }
         },
         copy: {
+            dev: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: './',
+                    dest: '.tmp/',
+                    src: [
+                        'fonts/{,*/}*'
+                    ]
+                }]
+            },
             dist: {
                 files: [{
                     expand: true,
@@ -114,6 +127,7 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('default', [
+        'copy:dev',
         'watch'
     ]);
 };
