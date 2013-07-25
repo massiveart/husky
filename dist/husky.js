@@ -430,8 +430,7 @@ if (typeof jQuery === "undefined" &&
                     columnEntryClass = ' class="' + columnEntryClasses.join(' ') + '"';
 
                     // prepare data-attributes
-                    columnEntryUri = (!!entry.uri) ? ' data-uri="' + entry.uri + '"' : '';
-                    columnEntryHasChildren = (!!entry.hasChildren && entry.hasChildren === 'true') ? ' data-has-children="true"' : '';
+                    columnEntryHasChildren = (!!entry.hasChildren) ? ' data-has-children="true"' : '';
 
                     // prepare title
                     columnEntryTitle = 'title="' + entry.title + '"';
@@ -448,7 +447,6 @@ if (typeof jQuery === "undefined" &&
                             entry.title,
                         '</li>'
                     );
-
                 }.bind(this));
 
                 $columnEntriesList.append(columnEntries.join(''));
