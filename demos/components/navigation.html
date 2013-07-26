@@ -60,7 +60,7 @@
                 collapse: true
             });
 
-            navigation.data('Husky.Ui.Navigation').on('navigation:entry:select', function() {
+            navigation.data('Husky.Ui.Navigation').on('navigation:item:select', function() {
                 setTimeout(function() {
                     server.respond();
                 }, 1000);

@@ -13,7 +13,7 @@
 $navigationColumnWidth: 250px;
 $navigationColumnHeight: 700px;
 
-$navigationEntryHeight: 50px;
+$navigationItemHeight: 50px;
 
 
 // Colors
@@ -23,8 +23,8 @@ $bgNavigationMainColumn: $baseColor;
 $colorNavigationMainColumn: #999;
 $colorNavigationMainColumnHover: #000;
 
-$bgNavigationEntryHover: #E0E0E0;
-$bgNavigationMainColumnEntryHover: #FFF;
+$bgNavigationItemHover: #E0E0E0;
+$bgNavigationMainColumnItemHover: #FFF;
 
 // Fonts 
 $navigationIconFont: $baseIconFont;
@@ -83,7 +83,7 @@ $navigationIconFont: $baseIconFont;
     height: 100%;
     overflow: hidden;
 
-    border-right: 1px solid $bgNavigationEntryHover;
+    border-right: 1px solid $bgNavigationItemHover;
     background-color: $bgNavigationColumn;
     box-shadow: 5px 5px 0 0 rgba(0, 0, 0, .25);
 
@@ -95,18 +95,18 @@ $navigationIconFont: $baseIconFont;
         &:hover {
             width: $navigationColumnWidth !important;
 
-            .navigation-column-entry {
+            .navigation-column-item {
                 &::before {
                     display: inline-block !important;
                 }
             }
         }
 
-        .navigation-column-entry {
+        .navigation-column-item {
             &:hover,
             &.selected {
                 color: $colorNavigationMainColumnHover;
-                background-color: $bgNavigationMainColumnEntryHover;
+                background-color: $bgNavigationMainColumnItemHover;
             }
         }
     }
@@ -114,7 +114,7 @@ $navigationIconFont: $baseIconFont;
     &.collapsed {
         width: 50px;
 
-        .navigation-column-entry {
+        .navigation-column-item {
             &::before {
                 display: none;
             }
@@ -127,11 +127,11 @@ $navigationIconFont: $baseIconFont;
     overflow: auto;
 }
 
-.navigation-column-entry {
+.navigation-column-item {
     padding: 0 10px;
     width: 100%;
-    height: $navigationEntryHeight;
-    line-height: $navigationEntryHeight;
+    height: $navigationItemHeight;
+    line-height: $navigationItemHeight;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -139,7 +139,7 @@ $navigationIconFont: $baseIconFont;
 
     &:hover,
     &.selected {
-        background-color: $bgNavigationEntryHover;
+        background-color: $bgNavigationItemHover;
         box-shadow: inset 1px 0 0 0 #FFF;
     }
 
