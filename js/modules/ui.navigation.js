@@ -6,7 +6,7 @@
     Husky.Ui.Navigation = function(element, options) {
         this.name = moduleName;
 
-        Husky.DEBUG && console.log(this.name, "create instance");
+        Husky.DEBUG && console.log(this.name, 'create instance');
 
         this.options = options;
 
@@ -200,7 +200,7 @@
                 if (!itemModel.get('sub')) {
                     this.addLoader($element);
                     this.load({
-                        url: this.options.url,
+                        url: this.options.url, // FIXME use only one url for each item ???
                         uri: this.entriesCollection.get($element.attr('id')).get('action'),
                         success: function() {
                             this.addColumn();
@@ -268,7 +268,7 @@
 
                 return [
                     '<form action="', data.action, '">',
-                        '<input type="text" class="search" autofill="false" placeholder="Search ..."/>',
+                        '<input type="text" class="search" autofill="false" placeholder="Search ..."/>', // TODO Translate
                     '</form>'
                 ].join();
             }

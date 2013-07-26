@@ -27,47 +27,47 @@
     <script type="text/javascript">
         Husky.DEBUG = true;
 
-        var server;
+        var fakeServer;
         $(document).ready(function() {
-            server = sinon.fakeServer.create();
+            fakeServer = sinon.fakeServer.create();
 
-            server.respondWith('GET', 'navigation', [200, { 'Content-Type': 'application/json' },
+            fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
                 '{"title":"Root","hasChildren":true,"id":"51f258be2e45b","sub":{"entries":[{"title":"Settings","icon":"settings", "hasChildren":true,"id":"51f258be2e47f","sub":{"entries":[{"title":"Translate","hasChildren":true,"id":"51f258be2e49a", "action": "dashboard"}]}}]}}'
             ]);
 
-            server.respondWith('GET', 'navigation/dashboard', [200, { 'Content-Type': 'application/json' },
+            fakeServer.respondWith('GET', '/navigation/dashboard', [200, { 'Content-Type': 'application/json' },
                 '{ "sub": { "entries": [{ "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Products", "id": "products", "hasChildren": "true", "uri": "products" }, { "title": "Contact", "id": "contact", "hasChildren": "true", "uri": "contact" }] }}'
             ]);
 
-            server.respondWith('GET', 'navigation/portals', [200, { 'Content-Type': 'application/json' },
+            fakeServer.respondWith('GET', '/navigation/portals', [200, { 'Content-Type': 'application/json' },
                 '{ "entries": [{ "title": "Deutschland", "id": "de", "hasChildren": "true", "uri": "portals/de" }, { "title": "Schweiz", "id": "ch", "hasChildren": "true", "uri": "contact" }] }'
             ]);
 
-            server.respondWith('GET', 'navigation/portals/de', [200, { 'Content-Type': 'application/json' },
+            fakeServer.respondWith('GET', '/navigation/portals/de', [200, { 'Content-Type': 'application/json' },
                 '{ "entries": [{ "title": "Land der Deutschen", "id": "land_deutschen", "hasChildren": "true", "uri": "portals/de/land_deutschen" }, { "title": "Voll deutsch", "id": "boom", "hasChildren": "true", "uri": "contact" }] }'
             ]);
 
-            server.respondWith('GET', 'navigation/portals/de/land_deutschen', [200, { 'Content-Type': 'application/json' },
+            fakeServer.respondWith('GET', '/navigation/portals/de/land_deutschen', [200, { 'Content-Type': 'application/json' },
                 '{ "entries": [{ "title": "Hallo", "id": "hallo", "hasChildren": "true", "uri": "portals/de/land_deutschen/hallo" }, { "title": "Voll deutsch", "id": "boom", "hasChildren": "true", "uri": "contact" }] }'
             ]);
 
-            server.respondWith('GET', 'navigation/portals/de/land_deutschen/hallo', [200, { 'Content-Type': 'application/json' },
+            fakeServer.respondWith('GET', '/navigation/portals/de/land_deutschen/hallo', [200, { 'Content-Type': 'application/json' },
                 '{ "entries": [{ "title": "Tschau", "id": "de", "hasChildren": "true", "uri": "test" }, { "title": "Voll deutsch", "id": "boom", "hasChildren": "true", "uri": "contact" }] }'
             ]);
 
             var navigation = $('#navigation').huskyNavigation({
-                url: 'navigation',
+                url: '/navigation',
                 collapse: true
             });
 
             navigation.data('Husky.Ui.Navigation').on('navigation:item:selected', function(item) {
                 console.log(item);
                 setTimeout(function() {
-                    server.respond();
+                    fakeServer.respond();
                 }, 1000);
             });
 
-            server.respond();
+            fakeServer.respond();
         });
     </script>
 
