@@ -32,7 +32,7 @@
             server = sinon.fakeServer.create();
 
             server.respondWith('GET', 'navigation', [200, { 'Content-Type': 'application/json' },
-                '{"title":"Root","hasChildren":true,"id":"51f258be2e45b","sub":{"entries":[{"title":"Settings","icon":"settings","hasChildren":true,"id":"51f258be2e47f","sub":{"entries":[{"title":"Translate","hasChildren":false,"id":"51f258be2e49a"}]}}]}}'
+                '{"title":"Root","hasChildren":true,"id":"51f258be2e45b","sub":{"entries":[{"title":"Settings","icon":"settings", "hasChildren":true,"id":"51f258be2e47f","sub":{"entries":[{"title":"Translate","hasChildren":true,"id":"51f258be2e49a", "action": "dashboard"}]}}]}}'
             ]);
 
             server.respondWith('GET', 'navigation/dashboard', [200, { 'Content-Type': 'application/json' },
