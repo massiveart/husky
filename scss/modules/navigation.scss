@@ -70,7 +70,7 @@ $navigationIconFont: $baseIconFont;
 
 .navigation-column {
     @include transition(width 0.4s ease-in-out);
-    @include animation(foldOut .3s 1);
+    @include animation(foldOut .4s 1);
     @include transform3d(rotate3d(0, 1, 0, 0deg));
     @include backface-visibility(hidden);
     @include transform-style(preserve-3d);
@@ -182,7 +182,7 @@ $navigationIconFont: $baseIconFont;
         font-family: $navigationIconFont;
 
         &::after {
-            content: "";
+            content: "\E281"; /* remove this shit */
             display: block;
         }
     }
