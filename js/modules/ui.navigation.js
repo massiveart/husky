@@ -268,7 +268,7 @@
 
                 return [
                     '<form action="', data.action, '">',
-                        '<input type="text" class="search" autofill="false" placeholder="Search ..."></input>',
+                        '<input type="text" class="search" autofill="false" placeholder="Search ..."/>',
                     '</form>'
                 ].join();
             }
