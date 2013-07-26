@@ -135,7 +135,7 @@
                     columnEntryTitle = 'title="' + entry.title + '"';
 
                     // prepare icon
-                    columnEntryIcon = (entry.icon === 'true') ? '<span class="icon-' + entry.id + '"></span>' : '';
+                    columnEntryIcon = (!!entry.icon) ? '<span class="icon-' + entry.icon + '"></span>' : '';
 
                     // prepare id
                     columnEntryId = 'id="' + entryModel.get('id') + '"';
