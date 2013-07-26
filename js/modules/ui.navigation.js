@@ -219,7 +219,7 @@
                     this.addColumn();
                 }
 
-                this.trigger('navigation:item:select');
+                this.trigger('navigation:item:selected', itemModel);
             }
         },
 
