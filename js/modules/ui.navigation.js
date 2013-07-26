@@ -53,8 +53,6 @@
         load: function(params) {
             Husky.DEBUG && console.log(this.name, 'load');
 
-            console.log(this.getUrl(params));
-
             Husky.Util.ajax({
                 url: this.getUrl(params),
                 success: function(data) {
@@ -192,12 +190,6 @@
             this.lastColumnIdx = this.currentColumnIdx;
             this.currentColumnIdx = $elementColumn.data('column-id');
 
-            if (this.currentColumnIdx > 0) {
-                $firstColumn.addClass('collapsed');
-            } else {
-                $firstColumn.removeClass('collapsed');
-            }
-
             if (!!entryModel && entryModel.get('hasChildren')) {
                 $elementColumn
                     .find('.selected')
@@ -213,6 +205,12 @@
                         success: function() {
                             this.addColumn();
                             this.hideLoader($element);
+
+                            if (this.currentColumnIdx > 0) {
+                                $firstColumn.addClass('collapsed');
+                            } else {
+                                $firstColumn.removeClass('collapsed');
+                            }
                         }.bind(this)
                     });
                 } else {
