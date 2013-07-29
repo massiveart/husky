@@ -312,7 +312,7 @@ if (typeof jQuery === "undefined" &&
     Husky.Ui.Navigation = function(element, options) {
         this.name = moduleName;
 
-        Husky.DEBUG && console.log(this.name, "create instance");
+        Husky.DEBUG && console.log(this.name, 'create instance');
 
         this.options = options;
 
@@ -330,7 +330,7 @@ if (typeof jQuery === "undefined" &&
         this.data = null;
 
         this.columnHeader = null;
-        this.columnEntries = null;
+        this.columnItems = null;
 
         if (!!this.options.url) {
             this.load({
@@ -348,19 +348,11 @@ if (typeof jQuery === "undefined" &&
             return $.extend({}, Husky.Events); 
         })(),
 
-        getUrl: function(params) {
-            var url = params.url;
-            if (!!params.uri) {
-                url += '/' + params.uri;
-            }
-            return url;
-        },
-
         load: function(params) {
             Husky.DEBUG && console.log(this.name, 'load');
 
             Husky.Util.ajax({
-                url: this.getUrl(params),
+                url: params.url,
                 success: function(data) {
                     console.log(data);
                     Husky.DEBUG && console.log(this.name, 'load', 'success');
@@ -368,7 +360,7 @@ if (typeof jQuery === "undefined" &&
                     this.data = data;
 
                     this.columnHeader = this.data.header || null;
-                    this.columnEntries = this.data.sub.entries || null;
+                    this.columnItems = this.data.sub.items || null;
 
                     if (typeof params.success === 'function') {
                         params.success(this.data);
@@ -397,34 +389,34 @@ if (typeof jQuery === "undefined" &&
                 'class': 'navigation-column'
             });
 
-            $column.append(this.prepareColumnEntries());
+            $column.append(this.prepareColumnItems());
 
             return $column;
         },
 
-        prepareColumnEntries: function() {
-            var $columnEntriesList, columnEntries, columnItemClass, 
+        prepareColumnItems: function() {
+            var $columnItemsList, columnItems, columnItemClass, 
                 columnItemClasses, columnItemUri, columnItemHasChildren, 
                 columnItemIcon, columnItemTitle, itemModel,
                 columnItemId;
 
-            columnEntries = [];
+            columnItems = [];
 
-            $columnEntriesList = $('<ul/>', {
-                class: 'navigation-entries'
+            $columnItemsList = $('<ul/>', {
+                class: 'navigation-items'
             });
 
-            if (!!this.columnEntries) {
-                if (!!this.entriesCollection) {
-                    delete this.entriesCollection;
+            if (!!this.columnItems) {
+                if (!!this.itemsCollection) {
+                    delete this.itemsCollection;
                 }
 
-                this.entriesCollection = new this.collections.entries();
+                this.itemsCollection = new this.collections.items();
 
-                this.columnEntries.forEach(function(item) {
+                this.columnItems.forEach(function(item) {
                     
                     itemModel = this.models.item(item);
-                    this.entriesCollection.add(itemModel);
+                    this.itemsCollection.add(itemModel);
 
                     // prepare classes
                     columnItemClasses = [];
@@ -446,7 +438,7 @@ if (typeof jQuery === "undefined" &&
                     // prepare id
                     columnItemId = 'id="' + itemModel.get('id') + '"';
 
-                    columnEntries.push(
+                    columnItems.push(
                         '<li ', columnItemId, columnItemTitle, columnItemClass, columnItemUri, columnItemHasChildren, '>',
                             columnItemIcon,
                             item.title,
@@ -454,10 +446,10 @@ if (typeof jQuery === "undefined" &&
                     );
                 }.bind(this));
 
-                $columnEntriesList.append(columnEntries.join(''));
+                $columnItemsList.append(columnItems.join(''));
             }
 
-            return $columnEntriesList;
+            return $columnItemsList;
         },
 
         addColumn: function() {
@@ -491,41 +483,49 @@ if (typeof jQuery === "undefined" &&
             $elementColumn = $element.parent().parent();
             $firstColumn = $('#column-0');
 
-            itemModel = this.entriesCollection.get($elementId);
+            itemModel = this.itemsCollection.get($elementId);
 
             this.lastColumnIdx = this.currentColumnIdx;
             this.currentColumnIdx = $elementColumn.data('column-id');
 
-            if (!!itemModel && itemModel.get('hasChildren')) {
+            if (!!itemModel) {
                 $elementColumn
                     .find('.selected')
                     .removeClass('selected');
 
                 $element.addClass('selected');
 
-                if (!itemModel.get('sub')) {
-                    this.addLoader($element);
-                    this.load({
-                        url: this.options.url,
-                        uri: this.entriesCollection.get($element.attr('id')).get('action'),
-                        success: function() {
-                            this.addColumn();
-                            this.hideLoader($element);
-
-                            if (this.currentColumnIdx > 0) {
-                                $firstColumn.addClass('collapsed');
-                            } else {
-                                $firstColumn.removeClass('collapsed');
-                            }
-                        }.bind(this)
-                    });
-                } else {
-                    // this.columnHeader = this.data.header || null;
-                    this.columnEntries = this.entriesCollection.get($element.attr('id')).get('sub').entries;
-                    this.addColumn();
-                }
-
                 this.trigger('navigation:item:selected', itemModel);
+
+                if (!!itemModel.get('hasSub')) {
+
+                    if (!itemModel.get('sub')) {
+                        this.addLoader($element);
+                        this.load({
+                            url: itemModel.get('action'),
+                            success: function() {
+                                this.addColumn();
+                                this.hideLoader($element);
+
+                                if (this.currentColumnIdx > 0) {
+                                    $firstColumn.addClass('collapsed');
+                                } else {
+                                    $firstColumn.removeClass('collapsed');
+                                }
+
+                                this.trigger('navigation:item:sub:loaded', itemModel);
+                            }.bind(this)
+                        });
+                    } else {
+                        // this.columnHeader = this.data.header || null;
+                        this.columnItems = this.itemsCollection.get($element.attr('id')).get('sub').items;
+                        this.addColumn();
+                    }
+
+                } else {
+
+                    this.trigger('navigation:item:content:show', itemModel);
+                }
             }
         },
 
@@ -548,7 +548,7 @@ if (typeof jQuery === "undefined" &&
         },
 
         collections: {
-            entries: function() {
+            items: function() {
                 return $.extend({}, Husky.Collection);    
             }
         },
@@ -574,7 +574,7 @@ if (typeof jQuery === "undefined" &&
 
                 return [
                     '<form action="', data.action, '">',
-                        '<input type="text" class="search" autofill="false" placeholder="Search ..."/>',
+                        '<input type="text" class="search" autofill="false" placeholder="Search ..."/>', // TODO Translate
                     '</form>'
                 ].join();
             }
@@ -603,6 +603,7 @@ if (typeof jQuery === "undefined" &&
     };
 
 })(Husky.$, this, this.document);
+
 (function($, window, document, undefined) {
     'use strict';
 
