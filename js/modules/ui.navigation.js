@@ -48,8 +48,7 @@
             Husky.Util.ajax({
                 url: params.url,
                 success: function(data) {
-                    console.log(data);
-                    Husky.DEBUG && console.log(this.name, 'load', 'success');
+                    Husky.DEBUG && console.log(this.name, 'load', 'success', data);
 
                     this.data = data;
 
@@ -90,7 +89,7 @@
 
         prepareColumnItems: function() {
             var $columnItemsList, columnItems, columnItemClass, 
-                columnItemClasses, columnItemUri, columnItemHasChildren, 
+                columnItemClasses, columnItemUri, columnItemHasSub,
                 columnItemIcon, columnItemTitle, itemModel,
                 columnItemId;
 
@@ -121,7 +120,7 @@
                     columnItemClass = ' class="' + columnItemClasses.join(' ') + '"';
 
                     // prepare data-attributes
-                    columnItemHasChildren = (!!item.hasChildren) ? ' data-has-children="true"' : '';
+                    columnItemHasSub = (!!item.hasSub) ? ' data-has-sub="true"' : '';
 
                     // prepare title
                     columnItemTitle = 'title="' + item.title + '"';
@@ -133,7 +132,7 @@
                     columnItemId = 'id="' + itemModel.get('id') + '"';
 
                     columnItems.push(
-                        '<li ', columnItemId, columnItemTitle, columnItemClass, columnItemUri, columnItemHasChildren, '>',
+                        '<li ', columnItemId, columnItemTitle, columnItemClass, columnItemUri, columnItemHasSub, '>',
                             columnItemIcon,
                             item.title,
                         '</li>'
@@ -252,7 +251,7 @@
                 var defaults = {
                     // defaults
                     title: '',
-                    hasChildren: false
+                    hasSub: false
                 };
 
                 return $.extend({}, Husky.Model, defaults, data);  
