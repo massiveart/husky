@@ -199,7 +199,7 @@
                             success: function() {
                                 this.addColumn();
                                 this.hideLoader($element);
-
+                                console.log(this.currentColumnIdx);
                                 if (this.currentColumnIdx > 0) {
                                     $firstColumn.addClass('collapsed');
                                 } else {
