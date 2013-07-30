@@ -36,11 +36,11 @@
             ]);
 
             fakeServer.respondWith('GET', '/navigation/portals', [200, { 'Content-Type': 'application/json' },
-                '{"sub":{"items":[{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Products","id":"products","hasSub":false},{"title":"Contact","id":"contact","hasSub":"true","action":"/navigation/contacts"}]}}'
+                '{"sub":{"items":[{"title":"Products","id":"products","hasSub":false}]}}'
             ]);
 
             fakeServer.respondWith('GET', '/settings/translates', [200, { 'Content-Type': 'application/json' },
-                '{"sub":{"items":[{"title":"Deutschland","id":"de","hasSub":false,"action":"de"},{"title":"Schweiz","id":"ch","hasSub":false,"action":"ch"}]}}'
+                '{"sub":{"items":[{"title":"Deutschland","id":"de","hasSub":false,"type":"content","action":"de"},{"title":"Schweiz","id":"ch","hasSub":false,"action":"ch"}]}}'
             ]);
 
             var navigation = $('#navigation').huskyNavigation({

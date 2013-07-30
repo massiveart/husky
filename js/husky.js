@@ -31,9 +31,9 @@ if (typeof jQuery === "undefined" &&
     }
 
     if (!Function.prototype.bind) {
-        /**
-         * @link https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind
-         */
+        //
+        // @link https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind
+        //
         Function.prototype.bind = function(oThis) {
             if (typeof this !== 'function') {
                 // closest thing possible to the ECMAScript 5 internal IsCallable function

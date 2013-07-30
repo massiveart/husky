@@ -38,6 +38,7 @@
     };
 
     $.extend(Husky.Ui.Navigation.prototype, Husky.Events, {
+
         vent: (function() {
             return $.extend({}, Husky.Events); 
         })(),
@@ -114,19 +115,19 @@
                     // prepare classes
                     columnItemClasses = [];
 
-                    !!item.class && columnItemClasses.push(item.class);
+                    !!itemModel.get('class') && columnItemClasses.push(itemModel.get('class'));
                     columnItemClasses.push('navigation-column-item');
 
                     columnItemClass = ' class="' + columnItemClasses.join(' ') + '"';
 
                     // prepare data-attributes
-                    columnItemHasSub = (!!item.hasSub) ? ' data-has-sub="true"' : '';
+                    columnItemHasSub = (!!itemModel.get('hasSub')) ? ' data-has-sub="true"' : '';
 
                     // prepare title
-                    columnItemTitle = 'title="' + item.title + '"';
+                    columnItemTitle = 'title="' + itemModel.get('title') + '"';
 
                     // prepare icon
-                    columnItemIcon = (!!item.icon) ? '<span class="icon-' + item.icon + '"></span>' : '';
+                    columnItemIcon = (!!itemModel.get('icon')) ? '<span class="icon-' + itemModel.get('icon') + '"></span>' : '';
 
                     // prepare id
                     columnItemId = 'id="' + itemModel.get('id') + '"';
@@ -134,7 +135,7 @@
                     columnItems.push(
                         '<li ', columnItemId, columnItemTitle, columnItemClass, columnItemUri, columnItemHasSub, '>',
                             columnItemIcon,
-                            item.title,
+                            itemModel.get('title'),
                         '</li>'
                     );
                 }.bind(this));
@@ -156,7 +157,7 @@
                 for (i = this.currentColumnIdx; i <= this.lastColumnIdx; i++) {
                     $column = this.$navigationColumns.find('#column-' + i);
 
-                    if ($column.size()) {
+                    if (!!$column.size()) {
                         $column.remove();
                     }
                 }
@@ -165,27 +166,32 @@
             this.$navigationColumns.append(this.prepareNavigationColumn());
         },
 
+        // TODO: cleanup and simplify selectItem function
         selectItem: function(event) {
             Husky.DEBUG && console.log(this.name, 'selectItem');
 
             var $element, $elementColumn, $firstColumn, 
-                $elementId, itemModel;
+                elementId, itemModel;
 
             $element = $(event.currentTarget);
-            $elementId = $element.attr('id');
             $elementColumn = $element.parent().parent();
             $firstColumn = $('#column-0');
 
-            itemModel = this.itemsCollection.get($elementId);
+            elementId = $element.attr('id');
+
+            itemModel = this.itemsCollection.get(elementId);
 
             this.lastColumnIdx = this.currentColumnIdx;
             this.currentColumnIdx = $elementColumn.data('column-id');
 
             if (!!itemModel) {
+
+                // reset all navigation items...
                 $elementColumn
                     .find('.selected')
                     .removeClass('selected');
 
+                // ... and add class to selected element
                 $element.addClass('selected');
 
                 this.trigger('navigation:item:selected', itemModel);
@@ -199,8 +205,8 @@
                             success: function() {
                                 this.addColumn();
                                 this.hideLoader($element);
-                                console.log(this.currentColumnIdx);
-                                if (this.currentColumnIdx > 0) {
+
+                                if (this.currentColumnIdx > 1) {
                                     $firstColumn.addClass('collapsed');
                                 } else {
                                     $firstColumn.removeClass('collapsed');
@@ -211,18 +217,19 @@
                         });
                     } else {
                         // this.columnHeader = this.data.header || null;
-                        this.columnItems = this.itemsCollection.get($element.attr('id')).get('sub').items;
+                        this.columnItems = itemModel.get('sub').items;
                         this.addColumn();
                     }
 
-                } else {
-
+                } else if (!!itemModel.get('content')) {
                     this.trigger('navigation:item:content:show', itemModel);
                 }
             }
         },
 
         bindDOMEvents: function() {
+            this.$element.off();
+
             this.$element.on('click', '.navigation-column-item:not(.selected)', this.selectItem.bind(this));
         },
 
@@ -266,9 +273,7 @@
                 data.icon = data.icon || '';
 
                 return [
-                    '<form action="', data.action, '">',
-                        '<input type="text" class="search" autofill="false" placeholder="Search ..."/>', // TODO Translate
-                    '</form>'
+                    '<input type="text" class="search" autofill="false" data-action="', data.action, '" placeholder="Search ..."/>', // TODO Translate
                 ].join();
             }
         }
