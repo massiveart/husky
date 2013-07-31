@@ -24,24 +24,29 @@ input {
 // Checkboxes
 // -------------------------
 .custom-checkbox {
-	$checkboxSize : 14px;
+	$checkboxSize: 14px;
+	$checkboxIconFont: 'Glyphicons';
+	$checkboxIcon: "\e207";
 
 	width: $checkboxSize;
 	height: $checkboxSize;
-	vertical-align: top;
+	vertical-align: middle;
 	opacity: 0;
+	cursor: pointer;
 
 	&:checked,
 	&.is-checked {
 		& + .custom-checkbox-icon {
 			&::after {
-				content: "Y";
-				display: inline;
+				content: $checkboxIcon;
+				position: relative;
+				top: -3px;
 			}
 		}
 	}
 
 	& + .custom-checkbox-icon {
+		// custom checkbox styling
 		display: inline-block;
 		width: $checkboxSize;
 		height: $checkboxSize;
@@ -49,9 +54,55 @@ input {
 
 		border: 1px solid $inputBorderColor;
 		background-color: #fff;
-		font-family: 'Glyphs'
+		font-family: $checkboxIconFont;
+		font-size: 12px;
+		text-align: center;
+		vertical-align: middle;
 	}
 }
+
+
+// Radio
+// -------------------------
+.custom-radio {
+	$radioSize: 18px;
+
+	width: $radioSize;
+	height: $radioSize;
+	vertical-align: middle;
+	opacity: 0;
+	cursor: pointer;
+
+	&:checked,
+	&.is-checked {
+		& + .custom-radio-icon {
+			&::after {
+				content: "";
+				display: inline-block;
+				width: 100%;
+				height: 100%;
+				border-radius: $radioSize;
+				background-color: #999;
+			}
+		}
+	}
+
+	& + .custom-radio-icon {
+		// custom checkbox styling
+		display: inline-block;
+		width: $radioSize;
+		height: $radioSize;
+		margin-left: -$radioSize;
+		padding: 2px;
+		border-radius: $radioSize;
+		border: 1px solid $inputBorderColor;
+		background-color: #fff;
+		text-align: center;
+		line-height: 1;
+		vertical-align: middle;
+	}
+}
+
 
 // Labels
 // -------------------------
