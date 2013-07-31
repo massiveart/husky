@@ -45,24 +45,14 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="pagination">
-                <ul>
-                    <li><a href="#">First</a></li>
-                    <li><a href="#">Prev</a></li>
-                </ul>
-                <ul>
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                </ul>
-                <ul>
-                    <li><a href="#">Next</a></li>
-                    <li><a href="#">Last</a></li>
-                </ul>
-            </div>
         </div>
+        <br/><br/>
 
+
+        <h1>This is a generated Table</h1>
         <div id="js-data-grid"></div>
+
+        <button id="add-row">Add Row</button>
 
         <script src="../../node_modules/sinon/pkg/sinon.js"></script>
         <script src="../../bower_components/jquery/jquery.js"></script>
@@ -74,34 +64,41 @@
         <script>
             Husky.DEBUG = true;
 
-            var server;
+            var fakeServer;
             $(document).ready(function() {
-                server = sinon.fakeServer.create();
+                fakeServer = sinon.fakeServer.create();
 
                 server.respondWith('GET', '/contacts?pageSize=4', [200, { 'Content-Type': 'application/json' },
-                    '{"pageSize": "4", "page": "1", "total": "56", "head": [{ "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "Head 3" }], "rows": [{ "id": "1", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "2", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "3", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "4", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }] }'
+                    '{"pageSize": "4", "page": "1", "total": "56", "head": [{ "content": "Radio", "width": "100" }, { "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "", "width": "100" }, { "content": "Remove" }], "rows": [{ "id": "1", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" }] }, { "id": "2", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" }] }, { "id": "3", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" }] }, { "id": "4", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" }] }] }'
                 ]);
 
-                server.respondWith('GET', '/contacts?pageSize=4&page=2', [200, { 'Content-Type': 'application/json' },
+                fakeServer.respondWith('GET', '/contacts?pageSize=4&page=2', [200, { 'Content-Type': 'application/json' },
                     '{"pageSize": "4", "page": "2", "total": "56", "head": [{ "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "Head 3" }], "rows": [{ "id": "1", "columns": [{ "content": "Tschau" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "2", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "3", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }, { "id": "4", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }] }] }'
                 ]);
 
 
                 var dataGrid = $('#js-data-grid').huskyDataGrid({
                     url: '/contacts',
-                    pagination: true,
+                    pagination: false,
                     showPages: 6,
                     pageSize: 4,
-                    selectItems: true
+                    removeRow: true,
+                    selectItems: {
+                        type: 'radio'
+                    }
                 });
 
-                dataGrid.data('Husky.Ui.DataGrid').on('data-grid:page:changed', function() {
+                $('#add-row').on('click', function() {
+                    dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:add', { "id": "1", "columns": [{ "content": "Tschau" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }]});   
+                });
+
+                dataGrid.data('Husky.Ui.DataGrid').on('data-grid:page:change', function() {
                     setTimeout(function() {
-                        server.respond();
+                        fakeServer.respond();
                     }, 500);
                 });
 
-                server.respond();
+                fakeServer.respond();
             });
 
         </script>
