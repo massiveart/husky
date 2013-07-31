@@ -68,7 +68,7 @@
             $(document).ready(function() {
                 fakeServer = sinon.fakeServer.create();
 
-                server.respondWith('GET', '/contacts?pageSize=4', [200, { 'Content-Type': 'application/json' },
+                fakeServer.respondWith('GET', '/contacts?pageSize=4', [200, { 'Content-Type': 'application/json' },
                     '{"pageSize": "4", "page": "1", "total": "56", "head": [{ "content": "Radio", "width": "100" }, { "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "", "width": "100" }, { "content": "Remove" }], "rows": [{ "id": "1", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" }] }, { "id": "2", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" }] }, { "id": "3", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" }] }, { "id": "4", "columns": [{ "content": "Hallo 1" }, { "content": "Hallo 2" }, { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" }] }] }'
                 ]);
 
