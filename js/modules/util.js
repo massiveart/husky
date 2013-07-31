@@ -16,7 +16,11 @@
 	    	if (typeOf(a) === 'array' && typeOf(b) === 'array') {
 	    		return JSON.stringify(a) === JSON.stringify(b);		
 	    	}
+	    },
+
+	    template: function(str, data) { 
+	    	// Todo
 	    }
-    };
+	};
 
 })(Husky.$, this, this.document);

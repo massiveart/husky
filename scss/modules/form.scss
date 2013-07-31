@@ -61,6 +61,49 @@ input {
 	}
 }
 
+
+// Radio
+// -------------------------
+.custom-radio {
+	$radioSize: 18px;
+
+	width: $radioSize;
+	height: $radioSize;
+	vertical-align: middle;
+	opacity: 0;
+	cursor: pointer;
+
+	&:checked,
+	&.is-checked {
+		& + .custom-radio-icon {
+			&::after {
+				content: "";
+				display: inline-block;
+				width: 100%;
+				height: 100%;
+				border-radius: $radioSize;
+				background-color: #999;
+			}
+		}
+	}
+
+	& + .custom-radio-icon {
+		// custom checkbox styling
+		display: inline-block;
+		width: $radioSize;
+		height: $radioSize;
+		margin-left: -$radioSize;
+		padding: 2px;
+		border-radius: $radioSize;
+		border: 1px solid $inputBorderColor;
+		background-color: #fff;
+		text-align: center;
+		line-height: 1;
+		vertical-align: middle;
+	}
+}
+
+
 // Labels
 // -------------------------
 label {
