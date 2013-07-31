@@ -3,163 +3,187 @@
 // --------------------------------------------------
 
 
+// Imports
+@import "compass/css3/transform";
 @import "compass/css3/transition";
+@import "animation";
 
-$navigationHeight: 600px;
 
-$navigationColumnExpandedWidth: 250px;
-$navigationCollapsedWidth: 50px;
+// Sizes
+$navigationColumnWidth: 250px;
+$navigationColumnHeight: 700px;
 
-.navigation {
-    position: fixed;
-    top: 20px;
-    left: 0;
-    top: 50%;
-    margin-top: - $navigationHeight / 2;
-    height: $navigationHeight;
-    box-shadow: 10px 10px 0 0 rgba(0, 0, 0, .4);
+$navigationItemHeight: 50px;
 
-    ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+
+// Colors
+$bgNavigationColumn: #FFF;
+$bgNavigationMainColumn: $baseColor;
+
+$colorNavigationMainColumn: #999;
+$colorNavigationMainColumnHover: #000;
+
+$bgNavigationItemHover: #E0E0E0;
+$bgNavigationMainColumnItemHover: #FFF;
+
+// Fonts 
+$navigationIconFont: $baseIconFont;
+
+
+// Animations
+@include keyframes(foldOut) {
+    0% {
+        @include transform3d(rotate3d(0, 1, 0, 100deg));
+    }
+    50% {
+        box-shadow: 0 5px 6px 0 rgba(0, 0, 0, 0);
+    }
+    100% {
+        @include transform3d(rotate3d(0, 1, 0, 0deg));
+        box-shadow: 5px 5px 0 0 rgba(0, 0, 0, .25);
     }
 }
 
-@media (max-height: $navigationHeight) { 
-    .navigation {
-        top: 0;
-        margin-top: 0;
-    }
+
+.navigation,
+.navigation ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.navigation {
+    height: 100%;
+    padding: 100px 0 50px;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.navigation-columns {
+    @include perspective(600px);
+
+    height: 100%;
+    white-space: nowrap;
 }
 
 .navigation-column {
-    width: 0;
-    height: $navigationHeight;
+    @include transition(width 0.4s ease-in-out);
+    @include animation(foldOut .4s 1);
+    @include transform3d(rotate3d(0, 1, 0, 0deg));
+    @include backface-visibility(hidden);
+    @include transform-style(preserve-3d);
+    @include transform-origin(0, 50%);
+
+    display: inline-block;
+    vertical-align: top;
+
+    width: $navigationColumnWidth;
+    height: 100%;
     overflow: hidden;
-    position: relative;
-    float: left;
-    background-color: #fff;
-    @include transition(width 0.3s ease-in-out);
+
+    border-right: 1px solid $bgNavigationItemHover;
+    background-color: $bgNavigationColumn;
+    box-shadow: 5px 5px 0 0 rgba(0, 0, 0, .25);
 
     &:first-child {
-        width: 250px;
-        background-color: $navigationMainColumnColor;
-        @include transition(width 0.3s ease-in-out);
+        border-right: 0;
+        color: $colorNavigationMainColumn;
+        background-color: $bgNavigationMainColumn;
 
         &:hover {
-            width: $navigationColumnExpandedWidth !important;
-        }
+            width: $navigationColumnWidth !important;
 
-        &.is-collapsed {
-            width: $navigationCollapsedWidth;
-            overflow: hidden;
-        }
-
-        li {
-            width: $navigationColumnExpandedWidth;
-            color: $grayLighter;
-            
-            &.is-active {
-                background-color: $navigationMainColumnColorActive;
-            }
-
-            [class^="glyphicons"] {
-                color: #fff;
+            .navigation-column-item {
+                &::before {
+                    display: inline-block !important;
+                }
             }
         }
 
-        .navigation-footer {
-            height: 60px;
-            background-color: transparent;
-        }
-    }
-
-    &.is-expanded {
-        width: $navigationColumnExpandedWidth;
-    }
-
-    li {
-        width: $navigationColumnExpandedWidth;
-        position: relative;
-        padding: 15px 10px;
-        color: #000;
-        cursor: pointer;
-
-        [class^="glyphicons"] {
-            padding: 10px 10px 0 10px;
-            position: relative;
-            top: -5px;
-            margin-right: 20px;
-            font-size: 22px;
-        }
-
-        &.is-active {
-            font-weight: bold;
-            background-color: $navigationColumnColorActive;
-            color: $black;
-
-            [class^="glyphicons"] {
-                color: #000;
-            }
-        }
-
-        &.has-children {
-            font-family: "Glyphicons";
-            &::after {
-                content: "\e224";
-                font-size: 12px;
-                display: block;
-                float: right;
+        .navigation-column-item {
+            &:hover,
+            &.selected {
+                color: $colorNavigationMainColumnHover;
+                background-color: $bgNavigationMainColumnItemHover;
             }
         }
     }
 
-    a {
-        color: $grayLighter;
-    }
-}
+    &.collapsed {
+        width: 50px;
 
-.navigation-header {
-    background-color: $accentColor;
-    color: #000 !important;
-    cursor: auto !important;
-}
-
-.navigation-footer {
-    width: $navigationColumnExpandedWidth;
-    height: 50px;
-    position: absolute !important;
-    bottom: 0;
-    left: 0;
-    z-index: 5;
-    padding: 15px 10px;
-    padding-bottom: 5px !important;
-    cursor: auto !important;
-    background-color: #F1F1F1;
-
-    .navigation-setting {
-        font-size: 12px;
-
-        [class^="glyphicons"] {
-            margin: 0;
-            padding-bottom: 10px;
-            font-size: 16px;
+        .navigation-column-item {
+            &::before {
+                display: none;
+            }
         }
     }
 }
 
-.navigation-entries {
-    height: $navigationHeight - 50px;
+.navigation-items {
+    height: 100%;
     overflow: auto;
-    overflow-x: hidden;
 }
 
-.navigation-entry-name {
-    max-width: $navigationColumnExpandedWidth - 50px;
-    display: inline-block;
-    white-space: nowrap;
+.navigation-column-item {
+    padding: 0 10px;
+    width: 100%;
+    height: $navigationItemHeight;
+    line-height: $navigationItemHeight;
     overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
-    font-family: $baseFontFamily;
+    cursor: pointer;
+
+    &:hover,
+    &.selected {
+        background-color: $bgNavigationItemHover;
+        box-shadow: inset 1px 0 0 0 #FFF;
+    }
+
+    &::before {
+        content: "\e224";
+        display: inline-block;
+        float: right;
+        font-size: 12px;
+        font-family: $navigationIconFont;
+        font-weight: normal;
+    }
+
+    &.loading {
+        &::before {
+            content: "";
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            float: right;
+            position: relative;
+            top: 16px;
+            background: url('../img/loader.gif') no-repeat center center;
+        }
+    }
+
+    &.selected {
+        cursor: default;
+    }
+
+    &[data-has-children="true"] {
+        font-weight: bold;
+    }
+
+    [class*="icon-"] {
+        display: inline-block;
+        margin: 0 15px 0 5px;
+        padding: 0;
+        float: left;
+        font-size: 20px;
+        font-family: $navigationIconFont;
+
+        &::after {
+            content: "\E281"; /* remove this shit */
+            display: block;
+        }
+    }
 }

@@ -1,7 +1,7 @@
 ### Folders ###
-dist
 node_modules
 bower_components
+coverage
 .tmp
 .sass-cache
 _docs
