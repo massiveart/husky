@@ -1,6 +1,7 @@
 {
   "name": "husky",
   "version": "0.1.0",
+  "main": "js/husky.js",
   "dependencies": {
     "jquery": "~2.0.3"
   }

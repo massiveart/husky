@@ -10,123 +10,53 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="stylesheet" href="../../.tmp/css/husky.css">
+    <link rel="stylesheet" href="../../.tmp/husky.css">
 </head>
 <body>
     <div id="main">
-        <div class="navigation">
-
-            <div class="navigation-column">
-                <ul class="navigation-entries">
-                    <li class="navigation-header">
-                        <span>Sulu</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="glyphicons star"></span>
-                        <span class="navigation-entry-name">Dashboard</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="glyphicons globe"></span>
-                        <span class="navigation-entry-name">Global</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="glyphicons camera"></span>
-                        <span class="navigation-entry-name">Media</span>
-                    </li>
-                    <li class="navigation-footer">
-                        <div class="avatar round pull-left">
-                            <img src="http://lorempixel.com/people/30/30" alt="avatar"/>
-                            <span>John Doe</span>
-                        </div>
-                        <a class="avatar-logout pull-right m-top-10" href="#">Log out</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="navigation-column">    
-                <ul class="navigation-entries">
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Events</span>
-                    </li>
-                    <li class="has-children is-active">
-                        <span class="navigation-entry-name">Kurzer text</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Das ist ein sehr langer Text der so lang ist</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Events</span>
-                    </li>
-                    <li class="has-children is-active">
-                        <span class="navigation-entry-name">Kurzer text</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Das ist ein sehr langer Text der so lang ist</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Events</span>
-                    </li>
-                    <li class="has-children is-active">
-                        <span class="navigation-entry-name">Kurzer text</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Das ist ein sehr langer Text der so lang ist</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Events</span>
-                    </li>
-                    <li class="has-children is-active">
-                        <span class="navigation-entry-name">Kurzer text</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Das ist ein sehr langer Text der so lang ist</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Events</span>
-                    </li>
-                    <li class="has-children is-active">
-                        <span class="navigation-entry-name">Kurzer text</span>
-                    </li>
-                    <li class="has-children">
-                        <span class="navigation-entry-name">Das ist ein sehr langer Text der so lang ist</span>
-                    </li>
-                </ul>
-                <div class="navigation-footer">
-                    <div class="navigation-setting pull-right">
-                        <span>Edit</span>
-                        <span class="glyphicons cogwheel m-left-5"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div id="navigation"></div>
     </div>
 
-
+    <script src="../../node_modules/sinon/pkg/sinon.js"></script>
     <script src="../../bower_components/jquery/jquery.js"></script>
-    
+
     <script src="../../js/husky.js"></script>
     <script src="../../js/modules/util.js"></script>
     <script src="../../js/modules/ui.navigation.js"></script>
 
     <script type="text/javascript">
-        window.addEventListener('load', function() {
-            $('.navigation .navigation-column').on('click', 'li:not(.navigation-header, .navigation-footer)', function(event) {
-                if ($(event.currentTarget).hasClass('is-active')) {
-                    $(event.currentTarget).removeClass('is-active');
-                } else {
-                    $('.navigation .navigation-column li').removeClass('is-active');
-                    $(event.currentTarget).addClass('is-active');
+        Husky.DEBUG = true;
 
-                    $('.navigation-column').eq($(event.currentTarget).parents('.navigation-column').index() + 1).addClass('is-expanded');
-                }
+        var fakeServer;
+        $(document).ready(function() {
+            fakeServer = sinon.fakeServer.create();
 
-                if ($(event.currentTarget).parents('.navigation-column').index() > 0) {
-                    $('.navigation-column').eq(0).addClass('is-collapsed');
-                } else {
-                    $('.navigation-column').eq(0).removeClass('is-collapsed');
-                }
-            }.bind(this));
-        }, false);
+            fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
+                '{"title":"Root","hasSub":true,"id":"51f258be2e45b","sub":{"items":[{"title":"Portals","icon":"portals","hasSub":true,"id":"52f258bc2e47f","action":"/navigation/portals"},{"title":"Settings","icon":"settings","hasSub":true,"id":"51f258be2e47f","sub":{"items":[{"title":"Translate","hasSub":"true","id":"51f258be2e49a","action":"/settings/translates"}]}}]}}'
+            ]);
+
+            fakeServer.respondWith('GET', '/navigation/portals', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Products","id":"products","hasSub":false}]}}'
+            ]);
+
+            fakeServer.respondWith('GET', '/settings/translates', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Deutschland","id":"de","hasSub":false,"type":"content","action":"de"},{"title":"Schweiz","id":"ch","hasSub":false,"action":"ch"}]}}'
+            ]);
+
+            var navigation = $('#navigation').huskyNavigation({
+                url: '/navigation',
+                collapse: true
+            });
+
+            navigation.data('Husky.Ui.Navigation').on('navigation:item:selected', function(item) {
+                setTimeout(function() {
+                    fakeServer.respond();
+                }, 1000);
+            });
+
+            fakeServer.respond();
+        });
     </script>
+
 </body>
 </html>
