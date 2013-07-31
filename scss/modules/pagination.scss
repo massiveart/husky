@@ -10,13 +10,39 @@
         padding: 0;
         display: inline-block;
         list-style: none;
-        & > li {
-            font-size: $smallFontSize;
-            display: inline-block;
-            & > a {
-                text-decoration: none;
-                color: $black;
-            }
+    }
+
+    li {
+        font-size: $smallFontSize;
+        display: inline-block;
+        margin-right: 5px;
+        cursor: pointer;
+        & > a {
+            text-decoration: none;
+            color: $black;
         }
+    }
+}
+
+.pagination-first,
+.pagination-last {
+    padding: 0 5px;
+    font-family: "Glyphicons";
+
+    &::after {
+        position: relative;
+        top: 2px;
+    }
+}
+
+.pagination-first {
+    &::after {
+        content: "\e173";
+    }
+}
+
+.pagination-last {
+    &::after {
+        content: "\e177";
     }
 }

@@ -23,6 +23,7 @@ table {
     thead {
         th {
             vertical-align: bottom;
+            font-weight: normal;
         }
 
         tr {
@@ -30,11 +31,30 @@ table {
         }
     }
 
-    &.hoverable {
+    tbody {
+        td {
+            vertical-align: middle;
+        }
+    }
+
+    &.is-selectable {
         tr {
+            cursor: pointer;
             &:hover > td {
                 background-color: #fff;
             }
         }
+    }
+
+    .thumb {
+        text-align: center;
+
+        img {
+            vertical-align: middle;
+        }
+    }
+
+    .remove-row {
+        text-align: center;
     }
 }

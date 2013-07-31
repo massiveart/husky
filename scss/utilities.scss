@@ -21,6 +21,18 @@
     visibility: hidden;
 }
 
+.inline-block {
+    display: inline-block !important;
+}
+
+.is-disabled {
+    cursor: default !important;
+}
+
+.is-loading {
+    background: url('../../img/loader.gif') center center no-repeat;
+}
+
 
 // Margin shorthands
 // -------------------------

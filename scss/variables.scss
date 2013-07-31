@@ -3,12 +3,11 @@
 // --------------------------------------------------
 
 
-
 // Global values
 // --------------------------------------------------
 
 
-// Shades of grey
+// Base Colors
 // -------------------------
 $black: #000;
 $grayLight: #999;
@@ -28,6 +27,8 @@ $accentColor: #41DDE0;
 // Font Colors
 // -------------------------
 $baseFontColor: $black;
+$highlightColor: #00aeff;
+$errorColor: #e60000;
 
 
 // Typography
@@ -46,7 +47,7 @@ $headingsColor: inherit;
 $baseIconFont: "Glyphicons";
 
 
-// Module specific values
+// Componenet values
 // --------------------------------------------------
 
 
@@ -55,9 +56,14 @@ $baseIconFont: "Glyphicons";
  $btnBorderRadius: 4px;
 
 
+// Form Elements
+// -------------------------
+$inputBorderColor: $grayLighter;
+$labelColor: $grayLighter;
+
+
 // Navigation
 // -------------------------
 $navigationColumnColorActive: #E0E0E0;
-
 $navigationMainColumnColor: #333333;
 $navigationMainColumnColorActive: #fff;

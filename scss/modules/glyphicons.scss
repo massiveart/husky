@@ -23,11 +23,8 @@
 .glyphicons {
   display: inline-block;
   position: relative;
-  padding: 5px 0 5px 35px;
   color: #1d1d1b;
   text-decoration: none;
-  *display: inline;
-  *zoom: 1;
 }
 
 .glyphicons::before {
