@@ -102,7 +102,7 @@
                 $table.append($thead);
             }
 
-            if (!!this.data.rows) {
+            if (!!this.data.items) {
                 $tbody = $('<tbody/>');
                 $tbody.append(this.prepareTableRows());
                 $table.append($tbody);
@@ -148,7 +148,7 @@
             tblRows = [];
             this.allItemIds = [];
 
-            this.data.rows.forEach(function(row) {
+            this.data.items.forEach(function(row) {
                 tblRows.push(this.prepareTableRow(row));
             }.bind(this));
 
