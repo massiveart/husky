@@ -175,9 +175,10 @@
                 }), '</td>');
             }
 
-            row.columns.forEach(function(column) {
+            for (var key in row) {
+                var column = row[key];
                 tblCellClasses = [];
-                tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column.content;
+                tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
                 
                 // prepare table cell classes
                 !!column.class && tblCellClasses.push(column.class);
@@ -186,7 +187,7 @@
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
                 tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
-            }.bind(this));
+            }
 
             if (!!this.options.removeRow) {
                 tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
@@ -358,7 +359,7 @@
         bindDOMEvents: function() {
             this.$element.off();
 
-            if (!!this.options.selectItems && this.options.selectItems === 'checkbox') {
+            if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
                 this.$element.on('click', 'tbody > tr', this.selectItem.bind(this));
                 this.$element.on('click', 'th.select-all', this.selectAllItems.bind(this));
             }
