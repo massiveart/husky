@@ -335,7 +335,7 @@ function typeOf(value) {
                 $table.append($thead);
             }
 
-            if (!!this.data.rows) {
+            if (!!this.data.items) {
                 $tbody = $('<tbody/>');
                 $tbody.append(this.prepareTableRows());
                 $table.append($tbody);
@@ -381,7 +381,7 @@ function typeOf(value) {
             tblRows = [];
             this.allItemIds = [];
 
-            this.data.rows.forEach(function(row) {
+            this.data.items.forEach(function(row) {
                 tblRows.push(this.prepareTableRow(row));
             }.bind(this));
 
@@ -408,9 +408,10 @@ function typeOf(value) {
                 }), '</td>');
             }
 
-            row.columns.forEach(function(column) {
+            for (var key in row) {
+                var column = row[key];
                 tblCellClasses = [];
-                tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column.content;
+                tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
                 
                 // prepare table cell classes
                 !!column.class && tblCellClasses.push(column.class);
@@ -419,7 +420,7 @@ function typeOf(value) {
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
                 tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
-            }.bind(this));
+            }
 
             if (!!this.options.removeRow) {
                 tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
