@@ -1,6 +1,6 @@
 Husky.DEBUG = true;
 
-ddescribe('Husky.Ui.DataGrid', function() {
+describe('Husky.Ui.DataGrid', function() {
     var $dataGridContainer, fakeServer;
 
     beforeEach(function() {
