@@ -6,4 +6,5 @@ npm install -g grunt-cli
 
 echo ">>> grunt exited with code: $?"
 echo ""
-echo ""
+
+grunt travis
