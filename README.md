@@ -12,7 +12,13 @@ First install all necessary npm modules by running:
 
 Install [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli)
 
+    sudo npm install -g grunt-cli
+
 Install [bower](http://bower.io)
+
+    sudo npm install -g bower
+
+And now install all dependencies:
 
 	bower install
 
