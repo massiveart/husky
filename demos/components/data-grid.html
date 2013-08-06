@@ -89,7 +89,7 @@
                 });
 
                 $('#add-row').on('click', function() {
-                    dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:add', { "id": "1", "columns": [{ "content": "Tschau" }, { "content": "Hallo 2" }, { "content": "Hallo 3" }]});   
+                    dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:add', { "id": "1", "content1": "Tschau" , "content2": "Hallo 2", "content3": "Hallo 3" });
                 });
 
                 dataGrid.data('Husky.Ui.DataGrid').on('data-grid:page:change', function() {
