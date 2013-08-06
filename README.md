@@ -1,7 +1,6 @@
-# Husky - The wuff wuff framework
+# Husky - The wuff wuff framework [![Build Status](https://api.travis-ci.org/massiveart/husky.png?branch=develop)](http://travis-ci.org/massiveart/husky)
 
 Husky is an awesome front-end framework.
-
 
 
 ## How to contribute like a boss
