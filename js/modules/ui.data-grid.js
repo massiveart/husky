@@ -37,7 +37,7 @@
         })(),
 
         getUrl: function(params) {
-            var url = params.url + '?pageSize=' + this.options.pageSize
+            var url = params.url + '?pageSize=' + this.options.paginationOptions.pageSize
 
             if (params.page > 1) {
                 url += '&page=' + params.page;
@@ -102,7 +102,7 @@
                 $table.append($thead);
             }
 
-            if (!!this.data.rows) {
+            if (!!this.data.items) {
                 $tbody = $('<tbody/>');
                 $tbody.append(this.prepareTableRows());
                 $table.append($tbody);
@@ -111,7 +111,7 @@
             // set html classes
             tblClasses = [];
             tblClasses.push((!!this.options.class && this.options.class !== 'table') ? 'table ' + this.options.class : 'table');
-            tblClasses.push((this.options.selectItems && this.options.selectItems.type === 'checkbox') ? 'is-selectable' : '');
+            tblClasses.push((this.options.selectItemType && this.options.selectItemType === 'checkbox') ? 'is-selectable' : '');
 
             $table.addClass(tblClasses.join(' '));
 
@@ -125,7 +125,7 @@
             headData = this.options.tableHead || this.data.head;
 
             // add a checkbox to head row
-            if (!!this.options.selectItems && this.options.selectItems.type === 'checkbox') {
+            if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
                 tblColumns.push(
                     '<th class="select-all">',
                         this.templates.checkbox({ id: 'select-all' }),
@@ -148,7 +148,7 @@
             tblRows = [];
             this.allItemIds = [];
 
-            this.data.rows.forEach(function(row) {
+            this.data.items.forEach(function(row) {
                 tblRows.push(this.prepareTableRow(row));
             }.bind(this));
 
@@ -165,28 +165,29 @@
             // add row id to itemIds collection (~~ === shorthand for parse int)
             !!row.id && this.allItemIds.push(~~row.id);
 
-            if (!!this.options.selectItems && this.options.selectItems.type === 'checkbox') {
+            if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
                 // add a checkbox to each row
                 tblColumns.push('<td>', this.templates.checkbox(), '</td>');
-            } else if (!!this.options.selectItems && this.options.selectItems.type === 'radio') {
+            } else if (!!this.options.selectItemType && this.options.selectItemType === 'radio') {
                 // add a radio to each row
                 tblColumns.push('<td>', this.templates.radio({
                     name: 'husky-radio' // TODO
                 }), '</td>');
             }
 
-            row.columns.forEach(function(column) {
+            for (var key in row) {
+                var column = row[key];
                 tblCellClasses = [];
-                tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column.content;
-                
+                tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
+
                 // prepare table cell classes
                 !!column.class && tblCellClasses.push(column.class);
                 !!column.thumb && tblCellClasses.push('thumb');
-                
+
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
                 tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
-            }.bind(this));
+            }
 
             if (!!this.options.removeRow) {
                 tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
@@ -308,7 +309,7 @@
 
         preparePaginationPageNavigation: function() {
             return this.templates.paginationPageNavigation({
-                pageSize: this.options.pageSize,
+                pageSize: this.options.paginationOptions.pageSize,
                 selectedPage: this.configs.page
             });
         },
@@ -358,7 +359,7 @@
         bindDOMEvents: function() {
             this.$element.off();
 
-            if (!!this.options.selectItems && this.options.selectItems === 'checkbox') {
+            if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
                 this.$element.on('click', 'tbody > tr', this.selectItem.bind(this));
                 this.$element.on('click', 'th.select-all', this.selectAllItems.bind(this));
             }
@@ -508,13 +509,11 @@
 
     $.fn.huskyDataGrid.defaults = {
         elementType: 'table',
+        selectItemType: 'checkbox',
         pagination: false,
         paginationOptions: {
             pageSize: 10,
             showPages: 5
-        },
-        selectItems: {
-            type: 'checkbox'
         }
     };
 
