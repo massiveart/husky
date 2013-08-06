@@ -359,7 +359,7 @@
         bindDOMEvents: function() {
             this.$element.off();
 
-            if (!!this.options.selectItems && this.options.selectItems === 'checkbox') {
+            if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
                 this.$element.on('click', 'tbody > tr', this.selectItem.bind(this));
                 this.$element.on('click', 'th.select-all', this.selectAllItems.bind(this));
             }

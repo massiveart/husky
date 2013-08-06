@@ -83,9 +83,7 @@
                     showPages: 6,
                     pageSize: 4,
                     removeRow: true,
-                    selectItems: {
-                        type: 'checkbox'
-                    }
+                    selectItemType: 'checkbox'
                 });
 
                 $('#add-row').on('click', function() {
@@ -96,6 +94,10 @@
                     setTimeout(function() {
                         fakeServer.respond();
                     }, 500);
+                });
+
+                dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:select', function() {
+                    console.log('Husky.Ui.DataGrid item select');
                 });
 
                 fakeServer.respond();
