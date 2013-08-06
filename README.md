@@ -10,8 +10,11 @@ First install all necessary npm modules by running:
 
 	npm install
 
-Install the [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli)
+Install [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli)
 
+Install [bower](http://bower.io)
+
+	bower install
 
 ### Grunt Tasks
 
