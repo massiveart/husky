@@ -221,7 +221,7 @@
                         this.addColumn();
                     }
 
-                } else if (!!itemModel.get('content')) {
+                } else if (itemModel.get('type') == 'content') {
                     this.trigger('navigation:item:content:show', itemModel);
                 }
             }

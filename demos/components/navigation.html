@@ -32,7 +32,7 @@
             fakeServer = sinon.fakeServer.create();
 
             fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
-                '{"title":"Root","hasSub":true,"id":"51f258be2e45b","sub":{"items":[{"title":"Portals","icon":"portals","hasSub":true,"id":"52f258bc2e47f","action":"/navigation/portals"},{"title":"Settings","icon":"settings","hasSub":true,"id":"51f258be2e47f","sub":{"items":[{"title":"Translate","hasSub":"true","id":"51f258be2e49a","action":"/settings/translates"}]}}]}}'
+                '{"title":"Root","hasSub":true,"id":"51f258be2e45b","sub":{"items":[{"title":"Portals","icon":"portals","hasSub":true,"id":"52f258bc2e47f","action":"/navigation/portals"},{"title":"Settings","icon":"settings","hasSub":true,"id":"51f258be2e47f","sub":{"items":[{"title":"Translate","hasSub":"false","id":"51f258be2e49a","action":"/settings/translates"}]}}]}}'
             ]);
 
             fakeServer.respondWith('GET', '/navigation/portals', [200, { 'Content-Type': 'application/json' },
@@ -52,6 +52,10 @@
                 setTimeout(function() {
                     fakeServer.respond();
                 }, 1000);
+            });
+
+            navigation.data('Husky.Ui.Navigation').on('navigation:item:content:show', function(item){
+                console.log('navigation:item:content:show');
             });
 
             fakeServer.respond();
