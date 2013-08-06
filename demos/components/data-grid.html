@@ -69,15 +69,15 @@
                 fakeServer = sinon.fakeServer.create();
 
                 fakeServer.respondWith('GET', '/contacts?pageSize=4', [200, { 'Content-Type': 'application/json' },
-                    '{"pageSize": "4", "page": "1", "total": "56", "head": [ { "content": "Radio", "width": "100" }, { "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "", "width": "100" }, { "content": "Remove" }], "items": [{"id": "1", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }, { "id": "2", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }, { "id": "3", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }, { "id": "4", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }] }'
+                    '{"pageSize": 4, "page": 1, "total": 56, "head": [ { "content": "Radio", "width": "100" }, { "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "", "width": "100" }, { "content": "Remove" }], "items": [{"id": "1", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }, { "id": "2", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }, { "id": "3", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }, { "id": "4", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }] }'
                 ]);
 
                 fakeServer.respondWith('GET', '/contacts?pageSize=4&page=2', [200, { 'Content-Type': 'application/json' },
-                    '{"pageSize": "4", "page": "1", "total": "56", "head": [ { "content": "Radio", "width": "100" }, { "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "", "width": "100" }, { "content": "Remove" }], "items": [{"id": "1", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }, { "id": "2", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }, { "id": "3", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }, { "id": "4", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }] }'
+                    '{"pageSize": 4, "page": 1, "total": 56, "head": [ { "content": "Radio", "width": "100" }, { "content": "Head 1", "width": "100" }, { "content": "Head 2" }, { "content": "", "width": "100" }, { "content": "Remove" }], "items": [{"id": "1", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }, { "id": "2", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }, { "id": "3", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }, { "id": "4", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://lorempixel.com/24/24/", "alt": "lorempixel" } }] }'
                 ]);
 
 
-                var dataGrid = $('#js-data-grid').huskyDataGrid({
+                var $dataGrid = $('#js-data-grid').huskyDataGrid({
                     url: '/contacts',
                     selectItemType: 'checkbox',
                     pagination: false,
@@ -89,16 +89,16 @@
                 });
 
                 $('#add-row').on('click', function() {
-                    dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:add', { "id": "1", "content1": "Tschau" , "content2": "Hallo 2", "content3": "Hallo 3" });
+                    $dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:add', { "id": "1", "content1": "Tschau" , "content2": "Hallo 2", "content3": "Hallo 3" });
                 });
 
-                dataGrid.data('Husky.Ui.DataGrid').on('data-grid:page:change', function() {
+                $dataGrid.data('Husky.Ui.DataGrid').on('data-grid:page:change', function() {
                     setTimeout(function() {
                         fakeServer.respond();
                     }, 500);
                 });
 
-                dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:select', function() {
+                $dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:select', function() {
                     console.log('Husky.Ui.DataGrid item select');
                 });
 
