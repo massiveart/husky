@@ -10,14 +10,14 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
 
         meta: {
-            banner: '/* \n' + 
-                    ' * <%= pkg.name %> v<%= pkg.version %>\n' +
-                    ' * <%= pkg.homepage %> \n' +
-                    ' * (c) <%= pkg.author.company %>\n' +
-                    ' * \n' +
-                    ' * This source file is subject to the MIT license that is bundled\n' + 
-                    ' * with this source code in the file LICENSE.\n' + 
-                    ' */\n\n'
+            banner: '/* \n' +
+                ' * <%= pkg.name %> v<%= pkg.version %>\n' +
+                ' * <%= pkg.homepage %> \n' +
+                ' * (c) <%= pkg.author.company %>\n' +
+                ' * \n' +
+                ' * This source file is subject to the MIT license that is bundled\n' +
+                ' * with this source code in the file LICENSE.\n' +
+                ' */\n\n'
         },
 
         watch: {
@@ -41,6 +41,10 @@ module.exports = function(grunt) {
         karma: {
             unit: {
                 configFile: 'karma.conf.js',
+                autoWatch: true
+            },
+            travis: {
+                configFile: 'karma.travis.conf.js',
                 autoWatch: true
             }
         },
@@ -78,39 +82,48 @@ module.exports = function(grunt) {
             build: {
                 files: {
                     'dist/<%= pkg.name %>.min.js': [
-                    'js/{,*/}*.js']
+                        'js/{,*/}*.js']
                 }
             }
         },
         copy: {
             dev: {
-                files: [{
-                    expand: true,
-                    dot: true,
-                    cwd: './',
-                    dest: '.tmp/',
-                    src: [
-                        'fonts/{,*/}*'
-                    ]
-                }]
+                files: [
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: './',
+                        dest: '.tmp/',
+                        src: [
+                            'fonts/{,*/}*'
+                        ]
+                    }
+                ]
             },
             dist: {
-                files: [{
-                    expand: true,
-                    dot: true,
-                    cwd: './',
-                    dest: 'dist',
-                    src: [
-                        'fonts/{,*/}*'
-                    ]
-                }]
+                files: [
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: './',
+                        dest: 'dist',
+                        src: [
+                            'fonts/{,*/}*'
+                        ]
+                    }
+                ]
             }
         }
     });
 
     // register tasks
     grunt.registerTask('test', [
-        'karma'
+        'karma:unit'
+    ]);
+
+    // Travis CI task.
+    grunt.registerTask('travis', [
+        'karma:travis'
     ]);
 
     grunt.registerTask('build', [
