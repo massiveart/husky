@@ -15,6 +15,7 @@
 <body>
     <div id="main">
         <div id="navigation"></div>
+        <button id="load-content" style="position:absolute; right:0; top:0;">Load Content</button>
     </div>
 
     <script src="../../node_modules/sinon/pkg/sinon.js"></script>
@@ -32,15 +33,19 @@
             fakeServer = sinon.fakeServer.create();
 
             fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
-                '{"title":"Root","hasSub":true,"id":"51f258be2e45b","sub":{"items":[{"title":"Portals","icon":"portals","hasSub":true,"id":"52f258bc2e47f","action":"/navigation/portals"},{"title":"Settings","icon":"settings","hasSub":true,"id":"51f258be2e47f","sub":{"items":[{"title":"Translate","hasSub":"false","id":"51f258be2e49a","action":"/settings/translates"}]}}]}}'
+                '{"title":"Root","hasSub":true,"id":"51f258be2e45b","sub":{"items":[{"title":"Portals","icon":"portals","hasSub":true,"id":"52f258bc2e47f","action":"/navigation/portals"},{"title":"Settings","icon":"settings","hasSub":true,"id":"51f258be2e47f","sub":{"items":[{"title":"Translate","icon":"translate","hasSub":"false","id":"51f258be2e49a","action":"/settings/translates"}]}}]}}'
             ]);
 
             fakeServer.respondWith('GET', '/navigation/portals', [200, { 'Content-Type': 'application/json' },
-                '{"sub":{"items":[{"title":"Products","id":"products","hasSub":false}]}}'
+                '{"header": { "title":"Portals" }, "sub":{"items":[{"title":"Products","id":"products","hasSub":false}]}}'
             ]);
 
             fakeServer.respondWith('GET', '/settings/translates', [200, { 'Content-Type': 'application/json' },
                 '{"sub":{"items":[{"title":"Deutschland","id":"de","hasSub":false,"type":"content","action":"de"},{"title":"Schweiz","id":"ch","hasSub":false,"action":"ch"}]}}'
+            ]);
+
+            fakeServer.respondWith('GET', '/navigation/settings/translate/content/3', [200, { 'Content-Type': 'application/json' },
+                '{"displayOption": "content", "sub":{"items":[{"title":"Details","id":"details","hasSub":false,"type":"content","action":"/"},{"title":"Settings","id":"settings","hasSub":false,"action":"/"}]}}'
             ]);
 
             var navigation = $('#navigation').huskyNavigation({
@@ -57,6 +62,17 @@
             navigation.data('Husky.Ui.Navigation').on('navigation:item:content:show', function(item){
                 console.log('navigation:item:content:show');
             });
+
+
+            $('#load-content').on('click', function() {
+                navigation.data('Husky.Ui.Navigation').trigger('navigation:item:column:load', {
+                    url: '/navigation/settings/translate/content/3'
+                });
+
+                setTimeout(function() {
+                    fakeServer.respond();
+                }, 500);
+            }.bind(this));
 
             fakeServer.respond();
         });
