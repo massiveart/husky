@@ -65,8 +65,8 @@
 
 
             $('#load-content').on('click', function() {
-                navigation.data('Husky.Ui.Navigation').trigger('navigation:item:column:load', {
-                    url: '/navigation/settings/translate/content/3'
+                navigation.data('Husky.Ui.Navigation').trigger('navigation:item:column:show', {
+                    data: {}
                 });
 
                 setTimeout(function() {
