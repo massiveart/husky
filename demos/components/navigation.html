@@ -44,10 +44,6 @@
                 '{"sub":{"items":[{"title":"Deutschland","id":"de","hasSub":false,"type":"content","action":"de"},{"title":"Schweiz","id":"ch","hasSub":false,"action":"ch"}]}}'
             ]);
 
-            fakeServer.respondWith('GET', '/navigation/settings/translate/content/3', [200, { 'Content-Type': 'application/json' },
-                '{"displayOption": "content", "sub":{"items":[{"title":"Details","id":"details","hasSub":false,"type":"content","action":"/"},{"title":"Settings","id":"settings","hasSub":false,"action":"/"}]}}'
-            ]);
-
             var navigation = $('#navigation').huskyNavigation({
                 url: '/navigation',
                 collapse: true
@@ -66,12 +62,25 @@
 
             $('#load-content').on('click', function() {
                 navigation.data('Husky.Ui.Navigation').trigger('navigation:item:column:show', {
-                    data: {}
+                    data: {
+                            "displayOption": "content", 
+                            "sub": {
+                                        "items":[{
+                                                    "title":"Details",
+                                                    "id":"details",
+                                                    "hasSub":false,
+                                                    "type":"content",
+                                                    "action":"/"
+                                                },
+                                                {
+                                                    "title":"Settings",
+                                                    "id":"settings",
+                                                    "hasSub":false,
+                                                    "action":"/"
+                                                }]
+                                    }
+                    }
                 });
-
-                setTimeout(function() {
-                    fakeServer.respond();
-                }, 500);
             }.bind(this));
 
             fakeServer.respond();

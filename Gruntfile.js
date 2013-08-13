@@ -110,6 +110,14 @@ module.exports = function(grunt) {
                         src: [
                             'fonts/{,*/}*'
                         ]
+                    }, {
+                        expand: true,
+                        dot: true,
+                        cwd: './',
+                        dest: 'docs/packages/husky/',
+                        src: [
+                            'dist/{,*/}*'
+                        ]
                     }
                 ]
             }
