@@ -17,6 +17,17 @@
 
 [class*='grid-col-'] {
     float: left;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    &:last-of-type {
+        padding-right: 0;
+    }
+
+    &:first-of-type {
+        padding-left: 0;
+        padding-right: 10px;
+    }
 }
 
 .grid-col-1 {
@@ -61,9 +72,4 @@
 
 .grid-col-11 {
     width: 91.66%;
-}
-
-[class*='grid-col-'] {
-    padding-left: 10px;
-    padding-right: 10px;
 }
