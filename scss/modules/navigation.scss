@@ -59,7 +59,8 @@ $navigationIconFont: $baseIconFont;
 
 .navigation {
     height: 100%;
-    padding: 50px 0 50px;
+    padding: 50px 5px 50px 0;
+    overflow: auto;
 
     position: fixed;
     top: 0;
@@ -67,7 +68,7 @@ $navigationIconFont: $baseIconFont;
 }
 
 .navigation-columns {
-    @include perspective(600px);
+    @include perspective(700px);
 
     height: 100%;
     white-space: nowrap;
@@ -75,21 +76,10 @@ $navigationIconFont: $baseIconFont;
     &.show-content {
         .navigation-column {
             width: 0;
-
-            &:hover {
-                width: $navigationColumnWidth !important;
-
-                .navigation-column-item {
-                    &::before {
-                        display: inline-block !important;
-                    }
-                }
-            }
-
+            border-right: 0;
             &:first-child,
             &.second-column {
                 width: 50px;
-
                 .navigation-column-item {
                     &::before {
                         display: none;
@@ -149,6 +139,7 @@ $navigationIconFont: $baseIconFont;
     &.content-column {
         width: 150px !important;
         max-width: 150px;
+        box-shadow: 5px 5px 0 0 rgba(0, 0, 0, .25)!important;
         .navigation-column-item {
             width: 100%;
         }
@@ -162,16 +153,6 @@ $navigationIconFont: $baseIconFont;
                 display: none;
             }
         }
-
-        &:hover {
-            width: $navigationColumnWidth !important;
-
-            .navigation-column-item {
-                &::before {
-                    display: inline-block !important;
-                }
-            }
-        }
     }
 
     &.hide {
@@ -180,19 +161,34 @@ $navigationIconFont: $baseIconFont;
 }
 
 .navigation-column-header {
-    padding: 30px 20px 30px 50px;
+    padding: 30px 20px 30px 10px;
 }
 
 .navigation-column-title {
-    color: $colorNavigationColumnTitle;
-    font-size: 22px;
+    display: inline-block;
+    padding-left: 40px;
+    font-size: 24px;
     font-weight: normal;
+    line-height: 32px;
     margin: 0;
+    color: $colorNavigationColumnTitle;
+}
+
+.navigation-column-logo {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+
+    & + .navigation-column-title {
+        padding-left: 0;
+        position: relative;
+        top: -6px;
+    }
 }
 
 .navigation-items {
-    height: 100%;
-    overflow: auto;
+    overflow: hidden;
 }
 
 .navigation-column-item {
@@ -205,6 +201,7 @@ $navigationIconFont: $baseIconFont;
     white-space: nowrap;
     text-overflow: ellipsis;
     cursor: pointer;
+    font-size: 18px;
 
     &:hover,
     &.selected {
@@ -243,10 +240,10 @@ $navigationIconFont: $baseIconFont;
 
     [class*="icon-"] {
         display: inline-block;
-        margin: 0 15px 0 5px;
+        margin: 0 20px 0 5px;
         padding: 0;
         float: left;
-        font-size: 20px;
+        font-size: 16px;
         font-family: $navigationIconFont;
 
         &::after {

@@ -76,10 +76,24 @@
                 class: 'navigation-columns'
             });
 
+            this.setNavigationWidth();
+
             this.$navigationColumns.append(this.prepareNavigationColumn());
             this.$navigation.append(this.$navigationColumns);
 
             return this;
+        },
+
+        setNavigationWidth: function() {
+            if (this.currentColumnIdx >= 1 && !this.$navigationColumns.hasClass('show-content')) {
+                this.$navigation.css({
+                    width: this.windowSize
+                });
+            } else {
+                this.$navigation.css({
+                    width: 'auto'
+                });
+            }
         },
 
         prepareNavigationColumn: function() {
@@ -109,6 +123,8 @@
             }
 
             $column.append(this.prepareColumnItems());
+
+            this.setNavigationWidth();
 
             return $column;
         },
@@ -187,28 +203,9 @@
         },
 
         addColumn: function() {
-            var $column, i, $firstColumn,
-                $secondColumn;
-
-            $firstColumn = $('#column-0');
-            $secondColumn = $('#column-1');
+            var $column, i;
 
             this.currentColumnIdx++;
-
-            // TODO: create function
-            if (this.currentColumnIdx > 1) {
-                $firstColumn.addClass('collapsed');
-            } else {
-                $firstColumn.removeClass('collapsed');
-            }
-
-            if (this.currentColumnIdx > 2) {
-                $firstColumn.addClass('hide');
-                $secondColumn.addClass('collapsed');
-            } else {
-                $firstColumn.removeClass('hide');
-                $secondColumn.removeClass('collapsed');
-            }
 
             if (this.currentColumnIdx < this.lastColumnIdx ||
                 this.currentColumnIdx === this.lastColumnIdx) {
@@ -224,11 +221,41 @@
             this.$navigationColumns.append(this.prepareNavigationColumn());
         },
 
-        showNavigation: function() {
-            var $firstColumn;
+        collapseColumns: function() {
+            var $firstColumn, $secondColumn;
 
             $firstColumn = $('#column-0');
+            $secondColumn = $('#column-1');
+
+            if (this.currentColumnIdx === 1) {
+                $firstColumn.addClass('collapsed');
+            } else {
+                $firstColumn.removeClass('collapsed');
+            }
+
+            if (this.currentColumnIdx >= 2) {
+                $firstColumn.addClass('hide');
+                $secondColumn.addClass('collapsed');
+            } else {
+                $firstColumn.removeClass('hide');
+                $secondColumn.removeClass('collapsed');
+            }
+        },
+
+        showNavigationColumns: function() {
+            var $firstColumn, $secondColumn;
+
+            $firstColumn = $('#column-0');
+            $secondColumn = $('#column-1');
+
             $firstColumn.removeClass('hide');
+            $secondColumn.removeClass('collapsed');
+
+            this.$navigationColumns.removeClass('show-content');
+
+            this.setNavigationWidth();
+
+            this.hideColumn();
         },
 
         // TODO: cleanup and simplify selectItem function
@@ -269,6 +296,8 @@
                                 this.addColumn();
                                 this.hideLoader($element);
 
+                                this.collapseColumns();
+
                                 this.trigger('navigation:item:sub:loaded', itemModel);
                             }.bind(this)
                         });
@@ -276,16 +305,21 @@
                         this.columnHeader = itemModel.get('header') || null;
                         this.columnItems = itemModel.get('sub').items;
                         this.addColumn();
+                        this.collapseColumns();
                     }
 
                 } else if (itemModel.get('type') == 'content') {
                     this.trigger('navigation:item:content:show', itemModel);
+                    this.collapseColumns();
                 }
             }
         },
 
+        // TODO
         showColumn: function(params) {
             Husky.DEBUG && console.log(this.name, 'showColumn');
+
+            var $showedColumn;
 
             params = params || {};
 
@@ -295,10 +329,33 @@
 
                 this.setConfigs(params.data);
 
+                $showedColumn = $('#column-' + this.addedColumn);
+
+                if (!!$showedColumn.size()) {
+                    this.currentColumnIdx--;
+                    $showedColumn.remove();
+                }
+
                 this.addColumn();
+                this.collapseColumns();
+
+                this.addedColumn = this.currentColumnIdx;
             } else {
                 Husky.DEBUG && console.error(this.name, 'showColumn', 'No data was defined!');
             }
+        },
+
+        // TODO
+        hideColumn: function() {
+            var $showedColumn;
+
+            $showedColumn = $('#column-' + this.addedColumn);
+
+            if (!!$showedColumn.size()) {
+                this.currentColumnIdx--;
+                $showedColumn.remove();
+            }
+            this.addedColumn = null;
         },
 
         bindEvents: function() {
@@ -311,8 +368,16 @@
         bindDOMEvents: function() {
             this.$element.off();
 
+            $(window).on('resize load', this.setWindowSize.bind(this));
+
             this.$element.on('click', '.navigation-column-item:not(.selected)', this.selectItem.bind(this));
-            this.$element.on('click', '.navigation-column:eq(1)', this.showNavigation.bind(this));
+            this.$element.on('click', '.navigation-column:eq(1)', this.showNavigationColumns.bind(this));
+        },
+
+        setWindowSize: function() {
+            this.windowSize = $(window).width();
+
+            this.setNavigationWidth();
         },
 
         render: function() {
@@ -350,12 +415,19 @@
 
         template: {
             columnHeader: function(data) {
+                var titleTemplate = null;;
+
                 data = data || {};
 
                 data.title = data.title || '';
                 data.logo = data.logo || '';
 
+                if (!!data.logo) {
+                    titleTemplate = '<span class="navigation-column-logo"><img alt="' + data.title + '" src="' + data.logo + '"/></span>';
+                }
+
                 return [
+                    titleTemplate,
                     '<h2 class="navigation-column-title">', data.title, '</h2>'
                 ].join('');
             },
