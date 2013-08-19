@@ -139,7 +139,7 @@
             $columnHeader.html(this.template.columnHeader({
                 title: this.columnHeader.title,
                 logo: this.columnHeader.logo
-            }))
+            }));
 
             return $columnHeader;
         },
@@ -227,13 +227,13 @@
             $firstColumn = $('#column-0');
             $secondColumn = $('#column-1');
 
-            if (this.currentColumnIdx === 1) {
+            if (this.currentColumnIdx > 1) {
                 $firstColumn.addClass('collapsed');
             } else {
                 $firstColumn.removeClass('collapsed');
             }
 
-            if (this.currentColumnIdx >= 2) {
+            if (this.currentColumnIdx > 2) {
                 $firstColumn.addClass('hide');
                 $secondColumn.addClass('collapsed');
             } else {
@@ -273,6 +273,7 @@
             itemModel = this.itemsCollection.get(elementId);
 
             this.lastColumnIdx = this.currentColumnIdx;
+            this.currentColumnIdx = $elementColumn.data('column-id');
             this.currentColumnIdx = $elementColumn.data('column-id');
 
             if (!!itemModel) {
