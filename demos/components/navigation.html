@@ -37,11 +37,11 @@
             ]);
 
             fakeServer.respondWith('GET', '/navigation/portals', [200, { 'Content-Type': 'application/json' },
-                '{"header": { "title":"Portals" }, "sub":{"items":[{"title":"Products","icon":"settings","id":"products","hasSub":false,"type":"content"}]}}'
+                '{"header": { "title":"Portals" }, "sub":{"items":[{"title":"Products","icon":"settings","id":"products","hasSub":true,"action":"/portals/products"}, {"title":"Portal 1","icon":"settings","id":"portal_1","hasSub":false,"action":"/portals/products","type":"content"}]}}'
             ]);
 
             fakeServer.respondWith('GET', '/settings/translates', [200, { 'Content-Type': 'application/json' },
-                '{"sub":{"items":[{"title":"Deutschland","id":"de","hasSub":true,"action":"/settings/translates/de"},{"title":"Schweiz","id":"ch","hasSub":false,"action":"ch"}]}}'
+                '{"sub":{"items":[{"title":"Deutschland","id":"de","hasSub":true,"action":"/settings/translates/de"},{"title":"Schweiz","id":"ch","hasSub":false,"type":"content","action":"ch"}]}}'
             ]);
 
             fakeServer.respondWith('GET', '/settings/translates/de', [200, { 'Content-Type': 'application/json' },
@@ -54,6 +54,11 @@
 
             fakeServer.respondWith('GET', '/settings/translates/de/item/sub', [200, { 'Content-Type': 'application/json' },
                 '{"sub":{"items":[{"title":"Sub","id":"sub","hasSub":false,"type":"content","action":"de"}]}}'
+            ]);
+
+
+            fakeServer.respondWith('GET', '/portals/products', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Produkt 1","id":"product_1","hasSub":false,"type":"content","action":"/portals/products/product_1"}]}}'
             ]);
 
             var navigation = $('#navigation').huskyNavigation({

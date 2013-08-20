@@ -1,7 +1,7 @@
 /* 
  * husky v0.1.0
  *  
- * (c) MASSIVE ART Webservices GmbH
+ * (c) MASSIVE ART WebServices GmbH
  * 
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -830,10 +830,24 @@ function typeOf(value) {
                 class: 'navigation-columns'
             });
 
+            this.setNavigationWidth();
+
             this.$navigationColumns.append(this.prepareNavigationColumn());
             this.$navigation.append(this.$navigationColumns);
 
             return this;
+        },
+
+        setNavigationWidth: function() {
+            if (this.currentColumnIdx >= 1 && !this.$navigationColumns.hasClass('show-content') && !this.showContent) {
+                this.$navigation.css({
+                    width: this.windowSize
+                });
+            } else {
+                this.$navigation.css({
+                    width: 'auto'
+                });
+            }
         },
 
         prepareNavigationColumn: function() {
@@ -864,6 +878,8 @@ function typeOf(value) {
 
             $column.append(this.prepareColumnItems());
 
+            this.setNavigationWidth();
+
             return $column;
         },
 
@@ -877,7 +893,7 @@ function typeOf(value) {
             $columnHeader.html(this.template.columnHeader({
                 title: this.columnHeader.title,
                 logo: this.columnHeader.logo
-            }))
+            }));
 
             return $columnHeader;
         },
@@ -941,49 +957,39 @@ function typeOf(value) {
         },
 
         addColumn: function() {
-            var $column, i, $firstColumn,
-                $secondColumn;
+            var $column, i;
+
+            this.currentColumnIdx++;
+            this.$navigationColumns.append(this.prepareNavigationColumn());
+        },
+
+        collapseFirstColumn: function() {
+            var $firstColumn;
+
+            $firstColumn = $('#column-0');
+            $firstColumn.addClass('collapsed');
+        },
+
+        showNavigationColumns: function() {
+            var $firstColumn, $secondColumn;
 
             $firstColumn = $('#column-0');
             $secondColumn = $('#column-1');
 
-            this.currentColumnIdx++;
-
-            // TODO: create function
-            if (this.currentColumnIdx > 1) {
-                $firstColumn.addClass('collapsed');
-            } else {
-                $firstColumn.removeClass('collapsed');
-            }
-
-            if (this.currentColumnIdx > 2) {
-                $firstColumn.addClass('hide');
-                $secondColumn.addClass('collapsed');
-            } else {
-                $firstColumn.removeClass('hide');
-                $secondColumn.removeClass('collapsed');
-            }
-
-            if (this.currentColumnIdx < this.lastColumnIdx ||
-                this.currentColumnIdx === this.lastColumnIdx) {
-
-                for (i = this.currentColumnIdx; i <= this.lastColumnIdx; i++) {
-                    $column = this.$navigationColumns.find('#column-' + i);
-
-                    if (!!$column.size()) {
-                        $column.remove();
-                    }
-                }
-            }
-            this.$navigationColumns.append(this.prepareNavigationColumn());
-        },
-
-        showNavigation: function() {
-            var $firstColumn;
-
-            $firstColumn = $('#column-0');
             $firstColumn.removeClass('hide');
+            $secondColumn.removeClass('collapsed');
+
+            this.$navigationColumns.removeClass('show-content');
+
+            this.setNavigationWidth();
+
+            this.hideColumn();
         },
+
+        // lock selection during column loading
+        selectionLocked: true,
+
+        showContent: true,
 
         // TODO: cleanup and simplify selectItem function
         selectItem: function(event) {
@@ -991,6 +997,8 @@ function typeOf(value) {
 
             var $element, $elementColumn, elementId, 
                 itemModel;
+
+            this.showContent = false;
 
             $element = $(event.currentTarget);
             $elementColumn = $element.parent().parent();
@@ -1001,8 +1009,9 @@ function typeOf(value) {
 
             this.lastColumnIdx = this.currentColumnIdx;
             this.currentColumnIdx = $elementColumn.data('column-id');
+            this.currentColumnIdx = $elementColumn.data('column-id');
 
-            if (!!itemModel) {
+            if (!!itemModel && this.selectionLocked) {
                 // reset all navigation items...
                 $elementColumn
                     .find('.selected')
@@ -1016,12 +1025,22 @@ function typeOf(value) {
                 if (!!itemModel.get('hasSub')) {
 
                     if (!itemModel.get('sub')) {
+                        this.selectionLocked = false;
+
                         this.addLoader($element);
+                        $('.navigation-column:gt(' + this.currentColumnIdx + ')').remove();
+
                         this.load({
                             url: itemModel.get('action'),
                             success: function() {
+                                this.selectionLocked = true;
+
                                 this.addColumn();
                                 this.hideLoader($element);
+
+                                if (this.currentColumnIdx > 1) {    
+                                    this.collapseFirstColumn();
+                                }
 
                                 this.trigger('navigation:item:sub:loaded', itemModel);
                             }.bind(this)
@@ -1029,17 +1048,50 @@ function typeOf(value) {
                     } else {
                         this.columnHeader = itemModel.get('header') || null;
                         this.columnItems = itemModel.get('sub').items;
+                        $('.navigation-column:gt(' + this.currentColumnIdx + ')').remove();
                         this.addColumn();
+
+                        if (this.currentColumnIdx > 1) {   
+                            this.collapseFirstColumn();
+                        }
                     }
 
                 } else if (itemModel.get('type') == 'content') {
                     this.trigger('navigation:item:content:show', itemModel);
+
+                    this.showContent = true;
+
+                    $('.navigation-column:gt(' + this.currentColumnIdx + ')').remove();
+                    this.collapseFirstColumn();
+
+                    this.setNavigationWidth();
                 }
             }
         },
 
+        showFirstNavigationColumn: function(event) {
+            var $element = $(event.target);
+
+            $('#column-0')
+                .removeClass('hide')
+                .removeClass('collapsed');
+
+            console.log(!$element.hasClass('navigation-column-item') && !$element.is('span'));
+
+            if (!$element.hasClass('navigation-column-item') && !$element.is('span')) {
+                this.currentColumnIdx = 1;
+                $('.navigation-column:gt(' + this.currentColumnIdx + ')').remove();
+                $('#column-1')
+                    .find('.selected')
+                    .removeClass('selected');
+            }
+        },
+
+        // TODO
         showColumn: function(params) {
             Husky.DEBUG && console.log(this.name, 'showColumn');
+
+            var $showedColumn;
 
             params = params || {};
 
@@ -1049,10 +1101,38 @@ function typeOf(value) {
 
                 this.setConfigs(params.data);
 
+                $showedColumn = $('#column-' + this.addedColumn);
+
+                $('#column-0').addClass('hide');
+                $('#column-1').addClass('collapsed');
+
+                if (!!$showedColumn.size()) {
+                    this.currentColumnIdx--;
+                    $showedColumn.remove();
+                }
+
                 this.addColumn();
+
+                this.addedColumn = this.currentColumnIdx;
             } else {
                 Husky.DEBUG && console.error(this.name, 'showColumn', 'No data was defined!');
             }
+        },
+
+        // TODO
+        hideColumn: function() {
+            var $showedColumn;
+
+            $showedColumn = $('#column-' + this.addedColumn);
+
+            if (!!$showedColumn.size()) {
+                this.currentColumnIdx--;
+                $showedColumn.remove();
+
+                $('#column-0').removeClass('hide');
+                $('#column-1').removeClass('collapsed');;
+            }
+            this.addedColumn = null;
         },
 
         bindEvents: function() {
@@ -1065,8 +1145,17 @@ function typeOf(value) {
         bindDOMEvents: function() {
             this.$element.off();
 
+            $(window).on('resize load', this.setWindowSize.bind(this));
+
             this.$element.on('click', '.navigation-column-item:not(.selected)', this.selectItem.bind(this));
-            this.$element.on('click', '.navigation-column:eq(1)', this.showNavigation.bind(this));
+            this.$element.on('click', '.navigation-column:eq(1)', this.showNavigationColumns.bind(this));
+            this.$element.on('click', '.navigation-column:eq(0).collapsed', this.showFirstNavigationColumn.bind(this));
+        },
+
+        setWindowSize: function() {
+            this.windowSize = $(window).width();
+
+            this.setNavigationWidth();
         },
 
         render: function() {
@@ -1104,12 +1193,19 @@ function typeOf(value) {
 
         template: {
             columnHeader: function(data) {
+                var titleTemplate = null;;
+
                 data = data || {};
 
                 data.title = data.title || '';
                 data.logo = data.logo || '';
 
+                if (!!data.logo) {
+                    titleTemplate = '<span class="navigation-column-logo"><img alt="' + data.title + '" src="' + data.logo + '"/></span>';
+                }
+
                 return [
+                    titleTemplate,
                     '<h2 class="navigation-column-title">', data.title, '</h2>'
                 ].join('');
             },
@@ -1122,7 +1218,7 @@ function typeOf(value) {
                 data.icon = data.icon || '';
 
                 return [
-                    '<input type="text" class="search" autofill="false" data-action="', data.action, '" placeholder="Search ..."/>', // TODO Translate
+                    '<input type="text" class="search" autofill="false" data-action="', data.action, '" placeholder="Search ..."/>' // TODO Translate
                 ].join('');
             }
         }

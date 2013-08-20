@@ -85,7 +85,7 @@
         },
 
         setNavigationWidth: function() {
-            if (this.currentColumnIdx >= 1 && !this.$navigationColumns.hasClass('show-content')) {
+            if (this.currentColumnIdx >= 1 && !this.$navigationColumns.hasClass('show-content') && !this.showContent) {
                 this.$navigation.css({
                     width: this.windowSize
                 });
@@ -206,40 +206,14 @@
             var $column, i;
 
             this.currentColumnIdx++;
-
-            if (this.currentColumnIdx < this.lastColumnIdx ||
-                this.currentColumnIdx === this.lastColumnIdx) {
-
-                for (i = this.currentColumnIdx; i <= this.lastColumnIdx; i++) {
-                    $column = this.$navigationColumns.find('#column-' + i);
-
-                    if (!!$column.size()) {
-                        $column.remove();
-                    }
-                }
-            }
             this.$navigationColumns.append(this.prepareNavigationColumn());
         },
 
-        collapseColumns: function() {
-            var $firstColumn, $secondColumn;
+        collapseFirstColumn: function() {
+            var $firstColumn;
 
             $firstColumn = $('#column-0');
-            $secondColumn = $('#column-1');
-
-            if (this.currentColumnIdx > 1) {
-                $firstColumn.addClass('collapsed');
-            } else {
-                $firstColumn.removeClass('collapsed');
-            }
-
-            if (this.currentColumnIdx > 2) {
-                $firstColumn.addClass('hide');
-                $secondColumn.addClass('collapsed');
-            } else {
-                $firstColumn.removeClass('hide');
-                $secondColumn.removeClass('collapsed');
-            }
+            $firstColumn.addClass('collapsed');
         },
 
         showNavigationColumns: function() {
@@ -258,12 +232,19 @@
             this.hideColumn();
         },
 
+        // lock selection during column loading
+        selectionLocked: true,
+
+        showContent: true,
+
         // TODO: cleanup and simplify selectItem function
         selectItem: function(event) {
             Husky.DEBUG && console.log(this.name, 'selectItem');
 
             var $element, $elementColumn, elementId, 
                 itemModel;
+
+            this.showContent = false;
 
             $element = $(event.currentTarget);
             $elementColumn = $element.parent().parent();
@@ -276,7 +257,7 @@
             this.currentColumnIdx = $elementColumn.data('column-id');
             this.currentColumnIdx = $elementColumn.data('column-id');
 
-            if (!!itemModel) {
+            if (!!itemModel && this.selectionLocked) {
                 // reset all navigation items...
                 $elementColumn
                     .find('.selected')
@@ -290,14 +271,22 @@
                 if (!!itemModel.get('hasSub')) {
 
                     if (!itemModel.get('sub')) {
+                        this.selectionLocked = false;
+
                         this.addLoader($element);
+                        $('.navigation-column:gt(' + this.currentColumnIdx + ')').remove();
+
                         this.load({
                             url: itemModel.get('action'),
                             success: function() {
+                                this.selectionLocked = true;
+
                                 this.addColumn();
                                 this.hideLoader($element);
 
-                                this.collapseColumns();
+                                if (this.currentColumnIdx > 1) {    
+                                    this.collapseFirstColumn();
+                                }
 
                                 this.trigger('navigation:item:sub:loaded', itemModel);
                             }.bind(this)
@@ -305,14 +294,42 @@
                     } else {
                         this.columnHeader = itemModel.get('header') || null;
                         this.columnItems = itemModel.get('sub').items;
+                        $('.navigation-column:gt(' + this.currentColumnIdx + ')').remove();
                         this.addColumn();
-                        this.collapseColumns();
+
+                        if (this.currentColumnIdx > 1) {   
+                            this.collapseFirstColumn();
+                        }
                     }
 
                 } else if (itemModel.get('type') == 'content') {
                     this.trigger('navigation:item:content:show', itemModel);
-                    this.collapseColumns();
+
+                    this.showContent = true;
+
+                    $('.navigation-column:gt(' + this.currentColumnIdx + ')').remove();
+                    this.collapseFirstColumn();
+
+                    this.setNavigationWidth();
                 }
+            }
+        },
+
+        showFirstNavigationColumn: function(event) {
+            var $element = $(event.target);
+
+            $('#column-0')
+                .removeClass('hide')
+                .removeClass('collapsed');
+
+            console.log(!$element.hasClass('navigation-column-item') && !$element.is('span'));
+
+            if (!$element.hasClass('navigation-column-item') && !$element.is('span')) {
+                this.currentColumnIdx = 1;
+                $('.navigation-column:gt(' + this.currentColumnIdx + ')').remove();
+                $('#column-1')
+                    .find('.selected')
+                    .removeClass('selected');
             }
         },
 
@@ -332,13 +349,15 @@
 
                 $showedColumn = $('#column-' + this.addedColumn);
 
+                $('#column-0').addClass('hide');
+                $('#column-1').addClass('collapsed');
+
                 if (!!$showedColumn.size()) {
                     this.currentColumnIdx--;
                     $showedColumn.remove();
                 }
 
                 this.addColumn();
-                this.collapseColumns();
 
                 this.addedColumn = this.currentColumnIdx;
             } else {
@@ -355,6 +374,9 @@
             if (!!$showedColumn.size()) {
                 this.currentColumnIdx--;
                 $showedColumn.remove();
+
+                $('#column-0').removeClass('hide');
+                $('#column-1').removeClass('collapsed');;
             }
             this.addedColumn = null;
         },
@@ -373,6 +395,7 @@
 
             this.$element.on('click', '.navigation-column-item:not(.selected)', this.selectItem.bind(this));
             this.$element.on('click', '.navigation-column:eq(1)', this.showNavigationColumns.bind(this));
+            this.$element.on('click', '.navigation-column:eq(0).collapsed', this.showFirstNavigationColumn.bind(this));
         },
 
         setWindowSize: function() {
@@ -441,7 +464,7 @@
                 data.icon = data.icon || '';
 
                 return [
-                    '<input type="text" class="search" autofill="false" data-action="', data.action, '" placeholder="Search ..."/>', // TODO Translate
+                    '<input type="text" class="search" autofill="false" data-action="', data.action, '" placeholder="Search ..."/>' // TODO Translate
                 ].join('');
             }
         }
