@@ -41,7 +41,7 @@
             ]);
 
             fakeServer.respondWith('GET', '/settings/translates', [200, { 'Content-Type': 'application/json' },
-                '{"sub":{"items":[{"title":"Deutschland","id":"de","hasSub":true,"action":"/settings/translates/de"},{"title":"Schweiz","id":"ch","hasSub":false,"type":"content","action":"ch"}]}}'
+                '{"sub":{"items":[{"title":"Deutschland","id":"de","hasSub":true,"action":"/settings/translates/de"}]}}'
             ]);
 
             fakeServer.respondWith('GET', '/settings/translates/de', [200, { 'Content-Type': 'application/json' },
@@ -58,7 +58,11 @@
 
 
             fakeServer.respondWith('GET', '/portals/products', [200, { 'Content-Type': 'application/json' },
-                '{"sub":{"items":[{"title":"Produkt 1","id":"product_1","hasSub":false,"type":"content","action":"/portals/products/product_1"}]}}'
+                '{"sub":{"items":[{"title":"Produkt 1","id":"product_1","hasSub":true,"action":"/portals/products/product_1"}]}}'
+            ]);
+
+            fakeServer.respondWith('GET', '/portals/products/product_1', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Produkt 2","id":"product_2","hasSub":false,"type":"content","action":"/portals/products/product_1/content"}]}}'
             ]);
 
             var navigation = $('#navigation').huskyNavigation({
@@ -74,6 +78,27 @@
 
             navigation.data('Husky.Ui.Navigation').on('navigation:item:content:show', function(item){
                 console.log('navigation:item:content:show');
+
+                navigation.data('Husky.Ui.Navigation').trigger('navigation:item:column:show', {
+                    data: {
+                            "displayOption": "content", 
+                            "sub": {
+                                        "items":[{
+                                                    "title":"Details",
+                                                    "id":"details",
+                                                    "hasSub":false,
+                                                    "type":"content",
+                                                    "action":"/"
+                                                },
+                                                {
+                                                    "title":"Settings",
+                                                    "id":"settings",
+                                                    "hasSub":false,
+                                                    "action":"/"
+                                                }]
+                                    }
+                    }
+                });
             });
 
 
