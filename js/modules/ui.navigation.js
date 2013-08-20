@@ -252,8 +252,6 @@
 
             this.$navigationColumns.removeClass('show-content');
 
-            
-
             this.hideColumn();
         },
 
@@ -317,6 +315,8 @@
                             }.bind(this)
                         });
                     } else {
+                        this.setConfigs({});
+
                         this.columnHeader = itemModel.get('header') || null;
                         this.columnItems = itemModel.get('sub').items;
                         $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
@@ -404,6 +404,38 @@
             this.addedColumn = null;
         },
 
+        // for normalized scrolling
+        scrollLocked: true,
+
+        scrollSubColumns: function(event) {
+            var $element = $(event.currentTarget),
+                $navigationSubColumns = $('.navigation-sub-columns'),
+                direction = event.originalEvent.detail < 0 || event.originalEvent.wheelDelta > 0 ? 1 : -1,
+                scrollSpeed = 25,
+                scrollLeft = 0;
+
+            event.preventDefault();
+
+            if (this.scrollLocked) {
+                this.scrollLocked = false;
+
+                // normalize scrolling
+                setTimeout(function() {
+                    this.scrollLocked = true;
+
+                    if (direction < 0){
+                        // leftscroll
+                        scrollLeft = this.$navigationSubColumns.scrollLeft() + 1 * scrollSpeed;
+                        this.$navigationSubColumns.scrollLeft(scrollLeft);
+                    } else {
+                        // rightscroll
+                        scrollLeft = this.$navigationSubColumns.scrollLeft() - 1 * scrollSpeed;
+                        this.$navigationSubColumns.scrollLeft(scrollLeft);
+                    }
+                }.bind(this), 25);
+            }
+        },
+
         bindEvents: function() {
             // external events
             this.on('navigation:item:column:show', this.showColumn.bind(this));
@@ -419,6 +451,7 @@
             this.$element.on('click', '.navigation-column-item:not(.selected)', this.selectItem.bind(this));
             this.$element.on('click', '.navigation-column:eq(1)', this.showNavigationColumns.bind(this));
             this.$element.on('click', '.navigation-column:eq(0).collapsed', this.showFirstNavigationColumn.bind(this));
+            this.$element.on('mousewheel DOMMouseScroll', '.navigation-sub-columns-container', this.scrollSubColumns.bind(this));
         },
 
         render: function() {

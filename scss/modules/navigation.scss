@@ -266,8 +266,11 @@ $navigationIconFont: $baseIconFont;
 }
 
 .navigation-sub-columns {
+    position: relative;
+    left: auto;
+    right: auto;
     height: 100%;
-    overflow: auto;
+    overflow: hidden;
     min-width: 250px;
     padding-bottom: 5px !important;
     padding-right: 5px !important;
