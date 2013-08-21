@@ -110,7 +110,7 @@
 
             // set html classes
             tblClasses = [];
-            tblClasses.push((!!this.options.class && this.options.class !== 'table') ? 'table ' + this.options.class : 'table');
+            tblClasses.push((!!this.options.className && this.options.className !== 'table') ? 'table ' + this.options.className : 'table');
             tblClasses.push((this.options.selectItemType && this.options.selectItemType === 'checkbox') ? 'is-selectable' : '');
 
             $table.addClass(tblClasses.join(' '));
