@@ -838,23 +838,29 @@ function typeOf(value) {
 
         setNavigationSize: function() {
             var $window = $(window),
+                $navigationSubColumnsCont = $('.navigation-sub-columns-container'),
                 $navigationSubColumns = $('.navigation-sub-columns'),
                 paddingRight = 100;
 
-            $navigationSubColumns.css({
-                width: 'auto'
-            });
+            setTimeout(function() {
+                $navigationSubColumns.css({
+                    width: 'auto'
+                });
 
-            if ($window.width() < this.$navigation.width()) {
-                $navigationSubColumns.css({
-                    width: ($window.width() - paddingRight) - (this.$navigation.width() - $navigationSubColumns.width())
-                });
-                $('.navigation-sub-columns-container').addClass('');
-            } else {
-                $navigationSubColumns.css({
-                    height: this.$navigation.height() + 5
-                });
-            }
+                $navigationSubColumnsCont.removeClass('scrolling');
+
+                if ($window.width() < this.$navigation.width() + paddingRight) {
+                    $navigationSubColumns.css({
+                        width: ($window.width() - paddingRight) - (this.$navigation.width() - $navigationSubColumns.width()),
+                        height: this.$navigation.height()
+                    });
+                    $navigationSubColumnsCont.addClass('scrolling');
+                } else {
+                    $navigationSubColumns.css({
+                        height: this.$navigation.height() + 5
+                    });
+                }
+            }.bind(this), 250);
         },
 
         prepareNavigationColumn: function() {
@@ -985,6 +991,7 @@ function typeOf(value) {
 
             if (!!$('.navigation-sub-columns-container').size()) {
                 this.$navigationSubColumns.append(this.prepareNavigationColumn());
+                this.scrollToLastSubColumn();
             } else {
                 this.$navigationColumns.append(this.prepareNavigationColumn());
             }
@@ -999,18 +1006,29 @@ function typeOf(value) {
             $firstColumn.addClass('collapsed');
         },
 
-        showNavigationColumns: function() {
-            var $firstColumn, $secondColumn;
+        showNavigationColumns: function(event) {
+            var $firstColumn, $secondColumn, $element;
 
+            $element = $(event.target);
             $firstColumn = $('#column-0');
             $secondColumn = $('#column-1');
 
-            $firstColumn.removeClass('hide');
-            $secondColumn.removeClass('collapsed');
-
             this.$navigationColumns.removeClass('show-content');
 
-            this.hideColumn();
+            this.currentColumnIdx = 1;
+            this.showContent = false;
+
+            if (!$element.hasClass('navigation-column-item') && !$element.is('span')) {
+                $firstColumn.removeClass('hide');
+                $secondColumn.removeClass('collapsed');
+
+                this.hideColumn();
+            } else {
+                $firstColumn.removeClass('hide');
+                $secondColumn.removeClass('collapsed');
+            }
+
+            this.setNavigationSize();
         },
 
         // lock selection during column loading
@@ -1149,11 +1167,9 @@ function typeOf(value) {
         // TODO
         hideColumn: function() {
             var $showedColumn;
-
             $showedColumn = $('#column-' + this.addedColumn);
 
             if (!!$showedColumn.size()) {
-                this.currentColumnIdx--;
                 $showedColumn.remove();
 
                 $('#column-0').removeClass('hide');
@@ -1192,6 +1208,12 @@ function typeOf(value) {
                     }
                 }.bind(this), 25);
             }
+        },
+
+        scrollToLastSubColumn: function() {
+            this.$navigationSubColumns.delay(250).animate({
+                'scrollLeft': 1000
+            }, 500);
         },
 
         bindEvents: function() {
