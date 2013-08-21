@@ -71,7 +71,7 @@
         setConfigs: function() {
             this.configs = {};
             this.configs.total = this.data.total;
-            this.configs.pagesSize = this.data.pagesSize;
+            this.configs.pageSize = this.data.pageSize;
             this.configs.page = this.data.page;
         },
 
