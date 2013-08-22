@@ -4,12 +4,12 @@
 @import 
     "variables.scss",
     "normalize.scss",
-    "utilities.scss",
-    "typo.scss";
+    "utilities.scss";
 
 
 // Husky Modules
 @import
+    "typo.scss",
     "modules/glyphicons.scss",
     "modules/icons.scss",
     "modules/core.scss",

@@ -82,6 +82,23 @@
             return this;
         },
 
+        setNavigationSize: function() {
+            var $window = $(window),
+                $navigationSubColumns = $('.navigation-sub-columns'),
+                paddingRight = 100;
+
+            $navigationSubColumns.css({
+                width: 'auto',
+                height: this.$navigation.height() + 5
+            });
+
+            if ($window.width() < this.$navigation.width()) {
+                $navigationSubColumns.css({
+                    width: ($window.width() - paddingRight) - (this.$navigation.width() - $navigationSubColumns.width())
+                });
+            }
+        },
+
         prepareNavigationColumn: function() {
             var $column, columnClasses;
 
@@ -113,6 +130,14 @@
             return $column;
         },
 
+        prepareNavigationSubColumn: function() {
+            this.$navigationSubColumns = $('<ul/>', {
+                'class': 'navigation-sub-columns'
+            });
+
+            return this.$navigationSubColumns;
+        },
+
         prepareColumnHeader: function() {
             var $columnHeader;
 
@@ -123,7 +148,7 @@
             $columnHeader.html(this.template.columnHeader({
                 title: this.columnHeader.title,
                 logo: this.columnHeader.logo
-            }))
+            }));
 
             return $columnHeader;
         },
@@ -187,49 +212,55 @@
         },
 
         addColumn: function() {
-            var $column, i, $firstColumn,
-                $secondColumn;
+            var $subColumns, i;
+
+            this.currentColumnIdx++;
+
+            if (this.currentColumnIdx === 2) {
+                $subColumns = $('<li/>', {
+                    'class': 'navigation-sub-columns-container'
+                });
+
+                $subColumns.append(this.prepareNavigationSubColumn());
+                this.$navigationColumns.append($subColumns);
+            }
+
+            if (!!$('.navigation-sub-columns-container').size()) {
+                this.$navigationSubColumns.append(this.prepareNavigationColumn());
+            } else {
+                this.$navigationColumns.append(this.prepareNavigationColumn());
+            }
+
+            this.setNavigationSize();
+        },
+
+        collapseFirstColumn: function() {
+            var $firstColumn;
+
+            $firstColumn = $('#column-0');
+            $firstColumn.addClass('collapsed');
+        },
+
+        showNavigationColumns: function() {
+            var $firstColumn, $secondColumn;
 
             $firstColumn = $('#column-0');
             $secondColumn = $('#column-1');
 
-            this.currentColumnIdx++;
-
-            // TODO: create function
-            if (this.currentColumnIdx > 1) {
-                $firstColumn.addClass('collapsed');
-            } else {
-                $firstColumn.removeClass('collapsed');
-            }
-
-            if (this.currentColumnIdx > 2) {
-                $firstColumn.addClass('hide');
-                $secondColumn.addClass('collapsed');
-            } else {
-                $firstColumn.removeClass('hide');
-                $secondColumn.removeClass('collapsed');
-            }
-
-            if (this.currentColumnIdx < this.lastColumnIdx ||
-                this.currentColumnIdx === this.lastColumnIdx) {
-
-                for (i = this.currentColumnIdx; i <= this.lastColumnIdx; i++) {
-                    $column = this.$navigationColumns.find('#column-' + i);
-
-                    if (!!$column.size()) {
-                        $column.remove();
-                    }
-                }
-            }
-            this.$navigationColumns.append(this.prepareNavigationColumn());
-        },
-
-        showNavigation: function() {
-            var $firstColumn;
-
-            $firstColumn = $('#column-0');
             $firstColumn.removeClass('hide');
+            $secondColumn.removeClass('collapsed');
+
+            this.$navigationColumns.removeClass('show-content');
+
+            
+
+            this.hideColumn();
         },
+
+        // lock selection during column loading
+        selectionLocked: true,
+
+        showContent: false,
 
         // TODO: cleanup and simplify selectItem function
         selectItem: function(event) {
@@ -237,6 +268,8 @@
 
             var $element, $elementColumn, elementId, 
                 itemModel;
+
+            this.showContent = false;
 
             $element = $(event.currentTarget);
             $elementColumn = $element.parent().parent();
@@ -247,8 +280,9 @@
 
             this.lastColumnIdx = this.currentColumnIdx;
             this.currentColumnIdx = $elementColumn.data('column-id');
+            this.currentColumnIdx = $elementColumn.data('column-id');
 
-            if (!!itemModel) {
+            if (!!itemModel && this.selectionLocked) {
                 // reset all navigation items...
                 $elementColumn
                     .find('.selected')
@@ -262,12 +296,22 @@
                 if (!!itemModel.get('hasSub')) {
 
                     if (!itemModel.get('sub')) {
+                        this.selectionLocked = false;
+
                         this.addLoader($element);
+                        $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
+
                         this.load({
                             url: itemModel.get('action'),
                             success: function() {
+                                this.selectionLocked = true;
+
                                 this.addColumn();
                                 this.hideLoader($element);
+
+                                if (this.currentColumnIdx > 1) {    
+                                    this.collapseFirstColumn();
+                                }
 
                                 this.trigger('navigation:item:sub:loaded', itemModel);
                             }.bind(this)
@@ -275,35 +319,94 @@
                     } else {
                         this.columnHeader = itemModel.get('header') || null;
                         this.columnItems = itemModel.get('sub').items;
+                        $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
                         this.addColumn();
+
+                        if (this.currentColumnIdx > 1) {   
+                            this.collapseFirstColumn();
+                        }
                     }
 
                 } else if (itemModel.get('type') == 'content') {
                     this.trigger('navigation:item:content:show', itemModel);
+
+                    this.showContent = true;
+
+                    $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
+                    this.collapseFirstColumn();
                 }
             }
         },
 
-        loadColumn: function(params) {
-            Husky.DEBUG && console.log(this.name, 'loadContentColumn');
+        showFirstNavigationColumn: function(event) {
+            var $element = $(event.target);
+
+            $('#column-0')
+                .removeClass('hide')
+                .removeClass('collapsed');
+
+            if (!$element.hasClass('navigation-column-item') && !$element.is('span')) {
+                this.currentColumnIdx = 1;
+                $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
+                $('#column-1')
+                    .find('.selected')
+                    .removeClass('selected');
+            }
+        },
+
+        // TODO
+        showColumn: function(params) {
+            Husky.DEBUG && console.log(this.name, 'showColumn');
+
+            var $showedColumn;
 
             params = params || {};
 
-            if (!!params.url) {
-                this.load({
-                    url: params.url,
-                    success: function() {
-                        this.addColumn();
-                    }.bind(this)
-                });
+            if (!!params.data) {
+                this.columnHeader = params.data.header || null;
+                this.columnItems = params.data.sub.items || null;
+
+                this.setConfigs(params.data);
+
+                $showedColumn = $('#column-' + this.addedColumn);
+
+                $('#column-0').addClass('hide');
+                $('#column-1').addClass('collapsed');
+
+                if (!!$showedColumn.size()) {
+                    this.currentColumnIdx--;
+                    $showedColumn.remove();
+                }
+
+                this.showContent = true;
+
+                this.addColumn();
+
+                this.addedColumn = this.currentColumnIdx;
             } else {
-                Husky.DEBUG && console.error(this.name, 'loadColumn', 'No url was defined!');
+                Husky.DEBUG && console.error(this.name, 'showColumn', 'No data was defined!');
             }
+        },
+
+        // TODO
+        hideColumn: function() {
+            var $showedColumn;
+
+            $showedColumn = $('#column-' + this.addedColumn);
+
+            if (!!$showedColumn.size()) {
+                this.currentColumnIdx--;
+                $showedColumn.remove();
+
+                $('#column-0').removeClass('hide');
+                $('#column-1').removeClass('collapsed');;
+            }
+            this.addedColumn = null;
         },
 
         bindEvents: function() {
             // external events
-            this.on('navigation:item:column:load', this.loadColumn.bind(this));
+            this.on('navigation:item:column:show', this.showColumn.bind(this));
 
             // internal events
         },
@@ -311,8 +414,11 @@
         bindDOMEvents: function() {
             this.$element.off();
 
+            $(window).on('resize load', this.setNavigationSize.bind(this));
+
             this.$element.on('click', '.navigation-column-item:not(.selected)', this.selectItem.bind(this));
-            this.$element.on('click', '.navigation-column:eq(1)', this.showNavigation.bind(this));
+            this.$element.on('click', '.navigation-column:eq(1)', this.showNavigationColumns.bind(this));
+            this.$element.on('click', '.navigation-column:eq(0).collapsed', this.showFirstNavigationColumn.bind(this));
         },
 
         render: function() {
@@ -350,12 +456,19 @@
 
         template: {
             columnHeader: function(data) {
+                var titleTemplate = null;;
+
                 data = data || {};
 
                 data.title = data.title || '';
                 data.logo = data.logo || '';
 
+                if (!!data.logo) {
+                    titleTemplate = '<span class="navigation-column-logo"><img alt="' + data.title + '" src="' + data.logo + '"/></span>';
+                }
+
                 return [
+                    titleTemplate,
                     '<h2 class="navigation-column-title">', data.title, '</h2>'
                 ].join('');
             },
@@ -368,7 +481,7 @@
                 data.icon = data.icon || '';
 
                 return [
-                    '<input type="text" class="search" autofill="false" data-action="', data.action, '" placeholder="Search ..."/>', // TODO Translate
+                    '<input type="text" class="search" autofill="false" data-action="', data.action, '" placeholder="Search ..."/>' // TODO Translate
                 ].join('');
             }
         }
