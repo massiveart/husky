@@ -1,7 +1,6 @@
-# Husky - The wuff wuff framework
+# Husky - The wuff wuff framework [![Build Status](https://api.travis-ci.org/massiveart/husky.png?branch=develop)](http://travis-ci.org/massiveart/husky)
 
 Husky is an awesome front-end framework.
-
 
 
 ## How to contribute like a boss
@@ -10,8 +9,17 @@ First install all necessary npm modules by running:
 
 	npm install
 
-Install the [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli)
+Install [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli)
 
+    sudo npm install -g grunt-cli
+
+Install [bower](http://bower.io)
+
+    sudo npm install -g bower
+
+And now install all dependencies:
+
+	bower install
 
 ### Grunt Tasks
 
