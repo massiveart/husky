@@ -1000,10 +1000,12 @@ function typeOf(value) {
         },
 
         collapseFirstColumn: function() {
+            Husky.DEBUG && console.log(this.name, 'collapseFirstColumn');
             var $firstColumn;
 
             $firstColumn = $('#column-0');
             $firstColumn.addClass('collapsed');
+            console.log($firstColumn.hasClass('collapsed'));
         },
 
         showNavigationColumns: function(event) {
@@ -1115,6 +1117,8 @@ function typeOf(value) {
         },
 
         showFirstNavigationColumn: function(event) {
+            Husky.DEBUG && console.log(this.name, 'showFirstNavigationColumn');
+
             var $element = $(event.target);
 
             $('#column-0')
@@ -1224,6 +1228,8 @@ function typeOf(value) {
         },
 
         bindDOMEvents: function() {
+            Husky.DEBUG && console.log(this.name, 'bindDOMEvents');
+
             this.$element.off();
 
             $(window).on('resize load', this.setNavigationSize.bind(this));
