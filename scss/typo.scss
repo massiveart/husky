@@ -46,9 +46,40 @@ h6 {
     margin: 10px 0;
     font-family: $headingsFontFamily;
     font-weight: $headingsFontWeight;
-    color: $headingsColor;
+    color: $grayLight;
 }
 
 h1 {
-    font-size: 24px
+    font-size: 36px;
+    line-height: 40px;
+}
+
+h2 {
+    font-size: 24px;
+    line-height: 30px;
+}
+
+h3 {
+    font-size: 20px;
+    line-height: 25px;
+}
+
+h4 {
+    font-size: 18px;
+    line-height: 20px;
+}
+h5 {
+    font-size: 14px;
+    line-height: 15px;
+}
+
+h4.bold {
+    font-size: 18px;
+    line-height: 20px;
+    font-weight:bold;
+}
+h5.bold {
+    font-size: 14px;
+    line-height: 15px;
+    font-weight:bold;
 }

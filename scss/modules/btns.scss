@@ -1,34 +1,19 @@
-/* 
- * -------------------------------------------------
- * Button
- * -------------------------------------------------
- */
+//
+// Buttons
+// --------------------------------------------------
 
 .btn {
-    padding: 4px 8px;
+    padding: 5px 30px;
     border: 0;
     border-radius: $btnBorderRadius;
-    background-color: $grayLighter;
-    
-    &.btn-dropdown {
-        padding-right: 20px;
-        & + .dropdown-menu {
-            display: none;
-        }
-    }
+    background-color: #FFF;
 }
 
-.btn-group {
-    display: inline-block;
-    white-space: nowrap;
-    vertical-align: middle;
-
-    & + .btn-group {
-        margin-left: 5px;
-    }
+.btn-large {
+    font-size: 18px;
 }
 
-
-/*
- * Button Styles
- */
+.btn-black {
+    background-color: #000;
+    color: #FFF;
+}
