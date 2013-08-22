@@ -54,8 +54,8 @@
                 <hr class="devider"/>
 
                 <div class="grid-row">
-                    <h3>[Language catalogues]</h3>
-                    <span>[Add language]</span>
+                    <div class="grid-col-10"><h3>[Language catalogues]</h3></div>
+                    <div class="grid-col-2 align-right"><span>[Add language]</span></div>
                     <table class="table">
                         <thead>
                             <tr>
@@ -66,13 +66,23 @@
                         </thead>
                         <tbody>
                         <tr>
-                            <td><input type="radio" checked/></td>
+                            <td>
+                                <label>
+                                    <input type="radio" class="custom-radio"/>
+                                    <span class="custom-radio-icon"></span>
+                                </label>
+                                </td>
                             <td><input class="form-element" type="text" id="locale1"
                                        value="<%= (!!catalogues[0]) ? catalogues[0].locale : '' %>"/></td>
                             <td></td>
                         </tr>
                         <tr>
-                            <td><input type="radio" checked/></td>
+                            <td>
+                                <label>
+                                    <input type="radio" class="custom-radio"/>
+                                    <span class="custom-radio-icon"></span>
+                                </label>
+                            </td>
                             <td><input type="text" class="form-element" id="locale2"
                                        value="<%= (!!catalogues[1]) ? catalogues[1].locale : '' %>"/></td>
                             <td></td>
@@ -84,8 +94,8 @@
                 <hr class="devider"/>
 
                 <div class="grid-row">
-                    <h3>[Section]</h3>
-                    <span>[Add language]</span>
+                    <div class="grid-col-10"><h3>[Section]</h3></div>
+                    <div class="grid-col-2 align-right"><span>[Add language]</span></div>
                     <table class="table">
                         <thead>
                         <tr>
