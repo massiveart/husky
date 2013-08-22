@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 table {
-    max-width: 100%;
+    width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
 }
@@ -23,7 +23,8 @@ table {
     thead {
         th {
             vertical-align: bottom;
-            font-weight: normal;
+            font-weight: 600;
+            color: $grayLight;
         }
 
         tr {

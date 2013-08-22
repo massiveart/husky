@@ -17,4 +17,12 @@ body {
 body {
     font-size: $baseFontSize;
     color: $baseFontColor;
+    background: $baseBackgroundColor;
+}
+
+hr.devider{
+	color:#fff;
+	height: 0;
+	border: 1px solid #fff;
+	margin: 30px 0;
 }
