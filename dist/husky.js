@@ -830,22 +830,25 @@ function typeOf(value) {
                 class: 'navigation-columns'
             });
 
-            this.setNavigationWidth();
-
             this.$navigationColumns.append(this.prepareNavigationColumn());
             this.$navigation.append(this.$navigationColumns);
 
             return this;
         },
 
-        setNavigationWidth: function() {
-            if (this.currentColumnIdx >= 1 && !this.$navigationColumns.hasClass('show-content') && !this.showContent) {
-                this.$navigation.css({
-                    width: this.windowSize
-                });
-            } else {
-                this.$navigation.css({
-                    width: 'auto'
+        setNavigationSize: function() {
+            var $window = $(window),
+                $navigationSubColumns = $('.navigation-sub-columns'),
+                paddingRight = 100;
+
+            $navigationSubColumns.css({
+                width: 'auto',
+                height: this.$navigation.height() + 5
+            });
+
+            if ($window.width() < this.$navigation.width()) {
+                $navigationSubColumns.css({
+                    width: ($window.width() - paddingRight) - (this.$navigation.width() - $navigationSubColumns.width())
                 });
             }
         },
@@ -878,9 +881,15 @@ function typeOf(value) {
 
             $column.append(this.prepareColumnItems());
 
-            this.setNavigationWidth();
-
             return $column;
+        },
+
+        prepareNavigationSubColumn: function() {
+            this.$navigationSubColumns = $('<ul/>', {
+                'class': 'navigation-sub-columns'
+            });
+
+            return this.$navigationSubColumns;
         },
 
         prepareColumnHeader: function() {
@@ -957,10 +966,26 @@ function typeOf(value) {
         },
 
         addColumn: function() {
-            var $column, i;
+            var $subColumns, i;
 
             this.currentColumnIdx++;
-            this.$navigationColumns.append(this.prepareNavigationColumn());
+
+            if (this.currentColumnIdx === 2) {
+                $subColumns = $('<li/>', {
+                    'class': 'navigation-sub-columns-container'
+                });
+
+                $subColumns.append(this.prepareNavigationSubColumn());
+                this.$navigationColumns.append($subColumns);
+            }
+
+            if (!!$('.navigation-sub-columns-container').size()) {
+                this.$navigationSubColumns.append(this.prepareNavigationColumn());
+            } else {
+                this.$navigationColumns.append(this.prepareNavigationColumn());
+            }
+
+            this.setNavigationSize();
         },
 
         collapseFirstColumn: function() {
@@ -981,7 +1006,7 @@ function typeOf(value) {
 
             this.$navigationColumns.removeClass('show-content');
 
-            this.setNavigationWidth();
+            
 
             this.hideColumn();
         },
@@ -989,7 +1014,7 @@ function typeOf(value) {
         // lock selection during column loading
         selectionLocked: true,
 
-        showContent: true,
+        showContent: false,
 
         // TODO: cleanup and simplify selectItem function
         selectItem: function(event) {
@@ -1028,7 +1053,7 @@ function typeOf(value) {
                         this.selectionLocked = false;
 
                         this.addLoader($element);
-                        $('.navigation-column:gt(' + this.currentColumnIdx + ')').remove();
+                        $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
 
                         this.load({
                             url: itemModel.get('action'),
@@ -1048,7 +1073,7 @@ function typeOf(value) {
                     } else {
                         this.columnHeader = itemModel.get('header') || null;
                         this.columnItems = itemModel.get('sub').items;
-                        $('.navigation-column:gt(' + this.currentColumnIdx + ')').remove();
+                        $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
                         this.addColumn();
 
                         if (this.currentColumnIdx > 1) {   
@@ -1061,10 +1086,8 @@ function typeOf(value) {
 
                     this.showContent = true;
 
-                    $('.navigation-column:gt(' + this.currentColumnIdx + ')').remove();
+                    $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
                     this.collapseFirstColumn();
-
-                    this.setNavigationWidth();
                 }
             }
         },
@@ -1076,11 +1099,9 @@ function typeOf(value) {
                 .removeClass('hide')
                 .removeClass('collapsed');
 
-            console.log(!$element.hasClass('navigation-column-item') && !$element.is('span'));
-
             if (!$element.hasClass('navigation-column-item') && !$element.is('span')) {
                 this.currentColumnIdx = 1;
-                $('.navigation-column:gt(' + this.currentColumnIdx + ')').remove();
+                $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
                 $('#column-1')
                     .find('.selected')
                     .removeClass('selected');
@@ -1110,6 +1131,8 @@ function typeOf(value) {
                     this.currentColumnIdx--;
                     $showedColumn.remove();
                 }
+
+                this.showContent = true;
 
                 this.addColumn();
 
@@ -1145,17 +1168,11 @@ function typeOf(value) {
         bindDOMEvents: function() {
             this.$element.off();
 
-            $(window).on('resize load', this.setWindowSize.bind(this));
+            $(window).on('resize load', this.setNavigationSize.bind(this));
 
             this.$element.on('click', '.navigation-column-item:not(.selected)', this.selectItem.bind(this));
             this.$element.on('click', '.navigation-column:eq(1)', this.showNavigationColumns.bind(this));
             this.$element.on('click', '.navigation-column:eq(0).collapsed', this.showFirstNavigationColumn.bind(this));
-        },
-
-        setWindowSize: function() {
-            this.windowSize = $(window).width();
-
-            this.setNavigationWidth();
         },
 
         render: function() {
