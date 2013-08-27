@@ -12,8 +12,9 @@
 
         this.configs = {};
 
-        this.$element = $(element).append('<div/>');
-        this.$dataGrid = $('<div/>');
+        this.$originalElement = $(element);
+        this.$element = $('<div class="husky-data-grid"/>');
+        $(element).append(this.$element);
 
         this.allItemIds = [];
         this.selectedItemIds = [];
@@ -87,13 +88,13 @@
         },
 
         prepare: function() {
-            this.$dataGrid.empty();
+            this.$element.empty();
 
             if (this.options.elementType === 'list') {
                 // TODO:
-                //this.$dataGrid = this.prepareList();
+                //this.$element = this.prepareList();
             } else {
-                this.$dataGrid.append(this.prepareTable());
+                this.$element.append(this.prepareTable());
             }
 
             return this;
@@ -260,7 +261,7 @@
 
             if (Husky.Util.compare(this.selectedItemIds, this.allItemIds)) {
 
-                this.$dataGrid
+                this.$element
                     .find('input[type="checkbox"]')
                     .prop('checked', false);
 
@@ -268,7 +269,7 @@
                 this.trigger('data-grid:all:deselect', null);
 
             } else {
-                this.$dataGrid
+                this.$element
                     .find('input[type="checkbox"]')
                     .prop('checked', true);
 
@@ -283,7 +284,7 @@
             var $table;
             // TODO check element type, list or table
 
-            $table = this.$dataGrid.find('table');
+            $table = this.$element.find('table');
 
             $table.append(this.prepareTableRow(row));
         },
@@ -307,7 +308,7 @@
         //
         appendPagination: function() {
             if (this.options.pagination) {
-                this.$dataGrid.append(this.preparePagination());
+                this.$element.append(this.preparePagination());
             }
             return this;
         },
@@ -380,8 +381,10 @@
             this.$element.off();
 
             if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
-                this.$element.on('click', 'tbody > tr', this.selectItem.bind(this));
+                this.$element.on('click', 'tbody > tr input[type="checkbox"]', this.selectItem.bind(this));
                 this.$element.on('click', 'th.select-all', this.selectAllItems.bind(this));
+            } else if (!!this.options.selectItemType && this.options.selectItemType === 'radio') {
+                this.$element.on('click', 'tbody > tr input[type="radio"]', this.selectItem.bind(this));
             }
 
             if (this.options.pagination) {
@@ -410,22 +413,22 @@
         },
 
         render: function() {
-            this.$element.html(this.$dataGrid);
+            this.$originalElement.html(this.$element);
 
             this.bindCustomEvents();
             this.bindDOMEvents();
         },
 
         addLoader: function() {
-            return this.$dataGrid
-                .outerWidth(this.$dataGrid.outerWidth())
-                .outerHeight(this.$dataGrid.outerHeight())
+            return this.$element
+                .outerWidth(this.$element.outerWidth())
+                .outerHeight(this.$element.outerHeight())
                 .empty()
                 .addClass('is-loading');
         },
 
         removeLoader: function() {
-            return this.$dataGrid.removeClass('is-loading');
+            return this.$element.removeClass('is-loading');
         },
 
         templates: {
@@ -531,7 +534,7 @@
 
     $.fn.huskyDataGrid.defaults = {
         elementType: 'table',
-        selectItemType: 'checkbox',
+        selectItemType: null,
         pagination: false,
         paginationOptions: {
             pageSize: 10,
