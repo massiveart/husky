@@ -246,9 +246,7 @@ function typeOf(value) {
         this.configs = {};
 
         this.$element = $(element);
-        this.$dataGrid = $('<div/>', {
-            class: 'inline-block'
-        });
+        this.$dataGrid = $('<div/>');
 
         this.allItemIds = [];
         this.selectedItemIds = [];
@@ -260,6 +258,19 @@ function typeOf(value) {
             this.load({
                 url: this.options.url
             });
+        } else if (!!this.options.data.items) {
+
+            this.data = this.options.data;
+
+            Husky.DEBUG && console.log(this.data, 'this.data set');
+            
+            this.setConfigs();
+
+            this.prepare()
+                .appendPagination()
+                .render();
+
+            Husky.DEBUG && console.log("data.items found");
         }
     };
 
@@ -304,7 +315,7 @@ function typeOf(value) {
         setConfigs: function() {
             this.configs = {};
             this.configs.total = this.data.total;
-            this.configs.pagesSize = this.data.pagesSize;
+            this.configs.pageSize = this.data.pageSize;
             this.configs.page = this.data.page;
         },
 
@@ -343,7 +354,7 @@ function typeOf(value) {
 
             // set html classes
             tblClasses = [];
-            tblClasses.push((!!this.options.class && this.options.class !== 'table') ? 'table ' + this.options.class : 'table');
+            tblClasses.push((!!this.options.className && this.options.className !== 'table') ? 'table ' + this.options.className : 'table');
             tblClasses.push((this.options.selectItemType && this.options.selectItemType === 'checkbox') ? 'is-selectable' : '');
 
             $table.addClass(tblClasses.join(' '));
@@ -379,54 +390,63 @@ function typeOf(value) {
             var tblRows;
 
             tblRows = [];
-            this.allItemIds = [];
+            this.allItemIds = [];      
 
             this.data.items.forEach(function(row) {
                 tblRows.push(this.prepareTableRow(row));
             }.bind(this));
+            
 
             return tblRows.join('');
         },
 
         prepareTableRow: function(row) {
-            var tblRowId, tblCellContent, tblCellClass,
-                tblColumns, tblCellClasses;
 
-            tblColumns = [];
-            tblRowId = ((!!row.id) ? ' data-id="' + row.id + '"' : '');
+            if(!!(this.options.template && this.options.template.row)) {
+                
+                return _.template(this.options.template.row, row);
 
-            // add row id to itemIds collection (~~ === shorthand for parse int)
-            !!row.id && this.allItemIds.push(~~row.id);
+            } else {
 
-            if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
-                // add a checkbox to each row
-                tblColumns.push('<td>', this.templates.checkbox(), '</td>');
-            } else if (!!this.options.selectItemType && this.options.selectItemType === 'radio') {
-                // add a radio to each row
-                tblColumns.push('<td>', this.templates.radio({
-                    name: 'husky-radio' // TODO
-                }), '</td>');
+                var tblRowId, tblCellContent, tblCellClass,
+                    tblColumns, tblCellClasses;
+
+                tblColumns = [];
+                tblRowId = ((!!row.id) ? ' data-id="' + row.id + '"' : '');
+
+                // add row id to itemIds collection (~~ === shorthand for parse int)
+                !!row.id && this.allItemIds.push(~~row.id);
+
+                if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
+                    // add a checkbox to each row
+                    tblColumns.push('<td>', this.templates.checkbox(), '</td>');
+                } else if (!!this.options.selectItemType && this.options.selectItemType === 'radio') {
+                    // add a radio to each row
+                    tblColumns.push('<td>', this.templates.radio({
+                        name: 'husky-radio' // TODO
+                    }), '</td>');
+                }
+
+                for (var key in row) {
+                    var column = row[key];
+                    tblCellClasses = [];
+                    tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
+
+                    // prepare table cell classes
+                    !!column.class && tblCellClasses.push(column.class);
+                    !!column.thumb && tblCellClasses.push('thumb');
+
+                    tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
+
+                    tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
+                }
+
+                if (!!this.options.removeRow) {
+                    tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
+                }
+
+                return '<tr' + tblRowId + '>' + tblColumns.join('') + '</tr>';
             }
-
-            for (var key in row) {
-                var column = row[key];
-                tblCellClasses = [];
-                tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
-
-                // prepare table cell classes
-                !!column.class && tblCellClasses.push(column.class);
-                !!column.thumb && tblCellClasses.push('thumb');
-
-                tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
-
-                tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
-            }
-
-            if (!!this.options.removeRow) {
-                tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
-            }
-
-            return '<tr' + tblRowId + '>' + tblColumns.join('') + '</tr>';
         },
 
         resetItemSelection: function() {
@@ -614,6 +634,8 @@ function typeOf(value) {
 
             // listen for public events
             this.on('data-grid:row:add', this.addRow.bind(this));
+
+            this.on('data-grid:row:remove', this.removeRow.bind(this));
         },
 
         updateHandler: function() {

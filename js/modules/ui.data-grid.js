@@ -13,9 +13,7 @@
         this.configs = {};
 
         this.$element = $(element);
-        this.$dataGrid = $('<div/>', {
-            class: 'inline-block'
-        });
+        this.$dataGrid = $('<div/>');
 
         this.allItemIds = [];
         this.selectedItemIds = [];
@@ -30,6 +28,9 @@
         } else if (!!this.options.data.items) {
 
             this.data = this.options.data;
+
+            Husky.DEBUG && console.log(this.data, 'this.data set');
+            
             this.setConfigs();
 
             this.prepare()
