@@ -61,6 +61,8 @@
             }.bind(this));
 
             // TODO keys up down
+            this.$valueField.on('keydown', function (event) {
+            });
         },
 
         inputChanged: function (event) {
