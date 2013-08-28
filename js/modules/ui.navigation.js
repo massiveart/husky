@@ -84,19 +84,29 @@
 
         setNavigationSize: function() {
             var $window = $(window),
+                $navigationSubColumnsCont = $('.navigation-sub-columns-container'),
                 $navigationSubColumns = $('.navigation-sub-columns'),
                 paddingRight = 100;
 
-            $navigationSubColumns.css({
-                width: 'auto',
-                height: this.$navigation.height() + 5
-            });
-
-            if ($window.width() < this.$navigation.width()) {
+            setTimeout(function() {
                 $navigationSubColumns.css({
-                    width: ($window.width() - paddingRight) - (this.$navigation.width() - $navigationSubColumns.width())
+                    width: 'auto'
                 });
-            }
+
+                $navigationSubColumnsCont.removeClass('scrolling');
+
+                if ($window.width() < this.$navigation.width() + paddingRight) {
+                    $navigationSubColumns.css({
+                        width: ($window.width() - paddingRight) - (this.$navigation.width() - $navigationSubColumns.width()),
+                        height: this.$navigation.height()
+                    });
+                    $navigationSubColumnsCont.addClass('scrolling');
+                } else {
+                    $navigationSubColumns.css({
+                        height: this.$navigation.height() + 5
+                    });
+                }
+            }.bind(this), 250);
         },
 
         prepareNavigationColumn: function() {
@@ -227,6 +237,7 @@
 
             if (!!$('.navigation-sub-columns-container').size()) {
                 this.$navigationSubColumns.append(this.prepareNavigationColumn());
+                this.scrollToLastSubColumn();
             } else {
                 this.$navigationColumns.append(this.prepareNavigationColumn());
             }
@@ -235,26 +246,37 @@
         },
 
         collapseFirstColumn: function() {
+            Husky.DEBUG && console.log(this.name, 'collapseFirstColumn');
             var $firstColumn;
 
             $firstColumn = $('#column-0');
             $firstColumn.addClass('collapsed');
+            console.log($firstColumn.hasClass('collapsed'));
         },
 
-        showNavigationColumns: function() {
-            var $firstColumn, $secondColumn;
+        showNavigationColumns: function(event) {
+            var $firstColumn, $secondColumn, $element;
 
+            $element = $(event.target);
             $firstColumn = $('#column-0');
             $secondColumn = $('#column-1');
 
-            $firstColumn.removeClass('hide');
-            $secondColumn.removeClass('collapsed');
-
             this.$navigationColumns.removeClass('show-content');
 
-            
+            this.currentColumnIdx = 1;
+            this.showContent = false;
 
-            this.hideColumn();
+            if (!$element.hasClass('navigation-column-item') && !$element.is('span')) {
+                $firstColumn.removeClass('hide');
+                $secondColumn.removeClass('collapsed');
+
+                this.hideColumn();
+            } else {
+                $firstColumn.removeClass('hide');
+                $secondColumn.removeClass('collapsed');
+            }
+
+            this.setNavigationSize();
         },
 
         // lock selection during column loading
@@ -317,6 +339,8 @@
                             }.bind(this)
                         });
                     } else {
+                        this.setConfigs({});
+
                         this.columnHeader = itemModel.get('header') || null;
                         this.columnItems = itemModel.get('sub').items;
                         $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
@@ -339,6 +363,8 @@
         },
 
         showFirstNavigationColumn: function(event) {
+            Husky.DEBUG && console.log(this.name, 'showFirstNavigationColumn');
+
             var $element = $(event.target);
 
             $('#column-0')
@@ -391,17 +417,53 @@
         // TODO
         hideColumn: function() {
             var $showedColumn;
-
             $showedColumn = $('#column-' + this.addedColumn);
 
             if (!!$showedColumn.size()) {
-                this.currentColumnIdx--;
                 $showedColumn.remove();
 
                 $('#column-0').removeClass('hide');
                 $('#column-1').removeClass('collapsed');;
             }
             this.addedColumn = null;
+        },
+
+        // for normalized scrolling
+        scrollLocked: true,
+
+        scrollSubColumns: function(event) {
+            var $element = $(event.currentTarget),
+                $navigationSubColumns = $('.navigation-sub-columns'),
+                direction = event.originalEvent.detail < 0 || event.originalEvent.wheelDelta > 0 ? 1 : -1,
+                scrollSpeed = 25,
+                scrollLeft = 0;
+
+            event.preventDefault();
+
+            if (this.scrollLocked) {
+                this.scrollLocked = false;
+
+                // normalize scrolling
+                setTimeout(function() {
+                    this.scrollLocked = true;
+
+                    if (direction < 0){
+                        // leftscroll
+                        scrollLeft = this.$navigationSubColumns.scrollLeft() + 1 * scrollSpeed;
+                        this.$navigationSubColumns.scrollLeft(scrollLeft);
+                    } else {
+                        // rightscroll
+                        scrollLeft = this.$navigationSubColumns.scrollLeft() - 1 * scrollSpeed;
+                        this.$navigationSubColumns.scrollLeft(scrollLeft);
+                    }
+                }.bind(this), 25);
+            }
+        },
+
+        scrollToLastSubColumn: function() {
+            this.$navigationSubColumns.delay(250).animate({
+                'scrollLeft': 1000
+            }, 500);
         },
 
         bindEvents: function() {
@@ -412,6 +474,8 @@
         },
 
         bindDOMEvents: function() {
+            Husky.DEBUG && console.log(this.name, 'bindDOMEvents');
+
             this.$element.off();
 
             $(window).on('resize load', this.setNavigationSize.bind(this));
@@ -419,6 +483,7 @@
             this.$element.on('click', '.navigation-column-item:not(.selected)', this.selectItem.bind(this));
             this.$element.on('click', '.navigation-column:eq(1)', this.showNavigationColumns.bind(this));
             this.$element.on('click', '.navigation-column:eq(0).collapsed', this.showFirstNavigationColumn.bind(this));
+            this.$element.on('mousewheel DOMMouseScroll', '.navigation-sub-columns-container', this.scrollSubColumns.bind(this));
         },
 
         render: function() {
