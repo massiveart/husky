@@ -1,0 +1,66 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../.tmp/husky.css">
+</head>
+<body>
+    <div id="main">
+        <div id="navigation"></div>
+    </div>
+
+    <script src="../../node_modules/sinon/pkg/sinon.js"></script>
+    <script src="../../bower_components/jquery/jquery.js"></script>
+
+    <script src="../../js/husky.js"></script>
+    <script src="../../js/modules/util.js"></script>
+    <script src="../../js/modules/ui.navigation.js"></script>
+
+    <script type="text/javascript">
+        Husky.DEBUG = true;
+
+        var fakeServer;
+        $(document).ready(function() {
+            fakeServer = sinon.fakeServer.create();
+
+            fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
+                '{"title":"Root","hasSub":true,"id":"51f258be2e45b","sub":{"items":[{"title":"Portals","icon":"portals","hasSub":true,"id":"52f258bc2e47f","action":"/navigation/portals"},{"title":"Settings","icon":"settings","hasSub":true,"id":"51f258be2e47f","sub":{"items":[{"title":"Translate","hasSub":"false","id":"51f258be2e49a","action":"/settings/translates"}]}}]}}'
+            ]);
+
+            fakeServer.respondWith('GET', '/navigation/portals', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Products","id":"products","hasSub":false}]}}'
+            ]);
+
+            fakeServer.respondWith('GET', '/settings/translates', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Deutschland","id":"de","hasSub":false,"type":"content","action":"de"},{"title":"Schweiz","id":"ch","hasSub":false,"action":"ch"}]}}'
+            ]);
+
+            var navigation = $('#navigation').huskyNavigation({
+                url: '/navigation',
+                collapse: true
+            });
+
+            navigation.data('Husky.Ui.Navigation').on('navigation:item:selected', function(item) {
+                setTimeout(function() {
+                    fakeServer.respond();
+                }, 1000);
+            });
+
+            navigation.data('Husky.Ui.Navigation').on('navigation:item:content:show', function(item){
+                console.log('navigation:item:content:show');
+            });
+
+            fakeServer.respond();
+        });
+    </script>
+
+</body>
+</html>
