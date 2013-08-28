@@ -2,23 +2,22 @@
 // Icons
 // --------------------------------------------------
 
-
 [class^="icon-"] {
-	font-family: 'Glyphicons';
+    font-family: 'Glyphicons';
 }
 
 .icon-remove {
-	cursor: pointer;
-	&::after {
-		content: "\E208";
-		display: inline-block;
-	}
+    cursor: pointer;
+    &::after {
+        content: "\E208";
+        display: inline-block;
+    }
 }
 
 .icon-add {
-	cursor: pointer;
-	&::after {
-		content: "\E191";
-		display: inline-block;
-	} 
+    cursor: pointer;
+    &::after {
+        content: "\E191";
+        display: inline-block;
+    }
 }
