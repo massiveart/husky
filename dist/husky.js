@@ -231,12 +231,12 @@ function typeOf(value) {
     window.Husky = Husky;
 
 })(libFuncName, this, this.document);
-(function($, window, document, undefined) {
+(function ($, window, document, undefined) {
     'use strict';
 
     var moduleName = 'Husky.Ui.DataGrid';
 
-    Husky.Ui.DataGrid = function(element, options) {
+    Husky.Ui.DataGrid = function (element, options) {
         this.name = moduleName;
 
         Husky.DEBUG && console.log(this.name, "create instance");
@@ -264,7 +264,7 @@ function typeOf(value) {
             this.data = this.options.data;
 
             Husky.DEBUG && console.log(this.data, 'this.data set');
-            
+
             this.setConfigs();
 
             this.prepare()
@@ -277,12 +277,14 @@ function typeOf(value) {
 
     $.extend(Husky.Ui.DataGrid.prototype, Husky.Events, {
         // private event dispatcher
-        vent: (function() {
+        vent: (function () {
             return $.extend({}, Husky.Events);
         })(),
 
-        getUrl: function(params) {
-            var url = params.url + '?pageSize=' + this.options.paginationOptions.pageSize
+        getUrl: function (params) {
+            var delimiter = '?';
+            if (params.url.indexOf('?') != -1) delimiter = '&';
+            var url = params.url + delimiter + 'pageSize=' + this.options.paginationOptions.pageSize;
 
             if (params.page > 1) {
                 url += '&page=' + params.page;
@@ -290,13 +292,13 @@ function typeOf(value) {
             return url;
         },
 
-        load: function(params) {
+        load: function (params) {
             Husky.DEBUG && console.log(this.name, 'load');
 
             Husky.Util.ajax({
                 url: this.getUrl(params),
                 data: params.data,
-                success: function(response) {
+                success: function (response) {
                     Husky.DEBUG && console.log(this.name, 'load', 'success');
 
                     this.data = response;
@@ -313,14 +315,14 @@ function typeOf(value) {
             });
         },
 
-        setConfigs: function() {
+        setConfigs: function () {
             this.configs = {};
             this.configs.total = this.data.total;
             this.configs.pageSize = this.data.pageSize;
             this.configs.page = this.data.page;
         },
 
-        prepare: function() {
+        prepare: function () {
             this.$element.empty();
 
             if (this.options.elementType === 'list') {
@@ -336,7 +338,7 @@ function typeOf(value) {
         //
         // elementType === 'table'
         //
-        prepareTable: function() {
+        prepareTable: function () {
             var $table, $thead, $tbody, tblClasses;
 
             $table = $('<table/>');
@@ -363,7 +365,7 @@ function typeOf(value) {
             return $table;
         },
 
-        prepareTableHead: function() {
+        prepareTableHead: function () {
             var tblColumns, tblCellClass, tblColumnWidth, headData;
 
             tblColumns = [];
@@ -373,11 +375,11 @@ function typeOf(value) {
             if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
                 tblColumns.push(
                     '<th class="select-all">',
-                        this.templates.checkbox({ id: 'select-all' }),
+                    this.templates.checkbox({ id: 'select-all' }),
                     '</th>');
             }
 
-            headData.forEach(function(column) {
+            headData.forEach(function (column) {
                 tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
                 tblColumnWidth = ((!!column.width) ? ' width="' + column.width + 'px"' : '');
 
@@ -387,24 +389,24 @@ function typeOf(value) {
             return '<tr>' + tblColumns.join('') + '</tr>';
         },
 
-        prepareTableRows: function() {
+        prepareTableRows: function () {
             var tblRows;
 
             tblRows = [];
-            this.allItemIds = [];      
+            this.allItemIds = [];
 
-            this.data.items.forEach(function(row) {
+            this.data.items.forEach(function (row) {
                 tblRows.push(this.prepareTableRow(row));
             }.bind(this));
-            
+
 
             return tblRows.join('');
         },
 
-        prepareTableRow: function(row) {
+        prepareTableRow: function (row) {
 
-            if(!!(this.options.template && this.options.template.row)) {
-                
+            if (!!(this.options.template && this.options.template.row)) {
+
                 return _.template(this.options.template.row, row);
 
             } else {
@@ -450,12 +452,12 @@ function typeOf(value) {
             }
         },
 
-        resetItemSelection: function() {
+        resetItemSelection: function () {
             this.allItemIds = [];
             this.selectedItemIds = [];
         },
 
-        selectItem: function(event) {
+        selectItem: function (event) {
             Husky.DEBUG && console.log(this.name, 'selectItem');
 
             var $element, itemId;
@@ -487,7 +489,7 @@ function typeOf(value) {
             }
         },
 
-        selectAllItems: function(event) {
+        selectAllItems: function (event) {
             Husky.DEBUG && console.log(this.name, 'selectAllItems');
 
             event.stopPropagation();
@@ -511,7 +513,7 @@ function typeOf(value) {
             }
         },
 
-        addRow: function(row) {
+        addRow: function (row) {
             Husky.DEBUG && console.log(this.name, 'addRow');
 
             var $table;
@@ -522,7 +524,7 @@ function typeOf(value) {
             $table.append(this.prepareTableRow(row));
         },
 
-        removeRow: function(event) {
+        removeRow: function (event) {
             Husky.DEBUG && console.log(this.name, 'removeRow');
 
             var $element, $tblRow;
@@ -539,14 +541,14 @@ function typeOf(value) {
         // Pagination
         // TODO: create pagination module
         //
-        appendPagination: function() {
+        appendPagination: function () {
             if (this.options.pagination) {
                 this.$element.append(this.preparePagination());
             }
             return this;
         },
 
-        preparePagination: function() {
+        preparePagination: function () {
             var $pagination;
 
             if (!!this.configs.total && ~~this.configs.total >= 1) {
@@ -561,14 +563,14 @@ function typeOf(value) {
             return $pagination;
         },
 
-        preparePaginationPageNavigation: function() {
+        preparePaginationPageNavigation: function () {
             return this.templates.paginationPageNavigation({
                 pageSize: this.options.paginationOptions.pageSize,
                 selectedPage: this.configs.page
             });
         },
 
-        preparePaginationNextNavigation: function() {
+        preparePaginationNextNavigation: function () {
             return this.templates.paginationNextNavigation({
                 next: this.options.pagination.next,
                 selectedPage: this.configs.page,
@@ -576,14 +578,14 @@ function typeOf(value) {
             });
         },
 
-        preparePaginationPrevNavigation: function() {
+        preparePaginationPrevNavigation: function () {
             return this.templates.paginationPrevNavigation({
                 prev: this.options.pagination.prev,
                 selectedPage: this.configs.page
             });
         },
 
-        changePage: function(event) {
+        changePage: function (event) {
             Husky.DEBUG && console.log(this.name, 'changePage');
 
             var $element, page;
@@ -597,7 +599,7 @@ function typeOf(value) {
             this.load({
                 url: this.options.url,
                 page: page,
-                success: function() {
+                success: function () {
                     this.removeLoader();
                 }.bind(this)
             });
@@ -606,11 +608,11 @@ function typeOf(value) {
             this.vent.trigger('data-grid:update', null);
         },
 
-        changePageSize: function() {
+        changePageSize: function () {
             // TODO
         },
 
-        bindDOMEvents: function() {
+        bindDOMEvents: function () {
             this.$element.off();
 
             if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
@@ -629,7 +631,7 @@ function typeOf(value) {
             }
         },
 
-        bindCustomEvents: function() {
+        bindCustomEvents: function () {
             // listen for private events
             this.vent.off();
 
@@ -641,18 +643,18 @@ function typeOf(value) {
             this.on('data-grid:row:remove', this.removeRow.bind(this));
         },
 
-        updateHandler: function() {
+        updateHandler: function () {
             this.resetItemSelection();
         },
 
-        render: function() {
+        render: function () {
             this.$originalElement.html(this.$element);
 
             this.bindCustomEvents();
             this.bindDOMEvents();
         },
 
-        addLoader: function() {
+        addLoader: function () {
             return this.$element
                 .outerWidth(this.$element.outerWidth())
                 .outerHeight(this.$element.outerHeight())
@@ -660,17 +662,17 @@ function typeOf(value) {
                 .addClass('is-loading');
         },
 
-        removeLoader: function() {
+        removeLoader: function () {
             return this.$element.removeClass('is-loading');
         },
 
         templates: {
-            removeRow: function() {
+            removeRow: function () {
                 return [
                     '<span class="icon-remove"></span>'
                 ].join('')
             },
-            checkbox: function(data) {
+            checkbox: function (data) {
                 var id, name;
 
                 data = data || {};
@@ -683,7 +685,7 @@ function typeOf(value) {
                 ].join('')
             },
 
-            radio: function(data) {
+            radio: function (data) {
                 var id, name;
 
                 data = data || {};
@@ -697,7 +699,7 @@ function typeOf(value) {
             },
 
             // Pagination
-            paginationPrevNavigation: function(data) {
+            paginationPrevNavigation: function (data) {
                 var prev, first, selectedPage;
 
                 data = data || {};
@@ -705,13 +707,13 @@ function typeOf(value) {
 
                 return [
                     '<ul>',
-                        '<li class="pagination-first page" data-page="1"></li>',
-                        '<li class="pagination-prev page" data-page="', selectedPage - 1, '">', 'Previous', '</li>',
+                    '<li class="pagination-first page" data-page="1"></li>',
+                    '<li class="pagination-prev page" data-page="', selectedPage - 1, '">', 'Previous', '</li>',
                     '</ul>'
                 ].join('')
             },
 
-            paginationNextNavigation: function(data) {
+            paginationNextNavigation: function (data) {
                 var next, last, pageSize, selectedPage;
 
                 data = data || {};
@@ -722,13 +724,13 @@ function typeOf(value) {
 
                 return [
                     '<ul>',
-                        '<li class="pagination-next page" data-page="', selectedPage + 1, '">', next, '</li>',
-                        '<li class="pagination-last page" data-page="', pageSize, '"></li>',
+                    '<li class="pagination-next page" data-page="', selectedPage + 1, '">', next, '</li>',
+                    '<li class="pagination-last page" data-page="', pageSize, '"></li>',
                     '</ul>'
                 ].join('')
             },
 
-            paginationPageNavigation: function(data) {
+            paginationPageNavigation: function (data) {
                 var pageSize, i, pageItems, selectedPage, pageClass;
 
                 data = data || {};
@@ -749,7 +751,7 @@ function typeOf(value) {
         }
     });
 
-    $.fn.huskyDataGrid = function(options) {
+    $.fn.huskyDataGrid = function (options) {
         var $element = $(this);
 
         options = $.extend({}, $.fn.huskyDataGrid.defaults, typeof options == 'object' && options);
