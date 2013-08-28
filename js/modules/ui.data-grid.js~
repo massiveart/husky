@@ -228,7 +228,7 @@
             var $element, itemId;
 
             $element = $(event.currentTarget);
-            itemId = $element.parents('tr').data('id');
+            itemId = $element.parent('tr').data('id');
 
             if (this.selectedItemIds.indexOf(itemId) > -1) {
                 $element

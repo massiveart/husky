@@ -81,7 +81,7 @@
 			console.log(itemId);
 		}.bind(this));
 		
-		// TODO: implement deselct for radio
+
 		$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:deselect', function(itemId) {
 			console.log(itemId);
 		}.bind(this));
