@@ -49,7 +49,7 @@ module.exports = function(grunt) {
             }
         },
         clean: {
-            dist: ['dist'],
+            dist: ['dist', 'docs/packages/husky/'],
             temp: ['dist/temp']
         },
         compass: {
@@ -112,6 +112,28 @@ module.exports = function(grunt) {
                         ]
                     }
                 ]
+            },
+            doc: {
+                files: [
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: './',
+                        dest: 'docs/packages/husky/',
+                        src: [
+                            'dist/{,*/}*'
+                        ]
+                    },
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: './',
+                        dest: 'docs/packages/husky/dist/',
+                        src: [
+                            'fonts/{,*/}*'
+                        ]
+                    }
+                ]
             }
         }
     });
@@ -132,7 +154,8 @@ module.exports = function(grunt) {
         'concat',
         'compass',
         'cssmin',
-        'copy:dist'
+        'copy:dist',
+        'copy:doc'
     ]);
 
     grunt.registerTask('default', [

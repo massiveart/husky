@@ -33,6 +33,18 @@
     background: url('../../img/loader.gif') center center no-repeat;
 }
 
+.align-left {
+    text-align:left;
+}
+
+.align-right{
+    text-align: right;
+}
+
+.align-center{
+    text-align: center;
+}
+
 
 // Margin shorthands
 // -------------------------
@@ -71,3 +83,21 @@
 .m-left-10 {
     margin-left: 10px !important;
 }
+
+// margins 15px
+.m-top-15 {
+    margin-top: 15px !important;
+}
+
+.m-bottom-15 {
+    margin-bottom: 15px !important;
+}
+
+.m-right-15 {
+    margin-right: 15px !important;
+}
+
+.m-left-15 {
+    margin-left: 15px !important;
+}
+

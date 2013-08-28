@@ -3,13 +3,35 @@
 // --------------------------------------------------
 
 
+@font-face {
+  font-family: 'MuseoSansCondensed300';
+  src: url('fonts/MuseoSansCondensed 300/MuseoSansCnd-300.eot');
+  src: url('fonts/MuseoSansCondensed 300/MuseoSansCnd-300.eot?#iefix') format('embedded-opentype'), 
+       url('fonts/MuseoSansCondensed 300/MuseoSansCnd-300.woff') format('woff'), 
+       url('fonts/MuseoSansCondensed 300/MuseoSansCnd-300.ttf') format('truetype'), 
+       url('fonts/MuseoSansCondensed 300/MuseoSansCnd-300.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MuseoSansCondensed700';
+  src: url('fonts/MuseoSansCondensed 700/MuseoSansCnd-700.eot');
+  src: url('fonts/MuseoSansCondensed 700/MuseoSansCnd-700.eot?#iefix') format('embedded-opentype'), 
+       url('fonts/MuseoSansCondensed 700/MuseoSansCnd-700.woff') format('woff'), 
+       url('fonts/MuseoSansCondensed 700/MuseoSansCnd-700.ttf') format('truetype'), 
+       url('fonts/MuseoSansCondensed 700/MuseoSansCnd-700.svg') format('svg');
+  font-weight: bold;
+  font-style: normal;
+}
+
+
 // Base font definitions
 // -------------------------
 body {
     font-size: $baseFontSize;
     font-family: $baseFontFamily;
     line-height: $baseLineHeight;
-    background-color: #eee; // TODO: remove;
 }
 
 
@@ -24,9 +46,40 @@ h6 {
     margin: 10px 0;
     font-family: $headingsFontFamily;
     font-weight: $headingsFontWeight;
-    color: $headingsColor;
+    color: $grayLight;
 }
 
 h1 {
-    font-size: 24px
+    font-size: 36px;
+    line-height: 40px;
+}
+
+h2 {
+    font-size: 24px;
+    line-height: 30px;
+}
+
+h3 {
+    font-size: 20px;
+    line-height: 25px;
+}
+
+h4 {
+    font-size: 18px;
+    line-height: 20px;
+}
+h5 {
+    font-size: 14px;
+    line-height: 15px;
+}
+
+h4.bold {
+    font-size: 18px;
+    line-height: 20px;
+    font-weight:bold;
+}
+h5.bold {
+    font-size: 14px;
+    line-height: 15px;
+    font-weight:bold;
 }

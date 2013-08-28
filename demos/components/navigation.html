@@ -15,6 +15,7 @@
 <body>
     <div id="main">
         <div id="navigation"></div>
+        <button id="load-content" style="position:absolute; right:0; top:0; margin: 20px;">Load Content</button>
     </div>
 
     <script src="../../node_modules/sinon/pkg/sinon.js"></script>
@@ -32,15 +33,40 @@
             fakeServer = sinon.fakeServer.create();
 
             fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
-                '{"title":"Root","hasSub":true,"id":"51f258be2e45b","sub":{"items":[{"title":"Portals","icon":"portals","hasSub":true,"id":"52f258bc2e47f","action":"/navigation/portals"},{"title":"Settings","icon":"settings","hasSub":true,"id":"51f258be2e47f","sub":{"items":[{"title":"Translate","hasSub":"false","id":"51f258be2e49a","action":"/settings/translates"}]}}]}}'
+                '{"title":"Root","hasSub":true,"id":"51f258be2e45b","header":{ "title":"Ivoclar Vivadent", "logo": "../../img/tmp/logo.png" },"sub":{"items":[{"title":"Portals","icon":"portals","hasSub":true,"id":"52f258bc2e47f","action":"/navigation/portals"},{"title":"Settings","icon":"settings","hasSub":true,"id":"51f258be2e47f","sub":{"items":[{"title":"Translate","icon":"translate","hasSub":"false","id":"51f258be2e49a","action":"/settings/translates"}, {"title":"Item","icon":"translate","hasSub":true,"id":"51f258be4e49a","action":"/settings/item"}]}}]}}'
             ]);
 
             fakeServer.respondWith('GET', '/navigation/portals', [200, { 'Content-Type': 'application/json' },
-                '{"sub":{"items":[{"title":"Products","id":"products","hasSub":false}]}}'
+                '{"header": { "title":"Portals" }, "sub":{"items":[{"title":"Products","icon":"settings","id":"products","hasSub":true,"action":"/portals/products"}, {"title":"Portal 1","icon":"settings","id":"portal_1","hasSub":false,"action":"/portals/products","type":"content"}]}}'
+            ]);
+
+            fakeServer.respondWith('GET', '/settings/item', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Items","id":"items","hasSub":false,"action":"/null","type":"content"}]}}'
             ]);
 
             fakeServer.respondWith('GET', '/settings/translates', [200, { 'Content-Type': 'application/json' },
-                '{"sub":{"items":[{"title":"Deutschland","id":"de","hasSub":false,"type":"content","action":"de"},{"title":"Schweiz","id":"ch","hasSub":false,"action":"ch"}]}}'
+                '{"sub":{"items":[{"title":"Deutschland","id":"de","hasSub":true,"action":"/settings/translates/de"}]}}'
+            ]);
+
+            fakeServer.respondWith('GET', '/settings/translates/de', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Items","id":"items","hasSub":true,"action":"/settings/translates/de/items"}]}}'
+            ]);
+
+            fakeServer.respondWith('GET', '/settings/translates/de/items', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Item","id":"item","hasSub":true,"action":"/settings/translates/de/item/sub"}]}}'
+            ]);
+
+            fakeServer.respondWith('GET', '/settings/translates/de/item/sub', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Sub","id":"sub","hasSub":false,"type":"content","action":"de"}]}}'
+            ]);
+
+
+            fakeServer.respondWith('GET', '/portals/products', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Produkt 1","id":"product_1","hasSub":true,"action":"/portals/products/product_1"}]}}'
+            ]);
+
+            fakeServer.respondWith('GET', '/portals/products/product_1', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Produkt 2","id":"product_2","hasSub":false,"type":"content","action":"/portals/products/product_1/content"}]}}'
             ]);
 
             var navigation = $('#navigation').huskyNavigation({
@@ -57,6 +83,30 @@
             navigation.data('Husky.Ui.Navigation').on('navigation:item:content:show', function(item){
                 console.log('navigation:item:content:show');
             });
+
+
+            $('#load-content').on('click', function() {
+                navigation.data('Husky.Ui.Navigation').trigger('navigation:item:column:show', {
+                    data: {
+                            "displayOption": "content", 
+                            "sub": {
+                                        "items":[{
+                                                    "title":"Details",
+                                                    "id":"details",
+                                                    "hasSub":false,
+                                                    "type":"content",
+                                                    "action":"/"
+                                                },
+                                                {
+                                                    "title":"Settings",
+                                                    "id":"settings",
+                                                    "hasSub":false,
+                                                    "action":"/"
+                                                }]
+                                    }
+                    }
+                });
+            }.bind(this));
 
             fakeServer.respond();
         });

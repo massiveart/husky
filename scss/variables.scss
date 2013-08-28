@@ -17,7 +17,7 @@ $grayLighter: #ccc;
 // Base colors
 // -------------------------
 $baseColor: #333333;
-
+$baseBackgroundColor: #f1f1f1;
 
 // Accent colors
 // -------------------------
@@ -37,11 +37,11 @@ $sansFontFamily: Helvetica, Arial, sans-serif;
 
 $baseFontSize: 14px;
 $smallFontSize: 12px;
-$baseFontFamily: $sansFontFamily;
+$baseFontFamily: "MuseoSansCondensed300", $sansFontFamily;
 $baseLineHeight: 20px;
 
 $headingsFontFamily: inherit;
-$headingsFontWeight: bold;
+$headingsFontWeight: normal;
 $headingsColor: inherit;
 
 $baseIconFont: "Glyphicons";
