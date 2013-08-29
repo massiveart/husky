@@ -82,12 +82,12 @@ describe('Husky.Ui.Navigation', function() {
             expect($navigation.find('.navigation-sub-columns').size()).toEqual(1);
         });
 
-        xit('should collapse the first column', function() {
+        it('should collapse the first column', function() {
             expect($navigation.find('.navigation-column').size()).toEqual(3);
             expect($navigation.html()).toBe(true);
         });
 
-        xit('should remove sub-columns element', function() {
+        it('should remove sub-columns element', function() {
             $navigation.find('#column-0').click();
 
             expect($navigation.find('.navigation-sub-columns').size()).toEqual(0);

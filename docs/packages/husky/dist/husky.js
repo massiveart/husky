@@ -239,7 +239,7 @@ function typeOf(value) {
     Husky.Ui.AutoComplete = function(element, options) {
         this.name = moduleName;
 
-        Husky.DEBUG && console.log(this.name, "create instance");
+        Husky.DEBUG && console.log(this.name, 'create instance');
 
         this.options = options;
 
@@ -270,7 +270,7 @@ function typeOf(value) {
             Husky.DEBUG && console.log(this.name, 'init');
 
             // init form-element and dropdown menu
-            this.$valueField = $('<input type="text" class="nameValue input-element" data-id=""/>');
+            this.$valueField = $('<input type="text" autofill="false" class="name-value input-element" data-id=""/>');
             this.$dropDown = $('<div class="dropdown-menu" />');
             this.$dropDownList = $('<ul/>');
             this.$element.append(this.$valueField);
@@ -287,10 +287,10 @@ function typeOf(value) {
             // turn off all events
             this.$element.off();
 
-            // Input value changed
+            // input value changed
             this.$valueField.on('input', this.inputChanged.bind(this));
 
-            // Mouse Control
+            // mouse control
             this.$dropDownList.on('click', 'li', function(event) {
                 var $element = $(event.currentTarget);
                 var id = $element.data('id');
@@ -300,24 +300,27 @@ function typeOf(value) {
                 this.selectItem(item);
             }.bind(this));
 
-            // Focus IN
-            this.$valueField.on('focusin', function(event) {
+            // focus in
+            this.$valueField.on('focusin', function() {
                 this.$valueField.trigger('input');
             }.bind(this));
 
-            // Focus OUT
-            this.$valueField.on('focusout', function(event) {
-                this.hideDropDown();
+            // focus out
+            this.$valueField.on('focusout', function() {
+                // FIXME may there is a better solution ???
+                setTimeout(function() {
+                    this.hideDropDown()
+                }.bind(this), 250);
             }.bind(this));
 
-            // Key Control
+            // key control
             if (this.options.keyControl) {
                 this.$valueField.on('keydown', function(event) {
-                    // Key 40 = Down, Key 38 = Up, Key 13 = Enter
+                    // key 40 = down, key 38 = up, key 13 = enter
                     if ([40, 38, 13].indexOf(event.which) == -1) return;
 
                     event.preventDefault();
-                    if (this.$dropDown.is(":visible")) {
+                    if (this.$dropDown.is(':visible')) {
 
                         if (event.which == 40)      this.pressKeyDown();
                         else if (event.which == 38) this.pressKeyUp();
@@ -331,20 +334,19 @@ function typeOf(value) {
                 }.bind(this));
 
                 // remove hover class by mouseover
-                this.$dropDownList.on('mouseover', 'li', function(event) {
+                this.$dropDownList.on('mouseover', 'li', function() {
                     this.$dropDownList.children().removeClass('hover');
                 }.bind(this));
             }
         },
 
         // value of input changed
-        inputChanged: function(event) {
+        inputChanged: function() {
             Husky.DEBUG && console.log(this.name, 'inputChanged');
 
             // value is not success
             this.noStateField();
 
-            //
             var val = this.$valueField.val();
             if (val.length >= this.options.minLength) {
                 this.loadData(val);
@@ -529,6 +531,7 @@ function typeOf(value) {
     };
 
 })(Husky.$, this, this.document);
+
 (function($, window, document, undefined) {
     'use strict';
 
@@ -1098,7 +1101,6 @@ function typeOf(value) {
         });
 
         this.currentColumnIdx = 0;
-        this.lastColumnIdx = 0;
 
         this.data = null;
 
@@ -1119,7 +1121,7 @@ function typeOf(value) {
     $.extend(Husky.Ui.Navigation.prototype, Husky.Events, {
 
         vent: (function() {
-            return $.extend({}, Husky.Events); 
+            return $.extend({}, Husky.Events);
         })(),
 
         load: function(params) {
@@ -1202,7 +1204,7 @@ function typeOf(value) {
             } else if (this.currentColumnIdx === 1) {
                 // if the column is the second column
                 columnClasses.push('second-column');
-            }  
+            }
 
             $column = $('<li/>', {
                 'id': 'column-' + this.currentColumnIdx,
@@ -1243,7 +1245,7 @@ function typeOf(value) {
         },
 
         prepareColumnItems: function() {
-            var $columnItemsList, columnItems, columnItemClass, 
+            var $columnItemsList, columnItems, columnItemClass,
                 columnItemClasses, columnItemUri, columnItemHasSub,
                 columnItemIcon, columnItemTitle, itemModel,
                 columnItemId;
@@ -1262,7 +1264,7 @@ function typeOf(value) {
                 this.itemsCollection = new this.collections.items();
 
                 this.columnItems.forEach(function(item) {
-                    
+
                     itemModel = this.models.item(item);
                     this.itemsCollection.add(itemModel);
 
@@ -1288,8 +1290,8 @@ function typeOf(value) {
 
                     columnItems.push(
                         '<li ', columnItemId, columnItemTitle, columnItemClass, columnItemUri, columnItemHasSub, '>',
-                            columnItemIcon,
-                            itemModel.get('title'),
+                        columnItemIcon,
+                        itemModel.get('title'),
                         '</li>'
                     );
                 }.bind(this));
@@ -1301,7 +1303,7 @@ function typeOf(value) {
         },
 
         addColumn: function() {
-            var $subColumns, i;
+            var $subColumns;
 
             this.currentColumnIdx++;
 
@@ -1367,7 +1369,7 @@ function typeOf(value) {
         selectItem: function(event) {
             Husky.DEBUG && console.log(this.name, 'selectItem');
 
-            var $element, $elementColumn, elementId, 
+            var $element, $elementColumn, elementId,
                 itemModel;
 
             this.showContent = false;
@@ -1379,7 +1381,6 @@ function typeOf(value) {
 
             itemModel = this.itemsCollection.get(elementId);
 
-            this.lastColumnIdx = this.currentColumnIdx;
             this.currentColumnIdx = $elementColumn.data('column-id');
             this.currentColumnIdx = $elementColumn.data('column-id');
 
@@ -1410,7 +1411,7 @@ function typeOf(value) {
                                 this.addColumn();
                                 this.hideLoader($element);
 
-                                if (this.currentColumnIdx > 1) {    
+                                if (this.currentColumnIdx > 1) {
                                     this.collapseFirstColumn();
                                 }
 
@@ -1425,7 +1426,7 @@ function typeOf(value) {
                         $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
                         this.addColumn();
 
-                        if (this.currentColumnIdx > 1) {   
+                        if (this.currentColumnIdx > 1) {
                             this.collapseFirstColumn();
                         }
                     }
@@ -1502,8 +1503,9 @@ function typeOf(value) {
                 $showedColumn.remove();
 
                 $('#column-0').removeClass('hide');
-                $('#column-1').removeClass('collapsed');;
+                $('#column-1').removeClass('collapsed');
             }
+
             this.addedColumn = null;
         },
 
@@ -1511,9 +1513,7 @@ function typeOf(value) {
         scrollLocked: true,
 
         scrollSubColumns: function(event) {
-            var $element = $(event.currentTarget),
-                $navigationSubColumns = $('.navigation-sub-columns'),
-                direction = event.originalEvent.detail < 0 || event.originalEvent.wheelDelta > 0 ? 1 : -1,
+            var direction = event.originalEvent.detail < 0 || event.originalEvent.wheelDelta > 0 ? 1 : -1,
                 scrollSpeed = 25,
                 scrollLeft = 0;
 
@@ -1526,13 +1526,13 @@ function typeOf(value) {
                 setTimeout(function() {
                     this.scrollLocked = true;
 
-                    if (direction < 0){
-                        // leftscroll
-                        scrollLeft = this.$navigationSubColumns.scrollLeft() + 1 * scrollSpeed;
+                    if (direction < 0) {
+                        // left scroll
+                        scrollLeft = this.$navigationSubColumns.scrollLeft() + scrollSpeed;
                         this.$navigationSubColumns.scrollLeft(scrollLeft);
                     } else {
-                        // rightscroll
-                        scrollLeft = this.$navigationSubColumns.scrollLeft() - 1 * scrollSpeed;
+                        // right scroll
+                        scrollLeft = this.$navigationSubColumns.scrollLeft() - scrollSpeed;
                         this.$navigationSubColumns.scrollLeft(scrollLeft);
                     }
                 }.bind(this), 25);
@@ -1582,7 +1582,7 @@ function typeOf(value) {
 
         collections: {
             items: function() {
-                return $.extend({}, Husky.Collection);    
+                return $.extend({}, Husky.Collection);
             }
         },
 
@@ -1594,13 +1594,13 @@ function typeOf(value) {
                     hasSub: false
                 };
 
-                return $.extend({}, Husky.Model, defaults, data);  
+                return $.extend({}, Husky.Model, defaults, data);
             }
         },
 
         template: {
             columnHeader: function(data) {
-                var titleTemplate = null;;
+                var titleTemplate = null;
 
                 data = data || {};
 
@@ -1649,7 +1649,7 @@ function typeOf(value) {
 
     $.fn.huskyNavigation.defaults = {
         url: '',
-        collapse: false 
+        collapse: false
     };
 
 })(Husky.$, this, this.document);

@@ -6,7 +6,7 @@
     Husky.Ui.AutoComplete = function(element, options) {
         this.name = moduleName;
 
-        Husky.DEBUG && console.log(this.name, "create instance");
+        Husky.DEBUG && console.log(this.name, 'create instance');
 
         this.options = options;
 
@@ -37,7 +37,7 @@
             Husky.DEBUG && console.log(this.name, 'init');
 
             // init form-element and dropdown menu
-            this.$valueField = $('<input type="text" class="nameValue input-element" data-id=""/>');
+            this.$valueField = $('<input type="text" autofill="false" class="name-value input-element" data-id=""/>');
             this.$dropDown = $('<div class="dropdown-menu" />');
             this.$dropDownList = $('<ul/>');
             this.$element.append(this.$valueField);
@@ -54,10 +54,10 @@
             // turn off all events
             this.$element.off();
 
-            // Input value changed
+            // input value changed
             this.$valueField.on('input', this.inputChanged.bind(this));
 
-            // Mouse Control
+            // mouse control
             this.$dropDownList.on('click', 'li', function(event) {
                 var $element = $(event.currentTarget);
                 var id = $element.data('id');
@@ -67,24 +67,27 @@
                 this.selectItem(item);
             }.bind(this));
 
-            // Focus IN
-            this.$valueField.on('focusin', function(event) {
+            // focus in
+            this.$valueField.on('focusin', function() {
                 this.$valueField.trigger('input');
             }.bind(this));
 
-            // Focus OUT
-            this.$valueField.on('focusout', function(event) {
-                this.hideDropDown();
+            // focus out
+            this.$valueField.on('focusout', function() {
+                // FIXME may there is a better solution ???
+                setTimeout(function() {
+                    this.hideDropDown()
+                }.bind(this), 250);
             }.bind(this));
 
-            // Key Control
+            // key control
             if (this.options.keyControl) {
                 this.$valueField.on('keydown', function(event) {
-                    // Key 40 = Down, Key 38 = Up, Key 13 = Enter
+                    // key 40 = down, key 38 = up, key 13 = enter
                     if ([40, 38, 13].indexOf(event.which) == -1) return;
 
                     event.preventDefault();
-                    if (this.$dropDown.is(":visible")) {
+                    if (this.$dropDown.is(':visible')) {
 
                         if (event.which == 40)      this.pressKeyDown();
                         else if (event.which == 38) this.pressKeyUp();
@@ -98,20 +101,19 @@
                 }.bind(this));
 
                 // remove hover class by mouseover
-                this.$dropDownList.on('mouseover', 'li', function(event) {
+                this.$dropDownList.on('mouseover', 'li', function() {
                     this.$dropDownList.children().removeClass('hover');
                 }.bind(this));
             }
         },
 
         // value of input changed
-        inputChanged: function(event) {
+        inputChanged: function() {
             Husky.DEBUG && console.log(this.name, 'inputChanged');
 
             // value is not success
             this.noStateField();
 
-            //
             var val = this.$valueField.val();
             if (val.length >= this.options.minLength) {
                 this.loadData(val);
