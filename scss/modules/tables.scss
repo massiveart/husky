@@ -1,0 +1,61 @@
+//
+// Tables
+// --------------------------------------------------
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.table {
+    th, 
+    td {
+        text-align: left;
+        padding: 8px;
+        vertical-align: top;   
+    }
+
+    tr {
+        border-bottom: 1px solid $grayLighter;
+    }
+
+    thead {
+        th {
+            vertical-align: bottom;
+            font-weight: 600;
+            color: $grayLight;
+        }
+
+        tr {
+            border-bottom: 2px solid $grayLight;
+        }
+    }
+
+    tbody {
+        td {
+            vertical-align: middle;
+        }
+    }
+
+    &.is-selectable {
+        tr {
+            cursor: pointer;
+            &:hover > td {
+                background-color: #fff;
+            }
+        }
+    }
+
+    .thumb {
+        text-align: center;
+
+        img {
+            vertical-align: middle;
+        }
+    }
+
+    .remove-row {
+        text-align: center;
+    }
+}
