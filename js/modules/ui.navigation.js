@@ -19,7 +19,6 @@
         });
 
         this.currentColumnIdx = 0;
-        this.lastColumnIdx = 0;
 
         this.data = null;
 
@@ -40,7 +39,7 @@
     $.extend(Husky.Ui.Navigation.prototype, Husky.Events, {
 
         vent: (function() {
-            return $.extend({}, Husky.Events); 
+            return $.extend({}, Husky.Events);
         })(),
 
         load: function(params) {
@@ -123,7 +122,7 @@
             } else if (this.currentColumnIdx === 1) {
                 // if the column is the second column
                 columnClasses.push('second-column');
-            }  
+            }
 
             $column = $('<li/>', {
                 'id': 'column-' + this.currentColumnIdx,
@@ -164,7 +163,7 @@
         },
 
         prepareColumnItems: function() {
-            var $columnItemsList, columnItems, columnItemClass, 
+            var $columnItemsList, columnItems, columnItemClass,
                 columnItemClasses, columnItemUri, columnItemHasSub,
                 columnItemIcon, columnItemTitle, itemModel,
                 columnItemId;
@@ -183,7 +182,7 @@
                 this.itemsCollection = new this.collections.items();
 
                 this.columnItems.forEach(function(item) {
-                    
+
                     itemModel = this.models.item(item);
                     this.itemsCollection.add(itemModel);
 
@@ -209,8 +208,8 @@
 
                     columnItems.push(
                         '<li ', columnItemId, columnItemTitle, columnItemClass, columnItemUri, columnItemHasSub, '>',
-                            columnItemIcon,
-                            itemModel.get('title'),
+                        columnItemIcon,
+                        itemModel.get('title'),
                         '</li>'
                     );
                 }.bind(this));
@@ -222,7 +221,7 @@
         },
 
         addColumn: function() {
-            var $subColumns, i;
+            var $subColumns;
 
             this.currentColumnIdx++;
 
@@ -288,7 +287,7 @@
         selectItem: function(event) {
             Husky.DEBUG && console.log(this.name, 'selectItem');
 
-            var $element, $elementColumn, elementId, 
+            var $element, $elementColumn, elementId,
                 itemModel;
 
             this.showContent = false;
@@ -300,7 +299,6 @@
 
             itemModel = this.itemsCollection.get(elementId);
 
-            this.lastColumnIdx = this.currentColumnIdx;
             this.currentColumnIdx = $elementColumn.data('column-id');
             this.currentColumnIdx = $elementColumn.data('column-id');
 
@@ -331,7 +329,7 @@
                                 this.addColumn();
                                 this.hideLoader($element);
 
-                                if (this.currentColumnIdx > 1) {    
+                                if (this.currentColumnIdx > 1) {
                                     this.collapseFirstColumn();
                                 }
 
@@ -346,7 +344,7 @@
                         $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
                         this.addColumn();
 
-                        if (this.currentColumnIdx > 1) {   
+                        if (this.currentColumnIdx > 1) {
                             this.collapseFirstColumn();
                         }
                     }
@@ -423,8 +421,9 @@
                 $showedColumn.remove();
 
                 $('#column-0').removeClass('hide');
-                $('#column-1').removeClass('collapsed');;
+                $('#column-1').removeClass('collapsed');
             }
+
             this.addedColumn = null;
         },
 
@@ -432,9 +431,7 @@
         scrollLocked: true,
 
         scrollSubColumns: function(event) {
-            var $element = $(event.currentTarget),
-                $navigationSubColumns = $('.navigation-sub-columns'),
-                direction = event.originalEvent.detail < 0 || event.originalEvent.wheelDelta > 0 ? 1 : -1,
+            var direction = event.originalEvent.detail < 0 || event.originalEvent.wheelDelta > 0 ? 1 : -1,
                 scrollSpeed = 25,
                 scrollLeft = 0;
 
@@ -447,13 +444,13 @@
                 setTimeout(function() {
                     this.scrollLocked = true;
 
-                    if (direction < 0){
-                        // leftscroll
-                        scrollLeft = this.$navigationSubColumns.scrollLeft() + 1 * scrollSpeed;
+                    if (direction < 0) {
+                        // left scroll
+                        scrollLeft = this.$navigationSubColumns.scrollLeft() + scrollSpeed;
                         this.$navigationSubColumns.scrollLeft(scrollLeft);
                     } else {
-                        // rightscroll
-                        scrollLeft = this.$navigationSubColumns.scrollLeft() - 1 * scrollSpeed;
+                        // right scroll
+                        scrollLeft = this.$navigationSubColumns.scrollLeft() - scrollSpeed;
                         this.$navigationSubColumns.scrollLeft(scrollLeft);
                     }
                 }.bind(this), 25);
@@ -503,7 +500,7 @@
 
         collections: {
             items: function() {
-                return $.extend({}, Husky.Collection);    
+                return $.extend({}, Husky.Collection);
             }
         },
 
@@ -515,13 +512,13 @@
                     hasSub: false
                 };
 
-                return $.extend({}, Husky.Model, defaults, data);  
+                return $.extend({}, Husky.Model, defaults, data);
             }
         },
 
         template: {
             columnHeader: function(data) {
-                var titleTemplate = null;;
+                var titleTemplate = null;
 
                 data = data || {};
 
@@ -570,7 +567,7 @@
 
     $.fn.huskyNavigation.defaults = {
         url: '',
-        collapse: false 
+        collapse: false
     };
 
 })(Husky.$, this, this.document);

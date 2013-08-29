@@ -6,10 +6,10 @@
         "frontend-framework"
     ],
     "author": {
-        "name": "Erfan Ebrahimnia",
-        "email": "eeb@massiveart.com",
+        "name": "Husky Community",
+        "email": "github@massiveart.com",
         "company": "MASSIVE ART WebServices GmbH",
-        "homepage": "http://massiveart.github.io/husky/"
+        "homepage": "https://github.com/massiveart/husky/contributors"
     },
     "repository": {
         "type": "git",
