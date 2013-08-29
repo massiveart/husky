@@ -543,10 +543,9 @@ function typeOf(value) {
 
         this.configs = {};
 
-        this.$element = $(element);
-        this.$dataGrid = $('<div/>', {
-            class: 'inline-block'
-        });
+        this.$originalElement = $(element);
+        this.$element = $('<div class="husky-data-grid"/>');
+        $(element).append(this.$element);
 
         this.allItemIds = [];
         this.selectedItemIds = [];
@@ -558,6 +557,19 @@ function typeOf(value) {
             this.load({
                 url: this.options.url
             });
+        } else if (!!this.options.data.items) {
+
+            this.data = this.options.data;
+
+            Husky.DEBUG && console.log(this.data, 'this.data set');
+
+            this.setConfigs();
+
+            this.prepare()
+                .appendPagination()
+                .render();
+
+            Husky.DEBUG && console.log("data.items found");
         }
     };
 
@@ -568,7 +580,9 @@ function typeOf(value) {
         })(),
 
         getUrl: function(params) {
-            var url = params.url + '?pageSize=' + this.options.paginationOptions.pageSize
+            var delimiter = '?';
+            if (params.url.indexOf('?') != -1) delimiter = '&';
+            var url = params.url + delimiter + 'pageSize=' + this.options.paginationOptions.pageSize;
 
             if (params.page > 1) {
                 url += '&page=' + params.page;
@@ -602,18 +616,18 @@ function typeOf(value) {
         setConfigs: function() {
             this.configs = {};
             this.configs.total = this.data.total;
-            this.configs.pagesSize = this.data.pagesSize;
+            this.configs.pageSize = this.data.pageSize;
             this.configs.page = this.data.page;
         },
 
         prepare: function() {
-            this.$dataGrid.empty();
+            this.$element.empty();
 
             if (this.options.elementType === 'list') {
                 // TODO:
-                //this.$dataGrid = this.prepareList();
+                //this.$element = this.prepareList();
             } else {
-                this.$dataGrid.append(this.prepareTable());
+                this.$element.append(this.prepareTable());
             }
 
             return this;
@@ -641,7 +655,7 @@ function typeOf(value) {
 
             // set html classes
             tblClasses = [];
-            tblClasses.push((!!this.options.class && this.options.class !== 'table') ? 'table ' + this.options.class : 'table');
+            tblClasses.push((!!this.options.className && this.options.className !== 'table') ? 'table ' + this.options.className : 'table');
             tblClasses.push((this.options.selectItemType && this.options.selectItemType === 'checkbox') ? 'is-selectable' : '');
 
             $table.addClass(tblClasses.join(' '));
@@ -659,7 +673,7 @@ function typeOf(value) {
             if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
                 tblColumns.push(
                     '<th class="select-all">',
-                        this.templates.checkbox({ id: 'select-all' }),
+                    this.templates.checkbox({ id: 'select-all' }),
                     '</th>');
             }
 
@@ -683,48 +697,57 @@ function typeOf(value) {
                 tblRows.push(this.prepareTableRow(row));
             }.bind(this));
 
+
             return tblRows.join('');
         },
 
         prepareTableRow: function(row) {
-            var tblRowId, tblCellContent, tblCellClass,
-                tblColumns, tblCellClasses;
 
-            tblColumns = [];
-            tblRowId = ((!!row.id) ? ' data-id="' + row.id + '"' : '');
+            if (!!(this.options.template && this.options.template.row)) {
 
-            // add row id to itemIds collection (~~ === shorthand for parse int)
-            !!row.id && this.allItemIds.push(~~row.id);
+                return _.template(this.options.template.row, row);
 
-            if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
-                // add a checkbox to each row
-                tblColumns.push('<td>', this.templates.checkbox(), '</td>');
-            } else if (!!this.options.selectItemType && this.options.selectItemType === 'radio') {
-                // add a radio to each row
-                tblColumns.push('<td>', this.templates.radio({
-                    name: 'husky-radio' // TODO
-                }), '</td>');
+            } else {
+
+                var tblRowId, tblCellContent, tblCellClass,
+                    tblColumns, tblCellClasses;
+
+                tblColumns = [];
+                tblRowId = ((!!row.id) ? ' data-id="' + row.id + '"' : '');
+
+                // add row id to itemIds collection (~~ === shorthand for parse int)
+                !!row.id && this.allItemIds.push(~~row.id);
+
+                if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
+                    // add a checkbox to each row
+                    tblColumns.push('<td>', this.templates.checkbox(), '</td>');
+                } else if (!!this.options.selectItemType && this.options.selectItemType === 'radio') {
+                    // add a radio to each row
+                    tblColumns.push('<td>', this.templates.radio({
+                        name: 'husky-radio' // TODO
+                    }), '</td>');
+                }
+
+                for (var key in row) {
+                    var column = row[key];
+                    tblCellClasses = [];
+                    tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
+
+                    // prepare table cell classes
+                    !!column.class && tblCellClasses.push(column.class);
+                    !!column.thumb && tblCellClasses.push('thumb');
+
+                    tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
+
+                    tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
+                }
+
+                if (!!this.options.removeRow) {
+                    tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
+                }
+
+                return '<tr' + tblRowId + '>' + tblColumns.join('') + '</tr>';
             }
-
-            for (var key in row) {
-                var column = row[key];
-                tblCellClasses = [];
-                tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
-
-                // prepare table cell classes
-                !!column.class && tblCellClasses.push(column.class);
-                !!column.thumb && tblCellClasses.push('thumb');
-
-                tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
-
-                tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
-            }
-
-            if (!!this.options.removeRow) {
-                tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
-            }
-
-            return '<tr' + tblRowId + '>' + tblColumns.join('') + '</tr>';
         },
 
         resetItemSelection: function() {
@@ -738,7 +761,7 @@ function typeOf(value) {
             var $element, itemId;
 
             $element = $(event.currentTarget);
-            itemId = $element.data('id');
+            itemId = $element.parents('tr').data('id');
 
             if (this.selectedItemIds.indexOf(itemId) > -1) {
                 $element
@@ -771,7 +794,7 @@ function typeOf(value) {
 
             if (Husky.Util.compare(this.selectedItemIds, this.allItemIds)) {
 
-                this.$dataGrid
+                this.$element
                     .find('input[type="checkbox"]')
                     .prop('checked', false);
 
@@ -779,7 +802,7 @@ function typeOf(value) {
                 this.trigger('data-grid:all:deselect', null);
 
             } else {
-                this.$dataGrid
+                this.$element
                     .find('input[type="checkbox"]')
                     .prop('checked', true);
 
@@ -794,7 +817,7 @@ function typeOf(value) {
             var $table;
             // TODO check element type, list or table
 
-            $table = this.$dataGrid.find('table');
+            $table = this.$element.find('table');
 
             $table.append(this.prepareTableRow(row));
         },
@@ -818,7 +841,7 @@ function typeOf(value) {
         //
         appendPagination: function() {
             if (this.options.pagination) {
-                this.$dataGrid.append(this.preparePagination());
+                this.$element.append(this.preparePagination());
             }
             return this;
         },
@@ -891,8 +914,10 @@ function typeOf(value) {
             this.$element.off();
 
             if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
-                this.$element.on('click', 'tbody > tr', this.selectItem.bind(this));
+                this.$element.on('click', 'tbody > tr input[type="checkbox"]', this.selectItem.bind(this));
                 this.$element.on('click', 'th.select-all', this.selectAllItems.bind(this));
+            } else if (!!this.options.selectItemType && this.options.selectItemType === 'radio') {
+                this.$element.on('click', 'tbody > tr input[type="radio"]', this.selectItem.bind(this));
             }
 
             if (this.options.pagination) {
@@ -912,6 +937,8 @@ function typeOf(value) {
 
             // listen for public events
             this.on('data-grid:row:add', this.addRow.bind(this));
+
+            this.on('data-grid:row:remove', this.removeRow.bind(this));
         },
 
         updateHandler: function() {
@@ -919,22 +946,22 @@ function typeOf(value) {
         },
 
         render: function() {
-            this.$element.html(this.$dataGrid);
+            this.$originalElement.html(this.$element);
 
             this.bindCustomEvents();
             this.bindDOMEvents();
         },
 
         addLoader: function() {
-            return this.$dataGrid
-                .outerWidth(this.$dataGrid.outerWidth())
-                .outerHeight(this.$dataGrid.outerHeight())
+            return this.$element
+                .outerWidth(this.$element.outerWidth())
+                .outerHeight(this.$element.outerHeight())
                 .empty()
                 .addClass('is-loading');
         },
 
         removeLoader: function() {
-            return this.$dataGrid.removeClass('is-loading');
+            return this.$element.removeClass('is-loading');
         },
 
         templates: {
@@ -978,8 +1005,8 @@ function typeOf(value) {
 
                 return [
                     '<ul>',
-                        '<li class="pagination-first page" data-page="1"></li>',
-                        '<li class="pagination-prev page" data-page="', selectedPage - 1, '">', 'Previous', '</li>',
+                    '<li class="pagination-first page" data-page="1"></li>',
+                    '<li class="pagination-prev page" data-page="', selectedPage - 1, '">', 'Previous', '</li>',
                     '</ul>'
                 ].join('')
             },
@@ -995,8 +1022,8 @@ function typeOf(value) {
 
                 return [
                     '<ul>',
-                        '<li class="pagination-next page" data-page="', selectedPage + 1, '">', next, '</li>',
-                        '<li class="pagination-last page" data-page="', pageSize, '"></li>',
+                    '<li class="pagination-next page" data-page="', selectedPage + 1, '">', next, '</li>',
+                    '<li class="pagination-last page" data-page="', pageSize, '"></li>',
                     '</ul>'
                 ].join('')
             },
@@ -1040,7 +1067,7 @@ function typeOf(value) {
 
     $.fn.huskyDataGrid.defaults = {
         elementType: 'table',
-        selectItemType: 'checkbox',
+        selectItemType: null,
         pagination: false,
         paginationOptions: {
             pageSize: 10,

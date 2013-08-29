@@ -31,7 +31,7 @@
             this.data = this.options.data;
 
             Husky.DEBUG && console.log(this.data, 'this.data set');
-
+            
             this.setConfigs();
 
             this.prepare()
@@ -49,9 +49,7 @@
         })(),
 
         getUrl: function(params) {
-            var delimiter = '?';
-            if (params.url.indexOf('?') != -1) delimiter = '&';
-            var url = params.url + delimiter + 'pageSize=' + this.options.paginationOptions.pageSize;
+            var url = params.url + '?pageSize=' + this.options.paginationOptions.pageSize
 
             if (params.page > 1) {
                 url += '&page=' + params.page;
@@ -142,7 +140,7 @@
             if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
                 tblColumns.push(
                     '<th class="select-all">',
-                    this.templates.checkbox({ id: 'select-all' }),
+                        this.templates.checkbox({ id: 'select-all' }),
                     '</th>');
             }
 
@@ -160,20 +158,20 @@
             var tblRows;
 
             tblRows = [];
-            this.allItemIds = [];
+            this.allItemIds = [];      
 
             this.data.items.forEach(function(row) {
                 tblRows.push(this.prepareTableRow(row));
             }.bind(this));
-
+            
 
             return tblRows.join('');
         },
 
         prepareTableRow: function(row) {
 
-            if (!!(this.options.template && this.options.template.row)) {
-
+            if(!!(this.options.template && this.options.template.row)) {
+                
                 return _.template(this.options.template.row, row);
 
             } else {
@@ -230,7 +228,7 @@
             var $element, itemId;
 
             $element = $(event.currentTarget);
-            itemId = $element.parents('tr').data('id');
+            itemId = $element.parent('tr').data('id');
 
             if (this.selectedItemIds.indexOf(itemId) > -1) {
                 $element
@@ -474,8 +472,8 @@
 
                 return [
                     '<ul>',
-                    '<li class="pagination-first page" data-page="1"></li>',
-                    '<li class="pagination-prev page" data-page="', selectedPage - 1, '">', 'Previous', '</li>',
+                        '<li class="pagination-first page" data-page="1"></li>',
+                        '<li class="pagination-prev page" data-page="', selectedPage - 1, '">', 'Previous', '</li>',
                     '</ul>'
                 ].join('')
             },
@@ -491,8 +489,8 @@
 
                 return [
                     '<ul>',
-                    '<li class="pagination-next page" data-page="', selectedPage + 1, '">', next, '</li>',
-                    '<li class="pagination-last page" data-page="', pageSize, '"></li>',
+                        '<li class="pagination-next page" data-page="', selectedPage + 1, '">', next, '</li>',
+                        '<li class="pagination-last page" data-page="', pageSize, '"></li>',
                     '</ul>'
                 ].join('')
             },
