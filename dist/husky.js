@@ -281,11 +281,27 @@ function typeOf(value) {
 
         bindDOMEvents: function () {
             this.$element.off();
+
             this.$valueField.on('input', this.inputChanged.bind(this));
+
+            this.$dropDownList.on('click', 'li', function (event) {
+                var $element = $(event.currentTarget);
+                var id = $element.data('id');
+
+                var item = {id: id};
+                item[this.options.valueName] = $element.text();
+                this.selectItem(item);
+            }.bind(this));
+
+            // TODO keys up down
+            this.$valueField.on('keydown', function (event) {
+            });
         },
 
         inputChanged: function (event) {
             Husky.DEBUG && console.log(this.name, 'inputChanged');
+
+            this.notSuccessDropDown();
 
             var val = this.$valueField.val();
             if (val.length >= this.options.minLength) {
@@ -335,10 +351,19 @@ function typeOf(value) {
             this.$dropDown.hide();
         },
 
+        successDropDown: function () {
+            this.$valueField.addClass('success');
+        },
+
+        notSuccessDropDown: function () {
+            this.$valueField.removeClass('success');
+        },
+
         selectItem: function (item) {
             this.$valueField.data('id', item.id);
             this.$valueField.val(item[this.options.valueName]);
             this.hideDropDown();
+            this.successDropDown();
         }
     });
 
