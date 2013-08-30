@@ -2,6 +2,9 @@
 
 Husky is an awesome front-end framework.
 
+## Read the documentation
+
+[Documentation](https://github.com/massiveart/husky/tree/develop/docs/md/README.md)
 
 ## How to contribute like a boss
 
@@ -32,7 +35,7 @@ Running Tests
 	grunt test
 
 Compiling SCSS
-	
+
 	grunt watch
 
 
