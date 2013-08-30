@@ -6,4 +6,73 @@ base_url: "../"
 ---
 
 
-<h1>{{ page.title }}</h1>
+<h1><span class="icon-css m-right-10"></span> {{ page.title }}</h1>
+
+<div class="doc-section">
+    <h2 id="grid">Grid System</h2>
+    <p>
+        Simple 12-column grid-system for creating responsive layouts.
+    </p>
+    <div class="doc-demo">
+        <div class="grid">
+            <div class="grid-row">
+                <div class="grid-col-2">
+                    <input class="form-element input-large" placeholder="col-2"/>
+                </div>
+                <div class="grid-col-2">
+                    <input class="form-element input-large" placeholder="col-2"/>
+                </div>
+                <div class="grid-col-2">
+                    <input class="form-element input-large" placeholder="col-2"/>
+                </div>
+                <div class="grid-col-2">
+                    <input class="form-element input-large" placeholder="col-2"/>
+                </div>
+                <div class="grid-col-2">
+                    <input class="form-element input-large" placeholder="col-2"/>
+                </div>
+                <div class="grid-col-2">
+                    <input class="form-element input-large" placeholder="col-2"/>
+                </div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-col-3">
+                    <input class="form-element input-large" placeholder="col-3"/>
+                </div>
+                <div class="grid-col-3">
+                    <input class="form-element input-large" placeholder="col-3"/>
+                </div>
+                <div class="grid-col-3">
+                    <input class="form-element input-large" placeholder="col-3"/>
+                </div>
+                <div class="grid-col-3">
+                    <input class="form-element input-large" placeholder="col-3"/>
+                </div>
+            </div>
+            <div class="grid-row">
+                <div class="grid-col-6">
+                    <input class="form-element input-large" placeholder="col-6"/>
+                </div>
+                <div class="grid-col-6">
+                    <input class="form-element input-large" placeholder="col-6"/>
+                </div>
+            </div>
+
+            <div class="grid-row">
+                <div class="grid-col-12">
+                    <label for="input-1">
+                        <input id="input-1" class="form-element input-large" placeholder="col-12"/>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="doc-code">
+        {% highlight html %}
+    <div class="grid">
+        <div class="grid-row">
+            <div class="grid-col-2"></div>
+        </div>
+    </div>{% endhighlight %}
+    </div>
+</div>
