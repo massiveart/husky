@@ -103,22 +103,22 @@
 
         <script>
             Husky.DEBUG = true;
-            
-           var dialog = $('#dialog').huskyDialog({
+
+            var $dialog = $('#dialog').huskyDialog({
                 backdrop: true,
                 width: '800px'
-           });
+            });
 
-           $('#showDialog').on('click', function() {
-                dialog.data('Husky.Ui.Dialog').trigger('dialog:show',{
+            $('#showDialog').on('click', function() {
+                $dialog.data('Husky.Ui.Dialog').trigger('dialog:show', {
                     template: {
                         content: '<h3><%= title %></h3><p><%= content %></p>',
                         footer: '<button class="btn btn-black closeButton"><%= buttonCancelText %></button><button class="btn btn-black saveButton"><%= buttonSaveText %></button>',
                         header: '<button type="button" class="close">×</button>'
                     },
                     data: {
-                        content:{
-                            title: "This is the headline!", 
+                        content: {
+                            title: "This is the headline!",
                             content: "This is the content"
                         },
                         footer: {
@@ -129,15 +129,15 @@
                 });
             });
 
-            $('#dialog').on('click', '.closeButton', function() {
+            $dialog.on('click', '.closeButton', function() {
                 console.log("closeButton");
-                dialog.data('Husky.Ui.Dialog').trigger('dialog:hide');
+                $dialog.data('Husky.Ui.Dialog').trigger('dialog:hide');
             });
 
 
-            $('#dialog').on('click', '.saveButton', function() {
+            $dialog.on('click', '.saveButton', function() {
                 console.log("saveButton");
-                dialog.data('Husky.Ui.Dialog').trigger('dialog:hide');
+                $dialog.data('Husky.Ui.Dialog').trigger('dialog:hide');
             });
 
         </script>
