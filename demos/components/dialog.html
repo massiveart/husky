@@ -84,31 +84,14 @@
                     </div>
                 </form>
             </div> <!-- dummy content end -->
-            
-
+                        
             <!-- Button to trigger modal -->
-            <a href="#myModal" role="button" class="btn" data-toggle="modal">Launch demo modal</a>
+            <a id="showDialog" href="#dialog" role="button" class="btn" data-toggle="dialog">Launch demo modal</a>
              
             <!-- Modal -->
-            <div id="myModal" class="husky-dialog hide fade" role="dialog">
-            
-              <div class="husky-dialog-header align-right">
-                <button type="button" class="close">×</button>
-              </div>
-              <div class="husky-dialog-body">
-                <h3>Modal header</h3>
-                <p>One fine body…</p>
-              </div>
-              <div class="husky-dialog-footer">
-                <button class="btn btn-black">Close</button>
-                <button class="btn btn-black">Save changes</button>
-              </div>
-
-            </div>
+            <div id="dialog"></div>
 
         </div>
-
-        <div class="husky-dialog-backdrop fade in"></div>
 
         <script src="../../node_modules/sinon/pkg/sinon.js"></script>
         <script src="../../bower_components/jquery/jquery.js"></script>
@@ -116,16 +99,24 @@
 
         <script src="../../js/husky.js"></script>
         <script src="../../js/modules/util.js"></script>
-        <script src="../../js/modules/ui.auto-complete.js"></script>
+        <script src="../../js/modules/ui.dialog.js"></script>
 
         <script>
             Husky.DEBUG = true;
+            
+           var dialog = $('#dialog').huskyDialog({
+                backdrop: true
+            });
 
-            var fakeServer;
-            $(document).ready(function () {
-
-            });           
+           $('#showDialog').on('click', function() {
+                dialog.data('Husky.Ui.Dialog').trigger('dialog:show',{
+                    template: 'leer',
+                    data: null
+                });
+            });
 
         </script>
+
+        <!-- inserted by js <div class="husky-dialog-backdrop fade"></div>-->
     </body>
 </html>

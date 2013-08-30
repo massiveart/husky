@@ -1080,6 +1080,118 @@ function typeOf(value) {
 
 })(Husky.$, this, this.document);
 
+/*****************************************************************************
+ *
+ *  Husky.Ui.Dialog
+ *  Shows a dialog and displays the given data and template.
+ *
+ *****************************************************************************/
+
+// TODO verschiedene größen der box?
+
+
+(function($, window, document, undefined) {
+    'use strict';
+
+    var moduleName = 'Husky.Ui.Dialog';
+
+    Husky.Ui.Dialog = function(element, options) {
+        
+        this.name = moduleName;
+        this.options = options;
+        this.configs = {};
+
+        Husky.DEBUG && console.log(this.name, 'created instance');
+
+        this.$originalElement = $(element);
+
+        this.$header = $('<div class="husky-dialog-header align-right">'+
+                            '<button type="button" class="close">×</button>'+
+                        '</div>');
+
+        this.$content = $('<div class="husky-dialog-body">'+
+                            '<h3>Modal header</h3>'+
+                            '<p>One fine body…</p>'+
+                          '</div>');
+
+        this.$footer = $('<div class="husky-dialog-footer">'+
+                            '<button class="btn btn-black">Close</button>'+
+                            '<button class="btn btn-black">Save changes</button>'+
+                          '</div>');
+
+        this.$wrapper = $('<div class="husky-dialog fade"/>');
+
+        this.$wrapper.append(this.$header.after(this.$content.after(this.$footer)));
+        $(element).append(this.$wrapper);
+
+        Husky.DEBUG && console.log($(element), 'element');
+
+        this.init();
+    };
+
+    $.extend(Husky.Ui.Dialog.prototype, Husky.Events, {
+
+        // private event dispatcher
+        vent: (function() {
+            return $.extend({}, Husky.Events);
+        })(),
+
+        init: function() {
+
+            Husky.DEBUG && console.log(this.name, 'init');
+
+            // ------------------------------------------------------------
+            // initialization
+            // ------------------------------------------------------------
+
+            // bind dom elements
+            this.bindDOMEvents();
+        },
+
+        // bind dom elements
+        bindDOMEvents: function() {
+
+            // turn off all events
+            this.$element.off();
+
+            // ------------------------------------------------------------
+            // DOM events
+            // ------------------------------------------------------------
+
+        },
+
+
+        // ------------------------------------------------------------
+        // custom events
+        // ------------------------------------------------------------
+
+        
+    });
+
+    $.fn.huskyDialog = function(options) {
+        var $element = $(this);
+
+        options = $.extend({}, $.fn.huskyDialog.defaults, typeof options == 'object' && options);
+
+        // return if this plugin has a module instance
+        if (!!$element.data(moduleName)) {
+            return this;
+        }
+
+        // store the module instance into the jQuery data property
+        $element.data(moduleName, new Husky.Ui.Dialog(this, options));
+
+        return this;
+    };
+
+    $.fn.huskyDialog.defaults = {
+        data: null,
+        template: '', 
+        backdrop: true
+    };
+
+})(Husky.$, this, this.document);
+
 (function($, window, document, undefined) {
     'use strict';
 
