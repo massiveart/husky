@@ -1,0 +1,19 @@
+//
+// Buttons
+// --------------------------------------------------
+
+.btn {
+    padding: 5px 30px;
+    border: 0;
+    border-radius: $btnBorderRadius;
+    background-color: #FFF;
+}
+
+.btn-large {
+    font-size: 18px;
+}
+
+.btn-black {
+    background-color: #000;
+    color: #FFF;
+}

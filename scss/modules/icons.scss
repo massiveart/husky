@@ -1,0 +1,31 @@
+//
+// Icons
+// --------------------------------------------------
+
+[class^="icon-"] {
+    font-family: 'Glyphicons';
+}
+
+.icon-remove {
+    cursor: pointer;
+    &::after {
+        content: "\E208";
+        display: inline-block;
+    }
+}
+
+.icon-add {
+    cursor: pointer;
+    &::after {
+        content: "\E191";
+        display: inline-block;
+    }
+}
+
+.icon-down {
+	cursor: pointer;
+	&::after {
+		content: "\e159";
+		display: inline-block;
+	}
+}

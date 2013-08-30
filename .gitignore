@@ -1,0 +1,21 @@
+### Folders ###
+node_modules
+bower_components
+coverage
+.tmp
+.sass-cache
+_docs
+
+### Files ###
+_*
+._*
+.DS_Store
+.project
+.cache
+*.sublime-project
+*.sublime-workspace
+*.sass-cache
+*.log
+
+.idea/*
+*.iml

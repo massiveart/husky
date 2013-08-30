@@ -1,0 +1,37 @@
+//
+// Header Bar
+// --------------------------------------------------
+
+
+.headerbar {
+    $baseColor: $baseColor;
+
+    width: 100%;
+    height: 50px;
+    padding: 10px 15px;
+    background-color: $baseColor;
+    box-shadow: 0 5px 0 0 rgba(0, 0, 0, .25);
+}
+
+.headerbar-logo {
+    float: left;
+    font-size: 18px;
+    color: #fff;
+    line-height: 30px;
+
+    &::after {
+        content: " ";
+        clear: both;
+    }
+}
+
+.headerbar-fixed-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+// change styling for other modules
+.navigation {
+    padding-top: 100px !important;
+}
