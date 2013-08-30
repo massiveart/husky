@@ -1103,9 +1103,7 @@ function typeOf(value) {
         this.options = options;
         this.configs = {};
 
-        Husky.DEBUG && console.log(this.name, 'created instance');
-
-        this.$element = $('<div class="husky-dialog hidden fade" style="width:'+this.options.width+', margin-left:'+this.options.width/2+'"/>');
+        this.$element = $('<div class="husky-dialog hidden fade"/>');
         $(element).append(this.$element); 
 
         this.init();
@@ -1136,6 +1134,18 @@ function typeOf(value) {
             this.$footer = $('<div class="husky-dialog-footer" />');
 
             this.$element.append(this.$header, this.$content, this.$footer);
+
+            var width = this.options.width;
+            var marginLeft = parseInt(this.options.width) / 2;     
+
+            console.log(width);
+            console.log(marginLeft);       
+
+            this.$element.css({
+                'width': width,
+                'margin-left': '-'+marginLeft+'px'
+            });
+
         },
 
         // bind dom elements
@@ -1169,6 +1179,7 @@ function typeOf(value) {
             this.$footer.append(_.template(this.template.footer, this.data.footer));
 
             this.$element.show();
+
             if(this.options.backdrop) {
                 $('body').append('<div id="husky-dialog-backdrop" class="husky-dialog-backdrop fade in"></div>');
             }            
@@ -1787,108 +1798,6 @@ function typeOf(value) {
     $.fn.huskyNavigation.defaults = {
         url: '',
         collapse: false
-    };
-
-})(Husky.$, this, this.document);
-
-/*****************************************************************************
- *
- *  [Name of the Module]
- *  [Short description]
- *  
- *  Code snippets to replace in template
- *      - "[MyElement]"
- *      - "[CSS Classes]"
- * 
- *  Sections
- *      - initialization
- *      - DOM events
- *      - custom events
- *      - default values
- *
- *
- *****************************************************************************/
-
-(function($, window, document, undefined) {
-    'use strict';
-
-    var moduleName = 'Husky.Ui.[MyElement]';
-
-    Husky.Ui.[MyElement] = function(element, options) {
-        this.name = moduleName;
-
-        Husky.DEBUG && console.log(this.name, 'create instance');
-
-        this.options = options;
-
-        this.configs = {};
-
-        this.$originalElement = $(element);
-        this.$element = $('<div class="[CSS Classes]"/>');
-        $(element).append(this.$element);
-
-        this.init();
-    };
-
-    $.extend(Husky.Ui.[MyElement].prototype, Husky.Events, {
-        // private event dispatcher
-        vent: (function() {
-            return $.extend({}, Husky.Events);
-        })(),
-
-        init: function() {
-            Husky.DEBUG && console.log(this.name, 'init');
-
-            // ------------------------------------------------------------
-            // initialization
-            // ------------------------------------------------------------
-
-            // bind dom elements
-            this.bindDOMEvents();
-        },
-
-        // bind dom elements
-        bindDOMEvents: function() {
-
-            // turn off all events
-            this.$element.off();
-
-            // ------------------------------------------------------------
-            // DOM events
-            // ------------------------------------------------------------
-
-        },
-
-
-        // ------------------------------------------------------------
-        // custom events
-        // ------------------------------------------------------------
-
-        
-    });
-
-    $.fn.husky[MyElement] = function(options) {
-        var $element = $(this);
-
-        options = $.extend({}, $.fn.husky[MyElement].defaults, typeof options == 'object' && options);
-
-        // return if this plugin has a module instance
-        if (!!$element.data(moduleName)) {
-            return this;
-        }
-
-        // store the module instance into the jQuery data property
-        $element.data(moduleName, new Husky.Ui.[MyElement](this, options));
-
-        return this;
-    };
-
-    $.fn.husky[MyElement].defaults = {
-        url: '',
-
-        // ------------------------------------------------------------
-        // default values
-        // ------------------------------------------------------------
     };
 
 })(Husky.$, this, this.document);
