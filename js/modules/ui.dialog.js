@@ -1,12 +1,13 @@
 /*****************************************************************************
  *
  *  Husky.Ui.Dialog
+ *
  *  Shows a dialog and displays the given data and template.
+ *  The show function accepts different template parts (dialog header, content,
+ *  footer) and data as parameters
+ *  
  *
  *****************************************************************************/
-
-// TODO verschiedene größen der box?
-
 
 (function($, window, document, undefined) {
 
@@ -20,10 +21,10 @@
         this.options = options;
         this.configs = {};
 
-        Husky.DEBUG && console.log(this.name, 'created instance');
+        this.$element = $('<div class="husky-dialog hidden fade"/>');
+        $(element).append(this.$element); 
 
         this.init();
-        $(element).append(this.$element); 
     };
 
     $.extend(Husky.Ui.Dialog.prototype, Husky.Events, {
@@ -36,35 +37,32 @@
         init: function() {
 
             Husky.DEBUG && console.log(this.name, 'init');
+            
+            this.prepare();
 
-            // ------------------------------------------------------------
-            // initialization
-            // ------------------------------------------------------------
-            this.render();
-
-
-            // bind dom elements
             this.bindDOMEvents();
             this.bindCustomEvents();
         },
 
-        render: function(){
+        // prepares the dialog structure
+        prepare: function(){
 
+            this.$header = $('<div class="husky-dialog-header align-right"/>');
+            this.$content = $('<div class="husky-dialog-body" />');
+            this.$footer = $('<div class="husky-dialog-footer" />');
 
-            this.$header = ('<div class="husky-dialog-header align-right">'+
-                                '<button type="button" class="close">×</button>'+
-                            '</div>');
-            this.$content = ('<div class="husky-dialog-body">'+
-                                '<h3>Modal header</h3>'+
-                                '<p>One fine body…</p>'+
-                              '</div>');
-            this.$footer = ('<div class="husky-dialog-footer">'+
-                                '<button class="btn btn-black">Close</button>'+
-                                '<button class="btn btn-black">Save changes</button>'+
-                              '</div>');
-            this.$element = $('<div class="husky-dialog hidden fade"/>');
-            
-            this.$element.append(this.$header.concat(this.$content.concat(this.$footer)));
+            this.$element.append(this.$header, this.$content, this.$footer);
+
+            var width = this.options.width;
+            var marginLeft = parseInt(this.options.width) / 2;     
+
+            console.log(width);
+            console.log(marginLeft);       
+
+            this.$element.css({
+                'width': width,
+                'margin-left': '-'+marginLeft+'px'
+            });
 
         },
 
@@ -74,45 +72,52 @@
             // turn off all events
             this.$element.off();
 
-            // ------------------------------------------------------------
-            // DOM events
-            // ------------------------------------------------------------
             this.$element.on('click', '.close', this.hide.bind(this));
-
-
         },
 
+        // listen for private events
         bindCustomEvents: function() {
-            // listen for private events
+          
             this.vent.off();
 
             // listen for public events
-            console.log("adfasdf");
             this.on('dialog:show',this.show.bind(this));
+            this.on('dialog:hide',this.hide.bind(this));
             
         },
 
+        // Shows the dialog and compiles the different dialog template parts 
         show: function(params) {
-            this.$element.show();
+                        
             this.template = params.template;
             this.data = params.data;
+
+            this.$header.append(_.template(this.template.header,this.data.header));
+            this.$content.append(_.template(this.template.content, this.data.content));
+            this.$footer.append(_.template(this.template.footer, this.data.footer));
+
+            this.$element.show();
 
             if(this.options.backdrop) {
                 $('body').append('<div id="husky-dialog-backdrop" class="husky-dialog-backdrop fade in"></div>');
             }            
         },
 
+        // Hides the dialog and empties the contents of the different template parts
         hide: function(params) {
 
             this.$element.hide();
-            this.template = "";
-            this.data = null;
             
             if(this.options.backdrop) {
                 $('#husky-dialog-backdrop ').remove();
-            }            
+            }
+            
+            this.template = null;
+            this.data = null;
+            this.$header.empty();
+            this.$content.empty();
+            this.$footer.empty();
         }
-        
         
     });
 
@@ -134,8 +139,9 @@
 
     $.fn.huskyDialog.defaults = {
         data: null,
-        template: '', 
-        backdrop: true
+        template: null, 
+        backdrop: true,
+        width: '560px'
     };
 
 })(Husky.$, this, this.document);

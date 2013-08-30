@@ -105,18 +105,42 @@
             Husky.DEBUG = true;
             
            var dialog = $('#dialog').huskyDialog({
-                backdrop: true
-            });
+                backdrop: true,
+                width: '800px'
+           });
 
            $('#showDialog').on('click', function() {
                 dialog.data('Husky.Ui.Dialog').trigger('dialog:show',{
-                    template: 'leer',
-                    data: null
+                    template: {
+                        content: '<h3><%= title %></h3><p><%= content %></p>',
+                        footer: '<button class="btn btn-black closeButton"><%= buttonCancelText %></button><button class="btn btn-black saveButton"><%= buttonSaveText %></button>',
+                        header: '<button type="button" class="close">×</button>'
+                    },
+                    data: {
+                        content:{
+                            title: "This is the headline!", 
+                            content: "This is the content"
+                        },
+                        footer: {
+                            buttonCancelText: "Abort",
+                            buttonSaveText: "Save"
+                        }
+                    }
                 });
             });
 
-        </script>
+            $('#dialog').on('click', '.closeButton', function() {
+                console.log("closeButton");
+                dialog.data('Husky.Ui.Dialog').trigger('dialog:hide');
+            });
 
-        <!-- inserted by js <div class="husky-dialog-backdrop fade"></div>-->
+
+            $('#dialog').on('click', '.saveButton', function() {
+                console.log("saveButton");
+                dialog.data('Husky.Ui.Dialog').trigger('dialog:hide');
+            });
+
+        </script>
+        
     </body>
 </html>
