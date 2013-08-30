@@ -161,6 +161,11 @@ $navigationIconFont: $baseIconFont;
             border-right: 0;
             color: $colorNavigationMainColumn;
             background-color: $bgNavigationMainColumn;
+
+            a {
+                color: $colorNavigationMainColumn;
+            }
+
             .navigation-column-title {
                 color: #fff;
             }
@@ -170,6 +175,10 @@ $navigationIconFont: $baseIconFont;
                 &.selected {
                     color: $colorNavigationMainColumnHover;
                     background-color: $bgNavigationMainColumnItemHover;
+
+                    a {
+                        color: $colorNavigationMainColumnHover;
+                    }
                 }
             }
         }
@@ -253,6 +262,12 @@ $navigationIconFont: $baseIconFont;
 
     &[data-has-children="true"] {
         font-weight: bold;
+    }
+
+    a {
+        display: inline-block;
+        width: 100%;
+        text-decoration: none;
     }
 
     [class*="icon-"] {

@@ -21,3 +21,11 @@
         display: inline-block;
     }
 }
+
+.icon-down {
+	cursor: pointer;
+	&::after {
+		content: "\e159";
+		display: inline-block;
+	}
+}

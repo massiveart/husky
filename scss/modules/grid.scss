@@ -20,13 +20,13 @@
     padding-left: 10px;
     padding-right: 10px;
 
-    &:last-of-type {
-        padding-right: 0;
-    }
-
     &:first-of-type {
         padding-left: 0;
         padding-right: 10px;
+    }
+
+    &:last-of-type {
+        padding-right: 0;
     }
 }
 
@@ -72,4 +72,8 @@
 
 .grid-col-11 {
     width: 91.66%;
+}
+
+.grid-col-12 {
+    width: 100%;
 }
