@@ -1,8 +1,11 @@
 define(['jquery'], function($) {
 
+    var sandbox;
+
     return {
         initialize: function() {
-            console.log(this);
+
+            sandbox = this.sandbox;
 
             this.$navigation = $('<div/>', {
                 class: 'navigation'
@@ -29,12 +32,12 @@ define(['jquery'], function($) {
 
         load: function(params) {
 
-            this.sandbox.logger.log('load', params);
+            sandbox.logger.log('load', params);
 
             $.ajax({
                 url: params.url,
                 success: function(data) {
-                    this.sandbox.logger.log('load', 'success', data);
+                    sandbox.logger.log('load', 'success', data);
 
                     this.data = data;
 
@@ -231,12 +234,11 @@ define(['jquery'], function($) {
         },
 
         collapseFirstColumn: function() {
-            this.sandbox.logger.log('collapseFirstColumn');
+            sandbox.logger.log('collapseFirstColumn');
             var $firstColumn;
 
             $firstColumn = $('#column-0');
             $firstColumn.addClass('collapsed');
-            console.log($firstColumn.hasClass('collapsed'));
         },
 
         showNavigationColumns: function(event) {
@@ -271,7 +273,7 @@ define(['jquery'], function($) {
 
         // TODO: cleanup and simplify selectItem function
         selectItem: function(event) {
-            this.sandbox.logger.log('selectItem');
+            sandbox.logger.log('selectItem');
 
             var $element, $elementColumn, elementId,
                 itemModel;
@@ -297,7 +299,7 @@ define(['jquery'], function($) {
                 // ... and add class to selected element
                 $element.addClass('selected');
 
-                this.trigger('navigation:item:selected', itemModel);
+                sandbox.emit('navigation:item:selected', itemModel);
 
                 if (!!itemModel.get('hasSub')) {
 
@@ -319,7 +321,7 @@ define(['jquery'], function($) {
                                     this.collapseFirstColumn();
                                 }
 
-                                this.trigger('navigation:item:sub:loaded', itemModel);
+                                sandbox.emit('navigation:item:sub:loaded', itemModel);
                             }.bind(this)
                         });
                     } else {
@@ -336,7 +338,7 @@ define(['jquery'], function($) {
                     }
 
                 } else if (itemModel.get('type') == 'content') {
-                    this.trigger('navigation:item:content:show', itemModel);
+                    sandbox.emit('navigation:item:content:show', itemModel);
 
                     this.showContent = true;
 
@@ -347,7 +349,7 @@ define(['jquery'], function($) {
         },
 
         showFirstNavigationColumn: function(event) {
-            this.sandbox.logger.log('showFirstNavigationColumn');
+            sandbox.logger.log('showFirstNavigationColumn');
 
             var $element = $(event.target);
 
@@ -366,7 +368,7 @@ define(['jquery'], function($) {
 
         // TODO
         showColumn: function(params) {
-            this.sandbox.logger.log('showColumn');
+            sandbox.logger.log('showColumn');
 
             var $showedColumn;
 
@@ -394,7 +396,7 @@ define(['jquery'], function($) {
 
                 this.addedColumn = this.currentColumnIdx;
             } else {
-                Husky.DEBUG && console.error(this.name, 'showColumn', 'No data was defined!');
+                sandbox.logger.error('showColumn', 'No data was defined!');
             }
         },
 
@@ -451,13 +453,13 @@ define(['jquery'], function($) {
 
         bindEvents: function() {
             // external events
-            this.on('navigation:item:column:show', this.showColumn.bind(this));
+            sandbox.on('navigation:item:column:show', this.showColumn.bind(this));
 
             // internal events
         },
 
         bindDOMEvents: function() {
-            this.sandbox.logger.log('bindDOMEvents');
+            sandbox.logger.log('bindDOMEvents');
 
             this.$el.off();
 
@@ -486,7 +488,7 @@ define(['jquery'], function($) {
 
         collections: {
             items: function() {
-                return $.extend({}, Husky.Collection);
+                return $.extend({}, sandbox.data.Collection);
             }
         },
 
@@ -498,7 +500,7 @@ define(['jquery'], function($) {
                     hasSub: false
                 };
 
-                return $.extend({}, Husky.Model, defaults, data);
+                return $.extend({}, sandbox.data.Model, defaults, data);
             }
         },
 
