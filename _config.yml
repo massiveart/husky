@@ -1,0 +1,25 @@
+# jekyllrb configurations
+# http://jekyllrb.com/
+
+
+# custom settings
+source:           ./docs
+pygments:         true
+
+# Dependencies
+markdown:         rdiscount
+pygments:         true
+
+# Permalinks
+permalink:        pretty
+
+# Server
+destination:      ./_docs
+exclude:          [".editorconfig", ".gitignore", ".ruby-version", "bower.json", "composer.json", "LICENSE", "Gruntfile.js", "package.json", "node_modules", "README.md", "scss"]
+port:             9001
+host:             0.0.0.0
+
+
+# Global variables
+title:            Husky Documentation
+
