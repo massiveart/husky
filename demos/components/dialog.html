@@ -84,15 +84,12 @@
                     </div>
                 </form>
             </div> <!-- dummy content end -->
-            
-
-            <div class="husky-dialog-container">
-                
-                <div class="husky-dialog-box">
-                    Test
-                </div>
-
-            </div>
+                        
+            <!-- Button to trigger modal -->
+            <a id="showDialog" href="#dialog" role="button" class="btn" data-toggle="dialog">Launch demo modal</a>
+             
+            <!-- Modal -->
+            <div id="dialog"></div>
 
         </div>
 
@@ -102,16 +99,48 @@
 
         <script src="../../js/husky.js"></script>
         <script src="../../js/modules/util.js"></script>
-        <script src="../../js/modules/ui.auto-complete.js"></script>
+        <script src="../../js/modules/ui.dialog.js"></script>
 
         <script>
             Husky.DEBUG = true;
 
-            var fakeServer;
-            $(document).ready(function () {
+            var $dialog = $('#dialog').huskyDialog({
+                backdrop: true,
+                width: '800px'
+            });
 
-            });           
+            $('#showDialog').on('click', function() {
+                $dialog.data('Husky.Ui.Dialog').trigger('dialog:show', {
+                    template: {
+                        content: '<h3><%= title %></h3><p><%= content %></p>',
+                        footer: '<button class="btn btn-black closeButton"><%= buttonCancelText %></button><button class="btn btn-black saveButton"><%= buttonSaveText %></button>',
+                        header: '<button type="button" class="close">×</button>'
+                    },
+                    data: {
+                        content: {
+                            title: "This is the headline!",
+                            content: "This is the content"
+                        },
+                        footer: {
+                            buttonCancelText: "Abort",
+                            buttonSaveText: "Save"
+                        }
+                    }
+                });
+            });
+
+            $dialog.on('click', '.closeButton', function() {
+                console.log("closeButton");
+                $dialog.data('Husky.Ui.Dialog').trigger('dialog:hide');
+            });
+
+
+            $dialog.on('click', '.saveButton', function() {
+                console.log("saveButton");
+                $dialog.data('Husky.Ui.Dialog').trigger('dialog:hide');
+            });
 
         </script>
+        
     </body>
 </html>

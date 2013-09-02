@@ -1,25 +1,111 @@
-.husky-dialog-container {
+//
+// Dialog Styling
+//
+// Inspired by Bootstrap
+// http://getbootstrap.com/2.3.2/javascript.html#modals
+// --------------------------------------------------
 
-	background: #000;
-	position: fixed;
-	top:0;
-	left:0;
-	width: 100%;
-	height: 100%;
-	z-index:8000;
-	
-	
+// Imports
+@import "compass/css3/box-shadow";
+@import "compass/css3/border-radius";
+@import "compass/css3/background-clip";
+@import "compass/css3/transition";
 
+
+// Dark background for dialog
+.husky-dialog-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1040;
+    background-color: $black;
 }
-.husky-dialog-box {
-		position:absolute;
-		top: 50%;
-		left: 50%;
-		background: #fff;
-		width: 450px;
-		height: 300px;
-		margin-left:-225px;
-		margin-top: -150px;
-		opacity: 1;
-		z-index: 9000;
-	}
+
+.husky-dialog-backdrop.fade {
+    opacity: 0;
+}
+
+.husky-dialog-backdrop,
+.husky-dialog-backdrop.fade.in {
+    opacity: 0.8;
+    filter: alpha(opacity=80);
+}
+
+// Dialog Classes
+.husky-dialog {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    z-index: 1050;
+    background-color: $white;
+    border: 1px solid $grayLight;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    *border: 1px solid $grayLight;
+
+    border-radius: 6px;
+    outline: none;
+
+    @include box-shadow(rgba(0, 0, 0, 0.3) 0 3px 7px);
+    @include background-clip(padding-box);
+}
+
+.husky-dialog.fade {
+
+    @include transition-property(opacity, top);
+    @include transition-duration(0.3s, 0.3s);
+    @include transition-timing-function(linear, ease-in);
+}
+
+.husky-dialog.fade.in {
+    top: 10%;
+}
+
+.husky-dialog-header {
+    padding: 9px 15px;
+    border-bottom: 1px solid $grayLighter;
+}
+
+.husky-dialog-header .close {
+    margin-top: 2px;
+}
+
+.husky-dialog-header h3 {
+    margin: 0;
+    line-height: 30px;
+}
+
+.husky-dialog-body {
+    position: relative;
+    max-height: 400px;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.husky-dialog-footer {
+    padding: 14px 15px 15px;
+    margin-bottom: 0;
+    text-align: right;
+    background-color: $baseBackgroundColor;
+    border-top: 1px solid $grayLighter;
+    border-radius: 0 0 6px 6px;
+    *zoom: 1;
+    @include box-shadow($white 0 1px 0 inset);
+}
+
+.husky-dialog-footer:before,
+.husky-dialog-footer:after {
+    display: table;
+    line-height: 0;
+    content: "";
+}
+
+.husky-dialog-footer:after {
+    clear: both;
+}
+
+.husky-dialog-footer .btn + .btn {
+    margin-bottom: 0;
+    margin-left: 5px;
+}
