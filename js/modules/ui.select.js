@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- *  [Name of the Module]
+ *  Select
  *  [Short description]
  *
  *  Sections
@@ -39,8 +39,8 @@
             return $.extend({}, Husky.Events);
         })(),
 
-        getUrl:function(){
-          return this.options.url;
+        getUrl: function() {
+            return this.options.url;
         },
 
         init: function() {
