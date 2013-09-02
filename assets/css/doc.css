@@ -41,6 +41,35 @@ body {
     font-size: 16px;
 }
 
+.doc-footnotes {
+    font-size: 14px;
+    display: block;
+    margin: 20px 0;
+}
+
+.doc-footnotes a {
+    color: #000;
+    text-decoration: none;
+}
+
+.doc-social-btn {
+    position: relative;
+    top: 5px;
+    display: inline-block;
+}
+
+.doc-social-btn + .doc-social-btn {
+    margin-left: 5px;
+}
+
+.headerbar {
+    z-index: 10;
+}
+
+.headerbar-logo {
+    text-decoration: none;
+}
+
 /*
  * Icons
  */
@@ -51,4 +80,11 @@ body {
 
 .icon-js::before {
     content: "\E242";
-};
+}
+
+.icon-download::before {
+    content: "\E182";
+    margin-right: 10px;
+    font-size: 14px;
+}
+
