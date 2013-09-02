@@ -4,11 +4,10 @@
 
 
 .headerbar {
-    $baseColor: $baseColor;
-
+    color: $grayLight;
     width: 100%;
-    height: 50px;
-    padding: 10px 15px;
+    height: 70px;
+    padding: 15px 15px;
     background-color: $baseColor;
     box-shadow: 0 5px 0 0 rgba(0, 0, 0, .25);
 }
@@ -29,6 +28,79 @@
     position: fixed;
     top: 0;
     left: 0;
+}
+
+//
+// Header Bar Left
+// --------------------------------------------------
+    
+.headerbar-left {
+    float:left;
+    width: 240px;
+
+    .headerbar-account-icon {
+        height: 40px;
+        width: 25px;
+        background: #999;   
+    }
+
+    .headerbar-account-icon,
+    .headerbar-account-text,
+    .headerbar-account-logout {
+        float:left;
+    }
+
+    .headerbar-account-text {
+        margin-left:20px;
+        margin-top: 15px;
+    }
+
+    .headerbar-account-logout{
+        margin-left: 5px;
+        margin-top: 18px;
+        font-size:12px;
+    }
+    
+    .headerbar-account-text {
+        font-size:18px;
+        font-weight: bold;
+    }
+}
+
+// 
+// Header Bar Mid
+// --------------------------------------------------
+
+.headerbar-mid {
+    float:left;
+    width: 800px;
+    margin-left:60px;
+    font-weight:bold;
+    
+    .headerbar-mid-left {
+        float:left;
+        width: 48%;
+        font-size: 18px;
+        margin-top: 15px;
+    }
+
+    .headerbar-mid-right {
+        float:right;
+        width: 48%;
+        text-align: right;
+        font-size:16px;
+        margin-top: 15px;
+    }
+}
+
+
+//
+// Header Bar Right
+// --------------------------------------------------
+
+.headerbar-right {
+    float:right;
+    width:10%;
 }
 
 // change styling for other modules
