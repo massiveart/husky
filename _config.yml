@@ -3,7 +3,6 @@
 
 
 # custom settings
-source:           ./docs
 pygments:         true
 
 # Dependencies
