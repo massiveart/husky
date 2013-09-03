@@ -1,0 +1,20 @@
+<div id="navigation" {% if page.slug == "home" %}class="is-startpage"{% endif%}>
+    <div class="navigation">
+        <ul class="navigation-columns">
+            <li id="column-0" class="navigation-column">
+                <ul class="navigation-items">
+                    <li title="CSS" class="navigation-column-item{% if page.slug == "css" %} selected{% endif %}">
+                        <a href="/husky/css">
+                            <span class="icon-css"></span>CSS
+                        </a>
+                    </li>
+                    <li title="JavaScript Components" class="navigation-column-item{% if page.slug == "js" %} selected{% endif %}">
+                        <a href="/husky/js">
+                            <span class="icon-js"></span>JavaScript Components
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

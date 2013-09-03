@@ -7,6 +7,12 @@
     border: 0;
     border-radius: $btnBorderRadius;
     background-color: #FFF;
+    color: #000;
+}
+
+a.btn {
+    color: #000;
+    text-decoration: none;
 }
 
 .btn-large {
@@ -16,4 +22,9 @@
 .btn-black {
     background-color: #000;
     color: #FFF;
+}
+
+a.btn-black {
+    color: #FFF;
+    text-decoration: none;
 }

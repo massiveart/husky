@@ -7,4 +7,12 @@
 	.fail {
 		background-color: orangered;
 	}
+
+	&.dropdown {
+		width: 100%;
+	}
+
+	.dropdown-menu {
+		top: 40px;
+	}
 }
