@@ -33,11 +33,28 @@
             return this.options.url + delimiter + 'search=' + pattern;
         },
 
+        getValueID: function() {
+            if (this.options.value != null) {
+                return this.options.value.id;
+            } else {
+                return null;
+            }
+        },
+
+        getValueName: function() {
+            if (this.options.value != null) {
+                return this.options.value[this.options.valueName];
+            } else {
+                return '';
+            }
+        },
+
         init: function() {
             Husky.DEBUG && console.log(this.name, 'init');
 
             // init form-element and dropdown menu
-            this.$valueField = $('<input type="text" autofill="false" class="name-value form-element" data-id=""/>');
+            this.$valueField = $('<input type="text" autofill="false" class="name-value form-element" data-id="' + this.getValueID() +
+                '" value="' + this.getValueName() + '"/>');
             this.$dropDown = $('<div class="dropdown-menu" />');
             this.$dropDownList = $('<ul/>');
             this.$element.append(this.$valueField);
@@ -47,6 +64,10 @@
 
             // bind dom elements
             this.bindDOMEvents();
+
+            if (this.options.value != null) {
+                this.successField();
+            }
         },
 
         // bind dom elements
@@ -294,7 +315,8 @@
         url: '',
         valueName: 'name',
         minLength: 3,
-        keyControl: true
+        keyControl: true,
+        value: null
     };
 
 })(Husky.$, this, this.document);
