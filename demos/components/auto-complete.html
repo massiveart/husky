@@ -59,7 +59,10 @@
 
 				var autoComplete = $('#content').huskyAutoComplete({
 					url: '/contacts',
-					value: {id: 1, name: 'abcd'}
+					value: {id: 1, name: 'abcd'},
+					excludeItems: [
+						{id: 2}
+					]
 				});
 
 				autoComplete.data('Husky.Ui.AutoComplete').on('auto-complete:loadData', function() {

@@ -3,6 +3,8 @@
 
     var moduleName = 'Husky.Ui.AutoComplete';
 
+    var data = [];
+
     Husky.Ui.AutoComplete = function(element, options) {
         this.name = moduleName;
 
@@ -152,10 +154,11 @@
                     Husky.DEBUG && console.log(this.name, 'load', 'success');
 
                     // if only one result this is it, if no result hideDropDown, else generateDropDown
-                    if (response.total > 1) {
-                        this.generateDropDown(response.items);
-                    } else if (response.total == 1) {
-                        this.selectItem(response.items[0]);
+                    this.updateData(response.items);
+                    if (data.length > 1) {
+                        this.generateDropDown(data);
+                    } else if (data.length == 1) {
+                        this.selectItem(data[0]);
                     } else {
                         this.hideDropDown();
                     }
@@ -169,6 +172,16 @@
             });
 
             this.trigger('auto-complete:loadData', null);
+        },
+
+        // update global data array
+        updateData: function(newData) {
+            data = [];
+            newData.forEach(function(item) {
+                if (this.isVisible(item)) {
+                    data.push(item);
+                }
+            }.bind(this));
         },
 
         // generate dropDown with given items
