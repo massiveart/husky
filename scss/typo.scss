@@ -48,7 +48,7 @@ h6 {
     font-weight: $headingsFontWeight;
     color: $grayLight;
 
-    .bold {
+    &.bold {
       font-family: 'MuseoSansCondensed700';
     }
 }
