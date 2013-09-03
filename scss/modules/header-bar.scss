@@ -6,8 +6,8 @@
 .headerbar {
     color: $grayLight;
     width: 100%;
-    height: 70px;
-    padding: 15px 15px;
+    height: 50px;
+    padding: 10px 16px;
     background-color: $baseColor;
     box-shadow: 0 5px 0 0 rgba(0, 0, 0, .25);
 }
@@ -34,62 +34,60 @@
 // Header Bar Left
 // --------------------------------------------------
     
-.headerbar-left {
+#headerbar-left {
     float:left;
     width: 240px;
 
-    .headerbar-account-icon {
-        height: 40px;
+    #headerbar-account-icon {
+        height: 30px;
         width: 25px;
         background: #999;   
     }
 
-    .headerbar-account-icon,
-    .headerbar-account-text,
-    .headerbar-account-logout {
+    #headerbar-account-icon,
+    #headerbar-account-text,
+    #headerbar-account-logout {
         float:left;
     }
 
-    .headerbar-account-text {
-        margin-left:20px;
-        margin-top: 15px;
+    #headerbar-account-text {
+        margin-left:10px;
+        margin-top: 10px;
+        font-weight: bold;
+        font-size:14px;
     }
 
-    .headerbar-account-logout{
+    #headerbar-account-logout{
         margin-left: 5px;
-        margin-top: 18px;
+        margin-top: 10px;
         font-size:12px;
     }
     
-    .headerbar-account-text {
-        font-size:18px;
-        font-weight: bold;
-    }
 }
 
 // 
 // Header Bar Mid
 // --------------------------------------------------
 
-.headerbar-mid {
+#headerbar-mid {
     float:left;
     width: 800px;
     margin-left:60px;
     font-weight:bold;
     
-    .headerbar-mid-left {
+    #headerbar-mid-left {
         float:left;
         width: 48%;
         font-size: 18px;
-        margin-top: 15px;
+        margin-top: 8px;
     }
 
-    .headerbar-mid-right {
+    #headerbar-mid-right {
         float:right;
         width: 48%;
         text-align: right;
-        font-size:16px;
-        margin-top: 15px;
+        font-size:14px;
+        margin-top: 10px;
     }
 }
 
@@ -98,7 +96,7 @@
 // Header Bar Right
 // --------------------------------------------------
 
-.headerbar-right {
+#headerbar-right {
     float:right;
     width:10%;
 }
