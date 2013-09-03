@@ -14,6 +14,7 @@
     'use strict';
 
     var moduleName = 'Husky.Ui.Dialog';
+    var $backdrop;
 
     Husky.Ui.Dialog = function(element, options) {
 
@@ -74,6 +75,7 @@
             this.$element.on('click', '.close', this.hide.bind(this));
         },
 
+
         // listen for private events
         bindCustomEvents: function() {
 
@@ -98,7 +100,12 @@
             this.$element.show();
 
             if (this.options.backdrop) {
-                $('body').append('<div id="husky-dialog-backdrop" class="husky-dialog-backdrop fade in"></div>');
+                $backdrop = $('<div id="husky-dialog-backdrop" class="husky-dialog-backdrop fade in"></div>');
+                $('body').append($backdrop);
+
+                $backdrop.click(function(){
+                    this.hide();
+                }.bind(this));
             }
         },
 

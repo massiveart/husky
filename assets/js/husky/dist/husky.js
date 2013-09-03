@@ -1188,7 +1188,11 @@ function typeOf(value) {
             this.$element.off();
 
             this.$element.on('click', '.close', this.hide.bind(this));
+           $('#husky-dialog-backdrop').click(function() {
+                this.hide.bind(this);
+           })
         },
+
 
         // listen for private events
         bindCustomEvents: function() {
