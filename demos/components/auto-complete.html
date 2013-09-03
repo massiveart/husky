@@ -18,7 +18,17 @@
 	</head>
 	<body>
 
-		<div id="content">
+		<div class="grid">
+
+			<div class="grid-row">
+
+				<div class="grid-col-1"></div>
+
+				<div id="content" class="grid-col-4">
+					<label>ASDF</label>
+				</div>
+
+			</div>
 
 		</div>
 
@@ -68,7 +78,7 @@
 				autoComplete.data('Husky.Ui.AutoComplete').on('auto-complete:loadData', function() {
 					setTimeout(function() {
 						fakeServer.respond();
-					}, 500);
+					}, 1000);
 				});
 
 				fakeServer.respond();
