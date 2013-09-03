@@ -90,8 +90,10 @@
         // Shows the dialog and compiles the different dialog template parts 
         show: function(params) {
 
-            this.template = params.template;
-            this.data = params.data;
+            var optionslocal = $.extend({}, $.fn.huskyDialog.defaults, typeof params == 'object' && params);
+
+            this.template = optionslocal.template;
+            this.data = optionslocal.data;
 
             this.$header.append(_.template(this.template.header, this.data.header));
             this.$content.append(_.template(this.template.content, this.data.content));
@@ -145,9 +147,13 @@
 
     $.fn.huskyDialog.defaults = {
         data: null,
-        template: null,
         backdrop: true,
-        width: '560px'
+        width: '560px',
+        template: {
+            content: '<h3><%= title %></h3><p><%= content %></p>',
+            footer: '<button class="btn btn-black closeButton"><%= buttonCancelText %></button><button class="btn btn-black saveButton"><%= buttonSaveText %></button>',
+            header: '<button type="button" class="close">×</button>'
+        }
     };
 
 })(Husky.$, this, this.document);
