@@ -13,7 +13,6 @@
 }
 
 .headerbar-logo {
-    float: left;
     font-size: 18px;
     color: #fff;
     line-height: 30px;
@@ -35,34 +34,8 @@
 // --------------------------------------------------
     
 #headerbar-left {
-    float:left;
-    width: 240px;
-
-    #headerbar-account-icon {
-        height: 30px;
-        width: 25px;
-        background: #999;   
-    }
-
-    #headerbar-account-icon,
-    #headerbar-account-text,
-    #headerbar-account-logout {
-        float:left;
-    }
-
-    #headerbar-account-text {
-        margin-left:10px;
-        margin-top: 10px;
-        font-weight: bold;
-        font-size:14px;
-    }
-
-    #headerbar-account-logout{
-        margin-left: 5px;
-        margin-top: 10px;
-        font-size:12px;
-    }
-    
+    background: red;
+    height:30px;
 }
 
 // 
@@ -70,25 +43,8 @@
 // --------------------------------------------------
 
 #headerbar-mid {
-    float:left;
-    width: 800px;
-    margin-left:60px;
-    font-weight:bold;
-    
-    #headerbar-mid-left {
-        float:left;
-        width: 48%;
-        font-size: 18px;
-        margin-top: 8px;
-    }
-
-    #headerbar-mid-right {
-        float:right;
-        width: 48%;
-        text-align: right;
-        font-size:14px;
-        margin-top: 10px;
-    }
+    background: yellow;
+    height:30px;
 }
 
 
@@ -97,9 +53,10 @@
 // --------------------------------------------------
 
 #headerbar-right {
-    float:right;
-    width:10%;
+    background: green;
+    height:30px;
 }
+
 
 // change styling for other modules
 .navigation {
