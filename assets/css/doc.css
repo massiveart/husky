@@ -115,3 +115,69 @@ body {
     font-size: 14px;
 }
 
+/*
+ * Common styles
+ */
+.doc-section-element {
+	margin-bottom: 50px;
+}
+
+/*
+ * Callout
+ */
+.bs-callout {
+	margin: 20px 0;
+	padding: 15px 30px 15px 15px;
+	border-left: 5px solid #eee;
+}
+
+.bs-callout h4 {
+	margin-top: 0;
+}
+
+.bs-callout p:last-child {
+	margin-bottom: 0;
+}
+
+/* Variations */
+.bs-callout-danger {
+	background-color: #fcf2f2;
+	border-color: #dFb5b4;
+}
+
+.bs-callout-warning {
+	background-color: #fefbed;
+	border-color: #f1e7bc;
+}
+
+.bs-callout-info {
+	background-color: #f0f7fd;
+	border-color: #d0e3f0;
+}
+
+/*
+ * Examples
+ */
+.bs-example {
+	position: relative;
+	padding: 45px 15px 15px;
+	margin: 0 -15px 15px;
+	background-color: #fafafa;
+	box-shadow: inset 0 3px 6px rgba(0, 0, 0, .05);
+	border-color: #e5e5e5 #eee #eee;
+	border-style: solid;
+	border-width: 1px 0;
+}
+
+/* Echo out a label for the example */
+.bs-example:after {
+	content: "Example";
+	position: absolute;
+	top: 15px;
+	left: 15px;
+	font-size: 12px;
+	font-weight: bold;
+	color: #bbb;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
