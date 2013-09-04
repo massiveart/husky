@@ -1,7 +1,11 @@
 (function($, window, document, undefined) {
     'use strict';
 
-    var moduleName = 'Husky.Ui.AutoComplete';
+    var moduleName = 'Husky.Ui.AutoComplete',
+        data = [],
+        successClass = 'husky-auto-complete-success',
+        failClass = 'husky-auto-complete-fail',
+        loadingClass = 'husky-auto-complete-loading';
 
     Husky.Ui.AutoComplete = function(element, options) {
         this.name = moduleName;
@@ -66,7 +70,7 @@
             this.bindDOMEvents();
 
             if (this.options.value != null) {
-                this.successField();
+                this.successState();
             }
         },
 
@@ -116,7 +120,7 @@
 
                     } else {
                         // If dropdown not visible => search for given pattern
-                        this.noStateField();
+                        this.noState();
                         this.loadData(this.$valueField.val());
                     }
                 }.bind(this));
@@ -133,7 +137,7 @@
             Husky.DEBUG && console.log(this.name, 'inputChanged');
 
             // value is not success
-            this.noStateField();
+            this.noState();
 
             var val = this.$valueField.val();
             if (val.length >= this.options.minLength) {
@@ -145,17 +149,21 @@
         loadData: function(pattern) {
             var url = this.getUrl(pattern);
             Husky.DEBUG && console.log(this.name, 'load: ' + url);
+            this.loadingState();
 
             Husky.Util.ajax({
                 url: url,
                 success: function(response) {
                     Husky.DEBUG && console.log(this.name, 'load', 'success');
 
+                    this.noState();
+
                     // if only one result this is it, if no result hideDropDown, else generateDropDown
-                    if (response.total > 1) {
-                        this.generateDropDown(response.items);
-                    } else if (response.total == 1) {
-                        this.selectItem(response.items[0]);
+                    this.updateData(response.items);
+                    if (data.length > 1) {
+                        this.generateDropDown(data);
+                    } else if (data.length == 1) {
+                        this.selectItem(data[0]);
                     } else {
                         this.hideDropDown();
                     }
@@ -163,12 +171,22 @@
                 error: function() {
                     Husky.DEBUG && console.log(this.name, 'load', 'error');
 
-                    this.failField();
+                    this.failState();
                     this.hideDropDown();
                 }.bind(this)
             });
 
             this.trigger('auto-complete:loadData', null);
+        },
+
+        // update global data array
+        updateData: function(newData) {
+            data = [];
+            newData.forEach(function(item) {
+                if (this.isVisible(item)) {
+                    data.push(item);
+                }
+            }.bind(this));
         },
 
         // generate dropDown with given items
@@ -186,7 +204,7 @@
         isVisible: function(item) {
             var result = true;
             this.options.excludeItems.forEach(function(testItem) {
-                if (item.id == testItem.id) result = false;
+                if (item.id === testItem.id) result = false;
             }.bind(this));
             return result;
         },
@@ -210,27 +228,38 @@
             this.$dropDown.hide();
         },
 
-        // set class success to field
-        successField: function() {
+        // set class success to container
+        successState: function() {
             Husky.DEBUG && console.log(this.name, 'set success');
             this.clearDropDown();
-            this.$valueField.removeClass('fail');
-            this.$valueField.addClass('success');
+            this.$originalElement.removeClass(failClass);
+            this.$originalElement.removeClass(loadingClass);
+            this.$originalElement.addClass(successClass);
         },
 
-        // remove class success and fail of field
-        noStateField: function() {
+        // remove class success, fail and loading of container
+        noState: function() {
             Husky.DEBUG && console.log(this.name, 'remove success and fail');
             this.$valueField.data('');
-            this.$valueField.removeClass('success');
-            this.$valueField.removeClass('fail');
+            this.$originalElement.removeClass(failClass);
+            this.$originalElement.removeClass(loadingClass);
+            this.$originalElement.removeClass(successClass);
         },
 
-        // add class fail to field
-        failField: function() {
+        // add class fail to container
+        failState: function() {
             Husky.DEBUG && console.log(this.name, 'set fail');
-            this.$valueField.removeClass('success');
-            this.$valueField.addClass('fail');
+            this.$originalElement.addClass(failClass);
+            this.$originalElement.removeClass(loadingClass);
+            this.$originalElement.removeClass(successClass);
+        },
+
+        // add class loading to container
+        loadingState: function() {
+            Husky.DEBUG && console.log(this.name, 'set loading');
+            this.$originalElement.removeClass(failClass);
+            this.$originalElement.addClass(loadingClass);
+            this.$originalElement.removeClass(successClass);
         },
 
         // handle key down
@@ -302,7 +331,7 @@
             this.$valueField.val(item[this.options.valueName]);
 
             this.hideDropDown();
-            this.successField();
+            this.successState();
         }
     });
 
