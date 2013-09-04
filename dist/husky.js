@@ -408,9 +408,20 @@ function typeOf(value) {
         generateDropDown: function(items) {
             this.clearDropDown();
             items.forEach(function(item) {
-                this.$dropDownList.append('<li data-id="' + item.id + '">' + item[this.options.valueName] + '</li>');
+                if (this.isVisible(item)) {
+                    this.$dropDownList.append('<li data-id="' + item.id + '">' + item[this.options.valueName] + '</li>');
+                }
             }.bind(this));
             this.showDropDown();
+        },
+
+        // is item visible (filter)
+        isVisible: function(item) {
+            var result = true;
+            this.options.excludeItems.forEach(function(testItem) {
+                if (item.id == testItem.id) result = false;
+            }.bind(this));
+            return result;
         },
 
         // clear childs of list
@@ -545,11 +556,12 @@ function typeOf(value) {
     };
 
     $.fn.huskyAutoComplete.defaults = {
-        url: '',
-        valueName: 'name',
-        minLength: 3,
-        keyControl: true,
-        value: null
+        url: '', // url to load data
+        valueName: 'name', // propertyName for value
+        minLength: 3, // min length for request
+        keyControl: true, // control with up/down key
+        value: null, // value to display at start
+        excludeItems: [] // items to filter
     };
 
 })(Husky.$, this, this.document);
@@ -1118,6 +1130,7 @@ function typeOf(value) {
     'use strict';
 
     var moduleName = 'Husky.Ui.Dialog';
+    var $backdrop;
 
     Husky.Ui.Dialog = function(element, options) {
 
@@ -1178,6 +1191,7 @@ function typeOf(value) {
             this.$element.on('click', '.close', this.hide.bind(this));
         },
 
+
         // listen for private events
         bindCustomEvents: function() {
 
@@ -1192,17 +1206,27 @@ function typeOf(value) {
         // Shows the dialog and compiles the different dialog template parts 
         show: function(params) {
 
-            this.template = params.template;
-            this.data = params.data;
+
+
+            var optionslocal = $.extend({}, $.fn.huskyDialog.defaults, typeof params == 'object' && params);
+
+            this.template = optionslocal.template;
+            this.data = optionslocal.data;
 
             this.$header.append(_.template(this.template.header, this.data.header));
             this.$content.append(_.template(this.template.content, this.data.content));
             this.$footer.append(_.template(this.template.footer, this.data.footer));
 
+            this.$element.off(); 
             this.$element.show();
 
             if (this.options.backdrop) {
-                $('body').append('<div id="husky-dialog-backdrop" class="husky-dialog-backdrop fade in"></div>');
+                $backdrop = $('<div id="husky-dialog-backdrop" class="husky-dialog-backdrop fade in"></div>');
+                $('body').append($backdrop);
+
+                $backdrop.click(function(){
+                    this.hide();
+                }.bind(this));
             }
         },
 
@@ -1242,9 +1266,13 @@ function typeOf(value) {
 
     $.fn.huskyDialog.defaults = {
         data: null,
-        template: null,
         backdrop: true,
-        width: '560px'
+        width: '560px',
+        template: {
+            content: '<h3><%= title %></h3><p><%= content %></p>',
+            footer: '<button class="btn btn-black closeButton"><%= buttonCancelText %></button><button class="btn btn-black saveButton"><%= buttonSaveText %></button>',
+            header: '<button type="button" class="close">×</button>'
+        }
     };
 
 })(Husky.$, this, this.document);
@@ -1408,11 +1436,22 @@ function typeOf(value) {
             this.clearDropDown();
             if (items.length > 0) {
                 items.forEach(function(item) {
-                    this.$dropDownList.append('<li data-id="' + item.id + '">' + item[this.options.valueName] + '</li>');
+                    if (this.isVisible(item)) {
+                        this.$dropDownList.append('<li data-id="' + item.id + '">' + item[this.options.valueName] + '</li>');
+                    }
                 }.bind(this));
             } else {
                 this.$dropDownList.append('<li>No data received</li>');
             }
+        },
+
+        // is item visible (filter)
+        isVisible: function(item) {
+            var result = true;
+            this.options.excludeItems.forEach(function(testItem) {
+                if (item.id == testItem.id) result = false;
+            }.bind(this));
+            return result;
         },
 
         // clear childs of list
@@ -1465,7 +1504,8 @@ function typeOf(value) {
         data: [],    // data array
         trigger: '',  // trigger for click event
         valueName: 'name', // name of text property
-        setParentDropDown: false // set class dropdown for parent dom object
+        setParentDropDown: false, // set class dropdown for parent dom object
+        excludeItems: [] // items to filter
     };
 
 })(Husky.$, this, this.document);
