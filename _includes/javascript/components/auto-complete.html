@@ -88,22 +88,55 @@ autoComplete.data('Husky.Ui.AutoComplete').on('auto-complete:loadData', function
 	</thead>
 	<tbody>
 		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			<td>url</td>
+			<td>string</td>
+			<td>null</td>
+			<td>URL to load Data</td>
 		</tr>
 		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			<td>valueName</td>
+			<td>string</td>
+			<td>"name"</td>
+			<td>Property name for value</td>
 		</tr>
 		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			<td>minLength</td>
+			<td>integer</td>
+			<td>3</td>
+			<td>Control with up/down/enter key</td>
+		</tr>
+		<tr>
+			<td>value</td>
+			<td>JSON object</td>
+			<td>null</td>
+			<td>Value to display at start</td>
+		</tr>
+		<tr>
+			<td>excludeItems</td>
+			<td>JSON array</td>
+			<td>[]</td>
+			<td>This items would not be shown</td>
 		</tr>
 	</tbody>
 </table>
+
+<h2>Data</h2>
+
+<p>Request:</p>
+{% highlight javascript %}
+var url = '/contacts?search=abc';
+{% endhighlight %}
+
+<div class="doc-code">
+{% highlight javascript %}
+{
+	"total": 3,
+	"items": [
+		{ "id": "1", "name": "abcd" },
+		{ "id": "2", "name": "abcde" },
+		{ "id": "3", "name": "abcdef" }
+	]
+}
+{% endhighlight %}
+</div>
+
