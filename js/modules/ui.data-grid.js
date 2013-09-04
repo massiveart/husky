@@ -178,11 +178,11 @@
 
             } else {
 
-                var tblRowId, tblCellContent, tblCellClass,
+                var tblRowAttributes, tblCellContent, tblCellClass,
                     tblColumns, tblCellClasses;
 
                 tblColumns = [];
-                tblRowId = ((!!row.id) ? ' data-id="' + row.id + '"' : '');
+                tblRowAttributes = '';
 
                 // add row id to itemIds collection (~~ === shorthand for parse int)
                 !!row.id && this.allItemIds.push(~~row.id);
@@ -199,23 +199,27 @@
 
                 for (var key in row) {
                     var column = row[key];
-                    tblCellClasses = [];
-                    tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
+                    if (!this.options.excludeFields.inArray(key)) {
+                        tblCellClasses = [];
+                        tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
 
-                    // prepare table cell classes
-                    !!column.class && tblCellClasses.push(column.class);
-                    !!column.thumb && tblCellClasses.push('thumb');
+                        // prepare table cell classes
+                        !!column.class && tblCellClasses.push(column.class);
+                        !!column.thumb && tblCellClasses.push('thumb');
 
-                    tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
+                        tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
-                    tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
+                        tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
+                    } else {
+                        tblRowAttributes += ' data-' + key + '="' + column + '"';
+                    }
                 }
 
                 if (!!this.options.removeRow) {
                     tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
                 }
 
-                return '<tr' + tblRowId + '>' + tblColumns.join('') + '</tr>';
+                return '<tr' + tblRowAttributes + '>' + tblColumns.join('') + '</tr>';
             }
         },
 
@@ -541,7 +545,8 @@
         paginationOptions: {
             pageSize: 10,
             showPages: 5
-        }
+        },
+        excludeFields: ['id']
     };
 
 })(Husky.$, this, this.document);
