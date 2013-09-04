@@ -1,5 +1,8 @@
 @charset "UTF-8";
 
+@import
+	"abstract/abstract_loader",
+	"abstract/abstract_fail";
 
 @import
     "variables.scss",

@@ -73,13 +73,9 @@ h5 {
     line-height: 15px;
 }
 
-h4.bold {
-    font-size: 18px;
-    line-height: 20px;
-    font-weight:bold;
-}
-h5.bold {
-    font-size: 14px;
-    line-height: 15px;
-    font-weight:bold;
+// Bold fonts
+// -------------------------
+
+.bold {
+  font-family: 'MuseoSansCondensed700' !important;
 }
