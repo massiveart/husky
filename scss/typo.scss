@@ -47,10 +47,6 @@ h6 {
     font-family: $headingsFontFamily;
     font-weight: $headingsFontWeight;
     color: $grayLight;
-
-    &.bold {
-      font-family: 'MuseoSansCondensed700';
-    }
 }
 
 h1 {
@@ -75,4 +71,11 @@ h4 {
 h5 {
     font-size: 14px;
     line-height: 15px;
+}
+
+// Bold fonts
+// -------------------------
+
+.bold {
+  font-family: 'MuseoSansCondensed700' !important;
 }
