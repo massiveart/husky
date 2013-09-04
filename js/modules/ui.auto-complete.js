@@ -1,13 +1,11 @@
 (function($, window, document, undefined) {
     'use strict';
 
-    var moduleName = 'Husky.Ui.AutoComplete';
-
-    var data = [];
-
-    var successClass = 'husky-auto-complete-success';
-    var failClass = 'husky-auto-complete-fail';
-    var loadingClass = 'husky-auto-complete-loading';
+    var moduleName = 'Husky.Ui.AutoComplete',
+        data = [],
+        successClass = 'husky-auto-complete-success',
+        failClass = 'husky-auto-complete-fail',
+        loadingClass = 'husky-auto-complete-loading';
 
     Husky.Ui.AutoComplete = function(element, options) {
         this.name = moduleName;
@@ -206,7 +204,7 @@
         isVisible: function(item) {
             var result = true;
             this.options.excludeItems.forEach(function(testItem) {
-                if (item.id == testItem.id) result = false;
+                if (item.id === testItem.id) result = false;
             }.bind(this));
             return result;
         },
