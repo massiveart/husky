@@ -165,6 +165,7 @@
                     } else if (data.length == 1) {
                         this.selectItem(data[0]);
                     } else {
+                        this.failState();
                         this.hideDropDown();
                     }
                 }.bind(this),
