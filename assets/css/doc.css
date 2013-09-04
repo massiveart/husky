@@ -20,18 +20,20 @@ body {
     margin: 20px 0;
 }
 
+.doc-example,
 .doc-code {
     position: relative;
     margin: 10px 0;
 }
 
-.doc-code .highlight {
-    padding: 15px 0 5px;
-    border: 1px solid #E1E1E1;
+.doc-code .highlight,
+.doc-example .example {
+	padding: 30px 10px 5px;
+	border: 1px solid #E1E1E1;
 }
 
+.doc-example::before,
 .doc-code::before {
-    content: "Code";
     position: absolute;
     top: 0;
     left: 0;
@@ -39,6 +41,14 @@ body {
     padding: 2px 10px;
     border-bottom-right-radius: 4px;
     font-size: 16px;
+}
+
+.doc-code::before {
+	content: "Code";
+}
+
+.doc-example::before {
+	content: "Example";
 }
 
 .doc-footnotes {
@@ -155,29 +165,23 @@ body {
 	border-color: #d0e3f0;
 }
 
-/*
- * Examples
- */
-.bs-example {
-	position: relative;
-	padding: 45px 15px 15px;
-	margin: 0 -15px 15px;
-	background-color: #fafafa;
-	box-shadow: inset 0 3px 6px rgba(0, 0, 0, .05);
-	border-color: #e5e5e5 #eee #eee;
-	border-style: solid;
-	border-width: 1px 0;
+.highlight {
+	padding: 9px 14px;
+	margin-bottom: 14px;
+	background-color: #f7f7f9;
+	border: 1px solid #e1e1e8;
+	border-radius: 4px;
 }
 
-/* Echo out a label for the example */
-.bs-example:after {
-	content: "Example";
-	position: absolute;
-	top: 15px;
-	left: 15px;
-	font-size: 12px;
-	font-weight: bold;
-	color: #bbb;
-	text-transform: uppercase;
-	letter-spacing: 1px;
+.highlight pre {
+	padding: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	background-color: transparent;
+	border: 0;
+}
+
+/* Fix Droppdown */
+.dropdown-menu {
+	z-index: 90;
 }

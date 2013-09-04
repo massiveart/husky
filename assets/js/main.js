@@ -35,3 +35,5 @@ $(document).ready(function() {
 
     fakeServer.respond();
 });
+
+// component dialog
