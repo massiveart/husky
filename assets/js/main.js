@@ -37,3 +37,34 @@ $(document).ready(function() {
 });
 
 // component dialog
+
+var $dialog = $('#dialog').huskyDialog({
+    backdrop: true,
+    width: '800px'
+});
+
+
+$('#showDialog').on('click', function() {
+    $dialog.data('Husky.Ui.Dialog').trigger('dialog:show', {
+        data: {
+            content: {
+                title: "This is the headline!",
+                content: "This is the content"
+            },
+            footer: {
+                buttonCancelText: "Abort",
+                buttonSaveText: "Save"
+            }
+        }
+    });
+});
+
+$dialog.on('click', '.closeButton', function() {
+    $dialog.data('Husky.Ui.Dialog').trigger('dialog:hide');
+});
+
+
+$dialog.on('click', '.saveButton', function() {
+    $dialog.data('Husky.Ui.Dialog').trigger('dialog:hide');
+});
+
