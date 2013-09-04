@@ -90,7 +90,7 @@
         // Shows the dialog and compiles the different dialog template parts 
         show: function(params) {
 
-
+            this.vent.off(); 
 
             var optionslocal = $.extend({}, $.fn.huskyDialog.defaults, typeof params == 'object' && params);
 
@@ -101,7 +101,6 @@
             this.$content.append(_.template(this.template.content, this.data.content));
             this.$footer.append(_.template(this.template.footer, this.data.footer));
 
-            this.$element.off(); 
             this.$element.show();
 
             if (this.options.backdrop) {
