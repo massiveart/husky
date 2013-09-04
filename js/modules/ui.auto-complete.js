@@ -205,7 +205,7 @@
         isVisible: function(item) {
             var result = true;
             this.options.excludeItems.forEach(function(testItem) {
-                if (item.id === testItem.id) result = false;
+                if (parseInt(item.id) === parseInt(testItem.id)) result = false;
             }.bind(this));
             return result;
         },
