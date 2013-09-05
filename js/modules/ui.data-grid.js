@@ -295,6 +295,17 @@
             $table.append(this.prepareTableRow(row));
         },
 
+        prepareRemoveRow: function(event) {
+            if (!!this.options.autoRemoveHandling) {
+                this.removeRow(event);
+            } else {
+                var $element, $tblRow;
+                $element = $(event.currentTarget);
+                $tblRow = $element.parent().parent();
+                this.trigger('data-grid:row:remove-click', event, $tblRow.data('id'));
+            }
+        },
+
         removeRow: function(event) {
             Husky.DEBUG && console.log(this.name, 'removeRow');
 
@@ -304,7 +315,6 @@
             $tblRow = $element.parent().parent();
 
             this.trigger('data-grid:row:removed', $tblRow.data('id'));
-
             $tblRow.remove();
         },
 
@@ -398,7 +408,7 @@
             }
 
             if (this.options.removeRow) {
-                this.$element.on('click', '.remove-row > span', this.removeRow.bind(this));
+                this.$element.on('click', '.remove-row > span', this.prepareRemoveRow.bind(this));
             }
         },
 
@@ -546,7 +556,8 @@
             pageSize: 10,
             showPages: 5
         },
-        excludeFields: ['id']
+        excludeFields: ['id'],
+        autoRemoveHandling: true
     };
 
 })(Husky.$, this, this.document);

@@ -56,6 +56,7 @@
 		<h1>This is a generated Table</h1>
 
 		<div id="js-data-grid"></div>
+		<div id="js-data-grid2"></div>
 
 		<button id="add-row">Add Row</button>
 
@@ -92,6 +93,7 @@
 						showPages: 6
 					},
 					removeRow: true,
+					autoRemoveHandling: false,
 					tableHead: [
 						{content: 'Name'},
 						{content: 'Image'},
@@ -114,7 +116,55 @@
 					console.log('remove: ' + item);
 				});
 
+				$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:row:remove-click', function(event, item) {
+					console.log('remove-clicked: ' + item);
+					alert('DELETE AFTER OK');
+					$dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove', event);
+				});
+
 				$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:select', function() {
+					console.log('Husky.Ui.DataGrid item select');
+				});
+
+				var $dataGrid2 = $('#js-data-grid2').huskyDataGrid({
+					url: '/contacts',
+					selectItemType: 'checkbox',
+					pagination: false,
+					className: "test",
+					paginationOptions: {
+						pageSize: 4,
+						showPages: 6
+					},
+					removeRow: true,
+					tableHead: [
+						{content: 'Name'},
+						{content: 'Image'},
+						{content: 'Options'}
+					],
+					excludeFields: ['id', 'content1']
+				});
+
+				$('#add-row').on('click', function() {
+					$dataGrid2.data('Husky.Ui.DataGrid').trigger('data-grid:row:add', { "id": "1", "content1": "Tschau", "content2": "Hallo 2", "content3": "Hallo 3" });
+				});
+
+				$dataGrid2.data('Husky.Ui.DataGrid').on('data-grid:page:change', function() {
+					setTimeout(function() {
+						fakeServer.respond();
+					}, 500);
+				});
+
+				$dataGrid2.data('Husky.Ui.DataGrid').on('data-grid:row:removed', function(item) {
+					console.log('remove: ' + item);
+				});
+
+				$dataGrid2.data('Husky.Ui.DataGrid').on('data-grid:row:remove-click', function(event, item) {
+					console.log('remove-clicked: ' + item);
+					alert('DELETE AFTER OK');
+					$dataGrid2.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove', event);
+				});
+
+				$dataGrid2.data('Husky.Ui.DataGrid').on('data-grid:item:select', function() {
 					console.log('Husky.Ui.DataGrid item select');
 				});
 
