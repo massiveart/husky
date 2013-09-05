@@ -20,18 +20,20 @@ body {
     margin: 20px 0;
 }
 
+.doc-example,
 .doc-code {
     position: relative;
     margin: 10px 0;
 }
 
-.doc-code .highlight {
-    padding: 15px 0 5px;
-    border: 1px solid #E1E1E1;
+.doc-code .highlight,
+.doc-example .example {
+	padding: 30px 10px 5px;
+	border: 1px solid #E1E1E1;
 }
 
+.doc-example::before,
 .doc-code::before {
-    content: "Code";
     position: absolute;
     top: 0;
     left: 0;
@@ -39,6 +41,14 @@ body {
     padding: 2px 10px;
     border-bottom-right-radius: 4px;
     font-size: 16px;
+}
+
+.doc-code::before {
+	content: "Code";
+}
+
+.doc-example::before {
+	content: "Example";
 }
 
 .doc-footnotes {
@@ -115,3 +125,77 @@ body {
     font-size: 14px;
 }
 
+/*
+ * Common styles
+ */
+.doc-section-element {
+	margin-bottom: 50px;
+}
+
+/*
+ * Callout
+ */
+.bs-callout {
+	margin: 20px 0;
+	padding: 15px 30px 15px 15px;
+	border-left: 5px solid #eee;
+}
+
+.bs-callout h4 {
+	margin-top: 0;
+}
+
+.bs-callout p:last-child {
+	margin-bottom: 0;
+}
+
+/* Variations */
+.bs-callout-danger {
+	background-color: #fcf2f2;
+	border-color: #dFb5b4;
+}
+
+.bs-callout-warning {
+	background-color: #fefbed;
+	border-color: #f1e7bc;
+}
+
+.bs-callout-info {
+	background-color: #f0f7fd;
+	border-color: #d0e3f0;
+}
+
+.highlight {
+	padding: 9px 14px;
+	margin-bottom: 14px;
+	background-color: #f7f7f9;
+	border: 1px solid #e1e1e8;
+	border-radius: 4px;
+}
+
+.highlight pre {
+	padding: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	background-color: transparent;
+	border: 0;
+}
+
+/* Fix Droppdown */
+.dropdown-menu {
+	z-index: 90;
+}
+
+
+
+/*
+ * Dialog
+ */
+
+.husky-dialog-example > .husky-dialog {
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    margin: auto;
+}
