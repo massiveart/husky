@@ -90,8 +90,6 @@
         // Shows the dialog and compiles the different dialog template parts 
         show: function(params) {
 
-            this.vent.off(); 
-
             var optionslocal = $.extend({}, $.fn.huskyDialog.defaults, typeof params == 'object' && params);
 
             this.template = optionslocal.template;
