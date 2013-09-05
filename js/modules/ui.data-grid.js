@@ -234,12 +234,16 @@
             var $element, itemId;
 
             $element = $(event.currentTarget);
+
+            if (!$element.is('input')) {
+                $element = $element.parent().find('input');
+            }
+
             itemId = $element.parents('tr').data('id');
 
             if (this.selectedItemIds.indexOf(itemId) > -1) {
                 $element
                     .removeClass('is-selected')
-                    .find('td:first-child input[type="checkbox"]')
                     .prop('checked', false);
 
                 // uncheck 'Select All'-checkbox
@@ -252,12 +256,12 @@
             } else {
                 $element
                     .addClass('is-selected')
-                    .find('td:first-child input[type="checkbox"]')
                     .prop('checked', true);
 
                 this.selectedItemIds.push(itemId);
                 this.trigger('data-grid:item:select', itemId);
             }
+            return false;
         },
 
         selectAllItems: function(event) {
@@ -397,11 +401,19 @@
             this.$element.off();
 
             if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
-                this.$element.on('click', 'tbody > tr input[type="checkbox"]', this.selectItem.bind(this));
+                this.$element.on('click', 'tbody > tr span.custom-checkbox-icon', this.selectItem.bind(this));
+                this.$element.on('change', 'tbody > tr input[type="checkbox"]', this.selectItem.bind(this));
+
                 this.$element.on('click', 'th.select-all', this.selectAllItems.bind(this));
             } else if (!!this.options.selectItemType && this.options.selectItemType === 'radio') {
                 this.$element.on('click', 'tbody > tr input[type="radio"]', this.selectItem.bind(this));
             }
+
+            this.$element.on('click', 'tbody > tr', function(event) {
+                if (!$(event.target).is('input') && !$(event.target).is('span.icon-remove')) {
+                    this.trigger('data-grid:item:click', $(event.currentTarget).data('id'));
+                }
+            }.bind(this));
 
             if (this.options.pagination) {
                 this.$element.on('click', '.pagination li.page', this.changePage.bind(this));

@@ -53,9 +53,14 @@
 		<br/><br/>
 
 
-		<h1>This is a generated Table</h1>
+		<h1>This are generated Table</h1>
+
+		<h2>Manuel Remove Handling</h2>
 
 		<div id="js-data-grid"></div>
+
+		<h2>Auto Remove Handling</h2>
+
 		<div id="js-data-grid2"></div>
 
 		<button id="add-row">Add Row</button>
@@ -122,8 +127,16 @@
 					$dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove', event);
 				});
 
-				$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:select', function() {
-					console.log('Husky.Ui.DataGrid item select');
+				$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:select', function(item) {
+					console.log('Husky.Ui.DataGrid item select: ' + item);
+				});
+
+				$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:deselect', function(item) {
+					console.log('Husky.Ui.DataGrid item deselect: ' + item);
+				});
+
+				$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:click', function(item) {
+					console.log('Husky.Ui.DataGrid item click: ' + item);
 				});
 
 				var $dataGrid2 = $('#js-data-grid2').huskyDataGrid({
