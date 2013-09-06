@@ -22,12 +22,15 @@
             core.mvc = require('backbone');
 
             sandbox.mvc = {};
+
             sandbox.mvc.View = function(view) {
                 return core.mvc.View.extend(view);
             };
+
             sandbox.mvc.Model = function(model) {
                 return core.mvc.Model.extend(model);
             };
+
             sandbox.mvc.Collection = function(collection) {
                 return core.mvc.Collection.extend(collection);
             };

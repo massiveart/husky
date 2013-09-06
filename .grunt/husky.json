@@ -10,7 +10,7 @@
             "backbone":       "bower_components/backbone/backbone",
             "requirejs":      "bower_components/requirejs/require",
             "text":           "bower_components/requirejs-text/text",
-            "jquery":         "empty:",
+            "jquery":         "bower_components/jquery/jquery",
             "husky":          "lib/husky",
 
             "__component__$navigation@husky":           "husky_components/navigation/main"
@@ -20,6 +20,7 @@
             "underscore": { "exports": "_" }
         },
         "include": [
+            "jquery",
             "requirejs",
             "underscore",
             "backbone",

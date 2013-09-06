@@ -1,4 +1,4 @@
-require(['lib/husky'], function(Husky) {
+require(['husky'], function(Husky) {
     'use strict';
 
     var fakeServer;
