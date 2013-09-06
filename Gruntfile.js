@@ -11,20 +11,13 @@ module.exports = function(grunt) {
     // Lookup of the Aura Extensions and injects them in the requirejs build
     var auraExtensions = grunt.file.glob
         .sync('husky_extensions/**/*.js')
-        .map(function (extension) {
+        .map(function(extension) {
             return extension.replace('.js', '');
         });
 
-    var auraComponents = grunt.file.glob
-        .sync('husky_components/**/*.js')
-        .map(function (extension) {
-            return extension.replace('.js', '');
-        });
-
-    var clientRJSConfig = (function () {
+    var rJSConfig = (function() {
         var _c = huskyConfig.requireJS;
         _c.include = _c.include.concat(auraExtensions);
-        //_c.include = _c.include.concat(auraComponents);
         _c.optimize = grunt.option('dev') ? "none" : "uglify";
         return _c;
     })();
@@ -36,7 +29,7 @@ module.exports = function(grunt) {
 
         requirejs: {
             husky: {
-                options: clone(clientRJSConfig, true)
+                options: clone(rJSConfig, true)
             }
         },
 

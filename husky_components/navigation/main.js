@@ -4,7 +4,7 @@ define(['jquery'], function($) {
 
     return {
 
-        type : 'View',
+        view: true,
 
         initialize: function() {
 
@@ -13,6 +13,7 @@ define(['jquery'], function($) {
             sandbox.logger.log('initialize', this);
 
             sandbox.logger.log(arguments);
+
 
             this.$navigation = $('<div/>', {
                 class: 'navigation'

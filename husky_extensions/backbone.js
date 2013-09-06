@@ -17,7 +17,7 @@
         initialize: function(app) {
             var core = app.core,
                 sandbox = app.sandbox,
-                components = app.components;
+                _ = app.sandbox.util._;
 
             core.mvc = require('backbone');
 
@@ -35,7 +35,38 @@
                 return core.mvc.Collection.extend(collection);
             };
 
-            components.addType('View', sandbox.mvc.View);
+            var views = {};
+
+            // Injecting a Backbone view in the Component just before initialization.
+            // This View's class will be built and cached this first time the component is included.
+            app.components.before('initialize', function(options) {
+
+                if (!this) {
+                    throw new Error("Missing context!");
+                }
+
+                // check component needs a view
+                if (!!this.view) {
+
+                    var View = views[options.ref];
+
+                    if (!View) {
+                        var ext = _.pick(this, 'model', 'collection', 'id', 'attributes', 'className', 'tagName', 'events');
+                        views[options.ref] = View = sandbox.mvc.View(ext);
+                    }
+                    this.view = new View({ el: this.$el });
+                    this.view.sandbox = this.sandbox;
+                }
+            });
+
+            app.components.before('remove', function() {
+
+                if (!this) {
+                    throw new Error("Missing context!");
+                }
+
+                this.view && this.view.stopListening();
+            });
         },
 
         afterAppStart: function(app) {
