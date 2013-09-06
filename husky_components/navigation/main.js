@@ -3,9 +3,16 @@ define(['jquery'], function($) {
     var sandbox;
 
     return {
+
+        type : 'View',
+
         initialize: function() {
 
             sandbox = this.sandbox;
+
+            sandbox.logger.log('initialize', this);
+
+            sandbox.logger.log(arguments);
 
             this.$navigation = $('<div/>', {
                 class: 'navigation'

@@ -1,0 +1,36 @@
+{
+    "namespace": "Husky",
+    "requireJS": {
+        "baseUrl": ".",
+        "preserveLicenseComments": false,
+        "paths": {
+            "aura":           "bower_components/aura/lib",
+            "underscore":     "bower_components/underscore/underscore",
+            "eventemitter":   "bower_components/eventemitter2/lib/eventemitter2",
+            "backbone":       "bower_components/backbone/backbone",
+            "requirejs":      "bower_components/requirejs/require",
+            "text":           "bower_components/requirejs-text/text",
+            "jquery":         "empty:",
+            "husky":          "lib/husky",
+
+            "__component__$navigation@husky":           "husky_components/navigation/main"
+        },
+        "shim": {
+            "backbone":   { "exports": "Backbone", "deps": ["underscore", "jquery"] },
+            "underscore": { "exports": "_" }
+        },
+        "include": [
+            "requirejs",
+            "underscore",
+            "backbone",
+            "text",
+            "aura/ext/debug",
+            "aura/ext/mediator",
+            "aura/ext/components",
+            "husky",
+
+            "__component__$navigation@husky"
+        ],
+        "out": "dist/<%= PKG_VERSION %>/husky.js"
+    }
+}

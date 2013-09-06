@@ -5,9 +5,40 @@ module.exports = function(grunt) {
     // load all grunt tasks
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
+    var huskyConfig = grunt.file.readJSON('.grunt/husky.json');
+    var clone = grunt.util._.clone;
+
+    // Lookup of the Aura Extensions and injects them in the requirejs build
+    var auraExtensions = grunt.file.glob
+        .sync('husky_extensions/**/*.js')
+        .map(function (extension) {
+            return extension.replace('.js', '');
+        });
+
+    var auraComponents = grunt.file.glob
+        .sync('husky_components/**/*.js')
+        .map(function (extension) {
+            return extension.replace('.js', '');
+        });
+
+    var clientRJSConfig = (function () {
+        var _c = huskyConfig.requireJS;
+        _c.include = _c.include.concat(auraExtensions);
+        //_c.include = _c.include.concat(auraComponents);
+        _c.optimize = grunt.option('dev') ? "none" : "uglify";
+        return _c;
+    })();
+
+
     // project configuration
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+
+        requirejs: {
+            husky: {
+                options: clone(clientRJSConfig, true)
+            }
+        },
 
         meta: {
             banner: '/* \n' +
