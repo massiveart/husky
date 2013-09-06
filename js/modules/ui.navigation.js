@@ -381,15 +381,12 @@
             $.each($columns, function(idx, column) {
                 $column = $(column);
 
-                if ($column.hasClass('hide')) {
-                    return;
-                } else if ($column.hasClass('collapsed')) {
+                if ($column.hasClass('collapsed')) {
                     width += 50;
-                    return;
                 } else {
                     width += 250;
-                    return;
                 }
+
             }.bind(this));
 
             return width;
