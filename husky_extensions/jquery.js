@@ -23,45 +23,45 @@
 
             app.core.dom.$document = $(document);
 
-            app.core.dom.createElement = function(element, props) {
+            app.core.dom.createElement = function(selector, props) {
                 props = props || {};
                 return $(element, props);
             };
 
-            app.core.dom.append = function(container, target) {
+            app.core.dom.append = function(selector, element) {
                 return $(container).append(target);
             };
 
-            app.core.dom.css = function(target, style) {
+            app.core.dom.css = function(selector, style) {
                 return $(target).css(style);
             };
 
-            app.core.dom.addClass = function(target, classes) {
+            app.core.dom.addClass = function(selector, classes) {
                 return $(target).addClass(classes);
             };
 
-            app.core.dom.removeClass = function(target, classes) {
+            app.core.dom.removeClass = function(selector, classes) {
                 return $(target).removeClass(classes);
             };
 
-            app.core.dom.width = function(element) {
+            app.core.dom.width = function(selector) {
                 return $(element).width();
             };
 
-            app.core.dom.height = function(element) {
+            app.core.dom.height = function(selector) {
                 return $(element).height();
             };
 
-            app.core.dom.remove = function(element) {
+            app.core.dom.remove = function(selector) {
                 return $(element).remove();
             };
 
-            app.core.dom.attr = function(element, attributes) {
+            app.core.dom.attr = function(selector, attributes) {
                 attributes = attributes || {};
-                return $(element).remove();
+                return $(element).attr(attributes);
             };
 
-            app.core.dom.is = function(element, type) {
+            app.core.dom.is = function(selector, type) {
                 return $(element).is(type);
             };
 
