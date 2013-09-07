@@ -1,10 +1,41 @@
-.husky-auto-complete {
+.husky-auto-complete-success,
+.husky-auto-complete-fail,
+.husky-auto-complete-loading {
+	label::after {
+		content: '';
+		font-family: 'Glyphicons';
+		z-index: 100;
+		float: right;
+		display: inline-block;
+		position: relative;
+		top: 35px;
+		right: 7px;
+	}
+}
 
-	.success {
-		background-color: greenyellow;
+.husky-auto-complete-success {
+	label::after {
+		content: "\e199";
+	}
+}
+
+.husky-auto-complete-fail {
+	@extend %abstract-fail;
+}
+
+.husky-auto-complete-loading {
+	label::after {
+		@extend %abstract-loader;
+		top: 37px;
+	}
+}
+
+.husky-auto-complete {
+	&.dropdown {
+		width: 100%;
 	}
 
-	.fail {
-		background-color: orangered;
+	.dropdown-menu {
+		top: 40px;
 	}
 }

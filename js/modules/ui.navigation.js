@@ -250,7 +250,6 @@
 
             $firstColumn = $('#column-0');
             $firstColumn.addClass('collapsed');
-            console.log($firstColumn.hasClass('collapsed'));
         },
 
         showNavigationColumns: function(event) {
@@ -311,7 +310,10 @@
                 // ... and add class to selected element
                 $element.addClass('selected');
 
-                this.trigger('navigation:item:selected', itemModel);
+                this.trigger('navigation:item:selected', {
+                    item: itemModel,
+                    data: this.getNavigationData()
+                });
 
                 if (!!itemModel.get('hasSub')) {
 
@@ -333,7 +335,10 @@
                                     this.collapseFirstColumn();
                                 }
 
-                                this.trigger('navigation:item:sub:loaded', itemModel);
+                                this.trigger('navigation:item:sub:loaded', {
+                                    item: itemModel,
+                                    data: this.getNavigationData()
+                                });
                             }.bind(this)
                         });
                     } else {
@@ -347,16 +352,50 @@
                         if (this.currentColumnIdx > 1) {
                             this.collapseFirstColumn();
                         }
+
+                        this.trigger('navigation:item:sub:show', {
+                            item: itemModel,
+                            data: this.getNavigationData()
+                        });
                     }
 
                 } else if (itemModel.get('type') == 'content') {
-                    this.trigger('navigation:item:content:show', itemModel);
-
                     this.showContent = true;
 
                     $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
                     this.collapseFirstColumn();
+
+                    this.trigger('navigation:item:content:show', {
+                        item: itemModel,
+                        data: this.getNavigationData()
+                    });
                 }
+            }
+        },
+
+        getNavigationWidth: function() {
+            var $columns = $('.navigation-column'),
+                width = 0,
+                $column = null;
+
+            $.each($columns, function(idx, column) {
+                $column = $(column);
+
+                if ($column.hasClass('collapsed')) {
+                    width += 50;
+                } else {
+                    width += 250;
+                }
+
+            }.bind(this));
+
+            return width;
+        },
+
+        getNavigationData: function() {
+            return {
+                // TODO
+                navWidth: this.getNavigationWidth()
             }
         },
 

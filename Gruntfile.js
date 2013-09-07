@@ -143,7 +143,7 @@ module.exports = function(grunt) {
                         expand: true,
                         dot: true,
                         cwd: './',
-                        dest: 'docs/packages/husky/',
+                        dest: 'assets/js/husky/',
                         src: [
                             'dist/{,*/}*'
                         ]
@@ -152,7 +152,7 @@ module.exports = function(grunt) {
                         expand: true,
                         dot: true,
                         cwd: './',
-                        dest: 'docs/packages/husky/dist/',
+                        dest: 'assets/js/husky/dist/',
                         src: [
                             'fonts/{,*/}*'
                         ]

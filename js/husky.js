@@ -46,6 +46,13 @@ function typeOf(value) {
         };
     }
 
+    if (!Array.prototype.inArray) {
+        Array.prototype.inArray = function(needle) {
+            for (var i = 0; i < this.length; i++) if (this[ i] === needle) return true;
+            return false;
+        }
+    }
+
     if (!Function.prototype.bind) {
         //
         // @link https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind
@@ -90,7 +97,7 @@ function typeOf(value) {
 
     // Debug configuration
     Husky.DEBUG = false;
-    
+
 
 
     // Backbone Events

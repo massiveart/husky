@@ -52,7 +52,7 @@
 
 		<script src="../../node_modules/sinon/pkg/sinon.js"></script>
 		<script src="../../bower_components/jquery/jquery.js"></script>
-		<script src="../../bower_components/underscore/underscore-min.js"></script>
+		<script src="../../bower_components/underscore/underscore.js"></script>
 
 		<script src="../../js/husky.js"></script>
 		<script src="../../js/modules/util.js"></script>
@@ -98,7 +98,11 @@
 				var dropDown2 = $('#dd2').huskyDropDown({
 					url: '/contacts',
 					trigger: '.drop-down-trigger',
-					setParentDropDown: true
+					setParentDropDown: true,
+					excludeItems: [
+						{id: 1},
+						{id: 2}
+					]
 				});
 
 				dropDown2.data('Husky.Ui.DropDown').on('drop-down:click-item', function(item) {
@@ -110,7 +114,7 @@
 				dropDown2.data('Husky.Ui.DropDown').on('drop-down:loadData', function() {
 					setTimeout(function() {
 						fakeServer.respond();
-					},1000);
+					}, 1000);
 				});
 			});
 
