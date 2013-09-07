@@ -15,6 +15,14 @@
         name: 'jQuery',
 
         initialize: function(app) {
+            app.core.dom.window = window;
+
+            app.core.dom.$window = $(window);
+
+            app.core.dom.document = document;
+
+            app.core.dom.$document = $(document);
+
             app.core.dom.createElement = function(element, props) {
                 props = props || {};
                 return $(element, props);
