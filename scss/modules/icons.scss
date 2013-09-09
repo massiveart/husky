@@ -1,0 +1,63 @@
+//
+// Icons
+// --------------------------------------------------
+
+[class^="icon-"] {
+    font-family: 'Glyphicons';
+}
+
+.icon-remove {
+    cursor: pointer;
+    &::after {
+        content: "\E208";
+        display: inline-block;
+    }
+}
+
+.icon-add {
+    cursor: pointer;
+    &::after {
+        content: "\E191";
+        display: inline-block;
+    }
+}
+
+.icon-down {
+	cursor: pointer;
+	&::after {
+		content: "\e159";
+		display: inline-block;
+	}
+}
+
+.icon-search {
+    cursor: pointer;
+    &::after {
+        content: "\e028";
+        display: inline-block;
+    }
+}
+
+.icon-circle-remove {
+    cursor: pointer;
+    &::after {
+        content: "\e193";
+        display: inline-block;
+    }
+}
+
+.icon-circle-arrow-down {
+    cursor: pointer;
+    &::after {
+        content: "\e220";
+        display: inline-block;
+    }
+}
+
+.icon-circle-ok {
+    cursor: pointer;
+    &::after {
+        content: "\e199";
+        display: inline-block;
+    }
+}
