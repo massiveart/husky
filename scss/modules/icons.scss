@@ -71,17 +71,25 @@
 }
 
 .icon-settings {
-	cursor: pointer;
-	&::after {
-		content: "\e281";
-		display: inline-block;
-	}
+    cursor: pointer;
+    &::after {
+        content: "\e281";
+        display: inline-block;
+    }
 }
 
 .icon-cogwheel {
     cursor: pointer;
     &::after {
         content: "\e137";
+        display: inline-block;
+    }
+}
+
+.icon-cogwheels {
+    cursor: pointer;
+    &::after {
+        content: "\e138";
         display: inline-block;
     }
 }
@@ -118,10 +126,26 @@
     }
 }
 
+.icon-bank {
+    cursor: pointer;
+    &::after {
+        content: "\e264";
+        display: inline-block;
+    }
+}
+
 .icon-book {
     cursor: pointer;
     &::after {
         content: "\e072";
+        display: inline-block;
+    }
+}
+
+.icon-book-open {
+    cursor: pointer;
+    &::after {
+        content: "\e352";
         display: inline-block;
     }
 }
