@@ -79,9 +79,49 @@
 }
 
 .icon-cogwheel {
-	cursor: pointer;
-	&::after {
-		content: "\e137";
-		display: inline-block;
-	}
+    cursor: pointer;
+    &::after {
+        content: "\e137";
+        display: inline-block;
+    }
+}
+
+.icon-caution {
+    cursor: pointer;
+    &::after {
+        content: "\e197";
+        display: inline-block;
+    }
+}
+
+.icon-contact-book {
+    cursor: pointer;
+    &::after {
+        content: "\e089";
+        display: inline-block;
+    }
+}
+
+.icon-parents {
+    cursor: pointer;
+    &::after {
+        content: "\e025";
+        display: inline-block;
+    }
+}
+
+.icon-building {
+    cursor: pointer;
+    &::after {
+        content: "\e090";
+        display: inline-block;
+    }
+}
+
+.icon-book {
+    cursor: pointer;
+    &::after {
+        content: "\e072";
+        display: inline-block;
+    }
 }
