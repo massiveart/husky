@@ -1,0 +1,93 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="stylesheet" href="../../.tmp/husky.css">
+    </head>
+    <body>
+        
+        <h1>This is a generated Table</h1>
+        <div id="js-data-grid"></div>
+
+        <button id="add-row">Add Row</button>
+
+        <script src="../../node_modules/sinon/pkg/sinon.js"></script>
+        <script src="../../bower_components/jquery/jquery.js"></script>
+        <script src="../../bower_components/underscore/underscore-min.js"></script>
+
+        <script src="../../js/husky.js"></script>
+        <script src="../../js/modules/util.js"></script>
+        <script src="../../js/modules/ui.data-grid.js"></script>
+
+        <script>
+            Husky.DEBUG = true;          
+
+            $(document).ready(function() {
+
+                var data = new Array();
+                data[0] = { id: 2, translations: [], locale: 'English'};
+                data[1] = { id: 4, translations: [], locale: 'Deutsch'};
+                
+                var $dataGrid = $('#js-data-grid').huskyDataGrid({
+                    pagination: false,
+                    showPages: 6,
+                    pageSize: 4,
+                    selectItemType: 'radio',
+                    data: {
+                        items: data,
+                    },
+                    template: {
+                        row: ['<tr <% if (!!id) { %> data-id="<%= id %>"<% } %> >',
+                                    '<td>',
+                                        '<label>',
+                                            '<input type="radio" class="custom-radio" name="catalogueRadio">',
+                                            '<span class="custom-radio-icon"></span>',
+                                        '</label>',
+                                    '</td>',
+                                    '<td>',
+                                        '<input class="form-element" type="text" id="locale<%= id %>" value="<%= locale %>"/>',
+                                    '</td>',
+                                    '<td class="remove-row">',
+                                        '<span class="icon-remove"></span>',
+                                    '</td>',
+                                '</tr>'].join(''),
+                        }
+                });
+
+                //this.templateCatalogueTableRow = RowTemplate;
+                //this.catalogueTable = dataGrid.data('Husky.Ui.DataGrid');
+                
+
+                $('#add-row').on('click', function() {
+                    $dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:add', { "id": "", "locale": "" , "translations": [] });
+                });
+                
+
+                // TODO id der row mitgeben
+                $('#js-data-grid').on('click', '.remove-row > span', function(event) {
+                    $dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove', event);
+                });
+
+		
+		$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:select', function(itemId) {
+			console.log(itemId);
+		}.bind(this));
+		
+		// TODO: implement deselct for radio
+		$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:deselect', function(itemId) {
+			console.log(itemId);
+		}.bind(this));
+               
+            });
+
+        </script>
+</body>
+</html>
