@@ -258,10 +258,6 @@ $navigationIconFont: $baseIconFont;
         }
     }
 
-    &.selected {
-        cursor: default;
-    }
-
     &[data-has-children="true"] {
         font-weight: bold;
     }
