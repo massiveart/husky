@@ -25,44 +25,44 @@
 
             app.core.dom.createElement = function(selector, props) {
                 props = props || {};
-                return $(element, props);
+                return $(selector, props);
             };
 
             app.core.dom.append = function(selector, element) {
-                return $(container).append(target);
+                return $(selector).append(element);
             };
 
             app.core.dom.css = function(selector, style) {
-                return $(target).css(style);
+                return $(selector).css(style);
             };
 
             app.core.dom.addClass = function(selector, classes) {
-                return $(target).addClass(classes);
+                return $(selector).addClass(classes);
             };
 
             app.core.dom.removeClass = function(selector, classes) {
-                return $(target).removeClass(classes);
+                return $(selector).removeClass(classes);
             };
 
             app.core.dom.width = function(selector) {
-                return $(element).width();
+                return $(selector).width();
             };
 
             app.core.dom.height = function(selector) {
-                return $(element).height();
+                return $(selector).height();
             };
 
             app.core.dom.remove = function(selector) {
-                return $(element).remove();
+                return $(selector).remove();
             };
 
             app.core.dom.attr = function(selector, attributes) {
                 attributes = attributes || {};
-                return $(element).attr(attributes);
+                return $(selector).attr(attributes);
             };
 
             app.core.dom.is = function(selector, type) {
-                return $(element).is(type);
+                return $(selector).is(type);
             };
 
             app.core.dom.onReady = function(callback) {
