@@ -61,3 +61,27 @@
         display: inline-block;
     }
 }
+
+.icon-edit {
+	cursor: pointer;
+	&::after {
+		content: "\e151";
+		display: inline-block;
+	}
+}
+
+.icon-settings {
+	cursor: pointer;
+	&::after {
+		content: "\e281";
+		display: inline-block;
+	}
+}
+
+.icon-cogwheel {
+	cursor: pointer;
+	&::after {
+		content: "\e137";
+		display: inline-block;
+	}
+}

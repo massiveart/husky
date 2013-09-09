@@ -124,7 +124,7 @@
 				$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:row:remove-click', function(event, item) {
 					console.log('remove-clicked: ' + item);
 					alert('DELETE AFTER OK');
-					$dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove', event);
+					$dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove', item);
 				});
 
 				$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:select', function(item) {
