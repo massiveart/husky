@@ -1802,11 +1802,11 @@ function typeOf(value) {
         },
 
         addColumn: function() {
-            var $subColumns;
+            var $subColumns, $subColumnsContainer;
 
             this.currentColumnIdx++;
 
-            if (this.currentColumnIdx === 2) {
+            if (this.currentColumnIdx === 2 && !$('.navigation-sub-columns-container').size()) {
                 $subColumns = $('<li/>', {
                     'class': 'navigation-sub-columns-container'
                 });
@@ -1842,7 +1842,6 @@ function typeOf(value) {
 
             this.$navigationColumns.removeClass('show-content');
 
-            this.currentColumnIdx = 1;
             this.showContent = false;
 
             if (!$element.hasClass('navigation-column-item') && !$element.is('span')) {

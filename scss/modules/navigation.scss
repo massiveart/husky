@@ -311,10 +311,14 @@ $navigationIconFont: $baseIconFont;
     padding-right: 5px !important;
 
     .navigation-column-item {
-        [data-has-sub="true"] {
+        &[data-has-sub="true"] {
             &::before {
                 content: "\E177";
             }
+        }
+
+        &.is-loading::before {
+            content: "";
         }
     }
 }
