@@ -221,11 +221,11 @@
         },
 
         addColumn: function() {
-            var $subColumns;
+            var $subColumns, $subColumnsContainer;
 
             this.currentColumnIdx++;
 
-            if (this.currentColumnIdx === 2) {
+            if (this.currentColumnIdx === 2 && !$('.navigation-sub-columns-container').size()) {
                 $subColumns = $('<li/>', {
                     'class': 'navigation-sub-columns-container'
                 });
@@ -261,7 +261,6 @@
 
             this.$navigationColumns.removeClass('show-content');
 
-            this.currentColumnIdx = 1;
             this.showContent = false;
 
             if (!$element.hasClass('navigation-column-item') && !$element.is('span')) {
@@ -321,7 +320,7 @@
                         this.selectionLocked = false;
 
                         this.addLoader($element);
-                        $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
+                        this.updateColumns();
 
                         this.load({
                             url: itemModel.get('action'),
@@ -346,7 +345,7 @@
 
                         this.columnHeader = itemModel.get('header') || null;
                         this.columnItems = itemModel.get('sub').items;
-                        $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
+                        this.updateColumns();
                         this.addColumn();
 
                         if (this.currentColumnIdx > 1) {
@@ -362,7 +361,7 @@
                 } else if (itemModel.get('type') == 'content') {
                     this.showContent = true;
 
-                    $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
+                    this.updateColumns();
                     this.collapseFirstColumn();
 
                     this.trigger('navigation:item:content:show', {
@@ -371,6 +370,12 @@
                     });
                 }
             }
+        },
+
+        // remove old columns before loading new ones
+        updateColumns: function() {
+            $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
+            $('.navigation-column:gt(' + this.currentColumnIdx + ')').remove();
         },
 
         getNavigationWidth: function() {
@@ -410,7 +415,7 @@
 
             if (!$element.hasClass('navigation-column-item') && !$element.is('span')) {
                 this.currentColumnIdx = 1;
-                $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
+                this.updateColumns();
                 $('#column-1')
                     .find('.selected')
                     .removeClass('selected');
@@ -516,7 +521,7 @@
 
             $(window).on('resize load', this.setNavigationSize.bind(this));
 
-            this.$element.on('click', '.navigation-column-item:not(.selected)', this.selectItem.bind(this));
+            this.$element.on('click', '.navigation-column-item', this.selectItem.bind(this));
             this.$element.on('click', '.navigation-column:eq(1)', this.showNavigationColumns.bind(this));
             this.$element.on('click', '.navigation-column:eq(0).collapsed', this.showFirstNavigationColumn.bind(this));
             this.$element.on('mousewheel DOMMouseScroll', '.navigation-sub-columns-container', this.scrollSubColumns.bind(this));
@@ -530,11 +535,11 @@
         },
 
         addLoader: function($elem) {
-            $elem.addClass('loading');
+            $elem.addClass('is-loading');
         },
 
         hideLoader: function($elem) {
-            $elem.removeClass('loading');
+            $elem.removeClass('is-loading');
         },
 
         collections: {
