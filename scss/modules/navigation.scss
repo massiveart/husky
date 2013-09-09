@@ -125,7 +125,7 @@ $navigationIconFont: $baseIconFont;
                 background-color: $bgNavigationSecondColumnItemHover;
             }
 
-            &.loading {
+            &.is-loading {
                 &::before {
                     background: url('../img/loader_black.gif') no-repeat center center !important;
                 }
@@ -237,7 +237,7 @@ $navigationIconFont: $baseIconFont;
     }
 
     &::before {
-        content: "\e224";
+        content: "\E174";
         display: inline-block;
         float: right;
         font-size: 12px;
@@ -245,7 +245,7 @@ $navigationIconFont: $baseIconFont;
         font-weight: normal;
     }
 
-    &.loading {
+    &.is-loading {
         &::before {
             content: "";
             display: inline-block;
@@ -281,7 +281,7 @@ $navigationIconFont: $baseIconFont;
         font-family: $navigationIconFont;
 
         &::after {
-            content: "\E281"; /* remove this shit */
+            content: "";
             display: block;
         }
     }
@@ -310,4 +310,12 @@ $navigationIconFont: $baseIconFont;
     min-width: 250px;
     padding-bottom: 5px !important;
     padding-right: 5px !important;
+
+    .navigation-column-item {
+        [data-has-sub="true"] {
+            &::before {
+                content: "\E177";
+            }
+        }
+    }
 }
