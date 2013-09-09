@@ -35,6 +35,18 @@
                 return core.mvc.Collection.extend(collection);
             };
 
+            define('mvc/view', function() {
+                return sandbox.mvc.View;
+            });
+
+            define('mvc/model', function() {
+                return sandbox.mvc.Model;
+            });
+
+            define('mvc/collection', function() {
+                return sandbox.mvc.Collection;
+            });
+
             var views = {};
 
             // Injecting a Backbone view in the Component just before initialization.
