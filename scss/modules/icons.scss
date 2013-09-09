@@ -79,9 +79,17 @@
 }
 
 .icon-cogwheel {
-	cursor: pointer;
-	&::after {
-		content: "\e137";
-		display: inline-block;
-	}
+    cursor: pointer;
+    &::after {
+        content: "\e137";
+        display: inline-block;
+    }
+}
+
+.icon-caution {
+    cursor: pointer;
+    &::after {
+        content: "\e197";
+        display: inline-block;
+    }
 }
