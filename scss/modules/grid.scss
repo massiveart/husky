@@ -2,6 +2,8 @@
 // Grid System
 // --------------------------------------------------
 
+$grid-padding-left: 10px;
+$grid-padding-right: 10px;
 
 .grid {
     display: block;
@@ -21,33 +23,77 @@
 
 [class*='grid-col-'] {
     float: left;
-    padding-left: 10px;
-    padding-right: 10px;
+	padding-left: $grid-padding-left;
+	padding-right: $grid-padding-right;
 
-    &:first-of-type {
-        padding-left: 0;
-        padding-right: 10px;
-    }
+	&:first-of-type {
+		padding-left: 0;
+		padding-right: $grid-padding-right;
+	}
 
-    &:last-of-type {
+	&:last-of-type {
         padding-right: 0;
     }
 }
 
 .grid-col-1 {
     width: 8.33%;
+
+	&.floating {
+		&:nth-child(12n+1) {
+			padding-left: 0;
+			padding-right: $grid-padding-right;
+		}
+
+		&:nth-child(12n) {
+			padding-right: 0;
+		}
+	}
 }
 
 .grid-col-2 {
     width: 16.66%;
+
+	&.floating {
+		&:nth-child(6n+1) {
+			padding-left: 0;
+			padding-right: $grid-padding-right;
+		}
+
+		&:nth-child(6n) {
+			padding-right: 0;
+		}
+	}
 }
 
 .grid-col-3 {
     width: 25%;
+
+	&.floating {
+		&:nth-child(4n+1) {
+			padding-left: 0;
+			padding-right: $grid-padding-right;
+		}
+
+		&:nth-child(4n) {
+			padding-right: 0;
+		}
+	}
 }
 
 .grid-col-4 {
     width: 33.33%;
+
+	&.floating {
+		&:nth-child(3n+1) {
+			padding-left: 0;
+			padding-right: $grid-padding-right;
+		}
+
+		&:nth-child(3n) {
+			padding-right: 0;
+		}
+	}
 }
 
 .grid-col-5 {
@@ -56,6 +102,17 @@
 
 .grid-col-6 {
     width: 50%;
+
+	&.floating {
+		&:nth-child(2n+1) {
+			padding-left: 0;
+			padding-right: $grid-padding-right;
+		}
+
+		&:nth-child(2n) {
+			padding-right: 0;
+		}
+	}
 }
 
 .grid-col-7 {
