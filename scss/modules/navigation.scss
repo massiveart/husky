@@ -281,7 +281,6 @@ $navigationIconFont: $baseIconFont;
         font-family: $navigationIconFont;
 
         &::after {
-            content: "";
             display: block;
         }
     }
