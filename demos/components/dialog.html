@@ -87,7 +87,9 @@
                         
             <!-- Button to trigger modal -->
             <a id="showDialog" href="#dialog" role="button" class="btn" data-toggle="dialog">Launch demo modal</a>
-             
+            <a id="showOkDialog" href="#dialog" role="button" class="btn" data-toggle="dialog">Launch OK dialog</a>
+            <a id="showDefinedDialog" href="#dialog" role="button" class="btn" data-toggle="dialog">Custom Template</a>
+
             <!-- Modal -->
             <div id="dialog"></div>
 
@@ -111,6 +113,34 @@
 
             $('#showDialog').on('click', function() {
                 $dialog.data('Husky.Ui.Dialog').trigger('dialog:show', {
+                    data: {
+                        content: {
+                            title: "This is the headline!",
+                            content: "This is the content"
+                        },
+                        footer: {
+                            buttonCancelText: "Cancel",
+                            buttonSaveText: "Save"
+                        }
+                    }
+                });
+            });
+
+            $('#showOkDialog').on('click', function() {
+                $dialog.data('Husky.Ui.Dialog').trigger('dialog:show', {
+                    templateType: "okDialog",
+                    data: {
+                        content: {
+                            title: "This is the headline!",
+                            content: '<p>This is the content</p>' +
+                                    '<p><input type="checkbox" id="mycheckbox"/><label for="mycheckbox">this is the label for the checkbox</label> </p>'
+                        }
+                    }
+                });
+            });
+
+            $('#showDefinedDialog').on('click', function() {
+                $dialog.data('Husky.Ui.Dialog').trigger('dialog:show', {
                     template: {
                         content: '<h3><%= title %></h3><p><%= content %></p>',
                         footer: '<button class="btn btn-black closeButton"><%= buttonCancelText %></button><button class="btn btn-black saveButton"><%= buttonSaveText %></button>',
@@ -122,7 +152,7 @@
                             content: "This is the content"
                         },
                         footer: {
-                            buttonCancelText: "Abort",
+                            buttonCancelText: "Cancel",
                             buttonSaveText: "Save"
                         }
                     }
