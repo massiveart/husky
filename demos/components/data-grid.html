@@ -53,13 +53,13 @@
 		<br/><br/>
 
 
-		<h1>This are generated Table</h1>
+		<h1>This is a generated Table</h1>
 
-		<h2>Manuel Remove Handling</h2>
+		<h2>manually remove handling</h2>
 
 		<div id="js-data-grid"></div>
 
-		<h2>Auto Remove Handling</h2>
+		<h2>automatically remove handling</h2>
 
 		<div id="js-data-grid2"></div>
 
@@ -90,7 +90,9 @@
 
 				var $dataGrid = $('#js-data-grid').huskyDataGrid({
 					url: '/contacts',
-					selectItemType: 'checkbox',
+					selectItem:{
+                        type: 'checkbox'
+                    },
 					pagination: false,
 					className: "test",
 					paginationOptions: {
@@ -141,7 +143,10 @@
 
 				var $dataGrid2 = $('#js-data-grid2').huskyDataGrid({
 					url: '/contacts',
-					selectItemType: 'checkbox',
+					selectItem:{
+                        type: 'checkbox',
+                        width: '100px'
+                    },
 					pagination: false,
 					className: "test",
 					paginationOptions: {

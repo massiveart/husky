@@ -125,7 +125,7 @@
             // set html classes
             tblClasses = [];
             tblClasses.push((!!this.options.className && this.options.className !== 'table') ? 'table ' + this.options.className : 'table');
-            tblClasses.push((this.options.selectItemType && this.options.selectItemType === 'checkbox') ? 'is-selectable' : '');
+            tblClasses.push((this.options.selectItem && this.options.selectItem.type === 'checkbox') ? 'is-selectable' : '');
 
             $table.addClass(tblClasses.join(' '));
 
@@ -133,15 +133,32 @@
         },
 
         prepareTableHead: function() {
-            var tblColumns, tblCellClass, tblColumnWidth, headData;
+            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth;
 
             tblColumns = [];
             headData = this.options.tableHead || this.data.head;
 
             // add a checkbox to head row
-            if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
+            if (!!this.options.selectItem && this.options.selectItem.type === 'checkbox') {
+
+                // default values
+                var checkboxValues = [100,'px'];
+
+                if (this.options.selectItem.width) {
+                    checkboxValues = this.getNumberAndUnit(this.options.selectItem.width);
+                }
+
+                console.log(checkboxValues);
+
+                tblCheckboxWidth = [];
+                tblCheckboxWidth.push(
+                    'width =',
+                    checkboxValues[0],
+                    checkboxValues[1]
+                );
+
                 tblColumns.push(
-                    '<th class="select-all">',
+                    '<th class="select-all" ',tblCheckboxWidth.join(""),' >',
                     this.templates.checkbox({ id: 'select-all' }),
                     '</th>');
             }
@@ -153,9 +170,15 @@
                 tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
             });
 
+            console.log( tblColumns.join(""));
             return '<tr>' + tblColumns.join('') + '</tr>';
         },
-
+        // returns number and unit
+        getNumberAndUnit: function(numberUnit) {
+            numberUnit= String(numberUnit);
+            var regex = numberUnit.match(/(\d+)\s*(.*)/);
+            return [regex[1], regex[2]];
+        },
         prepareTableRows: function() {
             var tblRows;
 
@@ -187,10 +210,10 @@
                 // add row id to itemIds collection (~~ === shorthand for parse int)
                 !!row.id && this.allItemIds.push(~~row.id);
 
-                if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
+                if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     // add a checkbox to each row
                     tblColumns.push('<td>', this.templates.checkbox(), '</td>');
-                } else if (!!this.options.selectItemType && this.options.selectItemType === 'radio') {
+                } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                     // add a radio to each row
                     tblColumns.push('<td>', this.templates.radio({
                         name: 'husky-radio' // TODO
@@ -407,12 +430,12 @@
         bindDOMEvents: function() {
             this.$element.off();
 
-            if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
+            if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                 this.$element.on('click', 'tbody > tr span.custom-checkbox-icon', this.selectItem.bind(this));
                 this.$element.on('change', 'tbody > tr input[type="checkbox"]', this.selectItem.bind(this));
 
                 this.$element.on('click', 'th.select-all', this.selectAllItems.bind(this));
-            } else if (!!this.options.selectItemType && this.options.selectItemType === 'radio') {
+            } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                 this.$element.on('click', 'tbody > tr input[type="radio"]', this.selectItem.bind(this));
             }
 
@@ -569,11 +592,17 @@
 
     $.fn.huskyDataGrid.defaults = {
         elementType: 'table',
-        selectItemType: null,
+        selectItem: {
+            type:   null,   // checkbox, radiobutton
+            width:  null   // numerous value
+        },
         pagination: false,
         paginationOptions: {
             pageSize: 10,
             showPages: 5
+        },
+        tableHead: {
+//            {content: 'name', width: '100px'}
         },
         excludeFields: ['id'],
         autoRemoveHandling: true
