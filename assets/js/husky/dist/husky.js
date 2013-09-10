@@ -1277,11 +1277,18 @@ function typeOf(value) {
 
         // Shows the dialog and compiles the different dialog template parts 
         show: function(params) {
+            params = params || {};
 
-            var optionslocal = $.extend({}, $.fn.huskyDialog.defaults, typeof params == 'object' && params);
+            var optionslocal;
+            if (params.templateType && params.templateType.toLowerCase() === "okdialog") {
+                optionslocal = $.extend(true, {}, $.fn.huskyDialog.okDialog, params);
+            } else {
+                optionslocal = $.extend(true, {}, $.fn.huskyDialog.defaults, params);
+            }
 
-            this.template = optionslocal.template;
-            this.data = optionslocal.data;
+            this.data       = optionslocal.data;
+            this.template   = optionslocal.template;
+
 
             this.$header.append(_.template(this.template.header, this.data.header));
             this.$content.append(_.template(this.template.content, this.data.content));
@@ -1334,13 +1341,34 @@ function typeOf(value) {
     };
 
     $.fn.huskyDialog.defaults = {
-        data: null,
+        data: {
+            footer: {
+                buttonCancelText: "Cancel",
+                buttonSaveText: "Ok"
+            }
+        },
         backdrop: true,
         width: '560px',
         template: {
             content: '<h3><%= title %></h3><p><%= content %></p>',
-            footer: '<button class="btn btn-black closeButton"><%= buttonCancelText %></button><button class="btn btn-black saveButton"><%= buttonSaveText %></button>',
+            footer: '<button class="btn btn-gray closeButton"><%= buttonCancelText %></button><button class="btn btn-black saveButton"><%= buttonSaveText %></button>',
+            header: ''
             // header: '<button type="button" class="close">×</button>'
+        }
+    };
+
+    $.fn.huskyDialog.okDialog = {
+        data: {
+            footer: {
+                buttonCancelText: "Ok"
+            }
+        },
+        backdrop: true,
+        width: '560px',
+        template: {
+            content: '<h3><%= title %></h3><p><%= content %></p>',
+            footer: '<button class="btn btn-black closeButton"><%= buttonCancelText %></button>',
+            header: ''
         }
     };
 
@@ -1802,11 +1830,11 @@ function typeOf(value) {
         },
 
         addColumn: function() {
-            var $subColumns;
+            var $subColumns, $subColumnsContainer;
 
             this.currentColumnIdx++;
 
-            if (this.currentColumnIdx === 2) {
+            if (this.currentColumnIdx === 2 && !$('.navigation-sub-columns-container').size()) {
                 $subColumns = $('<li/>', {
                     'class': 'navigation-sub-columns-container'
                 });
@@ -1842,7 +1870,6 @@ function typeOf(value) {
 
             this.$navigationColumns.removeClass('show-content');
 
-            this.currentColumnIdx = 1;
             this.showContent = false;
 
             if (!$element.hasClass('navigation-column-item') && !$element.is('span')) {
@@ -1902,7 +1929,7 @@ function typeOf(value) {
                         this.selectionLocked = false;
 
                         this.addLoader($element);
-                        $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
+                        this.updateColumns();
 
                         this.load({
                             url: itemModel.get('action'),
@@ -1927,7 +1954,7 @@ function typeOf(value) {
 
                         this.columnHeader = itemModel.get('header') || null;
                         this.columnItems = itemModel.get('sub').items;
-                        $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
+                        this.updateColumns();
                         this.addColumn();
 
                         if (this.currentColumnIdx > 1) {
@@ -1943,7 +1970,7 @@ function typeOf(value) {
                 } else if (itemModel.get('type') == 'content') {
                     this.showContent = true;
 
-                    $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
+                    this.updateColumns();
                     this.collapseFirstColumn();
 
                     this.trigger('navigation:item:content:show', {
@@ -1952,6 +1979,12 @@ function typeOf(value) {
                     });
                 }
             }
+        },
+
+        // remove old columns before loading new ones
+        updateColumns: function() {
+            $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
+            $('.navigation-column:gt(' + this.currentColumnIdx + ')').remove();
         },
 
         getNavigationWidth: function() {
@@ -1991,7 +2024,7 @@ function typeOf(value) {
 
             if (!$element.hasClass('navigation-column-item') && !$element.is('span')) {
                 this.currentColumnIdx = 1;
-                $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
+                this.updateColumns();
                 $('#column-1')
                     .find('.selected')
                     .removeClass('selected');
@@ -2097,7 +2130,7 @@ function typeOf(value) {
 
             $(window).on('resize load', this.setNavigationSize.bind(this));
 
-            this.$element.on('click', '.navigation-column-item:not(.selected)', this.selectItem.bind(this));
+            this.$element.on('click', '.navigation-column-item', this.selectItem.bind(this));
             this.$element.on('click', '.navigation-column:eq(1)', this.showNavigationColumns.bind(this));
             this.$element.on('click', '.navigation-column:eq(0).collapsed', this.showFirstNavigationColumn.bind(this));
             this.$element.on('mousewheel DOMMouseScroll', '.navigation-sub-columns-container', this.scrollSubColumns.bind(this));
@@ -2111,11 +2144,11 @@ function typeOf(value) {
         },
 
         addLoader: function($elem) {
-            $elem.addClass('loading');
+            $elem.addClass('is-loading');
         },
 
         hideLoader: function($elem) {
-            $elem.removeClass('loading');
+            $elem.removeClass('is-loading');
         },
 
         collections: {
