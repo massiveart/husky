@@ -84,6 +84,10 @@
                 console.log('navigation:item:content:show');
             });
 
+            navigation.data('Husky.Ui.Navigation').on('navigation:column:content:show', function(item){
+                console.log('navigation:column:content:show', item);
+            });
+
 
             $('#load-content').on('click', function() {
                 navigation.data('Husky.Ui.Navigation').trigger('navigation:item:column:show', {
