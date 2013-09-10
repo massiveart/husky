@@ -10,6 +10,7 @@
 @import "compass/css3/border-radius";
 @import "compass/css3/background-clip";
 @import "compass/css3/transition";
+@import "compass/reset/utilities";
 
 
 // Dark background for dialog
@@ -20,7 +21,7 @@
     bottom: 0;
     left: 0;
     z-index: 1040;
-    background-color: $black;
+    background-color: $grayLighter;
 }
 
 .husky-dialog-backdrop.fade {
@@ -40,15 +41,25 @@
     left: 50%;
     z-index: 1050;
     background-color: $white;
-    border: 1px solid $grayLight;
-    border: 1px solid rgba(0, 0, 0, 0.3);
-    *border: 1px solid $grayLight;
+    border: 1px solid $grayLighter;
+    //border: 1px solid rgba(0, 0, 0, 0.3);
+    //*border: 1px solid $grayLight;
 
-    border-radius: 6px;
+    //border-radius: 6px;
     outline: none;
 
-    @include box-shadow(rgba(0, 0, 0, 0.3) 0 3px 7px);
+    @include box-shadow(rgba(0, 0, 0, 0.1) 2px 2px 0px);
     @include background-clip(padding-box);
+}
+
+.husky-dialog label {
+  //color:#f00;
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  display: inline;
+  padding-left: 10px;
+
 }
 
 .husky-dialog.fade {
@@ -63,31 +74,41 @@
 }
 
 .husky-dialog-header {
-    padding: 9px 15px;
-    border-bottom: 1px solid $grayLighter;
+    p, div, span, button {
+      margin: 9px 15px;
+      //border-bottom: 1px solid $grayLighter;
+    }
 }
 
 .husky-dialog-header .close {
     margin-top: 2px;
 }
 
-.husky-dialog-header h3 {
-    margin: 0;
-    line-height: 30px;
+.husky-dialog-header,
+.husky-dialog-body {
+  h3 {
+      padding-bottom: 10px;
+      margin: 0;
+      line-height: 30px;
+      color: #000000;
+      font-weight: bold;
+      border-bottom: 1px solid #DDD;
+  }
 }
 
 .husky-dialog-body {
     position: relative;
     max-height: 400px;
-    padding: 15px;
+    padding: 27px;
     overflow-y: auto;
+    min-height: 150px;
 }
 
 .husky-dialog-footer {
     padding: 14px 15px 15px;
     margin-bottom: 0;
     text-align: right;
-    background-color: $baseBackgroundColor;
+    background-color: $white;
     border-top: 1px solid $grayLighter;
     border-radius: 0 0 6px 6px;
     *zoom: 1;

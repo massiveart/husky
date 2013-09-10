@@ -1340,7 +1340,7 @@ function typeOf(value) {
         template: {
             content: '<h3><%= title %></h3><p><%= content %></p>',
             footer: '<button class="btn btn-black closeButton"><%= buttonCancelText %></button><button class="btn btn-black saveButton"><%= buttonSaveText %></button>',
-            header: '<button type="button" class="close">×</button>'
+            // header: '<button type="button" class="close">×</button>'
         }
     };
 
