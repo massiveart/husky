@@ -1,0 +1,11 @@
+//
+// Loading Styling
+// --------------------------------------------------
+
+.loading {
+    @extend %abstract-loader;
+
+    .loading-content {
+        display: none;
+    }
+}
