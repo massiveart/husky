@@ -1,0 +1,151 @@
+//
+// Icons
+// --------------------------------------------------
+
+[class^="icon-"] {
+    font-family: 'Glyphicons';
+}
+
+.icon-remove {
+    cursor: pointer;
+    &::after {
+        content: "\E208";
+        display: inline-block;
+    }
+}
+
+.icon-add {
+    cursor: pointer;
+    &::after {
+        content: "\E191";
+        display: inline-block;
+    }
+}
+
+.icon-down {
+	cursor: pointer;
+	&::after {
+		content: "\e159";
+		display: inline-block;
+	}
+}
+
+.icon-search {
+    cursor: pointer;
+    &::after {
+        content: "\e028";
+        display: inline-block;
+    }
+}
+
+.icon-circle-remove {
+    cursor: pointer;
+    &::after {
+        content: "\e193";
+        display: inline-block;
+    }
+}
+
+.icon-circle-arrow-down {
+    cursor: pointer;
+    &::after {
+        content: "\e220";
+        display: inline-block;
+    }
+}
+
+.icon-circle-ok {
+    cursor: pointer;
+    &::after {
+        content: "\e199";
+        display: inline-block;
+    }
+}
+
+.icon-edit {
+	cursor: pointer;
+	&::after {
+		content: "\e151";
+		display: inline-block;
+	}
+}
+
+.icon-settings {
+    cursor: pointer;
+    &::after {
+        content: "\e281";
+        display: inline-block;
+    }
+}
+
+.icon-cogwheel {
+    cursor: pointer;
+    &::after {
+        content: "\e137";
+        display: inline-block;
+    }
+}
+
+.icon-cogwheels {
+    cursor: pointer;
+    &::after {
+        content: "\e138";
+        display: inline-block;
+    }
+}
+
+.icon-caution {
+    cursor: pointer;
+    &::after {
+        content: "\e197";
+        display: inline-block;
+    }
+}
+
+.icon-contact-book {
+    cursor: pointer;
+    &::after {
+        content: "\e089";
+        display: inline-block;
+    }
+}
+
+.icon-parents {
+    cursor: pointer;
+    &::after {
+        content: "\e025";
+        display: inline-block;
+    }
+}
+
+.icon-building {
+    cursor: pointer;
+    &::after {
+        content: "\e090";
+        display: inline-block;
+    }
+}
+
+.icon-bank {
+    cursor: pointer;
+    &::after {
+        content: "\e264";
+        display: inline-block;
+    }
+}
+
+.icon-book {
+    cursor: pointer;
+    &::after {
+        content: "\e072";
+        display: inline-block;
+    }
+}
+
+.icon-book-open {
+    cursor: pointer;
+    &::after {
+        content: "\e352";
+        display: inline-block;
+    }
+}

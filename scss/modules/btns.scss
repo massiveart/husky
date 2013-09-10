@@ -1,0 +1,38 @@
+//
+// Buttons
+// --------------------------------------------------
+
+.btn {
+    padding: 5px 35px;
+    border: 0;
+    border-radius: $btnBorderRadius;
+    background-color: #FFF;
+    color: #000;
+    font-weight: bold;
+}
+
+a.btn {
+    color: #000;
+    text-decoration: none;
+}
+
+.btn-large {
+    font-size: 18px;
+}
+
+.btn-black {
+    background-color: #000;
+    color: #FFF;
+}
+
+a.btn-black {
+    color: #FFF;
+    text-decoration: none;
+}
+
+.btn-gray {
+  background-color: $grayLighter;
+  color: #000;
+}
+
+
