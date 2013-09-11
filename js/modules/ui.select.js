@@ -63,6 +63,12 @@
             // turn off all events
             this.$element.off();
 
+            this.$select.on('change', function() {
+                var id= this.$select.val();
+                Husky.DEBUG && console.log(this.name, 'changed: '+id);
+                this.trigger('select:item:changed', id);
+            }.bind(this));
+
             // ------------------------------------------------------------
             // DOM events
             // ------------------------------------------------------------

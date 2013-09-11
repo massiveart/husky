@@ -113,6 +113,7 @@
                 $('body').append($backdrop);
 
                 $backdrop.click(function(){
+                    this.trigger('dialog:backdrop:click', null);
                     this.hide();
                 }.bind(this));
             }
