@@ -287,8 +287,6 @@
 
             }
 
-            // ???
-            //return false;
         },
 
         selectAllItems: function(event) {
