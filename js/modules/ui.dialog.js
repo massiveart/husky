@@ -156,15 +156,15 @@
     $.fn.huskyDialog.defaults = {
         data: {
             footer: {
-                button1Text: "Cancel",
-                button2Text: "Ok"
+                buttonCancelText: "Cancel",
+                buttonSubmitText: "Ok"
             }
         },
         backdrop: true,
         width: '560px',
         template: {
             content: '<h3><%= title %></h3><p><%= content %></p>',
-            footer: '<button class="btn btn-gray button1"><%= button1Text %></button><button class="btn btn-black button2"><%= button2Text %></button>',
+            footer: '<button class="btn btn-gray dialogButtonCancel"><%= buttonCancelText %></button><button class="btn btn-black dialogButtonSubmit"><%= buttonSubmitText %></button>',
             header: ''
             // header: '<button type="button" class="close">×</button>'
         }
@@ -173,14 +173,14 @@
     $.fn.huskyDialog.okDialog = {
         data: {
             footer: {
-                button1Text: "Ok"
+                buttonCancelText: "Ok"
             }
         },
         backdrop: true,
         width: '560px',
         template: {
             content: '<h3><%= title %></h3><p><%= content %></p>',
-            footer: '<button class="btn btn-black button1"><%= button1Text %></button>',
+            footer: '<button class="btn btn-black dialogButtonCancel"><%= buttonCancelText %></button>',
             header: ''
         }
     };
