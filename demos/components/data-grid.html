@@ -90,7 +90,7 @@
 
 				var $dataGrid = $('#js-data-grid').huskyDataGrid({
 					url: '/contacts',
-					selectItemType: 'checkbox',
+					selectItemType: 'radio',
 					pagination: false,
 					className: "test",
 					paginationOptions: {
@@ -100,6 +100,7 @@
 					removeRow: true,
 					autoRemoveHandling: false,
 					tableHead: [
+						{content: ''},
 						{content: 'Name'},
 						{content: 'Image'},
 						{content: 'Options'}
