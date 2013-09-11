@@ -65,6 +65,10 @@ require(['lib/husky'], function(Husky) {
         app.sandbox.on('navigation:item:content:show', function(item) {
             app.logger.log('navigation:item:content:show', item);
         });
+
+        _.delay(function() {
+            app.sandbox.emit('husky:headerbar:button-type', 'save');
+        }, 500);
     });
 
 });

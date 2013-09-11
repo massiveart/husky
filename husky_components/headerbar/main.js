@@ -70,6 +70,9 @@ define(['jquery'], function($) {
                 this.moveButtons(item.data.navWidth);
             }.bind(this));
             sandbox.on('husky:headerbar:move-buttons', this.moveButtons.bind(this));
+
+            // add buttons
+            sandbox.on('husky:headerbar:button-type', this.changeButtonType.bind(this));
         },
 
         // move buttons with navigation width
@@ -81,6 +84,55 @@ define(['jquery'], function($) {
 
             this.$mid.css('margin-left', marginLeft);
             this.$right.css('margin-left', width + marginLeft);
+        },
+
+        // add a button
+        changeButtonType: function(type) {
+            if (type === 'save') {
+                this.saveButtonType();
+            } else if (type === 'saveDelete') {
+                throw 'Not implemented';
+            } else if (type === 'add') {
+                throw 'Not implemented';
+            } else {
+                throw 'Not implemented';
+            }
+        },
+
+        // clean up buttons and turn off events
+        buttonCleanUp: function() {
+        },
+
+        // change to button type save
+        saveButtonType: function() {
+            // FIXME jquery extension
+            this.$midLeft.html('<div id="save-button"/>');
+            this.$midRight.html('<div id="delete-button" class="pull-right"/>');
+            
+            this.sandbox.start([
+                {
+                    name: 'button@husky',
+                    options: {
+                        el: '#save-button',
+                        instanceName: 'save',
+                        buttonType: 'icon',
+                        iconType: 'caution',
+                        text: 'Save'
+                    }
+                }
+            ]);
+            this.sandbox.start([
+                {
+                    name: 'button@husky',
+                    options: {
+                        el: '#delete-button',
+                        instanceName: 'delete',
+                        buttonType: 'icon',
+                        iconType: 'circle-remove',
+                        text: 'Delete'
+                    }
+                }
+            ]);
         }
     };
 });
