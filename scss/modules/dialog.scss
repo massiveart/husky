@@ -21,7 +21,7 @@
     bottom: 0;
     left: 0;
     z-index: 1040;
-    background-color: $grayLighter;
+    background-color: black;
 }
 
 .husky-dialog-backdrop.fade {
@@ -30,8 +30,8 @@
 
 .husky-dialog-backdrop,
 .husky-dialog-backdrop.fade.in {
-    opacity: 0.8;
-    filter: alpha(opacity=80);
+    opacity: 0.06;
+    filter: alpha(opacity=06);
 }
 
 // Dialog Classes
@@ -41,7 +41,7 @@
     left: 50%;
     z-index: 1050;
     background-color: $white;
-    border: 1px solid $grayLighter;
+    //border: 1px solid $grayLighter;
     //border: 1px solid rgba(0, 0, 0, 0.3);
     //*border: 1px solid $grayLight;
 

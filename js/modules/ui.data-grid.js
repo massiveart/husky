@@ -125,7 +125,7 @@
             // set html classes
             tblClasses = [];
             tblClasses.push((!!this.options.className && this.options.className !== 'table') ? 'table ' + this.options.className : 'table');
-            tblClasses.push((this.options.selectItemType && this.options.selectItemType === 'checkbox') ? 'is-selectable' : '');
+            tblClasses.push((this.options.selectItem && this.options.selectItem.type === 'checkbox') ? 'is-selectable' : '');
 
             $table.addClass(tblClasses.join(' '));
 
@@ -133,17 +133,33 @@
         },
 
         prepareTableHead: function() {
-            var tblColumns, tblCellClass, tblColumnWidth, headData;
+            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth;
 
             tblColumns = [];
             headData = this.options.tableHead || this.data.head;
 
             // add a checkbox to head row
-            if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
+            if (!!this.options.selectItem) {
+
+                // default values
+                var checkboxValues = [];
+                if (this.options.selectItem.width) {
+                    checkboxValues = this.getNumberAndUnit(this.options.selectItem.width);
+                }
+
+                tblCheckboxWidth = [];
+                tblCheckboxWidth.push(
+                    'width =',
+                    checkboxValues[0],
+                    checkboxValues[1]
+                );
+
+
                 tblColumns.push(
-                    '<th class="select-all">',
-                    this.templates.checkbox({ id: 'select-all' }),
-                    '</th>');
+                    '<th class="select-all" ',tblCheckboxWidth.join(""),' >');
+                if (this.options.selectItem.type === 'checkbox')
+                    tblColumns.push(this.templates.checkbox({ id: 'select-all' }));
+                tblColumns.push('</th>');
             }
 
             headData.forEach(function(column) {
@@ -155,7 +171,12 @@
 
             return '<tr>' + tblColumns.join('') + '</tr>';
         },
-
+        // returns number and unit
+        getNumberAndUnit: function(numberUnit) {
+            numberUnit= String(numberUnit);
+            var regex = numberUnit.match(/(\d+)\s*(.*)/);
+            return [regex[1], regex[2]];
+        },
         prepareTableRows: function() {
             var tblRows;
 
@@ -193,13 +214,14 @@
                 // add row id to itemIds collection (~~ === shorthand for parse int)
                 !!row.id && this.allItemIds.push(~~row.id);
 
-                if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
+                if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     // add a checkbox to each row
-                    tblColumns.push('<td>', this.templates.checkbox(), '</td>');
-                } else if (!!this.options.selectItemType && this.options.selectItemType === 'radio') {
+                    tblColumns.push('<td class="selectItemColumn">', this.templates.checkbox(), '</td>');
+                } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                     // add a radio to each row
-                    tblColumns.push('<td>', this.templates.radio({
-                        name: 'husky-radio'+radioPrefix 
+
+                    tblColumns.push('<td class="selectItemColumn">', this.templates.radio({
+                        name: 'husky-radio'+radioPrefix
                     }), '</td>');
                 }
 
@@ -286,7 +308,6 @@
                 this.trigger('data-grid:item:select', itemId);
 
             }
-
         },
 
         selectAllItems: function(event) {
@@ -432,12 +453,11 @@
         bindDOMEvents: function() {
             this.$element.off();
 
-            if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
+            if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                 this.$element.on('click', 'tbody > tr span.custom-checkbox-icon', this.selectItem.bind(this));
                 this.$element.on('change', 'tbody > tr input[type="checkbox"]', this.selectItem.bind(this));
                 this.$element.on('click', 'th.select-all', this.selectAllItems.bind(this));
-
-            } else if (!!this.options.selectItemType && this.options.selectItemType === 'radio') {
+            } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                 this.$element.on('click', 'tbody > tr input[type="radio"]', this.selectItem.bind(this));
             }
 
@@ -454,6 +474,18 @@
             if (this.options.removeRow) {
                 this.$element.on('click', '.remove-row > span', this.prepareRemoveRow.bind(this));
             }
+
+            if (this.options.selectItem && !this.options.selectItem .clickable)
+                this.$element.on('click', '.selectItemColumn', function(event) {
+
+                    // change checked state
+                    var $checkbox = $(event.target).find("input");
+                    $checkbox.prop("checked", !$checkbox.prop("checked"));
+
+                    // stop propagation
+                    event.stopPropagation();
+                    Husky.DEBUG && console.log('stopping eventPropagation');
+                }.bind(this));
         },
 
         bindCustomEvents: function() {
@@ -466,6 +498,8 @@
             this.on('data-grid:row:add', this.addRow.bind(this));
 
             this.on('data-grid:row:remove', this.removeRow.bind(this));
+
+
         },
 
         updateHandler: function() {
@@ -579,7 +613,7 @@
     $.fn.huskyDataGrid = function(options) {
         var $element = $(this);
 
-        options = $.extend({}, $.fn.huskyDataGrid.defaults, typeof options == 'object' && options);
+        options = $.extend(true, {}, $.fn.huskyDataGrid.defaults, typeof options == 'object' && options);
 
         // return if this plugin has a module instance
         if (!!$element.data(moduleName)) {
@@ -594,11 +628,18 @@
 
     $.fn.huskyDataGrid.defaults = {
         elementType: 'table',
-        selectItemType: null,
+        selectItem: {
+            type:   null,      // checkbox, radiobutton
+            width:  '50px',    // numerous value
+            clickable: null    // defines if background is clickable
+        },
         pagination: false,
         paginationOptions: {
             pageSize: 10,
             showPages: 5
+        },
+        tableHead: {
+//            {content: 'name', width: '100px'}
         },
         excludeFields: ['id'],
         autoRemoveHandling: true

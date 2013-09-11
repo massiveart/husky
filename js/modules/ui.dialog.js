@@ -157,14 +157,14 @@
         data: {
             footer: {
                 buttonCancelText: "Cancel",
-                buttonSaveText: "Ok"
+                buttonSubmitText: "Ok"
             }
         },
         backdrop: true,
         width: '560px',
         template: {
             content: '<h3><%= title %></h3><p><%= content %></p>',
-            footer: '<button class="btn btn-gray closeButton"><%= buttonCancelText %></button><button class="btn btn-black saveButton"><%= buttonSaveText %></button>',
+            footer: '<button class="btn btn-gray dialogButtonCancel"><%= buttonCancelText %></button><button class="btn btn-black dialogButtonSubmit"><%= buttonSubmitText %></button>',
             header: ''
             // header: '<button type="button" class="close">×</button>'
         }
@@ -180,7 +180,7 @@
         width: '560px',
         template: {
             content: '<h3><%= title %></h3><p><%= content %></p>',
-            footer: '<button class="btn btn-black closeButton"><%= buttonCancelText %></button>',
+            footer: '<button class="btn btn-black dialogButtonCancel"><%= buttonCancelText %></button>',
             header: ''
         }
     };
