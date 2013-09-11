@@ -39,12 +39,13 @@ define(['jquery'], function($) {
         },
 
         load: function(params) {
+
             sandbox.logger.log('load', params);
 
-            Husky.Util.ajax({
+            $.ajax({
                 url: params.url,
                 success: function(data) {
-                    sandbox.logger.log('load', params);
+                    sandbox.logger.log('load', 'success', data);
 
                     this.data = data;
 
@@ -217,11 +218,11 @@ define(['jquery'], function($) {
         },
 
         addColumn: function() {
-            var $subColumns, $subColumnsContainer;
+            var $subColumns;
 
             this.currentColumnIdx++;
 
-            if (this.currentColumnIdx === 2 && !$('.navigation-sub-columns-container').size()) {
+            if (this.currentColumnIdx === 2) {
                 $subColumns = $('<li/>', {
                     'class': 'navigation-sub-columns-container'
                 });
@@ -257,6 +258,7 @@ define(['jquery'], function($) {
 
             this.$navigationColumns.removeClass('show-content');
 
+            this.currentColumnIdx = 1;
             this.showContent = false;
 
             if (!$element.hasClass('navigation-column-item') && !$element.is('span')) {
@@ -305,10 +307,7 @@ define(['jquery'], function($) {
                 // ... and add class to selected element
                 $element.addClass('selected');
 
-                sandbox.emit('navigation:item:selected', {
-                    item: itemModel,
-                    data: this.getNavigationData()
-                });
+                sandbox.emit('navigation:item:selected', itemModel);
 
                 if (!!itemModel.get('hasSub')) {
 
@@ -316,7 +315,7 @@ define(['jquery'], function($) {
                         this.selectionLocked = false;
 
                         this.addLoader($element);
-                        this.updateColumns();
+                        $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
 
                         this.load({
                             url: itemModel.get('action'),
@@ -330,10 +329,7 @@ define(['jquery'], function($) {
                                     this.collapseFirstColumn();
                                 }
 
-                                sandbox.emit('navigation:item:sub:loaded', {
-                                    item: itemModel,
-                                    data: this.getNavigationData()
-                                });
+                                sandbox.emit('navigation:item:sub:loaded', itemModel);
                             }.bind(this)
                         });
                     } else {
@@ -341,66 +337,22 @@ define(['jquery'], function($) {
 
                         this.columnHeader = itemModel.get('header') || null;
                         this.columnItems = itemModel.get('sub').items;
-                        this.updateColumns();
+                        $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
                         this.addColumn();
 
                         if (this.currentColumnIdx > 1) {
                             this.collapseFirstColumn();
                         }
-
-                        sandbox.emit('navigation:item:sub:show', {
-                            item: itemModel,
-                            data: this.getNavigationData()
-                        });
                     }
 
                 } else if (itemModel.get('type') == 'content') {
+                    sandbox.emit('navigation:item:content:show', itemModel);
+
                     this.showContent = true;
 
-                    this.updateColumns();
+                    $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
                     this.collapseFirstColumn();
-
-                    sandbox.emit('navigation:item:content:show', {
-                        item: itemModel,
-                        data: this.getNavigationData()
-                    });
                 }
-            }
-        },
-
-        // remove old columns before loading new ones
-        updateColumns: function() {
-            $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
-            $('.navigation-column:gt(' + this.currentColumnIdx + ')').remove();
-        },
-
-        getNavigationWidth: function() {
-            var $columns = $('.navigation-column'),
-                width = 0,
-                $column = null;
-
-            $.each($columns, function(idx, column) {
-                $column = $(column);
-
-                if (!this.$navigationColumns.hasClass('show-content')) {
-                    if ($column.hasClass('collapsed')) {
-                        width += 50;
-                    } else {
-                        width += 250;
-                    }
-                } else {
-                    width = 200;
-                }
-
-            }.bind(this));
-
-            return width;
-        },
-
-        getNavigationData: function() {
-            return {
-                // TODO
-                navWidth: this.getNavigationWidth()
             }
         },
 
@@ -415,7 +367,7 @@ define(['jquery'], function($) {
 
             if (!$element.hasClass('navigation-column-item') && !$element.is('span')) {
                 this.currentColumnIdx = 1;
-                this.updateColumns();
+                $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
                 $('#column-1')
                     .find('.selected')
                     .removeClass('selected');
@@ -451,11 +403,6 @@ define(['jquery'], function($) {
                 this.addColumn();
 
                 this.addedColumn = this.currentColumnIdx;
-
-                sandbox.emit('navigation:column:content:show', {
-                    data: this.getNavigationData()
-                });
-
             } else {
                 sandbox.logger.error('showColumn', 'No data was defined!');
             }
@@ -522,34 +469,34 @@ define(['jquery'], function($) {
         bindDOMEvents: function() {
             sandbox.logger.log('bindDOMEvents');
 
-            this.$element.off();
+            this.$el.off();
 
             $(window).on('resize load', this.setNavigationSize.bind(this));
 
-            this.$element.on('click', '.navigation-column-item', this.selectItem.bind(this));
-            this.$element.on('click', '.navigation-column:eq(1)', this.showNavigationColumns.bind(this));
-            this.$element.on('click', '.navigation-column:eq(0).collapsed', this.showFirstNavigationColumn.bind(this));
-            this.$element.on('mousewheel DOMMouseScroll', '.navigation-sub-columns-container', this.scrollSubColumns.bind(this));
+            this.$el.on('click', '.navigation-column-item:not(.selected)', this.selectItem.bind(this));
+            this.$el.on('click', '.navigation-column:eq(1)', this.showNavigationColumns.bind(this));
+            this.$el.on('click', '.navigation-column:eq(0).collapsed', this.showFirstNavigationColumn.bind(this));
+            this.$el.on('mousewheel DOMMouseScroll', '.navigation-sub-columns-container', this.scrollSubColumns.bind(this));
         },
 
         render: function() {
-            this.$element.html(this.$navigation);
+            this.$el.html(this.$navigation);
 
             this.bindEvents();
             this.bindDOMEvents();
         },
 
         addLoader: function($elem) {
-            $elem.addClass('is-loading');
+            $elem.addClass('loading');
         },
 
         hideLoader: function($elem) {
-            $elem.removeClass('is-loading');
+            $elem.removeClass('loading');
         },
 
         collections: {
             items: function() {
-                return $.extend({}, Husky.Collection);
+                return $.extend({}, sandbox.data.Collection);
             }
         },
 
@@ -561,7 +508,7 @@ define(['jquery'], function($) {
                     hasSub: false
                 };
 
-                return $.extend({}, Husky.Model, defaults, data);
+                return $.extend({}, sandbox.data.Model, defaults, data);
             }
         },
 
@@ -596,5 +543,5 @@ define(['jquery'], function($) {
                 ].join('');
             }
         }
-    }
+    };
 });
