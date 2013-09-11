@@ -108,7 +108,7 @@ define(['jquery'], function($) {
             // FIXME jquery extension
             this.$midLeft.html('<div id="save-button"/>');
             this.$midRight.html('<div id="delete-button" class="pull-right"/>');
-            
+
             this.sandbox.start([
                 {
                     name: 'button@husky',
