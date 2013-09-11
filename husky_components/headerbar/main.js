@@ -16,7 +16,7 @@ define(['jquery'], function($) {
             sandbox.logger.log('initialize', this);
             sandbox.logger.log(arguments);
 
-            // FIXME
+            // FIXME jquery extension
             this.options = $.extend({}, defaults, this.options);
 
             // init html elements
@@ -74,6 +74,7 @@ define(['jquery'], function($) {
 
         // move buttons with navigation width
         moveButtons: function(navWidth) {
+            // FIXME jquery extension
             var headerbarLeft = parseInt(this.$headerbar.css('margin-left')),
                 marginLeft = navWidth + this.options.margin - headerbarLeft,
                 width = parseInt(this.$mid.css('width'));
