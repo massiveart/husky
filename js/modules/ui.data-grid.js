@@ -200,7 +200,13 @@
             } else {
 
                 var tblRowAttributes, tblCellContent, tblCellClass,
-                    tblColumns, tblCellClasses;
+                    tblColumns, tblCellClasses, radioPrefix;
+
+                if(!!this.options.className && this.options.className != '') {
+                    radioPrefix = '-'+this.options.className;
+                } else {
+                    radioPrefix = '';
+                }
 
                 tblColumns = [];
                 tblRowAttributes = '';
@@ -213,8 +219,9 @@
                     tblColumns.push('<td class="selectItemColumn">', this.templates.checkbox(), '</td>');
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                     // add a radio to each row
+
                     tblColumns.push('<td class="selectItemColumn">', this.templates.radio({
-                        name: 'husky-radio' // TODO
+                        name: 'husky-radio'+radioPrefix
                     }), '</td>');
                 }
 
@@ -260,30 +267,47 @@
                 $element = $element.parent().find('input');
             }
 
+            Husky.DEBUG && console.log($element.attr('type'), "element type");
+
             itemId = $element.parents('tr').data('id');
+            
+            if($element.attr('type') === 'checkbox') {
 
-            if (this.selectedItemIds.indexOf(itemId) > -1) {
-                $element
-                    .removeClass('is-selected')
-                    .prop('checked', false);
+                if (this.selectedItemIds.indexOf(itemId) > -1) {
+                    $element
+                        .removeClass('is-selected')
+                        .prop('checked', false);
 
-                // uncheck 'Select All'-checkbox
-                $('th.select-all')
-                    .find('input[type="checkbox"]')
-                    .prop('checked', false);
+                    // uncheck 'Select All'-checkbox
+                    $('th.select-all')
+                        .find('input[type="checkbox"]')
+                        .prop('checked', false);
 
-                this.selectedItemIds.splice(this.selectedItemIds.indexOf(itemId), 1);
-                this.trigger('data-grid:item:deselect', itemId);
-            } else {
-                $element
-                    .addClass('is-selected')
-                    .prop('checked', true);
+                    this.selectedItemIds.splice(this.selectedItemIds.indexOf(itemId), 1);
+                    this.trigger('data-grid:item:deselect', itemId);
+                } else {
+                    $element
+                        .addClass('is-selected')
+                        .prop('checked', true);
 
+                    this.selectedItemIds.push(itemId);
+                    this.trigger('data-grid:item:select', itemId);
+                }
+
+            } else if ($element.attr('type') === 'radio') {
+                
+                var oldSelectionId = this.selectedItemIds.pop();
+
+                if(!!oldSelectionId && oldSelectionId > -1) {
+                    $('tr[data-id="'+oldSelectionId+'"]').find('input[type="radio"]').removeClass('is-selected').prop('checked', false);
+                    this.trigger('data-grid:item:deselect', oldSelectionId);                    
+                }
+
+                $element.addClass('is-selected').prop('checked', true);
                 this.selectedItemIds.push(itemId);
                 this.trigger('data-grid:item:select', itemId);
-            }
 
-            return false;
+            }
         },
 
         selectAllItems: function(event) {
@@ -432,7 +456,6 @@
             if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                 this.$element.on('click', 'tbody > tr span.custom-checkbox-icon', this.selectItem.bind(this));
                 this.$element.on('change', 'tbody > tr input[type="checkbox"]', this.selectItem.bind(this));
-
                 this.$element.on('click', 'th.select-all', this.selectAllItems.bind(this));
             } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                 this.$element.on('click', 'tbody > tr input[type="radio"]', this.selectItem.bind(this));
