@@ -41,7 +41,7 @@ define(['jquery'], function($) {
         load: function(params) {
             sandbox.logger.log('load', params);
 
-            Husky.Util.ajax({
+            $.ajax({
                 url: params.url,
                 success: function(data) {
                     sandbox.logger.log('load', params);
@@ -522,18 +522,18 @@ define(['jquery'], function($) {
         bindDOMEvents: function() {
             sandbox.logger.log('bindDOMEvents');
 
-            this.$element.off();
+            this.$el.off();
 
             $(window).on('resize load', this.setNavigationSize.bind(this));
 
-            this.$element.on('click', '.navigation-column-item', this.selectItem.bind(this));
-            this.$element.on('click', '.navigation-column:eq(1)', this.showNavigationColumns.bind(this));
-            this.$element.on('click', '.navigation-column:eq(0).collapsed', this.showFirstNavigationColumn.bind(this));
-            this.$element.on('mousewheel DOMMouseScroll', '.navigation-sub-columns-container', this.scrollSubColumns.bind(this));
+            this.$el.on('click', '.navigation-column-item', this.selectItem.bind(this));
+            this.$el.on('click', '.navigation-column:eq(1)', this.showNavigationColumns.bind(this));
+            this.$el.on('click', '.navigation-column:eq(0).collapsed', this.showFirstNavigationColumn.bind(this));
+            this.$el.on('mousewheel DOMMouseScroll', '.navigation-sub-columns-container', this.scrollSubColumns.bind(this));
         },
 
         render: function() {
-            this.$element.html(this.$navigation);
+            this.$el.html(this.$navigation);
 
             this.bindEvents();
             this.bindDOMEvents();
@@ -549,7 +549,7 @@ define(['jquery'], function($) {
 
         collections: {
             items: function() {
-                return $.extend({}, Husky.Collection);
+                return $.extend({}, sandbox.data.Collection);
             }
         },
 
@@ -561,7 +561,7 @@ define(['jquery'], function($) {
                     hasSub: false
                 };
 
-                return $.extend({}, Husky.Model, defaults, data);
+                return $.extend({}, sandbox.data.Model, defaults, data);
             }
         },
 

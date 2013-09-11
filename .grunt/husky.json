@@ -13,7 +13,8 @@
             "jquery":         "bower_components/jquery/jquery",
             "husky":          "lib/husky",
 
-            "__component__$navigation@husky":           "husky_components/navigation/main"
+            "__component__$navigation@husky":           "husky_components/navigation/main",
+            "__component__$headerbar@husky":            "husky_components/headerbar/main"
         },
         "shim": {
             "backbone":   { "exports": "Backbone", "deps": ["underscore", "jquery"] },
@@ -30,7 +31,8 @@
             "aura/ext/components",
             "husky",
 
-            "__component__$navigation@husky"
+            "__component__$navigation@husky",
+            "__component__$headerbar@husky"
         ],
         "out": "dist/<%= PKG_VERSION %>/husky.js"
     }

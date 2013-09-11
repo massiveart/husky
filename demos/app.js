@@ -1,11 +1,15 @@
-require(['../lib/husky'], function(Husky) {
+require.config({
+    baseUrl: '../'
+});
+
+require(['lib/husky'], function(Husky) {
     'use strict';
 
     var fakeServer;
     fakeServer = sinon.fakeServer.create();
 
     fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
-        '{"title":"Root","hasSub":true,"id":"51f258be2e45b","header":{ "title":"Ivoclar Vivadent", "logo": "img/tmp/logo.png" },"sub":{"items":[{"title":"Portals","icon":"portals","hasSub":true,"id":"52f258bc2e47f","action":"/navigation/portals"},{"title":"Settings","icon":"settings","hasSub":true,"id":"51f258be2e47f","sub":{"items":[{"title":"Translate","icon":"translate","hasSub":"false","id":"51f258be2e49a","action":"/settings/translates"}, {"title":"Item","icon":"translate","hasSub":true,"id":"51f258be4e49a","action":"/settings/item"}]}}]}}'
+        '{"title":"Root","hasSub":true,"id":"51f258be2e45b","header":{ "title":"Ivoclar Vivadent", "logo": "../img/tmp/logo.png" },"sub":{"items":[{"title":"Portals","icon":"portals","hasSub":true,"id":"52f258bc2e47f","action":"/navigation/portals"},{"title":"Settings","icon":"settings","hasSub":true,"id":"51f258be2e47f","sub":{"items":[{"title":"Translate","icon":"translate","hasSub":"false","id":"51f258be2e49a","action":"/settings/translates"}, {"title":"Item","icon":"translate","hasSub":true,"id":"51f258be4e49a","action":"/settings/item"}]}}]}}'
     ]);
 
     fakeServer.respondWith('GET', '/navigation/portals', [200, { 'Content-Type': 'application/json' },
