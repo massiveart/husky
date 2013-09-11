@@ -113,8 +113,10 @@
                 $('body').append($backdrop);
 
                 $backdrop.click(function(){
-                    this.trigger('dialog:backdrop:click', null);
-                    this.hide();
+                    if (this.options.backdropClick && this.options.backdropClick === true) {
+                        this.trigger('dialog:backdrop:click', null);
+                        this.hide();
+                    }
                 }.bind(this));
             }
         },
@@ -161,12 +163,12 @@
             }
         },
         backdrop: true,
-        width: '560px',
+        backdropClick: false, // if true, click on backdrop is going to hide dialogbox
+        width: '550px',
         template: {
             content: '<h3><%= title %></h3><p><%= content %></p>',
             footer: '<button class="btn btn-gray dialogButtonCancel"><%= buttonCancelText %></button><button class="btn btn-black dialogButtonSubmit"><%= buttonSubmitText %></button>',
             header: ''
-            // header: '<button type="button" class="close">×</button>'
         }
     };
 
@@ -177,7 +179,8 @@
             }
         },
         backdrop: true,
-        width: '560px',
+        backdropClick: false,
+        width: '550px',
         template: {
             content: '<h3><%= title %></h3><p><%= content %></p>',
             footer: '<button class="btn btn-black dialogButtonCancel"><%= buttonCancelText %></button>',
