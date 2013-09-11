@@ -91,7 +91,8 @@
 				var $dataGrid = $('#js-data-grid').huskyDataGrid({
 					url: '/contacts',
 					selectItem:{
-                        type: 'checkbox'
+                        type: 'checkbox',
+                        clickable: false
                     },
 					pagination: false,
 					className: "test",
@@ -145,7 +146,8 @@
 					url: '/contacts',
 					selectItem:{
                         type: 'checkbox',
-                        width: '100px'
+                        width: '100px',
+                        clickable: false
                     },
 					pagination: false,
 					className: "test",

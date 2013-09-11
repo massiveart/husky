@@ -139,16 +139,13 @@
             headData = this.options.tableHead || this.data.head;
 
             // add a checkbox to head row
-            if (!!this.options.selectItem && this.options.selectItem.type === 'checkbox') {
+            if (!!this.options.selectItem) {
 
                 // default values
-                var checkboxValues = [100,'px'];
-
+                var checkboxValues = [];
                 if (this.options.selectItem.width) {
                     checkboxValues = this.getNumberAndUnit(this.options.selectItem.width);
                 }
-
-                console.log(checkboxValues);
 
                 tblCheckboxWidth = [];
                 tblCheckboxWidth.push(
@@ -157,10 +154,12 @@
                     checkboxValues[1]
                 );
 
+
                 tblColumns.push(
-                    '<th class="select-all" ',tblCheckboxWidth.join(""),' >',
-                    this.templates.checkbox({ id: 'select-all' }),
-                    '</th>');
+                    '<th class="select-all" ',tblCheckboxWidth.join(""),' >');
+                if (this.options.selectItem.type === 'checkbox')
+                    tblColumns.push(this.templates.checkbox({ id: 'select-all' }));
+                tblColumns.push('</th>');
             }
 
             headData.forEach(function(column) {
@@ -170,7 +169,6 @@
                 tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
             });
 
-            console.log( tblColumns.join(""));
             return '<tr>' + tblColumns.join('') + '</tr>';
         },
         // returns number and unit
@@ -212,10 +210,10 @@
 
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     // add a checkbox to each row
-                    tblColumns.push('<td>', this.templates.checkbox(), '</td>');
+                    tblColumns.push('<td class="selectItemColumn">', this.templates.checkbox(), '</td>');
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                     // add a radio to each row
-                    tblColumns.push('<td>', this.templates.radio({
+                    tblColumns.push('<td class="selectItemColumn">', this.templates.radio({
                         name: 'husky-radio' // TODO
                     }), '</td>');
                 }
@@ -284,6 +282,7 @@
                 this.selectedItemIds.push(itemId);
                 this.trigger('data-grid:item:select', itemId);
             }
+
             return false;
         },
 
@@ -452,6 +451,18 @@
             if (this.options.removeRow) {
                 this.$element.on('click', '.remove-row > span', this.prepareRemoveRow.bind(this));
             }
+
+            if (this.options.selectItem && !this.options.selectItem .clickable)
+                this.$element.on('click', '.selectItemColumn', function(event) {
+
+                    // change checked state
+                    var $checkbox = $(event.target).find("input");
+                    $checkbox.prop("checked", !$checkbox.prop("checked"));
+
+                    // stop propagation
+                    event.stopPropagation();
+                    Husky.DEBUG && console.log('stopping eventPropagation');
+                }.bind(this));
         },
 
         bindCustomEvents: function() {
@@ -464,6 +475,8 @@
             this.on('data-grid:row:add', this.addRow.bind(this));
 
             this.on('data-grid:row:remove', this.removeRow.bind(this));
+
+
         },
 
         updateHandler: function() {
@@ -577,7 +590,7 @@
     $.fn.huskyDataGrid = function(options) {
         var $element = $(this);
 
-        options = $.extend({}, $.fn.huskyDataGrid.defaults, typeof options == 'object' && options);
+        options = $.extend(true, {}, $.fn.huskyDataGrid.defaults, typeof options == 'object' && options);
 
         // return if this plugin has a module instance
         if (!!$element.data(moduleName)) {
@@ -593,8 +606,9 @@
     $.fn.huskyDataGrid.defaults = {
         elementType: 'table',
         selectItem: {
-            type:   null,   // checkbox, radiobutton
-            width:  null   // numerous value
+            type:   null,      // checkbox, radiobutton
+            width:  '50px',    // numerous value
+            clickable: null    // defines if background is clickable
         },
         pagination: false,
         paginationOptions: {
