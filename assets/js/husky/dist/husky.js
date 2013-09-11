@@ -1995,10 +1995,14 @@ function typeOf(value) {
             $.each($columns, function(idx, column) {
                 $column = $(column);
 
-                if ($column.hasClass('collapsed')) {
-                    width += 50;
+                if (!this.$navigationColumns.hasClass('show-content')) {
+                    if ($column.hasClass('collapsed')) {
+                        width += 50;
+                    } else {
+                        width += 250;
+                    }
                 } else {
-                    width += 250;
+                    width = 200;
                 }
 
             }.bind(this));
@@ -2060,6 +2064,11 @@ function typeOf(value) {
                 this.addColumn();
 
                 this.addedColumn = this.currentColumnIdx;
+
+                this.trigger('navigation:column:content:show', {
+                    data: this.getNavigationData()
+                });
+
             } else {
                 Husky.DEBUG && console.error(this.name, 'showColumn', 'No data was defined!');
             }
