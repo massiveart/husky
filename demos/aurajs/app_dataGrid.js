@@ -30,10 +30,10 @@ require(['lib/husky'], function(Husky) {
                 url: '/contacts',
                 selectItem:{
                         type: 'checkbox',
-                        clickable: true,
+                        clickable: false,
 
                 },
-                pagination: false,
+                pagination: true,
                 className: "myClass",
                 paginationOptions: {
                     pageSize: 4,
@@ -88,6 +88,12 @@ require(['lib/husky'], function(Husky) {
 
         app.sandbox.on('data-grid.item.click', function(item) {
             console.log('Husky.Ui.DataGrid item click: ' + item);
+        });
+
+        app.sandbox.on('data-grid.page.change', function() {
+            setTimeout(function() {
+                fakeServer.respond();
+            }, 500);
         });
 
     });

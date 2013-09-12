@@ -25,7 +25,7 @@
  *
  */
 
-define(['jquery'], function($) {
+define(function() {
 
 
 	/*
@@ -70,8 +70,8 @@ define(['jquery'], function($) {
 	        this.selectedItemIds = [];
 
 	        // append datagrid to html element
-	        this.$originalElement = $(this.options.el);
-	        this.$element = $('<div class="husky-data-grid"/>');
+	        this.$originalElement = this.sandbox.dom.$(this.options.el);
+	        this.$element = this.sandbox.dom.$('<div class="husky-data-grid"/>');
 	        this.$originalElement.append(this.$element);
 
 	        
@@ -110,7 +110,7 @@ define(['jquery'], function($) {
         	
         	this.sandbox.logger.log('loading data');
 
-            $.ajax({
+            this.sandbox.util.ajax({
 
                 url: this.getUrl(params),
                 data: params.data,
@@ -172,16 +172,16 @@ define(['jquery'], function($) {
         prepareTable: function() {
             var $table, $thead, $tbody, tblClasses;
 
-            $table = $('<table/>');
+            $table = this.sandbox.dom.$('<table/>');
 
             if (!!this.data.head || !!this.options.tableHead) {
-                $thead = $('<thead/>');
+                $thead = this.sandbox.dom.$('<thead/>');
                 $thead.append(this.prepareTableHead());
                 $table.append($thead);
             }
 
             if (!!this.data.items) {
-                $tbody = $('<tbody/>');
+                $tbody = this.sandbox.dom.$('<tbody/>');
                 $tbody.append(this.prepareTableRows());
                 $table.append($tbody);
             }
@@ -336,7 +336,7 @@ define(['jquery'], function($) {
 
             var $element, itemId;
 
-            $element = $(event.currentTarget);
+            $element = this.sandbox.dom.$(event.currentTarget);
 
             if (!$element.is('input')) {
                 $element = $element.parent().find('input');
@@ -372,7 +372,7 @@ define(['jquery'], function($) {
                 var oldSelectionId = this.selectedItemIds.pop();
 
                 if(!!oldSelectionId && oldSelectionId > -1) {
-                    $('tr[data-id="'+oldSelectionId+'"]').find('input[type="radio"]').removeClass('is-selected').prop('checked', false);
+                    this.sandbox.dom.$('tr[data-id="'+oldSelectionId+'"]').find('input[type="radio"]').removeClass('is-selected').prop('checked', false);
                     this.sandbox.emit('data-grid.item.deselect', oldSelectionId);                    
                 }
 
@@ -423,7 +423,7 @@ define(['jquery'], function($) {
                 this.removeRow(event);
             } else {
                 var $element, $tblRow;
-                $element = $(event.currentTarget);
+                $element = this.sandbox.dom.$(event.currentTarget);
                 $tblRow = $element.parent().parent();
                 this.sandbox.emit('data-grid.row.remove-click', event, $tblRow.data('id'));
             }
@@ -435,7 +435,7 @@ define(['jquery'], function($) {
             var $element, $tblRow, id;
 
             if (typeof event === 'object') {
-                $element = $(event.currentTarget);
+                $element = this.sandbox.dom.$(event.currentTarget);
                 $tblRow = $element.parent().parent();
 
                 id = $tblRow.data('id');
@@ -463,7 +463,7 @@ define(['jquery'], function($) {
             var $pagination;
 
             if (!!this.configs.total && ~~this.configs.total >= 1) {
-                $pagination = $('<div/>');
+                $pagination = this.sandbox.dom.$('<div/>');
                 $pagination.addClass('pagination');
 
                 $pagination.append(this.preparePaginationPrevNavigation());
@@ -501,7 +501,7 @@ define(['jquery'], function($) {
 
             var $element, page;
 
-            $element = $(event.currentTarget);
+            $element = this.sandbox.dom.$(event.currentTarget);
             page = $element.data('page');
 
 
@@ -515,8 +515,8 @@ define(['jquery'], function($) {
                 }.bind(this)
             });
 
-            this.sandbox.emit('data-grid.page.change', null);
-            this.vent.sandbox.emit('data-grid.update', null);
+            this.sandbox.emit('data-grid.page.change', 'change page');
+            this.sandbox.emit('data-grid.update', 'update page');
         },
 
 
@@ -531,8 +531,8 @@ define(['jquery'], function($) {
             }
 
             this.$element.on('click', 'tbody > tr', function(event) {
-                if (!$(event.target).is('input') && !$(event.target).is('span.icon-remove')) {
-                    this.sandbox.emit('data-grid.item.click', $(event.currentTarget).data('id'));
+                if (!this.sandbox.dom.$(event.target).is('input') && !this.sandbox.dom.$(event.target).is('span.icon-remove')) {
+                    this.sandbox.emit('data-grid.item.click', this.sandbox.dom.$(event.currentTarget).data('id'));
                 }
             }.bind(this));
 
@@ -548,7 +548,7 @@ define(['jquery'], function($) {
                 this.$element.on('click', '.selectItemColumn', function(event) {
 
                     // change checked state
-                    var $checkbox = $(event.target).find("input");
+                    var $checkbox = this.sandbox.dom.$(event.target).find("input");
                     $checkbox.prop("checked", !$checkbox.prop("checked"));
 
                     // stop propagation
