@@ -23,16 +23,22 @@
 
             sandbox.mvc = {};
 
-            sandbox.mvc.View = function(view) {
-                return core.mvc.View.extend(view);
+            sandbox.mvc.routes = [];
+
+            sandbox.mvc.Router = function(options) {
+                return core.mvc.Router.extend(options);
             };
 
-            sandbox.mvc.Model = function(model) {
-                return core.mvc.Model.extend(model);
+            sandbox.mvc.View = function(options) {
+                return core.mvc.View.extend(options);
             };
 
-            sandbox.mvc.Collection = function(collection) {
-                return core.mvc.Collection.extend(collection);
+            sandbox.mvc.Model = function(options) {
+                return core.mvc.Model.extend(options);
+            };
+
+            sandbox.mvc.Collection = function(options) {
+                return core.mvc.Collection.extend(options);
             };
 
             define('mvc/view', function() {
@@ -86,7 +92,7 @@
                 if (!app.core.mvc.History.started) {
                     app.core.mvc.history.start();
                 }
-            }, 500);
+            }, 250);
         }
     });
 })();
