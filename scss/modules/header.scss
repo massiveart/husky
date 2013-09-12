@@ -32,7 +32,7 @@ $header-padding-top: 10px;
         }
     }
 
-    .header-fixed-top {
+    &.header-fixed-top {
         position: fixed;
         top: 0;
         left: 0;
