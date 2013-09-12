@@ -1,41 +1,102 @@
-define(['jquery'], function($) {
+define([], function() {
 
-    var sandbox,
-        defaults = {
-            buttonType: 'icon',
-            instanceName: 'undefined',
-            text: 'undefined',
-            iconType: 'caution'
-        };
+    var defaults = {
+        buttontype: 'icon',
+        instancename: 'undefined',
+        text: 'undefined',
+        icontype: 'caution'
+    };
 
     return {
 
         view: true,
 
+        getEvent: function(append) {
+            return 'husky.button.' + this.options.instancename + '.' + append;
+        },
+
         initialize: function() {
+            this.sandbox.logger.log('initialize', this);
+            this.sandbox.logger.log(arguments);
 
-            sandbox = this.sandbox;
-
-            sandbox.logger.log('initialize', this);
-            sandbox.logger.log(arguments);
-
-            // FIXME jquery extension
-            this.options = $.extend({}, defaults, this.options);
+            // extend default options
+            this.options = this.sandbox.util.extend({}, defaults, this.options);
 
             this.render();
         },
 
         render: function() {
-            this.$el.addClass('pointer');
-            if (this.options.buttonType === 'icon') {
-                // FIXME jquery extension
-                this.html(this.template.icon(this.options.iconType, this.options.text));
+            if (!!this.types[this.options.buttontype]) {
+                this.types[this.options.buttontype].init.call(this);
+            } else {
+                throw 'not implemented';
+            }
+
+            this.bindCustomEvents();
+        },
+
+        clickEvent: function(event) {
+            this.sandbox.emit(this.getEvent('click'));
+        },
+
+        bindCustomEvents: function() {
+            this.sandbox.on(this.getEvent('state'), this.changeState.bind(this));
+        },
+
+        changeState: function(state) {
+            if (!!this.types[this.options.buttontype].states[state]) {
+                this.types[this.options.buttontype].reset.call(this);
+                this.types[this.options.buttontype].states[state].call(this);
+            } else {
+                throw 'not implemented';
             }
         },
 
-        template: {
-            icon: function(icon, text) {
-                return '<div class="loading-content"><span class="icon-' + icon + ' pull-left block"></span><span class="m-left-5 bold pull-left m-top-2 block">' + text + '</span></div>';
+        types: {
+            icon: {
+                init: function() {
+                    this.$el.addClass('pointer');
+                    this.html(this.types.icon.template(this.options.icontype, this.options.text));
+
+                    this.types.icon.bindDomEvents.call(this);
+                },
+                bindDomEvents: function() {
+                    this.$el.on('click', this.clickEvent.bind(this));
+                },
+                unBoundDomEvents: function() {
+                    this.$el.off('click');
+                },
+                template: function(icon, text) {
+                    return '<div class="loading-content"><span class="icon-' + icon + ' pull-left block"></span><span class="m-left-5 bold pull-left m-top-2 block">' + text + '</span></div>';
+                },
+                reset: function() {
+                    this.sandbox.dom.removeClass(this.$el, 'loading-black');
+                    this.sandbox.dom.removeClass(this.$el, 'loading');
+                    this.sandbox.dom.removeClass(this.$el, 'disable');
+                },
+
+                states: {
+                    standard: function() {
+                        this.types.icon.reset.call(this);
+
+                        this.types.icon.bindDomEvents.call(this);
+                    },
+                    disabled: function() {
+                        this.sandbox.dom.addClass(this.$el, 'disable');
+
+                        this.types.icon.unBoundDomEvents.call(this);
+                    },
+                    loading: function() {
+                        this.sandbox.dom.addClass(this.$el, 'loading');
+
+                        this.types.icon.unBoundDomEvents.call(this);
+                    },
+                    'loading-black': function() {
+                        this.sandbox.dom.addClass(this.$el, 'loading-black');
+
+                        this.types.icon.unBoundDomEvents.call(this);
+                    }
+                }
             }
         }
     }
