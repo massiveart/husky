@@ -582,8 +582,8 @@ define(function() {
             return this.$element
                 .outerWidth(this.$element.outerWidth())
                 .outerHeight(this.$element.outerHeight())
-                .empty()
-                .addClass('is-loading');
+                .empty();
+                //.addClass('is-loading');
         },
 
         removeLoader: function() {
