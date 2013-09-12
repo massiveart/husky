@@ -41,7 +41,7 @@ define(['jquery'], function($) {
         load: function(params) {
             sandbox.logger.log('load', params);
 
-            $.ajax({
+            sandbox.util.ajax({
                 url: params.url,
                 success: function(data) {
                     sandbox.logger.log('load', params);
