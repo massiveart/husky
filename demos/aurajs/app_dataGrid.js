@@ -28,7 +28,11 @@ require(['lib/husky'], function(Husky) {
             name: 'datagrid@husky', options: 
             { 
                 url: '/contacts',
-                selectItemType: 'checkbox',
+                selectItem:{
+                        type: 'checkbox',
+                        clickable: true,
+
+                },
                 pagination: false,
                 className: "myClass",
                 paginationOptions: {
@@ -38,7 +42,7 @@ require(['lib/husky'], function(Husky) {
                 removeRow: true,
                 autoRemoveHandling: false,
                 tableHead: [
-                    {content: 'Content 1'},
+                    {content: 'Content 1', width: "30%"},
                     {content: 'Content 2'},
                     {content: 'Content 3'},
                     {content: ''}

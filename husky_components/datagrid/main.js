@@ -11,7 +11,9 @@
  *      - pageSize: lines per page
  *      - showPages: amount of pages that will be shown
  *      - removeRow: displays in the last column an icon to remove a row
- *      - selectItemType: typ of select [checkbox, radio]
+ *      - selectItem.type: typ of select [checkbox, radio]
+ *      - selectItem.width: typ of select [checkbox, radio]
+ *      - selectItem.type: typ of select [checkbox, radio]
  *      - url: url to fetch content
  *
  *	Provided Events:
@@ -34,6 +36,7 @@ define(['jquery'], function($) {
 		className: 'datagridcontainer', 
 		elementType: 'table', //??
 		data: null,
+		defaultMeasureUnit: 'px',
 		excludeFields: ['id'],
 		pagination: false,
         paginationOptions: {
@@ -41,7 +44,11 @@ define(['jquery'], function($) {
             showPages: 5
         },
         removeRow: true,
-        selectItemType: null,
+        selectItem: {
+            type:   null,      // checkbox, radiobutton
+            width:  '50px',    // numerous value
+            clickable: null    // defines if background is clickable
+        },
         url: null,
 	};
 
@@ -55,7 +62,7 @@ define(['jquery'], function($) {
            	//this.sandbox.logger.log('el', this.$el);
 
             // extend default options and set variables
-            this.options = this.sandbox.util.extend({}, defaults, this.options);
+            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.name = this.options.name;
 	        this.data = null;
 	        this.configs = {};
@@ -182,7 +189,7 @@ define(['jquery'], function($) {
             // set html classes
             tblClasses = [];
             tblClasses.push((!!this.options.className && this.options.className !== 'table') ? 'table ' + this.options.className : 'table');
-            tblClasses.push((this.options.selectItemType && this.options.selectItemType === 'checkbox') ? 'is-selectable' : '');
+            tblClasses.push((this.options.selectItem && this.options.selectItem.type === 'checkbox') ? 'is-selectable' : '');
 
             $table.addClass(tblClasses.join(' '));
 
@@ -190,27 +197,59 @@ define(['jquery'], function($) {
         },
 
         prepareTableHead: function() {
-            var tblColumns, tblCellClass, tblColumnWidth, headData;
+            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues;
 
             tblColumns = [];
             headData = this.options.tableHead || this.data.head;
 
             // add a checkbox to head row
-            if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
+            if (!!this.options.selectItem) {
+
+                // default values
+                checkboxValues = [];
+                if (this.options.selectItem.width) {
+                    checkboxValues = this.getNumberAndUnit(this.options.selectItem.width, this.options.defaultMeasureUnit);
+                }
+
+                tblCheckboxWidth = [];
+                tblCheckboxWidth.push(
+                    'width =',
+                    checkboxValues[0],
+                    checkboxValues[1]
+                );
+
+
                 tblColumns.push(
-                    '<th class="select-all">',
-                    this.templates.checkbox({ id: 'select-all' }),
-                    '</th>');
+                    '<th class="select-all" ',tblCheckboxWidth.join(""),' >');
+                if (this.options.selectItem.type === 'checkbox')
+                    tblColumns.push(this.templates.checkbox({ id: 'select-all' }));
+                tblColumns.push('</th>');
             }
 
             headData.forEach(function(column) {
                 tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
-                tblColumnWidth = ((!!column.width) ? ' width="' + column.width + 'px"' : '');
+                tblColumnWidth = '';
+                // get width and measureunit
+                if (!!column.width) {
+                    widthValues = this.getNumberAndUnit(column.width, this.options.defaultMeasureUnit);
+                    tblColumnWidth = ' width="' + widthValues[0] + widthValues[1] + '"' ;
+                }
 
                 tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
-            });
+            }.bind(this));
 
             return '<tr>' + tblColumns.join('') + '</tr>';
+        },
+
+        // returns number and unit
+        getNumberAndUnit: function(numberUnit, defaultUnit) {
+            numberUnit= String(numberUnit);
+            var regex = numberUnit.match(/(\d+)\s*(.*)/);
+            // no unit , set default
+            if ((!!defaultUnit) && (!regex[2])) {
+            	regex[2] = defaultUnit;
+            }
+            return [regex[1], regex[2]];
         },
 
         prepareTableRows: function() {
@@ -236,7 +275,13 @@ define(['jquery'], function($) {
             } else {
 
                 var tblRowAttributes, tblCellContent, tblCellClass,
-                    tblColumns, tblCellClasses;
+                    tblColumns, tblCellClasses, radioPrefix;
+
+                if(!!this.options.className && this.options.className != '') {
+                    radioPrefix = '-'+this.options.className;
+                } else {
+                    radioPrefix = '';
+                }
 
                 tblColumns = [];
                 tblRowAttributes = '';
@@ -244,19 +289,19 @@ define(['jquery'], function($) {
                 // add row id to itemIds collection (~~ === shorthand for parse int)
                 !!row.id && this.allItemIds.push(~~row.id);
 
-                if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
+                if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     // add a checkbox to each row
-                    tblColumns.push('<td>', this.templates.checkbox(), '</td>');
-                } else if (!!this.options.selectItemType && this.options.selectItemType === 'radio') {
+                    tblColumns.push('<td class="selectItemColumn">', this.templates.checkbox(), '</td>');
+                } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                     // add a radio to each row
-                    tblColumns.push('<td>', this.templates.radio({
-                        name: 'husky-radio' // TODO
+
+                    tblColumns.push('<td class="selectItemColumn">', this.templates.radio({
+                        name: 'husky-radio'+radioPrefix
                     }), '</td>');
                 }
 
                 for (var key in row) {
                     var column = row[key];
-
                     if (this.options.excludeFields.indexOf(key) < 0) {
                         tblCellClasses = [];
                         tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
@@ -298,36 +343,50 @@ define(['jquery'], function($) {
             }
 
             itemId = $element.parents('tr').data('id');
+            
+            if($element.attr('type') === 'checkbox') {
 
-            if (this.selectedItemIds.indexOf(itemId) > -1) {
-                $element
-                    .removeClass('is-selected')
-                    .prop('checked', false);
+                if (this.selectedItemIds.indexOf(itemId) > -1) {
+                    $element
+                        .removeClass('is-selected')
+                        .prop('checked', false);
 
-                // uncheck 'Select All'-checkbox
-                $('th.select-all')
-                    .find('input[type="checkbox"]')
-                    .prop('checked', false);
+                    // uncheck 'Select All'-checkbox
+                    $('th.select-all')
+                        .find('input[type="checkbox"]')
+                        .prop('checked', false);
 
-                this.selectedItemIds.splice(this.selectedItemIds.indexOf(itemId), 1);
-                this.sandbox.emit('data-grid.item.deselect', itemId);
-            } else {
-                $element
-                    .addClass('is-selected')
-                    .prop('checked', true);
+                    this.selectedItemIds.splice(this.selectedItemIds.indexOf(itemId), 1);
+                    this.sandbox.emit('data-grid.item.deselect', itemId);
+                } else {
+                    $element
+                        .addClass('is-selected')
+                        .prop('checked', true);
 
+                    this.selectedItemIds.push(itemId);
+                    this.sandbox.emit('data-grid.item.select', itemId);
+                }
+
+            } else if ($element.attr('type') === 'radio') {
+                
+                var oldSelectionId = this.selectedItemIds.pop();
+
+                if(!!oldSelectionId && oldSelectionId > -1) {
+                    $('tr[data-id="'+oldSelectionId+'"]').find('input[type="radio"]').removeClass('is-selected').prop('checked', false);
+                    this.sandbox.emit('data-grid.item.deselect', oldSelectionId);                    
+                }
+
+                $element.addClass('is-selected').prop('checked', true);
                 this.selectedItemIds.push(itemId);
                 this.sandbox.emit('data-grid.item.select', itemId);
+
             }
-            return false;
         },
 
         selectAllItems: function(event) {
             console.log(this.name, 'selectAllItems');
 
             event.stopPropagation();
-
-            console.log(this.sandbox.util.compare(this.selectedItemIds, this.allItemIds), "compare");
 
             if (this.sandbox.util.compare(this.selectedItemIds, this.allItemIds)) {
 
@@ -462,14 +521,12 @@ define(['jquery'], function($) {
 
 
         bindDOMEvents: function() {
-            this.$element.off();
-
-            if (!!this.options.selectItemType && this.options.selectItemType === 'checkbox') {
+            
+            if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                 this.$element.on('click', 'tbody > tr span.custom-checkbox-icon', this.selectItem.bind(this));
                 this.$element.on('change', 'tbody > tr input[type="checkbox"]', this.selectItem.bind(this));
-
                 this.$element.on('click', 'th.select-all', this.selectAllItems.bind(this));
-            } else if (!!this.options.selectItemType && this.options.selectItemType === 'radio') {
+            } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                 this.$element.on('click', 'tbody > tr input[type="radio"]', this.selectItem.bind(this));
             }
 
@@ -486,6 +543,17 @@ define(['jquery'], function($) {
             if (this.options.removeRow) {
                 this.$element.on('click', '.remove-row > span', this.prepareRemoveRow.bind(this));
             }
+
+            if (this.options.selectItem && !this.options.selectItem .clickable)
+                this.$element.on('click', '.selectItemColumn', function(event) {
+
+                    // change checked state
+                    var $checkbox = $(event.target).find("input");
+                    $checkbox.prop("checked", !$checkbox.prop("checked"));
+
+                    // stop propagation
+                    event.stopPropagation();
+            }.bind(this));
         },
 
         bindCustomEvents: function() {
