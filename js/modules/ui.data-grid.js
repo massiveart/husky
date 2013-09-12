@@ -133,7 +133,7 @@
         },
 
         prepareTableHead: function() {
-            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth;
+            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues;
 
             tblColumns = [];
             headData = this.options.tableHead || this.data.head;
@@ -142,9 +142,9 @@
             if (!!this.options.selectItem) {
 
                 // default values
-                var checkboxValues = [];
+                checkboxValues = [];
                 if (this.options.selectItem.width) {
-                    checkboxValues = this.getNumberAndUnit(this.options.selectItem.width);
+                    checkboxValues = this.getNumberAndUnit(this.options.selectItem.width, this.options.defaultMeasureUnit);
                 }
 
                 tblCheckboxWidth = [];
@@ -164,17 +164,26 @@
 
             headData.forEach(function(column) {
                 tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
-                tblColumnWidth = ((!!column.width) ? ' width="' + column.width + 'px"' : '');
+                tblColumnWidth = '';
+                // get width and measureunit
+                if (!!column.width) {
+                    widthValues = this.getNumberAndUnit(column.width, this.options.defaultMeasureUnit);
+                    tblColumnWidth = ' width="' + widthValues[0] + widthValues[1] + '"' ;
+                }
 
                 tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
-            });
+            }.bind(this));
 
             return '<tr>' + tblColumns.join('') + '</tr>';
         },
         // returns number and unit
-        getNumberAndUnit: function(numberUnit) {
+        getNumberAndUnit: function(numberUnit, defaultUnit) {
             numberUnit= String(numberUnit);
             var regex = numberUnit.match(/(\d+)\s*(.*)/);
+            // no unit , set default
+            if ((!!defaultUnit) && (!regex[2])) {
+
+            }
             return [regex[1], regex[2]];
         },
         prepareTableRows: function() {
@@ -642,7 +651,8 @@
 //            {content: 'name', width: '100px'}
         },
         excludeFields: ['id'],
-        autoRemoveHandling: true
+        autoRemoveHandling: true,
+        defaultMeasureUnit: 'px'
     };
 
 })(Husky.$, this, this.document);

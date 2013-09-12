@@ -41,6 +41,7 @@
     left: 50%;
     z-index: 1050;
     background-color: $white;
+    font-size: 18px;
     //border: 1px solid $grayLighter;
     //border: 1px solid rgba(0, 0, 0, 0.3);
     //*border: 1px solid $grayLight;
@@ -48,7 +49,7 @@
     //border-radius: 6px;
     outline: none;
 
-    @include box-shadow(rgba(0, 0, 0, 0.1) 2px 2px 0px);
+    @include box-shadow(rgba(0, 0, 0, 0.1) 3px 3px 0px);
     @include background-clip(padding-box);
 }
 
@@ -84,22 +85,20 @@
     margin-top: 2px;
 }
 
-.husky-dialog-header,
 .husky-dialog-body {
   h3 {
-      padding-bottom: 10px;
+      font-size: 24px;
+      padding-bottom: 15px;
       margin: 0;
-      line-height: 30px;
       color: #000000;
-      font-weight: bold;
-      border-bottom: 1px solid #DDD;
+      border-bottom: 2px solid #E3E3E3;
   }
 }
 
 .husky-dialog-body {
     position: relative;
     max-height: 400px;
-    padding: 27px;
+    padding: 20px;
     overflow-y: auto;
     min-height: 150px;
 }
@@ -128,5 +127,6 @@
 
 .husky-dialog-footer .btn + .btn {
     margin-bottom: 0;
-    margin-left: 5px;
+    margin-left: 20px;
 }
+
