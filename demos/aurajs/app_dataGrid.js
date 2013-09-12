@@ -54,6 +54,37 @@ require(['lib/husky'], function(Husky) {
                 fakeServer.respond();
             }, 500);
 
-    });
+        $('#add-row').on('click', function() {
+            app.sandbox.emit('data-grid:row:add', { "id": "1", "content1": "Tschau", "content2": "Hallo 2", "content3": "Hallo 3" });
+        });
 
+        app.sandbox.on('data-grid:page:change', function() {
+            setTimeout(function() {
+                fakeServer.respond();
+            }, 500);
+        });
+
+        app.sandbox.on('data-grid:row:removed', function(item) {
+            console.log('remove: ' + item);
+        });
+
+        app.sandbox.on('data-grid:row:remove-click', function(event, item) {
+            console.log('remove-clicked: ' + item);
+            alert('DELETE AFTER OK');
+            app.sandbox.emit('data-grid:row:remove', item);
+        });
+
+        app.sandbox.on('data-grid:item:select', function(item) {
+            console.log('Husky.Ui.DataGrid item select: ' + item);
+        });
+
+        app.sandbox.on('data-grid:item:deselect', function(item) {
+            console.log('Husky.Ui.DataGrid item deselect: ' + item);
+        });
+
+        app.sandbox.on('data-grid:item:click', function(item) {
+            console.log('Husky.Ui.DataGrid item click: ' + item);
+        });
+
+    });
 });

@@ -287,7 +287,7 @@ define(['jquery'], function($) {
         },
 
         selectItem: function(event) {
-            Husky.DEBUG && console.log(this.name, 'selectItem');
+            console.log(this.name, 'selectItem');
 
             var $element, itemId;
 
@@ -310,31 +310,33 @@ define(['jquery'], function($) {
                     .prop('checked', false);
 
                 this.selectedItemIds.splice(this.selectedItemIds.indexOf(itemId), 1);
-                this.trigger('data-grid:item:deselect', itemId);
+                this.sandbox.emit('data-grid:item:deselect', itemId);
             } else {
                 $element
                     .addClass('is-selected')
                     .prop('checked', true);
 
                 this.selectedItemIds.push(itemId);
-                this.trigger('data-grid:item:select', itemId);
+                this.sandbox.emit('data-grid:item:select', itemId);
             }
             return false;
         },
 
         selectAllItems: function(event) {
-            Husky.DEBUG && console.log(this.name, 'selectAllItems');
+            console.log(this.name, 'selectAllItems');
 
             event.stopPropagation();
 
-            if (Husky.Util.compare(this.selectedItemIds, this.allItemIds)) {
+            console.log(Util.compare(this.selectedItemIds, this.allItemIds), "compare");
+
+            if (Util.compare(this.selectedItemIds, this.allItemIds)) {
 
                 this.$element
                     .find('input[type="checkbox"]')
                     .prop('checked', false);
 
                 this.selectedItemIds = [];
-                this.trigger('data-grid:all:deselect', null);
+                this.sandbox.emit('data-grid:all:deselect', null);
 
             } else {
                 this.$element
@@ -342,12 +344,12 @@ define(['jquery'], function($) {
                     .prop('checked', true);
 
                 this.selectedItemIds = this.allItemIds.slice(0);
-                this.trigger('data-grid:all:select', this.selectedItemIds);
+                this.sandbox.emit('data-grid:all:select', this.selectedItemIds);
             }
         },
 
         addRow: function(row) {
-            Husky.DEBUG && console.log(this.name, 'addRow');
+            console.log(this.name, 'addRow');
 
             var $table;
             // TODO check element type, list or table
@@ -364,12 +366,12 @@ define(['jquery'], function($) {
                 var $element, $tblRow;
                 $element = $(event.currentTarget);
                 $tblRow = $element.parent().parent();
-                this.trigger('data-grid:row:remove-click', event, $tblRow.data('id'));
+                this.sandbox.emit('data-grid:row:remove-click', event, $tblRow.data('id'));
             }
         },
 
         removeRow: function(event) {
-            Husky.DEBUG && console.log(this.name, 'removeRow');
+            console.log(this.name, 'removeRow');
 
             var $element, $tblRow, id;
 
@@ -383,7 +385,7 @@ define(['jquery'], function($) {
                 $tblRow = this.$element.find('tr[data-id="' + id + '"]');
             }
 
-            this.trigger('data-grid:row:removed', event);
+            this.sandbox.emit('data-grid:row:removed', event);
             $tblRow.remove();
         },
 
@@ -436,7 +438,7 @@ define(['jquery'], function($) {
         },
 
         changePage: function(event) {
-            Husky.DEBUG && console.log(this.name, 'changePage');
+            console.log(this.name, 'changePage');
 
             var $element, page;
 
@@ -454,8 +456,8 @@ define(['jquery'], function($) {
                 }.bind(this)
             });
 
-            this.trigger('data-grid:page:change', null);
-            this.vent.trigger('data-grid:update', null);
+            this.sandbox.emit('data-grid:page:change', null);
+            this.vent.sandbox.emit('data-grid:update', null);
         },
 
 
@@ -473,7 +475,7 @@ define(['jquery'], function($) {
 
             this.$element.on('click', 'tbody > tr', function(event) {
                 if (!$(event.target).is('input') && !$(event.target).is('span.icon-remove')) {
-                    this.trigger('data-grid:item:click', $(event.currentTarget).data('id'));
+                    this.sandbox.emit('data-grid:item:click', $(event.currentTarget).data('id'));
                 }
             }.bind(this));
 
