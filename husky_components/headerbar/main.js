@@ -14,15 +14,19 @@
 
 define([], function() {
 
-    var defaults = {
-        margin: 45  // add 45px to navWidth
-    };
+    var sandbox,
+        type,
+        defaults = {
+            margin: 45  // add 45px to navWidth
+        };
 
     return {
 
         view: true,
 
         initialize: function() {
+            sandbox = this.sandbox;
+
             this.sandbox.logger.log('initialize', this);
             this.sandbox.logger.log(arguments);
 
@@ -73,59 +77,95 @@ define([], function() {
 
             // add buttons
             this.sandbox.on('husky.headerbar.button-type', this.changeButtonType.bind(this));
+
+            // change state
+            this.sandbox.on('husky.headerbar.button-state', this.changeState.bind(this));
         },
 
         // move buttons with navigation width
         moveButtons: function(navWidth) {
-            // FIXME jquery extension
-            var headerbarLeft = parseInt(this.$headerbar.css('margin-left')),
+            var headerbarLeft = parseInt(this.sandbox.dom.css(this.$headerbar, 'margin-left')),
                 marginLeft = navWidth + this.options.margin - headerbarLeft,
-                width = parseInt(this.$mid.css('width'));
+                width = parseInt(this.sandbox.dom.css(this.$mid, 'width'));
 
             this.$mid.css('margin-left', marginLeft);
             this.$right.css('margin-left', width + marginLeft + 20);
         },
 
-        changeButtonType: function(type) {
-            if (type === 'save') {
-                this.saveButtonType();
-            } else if (type === 'saveDelete') {
+        changeButtonType: function(newType) {
+            this.buttonCleanUp();
+
+            if (!!this.types[newType]) {
+                this.$mid.html(this.types[newType].template.call(this));
+            } else {
                 throw 'Not implemented';
-            } else if (type === 'add') {
-                throw 'Not implemented';
+            }
+
+            type = newType;
+            this.sandbox.start('#headerbar-mid');
+        },
+
+        // clean up buttons and turn off events
+        buttonCleanUp: function() {
+            this.sandbox.stop('#headerbar-mid');
+        },
+
+        changeState: function(state) {
+            if (!!this.types[type] && !!this.types[type].states[state]) {
+                this.types[type].states[state].call(this);
+                this.types[type].reset.call(this);
             } else {
                 throw 'Not implemented';
             }
         },
 
-        // clean up buttons and turn off events
-        buttonCleanUp: function() {
-        },
-
-        // change to button type save
-        saveButtonType: function() {
-            this.$mid.html(this.template.save());
-            this.sandbox.start('#headerbar-mid');
-        },
-
-        template: {
-            saveType: function() {
-                return [
-                    '<div class="grid-row">',
-                    '<div class="grid-col-6">',
-                    '<div id="save-button" data-aura-component="button@husky" data-aura-istanceName="save" data-aura-buttonType="icon" data-aura-iconType="caution" data-aura-text="Save"/>',
-                    '</div>',
-                    '<div class="grid-col-6">',
-                    '<div id="delete-button" data-aura-component="button@husky" data-aura-istanceName="delete" data-aura-buttonType="icon" data-aura-iconType="circle-remove" data-aura-text="Delete"/>',
-                    '</div>',
-                    '</div>'
-                ].join('');
+        types: {
+            save: {
+                template: function() {
+                    return [
+                        '<div class="grid-row">',
+                        '   <div class="grid-col-6">',
+                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instancename="save" data-aura-buttontype="icon" data-aura-icontype="caution" data-aura-text="Save"/>',
+                        '   </div>',
+                        '</div>'
+                    ].join('');
+                },
+                reset: function(){
+                    // do nothing
+                },
+                states: {
+                    standard: function() {
+                        sandbox.emit('husky.button.save.state', 'standard');
+                    },
+                    'loading-save-button': function() {
+                        sandbox.emit('husky.button.save.state', 'loading-black');
+                    }
+                }
             },
-            saveDeleteType: function() {
-
+            saveDelete: {
+                template: function() {
+                    return [
+                        '<div class="grid-row">',
+                        '   <div class="grid-col-6">',
+                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instancename="save" data-aura-buttontype="icon" data-aura-icontype="caution" data-aura-text="Save"/>',
+                        '   </div>',
+                        '   <div class="grid-col-6">',
+                        '       <div id="delete-button" class="pull-right" data-aura-component="button@husky" data-aura-instancename="delete" data-aura-buttontype="icon" data-aura-icontype="circle-remove" data-aura-text="Delete"/>',
+                        '   </div>',
+                        '</div>'
+                    ].join('');
+                }
             },
-            addType: function() {
-
+            add: {
+                template: function() {
+                    return [
+                        '<div class="grid-row">',
+                        '   <div class="grid-col-6">',
+                        '       <div id="add-button" data-aura-component="button@husky" data-aura-instancename="add" data-aura-buttontype="icon" data-aura-icontype="add" data-aura-text="Add"/>',
+                        '   </div>',
+                        '</div>'
+                    ].join('');
+                }
             }
         }
     };

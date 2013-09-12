@@ -67,8 +67,25 @@ require(['lib/husky'], function(Husky) {
         });
 
         _.delay(function() {
-            app.sandbox.emit('husky:headerbar:button-type', 'save', ['export']);
+            app.sandbox.emit('husky.headerbar.button-type', 'save');
+
+            _.delay(function() {
+                app.sandbox.emit('husky.headerbar.button-state', 'loading-save-button');
+            }, 500);
+
         }, 500);
+
+        app.sandbox.on('husky.button.save.click', function() {
+            app.sandbox.emit('husky.headerbar.button-type', 'add');
+        });
+
+        app.sandbox.on('husky.button.delete.click', function() {
+            app.sandbox.emit('husky.headerbar.button-type', 'add');
+        });
+
+        app.sandbox.on('husky.button.add.click', function() {
+            app.sandbox.emit('husky.headerbar.button-type', 'saveDelete');
+        });
     });
 
 });
