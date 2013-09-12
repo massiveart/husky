@@ -108,8 +108,9 @@
 
             var $dialog = $('#dialog').huskyDialog({
                 backdrop: true,
-                width: '800px'
+                width: '650'
             });
+
 
             $('#showDialog').on('click', function() {
                 $dialog.data('Husky.Ui.Dialog').trigger('dialog:show', {
@@ -120,7 +121,7 @@
                         },
                         footer: {
                             buttonCancelText: "Cancel",
-                            buttonSaveText: "Save"
+                            buttonSubmitText: "Save"
                         }
                     }
                 });
@@ -143,7 +144,7 @@
                 $dialog.data('Husky.Ui.Dialog').trigger('dialog:show', {
                     template: {
                         content: '<h3><%= title %></h3><p><%= content %></p>',
-                        footer: '<button class="btn btn-black closeButton"><%= buttonCancelText %></button><button class="btn btn-black saveButton"><%= buttonSaveText %></button>',
+                        footer: '<button class="btn btn-black dialogButtonCancel"><%= buttonCancelText %></button><button class="btn btn-black dialogButtonSubmit"><%= buttonSubmitText %></button>',
                         header: '<button type="button" class="close">×</button>'
                     },
                     data: {
@@ -153,20 +154,20 @@
                         },
                         footer: {
                             buttonCancelText: "Cancel",
-                            buttonSaveText: "Save"
+                            buttonSubmitText: "Save"
                         }
                     }
                 });
             });
 
-            $dialog.on('click', '.closeButton', function() {
-                console.log("closeButton");
+            $dialog.on('click', '.dialogButtonCancel', function() {
+                console.log("cancel button");
                 $dialog.data('Husky.Ui.Dialog').trigger('dialog:hide');
             });
 
 
-            $dialog.on('click', '.saveButton', function() {
-                console.log("saveButton");
+            $dialog.on('click', '.dialogButtonSubmit', function() {
+                console.log("submit button");
                 $dialog.data('Husky.Ui.Dialog').trigger('dialog:hide');
             });
 

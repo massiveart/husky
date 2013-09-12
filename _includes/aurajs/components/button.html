@@ -1,14 +1,34 @@
-<h1 id="header">Header</h1>
+<h1 id="button">Button</h1>
 
 <!-- TODO Description -->
 
 <h2>Example</h2>
 
-<a href="../demos/aurajs/header/index.html">Goto Example</a>
+<div class="doc-example">
+    <div class="example">
+        <div id="save-button" data-aura-component="button@husky" data-aura-instancename="save" data-aura-buttontype="icon" data-aura-background="black" data-aura-icontype="caution" data-aura-text="Save"/>
+    </div>
+</div>
+
+<script lang="javascript">
+    $(document).ready(function() {
+        require(['lib/husky'], function(Husky) {
+            'use strict';
+
+            var app = Husky({ debug: { enable: true }}),
+                    _ = app.sandbox.util._;
+
+            app.start('#save-button').then(function() {
+                app.logger.log('Aura started...');
+            });
+
+        });
+    });
+</script>
 
 <div class="doc-code">
     {% highlight html %}
-    <div data-aura-component="header@husky" data-aura-buttontype="saveDelete"></div>
+    <div id="save-button" data-aura-component="button@husky" data-aura-instancename="save" data-aura-buttontype="icon" data-aura-background="black" data-aura-icontype="caution" data-aura-text="Save"/>
 
     <script src="../js/sinon.js"></script>
     <script src="../js/jquery.js"></script>
@@ -42,7 +62,8 @@
 <h3>Via Javascript</h3>
 
 {% highlight javascript %}
-this.$el.html("<div id='header'></div>");
+this.$el.html("
+<div id='header'></div>");
 this.sandbox.start([{ name: 'header@husky', options: { el: '#header' }}]);
 {% endhighlight %}
 
