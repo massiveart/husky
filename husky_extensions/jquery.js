@@ -23,6 +23,8 @@
 
             app.core.dom.$document = $(document);
 
+            app.core.dom.$ = $;
+
             app.core.dom.createElement = function(selector, props) {
                 props = props || {};
                 return $(selector, props);
@@ -67,10 +69,6 @@
 
             app.core.dom.onReady = function(callback) {
                 $(window).on('load', callback);
-            };
-
-            app.core.dom.extend = function(defaults, options) {
-                return $.extend({}, defaults, options);
             };
 
             app.core.util.ajax = $.ajax;
