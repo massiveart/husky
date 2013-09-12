@@ -310,14 +310,14 @@ define(['jquery'], function($) {
                     .prop('checked', false);
 
                 this.selectedItemIds.splice(this.selectedItemIds.indexOf(itemId), 1);
-                this.sandbox.emit('data-grid:item:deselect', itemId);
+                this.sandbox.emit('data-grid.item.deselect', itemId);
             } else {
                 $element
                     .addClass('is-selected')
                     .prop('checked', true);
 
                 this.selectedItemIds.push(itemId);
-                this.sandbox.emit('data-grid:item:select', itemId);
+                this.sandbox.emit('data-grid.item.select', itemId);
             }
             return false;
         },
@@ -336,7 +336,7 @@ define(['jquery'], function($) {
                     .prop('checked', false);
 
                 this.selectedItemIds = [];
-                this.sandbox.emit('data-grid:all:deselect', null);
+                this.sandbox.emit('data-grid.all.deselect', null);
 
             } else {
                 this.$element
@@ -344,7 +344,7 @@ define(['jquery'], function($) {
                     .prop('checked', true);
 
                 this.selectedItemIds = this.allItemIds.slice(0);
-                this.sandbox.emit('data-grid:all:select', this.selectedItemIds);
+                this.sandbox.emit('data-grid.all.select', this.selectedItemIds);
             }
         },
 
@@ -366,7 +366,7 @@ define(['jquery'], function($) {
                 var $element, $tblRow;
                 $element = $(event.currentTarget);
                 $tblRow = $element.parent().parent();
-                this.sandbox.emit('data-grid:row:remove-click', event, $tblRow.data('id'));
+                this.sandbox.emit('data-grid.row.remove-click', event, $tblRow.data('id'));
             }
         },
 
@@ -385,7 +385,7 @@ define(['jquery'], function($) {
                 $tblRow = this.$element.find('tr[data-id="' + id + '"]');
             }
 
-            this.sandbox.emit('data-grid:row:removed', event);
+            this.sandbox.emit('data-grid.row.removed', event);
             $tblRow.remove();
         },
 
@@ -456,8 +456,8 @@ define(['jquery'], function($) {
                 }.bind(this)
             });
 
-            this.sandbox.emit('data-grid:page:change', null);
-            this.vent.sandbox.emit('data-grid:update', null);
+            this.sandbox.emit('data-grid.page.change', null);
+            this.vent.sandbox.emit('data-grid.update', null);
         },
 
 
@@ -475,7 +475,7 @@ define(['jquery'], function($) {
 
             this.$element.on('click', 'tbody > tr', function(event) {
                 if (!$(event.target).is('input') && !$(event.target).is('span.icon-remove')) {
-                    this.sandbox.emit('data-grid:item:click', $(event.currentTarget).data('id'));
+                    this.sandbox.emit('data-grid.item.click', $(event.currentTarget).data('id'));
                 }
             }.bind(this));
 
@@ -491,12 +491,12 @@ define(['jquery'], function($) {
         bindCustomEvents: function() {
             // listen for private events
 
-            this.sandbox.on('data-grid:update', this.updateHandler.bind(this));
+            this.sandbox.on('data-grid.update', this.updateHandler.bind(this));
 
             // listen for public events
-            this.sandbox.on('data-grid:row:add', this.addRow.bind(this));
+            this.sandbox.on('data-grid.row.add', this.addRow.bind(this));
 
-            this.sandbox.on('data-grid:row:remove', this.removeRow.bind(this));
+            this.sandbox.on('data-grid.row.remove', this.removeRow.bind(this));
         },
 
         updateHandler: function() {
