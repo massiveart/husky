@@ -327,9 +327,9 @@ define(['jquery'], function($) {
 
             event.stopPropagation();
 
-            console.log(Util.compare(this.selectedItemIds, this.allItemIds), "compare");
+            console.log(this.sandbox.util.compare(this.selectedItemIds, this.allItemIds), "compare");
 
-            if (Util.compare(this.selectedItemIds, this.allItemIds)) {
+            if (this.sandbox.util.compare(this.selectedItemIds, this.allItemIds)) {
 
                 this.$element
                     .find('input[type="checkbox"]')

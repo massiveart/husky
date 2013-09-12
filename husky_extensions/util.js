@@ -1,15 +1,18 @@
-define(function() {
-    Util = {
+define([], {
 
-        // for array functions
-        compare: function(a, b) {
+    name: 'Util',
 
+    initialize: function(app) {
+
+        // for comparing arrays
+        app.core.util.compare = function(a, b) {
             if (this.typeOf(a) === 'array' && this.typeOf(b) === 'array') {
                 return JSON.stringify(a) === JSON.stringify(b);
             }
         },
 
-        typeOf: function(value) {
+        // Crockfords better typeof
+        app.core.util.typeOf = function(value) {
             var s = typeof value;
             if (s === 'object') {
                 if (value) {
