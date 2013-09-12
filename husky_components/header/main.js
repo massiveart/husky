@@ -152,6 +152,11 @@ define([], function() {
             // bind events
             this.bindDomEvents();
             this.bindCustomEvents();
+
+            // set default type
+            if(!!this.options.buttontype){
+                this.changeButtonType(this.options.buttontype);
+            }
         },
 
         bindDomEvents: function() {
