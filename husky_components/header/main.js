@@ -107,7 +107,9 @@ define([], function() {
             }
         },
         defaults = {
-            margin: 45  // add 45px to navWidth
+            marginmid: 45,   // add 45px to navWidth
+            marginright: 20, // add 20px to margin mid part
+            buttontype: null // type of button at start
         };
 
     return {
@@ -180,11 +182,11 @@ define([], function() {
         // move buttons with navigation width
         moveButtons: function(navWidth) {
             var headerLeft = parseInt(this.sandbox.dom.css(this.$header, 'margin-left')),
-                marginLeft = navWidth + this.options.margin - headerLeft,
+                marginLeft = navWidth + this.options.marginmid - headerLeft,
                 width = parseInt(this.sandbox.dom.css(this.$mid, 'width'));
 
             this.$mid.css('margin-left', marginLeft);
-            this.$right.css('margin-left', width + marginLeft + 20);
+            this.$right.css('margin-left', width + marginLeft + this.options.marginright);
         },
 
         changeButtonType: function(newType) {
