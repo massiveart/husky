@@ -4,21 +4,27 @@
         "baseUrl": ".",
         "preserveLicenseComments": false,
         "paths": {
-            "aura":           "bower_components/aura/lib",
-            "underscore":     "bower_components/underscore/underscore",
-            "eventemitter":   "bower_components/eventemitter2/lib/eventemitter2",
-            "backbone":       "bower_components/backbone/backbone",
-            "requirejs":      "bower_components/requirejs/require",
-            "text":           "bower_components/requirejs-text/text",
-            "jquery":         "bower_components/jquery/jquery",
-            "husky":          "lib/husky",
+            "aura": "bower_components/aura/lib",
+            "underscore": "bower_components/underscore/underscore",
+            "eventemitter": "bower_components/eventemitter2/lib/eventemitter2",
+            "backbone": "bower_components/backbone/backbone",
+            "requirejs": "bower_components/requirejs/require",
+            "text": "bower_components/requirejs-text/text",
+            "jquery": "bower_components/jquery/jquery",
+            "husky": "lib/husky",
 
-            "__component__$navigation@husky":           "husky_components/navigation/main",
-            "__component__$headerbar@husky":            "husky_components/headerbar/main"
+            "__component__$navigation@husky": "husky_components/navigation/main",
+            "__component__$header@husky": "husky_components/header/main",
+            "__component__$button@husky": "husky_components/button/main"
         },
         "shim": {
-            "backbone":   { "exports": "Backbone", "deps": ["underscore", "jquery"] },
-            "underscore": { "exports": "_" }
+            "backbone": {
+                "exports": "Backbone",
+                "deps": ["underscore", "jquery"]
+            },
+            "underscore": {
+                "exports": "_"
+            }
         },
         "include": [
             "jquery",
@@ -32,7 +38,8 @@
             "husky",
 
             "__component__$navigation@husky",
-            "__component__$headerbar@husky"
+            "__component__$header@husky",
+            "__component__$button@husky"
         ],
         "out": "dist/<%= PKG_VERSION %>/husky.js"
     }

@@ -67,24 +67,24 @@ require(['lib/husky'], function(Husky) {
         });
 
         _.delay(function() {
-            app.sandbox.emit('husky.headerbar.button-type', 'save');
+            app.sandbox.emit('husky.header.button-type', 'saveDelete');
 
             _.delay(function() {
-                app.sandbox.emit('husky.headerbar.button-state', 'loading-save-button');
-            }, 500);
+                app.sandbox.emit('husky.header.button-state', 'disable');
+            }, 1000);
 
         }, 500);
 
         app.sandbox.on('husky.button.save.click', function() {
-            app.sandbox.emit('husky.headerbar.button-type', 'add');
+            app.sandbox.emit('husky.header.button-type', 'add');
         });
 
         app.sandbox.on('husky.button.delete.click', function() {
-            app.sandbox.emit('husky.headerbar.button-type', 'add');
+            app.sandbox.emit('husky.header.button-type', 'add');
         });
 
         app.sandbox.on('husky.button.add.click', function() {
-            app.sandbox.emit('husky.headerbar.button-type', 'saveDelete');
+            app.sandbox.emit('husky.header.button-type', 'saveDelete');
         });
     });
 

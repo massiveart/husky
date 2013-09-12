@@ -35,7 +35,11 @@
             };
 
             app.core.dom.css = function(selector, style, value) {
-                return $(selector).css(style, value);
+                if (!!value) {
+                    return $(selector).css(style, value);
+                } else {
+                    return $(selector).css(style);
+                }
             };
 
             app.core.dom.addClass = function(selector, classes) {
