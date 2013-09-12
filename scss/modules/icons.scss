@@ -118,6 +118,14 @@
     }
 }
 
+.icon-keys {
+    cursor: pointer;
+    &::after {
+        content: "\e045";
+        display: inline-block;
+    }
+}
+
 .icon-building {
     cursor: pointer;
     &::after {
