@@ -51,6 +51,7 @@ this.sandbox.start([{ name: 'header@husky', options: { el: '#header' }}]);
 <table class="table">
     <thead>
         <tr>
+            <th width="5%">Direction</th>
             <th width="20%">Event Name</th>
             <th width="20%">Parameter</th>
             <th>Description</th>
@@ -58,16 +59,19 @@ this.sandbox.start([{ name: 'header@husky', options: { el: '#header' }}]);
     </thead>
     <tbody>
         <tr>
+            <td>in</td>
             <td>husky.header.move-buttons</td>
             <td>int ... navigation width</td>
             <td>move middle part to match given navigation width</td>
         </tr>
         <tr>
+            <td>in</td>
             <td>husky.header.button-type</td>
             <td>string|array ... typeName or type array</td>
-            <td>change buttonType [save, saveDelete, add, custom template]</td>
+            <td>change buttonType [save, saveDelete, add, custom type]</td>
         </tr>
         <tr>
+            <td>in</td>
             <td>husky.header.button-state</td>
             <td>string ... name of state</td>
             <td>change state of buttons</td>

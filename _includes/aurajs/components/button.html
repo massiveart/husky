@@ -5,13 +5,14 @@
 <h2>Example</h2>
 
 <div class="doc-example">
-    <div class="example">
-        <div id="save-button" data-aura-component="button@husky" data-aura-instancename="save" data-aura-buttontype="icon" data-aura-background="black" data-aura-icontype="caution" data-aura-text="Save"/>
+    <div class="example" id="save-button" style="min-height: 60px;">
+        <div data-aura-component="button@husky" data-aura-instancename="save" data-aura-buttontype="icon"
+             data-aura-background="black" data-aura-icontype="caution" data-aura-text="Save"></div>
     </div>
 </div>
 
 <script lang="javascript">
-    $(document).ready(function() {
+    window.onload = function() {
         require(['lib/husky'], function(Husky) {
             'use strict';
 
@@ -23,13 +24,15 @@
             });
 
         });
-    });
+    }
 </script>
 
 <div class="doc-code">
     {% highlight html %}
-    <div id="save-button" data-aura-component="button@husky" data-aura-instancename="save" data-aura-buttontype="icon" data-aura-background="black" data-aura-icontype="caution" data-aura-text="Save"/>
-
+    <div class="example" id="test-button" style="min-height: 60px;">
+        <div data-aura-component="button@husky" data-aura-instancename="save" data-aura-buttontype="icon"
+             data-aura-background="black" data-aura-icontype="caution" data-aura-text="Save"></div>
+    </div>
     <script src="../js/sinon.js"></script>
     <script src="../js/jquery.js"></script>
 
@@ -42,7 +45,7 @@
             var app = Husky({ debug: { enable: true }}),
                     _ = app.sandbox.util._;
 
-            app.start().then(function() {
+            app.start('#test-button').then(function() {
                 app.logger.log('Aura started...');
             });
 
@@ -56,15 +59,14 @@
 <h3>Via HTML</h3>
 
 {% highlight html %}
-<div data-aura-component="header@husky" data-aura-buttontype="saveDelete"></div>
+<div data-aura-component="button@husky" data-aura-instancename="save" data-aura-icontype="caution" data-aura-text="Save"></div>
 {% endhighlight %}
 
 <h3>Via Javascript</h3>
 
 {% highlight javascript %}
-this.$el.html("
-<div id='header'></div>");
-this.sandbox.start([{ name: 'header@husky', options: { el: '#header' }}]);
+this.$el.html("<div id='button'></div>");
+this.sandbox.start([{ name: 'button@husky', options: { el: '#button', instancename: 'save', text: 'Save', icontype: 'caution' }}]);
 {% endhighlight %}
 
 <h2>Provided Events</h2>
@@ -72,6 +74,7 @@ this.sandbox.start([{ name: 'header@husky', options: { el: '#header' }}]);
 <table class="table">
     <thead>
         <tr>
+            <th width="5%">Direction</th>
             <th width="20%">Event Name</th>
             <th width="20%">Parameter</th>
             <th>Description</th>
@@ -79,19 +82,16 @@ this.sandbox.start([{ name: 'header@husky', options: { el: '#header' }}]);
     </thead>
     <tbody>
         <tr>
-            <td>husky.header.move-buttons</td>
-            <td>int ... navigation width</td>
-            <td>move middle part to match given navigation width</td>
+            <td>in</td>
+            <td>husky.button.&lt;&lt;instancename&gt;&gt;.click</td>
+            <td>---</td>
+            <td>button where clicked</td>
         </tr>
         <tr>
-            <td>husky.header.button-type</td>
+            <td>out</td>
+            <td>husky.button.&lt;&lt;instancename&gt;&gt;.state</td>
             <td>string|array ... typeName or type array</td>
-            <td>change buttonType [save, saveDelete, add, custom template]</td>
-        </tr>
-        <tr>
-            <td>husky.header.button-state</td>
-            <td>string ... name of state</td>
-            <td>change state of buttons</td>
+            <td>change buttonType [icon, custom type]</td>
         </tr>
     </tbody>
 </table>
@@ -107,8 +107,7 @@ this.sandbox.start([{ name: 'header@husky', options: { el: '#header' }}]);
     </thead>
     <tbody>
         <tr>
-            <td>navigation.item.content.show</td>
-            <td>used to move buttons when the content is changing</td>
+            <td colspan="3">No event used</td>
         </tr>
     </tbody>
 </table>
@@ -126,22 +125,34 @@ this.sandbox.start([{ name: 'header@husky', options: { el: '#header' }}]);
     </thead>
     <tbody>
         <tr>
-            <td>marginmid</td>
-            <td>int</td>
-            <td>45</td>
-            <td>add 45px to navWidth</td>
-        </tr>
-        <tr>
-            <td>marginright</td>
-            <td>int</td>
-            <td>20</td>
-            <td>add 20px to margin mid part</td>
-        </tr>
-        <tr>
             <td>buttontype</td>
             <td>string</td>
+            <td>'icon'</td>
+            <td>type of button [icon, custom]</td>
+        </tr>
+        <tr>
+            <td>instancename</td>
+            <td>string</td>
+            <td>'undefined'</td>
+            <td>name of instance used in events</td>
+        </tr>
+        <tr>
+            <td>text</td>
+            <td>string</td>
+            <td>'undefined'</td>
+            <td>button text</td>
+        </tr>
+        <tr>
+            <td>icontype</td>
+            <td>string</td>
+            <td>'caution'</td>
+            <td>button icon</td>
+        </tr>
+        <tr>
+            <td>background</td>
+            <td>string</td>
             <td>null</td>
-            <td>type of button at start</td>
+            <td>background color for spinner</td>
         </tr>
     </tbody>
 </table>
@@ -158,69 +169,24 @@ this.sandbox.start([{ name: 'header@husky', options: { el: '#header' }}]);
     </thead>
     <tbody>
         <tr>
-            <td>save</td>
+            <td>icon</td>
             <td></td>
-            <td>Show a SaveButton in the left part</td>
+            <td>Create a button with an icon and a text</td>
         </tr>
         <tr>
             <td></td>
             <td>standard</td>
-            <td>SaveButton is active</td>
+            <td>Button is active</td>
         </tr>
         <tr>
             <td></td>
             <td>disable</td>
-            <td>SaveButton is disabled</td>
+            <td>Button is disabled</td>
         </tr>
         <tr>
             <td></td>
-            <td>loading-save-button</td>
-            <td>SaveButton is not visible, but a loading icon appears</td>
-        </tr>
-        <tr>
-            <td>saveDelete</td>
-            <td></td>
-            <td>Show a SaveButton in the left part and a DeleteButton in the right part</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>standard</td>
-            <td>SaveButton and DeleteButton is active</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>disable</td>
-            <td>SaveButton and DeleteButton is disabled</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>loading-save-button</td>
-            <td>SaveButton is not visible, but a loading icon appears and the DeleteButton is disabled</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>loading-delete-button</td>
-            <td>DeleteButton is not visible, but a loading icon appears and the SaveButton is disabled</td>
-        </tr>
-        <tr>
-            <td>add</td>
-            <td></td>
-            <td>Show a AddButton in the left part</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>standard</td>
-            <td>AddButton is active</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>disable</td>
-            <td>AddButton is disabled</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>loading-save-button</td>
-            <td>AddButton is not visible, but a loading icon appears</td>
+            <td>loading</td>
+            <td>Button is not visible, but a loading icon appears</td>
         </tr>
     </tbody>
 </table>

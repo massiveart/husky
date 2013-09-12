@@ -1,11 +1,21 @@
-/**
+/*
+ * This file is part of the Sulu CMS.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
  * Name: header
  * Options:
- *  margin: add margin to navWidth
+ *  marginmid: add 45px to navWidth
+ *  marginright: add 20px to margin mid part
+ *  buttontype: type of button at start
  *
  * Provided Events:
  *  husky.header.move-buttons: move middle part to match given navigation width
  *  husky.header.button-type: change ButtonType [save, saveDelete, add, template]
+ *  husky.header.button-state: change state of buttons
  *
  * Used Events:
  *  navigation:item:content:show: used to move buttons when the content is changing
@@ -190,7 +200,7 @@ define([], function() {
         },
 
         changeButtonType: function(newType) {
-            this.buttonCleanUp();
+            // TODO perhaps sandbox.stop('#header-mid')
 
             if (typeof newType === 'string') {
                 if (!!types[newType]) {
@@ -208,11 +218,6 @@ define([], function() {
             this.$mid.html(type.template.call(this));
 
             this.sandbox.start('#header-mid');
-        },
-
-        // clean up buttons and turn off events
-        buttonCleanUp: function() {
-            this.sandbox.stop('#header-mid');
         },
 
         changeState: function(state) {

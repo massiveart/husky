@@ -1,3 +1,25 @@
+/*
+ * This file is part of the Sulu CMS.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * Name: button
+ * Options:
+ *  buttontype: type of button [icon, custom]
+ *  instancename: name of instance used in events
+ *  text: button text
+ *  icontype: button icon
+ *  background: background color for spinner
+ *
+ * Provided Events:
+ *  husky.button.<<instancename>>.click: button where clicked
+ *  husky.button.<<instancename>>.state: change buttonType [icon, custom type]
+ *
+ */
+
 define([], function() {
 
     var type,
@@ -50,11 +72,11 @@ define([], function() {
             }
         },
         defaults = {
-            buttontype: 'icon',
-            instancename: 'undefined',
-            text: 'undefined',
-            icontype: 'caution',
-            background: null
+            buttontype: 'icon',         // type of button [icon, custom]
+            instancename: 'undefined',  // name of instance used in events
+            text: 'undefined',          // button text
+            icontype: 'caution',        // button icon
+            background: null            // background color for spinner
         };
 
 

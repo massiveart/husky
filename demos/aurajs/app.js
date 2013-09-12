@@ -68,12 +68,7 @@ require(['lib/husky'], function(Husky) {
 
         _.delay(function() {
             app.sandbox.emit('husky.header.button-type', 'saveDelete');
-
-            _.delay(function() {
-                app.sandbox.emit('husky.header.button-state', 'disable');
-            }, 1000);
-
-        }, 500);
+       }, 500);
 
         app.sandbox.on('husky.button.save.click', function() {
             app.sandbox.emit('husky.header.button-type', 'add');
