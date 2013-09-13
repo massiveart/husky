@@ -647,9 +647,9 @@
             pageSize: 10,
             showPages: 5
         },
-        tableHead: {
+        tableHead: [
 //            {content: 'name', width: '100px'}
-        },
+        ],
         excludeFields: ['id'],
         autoRemoveHandling: true,
         defaultMeasureUnit: 'px'
