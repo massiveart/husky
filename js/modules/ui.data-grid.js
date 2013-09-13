@@ -358,10 +358,21 @@
             if (!!this.options.autoRemoveHandling) {
                 this.removeRow(event);
             } else {
-                var $element, $tblRow;
-                $element = $(event.currentTarget);
-                $tblRow = $element.parent().parent();
-                this.trigger('data-grid:row:remove-click', event, $tblRow.data('id'));
+                var id, $tblRow;
+
+                $tblRow = $(event.currentTarget).parent().parent();
+                id = $tblRow.data('id');
+                
+                console.log($tblRow, "table row");
+                console.log(id, "id");
+                
+                if(id > 0) {
+                    this.trigger('data-grid:row:remove-click', event, id);
+                } else {
+                    this.trigger('data-grid:row:remove-click', event, $tblRow);
+                }
+
+                
             }
         },
 
@@ -369,6 +380,8 @@
             Husky.DEBUG && console.log(this.name, 'removeRow');
 
             var $element, $tblRow, id;
+
+            console.log(typeof event, "type of event");
 
             if (typeof event === 'object') {
                 $element = $(event.currentTarget);
@@ -492,6 +505,9 @@
                     // change checked state
                     var $input = $(event.target).find("input");
                     $input.prop("checked", !$input.prop("checked"));
+
+                    itemId = $(event.currentTarget).parents('tr').data('id');
+                    this.sandbox.emit('data-grid.item.select', itemId);
 
                     // stop propagation
                     event.stopPropagation();

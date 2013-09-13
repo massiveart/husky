@@ -49,6 +49,7 @@ define(function() {
             width:  '50px',    // numerous value
             clickable: null    // defines if background is clickable
         },
+        tableHead: [],
         url: null,
 	};
 
@@ -291,11 +292,11 @@ define(function() {
 
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     // add a checkbox to each row
-                    tblColumns.push('<td class="selectItemColumn">', this.templates.checkbox(), '</td>');
+                    tblColumns.push('<td class="select-item-column">', this.templates.checkbox(), '</td>');
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                     // add a radio to each row
 
-                    tblColumns.push('<td class="selectItemColumn">', this.templates.radio({
+                    tblColumns.push('<td class="select-item-column">', this.templates.radio({
                         name: 'husky-radio'+radioPrefix
                     }), '</td>');
                 }
@@ -422,10 +423,16 @@ define(function() {
             if (!!this.options.autoRemoveHandling) {
                 this.removeRow(event);
             } else {
-                var $element, $tblRow;
-                $element = this.sandbox.dom.$(event.currentTarget);
-                $tblRow = $element.parent().parent();
-                this.sandbox.emit('data-grid.row.remove-click', event, $tblRow.data('id'));
+                var $tblRow, id;
+
+                $tblRow = this.sandbox.dom.$(event.currentTarget).parent().parent();
+                id = $tblRow.data('id');    
+
+                if(id > 0) {
+                    this.sandbox.emit('data-grid.row.remove-click', event, id);
+                } else {
+                    this.sandbox.emit('data-grid.row.remove-click', event, $tblRow);
+                }
             }
         },
 
@@ -434,7 +441,10 @@ define(function() {
 
             var $element, $tblRow, id;
 
+            console.log(typeof event, "type of event");
+
             if (typeof event === 'object') {
+
                 $element = this.sandbox.dom.$(event.currentTarget);
                 $tblRow = $element.parent().parent();
 
@@ -545,11 +555,14 @@ define(function() {
             }
 
             if (this.options.selectItem && !this.options.selectItem .clickable)
-                this.$element.on('click', '.selectItemColumn', function(event) {
+                this.$element.on('click', '.select-item-column', function(event) {
 
                     // change checked state
-                    var $checkbox = this.sandbox.dom.$(event.target).find("input");
-                    $checkbox.prop("checked", !$checkbox.prop("checked"));
+                    var $input = this.sandbox.dom.$(event.target).find("input");
+                    $input.prop("checked", !$input.prop("checked"));
+
+                    itemId = $(event.currentTarget).parents('tr').data('id');
+                    this.sandbox.emit('data-grid.item.select', itemId);
 
                     // stop propagation
                     event.stopPropagation();

@@ -15,56 +15,70 @@
 		<meta name="viewport" content="width=device-width">
 		<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 		<link rel="stylesheet" href="../../.tmp/husky.css">
+
+		 <style type="text/css">
+            #content {
+                width: 800px;
+                margin-left: 300px;
+                margin-top: 100px;
+                min-height: 300px;
+                background: #f1f1f1;
+            }
+        </style>
+
 	</head>
 	<body>
-		<div>
-			<h1>This is a static table</h1>
-			<table class="table">
-				<thead>
-					<tr>
-						<th>Table Header</th>
-						<th>Table Header</th>
-						<th>Table Header</th>
-						<th>Table Header</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Content Goes Here</td>
-						<td>This is longer content Donec id elit non mi porta gravida at eget metus.</td>
-						<td>Content Goes Here</td>
-						<td>Content Goes Here</td>
-					</tr>
-					<tr>
-						<td>Content Goes Here</td>
-						<td>This is longer Content Goes Here Donec id elit non mi porta gravida at eget metus.</td>
-						<td>Content Goes Here</td>
-						<td>Content Goes Here</td>
-					</tr>
-					<tr>
-						<td>Content Goes Here</td>
-						<td>This is longer Content Goes Here Donec id elit non mi porta gravida at eget metus.</td>
-						<td>Content Goes Here</td>
-						<td>Content Goes Here</td>
-					</tr>
-				</tbody>
-			</table>
+
+		<div id="content" class="grid">
+			<div>
+				<h1>This is a static table</h1>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Table Header</th>
+							<th>Table Header</th>
+							<th>Table Header</th>
+							<th>Table Header</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Content Goes Here</td>
+							<td>This is longer content Donec id elit non mi porta gravida at eget metus.</td>
+							<td>Content Goes Here</td>
+							<td>Content Goes Here</td>
+						</tr>
+						<tr>
+							<td>Content Goes Here</td>
+							<td>This is longer Content Goes Here Donec id elit non mi porta gravida at eget metus.</td>
+							<td>Content Goes Here</td>
+							<td>Content Goes Here</td>
+						</tr>
+						<tr>
+							<td>Content Goes Here</td>
+							<td>This is longer Content Goes Here Donec id elit non mi porta gravida at eget metus.</td>
+							<td>Content Goes Here</td>
+							<td>Content Goes Here</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<br/><br/>
+
+				
+			<h1>This is a generated Table</h1>
+
+			<h2>manually remove handling</h2>
+	
+			<div id="js-data-grid"></div>
+			<br/><br/>
+			<h2>automatically remove handling</h2>
+
+			<div id="js-data-grid2"></div>
+			<br/><br/>
+			<button id="add-row">Add Row</button>
+			<br/><br/>
 		</div>
-		<br/><br/>
-
-
-		<h1>This is a generated Table</h1>
-
-		<h2>manually remove handling</h2>
-
-		<div id="js-data-grid"></div>
-
-		<h2>automatically remove handling</h2>
-
-		<div id="js-data-grid2"></div>
-
-		<button id="add-row">Add Row</button>
-
 		<script src="../../node_modules/sinon/pkg/sinon.js"></script>
 		<script src="../../bower_components/jquery/jquery.js"></script>
 
@@ -111,7 +125,7 @@
 				});
 
 				$('#add-row').on('click', function() {
-					$dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:add', { "id": "1", "content1": "Tschau", "content2": "Hallo 2", "content3": "Hallo 3" });
+					$dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:add', { "id": "", "content1": "Tschau", "content2": "Hallo 2", "content3": "Hallo 3" });
 				});
 
 				$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:page:change', function() {
@@ -127,7 +141,11 @@
 				$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:row:remove-click', function(event, item) {
 					console.log('remove-clicked: ' + item);
 					alert('DELETE AFTER OK');
-					$dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove', item);
+					if(typeof item == 'number' ) {
+						$dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove', item);
+					} else {
+						$dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove', event);
+					}
 				});
 
 				$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:select', function(item) {
@@ -165,7 +183,7 @@
 				});
 
 				$('#add-row').on('click', function() {
-					$dataGrid2.data('Husky.Ui.DataGrid').trigger('data-grid:row:add', { "id": "1", "content1": "Tschau", "content2": "Hallo 2", "content3": "Hallo 3" });
+					$dataGrid2.data('Husky.Ui.DataGrid').trigger('data-grid:row:add', { "id": "", "content1": "Tschau", "content2": "Hallo 2", "content3": "Hallo 3" });
 				});
 
 				$dataGrid2.data('Husky.Ui.DataGrid').on('data-grid:page:change', function() {
@@ -182,6 +200,12 @@
 					console.log('remove-clicked: ' + item);
 					alert('DELETE AFTER OK');
 					$dataGrid2.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove', event);
+
+					if(typeof item == 'number' ) {
+						$dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove', item);
+					} else {
+						$dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove', event);
+					}
 				});
 
 				$dataGrid2.data('Husky.Ui.DataGrid').on('data-grid:item:select', function() {
