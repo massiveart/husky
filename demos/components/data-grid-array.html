@@ -53,9 +53,9 @@
                     pagination: false,
                     showPages: 6,
                     pageSize: 4,
-                    autoRemoveHandling: true,
+                    autoRemoveHandling: false,
                     selectItem: {
-                        type: 'radio'
+                        clickable: false
                     },
                     tableHead: [
                         {content: 'Content 2', width: "50%"},
@@ -68,9 +68,9 @@
                     },
                     template: {
                         row: ['<tr <% if (!!id) { %> data-id="<%= id %>"<% } %> >',
-                                    '<td>',
+                                    '<td class="select-item-column">',
                                         '<label>',
-                                            '<input type="radio" class="custom-radio" name="catalogueRadio">',
+                                            '<input type="radio" class="custom-radio" name="catalogue-radio">',
                                             '<span class="custom-radio-icon"></span>',
                                         '</label>',
                                     '</td>',
@@ -92,21 +92,30 @@
                 });
                 
 
-                // TODO id der row mitgeben
-                $('#js-data-grid').on('click', '.remove-row > span', function(event) {
-                    $dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove', event);
-                });
 
 		
-        		$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:select', function(itemId) {
-        			console.log(itemId);
-        		}.bind(this));
-        		
-        		// TODO: implement deselct for radio
-        		$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:deselect', function(itemId) {
-        			console.log(itemId);
-        		}.bind(this));
-               
+        		$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:select', function(item) {
+                    console.log('Husky.Ui.DataGrid item select: ' + item);
+                });
+
+                $dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:deselect', function(item) {
+                    console.log('Husky.Ui.DataGrid item deselect: ' + item);
+                });
+                
+                $dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:click', function(item) {
+                    console.log('Husky.Ui.DataGrid item click: ' + item);
+                });
+
+                // delete row immediatly
+                // $dataGrid.data('Husky.Ui.DataGrid').on('data-grid:row:removed', function(item) {
+                //     console.log('remove: ' + item);
+                // });
+
+                $('#js-data-grid').on('click', '.remove-row > span', function(event) {
+                    $dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove-click', event);
+                });
+
+
                 $dataGrid.data('Husky.Ui.DataGrid').on('data-grid:row:remove-click', function(event, item) {
                     console.log('remove-clicked: ' + item);
                     alert('DELETE AFTER OK');

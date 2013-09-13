@@ -225,11 +225,11 @@
 
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     // add a checkbox to each row
-                    tblColumns.push('<td class="selectItemColumn">', this.templates.checkbox(), '</td>');
+                    tblColumns.push('<td class="select-item-column">', this.templates.checkbox(), '</td>');
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                     // add a radio to each row
 
-                    tblColumns.push('<td class="selectItemColumn">', this.templates.radio({
+                    tblColumns.push('<td class="select-item-column">', this.templates.radio({
                         name: 'husky-radio'+radioPrefix
                     }), '</td>');
                 }
@@ -485,11 +485,13 @@
             }
 
             if (this.options.selectItem && !this.options.selectItem .clickable)
-                this.$element.on('click', '.selectItemColumn', function(event) {
+
+                //?? TODO fuer alle radios und checkboxes
+                this.$element.on('click', '.select-item-column', function(event) {
 
                     // change checked state
-                    var $checkbox = $(event.target).find("input");
-                    $checkbox.prop("checked", !$checkbox.prop("checked"));
+                    var $input = $(event.target).find("input");
+                    $input.prop("checked", !$input.prop("checked"));
 
                     // stop propagation
                     event.stopPropagation();
