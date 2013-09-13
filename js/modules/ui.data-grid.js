@@ -366,7 +366,7 @@
                 console.log($tblRow, "table row");
                 console.log(id, "id");
                 
-                if(id > 0) {
+                if(!!id) {
                     this.trigger('data-grid:row:remove-click', event, id);
                 } else {
                     this.trigger('data-grid:row:remove-click', event, $tblRow);
@@ -506,8 +506,10 @@
                     var $input = $(event.target).find("input");
                     $input.prop("checked", !$input.prop("checked"));
 
-                    itemId = $(event.currentTarget).parents('tr').data('id');
-                    this.sandbox.emit('data-grid.item.select', itemId);
+                    // throw select event when click on colum
+                    // causes raising event twice when clicking on checkbox 
+                    // itemId = $(event.currentTarget).parents('tr').data('id');
+                    // this.sandbox.emit('data-grid.item.select', itemId);
 
                     // stop propagation
                     event.stopPropagation();

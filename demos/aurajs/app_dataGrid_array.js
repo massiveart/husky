@@ -20,9 +20,6 @@ require(['lib/husky'], function(Husky) {
                 el: '#datagrid',
                 pagination: false,
                 autoRemoveHandling: false,
-                selectItem: {
-                    clickable: false
-                },
                 tableHead: [
                     {content: 'Content 2', width: "60%"},
                     {content: 'Code', width: "20%"},
@@ -34,7 +31,7 @@ require(['lib/husky'], function(Husky) {
                 },
                 template: {
                     row: ['<tr <% if (!!id) { %> data-id="<%= id %>"<% } %> >',
-                                '<td class="select-item-column">',
+                                '<td>',
                                     '<label>',
                                         '<input type="radio" class="custom-radio" name="catalogue-radio">',
                                         '<span class="custom-radio-icon"></span>',
