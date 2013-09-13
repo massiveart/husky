@@ -269,7 +269,7 @@ define(function() {
 
             if (!!(this.options.template && this.options.template.row)) {
 
-                return _.template(this.options.template.row, row);
+                return this.sandbox.template.parse(this.options.template.row, row);
 
             } else {
 
@@ -393,7 +393,6 @@ define(function() {
         selectAllItems: function(event) {
 
             event.stopPropagation();
-
             if (this.sandbox.util.compare(this.selectedItemIds, this.allItemIds)) {
 
                 this.$element
