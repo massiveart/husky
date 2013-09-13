@@ -305,7 +305,7 @@ define(['jquery'], function($) {
                 // ... and add class to selected element
                 $element.addClass('selected');
 
-                sandbox.emit('navigation:item:selected', {
+                sandbox.emit('navigation.item.selected', {
                     item: itemModel,
                     data: this.getNavigationData()
                 });
@@ -330,7 +330,7 @@ define(['jquery'], function($) {
                                     this.collapseFirstColumn();
                                 }
 
-                                sandbox.emit('navigation:item:sub:loaded', {
+                                sandbox.emit('navigation.item.sub.loaded', {
                                     item: itemModel,
                                     data: this.getNavigationData()
                                 });
@@ -348,7 +348,7 @@ define(['jquery'], function($) {
                             this.collapseFirstColumn();
                         }
 
-                        sandbox.emit('navigation:item:sub:show', {
+                        sandbox.emit('navigation.item.sub.show', {
                             item: itemModel,
                             data: this.getNavigationData()
                         });
@@ -360,7 +360,7 @@ define(['jquery'], function($) {
                     this.updateColumns();
                     this.collapseFirstColumn();
 
-                    sandbox.emit('navigation:item:content:show', {
+                    sandbox.emit('navigation.item.content.show', {
                         item: itemModel,
                         data: this.getNavigationData()
                     });
@@ -452,7 +452,7 @@ define(['jquery'], function($) {
 
                 this.addedColumn = this.currentColumnIdx;
 
-                sandbox.emit('navigation:column:content:show', {
+                sandbox.emit('navigation.column.content.show', {
                     data: this.getNavigationData()
                 });
 
@@ -514,7 +514,7 @@ define(['jquery'], function($) {
 
         bindEvents: function() {
             // external events
-            sandbox.on('navigation:item:column:show', this.showColumn.bind(this));
+            sandbox.on('navigation.item.column.show', this.showColumn.bind(this));
 
             // internal events
         },
