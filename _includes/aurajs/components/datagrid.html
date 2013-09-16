@@ -1,69 +1,202 @@
 <h1 id="auto-complete">Datagrid</h1>
 
-TODO Description
+
 
 <h2>Example</h2>
 
-<div class="doc-example">
-	<div class="example">
-		<div class="grid">
-			<div class="grid-row">
-				<div class="grid-col-4">
-					<form>
-						<div id="auto-complete-example">
-							<label>Test</label>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="grid">
+	<ul>
+		<li><a href="/demos/aurajs/datagrid/app_dataGrid_doc.html">Example using an <b>url</b> as datasource</a></li>
+		<li><a href="/demos/aurajs/datagrid/app_dataGrid_array_doc.html">Example using an <b>array</b> as datasource</a></li>
+	</ul>
 </div>
 
+<h2>Example-Code using an array</h2>
+<div class="doc-code">
+	{% highlight javascript %}
+	<script lang="javascript">
+		var data = new Array();
+	    data[0] = { id: 2, translations: [], locale: 'English', code: 'code 1'};
+	    data[1] = { id: 4, translations: [], locale: 'Deutsch', code: 'code 2'};
+
+
+	    var app = Husky({ debug: { enable: true }}),
+	        _ = app.sandbox.util._;
+
+	    app.start([
+	        { 
+	            name: 'datagrid@husky', options: 
+	            { 
+	                el: '#datagrid',
+	                pagination: false,
+	                autoRemoveHandling: false,
+	                tableHead: [
+	                    {content: 'Content 2', width: "60%"},
+	                    {content: 'Code', width: "20%"},
+	                    {content: 'Remove', width: "10%"}
+	                ],
+	                excludeFields: ['id', 'translations'],
+	                data: {
+	                    items: data,
+	                },
+	                template: {
+	                    row: ['<tr <% if (!!id) { %> data-id="<%= id %>"<% } %> >',
+	                                '<td>',
+	                                    '<label>',
+	                                        '<input type="radio" class="custom-radio" name="catalogue-radio">',
+	                                        '<span class="custom-radio-icon"></span>',
+	                                    '</label>',
+	                                '</td>',
+	                                '<td>',
+	                                    '<input class="form-element" type="text" id="locale<%= id %>" value="<%= locale %>"/>',
+	                                '</td>',
+	                                '<td>',
+	                                    '<input class="form-element" type="text" id="code<%= id %>" value="<%= code %>"/>',
+	                                '</td>',
+	                                '<td class="remove-row">',
+	                                    '<span class="icon-remove"></span>',
+	                                '</td>',
+	                            '</tr>'].join(''),
+	                }
+	            }
+	        }
+	    ]).then(function() {
+	        app.logger.log('Aura started...');
+
+	        $('#add-row').on('click', function() {
+	            app.sandbox.emit('husky.datagrid.row.add', { id: "", locale: "" , translations: [], code: "" });
+	        });
+
+		// More events ...
+
+	    });
+	</script>
+	{% endhighlight %}
+</div>
+
+
+
+<h2>Example-Code using an array</h2>
 <div class="doc-code">
 	{% highlight html %}
-	<form>
-		<div id="auto-complete-example">
-			<label>Test</label>
-		</div>
-	</form>
+	<div id="datagrid" class="grid-row"></div>
 
 	<script lang="javascript">
-		var autoComplete = $('#auto-complete-example').huskyAutoComplete({
-			url: '/contacts'
-		});
+		var app = Husky({ debug: { enable: true }}),
+        _ = app.sandbox.util._;
+
+	    app.start([
+	        { 
+	            name: 'datagrid@husky', options: 
+	            { 
+	                url: '/contacts',
+	                selectItem:{
+	                        type: 'checkbox',
+	                        clickable: false,
+
+	                },
+	                pagination: true,
+	                className: "myClass",
+	                paginationOptions: {
+	                    pageSize: 4,
+	                    showPages: 6
+	                },
+	                removeRow: true,
+	                autoRemoveHandling: false,
+	                tableHead: [
+	                    {content: 'Content 1', width: "30%"},
+	                    {content: 'Content 2'},
+	                    {content: 'Content 3'},
+	                    {content: ''}
+	                ],
+	                excludeFields: ['id'],
+	                el: '#datagrid'
+	            }
+	        }
+	    ]).then(function() {
+	        app.logger.log('Aura started...');
+
+	        app.sandbox.on('husky.datagrid.row.removed', function(item) {
+	            console.log('remove: ' + item);
+	        });
+
+	        // More events ...
+
+	    });
 	</script>
 	{% endhighlight %}
 </div>
 
 <h2>Usage</h2>
 
-<h3>Via Javascript</h3>
+<h3>Via HTML element</h3>
 
 {% highlight javascript %}
-var autoComplete = $('#auto-complete').huskyAutoComplete(options);
+	<div id="datagrid"></div>
 {% endhighlight %}
 
-<h2>Events</h2>
-
+<h2>Provided Events</h2>
 <table class="table">
 	<thead>
 		<tr>
 			<th width="20%">Event Name</th>
+			<th>Parameter</th>
 			<th>Description</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr>
+			<td>husky.datagrid.item.deselect</td>
 			<td></td>
-			<td></td>
+			<td>raised when item is deselected</td>
 		</tr>
+		<tr>
+			<td>husky.datagrid.item.select</td>
+			<td></td>
+			<td>raised when item is selected</td>
+		</tr>
+		<tr>
+			<td>husky.datagrid.all.deselect</td>
+			<td></td>
+			<td>raised when all items get deselected via the header checkbox</td>
+		</tr>
+		<tr>
+			<td>husky.datagrid.all.select</td>
+			<td></td>
+			<td>raised when all items get selected via the header checkbox</td>
+		</tr>
+		<tr>
+			<td>husky.datagrid.row.remove-click</td>
+			<td></td>
+			<td>raised when clicked on the remove-row-icon</td>
+		</tr>
+		<tr>
+			<td>husky.datagrid.row.removed</td>
+			<td></td>
+			<td>raised when row got removed</td>
+		</tr>
+		<tr>
+			<td>husky.datagrid.page.change</td>
+			<td></td>
+			<td>raised when the the current page changes</td>
+		</tr>
+		<tr>
+			<td>husky.datagrid.update</td>
+			<td></td>
+			<td>raised when the data needs to be updated</td>
+		</tr>
+		<tr>
+			<td>husky.datagrid.item.click</td>
+			<td></td>
+			<td>raised when clicked on an item</td>
+		</tr>
+		
 	</tbody>
 </table>
 
 {% highlight javascript %}
-autoComplete.data('Husky.Ui.AutoComplete').on('auto-complete:loadData', function() {
-...
+app.sandbox.on('husky.datagrid.row.removed', function(item) {
+	...
 });
 {% endhighlight %}
 
@@ -80,23 +213,82 @@ autoComplete.data('Husky.Ui.AutoComplete').on('auto-complete:loadData', function
 	</thead>
 	<tbody>
 		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			<td>autoRemoveHandling</td>
+			<td>boolean</td>
+			<td>true</td>
+			<td>raises an event before a row is removed</td>
 		</tr>
 		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			<td>className</td>
+			<td>string</td>
+			<td>datagridcontainer</td>
+			<td>additional classname for the wrapping div</td>
 		</tr>
 		<tr>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			<td>data</td>
+			<td>array</td>
+			<td>null</td>
+			<td>array of data to display (instead of using a url)</td>
+		</tr>
+		<tr>
+			<td>elementType</td>
+			<td>table,list</td>
+			<td>table</td>
+			<td>type of datagrid</td>
+		</tr>
+		<tr>
+			<td>excludeFields</td>
+			<td>array</td>
+			<td>['id']</td>
+			<td>array of fields to exclude</td>
+		</tr>
+		<tr>
+			<td>pagination</td>
+			<td>boolean</td>
+			<td>false</td>
+			<td>display a pagination</td>
+		</tr>
+		<tr>
+			<td>paginationOptions.pageSize</td>
+			<td>int</td>
+			<td>10</td>
+			<td>lines per page</td>
+		</tr>
+		<tr>
+			<td>paginationOptions.showPages</td>
+			<td>int</td>
+			<td>5</td>
+			<td>amount of pages that will be shown</td>
+		</tr>
+		<tr>
+			<td>removeRow</td>
+			<td>boolean</td>
+			<td>true</td>
+			<td>displays a remove-icon in the last column</td>
+		</tr>
+		<tr>
+			<td>selectItem.type</td>
+			<td>checkbox,radiobuttom</td>
+			<td>null</td>
+			<td>typ of select [checkbox, radio]</td>
+		</tr>
+		<tr>
+			<td>selectItem.width</td>
+			<td>e.g. 20px</td>
+			<td>50px</td>
+			<td>width of the select column</td>
+		</tr>
+		<tr>
+			<td>url</td>
+			<td>string</td>
+			<td>null</td>
+			<td>url to fetch content from</td>
+		</tr>
+		<tr>
+			<td>template.row</td>
+			<td>string</td>
+			<td>-</td>
+			<td>template for a datagrid row</td>
 		</tr>
 	</tbody>
 </table>
-		

@@ -37,8 +37,8 @@ require(['lib/husky'], function(Husky) {
             { 
                 url: '/contacts',
                 selectItem:{
-                        type: 'checkbox',
-                        clickable: false,
+                        type: 'checkbox'
+                        //clickable: false,
 
                 },
                 pagination: true,
