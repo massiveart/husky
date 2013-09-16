@@ -27,8 +27,7 @@ define([], function() {
             icon: {
                 init: function() {
                     this.sandbox.dom.addClass(this.$el, 'pointer icon-btn');
-                    this.html(type.template(this.options.icontype, this.options.text));
-
+                    this.$el.html(type.template(this.options.icontype, this.options.text));
                     type.bindDomEvents.call(this);
                 },
                 bindDomEvents: function() {
