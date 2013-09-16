@@ -8,7 +8,7 @@
 
 <div class="doc-code">
     {% highlight html %}
-    <div data-aura-component="header@husky" data-aura-buttontype="saveDelete"></div>
+    <div data-aura-component="header@husky" data-aura-button-type="saveDelete"></div>
 
     <script src="../js/sinon.js"></script>
     <script src="../js/jquery.js"></script>
@@ -36,7 +36,7 @@
 <h3>Via HTML</h3>
 
 {% highlight html %}
-<div data-aura-component="header@husky" data-aura-buttontype="saveDelete"></div>
+<div data-aura-component="header@husky" data-aura-button-type="saveDelete"></div>
 {% endhighlight %}
 
 <h3>Via Javascript</h3>
@@ -109,19 +109,19 @@ this.sandbox.start([{ name: 'header@husky', options: { el: '#header' }}]);
     </thead>
     <tbody>
         <tr>
-            <td>marginmid</td>
+            <td>marginMid</td>
             <td>int</td>
             <td>45</td>
             <td>add 45px to navWidth</td>
         </tr>
         <tr>
-            <td>marginright</td>
+            <td>marginRight</td>
             <td>int</td>
             <td>20</td>
             <td>add 20px to margin mid part</td>
         </tr>
         <tr>
-            <td>buttontype</td>
+            <td>buttonType</td>
             <td>string</td>
             <td>null</td>
             <td>type of button at start</td>

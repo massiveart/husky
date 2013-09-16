@@ -55,15 +55,15 @@ require(['lib/husky'], function(Husky) {
         }, 200);
 
 
-        app.sandbox.on('navigation:item:selected', function(item) {
+        app.sandbox.on('navigation.item.selected', function(item) {
             app.logger.log(item);
             _.delay(function() {
                 fakeServer.respond();
             }, 500);
         });
 
-        app.sandbox.on('navigation:item:content:show', function(item) {
-            app.logger.log('navigation:item:content:show', item);
+        app.sandbox.on('navigation.item.content.show', function(item) {
+            app.logger.log('navigation.item.content.show', item);
         });
 
         _.delay(function() {

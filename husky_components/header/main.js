@@ -8,9 +8,9 @@
  *
  * Name: header
  * Options:
- *  marginmid: add 45px to navWidth
- *  marginright: add 20px to margin mid part
- *  buttontype: type of button at start
+ *  marginMid: add 45px to navWidth
+ *  marginRight: add 20px to margin mid part
+ *  buttonType: type of button at start
  *
  * Provided Events:
  *  husky.header.move-buttons: move middle part to match given navigation width
@@ -32,7 +32,7 @@ define([], function() {
                     return [
                         '<div class="grid-row">',
                         '   <div class="grid-col-6 left">',
-                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instancename="save" data-aura-buttontype="icon" data-aura-background="black" data-aura-icontype="caution" data-aura-text="Save"/>',
+                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="caution" data-aura-text="Save"/>',
                         '   </div>',
                         '</div>'
                     ].join('');
@@ -58,10 +58,10 @@ define([], function() {
                     return [
                         '<div class="grid-row">',
                         '   <div class="grid-col-6 left">',
-                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instancename="save" data-aura-buttontype="icon" data-aura-background="black" data-aura-icontype="caution" data-aura-text="Save"/>',
+                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="caution" data-aura-text="Save"/>',
                         '   </div>',
                         '   <div class="grid-col-6 right">',
-                        '       <div id="delete-button" class="pull-right" data-aura-component="button@husky" data-aura-instancename="delete" data-aura-buttontype="icon" data-aura-background="black" data-aura-icontype="circle-remove" data-aura-text="Delete"/>',
+                        '       <div id="delete-button" class="pull-right" data-aura-component="button@husky" data-aura-instance-name="delete" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="circle-remove" data-aura-text="Delete"/>',
                         '   </div>',
                         '</div>'
                     ].join('');
@@ -94,7 +94,7 @@ define([], function() {
                     return [
                         '<div class="grid-row">',
                         '   <div class="grid-col-6 left">',
-                        '       <div id="add-button" data-aura-component="button@husky" data-aura-instancename="add" data-aura-buttontype="icon" data-aura-background="black" data-aura-icontype="add" data-aura-text="Add"/>',
+                        '       <div id="add-button" data-aura-component="button@husky" data-aura-instance-name="add" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="add" data-aura-text="Add"/>',
                         '   </div>',
                         '</div>'
                     ].join('');
@@ -117,14 +117,12 @@ define([], function() {
             }
         },
         defaults = {
-            marginmid: 45,   // add 45px to navWidth
-            marginright: 20, // add 20px to margin mid part
-            buttontype: null // type of button at start
+            marginMid: 45,   // add 45px to navWidth
+            marginRight: 20, // add 20px to margin mid part
+            buttonType: null // type of button at start
         };
 
     return {
-
-        view: true,
 
         initialize: function() {
             sandbox = this.sandbox;
@@ -166,8 +164,8 @@ define([], function() {
             this.bindCustomEvents();
 
             // set default type
-            if(!!this.options.buttontype){
-                this.changeButtonType(this.options.buttontype);
+            if (!!this.options.buttonType) {
+                this.changeButtonType(this.options.buttonType);
             }
         },
 
@@ -192,11 +190,11 @@ define([], function() {
         // move buttons with navigation width
         moveButtons: function(navWidth) {
             var headerLeft = parseInt(this.sandbox.dom.css(this.$header, 'margin-left')),
-                marginLeft = navWidth + this.options.marginmid - headerLeft,
+                marginLeft = navWidth + this.options.marginMid - headerLeft,
                 width = parseInt(this.sandbox.dom.css(this.$mid, 'width'));
 
             this.$mid.css('margin-left', marginLeft);
-            this.$right.css('margin-left', width + marginLeft + this.options.marginright);
+            this.$right.css('margin-left', width + marginLeft + this.options.marginRight);
         },
 
         changeButtonType: function(newType) {

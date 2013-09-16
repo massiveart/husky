@@ -6,8 +6,8 @@
 
 <div class="doc-example">
     <div class="example" id="save-button" style="min-height: 60px;">
-        <div data-aura-component="button@husky" data-aura-instancename="save" data-aura-buttontype="icon"
-             data-aura-background="black" data-aura-icontype="caution" data-aura-text="Save"></div>
+        <div data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon"
+             data-aura-background="black" data-aura-icon-type="caution" data-aura-text="Save"></div>
     </div>
 </div>
 
@@ -30,8 +30,8 @@
 <div class="doc-code">
     {% highlight html %}
     <div class="example" id="test-button" style="min-height: 60px;">
-        <div data-aura-component="button@husky" data-aura-instancename="save" data-aura-buttontype="icon"
-             data-aura-background="black" data-aura-icontype="caution" data-aura-text="Save"></div>
+        <div data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon"
+             data-aura-background="black" data-aura-icon-type="caution" data-aura-text="Save"></div>
     </div>
     <script src="../js/sinon.js"></script>
     <script src="../js/jquery.js"></script>
@@ -59,14 +59,14 @@
 <h3>Via HTML</h3>
 
 {% highlight html %}
-<div data-aura-component="button@husky" data-aura-instancename="save" data-aura-icontype="caution" data-aura-text="Save"></div>
+<div data-aura-component="button@husky" data-aura-instance-name="save" data-aura-icon-type="caution" data-aura-text="Save"></div>
 {% endhighlight %}
 
 <h3>Via Javascript</h3>
 
 {% highlight javascript %}
-this.$el.html("<div id='button'></div>");
-this.sandbox.start([{ name: 'button@husky', options: { el: '#button', instancename: 'save', text: 'Save', icontype: 'caution' }}]);
+this.$el.html('<div id="button"></div>');
+this.sandbox.start([{ name: 'button@husky', options: { el: '#button', instanceName: 'save', text: 'Save', iconType: 'caution' }}]);
 {% endhighlight %}
 
 <h2>Provided Events</h2>
@@ -83,13 +83,13 @@ this.sandbox.start([{ name: 'button@husky', options: { el: '#button', instancena
     <tbody>
         <tr>
             <td>in</td>
-            <td>husky.button.&lt;&lt;instancename&gt;&gt;.click</td>
+            <td>husky.button.&lt;&lt;instanceName&gt;&gt;.click</td>
             <td>---</td>
             <td>button where clicked</td>
         </tr>
         <tr>
             <td>out</td>
-            <td>husky.button.&lt;&lt;instancename&gt;&gt;.state</td>
+            <td>husky.button.&lt;&lt;instanceName&gt;&gt;.state</td>
             <td>string|array ... typeName or type array</td>
             <td>change buttonType [icon, custom type]</td>
         </tr>
@@ -125,13 +125,13 @@ this.sandbox.start([{ name: 'button@husky', options: { el: '#button', instancena
     </thead>
     <tbody>
         <tr>
-            <td>buttontype</td>
+            <td>buttonType</td>
             <td>string</td>
             <td>'icon'</td>
             <td>type of button [icon, custom]</td>
         </tr>
         <tr>
-            <td>instancename</td>
+            <td>instanceName</td>
             <td>string</td>
             <td>'undefined'</td>
             <td>name of instance used in events</td>
@@ -143,7 +143,7 @@ this.sandbox.start([{ name: 'button@husky', options: { el: '#button', instancena
             <td>button text</td>
         </tr>
         <tr>
-            <td>icontype</td>
+            <td>iconType</td>
             <td>string</td>
             <td>'caution'</td>
             <td>button icon</td>

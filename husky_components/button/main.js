@@ -8,15 +8,15 @@
  *
  * Name: button
  * Options:
- *  buttontype: type of button [icon, custom]
- *  instancename: name of instance used in events
+ *  buttonType: type of button [icon, custom]
+ *  instanceName: name of instance used in events
  *  text: button text
- *  icontype: button icon
+ *  iconType: button icon
  *  background: background color for spinner
  *
  * Provided Events:
- *  husky.button.<<instancename>>.click: button where clicked
- *  husky.button.<<instancename>>.state: change buttonType [icon, custom type]
+ *  husky.button.<<instanceName>>.click: button where clicked
+ *  husky.button.<<instanceName>>.state: change buttonType [icon, custom type]
  *
  */
 
@@ -27,13 +27,13 @@ define([], function() {
             icon: {
                 init: function() {
                     this.sandbox.dom.addClass(this.$el, 'pointer icon-btn');
-                    this.$el.html(type.template(this.options.icontype, this.options.text));
+                    this.$el.html(type.template(this.options.iconType, this.options.text));
                     type.bindDomEvents.call(this);
                 },
                 bindDomEvents: function() {
                     this.$el.on('click', this.clickEvent.bind(this));
                 },
-                unBoundDomEvents: function() {
+                unBindDomEvents: function() {
                     this.$el.off('click');
                 },
                 template: function(icon, text) {
@@ -55,7 +55,7 @@ define([], function() {
                         this.sandbox.dom.addClass(this.$el, 'disable');
                         this.sandbox.dom.removeClass(this.$el, 'pointer');
 
-                        type.unBoundDomEvents.call(this);
+                        type.unBindDomEvents.call(this);
                     },
                     loading: function() {
                         if (!!this.options.background) {
@@ -65,26 +65,24 @@ define([], function() {
                         }
                         this.sandbox.dom.removeClass(this.$el, 'pointer');
 
-                        type.unBoundDomEvents.call(this);
+                        type.unBindDomEvents.call(this);
                     }
                 }
             }
         },
         defaults = {
-            buttontype: 'icon',         // type of button [icon, custom]
-            instancename: 'undefined',  // name of instance used in events
+            buttonType: 'icon',         // type of button [icon, custom]
+            instanceName: 'undefined',  // name of instance used in events
             text: 'undefined',          // button text
-            icontype: 'caution',        // button icon
+            iconType: 'caution',        // button icon
             background: null            // background color for spinner
         };
 
 
     return {
 
-        view: true,
-
         getEvent: function(append) {
-            return 'husky.button.' + this.options.instancename + '.' + append;
+            return 'husky.button.' + this.options.instanceName + '.' + append;
         },
 
         initialize: function() {
@@ -98,25 +96,26 @@ define([], function() {
         },
 
         render: function() {
-            if (typeof this.options.buttontype === 'string') {
-                if (!!types[this.options.buttontype]) {
-                    type = types[this.options.buttontype];
+            if (typeof this.options.buttonType === 'string') {
+                if (!!types[this.options.buttonType]) {
+                    type = types[this.options.buttonType];
                 } else {
                     throw 'not implemented';
                 }
             } else {
-                if (!!this.options.buttontype.init && !!this.options.buttontype.render && !!this.options.buttontype.states) {
-                    type = this.options.buttontype;
+                if (!!this.options.buttonType.init && !!this.options.buttonType.render && !!this.options.buttonType.states) {
+                    type = this.options.buttonType;
                 } else {
                     throw 'not implemented';
                 }
             }
+
             type.init.call(this);
 
             this.bindCustomEvents();
         },
 
-        clickEvent: function(event) {
+        clickEvent: function() {
             this.sandbox.emit(this.getEvent('click'));
         },
 
