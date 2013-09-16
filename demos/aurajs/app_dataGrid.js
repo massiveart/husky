@@ -16,6 +16,14 @@ require(['lib/husky'], function(Husky) {
     fakeServer.respondWith('GET', '/contacts?pageSize=4&page=2', [200, { 'Content-Type': 'application/json' },
         '{"total": 56, "items": [{"id": "1", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, { "id": "2", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, { "id": "3", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, { "id": "4", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }] }'
     ]);
+
+    fakeServer.respondWith('GET', '/contacts?pageSize=4&page=3', [200, { 'Content-Type': 'application/json' },
+        '{"total": 56, "items": [{"id": "1", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, { "id": "2", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, { "id": "3", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, { "id": "4", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }] }'
+    ]);
+
+    fakeServer.respondWith('GET', '/contacts?pageSize=4&page=4', [200, { 'Content-Type': 'application/json' },
+        '{"total": 56, "items": [{"id": "1", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, { "id": "2", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, { "id": "3", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, { "id": "4", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }] }'
+    ]);
     
 
 
@@ -30,10 +38,10 @@ require(['lib/husky'], function(Husky) {
                 url: '/contacts',
                 selectItem:{
                         type: 'checkbox',
-                        clickable: true,
+                        clickable: false,
 
                 },
-                pagination: false,
+                pagination: true,
                 className: "myClass",
                 paginationOptions: {
                     pageSize: 4,
@@ -59,7 +67,7 @@ require(['lib/husky'], function(Husky) {
             }, 500);
 
         $('#add-row').on('click', function() {
-            app.sandbox.emit('data-grid.row.add', { "id": "1", "content1": "Tschau", "content2": "Hallo 2", "content3": "Hallo 3" });
+            app.sandbox.emit('data-grid.row.add', { "id": "", "content1": "Tschau", "content2": "Hallo 2", "content3": "Hallo 3" });
         });
 
         app.sandbox.on('data-grid.page.change', function() {
@@ -75,7 +83,12 @@ require(['lib/husky'], function(Husky) {
         app.sandbox.on('data-grid.row.remove-click', function(event, item) {
             console.log('remove-clicked: ' + item);
             alert('DELETE AFTER OK');
-            app.sandbox.emit('data-grid.row.remove', item);
+            
+            if(typeof item == 'number' ) {
+                app.sandbox.emit('data-grid.row.remove', item);
+            } else {
+                app.sandbox.emit('data-grid.row.remove', event);
+            }
         });
 
         app.sandbox.on('data-grid.item.select', function(item) {
@@ -88,6 +101,13 @@ require(['lib/husky'], function(Husky) {
 
         app.sandbox.on('data-grid.item.click', function(item) {
             console.log('Husky.Ui.DataGrid item click: ' + item);
+        });
+
+        app.sandbox.on('data-grid.page.change', function() {
+            console.log('Husky.Ui.DataGrid page change');
+            setTimeout(function() {
+                fakeServer.respond();
+            }, 500);
         });
 
     });

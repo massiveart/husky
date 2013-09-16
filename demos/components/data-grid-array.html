@@ -11,13 +11,26 @@
         <meta name="viewport" content="width=device-width">
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <link rel="stylesheet" href="../../.tmp/husky.css">
+
+        <style type="text/css">
+            #content {
+                width: 800px;
+                margin-left: 300px;
+                margin-top: 100px;
+                min-height: 300px;
+                background: #f1f1f1;
+            }
+        </style>
+
     </head>
     <body>
         
-        <h1>This is a generated Table</h1>
-        <div id="js-data-grid"></div>
-
-        <button id="add-row">Add Row</button>
+        <div id="content" class="grid">
+            <h1>This is a generated Table</h1>
+            <div id="js-data-grid"></div>
+            <br/>
+            <button id="add-row">Add Row</button>
+        </div>
 
         <script src="../../node_modules/sinon/pkg/sinon.js"></script>
         <script src="../../bower_components/jquery/jquery.js"></script>
@@ -33,59 +46,82 @@
             $(document).ready(function() {
 
                 var data = new Array();
-                data[0] = { id: 2, translations: [], locale: 'English'};
-                data[1] = { id: 4, translations: [], locale: 'Deutsch'};
+                data[0] = { id: 2, translations: [], locale: 'English', code: 'code 1'};
+                data[1] = { id: 4, translations: [], locale: 'Deutsch', code: 'code 2'};
                 
                 var $dataGrid = $('#js-data-grid').huskyDataGrid({
                     pagination: false,
                     showPages: 6,
                     pageSize: 4,
-                    selectItemType: 'radio',
+                    autoRemoveHandling: false,
+                    selectItem: {
+                        clickable: false
+                    },
+                    tableHead: [
+                        {content: 'Content 2', width: "50%"},
+                        {content: 'Code', width: "20%"},
+                        {content: 'Remove', width: "20%"}
+                    ],
+                    excludeFields: ['id', 'translations'],
                     data: {
                         items: data,
                     },
                     template: {
                         row: ['<tr <% if (!!id) { %> data-id="<%= id %>"<% } %> >',
-                                    '<td>',
+                                    '<td class="select-item-column">',
                                         '<label>',
-                                            '<input type="radio" class="custom-radio" name="catalogueRadio">',
+                                            '<input type="radio" class="custom-radio" name="catalogue-radio">',
                                             '<span class="custom-radio-icon"></span>',
                                         '</label>',
                                     '</td>',
                                     '<td>',
                                         '<input class="form-element" type="text" id="locale<%= id %>" value="<%= locale %>"/>',
                                     '</td>',
+                                    '<td>',
+                                        '<input class="form-element" type="text" id="code<%= id %>" value="<%= code %>"/>',
+                                    '</td>',
                                     '<td class="remove-row">',
                                         '<span class="icon-remove"></span>',
                                     '</td>',
                                 '</tr>'].join(''),
                         }
-                });
-
-                //this.templateCatalogueTableRow = RowTemplate;
-                //this.catalogueTable = dataGrid.data('Husky.Ui.DataGrid');
-                
+                });                
 
                 $('#add-row').on('click', function() {
-                    $dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:add', { "id": "", "locale": "" , "translations": [] });
+                    $dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:add', { id: "", locale: "" , translations: [], code: "" });
                 });
                 
 
-                // TODO id der row mitgeben
-                $('#js-data-grid').on('click', '.remove-row > span', function(event) {
-                    $dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove', event);
-                });
 
 		
-		$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:select', function(itemId) {
-			console.log(itemId);
-		}.bind(this));
-		
-		// TODO: implement deselct for radio
-		$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:deselect', function(itemId) {
-			console.log(itemId);
-		}.bind(this));
-               
+        		$dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:select', function(item) {
+                    console.log('Husky.Ui.DataGrid item select: ' + item);
+                });
+
+                $dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:deselect', function(item) {
+                    console.log('Husky.Ui.DataGrid item deselect: ' + item);
+                });
+                
+                $dataGrid.data('Husky.Ui.DataGrid').on('data-grid:item:click', function(item) {
+                    console.log('Husky.Ui.DataGrid item click: ' + item);
+                });
+
+                // delete row immediatly
+                // $dataGrid.data('Husky.Ui.DataGrid').on('data-grid:row:removed', function(item) {
+                //     console.log('remove: ' + item);
+                // });
+
+                $('#js-data-grid').on('click', '.remove-row > span', function(event) {
+                    $dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove-click', event);
+                });
+
+
+                $dataGrid.data('Husky.Ui.DataGrid').on('data-grid:row:remove-click', function(event, item) {
+                    console.log('remove-clicked: ' + item);
+                    alert('DELETE AFTER OK');
+                    $dataGrid.data('Husky.Ui.DataGrid').trigger('data-grid:row:remove', item);
+                });
+
             });
 
         </script>

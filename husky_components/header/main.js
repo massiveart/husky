@@ -18,7 +18,7 @@
  *  husky.header.button-state: change state of buttons
  *
  * Used Events:
- *  navigation:item:content:show: used to move buttons when the content is changing
+ *  navigation.item.content.show: used to move buttons when the content is changing
  *
  */
 
@@ -177,7 +177,7 @@ define([], function() {
 
         bindCustomEvents: function() {
             // move buttons
-            this.sandbox.on('navigation:item:content:show', function(item) {
+            this.sandbox.on('navigation.item.content.show', function(item) {
                 this.moveButtons(item.data.navWidth);
             }.bind(this));
             this.sandbox.on('husky.header.move-buttons', this.moveButtons.bind(this));
