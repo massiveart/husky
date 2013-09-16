@@ -609,7 +609,7 @@ define(function() {
             this.sandbox.on('husky.datagrid.row.remove', this.removeRow.bind(this));
 
             // trigger selectedItems
-            this.sandbox.on('husky.datagrid.items.get-selected', this.getSelectedItemsIds())
+            this.sandbox.on('husky.datagrid.items.get-selected', this.getSelectedItemsIds.bind(this))
         },
 
         updateHandler: function() {
