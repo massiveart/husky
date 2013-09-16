@@ -17,11 +17,20 @@
  *      - url: url to fetch content
  *
  *	Provided Events:
- *		- ??
- *		- husky.headerbar.button-type: change ButtonType [save, saveDelete, add, template]
+ *       - husky.datagrid.item.deselect - raised when item is deselected
+ *       - husky.datagrid.item.select - raised when item is selected
+ *       - husky.datagrid.all.deselect - raised when all items get deselected via the header checkbox
+ *       - husky.datagrid.all.select - raised when all items get selected via the header checkbox
+ *       - husky.datagrid.row.remove-click - raised when clicked on the remove-row-icon 
+ *       - husky.datagrid.row.removed - raised when row got removed
+ *       - husky.datagrid.page.change - raised when the the current page changes
+ *       - husky.datagrid.update - raised when the data needs to be updated
+ *       - husky.datagrid.item.click - raised when clicked on an item
  *
  * 	Used Events:
- *  	- ??
+ *       - husky.datagrid.update
+ *       - husky.datagrid.row.add - used to add a row
+ *       - husky.datagrid.row.remove - used to remove a row
  *
  */
 
@@ -72,7 +81,7 @@ define(function() {
 
 	        // append datagrid to html element
 	        this.$originalElement = this.sandbox.dom.$(this.options.el);
-	        this.$element = this.sandbox.dom.$('<div class="husky-data-grid"/>');
+	        this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
 	        this.$originalElement.append(this.$element);
 
 	        
@@ -332,6 +341,8 @@ define(function() {
 
         selectItem: function(event) {
 
+            // Todo review handling of events for new rows in datagrid (itemId empty?)
+
             var $element, itemId;
 
             $element = this.sandbox.dom.$(event.currentTarget);
@@ -355,7 +366,7 @@ define(function() {
                         .prop('checked', false);
 
                     this.selectedItemIds.splice(this.selectedItemIds.indexOf(itemId), 1);
-                    this.sandbox.emit('data-grid.item.deselect', itemId);
+                    this.sandbox.emit('husky.datagrid.item.deselect', itemId);
                 } else {
                     $element
                         .addClass('is-selected')
@@ -363,9 +374,9 @@ define(function() {
                     
                     if(!!itemId){
                         this.selectedItemIds.push(itemId);
-                        this.sandbox.emit('data-grid.item.select', itemId);
+                        this.sandbox.emit('husky.datagrid.item.select', itemId);
                     } else {
-                        this.sandbox.emit('data-grid.item.select', event);
+                        this.sandbox.emit('husky.datagrid.item.select', event);
                     }
                 }
 
@@ -375,16 +386,16 @@ define(function() {
 
                 if(!!oldSelectionId && oldSelectionId > -1) {
                     this.sandbox.dom.$('tr[data-id="'+oldSelectionId+'"]').find('input[type="radio"]').removeClass('is-selected').prop('checked', false);
-                    this.sandbox.emit('data-grid.item.deselect', oldSelectionId);                    
+                    this.sandbox.emit('husky.datagrid.item.deselect', oldSelectionId);                    
                 }
 
                 $element.addClass('is-selected').prop('checked', true);
                 
                 if(!!itemId){
                     this.selectedItemIds.push(itemId);
-                    this.sandbox.emit('data-grid.item.select', itemId);
+                    this.sandbox.emit('husky.datagrid.item.select', itemId);
                 } else {
-                    this.sandbox.emit('data-grid.item.select', event);
+                    this.sandbox.emit('husky.datagrid.item.select', event);
                 }
 
             }
@@ -400,7 +411,7 @@ define(function() {
                     .prop('checked', false);
 
                 this.selectedItemIds = [];
-                this.sandbox.emit('data-grid.all.deselect', null);
+                this.sandbox.emit('husky.datagrid.all.deselect', null);
 
             } else {
                 this.$element
@@ -408,7 +419,7 @@ define(function() {
                     .prop('checked', true);
 
                 this.selectedItemIds = this.allItemIds.slice(0);
-                this.sandbox.emit('data-grid.all.select', this.selectedItemIds);
+                this.sandbox.emit('husky.datagrid.all.select', this.selectedItemIds);
             }
         },
 
@@ -432,9 +443,9 @@ define(function() {
                 id = $tblRow.data('id');    
 
                 if(!!id) {
-                    this.sandbox.emit('data-grid.row.remove-click', event, id);
+                    this.sandbox.emit('husky.datagrid.row.remove-click', event, id);
                 } else {
-                    this.sandbox.emit('data-grid.row.remove-click', event, $tblRow);
+                    this.sandbox.emit('husky.datagrid.row.remove-click', event, $tblRow);
                 }
             }
         },
@@ -454,7 +465,7 @@ define(function() {
                 $tblRow = this.$element.find('tr[data-id="' + id + '"]');
             }
 
-            this.sandbox.emit('data-grid.row.removed', event);
+            this.sandbox.emit('husky.datagrid.row.removed', event);
             $tblRow.remove();
         },
 
@@ -524,8 +535,8 @@ define(function() {
                 }.bind(this)
             });
 
-            this.sandbox.emit('data-grid.page.change', 'change page');
-            this.sandbox.emit('data-grid.update', 'update page');
+            this.sandbox.emit('husky.datagrid.page.change', 'change page');
+            this.sandbox.emit('husky.datagrid.update', 'update page');
         },
 
 
@@ -544,9 +555,9 @@ define(function() {
                     var id = this.sandbox.dom.$(event.currentTarget).data('id');
                     
                     if(!!id) {
-                        this.sandbox.emit('data-grid.item.click', id);
+                        this.sandbox.emit('husky.datagrid.item.click', id);
                     } else {
-                        this.sandbox.emit('data-grid.item.click', event);
+                        this.sandbox.emit('husky.datagrid.item.click', event);
                     }
                 }
             }.bind(this));
@@ -575,9 +586,9 @@ define(function() {
 
                     // if(!!itemId){
                     //     this.selectedItemIds.push(itemId);
-                    //     this.sandbox.once('data-grid.item.select', itemId);
+                    //     this.sandbox.once('husky.datagrid.item.select', itemId);
                     // } else {
-                    //     this.sandbox.once('data-grid.item.select', event);
+                    //     this.sandbox.once('husky.datagrid.item.select', event);
                     // }
 
                     // stop propagation
@@ -588,12 +599,12 @@ define(function() {
         bindCustomEvents: function() {
             // listen for private events
 
-            this.sandbox.on('data-grid.update', this.updateHandler.bind(this));
+            this.sandbox.on('husky.datagrid.update', this.updateHandler.bind(this));
 
             // listen for public events
-            this.sandbox.on('data-grid.row.add', this.addRow.bind(this));
+            this.sandbox.on('husky.datagrid.row.add', this.addRow.bind(this));
 
-            this.sandbox.on('data-grid.row.remove', this.removeRow.bind(this));
+            this.sandbox.on('husky.datagrid.row.remove', this.removeRow.bind(this));
         },
 
         updateHandler: function() {
