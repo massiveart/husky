@@ -55,6 +55,8 @@ define(['jquery'], function($) {
             this.$element = $('<div class="husky-dialog hidden fade"/>');
             $(this.options.el).append(this.$element);
 
+            console.log($(this.options.el));
+
             this.init();
         },
 
