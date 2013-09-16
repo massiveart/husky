@@ -30,6 +30,10 @@
                 return $(selector, props);
             };
 
+            app.core.dom.html = function(selector, content) {
+                return $(selector).html(content);
+            };
+
             app.core.dom.append = function(selector, element) {
                 return $(selector).append(element);
             };
