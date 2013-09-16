@@ -830,11 +830,11 @@ function typeOf(value) {
 
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     // add a checkbox to each row
-                    tblColumns.push('<td class="selectItemColumn">', this.templates.checkbox(), '</td>');
+                    tblColumns.push('<td class="select-item-column">', this.templates.checkbox(), '</td>');
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                     // add a radio to each row
 
-                    tblColumns.push('<td class="selectItemColumn">', this.templates.radio({
+                    tblColumns.push('<td class="select-item-column">', this.templates.radio({
                         name: 'husky-radio'+radioPrefix
                     }), '</td>');
                 }
@@ -963,10 +963,21 @@ function typeOf(value) {
             if (!!this.options.autoRemoveHandling) {
                 this.removeRow(event);
             } else {
-                var $element, $tblRow;
-                $element = $(event.currentTarget);
-                $tblRow = $element.parent().parent();
-                this.trigger('data-grid:row:remove-click', event, $tblRow.data('id'));
+                var id, $tblRow;
+
+                $tblRow = $(event.currentTarget).parent().parent();
+                id = $tblRow.data('id');
+                
+                console.log($tblRow, "table row");
+                console.log(id, "id");
+                
+                if(!!id) {
+                    this.trigger('data-grid:row:remove-click', event, id);
+                } else {
+                    this.trigger('data-grid:row:remove-click', event, $tblRow);
+                }
+
+                
             }
         },
 
@@ -974,6 +985,8 @@ function typeOf(value) {
             Husky.DEBUG && console.log(this.name, 'removeRow');
 
             var $element, $tblRow, id;
+
+            console.log(typeof event, "type of event");
 
             if (typeof event === 'object') {
                 $element = $(event.currentTarget);
@@ -1090,11 +1103,18 @@ function typeOf(value) {
             }
 
             if (this.options.selectItem && !this.options.selectItem .clickable)
-                this.$element.on('click', '.selectItemColumn', function(event) {
+
+                //?? TODO fuer alle radios und checkboxes
+                this.$element.on('click', '.select-item-column', function(event) {
 
                     // change checked state
-                    var $checkbox = $(event.target).find("input");
-                    $checkbox.prop("checked", !$checkbox.prop("checked"));
+                    var $input = $(event.target).find("input");
+                    $input.prop("checked", !$input.prop("checked"));
+
+                    // throw select event when click on colum
+                    // causes raising event twice when clicking on checkbox 
+                    // itemId = $(event.currentTarget).parents('tr').data('id');
+                    // this.sandbox.emit('data-grid.item.select', itemId);
 
                     // stop propagation
                     event.stopPropagation();
@@ -1252,9 +1272,9 @@ function typeOf(value) {
             pageSize: 10,
             showPages: 5
         },
-        tableHead: {
+        tableHead: [
 //            {content: 'name', width: '100px'}
-        },
+        ],
         excludeFields: ['id'],
         autoRemoveHandling: true,
         defaultMeasureUnit: 'px'
