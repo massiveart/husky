@@ -2,7 +2,7 @@
  *	Name: Datagrid
  * 
  *	Options:
- *		- autoRemoveHandling: thorws an event before a row is deleted
+ *		- autoRemoveHandling: raises an event before a row is removed
  *		- className: additional classname for the wrapping div 
  *		- data: array of data to display (instead of using a url)
  *		- elementType: type of datagrid (table,..) ??
@@ -13,7 +13,6 @@
  *      - removeRow: displays in the last column an icon to remove a row
  *      - selectItem.type: typ of select [checkbox, radio]
  *      - selectItem.width: typ of select [checkbox, radio]
- *      - selectItem.type: typ of select [checkbox, radio]
  *      - url: url to fetch content
  *
  *	Provided Events:
