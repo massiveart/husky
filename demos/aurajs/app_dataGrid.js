@@ -67,7 +67,7 @@ require(['lib/husky'], function(Husky) {
             }, 500);
 
         $('#add-row').on('click', function() {
-            app.sandbox.emit('data-grid.row.add', { "id": "1", "content1": "Tschau", "content2": "Hallo 2", "content3": "Hallo 3" });
+            app.sandbox.emit('data-grid.row.add', { "id": "", "content1": "Tschau", "content2": "Hallo 2", "content3": "Hallo 3" });
         });
 
         app.sandbox.on('data-grid.page.change', function() {
@@ -83,7 +83,12 @@ require(['lib/husky'], function(Husky) {
         app.sandbox.on('data-grid.row.remove-click', function(event, item) {
             console.log('remove-clicked: ' + item);
             alert('DELETE AFTER OK');
-            app.sandbox.emit('data-grid.row.remove', item);
+            
+            if(typeof item == 'number' ) {
+                app.sandbox.emit('data-grid.row.remove', item);
+            } else {
+                app.sandbox.emit('data-grid.row.remove', event);
+            }
         });
 
         app.sandbox.on('data-grid.item.select', function(item) {

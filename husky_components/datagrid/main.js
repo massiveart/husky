@@ -47,8 +47,9 @@ define(function() {
         selectItem: {
             type:   null,      // checkbox, radiobutton
             width:  '50px',    // numerous value
-            clickable: null    // defines if background is clickable
+            //clickable: false   // defines if background is clickable TODO do not use until fixed
         },
+        tableHead: [],
         url: null,
 	};
 
@@ -140,8 +141,6 @@ define(function() {
             if (params.page > 1) {
                 url += '&page=' + params.page;
             }
-
-            console.log(url, "url");
 
             return url;
         },
@@ -270,7 +269,7 @@ define(function() {
 
             if (!!(this.options.template && this.options.template.row)) {
 
-                return _.template(this.options.template.row, row);
+                return this.sandbox.template.parse(this.options.template.row, row);
 
             } else {
 
@@ -291,11 +290,11 @@ define(function() {
 
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     // add a checkbox to each row
-                    tblColumns.push('<td class="selectItemColumn">', this.templates.checkbox(), '</td>');
+                    tblColumns.push('<td>', this.templates.checkbox(), '</td>');
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                     // add a radio to each row
 
-                    tblColumns.push('<td class="selectItemColumn">', this.templates.radio({
+                    tblColumns.push('<td>', this.templates.radio({
                         name: 'husky-radio'+radioPrefix
                     }), '</td>');
                 }
@@ -332,7 +331,6 @@ define(function() {
         },
 
         selectItem: function(event) {
-            console.log(this.name, 'selectItem');
 
             var $element, itemId;
 
@@ -362,9 +360,13 @@ define(function() {
                     $element
                         .addClass('is-selected')
                         .prop('checked', true);
-
-                    this.selectedItemIds.push(itemId);
-                    this.sandbox.emit('data-grid.item.select', itemId);
+                    
+                    if(!!itemId){
+                        this.selectedItemIds.push(itemId);
+                        this.sandbox.emit('data-grid.item.select', itemId);
+                    } else {
+                        this.sandbox.emit('data-grid.item.select', event);
+                    }
                 }
 
             } else if ($element.attr('type') === 'radio') {
@@ -377,17 +379,20 @@ define(function() {
                 }
 
                 $element.addClass('is-selected').prop('checked', true);
-                this.selectedItemIds.push(itemId);
-                this.sandbox.emit('data-grid.item.select', itemId);
+                
+                if(!!itemId){
+                    this.selectedItemIds.push(itemId);
+                    this.sandbox.emit('data-grid.item.select', itemId);
+                } else {
+                    this.sandbox.emit('data-grid.item.select', event);
+                }
 
             }
         },
 
         selectAllItems: function(event) {
-            console.log(this.name, 'selectAllItems');
 
             event.stopPropagation();
-
             if (this.sandbox.util.compare(this.selectedItemIds, this.allItemIds)) {
 
                 this.$element
@@ -408,7 +413,6 @@ define(function() {
         },
 
         addRow: function(row) {
-            console.log(this.name, 'addRow');
 
             var $table;
             // TODO check element type, list or table
@@ -422,19 +426,25 @@ define(function() {
             if (!!this.options.autoRemoveHandling) {
                 this.removeRow(event);
             } else {
-                var $element, $tblRow;
-                $element = this.sandbox.dom.$(event.currentTarget);
-                $tblRow = $element.parent().parent();
-                this.sandbox.emit('data-grid.row.remove-click', event, $tblRow.data('id'));
+                var $tblRow, id;
+
+                $tblRow = this.sandbox.dom.$(event.currentTarget).parent().parent();
+                id = $tblRow.data('id');    
+
+                if(!!id) {
+                    this.sandbox.emit('data-grid.row.remove-click', event, id);
+                } else {
+                    this.sandbox.emit('data-grid.row.remove-click', event, $tblRow);
+                }
             }
         },
 
         removeRow: function(event) {
-            console.log(this.name, 'removeRow');
 
             var $element, $tblRow, id;
 
             if (typeof event === 'object') {
+
                 $element = this.sandbox.dom.$(event.currentTarget);
                 $tblRow = $element.parent().parent();
 
@@ -497,7 +507,6 @@ define(function() {
         },
 
         changePage: function(event) {
-            console.log(this.name, 'changePage');
 
             var $element, page;
 
@@ -532,7 +541,13 @@ define(function() {
 
             this.$element.on('click', 'tbody > tr', function(event) {
                 if (!this.sandbox.dom.$(event.target).is('input') && !this.sandbox.dom.$(event.target).is('span.icon-remove')) {
-                    this.sandbox.emit('data-grid.item.click', this.sandbox.dom.$(event.currentTarget).data('id'));
+                    var id = this.sandbox.dom.$(event.currentTarget).data('id');
+                    
+                    if(!!id) {
+                        this.sandbox.emit('data-grid.item.click', id);
+                    } else {
+                        this.sandbox.emit('data-grid.item.click', event);
+                    }
                 }
             }.bind(this));
 
@@ -544,16 +559,30 @@ define(function() {
                 this.$element.on('click', '.remove-row > span', this.prepareRemoveRow.bind(this));
             }
 
-            if (this.options.selectItem && !this.options.selectItem .clickable)
-                this.$element.on('click', '.selectItemColumn', function(event) {
 
-                    // change checked state
-                    var $checkbox = this.sandbox.dom.$(event.target).find("input");
-                    $checkbox.prop("checked", !$checkbox.prop("checked"));
+            // Todo
+            // trigger event when click on clickable area
+            // different handling when clicked on checkbox and when clicked on td
+
+            // if (this.options.selectItem && !this.options.selectItem.clickable)
+            //     this.$element.on('click', 'tbody tr td:first-child()', function(event) {
+
+            //         // change checked state
+            //         var $input = this.sandbox.dom.$(event.target).find("input");
+            //         $input.prop("checked", !$input.prop("checked"));
+
+            //         itemId = this.sandbox.dom.$(event.target).parents('tr').data('id');
+
+                    // if(!!itemId){
+                    //     this.selectedItemIds.push(itemId);
+                    //     this.sandbox.once('data-grid.item.select', itemId);
+                    // } else {
+                    //     this.sandbox.once('data-grid.item.select', event);
+                    // }
 
                     // stop propagation
-                    event.stopPropagation();
-            }.bind(this));
+            //         event.stopPropagation();
+            // }.bind(this));
         },
 
         bindCustomEvents: function() {
