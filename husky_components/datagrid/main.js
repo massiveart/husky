@@ -30,7 +30,7 @@ define(function() {
 
 	/*
 	 *	Default values for options
-	*/
+	 */
 	var defaults = {
 		autoRemoveHandling: true,
 		className: 'datagridcontainer', 
