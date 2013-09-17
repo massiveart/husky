@@ -49,6 +49,22 @@ define(function() {
             sandbox.dom.html($thType, this.options.captions.type);
 
             sandbox.dom.append($tr, $thType);
+
+            if (typeof(this.options.captions.horizontal) === 'string') {
+                var $th = sandbox.dom.createElement('<th/>', {colspan: this.options.values.length});
+                sandbox.dom.html($th, this.options.captions.horizontal);
+                sandbox.dom.append($tr, $th);
+            } else {
+                this.options.captions.horizontal.forEach(function(caption) {
+                    var $th = sandbox.dom.createElement('<th/>');
+                    sandbox.dom.html($th, caption);
+                    sandbox.dom.append($tr, $th);
+                });
+            }
+
+            // add empty th for all link
+            sandbox.dom.append($tr, sandbox.dom.createElement('<th/>'));
+
             sandbox.dom.append($thead, $tr);
 
             return $thead;
