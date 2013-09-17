@@ -57,10 +57,11 @@ define(function() {
         prepareTableBody: function() {
             var $tbody = sandbox.dom.createElement('<tbody/>');
 
-            // insert vertical headlines as first element
             this.options.captions.vertical.forEach(function(caption) {
+                // insert vertical headlines as first element
                 var $tr = sandbox.dom.createElement('<tr/>'),
-                    $tdHead = sandbox.dom.createElement('<td/>');
+                    $tdHead = sandbox.dom.createElement('<td/>'),
+                    $tdAll = sandbox.dom.createElement('<td/>');
                 sandbox.dom.html($tdHead, caption);
                 sandbox.dom.append($tr, $tdHead);
 
@@ -70,6 +71,10 @@ define(function() {
                     sandbox.dom.html($tdValue, value);
                     sandbox.dom.append($tr, $tdValue);
                 });
+
+                //add all link
+                sandbox.dom.html($tdAll, 'All');
+                sandbox.dom.append($tr, $tdAll);
 
                 sandbox.dom.append($tbody, $tr);
             }.bind(this));
