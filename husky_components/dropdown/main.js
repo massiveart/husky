@@ -11,11 +11,13 @@
  *
  *
  * Provided Events:
- * husky.dropdown.<<instanceName>>.item.click
- * husky.dropdown.<<instanceName>>.data.load
+ * husky.dropdown.<<instanceName>>.item.click   - triggered when item clicked
+ * husky.dropdown.<<instanceName>>.data.load    - triggered when data loaded
  *
  * Use Events
- * husky.dropdown.<<instanceName>>.toggle
+ * husky.dropdown.<<instanceName>>.toggle       - toggles (show/hide) dropdown menu
+ * husky.dropdown.<<instanceName>>.show       - show dropdown menu
+ * husky.dropdown.<<instanceName>>.hide       - hide dropdown menu
  */
 
 define(['jquery'], function($) {
@@ -29,7 +31,8 @@ define(['jquery'], function($) {
             valueName: 'name', // name of text property
             setParentDropDown: false, // set class dropdown for parent dom object
             excludeItems: [], // items to filter,
-            instanceName: 'undefined'
+            instanceName: 'undefined',  // instance name
+            alignment: 'left'
         };
 
 
@@ -75,6 +78,11 @@ define(['jquery'], function($) {
                 this.$element.parent().addClass('dropdown');
             }
 
+            // check alginment
+            if (this.options.alignment == 'right') {
+                this.$dropDown.addClass('dropdown-align-right');
+            }
+
             // bind dom elements
             this.bindDOMEvents();
 
@@ -114,6 +122,8 @@ define(['jquery'], function($) {
 
         bindCustomEvents : function() {
             this.sandbox.on(this.getEvent('toggle'), this.triggerClick.bind(this));
+            this.sandbox.on(this.getEvent('show'), this.showDropDown.bind(this));
+            this.sandbox.on(this.getEvent('hide'), this.hideDropDown.bind(this));
         },
 
         getEvent: function(append) {
