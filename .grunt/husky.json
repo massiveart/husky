@@ -40,6 +40,7 @@
             "aura/ext/mediator",
             "aura/ext/components",
             "husky",
+            "husky-validation",
 
             "__component__$navigation@husky",
             "__component__$header@husky",
