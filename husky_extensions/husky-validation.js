@@ -1,14 +1,14 @@
 (function() {
     require.config({
-        paths: { "husky-validation": 'bower_components/husky-validation/dist/validation' }
+        paths: { "validation": 'bower_components/husky-validation/dist/validation' }
     });
 
-    define(['husky-validation'], function(Validation) {
+    define(['validation'], function(Validation) {
         return  {
             name: 'husky-validation',
 
             initialize: function(app) {
-                app.core.validate = {
+                app.sandbox.validation = {
 
                     create: function(selector, options) {
                         return new Validation($(selector), options);
@@ -27,23 +27,23 @@
                     validate: function(selector, force) {
                         if (!force) force = false;
 
-                        return  app.core.validate.getObject(selector).validate(force);
+                        return  app.sandbox.validation.getObject(selector).validate(force);
                     },
 
                     isValid: function(selector) {
-                        return app.core.validate.getObject(selector).isValid();
+                        return app.sandbox.validation.getObject(selector).isValid();
                     },
 
                     addConstraint: function(selector, elementSelector, constraintName, options) {
-                        app.core.validate.getObject(selector).addConstraint(elementSelector, constraintName, options);
+                        app.sandbox.validation.getObject(selector).addConstraint(elementSelector, constraintName, options);
                     },
 
                     updateConstraint: function(selector, elementSelector, constraintName, options) {
-                        app.core.validate.getObject(selector).updateConstraint(elementSelector, constraintName, options);
+                        app.sandbox.validation.getObject(selector).updateConstraint(elementSelector, constraintName, options);
                     },
 
                     deleteConstraint: function(selector, elementSelector, constraintName) {
-                        app.core.validate.getObject(selector).deleteConstraint(elementSelector, constraintName);
+                        app.sandbox.validation.getObject(selector).deleteConstraint(elementSelector, constraintName);
                     },
 
                     element: {
@@ -52,15 +52,15 @@
                         },
 
                         addConstraint: function(elementSelector, constraintName, options) {
-                            app.core.validate.element.getObject(elementSelector).addConstraint(constraintName, options);
+                            app.sandbox.validation.element.getObject(elementSelector).addConstraint(constraintName, options);
                         },
 
                         updateConstraint: function(elementSelector, constraintName, options) {
-                            app.core.validate.element.getObject(elementSelector).updateConstraint(constraintName, options);
+                            app.sandbox.validation.element.getObject(elementSelector).updateConstraint(constraintName, options);
                         },
 
                         deleteConstraint: function(elementSelector, constraintName) {
-                            app.core.validate.element.getObject(elementSelector).deleteConstraint(constraintName, options);
+                            app.sandbox.validation.element.getObject(elementSelector).deleteConstraint(constraintName, options);
                         }
                     }
 

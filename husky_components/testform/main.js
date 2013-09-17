@@ -18,7 +18,6 @@ define([], function() {
     var defaults = {
     };
 
-
     return {
 
         initialize: function() {
@@ -33,7 +32,15 @@ define([], function() {
 
         render: function() {
             this.html(this.template());
-            this.sandbox.validate.create('#form');
+            this.sandbox.validation.create('#form');
+
+            this.bindDomEvents();
+        },
+
+        bindDomEvents:function(){
+            $('#check').on('click', function(){
+                this.sandbox.validation.validate('#form');
+            }.bind(this));
         },
 
         template: function() {
@@ -41,6 +48,7 @@ define([], function() {
                 '<form id="form">',
                 '<label>Name *</label>',
                 '<input type="text" class="form-element" data-validate="true" data-required="true" />',
+                '<div id="check" class="btn pointer">Check</div>',
                 '</form>'
             ].join('');
         }
