@@ -44,11 +44,11 @@ define(function() {
         prepareTableHead: function() {
             var $thead = sandbox.dom.createElement('<thead/>'),
                 $tr = sandbox.dom.createElement('<tr/>'),
-                $th = sandbox.dom.createElement('<th/>');
+                $thType = sandbox.dom.createElement('<th/>');
 
-            sandbox.dom.html($th, this.options.captions.type);
+            sandbox.dom.html($thType, this.options.captions.type);
 
-            sandbox.dom.append($tr, $th);
+            sandbox.dom.append($tr, $thType);
             sandbox.dom.append($thead, $tr);
 
             return $thead;
@@ -60,11 +60,19 @@ define(function() {
             // insert vertical headlines as first element
             this.options.captions.vertical.forEach(function(caption) {
                 var $tr = sandbox.dom.createElement('<tr/>'),
-                    $td = sandbox.dom.createElement('<td/>');
-                sandbox.dom.html($td, caption);
-                sandbox.dom.append($tr, $td);
+                    $tdHead = sandbox.dom.createElement('<td/>');
+                sandbox.dom.html($tdHead, caption);
+                sandbox.dom.append($tr, $tdHead);
+
+                // insert values of matrix
+                this.options.values.forEach(function(value) {
+                    var $tdValue = sandbox.dom.createElement('<td/>');
+                    sandbox.dom.html($tdValue, value);
+                    sandbox.dom.append($tr, $tdValue);
+                });
+
                 sandbox.dom.append($tbody, $tr);
-            });
+            }.bind(this));
 
             return $tbody;
         }
