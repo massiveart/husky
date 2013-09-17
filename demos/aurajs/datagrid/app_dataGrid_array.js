@@ -85,5 +85,14 @@ require(['lib/husky'], function(Husky) {
             console.log('Husky.Ui.DataGrid item click: ' + item);
         });
 
+        $('#add-row').on('click', function(){
+            app.sandbox.emit('husky.datagrid.data.get');
+        });
+
+         app.sandbox.on('husky.datagrid.data.provide', function(data) {
+            console.log('Husky.Ui.DataGrid data: ');
+            console.log(data);
+        });
+
     });
 });
