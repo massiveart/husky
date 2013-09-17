@@ -11,6 +11,7 @@
             "requirejs": "bower_components/requirejs/require",
             "text": "bower_components/requirejs-text/text",
             "jquery": "bower_components/jquery/jquery",
+            "husky-validation": "bower_components/husky-validation/dist/validation",
             "husky": "lib/husky",
 
             "__component__$navigation@husky": "husky_components/navigation/main",
