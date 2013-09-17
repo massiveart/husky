@@ -79,6 +79,10 @@
                 $(window).on('load', callback);
             };
 
+            app.core.dom.val = function(selector) {
+                return $(selector).val();
+            };
+
             app.core.util.ajax = $.ajax;
         }
     });
