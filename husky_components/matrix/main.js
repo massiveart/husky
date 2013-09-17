@@ -31,16 +31,42 @@ define(function() {
             var $table;
 
             $table = sandbox.dom.createElement('<table class="table"/>');
+            sandbox.dom.append($table, this.prepareTableHead());
 
-            this.options.captions.vertical.forEach(function(caption) {
-                var $tr = sandbox.dom.createElement('<tr/>');
-                var $td = sandbox.dom.createElement('<td/>');
-                sandbox.dom.html($td, caption);
-                sandbox.dom.append($tr, $td);
-                sandbox.dom.append($table, $tr);
-            });
+            if (!!this.options.captions.vertical) {
+                sandbox.dom.append($table, this.prepareTableBody());
+            }
+
 
             return $table;
+        },
+
+        prepareTableHead: function() {
+            var $thead = sandbox.dom.createElement('<thead/>'),
+                $tr = sandbox.dom.createElement('<tr/>'),
+                $th = sandbox.dom.createElement('<th/>');
+
+            sandbox.dom.html($th, this.options.captions.type);
+
+            sandbox.dom.append($tr, $th);
+            sandbox.dom.append($thead, $tr);
+
+            return $thead;
+        },
+
+        prepareTableBody: function() {
+            var $tbody = sandbox.dom.createElement('<tbody/>');
+
+            // insert vertical headlines as first element
+            this.options.captions.vertical.forEach(function(caption) {
+                var $tr = sandbox.dom.createElement('<tr/>'),
+                    $td = sandbox.dom.createElement('<td/>');
+                sandbox.dom.html($td, caption);
+                sandbox.dom.append($tr, $td);
+                sandbox.dom.append($tbody, $tr);
+            });
+
+            return $tbody;
         }
     };
 });
