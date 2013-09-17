@@ -54,6 +54,18 @@
                 return $(selector).removeClass(classes);
             };
 
+            app.core.dom.toggleClass = function(selector, classes) {
+                return $(selector).toggleClass(classes);
+            };
+
+            app.core.dom.hasClass = function(selector, classes) {
+                return $(selector).hasClass(classes);
+            };
+
+            app.core.dom.parent = function(selector) {
+                return $(selector).parent();
+            }
+
             app.core.dom.width = function(selector) {
                 return $(selector).width();
             };
@@ -77,6 +89,10 @@
 
             app.core.dom.onReady = function(callback) {
                 $(window).on('load', callback);
+            };
+
+            app.core.dom.on = function(selector, event, filter, callback) {
+                $(selector).on(event, filter, callback);
             };
 
             app.core.util.ajax = $.ajax;

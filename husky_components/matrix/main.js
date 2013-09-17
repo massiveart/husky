@@ -10,7 +10,8 @@
 define(function() {
     'use strict';
 
-    var sandbox;
+    var sandbox,
+        activeClass = 'is-active';
 
     return {
         initialize: function() {
@@ -21,6 +22,26 @@ define(function() {
             this.prepare();
 
             sandbox.dom.append(this.$el, this.$element);
+
+            this.bindDOMEvents();
+        },
+
+        bindDOMEvents: function() {
+            sandbox.dom.on(this.$element, 'click', 'tbody > tr span[class^="icon-"]', this.toggleIcon.bind(this));
+            sandbox.dom.on(this.$element, 'click', 'tbody > tr > td:last-child', this.setRowActive.bind(this));
+        },
+
+        toggleIcon: function(event) {
+            var $target = event.currentTarget;
+            sandbox.dom.toggleClass($target, activeClass);
+
+            // TODO emit events for communication with the outside
+        },
+
+        setRowActive: function(event) {
+            var $tr = sandbox.dom.parent(event.currentTarget),
+                $elements = sandbox.dom.find('span[class^="icon-"]', $tr);
+            sandbox.dom.addClass($elements, activeClass);
         },
 
         prepare: function() {
@@ -37,7 +58,6 @@ define(function() {
                 sandbox.dom.append($table, this.prepareTableBody());
             }
 
-
             return $table;
         },
 
@@ -51,10 +71,12 @@ define(function() {
             sandbox.dom.append($tr, $thType);
 
             if (typeof(this.options.captions.horizontal) === 'string') {
+                // insert a header for all values, if the horizontal caption is a string
                 var $th = sandbox.dom.createElement('<th/>', {colspan: this.options.values.length});
                 sandbox.dom.html($th, this.options.captions.horizontal);
                 sandbox.dom.append($tr, $th);
             } else {
+                // insert the corresponding headers, if the horizontal caption is an array
                 this.options.captions.horizontal.forEach(function(caption) {
                     var $th = sandbox.dom.createElement('<th/>');
                     sandbox.dom.html($th, caption);
@@ -83,8 +105,9 @@ define(function() {
 
                 // insert values of matrix
                 this.options.values.forEach(function(value) {
-                    var $tdValue = sandbox.dom.createElement('<td/>');
-                    sandbox.dom.html($tdValue, value);
+                    var $tdValue = sandbox.dom.createElement('<td/>'),
+                        $span = sandbox.dom.createElement('<span class="icon-' + value + '"/>');
+                    sandbox.dom.append($tdValue, $span);
                     sandbox.dom.append($tr, $tdValue);
                 });
 
