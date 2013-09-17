@@ -18,14 +18,14 @@
             <td>selector</td>
             <td>Object</td>
             <td>Bind Validation to a form</td>
-            <td>var validation = sandbox.validate.create('#contact-form')</td>
+            <td>var validation = sandbox.validation.create('#contact-form')</td>
         </tr>
         <tr>
             <td>getObject</td>
             <td>selector</td>
             <td>Object</td>
             <td>Get Validation Object</td>
-            <td>var validation = sandbox.validate.getObject('#contact-form')</td>
+            <td>var validation = sandbox.validation.getObject('#contact-form')</td>
         </tr>
         <tr>
             <td>validate</td>
@@ -35,14 +35,14 @@
             </td>
             <td>Boolean</td>
             <td>Revalidate Form (force - second parameter) ignore cached validation)</td>
-            <td>sandbox.validate.validate('#contact-form', true)</td>
+            <td>sandbox.validation.validate('#contact-form', true)</td>
         </tr>
         <tr>
             <td>isValid</td>
             <td>selector</td>
             <td>Boolean</td>
             <td>Get last Validation result</td>
-            <td>sandbox.validate.isValid('#contact-form')</td>
+            <td>sandbox.validation.isValid('#contact-form')</td>
         </tr>
         <tr>
             <td>addConstraint</td>
@@ -54,7 +54,7 @@
             </td>
             <td></td>
             <td>Add a Constraint to a field</td>
-            <td>sandbox.validate.addConstraint('#contact-form', '#field', 'minlength', {minlength: 6})</td>
+            <td>sandbox.validation.addConstraint('#contact-form', '#field', 'minlength', {minlength: 6})</td>
         </tr>
         <tr>
             <td>updateConstraint</td>
@@ -66,7 +66,7 @@
             </td>
             <td></td>
             <td>Update a Constraint from a field</td>
-            <td>sandbox.validate.updateConstraint('#contact-form', '#field', 'minlength', {minlength: 6})</td>
+            <td>sandbox.validation.updateConstraint('#contact-form', '#field', 'minlength', {minlength: 6})</td>
         </tr>
         <tr>
             <td>deleteConstraint</td>
@@ -77,7 +77,7 @@
             </td>
             <td></td>
             <td>Delete a Constraint from a field</td>
-            <td>sandbox.validate.deleteConstraint('#contact-form', '#field', 'minlength')</td>
+            <td>sandbox.validation.deleteConstraint('#contact-form', '#field', 'minlength')</td>
         </tr>
         <tr>
             <td>element.getObject</td>
@@ -86,7 +86,7 @@
             </td>
             <td></td>
             <td>Delete a Constraint from a field</td>
-            <td>sandbox.validate.element.getObject('#field')</td>
+            <td>sandbox.validation.element.getObject('#field')</td>
         </tr>
         <tr>
             <td>element.addConstraint</td>
@@ -97,7 +97,7 @@
             </td>
             <td></td>
             <td>Add a Constraint to a field</td>
-            <td>sandbox.validate.element.addConstraint('#field', 'minlength', {minlength: 6})</td>
+            <td>sandbox.validation.element.addConstraint('#field', 'minlength', {minlength: 6})</td>
         </tr>
         <tr>
             <td>updateConstraint</td>
@@ -108,7 +108,7 @@
             </td>
             <td></td>
             <td>Update a Constraint from a field</td>
-            <td>sandbox.validate.element.updateConstraint('#field', 'minlength', {minlength: 6})</td>
+            <td>sandbox.validation.element.updateConstraint('#field', 'minlength', {minlength: 6})</td>
         </tr>
         <tr>
             <td>deleteConstraint</td>
@@ -118,7 +118,7 @@
             </td>
             <td></td>
             <td>Delete a Constraint from a field</td>
-            <td>sandbox.validate.element.deleteConstraint('#field', 'minlength')</td>
+            <td>sandbox.validation.element.deleteConstraint('#field', 'minlength')</td>
         </tr>
     </tbody>
 </table>
