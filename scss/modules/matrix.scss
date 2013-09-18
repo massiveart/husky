@@ -20,7 +20,9 @@
 
     td {
         &.value {
-            width: 30px;
+            width: 20px;
+            padding: 4px;
+            margin: 0;
         }
 
         &.all {
@@ -33,11 +35,11 @@
         opacity: 0.2;
 
         border: 1px solid #000;
-        border-radius: 11px;
+        border-radius: 12px;
 
-        width: 22px;
-        height: 22px;
-        line-height: 21px;
+        width: 24px;
+        height: 24px;
+        line-height: 23px;
 
         display: inline-block;
         text-align: center;
