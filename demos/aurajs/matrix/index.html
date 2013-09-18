@@ -23,7 +23,7 @@
         }
 
         tbody span[class^="icon-"] {
-            opacity: 0.3;
+            opacity: 0.2;
         }
 
         .is-active {
@@ -66,7 +66,10 @@
                             horizontal: 'Permissions',
                             vertical: ['Videos', 'Documents', 'Images']
                         },
-                        values: ['view', 'add', 'edit', 'delete', 'archive', 'live', 'security']
+                        values: {
+                            vertical: ['sulu.assets.videos', 'sulu.assets.documents', 'sulu.assets.images'],
+                            horizontal: ['add', 'edit', 'search', 'remove', 'settings', 'circle-ok']
+                        }
                     }
                 }
             ]);

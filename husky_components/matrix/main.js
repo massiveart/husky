@@ -27,21 +27,35 @@ define(function() {
         },
 
         bindDOMEvents: function() {
-            sandbox.dom.on(this.$element, 'click', 'tbody > tr span[class^="icon-"]', this.toggleIcon.bind(this));
+            sandbox.dom.on(this.$element, 'click', 'tbody > tr > td:has(span[class^="icon-"])', this.toggleIcon.bind(this));
             sandbox.dom.on(this.$element, 'click', 'tbody > tr > td:last-child', this.setRowActive.bind(this));
         },
 
         toggleIcon: function(event) {
             var $target = event.currentTarget;
+            $target = sandbox.dom.find('span[class^="icon-"]', $target);
             sandbox.dom.toggleClass($target, activeClass);
 
-            // TODO emit events for communication with the outside
+            // emit events for communication with the outside
+            sandbox.emit('husky.matrix.change', {
+                section: sandbox.dom.data($target, 'section'),
+                value: sandbox.dom.data($target, 'value'),
+                activated: sandbox.dom.hasClass($target, activeClass)
+            });
         },
 
         setRowActive: function(event) {
             var $tr = sandbox.dom.parent(event.currentTarget),
-                $elements = sandbox.dom.find('span[class^="icon-"]', $tr);
-            sandbox.dom.addClass($elements, activeClass);
+                $targets = sandbox.dom.find('span[class^="icon-"]', $tr);
+            sandbox.dom.addClass($targets, activeClass);
+
+            // emit events for communication with the outside
+
+            sandbox.emit('husky.matrix.change', {
+                section: sandbox.dom.data($targets, 'section'),
+                value: this.options.values.horizontal,
+                activated: sandbox.dom.hasClass($targets, activeClass)
+            });
         },
 
         prepare: function() {
@@ -72,7 +86,7 @@ define(function() {
 
             if (typeof(this.options.captions.horizontal) === 'string') {
                 // insert a header for all values, if the horizontal caption is a string
-                var $th = sandbox.dom.createElement('<th/>', {colspan: this.options.values.length});
+                var $th = sandbox.dom.createElement('<th/>', {colspan: this.options.values.horizontal.length});
                 sandbox.dom.html($th, this.options.captions.horizontal);
                 sandbox.dom.append($tr, $th);
             } else {
@@ -95,28 +109,33 @@ define(function() {
         prepareTableBody: function() {
             var $tbody = sandbox.dom.createElement('<tbody/>');
 
-            this.options.captions.vertical.forEach(function(caption) {
+            for (var i = 0; i < this.options.captions.vertical.length; i++) {
                 // insert vertical headlines as first element
                 var $tr = sandbox.dom.createElement('<tr/>'),
                     $tdHead = sandbox.dom.createElement('<td/>'),
                     $tdAll = sandbox.dom.createElement('<td/>');
-                sandbox.dom.html($tdHead, caption);
+                sandbox.dom.html($tdHead, this.options.captions.vertical[i]);
                 sandbox.dom.append($tr, $tdHead);
 
                 // insert values of matrix
-                this.options.values.forEach(function(value) {
+                this.options.values.horizontal.forEach(function(value) {
                     var $tdValue = sandbox.dom.createElement('<td/>'),
-                        $span = sandbox.dom.createElement('<span class="icon-' + value + '"/>');
+                        $span = sandbox.dom.createElement(
+                            '<span class="icon-' + value + '"/>'
+                        );
+                    sandbox.dom.data($span, 'value', value);
+                    sandbox.dom.data($span, 'section', this.options.values.vertical[i]);
                     sandbox.dom.append($tdValue, $span);
                     sandbox.dom.append($tr, $tdValue);
-                });
+                }.bind(this));
 
                 //add all link
                 sandbox.dom.html($tdAll, 'All');
                 sandbox.dom.append($tr, $tdAll);
 
                 sandbox.dom.append($tbody, $tr);
-            }.bind(this));
+            }
+            ;
 
             return $tbody;
         }

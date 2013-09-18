@@ -87,6 +87,14 @@
                 return $(selector).is(type);
             };
 
+            app.core.dom.data = function(selector, key, value) {
+                if (!!value) {
+                    return $(selector).data(key, value);
+                } else {
+                    return $(selector).data(key);
+                }
+            };
+
             app.core.dom.onReady = function(callback) {
                 $(window).on('load', callback);
             };
