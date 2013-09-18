@@ -21,7 +21,8 @@ define(function() {
         data: [],
         valueName: 'name',
         selected: null,
-        defaultItem: { id: 1 }
+        defaultItem: { id: 1 },
+        instanceName: 'undefined'
     };
 
     return {
@@ -35,8 +36,9 @@ define(function() {
             this.configs = {};
 
             this.$originalElement = this.sandbox.dom.$(this.options.el);
+            // TODO class via options
             this.$select = $('<select class="select-value form-element"/>');
-            this.$element = this.sandbox.dom.$('<div class="husky-select form-element"/>');
+            this.$element = this.sandbox.dom.$('<div class="husky-select"/>');
 
             this.$element.append(this.$select);
             this.$originalElement.append(this.$element);
@@ -44,11 +46,6 @@ define(function() {
             this.prepareData();
             this.bindDOMEvents();
         },
-
-        getUrl: function() {
-            return this.options.url;
-        },
-
         
         // bind dom elements
         bindDOMEvents: function() {
@@ -58,8 +55,8 @@ define(function() {
 
             this.$select.on('change', function() {
                 var id= this.$select.val();
-               this.sandbox.logger.log(this.name, 'changed: '+id);
-                this.sandbox.emit('select.item.changed', id);
+               this.sandbox.logger.log('changed: '+id);
+                this.sandbox.emit('select.'+this.options.instanceName+'.item.changed', id);
             }.bind(this));
 
         },
@@ -75,13 +72,12 @@ define(function() {
 
         // load data with ajax
         loadData: function() {
-            var url = this.getUrl();
-            this.sandbox.logger.log(this.name, 'load: ' + url);
+            this.sandbox.logger.log('load: ' + this.options.url);
 
             this.sandbox.util.ajax({
-                url: url,
+                url: this.options.url,
                 success: function(response) {
-                    this.sandbox.logger.log(this.name, 'load', 'success');
+                    this.sandbox.logger.log('load', 'success');
 
                     if (response.total > 0 && response.items.length == response.total) {
                         this.options.data = response.items;
@@ -91,7 +87,7 @@ define(function() {
                     this.generateOptions(this.options.data);
                 }.bind(this),
                 error: function() {
-                    this.sandbox.logger.log(this.name, 'load', 'error');
+                    this.sandbox.logger.log('load', 'error');
 
                     this.options.data = [];
                     this.generateOptions(this.options.data);
@@ -100,8 +96,9 @@ define(function() {
 
             // FIXME event will be binded later
             setTimeout(function() {
-                this.trigger('select:loadData', null);
+                this.sandbox.emit('select.'+this.options.instanceName+'.loadData');
             }.bind(this), 200);
+
         },
 
         generateOptions: function(items) {
