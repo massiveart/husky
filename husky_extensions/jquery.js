@@ -103,8 +103,20 @@
                 $(window).on('load', callback);
             };
 
-            app.core.dom.on = function(selector, event, filter, callback) {
-                $(selector).on(event, filter, callback);
+            app.core.dom.val = function(selector) {
+                return $(selector).val();
+            };
+
+            app.core.dom.on = function(selector, event, callback, filter){
+                if(!!filter) {
+                    $(selector).on(event, filter, callback);
+                } else {
+                    $(selector).on(event, callback);
+                }
+            };
+
+            app.core.dom.next = function(selector, filter) {
+                return $(selector).next(filter);
             };
 
             app.core.util.ajax = $.ajax;

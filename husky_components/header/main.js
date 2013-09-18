@@ -189,7 +189,7 @@ define([], function() {
 
         // move buttons with navigation width
         moveButtons: function(navWidth) {
-            var headerLeft = parseInt(this.sandbox.dom.css(this.$header, 'margin-left')),
+            var headerLeft = parseInt(this.sandbox.dom.css(this.$header, 'padding-left')),
                 marginLeft = navWidth + this.options.marginMid - headerLeft,
                 width = parseInt(this.sandbox.dom.css(this.$mid, 'width'));
 

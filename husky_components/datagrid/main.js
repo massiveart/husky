@@ -26,6 +26,7 @@
  *       - husky.datagrid.update - raised when the data needs to be updated
  *       - husky.datagrid.item.click - raised when clicked on an item
  *       - husky.datagrid.items.selected - raised when husky.datagrid.items.get-selected is triggered
+ *       - husky.datagrid.data.provide - raised when when husky.datagrid.data.get is triggered
  *
  *
  * 	Used Events:
@@ -33,6 +34,7 @@
  *       - husky.datagrid.row.add - used to add a row
  *       - husky.datagrid.row.remove - used to remove a row
  *       - husky.datagrid.items.get-selected - triggers husky.datagrid.items.selected event, which returns all selected item ids
+ *       - husky.datagrid.data.get - triggers husky.datagrid.data.provide
  *
  */
 
@@ -86,8 +88,6 @@ define(function() {
 	        this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
 	        this.$originalElement.append(this.$element);
 
-	        
-	        // ??
 	        this.options.pagination = (this.options.pagination !== undefined) ? !!this.options.pagination : !!this.options.url;
 
 	       	this.getData();
@@ -466,6 +466,12 @@ define(function() {
                 id = event;
                 $tblRow = this.$element.find('tr[data-id="' + id + '"]');
             }
+            
+            var index = this.selectedItemIds.indexOf(id);            
+            
+            if(index >= 0) {
+                this.selectedItemIds.splice(index,1);
+            }
 
             this.sandbox.emit('husky.datagrid.row.removed', event);
             $tblRow.remove();
@@ -609,7 +615,13 @@ define(function() {
             this.sandbox.on('husky.datagrid.row.remove', this.removeRow.bind(this));
 
             // trigger selectedItems
-            this.sandbox.on('husky.datagrid.items.get-selected', this.getSelectedItemsIds.bind(this))
+            this.sandbox.on('husky.datagrid.items.get-selected', this.getSelectedItemsIds.bind(this));
+
+            this.sandbox.on('husky.datagrid.data.get',this.provideData.bind(this));
+        },
+
+        provideData: function(){
+            this.sandbox.emit('husky.datagrid.data.provide',this.data);
         },
 
         updateHandler: function() {
