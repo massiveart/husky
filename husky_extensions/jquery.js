@@ -83,8 +83,12 @@
                 return $(selector).val();
             };
 
-            app.core.dom.on = function(selector, event, callback){
-                $(selector).on(event,callback);
+            app.core.dom.on = function(selector, event, callback, selector2){
+                if(!!selector2) {
+                    $(selector).on(event, selector2, callback);
+                } else {
+                    $(selector).on(event, callback);
+                }
             }
 
             app.core.dom.toggleClass = function(selector, className) {
