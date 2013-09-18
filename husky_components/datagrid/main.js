@@ -88,8 +88,6 @@ define(function() {
 	        this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
 	        this.$originalElement.append(this.$element);
 
-	        
-	        // ??
 	        this.options.pagination = (this.options.pagination !== undefined) ? !!this.options.pagination : !!this.options.url;
 
 	       	this.getData();
