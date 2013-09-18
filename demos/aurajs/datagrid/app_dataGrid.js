@@ -48,7 +48,7 @@ require(['lib/husky'], function(Husky) {
                     showPages: 6
                 },
                 removeRow: true,
-                autoRemoveHandling: false,
+                autoRemoveHandling: true,
                 tableHead: [
                     {content: 'Content 1', width: "30%"},
                     {content: 'Content 2'},
@@ -108,6 +108,14 @@ require(['lib/husky'], function(Husky) {
             setTimeout(function() {
                 fakeServer.respond();
             }, 500);
+        });
+
+        $('#get-selected').on('click', function() {
+            app.sandbox.emit('husky.datagrid.items.get-selected');
+        });
+
+        app.sandbox.on('husky.datagrid.items.selected', function(event) {
+            console.log('Husky.Ui.DataGrid items selected '+event);
         });
 
     });

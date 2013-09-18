@@ -34,7 +34,7 @@
  *       - husky.datagrid.row.add - used to add a row
  *       - husky.datagrid.row.remove - used to remove a row
  *       - husky.datagrid.items.get-selected - triggers husky.datagrid.items.selected event, which returns all selected item ids
- *       - husky.datagrid.data.get - triggers husky.datagrid.items.
+ *       - husky.datagrid.data.get - triggers husky.datagrid.data.provide
  *
  */
 
@@ -467,6 +467,12 @@ define(function() {
             } else {
                 id = event;
                 $tblRow = this.$element.find('tr[data-id="' + id + '"]');
+            }
+            
+            var index = this.selectedItemIds.indexOf(id);            
+            
+            if(index >= 0) {
+                this.selectedItemIds.splice(index,1);
             }
 
             this.sandbox.emit('husky.datagrid.row.removed', event);
