@@ -95,8 +95,8 @@
                 return $(selector).parent();
             }
 
-            app.core.dom.next = function(selector) {
-                return $(selector).next();
+            app.core.dom.next = function(selector, selector2) {
+                return $(selector).next(selector2);
             }
 
             app.core.util.ajax = $.ajax;
