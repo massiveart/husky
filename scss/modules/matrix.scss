@@ -3,6 +3,8 @@
 // --------------------------------------------------
 
 .table.matrix {
+    margin-bottom: 30px;
+
     th {
         vertical-align: baseline;
 
@@ -29,6 +31,16 @@
 
     span[class^="icon-"] {
         opacity: 0.2;
+
+        border: 1px solid #000;
+        border-radius: 11px;
+
+        width: 22px;
+        height: 22px;
+        line-height: 21px;
+
+        display: inline-block;
+        text-align: center;
 
         &.is-active {
             opacity: 1;
