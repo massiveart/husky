@@ -24,11 +24,16 @@ define(function() {
             sandbox.dom.append(this.$el, this.$element);
 
             this.bindDOMEvents();
+            this.bindCustomEvents();
         },
 
         bindDOMEvents: function() {
             sandbox.dom.on(this.$element, 'click', 'tbody > tr > td:has(span[class^="icon-"])', this.toggleIcon.bind(this));
             sandbox.dom.on(this.$element, 'click', 'tbody > tr > td:last-child', this.setRowActive.bind(this));
+        },
+
+        bindCustomEvents: function() {
+            sandbox.on('husky.matrix.set-all', this.setAllActive.bind(this));
         },
 
         toggleIcon: function(event) {
@@ -37,7 +42,7 @@ define(function() {
             sandbox.dom.toggleClass($target, activeClass);
 
             // emit events for communication with the outside
-            sandbox.emit('husky.matrix.change', {
+            sandbox.emit('husky.matrix.changed', {
                 section: sandbox.dom.data($target, 'section'),
                 value: sandbox.dom.data($target, 'value'),
                 activated: sandbox.dom.hasClass($target, activeClass)
@@ -50,12 +55,26 @@ define(function() {
             sandbox.dom.addClass($targets, activeClass);
 
             // emit events for communication with the outside
-
-            sandbox.emit('husky.matrix.change', {
+            sandbox.emit('husky.matrix.changed', {
                 section: sandbox.dom.data($targets, 'section'),
                 value: this.options.values.horizontal,
-                activated: sandbox.dom.hasClass($targets, activeClass)
+                activated: true
             });
+        },
+
+        setAllActive: function() {
+            var $targets = sandbox.dom.find('span[class^="icon-"]', this.$element),
+                $trs = sandbox.dom.find('tbody > tr', this.$element);
+            sandbox.dom.addClass($targets, activeClass);
+
+            // emit events for communication with the outsite
+            sandbox.dom.each($trs, function(key, $tr) {
+                sandbox.emit('husky.matrix.changed', {
+                    section: sandbox.dom.data(sandbox.dom.find('td.section', $tr), 'section'),
+                    value: this.options.values.horizontal,
+                    activated: true
+                });
+            }.bind(this));
         },
 
         prepare: function() {
@@ -65,7 +84,7 @@ define(function() {
         prepareTable: function() {
             var $table;
 
-            $table = sandbox.dom.createElement('<table class="table"/>');
+            $table = sandbox.dom.createElement('<table class="table matrix"/>');
             sandbox.dom.append($table, this.prepareTableHead());
 
             if (!!this.options.captions.vertical) {
@@ -78,11 +97,18 @@ define(function() {
         prepareTableHead: function() {
             var $thead = sandbox.dom.createElement('<thead/>'),
                 $tr = sandbox.dom.createElement('<tr/>'),
-                $thType = sandbox.dom.createElement('<th/>');
+                $thSection = sandbox.dom.createElement('<th class="section"/>'),
+                $thGeneral;
 
-            sandbox.dom.html($thType, this.options.captions.type);
+            if (!!this.options.captions.general) {
+                $thGeneral = sandbox.dom.createElement('<th class="general"/>');
+                sandbox.dom.html($thGeneral, this.options.captions.general);
+                sandbox.dom.append($tr, $thGeneral);
+            }
 
-            sandbox.dom.append($tr, $thType);
+            sandbox.dom.html($thSection, this.options.captions.type);
+
+            sandbox.dom.append($tr, $thSection);
 
             if (typeof(this.options.captions.horizontal) === 'string') {
                 // insert a header for all values, if the horizontal caption is a string
@@ -110,16 +136,23 @@ define(function() {
             var $tbody = sandbox.dom.createElement('<tbody/>');
 
             for (var i = 0; i < this.options.captions.vertical.length; i++) {
-                // insert vertical headlines as first element
                 var $tr = sandbox.dom.createElement('<tr/>'),
-                    $tdHead = sandbox.dom.createElement('<td/>'),
-                    $tdAll = sandbox.dom.createElement('<td/>');
+                    $tdHead = sandbox.dom.createElement('<td class="section"/>'),
+                    $tdAll = sandbox.dom.createElement('<td class="all"/>');
+
+                // insert empty line, if there is a general caption
+                if (!!this.options.captions.general) {
+                    sandbox.dom.append($tr, sandbox.dom.createElement('<td/>'));
+                }
+
+                // insert vertical headlines as first element
                 sandbox.dom.html($tdHead, this.options.captions.vertical[i]);
+                sandbox.dom.data($tdHead, 'section', this.options.values.vertical[i]);
                 sandbox.dom.append($tr, $tdHead);
 
                 // insert values of matrix
                 this.options.values.horizontal.forEach(function(value) {
-                    var $tdValue = sandbox.dom.createElement('<td/>'),
+                    var $tdValue = sandbox.dom.createElement('<td class="value"/>'),
                         $span = sandbox.dom.createElement(
                             '<span class="icon-' + value + '"/>'
                         );
@@ -135,7 +168,6 @@ define(function() {
 
                 sandbox.dom.append($tbody, $tr);
             }
-            ;
 
             return $tbody;
         }

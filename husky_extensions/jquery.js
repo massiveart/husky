@@ -34,6 +34,10 @@
                 return $(selector).html(content);
             };
 
+            app.core.dom.each = function(selector, callback) {
+                $(selector).each(callback);
+            };
+
             app.core.dom.append = function(selector, element) {
                 return $(selector).append(element);
             };

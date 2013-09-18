@@ -21,19 +21,12 @@
             margin-left: 300px;
             margin-top: 100px;
         }
-
-        tbody span[class^="icon-"] {
-            opacity: 0.2;
-        }
-
-        .is-active {
-            opacity: 1 !important;
-        }
     </style>
 </head>
 <body>
 <div id="container">
 
+    <button id="set-all">Set All</button>
 </div>
 
 
@@ -62,17 +55,22 @@
                     options: {
                         el: '#container',
                         captions: {
+                            general: 'Assets',
                             type: 'Section',
                             horizontal: 'Permissions',
                             vertical: ['Videos', 'Documents', 'Images']
                         },
                         values: {
                             vertical: ['sulu.assets.videos', 'sulu.assets.documents', 'sulu.assets.images'],
-                            horizontal: ['add', 'edit', 'search', 'remove', 'settings', 'circle-ok']
+                            horizontal: ['add', 'edit', 'search', 'remove', 'settings', 'circle-ok', 'building']
                         }
                     }
                 }
             ]);
+
+            $('#set-all').on('click', function() {
+                app.sandbox.emit('husky.matrix.set-all');
+            });
         });
     });
 </script>
