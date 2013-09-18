@@ -83,6 +83,22 @@
                 return $(selector).val();
             };
 
+            app.core.dom.on = function(selector, event, callback){
+                $(selector).on(event,callback);
+            }
+
+            app.core.dom.toggleClass = function(selector, className) {
+                $(selector).toggleClass(className);
+            }
+
+            app.core.dom.parent = function(selector) {
+                return $(selector).parent();
+            }
+
+            app.core.dom.next = function(selector) {
+                return $(selector).next();
+            }
+
             app.core.util.ajax = $.ajax;
         }
     });
