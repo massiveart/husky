@@ -1,0 +1,37 @@
+//
+// Matrices
+// --------------------------------------------------
+
+.table.matrix {
+    th {
+        vertical-align: baseline;
+
+        &.general {
+            font-size: 24px;
+            width: 160px;
+        }
+
+        &.section {
+            width: 130px;
+        }
+    }
+
+    td {
+        &.value {
+            width: 30px;
+        }
+
+        &.all {
+            text-align: right;
+            padding-right: 10px;
+        }
+    }
+
+    span[class^="icon-"] {
+        opacity: 0.2;
+
+        &.is-active {
+            opacity: 1;
+        }
+    }
+}
