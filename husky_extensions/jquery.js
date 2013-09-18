@@ -83,9 +83,9 @@
                 return $(selector).val();
             };
 
-            app.core.dom.on = function(selector, event, callback, selector2){
-                if(!!selector2) {
-                    $(selector).on(event, selector2, callback);
+            app.core.dom.on = function(selector, event, callback, filter){
+                if(!!filter) {
+                    $(selector).on(event, filter, callback);
                 } else {
                     $(selector).on(event, callback);
                 }
@@ -99,8 +99,8 @@
                 return $(selector).parent();
             }
 
-            app.core.dom.next = function(selector, selector2) {
-                return $(selector).next(selector2);
+            app.core.dom.next = function(selector, filter) {
+                return $(selector).next(filter);
             }
 
             app.core.util.ajax = $.ajax;
