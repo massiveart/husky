@@ -151,16 +151,22 @@ define(function() {
                 sandbox.dom.append($tr, $tdHead);
 
                 // insert values of matrix
-                this.options.values.horizontal.forEach(function(value) {
+                for (var j = 0; j < this.options.values.horizontal.length; j++) {
                     var $tdValue = sandbox.dom.createElement('<td class="value"/>'),
                         $span = sandbox.dom.createElement(
-                            '<span class="icon-' + value + '"/>'
+                            '<span class="icon-' + this.options.values.horizontal[j] + '"/>'
                         );
-                    sandbox.dom.data($span, 'value', value);
+                    sandbox.dom.data($span, 'value', this.options.values.horizontal[j]);
                     sandbox.dom.data($span, 'section', this.options.values.vertical[i]);
+
+                    // set activated if set in delivered data
+                    if (!!this.options.data[i][j]) {
+                        sandbox.dom.addClass($span, activeClass);
+                    }
+
                     sandbox.dom.append($tdValue, $span);
                     sandbox.dom.append($tr, $tdValue);
-                }.bind(this));
+                }
 
                 //add all link
                 sandbox.dom.html($tdAll, 'All');
