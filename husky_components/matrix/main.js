@@ -28,8 +28,8 @@ define(function() {
         },
 
         bindDOMEvents: function() {
-            sandbox.dom.on(this.$element, 'click', 'tbody > tr > td:has(span[class^="icon-"])', this.toggleIcon.bind(this));
-            sandbox.dom.on(this.$element, 'click', 'tbody > tr > td:last-child', this.setRowActive.bind(this));
+            sandbox.dom.on(this.$element, 'click', this.toggleIcon.bind(this), 'tbody > tr > td:has(span[class^="icon-"])');
+            sandbox.dom.on(this.$element, 'click', this.setRowActive.bind(this), 'tbody > tr > td:last-child');
         },
 
         bindCustomEvents: function() {
