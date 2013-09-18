@@ -18,7 +18,8 @@
             "__component__$button@husky": "husky_components/button/main",
             "__component__$datagrid@husky": "husky_components/datagrid/main",
             "__component__$dialog@husky": "husky_components/dialog/main",
-            "__component__$dropdown@husky": "husky_components/dropdown/main"
+            "__component__$dropdown@husky": "husky_components/dropdown/main",
+            "__component__$matrix@husky": "husky_components/matrix/main"
         },
         "shim": {
             "backbone": {
@@ -45,7 +46,8 @@
             "__component__$button@husky",
             "__component__$datagrid@husky",
             "__component__$dialog@husky",
-            "__component__$dropdown@husky"
+            "__component__$dropdown@husky",
+            "__component__$matrix@husky"
         ],
         "out": "dist/<%= PKG_VERSION %>/husky.js"
     }
