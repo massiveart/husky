@@ -6,6 +6,7 @@
         "backbone":"~1.0.0",
         "underscore": "~1.5.1",
         "aura": "latest",
-        "husky-validation": "#develop"
+        "husky-validation": "#develop",
+        "globalize": "0.1.*"
     }
 }

@@ -31,16 +31,49 @@ define([], function() {
         },
 
         render: function() {
-            this.html(this.template());
-            this.sandbox.validation.create('#form');
+            require(['text!demos/aurajs/validation/template.html'], function(Template) {
+                this.html(Template);
+                this.sandbox.form.create('#form');
 
-            this.bindDomEvents();
+                this.bindDomEvents();
+            }.bind(this));
         },
 
-        bindDomEvents:function(){
-            $('#check').on('click', function(){
-                this.sandbox.validation.validate('#form');
+        bindDomEvents: function() {
+            $('#check').on('click', function() {
+                this.sandbox.form.validate('#form');
             }.bind(this));
+            $('#set').on('click', function() {
+                this.sandbox.form.setData('#form', this.data());
+            }.bind(this));
+            $('#get').on('click', function() {
+                this.sandbox.logger.log('data', this.sandbox.form.getData('#form'));
+            }.bind(this));
+        },
+
+        data: function() {
+            return {
+                firstName: 'Johannes',
+                lastName: 'Wachter',
+                birthDay: '2013-09-18T08:05:00+0200',
+                wage: 1500,
+                phones: [
+                    {
+                        type: {
+                            id: 5,
+                            name: "Privat"
+                        },
+                        phone: "+43 676 3596681"
+                    },
+                    {
+                        type: {
+                            id: 5,
+                            name: "Mobil"
+                        },
+                        phone: "+43 664 4119649"
+                    }
+                ]
+            };
         },
 
         template: function() {
