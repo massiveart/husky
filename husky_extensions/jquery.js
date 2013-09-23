@@ -83,6 +83,26 @@
                 return $(selector).val();
             };
 
+            app.core.dom.on = function(selector, event, callback, filter){
+                if(!!filter) {
+                    $(selector).on(event, filter, callback);
+                } else {
+                    $(selector).on(event, callback);
+                }
+            }
+
+            app.core.dom.toggleClass = function(selector, className) {
+                $(selector).toggleClass(className);
+            }
+
+            app.core.dom.parent = function(selector) {
+                return $(selector).parent();
+            }
+
+            app.core.dom.next = function(selector, filter) {
+                return $(selector).next(filter);
+            }
+
             app.core.util.ajax = $.ajax;
         }
     });

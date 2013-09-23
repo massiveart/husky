@@ -139,3 +139,17 @@
         display: inline-block;
     }
 }
+
+.icon-check {
+  &::after {
+    content: "\e153";
+    display: inline-block;
+  }
+}
+
+.icon-adjust-alt {
+  &::after {
+    content: "\e140";
+    display: inline-block;
+  }
+}
