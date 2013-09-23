@@ -85,10 +85,12 @@ define(['underscore', 'jquery'], function(_, $) {
                     result = template.match(regExp),
                     key, translation;
 
-                this.sandbox.util.each(result, function(key, value) {
-                    key = value.replace(/#/g, '');
-                    template = template.replace(new RegExp(value, 'g'), this.sandbox.translate(key));
-                }.bind(this));
+                if (!!result) {
+                    this.sandbox.util.each(result, function(key, value) {
+                        key = value.replace(/#/g, '');
+                        template = template.replace(new RegExp(value, 'g'), this.sandbox.translate(key));
+                    }.bind(this));
+                }
 
                 return template;
             } else {
