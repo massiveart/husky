@@ -26,6 +26,7 @@
                 };
 
                 app.sandbox.translate = function(key) {
+                    if (!app.config.culture || !app.config.culture.name)return key;
                     var translation = Globalize.localize(key, app.config.culture.name);
                     return !!translation ? translation : key;
                 };
