@@ -1,7 +1,7 @@
-<form id="form" class="grid" data-debug="true" data-language="fr">
+<form id="form" class="grid" data-debug="true">
     <div class="grid-row">
         <div class="grid-col-6">
-            <label>FirstName [required]:</label>
+            <label>###firstName### *:</label>
             <input type="text"
                    class="form-element"
                    id="firstName"
@@ -10,7 +10,7 @@
                    data-validation-required="true"/>
         </div>
         <div class="grid-col-6">
-            <label>LastName [minlength=6]:</label>
+            <label>###lastName###:</label>
             <input type="text"
                    class="form-element"
                    id="lastName"
@@ -21,7 +21,7 @@
     </div>
     <div class="grid-row">
         <div class="grid-col-6">
-            <label>BirthDay [type=date, trigger=keyup]:</label>
+            <label>###birthDay###:</label>
             <input type="text"
                    class="form-element"
                    id="birthday"
@@ -31,7 +31,7 @@
                    data-validation-trigger="keyup focusout"/>
         </div>
         <div class="grid-col-6">
-            <label>Wage [type=decimal, min=1000, max=1500]:</label>
+            <label>###wage###:</label>
             <input type="text"
                    class="form-element"
                    id="wage"
@@ -48,7 +48,7 @@
                    data-type="label"
                    data-type-label="name"
                    data-type-id="id">
-                Phone [minlength=6, maxlength=30]:
+                ###phone###:
             </label>
             <input type="text"
                    class="form-element"

@@ -12,6 +12,7 @@
             "text": "bower_components/requirejs-text/text",
             "jquery": "bower_components/jquery/jquery",
             "husky-validation": "bower_components/husky-validation/dist/validation",
+            "globalize_lib": "bower_components/globalize/lib/globalize",
             "husky": "lib/husky",
 
             "__component__$navigation@husky": "husky_components/navigation/main",
@@ -41,6 +42,7 @@
             "aura/ext/components",
             "husky",
             "husky-validation",
+            "globalize_lib",
 
             "__component__$navigation@husky",
             "__component__$header@husky",

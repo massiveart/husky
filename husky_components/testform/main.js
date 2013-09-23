@@ -19,6 +19,7 @@ define([], function() {
     };
 
     return {
+        templates: ['/demos/aurajs/validation/template'],
 
         initialize: function() {
             this.sandbox.logger.log('initialize', this);
@@ -31,12 +32,10 @@ define([], function() {
         },
 
         render: function() {
-            require(['text!demos/aurajs/validation/template.html'], function(Template) {
-                this.html(Template);
-                this.sandbox.form.create('#form');
+            this.html(this.renderTemplate('/demos/aurajs/validation/template'));
+            this.sandbox.form.create('#form');
 
-                this.bindDomEvents();
-            }.bind(this));
+            this.bindDomEvents();
         },
 
         bindDomEvents: function() {
