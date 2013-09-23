@@ -25,6 +25,8 @@ define(function() {
         instanceName: 'undefined'
     };
 
+    var moduleName = 'Husky.Ui.Select';
+
     return {
 
         view: true,
