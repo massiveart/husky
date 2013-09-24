@@ -16,7 +16,7 @@
  *  excludeItems ... items to filter
  *
  * Provided Events:
- *  auto-complete.loadData ... event to append data
+ *  auto-complete.load-data ... event to append data
  */
 
 define([], function() {
@@ -75,13 +75,14 @@ define([], function() {
         },
 
         render: function() {
+            this.$el.addClass('dropdown husky-auto-complete');
             // init form-element and dropdown menu
-            this.$valueField = $('<input type="text" autofill="false" class="name-value form-element" data-id="' + this.getValueID() +
+            this.$valueField = $('<input type="text" autofill="false" class="name-value form-element husky-validate" data-id="' + this.getValueID() +
                 '" value="' + this.getValueName() + '"/>');
             this.$dropDown = $('<div class="dropdown-menu" />');
             this.$dropDownList = $('<ul/>');
-            this.$element.append(this.$valueField);
-            this.$element.append(this.$dropDown);
+            this.$el.append(this.$valueField);
+            this.$el.append(this.$dropDown);
             this.$dropDown.append(this.$dropDownList);
             this.hideDropDown();
 
@@ -96,7 +97,7 @@ define([], function() {
         // bind dom elements
         bindDOMEvents: function() {
             // turn off all events
-            this.$element.off();
+            this.$el.off();
 
             // input value changed
             this.$valueField.on('input', this.inputChanged.bind(this));
@@ -153,7 +154,7 @@ define([], function() {
 
         // value of input changed
         inputChanged: function() {
-             this.sandbox.logger.log('inputChanged');
+            this.sandbox.logger.log('inputChanged');
 
             // value is not success
             this.noState();
@@ -167,13 +168,13 @@ define([], function() {
         // load data from server
         loadData: function(pattern) {
             var url = this.getUrl(pattern);
-             this.sandbox.logger.log('load: ' + url);
+            this.sandbox.logger.log('load: ' + url);
             this.loadingState();
 
-            Husky.Util.ajax({
+            $.ajax({
                 url: url,
                 success: function(response) {
-                     this.sandbox.logger.log('load', 'success');
+                    this.sandbox.logger.log('load', 'success');
 
                     this.noState();
 
@@ -189,24 +190,26 @@ define([], function() {
                     }
                 }.bind(this),
                 error: function() {
-                     this.sandbox.logger.log('load', 'error');
+                    this.sandbox.logger.log('load', 'error');
 
                     this.failState();
                     this.hideDropDown();
                 }.bind(this)
             });
 
-            this.sandbox.emit(this.getEvent('loadData'), null);
+            this.sandbox.emit(this.getEvent('load-data'));
         },
 
         // update global data array
         updateData: function(newData) {
             data = [];
-            newData.forEach(function(item) {
-                if (this.isVisible(item)) {
-                    data.push(item);
-                }
-            }.bind(this));
+            if (!!newData && $.isArray(newData)) {
+                newData.forEach(function(item) {
+                    if (this.isVisible(item)) {
+                        data.push(item);
+                    }
+                }.bind(this));
+            }
         },
 
         // generate dropDown with given items
@@ -237,54 +240,54 @@ define([], function() {
 
         // make dropDown visible
         showDropDown: function() {
-             this.sandbox.logger.log('show dropdown');
+            this.sandbox.logger.log('show dropdown');
             this.$dropDown.show();
         },
 
         // hide dropDown
         hideDropDown: function() {
-             this.sandbox.logger.log('hide dropdown');
+            this.sandbox.logger.log('hide dropdown');
             this.clearDropDown();
             this.$dropDown.hide();
         },
 
         // set class success to container
         successState: function() {
-             this.sandbox.logger.log('set success');
+            this.sandbox.logger.log('set success');
             this.clearDropDown();
-            this.$originalElement.removeClass(failClass);
-            this.$originalElement.removeClass(loadingClass);
-            this.$originalElement.addClass(successClass);
+            this.$el.parent().removeClass(failClass);
+            this.$el.parent().removeClass(loadingClass);
+            this.$el.parent().addClass(successClass);
         },
 
         // remove class success, fail and loading of container
         noState: function() {
-             this.sandbox.logger.log('remove success and fail');
+            this.sandbox.logger.log('remove success and fail');
             this.$valueField.data('');
-            this.$originalElement.removeClass(failClass);
-            this.$originalElement.removeClass(loadingClass);
-            this.$originalElement.removeClass(successClass);
+            this.$el.parent().removeClass(failClass);
+            this.$el.parent().removeClass(loadingClass);
+            this.$el.parent().removeClass(successClass);
         },
 
         // add class fail to container
         failState: function() {
-             this.sandbox.logger.log('set fail');
-            this.$originalElement.addClass(failClass);
-            this.$originalElement.removeClass(loadingClass);
-            this.$originalElement.removeClass(successClass);
+            this.sandbox.logger.log('set fail');
+            this.$el.parent().addClass(failClass);
+            this.$el.parent().removeClass(loadingClass);
+            this.$el.parent().removeClass(successClass);
         },
 
         // add class loading to container
         loadingState: function() {
-             this.sandbox.logger.log('set loading');
-            this.$originalElement.removeClass(failClass);
-            this.$originalElement.addClass(loadingClass);
-            this.$originalElement.removeClass(successClass);
+            this.sandbox.logger.log('set loading');
+            this.$el.parent().removeClass(failClass);
+            this.$el.parent().addClass(loadingClass);
+            this.$el.parent().removeClass(successClass);
         },
 
         // handle key down
         pressKeyDown: function() {
-             this.sandbox.logger.log('key down');
+            this.sandbox.logger.log('key down');
 
             // get actual and next element
             var $actual = this.$dropDownList.children('.hover');
@@ -300,7 +303,7 @@ define([], function() {
 
         // handle key up
         pressKeyUp: function() {
-             this.sandbox.logger.log('key up');
+            this.sandbox.logger.log('key up');
 
             // get actual and next element
             var $actual = this.$dropDownList.children('.hover');
@@ -316,7 +319,7 @@ define([], function() {
 
         // handle key enter
         pressKeyEnter: function() {
-             this.sandbox.logger.log('key enter');
+            this.sandbox.logger.log('key enter');
 
             // if one element selected
             var $actual = this.$dropDownList.children('.hover');
@@ -344,7 +347,7 @@ define([], function() {
 
         // select an item
         selectItem: function(item) {
-             this.sandbox.logger.log('select item: ' + item.id);
+            this.sandbox.logger.log('select item: ' + item.id);
             // set id to data-id
             this.$valueField.data('id', item.id);
             // set value to value
