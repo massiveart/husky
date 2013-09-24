@@ -34,6 +34,7 @@ define(function() {
 
         bindCustomEvents: function() {
             sandbox.on('husky.matrix.set-all', this.setAllActive.bind(this));
+            sandbox.on('husky.matrix.unset-all', this.unsetAllActive.bind(this));
         },
 
         toggleIcon: function(event) {
@@ -73,6 +74,21 @@ define(function() {
                     section: sandbox.dom.data(sandbox.dom.find('td.section', $tr), 'section'),
                     value: this.options.values.horizontal,
                     activated: true
+                });
+            }.bind(this));
+        },
+
+        unsetAllActive: function() {
+            var $targets = sandbox.dom.find('span[class^="icon-"]', this.$element),
+                $trs = sandbox.dom.find('tbody > tr', this.$element);
+            sandbox.dom.removeClass($targets, activeClass);
+
+            // emit events for communication with the outsite
+            sandbox.dom.each($trs, function(key, $tr) {
+                sandbox.emit('husky.matrix.changed', {
+                    section: sandbox.dom.data(sandbox.dom.find('td.section', $tr), 'section'),
+                    value: this.options.values.horizontal,
+                    activated: false
                 });
             }.bind(this));
         },

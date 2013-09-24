@@ -27,6 +27,7 @@
 <div id="container">
 
     <button id="set-all">Set All</button>
+    <button id="unset-all">Unset All</button>
 </div>
 
 
@@ -75,6 +76,10 @@
 
             $('#set-all').on('click', function() {
                 app.sandbox.emit('husky.matrix.set-all');
+            });
+
+            $('#unset-all').on('click', function() {
+                app.sandbox.emit('husky.matrix.unset-all');
             });
         });
     });
