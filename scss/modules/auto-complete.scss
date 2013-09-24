@@ -1,5 +1,5 @@
 .husky-auto-complete-success,
-.husky-auto-complete-fail,
+.husky-auto-complete-error,
 .husky-auto-complete-loading {
 	label::after {
 		content: '';
@@ -14,13 +14,14 @@
 }
 
 .husky-auto-complete-success {
+    @extend %abstract-success;
 	label::after {
 		content: "\e199";
 	}
 }
 
-.husky-auto-complete-fail {
-	@extend %abstract-fail;
+.husky-auto-complete-error {
+	@extend %abstract-error;
 }
 
 .husky-auto-complete-loading {
