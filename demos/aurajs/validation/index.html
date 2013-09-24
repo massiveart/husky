@@ -43,7 +43,23 @@
             require(['lib/husky'], function(Husky) {
                 'use strict';
 
-                var app = Husky({ debug: { enable: true }}),
+                var language = 'de',
+                        messages = {
+                            firstName: 'Vorname',
+                            lastName: 'Nachname',
+                            phone: 'Telefon',
+                            wage: 'Gehalt'
+                        };
+
+                var app = Husky({
+                            debug: {
+                                enable: true
+                            },
+                            culture: {
+                                name: language,
+                                messages: messages
+                            }
+                        }),
                         _ = app.sandbox.util._;
 
                 app.start().then(function() {

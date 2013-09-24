@@ -12,6 +12,7 @@
             "text": "bower_components/requirejs-text/text",
             "jquery": "bower_components/jquery/jquery",
             "husky-validation": "bower_components/husky-validation/dist/validation",
+            "globalize_lib": "bower_components/globalize/lib/globalize",
             "husky": "lib/husky",
 
             "__component__$navigation@husky": "husky_components/navigation/main",
@@ -20,7 +21,8 @@
             "__component__$datagrid@husky": "husky_components/datagrid/main",
             "__component__$dialog@husky": "husky_components/dialog/main",
             "__component__$dropdown@husky": "husky_components/dropdown/main",
-            "__component__$matrix@husky": "husky_components/matrix/main"
+            "__component__$matrix@husky": "husky_components/matrix/main",
+            "__component__$select@husky": "husky_components/select/main"
         },
         "shim": {
             "backbone": {
@@ -42,6 +44,7 @@
             "aura/ext/components",
             "husky",
             "husky-validation",
+            "globalize_lib",
 
             "__component__$navigation@husky",
             "__component__$header@husky",
@@ -49,7 +52,8 @@
             "__component__$datagrid@husky",
             "__component__$dialog@husky",
             "__component__$dropdown@husky",
-            "__component__$matrix@husky"
+            "__component__$matrix@husky",
+            "__component__$select@husky"
         ],
         "out": "dist/<%= PKG_VERSION %>/husky.js"
     }
