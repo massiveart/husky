@@ -642,14 +642,12 @@ define(function() {
                 .empty();
                 //.addClass('is-loading');
         },
-
         removeLoader: function() {
             return this.$element.removeClass('is-loading');
         },
 
         // trigger selected items
         getSelectedItemsIds: function(event) {
-            console.log( window.event ? window.event.srcElement : e.target, "event get selected items");
             this.sandbox.emit('husky.datagrid.items.selected', this.selectedItemIds)
         },
 
