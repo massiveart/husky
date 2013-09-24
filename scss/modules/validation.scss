@@ -3,9 +3,9 @@
 // --------------------------------------------------
 
 .husky-validate-success {
-    background-color: green;
+    @extend %abstract-success;
 }
 
 .husky-validate-error {
-    background-color: red;
+    @extend %abstract-error;
 }

@@ -28,7 +28,7 @@
         <link rel="stylesheet" href="../../../dist/husky.min.css">
     </head>
     <body>
-        <div id="content" data-aura-component="testform@husky"></div>
+        <div id="content" data-aura-component="testform@test"></div>
 
         <script src="../js/sinon.js"></script>
         <script src="../js/jquery.js"></script>
@@ -39,9 +39,34 @@
             require.config({
                 baseUrl: '../../../'
             });
-
             require(['lib/husky'], function(Husky) {
                 'use strict';
+
+                var initFakeServer = function(app) {
+                    app.logger.log('FakeServer started...');
+                    var fakeServer = sinon.fakeServer.create();
+                    fakeServer.respondWith('GET', '/contacts?search=abc', [200, { 'Content-Type': 'application/json' },
+                        '{"total": 3, "items": [ { "id": "1", "name": "abcd" }, { "id": "2", "name": "abcde" }, { "id": "3", "name":"abcdef" }] }'
+                    ]);
+                    fakeServer.respondWith('GET', '/contacts?search=abcd', [200, { 'Content-Type': 'application/json' },
+                        '{"total": 3, "items": [ { "id": "1", "name": "abcd" }, { "id": "2", "name": "abcde" }, { "id": "3", "name":"abcdef" }] }'
+                    ]);
+                    fakeServer.respondWith('GET', '/contacts?search=abcde', [200, { 'Content-Type': 'application/json' },
+                        '{"total": 2, "items": [ { "id": "2", "name": "abcde" }, { "id": "3", "name":"abcdef" }] }'
+                    ]);
+                    fakeServer.respondWith('GET', '/contacts?search=abcdef', [200, { 'Content-Type': 'application/json' },
+                        '{"total": 1, "items": [ { "id": "3", "name":"abcdef" }] }'
+                    ]);
+                    fakeServer.respondWith('GET', '/contacts?search=abcdefg', [200, { 'Content-Type': 'application/json' },
+                        '{"total": 0, "items": [ ] }'
+                    ]);
+
+                    app.sandbox.on('husky.auto-complete.load-data', function() {
+                        setTimeout(function() {
+                            fakeServer.respond();
+                        }, 1000);
+                    });
+                };
 
                 var language = 'de',
                         messages = {
@@ -62,8 +87,14 @@
                         }),
                         _ = app.sandbox.util._;
 
+                app.components.addSource('test', './demos/aurajs/validation/components');
+
                 app.start().then(function() {
                     app.logger.log('Aura started...');
+
+                    setTimeout(function() {
+                        initFakeServer(app);
+                    }, 50);
                 });
 
             });
