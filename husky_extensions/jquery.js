@@ -91,6 +91,14 @@
                 }
             }
 
+            app.core.dom.one = function(selector, event, callback, filter){
+                if(!!filter) {
+                    $(selector).one(event, filter, callback);
+                } else {
+                    $(selector).one(event, callback);
+                }
+            }
+
             app.core.dom.toggleClass = function(selector, className) {
                 $(selector).toggleClass(className);
             }

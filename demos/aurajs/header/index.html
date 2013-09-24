@@ -34,6 +34,10 @@
 
                 app.start().then(function() {
                     app.logger.log('Aura started...');
+
+                    app.sandbox.emit('husky.header.button-type', 'savedDelete');
+
+
                 });
 
             });
