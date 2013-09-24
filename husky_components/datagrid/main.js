@@ -648,7 +648,8 @@ define(function() {
         },
 
         // trigger selected items
-        getSelectedItemsIds: function() {
+        getSelectedItemsIds: function(event) {
+            console.log( window.event ? window.event.srcElement : e.target, "event get selected items");
             this.sandbox.emit('husky.datagrid.items.selected', this.selectedItemIds)
         },
 

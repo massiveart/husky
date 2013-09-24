@@ -103,6 +103,10 @@
                 return $(selector).next(filter);
             }
 
+            app.core.dom.prev = function(selector,filter) {
+                return $(selector).prev(filter);
+            }
+
             app.core.util.ajax = $.ajax;
         }
     });
