@@ -66,14 +66,14 @@ define(function() {
         url: null,
 	};
 
+    var moduleName = 'Husky.Ui.DataGrid';
+
     return {
 
         view: true,
 
         initialize: function() {
             this.sandbox.logger.log('initialized datagrid');
-            //this.sandbox.logger.log('options', this.options)
-           	//this.sandbox.logger.log('el', this.$el);
 
             // extend default options and set variables
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
@@ -648,7 +648,8 @@ define(function() {
         },
 
         // trigger selected items
-        getSelectedItemsIds: function() {
+        getSelectedItemsIds: function(event) {
+            console.log( window.event ? window.event.srcElement : e.target, "event get selected items");
             this.sandbox.emit('husky.datagrid.items.selected', this.selectedItemIds)
         },
 

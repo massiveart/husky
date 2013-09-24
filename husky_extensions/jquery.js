@@ -95,12 +95,20 @@
                 $(selector).toggleClass(className);
             }
 
-            app.core.dom.parent = function(selector) {
-                return $(selector).parent();
+            app.core.dom.parent = function(selector, filter) {
+                return $(selector).parent(filter);
             }
 
             app.core.dom.next = function(selector, filter) {
                 return $(selector).next(filter);
+            }
+
+            app.core.dom.prev = function(selector,filter) {
+                return $(selector).prev(filter);
+            }
+
+            app.core.dom.text = function(selector,value) {
+                return $(selector).text(value);
             }
 
             app.core.util.ajax = $.ajax;
