@@ -14,7 +14,7 @@
  *
  * Provided Events:
  *  husky.header.move-buttons: move middle part to match given navigation width
- *  husky.header.button-type: change ButtonType [save, saveDelete, add, template]
+ *  husky.header.button-type: change ButtonType [save, saveDelete, saved, savedDelete, add, reset, template]
  *  husky.header.button-state: change state of buttons
  *
  * Used Events:
@@ -170,6 +170,11 @@ define([], function() {
                         sandbox.emit('husky.button.add.state', 'loading');
                     }
                 }
+            },
+            reset: {
+              template: function() { return [];},
+              reset:    function() { },
+              states:   { }
             }
         },
         defaults = {
