@@ -1,0 +1,209 @@
+<h1 id="header">Header</h1>
+
+<!-- TODO Description -->
+
+<h2>Example</h2>
+
+<a href="../demos/aurajs/header/index.html">Goto Example</a>
+
+<div class="doc-code">
+    {% highlight html %}
+    <div data-aura-component="header@husky" data-aura-button-type="saveDelete"></div>
+
+    <script src="../js/sinon.js"></script>
+    <script src="../js/jquery.js"></script>
+
+    <script data-main="app" src="../js/require.js"></script>
+
+    <script lang="javascript">
+        require(['lib/husky'], function(Husky) {
+            'use strict';
+
+            var app = Husky({ debug: { enable: true }}),
+                    _ = app.sandbox.util._;
+
+            app.start().then(function() {
+                app.logger.log('Aura started...');
+            });
+
+        });
+    </script>
+    {% endhighlight %}
+</div>
+
+<h2>Usage</h2>
+
+<h3>Via HTML</h3>
+
+{% highlight html %}
+<div data-aura-component="header@husky" data-aura-button-type="saveDelete"></div>
+{% endhighlight %}
+
+<h3>Via Javascript</h3>
+
+{% highlight javascript %}
+this.$el.html("<div id='header'></div>");
+this.sandbox.start([{ name: 'header@husky', options: { el: '#header' }}]);
+{% endhighlight %}
+
+<h2>Provided Events</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th width="5%">Direction</th>
+            <th width="20%">Event Name</th>
+            <th width="20%">Parameter</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>in</td>
+            <td>husky.header.move-buttons</td>
+            <td>int ... navigation width</td>
+            <td>move middle part to match given navigation width</td>
+        </tr>
+        <tr>
+            <td>in</td>
+            <td>husky.header.button-type</td>
+            <td>string|array ... typeName or type array</td>
+            <td>change buttonType [save, saveDelete, add, custom type]</td>
+        </tr>
+        <tr>
+            <td>in</td>
+            <td>husky.header.button-state</td>
+            <td>string ... name of state</td>
+            <td>change state of buttons</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>Used Events</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th width="20%">Event Name</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>navigation.item.content.show</td>
+            <td>used to move buttons when the content is changing</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>Options</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th width="20%">Option Name</th>
+            <th width="10%">Type</th>
+            <th width="10%">Default</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>marginMid</td>
+            <td>int</td>
+            <td>45</td>
+            <td>add 45px to navWidth</td>
+        </tr>
+        <tr>
+            <td>marginRight</td>
+            <td>int</td>
+            <td>20</td>
+            <td>add 20px to margin mid part</td>
+        </tr>
+        <tr>
+            <td>buttonType</td>
+            <td>string</td>
+            <td>null</td>
+            <td>type of button at start</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>Types and States</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>State</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>save</td>
+            <td></td>
+            <td>Show a SaveButton in the left part</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>standard</td>
+            <td>SaveButton is active</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>disable</td>
+            <td>SaveButton is disabled</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>loading-save-button</td>
+            <td>SaveButton is not visible, but a loading icon appears</td>
+        </tr>
+        <tr>
+            <td>saveDelete</td>
+            <td></td>
+            <td>Show a SaveButton in the left part and a DeleteButton in the right part</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>standard</td>
+            <td>SaveButton and DeleteButton is active</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>disable</td>
+            <td>SaveButton and DeleteButton is disabled</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>loading-save-button</td>
+            <td>SaveButton is not visible, but a loading icon appears and the DeleteButton is disabled</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>loading-delete-button</td>
+            <td>DeleteButton is not visible, but a loading icon appears and the SaveButton is disabled</td>
+        </tr>
+        <tr>
+            <td>add</td>
+            <td></td>
+            <td>Show a AddButton in the left part</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>standard</td>
+            <td>AddButton is active</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>disable</td>
+            <td>AddButton is disabled</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>loading-save-button</td>
+            <td>AddButton is not visible, but a loading icon appears</td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,11 @@
+//
+// Validation
+// --------------------------------------------------
+
+.husky-validate-success {
+    @extend %abstract-success;
+}
+
+.husky-validate-error {
+    @extend %abstract-error;
+}

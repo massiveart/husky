@@ -5,9 +5,33 @@ module.exports = function(grunt) {
     // load all grunt tasks
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
+    var huskyConfig = grunt.file.readJSON('.grunt/husky.json');
+    var clone = grunt.util._.clone;
+
+    // Lookup of the Aura Extensions and injects them in the requirejs build
+    var auraExtensions = grunt.file.glob
+        .sync('husky_extensions/**/*.js')
+        .map(function(extension) {
+            return extension.replace('.js', '');
+        });
+
+    var rJSConfig = (function() {
+        var _c = huskyConfig.requireJS;
+        _c.include = _c.include.concat(auraExtensions);
+        _c.optimize = grunt.option('dev') ? "none" : "uglify";
+        return _c;
+    })();
+
+
     // project configuration
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+
+        requirejs: {
+            husky: {
+                options: clone(rJSConfig, true)
+            }
+        },
 
         meta: {
             banner: '/* \n' +
@@ -26,7 +50,7 @@ module.exports = function(grunt) {
             },
             compass: {
                 files: ['scss/{,*/}*.{scss,sass}'],
-                tasks: ['compass:dev']
+                tasks: ['compass:dev', 'copy:dist']
             },
             jshint: {
                 files: ['js/{,*/}*.{js,js}'],

@@ -1,0 +1,40 @@
+%abstract-error {
+    label,
+    .control-label {
+        color: #b94a48;
+    }
+
+    .husky-validate:not(label) {
+        border-color: #953b39;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
+    }
+}
+
+%abstract-success {
+    label::after,
+    .control-label::after {
+        content: '';
+        font-family: 'Glyphicons';
+        z-index: 100;
+        float: right;
+        display: inline-block;
+        position: relative;
+        top: 35px;
+        right: 7px;
+
+        content: "\e199";
+    }
+
+    label,
+    .control-label {
+        color: #468847;
+    }
+
+    .husky-validate:not(label) {
+        order-color: #356635;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #7aba7b;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #7aba7b;
+    }
+}
+
