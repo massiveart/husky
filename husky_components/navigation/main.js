@@ -238,6 +238,8 @@ define(['jquery'], function($) {
             }
 
             this.setNavigationSize();
+
+            sandbox.emit('navigation.size.changed', this.getNavigationData());
         },
 
         collapseFirstColumn: function() {
@@ -358,7 +360,14 @@ define(['jquery'], function($) {
                     this.showContent = true;
 
                     this.updateColumns();
-                    this.collapseFirstColumn();
+                    if ($elementColumn.data('columnId') !== 0) {
+                        this.collapseFirstColumn();
+                    } else {
+                        $('#column-0')
+                            .removeClass('hide')
+                            .removeClass('collapsed')
+                            .parent().removeClass('show-content');
+                    }
 
                     sandbox.emit('navigation.item.content.show', {
                         item: itemModel,
@@ -426,7 +435,11 @@ define(['jquery'], function($) {
         showColumn: function(params) {
             sandbox.logger.log('showColumn');
 
-            var $showedColumn;
+            var $showedColumn,
+                $column0 = $('#column-0'),
+                $column1 = $('#column-1'),
+                countCol0 = $column0.length,
+                countCol1 = $column1.length;
 
             params = params || {};
 
@@ -436,21 +449,26 @@ define(['jquery'], function($) {
 
                 this.setConfigs(params.data);
 
-                $showedColumn = $('#column-' + this.addedColumn);
-
-                $('#column-0').addClass('hide');
-                $('#column-1').addClass('collapsed');
-
-                if (!!$showedColumn.size()) {
-                    this.currentColumnIdx--;
-                    $showedColumn.remove();
+                if (countCol0 === 1 && countCol1 === 0) {
+                    // FIXME check if only special case
+                } else {
+                    $('#column-0').addClass('hide');
+                    $('#column-1').addClass('collapsed');
                 }
+
+                // FIXME check if necessary
+                // if (!!$showedColumn.size()) {
+                //     this.currentColumnIdx--;
+                //     $showedColumn.remove();
+                // }
 
                 this.showContent = true;
 
                 this.addColumn();
 
                 this.addedColumn = this.currentColumnIdx;
+                $showedColumn = $('#column-' + this.addedColumn);
+                $showedColumn.find('ul.navigation-items li:first').addClass('selected');
 
                 sandbox.emit('navigation.column.content.show', {
                     data: this.getNavigationData()
