@@ -79,8 +79,12 @@
                 $(window).on('load', callback);
             };
 
-            app.core.dom.val = function(selector) {
-                return $(selector).val();
+            app.core.dom.val = function(selector, value) {
+                if (!!value) {
+                    $(selector).val(value);
+                } else {
+                    return $(selector).val();
+                }
             };
 
             app.core.dom.on = function(selector, event, callback, filter){

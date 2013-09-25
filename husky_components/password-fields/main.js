@@ -8,21 +8,20 @@
  *
  * Name: button
  * Options:
- *  buttonType: type of button [icon, custom]
- *  instanceName: name of instance used in events
- *  text: button text
- *  iconType: button icon
- *  background: background color for spinner
+ *  labels.inputPassword1: text for the label for the first password field
+ *  labels.inputPassword2: text for the label for the second password field
+ *  labels.generateLabel: text for the generate label
+ *  instanceName: name of the instance of this component
  *
  * Provided Events:
- *  husky.button.<<instanceName>>.click: button where clicked
- *  husky.button.<<instanceName>>.state: change buttonType [icon, custom type]
+ *  husky.passwords.fields.<<instanceName>>.generated.passwords: password generated
  *
  */
 
 define([], function() {
 
     var defaults = {
+        instanceName: 'undefined',
         labels: {
             inputPassword1: 'Password',
             inputPassword2: 'Repeat Password',
@@ -32,13 +31,18 @@ define([], function() {
 
     return {
 
-       initialize: function() {
+        initialize: function() {
             this.sandbox.logger.log('initialize', this);
             this.sandbox.logger.log(arguments);
 
             // extend default options
             this.options = this.sandbox.util.extend({}, defaults, this.options);
-
+            this.options.ids =
+            {
+                inputPassword1: 'husky-password-fields-' + this.options.instanceName + '-password1',
+                inputPassword2: 'husky-password-fields-' + this.options.instanceName + '-password2',
+                generateLabel: 'husky-password-fields-' + this.options.instanceName + '-generate'
+            };
             this.render();
         },
 
@@ -53,19 +57,22 @@ define([], function() {
 
         bindDomEvents: function() {
 
-            this.$element.on('click', '#husky-password-fields-generate', function() {
+            this.$element.on('click', '#'+this.options.ids.generateLabel, function() {
                 this.generatePasswords();
-                this.sandbox.emit('husky.passwords-fiels.generated-passwords');
+                this.sandbox.emit('husky.passwords.fields.' + this.options.instanceName + '.generated.passwords');
             }.bind(this));
         },
 
-        generatePasswords: function(){
-            var password = "test";
+        generatePasswords: function() {
+            var generatedPassword = "test";
 
-            this.sandbox.dom.val('#husky-password-fields-password1')
+            // TODO generate password
+
+            this.sandbox.dom.val('#'+this.options.ids.inputPassword1, generatedPassword);
+            this.sandbox.dom.val('#'+this.options.ids.inputPassword2, generatedPassword);
         },
 
-        template: function(){
+        template: function() {
 
             return [
                 '<div class="husky-password-fields grid">',
@@ -73,27 +80,27 @@ define([], function() {
                 '        <div class="grid-col-6">',
                 '            <div class="grid-row m-height-25">',
                 '                <div class="grid-col-6">',
-                '                    <label>',this.options.labels.inputPassword1,'</label>',
+                '                    <label>', this.options.labels.inputPassword1, '</label>',
                 '                </div>',
-                '                <div class="grid-col-6 align-right" id="husky-password-fields-generate">',
-                '                    <span class="icon-keys m-right-10"></span><span class="pointer">',this.options.labels.generateLabel,'</span>',
+                '                <div class="grid-col-6 align-right" id="', this.options.ids.generateLabel, '">',
+                '                    <span class="icon-keys m-right-10"></span><span class="pointer">', this.options.labels.generateLabel, '</span>',
                 '                </div>',
                 '            </div>',
                 '            <div class="grid-row">',
-                '                <input class="form-element" type="text" id="husky-password-fields-password1"/>',
+                '                <input class="form-element" type="text" id="', this.options.ids.inputPassword1, '"/>',
                 '            </div>',
                 '        </div>',
                 '        <div class="grid-col-6">',
                 '            <div class="grid-row m-height-25">',
-                '                <label>',this.options.labels.inputPassword2,'</label>',
+                '                <label>', this.options.labels.inputPassword2, '</label>',
                 '            </div>',
                 '            <div class="grid-row">',
-                '                <input class="form-element" type="text" id="husky-password-fields-password2"/>',
+                '                <input class="form-element" type="text" id="', this.options.ids.inputPassword2, '"/>',
                 '            </div>',
                 '        </div>',
                 '    </div>',
                 '</div>'
-                 ].join('');
+            ].join('');
         }
     };
 });
