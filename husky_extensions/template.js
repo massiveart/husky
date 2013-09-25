@@ -81,8 +81,8 @@ define(['underscore', 'jquery'], function(_, $) {
 
         app.core.Components.Base.prototype.renderTemplate = function(tplName, context) {
 
-            if (typeof this.templates[tplName] === 'function') {
-                var tpl = this.templates[tplName],
+            if (typeof this.loadedTemplates[tplName] === 'function') {
+                var tpl = this.loadedTemplates[tplName],
                     regExp = new RegExp('(###\\w*###)', 'gi'),
                     template = tpl(context),
                     result = template.match(regExp);
@@ -102,15 +102,15 @@ define(['underscore', 'jquery'], function(_, $) {
 
         app.components.before('initialize', function() {
 
-            this.templates = {};
+            this.loadedTemplates = {};
 
-            if (this.templates === null || !this.templates.length) {
+            if (!this.templates || !this.templates.length) {
                 return;
             }
 
             var loading = manager.load(this.templates, this.options.name);
             loading.done(_.bind(function(templates) {
-                this.templates = templates;
+                this.loadedTemplates = templates;
             }, this));
 
             return loading.promise();
