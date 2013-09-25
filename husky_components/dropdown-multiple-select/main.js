@@ -20,12 +20,17 @@
  * husky.dropdown.<<instanceName>>.hide       - hide dropdown menu
  */
 
-define(['jquery'], function($) {
+define([], function() {
 
     var sandbox,
+
         labelId,
         listId,
+        dropdownContainerId,
+
+        $dropdownContainer,
         $list,
+
         defaults = {
             url: null,     // url for lazy loading
             data: [],    // data array
@@ -42,7 +47,8 @@ define(['jquery'], function($) {
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
             labelId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-label';
-            listId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-menu';
+            listId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-list';
+            dropdownContainerId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-menu';
 
             this.render();
         },
@@ -52,12 +58,13 @@ define(['jquery'], function($) {
             var $originalElement = this.sandbox.dom.$(this.options.el);
             this.sandbox.dom.append($originalElement, this.template.basicStructure(this.options.defaultLabel));
             $list = this.sandbox.dom.$('#'+listId);
-
+            $dropdownContainer = this.sandbox.dom.$('#'+dropdownContainerId);
             this.prepareData();
 
+
             // bind dom elements
-//            this.bindDOMEvents();
-//
+            this.bindDOMEvents();
+//// TODO
 //            this.bindCustomEvents();
         },
 
@@ -75,8 +82,8 @@ define(['jquery'], function($) {
         // generate dropDown with given items
         generateDropDown: function(items) {
 
-            this.clearDropDown();
-            
+            this.sandbox.dom.remove($list, 'li');
+
             if (items.length > 0) {
                 this.sandbox.util.each(items, function(index,value){
                     this.sandbox.dom.append($list, this.template.menuElement(index,value));
@@ -86,31 +93,22 @@ define(['jquery'], function($) {
             }
         },
 
-        // clear childs of list
-        clearDropDown: function() {
-            this.sandbox.dom.remove($list, 'li');
-        },
-
         // bind dom elements
         bindDOMEvents: function() {
 
             // turn off all events
-            this.$element.off();
+            //this.$element.off();
 
             // init drop-down
 
-            if (this.options.trigger != '') {
-                $(this.options.el).on('click', this.options.trigger, this.triggerClick.bind(this));
-            } else {
-                $(this.options.el).on('click', this.triggerClick.bind(this));
-            }
+//            this.sandbox.on('click', '#'+labelId, this.toggleDropDown.bind(this));
 
             // mouse control
-            this.$dropDownList.on('click', 'li', function(event) {
-                var $element = $(event.currentTarget);
-                var id = $element.data('id');
-                this.clickItem(id);
-            }.bind(this));
+//            this.$dropDownList.on('click', 'li', function(event) {
+//                var $element = $(event.currentTarget);
+//                var id = $element.data('id');
+//                this.clickItem(id);
+//            }.bind(this));
 
 
         },
@@ -137,12 +135,6 @@ define(['jquery'], function($) {
             }.bind(this));
             this.hideDropDown();
         },
-
-        // trigger click event handler toggles the dropDown
-        triggerClick: function() {
-            this.toggleDropDown();
-        },
-
 
         // load data with ajax
         loadData: function() {
@@ -181,8 +173,8 @@ define(['jquery'], function($) {
 
         // toggle dropDown visible
         toggleDropDown: function() {
-            this.sandbox.logger.log(this.name, 'toggle dropdown');
-            this.$dropDown.toggle();
+            this.sandbox.logger.log('toggle dropdown');
+            this.sandbox.dom.toggleClass($dropdownContainer, 'hidden');
         },
 
         // make dropDown visible
@@ -215,7 +207,7 @@ define(['jquery'], function($) {
                     '           <span class="dropdown-toggle inline-block"></span>',
                     '       </div>',
                     '   </div>',
-                    '   <div class="grid-row menu dropdown-align-right hidden">',
+                    '   <div class="grid-row dropdown-list dropdown-align-right hidden" id="',dropdownContainerId,'">',
                     '       <ul id="',listId,'"></ul>',
                     '   </div>',
                     '</div>'
