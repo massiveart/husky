@@ -2,7 +2,7 @@
 
 @import
 	"abstract/abstract_loader",
-	"abstract/abstract_fail";
+	"abstract/abstract_validation";
 
 @import
     "variables.scss",
@@ -17,7 +17,7 @@
     "modules/icons.scss",
     "modules/core.scss",
     "modules/grid.scss",
-    "modules/header-bar.scss",
+    "modules/header.scss",
     "modules/navigation.scss",
 	"modules/form.scss",
     "modules/dropdown.scss",
@@ -27,4 +27,5 @@
     "modules/avatar.scss",
     "modules/auto-complete.scss",
     "modules/dialog.scss",
+    "modules/validation.scss",
     "modules/loading.scss";
