@@ -53,7 +53,6 @@ define([], function() {
                     },
                     disable: function() {
                         this.sandbox.dom.addClass(this.$el, 'disable');
-                        this.sandbox.dom.removeClass(this.$el, 'pointer');
 
                         type.unBindDomEvents.call(this);
                     },
@@ -72,6 +71,7 @@ define([], function() {
         },
         defaults = {
             buttonType: 'icon',         // type of button [icon, custom]
+            buttonState: null,            // type of button [icon, custom]
             instanceName: 'undefined',  // name of instance used in events
             text: 'undefined',          // button text
             iconType: 'caution',        // button icon
@@ -112,6 +112,10 @@ define([], function() {
 
             type.init.call(this);
 
+            if (!!this.options.buttonState) {
+                this.changeState(this.options.buttonState);
+            }
+
             this.bindCustomEvents();
         },
 
@@ -121,6 +125,7 @@ define([], function() {
 
         bindCustomEvents: function() {
             this.sandbox.on(this.getEvent('state'), this.changeState.bind(this));
+            this.sandbox.on(this.getEvent('set-content'), this.setContent.bind(this));
         },
 
         changeState: function(state) {
@@ -130,6 +135,11 @@ define([], function() {
             } else {
                 throw 'not implemented';
             }
+        },
+
+        setContent:function(text, icon) {
+            console.log("bla");
+            console.log("this.el", this.$el);
         }
-    }
+    };
 });

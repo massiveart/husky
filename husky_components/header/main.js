@@ -32,7 +32,7 @@ define([], function() {
                     return [
                         '<div class="grid-row">',
                         '   <div class="grid-col-6 left">',
-                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="caution" data-aura-text="Save"/>',
+                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-button-state="disable" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-text="Saved"/>',
                         '   </div>',
                         '</div>'
                     ].join('');
@@ -43,6 +43,13 @@ define([], function() {
 
                 states: {
                     standard: function() {
+                        // set text to saved and OK
+                        sandbox.emit('husky.button.save.set-content', 'saved', 'circle-ok');
+                        sandbox.emit('husky.button.save.state', 'disable');
+                    },
+                    dirty: function(){
+                        // set text to save and icon to !
+                        sandbox.emit('husky.button.save.set-content', 'save', 'caution');
                         sandbox.emit('husky.button.save.state', 'standard');
                     },
                     disable: function() {
@@ -50,6 +57,9 @@ define([], function() {
                     },
                     'loading-save-button': function() {
                         sandbox.emit('husky.button.save.state', 'loading');
+                    },
+                    hide: function(){
+                        // hide save button
                     }
                 }
             },
@@ -58,7 +68,7 @@ define([], function() {
                     return [
                         '<div class="grid-row">',
                         '   <div class="grid-col-6 left">',
-                        '       <div id="saved-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-text="Saved"/>',
+                        '       <div id="saved-button" data-aura-component="button@husky" data-aura-state="disable" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-text="Saved"/>',
                         '   </div>',
                         '</div>'
                     ].join('');
@@ -78,7 +88,7 @@ define([], function() {
                     return [
                         '<div class="grid-row">',
                         '   <div class="grid-col-6 left">',
-                        '       <div id="saved-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-text="Saved"/>',
+                        '       <div id="saved-button" data-aura-component="button@husky" data-aura-state="disable" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-text="Saved"/>',
                         '   </div>',
                         '   <div class="grid-col-6 right">',
                         '       <div id="delete-button" class="pull-right" data-aura-component="button@husky" data-aura-instance-name="delete" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="circle-remove" data-aura-text="Delete"/>',
@@ -92,7 +102,7 @@ define([], function() {
 
                 states: {
                     standard: function() {
-                        sandbox.emit('husky.button.save.state', 'disabled');
+                        sandbox.emit('husky.button.save.state', 'disable');
                         sandbox.emit('husky.button.delete.state', 'standard');
                     },
                     disable: function() {
