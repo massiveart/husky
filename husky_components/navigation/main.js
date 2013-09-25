@@ -9,11 +9,8 @@ define(['jquery'], function($) {
         initialize: function() {
 
             sandbox = this.sandbox;
-
             sandbox.logger.log('initialize', this);
-
             sandbox.logger.log(arguments);
-
 
             this.$navigation = $('<div/>', {
                 class: 'navigation'

@@ -47,17 +47,21 @@ define([], function() {
 
                 states: {
                     standard: function() {
+                        this.sandbox.dom.show(this.$el);
                         type.reset.call(this);
 
                         type.bindDomEvents.call(this);
+                        this.sandbox.dom.addClass(this.$el, 'pointer');
                     },
                     disable: function() {
+                        this.sandbox.dom.show(this.$el);
                         this.sandbox.dom.addClass(this.$el, 'disable');
                         this.sandbox.dom.removeClass(this.$el, 'pointer');
 
                         type.unBindDomEvents.call(this);
                     },
                     loading: function() {
+                        this.sandbox.dom.show(this.$el);
                         if (!!this.options.background) {
                             this.sandbox.dom.addClass(this.$el, 'loading-' + this.options.background);
                         } else {
@@ -66,16 +70,21 @@ define([], function() {
                         this.sandbox.dom.removeClass(this.$el, 'pointer');
 
                         type.unBindDomEvents.call(this);
+                    },
+                    hide: function() {
+                        this.sandbox.dom.hide(this.$el);
+
                     }
+
                 }
             }
         },
         defaults = {
             buttonType: 'icon',         // type of button [icon, custom]
+            buttonState: null,            // type of button [icon, custom]
             instanceName: 'undefined',  // name of instance used in events
             text: 'undefined',          // button text
             iconType: 'caution',        // button icon
-            state: null,            // has dom events
             background: null            // background color for spinner
         };
 
@@ -94,6 +103,7 @@ define([], function() {
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
             this.render();
+            this.bindCustomEvents();
         },
 
         render: function() {
@@ -113,12 +123,11 @@ define([], function() {
 
             type.init.call(this);
 
-            this.bindCustomEvents();
-
-            if(!!this.options.state) {
-                this.changeState(this.options.state);
+            if (!!this.options.buttonState) {
+                this.changeState(this.options.buttonState);
             }
         },
+
 
         clickEvent: function() {
             this.sandbox.emit(this.getEvent('click'));
@@ -126,6 +135,7 @@ define([], function() {
 
         bindCustomEvents: function() {
             this.sandbox.on(this.getEvent('state'), this.changeState.bind(this));
+            this.sandbox.on(this.getEvent('set-content'), this.setContent.bind(this));
         },
 
         changeState: function(state) {
@@ -135,6 +145,12 @@ define([], function() {
             } else {
                 throw 'not implemented';
             }
+        },
+
+        setContent:function(text, icon) {
+            this.options.text = text;
+            this.options.iconType = icon;
+            type.init.call(this);
         }
-    }
+    };
 });

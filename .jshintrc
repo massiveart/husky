@@ -1,7 +1,5 @@
 {
     "globals": {
-        "$": false,
-        "_": false,
         "require": false,
         "define": false
     },
