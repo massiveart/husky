@@ -74,7 +74,21 @@ module.exports = function(grunt) {
         },
         clean: {
             dist: ['dist', 'docs/packages/husky/'],
-            temp: ['dist/temp']
+            temp: ['dist/temp'],
+            bower_after: {
+                files: {
+                    src: [
+                        'bower_components'
+                    ]
+                }
+            },
+            bower_before: {
+                files: {
+                    src: [
+                        'vendor'
+                    ]
+                }
+            }
         },
         compass: {
             dev: {
@@ -158,6 +172,97 @@ module.exports = function(grunt) {
                         ]
                     }
                 ]
+            },
+            bower: {
+                files: [
+                    // aura
+                    {
+                        expand: true,
+                        cwd: 'bower_components/aura/lib/',
+                        src: ['**'],
+                        dest: 'vendor/aura/'
+                    },
+                    // backbone
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            'bower_components/backbone/backbone.js',
+                            'bower_components/backbone/backbone-min.js',
+                            'bower_components/backbone/backbone-min.map'
+                        ],
+                        dest: 'vendor/backbone'
+                    },
+                    // eventemitter2
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['bower_components/eventemitter2/lib/eventemitter2.js'],
+                        dest: 'vendor/eventemitter2'
+                    },
+                    // globalize
+                    {
+                        expand: true,
+                        cwd: 'bower_components/globalize/lib/',
+                        src: ['**'],
+                        dest: 'vendor/globalize/'
+                    },
+                    // husky-validation
+                    {
+                        expand: true,
+                        cwd: 'bower_components/husky-validation/dist/',
+                        src: ['**'],
+                        dest: 'vendor/husky-validation/'
+                    },
+                    // jquery
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            'bower_components/jquery/jquery.js',
+                            'bower_components/jquery/jquery.min.map',
+                            'bower_components/jquery/jquery.min.js'
+                        ],
+                        dest: 'vendor/jquery'
+                    },
+                    // requirejs
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['bower_components/requirejs/require.js'],
+                        dest: 'vendor/requirejs'
+                    },
+                    // requirejs text
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['bower_components/requirejs-text/text.js'],
+                        dest: 'vendor/requirejs-text'
+                    },
+                    // underscore
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            'bower_components/underscore/underscore.js',
+                            'bower_components/underscore/underscore-min.js',
+                            'bower_components/underscore/underscore-min.map'
+                        ],
+                        dest: 'vendor/underscore'
+                    }
+                ]
+            }
+        },
+        bower: {
+            install: {
+                options: {
+                    copy: false,
+                    layout: 'byComponent',
+                    install: true,
+                    verbose: false,
+                    cleanTargetDir: false,
+                    cleanBowerDir: false
+                }
             }
         }
     });
@@ -180,6 +285,13 @@ module.exports = function(grunt) {
         'cssmin',
         'copy:dist',
         'copy:doc'
+    ]);
+
+    grunt.registerTask('update', [
+        'clean:bower_before',
+        'bower:install',
+        'copy:bower',
+        'clean:bower_after'
     ]);
 
     grunt.registerTask('default', [
