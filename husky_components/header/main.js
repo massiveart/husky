@@ -24,6 +24,8 @@
 
 define([], function() {
 
+    'use strict';
+
     var sandbox,
         type,
         types = {
@@ -215,9 +217,9 @@ define([], function() {
 
         // move buttons with navigation width
         moveButtons: function(navWidth) {
-            var headerLeft = parseInt(this.sandbox.dom.css(this.$header, 'padding-left')),
+            var headerLeft = parseInt(this.sandbox.dom.css(this.$header, 'padding-left'), 10),
                 marginLeft = navWidth + this.options.marginMid - headerLeft,
-                width = parseInt(this.sandbox.dom.css(this.$mid, 'width'));
+                width = parseInt(this.sandbox.dom.css(this.$mid, 'width'), 10);
 
             this.$mid.css('margin-left', marginLeft);
             this.$right.css('margin-left', width + marginLeft + this.options.marginRight);

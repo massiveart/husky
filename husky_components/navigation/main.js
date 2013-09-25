@@ -1,5 +1,7 @@
 define(['jquery'], function($) {
 
+    'use strict';
+
     var sandbox;
 
     return {
@@ -214,11 +216,12 @@ define(['jquery'], function($) {
         },
 
         addColumn: function() {
-            var $subColumns, $subColumnsContainer;
+            var $subColumns,
+                $subColumnsContainer = $('.navigation-sub-columns-container');
 
             this.currentColumnIdx++;
 
-            if (this.currentColumnIdx === 2 && !$('.navigation-sub-columns-container').size()) {
+            if (this.currentColumnIdx === 2 && !$subColumnsContainer.size()) {
                 $subColumns = $('<li/>', {
                     'class': 'navigation-sub-columns-container'
                 });
@@ -227,7 +230,7 @@ define(['jquery'], function($) {
                 this.$navigationColumns.append($subColumns);
             }
 
-            if (!!$('.navigation-sub-columns-container').size()) {
+            if (!!$subColumnsContainer.size()) {
                 this.$navigationSubColumns.append(this.prepareNavigationColumn());
                 this.scrollToLastSubColumn();
             } else {
@@ -351,7 +354,7 @@ define(['jquery'], function($) {
                         });
                     }
 
-                } else if (itemModel.get('type') == 'content') {
+                } else if (itemModel.get('type') === 'content') {
                     this.showContent = true;
 
                     this.updateColumns();
@@ -398,7 +401,7 @@ define(['jquery'], function($) {
             return {
                 // TODO
                 navWidth: this.getNavigationWidth()
-            }
+            };
         },
 
         showFirstNavigationColumn: function(event) {
@@ -593,5 +596,5 @@ define(['jquery'], function($) {
                 ].join('');
             }
         }
-    }
+    };
 });

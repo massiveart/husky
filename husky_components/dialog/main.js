@@ -9,12 +9,14 @@
 
 define(['jquery'], function($) {
 
+    'use strict';
+
     var sandbox,
         defaults = {
             data: {
                 footer: {
-                    buttonCancelText: "Cancel",
-                    buttonSubmitText: "Ok"
+                    buttonCancelText: 'Cancel',
+                    buttonSubmitText: 'Ok'
                 }
             },
             backdrop: true,
@@ -46,7 +48,7 @@ define(['jquery'], function($) {
         initialize: function() {
             sandbox = this.sandbox;
 
-            if (!!this.options.templateType && this.options.templateType.toLowerCase() == 'okdialog') {
+            if (!!this.options.templateType && this.options.templateType.toLowerCase() === 'okdialog') {
                 this.options = this.sandbox.util.extend(true, {}, defaultsOk, this.options);
             } else {
                 this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
@@ -54,8 +56,6 @@ define(['jquery'], function($) {
 
             this.$element = $('<div class="husky-dialog hidden fade"/>');
             $(this.options.el).append(this.$element);
-
-            console.log($(this.options.el));
 
             this.init();
         },
@@ -81,8 +81,8 @@ define(['jquery'], function($) {
             this.$element.append(this.$content);
             this.$element.append(this.$footer);
 
-            var width = this.options.width;
-            var marginLeft = parseInt(this.options.width) / 2;
+            var width = this.options.width,
+                marginLeft = parseInt(this.options.width, 10) / 2;
 
             this.$element.css({
                 'width': width,
@@ -115,14 +115,14 @@ define(['jquery'], function($) {
             this.data = this.options.data;
             this.template = this.options.template;
 
-            this.$header.append(_.template(this.template.header, this.data.header));
-            this.$content.append(_.template(this.template.content, this.data.content));
-            this.$footer.append(_.template(this.template.footer, this.data.footer));
+            this.$header.append(this.sandbox.template.parse(this.template.header, this.data.header));
+            this.$content.append(this.sandbox.template.parse(this.template.content, this.data.content));
+            this.$footer.append(this.sandbox.template.parse(this.template.footer, this.data.footer));
 
             this.$element.show();
 
             if (this.options.backdrop) {
-                $backdrop = $('<div id="husky-dialog-backdrop" class="husky-dialog-backdrop fade in"></div>');
+                var $backdrop = $('<div id="husky-dialog-backdrop" class="husky-dialog-backdrop fade in"></div>');
                 $('body').append($backdrop);
 
                 $backdrop.click(function() {
