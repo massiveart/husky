@@ -8,6 +8,7 @@
  */
 
 define(function() {
+
     'use strict';
 
     var sandbox,
@@ -114,7 +115,7 @@ define(function() {
             var $thead = sandbox.dom.createElement('<thead/>'),
                 $tr = sandbox.dom.createElement('<tr/>'),
                 $thSection = sandbox.dom.createElement('<th class="section"/>'),
-                $thGeneral;
+                $thGeneral, $th;
 
             if (!!this.options.captions.general) {
                 $thGeneral = sandbox.dom.createElement('<th class="general"/>');
@@ -128,7 +129,7 @@ define(function() {
 
             if (typeof(this.options.captions.horizontal) === 'string') {
                 // insert a header for all values, if the horizontal caption is a string
-                var $th = sandbox.dom.createElement('<th/>', {colspan: this.options.values.horizontal.length});
+                $th = sandbox.dom.createElement('<th/>', {colspan: this.options.values.horizontal.length});
                 sandbox.dom.html($th, this.options.captions.horizontal);
                 sandbox.dom.append($tr, $th);
             } else {
@@ -149,12 +150,14 @@ define(function() {
         },
 
         prepareTableBody: function() {
-            var $tbody = sandbox.dom.createElement('<tbody/>');
+            var $tbody = sandbox.dom.createElement('<tbody/>'),
+                i, $tr, $tdHead, $tdAll,
+                j, $tdValue, $span;
 
-            for (var i = 0; i < this.options.captions.vertical.length; i++) {
-                var $tr = sandbox.dom.createElement('<tr/>'),
-                    $tdHead = sandbox.dom.createElement('<td class="section"/>'),
-                    $tdAll = sandbox.dom.createElement('<td class="all"/>');
+            for (i = 0; i < this.options.captions.vertical.length; i++) {
+                $tr = sandbox.dom.createElement('<tr/>');
+                $tdHead = sandbox.dom.createElement('<td class="section"/>');
+                $tdAll = sandbox.dom.createElement('<td class="all"/>');
 
                 // insert empty line, if there is a general caption
                 if (!!this.options.captions.general) {
@@ -167,11 +170,11 @@ define(function() {
                 sandbox.dom.append($tr, $tdHead);
 
                 // insert values of matrix
-                for (var j = 0; j < this.options.values.horizontal.length; j++) {
-                    var $tdValue = sandbox.dom.createElement('<td class="value"/>'),
-                        $span = sandbox.dom.createElement(
-                            '<span class="icon-' + this.options.values.horizontal[j] + '"/>'
-                        );
+                for (j = 0; j < this.options.values.horizontal.length; j++) {
+                    $tdValue = sandbox.dom.createElement('<td class="value"/>');
+                    $span = sandbox.dom.createElement(
+                        '<span class="icon-' + this.options.values.horizontal[j] + '"/>'
+                    );
                     sandbox.dom.data($span, 'value', this.options.values.horizontal[j]);
                     sandbox.dom.data($span, 'section', this.options.values.vertical[i]);
 
