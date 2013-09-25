@@ -119,6 +119,15 @@
                 return $(selector).text(value);
             };
 
+
+            app.core.dom.hide = function(selector) {
+                return $(selector).hide();
+            };
+
+            app.core.dom.show = function(selector) {
+                return $(selector).show();
+            };
+
             app.core.util.ajax = $.ajax;
         }
     });

@@ -60,6 +60,7 @@ define([], function() {
                     },
                     hide: function() {
                         // hide save button
+                        sandbox.emit('husky.button.save.state', 'hide');
                     }
                 }
             },
@@ -103,6 +104,10 @@ define([], function() {
                     'loading-delete-button': function() {
                         sandbox.emit('husky.button.save.state', 'disable');
                         sandbox.emit('husky.button.delete.state', 'loading');
+                    },
+                    hide: function() {
+                        sandbox.emit('husky.button.save.state', 'hide');
+                        sandbox.emit('husky.button.delete.state', 'hide');
                     }
                 }
             },
@@ -218,9 +223,9 @@ define([], function() {
 
         // move buttons with navigation width
         moveButtons: function(navWidth) {
-            var headerLeft = parseInt(this.sandbox.dom.css(this.$header, 'padding-left')),
+            var headerLeft = parseInt(this.sandbox.dom.css(this.$header, 'padding-left'), 10),
                 marginLeft = navWidth + this.options.marginMid - headerLeft,
-                width = parseInt(this.sandbox.dom.css(this.$mid, 'width'));
+                width = parseInt(this.sandbox.dom.css(this.$mid, 'width'), 10);
 
             this.$mid.css('margin-left', marginLeft);
             this.$right.css('margin-left', width + marginLeft + this.options.marginRight);
