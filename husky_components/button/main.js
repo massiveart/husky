@@ -93,6 +93,7 @@ define([], function() {
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
             this.render();
+            this.bindCustomEvents();
         },
 
         render: function() {
@@ -115,9 +116,8 @@ define([], function() {
             if (!!this.options.buttonState) {
                 this.changeState(this.options.buttonState);
             }
-
-            this.bindCustomEvents();
         },
+
 
         clickEvent: function() {
             this.sandbox.emit(this.getEvent('click'));
@@ -138,8 +138,9 @@ define([], function() {
         },
 
         setContent:function(text, icon) {
-            console.log("bla");
-            console.log("this.el", this.$el);
+            this.options.text = text;
+            this.options.iconType = icon;
+            this.render();
         }
     };
 });
