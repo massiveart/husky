@@ -75,7 +75,6 @@ define([], function() {
             instanceName: 'undefined',  // name of instance used in events
             text: 'undefined',          // button text
             iconType: 'caution',        // button icon
-            state: null,            // has dom events
             background: null            // background color for spinner
         };
 
@@ -114,10 +113,6 @@ define([], function() {
             type.init.call(this);
 
             this.bindCustomEvents();
-
-            if(!!this.options.state) {
-                this.changeState(this.options.state);
-            }
         },
 
         clickEvent: function() {

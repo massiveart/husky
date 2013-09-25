@@ -58,7 +58,7 @@ define([], function() {
                     return [
                         '<div class="grid-row">',
                         '   <div class="grid-col-6 left">',
-                        '       <div id="saved-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-state="disable" data-aura-text="Saved"/>',
+                        '       <div id="saved-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-text="Saved"/>',
                         '   </div>',
                         '</div>'
                     ].join('');
@@ -69,7 +69,7 @@ define([], function() {
 
                 states: {
                     standard: function() {
-                        sandbox.emit('husky.button.save.state', 'standard');
+                        sandbox.emit('husky.button.save.state', 'disabled');
                     }
                 }
             },
@@ -78,7 +78,7 @@ define([], function() {
                     return [
                         '<div class="grid-row">',
                         '   <div class="grid-col-6 left">',
-                        '       <div id="saved-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-state="disable" data-aura-text="Saved"/>',
+                        '       <div id="saved-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-text="Saved"/>',
                         '   </div>',
                         '   <div class="grid-col-6 right">',
                         '       <div id="delete-button" class="pull-right" data-aura-component="button@husky" data-aura-instance-name="delete" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="circle-remove" data-aura-text="Delete"/>',
@@ -92,7 +92,7 @@ define([], function() {
 
                 states: {
                     standard: function() {
-                        sandbox.emit('husky.button.save.state', 'standard');
+                        sandbox.emit('husky.button.save.state', 'disabled');
                         sandbox.emit('husky.button.delete.state', 'standard');
                     },
                     disable: function() {
