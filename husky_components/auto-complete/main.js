@@ -1,44 +1,58 @@
-(function($, window, document, undefined) {
+/*
+ * This file is part of the Sulu CMS.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * Name: auto-complete
+ * Options:
+ *  url ... url to load data
+ *  valueName ... propertyName for value
+ *  minLength ... min length for request
+ *  keyControl ... control with up/down key
+ *  value ... value to display at start
+ *  excludeItems ... items to filter
+ *
+ * Provided Events:
+ *  auto-complete.load-data ... event to append data
+ */
+
+define([], function() {
+
     'use strict';
 
-    var moduleName = 'Husky.Ui.AutoComplete',
+    var defaults = {
+            url: '',            // url to load data
+            valueName: 'name',  // propertyName for value
+            minLength: 3,       // min length for request
+            keyControl: true,   // control with up/down key
+            value: null,        // value to display at start
+            excludeItems: []    // items to filter
+        },
         data = [],
         successClass = 'husky-auto-complete-success',
-        failClass = 'husky-auto-complete-fail',
+        failClass = 'husky-auto-complete-error',
         loadingClass = 'husky-auto-complete-loading';
 
-    Husky.Ui.AutoComplete = function(element, options) {
-        this.name = moduleName;
-
-        Husky.DEBUG && console.log(this.name, 'create instance');
-
-        this.options = options;
-
-        this.configs = {};
-
-        this.$originalElement = $(element);
-        this.$element = $('<div class="husky-auto-complete dropdown"/>');
-        $(element).append(this.$element);
-
-        this.init();
-    };
-
-    $.extend(Husky.Ui.AutoComplete.prototype, Husky.Events, {
-        // private event dispatcher
-        vent: (function() {
-            return $.extend({}, Husky.Events);
-        })(),
+    return {
+        getEvent: function(append) {
+            return 'husky.auto-complete.' + append;
+        },
 
         // get url for pattern
         getUrl: function(pattern) {
             var delimiter = '?';
-            if (this.options.url.indexOf('?') != -1) delimiter = '&';
+            if (this.options.url.indexOf('?') !== -1) {
+                delimiter = '&';
+            }
 
             return this.options.url + delimiter + 'search=' + pattern;
         },
 
         getValueID: function() {
-            if (this.options.value != null) {
+            if (!!this.options.value) {
                 return this.options.value.id;
             } else {
                 return null;
@@ -46,30 +60,38 @@
         },
 
         getValueName: function() {
-            if (this.options.value != null) {
+            if (!!this.options.value) {
                 return this.options.value[this.options.valueName];
             } else {
                 return '';
             }
         },
 
-        init: function() {
-            Husky.DEBUG && console.log(this.name, 'init');
+        initialize: function() {
+            this.sandbox.logger.log('initialize', this);
+            this.sandbox.logger.log(arguments);
 
+            // extend default options
+            this.options = this.sandbox.util.extend({}, defaults, this.options);
+
+            this.render();
+        },
+
+        render: function() {
+            this.$el.addClass('dropdown husky-auto-complete');
             // init form-element and dropdown menu
-            this.$valueField = $('<input type="text" autofill="false" class="name-value form-element" data-id="' + this.getValueID() +
-                '" value="' + this.getValueName() + '"/>');
+            this.$valueField = $('<input type="text" autofill="false" class="name-value form-element husky-validate" data-id="' + this.getValueID() + '" value="' + this.getValueName() + '"/>');
             this.$dropDown = $('<div class="dropdown-menu" />');
             this.$dropDownList = $('<ul/>');
-            this.$element.append(this.$valueField);
-            this.$element.append(this.$dropDown);
+            this.$el.append(this.$valueField);
+            this.$el.append(this.$dropDown);
             this.$dropDown.append(this.$dropDownList);
             this.hideDropDown();
 
             // bind dom elements
             this.bindDOMEvents();
 
-            if (this.options.value != null) {
+            if (!!this.options.value) {
                 this.successState();
             }
         },
@@ -77,17 +99,17 @@
         // bind dom elements
         bindDOMEvents: function() {
             // turn off all events
-            this.$element.off();
+            this.$el.off();
 
             // input value changed
             this.$valueField.on('input', this.inputChanged.bind(this));
 
             // mouse control
             this.$dropDownList.on('click', 'li', function(event) {
-                var $element = $(event.currentTarget);
-                var id = $element.data('id');
+                var $element = $(event.currentTarget),
+                    id = $element.data('id'),
+                    item = {id: id};
 
-                var item = {id: id};
                 item[this.options.valueName] = $element.text();
                 this.selectItem(item);
             }.bind(this));
@@ -101,7 +123,7 @@
             this.$valueField.on('focusout', function() {
                 // FIXME may there is a better solution ???
                 setTimeout(function() {
-                    this.hideDropDown()
+                    this.hideDropDown();
                 }.bind(this), 250);
             }.bind(this));
 
@@ -109,14 +131,22 @@
             if (this.options.keyControl) {
                 this.$valueField.on('keydown', function(event) {
                     // key 40 = down, key 38 = up, key 13 = enter
-                    if ([40, 38, 13].indexOf(event.which) == -1) return;
+                    if ([40, 38, 13].indexOf(event.which) === -1) {
+                        return;
+                    }
 
                     event.preventDefault();
                     if (this.$dropDown.is(':visible')) {
 
-                        if (event.which == 40)      this.pressKeyDown();
-                        else if (event.which == 38) this.pressKeyUp();
-                        else if (event.which == 13) this.pressKeyEnter();
+                        if (event.which === 40) {
+                            this.pressKeyDown();
+                        }
+                        else if (event.which === 38) {
+                            this.pressKeyUp();
+                        }
+                        else if (event.which === 13) {
+                            this.pressKeyEnter();
+                        }
 
                     } else {
                         // If dropdown not visible => search for given pattern
@@ -134,7 +164,7 @@
 
         // value of input changed
         inputChanged: function() {
-            Husky.DEBUG && console.log(this.name, 'inputChanged');
+            this.sandbox.logger.log('inputChanged');
 
             // value is not success
             this.noState();
@@ -148,13 +178,13 @@
         // load data from server
         loadData: function(pattern) {
             var url = this.getUrl(pattern);
-            Husky.DEBUG && console.log(this.name, 'load: ' + url);
+            this.sandbox.logger.log('load: ' + url);
             this.loadingState();
 
-            Husky.Util.ajax({
+            $.ajax({
                 url: url,
                 success: function(response) {
-                    Husky.DEBUG && console.log(this.name, 'load', 'success');
+                    this.sandbox.logger.log('load', 'success');
 
                     this.noState();
 
@@ -162,7 +192,7 @@
                     this.updateData(response.items);
                     if (data.length > 1) {
                         this.generateDropDown(data);
-                    } else if (data.length == 1) {
+                    } else if (data.length === 1) {
                         this.selectItem(data[0]);
                     } else {
                         this.failState();
@@ -170,24 +200,26 @@
                     }
                 }.bind(this),
                 error: function() {
-                    Husky.DEBUG && console.log(this.name, 'load', 'error');
+                    this.sandbox.logger.log('load', 'error');
 
                     this.failState();
                     this.hideDropDown();
                 }.bind(this)
             });
 
-            this.trigger('auto-complete:loadData', null);
+            this.sandbox.emit(this.getEvent('load-data'));
         },
 
         // update global data array
         updateData: function(newData) {
             data = [];
-            newData.forEach(function(item) {
-                if (this.isVisible(item)) {
-                    data.push(item);
-                }
-            }.bind(this));
+            if (!!newData && $.isArray(newData)) {
+                newData.forEach(function(item) {
+                    if (this.isVisible(item)) {
+                        data.push(item);
+                    }
+                }.bind(this));
+            }
         },
 
         // generate dropDown with given items
@@ -205,7 +237,9 @@
         isVisible: function(item) {
             var result = true;
             this.options.excludeItems.forEach(function(testItem) {
-                if (parseInt(item.id) === parseInt(testItem.id)) result = false;
+                if (parseInt(item.id, 10) === parseInt(testItem.id, 10)) {
+                    result = false;
+                }
             }.bind(this));
             return result;
         },
@@ -218,60 +252,61 @@
 
         // make dropDown visible
         showDropDown: function() {
-            Husky.DEBUG && console.log(this.name, 'show dropdown');
+            this.sandbox.logger.log('show dropdown');
             this.$dropDown.show();
         },
 
         // hide dropDown
         hideDropDown: function() {
-            Husky.DEBUG && console.log(this.name, 'hide dropdown');
+            this.sandbox.logger.log('hide dropdown');
             this.clearDropDown();
             this.$dropDown.hide();
         },
 
         // set class success to container
         successState: function() {
-            Husky.DEBUG && console.log(this.name, 'set success');
+            this.sandbox.logger.log('set success');
             this.clearDropDown();
-            this.$originalElement.removeClass(failClass);
-            this.$originalElement.removeClass(loadingClass);
-            this.$originalElement.addClass(successClass);
+            this.$el.parent().removeClass(failClass);
+            this.$el.parent().removeClass(loadingClass);
+            this.$el.parent().addClass(successClass);
         },
 
         // remove class success, fail and loading of container
         noState: function() {
-            Husky.DEBUG && console.log(this.name, 'remove success and fail');
+            this.sandbox.logger.log('remove success and fail');
             this.$valueField.data('');
-            this.$originalElement.removeClass(failClass);
-            this.$originalElement.removeClass(loadingClass);
-            this.$originalElement.removeClass(successClass);
+            this.$el.parent().removeClass(failClass);
+            this.$el.parent().removeClass(loadingClass);
+            this.$el.parent().removeClass(successClass);
         },
 
         // add class fail to container
         failState: function() {
-            Husky.DEBUG && console.log(this.name, 'set fail');
-            this.$originalElement.addClass(failClass);
-            this.$originalElement.removeClass(loadingClass);
-            this.$originalElement.removeClass(successClass);
+            this.sandbox.logger.log('set fail');
+            this.$el.parent().addClass(failClass);
+            this.$el.parent().removeClass(loadingClass);
+            this.$el.parent().removeClass(successClass);
         },
 
         // add class loading to container
         loadingState: function() {
-            Husky.DEBUG && console.log(this.name, 'set loading');
-            this.$originalElement.removeClass(failClass);
-            this.$originalElement.addClass(loadingClass);
-            this.$originalElement.removeClass(successClass);
+            this.sandbox.logger.log('set loading');
+            this.$el.parent().removeClass(failClass);
+            this.$el.parent().addClass(loadingClass);
+            this.$el.parent().removeClass(successClass);
         },
 
         // handle key down
         pressKeyDown: function() {
-            Husky.DEBUG && console.log(this.name, 'key down');
+            this.sandbox.logger.log('key down');
 
             // get actual and next element
-            var $actual = this.$dropDownList.children('.hover');
-            var $next = $actual.next();
+            var $actual = this.$dropDownList.children('.hover'),
+                $next = $actual.next();
+
             // no element selected
-            if ($next.length == 0) {
+            if ($next.length === 0) {
                 $next = this.$dropDownList.children().first();
             }
 
@@ -281,13 +316,13 @@
 
         // handle key up
         pressKeyUp: function() {
-            Husky.DEBUG && console.log(this.name, 'key up');
+            this.sandbox.logger.log('key up');
 
             // get actual and next element
-            var $actual = this.$dropDownList.children('.hover');
-            var $next = $actual.prev();
+            var $actual = this.$dropDownList.children('.hover'),
+                $next = $actual.prev();
             // no element selected
-            if ($next.length == 0) {
+            if ($next.length === 0) {
                 $next = this.$dropDownList.children().last();
             }
 
@@ -297,22 +332,23 @@
 
         // handle key enter
         pressKeyEnter: function() {
-            Husky.DEBUG && console.log(this.name, 'key enter');
+            this.sandbox.logger.log('key enter');
 
             // if one element selected
-            var $actual = this.$dropDownList.children('.hover');
-            if ($actual.length == 1) {
-                var item = {id: $actual.data('id')};
+            var $actual = this.$dropDownList.children('.hover'),
+                item, value, childs, that;
+            if ($actual.length === 1) {
+                item = {id: $actual.data('id')};
                 item[this.options.valueName] = $actual.text();
                 this.selectItem(item);
             } else {
                 // if it is one of the list
-                var value = this.$valueField.val();
+                value = this.$valueField.val();
+                childs = this.$dropDownList.children();
+                that = this;
 
-                var childs = this.$dropDownList.children();
-                var that = this;
                 $(childs).each(function() {
-                    if ($(this).text() == value) {
+                    if ($(this).text() === value) {
                         // found an item select it
                         var item = {id: $(this).data('id')};
                         item[that.options.valueName] = $(this).text();
@@ -325,7 +361,7 @@
 
         // select an item
         selectItem: function(item) {
-            Husky.DEBUG && console.log(this.name, 'select item: ' + item.id);
+            this.sandbox.logger.log('select item: ' + item.id);
             // set id to data-id
             this.$valueField.data('id', item.id);
             // set value to value
@@ -334,31 +370,5 @@
             this.hideDropDown();
             this.successState();
         }
-    });
-
-    $.fn.huskyAutoComplete = function(options) {
-        var $element = $(this);
-
-        options = $.extend({}, $.fn.huskyAutoComplete.defaults, typeof options == 'object' && options);
-
-        // return if this plugin has a module instance
-        if (!!$element.data(moduleName)) {
-            return this;
-        }
-
-        // store the module instance into the jQuery data property
-        $element.data(moduleName, new Husky.Ui.AutoComplete(this, options));
-
-        return this;
     };
-
-    $.fn.huskyAutoComplete.defaults = {
-        url: '', // url to load data
-        valueName: 'name', // propertyName for value
-        minLength: 3, // min length for request
-        keyControl: true, // control with up/down key
-        value: null, // value to display at start
-        excludeItems: [] // items to filter
-    };
-
-})(Husky.$, this, this.document);
+});

@@ -22,7 +22,8 @@
             "__component__$dialog@husky": "husky_components/dialog/main",
             "__component__$dropdown@husky": "husky_components/dropdown/main",
             "__component__$matrix@husky": "husky_components/matrix/main",
-            "__component__$select@husky": "husky_components/select/main"
+            "__component__$select@husky": "husky_components/select/main",
+            "__component__$auto-complete@husky": "husky_components/auto-complete/main"
         },
         "shim": {
             "backbone": {
@@ -53,7 +54,8 @@
             "__component__$dialog@husky",
             "__component__$dropdown@husky",
             "__component__$matrix@husky",
-            "__component__$select@husky"
+            "__component__$select@husky",
+            "__component__$auto-complete@husky"
         ],
         "out": "dist/<%= PKG_VERSION %>/husky.js"
     }

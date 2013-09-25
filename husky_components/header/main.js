@@ -14,7 +14,7 @@
  *
  * Provided Events:
  *  husky.header.move-buttons: move middle part to match given navigation width
- *  husky.header.button-type: change ButtonType [save, saveDelete, add, template]
+ *  husky.header.button-type: change ButtonType [save, saveDelete, saved, savedDelete, add, reset, template]
  *  husky.header.button-state: change state of buttons
  *
  * Used Events:
@@ -24,6 +24,8 @@
 
 define([], function() {
 
+    'use strict';
+
     var sandbox,
         type,
         types = {
@@ -32,7 +34,7 @@ define([], function() {
                     return [
                         '<div class="grid-row">',
                         '   <div class="grid-col-6 left">',
-                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="caution" data-aura-text="Save"/>',
+                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-button-state="disable" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-text="Saved"/>',
                         '   </div>',
                         '</div>'
                     ].join('');
@@ -43,6 +45,13 @@ define([], function() {
 
                 states: {
                     standard: function() {
+                        // set text to saved and OK
+                        sandbox.emit('husky.button.save.set-content', 'Saved', 'circle-ok');
+                        sandbox.emit('husky.button.save.state', 'disable');
+                    },
+                    dirty: function() {
+                        // set text to save and icon to !
+                        sandbox.emit('husky.button.save.set-content', 'Save', 'caution');
                         sandbox.emit('husky.button.save.state', 'standard');
                     },
                     disable: function() {
@@ -50,6 +59,10 @@ define([], function() {
                     },
                     'loading-save-button': function() {
                         sandbox.emit('husky.button.save.state', 'loading');
+                    },
+                    hide: function() {
+                        // hide save button
+                        sandbox.emit('husky.button.save.state', 'hide');
                     }
                 }
             },
@@ -58,7 +71,7 @@ define([], function() {
                     return [
                         '<div class="grid-row">',
                         '   <div class="grid-col-6 left">',
-                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="caution" data-aura-text="Save"/>',
+                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-button-state="disable" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-text="Saved"/>',
                         '   </div>',
                         '   <div class="grid-col-6 right">',
                         '       <div id="delete-button" class="pull-right" data-aura-component="button@husky" data-aura-instance-name="delete" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="circle-remove" data-aura-text="Delete"/>',
@@ -72,6 +85,13 @@ define([], function() {
 
                 states: {
                     standard: function() {
+                        sandbox.emit('husky.button.save.set-content', 'Saved', 'circle-ok');
+                        sandbox.emit('husky.button.save.state', 'disable');
+                        sandbox.emit('husky.button.delete.state', 'standard');
+                    },
+                    dirty: function() {
+                        // set text to save and icon to !
+                        sandbox.emit('husky.button.save.set-content', 'Save', 'caution');
                         sandbox.emit('husky.button.save.state', 'standard');
                         sandbox.emit('husky.button.delete.state', 'standard');
                     },
@@ -86,6 +106,10 @@ define([], function() {
                     'loading-delete-button': function() {
                         sandbox.emit('husky.button.save.state', 'disable');
                         sandbox.emit('husky.button.delete.state', 'loading');
+                    },
+                    hide: function() {
+                        sandbox.emit('husky.button.save.state', 'hide');
+                        sandbox.emit('husky.button.delete.state', 'hide');
                     }
                 }
             },
@@ -114,6 +138,14 @@ define([], function() {
                         sandbox.emit('husky.button.add.state', 'loading');
                     }
                 }
+            },
+            reset: {
+                template: function() {
+                    return [];
+                },
+                reset: function() {
+                },
+                states: { }
             }
         },
         defaults = {
@@ -178,6 +210,10 @@ define([], function() {
             this.sandbox.on('navigation.item.content.show', function(item) {
                 this.moveButtons(item.data.navWidth);
             }.bind(this));
+            this.sandbox.on('navigation.size.changed', function(data) {
+                this.moveButtons(data.navWidth);
+            }.bind(this));
+            
             this.sandbox.on('husky.header.move-buttons', this.moveButtons.bind(this));
 
             // add buttons
@@ -189,9 +225,9 @@ define([], function() {
 
         // move buttons with navigation width
         moveButtons: function(navWidth) {
-            var headerLeft = parseInt(this.sandbox.dom.css(this.$header, 'padding-left')),
+            var headerLeft = parseInt(this.sandbox.dom.css(this.$header, 'padding-left'), 10),
                 marginLeft = navWidth + this.options.marginMid - headerLeft,
-                width = parseInt(this.sandbox.dom.css(this.$mid, 'width'));
+                width = parseInt(this.sandbox.dom.css(this.$mid, 'width'), 10);
 
             this.$mid.css('margin-left', marginLeft);
             this.$right.css('margin-left', width + marginLeft + this.options.marginRight);

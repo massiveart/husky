@@ -15,8 +15,9 @@
 
 define(function() {
 
+    'use strict';
 
-    var defaults =  {
+    var defaults = {
         url: '',
         data: [],
         valueName: 'name',
@@ -42,11 +43,11 @@ define(function() {
 
             this.$element.append(this.$select);
             this.$originalElement.append(this.$element);
-           
+
             this.prepareData();
             this.bindDOMEvents();
         },
-        
+
         // bind dom elements
         bindDOMEvents: function() {
 
@@ -54,9 +55,9 @@ define(function() {
             this.$element.off();
 
             this.$select.on('change', function() {
-                var id= this.$select.val();
-               this.sandbox.logger.log('changed: '+id);
-                this.sandbox.emit('select.'+this.options.instanceName+'.item.changed', id);
+                var id = this.$select.val();
+                this.sandbox.logger.log('changed: ' + id);
+                this.sandbox.emit('select.' + this.options.instanceName + '.item.changed', id);
             }.bind(this));
 
         },
@@ -79,7 +80,7 @@ define(function() {
                 success: function(response) {
                     this.sandbox.logger.log('load', 'success');
 
-                    if (response.total > 0 && response.items.length == response.total) {
+                    if (response.total > 0 && response.items.length === response.total) {
                         this.options.data = response.items;
                     } else {
                         this.options.data = [];
@@ -96,7 +97,7 @@ define(function() {
 
             // FIXME event will be binded later
             setTimeout(function() {
-                this.sandbox.emit('select.'+this.options.instanceName+'.loadData');
+                this.sandbox.emit('select.' + this.options.instanceName + '.loadData');
             }.bind(this), 200);
 
         },
@@ -108,16 +109,16 @@ define(function() {
 
         generateOption: function(item) {
             var $option = $('<option value="' + item.id + '">' + item[this.options.valueName] + '</option>');
-            if ((this.options.selected != null && this.options.selected.id == item.id) ||
-                (this.options.selected == null && this.options.defaultItem.id == item.id)) {
-                $option.attr("selected", true);
+            if ((this.options.selected !== null && this.options.selected.id === item.id) ||
+                (this.options.selected === null && this.options.defaultItem.id === item.id)) {
+                $option.attr('selected', true);
             }
             this.$select.append($option);
         },
 
         clearOptions: function() {
             this.$select.find('option').remove();
-        }    
+        }
 
     };
 
