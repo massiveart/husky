@@ -58,8 +58,8 @@ define([], function() {
                     'loading-save-button': function() {
                         sandbox.emit('husky.button.save.state', 'loading');
                     },
-                    hide: function(){
-                        // hide save button
+                    hide: function() {
+                        sandbox.emit('husky.button.save.state', 'hide');
                     }
                 }
             },
@@ -103,6 +103,10 @@ define([], function() {
                     'loading-delete-button': function() {
                         sandbox.emit('husky.button.save.state', 'disable');
                         sandbox.emit('husky.button.delete.state', 'loading');
+                    },
+                    hide: function() {
+                        sandbox.emit('husky.button.save.state', 'hide');
+                        sandbox.emit('husky.button.delete.state', 'hide');
                     }
                 }
             },
