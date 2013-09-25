@@ -1,4 +1,7 @@
 (function() {
+
+    'use strict';
+
     require.config({
         paths: { "form": 'bower_components/husky-validation/dist/validation' }
     });
@@ -25,7 +28,9 @@
                     },
 
                     validate: function(selector, force) {
-                        if (!force) force = false;
+                        if (!force) {
+                            force = false;
+                        }
 
                         return  app.sandbox.form.getObject(selector).validation.validate(force);
                     },
@@ -80,12 +85,12 @@
                         },
 
                         deleteConstraint: function(elementSelector, constraintName) {
-                            app.sandbox.form.element.getObject(elementSelector).deleteConstraint(constraintName, options);
+                            app.sandbox.form.element.getObject(elementSelector).deleteConstraint(constraintName);
                         }
                     }
 
-                }
+                };
             }
-        }
+        };
     });
 })();

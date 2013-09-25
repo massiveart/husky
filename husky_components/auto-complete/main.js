@@ -21,6 +21,8 @@
 
 define([], function() {
 
+    'use strict';
+
     var type,
         defaults = {
             url: '',            // url to load data
