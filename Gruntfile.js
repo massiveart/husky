@@ -272,7 +272,6 @@ module.exports = function(grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'requirejs:husky',
-        'concat',
         'compass',
         'cssmin',
         'copy:dist',
