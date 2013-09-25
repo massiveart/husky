@@ -116,14 +116,6 @@ module.exports = function(grunt) {
                 }
             }
         },
-        uglify: {
-            build: {
-                files: {
-                    'dist/<%= pkg.name %>.min.js': [
-                        'js/{,*/}*.js']
-                }
-            }
-        },
         copy: {
             dev: {
                 files: [
@@ -180,7 +172,7 @@ module.exports = function(grunt) {
                         expand: true,
                         cwd: 'bower_components/aura/lib/',
                         src: ['**'],
-                        dest: 'vendor/aura/'
+                        dest: 'vendor/aura/lib/'
                     },
                     // backbone
                     {
@@ -279,7 +271,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
-        'uglify',
+        'requirejs:husky',
         'concat',
         'compass',
         'cssmin',

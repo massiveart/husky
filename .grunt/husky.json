@@ -34,6 +34,7 @@
             }
         },
         "include": [
+            "husky",
             "jquery",
             "requirejs",
             "underscore",
@@ -42,7 +43,6 @@
             "aura/ext/debug",
             "aura/ext/mediator",
             "aura/ext/components",
-            "husky",
             "husky-validation",
             "globalize_lib",
 
