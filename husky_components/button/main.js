@@ -53,7 +53,6 @@ define([], function() {
                     },
                     disable: function() {
                         this.sandbox.dom.addClass(this.$el, 'disable');
-                        this.sandbox.dom.removeClass(this.$el, 'pointer');
 
                         type.unBindDomEvents.call(this);
                     },
@@ -72,6 +71,7 @@ define([], function() {
         },
         defaults = {
             buttonType: 'icon',         // type of button [icon, custom]
+            buttonState: null,            // type of button [icon, custom]
             instanceName: 'undefined',  // name of instance used in events
             text: 'undefined',          // button text
             iconType: 'caution',        // button icon
@@ -93,6 +93,7 @@ define([], function() {
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
             this.render();
+            this.bindCustomEvents();
         },
 
         render: function() {
@@ -112,8 +113,11 @@ define([], function() {
 
             type.init.call(this);
 
-            this.bindCustomEvents();
+            if (!!this.options.buttonState) {
+                this.changeState(this.options.buttonState);
+            }
         },
+
 
         clickEvent: function() {
             this.sandbox.emit(this.getEvent('click'));
@@ -121,6 +125,7 @@ define([], function() {
 
         bindCustomEvents: function() {
             this.sandbox.on(this.getEvent('state'), this.changeState.bind(this));
+            this.sandbox.on(this.getEvent('set-content'), this.setContent.bind(this));
         },
 
         changeState: function(state) {
@@ -130,6 +135,12 @@ define([], function() {
             } else {
                 throw 'not implemented';
             }
+        },
+
+        setContent:function(text, icon) {
+            this.options.text = text;
+            this.options.iconType = icon;
+            this.render();
         }
-    }
+    };
 });

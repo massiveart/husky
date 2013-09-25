@@ -1,4 +1,8 @@
 {
+    "globals": {
+        "require": false,
+        "define": false
+    },
     "latedef" : true,
     "newcap" : true,
     "curly" : true,
