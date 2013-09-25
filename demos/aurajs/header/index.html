@@ -37,10 +37,10 @@
 
 
                     setTimeout(function() {
-                        app.sandbox.emit('husky.header.button-type', 'save');
+                        app.sandbox.emit('husky.header.button-type', 'saveDelete');
                         setTimeout(function() {
                             app.sandbox.emit('husky.header.button-state', 'dirty');
-//                            app.sandbox.emit('husky.header.button-state', 'standard');
+                            app.sandbox.emit('husky.header.button-state', 'standard');
 //                            app.sandbox.emit('husky.header.button-state', 'dirty');
                         }, 10);
                     }, 10);

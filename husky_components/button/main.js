@@ -50,9 +50,11 @@ define([], function() {
                         type.reset.call(this);
 
                         type.bindDomEvents.call(this);
+                        this.sandbox.dom.addClass(this.$el, 'pointer');
                     },
                     disable: function() {
                         this.sandbox.dom.addClass(this.$el, 'disable');
+                        this.sandbox.dom.removeClass(this.$el, 'pointer');
 
                         type.unBindDomEvents.call(this);
                     },
@@ -140,7 +142,7 @@ define([], function() {
         setContent:function(text, icon) {
             this.options.text = text;
             this.options.iconType = icon;
-            this.render();
+            type.init.call(this);
         }
     };
 });
