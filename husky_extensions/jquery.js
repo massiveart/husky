@@ -37,6 +37,10 @@
                 return $(selector).html(content);
             };
 
+            app.core.dom.each = function(selector, callback) {
+                $(selector).each(callback);
+            };
+
             app.core.dom.append = function(selector, element) {
                 return $(selector).append(element);
             };
@@ -57,6 +61,18 @@
                 return $(selector).removeClass(classes);
             };
 
+            app.core.dom.toggleClass = function(selector, classes) {
+                return $(selector).toggleClass(classes);
+            };
+
+            app.core.dom.hasClass = function(selector, classes) {
+                return $(selector).hasClass(classes);
+            };
+
+            app.core.dom.parent = function(selector) {
+                return $(selector).parent();
+            }
+
             app.core.dom.width = function(selector) {
                 return $(selector).width();
             };
@@ -76,6 +92,14 @@
 
             app.core.dom.is = function(selector, type) {
                 return $(selector).is(type);
+            };
+
+            app.core.dom.data = function(selector, key, value) {
+                if (!!value) {
+                    return $(selector).data(key, value);
+                } else {
+                    return $(selector).data(key);
+                }
             };
 
             app.core.dom.onReady = function(callback) {
