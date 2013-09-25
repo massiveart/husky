@@ -14,7 +14,7 @@
     </head>
     <body>
 
-        <div data-aura-component="header@husky" data-aura-button-type="saveDelete"></div>
+        <div data-aura-component="header@husky" ></div>
 
         <script src="../js/sinon.js"></script>
         <script src="../js/jquery.js"></script>
@@ -34,6 +34,14 @@
 
                 app.start().then(function() {
                     app.logger.log('Aura started...');
+
+
+                    setTimeout(function() {
+                        app.sandbox.emit('husky.header.button-type', 'save');
+                        app.sandbox.emit('husky.header.button-state', 'dirty');
+
+
+                    }, 500);
                 });
 
             });
