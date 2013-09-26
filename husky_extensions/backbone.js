@@ -8,7 +8,7 @@
         });
     } else {
         require.config({
-            paths: { backbone: 'vendor/backbone/backbone' },
+            paths: { backbone: 'bower_components/backbone/backbone' },
             shim: { backbone: { exports: 'Backbone', deps: ['underscore', 'jquery'] } }
         });
     }

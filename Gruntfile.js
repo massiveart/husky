@@ -78,14 +78,14 @@ module.exports = function(grunt) {
             bower_after: {
                 files: {
                     src: [
-                        'bower_components'
+                        '.bower_components'
                     ]
                 }
             },
             bower_before: {
                 files: {
                     src: [
-                        'vendor'
+                        'bower_components'
                     ]
                 }
             }
@@ -170,77 +170,77 @@ module.exports = function(grunt) {
                     // aura
                     {
                         expand: true,
-                        cwd: 'bower_components/aura/lib/',
+                        cwd: '.bower_components/aura/lib/',
                         src: ['**'],
-                        dest: 'vendor/aura/lib/'
+                        dest: 'bower_components/aura/lib/'
                     },
                     // backbone
                     {
                         expand: true,
                         flatten: true,
                         src: [
-                            'bower_components/backbone/backbone.js',
-                            'bower_components/backbone/backbone-min.js',
-                            'bower_components/backbone/backbone-min.map'
+                            '.bower_components/backbone/backbone.js',
+                            '.bower_components/backbone/backbone-min.js',
+                            '.bower_components/backbone/backbone-min.map'
                         ],
-                        dest: 'vendor/backbone'
+                        dest: 'bower_components/backbone/'
                     },
                     // eventemitter2
                     {
                         expand: true,
                         flatten: true,
-                        src: ['bower_components/eventemitter2/lib/eventemitter2.js'],
-                        dest: 'vendor/eventemitter2'
+                        src: ['.bower_components/eventemitter2/lib/eventemitter2.js'],
+                        dest: 'bower_components/eventemitter2/lib/'
                     },
                     // globalize
                     {
                         expand: true,
-                        cwd: 'bower_components/globalize/lib/',
+                        cwd: '.bower_components/globalize/lib/',
                         src: ['**'],
-                        dest: 'vendor/globalize/'
+                        dest: 'bower_components/globalize/lib/'
                     },
                     // husky-validation
                     {
                         expand: true,
-                        cwd: 'bower_components/husky-validation/dist/',
+                        cwd: '.bower_components/husky-validation/dist/',
                         src: ['**'],
-                        dest: 'vendor/husky-validation/'
+                        dest: 'bower_components/husky-validation/dist/'
                     },
                     // jquery
                     {
                         expand: true,
                         flatten: true,
                         src: [
-                            'bower_components/jquery/jquery.js',
-                            'bower_components/jquery/jquery.min.map',
-                            'bower_components/jquery/jquery.min.js'
+                            '.bower_components/jquery/jquery.js',
+                            '.bower_components/jquery/jquery.min.map',
+                            '.bower_components/jquery/jquery.min.js'
                         ],
-                        dest: 'vendor/jquery'
+                        dest: 'bower_components/jquery/'
                     },
                     // requirejs
                     {
                         expand: true,
                         flatten: true,
-                        src: ['bower_components/requirejs/require.js'],
-                        dest: 'vendor/requirejs'
+                        src: ['.bower_components/requirejs/require.js'],
+                        dest: 'bower_components/requirejs/'
                     },
                     // requirejs text
                     {
                         expand: true,
                         flatten: true,
-                        src: ['bower_components/requirejs-text/text.js'],
-                        dest: 'vendor/requirejs-text'
+                        src: ['.bower_components/requirejs-text/text.js'],
+                        dest: 'bower_components/requirejs-text/'
                     },
                     // underscore
                     {
                         expand: true,
                         flatten: true,
                         src: [
-                            'bower_components/underscore/underscore.js',
-                            'bower_components/underscore/underscore-min.js',
-                            'bower_components/underscore/underscore-min.map'
+                            '.bower_components/underscore/underscore.js',
+                            '.bower_components/underscore/underscore-min.js',
+                            '.bower_components/underscore/underscore-min.map'
                         ],
-                        dest: 'vendor/underscore'
+                        dest: 'bower_components/underscore/'
                     }
                 ]
             }

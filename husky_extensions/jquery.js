@@ -8,7 +8,7 @@
         });
     } else {
         require.config({
-            paths: { backbone: 'vendor/jquery/jquery' },
+            paths: { backbone: 'bower_components/jquery/jquery' },
             shim: { backbone: { exports: '$' } }
         });
     }
@@ -71,7 +71,7 @@
 
             app.core.dom.parent = function(selector) {
                 return $(selector).parent();
-            }
+            };
 
             app.core.dom.width = function(selector) {
                 return $(selector).width();
@@ -110,16 +110,16 @@
                 return $(selector).val();
             };
 
-            app.core.dom.on = function(selector, event, callback, filter){
-                if(!!filter) {
+            app.core.dom.on = function(selector, event, callback, filter) {
+                if (!!filter) {
                     $(selector).on(event, filter, callback);
                 } else {
                     $(selector).on(event, callback);
                 }
             };
 
-            app.core.dom.one = function(selector, event, callback, filter){
-                if(!!filter) {
+            app.core.dom.one = function(selector, event, callback, filter) {
+                if (!!filter) {
                     $(selector).one(event, filter, callback);
                 } else {
                     $(selector).one(event, callback);
@@ -138,11 +138,11 @@
                 return $(selector).next(filter);
             };
 
-            app.core.dom.prev = function(selector,filter) {
+            app.core.dom.prev = function(selector, filter) {
                 return $(selector).prev(filter);
             };
 
-            app.core.dom.text = function(selector,value) {
+            app.core.dom.text = function(selector, value) {
                 return $(selector).text(value);
             };
 

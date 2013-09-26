@@ -11,7 +11,7 @@ files = [
     JASMINE,
     JASMINE_ADAPTER,
 
-    'vendor/jquery/jquery.js',
+    'bower_components/jquery/jquery.js',
     'node_modules/sinon/pkg/sinon.js',
 
     'js/*.js',
