@@ -1,26 +1,26 @@
-'use strict';
-
 module.exports = function(grunt) {
+
+    'use strict';
 
     // load all grunt tasks
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-    var huskyConfig = grunt.file.readJSON('.grunt/husky.json');
-    var clone = grunt.util._.clone;
+    var huskyConfig = grunt.file.readJSON('.grunt/husky.json'),
+        clone = grunt.util._.clone,
 
     // Lookup of the Aura Extensions and injects them in the requirejs build
-    var auraExtensions = grunt.file.glob
-        .sync('husky_extensions/**/*.js')
-        .map(function(extension) {
-            return extension.replace('.js', '');
-        });
+        auraExtensions = grunt.file.glob
+            .sync('husky_extensions/**/*.js')
+            .map(function(extension) {
+                return extension.replace('.js', '');
+            }),
 
-    var rJSConfig = (function() {
-        var _c = huskyConfig.requireJS;
-        _c.include = _c.include.concat(auraExtensions);
-        _c.optimize = grunt.option('dev') ? "none" : "uglify";
-        return _c;
-    })();
+        rJSConfig = (function() {
+            var _c = huskyConfig.requireJS;
+            _c.include = _c.include.concat(auraExtensions);
+            _c.optimize = grunt.option('dev') ? "none" : "uglify";
+            return _c;
+        })();
 
 
     // project configuration
