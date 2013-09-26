@@ -4,15 +4,15 @@
         "baseUrl": ".",
         "preserveLicenseComments": false,
         "paths": {
-            "aura": "bower_components/aura/lib",
-            "underscore": "bower_components/underscore/underscore",
-            "eventemitter": "bower_components/eventemitter2/lib/eventemitter2",
-            "backbone": "bower_components/backbone/backbone",
-            "requirejs": "bower_components/requirejs/require",
-            "text": "bower_components/requirejs-text/text",
-            "jquery": "bower_components/jquery/jquery",
-            "husky-validation": "bower_components/husky-validation/dist/validation",
-            "globalize_lib": "bower_components/globalize/lib/globalize",
+            "aura": "vendor/aura/lib",
+            "underscore": "vendor/underscore/underscore",
+            "eventemitter": "vendor/eventemitter2/eventemitter2",
+            "backbone": "vendor/backbone/backbone",
+            "requirejs": "vendor/requirejs/require",
+            "text": "vendor/requirejs-text/text",
+            "jquery": "vendor/jquery/jquery",
+            "husky-validation": "vendor/husky-validation/validation",
+            "globalize_lib": "vendor/globalize/globalize",
             "husky": "lib/husky",
 
             "__component__$navigation@husky": "husky_components/navigation/main",
@@ -35,6 +35,7 @@
             }
         },
         "include": [
+            "husky",
             "jquery",
             "requirejs",
             "underscore",
@@ -43,7 +44,6 @@
             "aura/ext/debug",
             "aura/ext/mediator",
             "aura/ext/components",
-            "husky",
             "husky-validation",
             "globalize_lib",
 

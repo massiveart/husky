@@ -4,8 +4,8 @@
 
     require.config({
         paths: {
-            'globalize_lib': 'bower_components/globalize/lib/globalize',
-            'cultures': 'bower_components/globalize/lib/cultures'
+            'globalize_lib': 'vendor/globalize/lib/globalize',
+            'cultures': 'vendor/globalize/lib/cultures'
         }
     });
 

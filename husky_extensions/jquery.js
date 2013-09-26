@@ -8,7 +8,7 @@
         });
     } else {
         require.config({
-            paths: { backbone: 'bower_components/jquery/jquery' },
+            paths: { backbone: 'vendor/jquery/jquery' },
             shim: { backbone: { exports: '$' } }
         });
     }

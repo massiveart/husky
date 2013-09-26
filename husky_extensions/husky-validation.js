@@ -3,7 +3,7 @@
     'use strict';
 
     require.config({
-        paths: { "form": 'bower_components/husky-validation/dist/validation' }
+        paths: { "form": 'vendor/husky-validation/dist/validation' }
     });
 
     define(['form'], function(Form) {
