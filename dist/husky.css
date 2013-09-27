@@ -4193,6 +4193,15 @@ a.btn-black {
   opacity: 1;
 }
 
+/* line 13, ../scss/modules/validation.scss */
+.required {
+  font-family: 'MuseoSansCondensed700' !important;
+}
+/* line 16, ../scss/modules/validation.scss */
+.required::after {
+  content: " *";
+}
+
 /* line 8, ../scss/modules/loading.scss */
 .loading .loading-content {
   display: none;
