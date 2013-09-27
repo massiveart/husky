@@ -1,26 +1,26 @@
-'use strict';
-
 module.exports = function(grunt) {
+
+    'use strict';
 
     // load all grunt tasks
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-    var huskyConfig = grunt.file.readJSON('.grunt/husky.json');
-    var clone = grunt.util._.clone;
+    var huskyConfig = grunt.file.readJSON('.grunt/husky.json'),
+        clone = grunt.util._.clone,
 
     // Lookup of the Aura Extensions and injects them in the requirejs build
-    var auraExtensions = grunt.file.glob
-        .sync('husky_extensions/**/*.js')
-        .map(function(extension) {
-            return extension.replace('.js', '');
-        });
+        auraExtensions = grunt.file.glob
+            .sync('husky_extensions/**/*.js')
+            .map(function(extension) {
+                return extension.replace('.js', '');
+            }),
 
-    var rJSConfig = (function() {
-        var _c = huskyConfig.requireJS;
-        _c.include = _c.include.concat(auraExtensions);
-        _c.optimize = grunt.option('dev') ? "none" : "uglify";
-        return _c;
-    })();
+        rJSConfig = (function() {
+            var _c = huskyConfig.requireJS;
+            _c.include = _c.include.concat(auraExtensions);
+            _c.optimize = grunt.option('dev') ? "none" : "uglify";
+            return _c;
+        })();
 
 
     // project configuration
@@ -74,7 +74,21 @@ module.exports = function(grunt) {
         },
         clean: {
             dist: ['dist', 'docs/packages/husky/'],
-            temp: ['dist/temp']
+            temp: ['dist/temp'],
+            bower_after: {
+                files: {
+                    src: [
+                        '.bower_components'
+                    ]
+                }
+            },
+            bower_before: {
+                files: {
+                    src: [
+                        'bower_components'
+                    ]
+                }
+            }
         },
         compass: {
             dev: {
@@ -99,14 +113,6 @@ module.exports = function(grunt) {
             compress: {
                 files: {
                     'dist/<%= pkg.name %>.min.css': ['.tmp/{,*/}*.css']
-                }
-            }
-        },
-        uglify: {
-            build: {
-                files: {
-                    'dist/<%= pkg.name %>.min.js': [
-                        'js/{,*/}*.js']
                 }
             }
         },
@@ -158,6 +164,97 @@ module.exports = function(grunt) {
                         ]
                     }
                 ]
+            },
+            bower: {
+                files: [
+                    // aura
+                    {
+                        expand: true,
+                        cwd: '.bower_components/aura/lib/',
+                        src: ['**'],
+                        dest: 'bower_components/aura/lib/'
+                    },
+                    // backbone
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            '.bower_components/backbone/backbone.js',
+                            '.bower_components/backbone/backbone-min.js',
+                            '.bower_components/backbone/backbone-min.map'
+                        ],
+                        dest: 'bower_components/backbone/'
+                    },
+                    // eventemitter2
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['.bower_components/eventemitter2/lib/eventemitter2.js'],
+                        dest: 'bower_components/eventemitter2/lib/'
+                    },
+                    // globalize
+                    {
+                        expand: true,
+                        cwd: '.bower_components/globalize/lib/',
+                        src: ['**'],
+                        dest: 'bower_components/globalize/lib/'
+                    },
+                    // husky-validation
+                    {
+                        expand: true,
+                        cwd: '.bower_components/husky-validation/dist/',
+                        src: ['**'],
+                        dest: 'bower_components/husky-validation/dist/'
+                    },
+                    // jquery
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            '.bower_components/jquery/jquery.js',
+                            '.bower_components/jquery/jquery.min.map',
+                            '.bower_components/jquery/jquery.min.js'
+                        ],
+                        dest: 'bower_components/jquery/'
+                    },
+                    // requirejs
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['.bower_components/requirejs/require.js'],
+                        dest: 'bower_components/requirejs/'
+                    },
+                    // requirejs text
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: ['.bower_components/requirejs-text/text.js'],
+                        dest: 'bower_components/requirejs-text/'
+                    },
+                    // underscore
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            '.bower_components/underscore/underscore.js',
+                            '.bower_components/underscore/underscore-min.js',
+                            '.bower_components/underscore/underscore-min.map'
+                        ],
+                        dest: 'bower_components/underscore/'
+                    }
+                ]
+            }
+        },
+        bower: {
+            install: {
+                options: {
+                    copy: false,
+                    layout: 'byComponent',
+                    install: true,
+                    verbose: false,
+                    cleanTargetDir: false,
+                    cleanBowerDir: false
+                }
             }
         }
     });
@@ -174,12 +271,18 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
-        'uglify',
-        'concat',
+        'requirejs:husky',
         'compass',
         'cssmin',
         'copy:dist',
         'copy:doc'
+    ]);
+
+    grunt.registerTask('update', [
+        'clean:bower_before',
+        'bower:install',
+        'copy:bower',
+        'clean:bower_after'
     ]);
 
     grunt.registerTask('default', [
