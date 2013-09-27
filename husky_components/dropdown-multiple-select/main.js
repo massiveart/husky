@@ -26,17 +26,7 @@
 
 define([], function() {
 
-    var selectedElements, // selected items - ids if data contains objects
-        labelsOfSelectedElements, // displayed labels for selection
-
-        labelId,
-        listId,
-        dropdownContainerId,
-
-        $dropdownContainer,
-        $list,
-
-        defaults = {
+    var defaults = {
             data: [],    // data array
             valueName: 'name', // name of text property
             instanceName: 'undefined', // instance name
@@ -45,15 +35,28 @@ define([], function() {
 
 
     return {
+
+//        selectedElements, // selected items - ids if data contains objects
+//        labelsOfSelectedElements, // displayed labels for selection
+//
+//        labelId,
+//        listId,
+//        dropdownContainerId,
+//
+//        $dropdownContainer,
+//        $list,
+
         initialize: function() {
+
             this.sandbox.logger.log('initialize', this);
             this.options = this.sandbox.util.extend({}, defaults, this.options);
-            selectedElements = [];
-            labelsOfSelectedElements = [];
 
-            labelId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-label';
-            listId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-list';
-            dropdownContainerId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-menu';
+            this.selectedElements = [];
+            this.labelsOfSelectedElements = [];
+
+            this.labelId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-label';
+            this.listId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-list';
+            this.dropdownContainerId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-menu';
 
             this.render();
         },
@@ -61,9 +64,9 @@ define([], function() {
         render: function() {
 
             var $originalElement = this.sandbox.dom.$(this.options.el);
-            this.sandbox.dom.append($originalElement, this.template.basicStructure(this.options.defaultLabel));
-            $list = this.sandbox.dom.$('#'+listId);
-            $dropdownContainer = this.sandbox.dom.$('#'+dropdownContainerId);
+            this.sandbox.dom.append($originalElement, this.template.basicStructure.call(this,this.options.defaultLabel));
+            this.$list = this.sandbox.dom.$('#'+this.listId);
+            this.$dropdownContainer = this.sandbox.dom.$('#'+this.dropdownContainerId);
             this.prepareData();
 
 
@@ -86,11 +89,11 @@ define([], function() {
         // generate dropDown with given items
         generateDropDown: function(items) {
             // remove all elements
-            this.sandbox.dom.remove($list, 'li');
+            this.sandbox.dom.remove(this.$list, 'li');
 
             if (items.length > 0) {
                 this.sandbox.util.each(items, function(index,value){
-                    this.sandbox.dom.append($list, this.template.menuElement(value,this.options.valueName));
+                    this.sandbox.dom.append(this.$list, this.template.menuElement.call(this,value,this.options.valueName));
                 }.bind(this));
             } else {
                 this.$dropDownList.append('<li>No data received</li>');
@@ -104,7 +107,7 @@ define([], function() {
             this.sandbox.dom.on('#'+ this.options.instanceName,'click', this.toggleDropDown.bind(this), '.dropdown-label');
 
             // click on single item
-            this.sandbox.dom.on('#'+listId,'click', this.clickItem.bind(this), 'li');
+            this.sandbox.dom.on('#'+this.listId,'click', this.clickItem.bind(this), 'li');
 
         },
 
@@ -120,22 +123,22 @@ define([], function() {
             var key = this.sandbox.dom.attr(event.currentTarget, 'data-key'),
                 value = this.sandbox.dom.text(this.sandbox.dom.find('.item-value', event.currentTarget)),
                 $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget),
-                index = selectedElements.indexOf(key);
+                index = this.selectedElements.indexOf(key);
 
             if (index > -1) {
 
                 this.sandbox.dom.removeClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', false);
-                selectedElements.splice(index, 1);
-                labelsOfSelectedElements.splice(index,1);
+                this.selectedElements.splice(index, 1);
+                this.labelsOfSelectedElements.splice(index,1);
                 this.sandbox.emit(this.getEventName('deselected.item'), key);
 
             } else {
 
                 this.sandbox.dom.addClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', true);
-                selectedElements.push(key);
-                labelsOfSelectedElements.push(value);
+                this.selectedElements.push(key);
+                this.labelsOfSelectedElements.push(value);
                 this.sandbox.emit(this.getEventName('selected.item'), key);
             }
 
@@ -149,36 +152,36 @@ define([], function() {
 
         changeLabel: function() {
 
-            if (labelsOfSelectedElements.length === this.options.data.length) {
-                this.sandbox.dom.text('#' + labelId, 'All languages');
-            } else if (labelsOfSelectedElements.length === 0) {
-                this.sandbox.dom.text('#' + labelId, this.options.defaultLabel);
+            if (this.labelsOfSelectedElements.length === this.options.data.length) {
+                this.sandbox.dom.text('#' + this.labelId, 'All languages');
+            } else if (this.labelsOfSelectedElements.length === 0) {
+                this.sandbox.dom.text('#' + this.labelId, this.options.defaultLabel);
             } else {
 
                 var text = "";
-                this.sandbox.util.each(labelsOfSelectedElements, function(index, value) {
+                this.sandbox.util.each(this.labelsOfSelectedElements, function(index, value) {
                     text += ' '+value + ',';
                 });
-                this.sandbox.dom.text('#' + labelId, text.substring(1, text.length - 1));
+                this.sandbox.dom.text('#' + this.labelId, text.substring(1, text.length - 1));
             }
         },
 
         // toggle dropDown visible
         toggleDropDown: function() {
             this.sandbox.logger.log('toggle dropdown '+this.options.instanceName);
-            this.sandbox.dom.toggleClass($dropdownContainer, 'hidden');
+            this.sandbox.dom.toggleClass(this.$dropdownContainer, 'hidden');
         },
 
         // make dropDown visible
         showDropDown: function() {
             this.sandbox.logger.log('show dropdown '+this.options.instanceName);
-            this.sandbox.dom.removeClass($dropdownContainer, 'hidden');
+            this.sandbox.dom.removeClass(this.$dropdownContainer, 'hidden');
         },
 
         // hide dropDown
         hideDropDown: function() {
             this.sandbox.logger.log('hide dropdown '+this.options.instanceName);
-            this.sandbox.dom.addClass($dropdownContainer, 'hidden');
+            this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');
         },
 
 
@@ -189,14 +192,14 @@ define([], function() {
                     '<div class="husky-dropdown-multiple-select">',
                     '    <div class="grid-row dropdown-label dropdown-open">',
                     '       <div class="grid-col-11 checkbox">',
-                    '           <span id="',labelId,'">',defaultLabel,'</span>',
+                    '           <span id="',this.labelId,'">',defaultLabel,'</span>',
                     '       </div>',
                     '       <div class="grid-col-1 align-right">',
                     '           <span class="dropdown-toggle inline-block"></span>',
                     '       </div>',
                     '   </div>',
-                    '   <div class="grid-row dropdown-list dropdown-align-right hidden" id="',dropdownContainerId,'">',
-                    '       <ul id="',listId,'"></ul>',
+                    '   <div class="grid-row dropdown-list dropdown-align-right hidden" id="',this.dropdownContainerId,'">',
+                    '       <ul id="',this.listId,'"></ul>',
                     '   </div>',
                     '</div>'
                 ].join('');

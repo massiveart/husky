@@ -34,11 +34,11 @@
     <div class="grid-row">
 
         <div class="grid-col-6" id="ddms"></div>
-
+        <div class="grid-col-6" id="ddms2"></div>
     </div>
 
     <div class="grid-row m-top-30"><input type="text" class="form-element"/></div>
-    <div class=grid-row" style="margin-top:150px;">
+    <div class="grid-row" style="margin-top:150px;">
         <div class="grid-col-4 pointer" id="show">Show</div>
         <div class="grid-col-4 pointer" id="hide">Hide</div>
         <div class="grid-col-4 pointer" id="toggle">Toggle</div>
@@ -71,12 +71,21 @@
                             defaultLabel: 'Please choose ...',
                             value: 'name',
                             data: ['Deutsch','English','Spanish','Italienisch']
-//                            data: [
-//                                {id: 0, name: 'Deutsch'},
-//                                {id: 1, name: 'English'},
-//                                {id: 2, name: 'Spanish'},
-//                                {id: 3, name: 'Italienisch'}
-//                            ]
+                        }
+                    },
+                    {
+                        name: 'dropdown-multiple-select@husky',
+                        options: {
+                            el: '#ddms2',
+                            instanceName: 'ddms2',
+                            defaultLabel: 'Please choose ...',
+                            value: 'name',
+                            data: [
+                                {id: 0, name: 'Deutsch'},
+                                {id: 1, name: 'English'},
+                                {id: 2, name: 'Spanish'},
+                                {id: 3, name: 'Italienisch'}
+                            ]
                         }
                     }
                 ]).then(function() {
@@ -101,7 +110,19 @@
                         app.sandbox.emit('husky.dropdown.multiple.select.ddms.toggle');
                     });
 
+
+
+
+                    app.sandbox.on('husky.dropdown.multiple.select.ddms2.deselected.item', function(item) {
+                        console.log("drop-down multiple select ddms2: deselected item: " + item);
+                    });
+
+                    app.sandbox.on('husky.dropdown.multiple.select.ddms2.selected.item', function(item) {
+                        console.log("drop-down multiple select ddms2: selected item: " + item);
+                    });
+
                 });
+
     });
 
 
