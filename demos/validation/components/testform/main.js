@@ -32,7 +32,7 @@ define([], function() {
         },
 
         render: function() {
-            this.html(this.renderTemplate('/demos/aurajs/validation/template'));
+            this.html(this.renderTemplate('/demos/validation/template'));
             this.sandbox.form.create('#form');
 
             this.bindDomEvents();
