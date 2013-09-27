@@ -131,6 +131,10 @@
                 $(selector).prop( propertyName, value);
             };
 
+            app.core.dom.stopPropagation = function(event) {
+              event.stopPropagation();
+            };
+
             app.core.util.ajax = $.ajax;
         }
     });

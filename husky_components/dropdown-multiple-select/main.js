@@ -122,8 +122,8 @@ define([], function() {
         // trigger event with clicked item
         clickItem: function(event) {
 
-            event.stopPropagation();
-            
+            this.sandbox.dom.stopPropagation(event);
+
             var key = this.sandbox.dom.attr(event.currentTarget, 'data-key'),
                 value = this.sandbox.dom.text(this.sandbox.dom.find('.item-value', event.currentTarget)),
                 $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget),
@@ -175,7 +175,7 @@ define([], function() {
             this.sandbox.logger.log('toggle dropdown '+this.options.instanceName);
             this.sandbox.dom.toggleClass(this.$dropdownContainer, 'hidden');
 
-            event.stopPropagation();
+            this.sandbox.dom.stopPropagation(event);
         },
 
         // make dropDown visible
@@ -183,7 +183,7 @@ define([], function() {
             this.sandbox.logger.log('show dropdown '+this.options.instanceName);
             this.sandbox.dom.removeClass(this.$dropdownContainer, 'hidden');
 
-            event.stopPropagation(event);
+            this.sandbox.dom.stopPropagation(event);
         },
 
         // hide dropDown
@@ -191,7 +191,7 @@ define([], function() {
             this.sandbox.logger.log('hide dropdown '+this.options.instanceName);
             this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');
 
-            event.stopPropagation();
+            this.sandbox.dom.stopPropagation(event);
         },
 
 

@@ -98,15 +98,18 @@
                         console.log("drop-down multiple select ddms: selected item: " + item);
                     });
 
-                    app.sandbox.dom.on('#show', 'click', function() {
+                    app.sandbox.dom.on('#show', 'click', function(event) {
+                        app.sandbox.dom.stopPropagation(event);
                         app.sandbox.emit('husky.dropdown.multiple.select.ddms.show');
                     });
 
-                    app.sandbox.dom.on('#hide', 'click', function() {
+                    app.sandbox.dom.on('#hide', 'click', function(event) {
+                        app.sandbox.dom.stopPropagation(event);
                         app.sandbox.emit('husky.dropdown.multiple.select.ddms.hide');
                     });
 
-                    app.sandbox.dom.on('#toggle', 'click', function() {
+                    app.sandbox.dom.on('#toggle', 'click', function(event) {
+                        app.sandbox.dom.stopPropagation(event);
                         app.sandbox.emit('husky.dropdown.multiple.select.ddms.toggle');
                     });
 
