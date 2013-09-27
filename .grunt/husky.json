@@ -58,7 +58,6 @@
             "__component__$select@husky",
             "__component__$auto-complete@husky",
             "__component__$password-fields@husky"
-        ],
-        "out": "dist/<%= PKG_VERSION %>/husky.js"
+        ]
     }
 }
