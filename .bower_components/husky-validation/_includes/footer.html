@@ -1,0 +1,5 @@
+<!-- Vendor scripts -->
+<script src="{{ page.base_url }}assets/js/jquery.js"></script>
+{% if page.main_js != "" %}
+<script data-main="{{ page.base_url }}{{ page.main_js }}" type="text/javascript" src="{{ page.base_url }}assets/js/require.js"></script>
+{% endif %}

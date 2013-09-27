@@ -26,6 +26,8 @@
 
 define([], function() {
 
+    'use strict';
+
     var defaults = {
         data: [],    // data array
         valueName: 'name', // name of text property

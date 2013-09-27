@@ -1,0 +1,467 @@
+---
+layout: default
+title: Documentation
+slug: documentation
+base_url: "../"
+main_js: "assets/js/documentation.js"
+---
+
+<div id="content">
+    <h1>Documentation</h1>
+
+    <ol>
+        <li><a href="#install">Installation</a></li>
+        <li><a href="#form">Form Options</a></li>
+        <li><a href="#field">Field Options</a></li>
+        <li><a href="#validators">Built-In Validators</a></li>
+        <li><a href="#types">Built-In Types</a></li>
+        <li><a href="#jsapi">JavaScript API</a></li>
+    </ol>
+
+    <h2 id="install">Installation</h2>
+
+    <p>Requirements:</p>
+    <ul>
+        <li>JQuery</li>
+        <li>RequireJS</li>
+        <li>Globalize for Dates and Numbers</li>
+    </ul>
+
+    <h3>index.html</h3>
+    <div class="doc-code">
+        {% highlight html %}
+<form id="contact-form">
+    [...]
+</form>
+
+<script type="text/javascript" src="jquery.js"></script>
+<script data-main="app.js" type="text/javascript" src="require.js"></script>
+        {% endhighlight %}
+    </div>
+
+    <h3>app.js</h3>
+    <div class="doc-code">
+{% highlight javascript %}
+requirejs.config({
+    paths: {
+        'globalize': 'bower_components/globalize/lib/globalize',
+        'cultures': 'bower_components/globalize/lib/cultures'
+    }
+});
+define(['js/form', 'globalize', 'cultures/globalize.culture.en-GB'], function(Form) {
+    Globalize.culture('en-GB');
+    var form = new Form($('#contact-form'));
+});
+{% endhighlight %}
+    </div>
+
+    <h2 id="form">Form Options</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>data</th>
+                <th>Default</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>debug</td>
+                <td>data-debug="true"</td>
+                <td>false</td>
+                <td>print debug messages</td>
+            </tr>
+            <tr>
+                <td>validation</td>
+                <td>data-validation="false"</td>
+                <td>true</td>
+                <td>load validation api</td>
+            </tr>
+            <tr>
+                <td>validationTrigger</td>
+                <td>data-validation-trigger="keyup forcusout"</td>
+                <td>'focusout'</td>
+                <td>default validate trigger</td>
+            </tr>
+            <tr>
+                <td>validationAddClasses</td>
+                <td>data-validation-add-classes="false"</td>
+                <td>true</td>
+                <td>add classes after validation (error / success)</td>
+            </tr>
+            <tr>
+                <td>validationSubmitEvent</td>
+                <td>data-validation-submit-event="false"</td>
+                <td>true</td>
+                <td>avoid submit if not valid</td>
+            </tr>
+            <tr>
+                <td>mapper</td>
+                <td>data-mapper="false"</td>
+                <td>true</td>
+                <td>load mapper api</td>
+            </tr>
+            <tr>
+                <td>type</td>
+                <td>data-type="date"</td>
+                <td>'string'</td>
+                <td>default type include all fields</td>
+            </tr>
+            <tr>
+                <td>validation*</td>
+                <td>data-validation-*="..."</td>
+                <td></td>
+                <td>default validation include all fields (Example: data-validation-required="true")</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="doc-code">
+        {% highlight javascript %}
+define(['js/form'], function(Form) {
+    var form = new Form($('#contact-form'), {
+        validation:false,
+        mapper:false
+    });
+});
+        {% endhighlight %}
+    </div>
+    <div class="doc-code">
+        {% highlight html %}
+<form data-validation="false" data-mapper="false"></form>
+        {% endhighlight %}
+    </div>
+
+    <h2 id="field">Field Options</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Option</th>
+                <th>Default</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>type</td>
+                <td>data-type="string"</td>
+                <td>'string'</td>
+                <td>Type of the Element</td>
+            </tr>
+            <tr>
+                <td>validationTrigger</td>
+                <td>data-trigger="focusin focusout"</td>
+                <td>'focusout'</td>
+                <td>default validate trigger</td>
+            </tr>
+            <tr>
+                <td>validationAddClasses</td>
+                <td>data-validation-add-classes="true"</td>
+                <td>true</td>
+                <td>add error and success classes</td>
+            </tr>
+            <tr>
+                <td>validationAddClassesParent</td>
+                <td>data-validation-add-classes-parent="true"</td>
+                <td>true</td>
+                <td>add classes to parent element</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="doc-code">
+        {% highlight html %}
+<input type="text"
+       data-validate="true"
+       data-trigger="keyup"
+       data-prop="birthDay"/>
+        {% endhighlight %}
+    </div>
+
+    <!-- TODO Documentation from here -->
+
+    <h2 id="validators">Built-In Validators</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>API</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Required</td>
+                <td>data-validation-required="true"</td>
+                <td>Validate that a required field has been filled.</td>
+            </tr>
+            <tr>
+                <td>Max</td>
+                <td>data-validation-max="100"</td>
+                <td>Validates that a given number is less than some maximum number.</td>
+            </tr>
+            <tr>
+                <td>Min</td>
+                <td>data-validation-min="20"</td>
+                <td>Validates that a given number is greater than some minimum number.</td>
+            </tr>
+            <tr>
+                <td>Min Length</td>
+                <td>dta-validation-min-length="3"</td>
+                <td>Validates that the length of a string is at least as long as the given limit.</td>
+            </tr>
+            <tr>
+                <td>Max Length</td>
+                <td>data-validation-max-length="10"</td>
+                <td>Validates that the length of a string is not larger than the given limit.</td>
+            </tr>
+            <tr>
+                <td>Unique</td>
+                <td>data-unique="groupname"</td>
+                <td>Validates wether a value is unique in a specific group of values or not.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 id="types">Built-In Types</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>API</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Date</td>
+                <td>data-type="date"</td>
+                <td>Validates that a value is a valid ISO date.</td>
+            </tr>
+            <tr>
+                <td>Decimal</td>
+                <td>data-type="decimal"</td>
+                <td>Validates that a value is a valid number.</td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>data-type="email"</td>
+                <td>Validates that a value is a valid email address.</td>
+            </tr>
+            <tr>
+                <td>Url</td>
+                <td>
+                    data-type="url"<br>
+                    data-url-strict="true"
+                </td>
+                <td>
+                    Strict=false: Validates that a value is a valid url.<br>
+                    Strict=true: Validates that a value is a valid strict URL, ie: with one of http, https, ftp, git allowed protocols.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 id="jsapi">JavaScript API</h2>
+
+    <h3>Form</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Return</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Create</td>
+                <td>Object</td>
+                <td>Bind to a form</td>
+                <td>var form = new Form($('#contact-form'));</td>
+            </tr>
+            <tr>
+                <td>Get</td>
+                <td>Object</td>
+                <td>Get the Object for form</td>
+                <td>var form = $('#contact-form').data('form-object')</td>
+            </tr>
+            <tr>
+                <td>Validate</td>
+                <td>Boolean</td>
+                <td>Revalidate Form</td>
+                <td>form.validation.validate([force])</td>
+            </tr>
+            <tr>
+                <td>isValid</td>
+                <td>Boolean</td>
+                <td>Get last Validation result</td>
+                <td>form.validation.isValid()</td>
+            </tr>
+            <tr>
+                <td>Add Field</td>
+                <td></td>
+                <td>Add a field to Form</td>
+                <td>form.addField('#date-field')</td>
+            </tr>
+            <tr>
+                <td>Remove Field</td>
+                <td></td>
+                <td>Remove a field from Form</td>
+                <td>form.removeField('#date-field')</td>
+            </tr>
+            </tbody>
+        </table>
+
+    <h3>Validation</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Return</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Add Constraint</td>
+                <td></td>
+                <td>Add a Constraint to a field</td>
+                <td>form.validation.addConstraint('#field', 'minlength', {minlength: 6})</td>
+            </tr>
+            <tr>
+                <td>Update Constraint</td>
+                <td></td>
+                <td>Update a Constraint from a field</td>
+                <td>form.validation.updateConstraint('#field', 'minlength', {minlength: 6})</td>
+            </tr>
+            <tr>
+                <td>Delete Constraint</td>
+                <td></td>
+                <td>Delete a Constraint from a field</td>
+                <td>form.validation.updateConstraint('#field', 'minlength')</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Mapper</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Return</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Set Data</td>
+                <td></td>
+                <td>Set data to form, the form will be filled with the given data</td>
+                <td>form.mapper.setData({name: 'TEST'})</td>
+            </tr>
+            <tr>
+                <td>Get Data</td>
+                <td>Object</td>
+                <td>Get data to form, the result will be filled with the data of the form</td>
+                <td>form.mapper.getData()</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Element</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Return</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Get</td>
+                <td>Object</td>
+                <td>Get the element for field</td>
+                <td>var element = $('#field').data('element')</td>
+            </tr>
+            <tr>
+                <td>Validate</td>
+                <td>Boolean</td>
+                <td>Revalidate Field</td>
+                <td>element.validate()</td>
+            </tr>
+            <tr>
+                <td>Add Constraint</td>
+                <td></td>
+                <td>Add a Constraint to a field</td>
+                <td>element.addConstraint('minlength', {minlength: 6})</td>
+            </tr>
+            <tr>
+                <td>Update Constraint</td>
+                <td></td>
+                <td>Update a Constraint from a field</td>
+                <td>element.updateConstraint('minlength', {minlength: 6})</td>
+            </tr>
+            <tr>
+                <td>Delete Constraint</td>
+                <td></td>
+                <td>Delete a Constraint from a field</td>
+                <td>element.updateConstraint('minlength')</td>
+            </tr>
+            <tr>
+                <td>Set Value</td>
+                <td></td>
+                <td>Set value</td>
+                <td>element.setValue('TEST')</td>
+            </tr>
+            <tr>
+                <td>Get Value</td>
+                <td>Object</td>
+                <td>Get value</td>
+                <td>element.getValue()</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 id="css">CSS Classes</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Class name</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Error</td>
+                <td>husky-validate-error</td>
+                <td>The field validation is failed</td>
+                <td>
+                    <div class="husky-validate-error">
+                        <label for="error">Error</label>
+                        <input id="error" type="text" class="husky-validate"/>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Success</td>
+                <td>husky-validate-success</td>
+                <td>The field validation where successfully</td>
+                <td>
+                    <div class="husky-validate-success">
+                        <label for="success">Success</label>
+                        <input id="success" type="text" class="husky-validate"/>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

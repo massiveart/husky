@@ -1,0 +1,10 @@
+# Tools
+/bower_components/
+/node_modules/
+
+# Jekyllrb
+/_docs
+
+# IDEs
+.idea/*
+*.iml

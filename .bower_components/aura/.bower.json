@@ -1,0 +1,22 @@
+{
+  "name": "aura",
+  "version": "0.9.1",
+  "main": "lib/aura.js",
+  "dependencies": {
+    "jquery": "~1.10.x",
+    "underscore": "~1.5.x",
+    "eventemitter2": "~0.4.11",
+    "requirejs": "~2.1.4",
+    "requirejs-text": "~2.0.5"
+  },
+  "homepage": "https://github.com/aurajs/aura",
+  "_release": "0.9.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.9.1",
+    "commit": "12457321d2764d4b86a2f766d9d4608af1cbf802"
+  },
+  "_source": "git://github.com/aurajs/aura.git",
+  "_target": "*",
+  "_originalSource": "aura"
+}
