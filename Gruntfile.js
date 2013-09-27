@@ -134,11 +134,10 @@ module.exports = function(grunt) {
                 files: [
                     {
                         expand: true,
-                        dot: true,
-                        cwd: './',
+                        cwd: '.tmp',
                         dest: 'dist',
                         src: [
-                            'fonts/{,*/}*'
+                            '**'
                         ]
                     }
                 ]
