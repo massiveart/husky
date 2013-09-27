@@ -1,4 +1,7 @@
-(function() {    
+(function() {
+
+    'use strict';
+
     if (window.jQuery) {
         define('jquery', [], function() {
             return window.jQuery;
@@ -34,6 +37,10 @@
                 return $(selector).html(content);
             };
 
+            app.core.dom.each = function(selector, callback) {
+                $(selector).each(callback);
+            };
+
             app.core.dom.append = function(selector, element) {
                 return $(selector).append(element);
             };
@@ -52,6 +59,18 @@
 
             app.core.dom.removeClass = function(selector, classes) {
                 return $(selector).removeClass(classes);
+            };
+
+            app.core.dom.toggleClass = function(selector, classes) {
+                return $(selector).toggleClass(classes);
+            };
+
+            app.core.dom.hasClass = function(selector, classes) {
+                return $(selector).hasClass(classes);
+            };
+
+            app.core.dom.parent = function(selector) {
+                return $(selector).parent();
             };
 
             app.core.dom.width = function(selector) {
@@ -75,6 +94,14 @@
                 return $(selector).is(type);
             };
 
+            app.core.dom.data = function(selector, key, value) {
+                if (!!value) {
+                    return $(selector).data(key, value);
+                } else {
+                    return $(selector).data(key);
+                }
+            };
+
             app.core.dom.onReady = function(callback) {
                 $(window).on('load', callback);
             };
@@ -87,16 +114,16 @@
                 }
             };
 
-            app.core.dom.on = function(selector, event, callback, filter){
-                if(!!filter) {
+            app.core.dom.on = function(selector, event, callback, filter) {
+                if (!!filter) {
                     $(selector).on(event, filter, callback);
                 } else {
                     $(selector).on(event, callback);
                 }
             };
 
-            app.core.dom.one = function(selector, event, callback, filter){
-                if(!!filter) {
+            app.core.dom.one = function(selector, event, callback, filter) {
+                if (!!filter) {
                     $(selector).one(event, filter, callback);
                 } else {
                     $(selector).one(event, callback);
@@ -115,7 +142,7 @@
                 return $(selector).next(filter);
             };
 
-            app.core.dom.prev = function(selector,filter) {
+            app.core.dom.prev = function(selector, filter) {
                 return $(selector).prev(filter);
             };
 
@@ -133,6 +160,15 @@
 
             app.core.dom.stopPropagation = function(event) {
               event.stopPropagation();
+            };
+
+
+            app.core.dom.hide = function(selector) {
+                return $(selector).hide();
+            };
+
+            app.core.dom.show = function(selector) {
+                return $(selector).show();
             };
 
             app.core.util.ajax = $.ajax;

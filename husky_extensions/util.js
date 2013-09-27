@@ -1,30 +1,34 @@
-define([], {
+define(function() {
 
-    name: 'Util',
+    'use strict';
 
-    initialize: function(app) {
+    return {
+        name: 'Util',
 
-        // for comparing arrays
-        app.core.util.compare = function(a, b) {
-            if (this.typeOf(a) === 'array' && this.typeOf(b) === 'array') {
-                return JSON.stringify(a) === JSON.stringify(b);
-            }
-        },
+        initialize: function(app) {
 
-        // Crockfords better typeof
-        app.core.util.typeOf = function(value) {
-            var s = typeof value;
-            if (s === 'object') {
-                if (value) {
-                    if (value instanceof Array) {
-                        s = 'array';
-                    }
-                } else {
-                    s = 'null';
+            // for comparing arrays
+            app.core.util.compare = function(a, b) {
+                if (this.typeOf(a) === 'array' && this.typeOf(b) === 'array') {
+                    return JSON.stringify(a) === JSON.stringify(b);
                 }
-            }
-            return s;
-        }
+            };
 
-    }
+            // Crockfords better typeof
+            app.core.util.typeOf = function(value) {
+                var s = typeof value;
+                if (s === 'object') {
+                    if (value) {
+                        if (value instanceof Array) {
+                            s = 'array';
+                        }
+                    } else {
+                        s = 'null';
+                    }
+                }
+                return s;
+            };
+
+        }
+    };
 });

@@ -10,14 +10,18 @@ basePath = '';
 files = [
     JASMINE,
     JASMINE_ADAPTER,
+    REQUIRE,
+    REQUIRE_ADAPTER,
 
-    'bower_components/jquery/jquery.js',
-    'node_modules/sinon/pkg/sinon.js',
+    { pattern: 'bower_components/**/*.js', included: false},
+    { pattern: 'lib/*.js', included: false},
+    { pattern: 'husky_extensions/*.js', included: false},
+    { pattern: 'husky_components/**/*.js', included: false},
 
-    'js/*.js',
-    'js/**/*.js',
-    'tests/*.js',
-    'tests/**/*.js'
+    { pattern: 'tests/*Spec.js', included: false},
+    { pattern: 'tests/**/*Spec.js', included: false},
+
+    'tests/runner.js'
 ];
 
 

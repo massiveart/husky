@@ -22,6 +22,8 @@
 
 define([], function() {
 
+    'use strict';
+
     var type,
         types = {
             icon: {
@@ -31,6 +33,8 @@ define([], function() {
                     type.bindDomEvents.call(this);
                 },
                 bindDomEvents: function() {
+                    // FIXME if not events would be triggered multiple times
+                    this.$el.off('click');
                     this.$el.on('click', this.clickEvent.bind(this));
                 },
                 unBindDomEvents: function() {
@@ -47,16 +51,21 @@ define([], function() {
 
                 states: {
                     standard: function() {
+                        this.sandbox.dom.show(this.$el);
                         type.reset.call(this);
 
                         type.bindDomEvents.call(this);
+                        this.sandbox.dom.addClass(this.$el, 'pointer');
                     },
                     disable: function() {
+                        this.sandbox.dom.show(this.$el);
                         this.sandbox.dom.addClass(this.$el, 'disable');
+                        this.sandbox.dom.removeClass(this.$el, 'pointer');
 
                         type.unBindDomEvents.call(this);
                     },
                     loading: function() {
+                        this.sandbox.dom.show(this.$el);
                         if (!!this.options.background) {
                             this.sandbox.dom.addClass(this.$el, 'loading-' + this.options.background);
                         } else {
@@ -65,7 +74,12 @@ define([], function() {
                         this.sandbox.dom.removeClass(this.$el, 'pointer');
 
                         type.unBindDomEvents.call(this);
+                    },
+                    hide: function() {
+                        this.sandbox.dom.hide(this.$el);
+
                     }
+
                 }
             }
         },
@@ -137,9 +151,10 @@ define([], function() {
             }
         },
 
-        setContent:function(text, icon) {
+        setContent: function(text, icon) {
             this.options.text = text;
             this.options.iconType = icon;
+//            type.init.call(this);
             this.render();
         }
     };

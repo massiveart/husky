@@ -21,8 +21,9 @@
 
 define([], function() {
 
-    var type,
-        defaults = {
+    'use strict';
+
+    var defaults = {
             url: '',            // url to load data
             valueName: 'name',  // propertyName for value
             minLength: 3,       // min length for request
@@ -43,13 +44,15 @@ define([], function() {
         // get url for pattern
         getUrl: function(pattern) {
             var delimiter = '?';
-            if (this.options.url.indexOf('?') != -1) delimiter = '&';
+            if (this.options.url.indexOf('?') !== -1) {
+                delimiter = '&';
+            }
 
             return this.options.url + delimiter + 'search=' + pattern;
         },
 
         getValueID: function() {
-            if (this.options.value != null) {
+            if (!!this.options.value) {
                 return this.options.value.id;
             } else {
                 return null;
@@ -57,7 +60,7 @@ define([], function() {
         },
 
         getValueName: function() {
-            if (this.options.value != null) {
+            if (!!this.options.value) {
                 return this.options.value[this.options.valueName];
             } else {
                 return '';
@@ -77,8 +80,7 @@ define([], function() {
         render: function() {
             this.$el.addClass('dropdown husky-auto-complete');
             // init form-element and dropdown menu
-            this.$valueField = $('<input type="text" autofill="false" class="name-value form-element husky-validate" data-id="' + this.getValueID() +
-                '" value="' + this.getValueName() + '"/>');
+            this.$valueField = $('<input type="text" autofill="false" class="name-value form-element husky-validate" data-id="' + this.getValueID() + '" value="' + this.getValueName() + '"/>');
             this.$dropDown = $('<div class="dropdown-menu" />');
             this.$dropDownList = $('<ul/>');
             this.$el.append(this.$valueField);
@@ -89,7 +91,7 @@ define([], function() {
             // bind dom elements
             this.bindDOMEvents();
 
-            if (this.options.value != null) {
+            if (!!this.options.value) {
                 this.successState();
             }
         },
@@ -104,10 +106,10 @@ define([], function() {
 
             // mouse control
             this.$dropDownList.on('click', 'li', function(event) {
-                var $element = $(event.currentTarget);
-                var id = $element.data('id');
+                var $element = $(event.currentTarget),
+                    id = $element.data('id'),
+                    item = {id: id};
 
-                var item = {id: id};
                 item[this.options.valueName] = $element.text();
                 this.selectItem(item);
             }.bind(this));
@@ -121,7 +123,7 @@ define([], function() {
             this.$valueField.on('focusout', function() {
                 // FIXME may there is a better solution ???
                 setTimeout(function() {
-                    this.hideDropDown()
+                    this.hideDropDown();
                 }.bind(this), 250);
             }.bind(this));
 
@@ -129,14 +131,22 @@ define([], function() {
             if (this.options.keyControl) {
                 this.$valueField.on('keydown', function(event) {
                     // key 40 = down, key 38 = up, key 13 = enter
-                    if ([40, 38, 13].indexOf(event.which) == -1) return;
+                    if ([40, 38, 13].indexOf(event.which) === -1) {
+                        return;
+                    }
 
                     event.preventDefault();
                     if (this.$dropDown.is(':visible')) {
 
-                        if (event.which == 40)      this.pressKeyDown();
-                        else if (event.which == 38) this.pressKeyUp();
-                        else if (event.which == 13) this.pressKeyEnter();
+                        if (event.which === 40) {
+                            this.pressKeyDown();
+                        }
+                        else if (event.which === 38) {
+                            this.pressKeyUp();
+                        }
+                        else if (event.which === 13) {
+                            this.pressKeyEnter();
+                        }
 
                     } else {
                         // If dropdown not visible => search for given pattern
@@ -182,7 +192,7 @@ define([], function() {
                     this.updateData(response.items);
                     if (data.length > 1) {
                         this.generateDropDown(data);
-                    } else if (data.length == 1) {
+                    } else if (data.length === 1) {
                         this.selectItem(data[0]);
                     } else {
                         this.failState();
@@ -227,7 +237,9 @@ define([], function() {
         isVisible: function(item) {
             var result = true;
             this.options.excludeItems.forEach(function(testItem) {
-                if (parseInt(item.id) === parseInt(testItem.id)) result = false;
+                if (parseInt(item.id, 10) === parseInt(testItem.id, 10)) {
+                    result = false;
+                }
             }.bind(this));
             return result;
         },
@@ -290,10 +302,11 @@ define([], function() {
             this.sandbox.logger.log('key down');
 
             // get actual and next element
-            var $actual = this.$dropDownList.children('.hover');
-            var $next = $actual.next();
+            var $actual = this.$dropDownList.children('.hover'),
+                $next = $actual.next();
+
             // no element selected
-            if ($next.length == 0) {
+            if ($next.length === 0) {
                 $next = this.$dropDownList.children().first();
             }
 
@@ -306,10 +319,10 @@ define([], function() {
             this.sandbox.logger.log('key up');
 
             // get actual and next element
-            var $actual = this.$dropDownList.children('.hover');
-            var $next = $actual.prev();
+            var $actual = this.$dropDownList.children('.hover'),
+                $next = $actual.prev();
             // no element selected
-            if ($next.length == 0) {
+            if ($next.length === 0) {
                 $next = this.$dropDownList.children().last();
             }
 
@@ -322,19 +335,20 @@ define([], function() {
             this.sandbox.logger.log('key enter');
 
             // if one element selected
-            var $actual = this.$dropDownList.children('.hover');
-            if ($actual.length == 1) {
-                var item = {id: $actual.data('id')};
+            var $actual = this.$dropDownList.children('.hover'),
+                item, value, childs, that;
+            if ($actual.length === 1) {
+                item = {id: $actual.data('id')};
                 item[this.options.valueName] = $actual.text();
                 this.selectItem(item);
             } else {
                 // if it is one of the list
-                var value = this.$valueField.val();
+                value = this.$valueField.val();
+                childs = this.$dropDownList.children();
+                that = this;
 
-                var childs = this.$dropDownList.children();
-                var that = this;
                 $(childs).each(function() {
-                    if ($(this).text() == value) {
+                    if ($(this).text() === value) {
                         // found an item select it
                         var item = {id: $(this).data('id')};
                         item[that.options.valueName] = $(this).text();
@@ -356,5 +370,5 @@ define([], function() {
             this.hideDropDown();
             this.successState();
         }
-    }
+    };
 });

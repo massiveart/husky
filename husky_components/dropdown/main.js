@@ -22,6 +22,8 @@
 
 define(['jquery'], function($) {
 
+    'use strict';
+
     var sandbox,
         moduleName = 'Husky.Ui.DropDown',
         defaults = {
@@ -79,7 +81,7 @@ define(['jquery'], function($) {
             }
 
             // check alginment
-            if (this.options.alignment == 'right') {
+            if (this.options.alignment === 'right') {
                 this.$dropDown.addClass('dropdown-align-right');
             }
 
@@ -104,7 +106,7 @@ define(['jquery'], function($) {
 
             // init drop-down
 
-            if (this.options.trigger != '') {
+            if (this.options.trigger !== '') {
                 $(this.options.el).on('click', this.options.trigger, this.triggerClick.bind(this));
             } else {
                 $(this.options.el).on('click', this.triggerClick.bind(this));
@@ -112,29 +114,28 @@ define(['jquery'], function($) {
 
             // mouse control
             this.$dropDownList.on('click', 'li', function(event) {
-                var $element = $(event.currentTarget);
-                var id = $element.data('id');
+                var $element = $(event.currentTarget),
+                    id = $element.data('id');
                 this.clickItem(id);
             }.bind(this));
 
 
         },
 
-        bindCustomEvents : function() {
+        bindCustomEvents: function() {
             this.sandbox.on(this.getEvent('toggle'), this.triggerClick.bind(this));
             this.sandbox.on(this.getEvent('show'), this.showDropDown.bind(this));
             this.sandbox.on(this.getEvent('hide'), this.hideDropDown.bind(this));
         },
 
         getEvent: function(append) {
-            console.log("instance - name", this.options.instanceName);
             return 'husky.dropdown.' + this.options.instanceName + '.' + append;
         },
 
         // trigger event with clicked item
         clickItem: function(id) {
             this.options.data.forEach(function(item) {
-                if (item.id == id) {
+                if (item.id === id) {
                     sandbox.logger.log(this.name, 'item.click: ' + id, 'success');
                     sandbox.emit(this.getEvent('item.click'), item, this.$el);
                     return false;
@@ -164,9 +165,9 @@ define(['jquery'], function($) {
             sandbox.util.ajax({
                 url: url,
                 success: function(response) {
-                   this.sandbox.logger.log(this.name, 'load', 'success');
+                    this.sandbox.logger.log(this.name, 'load', 'success');
 
-                    if (response.total > 0 && response.items.length == response.total) {
+                    if (response.total > 0 && response.items.length === response.total) {
                         this.options.data = response.items;
                     } else {
                         this.options.data = [];
@@ -205,7 +206,9 @@ define(['jquery'], function($) {
         isVisible: function(item) {
             var result = true;
             this.options.excludeItems.forEach(function(testItem) {
-                if (item.id == testItem.id) result = false;
+                if (item.id === testItem.id) {
+                    result = false;
+                }
             }.bind(this));
             return result;
         },
@@ -239,6 +242,6 @@ define(['jquery'], function($) {
             return this.options.url;
         }
 
-    }
+    };
 
 });

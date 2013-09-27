@@ -1,5 +1,7 @@
 (function() {
 
+    'use strict';
+
     if (window.Backbone) {
         define('backbone', [], function() {
             return window.Backbone;
@@ -17,7 +19,8 @@
         initialize: function(app) {
             var core = app.core,
                 sandbox = app.sandbox,
-                _ = app.sandbox.util._;
+                _ = app.sandbox.util._,
+                views = {};
 
             core.mvc = require('backbone');
 
@@ -53,34 +56,34 @@
                 return sandbox.mvc.Collection;
             });
 
-            var views = {};
-
             // Injecting a Backbone view in the Component just before initialization.
             // This View's class will be built and cached this first time the component is included.
             app.components.before('initialize', function(options) {
 
                 if (!this) {
-                    throw new Error("Missing context!");
+                    throw new Error('Missing context!');
                 }
 
                 // check component needs a view
                 if (!!this.view) {
 
-                    var View = views[options.ref];
+                    var View = views[options.ref],
+                        ext;
 
                     if (!View) {
-                        var ext = _.pick(this, 'model', 'collection', 'id', 'attributes', 'className', 'tagName', 'events');
+                        ext = _.pick(this, 'model', 'collection', 'id', 'attributes', 'className', 'tagName', 'events');
                         views[options.ref] = View = sandbox.mvc.View(ext);
                     }
                     this.view = new View({ el: this.$el });
                     this.view.sandbox = this.sandbox;
+                    this.view.parent = this;
                 }
             });
 
             app.components.before('remove', function() {
 
                 if (!this) {
-                    throw new Error("Missing context!");
+                    throw new Error('Missing context!');
                 }
 
                 this.view && this.view.stopListening();

@@ -21,9 +21,11 @@
             "__component__$datagrid@husky": "husky_components/datagrid/main",
             "__component__$dialog@husky": "husky_components/dialog/main",
             "__component__$dropdown@husky": "husky_components/dropdown/main",
+            "__component__$matrix@husky": "husky_components/matrix/main",
             "__component__$select@husky": "husky_components/select/main",
             "__component__$auto-complete@husky": "husky_components/auto-complete/main",
-            "__component__$dropdown-multiple-select@husky": "husky_components/dropdown-multiple-select/main"
+            "__component__$dropdown-multiple-select@husky": "husky_components/dropdown-multiple-select/main",
+            "__component__$password-fields@husky": "husky_components/password-fields/main"
         },
         "shim": {
             "backbone": {
@@ -43,19 +45,21 @@
             "aura/ext/debug",
             "aura/ext/mediator",
             "aura/ext/components",
-            "husky",
             "husky-validation",
             "globalize_lib",
 
+            "husky",
             "__component__$navigation@husky",
             "__component__$header@husky",
             "__component__$button@husky",
             "__component__$datagrid@husky",
             "__component__$dialog@husky",
             "__component__$dropdown@husky",
+            "__component__$matrix@husky",
             "__component__$select@husky",
             "__component__$auto-complete@husky",
-            "__component__$dropdown-multiple-select@husky"
+            "__component__$dropdown-multiple-select@husky",
+            "__component__$password-fields@husky"
         ],
         "out": "dist/<%= PKG_VERSION %>/husky.js"
     }

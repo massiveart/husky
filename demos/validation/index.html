@@ -1,0 +1,104 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <style type="text/css">
+            #content {
+                width: 800px;
+                margin-left: 300px;
+                margin-top: 100px;
+                min-height: 300px;
+                background: #f1f1f1;
+            }
+        </style>
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="stylesheet" href="../../dist/husky.min.css">
+    </head>
+    <body>
+        <div id="content" data-aura-component="testform@test"></div>
+
+        <script src="../js/sinon.js"></script>
+        <script src="../js/jquery.js"></script>
+
+        <script src="../js/require.js"></script>
+
+        <script type="text/javascript">
+            require.config({
+                baseUrl: '../../'
+            });
+            require(['lib/husky'], function(Husky) {
+                'use strict';
+
+                var initFakeServer = function(app) {
+                    app.logger.log('FakeServer started...');
+                    var fakeServer = sinon.fakeServer.create();
+                    fakeServer.respondWith('GET', '/contacts?search=abc', [200, { 'Content-Type': 'application/json' },
+                        '{"total": 3, "items": [ { "id": "1", "name": "abcd" }, { "id": "2", "name": "abcde" }, { "id": "3", "name":"abcdef" }] }'
+                    ]);
+                    fakeServer.respondWith('GET', '/contacts?search=abcd', [200, { 'Content-Type': 'application/json' },
+                        '{"total": 3, "items": [ { "id": "1", "name": "abcd" }, { "id": "2", "name": "abcde" }, { "id": "3", "name":"abcdef" }] }'
+                    ]);
+                    fakeServer.respondWith('GET', '/contacts?search=abcde', [200, { 'Content-Type': 'application/json' },
+                        '{"total": 2, "items": [ { "id": "2", "name": "abcde" }, { "id": "3", "name":"abcdef" }] }'
+                    ]);
+                    fakeServer.respondWith('GET', '/contacts?search=abcdef', [200, { 'Content-Type': 'application/json' },
+                        '{"total": 1, "items": [ { "id": "3", "name":"abcdef" }] }'
+                    ]);
+                    fakeServer.respondWith('GET', '/contacts?search=abcdefg', [200, { 'Content-Type': 'application/json' },
+                        '{"total": 0, "items": [ ] }'
+                    ]);
+
+                    app.sandbox.on('husky.auto-complete.load-data', function() {
+                        setTimeout(function() {
+                            fakeServer.respond();
+                        }, 1000);
+                    });
+                };
+
+                var language = 'de',
+                        messages = {
+                            firstName: 'Vorname',
+                            lastName: 'Nachname',
+                            phone: 'Telefon',
+                            wage: 'Gehalt'
+                        };
+
+                var app = Husky({
+                            debug: {
+                                enable: true
+                            },
+                            culture: {
+                                name: language,
+                                messages: messages
+                            }
+                        }),
+                        _ = app.sandbox.util._;
+
+                app.components.addSource('test', './demos/validation/components');
+
+                app.start().then(function() {
+                    app.logger.log('Aura started...');
+
+                    setTimeout(function() {
+                        initFakeServer(app);
+                    }, 50);
+                });
+
+            });
+        </script>
+
+    </body>
+</html>

@@ -40,6 +40,7 @@
 
 define(function() {
 
+    'use strict';
 
     /*
      *	Default values for options
@@ -144,9 +145,13 @@ define(function() {
         },
 
         getUrl: function(params) {
-            var delimiter = '?';
-            if (params.url.indexOf('?') != -1) delimiter = '&';
-            var url = params.url + delimiter + 'pageSize=' + this.options.paginationOptions.pageSize;
+            var delimiter = '?', url;
+
+            if (params.url.indexOf('?') !== -1) {
+                delimiter = '&';
+            }
+
+            url = params.url + delimiter + 'pageSize=' + this.options.paginationOptions.pageSize;
 
             if (params.page > 1) {
                 url += '&page=' + params.page;
@@ -230,8 +235,11 @@ define(function() {
 
                 tblColumns.push(
                     '<th class="select-all" ', tblCheckboxWidth.join(""), ' >');
-                if (this.options.selectItem.type === 'checkbox')
+
+                if (this.options.selectItem.type === 'checkbox') {
                     tblColumns.push(this.templates.checkbox({ id: 'select-all' }));
+                }
+
                 tblColumns.push('</th>');
             }
 
@@ -284,9 +292,9 @@ define(function() {
             } else {
 
                 var tblRowAttributes, tblCellContent, tblCellClass,
-                    tblColumns, tblCellClasses, radioPrefix;
+                    tblColumns, tblCellClasses, radioPrefix, key, column;
 
-                if (!!this.options.className && this.options.className != '') {
+                if (!!this.options.className && this.options.className !== '') {
                     radioPrefix = '-' + this.options.className;
                 } else {
                     radioPrefix = '';
@@ -295,8 +303,7 @@ define(function() {
                 tblColumns = [];
                 tblRowAttributes = '';
 
-                // add row id to itemIds collection (~~ === shorthand for parse int)
-                !!row.id && this.allItemIds.push(~~row.id);
+                !!row.id && this.allItemIds.push(parseInt(row.id, 10));
 
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     // add a checkbox to each row
@@ -309,21 +316,24 @@ define(function() {
                     }), '</td>');
                 }
 
-                for (var key in row) {
-                    var column = row[key];
-                    if (this.options.excludeFields.indexOf(key) < 0) {
-                        tblCellClasses = [];
-                        tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
+                for (key in row) {
+                    if (row.hasOwnProperty(key)) {
+                        column = row[key];
 
-                        // prepare table cell classes
-                        !!column.class && tblCellClasses.push(column.class);
-                        !!column.thumb && tblCellClasses.push('thumb');
+                        if (this.options.excludeFields.indexOf(key) < 0) {
+                            tblCellClasses = [];
+                            tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
 
-                        tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
+                            // prepare table cell classes
+                            !!column.class && tblCellClasses.push(column.class);
+                            !!column.thumb && tblCellClasses.push('thumb');
 
-                        tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
-                    } else {
-                        tblRowAttributes += ' data-' + key + '="' + column + '"';
+                            tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
+
+                            tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
+                        } else {
+                            tblRowAttributes += ' data-' + key + '="' + column + '"';
+                        }
                     }
                 }
 
@@ -344,7 +354,7 @@ define(function() {
 
             // Todo review handling of events for new rows in datagrid (itemId empty?)
 
-            var $element, itemId;
+            var $element, itemId, oldSelectionId;
 
             $element = this.sandbox.dom.$(event.currentTarget);
 
@@ -383,7 +393,7 @@ define(function() {
 
             } else if ($element.attr('type') === 'radio') {
 
-                var oldSelectionId = this.selectedItemIds.pop();
+                oldSelectionId = this.selectedItemIds.pop();
 
                 if (!!oldSelectionId && oldSelectionId > -1) {
                     this.sandbox.dom.$('tr[data-id="' + oldSelectionId + '"]').find('input[type="radio"]').removeClass('is-selected').prop('checked', false);
@@ -453,7 +463,7 @@ define(function() {
 
         removeRow: function(event) {
 
-            var $element, $tblRow, id;
+            var $element, $tblRow, id, idx;
 
             if (typeof event === 'object') {
 
@@ -466,10 +476,10 @@ define(function() {
                 $tblRow = this.$element.find('tr[data-id="' + id + '"]');
             }
 
-            var index = this.selectedItemIds.indexOf(id);
+            idx = this.selectedItemIds.indexOf(id);
 
-            if (index >= 0) {
-                this.selectedItemIds.splice(index, 1);
+            if (idx >= 0) {
+                this.selectedItemIds.splice(idx, 1);
             }
 
             this.sandbox.emit('husky.datagrid.row.removed', event);
@@ -490,7 +500,7 @@ define(function() {
         preparePagination: function() {
             var $pagination;
 
-            if (!!this.configs.total && ~~this.configs.total >= 1) {
+            if (!!this.configs.total && parseInt(this.configs.total, 10) >= 1) {
                 $pagination = this.sandbox.dom.$('<div/>');
                 $pagination.addClass('pagination');
 
@@ -646,80 +656,81 @@ define(function() {
         },
 
         // trigger selected items
-        getSelectedItemsIds: function(event) {
-            this.sandbox.emit('husky.datagrid.items.selected', this.selectedItemIds)
+        getSelectedItemsIds: function() {
+            this.sandbox.emit('husky.datagrid.items.selected', this.selectedItemIds);
         },
 
         templates: {
             removeRow: function() {
                 return [
                     '<span class="icon-remove"></span>'
-                ].join('')
+                ].join('');
             },
+
             checkbox: function(data) {
                 var id, name;
 
                 data = data || {};
-                id = (!!data['id']) ? ' id="' + data['id'] + '"' : '';
-                name = (!!data['name']) ? ' name="' + data['name'] + '"' : '';
+                id = (!!data.id) ? ' id="' + data.id + '"' : '';
+                name = (!!data.name) ? ' name="' + data.name + '"' : '';
 
                 return [
                     '<input', id, name, ' type="checkbox" class="custom-checkbox"/>',
                     '<span class="custom-checkbox-icon"></span>'
-                ].join('')
+                ].join('');
             },
 
             radio: function(data) {
                 var id, name;
 
                 data = data || {};
-                id = (!!data['id']) ? ' id="' + data['id'] + '"' : '';
-                name = (!!data['name']) ? ' name="' + data['name'] + '"' : '';
+                id = (!!data.id) ? ' id="' + data.id + '"' : '';
+                name = (!!data.name) ? ' name="' + data.name + '"' : '';
 
                 return [
                     '<input', id, name, ' type="radio" class="custom-radio"/>',
                     '<span class="custom-radio-icon"></span>'
-                ].join('')
+                ].join('');
             },
 
             // Pagination
             paginationPrevNavigation: function(data) {
-                var prev, first, selectedPage;
+                var selectedPage;
 
                 data = data || {};
-                selectedPage = ~~data['selectedPage'];
+                selectedPage = parseInt(data.selectedPage, 10);
 
                 return [
                     '<ul>',
-                    '<li class="pagination-first page" data-page="1"></li>',
-                    '<li class="pagination-prev page" data-page="', selectedPage - 1, '">', 'Previous', '</li>',
+                        '<li class="pagination-first page" data-page="1"></li>',
+                        '<li class="pagination-prev page" data-page="', selectedPage - 1, '">', 'Previous', '</li>',
                     '</ul>'
-                ].join('')
+                ].join('');
             },
 
             paginationNextNavigation: function(data) {
                 var next, last, pageSize, selectedPage;
 
                 data = data || {};
-                next = data['next'] || 'Next';
-                last = data['last'] || 'Last';
-                pageSize = data['pageSize'];
-                selectedPage = ~~data['selectedPage'];
+                next = data.next || 'Next';
+                last = data.last || 'Last';
+                pageSize = data.pageSize || 10;
+                selectedPage = (!!data.selectedPage) ? parseInt(data.selectedPage, 10) : 0;
 
                 return [
                     '<ul>',
-                    '<li class="pagination-next page" data-page="', selectedPage + 1, '">', next, '</li>',
-                    '<li class="pagination-last page" data-page="', pageSize, '"></li>',
+                        '<li class="pagination-next page" data-page="', selectedPage + 1, '">', next, '</li>',
+                        '<li class="pagination-last page" data-page="', pageSize, '"></li>',
                     '</ul>'
-                ].join('')
+                ].join('');
             },
 
             paginationPageNavigation: function(data) {
                 var pageSize, i, pageItems, selectedPage, pageClass;
 
                 data = data || {};
-                pageSize = ~~data['pageSize'];
-                selectedPage = ~~data['selectedPage'];
+                pageSize = data.pageSize || 10;
+                selectedPage = (!!data.selectedPage) ? parseInt(data.selectedPage, 10) : 0;
 
                 pageItems = [];
 
