@@ -120,7 +120,11 @@
             };
 
             app.core.dom.text = function(selector,value) {
-                return $(selector).text(value);
+                if (!!value) {
+                    $(selector).text(value);
+                } else {
+                    return $(selector).text();
+                }
             };
 
             app.core.dom.prop = function(selector, propertyName, value) {

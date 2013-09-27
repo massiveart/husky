@@ -6,23 +6,28 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  *
- * Name: dropdown
+ * Name: dropdown multiple select
  * Options:
- *
+ *      data: [],  array of data [string, object]
+ *      valueName: name of property which should be used
+ *      instanceName: instance name of this component
+ *      defaultLabel: default label which gets displayed
  *
  * Provided Events:
- * husky.dropdown.<<instanceName>>.item.click   - triggered when item clicked
- * husky.dropdown.<<instanceName>>.data.load    - triggered when data loaded
+ * husky.dropdown.multiple.select.<<instanceName>>.selected.item   - triggered when item selected
+ * husky.dropdown.multiple.select.<<instanceName>>.deselected.item   - triggered when item deselected
+
  *
  * Use Events
- * husky.dropdown.<<instanceName>>.toggle       - toggles (show/hide) dropdown menu
- * husky.dropdown.<<instanceName>>.show       - show dropdown menu
- * husky.dropdown.<<instanceName>>.hide       - hide dropdown menu
+ * husky.dropdown.multiple.select.<<instanceName>>.toggle     - toggles (show/hide) dropdown menu
+ * husky.dropdown.multiple.select.<<instanceName>>.show       - show dropdown menu
+ * husky.dropdown.multiple.select.<<instanceName>>.hide       - hide dropdown menu
  */
 
 define([], function() {
 
-    var selectedElements,
+    var selectedElements, // selected items - ids if data contains objects
+        labelsOfSelectedElements, // displayed labels for selection
 
         labelId,
         listId,
@@ -44,6 +49,7 @@ define([], function() {
             this.sandbox.logger.log('initialize', this);
             this.options = this.sandbox.util.extend({}, defaults, this.options);
             selectedElements = [];
+            labelsOfSelectedElements = [];
 
             labelId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-label';
             listId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-list';
@@ -112,6 +118,7 @@ define([], function() {
         clickItem: function(event) {
 
             var key = this.sandbox.dom.attr(event.currentTarget, 'data-key'),
+                value = this.sandbox.dom.text(this.sandbox.dom.find('.item-value', event.currentTarget)),
                 $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget),
                 index = selectedElements.indexOf(key);
 
@@ -120,6 +127,7 @@ define([], function() {
                 this.sandbox.dom.removeClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', false);
                 selectedElements.splice(index, 1);
+                labelsOfSelectedElements.splice(index,1);
                 this.sandbox.emit(this.getEventName('deselected.item'), key);
 
             } else {
@@ -127,6 +135,7 @@ define([], function() {
                 this.sandbox.dom.addClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', true);
                 selectedElements.push(key);
+                labelsOfSelectedElements.push(value);
                 this.sandbox.emit(this.getEventName('selected.item'), key);
             }
 
@@ -140,14 +149,14 @@ define([], function() {
 
         changeLabel: function() {
 
-            if (selectedElements.length === this.options.data.length) {
+            if (labelsOfSelectedElements.length === this.options.data.length) {
                 this.sandbox.dom.text('#' + labelId, 'All languages');
-            } else if (selectedElements.length === 0) {
-                this.sandbox.dom.text('#' + labelId, 'Please choose...');
+            } else if (labelsOfSelectedElements.length === 0) {
+                this.sandbox.dom.text('#' + labelId, this.options.defaultLabel);
             } else {
-                // TODO
+
                 var text = "";
-                this.sandbox.util.each(selectedElements, function(index, value) {
+                this.sandbox.util.each(labelsOfSelectedElements, function(index, value) {
                     text += ' '+value + ',';
                 });
                 this.sandbox.dom.text('#' + labelId, text.substring(1, text.length - 1));
@@ -203,7 +212,7 @@ define([], function() {
                         '            <input type="checkbox" class="form-element custom-checkbox"/>',
                         '            <span class="custom-checkbox-icon"></span>',
                         '        </div>',
-                        '        <div class="grid-col-11 m-top-10">',value,'</div>',
+                        '        <div class="grid-col-11 m-top-10 item-value">',value,'</div>',
                         '    </div>',
                         '</li>'
                     ].join('');
@@ -217,7 +226,7 @@ define([], function() {
                         '            <input type="checkbox" class="form-element custom-checkbox"/>',
                         '            <span class="custom-checkbox-icon"></span>',
                         '        </div>',
-                        '        <div class="grid-col-11 m-top-10">',value[property],'</div>',
+                        '        <div class="grid-col-11 m-top-10 item-value">',value[property],'</div>',
                         '    </div>',
                         '</li>'
                     ].join('');
