@@ -149,10 +149,18 @@ define(['jquery'], function($) {
                 'class': 'navigation-column-header'
             });
 
-            $columnHeader.html(this.template.columnHeader({
-                title: this.columnHeader.title,
-                logo: this.columnHeader.logo
-            }));
+            if (this.columnHeader.displayOption === 'link') {
+                $columnHeader.html(this.template.columnHeaderLink({
+                    title: this.columnHeader.title,
+                    icon: this.columnHeader.icon,
+                    action: this.columnHeader.action
+                }));
+            } else {
+                $columnHeader.html(this.template.columnHeader({
+                    title: this.columnHeader.title,
+                    logo: this.columnHeader.logo
+                }));
+            }
 
             return $columnHeader;
         },
@@ -378,6 +386,30 @@ define(['jquery'], function($) {
             }
         },
 
+        headerLinkClick: function() {
+            var action = $('.navigation-header-link').data('action'),
+                $column0 = $('#column-0'),
+                $column1 = $('#column-1');
+
+            this.removeContentColumn();
+
+            $column0.parent().removeClass('show-content');
+            if ($column0.hasClass('hide') && $column1.hasClass('collapsed')) {
+                $column0.removeClass('hide');
+                $column0.addClass('collapsed');
+                $column1.removeClass('collapsed');
+            } else if ($column0.hasClass('collapsed')) {
+                $column0.removeClass('collapsed');
+            }
+
+            sandbox.emit('navigation.item.content.show', {
+                item: {
+                    action: action
+                },
+                data: this.getNavigationData()
+            });
+        },
+
         // remove old columns before loading new ones
         updateColumns: function() {
             $('.navigation-columns > li:gt(' + this.currentColumnIdx + ')').remove();
@@ -434,13 +466,27 @@ define(['jquery'], function($) {
             }
         },
 
+        removeContentColumn: function() {
+            var $contentColumn = this.$navigation.find('.content-column');
+            if ($contentColumn.length > 0) {
+                this.currentColumnIdx -= $contentColumn.length;
+                $contentColumn.remove();
+            }
+        },
+
+        removeSubColumns: function() {
+            var $subColumns = this.$navigation.find('.navigation-sub-columns-container');
+            if ($subColumns.length > 0) {
+                this.currentColumnIdx -= this.$navigation.find('.navigation-sub-columns').length;
+                $subColumns.remove();
+            }
+        },
+
         // TODO
         showColumn: function(params) {
             sandbox.logger.log('showColumn');
 
             var $showedColumn,
-                $contentColumn,
-                $subColumns,
                 $column0,
                 $column1,
                 countCol0,
@@ -450,17 +496,7 @@ define(['jquery'], function($) {
 
             if (!!params.data) {
                 if (params.data.displayOption === 'content') {
-                    $contentColumn = this.$navigation.find('.content-column');
-                    $subColumns = this.$navigation.find('.navigation-sub-columns-container');
-
-                    if ($contentColumn.length > 0) {
-                        this.currentColumnIdx -= $contentColumn.length;
-                        $contentColumn.remove();
-                    }
-                    if ($subColumns.length > 0) {
-                        this.currentColumnIdx -= this.$navigation.find('.navigation-sub-columns').length;
-                        $subColumns.remove();
-                    }
+                    this.removeContentColumn();
                 }
                 $column0 = $('#column-0');
                 $column1 = $('#column-1');
@@ -567,6 +603,7 @@ define(['jquery'], function($) {
             $(window).on('resize load', this.setNavigationSize.bind(this));
 
             this.$el.on('click', '.navigation-column-item', this.selectItem.bind(this));
+            this.$el.on('click', '.navigation-header-link', this.headerLinkClick.bind(this));
             this.$el.on('click', '.navigation-column:eq(1)', this.showNavigationColumns.bind(this));
             this.$el.on('click', '.navigation-column:eq(0).collapsed', this.showFirstNavigationColumn.bind(this));
             this.$el.on('mousewheel DOMMouseScroll', '.navigation-sub-columns-container', this.scrollSubColumns.bind(this));
@@ -606,6 +643,16 @@ define(['jquery'], function($) {
         },
 
         template: {
+            columnHeaderLink: function(data) {
+                data.title = data.title || sandbox.translate('navigation.list');
+                data.icon = data.icon || 'list';
+                data.action = data.action || '';
+
+                return [
+                    '<div class="navigation-header-link pointer" data-action="', data.action, '"><span class="icon-', data.icon, '"></span>&nbsp;', data.title, '</div>'
+                ].join('');
+            },
+
             columnHeader: function(data) {
                 var titleTemplate = null;
 

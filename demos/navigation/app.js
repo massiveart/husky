@@ -40,26 +40,15 @@ require(['lib/husky'], function(Husky) {
             fakeServer.respond();
         }, 100);
 
-        app.sandbox.on('navigation.item.selected', function(event) {
-                $('#print').html(event.item.action);
-
-                if(event.item.action === '/portals/products/product_1/product_2/product_3/product_4/content'){
-                    showColumn();
-                }
-
-                setTimeout(function() {
-                    fakeServer.respond();
-                }, 500);
-            }
-        );
-
-        var showColumn = function() {
+        var sizeChanged = function(event) {
+            $('#content').css('margin-left', event.data.navWidth + 45);
+        }, showColumn = function() {
             app.sandbox.emit('navigation.item.column.show', {
                 data: {
                     "displayOption": "content",
                     "header": {
                         "displayOption": "link",
-                        "target": ""
+                        "action": "/back"
                     },
                     "sub": {
                         "items": [
@@ -83,8 +72,28 @@ require(['lib/husky'], function(Husky) {
             });
         };
 
+        app.sandbox.on('navigation.item.selected', function(event) {
+                $('#print').html(event.item.action);
+
+                setTimeout(function() {
+                    fakeServer.respond();
+                }, 500);
+            }
+        );
+
+        app.sandbox.on('navigation.item.content.show', function(event) {
+            sizeChanged(event);
+            
+            if (event.item.action === '/portals/products/product_1/product_2/product_3/product_4/content') {
+                showColumn();
+            }
+        });
+
+        app.sandbox.on('navigation.size.changed', function(event) {
+            sizeChanged(event);
+        });
+
         $('#load').on('click', showColumn);
     });
-
 
 });
