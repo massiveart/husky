@@ -23,6 +23,7 @@
 define([], function() {
 
     var sandbox,
+        selectedElements,
 
         labelId,
         listId,
@@ -82,6 +83,7 @@ define([], function() {
         // generate dropDown with given items
         generateDropDown: function(items) {
 
+            // remove all elements
             this.sandbox.dom.remove($list, 'li');
 
             if (items.length > 0) {
@@ -96,12 +98,16 @@ define([], function() {
         // bind dom elements
         bindDOMEvents: function() {
 
-            // turn off all events
-            //this.$element.off();
+            // toggle drop-down
+            this.sandbox.dom.on('#'+ this.options.instanceName,'click', this.toggleDropDown.bind(this), '.dropdown-label');
 
-            // init drop-down
+            // click on single item
+            this.sandbox.dom.on('#husky-dropdown-multiple-select-ddms-list','click', this.toggleDropDown.bind(this));
 
-//            this.sandbox.on('click', '#'+labelId, this.toggleDropDown.bind(this));
+
+
+
+            // click on checkbox of item
 
             // mouse control
 //            this.$dropDownList.on('click', 'li', function(event) {
@@ -117,11 +123,6 @@ define([], function() {
             this.sandbox.on(this.getEvent('toggle'), this.triggerClick.bind(this));
             this.sandbox.on(this.getEvent('show'), this.showDropDown.bind(this));
             this.sandbox.on(this.getEvent('hide'), this.hideDropDown.bind(this));
-        },
-
-        getEvent: function(append) {
-            console.log("instance - name", this.options.instanceName);
-            return 'husky.dropdown.' + this.options.instanceName + '.' + append;
         },
 
         // trigger event with clicked item
