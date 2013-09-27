@@ -27,11 +27,11 @@
 define([], function() {
 
     var defaults = {
-            data: [],    // data array
-            valueName: 'name', // name of text property
-            instanceName: 'undefined', // instance name
-            defaultLabel: 'Please choose'
-        };
+        data: [],    // data array
+        valueName: 'name', // name of text property
+        instanceName: 'undefined', // instance name
+        defaultLabel: 'Please choose'
+    };
 
 
     return {
@@ -54,9 +54,9 @@ define([], function() {
             this.selectedElements = [];
             this.labelsOfSelectedElements = [];
 
-            this.labelId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-label';
-            this.listId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-list';
-            this.dropdownContainerId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-menu';
+            this.labelId = 'husky-dropdown-multiple-select-' + this.options.instanceName + '-label';
+            this.listId = 'husky-dropdown-multiple-select-' + this.options.instanceName + '-list';
+            this.dropdownContainerId = 'husky-dropdown-multiple-select-' + this.options.instanceName + '-menu';
 
             this.render();
         },
@@ -64,9 +64,9 @@ define([], function() {
         render: function() {
 
             var $originalElement = this.sandbox.dom.$(this.options.el);
-            this.sandbox.dom.append($originalElement, this.template.basicStructure.call(this,this.options.defaultLabel));
-            this.$list = this.sandbox.dom.$('#'+this.listId);
-            this.$dropdownContainer = this.sandbox.dom.$('#'+this.dropdownContainerId);
+            this.sandbox.dom.append($originalElement, this.template.basicStructure.call(this, this.options.defaultLabel));
+            this.$list = this.sandbox.dom.$('#' + this.listId);
+            this.$dropdownContainer = this.sandbox.dom.$('#' + this.dropdownContainerId);
             this.prepareData();
 
 
@@ -79,7 +79,7 @@ define([], function() {
         prepareData: function() {
             if (this.options.data.length > 0) {
                 this.generateDropDown(this.options.data);
-            } else if (!!this.options.url){
+            } else if (!!this.options.url) {
                 this.loadData();
             } else {
                 this.sandbox.logger.log('error: wether url nor data set');
@@ -92,8 +92,8 @@ define([], function() {
             this.sandbox.dom.remove(this.$list, 'li');
 
             if (items.length > 0) {
-                this.sandbox.util.each(items, function(index,value){
-                    this.sandbox.dom.append(this.$list, this.template.menuElement.call(this,value,this.options.valueName));
+                this.sandbox.util.each(items, function(index, value) {
+                    this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName));
                 }.bind(this));
             } else {
                 this.$dropDownList.append('<li>No data received</li>');
@@ -106,14 +106,14 @@ define([], function() {
             this.sandbox.dom.on(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
 
             // toggle drop-down
-            this.sandbox.dom.on('#'+ this.options.instanceName,'click', this.toggleDropDown.bind(this), '.dropdown-label');
+            this.sandbox.dom.on('#' + this.options.instanceName, 'click', this.toggleDropDown.bind(this), '.dropdown-label');
 
             // click on single item
-            this.sandbox.dom.on('#'+this.listId,'click', this.clickItem.bind(this), 'li');
+            this.sandbox.dom.on('#' + this.listId, 'click', this.clickItem.bind(this), 'li');
 
         },
 
-        bindCustomEvents : function() {
+        bindCustomEvents: function() {
             this.sandbox.on(this.getEventName('toggle'), this.toggleDropDown.bind(this, event));
             this.sandbox.on(this.getEventName('show'), this.showDropDown.bind(this, event));
             this.sandbox.on(this.getEventName('hide'), this.hideDropDown.bind(this, event));
@@ -134,7 +134,7 @@ define([], function() {
                 this.sandbox.dom.removeClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', false);
                 this.selectedElements.splice(index, 1);
-                this.labelsOfSelectedElements.splice(index,1);
+                this.labelsOfSelectedElements.splice(index, 1);
                 this.sandbox.emit(this.getEventName('deselected.item'), key);
 
             } else {
@@ -151,7 +151,7 @@ define([], function() {
         },
 
         getEventName: function(suffix) {
-            return 'husky.dropdown.multiple.select.'+this.options.instanceName+'.'+suffix;
+            return 'husky.dropdown.multiple.select.' + this.options.instanceName + '.' + suffix;
         },
 
         changeLabel: function() {
@@ -164,7 +164,7 @@ define([], function() {
 
                 var text = "";
                 this.sandbox.util.each(this.labelsOfSelectedElements, function(index, value) {
-                    text += ' '+value + ',';
+                    text += ' ' + value + ',';
                 });
                 this.sandbox.dom.text('#' + this.labelId, text.substring(1, text.length - 1));
             }
@@ -172,7 +172,7 @@ define([], function() {
 
         // toggle dropDown visible
         toggleDropDown: function(event) {
-            this.sandbox.logger.log('toggle dropdown '+this.options.instanceName);
+            this.sandbox.logger.log('toggle dropdown ' + this.options.instanceName);
             this.sandbox.dom.toggleClass(this.$dropdownContainer, 'hidden');
 
             this.sandbox.dom.stopPropagation(event);
@@ -180,7 +180,7 @@ define([], function() {
 
         // make dropDown visible
         showDropDown: function(event) {
-            this.sandbox.logger.log('show dropdown '+this.options.instanceName);
+            this.sandbox.logger.log('show dropdown ' + this.options.instanceName);
             this.sandbox.dom.removeClass(this.$dropdownContainer, 'hidden');
 
             this.sandbox.dom.stopPropagation(event);
@@ -188,7 +188,7 @@ define([], function() {
 
         // hide dropDown
         hideDropDown: function(event) {
-            this.sandbox.logger.log('hide dropdown '+this.options.instanceName);
+            this.sandbox.logger.log('hide dropdown ' + this.options.instanceName);
             this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');
 
             this.sandbox.dom.stopPropagation(event);
@@ -197,35 +197,35 @@ define([], function() {
 
         template: {
 
-            basicStructure: function(defaultLabel){
+            basicStructure: function(defaultLabel) {
                 return [
                     '<div class="husky-dropdown-multiple-select">',
                     '    <div class="grid-row dropdown-label dropdown-open">',
                     '       <div class="grid-col-11 checkbox">',
-                    '           <span id="',this.labelId,'">',defaultLabel,'</span>',
+                    '           <span id="', this.labelId, '">', defaultLabel, '</span>',
                     '       </div>',
                     '       <div class="grid-col-1 align-right">',
                     '           <span class="dropdown-toggle inline-block"></span>',
                     '       </div>',
                     '   </div>',
-                    '   <div class="grid-row dropdown-list dropdown-align-right hidden" id="',this.dropdownContainerId,'">',
-                    '       <ul id="',this.listId,'"></ul>',
+                    '   <div class="grid-row dropdown-list dropdown-align-right hidden" id="', this.dropdownContainerId, '">',
+                    '       <ul id="', this.listId, '"></ul>',
                     '   </div>',
                     '</div>'
                 ].join('');
             },
-            menuElement: function(value, property){
+            menuElement: function(value, property) {
 
-                if(typeof value === 'string') {
+                if (typeof value === 'string') {
 
                     return [
-                        '<li data-key="',value,'">',
+                        '<li data-key="', value, '">',
                         '    <div class="grid-row">',
                         '        <div class="grid-col-1">',
                         '            <input type="checkbox" class="form-element custom-checkbox"/>',
                         '            <span class="custom-checkbox-icon"></span>',
                         '        </div>',
-                        '        <div class="grid-col-11 m-top-10 item-value">',value,'</div>',
+                        '        <div class="grid-col-11 m-top-10 item-value">', value, '</div>',
                         '    </div>',
                         '</li>'
                     ].join('');
@@ -233,13 +233,13 @@ define([], function() {
                 } else {
 
                     return [
-                        '<li data-key="',value.id,'">',
+                        '<li data-key="', value.id, '">',
                         '    <div class="grid-row">',
                         '        <div class="grid-col-1">',
                         '            <input type="checkbox" class="form-element custom-checkbox"/>',
                         '            <span class="custom-checkbox-icon"></span>',
                         '        </div>',
-                        '        <div class="grid-col-11 m-top-10 item-value">',value[property],'</div>',
+                        '        <div class="grid-col-11 m-top-10 item-value">', value[property], '</div>',
                         '    </div>',
                         '</li>'
                     ].join('');
