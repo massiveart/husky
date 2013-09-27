@@ -20,6 +20,8 @@
 
 define([], function() {
 
+    'use strict';
+
     var defaults = {
         instanceName: 'undefined',
         labels: {
@@ -64,7 +66,7 @@ define([], function() {
         },
 
         generatePasswords: function() {
-            var generatedPassword = "test";
+            var generatedPassword = 'test';
 
             // TODO generate password
 
