@@ -1,7 +1,7 @@
 var tests = [];
 for (var file in window.__karma__.files) {
     if (window.__karma__.files.hasOwnProperty(file)) {
-        if (/-spec\.js$/.test(file)) {
+        if (/Spec\.js$/.test(file)) {
             tests.push(file);
         }
     }
@@ -14,6 +14,7 @@ require.config({
     paths: {
         'jquery': 'bower_components/jquery/jquery',
         'sinon': 'node_modules/sinon/pkg/sinon.js',
+        'aura': 'bower_components/aura/lib',
         'husky': 'lib/husky'
     },
 

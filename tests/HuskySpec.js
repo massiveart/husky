@@ -14,11 +14,15 @@ define(['husky', 'jquery'], function(husky, $) {
             app.stop();
         });
 
-        it('start application', function() {
+        it('application start', function() {
 
             app = husky({ debug: { enable: true }});
 
-            app.start().then(function() {
+            var promise = app.start();
+
+            expect(promise.then).toBeDefined();
+
+            promise.then(function() {
                 app.logger.log('Aura started...');
             });
         });
