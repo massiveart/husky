@@ -46,6 +46,8 @@ define([], function() {
         initialize: function() {
             this.sandbox.logger.log('initialize', this);
             this.options = this.sandbox.util.extend({}, defaults, this.options);
+            selectedElements = [];
+
 
             labelId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-label';
             listId = 'husky-dropdown-multiple-select-'+this.options.instanceName+'-list';
@@ -88,7 +90,7 @@ define([], function() {
 
             if (items.length > 0) {
                 this.sandbox.util.each(items, function(index,value){
-                    this.sandbox.dom.append($list, this.template.menuElement(index,value));
+                    this.sandbox.dom.append($list, this.template.menuElement(value));
                 }.bind(this));
             } else {
                 this.$dropDownList.append('<li>No data received</li>');
@@ -102,7 +104,7 @@ define([], function() {
             this.sandbox.dom.on('#'+ this.options.instanceName,'click', this.toggleDropDown.bind(this), '.dropdown-label');
 
             // click on single item
-            this.sandbox.dom.on('#husky-dropdown-multiple-select-ddms-list','click', this.toggleDropDown.bind(this));
+            this.sandbox.dom.on('#husky-dropdown-multiple-select-ddms-list','click', this.clickItem.bind(this), 'li');
 
 
 
@@ -119,22 +121,51 @@ define([], function() {
 
         },
 
-        bindCustomEvents : function() {
-            this.sandbox.on(this.getEvent('toggle'), this.triggerClick.bind(this));
-            this.sandbox.on(this.getEvent('show'), this.showDropDown.bind(this));
-            this.sandbox.on(this.getEvent('hide'), this.hideDropDown.bind(this));
-        },
+//        bindCustomEvents : function() {
+//            this.sandbox.on(this.getEvent('toggle'), this.triggerClick.bind(this));
+//            this.sandbox.on(this.getEvent('show'), this.showDropDown.bind(this));
+//            this.sandbox.on(this.getEvent('hide'), this.hideDropDown.bind(this));
+//        },
 
         // trigger event with clicked item
-        clickItem: function(id) {
-            this.options.data.forEach(function(item) {
-                if (item.id == id) {
-                    sandbox.logger.log(this.name, 'item.click: ' + id, 'success');
-                    sandbox.emit(this.getEvent('item.click'), item, this.$el);
-                    return false;
-                }
-            }.bind(this));
-            this.hideDropDown();
+        clickItem: function(event) {
+
+            var key = this.sandbox.dom.attr(event.currentTarget, 'data-key'),
+                $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget),
+                index = selectedElements.indexOf(key);
+
+            if (index > -1) {
+
+                this.sandbox.dom.removeClass($checkbox, 'is-selected');
+                this.sandbox.dom.prop($checkbox, 'checked', false);
+                selectedElements.splice(index, 1);
+                this.sandbox.emit('husky.dropdown.multiple.deselected.item', key);
+
+            } else {
+
+                this.sandbox.dom.addClass($checkbox, 'is-selected');
+                this.sandbox.dom.prop($checkbox, 'checked', true);
+                selectedElements.push(key);
+                this.sandbox.emit('husky.dropdown.multiple.selected.item', key);
+            }
+
+            this.changeLabel();
+
+        },
+
+        changeLabel: function() {
+
+            if (selectedElements.length === this.options.data.length) {
+                this.sandbox.dom.text('#' + labelId, 'All languages');
+            } else if (selectedElements.length === 0) {
+                this.sandbox.dom.text('#' + labelId, 'Please choose...');
+            } else {
+                var text = "";
+                this.sandbox.util.each(selectedElements, function(index, value) {
+                    text += ' '+value + ',';
+                });
+                this.sandbox.dom.text('#' + labelId, text.substring(1, text.length - 1));
+            }
         },
 
         // load data with ajax
@@ -201,7 +232,7 @@ define([], function() {
                 return [
                     '<div class="husky-dropdown-multiple-select">',
                     '    <div class="grid-row dropdown-label dropdown-open">',
-                    '       <div class="grid-col-11">',
+                    '       <div class="grid-col-11 checkbox">',
                     '           <span id="',labelId,'">',defaultLabel,'</span>',
                     '       </div>',
                     '       <div class="grid-col-1 align-right">',
@@ -214,9 +245,9 @@ define([], function() {
                     '</div>'
                 ].join('');
             },
-            menuElement: function(index, value){
+            menuElement: function(value){
                 return [
-                    '<li data-index="',index,'">',
+                    '<li data-key="',value,'">',
                     '    <div class="grid-row">',
                     '        <div class="grid-col-1">',
                     '            <input type="checkbox" class="form-element custom-checkbox"/>',

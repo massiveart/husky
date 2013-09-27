@@ -123,6 +123,10 @@
                 return $(selector).text(value);
             };
 
+            app.core.dom.prop = function(selector, propertyName, value) {
+                $(selector).prop( propertyName, value);
+            };
+
             app.core.util.ajax = $.ajax;
         }
     });
