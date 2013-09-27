@@ -238,8 +238,6 @@ define(['jquery'], function($) {
             }
 
             this.setNavigationSize();
-
-            sandbox.emit('navigation.size.changed', this.getNavigationData());
         },
 
         collapseFirstColumn: function() {
@@ -257,11 +255,13 @@ define(['jquery'], function($) {
             $firstColumn = $('#column-0');
             $secondColumn = $('#column-1');
 
-            this.$navigationColumns.removeClass('show-content');
+            if (!$element.hasClass('content-column')) {
+                this.$navigationColumns.removeClass('show-content');
+            }
 
             this.showContent = false;
 
-            if (!$element.hasClass('navigation-column-item') && !$element.is('span')) {
+            if (!$element.hasClass('content-column') && !$element.hasClass('navigation-column-item') && !$element.is('span')) {
                 $firstColumn.removeClass('hide');
                 $secondColumn.removeClass('collapsed');
 
@@ -394,6 +394,8 @@ define(['jquery'], function($) {
                 if (!this.$navigationColumns.hasClass('show-content')) {
                     if ($column.hasClass('collapsed')) {
                         width += 50;
+                    } else if ($column.hasClass('content-column')) {
+                        width += 150;
                     } else {
                         width += 250;
                     }
@@ -436,22 +438,30 @@ define(['jquery'], function($) {
             sandbox.logger.log('showColumn');
 
             var $showedColumn,
-                $column0 = $('#column-0'),
-                $column1 = $('#column-1'),
-                countCol0 = $column0.length,
-                countCol1 = $column1.length;
+                $column0,
+                $column1,
+                countCol0,
+                countCol1;
 
             params = params || {};
 
             if (!!params.data) {
+                if (params.data.displayOption === 'content' && this.$navigation.find('.content-column').length > 0) {
+                    this.currentColumnIdx--;
+                    this.$navigation.find('.content-column').remove();
+                }
+                $column0 = $('#column-0');
+                $column1 = $('#column-1');
+                countCol0 = $column0.length;
+                countCol1 = $column1.length;
+
                 this.columnHeader = params.data.header || null;
                 this.columnItems = params.data.sub.items || null;
 
                 this.setConfigs(params.data);
 
-                if (countCol0 === 1 && countCol1 === 0) {
-                    // FIXME check if only special case
-                } else {
+                // FIXME check if only special case
+                if (!(countCol0 === 1 && countCol1 === 0)) {
                     $('#column-0').addClass('hide');
                     $('#column-1').addClass('collapsed');
                 }
@@ -470,7 +480,7 @@ define(['jquery'], function($) {
                 $showedColumn = $('#column-' + this.addedColumn);
                 $showedColumn.find('ul.navigation-items li:first').addClass('selected');
 
-                sandbox.emit('navigation.column.content.show', {
+                sandbox.emit('navigation.size.changed', {
                     data: this.getNavigationData()
                 });
 
