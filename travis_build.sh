@@ -7,10 +7,8 @@ npm install -g grunt-cli
 echo ">>> grunt exited with code: $?"
 echo ""
 
-npm install -g bower
-echo ">>> bower exited with code: $?"
-echo ""
+npm install
 
-bower install
+grunt update
 
 grunt travis
