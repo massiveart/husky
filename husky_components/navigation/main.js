@@ -216,11 +216,11 @@ define(['jquery'], function($) {
         },
 
         addColumn: function() {
-            var $subColumns,
-                $subColumnsContainer = $('.navigation-sub-columns-container');
+            var $subColumns, $subColumnsContainer = $('.navigation-sub-columns-container');
 
             this.currentColumnIdx++;
 
+            // FIXME check if necessary
             if (this.currentColumnIdx === 2 && !$subColumnsContainer.size()) {
                 $subColumns = $('<li/>', {
                     'class': 'navigation-sub-columns-container'
@@ -228,6 +228,7 @@ define(['jquery'], function($) {
 
                 $subColumns.append(this.prepareNavigationSubColumn());
                 this.$navigationColumns.append($subColumns);
+                $subColumnsContainer = $('.navigation-sub-columns-container');
             }
 
             if (!!$subColumnsContainer.size()) {
@@ -296,7 +297,6 @@ define(['jquery'], function($) {
             itemModel = this.itemsCollection.get(elementId);
 
             this.currentColumnIdx = $elementColumn.data('column-id');
-            this.currentColumnIdx = $elementColumn.data('column-id');
 
             if (!!itemModel && this.selectionLocked) {
                 // reset all navigation items...
@@ -363,6 +363,7 @@ define(['jquery'], function($) {
                     if ($elementColumn.data('columnId') !== 0) {
                         this.collapseFirstColumn();
                     } else {
+                        $('#column-1').remove();
                         $('#column-0')
                             .removeClass('hide')
                             .removeClass('collapsed')
@@ -438,6 +439,8 @@ define(['jquery'], function($) {
             sandbox.logger.log('showColumn');
 
             var $showedColumn,
+                $contentColumn,
+                $subColumns,
                 $column0,
                 $column1,
                 countCol0,
@@ -446,9 +449,18 @@ define(['jquery'], function($) {
             params = params || {};
 
             if (!!params.data) {
-                if (params.data.displayOption === 'content' && this.$navigation.find('.content-column').length > 0) {
-                    this.currentColumnIdx--;
-                    this.$navigation.find('.content-column').remove();
+                if (params.data.displayOption === 'content') {
+                    $contentColumn = this.$navigation.find('.content-column');
+                    $subColumns = this.$navigation.find('.navigation-sub-columns-container');
+
+                    if ($contentColumn.length > 0) {
+                        this.currentColumnIdx -= $contentColumn.length;
+                        $contentColumn.remove();
+                    }
+                    if ($subColumns.length > 0) {
+                        this.currentColumnIdx -= this.$navigation.find('.navigation-sub-columns').length;
+                        $subColumns.remove();
+                    }
                 }
                 $column0 = $('#column-0');
                 $column1 = $('#column-1');
