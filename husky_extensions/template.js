@@ -1,5 +1,7 @@
 define(['underscore', 'jquery'], function(_, $) {
 
+    'use strict';
+
     function TemplateManager(options) {
         this.options = _.defaults(options || {}, {
             type: 'html',
@@ -16,8 +18,9 @@ define(['underscore', 'jquery'], function(_, $) {
         load: function(names, widget) {
             names = _.isString(names) ? [names] : names;
 
-            var resolved = {};
-            var unresolved = [];
+            var resolved = {},
+                unresolved = [],
+                deferred, files;
 
             _.each(names, function(name) {
                 var template = this.find(widget + '/' + name);
@@ -28,14 +31,14 @@ define(['underscore', 'jquery'], function(_, $) {
                 }
             }, this);
 
-            var deferred = new $.Deferred();
+            deferred = new $.Deferred();
 
             if (!unresolved.length) {
                 deferred.resolve(resolved);
             } else {
-                var files = _.map(unresolved, function(u) {
+                files = _.map(unresolved, function(u) {
                     var path = u + '.' + this.options.type;
-                    if (u.indexOf('/') != 0) {
+                    if (u.indexOf('/') !== 0) {
                         // TODO default path
                     }
                     return 'text!' + path;
@@ -49,7 +52,6 @@ define(['underscore', 'jquery'], function(_, $) {
 
                     deferred.resolve(resolved);
                 }, this), function(error) {
-                    console.error(error);
                     deferred.reject(error);
                 });
             }
@@ -59,12 +61,13 @@ define(['underscore', 'jquery'], function(_, $) {
 
         find: function(name, namespace) {
             namespace = namespace || 'aura';
-            var template = $('script[data-' + namespace + '-template="' + name + '"]').html();
+            var template = $('script[data-' + namespace + '-template="' + name + '"]').html(),
+                hash;
 
             if (template) {
                 return this.options.compiler(template);
             } else {
-                var hash = _.find(this.options.lookup, function(h) {
+                hash = _.find(this.options.lookup, function(h) {
                     return !!h[name];
                 }) || {};
 
@@ -77,13 +80,12 @@ define(['underscore', 'jquery'], function(_, $) {
         var manager = new TemplateManager(app.config.template);
 
         app.core.Components.Base.prototype.renderTemplate = function(tplName, context) {
-            var tpl = this._templates[tplName];
 
-            if (typeof tpl === 'function') {
-                var regExp = new RegExp('(###\\w*###)', 'gi'),
+            if (typeof this.loadedTemplates[tplName] === 'function') {
+                var tpl = this.loadedTemplates[tplName],
+                    regExp = new RegExp('(###\\w*###)', 'gi'),
                     template = tpl(context),
-                    result = template.match(regExp),
-                    key, translation;
+                    result = template.match(regExp);
 
                 if (!!result) {
                     this.sandbox.util.each(result, function(key, value) {
@@ -100,15 +102,15 @@ define(['underscore', 'jquery'], function(_, $) {
 
         app.components.before('initialize', function() {
 
-            this._templates = {};
+            this.loadedTemplates = {};
 
-            if (this.templates == null || !this.templates.length) {
+            if (!this.templates || !this.templates.length) {
                 return;
             }
 
             var loading = manager.load(this.templates, this.options.name);
             loading.done(_.bind(function(templates) {
-                this._templates = templates;
+                this.loadedTemplates = templates;
             }, this));
 
             return loading.promise();

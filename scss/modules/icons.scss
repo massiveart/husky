@@ -140,6 +140,41 @@
     }
 }
 
+.icon-view {
+    &::after {
+        content: "\e052";
+        display: inline-block;
+    }
+}
+
+.icon-delete {
+    &::after {
+        content: "\e017";
+        display: inline-block;
+    }
+}
+
+.icon-live {
+    &::after {
+        content: "\e033";
+        display: inline-block;
+    }
+}
+
+.icon-security {
+    &::after {
+        content: "\e205";
+        display: inline-block;
+    }
+}
+
+.icon-archive {
+    &::after {
+        content: "\e150";
+        display: inline-block;
+    }
+}
+
 .icon-check {
   &::after {
     content: "\e153";
@@ -153,3 +188,4 @@
     display: inline-block;
   }
 }
+

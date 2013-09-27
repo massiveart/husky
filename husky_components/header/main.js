@@ -24,6 +24,8 @@
 
 define([], function() {
 
+    'use strict';
+
     var sandbox,
         type,
         types = {
@@ -47,7 +49,7 @@ define([], function() {
                         sandbox.emit('husky.button.save.set-content', 'Saved', 'circle-ok');
                         sandbox.emit('husky.button.save.state', 'disable');
                     },
-                    dirty: function(){
+                    dirty: function() {
                         // set text to save and icon to !
                         sandbox.emit('husky.button.save.set-content', 'Save', 'caution');
                         sandbox.emit('husky.button.save.state', 'standard');
@@ -59,6 +61,7 @@ define([], function() {
                         sandbox.emit('husky.button.save.state', 'loading');
                     },
                     hide: function() {
+                        // hide save button
                         sandbox.emit('husky.button.save.state', 'hide');
                     }
                 }
@@ -86,7 +89,7 @@ define([], function() {
                         sandbox.emit('husky.button.save.state', 'disable');
                         sandbox.emit('husky.button.delete.state', 'standard');
                     },
-                    dirty: function(){
+                    dirty: function() {
                         // set text to save and icon to !
                         sandbox.emit('husky.button.save.set-content', 'Save', 'caution');
                         sandbox.emit('husky.button.save.state', 'standard');
@@ -137,9 +140,12 @@ define([], function() {
                 }
             },
             reset: {
-              template: function() { return [];},
-              reset:    function() { },
-              states:   { }
+                template: function() {
+                    return [];
+                },
+                reset: function() {
+                },
+                states: { }
             }
         },
         defaults = {
@@ -204,6 +210,10 @@ define([], function() {
             this.sandbox.on('navigation.item.content.show', function(item) {
                 this.moveButtons(item.data.navWidth);
             }.bind(this));
+            this.sandbox.on('navigation.size.changed', function(data) {
+                this.moveButtons(data.navWidth);
+            }.bind(this));
+            
             this.sandbox.on('husky.header.move-buttons', this.moveButtons.bind(this));
 
             // add buttons
@@ -215,9 +225,9 @@ define([], function() {
 
         // move buttons with navigation width
         moveButtons: function(navWidth) {
-            var headerLeft = parseInt(this.sandbox.dom.css(this.$header, 'padding-left')),
+            var headerLeft = parseInt(this.sandbox.dom.css(this.$header, 'padding-left'), 10),
                 marginLeft = navWidth + this.options.marginMid - headerLeft,
-                width = parseInt(this.sandbox.dom.css(this.$mid, 'width'));
+                width = parseInt(this.sandbox.dom.css(this.$mid, 'width'), 10);
 
             this.$mid.css('margin-left', marginLeft);
             this.$right.css('margin-left', width + marginLeft + this.options.marginRight);

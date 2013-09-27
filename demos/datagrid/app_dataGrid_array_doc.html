@@ -1,0 +1,137 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../dist/husky.min.css">
+
+    <style type="text/css">
+        #content {
+            width: 800px;
+            margin-left: 300px;
+            margin-top: 100px;
+            min-height: 300px;
+            background: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- <div data-aura-component="headerbar@husky" data-aura-margin="55"></div>
+
+    <div data-aura-component="navigation@husky" data-aura-url="/navigation" data-aura-collapse="true"></div> -->
+
+    <div id="content" class="grid">
+        <div id="datagrid" class="grid-row"></div>
+        <div id="add-row" class="grid-row m-top-30"><span>Add Row</span></div>
+    </div>
+
+
+    <script src="../js/sinon.js"></script>
+    <script src="../js/jquery.js"></script>
+
+    <script src="../js/require.js"></script>
+
+    <script type="text/javascript">
+            require.config({
+                baseUrl: '../../'
+            });
+
+            require(['lib/husky'], function(Husky) {
+                'use strict';
+
+                var data = new Array();
+                data[0] = { id: 2, translations: [], locale: 'English', code: 'code 1'};
+                data[1] = { id: 4, translations: [], locale: 'Deutsch', code: 'code 2'};
+
+
+                var app = Husky({ debug: { enable: true }}),
+                    _ = app.sandbox.util._;
+
+                app.start([
+                    { 
+                        name: 'datagrid@husky', options: 
+                        { 
+                            el: '#datagrid',
+                            pagination: false,
+                            autoRemoveHandling: false,
+                            tableHead: [
+                                {content: 'Content 2', width: "60%"},
+                                {content: 'Code', width: "20%"},
+                                {content: 'Remove', width: "10%"}
+                            ],
+                            excludeFields: ['id', 'translations'],
+                            data: {
+                                items: data,
+                            },
+                            template: {
+                                row: ['<tr <% if (!!id) { %> data-id="<%= id %>"<% } %> >',
+                                            '<td>',
+                                                '<label>',
+                                                    '<input type="radio" class="custom-radio" name="catalogue-radio">',
+                                                    '<span class="custom-radio-icon"></span>',
+                                                '</label>',
+                                            '</td>',
+                                            '<td>',
+                                                '<input class="form-element" type="text" id="locale<%= id %>" value="<%= locale %>"/>',
+                                            '</td>',
+                                            '<td>',
+                                                '<input class="form-element" type="text" id="code<%= id %>" value="<%= code %>"/>',
+                                            '</td>',
+                                            '<td class="remove-row">',
+                                                '<span class="icon-remove"></span>',
+                                            '</td>',
+                                        '</tr>'].join(''),
+                            }
+                        }
+                    }
+                ]).then(function() {
+                    app.logger.log('Aura started...');
+
+                    $('#add-row').on('click', function() {
+                        app.sandbox.emit('husky.datagrid.row.add', { id: "", locale: "" , translations: [], code: "" });
+                    });
+
+                    // app.sandbox.on('husky.datagrid.row.removed', function(item) {
+                    //     console.log('remove: ' + item);
+                    // });
+
+                    app.sandbox.on('husky.datagrid.row.remove-click', function(event, item) {
+                        console.log('remove-clicked: ' + item);
+                        console.log(item);
+                        alert('DELETE AFTER OK');
+                        
+                        if(typeof item == 'number' ) {
+                            app.sandbox.emit('husky.datagrid.row.remove', item);
+                        } else {
+                            app.sandbox.emit('husky.datagrid.row.remove', event);
+                        }
+                    });
+
+                    app.sandbox.on('husky.datagrid.item.select', function(item) {
+                        console.log('Husky.Ui.DataGrid item select: ' + item);
+                    });
+
+                    app.sandbox.on('husky.datagrid.item.deselect', function(item) {
+                        console.log('Husky.Ui.DataGrid item deselect: ' + item);
+                    });
+
+                    app.sandbox.on('husky.datagrid.item.click', function(item) {
+                        console.log('Husky.Ui.DataGrid item click: ' + item);
+                    });
+
+                });
+            });
+
+        </script>
+
+
+</body>
+</html>

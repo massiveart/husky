@@ -1,5 +1,7 @@
 define(function() {
 
+    'use strict';
+
     // simplified backbone collection
     var Collection = {
         byId: {},
@@ -23,5 +25,5 @@ define(function() {
             app.sandbox.data.Collection = Collection;
         }
 
-    }
+    };
 });

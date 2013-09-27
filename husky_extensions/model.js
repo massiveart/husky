@@ -1,5 +1,7 @@
 define(function() {
 
+    'use strict';
+
     // simplified backbone model
     var Model = {
         get: function(attr) {
@@ -20,5 +22,5 @@ define(function() {
             app.sandbox.data.Model = Model;
         }
 
-    }
+    };
 });

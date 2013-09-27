@@ -22,6 +22,8 @@
 
 define([], function() {
 
+    'use strict';
+
     var type,
         types = {
             icon: {
@@ -149,7 +151,7 @@ define([], function() {
             }
         },
 
-        setContent:function(text, icon) {
+        setContent: function(text, icon) {
             this.options.text = text;
             this.options.iconType = icon;
 //            type.init.call(this);
