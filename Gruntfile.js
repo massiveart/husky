@@ -277,6 +277,13 @@ module.exports = function(grunt) {
         'copy:doc'
     ]);
 
+    grunt.registerTask('build:css', [
+        'compass',
+        'cssmin',
+        'copy:dist',
+        'copy:doc'
+    ]);
+
     grunt.registerTask('update', [
         'clean:bower_before',
         'bower:install',
