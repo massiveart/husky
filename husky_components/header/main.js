@@ -108,8 +108,8 @@ define([], function() {
                         sandbox.emit('husky.button.delete.state', 'loading');
                     },
                     hide: function() {
-                        sandbox.emit('husky.button.save.state', 'hide');
-                        sandbox.emit('husky.button.delete.state', 'hide');
+//                        sandbox.emit('husky.button.save.state', 'hide');
+//                        sandbox.emit('husky.button.delete.state', 'hide');
                     }
                 }
             },
