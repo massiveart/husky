@@ -12,6 +12,7 @@
  *      valueName: name of property which should be used
  *      instanceName: instance name of this component
  *      defaultLabel: default label which gets displayed
+ *      checkedAllLabel: Label if all checked
  *
  * Provided Events:
  * husky.dropdown.multiple.select.<<instanceName>>.selected.item   - triggered when item selected
@@ -29,24 +30,15 @@ define([], function() {
     'use strict';
 
     var defaults = {
-        data: [],    // data array
-        valueName: 'name', // name of text property
-        instanceName: 'undefined', // instance name
-        defaultLabel: 'Please choose'
+        data: [],                        // data array
+        valueName: 'name',               // name of text property
+        instanceName: 'undefined',       // instance name
+        defaultLabel: 'Please choose',   // default label which gets displayed
+        checkedAllLabel: 'All Languages' // Label if all checked
     };
 
 
     return {
-
-//        selectedElements, // selected items - ids if data contains objects
-//        labelsOfSelectedElements, // displayed labels for selection
-//
-//        labelId,
-//        listId,
-//        dropdownContainerId,
-//
-//        $dropdownContainer,
-//        $list,
 
         initialize: function() {
 
@@ -70,7 +62,6 @@ define([], function() {
             this.$list = this.sandbox.dom.$('#' + this.listId);
             this.$dropdownContainer = this.sandbox.dom.$('#' + this.dropdownContainerId);
             this.prepareData();
-
 
             // bind dom elements
             this.bindDOMEvents();
@@ -159,7 +150,7 @@ define([], function() {
         changeLabel: function() {
 
             if (this.labelsOfSelectedElements.length === this.options.data.length) {
-                this.sandbox.dom.text('#' + this.labelId, 'All languages');
+                this.sandbox.dom.text('#' + this.labelId, this.options.checkedAllLabel);
             } else if (this.labelsOfSelectedElements.length === 0) {
                 this.sandbox.dom.text('#' + this.labelId, this.options.defaultLabel);
             } else {
