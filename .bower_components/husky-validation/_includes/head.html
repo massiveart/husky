@@ -1,0 +1,25 @@
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="">
+<meta name="description" content="">
+
+<title>
+    {% if page.title == "Husky Validation" %}
+    {{ page.title }}
+    {% else if %}
+    {{ page.title }} | Husky Validation
+    {% endif %}
+</title>
+
+<!-- Husky main CSS -->
+<link href="{{ page.base_url }}assets/css/husky.min.css" rel="stylesheet">
+
+<!-- Syntax Highlighting CSS -->
+<link href="{{ page.base_url }}assets/css/syntax.css" rel="stylesheet">
+
+<!-- Documentation CSS -->
+<link href="{{ page.base_url }}assets/css/doc.css" rel="stylesheet">
+
+<!-- Validation CSS -->
+<link href="{{ page.base_url }}css/validation.css" rel="stylesheet">
