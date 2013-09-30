@@ -18912,6 +18912,7 @@ define('__component__$navigation@husky',['jquery'], function($) {
                     columnItemClasses = [];
 
                     !!itemModel.get('class') && columnItemClasses.push(itemModel.get('class'));
+                    !!itemModel.get('selected') && columnItemClasses.push('selected');
                     columnItemClasses.push('navigation-column-item');
 
                     columnItemClass = ' class="' + columnItemClasses.join(' ') + '"';
@@ -19245,7 +19246,7 @@ define('__component__$navigation@husky',['jquery'], function($) {
 
                 this.addedColumn = this.currentColumnIdx;
                 $showedColumn = $('#column-' + this.addedColumn);
-                $showedColumn.find('ul.navigation-items li:first').addClass('selected');
+                //$showedColumn.find('ul.navigation-items li:first').addClass('selected');
 
                 sandbox.emit('navigation.size.changed', {
                     data: this.getNavigationData()
@@ -20498,7 +20499,7 @@ define('__component__$datagrid@husky',[],function() {
         // trigger selected items
         getSelectedItemsIds: function(callback) {
             if (typeof callback === 'function') {
-                callback(this.getSelectedItemsIds());
+                callback(this.selectedItemIds);
             } else {
                 this.sandbox.emit('husky.datagrid.items.selected', this.selectedItemIds);
             }

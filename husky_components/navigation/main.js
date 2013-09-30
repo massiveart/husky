@@ -193,6 +193,7 @@ define(['jquery'], function($) {
                     columnItemClasses = [];
 
                     !!itemModel.get('class') && columnItemClasses.push(itemModel.get('class'));
+                    !!itemModel.get('selected') && columnItemClasses.push('selected');
                     columnItemClasses.push('navigation-column-item');
 
                     columnItemClass = ' class="' + columnItemClasses.join(' ') + '"';
@@ -526,7 +527,7 @@ define(['jquery'], function($) {
 
                 this.addedColumn = this.currentColumnIdx;
                 $showedColumn = $('#column-' + this.addedColumn);
-                $showedColumn.find('ul.navigation-items li:first').addClass('selected');
+                //$showedColumn.find('ul.navigation-items li:first').addClass('selected');
 
                 sandbox.emit('navigation.size.changed', {
                     data: this.getNavigationData()

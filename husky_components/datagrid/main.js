@@ -662,7 +662,7 @@ define(function() {
         // trigger selected items
         getSelectedItemsIds: function(callback) {
             if (typeof callback === 'function') {
-                callback(this.getSelectedItemsIds());
+                callback(this.selectedItemIds);
             } else {
                 this.sandbox.emit('husky.datagrid.items.selected', this.selectedItemIds);
             }
