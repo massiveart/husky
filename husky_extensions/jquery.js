@@ -81,8 +81,8 @@
                 return $(selector).height();
             };
 
-            app.core.dom.remove = function(selector) {
-                return $(selector).remove();
+            app.core.dom.remove = function(context, selector) {
+                return $(context).remove(selector);
             };
 
             app.core.dom.attr = function(selector, attributes) {
@@ -146,8 +146,20 @@
                 return $(selector).prev(filter);
             };
 
-            app.core.dom.text = function(selector, value) {
-                return $(selector).text(value);
+            app.core.dom.text = function(selector,value) {
+                if (!!value) {
+                    $(selector).text(value);
+                } else {
+                    return $(selector).text();
+                }
+            };
+
+            app.core.dom.prop = function(selector, propertyName, value) {
+                $(selector).prop( propertyName, value);
+            };
+
+            app.core.dom.stopPropagation = function(event) {
+              event.stopPropagation();
             };
 
 
