@@ -13,15 +13,16 @@ files = [
     REQUIRE,
     REQUIRE_ADAPTER,
 
-    { pattern: 'bower_components/**/*.js', included: false},
-    { pattern: 'lib/*.js', included: false},
-    { pattern: 'husky_extensions/*.js', included: false},
-    { pattern: 'husky_components/**/*.js', included: false},
+    { pattern: './bower_components/**/*.js', included: false},
+    { pattern: './bower_components/**/**/*.js', included: false},
+    { pattern: './lib/*.js', included: false},
+    { pattern: './husky_extensions/*.js', included: false},
+    { pattern: './husky_components/**/*.js', included: false},
 
-    { pattern: 'tests/*Spec.js', included: false},
-    { pattern: 'tests/**/*Spec.js', included: false},
+    { pattern: './tests/*Spec.js', included: false},
+    { pattern: './tests/**/*Spec.js', included: false},
 
-    'tests/runner.js'
+    './tests/runner.js'
 ];
 
 
