@@ -84,7 +84,7 @@ define([], function() {
                 '                <div class="grid-col-6">',
                 '                    <label>', this.options.labels.inputPassword1, '</label>',
                 '                </div>',
-                '                <div class="grid-col-6 align-right" id="', this.options.ids.generateLabel, '">',
+                '                <div class="grid-col-6 align-right hidden" id="', this.options.ids.generateLabel, '">',
                 '                    <span class="icon-keys m-right-10"></span><span class="pointer">', this.options.labels.generateLabel, '</span>',
                 '                </div>',
                 '            </div>',

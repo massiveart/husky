@@ -495,7 +495,7 @@ define(['jquery'], function($) {
             params = params || {};
 
             if (!!params.data) {
-                if (params.data.displayOption === 'content') {
+                if (!params.data.displayOption || params.data.displayOption === 'content') {
                     this.removeContentColumn();
                 }
                 $column0 = $('#column-0');
