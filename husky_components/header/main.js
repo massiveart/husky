@@ -16,6 +16,7 @@
  *  husky.header.move-buttons: move middle part to match given navigation width
  *  husky.header.button-type: change ButtonType [save, saveDelete, saved, savedDelete, add, reset, template]
  *  husky.header.button-state: change state of buttons
+ *  husky.header.user-menu: [username, logout-url, img-url]set user menu on top left side
  *
  * Used Events:
  *  navigation.item.content.show: used to move buttons when the content is changing
@@ -199,6 +200,11 @@ define([], function() {
             if (!!this.options.buttonType) {
                 this.changeButtonType(this.options.buttonType);
             }
+
+            // set default user
+            if (!!this.options.userName) {
+
+            }
         },
 
         bindDomEvents: function() {
@@ -221,6 +227,9 @@ define([], function() {
 
             // change state
             this.sandbox.on('husky.header.button-state', this.changeState.bind(this));
+
+            // add username
+            this.sandbox.on('husky.header.user-menu', this.changeUser.bind(this));
         },
 
         // move buttons with navigation width
@@ -261,6 +270,11 @@ define([], function() {
             } else {
                 throw 'Not implemented';
             }
+        },
+
+        changeUser: function(username, logoutlink, usericon) {
+            var logout = '<a href="' + logoutlink + '">Logout</a>';
+            this.$left.html(username + ' ' + logout);
         }
     };
 });
