@@ -1,0 +1,97 @@
+---
+layout: default
+title: Contribute
+slug: contribute
+base_url: "../"
+main_js: ""
+---
+
+<div id="content">
+    <h1>Contribute</h1>
+
+    <ol>
+        <li><a href="#requirements">Requirements</a></li>
+        <li><a href="#install">Installation</a></li>
+        <li><a href="#grunt">Grunt Tasks</a></li>
+        <li><a href="#documentation">Documentation</a></li>
+    </ol>
+
+    <h2 id="requirements">Requirements</h2>
+
+    <ul>
+        <li>NodeJS</li>
+    </ul>
+
+    <h2 id="install">Installation</h2>
+
+    <p>First install all necessary npm modules by running:</p>
+
+    <div class="doc-code">
+        {% highlight html %}
+npm install
+        {% endhighlight %}
+    </div>
+
+    <p>Install <a href="http://gruntjs.com/getting-started#installing-the-cli">grunt-cli</a>:</p>
+
+    <div class="doc-code">
+        {% highlight html %}
+sudo npm install -g grunt-cli
+        {% endhighlight %}
+    </div>
+
+    <p>Install <a href="http://bower.io/">bower</a>:</p>
+
+    <div class="doc-code">
+        {% highlight html %}
+sudo npm install -g bower
+        {% endhighlight %}
+    </div>
+
+    <p>And now install all dependencies:</p>
+
+    <div class="doc-code">
+        {% highlight html %}
+bower install
+        {% endhighlight %}
+    </div>
+
+    <h2 id="grunt">Grunt Tasks</h2>
+
+    <p>Build Validation:</p>
+
+    <div class="doc-code">
+        {% highlight html %}
+grunt build
+        {% endhighlight %}
+    </div>
+
+    <h2 id="documentation">Documentation</h2>
+
+    <p>Install <a href="http://jekyllrb.com/">Jekyll</a>:</p>
+
+    <div class="doc-code">
+        {% highlight html %}
+gem install jekyll
+        {% endhighlight %}
+    </div>
+
+    <p>Start Jekyll Server (run in husky-validation directory):</p>
+
+    <div class="doc-code">
+        {% highlight html %}
+jekyll serve
+        {% endhighlight %}
+    </div>
+
+    <p>Or start it with develop mode:</p>
+
+    <div class="doc-code">
+        {% highlight html %}
+jekyll serve --watch
+        {% endhighlight %}
+    </div>
+
+    <p>Goto http://localhost:9001 with your favorite browser.</p>
+
+</div>

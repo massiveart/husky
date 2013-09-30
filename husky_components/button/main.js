@@ -33,6 +33,8 @@ define([], function() {
                     type.bindDomEvents.call(this);
                 },
                 bindDomEvents: function() {
+                    // FIXME if not events would be triggered multiple times
+                    this.$el.off('click');
                     this.$el.on('click', this.clickEvent.bind(this));
                 },
                 unBindDomEvents: function() {
@@ -152,7 +154,8 @@ define([], function() {
         setContent: function(text, icon) {
             this.options.text = text;
             this.options.iconType = icon;
-            type.init.call(this);
+//            type.init.call(this);
+            this.render();
         }
     };
 });
