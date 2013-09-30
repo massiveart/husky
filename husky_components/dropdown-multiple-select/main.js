@@ -30,11 +30,11 @@ define([], function() {
     'use strict';
 
     var defaults = {
-        data: [],                        // data array
-        valueName: 'name',               // name of text property
-        instanceName: 'undefined',       // instance name
-        defaultLabel: 'Please choose',   // default label which gets displayed
-        checkedAllLabel: 'All Languages' // Label if all checked
+        data: [],                         // data array
+        valueName: 'name',                // name of text property
+        instanceName: 'undefined',        // instance name
+        defaultLabel: 'Please choose',    // default label which gets displayed
+        checkedAllLabel: 'All Languages'  // Label if all checked
     };
 
 
@@ -45,8 +45,7 @@ define([], function() {
             this.sandbox.logger.log('initialize', this);
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
-            this.selectedElements = [];
-            this.labelsOfSelectedElements = [];
+            this.selectedElements = {};
 
             this.labelId = 'husky-dropdown-multiple-select-' + this.options.instanceName + '-label';
             this.listId = 'husky-dropdown-multiple-select-' + this.options.instanceName + '-list';
@@ -72,11 +71,10 @@ define([], function() {
         prepareData: function() {
             if (this.options.data.length > 0) {
                 this.generateDropDown(this.options.data);
-            } else if (!!this.options.url) {
-                this.loadData();
             } else {
-                this.sandbox.logger.log('error: wether url nor data set');
+                this.sandbox.logger.log('error: data not set');
             }
+            // TODO load data from url
         },
 
         // generate dropDown with given items
@@ -107,9 +105,10 @@ define([], function() {
         },
 
         bindCustomEvents: function() {
-            this.sandbox.on(this.getEventName('toggle'), this.toggleDropDown.bind(this, event));
-            this.sandbox.on(this.getEventName('show'), this.showDropDown.bind(this, event));
-            this.sandbox.on(this.getEventName('hide'), this.hideDropDown.bind(this, event));
+            this.sandbox.on(this.getEventName('toggle'), this.toggleDropDown.bind(this));
+            this.sandbox.on(this.getEventName('show'), this.showDropDown.bind(this));
+            this.sandbox.on(this.getEventName('hide'), this.hideDropDown.bind(this));
+            this.sandbox.on(this.getEventName('getChecked'), this.getChecked.bind(this));
         },
 
         // trigger event with clicked item
@@ -119,23 +118,20 @@ define([], function() {
 
             var key = this.sandbox.dom.attr(event.currentTarget, 'data-key'),
                 value = this.sandbox.dom.text(this.sandbox.dom.find('.item-value', event.currentTarget)),
-                $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget),
-                index = this.selectedElements.indexOf(key);
+                $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget);
 
-            if (index > -1) {
+            if (key in this.selectedElements) {
 
                 this.sandbox.dom.removeClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', false);
-                this.selectedElements.splice(index, 1);
-                this.labelsOfSelectedElements.splice(index, 1);
+                delete this.selectedElements[key];
                 this.sandbox.emit(this.getEventName('deselected.item'), key);
 
             } else {
 
                 this.sandbox.dom.addClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', true);
-                this.selectedElements.push(key);
-                this.labelsOfSelectedElements.push(value);
+                this.selectedElements[key] = value;
                 this.sandbox.emit(this.getEventName('selected.item'), key);
             }
 
@@ -149,14 +145,14 @@ define([], function() {
 
         changeLabel: function() {
 
-            if (this.labelsOfSelectedElements.length === this.options.data.length) {
+            if (this.selectedElements.length === this.options.data.length) {
                 this.sandbox.dom.text('#' + this.labelId, this.options.checkedAllLabel);
-            } else if (this.labelsOfSelectedElements.length === 0) {
+            } else if (this.selectedElements.length === 0) {
                 this.sandbox.dom.text('#' + this.labelId, this.options.defaultLabel);
             } else {
 
                 var text = "";
-                this.sandbox.util.each(this.labelsOfSelectedElements, function(index, value) {
+                this.sandbox.util.each(this.selectedElements, function(index, value) {
                     text += ' ' + value + ',';
                 });
                 this.sandbox.dom.text('#' + this.labelId, text.substring(1, text.length - 1));
@@ -185,6 +181,15 @@ define([], function() {
             this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');
 
             this.sandbox.dom.stopPropagation(event);
+        },
+
+        // return checked values
+        getChecked: function(callback) {
+            if (typeof callback === 'function') {
+                callback(this.selectedElements);
+            } else {
+                throw 'error: callback is not a function';
+            }
         },
 
 

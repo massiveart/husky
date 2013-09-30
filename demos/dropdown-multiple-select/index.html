@@ -39,9 +39,10 @@
 
     <div class="grid-row m-top-30"><input type="text" class="form-element"/></div>
     <div class="grid-row" style="margin-top:150px;">
-        <div class="grid-col-4 pointer" id="show">Show</div>
-        <div class="grid-col-4 pointer" id="hide">Hide</div>
-        <div class="grid-col-4 pointer" id="toggle">Toggle</div>
+        <div class="grid-col-3 pointer" id="show">Show</div>
+        <div class="grid-col-3 pointer" id="hide">Hide</div>
+        <div class="grid-col-3 pointer" id="toggle">Toggle</div>
+        <div class="grid-col-3 pointer" id="get">getChecked</div>
     </div>
 </div>
 
@@ -111,6 +112,12 @@
                     app.sandbox.dom.on('#toggle', 'click', function(event) {
                         app.sandbox.dom.stopPropagation(event);
                         app.sandbox.emit('husky.dropdown.multiple.select.ddms.toggle');
+                    });
+
+                    app.sandbox.dom.on('#get', 'click', function(event) {
+                        app.sandbox.emit('husky.dropdown.multiple.select.ddms2.getChecked', function(selected){
+                            console.log('selected items', selected);
+                        });
                     });
 
 
