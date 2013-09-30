@@ -11,6 +11,9 @@
  *  marginMid: add 45px to navWidth
  *  marginRight: add 20px to margin mid part
  *  buttonType: type of button at start
+ *  userName:   username to be shown in left side of header
+ *  logoutURL: logout link
+ *  userIconURL: logout link
  *
  * Provided Events:
  *  husky.header.move-buttons: move middle part to match given navigation width
@@ -150,9 +153,13 @@ define([], function() {
             }
         },
         defaults = {
-            marginMid: 45,   // add 45px to navWidth
-            marginRight: 20, // add 20px to margin mid part
-            buttonType: null // type of button at start
+            marginMid:      45,   // add 45px to navWidth
+            marginRight:    20, // add 20px to margin mid part
+            buttonType:     null, // type of button at start
+            userName :      null,
+            logoutUrl:      null,
+            userIconUrl:    null
+
         };
 
     return {
@@ -203,7 +210,7 @@ define([], function() {
 
             // set default user
             if (!!this.options.userName) {
-
+                this.changeUser(this.options.userName, this.options.logoutUrl, this.options.userIconUrl);
             }
         },
 
@@ -272,9 +279,11 @@ define([], function() {
             }
         },
 
-        changeUser: function(username, logoutlink, usericon) {
-            var logout = '<a href="' + logoutlink + '">Logout</a>';
-            this.$left.html(username + ' ' + logout);
+        changeUser: function(username, logoutLink, usericon) {
+            var icon = usericon ? '<img src="' + usericon + '" />' : '';
+            var logout = logoutLink ? '<a href="' + logoutLink + '" class="logout">Log out</a>' : '';
+            var userSpan = username ? '<span class="username" >' + username + '</span>' : '';
+            this.$left.html(icon + userSpan + ' ' + logout);
         }
     };
 });
