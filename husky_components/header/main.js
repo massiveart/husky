@@ -13,7 +13,7 @@
  *  buttonType: type of button at start
  *  userName:   username to be shown in left side of header
  *  logoutURL: logout link
- *  userIconURL: logout link
+ *  userIconURL: link to the icon in the left side
  *
  * Provided Events:
  *  husky.header.move-buttons: move middle part to match given navigation width
@@ -153,12 +153,12 @@ define([], function() {
             }
         },
         defaults = {
-            marginMid:      45,   // add 45px to navWidth
-            marginRight:    20, // add 20px to margin mid part
-            buttonType:     null, // type of button at start
-            userName :      null,
-            logoutUrl:      null,
-            userIconUrl:    null
+            marginMid: 45,   // add 45px to navWidth
+            marginRight: 20,   // add 20px to margin mid part
+            buttonType: null, // type of button at start
+            userName: null, // username to be shown in left side of header
+            logoutUrl: null, // logout link
+            userIconUrl: null // link to the icon in the left side
 
         };
 
@@ -226,7 +226,7 @@ define([], function() {
             this.sandbox.on('navigation.size.changed', function(data) {
                 this.moveButtons(data.navWidth);
             }.bind(this));
-            
+
             this.sandbox.on('husky.header.move-buttons', this.moveButtons.bind(this));
 
             // add buttons
@@ -280,9 +280,10 @@ define([], function() {
         },
 
         changeUser: function(username, logoutLink, usericon) {
-            var icon = usericon ? '<img src="' + usericon + '" />' : '';
-            var logout = logoutLink ? '<a href="' + logoutLink + '" class="logout">Log out</a>' : '';
-            var userSpan = username ? '<span class="username" >' + username + '</span>' : '';
+            var icon = usericon ? '<img src="' + usericon + '" />' : '',
+                logout = logoutLink ? '<a href="' + logoutLink + '" class="logout">Log out</a>' : '',
+                userSpan = username ? '<span class="username" >' + username + '</span>' : '';
+
             this.$left.html(icon + userSpan + ' ' + logout);
         }
     };
