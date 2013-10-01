@@ -11,11 +11,15 @@
  *  marginMid: add 45px to navWidth
  *  marginRight: add 20px to margin mid part
  *  buttonType: type of button at start
+ *  userName:   username to be shown in left side of header
+ *  logoutURL: logout link
+ *  userIconURL: link to the icon in the left side
  *
  * Provided Events:
  *  husky.header.move-buttons: move middle part to match given navigation width
  *  husky.header.button-type: change ButtonType [save, saveDelete, saved, savedDelete, add, reset, template]
  *  husky.header.button-state: change state of buttons
+ *  husky.header.user-menu: [username, logout-url, img-url]set user menu on top left side
  *
  * Used Events:
  *  navigation.item.content.show: used to move buttons when the content is changing
@@ -150,8 +154,12 @@ define([], function() {
         },
         defaults = {
             marginMid: 45,   // add 45px to navWidth
-            marginRight: 20, // add 20px to margin mid part
-            buttonType: null // type of button at start
+            marginRight: 20,   // add 20px to margin mid part
+            buttonType: null, // type of button at start
+            userName: null, // username to be shown in left side of header
+            logoutUrl: null, // logout link
+            userIconUrl: null // link to the icon in the left side
+
         };
 
     return {
@@ -199,6 +207,11 @@ define([], function() {
             if (!!this.options.buttonType) {
                 this.changeButtonType(this.options.buttonType);
             }
+
+            // set default user
+            if (!!this.options.userName) {
+                this.changeUser(this.options.userName, this.options.logoutUrl, this.options.userIconUrl);
+            }
         },
 
         bindDomEvents: function() {
@@ -213,7 +226,7 @@ define([], function() {
             this.sandbox.on('navigation.size.changed', function(item) {
                 this.moveButtons(item.data.navWidth);
             }.bind(this));
-            
+
             this.sandbox.on('husky.header.move-buttons', this.moveButtons.bind(this));
 
             // add buttons
@@ -221,6 +234,9 @@ define([], function() {
 
             // change state
             this.sandbox.on('husky.header.button-state', this.changeState.bind(this));
+
+            // add username
+            this.sandbox.on('husky.header.user-menu', this.changeUser.bind(this));
         },
 
         // move buttons with navigation width
@@ -261,6 +277,14 @@ define([], function() {
             } else {
                 throw 'Not implemented';
             }
+        },
+
+        changeUser: function(username, logoutLink, usericon) {
+            var icon = usericon ? '<img src="' + usericon + '" />' : '',
+                logout = logoutLink ? '<a href="' + logoutLink + '" class="logout">Log out</a>' : '',
+                userSpan = username ? '<span class="username" >' + username + '</span>' : '';
+
+            this.$left.html(icon + userSpan + ' ' + logout);
         }
     };
 });

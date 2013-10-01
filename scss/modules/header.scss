@@ -39,10 +39,31 @@ $header-padding-top: 10px;
         z-index: 100;
     }
 
+
+
     .header-left {
         position: absolute;
 
         width: $header-left-width;
+
+
+        .username {
+            display: inline-block;
+            margin-top: $header-padding-top;
+            @extend %bold;
+        }
+
+        .logout {
+            margin-top: $header-padding-top;
+            margin-left: 5px;
+            text-decoration: none;
+            color: inherit;
+            font-size: 0.8em;
+
+            &:hover {
+              text-decoration: underline;
+            }
+        }
     }
 
     .header-right {
