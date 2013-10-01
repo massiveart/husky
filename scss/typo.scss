@@ -3,6 +3,7 @@
 // --------------------------------------------------
 
 
+
 @font-face {
   font-family: 'MuseoSansCondensed300';
   src: url('fonts/MuseoSansCondensed 300/MuseoSansCnd-300.eot');
@@ -76,6 +77,11 @@ h5 {
 // Bold fonts
 // -------------------------
 
-.bold {
+%bold {
   font-family: 'MuseoSansCondensed700' !important;
+
+}
+
+.bold {
+  @extend %bold;
 }
