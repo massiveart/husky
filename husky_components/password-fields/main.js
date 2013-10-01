@@ -16,6 +16,9 @@
  * Provided Events:
  *  husky.passwords.fields.<<instanceName>>.generated.passwords: password generated
  *
+ * Used Events
+ *  husky.passwords.fields.<<instanceName>>.get.passwords: callback for passwords
+ *
  */
 
 define([], function() {
