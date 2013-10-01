@@ -6,6 +6,10 @@
  *      - valueName: name of the attribute used for display
  *      - selected: object with an id attribute e.g. {id : 1}
  *      - defaultItem: object with an id attribute e.g. {id : 1}
+ *      - property: data-mapper-property
+ *      - type: data-type
+ *      - typeId: id property
+ *      - typeLabel: label property
  *
  *  Provided Events
  *      - select.item.changed - raised when the selected element changed
@@ -23,7 +27,11 @@ define(function() {
         valueName: 'name',
         selected: null,
         defaultItem: { id: 1 },
-        instanceName: 'undefined'
+        instanceName: 'undefined',
+        property: null,
+        type: 'select',
+        typeId: null,
+        typeLabel: null
     };
 
     return {
@@ -38,7 +46,17 @@ define(function() {
 
             this.$originalElement = this.sandbox.dom.$(this.options.el);
             // TODO class via options
-            this.$select = $('<select class="select-value form-element"/>');
+
+            var dataAttr = [
+                    (!!this.options.property) ? 'data-mapper-property="' + this.options.property + '" data-type="' + this.options.type + '" ' : '',
+                    (!!this.options.property && this.options.typeId) ? 'data-type-id="' + this.options.typeId + '" ' : '',
+                    (!!this.options.property && this.options.typeLabel) ? 'data-type-label="' + this.options.typeLabel + '" ' : ''
+                ].join(''),
+                selectHtml = [
+                    '<select class="select-value form-element" ', dataAttr, '/>'
+                ].join('');
+
+            this.$select = $(selectHtml);
             this.$element = this.sandbox.dom.$('<div class="husky-select"/>');
 
             this.$element.append(this.$select);
