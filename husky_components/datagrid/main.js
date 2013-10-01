@@ -14,6 +14,7 @@
  *      - selectItem.type: typ of select [checkbox, radio]
  *      - selectItem.width: typ of select [checkbox, radio]
  *      - url: url to fetch content
+ *      - appendTBody: add TBODY to table
  *
  *    Provided Events:
  *       - husky.datagrid.item.deselect - raised when item is deselected
@@ -64,7 +65,8 @@ define(function() {
             //clickable: false   // defines if background is clickable TODO do not use until fixed
         },
         tableHead: [],
-        url: null
+        url: null,
+        appendTBody: true   // add TBODY to table
     };
 
 
@@ -195,7 +197,9 @@ define(function() {
             }
 
             if (!!this.data.items) {
-                $tbody = this.sandbox.dom.$('<tbody/>');
+                if (!!this.options.appendTBody) {
+                    $tbody = this.sandbox.dom.$('<tbody/>');
+                }
                 $tbody.append(this.prepareTableRows());
                 $table.append($tbody);
             }
@@ -656,8 +660,12 @@ define(function() {
         },
 
         // trigger selected items
-        getSelectedItemsIds: function() {
-            this.sandbox.emit('husky.datagrid.items.selected', this.selectedItemIds);
+        getSelectedItemsIds: function(callback) {
+            if (typeof callback === 'function') {
+                callback(this.selectedItemIds);
+            } else {
+                this.sandbox.emit('husky.datagrid.items.selected', this.selectedItemIds);
+            }
         },
 
         templates: {
@@ -702,8 +710,8 @@ define(function() {
 
                 return [
                     '<ul>',
-                        '<li class="pagination-first page" data-page="1"></li>',
-                        '<li class="pagination-prev page" data-page="', selectedPage - 1, '">', 'Previous', '</li>',
+                    '<li class="pagination-first page" data-page="1"></li>',
+                    '<li class="pagination-prev page" data-page="', selectedPage - 1, '">', 'Previous', '</li>',
                     '</ul>'
                 ].join('');
             },
@@ -719,8 +727,8 @@ define(function() {
 
                 return [
                     '<ul>',
-                        '<li class="pagination-next page" data-page="', selectedPage + 1, '">', next, '</li>',
-                        '<li class="pagination-last page" data-page="', pageSize, '"></li>',
+                    '<li class="pagination-next page" data-page="', selectedPage + 1, '">', next, '</li>',
+                    '<li class="pagination-last page" data-page="', pageSize, '"></li>',
                     '</ul>'
                 ].join('');
             },

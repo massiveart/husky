@@ -183,9 +183,16 @@
 }
 
 .icon-adjust-alt {
-  &::after {
-    content: "\e140";
-    display: inline-block;
-  }
+    &::after {
+        content: "\e140";
+        display: inline-block;
+    }
+}
+
+.icon-list {
+    &::after {
+        content: "\e115";
+        display: inline-block;
+    }
 }
 

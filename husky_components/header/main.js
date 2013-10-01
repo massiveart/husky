@@ -210,8 +210,8 @@ define([], function() {
             this.sandbox.on('navigation.item.content.show', function(item) {
                 this.moveButtons(item.data.navWidth);
             }.bind(this));
-            this.sandbox.on('navigation.size.changed', function(data) {
-                this.moveButtons(data.navWidth);
+            this.sandbox.on('navigation.size.changed', function(item) {
+                this.moveButtons(item.data.navWidth);
             }.bind(this));
             
             this.sandbox.on('husky.header.move-buttons', this.moveButtons.bind(this));
