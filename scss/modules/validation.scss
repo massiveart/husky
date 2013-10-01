@@ -9,3 +9,11 @@
 .husky-validate-error {
     @extend %abstract-error;
 }
+
+.required {
+    font-family: 'MuseoSansCondensed700' !important;
+
+    &::after {
+        content: " *";
+    }
+}
