@@ -49,8 +49,8 @@ define(function() {
 
             var dataAttr = [
                     (!!this.options.property) ? 'data-mapper-property="' + this.options.property + '" data-type="' + this.options.type + '" ' : '',
-                    (!!this.options.property && this.options.typeId) ? 'data-type-id="' + this.options.typeId + '" ' : '',
-                    (!!this.options.property && this.options.typeLabel) ? 'data-type-label="' + this.options.typeLabel + '" ' : ''
+                    (!!this.options.property && !!this.options.typeId) ? 'data-type-id="' + this.options.typeId + '" ' : '',
+                    (!!this.options.property && !!this.options.typeLabel) ? 'data-type-label="' + this.options.typeLabel + '" ' : ''
                 ].join(''),
                 selectHtml = [
                     '<select class="select-value form-element" ', dataAttr, '/>'
