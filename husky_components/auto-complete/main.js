@@ -31,12 +31,13 @@ define([], function() {
             value: null,        // value to display at start
             excludeItems: []    // items to filter
         },
-        data = [],
         successClass = 'husky-auto-complete-success',
         failClass = 'husky-auto-complete-error',
         loadingClass = 'husky-auto-complete-loading';
 
     return {
+        data: [],
+
         getEvent: function(append) {
             return 'husky.auto-complete.' + append;
         },
@@ -190,10 +191,10 @@ define([], function() {
 
                     // if only one result this is it, if no result hideDropDown, else generateDropDown
                     this.updateData(response.items);
-                    if (data.length > 1) {
-                        this.generateDropDown(data);
-                    } else if (data.length === 1) {
-                        this.selectItem(data[0]);
+                    if (this.data.length > 1) {
+                        this.generateDropDown(this.data);
+                    } else if (this.data.length === 1) {
+                        this.selectItem(this.data[0]);
                     } else {
                         this.failState();
                         this.hideDropDown();
@@ -212,11 +213,11 @@ define([], function() {
 
         // update global data array
         updateData: function(newData) {
-            data = [];
+            this.data = [];
             if (!!newData && $.isArray(newData)) {
                 newData.forEach(function(item) {
                     if (this.isVisible(item)) {
-                        data.push(item);
+                        this.data.push(item);
                     }
                 }.bind(this));
             }

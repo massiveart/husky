@@ -60,7 +60,6 @@
             "__component__$auto-complete@husky",
             "__component__$dropdown-multiple-select@husky",
             "__component__$password-fields@husky"
-        ],
-        "out": "dist/<%= PKG_VERSION %>/husky.js"
+        ]
     }
 }

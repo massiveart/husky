@@ -46,7 +46,7 @@
 
             afterAppStart: function(app) {
                 if (!!app.config.culture && !!app.config.culture) {
-                    if (!!app.config.culture.messages) {
+                    if (!app.config.culture.messages) {
                         app.config.culture.messages = { };
                     }
                     app.setLanguage(app.config.culture.name, app.config.culture.messages);

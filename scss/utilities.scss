@@ -2,7 +2,6 @@
 // Utility Classes
 // --------------------------------------------------
 
-
 // Helper classes
 // -------------------------
 .pull-right {
@@ -29,19 +28,19 @@
     cursor: default !important;
 }
 
-.is-loading {
+.is-loading:not(.navigation-column-item) {
     background: url('../../img/loader.gif') center center no-repeat;
 }
 
 .align-left {
-    text-align:left;
+    text-align: left;
 }
 
-.align-right{
+.align-right {
     text-align: right;
 }
 
-.align-center{
+.align-center {
     text-align: center;
 }
 
@@ -49,10 +48,8 @@
     cursor: pointer;
 }
 
-
 // Margin shorthands
 // -------------------------
-
 
 // margins 5px
 .m-top-5 {
@@ -139,11 +136,10 @@
     margin-left: 30px !important;
 }
 
-
 // Height shorthands
 // -------------------------
 
 // heights 30px
 .m-height-25 {
-  height: 25px !important;
+    height: 25px !important;
 }
