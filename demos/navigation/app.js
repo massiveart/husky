@@ -43,33 +43,35 @@ require(['lib/husky'], function(Husky) {
         var sizeChanged = function(event) {
             $('#content').css('margin-left', event.data.navWidth + 45);
         }, showColumn = function() {
-            app.sandbox.emit('navigation.item.column.show', {
-                data: {
-                    "displayOption": "content",
-                    "header": {
-                        "displayOption": "link",
-                        "action": "/back"
-                    },
-                    "sub": {
-                        "items": [
-                            {
-                                "title": "Details",
-                                "id": "details",
-                                "hasSub": false,
-                                "type": "content",
-                                "action": "/details"
-                            },
-                            {
-                                "title": "Settings",
-                                "id": "settings",
-                                "hasSub": false,
-                                "type": "content",
-                                "action": "/settings"
-                            }
-                        ]
+            setTimeout(function() {
+                app.sandbox.emit('navigation.item.column.show', {
+                    data: {
+                        "displayOption": "content",
+                        "header": {
+                            "displayOption": "link",
+                            "action": "/back"
+                        },
+                        "sub": {
+                            "items": [
+                                {
+                                    "title": "Details",
+                                    "id": "details",
+                                    "hasSub": false,
+                                    "type": "content",
+                                    "action": "/details"
+                                },
+                                {
+                                    "title": "Settings",
+                                    "id": "settings",
+                                    "hasSub": false,
+                                    "type": "content",
+                                    "action": "/settings"
+                                }
+                            ]
+                        }
                     }
-                }
-            });
+                });
+            }, 10);
         };
 
         app.sandbox.on('navigation.item.selected', function(event) {
@@ -96,4 +98,5 @@ require(['lib/husky'], function(Husky) {
         $('#load').on('click', showColumn);
     });
 
-});
+})
+;

@@ -426,12 +426,14 @@ define(['jquery'], function($) {
                 $column = $(column);
 
                 if (!this.$navigationColumns.hasClass('show-content')) {
-                    if ($column.hasClass('collapsed')) {
-                        width += 50;
-                    } else if ($column.hasClass('content-column')) {
-                        width += 150;
-                    } else {
-                        width += 250;
+                    if (!$column.parent().parent().hasClass('navigation-sub-columns-container')) {
+                        if ($column.hasClass('collapsed')) {
+                            width += 50;
+                        } else if ($column.hasClass('content-column')) {
+                            width += 150;
+                        } else {
+                            width += 250;
+                        }
                     }
                 } else {
                     width = 200;
