@@ -56,6 +56,9 @@ define([], function() {
                 lastName: 'Wachter',
                 birthDay: '2013-09-18T08:05:00+0200',
                 wage: 1500,
+                country: {
+                    id: 2
+                },
                 phones: [
                     {
                         type: {
