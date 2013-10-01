@@ -26,6 +26,7 @@
 <body>
 <div class="container">
     <div class="grid" id="password-fields"></div>
+    <div id="getPasswords" class="pointer">Get Passwords</div>
 </div>
 
 
@@ -56,11 +57,26 @@
                     inputPassword2: 'Wiederhole Passwort',
                     generateLabel: 'Generiere Passwort'
                 },
+                values: {
+                    inputPassword1: 'test',
+                    inputPassword2: 'test2',
+                },
                 el: '#password-fields'
             }
         }]).then(function() {
                     app.logger.log('Aura started...');
                 });
+
+            $('#getPasswords').on('click', function(){
+
+                app.sandbox.emit('husky.password.fields.instance1.get.passwords', function(password1, password2){
+                    console.log("Password 1", password1);
+                    console.log("Password 2", password2);
+                });
+
+            });
+
+
     });
 
 </script>
