@@ -83,7 +83,7 @@ define(['underscore', 'jquery'], function(_, $) {
 
             if (typeof this.loadedTemplates[tplName] === 'function') {
                 var tpl = this.loadedTemplates[tplName],
-                    regExp = new RegExp('(###\\w*###)', 'gi'),
+                    regExp = /(###[.\w]*###)/gi,
                     template = tpl(context),
                     result = template.match(regExp);
 
