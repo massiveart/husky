@@ -27,6 +27,7 @@ define([], function() {
 
     var defaults = {
         instanceName: 'undefined',
+        validation: false,
         labels: {
             inputPassword1: 'Password',
             inputPassword2: 'Repeat Password',
@@ -61,6 +62,11 @@ define([], function() {
             this.$originalElement = this.sandbox.dom.$(this.options.el);
             this.$element = this.sandbox.dom.$(this.template());
             this.$originalElement.append(this.$element);
+
+            if (!!this.options.validation) {
+                this.sandbox.form.addField(this.options.validation, this.$el.find('#' + this.options.ids.inputPassword1));
+                this.sandbox.form.addField(this.options.validation, this.$el.find('#' + this.options.ids.inputPassword2));
+            }
 
             this.bindDomEvents();
             this.bindCustomEvents();
@@ -112,7 +118,7 @@ define([], function() {
                 '                </div>',
                 '            </div>',
                 '            <div class="grid-row">',
-                '                <input class="form-element" value="',this.options.values.inputPassword1,'" type="text" id="', this.options.ids.inputPassword1, '"/>',
+                '                <input class="form-element" value="', this.options.values.inputPassword1, '" type="text" id="', this.options.ids.inputPassword1, '"', (!!this.options.validation ? 'data-validation-equal="' + this.options.instanceName + '"' : ''), '/>',
                 '            </div>',
                 '        </div>',
                 '        <div class="grid-col-6">',
@@ -120,7 +126,7 @@ define([], function() {
                 '                <label>', this.options.labels.inputPassword2, '</label>',
                 '            </div>',
                 '            <div class="grid-row">',
-                '                <input class="form-element" value="',this.options.values.inputPassword2,'" type="text" id="', this.options.ids.inputPassword2, '"/>',
+                '                <input class="form-element" value="', this.options.values.inputPassword2, '" type="text" id="', this.options.ids.inputPassword2, '"', (!!this.options.validation ? 'data-validation-equal="' + this.options.instanceName + '"' : ''), '/>',
                 '            </div>',
                 '        </div>',
                 '    </div>',
