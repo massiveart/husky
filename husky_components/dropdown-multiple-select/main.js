@@ -105,9 +105,9 @@ define([], function() {
         },
 
         bindCustomEvents: function() {
-            this.sandbox.on(this.getEventName('toggle'), this.toggleDropDown.bind(this));
-            this.sandbox.on(this.getEventName('show'), this.showDropDown.bind(this));
-            this.sandbox.on(this.getEventName('hide'), this.hideDropDown.bind(this));
+            this.sandbox.on(this.getEventName('toggle'), this.toggleDropDown.bind(this,event));
+            this.sandbox.on(this.getEventName('show'), this.showDropDown.bind(this,event));
+            this.sandbox.on(this.getEventName('hide'), this.hideDropDown.bind(this,event));
             this.sandbox.on(this.getEventName('getChecked'), this.getChecked.bind(this));
         },
 
