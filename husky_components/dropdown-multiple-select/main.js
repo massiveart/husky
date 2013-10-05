@@ -120,7 +120,7 @@ define([], function() {
 
             var key = this.sandbox.dom.attr(event.currentTarget, 'data-key'),
                 value = this.sandbox.dom.text(this.sandbox.dom.find('.item-value', event.currentTarget)),
-                $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget),
+                $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget)[0],
                 index = this.selectedElements.indexOf(key);
 
             if (index >= 0) {
