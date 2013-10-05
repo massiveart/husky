@@ -94,7 +94,8 @@ define([], function() {
         // bind dom elements
         bindDOMEvents: function() {
 
-            this.sandbox.dom.on(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
+            // TODO nice to have - fixe problem 
+            //this.sandbox.dom.on(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
 
             // toggle drop-down
             this.sandbox.dom.on('#' + this.options.instanceName, 'click', this.toggleDropDown.bind(this), '.dropdown-label');
@@ -105,9 +106,9 @@ define([], function() {
         },
 
         bindCustomEvents: function() {
-            this.sandbox.on(this.getEventName('toggle'), this.toggleDropDown.bind(this,event));
-            this.sandbox.on(this.getEventName('show'), this.showDropDown.bind(this,event));
-            this.sandbox.on(this.getEventName('hide'), this.hideDropDown.bind(this,event));
+            this.sandbox.on(this.getEventName('toggle'), this.toggleDropDown.bind(this));
+            this.sandbox.on(this.getEventName('show'), this.showDropDown.bind(this));
+            this.sandbox.on(this.getEventName('hide'), this.hideDropDown.bind(this));
             this.sandbox.on(this.getEventName('getChecked'), this.getChecked.bind(this));
         },
 
@@ -160,27 +161,21 @@ define([], function() {
         },
 
         // toggle dropDown visible
-        toggleDropDown: function(event) {
+        toggleDropDown: function() {
             this.sandbox.logger.log('toggle dropdown ' + this.options.instanceName);
             this.sandbox.dom.toggleClass(this.$dropdownContainer, 'hidden');
-
-            this.sandbox.dom.stopPropagation(event);
         },
 
         // make dropDown visible
-        showDropDown: function(event) {
+        showDropDown: function() {
             this.sandbox.logger.log('show dropdown ' + this.options.instanceName);
             this.sandbox.dom.removeClass(this.$dropdownContainer, 'hidden');
-
-            this.sandbox.dom.stopPropagation(event);
         },
 
         // hide dropDown
-        hideDropDown: function(event) {
+        hideDropDown: function() {
             this.sandbox.logger.log('hide dropdown ' + this.options.instanceName);
-            this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');
-
-            this.sandbox.dom.stopPropagation(event);
+            this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');  
         },
 
         // return checked values
