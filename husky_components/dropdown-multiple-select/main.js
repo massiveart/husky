@@ -35,6 +35,7 @@ define([], function() {
         instanceName: 'undefined',        // instance name
         defaultLabel: 'Please choose',    // default label which gets displayed
         checkedAllLabel: 'All Languages'  // Label if all checked
+        // selectedElements: [] TODO not yet implemented
     };
 
 
@@ -204,7 +205,7 @@ define([], function() {
             basicStructure: function(defaultLabel) {
                 return [
                     '<div class="husky-dropdown-multiple-select">',
-                    '    <div class="grid-row dropdown-label dropdown-open">',
+                    '    <div class="grid-row dropdown-label">',
                     '       <div class="grid-col-11 checkbox">',
                     '           <span id="', this.labelId, '">', defaultLabel, '</span>',
                     '       </div>',

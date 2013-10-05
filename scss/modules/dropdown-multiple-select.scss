@@ -3,13 +3,9 @@
   position:relative;
 
   .dropdown-label {
-    background: #ccc;
+    background: $grayLighter;
     padding: 10px;
     border-radius: 6px;
-
-    &.dropdown-open {
-      background: #999 !important;
-    }
   }
 
   .dropdown-list {
