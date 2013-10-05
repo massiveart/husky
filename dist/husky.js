@@ -17580,12 +17580,17 @@ define('type/label',[
     return function($el, options) {
         var defaults = {
                 id: 'id',
-                label: 'name'
+                label: 'name',
+                translate: true
             },
             typeInterface = {
                 setValue: function(value) {
                     if (!!value[this.options.label]) {
-                        this.$el.text(value[this.options.label]);
+                        var label = value[this.options.label];
+                        if (!!this.options.translate) {
+                            label = Globalize.localize(label, Globalize.culture().name);
+                        }
+                        this.$el.text(label);
                     }
 
                     if (!!value[this.options.id]) {
