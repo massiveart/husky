@@ -96,13 +96,19 @@ define([], function() {
         bindDOMEvents: function() {
 
             // TODO nice to have - fixe problem 
-            //this.sandbox.dom.on(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
+            this.sandbox.dom.on(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
 
             // toggle drop-down
-            this.sandbox.dom.on('#' + this.options.instanceName, 'click', this.toggleDropDown.bind(this), '.dropdown-label');
+            this.sandbox.dom.on('#' + this.options.instanceName, 'click', function(event) {
+                this.sandbox.dom.stopPropagation(event);
+                this.toggleDropDown();
+            }.bind(this), '.dropdown-label');
 
             // click on single item
-            this.sandbox.dom.on('#' + this.listId, 'click', this.clickItem.bind(this), 'li');
+            this.sandbox.dom.on('#' + this.listId, 'click', function(event) {
+                this.sandbox.dom.stopPropagation(event);
+                this.clickItem(event);
+            }.bind(this), 'li');
 
         },
 
@@ -110,13 +116,14 @@ define([], function() {
             this.sandbox.on(this.getEventName('toggle'), this.toggleDropDown.bind(this));
             this.sandbox.on(this.getEventName('show'), this.showDropDown.bind(this));
             this.sandbox.on(this.getEventName('hide'), this.hideDropDown.bind(this));
+
             this.sandbox.on(this.getEventName('getChecked'), this.getChecked.bind(this));
         },
 
         // trigger event with clicked item
         clickItem: function(event) {
 
-            //this.sandbox.dom.stopPropagation(event);
+//            this.sandbox.dom.stopPropagation(event);
 
             var key = this.sandbox.dom.attr(event.currentTarget, 'data-key'),
                 value = this.sandbox.dom.text(this.sandbox.dom.find('.item-value', event.currentTarget)),
@@ -127,8 +134,8 @@ define([], function() {
 
                 this.sandbox.dom.removeClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', false);
-                this.selectedElements.splice(index,1);
-                this.selectedElementsValues.splice(index,1);
+                this.selectedElements.splice(index, 1);
+                this.selectedElementsValues.splice(index, 1);
                 this.sandbox.emit(this.getEventName('deselected.item'), key);
 
             } else {
@@ -179,7 +186,7 @@ define([], function() {
         // hide dropDown
         hideDropDown: function() {
             this.sandbox.logger.log('hide dropdown ' + this.options.instanceName);
-            this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');  
+            this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');
         },
 
         // return checked values
