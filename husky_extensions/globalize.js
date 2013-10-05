@@ -22,9 +22,15 @@
                     },
 
                     culture: function(cultureName) {
-                        require(['cultures/globalize.culture.' + cultureName], function() {
+                        var setLanguage = function() {
                             Globalize.culture(cultureName);
-                        }.bind(this));
+                        };
+
+                        if (cultureName !== 'en') {
+                            require(['cultures/globalize.culture.' + cultureName], setLanguage.bind(this));
+                        } else {
+                            setLanguage();
+                        }
                     }
                 };
 
@@ -37,10 +43,15 @@
                 };
 
                 app.setLanguage = function(cultureName, messages) {
-                    require(['cultures/globalize.culture.' + cultureName], function() {
+                    var setLanguage = function() {
                         Globalize.culture(cultureName);
                         app.sandbox.globalize.addCultureInfo(cultureName, messages);
-                    }.bind(this));
+                    };
+                    if (cultureName !== 'en') {
+                        require(['cultures/globalize.culture.' + cultureName], setLanguage.bind(this));
+                    } else {
+                        setLanguage();
+                    }
                 };
             },
 

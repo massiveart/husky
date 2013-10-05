@@ -174,7 +174,7 @@ define('form/element',['form/util'], function(Util) {
     return function(el, form, options) {
 
         var defaults = {
-                type: 'string',
+                type: null,
                 validationTrigger: 'focusout',                     // default validate trigger
                 validationAddClasses: true,                        // add error and success classes
                 validationAddClassesParent: true,                  // add classes to parent element
@@ -258,6 +258,15 @@ define('form/element',['form/util'], function(Util) {
                 },
 
                 initValidators: function() {
+                    var addFunction = function(name, options) {
+                        this.requireCounter++;
+                        require(['validator/' + name], function(Validator) {
+                            validators[name] = new Validator(this.$el, form, this, options);
+                            Util.debug('Element Validator', name, options);
+                            that.resolveInitialization.call(this);
+                        }.bind(this));
+                    }.bind(this);
+
                     // create validators for each of the constraints
                     $.each(this.options, function(key, val) {
                         // val not false
@@ -265,33 +274,84 @@ define('form/element',['form/util'], function(Util) {
                         // and key starts with validation
                         if (!!val && $.inArray(key, ignoredOptions) === -1 && Util.startsWith(key, 'validation')) {
                             // filter validation prefix
-                            var name = Util.lcFirst(key.replace('validation', ''));
-                            this.requireCounter++;
-                            require(['validator/' + name], function(Validator) {
-                                var options = Util.buildOptions(this.options, 'validation', name);
-                                validators[name] = new Validator(this.$el, form, options);
-                                Util.debug('Element Validator', key, options);
-                                that.resolveInitialization.call(this);
-                            }.bind(this));
+                            var name = Util.lcFirst(key.replace('validation', '')),
+                                options = Util.buildOptions(this.options, 'validation', name);
+
+                            addFunction(name, options);
                         }
                     }.bind(this));
-                },
 
-                initType: function() {
-                    // if type exists
-                    if (!!this.options.type) {
-                        this.requireCounter++;
-                        require(['type/' + this.options.type], function(Type) {
-                            var options = Util.buildOptions(this.options, 'type');
-                            type = new Type(this.$el, options);
-                            Util.debug('Element Type', type, options);
-                            that.resolveInitialization.call(this);
-                        }.bind(this));
+                    // HTML 5 attributes
+                    // required
+                    if (this.$el.attr('required') === 'required' && !validators['required']) {
+                        addFunction('required', {required: true});
+                    }
+                    // min
+                    if (!!this.$el.attr('min') && !validators['min']) {
+                        addFunction('min', {min: parseInt(this.$el.attr('min'), 10)});
+                    }
+                    // max
+                    if (!!this.$el.attr('max') && !validators['max']) {
+                        addFunction('max', {max: parseInt(this.$el.attr('max'), 10)});
+                    }
+                    // regex
+                    if (!!this.$el.attr('pattern') && !validators['pattern']) {
+                        addFunction('regex', {regex: this.$el.attr('pattern')});
                     }
                 },
 
+                initType: function() {
+                    var addFunction = function(typeName, options) {
+                            this.requireCounter++;
+                            require(['type/' + typeName], function(Type) {
+                                type = new Type(this.$el, options);
+                                Util.debug('Element Type', typeName, options);
+                                that.resolveInitialization.call(this);
+                            }.bind(this));
+                        }.bind(this),
+                        options = Util.buildOptions(this.options, 'type'),
+                        typeName, tmpType;
+
+                    // FIXME date HTML5 type browser language format
+
+                    // if type exists
+                    if (!!this.options.type) {
+                        typeName = this.options.type;
+                    } else if (!!this.$el.attr('type')) {
+                        // HTML5 type attribute
+                        tmpType = this.$el.attr('type');
+                        if (tmpType === 'email') {
+                            typeName = 'email';
+                        } else if (tmpType === 'url') {
+                            typeName = 'url';
+                        } else if (tmpType === 'number') {
+                            typeName = 'decimal';
+                        } else if (tmpType === 'date') {
+                            typeName = 'date';
+                            if (!!options.format) {
+                                options.format = 'd';
+                            }
+                        } else if (tmpType === 'time') {
+                            typeName = 'date';
+                            if (!!options.format) {
+                                options.format = 't';
+                            }
+                        } else if (tmpType === 'datetime') {
+                            typeName = 'date';
+                        } else {
+                            typeName = 'string';
+                        }
+                    } else {
+                        typeName = 'string';
+                    }
+                    addFunction(typeName, options);
+                },
+
                 hasConstraints: function() {
-                    return Object.keys(validators).length > 0 || (type !== null && type.needsValidation());
+                    var typeConstraint = (!!type && type.needsValidation()),
+                        validatorsConstraint = Object.keys(validators).length > 0;
+
+                    return validatorsConstraint || typeConstraint;
                 },
 
                 needsValidation: function() {
@@ -322,6 +382,10 @@ define('form/element',['form/util'], function(Util) {
                             $element.addClass(this.options.validationErrorClass);
                         }
                     }
+                },
+
+                validateCallback: function(validatorCallback) {
+
                 }
             },
 
@@ -331,7 +395,7 @@ define('form/element',['form/util'], function(Util) {
                     if (force || that.needsValidation.call(this)) {
                         if (!that.hasConstraints.call(this)) {
                             // delete state
-                            that.reset.call(this);
+                            //that.reset.call(this);
                             return true;
                         }
 
@@ -349,9 +413,41 @@ define('form/element',['form/util'], function(Util) {
                             result = false;
                         }
 
+                        if (!result) {
+                            Util.debug('Field validate', !!result ? 'true' : 'false', this.$el);
+                        }
                         that.setValid.call(this, result);
                     }
                     return this.isValid();
+                },
+
+                update: function() {
+                    if (!that.hasConstraints.call(this)) {
+                        // delete state
+                        //that.reset.call(this);
+                        return true;
+                    }
+
+                    var result = true;
+                    // check each validator
+                    $.each(validators, function(key, validator) {
+                        if (!validator.update()) {
+                            result = false;
+                            // TODO Messages
+                        }
+                    });
+
+                    // check type
+                    if (type !== null && !type.validate()) {
+                        result = false;
+                    }
+
+                    if (!result) {
+                        Util.debug('Field validate', !!result ? 'true' : 'false', this.$el);
+                    }
+                    that.setValid.call(this, result);
+
+                    return result;
                 },
 
                 isValid: function() {
@@ -379,11 +475,36 @@ define('form/element',['form/util'], function(Util) {
                 addConstraint: function(name, options) {
                     if ($.inArray(name, Object.keys(validators)) === -1) {
                         require(['validator/' + name], function(Validator) {
-                            validators[name] = new Validator(this.$el, form, options);
+                            validators[name] = new Validator(this.$el, form, this, options);
                         }.bind(this));
                     } else {
                         throw 'Constraint with name: ' + name + ' already exists';
                     }
+                },
+
+                hasConstraint: function(name) {
+                    return !!validators[name];
+                },
+
+                getConstraint: function(name) {
+                    if (!this.hasConstraint(name)) {
+                        return false;
+                    }
+                    return validators[name];
+                },
+
+                fieldAdded: function(element) {
+                    $.each(validators, function(key, validator) {
+                        // FIXME better solution? perhaps only to interested validators?
+                        validator.fieldAdded(element);
+                    });
+                },
+
+                fieldRemoved: function(element) {
+                    $.each(validators, function(key, validator) {
+                        // FIXME better solution? perhaps only to interested validators?
+                        validator.fieldRemoved(element);
+                    });
                 },
 
                 setValue: function(value) {
@@ -445,10 +566,14 @@ define('form/validation',[
         // define validation interface
             result = {
                 validate: function(force) {
-                    var result = true;
+                    var result = true, focus = false;
                     // validate each element
                     $.each(form.elements, function(key, element) {
                         if (!element.validate(force)) {
+                            if (!focus) {
+                                element.$el.focus();
+                                focus = true;
+                            }
                             result = false;
                         }
                     });
@@ -518,8 +643,10 @@ define('form/mapper',[
 
     return function(form) {
 
+        var filters = {},
+
         // private functions
-        var that = {
+            that = {
                 initialize: function() {
                     Util.debug('INIT Mapper');
                 },
@@ -528,8 +655,9 @@ define('form/mapper',[
                     // get attributes
                     var $el = $(el),
                         type = $el.data('type'),
+                        property = $el.data('mapper-property'),
                         element = $el.data('element'),
-                        result;
+                        result, item;
 
                     // if type == array process children, else get value
                     if (type !== 'array') {
@@ -540,8 +668,11 @@ define('form/mapper',[
                         }
                     } else {
                         result = [];
-                        $.each($el.children(), function(key1, value1) {
-                            result.push(form.mapper.getData($(value1)));
+                        $.each($el.children(), function(key, value) {
+                            item = form.mapper.getData($(value));
+                            if (!filters[property] || (!!filters[property] && filters[property](item))) {
+                                result.push(item);
+                            }
                         });
                         return result;
                     }
@@ -653,7 +784,16 @@ define('form/mapper',[
                     }
 
                     return data;
+                },
+
+                addArrayFilter: function(name, callback) {
+                    filters[name] = callback;
+                },
+
+                removeArrayFilter: function(name) {
+                    delete filters[name];
                 }
+
             };
 
         that.initialize.call(result);
@@ -695,7 +835,9 @@ require.config({
         'validator/minLength': 'js/validators/min-length',
         'validator/maxLength': 'js/validators/max-length',
         'validator/required': 'js/validators/required',
-        'validator/unique': 'js/validators/unique'
+        'validator/unique': 'js/validators/unique',
+        'validator/equal': 'js/validators/equal',
+        'validator/regex': 'js/validators/regex'
     }
 });
 
@@ -710,7 +852,6 @@ define('form',[
 
     return function(el, options) {
         var defaults = {
-                //language: 'de',                // language
                 debug: false,                     // debug on/off
                 validation: true,                 // validation on/off
                 validationTrigger: 'focusout',    // default validate trigger
@@ -719,17 +860,18 @@ define('form',[
                 validationSubmitEvent: true,      // avoid submit if not valid
                 mapper: true                      // mapper on/off
             },
+            dfd = null,
 
         // private functions
             that = {
                 initialize: function() {
+                    // init initialized
+                    dfd = $.Deferred();
+                    this.requireCounter = 0;
+                    this.initialized = dfd.promise();
+
                     this.$el = $(el);
                     this.options = $.extend(defaults, this.$el.data(), options);
-
-                    // set culture
-                    //require(['cultures/globalize.culture.' + this.options.language], function() {
-                    //    Globalize.culture(this.options.language);
-                    //}.bind(this));
 
                     // enable / disable debug
                     Util.debugEnabled = this.options.debug;
@@ -752,8 +894,18 @@ define('form',[
                 // initialize field objects
                 initFields: function() {
                     $.each(Util.getFields(this.$el), function(key, value) {
-                        this.addField.call(this, value);
+                        this.requireCounter++;
+                        that.addField.call(this, value, false).initialized.then(function() {
+                            that.resolveInitialization.call(this)
+                        }.bind(this));
                     }.bind(this));
+                },
+
+                resolveInitialization: function() {
+                    this.requireCounter--;
+                    if (this.requireCounter === 0) {
+                        dfd.resolve();
+                    }
                 },
 
                 bindValidationDomEvents: function() {
@@ -763,6 +915,16 @@ define('form',[
                             return this.validation.validate();
                         }.bind(this));
                     }
+                },
+
+                addField: function(selector) {
+                    var $element = $(selector),
+                        options = Util.parseData($element, '', this.options),
+                        element = new Element($element, this, options);
+
+                    this.elements.push(element);
+                    Util.debug('Element created', options);
+                    return element;
                 }
             },
 
@@ -773,20 +935,30 @@ define('form',[
                 mapper: false,
 
                 addField: function(selector) {
-                    var $element = $(selector),
-                        options = Util.parseData($element, '', this.options),
-                        element = new Element($element, this, options);
+                    var element = that.addField.call(this, selector);
 
-                    this.elements.push(element);
-                    Util.debug('Element created', options);
+                    element.initialized.then(function() {
+                        // say everybody I have a new field
+                        // FIXME better solution?
+                        $.each(this.elements, function(key, element) {
+                            element.fieldAdded(element);
+                        });
+                    }.bind(this));
+
                     return element;
                 },
 
                 removeField: function(selector) {
                     var $element = $(selector),
-                        element = $element.data('element');
+                        el = $element.data('element');
 
-                    this.elements.splice(this.elements.indexOf(element), 1);
+                    // say everybody I have a lost field
+                    // FIXME better solution?
+                    $.each(this.elements, function(key, element) {
+                        element.fieldRemoved(el);
+                    });
+
+                    this.elements.splice(this.elements.indexOf(el), 1);
                 }
             };
 
@@ -822,6 +994,7 @@ define('type/default',[],function() {
                     }
                 }
             },
+
             defaultInterface = {
                 name: name,
 
@@ -906,8 +1079,9 @@ define('type/string',[
  */
 
 define('type/date',[
-    'type/default'
-], function(Default) {
+    'type/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -917,7 +1091,7 @@ define('type/date',[
             },
 
             getDate = function(value) {
-                console.log(value, new Date(value));
+                Util.debug(value, new Date(value));
                 return new Date(value);
             },
 
@@ -930,6 +1104,11 @@ define('type/date',[
 
                     date = Globalize.parseDate(val, this.options.format);
                     return date !== null;
+                },
+
+                needsValidation: function() {
+                    var val = this.$el.val();
+                    return val !== '';
                 },
 
                 // internationalization of view data: Globalize library
@@ -1013,6 +1192,7 @@ define('type/email',[
         var defaults = {
                 regExp: /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))){2,6}$/i
             },
+
             typeInterface = {
                 validate: function() {
                     var val = this.$el.val();
@@ -1021,6 +1201,11 @@ define('type/email',[
                     }
 
                     return this.options.regExp.test(this.$el.val());
+                },
+
+                needsValidation: function() {
+                    var val = this.$el.val();
+                    return val !== '';
                 }
             };
 
@@ -1048,6 +1233,7 @@ define('type/url',[
         var defaults = {
                 regExp: /^(https?|s?ftp|git):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i
             },
+
             typeInterface = {
                 validate: function() {
                     var val = this.$el.val();
@@ -1059,6 +1245,11 @@ define('type/url',[
                         val = new RegExp('(https?|s?ftp|git)', 'i').test(val) ? val : 'http://' + val;
                     }
                     return this.options.regExp.test(val);
+                },
+
+                needsValidation: function() {
+                    var val = this.$el.val();
+                    return val !== '';
                 }
             };
 
@@ -1085,12 +1276,18 @@ define('type/label',[
     return function($el, options) {
         var defaults = {
                 id: 'id',
-                label: 'name'
+                label: 'name',
+                translate: true
             },
+
             typeInterface = {
                 setValue: function(value) {
                     if (!!value[this.options.label]) {
-                        this.$el.text(value[this.options.label]);
+                        var label = value[this.options.label];
+                        if (!!this.options.translate) {
+                            label = Globalize.localize(label, Globalize.culture().name);
+                        }
+                        this.$el.text(label);
                     }
 
                     if (!!value[this.options.id]) {
@@ -1139,6 +1336,7 @@ define('type/select',[
                 id: 'id',
                 label: 'name'
             },
+
             typeInterface = {
                 setValue: function(value) {
                     this.$el.val(value[this.options.id]);
@@ -1193,6 +1391,15 @@ define('validator/default',[],function() {
                 }
             },
 
+            validate: function() {
+                // do nothing
+            },
+
+            update: function() {
+                // do nothing
+                return this.validate();
+            },
+
             updateConstraint: function(options) {
                 $.extend(this.data, options);
                 this.updateData();
@@ -1202,6 +1409,14 @@ define('validator/default',[],function() {
                 $.each(this.data, function(key, value) {
                     this.$el.data(key, value);
                 }.bind(this));
+            },
+
+            fieldRemoved: function() {
+                // do nothing
+            },
+
+            fieldAdded: function() {
+                // do nothing
             }
         };
 
@@ -1225,7 +1440,7 @@ define('validator/min',[
 
     
 
-    return function($el, form, options) {
+    return function($el, form, element, options) {
         var defaults = {
                 min: 0
             },
@@ -1259,7 +1474,7 @@ define('validator/max',[
 
     
 
-    return function($el, form, options) {
+    return function($el, form, element, options) {
         var defaults = {
                 max: 999
             },
@@ -1293,7 +1508,7 @@ define('validator/minLength',[
 
     
 
-    return function($el, form, options) {
+    return function($el, form, element, options) {
         var defaults = {
                 minLength: 0
             },
@@ -1327,7 +1542,7 @@ define('validator/maxLength',[
 
     
 
-    return function($el, form, options) {
+    return function($el, form, element, options) {
         var defaults = {
                 maxLength: 999
             },
@@ -1361,7 +1576,7 @@ define('validator/required',[
 
     
 
-    return function($el, form, options) {
+    return function($el, form, element, options) {
         var defaults = { },
 
             result = $.extend(new Default($el, form, defaults, options, 'required'), {
@@ -1372,8 +1587,10 @@ define('validator/required',[
                         // check there is at least one required value
                         if ('object' === typeof val) {
                             for (i in val) {
-                                if (this.validate(val[i])) {
-                                    return true;
+                                if (val.hasOwnProperty(i)) {
+                                    if (this.validate(val[i])) {
+                                        return true;
+                                    }
                                 }
                             }
                             return false;
@@ -1403,38 +1620,242 @@ define('validator/required',[
  */
 
 define('validator/unique',[
-    'validator/default'
-], function(Default) {
+    'validator/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
-    return function($el, form, options) {
+    return function($el, form, element, options) {
 
         var defaults = {
                 validationUnique: null
             },
 
+        // elements with same group name
+            relatedElements = [],
+
+        // is the element related
+            isElementRelated = function(element, group) {
+                return relatedElements.indexOf(element) && !!element.options.validationUnique && element.options.validationUnique === group;
+            },
+
+        // validate all related element
+            validateElements = function(val) {
+                var result = true;
+                $.each(relatedElements, function(key, element) {
+                    if (!validateElement(val, element)) {
+                        result = false;
+                        return false;
+                    }
+                    return true;
+                });
+                return result;
+            },
+
+        // validate one element
+            validateElement = function(val, element) {
+                return val !== element.getValue();
+            },
+
+        // update all related elements
+            updateRelatedElements = function() {
+                $.each(relatedElements, function(key, element) {
+                    element.update();
+                });
+            },
+
             result = $.extend({}, new Default($el, form, defaults, options, 'unique'), {
+
+                initializeSub: function() {
+                    // init related elements
+                    element.initialized.then(function() {
+                        $.each(form.elements, function(key, element) {
+                            this.fieldAdded(element);
+                        }.bind(this));
+                    }.bind(this));
+                },
+
                 validate: function() {
+                    var val = this.$el.val(),
+                        result;
+                    if (!!this.data.unique) {
+                        result = validateElements(val);
+                        updateRelatedElements();
+                        return result;
+                    } else {
+                        throw 'No option group set';
+                    }
+                },
 
-                    var uniqueValue = $($el).val(),
-                        uniqueGroup = $el.data('validation-unique'),
-                        counter = 0;
+                update: function() {
+                    var val = this.$el.val(),
+                        result;
+                    if (!!this.data.unique) {
+                        result = validateElements(val);
+                        return result;
+                    } else {
+                        throw 'No option group set';
+                    }
+                },
 
-                    $.each(form.elements, function(index, element) {
-                        var group = element.options.validationUnique,
-                            value = element.getValue();
+                fieldAdded: function(element) {
+                    if (element.$el !== this.$el && isElementRelated(element, this.data.unique)) {
+                        Util.debug('field added', this.$el);
+                        relatedElements.push(element);
+                    }
+                },
 
-                        if (uniqueGroup === group) {
-                            if (uniqueValue === value) {
-                                counter++;
-                            }
-                        }
+                fieldRemoved: function(element) {
+                    Util.debug('field removed', this.$el);
+                    relatedElements = relatedElements.splice(relatedElements.indexOf(element), 1);
+                }
+            });
 
-                        return counter <= 1;
-                    });
+        result.initialize();
+        return result;
+    };
 
-                    return counter <= 1;
+});
+
+/*
+ * This file is part of the Husky Validation.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
+define('validator/equal',[
+    'validator/default'
+], function(Default) {
+
+    
+
+    return function($el, form, element, options) {
+        var defaults = {
+                equal: null
+            },
+
+        // elements with same group name
+            relatedElements = [],
+
+        // is the element related
+            isElementRelated = function(element, group) {
+                return relatedElements.indexOf(element) && !!element.options.validationEqual && element.options.validationEqual === group;
+            },
+
+        // validate all related element
+            validateElements = function(val) {
+                var result = true;
+                $.each(relatedElements, function(key, element) {
+                    if (!validateElement(val, element)) {
+                        result = false;
+                        return false;
+                    }
+                    return true;
+                });
+                return result;
+            },
+
+        // validate one element
+            validateElement = function(val, element) {
+                return val === element.getValue();
+            },
+
+        // update all related elements
+            updateRelatedElements = function() {
+                $.each(relatedElements, function(key, element) {
+                    element.update();
+                });
+            },
+
+            result = $.extend(new Default($el, form, defaults, options, 'equal'), {
+
+                initializeSub: function() {
+                    // init related elements
+                    element.initialized.then(function() {
+                        $.each(form.elements, function(key, element) {
+                            this.fieldAdded(element);
+                        }.bind(this));
+                    }.bind(this));
+                },
+
+                validate: function() {
+                    var val = this.$el.val(),
+                        result;
+                    if (!!this.data.equal) {
+                        result = validateElements(val);
+                        updateRelatedElements();
+                        return result;
+                    } else {
+                        throw 'No option group set';
+                    }
+                },
+
+                update: function() {
+                    var val = this.$el.val(),
+                        result;
+                    if (!!this.data.equal) {
+                        result = validateElements(val);
+                        return result;
+                    } else {
+                        throw 'No option group set';
+                    }
+                },
+
+                fieldAdded: function(element) {
+                    if (element.$el !== this.$el && isElementRelated(element, this.data.equal)) {
+                        relatedElements.push(element);
+                    }
+                },
+
+                fieldRemoved: function(element) {
+                    relatedElements = relatedElements.splice(relatedElements.indexOf(element), 1);
+                }
+            });
+
+        result.initialize();
+        return result;
+    };
+
+});
+
+/*
+ * This file is part of the Husky Validation.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
+define('validator/regex',[
+    'validator/default'
+], function(Default) {
+
+    
+
+    return function($el, form, element, options) {
+        var defaults = {
+                regex: /\w*/
+            },
+
+            result = $.extend(new Default($el, form, defaults, options, 'regex'), {
+                validate: function() {
+                    var flags = this.data.regex.replace(/.*\/([gimy]*)$/, '$1'),
+                        pattern = this.data.regex.replace(new RegExp('^/(.*?)/' + flags + '$'), '$1'),
+                        regex = new RegExp(pattern, flags),
+                        val = this.$el.val();
+
+                    if (val === '') {
+                        return true;
+                    }
+
+                    return regex.test(val);
                 }
             });
 

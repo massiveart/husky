@@ -34,7 +34,8 @@ define(['jquery'], function($) {
             setParentDropDown: false, // set class dropdown for parent dom object
             excludeItems: [], // items to filter,
             instanceName: 'undefined',  // instance name
-            alignment: 'left'
+            alignment: 'left',  // alignment of the arrow and the box
+            translateLabels: true   // translate labels withe globalize
         };
 
 
@@ -194,7 +195,11 @@ define(['jquery'], function($) {
             if (items.length > 0) {
                 items.forEach(function(item) {
                     if (this.isVisible(item)) {
-                        this.$dropDownList.append('<li data-id="' + item.id + '">' + item[this.options.valueName] + '</li>');
+                        var label = item[this.options.valueName];
+                        if (this.options.translateLabels) {
+                            label = this.sandbox.translate(label);
+                        }
+                        this.$dropDownList.append('<li data-id="' + item.id + '">' + label + '</li>');
                     }
                 }.bind(this));
             } else {

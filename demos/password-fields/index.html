@@ -25,8 +25,10 @@
 </head>
 <body>
 <div class="container">
-    <div class="grid" id="password-fields"></div>
-    <div id="getPasswords" class="pointer">Get Passwords</div>
+    <form id="form">
+        <div class="grid" id="password-fields"></div>
+        <div id="getPasswords" class="pointer">Get Passwords</div>
+    </form>
 </div>
 
 
@@ -48,7 +50,6 @@
                 _ = app.sandbox.util._;
 
         app.start([{
-
             name: 'password-fields@husky',
             options: {
                 instanceName: "instance1",
@@ -59,12 +60,14 @@
                 },
                 values: {
                     inputPassword1: 'test',
-                    inputPassword2: 'test2',
+                    inputPassword2: 'test2'
                 },
+                validation: '#form',
                 el: '#password-fields'
             }
         }]).then(function() {
                     app.logger.log('Aura started...');
+                    var form = app.sandbox.form.create('#form');
                 });
 
             $('#getPasswords').on('click', function(){
