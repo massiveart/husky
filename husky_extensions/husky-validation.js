@@ -67,13 +67,21 @@
                         return  app.sandbox.form.getObject(selector).mapper.getData();
                     },
 
+                    addArrayFilter: function(selector, arrayName, callback) {
+                        app.sandbox.form.getObject(selector).mapper.addArrayFilter(arrayName, callback);
+                    },
+
+                    removeArrayFilter: function(selector, arrayName) {
+                        app.sandbox.form.getObject(selector).mapper.removeArrayFilter(arrayName);
+                    },
+
                     element: {
                         getObject: function(elementSelector) {
                             return $(elementSelector).data('element');
                         },
 
                         validate: function(elementSelector, force) {
-                            app.sandbox.form.element.getObject(elementSelector).validate(force);
+                            return app.sandbox.form.element.getObject(elementSelector).validate(force);
                         },
 
                         addConstraint: function(elementSelector, constraintName, options) {
@@ -86,6 +94,22 @@
 
                         deleteConstraint: function(elementSelector, constraintName) {
                             app.sandbox.form.element.getObject(elementSelector).deleteConstraint(constraintName);
+                        },
+
+                        hasConstraint: function(elementSelector, constraintName) {
+                            return app.sandbox.form.element.getObject(elementSelector).hasConstraint(constraintName);
+                        },
+
+                        getConstraint: function(elementSelector, constraintName) {
+                            return  app.sandbox.form.element.getObject(elementSelector).getConstraint(constraintName);
+                        },
+
+                        setValue: function(elementSelector, value) {
+                            app.sandbox.form.element.getObject(elementSelector).setValue(value);
+                        },
+
+                        getValue: function(elementSelector) {
+                            return app.sandbox.form.element.getObject(elementSelector).getValue();
                         }
                     }
 
