@@ -23258,7 +23258,8 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
             this.sandbox.logger.log('initialize', this);
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
-            this.selectedElements = {};
+            this.selectedElements = [];
+            this.selectedElementsValues = [];
 
             this.labelId = 'husky-dropdown-multiple-select-' + this.options.instanceName + '-label';
             this.listId = 'husky-dropdown-multiple-select-' + this.options.instanceName + '-list';
@@ -23328,24 +23329,27 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
         // trigger event with clicked item
         clickItem: function(event) {
 
-            this.sandbox.dom.stopPropagation(event);
+            //this.sandbox.dom.stopPropagation(event);
 
             var key = this.sandbox.dom.attr(event.currentTarget, 'data-key'),
                 value = this.sandbox.dom.text(this.sandbox.dom.find('.item-value', event.currentTarget)),
-                $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget);
+                $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget)[0],
+                index = this.selectedElements.indexOf(key);
 
-            if (key in this.selectedElements) {
+            if (index >= 0) {
 
                 this.sandbox.dom.removeClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', false);
-                delete this.selectedElements[key];
+                this.selectedElements.splice(index,1);
+                this.selectedElementsValues.splice(index,1);
                 this.sandbox.emit(this.getEventName('deselected.item'), key);
 
             } else {
 
                 this.sandbox.dom.addClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', true);
-                this.selectedElements[key] = value;
+                this.selectedElements.push(key);
+                this.selectedElementsValues.push(value);
                 this.sandbox.emit(this.getEventName('selected.item'), key);
             }
 
@@ -23366,7 +23370,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
             } else {
 
                 var text = "";
-                this.sandbox.util.each(this.selectedElements, function(index, value) {
+                this.sandbox.util.each(this.selectedElementsValues, function(index, value) {
                     text += ' ' + value + ',';
                 });
                 this.sandbox.dom.text('#' + this.labelId, text.substring(1, text.length - 1));
@@ -24035,7 +24039,7 @@ define('husky_extensions/collection',[],function() {
             };
 
             app.core.dom.prop = function(selector, propertyName, value) {
-                if (!!value) {
+                if (value !== 'undefined') {
                     return $(selector).prop(propertyName, value);
                 } else {
                     return $(selector).prop(propertyName);
