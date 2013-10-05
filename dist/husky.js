@@ -23248,6 +23248,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
         instanceName: 'undefined',        // instance name
         defaultLabel: 'Please choose',    // default label which gets displayed
         checkedAllLabel: 'All Languages'  // Label if all checked
+        // selectedElements: [] TODO not yet implemented
     };
 
 
@@ -23438,11 +23439,11 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
                     return [
                         '<li data-key="', value, '">',
                         '    <div class="grid-row">',
-                        '        <div class="grid-col-1">',
+                        '        <div class="grid-col-2">',
                         '            <input type="checkbox" class="form-element custom-checkbox"/>',
                         '            <span class="custom-checkbox-icon"></span>',
                         '        </div>',
-                        '        <div class="grid-col-11 m-top-10 item-value">', value, '</div>',
+                        '        <div class="grid-col-10 m-top-10 item-value">', value, '</div>',
                         '    </div>',
                         '</li>'
                     ].join('');
@@ -23452,11 +23453,11 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
                     return [
                         '<li data-key="', value.id, '">',
                         '    <div class="grid-row">',
-                        '        <div class="grid-col-1">',
+                        '        <div class="grid-col-2">',
                         '            <input type="checkbox" class="form-element custom-checkbox"/>',
                         '            <span class="custom-checkbox-icon"></span>',
                         '        </div>',
-                        '        <div class="grid-col-11 m-top-10 item-value">', value[property], '</div>',
+                        '        <div class="grid-col-10 m-top-10 item-value">', value[property], '</div>',
                         '    </div>',
                         '</li>'
                     ].join('');
@@ -24046,7 +24047,7 @@ define('husky_extensions/collection',[],function() {
             };
 
             app.core.dom.prop = function(selector, propertyName, value) {
-                if (value !== 'undefined') {
+                if (value !== undefined) {
                     return $(selector).prop(propertyName, value);
                 } else {
                     return $(selector).prop(propertyName);

@@ -226,11 +226,11 @@ define([], function() {
                     return [
                         '<li data-key="', value, '">',
                         '    <div class="grid-row">',
-                        '        <div class="grid-col-1">',
+                        '        <div class="grid-col-2">',
                         '            <input type="checkbox" class="form-element custom-checkbox"/>',
                         '            <span class="custom-checkbox-icon"></span>',
                         '        </div>',
-                        '        <div class="grid-col-11 m-top-10 item-value">', value, '</div>',
+                        '        <div class="grid-col-10 m-top-10 item-value">', value, '</div>',
                         '    </div>',
                         '</li>'
                     ].join('');
@@ -240,11 +240,11 @@ define([], function() {
                     return [
                         '<li data-key="', value.id, '">',
                         '    <div class="grid-row">',
-                        '        <div class="grid-col-1">',
+                        '        <div class="grid-col-2">',
                         '            <input type="checkbox" class="form-element custom-checkbox"/>',
                         '            <span class="custom-checkbox-icon"></span>',
                         '        </div>',
-                        '        <div class="grid-col-11 m-top-10 item-value">', value[property], '</div>',
+                        '        <div class="grid-col-10 m-top-10 item-value">', value[property], '</div>',
                         '    </div>',
                         '</li>'
                     ].join('');
