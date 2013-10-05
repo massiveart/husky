@@ -860,10 +860,16 @@ define('form',[
                 validationSubmitEvent: true,      // avoid submit if not valid
                 mapper: true                      // mapper on/off
             },
+            dfd = null,
 
         // private functions
             that = {
                 initialize: function() {
+                    // init initialized
+                    dfd = $.Deferred();
+                    this.requireCounter = 0;
+                    this.initialized = dfd.promise();
+
                     this.$el = $(el);
                     this.options = $.extend(defaults, this.$el.data(), options);
 
@@ -888,8 +894,18 @@ define('form',[
                 // initialize field objects
                 initFields: function() {
                     $.each(Util.getFields(this.$el), function(key, value) {
-                        that.addField.call(this, value, false);
+                        this.requireCounter++;
+                        that.addField.call(this, value, false).initialized.then(function() {
+                            that.resolveInitialization.call(this)
+                        }.bind(this));
                     }.bind(this));
+                },
+
+                resolveInitialization: function() {
+                    this.requireCounter--;
+                    if (this.requireCounter === 0) {
+                        dfd.resolve();
+                    }
                 },
 
                 bindValidationDomEvents: function() {
