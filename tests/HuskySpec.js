@@ -10,8 +10,6 @@ define(['husky', 'jquery'], function(husky, $) {
             app = husky({ debug: { enable: true }});
 
             expect(app.version).toBe('0.1.0');
-
-            app.stop();
         });
 
         it('application start', function() {

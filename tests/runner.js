@@ -13,14 +13,21 @@ require.config({
 
     paths: {
         'jquery': 'bower_components/jquery/jquery',
-        'sinon': 'node_modules/sinon/pkg/sinon.js',
+        'underscore': 'bower_components/underscore/underscore',
+        'sinon': 'node_modules/sinon/pkg/sinon',
         'aura': 'bower_components/aura/lib',
         'husky': 'lib/husky'
     },
 
     shim: {
+        'jquery': {
+            exports: '$'
+        },
         'underscore': {
             exports: '_'
+        },
+        'sinon': {
+            exports: 'sinon'
         }
     },
 
