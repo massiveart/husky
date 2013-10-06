@@ -9,6 +9,4 @@ echo ""
 
 npm install
 
-grunt update
-
 grunt travis
