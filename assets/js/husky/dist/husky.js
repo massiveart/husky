@@ -20901,6 +20901,21 @@ define('__component__$navigation@husky',['jquery'], function($) {
 
             $element = $(event.currentTarget);
             $elementColumn = $element.parent().parent();
+            if ($element.hasClass('selected') && ($elementColumn.hasClass('collapsed') || ($elementColumn.data('columnId') === 0 && $elementColumn.parent().hasClass('show-content')))) {
+                event.stopPropagation();
+                $('#column-0')
+                    .removeClass('hide');
+
+                $('#column-1')
+                    .removeClass('collapsed')
+                    .parent().removeClass('show-content');
+
+                if ($elementColumn.data('columnId') === 0) {
+                    this.showFirstNavigationColumn(event);
+                }
+
+                return;
+            }
 
             elementId = $element.attr('id');
 
@@ -20978,6 +20993,23 @@ define('__component__$navigation@husky',['jquery'], function($) {
                             .removeClass('hide')
                             .removeClass('collapsed')
                             .parent().removeClass('show-content');
+                    }
+
+                    if($elementColumn.data('columnId') === 1){
+                        if($elementColumn.hasClass('content-column')){
+                            $('#column-0')
+                                .addClass('collapsed')
+                                .parent().addClass('show-content');
+                        }
+                        this.showNavigationColumns(event);
+                    }else if($elementColumn.data('columnId') === 2){
+                        if($elementColumn.hasClass('content-column')){
+                            $('#column-1')
+                                .addClass('collapsed')
+                                .parent().addClass('show-content');
+                            $('#column-0')
+                                .addClass('hide');
+                        }
                     }
 
                     sandbox.emit('navigation.item.content.show', {
