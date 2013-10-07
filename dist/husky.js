@@ -23674,8 +23674,8 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
         valueName: 'name',                // name of text property
         instanceName: 'undefined',        // instance name
         defaultLabel: 'Please choose',    // default label which gets displayed
-        checkedAllLabel: 'All Languages'  // Label if all checked
-        // selectedElements: [] TODO not yet implemented
+        checkedAllLabel: 'All Languages', // Label if all checked
+        preSelectedElements: []           // Elements selected by default
     };
 
 
@@ -23725,9 +23725,27 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
             this.sandbox.dom.remove(this.$list, 'li');
 
             if (items.length > 0) {
-                this.sandbox.util.each(items, function(index, value) {
-                    this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName));
-                }.bind(this));
+
+                if(typeof(items[0]) === 'string') {
+                    this.sandbox.util.each(items, function(index, value) {
+                        if(this.options.preSelectedElements.indexOf(value) >= 0) {
+                            this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, 'checked'));
+                        } else {
+                            this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, ''));
+                        }
+                    }.bind(this));
+                } else if(typeof(items[0]) === 'object') {
+                    this.sandbox.util.each(items, function(index, value) {
+                        if(this.options.preSelectedElements.indexOf(value.id) >= 0) {
+                            this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, 'checked'));
+                        } else {
+                            this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, ''));
+                        }
+                    }.bind(this));
+                }
+                this.selectedElements = this.options.preSelectedElements;
+                this.changeLabel();
+
             } else {
                 this.$dropDownList.append('<li>No data received</li>');
             }
@@ -23736,7 +23754,6 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
         // bind dom elements
         bindDOMEvents: function() {
 
-            // TODO nice to have - fixe problem 
             this.sandbox.dom.on(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
 
             // toggle drop-down
@@ -23763,8 +23780,6 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
 
         // trigger event with clicked item
         clickItem: function(event) {
-
-//            this.sandbox.dom.stopPropagation(event);
 
             var key = this.sandbox.dom.attr(event.currentTarget, 'data-key'),
                 value = this.sandbox.dom.text(this.sandbox.dom.find('.item-value', event.currentTarget)),
@@ -23859,7 +23874,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
                     '</div>'
                 ].join('');
             },
-            menuElement: function(value, property) {
+            menuElement: function(value, property, checked) {
 
                 if (typeof value === 'string') {
 
@@ -23867,7 +23882,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
                         '<li data-key="', value, '">',
                         '    <div class="grid-row">',
                         '        <div class="grid-col-2">',
-                        '            <input type="checkbox" class="form-element custom-checkbox"/>',
+                        '            <input type="checkbox" class="form-element custom-checkbox"',checked,'/>',
                         '            <span class="custom-checkbox-icon"></span>',
                         '        </div>',
                         '        <div class="grid-col-10 m-top-10 item-value">', value, '</div>',
@@ -23881,7 +23896,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
                         '<li data-key="', value.id, '">',
                         '    <div class="grid-row">',
                         '        <div class="grid-col-2">',
-                        '            <input type="checkbox" class="form-element custom-checkbox"/>',
+                        '            <input type="checkbox" class="form-element custom-checkbox"',checked,'/>',
                         '            <span class="custom-checkbox-icon"></span>',
                         '        </div>',
                         '        <div class="grid-col-10 m-top-10 item-value">', value[property], '</div>',
