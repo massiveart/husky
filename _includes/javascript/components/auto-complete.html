@@ -1,0 +1,142 @@
+<h1 id="auto-complete">Auto-Complete</h1>
+
+The Auto-Complete Field is a flexible field which helps the user to search for a relation.
+
+<h2>Example</h2>
+
+<div class="doc-example">
+	<div class="example">
+		<div class="grid">
+			<div class="grid-row">
+				<div class="grid-col-4">
+					<form>
+						<div id="auto-complete-example">
+							<label>Test</label>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="doc-code">
+	{% highlight html %}
+	<form>
+		<div id="auto-complete-example">
+			<label>Test</label>
+		</div>
+	</form>
+
+	<script lang="javascript">
+		var autoComplete = $('#auto-complete-example').huskyAutoComplete({
+			url: '/contacts'
+		});
+	</script>
+	{% endhighlight %}
+</div>
+
+<p>Data to search:</p>
+
+<ul>
+	<li>abcd</li>
+	<li>abcde</li>
+	<li>abcdef</li>
+</ul>
+
+<h2>Usage</h2>
+
+<h3>Via Javascript</h3>
+
+{% highlight javascript %}
+var autoComplete = $('#auto-complete').huskyAutoComplete(options);
+{% endhighlight %}
+
+<h2>Events</h2>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th width="20%">Event Name</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>auto-complete:loadData</td>
+			<td>Event will be raised when the data will be loaded</td>
+		</tr>
+	</tbody>
+</table>
+
+{% highlight javascript %}
+autoComplete.data('Husky.Ui.AutoComplete').on('auto-complete:loadData', function() {
+...
+});
+{% endhighlight %}
+
+<h2>Options</h2>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th width="20%">Option Name</th>
+			<th width="10%">Type</th>
+			<th width="10%">Default</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>url</td>
+			<td>string</td>
+			<td>null</td>
+			<td>URL to load Data</td>
+		</tr>
+		<tr>
+			<td>valueName</td>
+			<td>string</td>
+			<td>"name"</td>
+			<td>Property name for value</td>
+		</tr>
+		<tr>
+			<td>minLength</td>
+			<td>integer</td>
+			<td>3</td>
+			<td>Control with up/down/enter key</td>
+		</tr>
+		<tr>
+			<td>value</td>
+			<td>JSON object</td>
+			<td>null</td>
+			<td>Value to display at start</td>
+		</tr>
+		<tr>
+			<td>excludeItems</td>
+			<td>JSON array</td>
+			<td>[]</td>
+			<td>This items would not be shown</td>
+		</tr>
+	</tbody>
+</table>
+
+<h2>Data</h2>
+
+<p>Request:</p>
+{% highlight javascript %}
+var url = '/contacts?search=abc';
+{% endhighlight %}
+
+<div class="doc-code">
+{% highlight javascript %}
+{
+	"total": 3,
+	"items": [
+		{ "id": "1", "name": "abcd" },
+		{ "id": "2", "name": "abcde" },
+		{ "id": "3", "name": "abcdef" }
+	]
+}
+{% endhighlight %}
+</div>
+

@@ -1,7 +1,9 @@
 ### Folders ###
-dist
 node_modules
+coverage
 .tmp
+.sass-cache
+_docs
 
 ### Files ###
 ._*
@@ -12,3 +14,6 @@ node_modules
 *.sublime-workspace
 *.sass-cache
 *.log
+
+.idea/*
+*.iml
