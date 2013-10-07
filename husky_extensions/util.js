@@ -29,6 +29,13 @@ define(function() {
                 return s;
             };
 
+            // cool guy loop implementation of foreach: http://jsperf.com/loops3/2
+            app.core.util.foreach = function(array, callbackValue) {
+                for (var i = -1, length = array.length; ++i < length;) {
+                    callbackValue( array[i]);
+                }
+            };
+
         }
     };
 });

@@ -20638,6 +20638,7 @@ define('__component__$navigation@husky',['jquery'], function($) {
 
             sandbox.util.ajax({
                 url: params.url,
+
                 success: function(data) {
                     sandbox.logger.log('data loaded', data);
 
@@ -24081,6 +24082,8 @@ define('__component__$password-fields@husky',[], function() {
                 return core.mvc.Collection.extend(options);
             };
 
+            sandbox.mvc.history = core.mvc.history;
+
             define('mvc/view', function() {
                 return sandbox.mvc.View;
             });
@@ -24711,6 +24714,13 @@ define('husky_extensions/util',[],function() {
                     }
                 }
                 return s;
+            };
+
+            // cool guy loop implementation of foreach: http://jsperf.com/loops3/2
+            app.core.util.foreach = function(array, callbackValue) {
+                for (var i = -1, length = array.length; ++i < length;) {
+                    callbackValue( array[i]);
+                }
             };
 
         }
