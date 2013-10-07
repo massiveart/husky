@@ -155,7 +155,7 @@
             };
 
             app.core.dom.prop = function(selector, propertyName, value) {
-                if (!!value) {
+                if (value !== undefined) {
                     return $(selector).prop(propertyName, value);
                 } else {
                     return $(selector).prop(propertyName);
