@@ -25,6 +25,7 @@
         <div id="content">
             <div class="btn grid-col-2 pointer align-center" id="hide">Hide Save</div>
             <div class="btn grid-col-2 pointer align-center" id="show">Show Save</div>
+            <div class="btn grid-col-2 pointer align-center" id="dirty">Dirty</div>
         </div>
 
         <script src="../js/sinon.js"></script>
@@ -49,6 +50,11 @@
 
                 $('#show').click(function(event) {
                     app.sandbox.emit('husky.header.button-state', 'standard');
+                });
+
+
+                $('#dirty').click(function(event) {
+                    app.sandbox.emit('husky.header.button-state', 'dirty');
                 });
 
                 app.start().then(function() {

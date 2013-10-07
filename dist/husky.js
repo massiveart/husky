@@ -21658,7 +21658,7 @@ define('__component__$button@husky',[], function() {
                     this.$el.off('click');
                 },
                 template: function(icon, text) {
-                    return '<div class="loading-content"><span class="icon-' + icon + ' pull-left block"></span><span class="m-left-5 bold pull-left m-top-2 block">' + text + '</span></div>';
+                    return '<div class="loading-content"><span class="icon-' + icon + ' pull-left block"></span><span class="p-left-5 bold pull-left block">' + text + '</span></div>';
                 },
                 reset: function() {
                     this.sandbox.dom.removeClass(this.$el, 'loading-black');
