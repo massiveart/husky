@@ -188,7 +188,7 @@ define(function() {
                 }
 
                 //add all link
-                sandbox.dom.html($tdAll, 'All');
+                sandbox.dom.html($tdAll, '<span class="pointer">'+this.options.captions.all+'</span>');
                 sandbox.dom.append($tr, $tdAll);
 
                 sandbox.dom.append($tbody, $tr);
