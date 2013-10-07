@@ -22,6 +22,7 @@ files = [
     { pattern: './tests/*Spec.js', included: false},
     { pattern: './tests/**/*Spec.js', included: false},
 
+    './node_modules/sinon/pkg/sinon.js',
     './tests/runner.js'
 ];
 
