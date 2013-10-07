@@ -83,18 +83,13 @@ define(['underscore', 'jquery'], function(_, $) {
 
             if (typeof this.loadedTemplates[tplName] === 'function') {
                 var tpl = this.loadedTemplates[tplName],
-                    regExp = new RegExp('(###\\w*###)', 'gi'),
-                    template = tpl(context),
-                    result = template.match(regExp);
+                    defaults = {
+                        translate: this.sandbox.translate
+                    };
 
-                if (!!result) {
-                    this.sandbox.util.each(result, function(key, value) {
-                        key = value.replace(/#/g, '');
-                        template = template.replace(new RegExp(value, 'g'), this.sandbox.translate(key));
-                    }.bind(this));
-                }
+                context = this.sandbox.util.extend({}, defaults, context);
 
-                return template;
+                return tpl(context);
             } else {
                 return 'Template ' + tplName + ' not found.';
             }

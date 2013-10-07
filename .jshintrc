@@ -1,11 +1,16 @@
 {
     "globals": {
+        "$": false,
+        "_": false,
         "require": false,
         "define": false,
         "Globalize": false,
         "describe": false,
         "it": false,
-        "expect": false
+        "expect": false,
+        "beforeEach": false,
+        "afterEach": false,
+        "sinon": false
     },
     "bitwise": true,
     "camelcase": true,

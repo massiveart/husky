@@ -16,6 +16,9 @@
  * Provided Events:
  *  husky.passwords.fields.<<instanceName>>.generated.passwords: password generated
  *
+ * Used Events
+ *  husky.passwords.fields.<<instanceName>>.get.passwords: callback for passwords
+ *
  */
 
 define([], function() {
@@ -24,11 +27,17 @@ define([], function() {
 
     var defaults = {
         instanceName: 'undefined',
+        validation: false,
         labels: {
             inputPassword1: 'Password',
             inputPassword2: 'Repeat Password',
             generateLabel: 'Generate password'
+        },
+        values: {
+            inputPassword1: '',
+            inputPassword2: ''
         }
+
     };
 
     return {
@@ -54,7 +63,27 @@ define([], function() {
             this.$element = this.sandbox.dom.$(this.template());
             this.$originalElement.append(this.$element);
 
+            if (!!this.options.validation) {
+                this.sandbox.form.addField(this.options.validation, this.$el.find('#' + this.options.ids.inputPassword1));
+                this.sandbox.form.addField(this.options.validation, this.$el.find('#' + this.options.ids.inputPassword2));
+            }
+
             this.bindDomEvents();
+            this.bindCustomEvents();
+        },
+
+        bindCustomEvents: function(){
+
+            this.sandbox.on('husky.password.fields.' + this.options.instanceName + '.get.passwords', function(callback){
+
+                if(typeof callback === 'function'){
+                    var password1 = this.sandbox.dom.val('#'+this.options.ids.inputPassword1),
+                        password2 = this.sandbox.dom.val('#'+this.options.ids.inputPassword2);
+                    callback(password1, password2);
+                }
+
+            }.bind(this));
+
         },
 
         bindDomEvents: function() {
@@ -89,7 +118,7 @@ define([], function() {
                 '                </div>',
                 '            </div>',
                 '            <div class="grid-row">',
-                '                <input class="form-element" type="text" id="', this.options.ids.inputPassword1, '"/>',
+                '                <input class="form-element" value="', this.options.values.inputPassword1, '" type="text" id="', this.options.ids.inputPassword1, '"', (!!this.options.validation ? 'data-validation-equal="' + this.options.instanceName + '"' : ''), '/>',
                 '            </div>',
                 '        </div>',
                 '        <div class="grid-col-6">',
@@ -97,7 +126,7 @@ define([], function() {
                 '                <label>', this.options.labels.inputPassword2, '</label>',
                 '            </div>',
                 '            <div class="grid-row">',
-                '                <input class="form-element" type="text" id="', this.options.ids.inputPassword2, '"/>',
+                '                <input class="form-element" value="', this.options.values.inputPassword2, '" type="text" id="', this.options.ids.inputPassword2, '"', (!!this.options.validation ? 'data-validation-equal="' + this.options.instanceName + '"' : ''), '/>',
                 '            </div>',
                 '        </div>',
                 '    </div>',

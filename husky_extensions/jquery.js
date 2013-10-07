@@ -146,7 +146,7 @@
                 return $(selector).prev(filter);
             };
 
-            app.core.dom.text = function(selector,value) {
+            app.core.dom.text = function(selector, value) {
                 if (!!value) {
                     $(selector).text(value);
                 } else {
@@ -155,11 +155,15 @@
             };
 
             app.core.dom.prop = function(selector, propertyName, value) {
-                $(selector).prop( propertyName, value);
+                if (value !== undefined) {
+                    return $(selector).prop(propertyName, value);
+                } else {
+                    return $(selector).prop(propertyName);
+                }
             };
 
             app.core.dom.stopPropagation = function(event) {
-              event.stopPropagation();
+                event.stopPropagation();
             };
 
 

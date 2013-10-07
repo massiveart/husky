@@ -13,7 +13,7 @@
  *  buttonType: type of button at start
  *  userName:   username to be shown in left side of header
  *  logoutURL: logout link
- *  userIconURL: logout link
+ *  userIconURL: link to the icon in the left side
  *
  * Provided Events:
  *  husky.header.move-buttons: move middle part to match given navigation width
@@ -38,7 +38,7 @@ define([], function() {
                     return [
                         '<div class="grid-row">',
                         '   <div class="grid-col-6 left">',
-                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-button-state="disable" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-text="Saved"/>',
+                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-button-state="disable" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-text="',this.sandbox.translate('header.saved'),'"/>',
                         '   </div>',
                         '</div>'
                     ].join('');
@@ -50,12 +50,12 @@ define([], function() {
                 states: {
                     standard: function() {
                         // set text to saved and OK
-                        sandbox.emit('husky.button.save.set-content', 'Saved', 'circle-ok');
+                        sandbox.emit('husky.button.save.set-content', this.sandbox.translate('header.saved'), 'circle-ok');
                         sandbox.emit('husky.button.save.state', 'disable');
                     },
                     dirty: function() {
                         // set text to save and icon to !
-                        sandbox.emit('husky.button.save.set-content', 'Save', 'caution');
+                        sandbox.emit('husky.button.save.set-content', this.sandbox.translate('header.save'), 'caution');
                         sandbox.emit('husky.button.save.state', 'standard');
                     },
                     disable: function() {
@@ -75,10 +75,10 @@ define([], function() {
                     return [
                         '<div class="grid-row">',
                         '   <div class="grid-col-6 left">',
-                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-button-state="disable" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-text="Saved"/>',
+                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-button-state="disable" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-text="',this.sandbox.translate('header.saved'),'"/>',
                         '   </div>',
                         '   <div class="grid-col-6 right">',
-                        '       <div id="delete-button" class="pull-right" data-aura-component="button@husky" data-aura-instance-name="delete" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="circle-remove" data-aura-text="Delete"/>',
+                        '       <div id="delete-button" class="pull-right" data-aura-component="button@husky" data-aura-instance-name="delete" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="circle-remove" data-aura-text="',this.sandbox.translate('header.delete'),'"/>',
                         '   </div>',
                         '</div>'
                     ].join('');
@@ -89,13 +89,13 @@ define([], function() {
 
                 states: {
                     standard: function() {
-                        sandbox.emit('husky.button.save.set-content', 'Saved', 'circle-ok');
+                        sandbox.emit('husky.button.save.set-content', this.sandbox.translate('header.saved'), 'circle-ok');
                         sandbox.emit('husky.button.save.state', 'disable');
                         sandbox.emit('husky.button.delete.state', 'standard');
                     },
                     dirty: function() {
                         // set text to save and icon to !
-                        sandbox.emit('husky.button.save.set-content', 'Save', 'caution');
+                        sandbox.emit('husky.button.save.set-content', this.sandbox.translate('header.save'), 'caution');
                         sandbox.emit('husky.button.save.state', 'standard');
                         sandbox.emit('husky.button.delete.state', 'standard');
                     },
@@ -122,7 +122,7 @@ define([], function() {
                     return [
                         '<div class="grid-row">',
                         '   <div class="grid-col-6 left">',
-                        '       <div id="add-button" data-aura-component="button@husky" data-aura-instance-name="add" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="add" data-aura-text="Add"/>',
+                        '       <div id="add-button" data-aura-component="button@husky" data-aura-instance-name="add" data-aura-button-type="icon" data-aura-background="black" data-aura-icon-type="add" data-aura-text="',this.sandbox.translate('header.add'),'"/>',
                         '   </div>',
                         '</div>'
                     ].join('');
@@ -153,12 +153,12 @@ define([], function() {
             }
         },
         defaults = {
-            marginMid:      45,   // add 45px to navWidth
-            marginRight:    20, // add 20px to margin mid part
-            buttonType:     null, // type of button at start
-            userName :      null,
-            logoutUrl:      null,
-            userIconUrl:    null
+            marginMid: 45,   // add 45px to navWidth
+            marginRight: 20,   // add 20px to margin mid part
+            buttonType: null, // type of button at start
+            userName: null, // username to be shown in left side of header
+            logoutUrl: null, // logout link
+            userIconUrl: null // link to the icon in the left side
 
         };
 
@@ -223,10 +223,10 @@ define([], function() {
             this.sandbox.on('navigation.item.content.show', function(item) {
                 this.moveButtons(item.data.navWidth);
             }.bind(this));
-            this.sandbox.on('navigation.size.changed', function(data) {
-                this.moveButtons(data.navWidth);
+            this.sandbox.on('navigation.size.changed', function(item) {
+                this.moveButtons(item.data.navWidth);
             }.bind(this));
-            
+
             this.sandbox.on('husky.header.move-buttons', this.moveButtons.bind(this));
 
             // add buttons
@@ -280,9 +280,10 @@ define([], function() {
         },
 
         changeUser: function(username, logoutLink, usericon) {
-            var icon = usericon ? '<img src="' + usericon + '" />' : '';
-            var logout = logoutLink ? '<a href="' + logoutLink + '" class="logout">Log out</a>' : '';
-            var userSpan = username ? '<span class="username" >' + username + '</span>' : '';
+            var icon = usericon ? '<img src="' + usericon + '" />' : '',
+                logout = logoutLink ? '<a href="' + logoutLink + '" class="logout">Log out</a>' : '',
+                userSpan = username ? '<span class="username" >' + username + '</span>' : '';
+
             this.$left.html(icon + userSpan + ' ' + logout);
         }
     };

@@ -15,12 +15,16 @@ module.exports = function(grunt) {
                 return extension.replace('.js', '');
             }),
 
-        rJSConfig = (function() {
-            var _c = huskyConfig.requireJS;
+        getConfig = function(dev) {
+            var _c = clone(huskyConfig.requireJS);
             _c.include = _c.include.concat(auraExtensions);
-            _c.optimize = grunt.option('dev') ? "none" : "uglify";
+            _c.optimize = !!dev ? "none" : "uglify";
+            _c.out = "dist/" + (!!dev ? "husky.js" : "husky.min.js");
             return _c;
-        })();
+        },
+
+        rJSConfig = getConfig(grunt.option('dev')),
+        rJSConfigDev = getConfig(true);
 
 
     // project configuration
@@ -28,8 +32,11 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
 
         requirejs: {
-            husky: {
+            dist: {
                 options: clone(rJSConfig, true)
+            },
+            dev: {
+                options: clone(rJSConfigDev, true)
             }
         },
 
@@ -134,12 +141,21 @@ module.exports = function(grunt) {
                 files: [
                     {
                         expand: true,
-                        dot: true,
-                        cwd: './',
+                        cwd: '.tmp',
                         dest: 'dist',
                         src: [
-                            'fonts/{,*/}*'
+                            '**'
                         ]
+                    }
+                ]
+            },
+            "requirejs_dist": {
+                files: [
+                    {
+                        expand: true,
+                        cwd: 'dist',
+                        dest: 'dist/husky.min.js',
+                        src: 'husky.js'
                     }
                 ]
             },
@@ -271,7 +287,15 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
-        'requirejs:husky',
+        'requirejs:dist',
+        'requirejs:dev',
+        'compass',
+        'cssmin',
+        'copy:dist',
+        'copy:doc'
+    ]);
+
+    grunt.registerTask('build:css', [
         'compass',
         'cssmin',
         'copy:dist',

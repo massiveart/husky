@@ -42,8 +42,9 @@ define(['jquery'], function($) {
 
             sandbox.util.ajax({
                 url: params.url,
-                    success: function(data) {
-                    sandbox.logger.log('load', params);
+
+                success: function(data) {
+                    sandbox.logger.log('data loaded', data);
 
                     this.data = data;
 
@@ -149,10 +150,18 @@ define(['jquery'], function($) {
                 'class': 'navigation-column-header'
             });
 
-            $columnHeader.html(this.template.columnHeader({
-                title: this.columnHeader.title,
-                logo: this.columnHeader.logo
-            }));
+            if (this.columnHeader.displayOption === 'link') {
+                $columnHeader.html(this.template.columnHeaderLink({
+                    title: this.columnHeader.title,
+                    icon: this.columnHeader.icon,
+                    action: this.columnHeader.action
+                }));
+            } else {
+                $columnHeader.html(this.template.columnHeader({
+                    title: this.columnHeader.title,
+                    logo: this.columnHeader.logo
+                }));
+            }
 
             return $columnHeader;
         },
@@ -185,6 +194,7 @@ define(['jquery'], function($) {
                     columnItemClasses = [];
 
                     !!itemModel.get('class') && columnItemClasses.push(itemModel.get('class'));
+                    !!itemModel.get('selected') && columnItemClasses.push('selected');
                     columnItemClasses.push('navigation-column-item');
 
                     columnItemClass = ' class="' + columnItemClasses.join(' ') + '"';
@@ -216,11 +226,11 @@ define(['jquery'], function($) {
         },
 
         addColumn: function() {
-            var $subColumns,
-                $subColumnsContainer = $('.navigation-sub-columns-container');
+            var $subColumns, $subColumnsContainer = $('.navigation-sub-columns-container');
 
             this.currentColumnIdx++;
 
+            // FIXME check if necessary
             if (this.currentColumnIdx === 2 && !$subColumnsContainer.size()) {
                 $subColumns = $('<li/>', {
                     'class': 'navigation-sub-columns-container'
@@ -228,6 +238,7 @@ define(['jquery'], function($) {
 
                 $subColumns.append(this.prepareNavigationSubColumn());
                 this.$navigationColumns.append($subColumns);
+                $subColumnsContainer = $('.navigation-sub-columns-container');
             }
 
             if (!!$subColumnsContainer.size()) {
@@ -238,8 +249,6 @@ define(['jquery'], function($) {
             }
 
             this.setNavigationSize();
-
-            sandbox.emit('navigation.size.changed', this.getNavigationData());
         },
 
         collapseFirstColumn: function() {
@@ -251,17 +260,24 @@ define(['jquery'], function($) {
         },
 
         showNavigationColumns: function(event) {
-            var $firstColumn, $secondColumn, $element;
+            var $firstColumn, $secondColumn, $element,
+                $target = $(event.target);
+
+            if ($target.hasClass('navigation-column-header')) {
+                return;
+            }
 
             $element = $(event.target);
             $firstColumn = $('#column-0');
             $secondColumn = $('#column-1');
 
-            this.$navigationColumns.removeClass('show-content');
+            if (!$element.hasClass('content-column')) {
+                this.$navigationColumns.removeClass('show-content');
+            }
 
             this.showContent = false;
 
-            if (!$element.hasClass('navigation-column-item') && !$element.is('span')) {
+            if (!$element.hasClass('content-column') && !$element.hasClass('navigation-column-item') && !$element.is('span')) {
                 $firstColumn.removeClass('hide');
                 $secondColumn.removeClass('collapsed');
 
@@ -295,7 +311,6 @@ define(['jquery'], function($) {
 
             itemModel = this.itemsCollection.get(elementId);
 
-            this.currentColumnIdx = $elementColumn.data('column-id');
             this.currentColumnIdx = $elementColumn.data('column-id');
 
             if (!!itemModel && this.selectionLocked) {
@@ -363,6 +378,7 @@ define(['jquery'], function($) {
                     if ($elementColumn.data('columnId') !== 0) {
                         this.collapseFirstColumn();
                     } else {
+                        $('#column-1').remove();
                         $('#column-0')
                             .removeClass('hide')
                             .removeClass('collapsed')
@@ -375,6 +391,30 @@ define(['jquery'], function($) {
                     });
                 }
             }
+        },
+
+        headerLinkClick: function() {
+            var action = $('.navigation-header-link').data('action'),
+                $column0 = $('#column-0'),
+                $column1 = $('#column-1');
+
+            this.removeContentColumn();
+
+            $column0.parent().removeClass('show-content');
+            if ($column0.hasClass('hide') && $column1.hasClass('collapsed')) {
+                $column0.removeClass('hide');
+                $column0.addClass('collapsed');
+                $column1.removeClass('collapsed');
+            } else if ($column0.hasClass('collapsed')) {
+                $column0.removeClass('collapsed');
+            }
+
+            sandbox.emit('navigation.item.content.show', {
+                item: {
+                    action: action
+                },
+                data: this.getNavigationData()
+            });
         },
 
         // remove old columns before loading new ones
@@ -392,10 +432,14 @@ define(['jquery'], function($) {
                 $column = $(column);
 
                 if (!this.$navigationColumns.hasClass('show-content')) {
-                    if ($column.hasClass('collapsed')) {
-                        width += 50;
-                    } else {
-                        width += 250;
+                    if (!$column.parent().parent().hasClass('navigation-sub-columns-container')) {
+                        if ($column.hasClass('collapsed')) {
+                            width += 50;
+                        } else if ($column.hasClass('content-column')) {
+                            width += 150;
+                        } else {
+                            width += 250;
+                        }
                     }
                 } else {
                     width = 200;
@@ -431,27 +475,50 @@ define(['jquery'], function($) {
             }
         },
 
+        removeContentColumn: function() {
+            var $contentColumn = this.$navigation.find('.content-column');
+            if ($contentColumn.length > 0) {
+                this.currentColumnIdx -= $contentColumn.length;
+                $contentColumn.remove();
+            }
+        },
+
+        removeSubColumns: function() {
+            var $subColumns = this.$navigation.find('.navigation-sub-columns-container');
+            if ($subColumns.length > 0) {
+                this.currentColumnIdx -= this.$navigation.find('.navigation-sub-columns').length;
+                $subColumns.remove();
+            }
+        },
+
         // TODO
         showColumn: function(params) {
             sandbox.logger.log('showColumn');
 
             var $showedColumn,
-                $column0 = $('#column-0'),
-                $column1 = $('#column-1'),
-                countCol0 = $column0.length,
-                countCol1 = $column1.length;
+                $column0,
+                $column1,
+                countCol0,
+                countCol1;
 
             params = params || {};
 
             if (!!params.data) {
+                if (!params.data.displayOption || params.data.displayOption === 'content') {
+                    this.removeContentColumn();
+                }
+                $column0 = $('#column-0');
+                $column1 = $('#column-1');
+                countCol0 = $column0.length;
+                countCol1 = $column1.length;
+
                 this.columnHeader = params.data.header || null;
                 this.columnItems = params.data.sub.items || null;
 
                 this.setConfigs(params.data);
 
-                if (countCol0 === 1 && countCol1 === 0) {
-                    // FIXME check if only special case
-                } else {
+                // FIXME check if only special case
+                if (!(countCol0 === 1 && countCol1 === 0)) {
                     $('#column-0').addClass('hide');
                     $('#column-1').addClass('collapsed');
                 }
@@ -468,9 +535,9 @@ define(['jquery'], function($) {
 
                 this.addedColumn = this.currentColumnIdx;
                 $showedColumn = $('#column-' + this.addedColumn);
-                $showedColumn.find('ul.navigation-items li:first').addClass('selected');
+                //$showedColumn.find('ul.navigation-items li:first').addClass('selected');
 
-                sandbox.emit('navigation.column.content.show', {
+                sandbox.emit('navigation.size.changed', {
                     data: this.getNavigationData()
                 });
 
@@ -545,6 +612,7 @@ define(['jquery'], function($) {
             $(window).on('resize load', this.setNavigationSize.bind(this));
 
             this.$el.on('click', '.navigation-column-item', this.selectItem.bind(this));
+            this.$el.on('click', '.navigation-header-link', this.headerLinkClick.bind(this));
             this.$el.on('click', '.navigation-column:eq(1)', this.showNavigationColumns.bind(this));
             this.$el.on('click', '.navigation-column:eq(0).collapsed', this.showFirstNavigationColumn.bind(this));
             this.$el.on('mousewheel DOMMouseScroll', '.navigation-sub-columns-container', this.scrollSubColumns.bind(this));
@@ -584,6 +652,16 @@ define(['jquery'], function($) {
         },
 
         template: {
+            columnHeaderLink: function(data) {
+                data.title = data.title || sandbox.translate('navigation.list');
+                data.icon = data.icon || 'list';
+                data.action = data.action || '';
+
+                return [
+                    '<div class="navigation-header-link pointer" data-action="', data.action, '"><span class="icon-', data.icon, '"></span>&nbsp;', data.title, '</div>'
+                ].join('');
+            },
+
             columnHeader: function(data) {
                 var titleTemplate = null;
 

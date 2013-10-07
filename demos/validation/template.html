@@ -1,7 +1,7 @@
 <form id="form" class="grid" data-debug="true">
     <div class="grid-row">
         <div class="grid-col-6">
-            <label>###firstName### *:</label>
+            <label class="required"><%=translate('demo.firstName') %>:</label>
             <input type="text"
                    class="form-element"
                    id="firstName"
@@ -10,7 +10,7 @@
                    data-validation-required="true"/>
         </div>
         <div class="grid-col-6">
-            <label>###lastName###:</label>
+            <label><%=translate('lastName') %>:</label>
             <input type="text"
                    class="form-element"
                    id="lastName"
@@ -21,7 +21,7 @@
     </div>
     <div class="grid-row">
         <div class="grid-col-6">
-            <label>###birthDay###:</label>
+            <label><%=translate('birthDay') %>:</label>
             <input type="text"
                    class="form-element"
                    id="birthday"
@@ -31,7 +31,7 @@
                    data-validation-trigger="keyup focusout"/>
         </div>
         <div class="grid-col-6">
-            <label>###wage###:</label>
+            <label><%=translate('wage') %>:</label>
             <input type="text"
                    class="form-element"
                    id="wage"
@@ -48,7 +48,7 @@
                    data-type="label"
                    data-type-label="name"
                    data-type-id="id">
-                ###phone###:
+                <%=translate('phone') %>:
             </label>
             <input type="text"
                    class="form-element"
@@ -62,20 +62,26 @@
     <div class="grid-row">
         <div class="grid-col-4 floating">
             <label>
-                ###company###:
+               <%=translate('company') %>
             </label>
             <div data-aura-component="auto-complete@husky" data-aura-url="/contacts"></div>
+        </div>
+        <div class="grid-col-4 floating">
+            <label>
+              <%=translate('country') %>
+            </label>
+            <div data-aura-component="select@husky" data-aura-data='[{"id":1,"name":"country.austria"},{"id":2,"name":"country.germany"},{"id":3,"name":"country.switzerland"}]' data-aura-property="country"></div>
         </div>
     </div>
     <div class="grid-row">
         <div class="grid-col-2">
-            <div id="check" class="btn pointer">Check</div>
+            <div id="check" class="btn pointer"><%=translate('check') %></div>
         </div>
         <div class="grid-col-2">
-            <div id="set" class="btn pointer">SetData</div>
+            <div id="set" class="btn pointer"><%=translate('setData') %></div>
         </div>
         <div class="grid-col-2">
-            <div id="get" class="btn pointer">GetData</div>
+            <div id="get" class="btn pointer"><%=translate('getData') %></div>
         </div>
     </div>
 </form>
