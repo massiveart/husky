@@ -37,9 +37,11 @@
         <tbody>
             <tr>
                 <td><div class="grid-col-6" id="ddms"></div></td>
+                <td><div class="grid-col-6" id="ddms2"></div></td>
             </tr>
             <tr>
-                <td><div class="grid-col-6" id="ddms2"></div></td>
+                <td><div class="grid-col-6" id="ddms3"></div></td>
+                <td><div class="grid-col-6" id="ddms4"></div></td>
             </tr>
         </tbody>
     </table>
@@ -81,7 +83,8 @@
                             instanceName: 'ddms',
                             defaultLabel: 'Please choose ...',
                             value: 'name',
-                            data: ['Deutsch', 'English', 'Spanish', 'Italienisch']
+                            data: ['Deutsch', 'English', 'Spanish', 'Italienisch'],
+                            preSelectedElements: ['Deutsch', 'English', 'Italienisch' ]
                         }
                     },
                     {
@@ -89,6 +92,37 @@
                         options: {
                             el: '#ddms2',
                             instanceName: 'ddms2',
+                            defaultLabel: 'Please choose ...',
+                            value: 'name',
+                            data: [
+                                {id: 0, name: 'Deutsch'},
+                                {id: 1, name: 'English'},
+                                {id: 2, name: 'Spanish'},
+                                {id: 3, name: 'Italienisch'}
+                            ],
+                            preSelectedElements: [1,2,3]
+                        }
+                    },
+                    {
+                        name: 'dropdown-multiple-select@husky',
+                        options: {
+                            el: '#ddms3',
+                            instanceName: 'ddms3',
+                            defaultLabel: 'Please choose ...',
+                            value: 'name',
+                            data: [
+                                {id: 0, name: 'Deutsch'},
+                                {id: 1, name: 'English'},
+                                {id: 2, name: 'Spanish'},
+                                {id: 3, name: 'Italienisch'}
+                            ]
+                        }
+                    },
+                    {
+                        name: 'dropdown-multiple-select@husky',
+                        options: {
+                            el: '#ddms4',
+                            instanceName: 'ddms4',
                             defaultLabel: 'Please choose ...',
                             value: 'name',
                             data: [
