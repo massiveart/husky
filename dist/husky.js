@@ -21362,7 +21362,7 @@ define('__component__$header@husky',[], function() {
                     return [
                         '<div class="grid-row">',
                         '   <div class="grid-col-6 left">',
-                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-button-state="disable" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-text="',this.sandbox.translate('header.saved'),'"/>',
+                        '       <div id="save-button" data-aura-component="button@husky" data-aura-instance-name="save" data-aura-button-type="icon" data-aura-button-state="hide" data-aura-background="black" data-aura-icon-type="circle-ok" data-aura-text="',this.sandbox.translate('header.saved'),'"/>',
                         '   </div>',
                         '</div>'
                     ].join('');
@@ -21436,8 +21436,8 @@ define('__component__$header@husky',[], function() {
                         sandbox.emit('husky.button.delete.state', 'loading');
                     },
                     hide: function() {
-//                        sandbox.emit('husky.button.save.state', 'hide');
-//                        sandbox.emit('husky.button.delete.state', 'hide');
+                        sandbox.emit('husky.button.save.state', 'hide');
+                        sandbox.emit('husky.button.delete.state', 'hide');
                     }
                 }
             },
@@ -21464,6 +21464,9 @@ define('__component__$header@husky',[], function() {
                     },
                     'loading-add-button': function() {
                         sandbox.emit('husky.button.add.state', 'loading');
+                    },
+                    hide: function() {
+                        sandbox.emit('husky.button.add.state', 'hide');
                     }
                 }
             },
@@ -21483,7 +21486,6 @@ define('__component__$header@husky',[], function() {
             userName: null, // username to be shown in left side of header
             logoutUrl: null, // logout link
             userIconUrl: null // link to the icon in the left side
-
         };
 
     return {
