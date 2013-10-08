@@ -36,12 +36,12 @@
     <table>
         <tbody>
             <tr>
-                <td><div class="grid-col-6" id="ddms"></div></td>
-                <td><div class="grid-col-6" id="ddms2"></div></td>
+                <td width="50%"><div class="grid-col-11" id="ddms"></div></td>
+                <td width="50%"><div class="grid-col-11" id="ddms2"></div></td>
             </tr>
             <tr>
-                <td><div class="grid-col-6" id="ddms3"></div></td>
-                <td><div class="grid-col-6" id="ddms4"></div></td>
+                <td><div class="grid-col-11" id="ddms3"></div></td>
+                <td><div class="grid-col-11" id="ddms4"></div></td>
             </tr>
         </tbody>
     </table>
@@ -110,12 +110,7 @@
                             instanceName: 'ddms3',
                             defaultLabel: 'Please choose ...',
                             value: 'name',
-                            data: [
-                                {id: 0, name: 'Deutsch'},
-                                {id: 1, name: 'English'},
-                                {id: 2, name: 'Spanish'},
-                                {id: 3, name: 'Italienisch'}
-                            ]
+                            data: ['Deutsch', 'English', 'Spanish', 'Italienisch']
                         }
                     },
                     {
@@ -159,7 +154,7 @@
                     });
 
                     app.sandbox.dom.on('#get', 'click', function(event) {
-                        app.sandbox.emit('husky.dropdown.multiple.select.ddms2.getChecked', function(selected){
+                        app.sandbox.emit('husky.dropdown.multiple.select.ddms.getChecked', function(selected){
                             console.log('selected items', selected);
                         });
                     });
