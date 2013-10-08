@@ -11,10 +11,22 @@
         <meta name="viewport" content="width=device-width">
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <link rel="stylesheet" href="../../dist/husky.min.css">
+
+        <style type="text/css">
+            #content {
+                margin-top: 100px;
+            }
+        </style>
     </head>
     <body>
 
         <div data-aura-component="header@husky" data-aura-user-name="John Doe" data-aura-logout-url="logout" ></div>
+
+        <div id="content">
+            <div class="btn grid-col-2 pointer align-center" id="hide">Hide Save</div>
+            <div class="btn grid-col-2 pointer align-center" id="show">Show Save</div>
+            <div class="btn grid-col-2 pointer align-center" id="dirty">Dirty</div>
+        </div>
 
         <script src="../js/sinon.js"></script>
         <script src="../js/jquery.js"></script>
@@ -32,21 +44,25 @@
                 var app = Husky({ debug: { enable: true }}),
                         _ = app.sandbox.util._;
 
+                $('#hide').click(function(event) {
+                    app.sandbox.emit('husky.header.button-state', 'hide');
+                });
+
+                $('#show').click(function(event) {
+                    app.sandbox.emit('husky.header.button-state', 'standard');
+                });
+
+
+                $('#dirty').click(function(event) {
+                    app.sandbox.emit('husky.header.button-state', 'dirty');
+                });
+
                 app.start().then(function() {
                     app.logger.log('Aura started...');
 
-
-                    setTimeout(function() {
+                    setTimeout(function(){
                         app.sandbox.emit('husky.header.button-type', 'save');
-                        setTimeout(function() {
-                            app.sandbox.emit('husky.header.button-type', 'saveDelete');
-                            setTimeout(function() {
-//                                app.sandbox.emit('husky.header.button-state', 'hide');
-                                app.sandbox.emit('husky.header.button-state', 'standard');
-                                app.sandbox.emit('husky.header.button-state', 'dirty');
-                            }, 10);
-                        }, 10);
-                    }, 10);
+                    }, 100);
                 });
 
             });
