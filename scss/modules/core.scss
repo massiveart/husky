@@ -1,0 +1,28 @@
+//
+// Core Styling
+// --------------------------------------------------
+
+
+@import "compass/css3/box-sizing";
+
+* {
+    @include box-sizing(border-box);
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-size: $baseFontSize;
+    color: $baseFontColor;
+    background: $baseBackgroundColor;
+}
+
+hr.divider{
+	color:#fff;
+	height: 0;
+	border: 1px solid #fff;
+	margin: 30px 0 20px 0;
+}
