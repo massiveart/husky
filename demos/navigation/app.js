@@ -58,7 +58,8 @@ require(['lib/husky'], function(Husky) {
                                     "id": "details",
                                     "hasSub": false,
                                     "type": "content",
-                                    "action": "/details"
+                                    "action": "/details",
+                                    "selected": true
                                 },
                                 {
                                     "title": "Settings",
@@ -74,9 +75,7 @@ require(['lib/husky'], function(Husky) {
             }, 10);
         };
 
-        app.sandbox.on('navigation.item.selected', function(event) {
-                $('#print').html(event.item.action);
-
+        app.sandbox.on('navigation.item.selected', function() {
                 setTimeout(function() {
                     fakeServer.respond();
                 }, 500);
@@ -84,6 +83,7 @@ require(['lib/husky'], function(Husky) {
         );
 
         app.sandbox.on('navigation.item.content.show', function(event) {
+            $('#print').html(event.item.action);
             sizeChanged(event);
 
             if (event.item.action === '/portals/products/product_1/product_2/product_3/product_4/content') {
@@ -95,7 +95,10 @@ require(['lib/husky'], function(Husky) {
             sizeChanged(event);
         });
 
-        $('#load').on('click', showColumn);
+        $('#load').on('click', function() {
+            $('#print').html('Content');
+            showColumn();
+        });
     });
 
 })
