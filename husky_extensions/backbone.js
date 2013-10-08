@@ -44,6 +44,8 @@
                 return core.mvc.Collection.extend(options);
             };
 
+            sandbox.mvc.history = core.mvc.history;
+
             define('mvc/view', function() {
                 return sandbox.mvc.View;
             });

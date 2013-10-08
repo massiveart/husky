@@ -42,6 +42,7 @@ define(['jquery'], function($) {
 
             sandbox.util.ajax({
                 url: params.url,
+
                 success: function(data) {
                     sandbox.logger.log('data loaded', data);
 
