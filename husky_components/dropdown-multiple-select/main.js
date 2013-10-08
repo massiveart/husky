@@ -90,6 +90,7 @@ define([], function() {
                     this.sandbox.util.each(items, function(index, value) {
                         if(this.options.preSelectedElements.indexOf(value) >= 0) {
                             this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, 'checked'));
+                            this.selectedElementsValues.push(value);
                         } else {
                             this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, ''));
                         }
@@ -98,6 +99,7 @@ define([], function() {
                     this.sandbox.util.each(items, function(index, value) {
                         if(this.options.preSelectedElements.indexOf(value.id) >= 0) {
                             this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, 'checked'));
+                            this.selectedElementsValues.push(value[this.options.valueName]);
                         } else {
                             this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, ''));
                         }
