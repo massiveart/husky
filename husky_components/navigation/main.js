@@ -195,10 +195,10 @@ define(function() {
             this.sandbox.on('navigation.item.column.show', showColumn.bind(this));
         },
 
+    // FIXME better solution?
         headerLinkClick = function() {
             removeContentColumn.call(this);
 
-            // FIXME better solution?
             if (this.sandbox.dom.hasClass('#column-0', 'hide') &&
                 this.sandbox.dom.hasClass('#column-1', 'collapsed')) {
                 this.sandbox.emit('husky.navigation.column.collapse', 0);
