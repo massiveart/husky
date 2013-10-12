@@ -187,11 +187,31 @@ define(function() {
         },
 
         bindDomEvents = function() {
-            this.$el.on('mousewheel DOMMouseScroll', '.navigation-sub-columns-container', scrollSubColumns.bind(this));
+            this.sandbox.dom.on('.navigation', 'click', headerLinkClick.bind(this), '.navigation-header-link');
+            this.sandbox.dom.on('.navigation-sub-columns-container', 'mousewheel DOMMouseScroll', scrollSubColumns.bind(this));
         },
 
         bindCustomEvents = function() {
             this.sandbox.on('navigation.item.column.show', showColumn.bind(this));
+        },
+
+        headerLinkClick = function() {
+            removeContentColumn.call(this);
+
+            // FIXME better solution?
+            if (this.sandbox.dom.hasClass('#column-0', 'hide') &&
+                this.sandbox.dom.hasClass('#column-1', 'collapsed')) {
+                this.sandbox.emit('husky.navigation.column.collapse', 0);
+            } else if (this.sandbox.dom.hasClass('#column-0', 'collapsed')) {
+                this.sandbox.emit('husky.navigation.column.show', 0);
+            }
+
+            this.sandbox.emit('navigation.item.content.show', {
+                item: {
+                    action: $('.navigation-header-link').data('action')
+                },
+                data: getNavigationData.call(this)
+            });
         },
 
         removeContentColumn = function() {
