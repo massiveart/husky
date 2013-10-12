@@ -63,8 +63,10 @@ define(function() {
             this.sandbox.dom.on(this.$el, 'click', clickItem.bind(this));
         },
 
-        clickItem = function() {
+        clickItem = function(event) {
             this.sandbox.logger.log('click item', this.options.data);
+
+            event.stopPropagation();
 
             // emit click callback or event
             if (!!this.options.clickCallback && typeof this.options.clickCallback === 'function') {

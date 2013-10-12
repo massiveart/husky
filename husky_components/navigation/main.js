@@ -111,6 +111,7 @@ define(function() {
             if (!item.sub) {
                 if (!!item.action) {
                     updateColumns.call(this, index, false);
+                    this.sandbox.emit('husky.navigation.column.show', index);
                     this.sandbox.emit('husky.navigation.item.loading', item.id, true);
                     load
                         .call(this, item.action)
@@ -120,7 +121,7 @@ define(function() {
                         }.bind(this));
                 }
             } else {
-                updateColumns.call(this, index);
+                updateColumns.call(this, index, true);
                 addColumn.call(this, index + 1, item);
             }
         },

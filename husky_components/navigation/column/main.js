@@ -20,10 +20,40 @@ define(function() {
 
     var render = function() {
             prepareColumn.call(this);
+
+            if (!!this.options.data.header) {
+                this.sandbox.dom.append(this.$el, prepareColumnHeader.call(this));
+            }
+
             this.$columnItemsList = prepareColumnItems.call(this);
             this.sandbox.dom.append(this.$el, this.$columnItemsList);
 
             bindCustomEvents.call(this);
+            bindDomEvents.call(this);
+        },
+
+        prepareColumnHeader = function() {
+            var $columnHeader = this.sandbox.dom.createElement('<div/>', {
+                'class': 'navigation-column-header'
+            });
+
+            if (this.options.data.header.displayOption === 'link') {
+                $columnHeader.html(template.columnHeaderLink({
+                    title: this.options.data.header.title,
+                    icon: this.options.data.header.icon,
+                    action: this.options.data.header.action
+                }));
+            } else {
+                $columnHeader.html(template.columnHeader({
+                    title: this.options.data.header.title,
+                    logo: this.options.data.header.logo
+                }));
+            }
+
+            return $columnHeader;
+        },
+
+        bindDomEvents = function() {
         },
 
         bindCustomEvents = function() {
@@ -137,6 +167,47 @@ define(function() {
                 } else {
                     this.sandbox.emit('husky.navigation.column.show-content', this.options.index, this.options.data);
                 }
+            }
+        },
+        template = {
+            columnHeaderLink: function(data) {
+                data.title = data.title || sandbox.translate('navigation.list');
+                data.icon = data.icon || 'list';
+                data.action = data.action || '';
+
+                return [
+                    '<div class="navigation-header-link pointer" data-action="', data.action, '"><span class="icon-', data.icon, '"></span>&nbsp;', data.title, '</div>'
+                ].join('');
+            },
+
+            columnHeader: function(data) {
+                var titleTemplate = null;
+
+                data = data || {};
+
+                data.title = data.title || '';
+                data.logo = data.logo || '';
+
+                if (!!data.logo) {
+                    titleTemplate = '<span class="navigation-column-logo"><img alt="' + data.title + '" src="' + data.logo + '"/></span>';
+                }
+
+                return [
+                    titleTemplate,
+                    '<h2 class="navigation-column-title">', data.title, '</h2>'
+                ].join('');
+            },
+
+            // TODO: Remove search
+            search: function(data) {
+                data = data || {};
+
+                data.action = data.action || '';
+                data.icon = data.icon || '';
+
+                return [
+                    '<input type="text" class="search" autofill="false" data-action="', data.action, '" placeholder="Search ..."/>' // TODO Translate
+                ].join('');
             }
         };
 
