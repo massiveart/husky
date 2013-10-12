@@ -305,16 +305,17 @@ $navigationIconFont: $baseIconFont;
     //min-width: 250px;
     padding-bottom: 5px !important;
     padding-right: 5px !important;
+    max-width: 700px;
+}
 
-    .navigation-column-item {
-        &[data-has-sub="true"] {
-            &::before {
-                content: "\E177";
-            }
+.navigation-column-item {
+    &[data-has-sub="true"] {
+        &::before {
+            content: "\E177";
         }
+    }
 
-        &.is-loading::before {
-            content: "";
-        }
+    &.is-loading::before {
+        content: "";
     }
 }

@@ -39,16 +39,7 @@ define(function() {
         prepareFirstColumn = function(data) {
             this.data = data;
 
-            this.$subColumns = this.sandbox.dom.createElement('<li/>', {
-                'class': 'navigation-sub-columns-container'
-            });
-            this.$navigationSubColumns = this.sandbox.dom.createElement('<ul/>', {
-                'class': 'navigation-sub-columns'
-            });
-            this.sandbox.dom.append(this.$subColumns, this.$navigationSubColumns);
-
             this.sandbox.dom.append(this.$navigationColumns, startColumn.call(this, 0, data));
-            this.sandbox.dom.append(this.$navigationColumns, this.$subColumns);
         },
 
         startColumn = function(index, data) {
@@ -75,6 +66,11 @@ define(function() {
         contentCallback = function(index, data) {
             this.sandbox.logger.log('content', index, data);
 
+            if (index >= 1) {
+                updateColumns.call(this, 1, true);
+                index = 1;
+            }
+
             // FIXME better solution
             if (index === 0) {
                 this.sandbox.emit('husky.navigation.column.show', 0);
@@ -92,8 +88,12 @@ define(function() {
             });
         },
 
-        updateColumns = function(index) {
-            $('.navigation-column:gt(' + index + ')').remove();
+        updateColumns = function(index, removeSubColumns) {
+            if (!!removeSubColumns) {
+                this.sandbox.dom.remove(this.$subColumns);
+                delete this.$navigationSubColumns;
+            }
+            this.sandbox.dom.remove('.navigation-column:gt(' + index + ')');
         },
 
         selectedCallback = function(index, item) {
@@ -109,7 +109,16 @@ define(function() {
 
         addColumnCallback = function(index, item) {
             if (!item.sub) {
-                // TODO load data
+                if (!!item.action) {
+                    updateColumns.call(this, index, false);
+                    this.sandbox.emit('husky.navigation.item.loading', item.id, true);
+                    load
+                        .call(this, item.action)
+                        .then(function(data) {
+                            addColumn.call(this, index + 1, data);
+                            this.sandbox.emit('husky.navigation.item.loading', item.id, false);
+                        }.bind(this));
+                }
             } else {
                 updateColumns.call(this, index);
                 addColumn.call(this, index + 1, item);
@@ -119,11 +128,71 @@ define(function() {
         addColumn = function(index, data) {
             var $column = startColumn.call(this, index, data);
 
-            this.sandbox.dom.append(this.$navigationSubColumns, $column);
+            if (index >= 2) {
+                this.sandbox.emit('husky.navigation.column.collapse', 0);
+
+                if (!this.$navigationSubColumns) {
+                    initSubColumns.call(this);
+                }
+                this.sandbox.dom.append(this.$navigationSubColumns, $column);
+                scrollToLastSubColumn.call(this);
+            } else {
+                this.sandbox.dom.append(this.$navigationColumns, $column);
+            }
+        },
+
+        scrollToLastSubColumn = function() {
+            this.$navigationSubColumns.delay(250).animate({
+                'scrollLeft': 1000
+            }, 500);
+        },
+
+        initSubColumns = function() {
+            this.$subColumns = this.sandbox.dom.createElement('<li/>', {
+                'class': 'navigation-sub-columns-container'
+            });
+            this.$navigationSubColumns = this.sandbox.dom.createElement('<ul/>', {
+                'class': 'navigation-sub-columns'
+            });
+            this.sandbox.dom.append(this.$subColumns, this.$navigationSubColumns);
+            this.sandbox.dom.append(this.$navigationColumns, this.$subColumns);
         },
 
         render = function() {
             this.$el.html(this.$navigation);
+
+            bindDomEvents.call(this);
+        },
+
+        bindDomEvents = function() {
+            this.$el.on('mousewheel DOMMouseScroll', '.navigation-sub-columns-container', scrollSubColumns.bind(this));
+        },
+
+        scrollSubColumns = function(event) {
+            var direction = event.originalEvent.detail < 0 || event.originalEvent.wheelDelta > 0 ? 1 : -1,
+                scrollSpeed = 25,
+                scrollLeft = 0;
+
+            event.preventDefault();
+
+            if (this.scrollLocked) {
+                this.scrollLocked = false;
+
+                // normalize scrolling
+                setTimeout(function() {
+                    this.scrollLocked = true;
+
+                    if (direction < 0) {
+                        // left scroll
+                        scrollLeft = this.$navigationSubColumns.scrollLeft() + scrollSpeed;
+                        this.$navigationSubColumns.scrollLeft(scrollLeft);
+                    } else {
+                        // right scroll
+                        scrollLeft = this.$navigationSubColumns.scrollLeft() - scrollSpeed;
+                        this.$navigationSubColumns.scrollLeft(scrollLeft);
+                    }
+                }.bind(this), 25);
+            }
         },
 
         getNavigationWidth = function() {
@@ -148,7 +217,8 @@ define(function() {
 
             }.bind(this));
 
-            return width;
+            // 5px margin
+            return width + 5;
         },
 
         getNavigationData = function() {
@@ -159,6 +229,8 @@ define(function() {
         };
 
     return  {
+        scrollLocked: true,
+
         view: true,
 
         initialize: function() {

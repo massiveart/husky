@@ -69,7 +69,7 @@ define(function() {
 
             this.sandbox.dom.attr(this.$el, {
                 'id': this.id,
-                'dataColumnId': this.options.index,
+                'data-column-id': this.options.index,
                 'class': 'navigation-column ' + columnClasses.join(' ')
             });
         },
@@ -116,7 +116,7 @@ define(function() {
                 this.sandbox.emit('husky.navigation.column.item-selected', this.options.index, this.options.index, item);
             }
 
-            if (this.sandbox.dom.hasClass($item, 'selected')) {
+            if (this.sandbox.dom.hasClass($item, 'selected') && this.options.index === 0) {
                 // add a column to navigation
                 if (!!this.options.selectedClickCallback && typeof this.options.selectedClickCallback === 'function') {
                     this.options.selectedClickCallback(this.options.index);

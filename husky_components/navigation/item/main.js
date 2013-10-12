@@ -27,6 +27,7 @@ define(function() {
             prepareColumnItem.call(this);
 
             bindDomEvents.call(this);
+            bindCustomEvents.call(this);
         },
 
         prepareColumnItem = function() {
@@ -43,7 +44,7 @@ define(function() {
                 id: this.options.data.id,
                 class: columnItemClasses.join(' '),
                 title: this.options.data.title,
-                dataHasSub: (!!this.options.data.hasSub) ? 'true' : 'false'
+                'data-has-sub': (!!this.options.data.hasSub) ? 'true' : 'false'
             });
 
             // add icon
@@ -74,6 +75,20 @@ define(function() {
 
             // selected class
             this.sandbox.dom.addClass(this.$el, 'selected');
+        },
+
+        bindCustomEvents = function() {
+            this.sandbox.on('husky.navigation.item.loading', loadingItem.bind(this));
+        },
+
+        loadingItem = function(id, onOff) {
+            if (id === this.options.data.id) {
+                if (onOff) {
+                    this.sandbox.dom.addClass(this.$el, 'is-loading');
+                } else {
+                    this.sandbox.dom.removeClass(this.$el, 'is-loading');
+                }
+            }
         };
 
     return {
