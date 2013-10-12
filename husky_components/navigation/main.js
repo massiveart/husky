@@ -67,8 +67,11 @@ define(function() {
             this.sandbox.logger.log('content', index, data);
 
             if (index >= 1) {
+                if (!$('#' + data.id).parent().parent().hasClass('content-column')) {
+                    updateColumns.call(this, 1, true);
+                }
+            } else {
                 updateColumns.call(this, 1, true);
-                index = 1;
             }
 
             // FIXME better solution
@@ -77,9 +80,10 @@ define(function() {
                 this.sandbox.dom.remove('#column-1');
             } else if (index === 1) {
                 this.sandbox.emit('husky.navigation.column.collapse', 0);
-            } else if (index === 2) {
-                this.sandbox.emit('husky.navigation.column.hide', 0);
-                this.sandbox.emit('husky.navigation.column.collapse', 1);
+                this.sandbox.emit('husky.navigation.column.show', 1);
+            } else if (index >= 2) {
+                this.sandbox.emit('husky.navigation.column.collapse', 0);
+                this.sandbox.emit('husky.navigation.column.show', 1);
             }
 
             this.sandbox.emit('navigation.item.content.show', {
@@ -105,12 +109,21 @@ define(function() {
 
         selectedClickCallback = function(index) {
             this.sandbox.emit('husky.navigation.column.show', index);
+            if (index > 0) {
+                this.sandbox.emit('husky.navigation.column.collapse', index - 1);
+            }
         },
 
         addColumnCallback = function(index, item) {
             if (!item.sub) {
                 if (!!item.action) {
-                    updateColumns.call(this, index, false);
+                    if (index < 1) {
+                        updateColumns.call(this, index, true);
+                    } else {
+                        this.sandbox.emit('husky.navigation.column.collapse', 0);
+                        updateColumns.call(this, index, false);
+                    }
+
                     this.sandbox.emit('husky.navigation.column.show', index);
                     this.sandbox.emit('husky.navigation.item.loading', item.id, true);
                     load
@@ -129,8 +142,15 @@ define(function() {
         addColumn = function(index, data) {
             var $column = startColumn.call(this, index, data);
 
+            removeContentColumn.call(this);
+
             if (index >= 2) {
-                this.sandbox.emit('husky.navigation.column.collapse', 0);
+//                if (data.type === 'content') {
+//                    this.sandbox.emit('husky.navigation.column.hide', 0);
+//                }else{
+//                    this.sandbox.emit('husky.navigation.column.collapse', 0);
+//                }
+//                this.sandbox.emit('husky.navigation.column.collapse', 1);
 
                 if (!this.$navigationSubColumns) {
                     initSubColumns.call(this);
@@ -163,10 +183,41 @@ define(function() {
             this.$el.html(this.$navigation);
 
             bindDomEvents.call(this);
+            bindCustomEvents.call(this);
         },
 
         bindDomEvents = function() {
             this.$el.on('mousewheel DOMMouseScroll', '.navigation-sub-columns-container', scrollSubColumns.bind(this));
+        },
+
+        bindCustomEvents = function() {
+            this.sandbox.on('navigation.item.column.show', showColumn.bind(this));
+        },
+
+        removeContentColumn = function() {
+            this.sandbox.dom.remove('.content-column');
+        },
+
+        showColumn = function(params) {
+            if (!params.data.displayOption || params.data.displayOption === 'content') {
+                removeContentColumn.call(this);
+            }
+
+            if (this.sandbox.dom.find('#column-0').length === 1 &&
+                this.sandbox.dom.find('#column-1').length === 1) {
+                this.sandbox.emit('husky.navigation.column.hide', 0);
+                this.sandbox.emit('husky.navigation.column.collapse', 1);
+            } else {
+                this.sandbox.emit('husky.navigation.column.collapse', 0);
+            }
+
+            addColumn.call(this, 9, params.data);
+
+            setTimeout(function() {
+                this.sandbox.emit('navigation.size.changed', {
+                    data: getNavigationData.call(this)
+                });
+            }.bind(this), 10);
         },
 
         scrollSubColumns = function(event) {
@@ -204,18 +255,15 @@ define(function() {
             this.sandbox.dom.each($columns, function(idx, column) {
                 $column = this.sandbox.dom.createElement(column);
 
-                if (!this.$navigationColumns.hasClass('show-content')) {
-                    if (this.sandbox.dom.hasClass($column, 'collapsed')) {
-                        width += 50;
-                    } else if (this.sandbox.dom.hasClass($column, 'content-column')) {
-                        width += 150;
-                    } else {
-                        width += 250;
-                    }
+                if (this.sandbox.dom.hasClass($column, 'collapsed')) {
+                    width += 50;
+                } else if (this.sandbox.dom.hasClass($column, 'content-column')) {
+                    width += 150;
+                } else if (this.sandbox.dom.hasClass($column, 'hide')) {
+                    width += 0;
                 } else {
-                    width = 200;
+                    width += 250;
                 }
-
             }.bind(this));
 
             // 5px margin

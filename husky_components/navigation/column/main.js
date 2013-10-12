@@ -38,13 +38,13 @@ define(function() {
             });
 
             if (this.options.data.header.displayOption === 'link') {
-                $columnHeader.html(template.columnHeaderLink({
+                $columnHeader.html(template.columnHeaderLink.call(this, {
                     title: this.options.data.header.title,
                     icon: this.options.data.header.icon,
                     action: this.options.data.header.action
                 }));
             } else {
-                $columnHeader.html(template.columnHeader({
+                $columnHeader.html(template.columnHeader.call(this, {
                     title: this.options.data.header.title,
                     logo: this.options.data.header.logo
                 }));
@@ -70,6 +70,7 @@ define(function() {
 
         collapse = function(index) {
             if (index === this.options.index) {
+                this.sandbox.dom.removeClass(this.$el, 'hide');
                 this.sandbox.dom.addClass(this.$el, 'collapsed');
             }
         },
@@ -77,15 +78,16 @@ define(function() {
         hide = function(index) {
             if (index === this.options.index) {
                 this.sandbox.dom.addClass(this.$el, 'hide');
+                this.sandbox.dom.removeClass(this.$el, 'collapsed');
             }
         },
 
         prepareColumn = function() {
             var columnClasses = [];
 
-            if (!!this.options.data && !!this.options.data.type) {
+            if (!!this.options.data && !!this.options.data.displayOption) {
                 // add a class that defines display-options
-                columnClasses.push(this.options.data.type + '-column');
+                columnClasses.push(this.options.data.displayOption + '-column');
             }
             if (this.options.index === 0) {
                 // if the column is the second column
@@ -146,7 +148,7 @@ define(function() {
                 this.sandbox.emit('husky.navigation.column.item-selected', this.options.index, this.options.index, item);
             }
 
-            if (this.sandbox.dom.hasClass($item, 'selected') && this.options.index === 0) {
+            if (this.sandbox.dom.hasClass($item, 'selected') && this.sandbox.dom.hasClass(this.$el, 'collapsed')) {
                 // add a column to navigation
                 if (!!this.options.selectedClickCallback && typeof this.options.selectedClickCallback === 'function') {
                     this.options.selectedClickCallback(this.options.index);
@@ -171,7 +173,7 @@ define(function() {
         },
         template = {
             columnHeaderLink: function(data) {
-                data.title = data.title || sandbox.translate('navigation.list');
+                data.title = data.title || this.sandbox.translate('navigation.list');
                 data.icon = data.icon || 'list';
                 data.action = data.action || '';
 
