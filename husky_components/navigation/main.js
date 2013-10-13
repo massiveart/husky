@@ -195,7 +195,7 @@ define(function() {
             this.sandbox.on('navigation.item.column.show', showColumn.bind(this));
         },
 
-    // FIXME better solution?
+        // FIXME better solution?
         headerLinkClick = function() {
             removeContentColumn.call(this);
 
@@ -275,6 +275,7 @@ define(function() {
             this.sandbox.dom.each($columns, function(idx, column) {
                 $column = this.sandbox.dom.createElement(column);
 
+                // TODO: refactore
                 if (this.sandbox.dom.hasClass($column, 'collapsed')) {
                     width += 50;
                 } else if (this.sandbox.dom.hasClass($column, 'content-column')) {
