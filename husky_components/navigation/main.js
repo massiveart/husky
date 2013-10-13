@@ -26,7 +26,6 @@ define(function() {
 
             this.sandbox.util.ajax({
                 url: url,
-
                 success: function(data) {
                     this.sandbox.logger.log('data loaded', data);
                     deferred.resolve(data);
@@ -231,6 +230,7 @@ define(function() {
                 this.sandbox.emit('husky.navigation.column.collapse', 0);
             }
 
+            // TODO: show
             addColumn.call(this, 9, params.data);
 
             setTimeout(function() {
@@ -304,7 +304,7 @@ define(function() {
         view: true,
 
         initialize: function() {
-            this.sandbox.logger.log('initialize', this);
+            this.sandbox.logger.log('initialize');
             this.sandbox.logger.log(arguments);
 
             // init container
