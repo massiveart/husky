@@ -4,7 +4,7 @@ define(['husky'], function(husky) {
 
     var app;
 
-    ddescribe('Button', function() {
+    describe('Button', function() {
         $('body').append('<div id="button">');
 
 
@@ -34,9 +34,18 @@ define(['husky'], function(husky) {
         afterEach(function() {
         });
 
+        /**
+         check if the button was initialized by checking
+         if it appears in the dom
+         */
+
         it('should be inserted into the dom', function() {
             expect($('.icon-btn').size()).toBe(1);
         });
+
+        /**
+         check if the button status can be changed to disabled
+         */
 
         it('should change status to be disabled', function() {
             var flag = false;
@@ -54,8 +63,13 @@ define(['husky'], function(husky) {
 
             runs(function() {
                 expect($('.icon-btn.disable').size()).toBe(1);
+                expect($('.icon-btn.pointer').size()).toBe(0);
             });
         });
+
+        /**
+         check if the button icon can be changed to ok-circle
+         */
 
         it('should change icon to ok-circle', function() {
             var flag = false;
