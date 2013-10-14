@@ -15,7 +15,7 @@
  *
  */
 
-define(['./navigation-column'], function(NavigationColumn) {
+define(['husky_components/navigation/navigation-column'], function(NavigationColumn) {
 
     'use strict';
 

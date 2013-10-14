@@ -15,7 +15,7 @@
  *
  */
 
-define(['./navigation-item'], function(NavigationItem) {
+define(['husky_components/navigation/navigation-item'], function(NavigationItem) {
     'use strict';
 
     var render = function() {
