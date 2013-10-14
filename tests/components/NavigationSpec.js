@@ -350,8 +350,9 @@ define(['husky'], function(husky) {
              */
             it('should remove the content-column', function() {
                 $('#5242c58c3a591').click();
+                expect($('.navigation').size()).toEqual(1);
                 expect($('.content-column').size()).toEqual(0);
             });
-        })
+        });
     });
 });

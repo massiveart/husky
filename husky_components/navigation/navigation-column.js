@@ -15,7 +15,7 @@
  *
  */
 
-define(function() {
+define(['./navigation-item'], function(NavigationItem) {
     'use strict';
 
     var render = function() {
@@ -53,8 +53,7 @@ define(function() {
             return $columnHeader;
         },
 
-        bindDomEvents = function() {
-        },
+        bindDomEvents = function() {},
 
         bindCustomEvents = function() {
             this.sandbox.on('husky.navigation.column.show', show.bind(this));
@@ -119,18 +118,19 @@ define(function() {
         },
 
         prepareColumnItem = function(item) {
-            var $item = this.sandbox.dom.createElement('<li/>');
+            var $item = this.sandbox.dom.createElement('<li/>'),
+                navigationItem = new NavigationItem();
 
-            this.sandbox.start([
-                {
-                    name: 'navigation/item@husky',
-                    options: {
-                        el: $item,
-                        data: item,
-                        clickCallback: clickCallback.bind(this)
-                    }
-                }
-            ]);
+
+
+            navigationItem.sandbox = this.sandbox;
+            navigationItem.setOptions({
+                $el: $item,
+                data: item,
+                clickCallback: clickCallback.bind(this)
+            });
+
+            navigationItem.render();
 
             return $item;
         },
@@ -213,9 +213,19 @@ define(function() {
             }
         };
 
-    return {
-        initialize: function() {
-            render.call(this);
-        }
+    return function() {
+        return {
+            render: function() {
+                render.call(this);
+            },
+
+            setOptions: function(options) {
+                if (!options) {
+                    throw('No options were defined!');
+                }
+                this.options = options;
+                this.$el = this.options.$el;
+            }
+        };         
     };
 });

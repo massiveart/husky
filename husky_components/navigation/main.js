@@ -15,7 +15,7 @@
  *
  */
 
-define(function() {
+define(['./navigation-column'], function(NavigationColumn) {
 
     'use strict';
 
@@ -42,22 +42,22 @@ define(function() {
         },
 
         startColumn = function(index, data) {
-            var $column = this.sandbox.dom.createElement('<li/>');
+            var $column = this.sandbox.dom.createElement('<li/>'),
+                navigationColumn = new NavigationColumn();
 
-            this.sandbox.start([
-                {
-                    name: 'navigation/column@husky',
-                    options: {
-                        el: $column,
-                        data: data,
-                        index: index,
-                        contentCallback: contentCallback.bind(this),
-                        selectedCallback: selectedCallback.bind(this),
-                        addColumnCallback: addColumnCallback.bind(this),
-                        selectedClickCallback: selectedClickCallback.bind(this)
-                    }
-                }
-            ]);
+            navigationColumn.sandbox = this.sandbox;
+
+            navigationColumn.setOptions({
+                $el: $column,
+                data: data,
+                index: index,
+                contentCallback: contentCallback.bind(this),
+                selectedCallback: selectedCallback.bind(this),
+                addColumnCallback: addColumnCallback.bind(this),
+                selectedClickCallback: selectedClickCallback.bind(this)
+            });
+
+            navigationColumn.render();
 
             return $column;
         },
@@ -144,13 +144,6 @@ define(function() {
             removeContentColumn.call(this);
 
             if (index >= 2) {
-//                if (data.type === 'content') {
-//                    this.sandbox.emit('husky.navigation.column.hide', 0);
-//                }else{
-//                    this.sandbox.emit('husky.navigation.column.collapse', 0);
-//                }
-//                this.sandbox.emit('husky.navigation.column.collapse', 1);
-
                 if (!this.$navigationSubColumns) {
                     initSubColumns.call(this);
                 }
