@@ -43,7 +43,7 @@ define([], function() {
     return {
 
         initialize: function() {
-            this.sandbox.logger.log('initialize', this);
+            this.sandbox.logger.log('initialize');
             this.sandbox.logger.log(arguments);
 
             // extend default options
