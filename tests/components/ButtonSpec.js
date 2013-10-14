@@ -2,45 +2,53 @@ define(['husky'], function(husky) {
 
     'use strict';
 
-    var app, $button;
+    var app;
 
     ddescribe('Button', function() {
         $('body').append('<div id="button">');
-        app = husky({ debug: { enable: true }});
+
 
         beforeEach(function() {
+            var flag = false;
             runs(function() {
+                app = husky({ debug: { enable: true }});
                 app.start(document.body).then(function() {
                     app.sandbox.start([
                         { name: 'button@husky', options: { el: '#button', text: 'myText', instanceName: 'instance' } }
                     ]);
                 });
+                _.delay(function() {
+                    flag = true;
+                }, 300);
             });
 
             waitsFor(function() {
-                return $('.icon-btn').size() === 1;
+                return flag;
+//                return $('.icon-btn').size() === 1;
             }, 'load icon', 500);
 
             runs(function() {
-                $button = $('.icon-btn');
+
             });
         });
 
         afterEach(function() {
+//            app.stop();
+//            $('.icon-btn').remove();
         });
 
         it('should be inserted into the dom', function() {
-            expect($button.size()).toBe(1);
+            expect($('.icon-btn').size()).toBe(1);
         });
 
         it('has icon ok-circle', function() {
             var flag = false;
             runs(function() {
-                app.sandbox.emit('husky.button.instance.set-content', 'test', 'circle-ok');
+                app.sandbox.emit('husky.button.instance.set-content', 'myText', 'circle-ok');
 
                 _.delay(function() {
                     flag = true;
-                }, 500);
+                }, 300);
             });
 
             waitsFor(function() {
@@ -59,7 +67,7 @@ define(['husky'], function(husky) {
 
                 _.delay(function() {
                     flag = true;
-                }, 500);
+                }, 100);
             });
 
             waitsFor(function() {
