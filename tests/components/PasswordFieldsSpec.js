@@ -38,5 +38,13 @@ define(['husky'], function(husky) {
         it('should be inserted into the dom', function() {
             expect($('.husky-password-fields').size()).toBe(1);
         });
+
+        xit('should get success class', function() {
+
+        });
+
+        xit('should get error class', function() {
+
+        });
     });
 });
