@@ -152,6 +152,8 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
             } else {
                 this.sandbox.dom.append(this.$navigationColumns, $column);
             }
+
+            setNavigationSize.call(this);
         },
 
         scrollToLastSubColumn = function() {
@@ -179,11 +181,13 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
         },
 
         bindDomEvents = function() {
+            this.sandbox.dom.on(this.sandbox.dom.$window, 'resize load', setNavigationSize.bind(this));
             this.sandbox.dom.on('.navigation', 'click', headerLinkClick.bind(this), '.navigation-header-link');
-            this.sandbox.dom.on('.navigation-sub-columns-container', 'mousewheel DOMMouseScroll', scrollSubColumns.bind(this));
+            this.sandbox.dom.on('.navigation', 'mousewheel DOMMouseScroll', scrollSubColumns.bind(this), '.navigation-sub-columns-container');
         },
 
         bindCustomEvents = function() {
+            this.sandbox.on('navigation.route', routeNavigation.bind(this));
             this.sandbox.on('navigation.item.column.show', showColumn.bind(this));
         },
 
@@ -207,6 +211,7 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
         },
 
         removeContentColumn = function() {
+            this.sandbox.dom.removeClass('.navigation', 'show-content');
             this.sandbox.dom.remove('.content-column');
         },
 
@@ -225,6 +230,8 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
 
             // TODO: show
             addColumn.call(this, 9, params.data);
+
+            this.sandbox.dom.addClass('.navigation', 'show-content');
 
             setTimeout(function() {
                 this.sandbox.emit('navigation.size.changed', {
@@ -284,11 +291,79 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
             return width + 5;
         },
 
+        setNavigationSize = function() {
+            var $window = this.sandbox.dom.$window,
+                $navigation = this.sandbox.dom.$('.navigation'),
+                $navigationSubColumnsCont = this.sandbox.dom.$('.navigation-sub-columns-container'),
+                $navigationSubColumns = this.sandbox.dom.$('.navigation-sub-columns'),
+                paddingRight = 100;
+
+            setTimeout(function() {
+                this.sandbox.dom.css($navigationSubColumns, {
+                    width: 'auto'
+                });
+
+                $navigationSubColumnsCont.removeClass('scrolling');
+
+                if (this.sandbox.dom.width($window) < this.sandbox.dom.width($navigation) + paddingRight) {
+                    this.sandbox.dom.css($navigationSubColumns, {
+                        width: (this.sandbox.dom.width($window) - paddingRight) - this.sandbox.dom.width($navigation) - this.sandbox.dom.width($navigationSubColumns),
+                        height: this.sandbox.dom.height($navigation)
+                    });
+                    this.sandbox.dom.addClass($navigationSubColumnsCont, 'scrolling');
+                } else {
+                    this.sandbox.dom.css($navigationSubColumns, {
+                        height: $navigation.height() + 5
+                    });
+                }
+            }.bind(this), 250);
+        },
+
         getNavigationData = function() {
             return {
                 // TODO
                 navWidth: getNavigationWidth.call(this)
             };
+        },
+        // TODO
+        prepareRoute = function(params) {
+            var routes = params.route.split('/'),
+                route = '',
+                items = this.data.sub.items,
+                retItems = [],
+                i = 0,
+                j = 0;
+
+            for (i; i <= routes.length; i++) {
+                j = 0;
+                route = '';
+
+                for (j; j <= items.length; j++) {
+                    if (!!retItems.length) {
+                        route = routes.slice(0, retItems.length).join('/') + '/';
+                        console.log(route);
+                    }
+
+                    if (route + items[j].route === routes[i]) {
+                        retItems.push(items[j]);
+                        items = items[j].sub.items;
+                        break;
+                    }
+                }
+            }
+
+            return retItems;
+        },
+
+        routeNavigation = function(params) {
+            var preparedRoute;
+            if (!params) {
+                throw('No params were defined!');
+            }
+            this.sandbox.dom.remove('.navigation-column:gt(0)');
+            preparedRoute = prepareRoute.call(this, params);
+
+            console.log(preparedRoute);
         };
 
     return  {

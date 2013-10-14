@@ -66,6 +66,10 @@ $navigationIconFont: $baseIconFont;
     left: 0;
 
 	z-index: 95;
+
+    &.show-content {
+        width: 210px !important;
+    }
 }
 
 .navigation-columns {
@@ -190,6 +194,14 @@ $navigationIconFont: $baseIconFont;
 .navigation-column-header {
     height: 100px;
     padding: 30px 20px 30px 10px;
+
+    .navigation-header-link {
+        margin-left: 10px;
+        [class^="icon-"] {
+            position: relative;
+            top: 3px;
+        }
+    }
 }
 
 .navigation-column-title {
@@ -301,6 +313,7 @@ $navigationIconFont: $baseIconFont;
     left: auto;
     right: auto;
     height: 100%;
+    min-height: 305px;
     overflow: hidden;
     //min-width: 250px;
     padding-bottom: 5px !important;
