@@ -21,15 +21,89 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
     var render = function() {
             prepareColumn.call(this);
 
-            if (!!this.options.data.header) {
-                this.sandbox.dom.append(this.$el, prepareColumnHeader.call(this));
-            }
+            if (!!this.options.data.displayOption && this.options.data.displayOption === 'portals') {
+                renderPortals.call(this);
+            } else {
+                if (this.sandbox.dom.data(this.$el, 'columnId') < 2 || !!this.options.data.displayOption) {
+                    this.sandbox.dom.append(this.$el, prepareColumnHeader.call(this));
+                }
 
-            this.$columnItemsList = prepareColumnItems.call(this);
-            this.sandbox.dom.append(this.$el, this.$columnItemsList);
+                this.$columnItemsList = prepareColumnItems.call(this);
+                this.sandbox.dom.append(this.$el, this.$columnItemsList);
+            }
 
             bindCustomEvents.call(this);
             bindDomEvents.call(this);
+        },
+
+        renderPortals = function() {
+            var $columnHeader = this.sandbox.dom.createElement('<div/>', {
+                'class': 'navigation-column-header'
+            });
+
+            $columnHeader.html(template.columnHeaderPortal.call(this, {
+                title: this.options.data.sub.items[0].title,
+                logo: !!this.options.data.header ? this.options.data.header.logo : null
+            }));
+
+            this.sandbox.dom.append(this.$el, $columnHeader);
+
+            this.sandbox.start([
+                {
+                    name: 'dropdown@husky',
+                    options: {
+                        el: $columnHeader.find('#portal-header'),
+                        data: this.options.data.sub.items,
+                        alignment: 'right',
+                        instanceName: 'portalHeader',
+                        valueName: 'title',
+                        setParentDropDown: true,
+                        trigger: '.navigation-column-title, .dropdown-toggle',
+                        clickCallback: portalClick.bind(this)
+                    }
+                }
+            ]);
+
+            preparePortalsColumnList.call(this, this.options.data.sub.items[0]).then(function($columnItemsList) {
+                this.sandbox.dom.append(this.$el, $columnItemsList);
+            }.bind(this));
+        },
+
+        portalClick = function(item) {
+            if (!!this.locked) {
+                return;
+            }
+            this.sandbox.logger.log('item clicked', item);
+            this.sandbox.dom.text('#portal-header h2', item.title);
+            this.sandbox.dom.find('#' + this.id + ' .navigation-items').remove();
+
+            if (!!this.options.updateColumnCallback) {
+                this.options.updateColumnCallback(this.index, true);
+            }
+
+            preparePortalsColumnList.call(this, item).then(function($columnItemsList) {
+                this.sandbox.dom.append(this.$el, $columnItemsList);
+            }.bind(this));
+        },
+
+        preparePortalsColumnList = function(item) {
+            var $columnItemsList,
+                dfd = new this.sandbox.data.deferred();
+
+            if (!!item.hasSub && !!item.sub) {
+                $columnItemsList = prepareColumnItems.call(this, item);
+                dfd.resolve($columnItemsList);
+            } else {
+                this.locked = true;
+                this.sandbox.util.load(item.action)
+                    .then(function(data) {
+                        this.locked = false;
+                        $columnItemsList = prepareColumnItems.call(this, data);
+                        dfd.resolve($columnItemsList);
+                    }.bind(this));
+            }
+
+            return dfd.promise();
         },
 
         prepareColumnHeader = function() {
@@ -46,7 +120,7 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
             } else {
                 $columnHeader.html(template.columnHeader.call(this, {
                     title: this.options.data.header.title,
-                    logo: this.options.data.header.logo
+                    logo: this.options.data.header.logo || this.options.data.logo || null
                 }));
             }
 
@@ -116,12 +190,16 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
             });
         },
 
-        prepareColumnItems = function() {
+        prepareColumnItems = function(data) {
+            if (!data) {
+                data = this.options.data;
+            }
+
             var $columnItemsList = this.sandbox.dom.createElement('<ul/>', {
                 class: 'navigation-items'
             });
 
-            this.options.data.sub.items.forEach(function(item) {
+            data.sub.items.forEach(function(item) {
                 $columnItemsList.append(prepareColumnItem.call(this, item));
             }.bind(this));
 
@@ -131,8 +209,6 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
         prepareColumnItem = function(item) {
             var $item = this.sandbox.dom.createElement('<li/>'),
                 navigationItem = new NavigationItem();
-
-
 
             navigationItem.sandbox = this.sandbox;
             navigationItem.setOptions({
@@ -211,6 +287,24 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
                 ].join('');
             },
 
+            columnHeaderPortal: function(data) {
+                var titleTemplate;
+                data.title = data.title || '';
+                data.logo = data.logo || '';
+
+                if (!!data.logo) {
+                    titleTemplate = '<span class="navigation-column-logo"><img alt="' + data.title + '" src="' + data.logo + '"/></span>';
+                }
+
+                return [
+                    '<div id="portal-header">',
+                    titleTemplate,
+                    '   <h2 class="navigation-column-title pointer">', data.title, '</h2>',
+                    '   <span class="dropdown-toggle inline-block pointer"></span>',
+                    '</div>'
+                ].join('');
+            },
+
             // TODO: Remove search
             search: function(data) {
                 data = data || {};
@@ -237,6 +331,6 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
                 this.options = options;
                 this.$el = this.options.$el;
             }
-        };         
+        };
     };
 });

@@ -19,24 +19,10 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
 
     'use strict';
 
-    var load = function(url) {
-            var deferred = new this.sandbox.data.deferred();
-
-            this.sandbox.logger.log('load', url);
-
-            this.sandbox.util.ajax({
-                url: url,
-                success: function(data) {
-                    this.sandbox.logger.log('data loaded', data);
-                    deferred.resolve(data);
-                }.bind(this)
-            });
-
-            return deferred.promise();
-        },
-
-        prepareFirstColumn = function(data) {
+    var prepareFirstColumn = function(data) {
             this.data = data;
+
+            this.options.data = data;
 
             this.sandbox.dom.append(this.$navigationColumns, startColumn.call(this, 0, data));
         },
@@ -47,6 +33,15 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
 
             navigationColumn.sandbox = this.sandbox;
 
+            if (!data.header || !data.header.logo) {
+                if (!data.header) {
+                    data.header = {
+                        title: data.title
+                    };
+                }
+                data.header.logo = !!this.options.data.header && !!this.options.data.header.logo ? this.options.data.header.logo : null;
+            }
+
             navigationColumn.setOptions({
                 $el: $column,
                 data: data,
@@ -54,7 +49,8 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
                 contentCallback: contentCallback.bind(this),
                 selectedCallback: selectedCallback.bind(this),
                 addColumnCallback: addColumnCallback.bind(this),
-                selectedClickCallback: selectedClickCallback.bind(this)
+                selectedClickCallback: selectedClickCallback.bind(this),
+                updateColumnCallback: updateColumns.bind(this)
             });
 
             navigationColumn.render();
@@ -114,6 +110,9 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
         },
 
         addColumnCallback = function(index, item) {
+            if(!!this.locked){
+                return;
+            }
             if (!item.sub) {
                 if (!!item.action) {
                     if (index < 1) {
@@ -125,9 +124,10 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
 
                     this.sandbox.emit('husky.navigation.column.show', index);
                     this.sandbox.emit('husky.navigation.item.loading', item.id, true);
-                    load
-                        .call(this, item.action)
+                    this.locked = true;
+                    this.sandbox.util.load(item.action)
                         .then(function(data) {
+                            this.locked = false;
                             addColumn.call(this, index + 1, data);
                             this.sandbox.emit('husky.navigation.item.loading', item.id, false);
                         }.bind(this));
@@ -413,8 +413,7 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
 
             // load Data
             if (!!this.options.url) {
-                load
-                    .call(this, this.options.url)
+                this.sandbox.util.load(this.options.url)
                     .then(prepareFirstColumn.bind(this));
 
                 render.call(this);

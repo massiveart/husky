@@ -3519,23 +3519,53 @@ hr.divider {
 
 /* line 194, ../scss/modules/navigation.scss */
 .navigation-column-header {
+  width: 100%;
   height: 100px;
   padding: 30px 20px 30px 10px;
 }
-/* line 198, ../scss/modules/navigation.scss */
+/* line 199, ../scss/modules/navigation.scss */
 .navigation-column-header .navigation-header-link {
   margin-left: 10px;
 }
-/* line 200, ../scss/modules/navigation.scss */
+/* line 201, ../scss/modules/navigation.scss */
 .navigation-column-header .navigation-header-link [class^="icon-"] {
   position: relative;
   top: 3px;
 }
-
 /* line 207, ../scss/modules/navigation.scss */
+.navigation-column-header #portal-header {
+  width: 100%;
+}
+/* line 210, ../scss/modules/navigation.scss */
+.navigation-column-header #portal-header .dropdown-toggle::after {
+  top: -7px;
+}
+/* line 214, ../scss/modules/navigation.scss */
+.navigation-column-header #portal-header .dropdown-menu {
+  width: 100%;
+}
+/* line 218, ../scss/modules/navigation.scss */
+.navigation-column-header #portal-header .dropdown-menu::after, .navigation-column-header #portal-header .dropdown-menu::before {
+  display: none;
+}
+
+/* line 227, ../scss/modules/navigation.scss */
+.navigation-column:not(#column-0) .navigation-column-logo {
+  display: none;
+}
+/* line 230, ../scss/modules/navigation.scss */
+.navigation-column:not(#column-0) .navigation-column-title {
+  padding-left: 40px;
+}
+/* line 235, ../scss/modules/navigation.scss */
+.navigation-column:not(#column-0).collapsed .navigation-column-logo {
+  display: block;
+}
+
+/* line 241, ../scss/modules/navigation.scss */
 .navigation-column-title {
   display: inline-block;
-  padding-left: 40px;
+  margin-left: 40px;
   font-size: 24px;
   font-weight: normal;
   line-height: 32px;
@@ -3543,26 +3573,26 @@ hr.divider {
   color: #9B9B9B;
 }
 
-/* line 217, ../scss/modules/navigation.scss */
+/* line 251, ../scss/modules/navigation.scss */
 .navigation-column-logo {
   display: inline-block;
   width: 26px;
   height: 26px;
-  margin-right: 20px;
+  margin-right: 15px;
 }
-/* line 223, ../scss/modules/navigation.scss */
+/* line 257, ../scss/modules/navigation.scss */
 .navigation-column-logo + .navigation-column-title {
   padding-left: 0;
   position: relative;
   top: -4px;
 }
 
-/* line 230, ../scss/modules/navigation.scss */
+/* line 264, ../scss/modules/navigation.scss */
 .navigation-items {
   overflow: hidden;
 }
 
-/* line 234, ../scss/modules/navigation.scss */
+/* line 268, ../scss/modules/navigation.scss */
 .navigation-column-item {
   padding: 0 10px;
   width: 249px;
@@ -3575,11 +3605,11 @@ hr.divider {
   cursor: pointer;
   font-size: 18px;
 }
-/* line 247, ../scss/modules/navigation.scss */
+/* line 281, ../scss/modules/navigation.scss */
 .navigation-column-item:hover, .navigation-column-item.selected {
   background-color: #e0e0e0;
 }
-/* line 251, ../scss/modules/navigation.scss */
+/* line 285, ../scss/modules/navigation.scss */
 .navigation-column-item::before {
   content: "\E174";
   display: inline-block;
@@ -3588,7 +3618,7 @@ hr.divider {
   font-family: "Glyphicons";
   font-weight: normal;
 }
-/* line 261, ../scss/modules/navigation.scss */
+/* line 295, ../scss/modules/navigation.scss */
 .navigation-column-item.is-loading::before {
   content: "";
   display: inline-block;
@@ -3599,17 +3629,17 @@ hr.divider {
   top: 16px;
   background: url("../img/loader_grey.gif") no-repeat center center;
 }
-/* line 273, ../scss/modules/navigation.scss */
+/* line 307, ../scss/modules/navigation.scss */
 .navigation-column-item[data-has-children="true"] {
   font-weight: bold;
 }
-/* line 277, ../scss/modules/navigation.scss */
+/* line 311, ../scss/modules/navigation.scss */
 .navigation-column-item a {
   display: inline-block;
   width: 100%;
   text-decoration: none;
 }
-/* line 283, ../scss/modules/navigation.scss */
+/* line 317, ../scss/modules/navigation.scss */
 .navigation-column-item [class*="icon-"] {
   display: inline-block;
   margin: 0 20px 0 5px;
@@ -3618,27 +3648,27 @@ hr.divider {
   font-size: 16px;
   font-family: "Glyphicons";
 }
-/* line 291, ../scss/modules/navigation.scss */
+/* line 325, ../scss/modules/navigation.scss */
 .navigation-column-item [class*="icon-"]::after {
   display: block;
 }
 
-/* line 297, ../scss/modules/navigation.scss */
+/* line 331, ../scss/modules/navigation.scss */
 .navigation-sub-columns-container {
   display: inline-block;
   height: 100%;
 }
-/* line 301, ../scss/modules/navigation.scss */
+/* line 335, ../scss/modules/navigation.scss */
 .navigation-sub-columns-container.scrolling {
   box-shadow: 5px 5px 0 0 rgba(0, 0, 0, 0.25) !important;
 }
-/* line 303, ../scss/modules/navigation.scss */
+/* line 337, ../scss/modules/navigation.scss */
 .navigation-sub-columns-container.scrolling .navigation-sub-columns {
   padding-bottom: 0 !important;
   padding-right: 0 !important;
 }
 
-/* line 310, ../scss/modules/navigation.scss */
+/* line 344, ../scss/modules/navigation.scss */
 .navigation-sub-columns {
   -webkit-perspective: 700px;
   -moz-perspective: 700px;
@@ -3656,11 +3686,11 @@ hr.divider {
   max-width: 700px;
 }
 
-/* line 326, ../scss/modules/navigation.scss */
+/* line 360, ../scss/modules/navigation.scss */
 .navigation-column-item[data-has-sub="true"]::before {
   content: "\E177";
 }
-/* line 331, ../scss/modules/navigation.scss */
+/* line 365, ../scss/modules/navigation.scss */
 .navigation-column-item.is-loading::before {
   content: "";
 }

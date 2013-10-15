@@ -36,6 +36,24 @@ define(function() {
                 }
             };
 
+            app.core.util.load = function(url) {
+                var deferred = new app.sandbox.data.deferred();
+
+                app.logger.log('load', url);
+
+                app.sandbox.util.ajax({
+                    url: url,
+                    success: function(data) {
+                        app.logger.log('data loaded', data);
+                        deferred.resolve(data);
+                    }.bind(this)
+                });
+
+                app.sandbox.emit('husky.util.load.data');
+
+                return deferred.promise();
+            };
+
         }
     };
 });
