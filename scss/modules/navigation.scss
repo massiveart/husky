@@ -157,7 +157,12 @@ $navigationIconFont: $baseIconFont;
     }
 
     &.hide {
-        width: 0 !important;
+        width: 10px !important;
+
+        .navigation-column-header,
+        .navigation-items {
+            display: none !important;
+        }
     }
 }
 
