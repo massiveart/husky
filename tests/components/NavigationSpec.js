@@ -17,7 +17,7 @@ define(['husky'], function(husky) {
             ]);
 
             fakeServer.respondWith('GET', '/navigation/portals', [200, { 'Content-Type': 'application/json' },
-                '{"displayOption": "portals", "sub":{"items":[{"title":"Portal 1","icon":"check","id":"portal1","hasSub":true,"action":"/portals/1"},{"title":"Portal 2","icon":"caution","id":"portal_2","hasSub":true,"action":"/portals/2","sub":{"items":[{"title":"Home Pages","icon":"bank","id":"home1","hasSub":false,"action":"/portals/1/home"},{"title":"Pages","icon":"book","id":"pages1","hasSub":true,"action":"/portals/1/pages"}]}}]}}'
+                '{"displayOption": "portals", "sub":{"items":[{"title":"Portal 1","icon":"check","id":"portal1","hasSub":true,"action":"/portals/1","sub":{"items":[{"title":"Home Pages","icon":"bank","id":"home1","hasSub":false,"action":"/portals/1/home"},{"title":"Pages","icon":"book","id":"pages1","hasSub":true,"action":"/portals/1/pages"}]}},{"title":"Portal 2","icon":"caution","id":"portal_2","hasSub":true,"action":"/portals/2","sub":{"items":[{"title":"Home Pages","icon":"bank","id":"home1","hasSub":false,"action":"/portals/1/home"},{"title":"Pages","icon":"book","id":"pages1","hasSub":true,"action":"/portals/1/pages"}]}}]}}'
             ]);
 
             fakeServer.respondWith('GET', '/portals/1', [200, { 'Content-Type': 'application/json' },
@@ -64,6 +64,15 @@ define(['husky'], function(husky) {
 
         afterEach(function() {
             fakeServer.restore();
+
+            // check if any have failed
+            if(this.results_.failedCount > 0) {
+                // if so, change the function which should move to the next test
+                jasmine.Queue.prototype.next_ = function () {
+                    // to instead skip to the end
+                    this.onComplete();
+                }
+            }
         });
 
         /**
@@ -182,12 +191,11 @@ define(['husky'], function(husky) {
         /**
             check if after the second column a
             sub-columns container is inerted into the navigation
-
-         TODO Errored
          */
         it('should insert sub-columns container after the second column', function() {
             var flag1 = false,
-                flag2 = false;
+                flag2 = false,
+                flag3 = false;
 
             runs(function() {
                 _.delay(function() {
@@ -207,7 +215,7 @@ define(['husky'], function(husky) {
             runs(function() {
                 _.delay(function() {
                     // navigation-item id of products
-                    $('#products').click();
+                    $('#52f258bc2e47f').click();
                     fakeServer.respond();
 
                     flag2 = true;
@@ -219,7 +227,83 @@ define(['husky'], function(husky) {
             }, 'Fake server should have respond!', 500);
 
             runs(function() {
+                _.delay(function() {
+                    // navigation-item id of products
+                    $('#pages1').click();
+                    fakeServer.respond();
+
+                    flag3 = true;
+                }, 100);
+            });
+
+            waitsFor(function() {
+                return flag3;
+            }, 'Fake server should have respond!', 500);
+
+            runs(function() {
                 expect($('.navigation-sub-columns').size()).toEqual(1);
+            });
+        });
+
+        /**
+         * If two clicks on a ajax reloading item the request should only be done once
+         */
+        it('should only do the click once', function() {
+            var flag1 = false,
+                flag2 = false,
+                flag3 = false;
+
+            runs(function() {
+                _.delay(function() {
+                    // navigation-item id of portals
+                    $('#52f258bc2e47f').click();
+                    fakeServer.respond();
+
+                    flag1 = true;
+                }, 100);
+
+            });
+
+            waitsFor(function() {
+                return flag1;
+            }, 'Fake server should have respond!', 500);
+
+            runs(function() {
+                _.delay(function() {
+                    // navigation-item id of products
+                    $('#52f258bc2e47f').click();
+                    fakeServer.respond();
+
+                    flag2 = true;
+                }, 100);
+            });
+
+            waitsFor(function() {
+                return flag2;
+            }, 'Fake server should have respond!', 500);
+
+            runs(function() {
+                _.delay(function() {
+                    // navigation-item id of products
+                    $('#pages1').click();
+                    _.delay(function(){
+                        fakeServer.respond();
+                        flag3 = true;
+                    }, 100);
+                    $('#pages1').click();
+                    _.delay(function(){
+                        fakeServer.respond();
+                        flag3 = true;
+                    }, 100);
+                }, 100);
+            });
+
+            waitsFor(function() {
+                return flag3;
+            }, 'Fake server should have respond!', 500);
+
+            runs(function() {
+                expect($('.navigation-sub-columns .navigation-column').size()).toEqual(1);
             });
         });
 
