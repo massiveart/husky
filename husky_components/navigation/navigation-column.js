@@ -53,7 +53,18 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
             return $columnHeader;
         },
 
-        bindDomEvents = function() {},
+        bindDomEvents = function() {
+            // FIXME better solution
+            this.sandbox.dom.on('body', 'click', clickColumn.bind(this), '#' + this.id + '.collapsed');
+        },
+
+        clickColumn = function() {
+            if (!!this.options.selectedClickCallback && typeof this.options.selectedClickCallback === 'function') {
+                this.options.selectedClickCallback(this.options.index);
+            } else {
+                this.sandbox.emit('husky.navigation.column.selected-click', this.options.index);
+            }
+        },
 
         bindCustomEvents = function() {
             this.sandbox.on('husky.navigation.column.show', show.bind(this));

@@ -201,7 +201,11 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
             } else if (this.sandbox.dom.hasClass('#column-0', 'collapsed') &&
                 this.sandbox.dom.find('#column-1').length === 0) {
                 this.sandbox.emit('husky.navigation.column.show', 0);
+            } else if (!this.sandbox.dom.hasClass('#column-0', 'collapsed') &&
+                !this.sandbox.dom.hasClass('#column-1', 'collapsed')) {
+                this.sandbox.emit('husky.navigation.column.collapse', 0);
             }
+            // both open + click back to list = collapse first
 
             this.sandbox.emit('navigation.item.content.show', {
                 item: {
@@ -381,7 +385,7 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
             this.sandbox.dom.remove('.navigation-column:gt(0)');
             preparedRoute = prepareRoute.call(this, params);
 
-            console.log(preparedRoute);
+            this.sandbox.logger.log(preparedRoute);
         };
 
     return  {
