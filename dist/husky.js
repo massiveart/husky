@@ -23127,7 +23127,7 @@ define('__component__$matrix@husky',[],function() {
                 for (j = 0; j < this.options.values.horizontal.length; j++) {
                     $tdValue = sandbox.dom.createElement('<td class="value"/>');
                     $span = sandbox.dom.createElement(
-                        '<span class="icon-' + this.options.values.horizontal[j] + '"/>'
+                        '<span class="icon-' + this.options.values.horizontal[j] + ' pointer"/>'
                     );
                     sandbox.dom.data($span, 'value', this.options.values.horizontal[j]);
                     sandbox.dom.data($span, 'section', this.options.values.vertical[i]);
@@ -23152,6 +23152,7 @@ define('__component__$matrix@husky',[],function() {
         }
     };
 });
+
 /*****************************************************************************
  *
  *  Select
@@ -24063,7 +24064,7 @@ define('__component__$password-fields@husky',[], function() {
                 '        <div class="grid-col-6">',
                 '            <div class="grid-row m-height-25">',
                 '                <div class="grid-col-6">',
-                '                    <label>', this.options.labels.inputPassword1, '</label>',
+                '                    <label for="',this.options.ids.inputPassword1,'">', this.options.labels.inputPassword1, '</label>',
                 '                </div>',
                 '                <div class="grid-col-6 align-right hidden" id="', this.options.ids.generateLabel, '">',
                 '                    <span class="icon-keys m-right-10"></span><span class="pointer">', this.options.labels.generateLabel, '</span>',
@@ -24075,7 +24076,7 @@ define('__component__$password-fields@husky',[], function() {
                 '        </div>',
                 '        <div class="grid-col-6">',
                 '            <div class="grid-row m-height-25">',
-                '                <label>', this.options.labels.inputPassword2, '</label>',
+                '                <label for="',this.options.ids.inputPassword2,'">', this.options.labels.inputPassword2, '</label>',
                 '            </div>',
                 '            <div class="grid-row">',
                 '                <input class="form-element" value="', this.options.values.inputPassword2, '" type="text" id="', this.options.ids.inputPassword2, '"', (!!this.options.validation ? 'data-validation-equal="' + this.options.instanceName + '"' : ''), '/>',
