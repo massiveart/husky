@@ -75,12 +75,6 @@ require(['lib/husky'], function(Husky) {
             }, 10);
         };
 
-        setTimeout(function() {
-            app.sandbox.emit('navigation.route', {
-                route: 'settings/translate'
-            });
-        }, 1000);
-
         app.sandbox.on('navigation.item.selected', function() {
                 setTimeout(function() {
                     fakeServer.respond();
