@@ -198,7 +198,8 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
             if (this.sandbox.dom.hasClass('#column-0', 'hide') &&
                 this.sandbox.dom.hasClass('#column-1', 'collapsed')) {
                 this.sandbox.emit('husky.navigation.column.collapse', 0);
-            } else if (this.sandbox.dom.hasClass('#column-0', 'collapsed')) {
+            } else if (this.sandbox.dom.hasClass('#column-0', 'collapsed') &&
+                this.sandbox.dom.find('#column-1').length === 0) {
                 this.sandbox.emit('husky.navigation.column.show', 0);
             }
 
@@ -358,7 +359,7 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
                 for (j; j <= items.length; j++) {
                     if (!!retItems.length) {
                         route = routes.slice(0, retItems.length).join('/') + '/';
-                        console.log(route);
+                        this.sandbox.logger.log(route);
                     }
 
                     if (route + items[j].route === routes[i]) {
