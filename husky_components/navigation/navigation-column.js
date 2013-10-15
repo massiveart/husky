@@ -130,6 +130,7 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
         bindDomEvents = function() {
             // FIXME better solution
             this.sandbox.dom.on('body', 'click', clickColumn.bind(this), '#' + this.id + '.collapsed');
+            this.sandbox.dom.on('body', 'click', clickColumn.bind(this), '#' + this.id + '.hide');
         },
 
         clickColumn = function() {

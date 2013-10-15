@@ -77,8 +77,8 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
                 this.sandbox.emit('husky.navigation.column.collapse', 0);
                 this.sandbox.emit('husky.navigation.column.show', 1);
             } else if (index >= 2) {
-                this.sandbox.emit('husky.navigation.column.collapse', 0);
-                this.sandbox.emit('husky.navigation.column.show', 1);
+                this.sandbox.emit('husky.navigation.column.hide', 0);
+                this.sandbox.emit('husky.navigation.column.collapse', 1);
             }
 
             this.sandbox.emit('navigation.item.content.show', {
@@ -103,9 +103,12 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
         },
 
         selectedClickCallback = function(index) {
-            this.sandbox.emit('husky.navigation.column.show', index);
-            if (index > 0) {
-                this.sandbox.emit('husky.navigation.column.collapse', index - 1);
+            if(index === 0){
+                this.sandbox.emit('husky.navigation.column.show', 0);
+                this.sandbox.emit('husky.navigation.column.show', 1);
+            }else if (index === 1){
+                this.sandbox.emit('husky.navigation.column.collapse', 0);
+                this.sandbox.emit('husky.navigation.column.show', 1);
             }
         },
 
