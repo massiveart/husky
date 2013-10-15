@@ -90,7 +90,7 @@ require(['lib/husky'], function(Husky) {
 
         app.sandbox.on('navigation.item.content.show', function(event) {
             $('#print').html(event.item.action);
-            sizeChanged(event);
+            //sizeChanged(event);
 
             if (event.item.action === '/portals/1/pages/page5') {
                 showColumn();
@@ -98,7 +98,7 @@ require(['lib/husky'], function(Husky) {
         });
 
         app.sandbox.on('navigation.size.changed', function(event) {
-            sizeChanged(event);
+            //sizeChanged(event);
         });
 
         $('#load').on('click', function() {

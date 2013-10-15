@@ -348,9 +348,10 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
         getNavigationData = function() {
             return {
                 // TODO
-                navWidth: getNavigationWidth.call(this)
+                // FIXME remove? navWidth: getNavigationWidth.call(this)
             };
         },
+
     // TODO
         prepareRoute = function(params) {
             var routes = params.route.split('/'),

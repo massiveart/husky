@@ -173,8 +173,7 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
             if (!!this.options.data && !!this.options.data.displayOption) {
                 // add a class that defines display-options
                 columnClasses.push(this.options.data.displayOption + '-column');
-            }
-            if (this.options.index === 0) {
+            } else if (this.options.index === 0) {
                 // if the column is the second column
                 columnClasses.push('first-column');
             } else if (this.options.index === 1) {
