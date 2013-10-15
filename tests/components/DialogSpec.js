@@ -38,7 +38,7 @@ define(['husky'], function(husky) {
         });
 
         it('should be initialized', function() {
-            expect($('.dialog-container').size()).toBe(1);
+            expect($('.husky-dialog').size()).toBe(1);
         });
     });
 });
