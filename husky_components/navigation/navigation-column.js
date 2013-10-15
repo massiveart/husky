@@ -82,7 +82,7 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
         },
 
         prepareColumn = function() {
-            var columnClasses = [];
+            var columnClasses = ['navigation-column'];
 
             if (!!this.options.data && !!this.options.data.displayOption) {
                 // add a class that defines display-options
@@ -101,7 +101,7 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
             this.sandbox.dom.attr(this.$el, {
                 'id': this.id,
                 'data-column-id': this.options.index,
-                'class': 'navigation-column ' + columnClasses.join(' ')
+                'class': columnClasses.join(' ')
             });
         },
 

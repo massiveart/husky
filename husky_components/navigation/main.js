@@ -191,7 +191,7 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
             this.sandbox.on('navigation.item.column.show', showColumn.bind(this));
         },
 
-        // FIXME better solution?
+    // FIXME better solution?
         headerLinkClick = function() {
             removeContentColumn.call(this);
 
@@ -215,7 +215,25 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
             this.sandbox.dom.remove('.content-column');
         },
 
+        getCurrentIndex = function(contentColumn) {
+            var selector = '.navigation-column',
+                index, currentIndex = 0;
+            if (!contentColumn) {
+                selector += ':not(.content-column)';
+            }
+            this.sandbox.dom.each(selector, function(key, value) {
+                index = this.sandbox.dom.data(value, 'columnId');
+                if (currentIndex < index) {
+                    currentIndex = index;
+                }
+            }.bind(this));
+
+            return currentIndex;
+        },
+
         showColumn = function(params) {
+            var currentIndex = getCurrentIndex.call(this, false);
+
             if (!params.data.displayOption || params.data.displayOption === 'content') {
                 removeContentColumn.call(this);
             }
@@ -228,8 +246,7 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
                 this.sandbox.emit('husky.navigation.column.collapse', 0);
             }
 
-            // TODO: show
-            addColumn.call(this, 9, params.data);
+            addColumn.call(this, currentIndex + 1, params.data);
 
             this.sandbox.dom.addClass('.navigation', 'show-content');
 
@@ -325,7 +342,7 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
                 navWidth: getNavigationWidth.call(this)
             };
         },
-        // TODO
+    // TODO
         prepareRoute = function(params) {
             var routes = params.route.split('/'),
                 route = '',

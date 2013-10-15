@@ -63,7 +63,7 @@ define(['husky'], function(husky) {
         });
 
         /**
-            check if the navigation was initialized by checking 
+            check if the navigation was initialized by checking
             if it appears in the dom
          */
         it('should be started after app start', function() {
@@ -176,7 +176,7 @@ define(['husky'], function(husky) {
         });
 
         /**
-            check if after the second column a 
+            check if after the second column a
             sub-columns container is inerted into the navigation
          */
         it('should insert sub-columns container after the second column', function() {
@@ -221,7 +221,7 @@ define(['husky'], function(husky) {
             check if selected item get class "selected"
          */
         xit('should have class selected', function() {});
-        
+
         /**
             Specs for content columns
          */
@@ -294,7 +294,7 @@ define(['husky'], function(husky) {
                         flag3 = true;
                     }, 100);
                 });
-                
+
                 waitsFor(function() {
                     return flag3;
                 }, 500);
@@ -319,7 +319,7 @@ define(['husky'], function(husky) {
                 check if the column idx (index) equals the amount of columns
              */
             it('should have the right idx', function() {
-                expect($('.navigation-column').size()).toEqual($('.content-column').data('column-id'));
+                expect($('.navigation-column').size()-1).toEqual($('.content-column').data('column-id'));
             });
 
             /**
