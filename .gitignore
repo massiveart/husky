@@ -4,6 +4,7 @@ coverage
 .tmp
 .sass-cache
 _docs
+.bower_components
 
 ### Files ###
 ._*
