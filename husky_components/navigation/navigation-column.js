@@ -32,7 +32,6 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
                 this.sandbox.dom.append(this.$el, this.$columnItemsList);
             }
 
-            bindCustomEvents.call(this);
             bindDomEvents.call(this);
         },
 
@@ -141,32 +140,6 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
             }
         },
 
-        bindCustomEvents = function() {
-            this.sandbox.on('husky.navigation.column.show', show.bind(this));
-            this.sandbox.on('husky.navigation.column.collapse', collapse.bind(this));
-            this.sandbox.on('husky.navigation.column.hide', hide.bind(this));
-        },
-
-        show = function(index) {
-            if (index === this.options.index) {
-                this.sandbox.dom.removeClass(this.$el, 'hide collapsed');
-            }
-        },
-
-        collapse = function(index) {
-            if (index === this.options.index) {
-                this.sandbox.dom.removeClass(this.$el, 'hide');
-                this.sandbox.dom.addClass(this.$el, 'collapsed');
-            }
-        },
-
-        hide = function(index) {
-            if (index === this.options.index) {
-                this.sandbox.dom.addClass(this.$el, 'hide');
-                this.sandbox.dom.removeClass(this.$el, 'collapsed');
-            }
-        },
-
         prepareColumn = function() {
             var columnClasses = ['navigation-column'];
 
@@ -218,6 +191,7 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
             });
 
             navigationItem.render();
+            this.items[item.id] = navigationItem;
 
             return $item;
         },
@@ -225,6 +199,8 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
         clickCallback = function(item) {
             var itemId = '#' + item.id,
                 $item = this.sandbox.dom.find(itemId);
+
+            item.columnIndex = this.options.index;
 
             // reset selected item
             this.sandbox.dom.removeClass('#' + this.id + ' .selected:not(' + itemId + ')', 'selected');
@@ -321,6 +297,8 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
     return function() {
         return {
             render: function() {
+                this.items = {};
+
                 render.call(this);
             },
 
@@ -330,6 +308,24 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
                 }
                 this.options = options;
                 this.$el = this.options.$el;
+            },
+
+            show: function() {
+                this.sandbox.dom.removeClass(this.$el, 'hide collapsed');
+            },
+
+            collapse: function() {
+                this.sandbox.dom.removeClass(this.$el, 'hide');
+                this.sandbox.dom.addClass(this.$el, 'collapsed');
+            },
+
+            hide: function() {
+                this.sandbox.dom.addClass(this.$el, 'hide');
+                this.sandbox.dom.removeClass(this.$el, 'collapsed');
+            },
+
+            loadingItem: function(index, onOff) {
+                this.items[index].loadingItem(onOff);
             }
         };
     };

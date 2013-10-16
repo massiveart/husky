@@ -13,11 +13,24 @@
         });
     }
 
+    // add remove event for jquery
+    var initRemoveEvent = function() {
+        var ev = new $.Event('remove'),
+            orig = $.fn.remove;
+        $.fn.remove = function() {
+            $(this).trigger(ev);
+            return orig.apply(this, arguments);
+        };
+    };
+
     define(['jquery'], {
 
         name: 'jQuery',
 
         initialize: function(app) {
+
+            initRemoveEvent();
+
             app.core.dom.window = window;
 
             app.core.dom.$window = $(window);

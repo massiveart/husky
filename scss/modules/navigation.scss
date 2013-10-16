@@ -14,7 +14,8 @@ $navigationColumn0Width: 250px;
 $navigationColumn1Width: 200px;
 $navigationColumnHeight: 700px;
 
-$navigationItemWidth: 249px;
+$navigationItem0Width: 249px;
+$navigationItem1Width: 199px;
 $navigationItemHeight: 50px;
 
 
@@ -119,7 +120,8 @@ $navigationIconFont: $baseIconFont;
     background-color: $bgNavigationColumn;
     box-shadow: 5px 5px 0 0 rgba(0, 0, 0, .25);
 
-    &.second-column {
+    &.second-column,
+    &.portals-column {
         border-right: 0;
         background-color: $bgNavigationSecondColumn;
 
@@ -276,7 +278,7 @@ $navigationIconFont: $baseIconFont;
 
 .navigation-column-item {
     padding: 0 10px;
-    width: $navigationItemWidth;
+    width: $navigationItem1Width;
     height: $navigationItemHeight;
     margin-left: 1px;
     line-height: $navigationItemHeight;
@@ -335,6 +337,10 @@ $navigationIconFont: $baseIconFont;
             display: block;
         }
     }
+}
+
+.first-column .navigation-column-item {
+    width: $navigationItem0Width;
 }
 
 .navigation-sub-columns-container {

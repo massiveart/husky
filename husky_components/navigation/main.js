@@ -24,7 +24,8 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
 
             this.options.data = data;
 
-            this.sandbox.dom.append(this.$navigationColumns, startColumn.call(this, 0, data));
+            var $column = startColumn.call(this, 0, data);
+            this.sandbox.dom.append(this.$navigationColumns, $column);
         },
 
         startColumn = function(index, data) {
@@ -54,6 +55,7 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
             });
 
             navigationColumn.render();
+            this.columns[index] = navigationColumn;
 
             return $column;
         },
@@ -71,14 +73,20 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
 
             // FIXME better solution
             if (index === 0) {
-                this.sandbox.emit('husky.navigation.column.show', 0);
+
+                this.columns[0].show();
                 this.sandbox.dom.remove('#column-1');
+
             } else if (index === 1) {
-                this.sandbox.emit('husky.navigation.column.collapse', 0);
-                this.sandbox.emit('husky.navigation.column.show', 1);
+
+                this.columns[0].collapse();
+                this.columns[1].show();
+
             } else if (index >= 2) {
-                this.sandbox.emit('husky.navigation.column.hide', 0);
-                this.sandbox.emit('husky.navigation.column.collapse', 1);
+
+                this.columns[0].hide();
+                this.columns[1].collapse();
+
             }
 
             this.sandbox.emit('navigation.item.content.show', {
@@ -104,11 +112,15 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
 
         selectedClickCallback = function(index) {
             if(index === 0){
-                this.sandbox.emit('husky.navigation.column.show', 0);
-                this.sandbox.emit('husky.navigation.column.show', 1);
+
+                this.columns[0].show();
+                this.columns[1].show();
+
             }else if (index === 1){
-                this.sandbox.emit('husky.navigation.column.collapse', 0);
-                this.sandbox.emit('husky.navigation.column.show', 1);
+
+                this.columns[0].collapse();
+                this.columns[1].show();
+
             }
         },
 
@@ -121,18 +133,21 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
                     if (index < 1) {
                         updateColumns.call(this, index, true);
                     } else {
-                        this.sandbox.emit('husky.navigation.column.collapse', 0);
+
+                        this.columns[0].collapse();
                         updateColumns.call(this, index, false);
+
                     }
 
-                    this.sandbox.emit('husky.navigation.column.show', index);
-                    this.sandbox.emit('husky.navigation.item.loading', item.id, true);
+                    this.columns[index].show();
+
+                    this.columns[item.columnIndex].loadingItem(item.id, true);
                     this.locked = true;
                     this.sandbox.util.load(item.action)
                         .then(function(data) {
                             this.locked = false;
                             addColumn.call(this, index + 1, data);
-                            this.sandbox.emit('husky.navigation.item.loading', item.id, false);
+                            this.columns[item.columnIndex].loadingItem(item.id, false);
                         }.bind(this));
                 }
             } else {
@@ -201,14 +216,20 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
             // FIXME abstract these states
             if (this.sandbox.dom.hasClass('#column-0', 'hide') &&
                 this.sandbox.dom.hasClass('#column-1', 'collapsed')) {
-                this.sandbox.emit('husky.navigation.column.collapse', 0);
-                this.sandbox.emit('husky.navigation.column.show', 1);
+
+                this.columns[0].collapse();
+                this.columns[1].show();
+
             } else if (this.sandbox.dom.hasClass('#column-0', 'collapsed') &&
                 this.sandbox.dom.find('#column-1').length === 0) {
-                this.sandbox.emit('husky.navigation.column.show', 0);
+
+                this.columns[0].show();
+
             } else if (!this.sandbox.dom.hasClass('#column-0', 'collapsed') &&
                 !this.sandbox.dom.hasClass('#column-1', 'collapsed')) {
-                this.sandbox.emit('husky.navigation.column.collapse', 0);
+
+                this.columns[0].collapse();
+
             }
 
             this.sandbox.emit('navigation.item.content.show', {
@@ -249,10 +270,14 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
 
             if (this.sandbox.dom.find('#column-0').length === 1 &&
                 this.sandbox.dom.find('#column-1').length === 1) {
-                this.sandbox.emit('husky.navigation.column.hide', 0);
-                this.sandbox.emit('husky.navigation.column.collapse', 1);
+
+                this.columns[0].hide();
+                this.columns[1].collapse();
+
             } else {
-                this.sandbox.emit('husky.navigation.column.collapse', 0);
+
+                this.columns[0].collapse();
+
             }
 
             addColumn.call(this, currentIndex + 1, params.data);
@@ -293,29 +318,29 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
             }
         },
 
-        getNavigationWidth = function() {
-            var $columns = this.sandbox.dom.find('.navigation-column'),
-                width = 0,
-                $column = null;
-
-            this.sandbox.dom.each($columns, function(idx, column) {
-                $column = this.sandbox.dom.createElement(column);
-
-                // TODO: refactore
-                if (this.sandbox.dom.hasClass($column, 'collapsed')) {
-                    width += 50;
-                } else if (this.sandbox.dom.hasClass($column, 'content-column')) {
-                    width += 150;
-                } else if (this.sandbox.dom.hasClass($column, 'hide')) {
-                    width += 0;
-                } else {
-                    width += 250;
-                }
-            }.bind(this));
-
-            // 5px margin
-            return width + 5;
-        },
+//        FIXME deprecated
+//        getNavigationWidth = function() {
+//            var $columns = this.sandbox.dom.find('.navigation-column'),
+//                width = 0,
+//                $column = null;
+//
+//            this.sandbox.dom.each($columns, function(idx, column) {
+//                $column = this.sandbox.dom.createElement(column);
+//
+//                if (this.sandbox.dom.hasClass($column, 'collapsed')) {
+//                    width += 50;
+//                } else if (this.sandbox.dom.hasClass($column, 'content-column')) {
+//                    width += 150;
+//                } else if (this.sandbox.dom.hasClass($column, 'hide')) {
+//                    width += 0;
+//                } else {
+//                    width += 250;
+//                }
+//            }.bind(this));
+//
+//            // 5px margin
+//            return width + 5;
+//        },
 
         setNavigationSize = function() {
             var $window = this.sandbox.dom.$window,
