@@ -172,6 +172,16 @@ $navigationIconFont: $baseIconFont;
     width: $navigationColumn0Width;
 }
 
+.navigation-sub-columns {
+    .navigation-column:not(.content-column) {
+        width: 250px;
+
+        .navigation-column-item {
+            width: 249px;
+        }
+    }
+}
+
 .navigation-columns {
     & > .navigation-column {
         &:first-child {
@@ -357,7 +367,7 @@ $navigationIconFont: $baseIconFont;
 }
 
 .navigation-sub-columns {
-    @include perspective(700px);
+    @include perspective(900px);
     position: relative;
     left: auto;
     right: auto;
