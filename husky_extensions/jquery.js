@@ -200,6 +200,15 @@
                 return $(selector).show();
             };
 
+            app.core.dom.insertAt = function(index, selector, $container, $item) {
+                if (index === 0) {
+                    app.core.dom.prepend($container, $item);
+                } else {
+                    var $before = app.core.dom.find(selector + ':nth-child(' + index + ')', $container);
+                    app.core.dom.after($before, $item);
+                }
+            };
+
             app.core.util.ajax = $.ajax;
         }
     });
