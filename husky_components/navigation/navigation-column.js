@@ -330,6 +330,10 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
 
             selectItem: function(index, onOff){
                 this.items[index].selectItem(onOff);
+            },
+
+            getSelectedItemId: function() {
+                return this.sandbox.dom.attr(this.$el, 'id');
             }
         };
     };

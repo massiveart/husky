@@ -13,8 +13,6 @@
  *
  * Used Events:
  *
- * FIXME the subColumns will show when you click on the back button and click on hidden column 0
- *
  */
 
 define(['husky_components/navigation/navigation-column'], function(NavigationColumn) {
@@ -121,7 +119,11 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
         },
 
         selectedClickCallback = function(index) {
-            showSubColumns.call(this);
+
+            if (isHiddenSubColumns.call(this) && !!this.columns[1] &&
+                this.sandbox.dom.data(this.$navigationSubColumns, 'parent') === this.columns[0].getSelectedItemId()) {
+                showSubColumns.call(this);
+            }
 
             if(index === 0){
 
@@ -217,19 +219,10 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
                 this.sandbox.dom.append(this.$navigationSubColumns, $column);
                 scrollToLastSubColumn.call(this);
             } else {
-                insertAt.call(this, index, this.$navigationColumns, $column);
+                this.sandbox.dom.insertAt(index, 'li.navigation-column:not(.portal-column)', this.$navigationColumns, $column);
             }
 
             setNavigationSize.call(this);
-        },
-
-        insertAt = function(i, $container, $item) {
-            if (i === 0) {
-                this.sandbox.dom.prepend($container, $item);
-            } else {
-                var $before = this.sandbox.dom.find('li.navigation-column:not(.portal-column):nth-child(' + i + ')', $container);
-                this.sandbox.dom.after($before, $item);
-            }
         },
 
         scrollToLastSubColumn = function() {
@@ -293,7 +286,10 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
 
             }
 
-            showSubColumns.call(this);
+            if (isHiddenSubColumns.call(this) && !!this.columns[1] &&
+                this.sandbox.dom.data(this.$navigationSubColumns, 'parent') === this.columns[0].getSelectedItemId()) {
+                showSubColumns.call(this);
+            }
 
             this.sandbox.emit('navigation.item.content.show', {
                 item: {
