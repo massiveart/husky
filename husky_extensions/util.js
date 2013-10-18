@@ -54,6 +54,10 @@ define(function() {
                 return deferred.promise();
             };
 
+            app.core.util.contains = function(list, value){
+                return _.contains(list, value);
+            };
+
         }
     };
 });
