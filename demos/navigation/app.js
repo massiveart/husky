@@ -22,19 +22,19 @@ require(['lib/husky'], function(Husky) {
     ]);
 
     fakeServer.respondWith('GET', '/portals/1/pages', [200, { 'Content-Type': 'application/json' },
-        '{"sub":{"items":[{"title":"Page 1","id":"page1-1","hasSub":true,"action":"/portals/1/pages/page1"},{"title":"Page 2","id":"page1-2","hasSub":false,"action":"/portals/1/pages/page2"}]}}'
+        '{"displayOption": "portal", "sub":{"items":[{"title":"Page 1","id":"page1-1","hasSub":true,"action":"/portals/1/pages/page1"},{"title":"Page 2","id":"page1-2","hasSub":false,"action":"/portals/1/pages/page2"}]}}'
     ]);
 
     fakeServer.respondWith('GET', '/portals/1/pages/page1', [200, { 'Content-Type': 'application/json' },
-        '{"sub":{"items":[{"title":"Page 3","id":"page1-3","hasSub":true,"action":"/portals/1/pages/page3"}]}}'
+        '{"displayOption": "portal", "sub":{"items":[{"title":"Page 3","id":"page1-3","hasSub":true,"action":"/portals/1/pages/page3"}]}}'
     ]);
 
     fakeServer.respondWith('GET', '/portals/1/pages/page3', [200, { 'Content-Type': 'application/json' },
-        '{"sub":{"items":[{"title":"Page 4","id":"page1-4","hasSub":true,"action":"/portals/1/pages/page4"}]}}'
+        '{"displayOption": "portal", "sub":{"items":[{"title":"Page 4","id":"page1-4","hasSub":true,"action":"/portals/1/pages/page4"}]}}'
     ]);
 
     fakeServer.respondWith('GET', '/portals/1/pages/page4', [200, { 'Content-Type': 'application/json' },
-        '{"sub":{"items":[{"title":"Page 5","id":"page1-5","hasSub":false,"type":"content","action":"/portals/1/pages/page5"}]}}'
+        '{"displayOption": "portal", "sub":{"items":[{"title":"Page 5","id":"page1-5","hasSub":false,"type":"content","action":"/portals/1/pages/page5"}]}}'
     ]);
 
     app.start().then(function() {

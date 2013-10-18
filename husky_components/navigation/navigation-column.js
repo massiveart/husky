@@ -24,7 +24,7 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
             if (!!this.options.data.displayOption && this.options.data.displayOption === 'portals') {
                 renderPortals.call(this);
             } else {
-                if (this.sandbox.dom.data(this.$el, 'columnId') < 2 || !!this.options.data.displayOption) {
+                if (this.options.data.displayOption !== 'portal' && (this.sandbox.dom.data(this.$el, 'columnId') < 2 || !!this.options.data.displayOption)) {
                     this.sandbox.dom.append(this.$el, prepareColumnHeader.call(this));
                 }
 

@@ -35,8 +35,9 @@ define(function() {
             if (!!this.options.data.class) {
                 columnItemClasses.push(this.options.data.class);
             }
+
             if (!!this.options.data.selected) {
-                columnItemClasses.push(this.options.data.selected);
+                columnItemClasses.push('selected');
             }
 
             this.sandbox.dom.attr(this.$el, {

@@ -64,12 +64,15 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
             this.sandbox.logger.log('content', index, data);
 
             if (index >= 1) {
+                // FIXME abstract
                 if (!$('#' + data.id).parent().parent().hasClass('content-column')) {
                     updateColumns.call(this, 1, true);
                 }
             } else {
                 updateColumns.call(this, 1, true);
             }
+
+            hideSubColumns.call(this);
 
             // FIXME better solution
             if (index === 0) {
@@ -96,11 +99,14 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
         },
 
         updateColumns = function(index, removeSubColumns) {
+            var selector = '.navigation-column:gt(' + index + ')';
+
             if (!!removeSubColumns) {
-                this.sandbox.dom.remove(this.$subColumns);
-                delete this.$navigationSubColumns;
+                hideSubColumns.call(this);
+                selector += ':not(.portal-column)';
             }
-            this.sandbox.dom.remove('.navigation-column:gt(' + index + ')');
+
+            this.sandbox.dom.remove(selector);
 
             this.contentColumn = false;
         },
@@ -113,6 +119,8 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
         },
 
         selectedClickCallback = function(index) {
+            showSubColumns.call(this);
+
             if(index === 0){
 
                 this.columns[0].show();
@@ -126,10 +134,38 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
             }
         },
 
+        hideSubColumns = function() {
+            this.sandbox.dom.css(this.$navigationSubColumns, 'display', 'none');
+        },
+
+        isHiddenSubColumns = function() {
+            return this.sandbox.dom.css(this.$navigationSubColumns, 'display') === 'none';
+        },
+
+        showSubColumns = function() {
+            scrollToLastSubColumn.call(this);
+            this.sandbox.dom.css(this.$navigationSubColumns, 'display', 'block');
+        },
+
+        removeSubColumns = function() {
+            this.$navigationSubColumns = null;
+            this.sandbox.dom.remove('.navigation-sub-columns-container');
+        },
+
         addColumnCallback = function(index, item) {
             if(!!this.locked){
                 return;
             }
+
+            if (index === 0) {
+                removeSubColumns.call(this);
+            } else if (index === 1 &&
+                isHiddenSubColumns.call(this) &&
+                this.sandbox.dom.find('.navigation-sub-columns-container .navigation-column').length > 0) {
+                showSubColumns.call(this);
+                return;
+            }
+
             if (!item.sub) {
                 if (!!item.action) {
                     if (index < 1) {
@@ -165,9 +201,11 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
                 removeContentColumn.call(this);
             }
 
-            if (index >= 2) {
+            if (index >= 2 && data.displayOption !== 'content') {
                 if (!this.$navigationSubColumns) {
                     initSubColumns.call(this);
+                } else {
+                    showSubColumns.call(this);
                 }
                 this.sandbox.dom.append(this.$navigationSubColumns, $column);
                 scrollToLastSubColumn.call(this);
@@ -179,9 +217,11 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
         },
 
         scrollToLastSubColumn = function() {
-            this.$navigationSubColumns.delay(250).animate({
-                'scrollLeft': 1000
-            }, 500);
+            if (!!this.$navigationSubColumns) {
+                this.$navigationSubColumns.delay(250).animate({
+                    'scrollLeft': 1000
+                }, 500);
+            }
         },
 
         initSubColumns = function() {
@@ -236,6 +276,8 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
                 this.columns[0].collapse();
 
             }
+
+            showSubColumns.call(this);
 
             this.sandbox.emit('navigation.item.content.show', {
                 item: {
