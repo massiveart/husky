@@ -58,6 +58,18 @@
                 return $(selector).append(element);
             };
 
+            app.core.dom.prepend = function(selector, element) {
+                return $(selector).prepend(element);
+            };
+
+            app.core.dom.before = function(selector, element) {
+                return $(selector).before(element);
+            };
+
+            app.core.dom.after = function(selector, element) {
+                return $(selector).after(element);
+            };
+
             app.core.dom.css = function(selector, style, value) {
                 if (!!value) {
                     return $(selector).css(style, value);
