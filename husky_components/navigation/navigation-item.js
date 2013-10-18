@@ -98,6 +98,14 @@ define(function() {
                 } else {
                     this.sandbox.dom.removeClass(this.$el, 'is-loading');
                 }
+            },
+
+            selectItem: function(onOff) {
+                if (!!onOff) {
+                    this.sandbox.dom.addClass(this.$el, 'selected');
+                } else {
+                    this.sandbox.dom.removeClass(this.$el, 'selected');
+                }
             }
         };
     };

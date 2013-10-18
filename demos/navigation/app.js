@@ -42,7 +42,7 @@ require(['lib/husky'], function(Husky) {
 
         var sizeChanged = function(event) {
             $('#content').css('margin-left', event.data.navWidth + 45);
-        }, showColumn = function() {
+        }, showColumn = function(selected) {
             setTimeout(function() {
                 app.sandbox.emit('navigation.item.column.show', {
                     data: {
@@ -59,14 +59,15 @@ require(['lib/husky'], function(Husky) {
                                     "hasSub": false,
                                     "type": "content",
                                     "action": "/details",
-                                    "selected": true
+                                    "selected": !!(selected === 1)
                                 },
                                 {
                                     "title": "Settings",
                                     "id": "settings",
                                     "hasSub": false,
                                     "type": "content",
-                                    "action": "/settings"
+                                    "action": "/settings",
+                                    "selected": !!(selected === 2)
                                 }
                             ]
                         }
@@ -93,7 +94,13 @@ require(['lib/husky'], function(Husky) {
             //sizeChanged(event);
 
             if (event.item.action === '/portals/1/pages/page5') {
-                showColumn();
+                showColumn(1);
+            }
+            if (event.item.action === '/settings') {
+                showColumn(2);
+            }
+            if (event.item.action === '/details') {
+                showColumn(1);
             }
         });
 
@@ -103,7 +110,7 @@ require(['lib/husky'], function(Husky) {
 
         $('#load').on('click', function() {
             $('#print').html('Content');
-            showColumn();
+            showColumn(1);
         });
     });
 

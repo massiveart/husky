@@ -326,6 +326,10 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
 
             loadingItem: function(index, onOff) {
                 this.items[index].loadingItem(onOff);
+            },
+
+            selectItem: function(index, onOff){
+                this.items[index].selectItem(onOff);
             }
         };
     };
