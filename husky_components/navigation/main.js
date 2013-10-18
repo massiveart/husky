@@ -13,6 +13,8 @@
  *
  * Used Events:
  *
+ * FIXME the subColumns will show when you click on the back button and click on hidden column 0
+ *
  */
 
 define(['husky_components/navigation/navigation-column'], function(NavigationColumn) {
@@ -135,6 +137,8 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
         },
 
         hideSubColumns = function() {
+            this.sandbox.dom.addClass('.navigation-sub-columns .navigation-column', 'hide-portal');
+
             this.sandbox.dom.css(this.$navigationSubColumns, 'display', 'none');
         },
 
@@ -157,13 +161,15 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
                 return;
             }
 
-            if (index === 0) {
-                removeSubColumns.call(this);
-            } else if (index === 1 &&
-                isHiddenSubColumns.call(this) &&
-                this.sandbox.dom.find('.navigation-sub-columns-container .navigation-column').length > 0) {
-                showSubColumns.call(this);
-                return;
+            if (index === 1) {
+                if (this.sandbox.dom.data(this.$navigationSubColumns, 'parent') === item.id &&
+                    isHiddenSubColumns.call(this) &&
+                    this.sandbox.dom.find('.navigation-sub-columns-container .navigation-column').length > 0) {
+                    showSubColumns.call(this);
+
+                    this.columns[0].collapse();
+                    return;
+                }
             }
 
             if (!item.sub) {
@@ -184,17 +190,17 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
                     this.sandbox.util.load(item.action)
                         .then(function(data) {
                             this.locked = false;
-                            addColumn.call(this, index + 1, data);
+                            addColumn.call(this, index + 1, data, item.id);
                             this.columns[item.columnIndex].loadingItem(item.id, false);
                         }.bind(this));
                 }
             } else {
                 updateColumns.call(this, index, true);
-                addColumn.call(this, index + 1, item);
+                addColumn.call(this, index + 1, item, item.id);
             }
         },
 
-        addColumn = function(index, data) {
+        addColumn = function(index, data, subColumnParentId) {
             var $column = startColumn.call(this, index, data);
 
             if (data.displayOption !== 'content') {
@@ -204,16 +210,26 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
             if (index >= 2 && data.displayOption !== 'content') {
                 if (!this.$navigationSubColumns) {
                     initSubColumns.call(this);
+                    this.sandbox.dom.data(this.$navigationSubColumns, 'parent', subColumnParentId);
                 } else {
                     showSubColumns.call(this);
                 }
                 this.sandbox.dom.append(this.$navigationSubColumns, $column);
                 scrollToLastSubColumn.call(this);
             } else {
-                this.sandbox.dom.append(this.$navigationColumns, $column);
+                insertAt.call(this, index, this.$navigationColumns, $column);
             }
 
             setNavigationSize.call(this);
+        },
+
+        insertAt = function(i, $container, $item) {
+            if (i === 0) {
+                this.sandbox.dom.prepend($container, $item);
+            } else {
+                var $before = this.sandbox.dom.find('li.navigation-column:not(.portal-column):nth-child(' + i + ')', $container);
+                this.sandbox.dom.after($before, $item);
+            }
         },
 
         scrollToLastSubColumn = function() {
@@ -295,7 +311,7 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
         },
 
         getCurrentIndex = function(contentColumn) {
-            var selector = '.navigation-column',
+            var selector = '.navigation-column:not(.hide-portal)',
                 index, currentIndex = 0;
             if (!contentColumn) {
                 selector += ':not(.content-column)';
