@@ -334,6 +334,22 @@ define(['husky_components/navigation/item'], function(NavigationItem) {
 
             getSelectedItemId: function() {
                 return this.sandbox.dom.attr(this.$el, 'id');
+            },
+
+            isSubColumn: function() {
+                return this.options.index >= 2 && this.options.data.displayOption !== 'content';
+            },
+
+            isContentColumn: function() {
+                return this.options.data.displayOption === 'content'
+            },
+
+            getIndex: function() {
+                return this.options.index;
+            },
+
+            remove: function() {
+                this.sandbox.dom.remove(this.$el);
             }
         };
     };

@@ -79,7 +79,8 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
             if (index === 0) { // first column click, display content
 
                 this.columns[0].show();
-                this.sandbox.dom.remove('#column-1');
+                this.columns[1].remove();
+                delete this.columns[1];
 
             } else if (index === 1) { // second column click, display content
 
@@ -100,16 +101,22 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
         },
 
         updateColumns = function(index, removeSubColumns) {
-            var selector = '#' + this.id + ' .navigation-column:gt(' + index + ')';
-
             if (!!removeSubColumns) {
                 hideSubColumns.call(this);
-                selector += ':not(.portal-column)';
             }
 
-            this.sandbox.dom.remove(selector);
+            // loop thru all columns
+            for (var colIndex in this.columns) {
+                if (this.columns.hasOwnProperty(colIndex) && parseInt(colIndex, 10) > index) {
+                    if (!removeSubColumns || !this.columns[colIndex].isSubColumn()) { // delete only if flag not set or is not a subColumn
+                        this.columns[colIndex].remove(); // remove dom element
+                        delete this.columns[colIndex]; // delete index
+                    }
+                }
+            }
 
             this.contentColumn = false;
+            this.contentColumnSelected = false;
         },
 
         selectedCallback = function(index, item) {
@@ -190,6 +197,11 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
                             this.locked = false;
                             addColumn.call(this, index + 1, data, item.id);
                             this.columns[item.columnIndex].loadingItem(item.id, false);
+                        }.bind(this))
+                        .fail(function() {
+                            this.locked = false;
+                            this.columns[item.columnIndex].loadingItem(item.id, false);
+                            this.sandbox.logger.error('Could not load data from action: ' + item.action);
                         }.bind(this));
                 }
             } else {
@@ -258,7 +270,7 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
             this.sandbox.on('navigation.item.column.show', showColumn.bind(this));
         },
 
-    // FIXME better solution?
+    // FIXME better solution? move to column
         headerLinkClick = function() {
             var action = this.sandbox.dom.data('#' + this.id + ' .navigation-header-link', 'action');
 
@@ -296,22 +308,26 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
 
         removeContentColumn = function() {
             this.sandbox.dom.removeClass('#' + this.id, 'show-content');
-            this.sandbox.dom.remove('#' + this.id + ' .content-column');
+            var index = this.sandbox.dom.data('#' + this.id + ' .content-column', 'column-id');
+
+            if(!!index){
+                this.columns[index].remove();
+                delete this.columns[index];
+            }
 
             this.contentColumn = false;
             this.contentColumnSelected = false;
         },
 
         getCurrentIndex = function(contentColumn) {
-            var selector = '#' + this.id + ' .navigation-column:not(.hide-portal)',
-                index, currentIndex = 0;
-            if (!contentColumn) {
-                selector += ':not(.content-column)';
-            }
-            this.sandbox.dom.each(selector, function(key, value) {
-                index = this.sandbox.dom.data(value, 'columnId');
-                if (currentIndex < index) {
-                    currentIndex = index;
+            var index, currentIndex = 0;
+
+            this.sandbox.util.foreach(this.columns, function(column) {
+                if (!!column && (!contentColumn || column.isContentColumn())) {
+                    index = column.getIndex();
+                    if (currentIndex < index) {
+                        currentIndex = index;
+                    }
                 }
             }.bind(this));
 
@@ -367,7 +383,6 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
 
         /**
          * compares two objects
-         *
          * exclude given properties
          */
         compare = function(obj1, obj2, excludeProperties) {
@@ -492,6 +507,7 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
             if (!params) {
                 throw('No params were defined!');
             }
+            // FIXME update this.columns array
             this.sandbox.dom.remove('.navigation-column:gt(0)');
             preparedRoute = prepareRoute.call(this, params);
 
