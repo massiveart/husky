@@ -23208,7 +23208,7 @@ define('__component__$select@husky',[],function() {
                     (!!this.options.property && !!this.options.typeLabel) ? 'data-type-label="' + this.options.typeLabel + '" ' : ''
                 ].join(''),
                 selectHtml = [
-                    '<select class="select-value form-element" ', dataAttr, '/>'
+                    '<select id="',this.options.instanceName,'" class="select-value form-element" ', dataAttr, '/>'
                 ].join('');
 
             this.$select = $(selectHtml);
