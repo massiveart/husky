@@ -24,7 +24,8 @@ And now install all dependencies:
 
     bower install
 	
-Install Compass with animations:
+Install [Compass](http://compass-style.org/install/) with [animations](https://github.com/ericam/compass-animation):
+
 	
     gem update --system
     gem install compass
