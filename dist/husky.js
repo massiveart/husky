@@ -23446,7 +23446,7 @@ define('__component__$matrix@husky',[],function() {
                 for (j = 0; j < this.options.values.horizontal.length; j++) {
                     $tdValue = sandbox.dom.createElement('<td class="value"/>');
                     $span = sandbox.dom.createElement(
-                        '<span class="icon-' + this.options.values.horizontal[j] + '"/>'
+                        '<span class="icon-' + this.options.values.horizontal[j] + ' pointer"/>'
                     );
                     sandbox.dom.data($span, 'value', this.options.values.horizontal[j]);
                     sandbox.dom.data($span, 'section', this.options.values.vertical[i]);
@@ -23471,6 +23471,7 @@ define('__component__$matrix@husky',[],function() {
         }
     };
 });
+
 /*****************************************************************************
  *
  *  Select
@@ -23526,7 +23527,7 @@ define('__component__$select@husky',[],function() {
                     (!!this.options.property && !!this.options.typeLabel) ? 'data-type-label="' + this.options.typeLabel + '" ' : ''
                 ].join(''),
                 selectHtml = [
-                    '<select class="select-value form-element" ', dataAttr, '/>'
+                    '<select id="',this.options.instanceName,'" class="select-value form-element" ', dataAttr, '/>'
                 ].join('');
 
             this.$select = $(selectHtml);
@@ -23641,12 +23642,13 @@ define('__component__$auto-complete@husky',[], function() {
     
 
     var defaults = {
-            url: '',            // url to load data
-            valueName: 'name',  // propertyName for value
-            minLength: 3,       // min length for request
-            keyControl: true,   // control with up/down key
-            value: null,        // value to display at start
-            excludeItems: []    // items to filter
+            url: '',                    // url to load data
+            valueName: 'name',          // propertyName for value
+            minLength: 3,               // min length for request
+            keyControl: true,           // control with up/down key
+            value: null,                // value to display at start
+            excludeItems: [],           // items to filter
+            instanceName: 'undefined'   // name of the component instance
         },
         successClass = 'husky-auto-complete-success',
         failClass = 'husky-auto-complete-error',
@@ -23698,7 +23700,7 @@ define('__component__$auto-complete@husky',[], function() {
         render: function() {
             this.$el.addClass('dropdown husky-auto-complete');
             // init form-element and dropdown menu
-            this.$valueField = $('<input type="text" autofill="false" class="name-value form-element husky-validate" data-id="' + this.getValueID() + '" value="' + this.getValueName() + '"/>');
+            this.$valueField = $('<input id="'+this.options.instanceName+'" type="text" autofill="false" class="name-value form-element husky-validate" data-id="' + this.getValueID() + '" value="' + this.getValueName() + '"/>');
             this.$dropDown = $('<div class="dropdown-menu" />');
             this.$dropDownList = $('<ul/>');
             this.$el.append(this.$valueField);
@@ -24216,7 +24218,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
             basicStructure: function(defaultLabel) {
                 return [
                     '<div class="husky-dropdown-multiple-select">',
-                    '    <div class="grid-row dropdown-label">',
+                    '    <div class="grid-row dropdown-label pointer">',
                     '       <div class="grid-col-11 checkbox">',
                     '           <span id="', this.labelId, '">', defaultLabel, '</span>',
                     '       </div>',
@@ -24382,7 +24384,7 @@ define('__component__$password-fields@husky',[], function() {
                 '        <div class="grid-col-6">',
                 '            <div class="grid-row m-height-25">',
                 '                <div class="grid-col-6">',
-                '                    <label>', this.options.labels.inputPassword1, '</label>',
+                '                    <label for="',this.options.ids.inputPassword1,'">', this.options.labels.inputPassword1, '</label>',
                 '                </div>',
                 '                <div class="grid-col-6 align-right hidden" id="', this.options.ids.generateLabel, '">',
                 '                    <span class="icon-keys m-right-10"></span><span class="pointer">', this.options.labels.generateLabel, '</span>',
@@ -24394,7 +24396,7 @@ define('__component__$password-fields@husky',[], function() {
                 '        </div>',
                 '        <div class="grid-col-6">',
                 '            <div class="grid-row m-height-25">',
-                '                <label>', this.options.labels.inputPassword2, '</label>',
+                '                <label for="',this.options.ids.inputPassword2,'">', this.options.labels.inputPassword2, '</label>',
                 '            </div>',
                 '            <div class="grid-row">',
                 '                <input class="form-element" value="', this.options.values.inputPassword2, '" type="text" id="', this.options.ids.inputPassword2, '"', (!!this.options.validation ? 'data-validation-equal="' + this.options.instanceName + '"' : ''), '/>',
@@ -24924,13 +24926,16 @@ define('husky_extensions/collection',[],function() {
                 event.stopPropagation();
             };
 
-
             app.core.dom.hide = function(selector) {
                 return $(selector).hide();
             };
 
             app.core.dom.show = function(selector) {
                 return $(selector).show();
+            };
+
+            app.core.dom.keypress = function(selector, callback) {
+              $(selector).keypress(callback);
             };
 
             app.core.dom.insertAt = function(index, selector, $container, $item) {

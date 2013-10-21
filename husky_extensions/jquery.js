@@ -191,13 +191,16 @@
                 event.stopPropagation();
             };
 
-
             app.core.dom.hide = function(selector) {
                 return $(selector).hide();
             };
 
             app.core.dom.show = function(selector) {
                 return $(selector).show();
+            };
+
+            app.core.dom.keypress = function(selector, callback) {
+              $(selector).keypress(callback);
             };
 
             app.core.dom.insertAt = function(index, selector, $container, $item) {
