@@ -10,7 +10,9 @@
         "expect": false,
         "beforeEach": false,
         "afterEach": false,
-        "sinon": false
+        "sinon": false,
+        "runs": false,
+        "waitsFor": false
     },
     "bitwise": true,
     "camelcase": true,

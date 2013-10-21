@@ -19,6 +19,7 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
 
     'use strict';
 
+
     var prepareFirstColumn = function(data) {
             this.data = data;
 

@@ -21091,6 +21091,7 @@ define('__component__$navigation@husky',['husky_components/navigation/column'], 
 
     
 
+
     var prepareFirstColumn = function(data) {
             this.data = data;
 
@@ -21964,7 +21965,6 @@ define('__component__$button@husky',[], function() {
                     type.bindDomEvents.call(this);
                 },
                 bindDomEvents: function() {
-                    // FIXME if not events would be triggered multiple times
                     this.$el.off('click');
                     this.$el.on('click', this.clickEvent.bind(this));
                 },
@@ -22031,7 +22031,7 @@ define('__component__$button@husky',[], function() {
         },
 
         initialize: function() {
-            this.sandbox.logger.log('initialize', this);
+            this.sandbox.logger.log('initialize');
             this.sandbox.logger.log(arguments);
 
             // extend default options
@@ -24316,7 +24316,7 @@ define('__component__$password-fields@husky',[], function() {
     return {
 
         initialize: function() {
-            this.sandbox.logger.log('initialize', this);
+            this.sandbox.logger.log('initialize');
             this.sandbox.logger.log(arguments);
 
             // extend default options
