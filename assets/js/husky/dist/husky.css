@@ -3758,8 +3758,14 @@ label {
 label .form-element {
   margin-top: 6px;
 }
+/* line 45, ../scss/modules/form.scss */
+label.inline {
+  font-size: 1em;
+  font-weight: normal;
+  display: inline;
+}
 
-/* line 49, ../scss/modules/form.scss */
+/* line 54, ../scss/modules/form.scss */
 .custom-checkbox {
   width: 14px;
   height: 14px;
@@ -3767,13 +3773,13 @@ label .form-element {
   opacity: 0;
   cursor: pointer;
 }
-/* line 63, ../scss/modules/form.scss */
+/* line 68, ../scss/modules/form.scss */
 .custom-checkbox:checked + .custom-checkbox-icon::after, .custom-checkbox.is-checked + .custom-checkbox-icon::after {
   content: "\e207";
   position: relative;
   top: -3px;
 }
-/* line 71, ../scss/modules/form.scss */
+/* line 76, ../scss/modules/form.scss */
 .custom-checkbox + .custom-checkbox-icon {
   display: inline-block;
   width: 14px;
@@ -3787,27 +3793,27 @@ label .form-element {
   vertical-align: middle;
 }
 
-/* line 90, ../scss/modules/form.scss */
+/* line 95, ../scss/modules/form.scss */
 textarea {
   resize: both;
 }
 
-/* line 91, ../scss/modules/form.scss */
+/* line 96, ../scss/modules/form.scss */
 textarea.vertical {
   resize: vertical;
 }
 
-/* line 92, ../scss/modules/form.scss */
+/* line 97, ../scss/modules/form.scss */
 textarea.horizontal {
   resize: horizontal;
 }
 
-/* line 93, ../scss/modules/form.scss */
+/* line 98, ../scss/modules/form.scss */
 textarea.noResize {
   resize: none;
 }
 
-/* line 95, ../scss/modules/form.scss */
+/* line 100, ../scss/modules/form.scss */
 textarea.form-element {
   height: 40px;
   padding: 10px;
@@ -3815,7 +3821,7 @@ textarea.form-element {
   font-family: inherit;
 }
 
-/* line 106, ../scss/modules/form.scss */
+/* line 111, ../scss/modules/form.scss */
 .custom-radio {
   width: 18px;
   height: 18px;
@@ -3823,7 +3829,7 @@ textarea.form-element {
   opacity: 0;
   cursor: pointer;
 }
-/* line 118, ../scss/modules/form.scss */
+/* line 123, ../scss/modules/form.scss */
 .custom-radio:checked + .custom-radio-icon::after, .custom-radio.is-checked + .custom-radio-icon::after {
   content: "";
   display: block;
@@ -3832,7 +3838,7 @@ textarea.form-element {
   border-radius: 18px;
   background-color: #999;
 }
-/* line 129, ../scss/modules/form.scss */
+/* line 134, ../scss/modules/form.scss */
 .custom-radio + .custom-radio-icon {
   display: inline-block;
   width: 18px;
