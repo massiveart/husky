@@ -41,8 +41,13 @@ label {
     .form-element {
         margin-top: 6px;
     }
-}
 
+    &.inline {
+        font-size: 1em;
+        font-weight: normal;
+        display: inline;
+    }
+}
 
 // Checkboxes
 // -------------------------

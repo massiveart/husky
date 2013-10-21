@@ -13,27 +13,31 @@ define(['husky'], function(husky) {
             fakeServer = sinon.fakeServer.create();
 
             fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
-                '{"title":"Root","hasSub":true,"id":"5242c58c3a494","sub":{"items":[{"title":"Audits","icon":"check","action":"audit","hasSub":false,"type":"content","id":"5242c58c3a4f2"},{"title":"Profiles","icon":"adjust-alt","action":"profile","hasSub":false,"type":"content","id":"5242c58c3a53e"},{"title":"Portals","icon":"caution","hasSub":true,"id":"52f258bc2e47f","action":"/navigation/portals"},{"title":"Contacts","icon":"contact-book","hasSub":true,"id":"5242c58c3a591","sub":{"items":[{"title":"People","icon":"parents","action":"contacts\/people","hasSub":false,"type":"content","id":"5242c58c3a5f6"},{"title":"Companies","icon":"bank","action":"contacts\/companies","hasSub":false,"type":"content","id":"5242c58c3a64c"}]}},{"title":"Settings","icon":"cogwheels","hasSub":true,"id":"5242c58c3a69b","sub":{"items":[{"title":"Translate","icon":"book-open","action":"settings\/translate","hasSub":false,"type":"content","id":"5242c58c3a6dd"}]}}]}}'
+                '{"title":"Root","hasSub":true,"id":"5242c58c3a494", "header": { "title":"Ivoclar", "logo":"../../img/tmp/logo.png" },"sub":{"items":[{"title":"Audits","icon":"check","action":"audit","hasSub":false,"type":"content","id":"5242c58c3a4f2"},{"title":"Profiles","icon":"adjust-alt","action":"profile","hasSub":false,"type":"content","id":"5242c58c3a53e"},{"title":"Portals","icon":"caution","hasSub":true,"id":"52f258bc2e47f","action":"/navigation/portals"},{"header":{"title":"Contacts"},"title":"Contacts","icon":"contact-book","hasSub":true,"id":"5242c58c3a591","sub":{"items":[{"title":"People","icon":"parents","action":"contacts\/people","hasSub":false,"type":"content","id":"5242c58c3a5f6"},{"title":"Companies","icon":"bank","action":"contacts\/companies","hasSub":false,"type":"content","id":"5242c58c3a64c"}]}},{"title":"Settings","route":"settings","icon":"cogwheels","hasSub":true,"id":"5242c58c3a69b","sub":{"items":[{"title":"Translate","icon":"book-open","route":"settings/translate","action":"settings\/translate","hasSub":false,"type":"content","id":"5242c58c3a6dd"}]}}]}}'
             ]);
 
             fakeServer.respondWith('GET', '/navigation/portals', [200, { 'Content-Type': 'application/json' },
-                '{"header": { "title":"Portals" }, "sub":{"items":[{"title":"Products","icon":"check","id":"products","hasSub":true,"action":"/portals/products"},{"title":"Portal 1","icon":"caution","id":"portal_1","hasSub":false,"action":"/portals/products","type":"content"}]}}'
+                '{"displayOption": "portals", "sub":{"items":[{"title":"Portal 1","icon":"check","id":"portal1","hasSub":true,"action":"/portals/1","sub":{"items":[{"title":"Home Pages","icon":"bank","id":"home1","hasSub":false,"action":"/portals/1/home"},{"title":"Pages","icon":"book","id":"pages1","hasSub":true,"action":"/portals/1/pages"}]}},{"title":"Portal 2","icon":"caution","id":"portal_2","hasSub":true,"action":"/portals/2","sub":{"items":[{"title":"Home Pages","icon":"bank","id":"home1","hasSub":false,"action":"/portals/1/home"},{"title":"Pages","icon":"book","id":"pages1","hasSub":true,"action":"/portals/1/pages"}]}}]}}'
             ]);
 
-            fakeServer.respondWith('GET', '/portals/products', [200, { 'Content-Type': 'application/json' },
-                '{"sub":{"items":[{"title":"Produkt 1","id":"product_1","hasSub":true,"action":"/portals/products/product_1"},{"title":"Produkt 4","id":"product_4","hasSub":false,"type":"content","action":"/portals/products/product_1/product_2/product_3/product_4/content"}]}}'
+            fakeServer.respondWith('GET', '/portals/1', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Home Pages","icon":"bank","id":"home1","hasSub":false,"action":"/portals/1/home","type":"content"},{"title":"Pages","icon":"book","id":"pages1","hasSub":true,"action":"/portals/1/pages"}]}}'
             ]);
 
-            fakeServer.respondWith('GET', '/portals/products/product_1', [200, { 'Content-Type': 'application/json' },
-                '{"sub":{"items":[{"title":"Produkt 2","id":"product_2","hasSub":true,"action":"/portals/products/product_1/product_2"}]}}'
+            fakeServer.respondWith('GET', '/portals/1/pages', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Page 1","id":"page1-1","hasSub":true,"action":"/portals/1/pages/page1"},{"title":"Page 2","id":"page1-2","hasSub":false,"action":"/portals/1/pages/page2"}]}}'
             ]);
 
-            fakeServer.respondWith('GET', '/portals/products/product_1/product_2', [200, { 'Content-Type': 'application/json' },
-                '{"sub":{"items":[{"title":"Produkt 3","id":"product_3","hasSub":true,"action":"/portals/products/product_1/product_2/product_3"}]}}'
+            fakeServer.respondWith('GET', '/portals/1/pages/page1', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Page 3","id":"page1-3","hasSub":true,"action":"/portals/1/pages/page3"}]}}'
             ]);
 
-            fakeServer.respondWith('GET', '/portals/products/product_1/product_2/product_3', [200, { 'Content-Type': 'application/json' },
-                '{"sub":{"items":[{"title":"Produkt 4","id":"product_4","hasSub":false,"type":"content","action":"/portals/products/product_1/product_2/product_3/product_4/content"}]}}'
+            fakeServer.respondWith('GET', '/portals/1/pages/page3', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Page 4","id":"page1-4","hasSub":true,"action":"/portals/1/pages/page4"}]}}'
+            ]);
+
+            fakeServer.respondWith('GET', '/portals/1/pages/page4', [200, { 'Content-Type': 'application/json' },
+                '{"sub":{"items":[{"title":"Page 5","id":"page1-5","hasSub":false,"type":"content","action":"/portals/1/pages/page5"}]}}'
             ]);
 
             runs(function() {
@@ -60,10 +64,19 @@ define(['husky'], function(husky) {
 
         afterEach(function() {
             fakeServer.restore();
+
+            // check if any have failed
+            if(this.results_.failedCount > 0) {
+                // if so, change the function which should move to the next test
+                jasmine.Queue.prototype.next_ = function () {
+                    // to instead skip to the end
+                    this.onComplete();
+                }
+            }
         });
 
         /**
-            check if the navigation was initialized by checking 
+            check if the navigation was initialized by checking
             if it appears in the dom
          */
         it('should be started after app start', function() {
@@ -176,12 +189,13 @@ define(['husky'], function(husky) {
         });
 
         /**
-            check if after the second column a 
+            check if after the second column a
             sub-columns container is inerted into the navigation
          */
         it('should insert sub-columns container after the second column', function() {
             var flag1 = false,
-                flag2 = false;
+                flag2 = false,
+                flag3 = false;
 
             runs(function() {
                 _.delay(function() {
@@ -201,7 +215,7 @@ define(['husky'], function(husky) {
             runs(function() {
                 _.delay(function() {
                     // navigation-item id of products
-                    $('#products').click();
+                    $('#52f258bc2e47f').click();
                     fakeServer.respond();
 
                     flag2 = true;
@@ -213,7 +227,83 @@ define(['husky'], function(husky) {
             }, 'Fake server should have respond!', 500);
 
             runs(function() {
+                _.delay(function() {
+                    // navigation-item id of products
+                    $('#pages1').click();
+                    fakeServer.respond();
+
+                    flag3 = true;
+                }, 100);
+            });
+
+            waitsFor(function() {
+                return flag3;
+            }, 'Fake server should have respond!', 500);
+
+            runs(function() {
                 expect($('.navigation-sub-columns').size()).toEqual(1);
+            });
+        });
+
+        /**
+         * If two clicks on a ajax reloading item the request should only be done once
+         */
+        it('should only do the click once', function() {
+            var flag1 = false,
+                flag2 = false,
+                flag3 = false;
+
+            runs(function() {
+                _.delay(function() {
+                    // navigation-item id of portals
+                    $('#52f258bc2e47f').click();
+                    fakeServer.respond();
+
+                    flag1 = true;
+                }, 100);
+
+            });
+
+            waitsFor(function() {
+                return flag1;
+            }, 'Fake server should have respond!', 500);
+
+            runs(function() {
+                _.delay(function() {
+                    // navigation-item id of products
+                    $('#52f258bc2e47f').click();
+                    fakeServer.respond();
+
+                    flag2 = true;
+                }, 100);
+            });
+
+            waitsFor(function() {
+                return flag2;
+            }, 'Fake server should have respond!', 500);
+
+            runs(function() {
+                _.delay(function() {
+                    // navigation-item id of products
+                    $('#pages1').click();
+                    _.delay(function(){
+                        fakeServer.respond();
+                        flag3 = true;
+                    }, 100);
+                    $('#pages1').click();
+                    _.delay(function(){
+                        fakeServer.respond();
+                        flag3 = true;
+                    }, 100);
+                }, 100);
+            });
+
+            waitsFor(function() {
+                return flag3;
+            }, 'Fake server should have respond!', 500);
+
+            runs(function() {
+                expect($('.navigation-sub-columns .navigation-column').size()).toEqual(1);
             });
         });
 
@@ -221,7 +311,7 @@ define(['husky'], function(husky) {
             check if selected item get class "selected"
          */
         xit('should have class selected', function() {});
-        
+
         /**
             Specs for content columns
          */
@@ -294,7 +384,7 @@ define(['husky'], function(husky) {
                         flag3 = true;
                     }, 100);
                 });
-                
+
                 waitsFor(function() {
                     return flag3;
                 }, 500);
@@ -319,7 +409,7 @@ define(['husky'], function(husky) {
                 check if the column idx (index) equals the amount of columns
              */
             it('should have the right idx', function() {
-                expect($('.navigation-column').size()).toEqual($('.content-column').data('column-id'));
+                expect($('.navigation-column').size()-1).toEqual($('.content-column').data('column-id'));
             });
 
             /**
