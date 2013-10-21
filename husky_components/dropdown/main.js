@@ -138,7 +138,13 @@ define(['jquery'], function($) {
             this.options.data.forEach(function(item) {
                 if (item.id === id) {
                     sandbox.logger.log(this.name, 'item.click: ' + id, 'success');
-                    sandbox.emit(this.getEvent('item.click'), item, this.$el);
+
+                    if (!!this.options.clickCallback && typeof this.options.clickCallback === 'function') {
+                        this.options.clickCallback(item, this.$el);
+                    } else {
+                        sandbox.emit(this.getEvent('item.click'), item, this.$el);
+                    }
+
                     return false;
                 }
             }.bind(this));
