@@ -79,7 +79,9 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
             if (index === 0) { // first column click, display content
 
                 this.columns[0].show();
-                this.columns[1].remove();
+                if (!!this.columns[1]) {
+                    this.columns[1].remove();
+                }
                 delete this.columns[1];
 
             } else if (index === 1) { // second column click, display content
@@ -310,7 +312,7 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
             this.sandbox.dom.removeClass('#' + this.id, 'show-content');
             var index = this.sandbox.dom.data('#' + this.id + ' .content-column', 'column-id');
 
-            if(!!index){
+            if(!!index && !!this.columns[index]){
                 this.columns[index].remove();
                 delete this.columns[index];
             }
