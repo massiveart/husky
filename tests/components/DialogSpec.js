@@ -2,21 +2,20 @@ define(['husky'], function(husky) {
 
     'use strict';
 
-    var app;
+    var app, flag1 = false;
 
     describe('Dialog', function() {
 
         beforeEach(function() {
-            $('body').append($('<div/>', {
-                id: 'dialog'
-            }));
+            flag1 = false;
 
-            app.start().then(function() {
+            app = husky({ debug: { enable: true }});
+            app.start(document.body).then(function() {
                 app.sandbox.start([
                     {
                         name: 'dialog@husky',
                         options: {
-                            el: '#dialog',
+                            el: 'body',
                             data: {
                                 content: {
                                     title: "This is the headline!",
@@ -31,6 +30,14 @@ define(['husky'], function(husky) {
                     }
                 ]);
             });
+
+            _.delay(function() {
+                flag1 = true;
+            }, 300);
+
+            waitsFor(function() {
+                return flag1;
+            }, 'Wait a little bit', 3000);
         });
 
         afterEach(function() {
