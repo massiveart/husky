@@ -24947,8 +24947,8 @@ define('husky_extensions/collection',[],function() {
                 }
             };
 
-            app.core.dom.scrollTop = function(selector, itemSelector) {
-                $(selector).scrollTop($(itemSelector).offset().top);
+            app.core.dom.scrollTop = function(itemSelector) {
+                $(window).scrollTop($(itemSelector).offset().top);
             };
 
             app.core.util.ajax = $.ajax;
