@@ -350,6 +350,10 @@ define(['husky_components/navigation/item'], function(NavigationItem) {
 
             remove: function() {
                 this.sandbox.dom.remove(this.$el);
+            },
+
+            hasClass: function(className) {
+                return this.sandbox.dom.hasClass(this.$el, className);
             }
         };
     };

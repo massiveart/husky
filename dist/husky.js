@@ -21060,6 +21060,10 @@ define('husky_components/navigation/column',['husky_components/navigation/item']
 
             remove: function() {
                 this.sandbox.dom.remove(this.$el);
+            },
+
+            hasClass: function(className) {
+                return this.sandbox.dom.hasClass(this.$el, className);
             }
         };
     };
@@ -21148,18 +21152,22 @@ define('__component__$navigation@husky',['husky_components/navigation/column'], 
                 this.columns[0].show();
                 if (!!this.columns[1]) {
                     this.columns[1].remove();
+                    delete this.columns[1];
                 }
-                delete this.columns[1];
 
             } else if (index === 1) { // second column click, display content
 
                 this.columns[0].collapse();
-                this.columns[1].show();
+                if (!!this.columns[1]) {
+                    this.columns[1].show();
+                }
 
             } else if (index >= 2) { // all other columns, display content
 
                 this.columns[0].hide();
-                this.columns[1].collapse();
+                if (!!this.columns[1]) {
+                    this.columns[1].collapse();
+                }
 
             }
 
@@ -21392,7 +21400,7 @@ define('__component__$navigation@husky',['husky_components/navigation/column'], 
             var index, currentIndex = 0;
 
             this.sandbox.util.foreach(this.columns, function(column) {
-                if (!!column && (!contentColumn || column.isContentColumn())) {
+                if (!!column && (!contentColumn || column.isContentColumn()) && !column.hasClass('hide-portal')) {
                     index = column.getIndex();
                     if (currentIndex < index) {
                         currentIndex = index;
