@@ -15,7 +15,7 @@
  *
  */
 
-define(['husky_components/navigation/navigation-column'], function(NavigationColumn) {
+define(['husky_components/navigation/column'], function(NavigationColumn) {
 
     'use strict';
 
@@ -74,18 +74,19 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
 
             hideSubColumns.call(this);
 
-            // FIXME better solution
-            if (index === 0) {
+            // TODO improvement for different sates
+
+            if (index === 0) { // first column click, display content
 
                 this.columns[0].show();
                 this.sandbox.dom.remove('#column-1');
 
-            } else if (index === 1) {
+            } else if (index === 1) { // second column click, display content
 
                 this.columns[0].collapse();
                 this.columns[1].show();
 
-            } else if (index >= 2) {
+            } else if (index >= 2) { // all other columns, display content
 
                 this.columns[0].hide();
                 this.columns[1].collapse();
@@ -106,6 +107,7 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
                 selector += ':not(.portal-column)';
             }
 
+            // FIXME context this.$el
             this.sandbox.dom.remove(selector);
 
             this.contentColumn = false;
@@ -125,12 +127,12 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
                 showSubColumns.call(this);
             }
 
-            if(index === 0){
+            if (index === 0) {
 
                 this.columns[0].show();
                 this.columns[1].show();
 
-            }else if (index === 1){
+            } else if (index === 1) {
 
                 this.columns[0].collapse();
                 this.columns[1].show();
@@ -153,13 +155,8 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
             this.sandbox.dom.css(this.$navigationSubColumns, 'display', 'block');
         },
 
-        removeSubColumns = function() {
-            this.$navigationSubColumns = null;
-            this.sandbox.dom.remove('.navigation-sub-columns-container');
-        },
-
         addColumnCallback = function(index, item) {
-            if(!!this.locked){
+            if (!!this.locked) {
                 return;
             }
 
@@ -279,8 +276,7 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
 
                 this.columns[0].show();
 
-            } else if (!this.sandbox.dom.hasClass('#column-0', 'collapsed') &&
-                !this.sandbox.dom.hasClass('#column-1', 'collapsed')) {
+            } else if (!this.sandbox.dom.hasClass('#column-0', 'collapsed') && !this.sandbox.dom.hasClass('#column-1', 'collapsed')) {
 
                 this.columns[0].collapse();
 

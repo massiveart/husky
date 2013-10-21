@@ -15,7 +15,7 @@
  *
  */
 
-define(['husky_components/navigation/navigation-item'], function(NavigationItem) {
+define(['husky_components/navigation/item'], function(NavigationItem) {
     'use strict';
 
     var render = function() {
@@ -328,7 +328,7 @@ define(['husky_components/navigation/navigation-item'], function(NavigationItem)
                 this.items[index].loadingItem(onOff);
             },
 
-            selectItem: function(index, onOff){
+            selectItem: function(index, onOff) {
                 this.items[index].selectItem(onOff);
             },
 
