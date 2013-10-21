@@ -341,7 +341,7 @@ define(['husky_components/navigation/item'], function(NavigationItem) {
             },
 
             isContentColumn: function() {
-                return this.options.data.displayOption === 'content'
+                return this.options.data.displayOption === 'content';
             },
 
             getIndex: function() {
