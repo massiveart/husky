@@ -107,7 +107,6 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
                 selector += ':not(.portal-column)';
             }
 
-            // FIXME context this.$el
             this.sandbox.dom.remove(selector);
 
             this.contentColumn = false;
@@ -160,10 +159,10 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
                 return;
             }
 
-            if (index === 1) {
-                if (this.sandbox.dom.data(this.$navigationSubColumns, 'parent') === item.id &&
-                    isHiddenSubColumns.call(this) &&
-                    this.sandbox.dom.find('#' + this.id + ' .navigation-sub-columns-container .navigation-column').length > 0) {
+            if (index === 1) { // click on second column, check if subColumns can be shown
+                if (this.sandbox.dom.data(this.$navigationSubColumns, 'parent') === item.id && // subColumns belongs to clicked item
+                    isHiddenSubColumns.call(this) && // subColumns are hidden
+                    this.sandbox.dom.find('#' + this.id + ' .navigation-sub-columns-container .navigation-column').length > 0) { // and there are sum subColumns
                     showSubColumns.call(this);
 
                     this.columns[0].collapse();
@@ -171,9 +170,9 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
                 }
             }
 
-            if (!item.sub) {
-                if (!!item.action) {
-                    if (index < 1) {
+            if (!item.sub) { // sub items not present
+                if (!!item.action) { // url to load from is defined
+                    if (index < 1) { // click on second column and add a new column
                         updateColumns.call(this, index, true);
                     } else {
 
@@ -206,7 +205,7 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
                 removeContentColumn.call(this);
             }
 
-            if (index >= 2 && data.displayOption !== 'content') {
+            if (index >= 2 && data.displayOption !== 'content') { //
                 if (!this.$navigationSubColumns) {
                     initSubColumns.call(this);
                     this.sandbox.dom.data(this.$navigationSubColumns, 'parent', subColumnParentId);
@@ -300,6 +299,7 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
             this.sandbox.dom.remove('#' + this.id + ' .content-column');
 
             this.contentColumn = false;
+            this.contentColumnSelected = false;
         },
 
         getCurrentIndex = function(contentColumn) {
@@ -357,14 +357,19 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
         },
 
         compareContentColumn = function(params) {
+            this.contentColumnSelected = false;
             if (!this.contentColumn) {
                 return false;
             }
 
-            var result = compare.call(this, this.contentColumn, params, ['selected', 'logo', 'columnIndex']);
-            return result;
+            return compare.call(this, this.contentColumn, params, ['selected', 'logo', 'columnIndex']);
         },
 
+        /**
+         * compares two objects
+         *
+         * exclude given properties
+         */
         compare = function(obj1, obj2, excludeProperties) {
             for (var p in obj1) {
                 if (!this.sandbox.util.contains(excludeProperties, p)) {
@@ -415,30 +420,6 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
             }
         },
 
-//        FIXME deprecated
-//        getNavigationWidth = function() {
-//            var $columns = this.sandbox.dom.find('.navigation-column'),
-//                width = 0,
-//                $column = null;
-//
-//            this.sandbox.dom.each($columns, function(idx, column) {
-//                $column = this.sandbox.dom.createElement(column);
-//
-//                if (this.sandbox.dom.hasClass($column, 'collapsed')) {
-//                    width += 50;
-//                } else if (this.sandbox.dom.hasClass($column, 'content-column')) {
-//                    width += 150;
-//                } else if (this.sandbox.dom.hasClass($column, 'hide')) {
-//                    width += 0;
-//                } else {
-//                    width += 250;
-//                }
-//            }.bind(this));
-//
-//            // 5px margin
-//            return width + 5;
-//        },
-
         setNavigationSize = function() {
             var $window = this.sandbox.dom.$window,
                 $navigation = this.sandbox.dom.$('#' + this.id),
@@ -470,7 +451,6 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
         getNavigationData = function() {
             return {
                 // TODO
-                // FIXME remove? navWidth: getNavigationWidth.call(this)
             };
         },
 
@@ -504,6 +484,9 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
             return retItems;
         },
 
+        /**
+         * TODO reanable for navigation update while routing
+         */
         routeNavigation = function(params) {
             var preparedRoute;
             if (!params) {
