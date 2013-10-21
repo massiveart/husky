@@ -3798,8 +3798,9 @@ textarea.form-element {
   margin-top: 10px;
   background-color: #FFF;
   box-shadow: 5px 5px 0 0 rgba(0, 0, 0, 0.25);
+  z-index: 95;
 }
-/* line 28, ../scss/modules/dropdown.scss */
+/* line 29, ../scss/modules/dropdown.scss */
 .dropdown-menu::after, .dropdown-menu::before {
   content: "";
   display: block;
@@ -3812,7 +3813,7 @@ textarea.form-element {
   border-right: 10px solid transparent;
   border-bottom: 10px solid #FFF;
 }
-/* line 42, ../scss/modules/dropdown.scss */
+/* line 43, ../scss/modules/dropdown.scss */
 .dropdown-menu::before {
   top: -11px;
   left: 4px;
@@ -3820,44 +3821,44 @@ textarea.form-element {
   border-right: 11px solid transparent;
   border-bottom: 11px solid #ccc;
 }
-/* line 51, ../scss/modules/dropdown.scss */
+/* line 52, ../scss/modules/dropdown.scss */
 .dropdown-menu.dropdown-align-right {
   left: auto !important;
   right: 0;
 }
-/* line 55, ../scss/modules/dropdown.scss */
+/* line 56, ../scss/modules/dropdown.scss */
 .dropdown-menu.dropdown-align-right::after, .dropdown-menu.dropdown-align-right::before {
   left: auto !important;
   right: 5px;
 }
-/* line 61, ../scss/modules/dropdown.scss */
+/* line 62, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul {
   list-style: none;
   margin: 0;
   padding: 10px 0;
 }
-/* line 66, ../scss/modules/dropdown.scss */
+/* line 67, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul > li {
   padding: 5px 10px;
 }
-/* line 70, ../scss/modules/dropdown.scss */
+/* line 71, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul > li:hover, .dropdown-menu > ul > li.hover {
   background-color: #ccc;
   cursor: pointer;
 }
 
-/* line 78, ../scss/modules/dropdown.scss */
+/* line 79, ../scss/modules/dropdown.scss */
 .dropdown-footer {
   border-top: 1px solid #ccc;
   padding: 10px 10px;
 }
 
-/* line 83, ../scss/modules/dropdown.scss */
+/* line 84, ../scss/modules/dropdown.scss */
 .dropdown-toggle {
   display: block;
   cursor: pointer;
 }
-/* line 86, ../scss/modules/dropdown.scss */
+/* line 87, ../scss/modules/dropdown.scss */
 .dropdown-toggle::after {
   content: "";
   display: inline-block;

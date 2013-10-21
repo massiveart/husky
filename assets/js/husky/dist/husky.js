@@ -23323,12 +23323,13 @@ define('__component__$auto-complete@husky',[], function() {
     
 
     var defaults = {
-            url: '',            // url to load data
-            valueName: 'name',  // propertyName for value
-            minLength: 3,       // min length for request
-            keyControl: true,   // control with up/down key
-            value: null,        // value to display at start
-            excludeItems: []    // items to filter
+            url: '',                    // url to load data
+            valueName: 'name',          // propertyName for value
+            minLength: 3,               // min length for request
+            keyControl: true,           // control with up/down key
+            value: null,                // value to display at start
+            excludeItems: [],           // items to filter
+            instanceName: 'undefined'   // name of the component instance
         },
         successClass = 'husky-auto-complete-success',
         failClass = 'husky-auto-complete-error',
@@ -23380,7 +23381,7 @@ define('__component__$auto-complete@husky',[], function() {
         render: function() {
             this.$el.addClass('dropdown husky-auto-complete');
             // init form-element and dropdown menu
-            this.$valueField = $('<input type="text" autofill="false" class="name-value form-element husky-validate" data-id="' + this.getValueID() + '" value="' + this.getValueName() + '"/>');
+            this.$valueField = $('<input id="'+this.options.instanceName+'" type="text" autofill="false" class="name-value form-element husky-validate" data-id="' + this.getValueID() + '" value="' + this.getValueName() + '"/>');
             this.$dropDown = $('<div class="dropdown-menu" />');
             this.$dropDownList = $('<ul/>');
             this.$el.append(this.$valueField);
@@ -23898,7 +23899,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
             basicStructure: function(defaultLabel) {
                 return [
                     '<div class="husky-dropdown-multiple-select">',
-                    '    <div class="grid-row dropdown-label">',
+                    '    <div class="grid-row dropdown-label pointer">',
                     '       <div class="grid-col-11 checkbox">',
                     '           <span id="', this.labelId, '">', defaultLabel, '</span>',
                     '       </div>',
@@ -24588,6 +24589,10 @@ define('husky_extensions/collection',[],function() {
 
             app.core.dom.show = function(selector) {
                 return $(selector).show();
+            };
+
+            app.core.dom.submit = function(selector, callback) {
+              $(selector).submit(callback);
             };
 
             app.core.util.ajax = $.ajax;

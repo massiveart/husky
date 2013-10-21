@@ -175,6 +175,10 @@
                 return $(selector).show();
             };
 
+            app.core.dom.submit = function(selector, callback) {
+              $(selector).submit(callback);
+            };
+
             app.core.util.ajax = $.ajax;
         }
     });
