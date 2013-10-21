@@ -43,10 +43,15 @@ define(function() {
 
                 app.sandbox.util.ajax({
                     url: url,
+
                     success: function(data) {
                         app.logger.log('data loaded', data);
                         deferred.resolve(data);
-                    }.bind(this)
+                    }.bind(this),
+
+                    error: function() {
+                        deferred.reject();
+                    }
                 });
 
                 app.sandbox.emit('husky.util.load.data');
