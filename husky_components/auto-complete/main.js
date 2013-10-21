@@ -24,12 +24,13 @@ define([], function() {
     'use strict';
 
     var defaults = {
-            url: '',            // url to load data
-            valueName: 'name',  // propertyName for value
-            minLength: 3,       // min length for request
-            keyControl: true,   // control with up/down key
-            value: null,        // value to display at start
-            excludeItems: []    // items to filter
+            url: '',                    // url to load data
+            valueName: 'name',          // propertyName for value
+            minLength: 3,               // min length for request
+            keyControl: true,           // control with up/down key
+            value: null,                // value to display at start
+            excludeItems: [],           // items to filter
+            instanceName: 'undefined'   // name of the component instance
         },
         successClass = 'husky-auto-complete-success',
         failClass = 'husky-auto-complete-error',
@@ -81,7 +82,7 @@ define([], function() {
         render: function() {
             this.$el.addClass('dropdown husky-auto-complete');
             // init form-element and dropdown menu
-            this.$valueField = $('<input type="text" autofill="false" class="name-value form-element husky-validate" data-id="' + this.getValueID() + '" value="' + this.getValueName() + '"/>');
+            this.$valueField = $('<input id="'+this.options.instanceName+'" type="text" autofill="false" class="name-value form-element husky-validate" data-id="' + this.getValueID() + '" value="' + this.getValueName() + '"/>');
             this.$dropDown = $('<div class="dropdown-menu" />');
             this.$dropDownList = $('<ul/>');
             this.$el.append(this.$valueField);

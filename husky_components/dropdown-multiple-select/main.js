@@ -223,7 +223,7 @@ define([], function() {
             basicStructure: function(defaultLabel) {
                 return [
                     '<div class="husky-dropdown-multiple-select">',
-                    '    <div class="grid-row dropdown-label">',
+                    '    <div class="grid-row dropdown-label pointer">',
                     '       <div class="grid-col-11 checkbox">',
                     '           <span id="', this.labelId, '">', defaultLabel, '</span>',
                     '       </div>',

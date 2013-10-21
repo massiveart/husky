@@ -13,7 +13,6 @@ define(['husky', 'jquery'], function(husky, $) {
         });
 
         it('application start', function() {
-
             app = husky({ debug: { enable: true }});
 
             var promise = app.start();
