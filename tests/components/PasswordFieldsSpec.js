@@ -5,16 +5,13 @@ define(['husky'], function(husky) {
     var app;
 
     describe('Password-fields', function() {
-        $('body').append('<div id="testing-password-field">');
-
-
         beforeEach(function() {
             var flag = false;
             runs(function() {
                 app = husky({ debug: { enable: true }});
                 app.start(document.body).then(function() {
                     app.sandbox.start([
-                        { name: 'password-fields@husky', options: { el: '#testing-password-field', instanceName: 'test-instance' } }
+                        { name: 'password-fields@husky', options: { el: 'body', instanceName: 'test-instance' } }
                     ]);
                 });
                 _.delay(function() {
