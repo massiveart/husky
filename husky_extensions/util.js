@@ -36,6 +36,33 @@ define(function() {
                 }
             };
 
+            app.core.util.load = function(url) {
+                var deferred = new app.sandbox.data.deferred();
+
+                app.logger.log('load', url);
+
+                app.sandbox.util.ajax({
+                    url: url,
+
+                    success: function(data) {
+                        app.logger.log('data loaded', data);
+                        deferred.resolve(data);
+                    }.bind(this),
+
+                    error: function() {
+                        deferred.reject();
+                    }
+                });
+
+                app.sandbox.emit('husky.util.load.data');
+
+                return deferred.promise();
+            };
+
+            app.core.util.contains = function(list, value){
+                return _.contains(list, value);
+            };
+
         }
     };
 });
