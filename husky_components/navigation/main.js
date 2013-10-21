@@ -100,7 +100,7 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
         },
 
         updateColumns = function(index, removeSubColumns) {
-            var selector = '.navigation-column:gt(' + index + ')';
+            var selector = '#' + this.id + ' .navigation-column:gt(' + index + ')';
 
             if (!!removeSubColumns) {
                 hideSubColumns.call(this);
@@ -127,12 +127,12 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
                 showSubColumns.call(this);
             }
 
-            if (index === 0) {
+            if (index === 0) { // first column click while is selected
 
                 this.columns[0].show();
                 this.columns[1].show();
 
-            } else if (index === 1) {
+            } else if (index === 1) { // second column click while is selected
 
                 this.columns[0].collapse();
                 this.columns[1].show();
@@ -141,7 +141,7 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
         },
 
         hideSubColumns = function() {
-            this.sandbox.dom.addClass('.navigation-sub-columns .navigation-column', 'hide-portal');
+            this.sandbox.dom.addClass('#' + this.id + ' .navigation-sub-columns .navigation-column', 'hide-portal');
 
             this.sandbox.dom.css(this.$navigationSubColumns, 'display', 'none');
         },
@@ -163,7 +163,7 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
             if (index === 1) {
                 if (this.sandbox.dom.data(this.$navigationSubColumns, 'parent') === item.id &&
                     isHiddenSubColumns.call(this) &&
-                    this.sandbox.dom.find('.navigation-sub-columns-container .navigation-column').length > 0) {
+                    this.sandbox.dom.find('#' + this.id + ' .navigation-sub-columns-container .navigation-column').length > 0) {
                     showSubColumns.call(this);
 
                     this.columns[0].collapse();
@@ -250,18 +250,18 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
 
         bindDomEvents = function() {
             this.sandbox.dom.on(this.sandbox.dom.$window, 'resize load', setNavigationSize.bind(this));
-            this.sandbox.dom.on('.navigation', 'click', headerLinkClick.bind(this), '.navigation-header-link');
-            this.sandbox.dom.on('.navigation', 'mousewheel DOMMouseScroll', scrollSubColumns.bind(this), '.navigation-sub-columns-container');
+            this.sandbox.dom.on('#' + this.id, 'click', headerLinkClick.bind(this), '.navigation-header-link');
+            this.sandbox.dom.on('#' + this.id, 'mousewheel DOMMouseScroll', scrollSubColumns.bind(this), '.navigation-sub-columns-container');
         },
 
         bindCustomEvents = function() {
-            this.sandbox.on('navigation.route', routeNavigation.bind(this));
+            // FIXME enable for reload navigation for route: this.sandbox.on('navigation.route', routeNavigation.bind(this));
             this.sandbox.on('navigation.item.column.show', showColumn.bind(this));
         },
 
     // FIXME better solution?
         headerLinkClick = function() {
-            var action = this.sandbox.dom.data('.navigation-header-link', 'action');
+            var action = this.sandbox.dom.data('#' + this.id + ' .navigation-header-link', 'action');
 
             removeContentColumn.call(this);
 
@@ -296,14 +296,14 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
         },
 
         removeContentColumn = function() {
-            this.sandbox.dom.removeClass('.navigation', 'show-content');
-            this.sandbox.dom.remove('.content-column');
+            this.sandbox.dom.removeClass('#' + this.id, 'show-content');
+            this.sandbox.dom.remove('#' + this.id + ' .content-column');
 
             this.contentColumn = false;
         },
 
         getCurrentIndex = function(contentColumn) {
-            var selector = '.navigation-column:not(.hide-portal)',
+            var selector = '#' + this.id + ' .navigation-column:not(.hide-portal)',
                 index, currentIndex = 0;
             if (!contentColumn) {
                 selector += ':not(.content-column)';
@@ -347,7 +347,7 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
                 this.columns[currentIndex + 1].selectItem(this.contentColumnSelected.id, true);
             }
 
-            this.sandbox.dom.addClass('.navigation', 'show-content');
+            this.sandbox.dom.addClass('#' + this.id, 'show-content');
 
             setTimeout(function() {
                 this.sandbox.emit('navigation.size.changed', {
@@ -441,9 +441,9 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
 
         setNavigationSize = function() {
             var $window = this.sandbox.dom.$window,
-                $navigation = this.sandbox.dom.$('.navigation'),
-                $navigationSubColumnsCont = this.sandbox.dom.$('.navigation-sub-columns-container'),
-                $navigationSubColumns = this.sandbox.dom.$('.navigation-sub-columns'),
+                $navigation = this.sandbox.dom.$('#' + this.id),
+                $navigationSubColumnsCont = this.sandbox.dom.$('#' + this.id + ' .navigation-sub-columns-container'),
+                $navigationSubColumns = this.sandbox.dom.$('#' + this.id + ' .navigation-sub-columns'),
                 paddingRight = 100;
 
             setTimeout(function() {
@@ -530,9 +530,13 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
             this.sandbox.logger.log('initialize');
             this.sandbox.logger.log(arguments);
 
+            this.id = 'navigation';
+            this.sandbox.logger.log('id:', '#' + this.id);
+
             // init container
             this.$navigation = this.sandbox.dom.createElement('<div/>', {
-                class: 'navigation'
+                class: 'navigation',
+                id: this.id
             });
             this.$navigationColumns = this.sandbox.dom.createElement('<ul/>', {
                 class: 'navigation-columns'

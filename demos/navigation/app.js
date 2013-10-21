@@ -14,7 +14,7 @@ require(['lib/husky'], function(Husky) {
     ]);
 
     fakeServer.respondWith('GET', '/navigation/portals', [200, { 'Content-Type': 'application/json' },
-        '{"displayOption": "portals", "sub":{"items":[{"title":"Portal 1","icon":"check","id":"portal1","hasSub":true,"action":"/portals/1"},{"title":"Portal 2","icon":"caution","id":"portal_2","hasSub":true,"action":"/portals/2","sub":{"items":[{"title":"Home Pages","icon":"bank","id":"home1","hasSub":false,"action":"/portals/1/home"},{"title":"Pages","icon":"book","id":"pages1","hasSub":true,"action":"/portals/1/pages"}]}}]}}'
+        '{"displayOption": "portals", "sub":{"items":[{"title":"Portal 1","icon":"check","id":"portal1","hasSub":true,"action":"/portals/1"},{"title":"Portal 2","icon":"caution","id":"portal_2","hasSub":true,"action":"/portals/2","sub":{"items":[{"title":"Home Pages","icon":"bank","id":"home2","hasSub":false,"action":"/portals/2/home"},{"title":"Pages","icon":"book","id":"pages2","hasSub":true,"action":"/portals/2/pages"}]}}]}}'
     ]);
 
     fakeServer.respondWith('GET', '/portals/1', [200, { 'Content-Type': 'application/json' },
