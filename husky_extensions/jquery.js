@@ -212,6 +212,10 @@
                 }
             };
 
+            app.core.dom.scrollTop = function(selector, itemSelector) {
+                $(selector).scrollTop($(itemSelector).offset().top);
+            };
+
             app.core.util.ajax = $.ajax;
         }
     });
