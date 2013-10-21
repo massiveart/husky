@@ -10,7 +10,7 @@ Husky is an awesome front-end framework.
 
 First install all necessary npm modules by running:
 
-	npm install
+    npm install
 
 Install [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli)
 
@@ -22,21 +22,27 @@ Install [bower](http://bower.io)
 
 And now install all dependencies:
 
-	bower install
+    bower install
+	
+Install Compass with animations:
+	
+    gem update --system
+    gem install compass
+    gem install animation --pre
 
 ### Grunt Tasks
 
 Build Husky
 
-	grunt build
+    grunt build
 
 Running Tests
 
-	grunt test
+    grunt test
 
 Compiling SCSS
 
-	grunt watch
+    grunt watch
 
 
 ### Documentation
