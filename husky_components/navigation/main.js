@@ -342,8 +342,6 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
         },
 
         showColumn = function(params) {
-            var currentIndex = getCurrentIndex.call(this, false);
-
             if (!params.data.displayOption || params.data.displayOption === 'content') {
                 if (compareContentColumn.call(this, params)) {
                     return;
@@ -352,11 +350,15 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
                 this.contentColumn = params;
             }
 
+            var currentIndex = getCurrentIndex.call(this, false);
+
             if (this.sandbox.dom.find('#column-0').length === 1 &&
                 this.sandbox.dom.find('#column-1').length === 1) {
 
                 this.columns[0].hide();
-                this.columns[1].collapse();
+                if (!!this.columns[1]) {
+                    this.columns[1].collapse();
+                }
 
             } else {
 
