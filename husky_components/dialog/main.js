@@ -155,6 +155,9 @@ define(['jquery'], function($) {
             if (!!this.data.callback.cancel && typeof this.data.callback.cancel === 'function') {
                 this.data.callback.cancel();
             } else {
+                /**
+                 * @deprecated use callback functions
+                 */
                 sandbox.emit('husky.dialog.cancel');
             }
         },
@@ -163,6 +166,9 @@ define(['jquery'], function($) {
             if (!!this.data.callback.submit && typeof this.data.callback.submit === 'function') {
                 this.data.callback.submit();
             } else {
+                /**
+                 * @deprecated use callback functions
+                 */
                 sandbox.emit('husky.dialog.submit');
             }
         }
