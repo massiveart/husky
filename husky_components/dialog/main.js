@@ -152,11 +152,25 @@ define(['jquery'], function($) {
 
         // Handles the click event of the cancel button
         cancel: function() {
-            sandbox.emit('husky.dialog.cancel');
+            if (!!this.data.callback.cancel && typeof this.data.callback.cancel === 'function') {
+                this.data.callback.cancel();
+            } else {
+                /**
+                 * @deprecated use callback functions
+                 */
+                sandbox.emit('husky.dialog.cancel');
+            }
         },
 
         submit: function() {
-            sandbox.emit('husky.dialog.submit');
+            if (!!this.data.callback.submit && typeof this.data.callback.submit === 'function') {
+                this.data.callback.submit();
+            } else {
+                /**
+                 * @deprecated use callback functions
+                 */
+                sandbox.emit('husky.dialog.submit');
+            }
         }
     };
 });
