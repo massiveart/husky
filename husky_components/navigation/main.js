@@ -25,7 +25,6 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
             this.data = data;
 
             this.options.data = data;
-
             var $column = startColumn.call(this, 0, data);
             this.sandbox.dom.append(this.$navigationColumns, $column);
         },
@@ -135,7 +134,6 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
         },
 
         selectedClickCallback = function(index) {
-
             if (isHiddenSubColumns.call(this) && !!this.columns[1] &&
                 this.sandbox.dom.data(this.$navigationSubColumns, 'parent') === this.columns[0].getSelectedItemId()) {
                 showSubColumns.call(this);
@@ -190,10 +188,8 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
                     if (index < 1) { // click on second column and add a new column
                         updateColumns.call(this, index, true);
                     } else {
-
                         this.columns[0].collapse();
                         updateColumns.call(this, index, false);
-
                     }
 
                     this.columns[index].show();
@@ -205,6 +201,9 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
                             this.locked = false;
                             addColumn.call(this, index + 1, data, item.id);
                             this.columns[item.columnIndex].loadingItem(item.id, false);
+                            if (data.displayOption !== 'portals') {
+                                this.sandbox.emit('navigation.column.loaded', data);
+                            }
                         }.bind(this))
                         .fail(function() {
                             this.locked = false;
@@ -480,43 +479,82 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
             };
         },
 
-        prepareRoute = function(params) {
+        prepareRoute = function(fn, params) {
             var routes = params.route.split('/'),
             items = this.data.sub.items,
-            retItems = [];
+            navItems = [],
+            idx = 0;
+
+            function navigate() {
+                _.delay(function() {
+                    fn({
+                        itemId: navItems[idx].id
+                    });
+                    if (idx < navItems.length -1) {
+                        navigate();
+                    }
+                    idx++;
+                }, 250);
+            }
 
             for (var i = 0; i < routes.length; i++) {
                 for (var j = 0; j < items.length; j++) {
                     if (!!items[j].route && items[j].route === routes[i]) {
-                        retItems.push(items[j]);
+                        navItems.push(items[j]);
                         if (!!items[j].sub) items = items[j].sub.items;
                         break;
                     }
                 }
             }
-            return retItems;
+
+            navigate();
+        },
+
+        prepareRouteAsync = function(fn, params) {
+            var routes = params.route.split('/'),
+                items = this.data.sub.items,
+                idx = 0;
+
+            function navigate() {
+                for (var j = 0; j < items.length; j++) {
+                    if (!!items[j].route && items[j].route === routes[idx]) {
+                        this.sandbox.off('navigation.column.loaded');
+                        this.sandbox.on('navigation.column.loaded', function(data) {
+                            if (idx < routes.length) {
+                                if (!!data.sub) items = data.sub.items;
+                                _.delay(function() {
+                                    navigate.call(this);
+                                }.bind(this), 500);
+                            }
+                        }.bind(this));
+
+                        idx++;
+                        fn({
+                            itemId: items[j].id
+                        });
+
+                        break;
+                    }
+                }
+            }
+            navigate.call(this);
         },
 
         routeNavigation = function(params) {
-            var preparedRoute,
-                idx = 0;
             if (!params) {
                 throw('No params were defined!');
             }
+
             this.sandbox.dom.remove('.navigation-column:gt(0)');
-            preparedRoute = prepareRoute.call(this, params);
-
-            function navigate() {
-                _.delay(function() {
-                    $('#' + preparedRoute[idx].id).click();
-                    if (idx < preparedRoute.length -1) {
-                        navigate();
-                    }
-                    idx++;
-                }, 250);
-            };
-
-            navigate();
+            if (!!params.async) {
+                prepareRouteAsync.call(this, function(params) {
+                    $('#' + params.itemId).click();
+                }.bind(this), params);
+            } else {
+                prepareRoute.call(this, function(params) {
+                    $('#' + params.itemId).click();
+                }.bind(this), params);
+            }
         };
 
         return  {
