@@ -163,6 +163,10 @@
                 return $(selector).parent(filter);
             };
 
+            app.core.dom.parents = function(selector, filter) {
+                return $(selector).parents(filter);
+            };
+
             app.core.dom.next = function(selector, filter) {
                 return $(selector).next(filter);
             };
