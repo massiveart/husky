@@ -27,7 +27,6 @@ define(function() {
             prepareColumnItem.call(this);
 
             bindDomEvents.call(this);
-            bindCustomEvents.call(this);
         },
 
         prepareColumnItem = function() {
@@ -36,8 +35,9 @@ define(function() {
             if (!!this.options.data.class) {
                 columnItemClasses.push(this.options.data.class);
             }
+
             if (!!this.options.data.selected) {
-                columnItemClasses.push(this.options.data.selected);
+                columnItemClasses.push('selected');
             }
 
             this.sandbox.dom.attr(this.$el, {
@@ -77,20 +77,6 @@ define(function() {
 
             // selected class
             this.sandbox.dom.addClass(this.$el, 'selected');
-        },
-
-        bindCustomEvents = function() {
-            this.sandbox.on('husky.navigation.item.loading', loadingItem.bind(this));
-        },
-
-        loadingItem = function(id, onOff) {
-            if (id === this.options.data.id) {
-                if (onOff) {
-                    this.sandbox.dom.addClass(this.$el, 'is-loading');
-                } else {
-                    this.sandbox.dom.removeClass(this.$el, 'is-loading');
-                }
-            }
         };
 
     return function() {
@@ -105,6 +91,22 @@ define(function() {
                 }
                 this.options = this.sandbox.util.extend({}, defaults, options);
                 this.$el = this.options.$el;
+            },
+
+            loadingItem: function(onOff) {
+                if (onOff) {
+                    this.sandbox.dom.addClass(this.$el, 'is-loading');
+                } else {
+                    this.sandbox.dom.removeClass(this.$el, 'is-loading');
+                }
+            },
+
+            selectItem: function(onOff) {
+                if (!!onOff) {
+                    this.sandbox.dom.addClass(this.$el, 'selected');
+                } else {
+                    this.sandbox.dom.removeClass(this.$el, 'selected');
+                }
             }
         };
     };

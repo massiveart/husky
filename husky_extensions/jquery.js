@@ -13,11 +13,24 @@
         });
     }
 
+    // add remove event for jquery
+    var initRemoveEvent = function() {
+        var ev = new $.Event('remove'),
+            orig = $.fn.remove;
+        $.fn.remove = function() {
+            $(this).trigger(ev);
+            return orig.apply(this, arguments);
+        };
+    };
+
     define(['jquery'], {
 
         name: 'jQuery',
 
         initialize: function(app) {
+
+            initRemoveEvent();
+
             app.core.dom.window = window;
 
             app.core.dom.$window = $(window);
@@ -43,6 +56,18 @@
 
             app.core.dom.append = function(selector, element) {
                 return $(selector).append(element);
+            };
+
+            app.core.dom.prepend = function(selector, element) {
+                return $(selector).prepend(element);
+            };
+
+            app.core.dom.before = function(selector, element) {
+                return $(selector).before(element);
+            };
+
+            app.core.dom.after = function(selector, element) {
+                return $(selector).after(element);
             };
 
             app.core.dom.css = function(selector, style, value) {
@@ -138,6 +163,10 @@
                 return $(selector).parent(filter);
             };
 
+            app.core.dom.parents = function(selector, filter) {
+                return $(selector).parents(filter);
+            };
+
             app.core.dom.next = function(selector, filter) {
                 return $(selector).next(filter);
             };
@@ -166,13 +195,29 @@
                 event.stopPropagation();
             };
 
-
             app.core.dom.hide = function(selector) {
                 return $(selector).hide();
             };
 
             app.core.dom.show = function(selector) {
                 return $(selector).show();
+            };
+
+            app.core.dom.keypress = function(selector, callback) {
+              $(selector).keypress(callback);
+            };
+
+            app.core.dom.insertAt = function(index, selector, $container, $item) {
+                if (index === 0) {
+                    app.core.dom.prepend($container, $item);
+                } else {
+                    var $before = app.core.dom.find(selector + ':nth-child(' + index + ')', $container);
+                    app.core.dom.after($before, $item);
+                }
+            };
+
+            app.core.dom.scrollTop = function(itemSelector) {
+                $(window).scrollTop($(itemSelector).offset().top);
             };
 
             app.core.util.ajax = $.ajax;

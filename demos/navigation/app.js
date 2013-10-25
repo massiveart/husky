@@ -14,35 +14,35 @@ require(['lib/husky'], function(Husky) {
     ]);
 
     fakeServer.respondWith('GET', '/navigation/portals', [200, { 'Content-Type': 'application/json' },
-        '{"header": { "title":"Portals" }, "sub":{"items":[{"title":"Products","icon":"check","id":"products","hasSub":true,"action":"/portals/products"},{"title":"Portal 1","icon":"caution","id":"portal_1","hasSub":false,"action":"/portals/products","type":"content"}]}}'
+        '{"displayOption": "portals", "sub":{"items":[{"title":"Portal 1","icon":"check","id":"portal1","hasSub":true,"action":"/portals/1"},{"title":"Portal 2","icon":"caution","id":"portal_2","hasSub":true,"action":"/portals/2","sub":{"items":[{"title":"Home Pages","icon":"bank","id":"home2","hasSub":false,"action":"/portals/2/home"},{"title":"Pages","icon":"book","id":"pages2","hasSub":true,"action":"/portals/2/pages"}]}}]}}'
     ]);
 
-    fakeServer.respondWith('GET', '/portals/products', [200, { 'Content-Type': 'application/json' },
-        '{"sub":{"items":[{"title":"Produkt 1","id":"product_1","hasSub":true,"action":"/portals/products/product_1"},{"title":"Produkt 4","id":"product_4","hasSub":false,"type":"content","action":"/portals/products/product_1/product_2/product_3/product_4/content"}]}}'
+    fakeServer.respondWith('GET', '/portals/1', [200, { 'Content-Type': 'application/json' },
+        '{"sub":{"items":[{"title":"Home Pages","icon":"bank","id":"home1","hasSub":false,"action":"/portals/1/home","type":"content"},{"title":"Pages","icon":"book","id":"pages1","hasSub":true,"action":"/portals/1/pages"}]}}'
     ]);
 
-    fakeServer.respondWith('GET', '/portals/products/product_1', [200, { 'Content-Type': 'application/json' },
-        '{"sub":{"items":[{"title":"Produkt 2","id":"product_2","hasSub":true,"action":"/portals/products/product_1/product_2"}]}}'
+    fakeServer.respondWith('GET', '/portals/1/pages', [200, { 'Content-Type': 'application/json' },
+        '{"displayOption": "portal", "sub":{"items":[{"title":"Page 1","id":"page1-1","hasSub":true,"action":"/portals/1/pages/page1"},{"title":"Page 2","id":"page1-2","hasSub":false,"action":"/portals/1/pages/page2"}]}}'
     ]);
 
-    fakeServer.respondWith('GET', '/portals/products/product_1/product_2', [200, { 'Content-Type': 'application/json' },
-        '{"sub":{"items":[{"title":"Produkt 3","id":"product_3","hasSub":true,"action":"/portals/products/product_1/product_2/product_3"}]}}'
+    fakeServer.respondWith('GET', '/portals/1/pages/page1', [200, { 'Content-Type': 'application/json' },
+        '{"displayOption": "portal", "sub":{"items":[{"title":"Page 3","id":"page1-3","hasSub":true,"action":"/portals/1/pages/page3"}]}}'
     ]);
 
-    fakeServer.respondWith('GET', '/portals/products/product_1/product_2/product_3', [200, { 'Content-Type': 'application/json' },
-        '{"sub":{"items":[{"title":"Produkt 4","id":"product_4","hasSub":false,"type":"content","action":"/portals/products/product_1/product_2/product_3/product_4/content"}]}}'
+    fakeServer.respondWith('GET', '/portals/1/pages/page3', [200, { 'Content-Type': 'application/json' },
+        '{"displayOption": "portal", "sub":{"items":[{"title":"Page 4","id":"page1-4","hasSub":true,"action":"/portals/1/pages/page4"}]}}'
+    ]);
+
+    fakeServer.respondWith('GET', '/portals/1/pages/page4', [200, { 'Content-Type': 'application/json' },
+        '{"displayOption": "portal", "sub":{"items":[{"title":"Page 5","id":"page1-5","hasSub":false,"type":"content","action":"/portals/1/pages/page5"}]}}'
     ]);
 
     app.start().then(function() {
         app.logger.log('Aura started...');
 
-        setTimeout(function() {
-            fakeServer.respond();
-        }, 100);
-
         var sizeChanged = function(event) {
             $('#content').css('margin-left', event.data.navWidth + 45);
-        }, showColumn = function() {
+        }, showColumn = function(selected) {
             setTimeout(function() {
                 app.sandbox.emit('navigation.item.column.show', {
                     data: {
@@ -59,14 +59,15 @@ require(['lib/husky'], function(Husky) {
                                     "hasSub": false,
                                     "type": "content",
                                     "action": "/details",
-                                    "selected": true
+                                    "selected": !!(selected === 1)
                                 },
                                 {
                                     "title": "Settings",
                                     "id": "settings",
                                     "hasSub": false,
                                     "type": "content",
-                                    "action": "/settings"
+                                    "action": "/settings",
+                                    "selected": !!(selected === 2)
                                 }
                             ]
                         }
@@ -86,25 +87,36 @@ require(['lib/husky'], function(Husky) {
             app.sandbox.emit('navigation.route', {
                 route: 'settings/translate'
             });
-        }, 500);
+        }, 600);
 
+        app.sandbox.on('husky.util.load.data', function() {
+            setTimeout(function() {
+                fakeServer.respond();
+            }, 500);
+        });
 
         app.sandbox.on('navigation.item.content.show', function(event) {
             $('#print').html(event.item.action);
-            sizeChanged(event);
+            //sizeChanged(event);
 
-            if (event.item.action === '/portals/products/product_1/product_2/product_3/product_4/content') {
-                showColumn();
+            if (event.item.action === '/portals/1/pages/page5') {
+                showColumn(1);
+            }
+            if (event.item.action === '/settings') {
+                showColumn(2);
+            }
+            if (event.item.action === '/details') {
+                showColumn(1);
             }
         });
 
         app.sandbox.on('navigation.size.changed', function(event) {
-            sizeChanged(event);
+            //sizeChanged(event);
         });
 
         $('#load').on('click', function() {
             $('#print').html('Content');
-            showColumn();
+            showColumn(1);
         });
     });
 
