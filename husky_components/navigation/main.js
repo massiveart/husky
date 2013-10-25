@@ -37,11 +37,11 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
 
         prepareFirstColumn = function(data) {
             this.data = data;
-
             this.sandbox.dom.append(this.$navigationColumns, startColumn.call(this, 0, data));
         },
 
         startColumn = function(index, data) {
+            console.log(index, data);
             var $column = this.sandbox.dom.createElement('<li/>'),
                 navigationColumn = new NavigationColumn();
 
@@ -325,28 +325,18 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
                 navWidth: getNavigationWidth.call(this)
             };
         },
+
         // TODO
         prepareRoute = function(params) {
             var routes = params.route.split('/'),
-                route = '',
                 items = this.data.sub.items,
-                retItems = [],
-                i = 0,
-                j = 0;
+                retItems = [];
 
-            for (i; i <= routes.length; i++) {
-                j = 0;
-                route = '';
-
-                for (j; j <= items.length; j++) {
-                    if (!!retItems.length) {
-                        route = routes.slice(0, retItems.length).join('/') + '/';
-                        console.log(route);
-                    }
-
-                    if (route + items[j].route === routes[i]) {
+            for (var i = 0; i < routes.length; i++) {
+                for (var j = 0; j < items.length; j++) {
+                    if (!!items[j].route && items[j].route === routes[i]) {
                         retItems.push(items[j]);
-                        items = items[j].sub.items;
+                        if (!!items[j].sub) items = items[j].sub.items;
                         break;
                     }
                 }
@@ -362,8 +352,7 @@ define(['husky_components/navigation/navigation-column'], function(NavigationCol
             }
             this.sandbox.dom.remove('.navigation-column:gt(0)');
             preparedRoute = prepareRoute.call(this, params);
-
-            console.log(preparedRoute);
+            startColumn.call(this, 1, preparedRoute[1]);
         };
 
     return  {
