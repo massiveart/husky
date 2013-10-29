@@ -81,8 +81,6 @@ define([], function() {
 
         // generate dropDown with given items
         generateDropDown: function(items) {
-            // remove all elements
-            this.sandbox.dom.remove(this.$list, 'li');
 
             if (items.length > 0) {
 
