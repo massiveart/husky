@@ -85,7 +85,7 @@ require(['lib/husky'], function(Husky) {
 
         setTimeout(function() {
             app.sandbox.emit('navigation.route', {
-                route: 'portals/pages/page1/page2/page3',
+                route: 'portals',
                 async: true
             });
         }, 600);
