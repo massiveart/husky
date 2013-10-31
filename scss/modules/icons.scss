@@ -168,6 +168,13 @@
     }
 }
 
+.icon-chevron-right {
+  &::after {
+    content: "\e244";
+    display: inline-block;
+  }
+}
+
 .icon-archive {
     &::after {
         content: "\e150";

@@ -127,9 +127,14 @@ $navigationIconFont: $baseIconFont;
 
         .navigation-column-item {
             &:hover,
-            &.selected {
+            &.selected,
+            &.selected:hover {
                 color: $colorNavigationSecondColumnHover;
                 background-color: $bgNavigationSecondColumnItemHover;
+            }
+
+            &:hover {
+                background-color: rgba($bgNavigationSecondColumnItemHover, 0.5);
             }
 
             &.is-loading {
@@ -199,13 +204,17 @@ $navigationIconFont: $baseIconFont;
 
             .navigation-column-item {
                 &:hover,
-                &.selected {
+                &.selected ,
+                &.selected:hover {
                     color: $colorNavigationMainColumnHover;
                     background-color: $bgNavigationMainColumnItemHover;
 
                     a {
                         color: $colorNavigationMainColumnHover;
                     }
+                }
+                &:hover {
+                  background-color: rgba($bgNavigationMainColumnItemHover, 0.75);
                 }
             }
         }
@@ -278,7 +287,7 @@ $navigationIconFont: $baseIconFont;
     & + .navigation-column-title {
         padding-left: 0;
         position: relative;
-        top: -4px;
+        top: -2px;
     }
 }
 
@@ -298,13 +307,17 @@ $navigationIconFont: $baseIconFont;
     cursor: pointer;
     font-size: 18px;
 
-    &:hover,
-    &.selected {
+    &:hover {
+        background-color: rgba($bgNavigationItemHover,0.5);
+    }
+
+    &.selected,
+    &.selected:hover {
         background-color: $bgNavigationItemHover;
     }
 
     &::before {
-        content: "\E174";
+        content: "\E224";
         display: inline-block;
         float: right;
         font-size: 12px;
@@ -383,7 +396,7 @@ $navigationIconFont: $baseIconFont;
 .navigation-column-item {
     &[data-has-sub="true"] {
         &::before {
-            content: "\E177";
+            content: "\E224";
         }
     }
 

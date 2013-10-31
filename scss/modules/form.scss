@@ -25,7 +25,8 @@
 
     &[readonly] {
         background:none;
-        border:0;    
+        border:0;
+        color: $grayLight;
     }
 }
 
@@ -36,7 +37,6 @@ label {
     font-size: 18px;
     color: #999999;
     cursor: pointer;
-    font-weight: bold;
 
     .form-element {
         margin-top: 6px;
