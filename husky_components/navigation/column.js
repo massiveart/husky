@@ -99,6 +99,7 @@ define(['husky_components/navigation/item'], function(NavigationItem) {
                         this.locked = false;
                         $columnItemsList = prepareColumnItems.call(this, data);
                         dfd.resolve($columnItemsList);
+                        this.sandbox.emit('navigation.column.loaded', data);
                     }.bind(this));
             }
 

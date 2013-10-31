@@ -10,27 +10,27 @@ require(['lib/husky'], function(Husky) {
         _ = app.sandbox.util._;
 
     fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
-        '{"title":"Root","hasSub":true,"id":"5242c58c3a494", "header": { "title":"Ivoclar", "logo":"../../img/tmp/logo.png" },"sub":{"items":[{"title":"Audits","icon":"check","action":"audit","hasSub":false,"type":"content","id":"5242c58c3a4f2"},{"title":"Profiles","icon":"adjust-alt","action":"profile","hasSub":false,"type":"content","id":"5242c58c3a53e"},{"title":"Portals","icon":"caution","hasSub":true,"id":"52f258bc2e47f","action":"/navigation/portals"},{"header":{"title":"Contacts"},"title":"Contacts","icon":"contact-book","hasSub":true,"id":"5242c58c3a591","sub":{"items":[{"title":"People","icon":"parents","action":"contacts\/people","hasSub":false,"type":"content","id":"5242c58c3a5f6"},{"title":"Companies","icon":"bank","action":"contacts\/companies","hasSub":false,"type":"content","id":"5242c58c3a64c"}]}},{"title":"Settings","route":"settings","icon":"cogwheels","hasSub":true,"id":"5242c58c3a69b","sub":{"items":[{"title":"Translate","icon":"book-open","route":"settings/translate","action":"settings\/translate","hasSub":false,"type":"content","id":"5242c58c3a6dd"}]}}]}}'
+        '{"title":"Root","hasSub":true,"id":"5242c58c3a494", "header": { "title":"Ivoclar", "logo":"../../img/tmp/logo.png" },"sub":{"items":[{"title":"Audits","icon":"check","action":"audit","hasSub":false,"type":"content","id":"5242c58c3a4f2"},{"title":"Profiles","icon":"adjust-alt","action":"profile","hasSub":false,"type":"content","id":"5242c58c3a53e"},{"title":"Portals", "route":"portals","icon":"caution","hasSub":true,"id":"52f258bc2e47f","action":"/navigation/portals"},{"title":"Contacts","icon":"contact-book","hasSub":true,"id":"5242c58c3a591","sub":{"items":[{"title":"People","icon":"parents","action":"contacts\/people","hasSub":false,"type":"content","id":"5242c58c3a5f6"},{"title":"Companies","icon":"bank","action":"contacts\/companies","hasSub":false,"type":"content","id":"5242c58c3a64c"}]}},{"title":"Settings","route":"settings","icon":"cogwheels","hasSub":true,"id":"5242c58c3a69b","sub":{"items":[{"title":"Translate","icon":"book-open","route":"translate","action":"settings\/translate","hasSub":false,"type":"content","id":"5242c58c3a6dd"}]}}]}}'
     ]);
 
     fakeServer.respondWith('GET', '/navigation/portals', [200, { 'Content-Type': 'application/json' },
-        '{"displayOption": "portals", "sub":{"items":[{"title":"Portal 1","icon":"check","id":"portal1","hasSub":true,"action":"/portals/1"},{"title":"Portal 2","icon":"caution","id":"portal_2","hasSub":true,"action":"/portals/2","sub":{"items":[{"title":"Home Pages","icon":"bank","id":"home2","hasSub":false,"action":"/portals/2/home"},{"title":"Pages","icon":"book","id":"pages2","hasSub":true,"action":"/portals/2/pages"}]}}]}}'
+        '{"displayOption": "portals", "sub":{"items":[{"title":"Portal 1","icon":"check","id":"portal1","hasSub":true,"action":"/portals/1"},{"title":"Portal 2","icon":"caution","id":"portal_2","hasSub":true,"action":"/portals/2","sub":{"items":[{"title":"Home Pages","icon":"bank","id":"home2","hasSub":false,"action":"/portals/2/home"},{"title":"Pages","icon":"book","route":"pages","id":"pages2","hasSub":true,"action":"/portals/2/pages"}]}}]}}'
     ]);
 
     fakeServer.respondWith('GET', '/portals/1', [200, { 'Content-Type': 'application/json' },
-        '{"sub":{"items":[{"title":"Home Pages","icon":"bank","id":"home1","hasSub":false,"action":"/portals/1/home","type":"content"},{"title":"Pages","icon":"book","id":"pages1","hasSub":true,"action":"/portals/1/pages"}]}}'
+        '{"sub":{"items":[{"title":"Home Pages","icon":"bank","id":"home1","hasSub":false,"action":"/portals/1/home","type":"content"},{"title":"Pages","route":"pages","icon":"book","id":"pages1","hasSub":true,"action":"/portals/1/pages"}]}}'
     ]);
 
     fakeServer.respondWith('GET', '/portals/1/pages', [200, { 'Content-Type': 'application/json' },
-        '{"displayOption": "portal", "sub":{"items":[{"title":"Page 1","id":"page1-1","hasSub":true,"action":"/portals/1/pages/page1"},{"title":"Page 2","id":"page1-2","hasSub":false,"action":"/portals/1/pages/page2"}]}}'
+        '{"sub":{"items":[{"title":"Page 1","route":"page1","id":"page1-1","hasSub":true,"action":"/portals/1/pages/page1"},{"title":"Page 2","id":"page1-2","hasSub":false,"action":"/portals/1/pages/page2"}]}}'
     ]);
 
     fakeServer.respondWith('GET', '/portals/1/pages/page1', [200, { 'Content-Type': 'application/json' },
-        '{"displayOption": "portal", "sub":{"items":[{"title":"Page 3","id":"page1-3","hasSub":true,"action":"/portals/1/pages/page3"}]}}'
+        '{"sub":{"items":[{"title":"Page 3","route":"page2","id":"page1-3","hasSub":true,"action":"/portals/1/pages/page3"}]}}'
     ]);
 
     fakeServer.respondWith('GET', '/portals/1/pages/page3', [200, { 'Content-Type': 'application/json' },
-        '{"displayOption": "portal", "sub":{"items":[{"title":"Page 4","id":"page1-4","hasSub":true,"action":"/portals/1/pages/page4"}]}}'
+        '{"displayOption": "portal", "sub":{"items":[{"title":"Page 4","route":"page3","id":"page1-4","hasSub":true,"action":"/portals/1/pages/page4"}]}}'
     ]);
 
     fakeServer.respondWith('GET', '/portals/1/pages/page4', [200, { 'Content-Type': 'application/json' },
@@ -82,6 +82,13 @@ require(['lib/husky'], function(Husky) {
                 }, 500);
             }
         );
+
+        setTimeout(function() {
+            app.sandbox.emit('navigation.route', {
+                route: 'portals',
+                async: true
+            });
+        }, 600);
 
         app.sandbox.on('husky.util.load.data', function() {
             setTimeout(function() {
