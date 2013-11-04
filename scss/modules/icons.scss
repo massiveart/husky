@@ -196,3 +196,9 @@
     }
 }
 
+.icon-items {
+    &::after {
+        content: "\e319";
+        display: inline-block;
+    }
+}
