@@ -202,3 +202,10 @@
         display: inline-block;
     }
 }
+
+.icon-star {
+    &::after {
+        content: "\e050";
+        display: inline-block;
+    }
+}
