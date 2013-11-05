@@ -358,8 +358,8 @@ define(['husky_components/navigation/item'], function(NavigationItem) {
                 return this.sandbox.dom.hasClass(this.$el, className);
             },
 
-            addSelected: function(){
-                this.sandbox.dom.addClass(this.$columnItemsList,'item-selected');
+            addSelected: function() {
+                this.sandbox.dom.addClass(this.$columnItemsList, 'item-selected');
             }
         };
     };
