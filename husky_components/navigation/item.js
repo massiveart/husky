@@ -38,6 +38,7 @@ define(function() {
 
             if (!!this.options.data.selected) {
                 columnItemClasses.push('selected');
+                this.options.column.addSelected();
             }
 
             this.sandbox.dom.attr(this.$el, {
@@ -61,11 +62,13 @@ define(function() {
 
         bindDomEvents = function() {
             this.sandbox.dom.on(this.$el, 'click', clickItem.bind(this));
+            this.sandbox.dom.on(this.$el, 'dblclick', dblClickItem.bind(this));
         },
 
         clickItem = function(event) {
             this.sandbox.logger.log('click item', this.options.data);
 
+            removeNavigationFolding.call(this);
             event.stopPropagation();
 
             // emit click callback or event
@@ -77,6 +80,37 @@ define(function() {
 
             // selected class
             this.sandbox.dom.addClass(this.$el, 'selected');
+            // selected column
+            this.options.column.addSelected();
+        },
+
+        dblClickItem = function(event){
+
+            event.stopPropagation();
+
+
+            this.sandbox.logger.log('double click item', this.options.data);
+
+            event.stopPropagation();
+
+            // emit click callback or event
+            if (!!this.options.doubleClickCallback && typeof this.options.doubleClickCallback === 'function') {
+                this.options.doubleClickCallback(this.options.data);
+            } else {
+                this.sandbox.emit('husky.navigation.item.doubleclick', this.options.data);
+            }
+
+            // selected class
+            this.sandbox.dom.addClass(this.$el, 'selected');
+            // selected column
+            this.options.column.addSelected();
+
+
+        },
+
+        // removes fold event from navigation
+        removeNavigationFolding = function() {
+            this.sandbox.dom.off('#navigation', 'mouseleave');
         };
 
     return function() {

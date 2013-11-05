@@ -94,6 +94,7 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
 
             } else if (index >= 2) { // all other columns, display content
 
+
                 this.columns[0].hide();
                 if (!!this.columns[1]) {
                     this.columns[1].collapse();
@@ -268,8 +269,65 @@ define(['husky_components/navigation/column'], function(NavigationColumn) {
 
         bindDomEvents = function() {
             this.sandbox.dom.on(this.sandbox.dom.$window, 'resize load', setNavigationSize.bind(this));
+            this.sandbox.dom.on('#' + this.id, 'mouseover', hiddenFirstColumnHover.bind(this), '.navigation-column.first-column.hide');
             this.sandbox.dom.on('#' + this.id, 'click', headerLinkClick.bind(this), '.navigation-header-link');
             this.sandbox.dom.on('#' + this.id, 'mousewheel DOMMouseScroll', scrollSubColumns.bind(this), '.navigation-sub-columns-container');
+        },
+
+
+
+        navigationOutListener = function() {
+
+            if(!!this.columns[0]) {
+                this.columns[0].hide();
+            }
+            if(this.columns[1]) {
+                this.columns[1].collapse();
+            }
+
+            // TODO: check selected element
+//            this.sandbox.foreach(this.columns, function(column, index) {
+//                if (index>0) {
+//
+//                }
+//            });
+        },
+
+        // mouse out for hidden first column
+        hiddenFirstColumnOut = function(event) {
+            // remove focus
+            this.sandbox.dom.removeClass(event.target, 'hasFocus');
+        },
+
+        // removes fold event from navigation
+        removeNavigationFolding = function() {
+            this.sandbox.dom.off('#navigation', 'mouseleave');
+        },
+
+        // mouse over for hidden first column
+        hiddenFirstColumnHover = function(event) {
+
+            // add focus class
+            this.sandbox.dom.addClass(event.target, 'hasFocus');
+            // focus mouseout listener
+            this.sandbox.dom.mouseleave(event.target, hiddenFirstColumnOut.bind(this));
+
+            // and check after timeout
+            setTimeout(function() {
+                if (this.sandbox.dom.hasClass(event.target, 'hasFocus')) {
+                    // show items
+                    if(!!this.columns[0]) {
+                        this.columns[0].show();
+                    }
+                    if(!!this.columns[1]) {
+                        this.columns[1].show();
+                    }
+                    this.sandbox.dom.mouseleave('#navigation', navigationOutListener.bind(this));
+                    this.sandbox.dom.one('#navigation','click', function() {
+                        removeNavigationFolding.call(this);
+                    }.bind(this));
+                }
+            }.bind(this), 250);
         },
 
         bindCustomEvents = function() {
