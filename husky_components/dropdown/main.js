@@ -20,7 +20,7 @@
  * husky.dropdown.<<instanceName>>.hide       - hide dropdown menu
  */
 
-define(['jquery'], function() {
+define([], function() {
 
     'use strict';
 

@@ -84,7 +84,7 @@ define(function() {
             this.options.column.addSelected();
         },
 
-        dblClickItem = function(event){
+        dblClickItem = function(event) {
 
             event.stopPropagation();
 
@@ -108,7 +108,7 @@ define(function() {
 
         },
 
-        // removes fold event from navigation
+    // removes fold event from navigation
         removeNavigationFolding = function() {
             this.sandbox.dom.off('#navigation', 'mouseleave');
         };
