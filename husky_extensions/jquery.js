@@ -155,6 +155,10 @@
                 }
             };
 
+            app.core.dom.off = function(selector, event, filter, handler) {
+                $(selector).off(event, filter, handler);
+            };
+
             app.core.dom.toggleClass = function(selector, className) {
                 $(selector).toggleClass(className);
             };
@@ -175,6 +179,10 @@
                 return $(selector).prev(filter);
             };
 
+            app.core.dom.closest = function(selector, filter) {
+                return $(selector).closest(filter);
+            };
+
             app.core.dom.text = function(selector, value) {
                 if (!!value) {
                     $(selector).text(value);
@@ -189,6 +197,10 @@
                 } else {
                     return $(selector).prop(propertyName);
                 }
+            };
+
+            app.core.dom.mouseleave = function(selector, handler) {
+                $(selector).mouseleave(handler);
             };
 
             app.core.dom.stopPropagation = function(event) {
