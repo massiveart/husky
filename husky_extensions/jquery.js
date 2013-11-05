@@ -155,6 +155,10 @@
                 }
             };
 
+            app.core.dom.off = function(selector, event, filter, handler) {
+                $(selector).off(event, filter, handler);
+            };
+
             app.core.dom.toggleClass = function(selector, className) {
                 $(selector).toggleClass(className);
             };
@@ -167,12 +171,20 @@
                 return $(selector).parents(filter);
             };
 
+            app.core.dom.children = function(selector, filter) {
+                return $(selector).children(filter);
+            };
+
             app.core.dom.next = function(selector, filter) {
                 return $(selector).next(filter);
             };
 
             app.core.dom.prev = function(selector, filter) {
                 return $(selector).prev(filter);
+            };
+
+            app.core.dom.closest = function(selector, filter) {
+                return $(selector).closest(filter);
             };
 
             app.core.dom.text = function(selector, value) {
@@ -191,6 +203,10 @@
                 }
             };
 
+            app.core.dom.mouseleave = function(selector, handler) {
+                $(selector).mouseleave(handler);
+            };
+
             app.core.dom.stopPropagation = function(event) {
                 event.stopPropagation();
             };
@@ -201,6 +217,10 @@
 
             app.core.dom.show = function(selector) {
                 return $(selector).show();
+            };
+
+            app.core.dom.toggle = function(selector) {
+                return $(selector).toggle();
             };
 
             app.core.dom.keypress = function(selector, callback) {

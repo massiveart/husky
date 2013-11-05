@@ -6,6 +6,7 @@
 // Imports
 @import "compass/css3/transform";
 @import "compass/css3/transition";
+@import "compass/css3/user-interface";
 @import "animation";
 
 
@@ -27,6 +28,7 @@ $bgNavigationSecondColumn: #E0E0E0;
 $colorNavigationColumnTitle: #999;
 $colorNavigationMainColumn: #999;
 $colorNavigationMainColumnHover: #000;
+$colorNavigationSecondColumn: #000;
 $colorNavigationSecondColumnHover: #FFF;
 
 $bgNavigationItemHover: #E0E0E0;
@@ -126,10 +128,9 @@ $navigationIconFont: $baseIconFont;
         background-color: $bgNavigationSecondColumn;
 
         .navigation-column-item {
-            &:hover,
-            &.selected {
-                color: $colorNavigationSecondColumnHover;
-                background-color: $bgNavigationSecondColumnItemHover;
+          &:hover {
+            color: $colorNavigationSecondColumnHover;
+            background-color: $bgNavigationSecondColumnItemHover;
             }
 
             &.is-loading {
@@ -138,6 +139,24 @@ $navigationIconFont: $baseIconFont;
                 }
             }
         }
+
+      .item-selected {
+        .navigation-column-item {
+          &.selected,
+          &.selected:hover {
+            color: $colorNavigationSecondColumnHover;
+            background-color: $bgNavigationSecondColumnItemHover;
+
+            a {
+              color: $colorNavigationSecondColumn;
+            }
+          }
+          &:hover {
+            color: $colorNavigationSecondColumn;
+            background-color: rgba($bgNavigationSecondColumnItemHover, 0.1);
+          }
+        }
+      }
     }
 
     &.content-column {
@@ -198,16 +217,33 @@ $navigationIconFont: $baseIconFont;
             }
 
             .navigation-column-item {
-                &:hover,
-                &.selected {
-                    color: $colorNavigationMainColumnHover;
-                    background-color: $bgNavigationMainColumnItemHover;
+              &:hover {
+                color: $colorNavigationMainColumnHover;
+                background-color: $bgNavigationMainColumnItemHover;
 
                     a {
                         color: $colorNavigationMainColumnHover;
                     }
                 }
             }
+
+          .item-selected {
+            .navigation-column-item {
+              &.selected,
+              &.selected:hover {
+                color: $colorNavigationMainColumnHover;
+                background-color: $bgNavigationMainColumnItemHover;
+
+                a {
+                  color: $colorNavigationMainColumnHover;
+                }
+              }
+              &:hover {
+                color: $colorNavigationMainColumn;
+                background-color: rgba($bgNavigationMainColumnItemHover, 0.1);
+              }
+            }
+          }
         }
     }
 }
@@ -256,6 +292,13 @@ $navigationIconFont: $baseIconFont;
         .navigation-column-logo {
             display: block;
         }
+      .navigation-column-title {
+        display: none;
+      }
+
+      .dropdown-toggle {
+        display: none !important;
+      }
     }
 }
 
@@ -278,7 +321,7 @@ $navigationIconFont: $baseIconFont;
     & + .navigation-column-title {
         padding-left: 0;
         position: relative;
-        top: -4px;
+        top: -2px;
     }
 }
 
@@ -297,14 +340,14 @@ $navigationIconFont: $baseIconFont;
     text-overflow: ellipsis;
     cursor: pointer;
     font-size: 18px;
+  @include user-select(none);
 
-    &:hover,
-    &.selected {
-        background-color: $bgNavigationItemHover;
-    }
+  &:hover {
+    background-color: $bgNavigationItemHover;
+  }
 
     &::before {
-        content: "\E174";
+        content: "\E224";
         display: inline-block;
         float: right;
         font-size: 12px;
@@ -349,6 +392,19 @@ $navigationIconFont: $baseIconFont;
     }
 }
 
+.item-selected {
+  .navigation-column-item {
+    &.selected,
+    &.selected:hover {
+      background-color: $bgNavigationItemHover;
+    }
+
+    &:hover {
+      background-color: rgba($bgNavigationItemHover, 0.3);
+    }
+  }
+}
+
 .first-column .navigation-column-item {
     width: $navigationItem0Width;
 }
@@ -383,7 +439,7 @@ $navigationIconFont: $baseIconFont;
 .navigation-column-item {
     &[data-has-sub="true"] {
         &::before {
-            content: "\E177";
+            content: "\E224";
         }
     }
 

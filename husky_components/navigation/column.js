@@ -28,7 +28,7 @@ define(['husky_components/navigation/item'], function(NavigationItem) {
                     this.sandbox.dom.append(this.$el, prepareColumnHeader.call(this));
                 }
 
-                this.$columnItemsList = prepareColumnItems.call(this);
+                prepareColumnItems.call(this);
                 this.sandbox.dom.append(this.$el, this.$columnItemsList);
             }
 
@@ -168,15 +168,15 @@ define(['husky_components/navigation/item'], function(NavigationItem) {
                 data = this.options.data;
             }
 
-            var $columnItemsList = this.sandbox.dom.createElement('<ul/>', {
+            this.$columnItemsList = this.sandbox.dom.createElement('<ul/>', {
                 class: 'navigation-items'
             });
 
             data.sub.items.forEach(function(item) {
-                $columnItemsList.append(prepareColumnItem.call(this, item));
+                this.$columnItemsList.append(prepareColumnItem.call(this, item));
             }.bind(this));
 
-            return $columnItemsList;
+            return this.$columnItemsList;
         },
 
         prepareColumnItem = function(item) {
@@ -187,7 +187,9 @@ define(['husky_components/navigation/item'], function(NavigationItem) {
             navigationItem.setOptions({
                 $el: $item,
                 data: item,
-                clickCallback: clickCallback.bind(this)
+                column: this,
+                clickCallback: clickCallback.bind(this),
+                doubleClickCallback: clickCallback.bind(this, true)
             });
 
             navigationItem.render();
@@ -196,7 +198,7 @@ define(['husky_components/navigation/item'], function(NavigationItem) {
             return $item;
         },
 
-        clickCallback = function(item) {
+        clickCallback = function(item, isDoubleClick) {
             var itemId = '#' + item.id,
                 $item = this.sandbox.dom.find(itemId);
 
@@ -211,7 +213,7 @@ define(['husky_components/navigation/item'], function(NavigationItem) {
                 this.sandbox.emit('husky.navigation.column.item-selected', this.options.index, this.options.index, item);
             }
 
-            if (this.sandbox.dom.hasClass($item, 'selected') && this.sandbox.dom.hasClass(this.$el, 'collapsed')) {
+            if (isDoubleClick || this.sandbox.dom.hasClass($item, 'selected') && this.sandbox.dom.hasClass(this.$el, 'collapsed')) {
                 // add a column to navigation
                 if (!!this.options.selectedClickCallback && typeof this.options.selectedClickCallback === 'function') {
                     this.options.selectedClickCallback(this.options.index);
@@ -354,6 +356,10 @@ define(['husky_components/navigation/item'], function(NavigationItem) {
 
             hasClass: function(className) {
                 return this.sandbox.dom.hasClass(this.$el, className);
+            },
+
+            addSelected: function() {
+                this.sandbox.dom.addClass(this.$columnItemsList, 'item-selected');
             }
         };
     };
