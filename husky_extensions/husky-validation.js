@@ -68,11 +68,11 @@
                     },
 
                     addArrayFilter: function(selector, arrayName, callback) {
-                        app.sandbox.form.getObject(selector).mapper.addArrayFilter(arrayName, callback);
+                        app.sandbox.form.getObject(selector).mapper.addCollectionFilter(arrayName, callback);
                     },
 
                     removeArrayFilter: function(selector, arrayName) {
-                        app.sandbox.form.getObject(selector).mapper.removeArrayFilter(arrayName);
+                        app.sandbox.form.getObject(selector).mapper.removeCollectionFilter(arrayName);
                     },
 
                     element: {
