@@ -23702,12 +23702,12 @@ define('__component__$matrix@husky',[],function() {
                     $tdValue = sandbox.dom.createElement('<td class="value"/>');
 
                     if (this.options.values.titles) {
-                        title = 'title="'+this.options.values.titles[j]+'"';
+                        title = 'title="' + this.options.values.titles[j] + '"';
                     } else {
-                        title='';
+                        title = '';
                     }
                     $span = sandbox.dom.createElement(
-                        '<span '+title+' class="icon-' + this.options.values.horizontal[j] + ' pointer"/>'
+                        '<span ' + title + ' class="icon-' + this.options.values.horizontal[j] + ' pointer"/>'
                     );
                     sandbox.dom.data($span, 'value', this.options.values.horizontal[j]);
                     sandbox.dom.data($span, 'section', this.options.values.vertical[i]);
@@ -23722,7 +23722,7 @@ define('__component__$matrix@husky',[],function() {
                 }
 
                 //add all link
-                sandbox.dom.html($tdAll, '<span class="pointer">'+this.options.captions.all+'</span>');
+                sandbox.dom.html($tdAll, '<span class="pointer">' + this.options.captions.all + '</span>');
                 sandbox.dom.append($tr, $tdAll);
 
                 sandbox.dom.append($tbody, $tr);
