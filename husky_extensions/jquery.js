@@ -171,6 +171,10 @@
                 return $(selector).parents(filter);
             };
 
+            app.core.dom.children = function(selector, filter) {
+                return $(selector).children(filter);
+            };
+
             app.core.dom.next = function(selector, filter) {
                 return $(selector).next(filter);
             };
@@ -213,6 +217,10 @@
 
             app.core.dom.show = function(selector) {
                 return $(selector).show();
+            };
+
+            app.core.dom.toggle = function(selector) {
+                return $(selector).toggle();
             };
 
             app.core.dom.keypress = function(selector, callback) {
