@@ -203,3 +203,16 @@
     }
 }
 
+.icon-items {
+    &::after {
+        content: "\e319";
+        display: inline-block;
+    }
+}
+
+.icon-star {
+    &::after {
+        content: "\e050";
+        display: inline-block;
+    }
+}

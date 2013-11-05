@@ -20636,7 +20636,6 @@ define('husky_components/navigation/item',[],function() {
             if (!!this.options.data.selected) {
                 columnItemClasses.push('selected');
                 this.options.column.addSelected();
-                this.sandbox.dom.addClass(this.sandbox.dom.parent(this.$el,'ul'),'item-selected');
             }
 
             this.sandbox.dom.attr(this.$el, {
@@ -20660,11 +20659,13 @@ define('husky_components/navigation/item',[],function() {
 
         bindDomEvents = function() {
             this.sandbox.dom.on(this.$el, 'click', clickItem.bind(this));
+            this.sandbox.dom.on(this.$el, 'dblclick', dblClickItem.bind(this));
         },
 
         clickItem = function(event) {
             this.sandbox.logger.log('click item', this.options.data);
 
+            removeNavigationFolding.call(this);
             event.stopPropagation();
 
             // emit click callback or event
@@ -20676,8 +20677,37 @@ define('husky_components/navigation/item',[],function() {
 
             // selected class
             this.sandbox.dom.addClass(this.$el, 'selected');
+            // selected column
+            this.options.column.addSelected();
+        },
 
-            this.sandbox.dom.addClass(this.sandbox.dom.parent(this.$el,'ul'), 'item-selected');
+        dblClickItem = function(event){
+
+            event.stopPropagation();
+
+
+            this.sandbox.logger.log('double click item', this.options.data);
+
+            event.stopPropagation();
+
+            // emit click callback or event
+            if (!!this.options.doubleClickCallback && typeof this.options.doubleClickCallback === 'function') {
+                this.options.doubleClickCallback(this.options.data);
+            } else {
+                this.sandbox.emit('husky.navigation.item.doubleclick', this.options.data);
+            }
+
+            // selected class
+            this.sandbox.dom.addClass(this.$el, 'selected');
+            // selected column
+            this.options.column.addSelected();
+
+
+        },
+
+        // removes fold event from navigation
+        removeNavigationFolding = function() {
+            this.sandbox.dom.off('#navigation', 'mouseleave');
         };
 
     return function() {
@@ -20890,6 +20920,8 @@ define('husky_components/navigation/column',['husky_components/navigation/item']
             data.sub.items.forEach(function(item) {
                 this.$columnItemsList.append(prepareColumnItem.call(this, item));
             }.bind(this));
+
+            return this.$columnItemsList;
         },
 
         prepareColumnItem = function(item) {
@@ -20901,7 +20933,8 @@ define('husky_components/navigation/column',['husky_components/navigation/item']
                 $el: $item,
                 data: item,
                 column: this,
-                clickCallback: clickCallback.bind(this)
+                clickCallback: clickCallback.bind(this),
+                doubleClickCallback: clickCallback.bind(this, true)
             });
 
             navigationItem.render();
@@ -20910,7 +20943,7 @@ define('husky_components/navigation/column',['husky_components/navigation/item']
             return $item;
         },
 
-        clickCallback = function(item) {
+        clickCallback = function(item, isDoubleClick) {
             var itemId = '#' + item.id,
                 $item = this.sandbox.dom.find(itemId);
 
@@ -20925,7 +20958,7 @@ define('husky_components/navigation/column',['husky_components/navigation/item']
                 this.sandbox.emit('husky.navigation.column.item-selected', this.options.index, this.options.index, item);
             }
 
-            if (this.sandbox.dom.hasClass($item, 'selected') && this.sandbox.dom.hasClass(this.$el, 'collapsed')) {
+            if (isDoubleClick || this.sandbox.dom.hasClass($item, 'selected') && this.sandbox.dom.hasClass(this.$el, 'collapsed')) {
                 // add a column to navigation
                 if (!!this.options.selectedClickCallback && typeof this.options.selectedClickCallback === 'function') {
                     this.options.selectedClickCallback(this.options.index);
@@ -21166,7 +21199,6 @@ define('__component__$navigation@husky',['husky_components/navigation/column'], 
 
             } else if (index === 1) { // second column click, display content
 
-                console.log('asdfasdfasdfasdf',index, data);
                 this.columns[0].collapse();
                 if (!!this.columns[1]) {
                     this.columns[1].show();
@@ -21349,8 +21381,65 @@ define('__component__$navigation@husky',['husky_components/navigation/column'], 
 
         bindDomEvents = function() {
             this.sandbox.dom.on(this.sandbox.dom.$window, 'resize load', setNavigationSize.bind(this));
+            this.sandbox.dom.on('#' + this.id, 'mouseover', hiddenFirstColumnHover.bind(this), '.navigation-column.first-column.hide');
             this.sandbox.dom.on('#' + this.id, 'click', headerLinkClick.bind(this), '.navigation-header-link');
             this.sandbox.dom.on('#' + this.id, 'mousewheel DOMMouseScroll', scrollSubColumns.bind(this), '.navigation-sub-columns-container');
+        },
+
+
+
+        navigationOutListener = function() {
+
+            if(!!this.columns[0]) {
+                this.columns[0].hide();
+            }
+            if(this.columns[1]) {
+                this.columns[1].collapse();
+            }
+
+            // TODO: check selected element
+//            this.sandbox.foreach(this.columns, function(column, index) {
+//                if (index>0) {
+//
+//                }
+//            });
+        },
+
+        // mouse out for hidden first column
+        hiddenFirstColumnOut = function(event) {
+            // remove focus
+            this.sandbox.dom.removeClass(event.target, 'hasFocus');
+        },
+
+        // removes fold event from navigation
+        removeNavigationFolding = function() {
+            this.sandbox.dom.off('#navigation', 'mouseleave');
+        },
+
+        // mouse over for hidden first column
+        hiddenFirstColumnHover = function(event) {
+
+            // add focus class
+            this.sandbox.dom.addClass(event.target, 'hasFocus');
+            // focus mouseout listener
+            this.sandbox.dom.mouseleave(event.target, hiddenFirstColumnOut.bind(this));
+
+            // and check after timeout
+            setTimeout(function() {
+                if (this.sandbox.dom.hasClass(event.target, 'hasFocus')) {
+                    // show items
+                    if(!!this.columns[0]) {
+                        this.columns[0].show();
+                    }
+                    if(!!this.columns[1]) {
+                        this.columns[1].show();
+                    }
+                    this.sandbox.dom.mouseleave('#navigation', navigationOutListener.bind(this));
+                    this.sandbox.dom.one('#navigation','click', function() {
+                        removeNavigationFolding.call(this);
+                    }.bind(this));
+                }
+            }.bind(this), 250);
         },
 
         bindCustomEvents = function() {
@@ -24914,6 +25003,10 @@ define('husky_extensions/collection',[],function() {
                 }
             };
 
+            app.core.dom.off = function(selector, event, filter, handler) {
+                $(selector).off(event, filter, handler);
+            };
+
             app.core.dom.toggleClass = function(selector, className) {
                 $(selector).toggleClass(className);
             };
@@ -24952,6 +25045,10 @@ define('husky_extensions/collection',[],function() {
                 } else {
                     return $(selector).prop(propertyName);
                 }
+            };
+
+            app.core.dom.mouseleave = function(selector, handler) {
+                $(selector).mouseleave(handler);
             };
 
             app.core.dom.stopPropagation = function(event) {
