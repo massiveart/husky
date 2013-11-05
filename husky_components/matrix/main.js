@@ -152,7 +152,7 @@ define(function() {
         prepareTableBody: function() {
             var $tbody = sandbox.dom.createElement('<tbody/>'),
                 i, $tr, $tdHead, $tdAll,
-                j, $tdValue, $span;
+                j, $tdValue, $span, title;
 
             for (i = 0; i < this.options.captions.vertical.length; i++) {
                 $tr = sandbox.dom.createElement('<tr/>');
@@ -172,8 +172,14 @@ define(function() {
                 // insert values of matrix
                 for (j = 0; j < this.options.values.horizontal.length; j++) {
                     $tdValue = sandbox.dom.createElement('<td class="value"/>');
+
+                    if (this.options.values.titles) {
+                        title = 'title="'+this.options.values.titles[j]+'"';
+                    } else {
+                        title='';
+                    }
                     $span = sandbox.dom.createElement(
-                        '<span class="icon-' + this.options.values.horizontal[j] + ' pointer"/>'
+                        '<span '+title+' class="icon-' + this.options.values.horizontal[j] + ' pointer"/>'
                     );
                     sandbox.dom.data($span, 'value', this.options.values.horizontal[j]);
                     sandbox.dom.data($span, 'section', this.options.values.vertical[i]);
