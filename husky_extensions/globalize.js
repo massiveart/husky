@@ -42,6 +42,19 @@
                     return !!translation ? translation : key;
                 };
 
+                /**
+                 * function calls this.sandbox.translate for an array of keys and returns an array of translations
+                 * @param array
+                 * @returns {Array}
+                 */
+                app.sandbox.translateArray = function(array) {
+                    var translations = [];
+                    app.sandbox.util.foreach(array, function(key) {
+                        translations.push(app.sandbox.translate(key));
+                    }.bind(this));
+                    return translations;
+                };
+
                 app.setLanguage = function(cultureName, messages) {
                     var setLanguage = function() {
                         Globalize.culture(cultureName);
