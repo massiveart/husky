@@ -119,13 +119,6 @@ define([], function() {
                 event.stopPropagation();
                 this.clickItem(this.sandbox.dom.data(event.currentTarget, 'id'));
             }.bind(this), 'li');
-
-
-            // on click on trigger check
-            this.sandbox.dom.on(this.sandbox.dom.window, 'click', function() {
-                this.hideDropDown.call(this);
-            }.bind(this));
-
         },
 
         bindCustomEvents: function() {
@@ -239,18 +232,27 @@ define([], function() {
         // toggle dropDown visible
         toggleDropDown: function() {
             this.sandbox.logger.log(this.name, 'toggle dropdown');
-            this.sandbox.dom.toggle(this.$dropDown);
+//            this.sandbox.dom.toggle(this.$dropDown);
+            if (this.sandbox.dom.is(this.$dropDown,':visible')) {
+                this.hideDropDown();
+            } else {
+                this.showDropDown();
+            }
         },
 
         // make dropDown visible
         showDropDown: function() {
             this.sandbox.logger.log(this.name, 'show dropdown');
+            // on click on trigger outside check
+            this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.show(this.$dropDown);
         },
 
         // hide dropDown
         hideDropDown: function() {
             this.sandbox.logger.log(this.name, 'hide dropdown');
+            // remove global click event
+            this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.hide(this.$dropDown);
         },
 
