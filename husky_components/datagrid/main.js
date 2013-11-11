@@ -94,6 +94,12 @@ define(function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
             this.rowStructure = ['id'];
+            this.sort = {
+                ascClass : 'icon-arrow-up',
+                descClass : 'icon-arrow-down',
+                additionalClasses : ' m-left-5 small-font'
+            };
+
 
             // append datagrid to html element
             this.$originalElement = this.sandbox.dom.$(this.options.el);
@@ -148,6 +154,8 @@ define(function() {
                     this.prepare()
                         .appendPagination()
                         .render();
+
+                    this.setHeaderClasses();
 
                     if (typeof params.success === 'function') {
                         params.success(response);
@@ -692,32 +700,23 @@ define(function() {
             var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
                 $element = event.currentTarget,
                 $span = this.sandbox.dom.children($element, 'span')[0],
-                asc = 'icon-arrow-up',
-                desc = 'icon-arrow-down',
-                additionalClasses =' m-left-5 small-font',
                 params = "";
 
             if (!!attribute) {
 
-                if (this.sandbox.dom.hasClass($span, asc)) {
-                    this.sandbox.dom.removeClass($span, asc + additionalClasses);
-                    this.sandbox.dom.toggleClass($span, desc + additionalClasses);
+                this.sort.attribute = attribute;
+
+                if (this.sandbox.dom.hasClass($span, this.sort.ascClass)) {
+                    this.sort.direction = "desc";
                     params = '?sortOrder=desc&sortBy=' + attribute;
-                }
-                else if (this.sandbox.dom.hasClass($span, desc)) {
-                    this.sandbox.dom.removeClass($span, desc + additionalClasses);
-                    this.sandbox.dom.toggleClass($span, asc + additionalClasses);
-                    params = '?sortOrder=asc&sortBy=' + attribute;
                 } else {
-                    this.resetHeaderClasses(asc, desc, additionalClasses);
-                    this.sandbox.dom.addClass($element, 'bold');
-                    this.sandbox.dom.addClass($span, asc + additionalClasses);
+                    this.sort.direction = "asc";
                     params = '?sortOrder=asc&sortBy=' + attribute;
                 }
 
                 this.addLoader();
                 this.load({
-                    url: this.options.url+params,
+                    url: this.options.url + params,
                     success: function () {
                         this.removeLoader();
                     }.bind(this)
@@ -730,18 +729,38 @@ define(function() {
             }
         },
 
-        /**
-         * Removes header classes used for sorting (bold, asc, desc)
-         */
-        resetHeaderClasses: function(asc, desc , additionalClasses){
-            var $elements = this.sandbox.dom.$('thead th[data-attribute]');
 
-            this.sandbox.util.each($elements, function(index, $el){
-                var $span = this.sandbox.dom.children($el, 'span')[0];
-                this.sandbox.dom.removeClass($el, 'bold');
-                this.sandbox.dom.removeClass($span, asc+' '+desc + additionalClasses);
-            }.bind(this));
+        setHeaderClasses: function () {
+            var attribute = this.sort.attribute,
+                direction = this.sort.direction,
+                $element = this.sandbox.dom.find('thead th[data-attribute=' + attribute + ']', this.$element),
+                $span = this.sandbox.dom.children($element, 'span')[0];
+
+            if (!!attribute) {
+
+                this.sandbox.dom.addClass($element, 'bold');
+
+                if (direction === 'asc') {
+                    this.sandbox.dom.addClass($span, this.sort.descClass + this.sort.additionalClasses);
+                } else {
+                    this.sandbox.dom.addClass($span, this.sort.ascClass + this.sort.additionalClasses);
+                }
+
+            }
         },
+
+//        /**
+//         * Removes header classes used for sorting (bold, asc, desc)
+//         */
+//        resetHeaderClasses: function(asc, desc , additionalClasses){
+//            var $elements = this.sandbox.dom.$('thead th[data-attribute]');
+//
+//            this.sandbox.util.each($elements, function(index, $el){
+//                var $span = this.sandbox.dom.children($el, 'span')[0];
+//                this.sandbox.dom.removeClass($el, 'bold');
+//                this.sandbox.dom.removeClass($span, asc+' '+desc + additionalClasses);
+//            }.bind(this));
+//        },
 
         bindCustomEvents: function() {
             // listen for private events
