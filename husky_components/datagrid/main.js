@@ -164,20 +164,6 @@ define(function() {
             });
         },
 
-        getSortingUrl: function () {
-            // TODO
-            // - make header clickable (icon + bold)
-            //      - get clicked element
-            //      - attribute <-> clicked column
-            //      - save clicked and asc/desc
-            // - on click load new data (spinner)
-            //      - change to different url
-            //      - remember asc/desc and column
-            // - display new data
-            // GET /admin/api/contact/contacts/list?fields=id,title,firstName,lastName,position&pageSize=10&sortOrder=asc&sortBy=id
-        },
-
-
         /**
          * Returns url with page size and page param at the end
          * @param params
@@ -725,11 +711,13 @@ define(function() {
                 this.sandbox.emit('husky.datagrid.data.sort');
                 this.sandbox.emit('husky.datagrid.update', 'update sort');
 
-                // TODO
             }
         },
 
-
+        /**
+         * Sets the header classes used for sorting purposes
+         * needs this.sort to be correctly initialized
+         */
         setHeaderClasses: function () {
             var attribute = this.sort.attribute,
                 direction = this.sort.direction,
@@ -748,19 +736,6 @@ define(function() {
 
             }
         },
-
-//        /**
-//         * Removes header classes used for sorting (bold, asc, desc)
-//         */
-//        resetHeaderClasses: function(asc, desc , additionalClasses){
-//            var $elements = this.sandbox.dom.$('thead th[data-attribute]');
-//
-//            this.sandbox.util.each($elements, function(index, $el){
-//                var $span = this.sandbox.dom.children($el, 'span')[0];
-//                this.sandbox.dom.removeClass($el, 'bold');
-//                this.sandbox.dom.removeClass($span, asc+' '+desc + additionalClasses);
-//            }.bind(this));
-//        },
 
         bindCustomEvents: function() {
             // listen for private events
