@@ -325,9 +325,9 @@ define(function() {
         },
 
         /**
-         * Returns table row with values and data attributes
+         * Returns table row including values and data attributes
          * @param row
-         * @returns tr
+         * @returns string table row
          */
         prepareTableRow: function(row) {
 
@@ -650,7 +650,7 @@ define(function() {
             }
 
             if(this.options.sortable) {
-                this.$element.on('click', 'thead th', this.changeSorting.bind(this));
+                this.$element.on('click', 'thead th[data-attribute]', this.changeSorting.bind(this));
             }
 
 
@@ -680,8 +680,41 @@ define(function() {
             // }.bind(this));
         },
 
+        /**
+         * Sets header classes and loads new data
+         * @param event
+         */
         changeSorting: function(event){
-            this.sandbox.logger.log(event);
+
+            var attribute = this.sandbox.dom.data(event.currentTarget,'attribute'),
+                $element = event.currentTarget;
+
+
+            if(this.sandbox.dom.hasClass($element, 'asc') || this.sandbox.dom.hasClass($element, 'desc')) {
+                this.sandbox.dom.toggleClass($element, 'asc desc');
+            } else {
+
+                // reset other headers
+                // set header
+                this.resetHeaderClasses();
+                this.sandbox.dom.addClass($element, 'bold asc');
+
+            }
+
+
+            // load new list
+            // spinner?
+            this.sandbox.logger.log(attribute);
+        },
+
+        /**
+         * Removes header classes used for sorting (bold, asc, desc)
+         */
+        resetHeaderClasses: function(){
+            var $elements = this.sandbox.dom.$('thead th[data-attribute]');
+            this.sandbox.util.each($elements, function(index, $el){
+                this.sandbox.dom.removeClass($el, 'bold asc desc');
+            }.bind(this));
         },
 
         bindCustomEvents: function() {
