@@ -22,26 +22,26 @@ require(['lib/husky'], function (Husky) {
 
     fakeServer.respondWith('GET', '/contacts?pageSize=4&page=2', [200, { 'Content-Type': 'application/json' },
         '{"total": 56, "items": [' +
-            '{"id": "1", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "2", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "3", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "4", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }] }'
+            '{"id": "1", "content1": "Hallo 2", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "2", "content1": "Hallo 2", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "3", "content1": "Hallo 2", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "4", "content1": "Hallo 2", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }] }'
     ]);
 
     fakeServer.respondWith('GET', '/contacts?pageSize=4&page=3', [200, { 'Content-Type': 'application/json' },
         '{"total": 56, "items": [' +
-            '{"id": "1", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "2", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "3", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "4", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }] }'
+            '{"id": "1", "content1": "Hallo 3", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "2", "content1": "Hallo 3", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "3", "content1": "Hallo 3", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "4", "content1": "Hallo 3", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }] }'
     ]);
 
     fakeServer.respondWith('GET', '/contacts?pageSize=4&page=4', [200, { 'Content-Type': 'application/json' },
         '{"total": 56, "items": [' +
-            '{"id": "1", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "2", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "3", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "4", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }] }'
+            '{"id": "1", "content1": "Hallo 4", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "2", "content1": "Hallo 4", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "3", "content1": "Hallo 4", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "4", "content1": "Hallo 4", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }] }'
     ]);
 
     fakeServer.respondWith('GET', '/contacts?sortOrder=asc&sortBy=content1&pageSize=4', [200, { 'Content-Type': 'application/json' },

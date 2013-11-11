@@ -277,6 +277,8 @@ define(function() {
                 tblColumns.push('</th>');
             }
 
+            this.rowStructure = ['id'];
+
             headData.forEach(function(column) {
                 tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
 
