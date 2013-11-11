@@ -50,11 +50,12 @@ require(['lib/husky'], function (Husky) {
                 removeRow: true,
                 autoRemoveHandling: true,
                 tableHead: [
-                    {content: 'Content 1', width: "30%"},
-                    {content: 'Content 2'},
-                    {content: 'Content 3'},
+                    {content: 'Content 1', width: "30%", attribute: "content1"},
+                    {content: 'Content 2', attribute: "content3"},
+                    {content: 'Content 3', attribute: "content2"},
                     {content: ''}
                 ],
+                sortable: true,
                 excludeFields: ['id'],
                 el: '#datagrid'
             }

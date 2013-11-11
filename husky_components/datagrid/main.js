@@ -2,17 +2,23 @@
  *    Name: Datagrid
  *
  *    Options:
- *        - autoRemoveHandling: raises an event before a row is removed
- *        - className: additional classname for the wrapping div
- *        - data: array of data to display (instead of using a url)
- *        - elementType: type of datagrid (table,..) ??
- *        - excludeFields: array of field to exclude
- *        - pagination: display a pagination
+ *      - autoRemoveHandling: raises an event before a row is removed
+ *      - className: additional classname for the wrapping div
+ *      - data: array of data to display (instead of using a url)
+ *      - elementType: type of datagrid (table,..) ??
+ *      - excludeFields: array of field to exclude
+ *      - pagination: display a pagination
  *      - pageSize: lines per page
  *      - showPages: amount of pages that will be shown
  *      - removeRow: displays in the last column an icon to remove a row
  *      - selectItem.type: typ of select [checkbox, radio]
  *      - selectItem.width: typ of select [checkbox, radio]
+ *      - sortable: is list sortable [true,false]
+ *      - tableHead: configuration of table header
+ *          - content: column title
+ *          - width: width of column
+ *          - class: css class of th
+ *          - attribute: mapping information to data
  *      - url: url to fetch content
  *      - appendTBody: add TBODY to table
  *
@@ -66,6 +72,7 @@ define(function() {
             width: '50px'    // numerous value
             //clickable: false   // defines if background is clickable TODO do not use until fixed
         },
+        sortable: false,
         tableHead: [],
         url: null,
         appendTBody: true   // add TBODY to table
@@ -86,6 +93,7 @@ define(function() {
             this.configs = {};
             this.allItemIds = [];
             this.selectedItemIds = [];
+            this.rowStructure = [];
 
             // append datagrid to html element
             this.$originalElement = this.sandbox.dom.$(this.options.el);
@@ -150,7 +158,10 @@ define(function() {
 
         getSortingUrl: function () {
             // TODO
-            // - make header clickable (icon)
+            // - make header clickable (icon + bold)
+            //      - get clicked element
+            //      - attribute <-> clicked column
+            //      - save clicked and asc/desc
             // - on click load new data (spinner)
             //      - change to different url
             //      - remember asc/desc and column
@@ -158,6 +169,12 @@ define(function() {
             // GET /admin/api/contact/contacts/list?fields=id,title,firstName,lastName,position&pageSize=10&sortOrder=asc&sortBy=id
         },
 
+
+        /**
+         * Returns url with page size and page param at the end
+         * @param params
+         * @returns {string}
+         */
         getUrl: function(params) {
             var delimiter = '?', url;
 
@@ -227,7 +244,7 @@ define(function() {
         },
 
         prepareTableHead: function() {
-            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues;
+            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute;
 
             tblColumns = [];
             headData = this.options.tableHead || this.data.head;
@@ -261,6 +278,7 @@ define(function() {
 
             headData.forEach(function(column) {
                 tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
+
                 tblColumnWidth = '';
                 // get width and measureunit
                 if (!!column.width) {
@@ -268,7 +286,14 @@ define(function() {
                     tblColumnWidth = ' width="' + widthValues[0] + widthValues[1] + '"';
                 }
 
-                tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
+                if(column.attribute !== undefined) {
+                    this.rowStructure.push(column.attribute);
+                    dataAttribute = ' data-attribute="'+column.attribute+'"';
+                    tblColumns.push('<th' + tblCellClass + tblColumnWidth + dataAttribute + '>' + column.content + '</th>');
+                } else {
+                    tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
+                }
+
             }.bind(this));
 
             return '<tr>' + tblColumns.join('') + '</tr>';
@@ -332,8 +357,10 @@ define(function() {
                     }), '</td>');
                 }
 
-                for (key in row) {
-                    if (row.hasOwnProperty(key)) {
+                // when row structure is set then use the structure to set values
+                if(this.rowStructure.length > 0) {
+                    this.rowStructure.forEach(function(key) {
+
                         column = row[key];
 
                         if (this.options.excludeFields.indexOf(key) < 0) {
@@ -350,6 +377,28 @@ define(function() {
                         } else {
                             tblRowAttributes += ' data-' + key + '="' + column + '"';
                         }
+
+                    }.bind(this));
+                } else {
+                    for (key in row) {
+                        if (row.hasOwnProperty(key)) {
+                            column = row[key];
+
+                            if (this.options.excludeFields.indexOf(key) < 0) {
+                                tblCellClasses = [];
+                                tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
+
+                                // prepare table cell classes
+                                !!column.class && tblCellClasses.push(column.class);
+                                !!column.thumb && tblCellClasses.push('thumb');
+
+                                tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
+
+                                tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
+                            } else {
+                                tblRowAttributes += ' data-' + key + '="' + column + '"';
+                            }
+                        }
                     }
                 }
 
@@ -360,7 +409,7 @@ define(function() {
                 return '<tr' + tblRowAttributes + '>' + tblColumns.join('') + '</tr>';
             }
         },
-
+        
         resetItemSelection: function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
@@ -603,6 +652,11 @@ define(function() {
                 this.$element.on('click', '.remove-row > span', this.prepareRemoveRow.bind(this));
             }
 
+            if(this.options.sortable) {
+                this.$element.on('click', 'thead th', this.changeSorting.bind(this));
+            }
+
+
 
             // Todo
             // trigger event when click on clickable area
@@ -627,6 +681,10 @@ define(function() {
             // stop propagation
             //         event.stopPropagation();
             // }.bind(this));
+        },
+
+        changeSorting: function(event){
+            this.sandbox.logger.log(event);
         },
 
         bindCustomEvents: function() {
