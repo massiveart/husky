@@ -741,9 +741,9 @@ define(function() {
                 this.sandbox.dom.addClass($element, 'bold');
 
                 if (direction === 'asc') {
-                    this.sandbox.dom.addClass($span, this.sort.descClass + this.sort.additionalClasses);
-                } else {
                     this.sandbox.dom.addClass($span, this.sort.ascClass + this.sort.additionalClasses);
+                } else {
+                    this.sandbox.dom.addClass($span, this.sort.descClass + this.sort.additionalClasses);
                 }
 
             }
