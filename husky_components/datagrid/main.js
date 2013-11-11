@@ -188,6 +188,7 @@ define(function() {
                 url += '&page=' + params.page;
             }
 
+            this.sandbox.logger.log("url: "+url);
             return url;
         },
 
@@ -691,7 +692,8 @@ define(function() {
                 $span = this.sandbox.dom.children($element, 'span')[0],
                 asc = 'icon-arrow-up',
                 desc = 'icon-arrow-down',
-                additionalClasses =' m-left-5 small-font';
+                additionalClasses =' m-left-5 small-font',
+                url = this.options.url;
 
             if (!!attribute) {
 
@@ -699,22 +701,34 @@ define(function() {
                 if (this.sandbox.dom.hasClass($span, asc)) {
                     this.sandbox.dom.removeClass($span, asc + additionalClasses);
                     this.sandbox.dom.toggleClass($span, desc + additionalClasses);
+                    url+= '?sortOrder=desc&sortBy='+attribute;
                 }
                 else if (this.sandbox.dom.hasClass($span, desc)) {
                     this.sandbox.dom.removeClass($span, desc + additionalClasses);
                     this.sandbox.dom.toggleClass($span, asc + additionalClasses);
+                    url+= '?sortOrder=asc&sortBy='+attribute;
                 } else {
                     this.resetHeaderClasses(asc, desc, additionalClasses);
                     this.sandbox.dom.addClass($element, 'bold');
                     this.sandbox.dom.addClass($span, asc + additionalClasses);
-
+                    url+= '?sortOrder=asc&sortBy='+attribute;
                 }
 
-                this.sandbox.logger.log(this.options.url);
-            }
+                this.sandbox.logger.log("url: ",this.options.url);
 
-            // load new list
-            // spinner?
+                this.addLoader();
+                this.load({
+                    url: url,
+                    success: function (data) {
+                        this.removeLoader();
+                        this.sandbox.logger.log(data);
+                    }.bind(this)
+                });
+
+                this.sandbox.emit('husky.datagrid.data.sort');
+                this.sandbox.emit('husky.datagrid.update', 'update sort');
+
+            }
         },
 
         /**
@@ -768,6 +782,7 @@ define(function() {
                 .empty();
             //.addClass('is-loading');
         },
+
         removeLoader: function() {
             return this.$element.removeClass('is-loading');
         },
