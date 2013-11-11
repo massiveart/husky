@@ -29,7 +29,7 @@ require(['lib/husky'], function (Husky) {
     ]);
 
 
-    app = Husky({ debug: { enable: true }});
+    app = new Husky({ debug: { enable: true }});
     _ = app.sandbox.util._;
 
     app.start([
@@ -83,7 +83,7 @@ require(['lib/husky'], function (Husky) {
             app.sandbox.on('husky.datagrid.row.remove-click', function (event, item) {
                 app.logger.log('remove-clicked: ' + item);
 
-                alert('DELETE AFTER OK');
+                window.alert('DELETE AFTER OK');
 
                 if (typeof item === 'number') {
                     app.sandbox.emit('husky.datagrid.row.remove', item);
