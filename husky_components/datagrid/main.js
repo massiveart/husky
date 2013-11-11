@@ -39,6 +39,8 @@
  *
  */
 
+
+
 define(function() {
 
     'use strict';
@@ -144,6 +146,16 @@ define(function() {
                     }
                 }.bind(this)
             });
+        },
+
+        getSortingUrl: function () {
+            // TODO
+            // - make header clickable (icon)
+            // - on click load new data (spinner)
+            //      - change to different url
+            //      - remember asc/desc and column
+            // - display new data
+            // GET /admin/api/contact/contacts/list?fields=id,title,firstName,lastName,position&pageSize=10&sortOrder=asc&sortBy=id
         },
 
         getUrl: function(params) {
