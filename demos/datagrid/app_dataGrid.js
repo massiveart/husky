@@ -68,7 +68,7 @@ require(['lib/husky'], function (Husky) {
             '{ "id": "4", "content1": "A Hallo 1", "content2": "D Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }] }'
     ]);
 
-    fakeServer.respondWith('GET', '/contacts?sortOrder=asc&sortBy=content2&pageSize=4', [200, { 'Content-Type': 'application/json' },
+    fakeServer.respondWith('GET', '/contacts?sortOrder=desc&sortBy=content2&pageSize=4', [200, { 'Content-Type': 'application/json' },
         '{"total": 56, "items": [' +
             '{"id": "1", "content1": "A Hallo 1", "content2": "D Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
             '{ "id": "2", "content1": "C Hallo 1", "content2": "C Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
@@ -99,9 +99,9 @@ require(['lib/husky'], function (Husky) {
                 removeRow: true,
                 autoRemoveHandling: true,
                 tableHead: [
-                    {content: 'Content 1', width: "30%", attribute: "content2"},
-                    {content: 'Content 2', width: "30%", attribute: "content3"},
-                    {content: 'Content 3', width: "30%", attribute: "content1"},
+                    {content: 'Content 2', width: "30%", attribute: "content2"},
+                    {content: 'Content 3', width: "30%", attribute: "content3"},
+                    {content: 'Content 1', width: "30%", attribute: "content1"},
                     {content: ''}
 //                    {content: 'Content 1', width: "30%"},
 //                    {content: 'Content 2'},

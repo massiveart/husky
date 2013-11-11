@@ -692,50 +692,41 @@ define(function() {
             var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
                 $element = event.currentTarget,
                 $span = this.sandbox.dom.children($element, 'span')[0],
-                url = this.options.url;
+                asc = 'icon-arrow-up',
+                desc = 'icon-arrow-down',
+                additionalClasses =' m-left-5 small-font',
+                params = "";
 
             if (!!attribute) {
 
-                this.sandbox.logger.log("url: ",this.options.url);
-//                this.addLoader();
-//                this.load({
-//                    url: url,
-//                    success: function (data) {
-//                        this.removeLoader();
-//                        this.setHeaderClasses($span, $element, attribute);
-//                        this.sandbox.logger.log(data);
-//                    }.bind(this)
-//                });
+                if (this.sandbox.dom.hasClass($span, asc)) {
+                    this.sandbox.dom.removeClass($span, asc + additionalClasses);
+                    this.sandbox.dom.toggleClass($span, desc + additionalClasses);
+                    params = '?sortOrder=desc&sortBy=' + attribute;
+                }
+                else if (this.sandbox.dom.hasClass($span, desc)) {
+                    this.sandbox.dom.removeClass($span, desc + additionalClasses);
+                    this.sandbox.dom.toggleClass($span, asc + additionalClasses);
+                    params = '?sortOrder=asc&sortBy=' + attribute;
+                } else {
+                    this.resetHeaderClasses(asc, desc, additionalClasses);
+                    this.sandbox.dom.addClass($element, 'bold');
+                    this.sandbox.dom.addClass($span, asc + additionalClasses);
+                    params = '?sortOrder=asc&sortBy=' + attribute;
+                }
 
-                this.setHeaderClasses($span, $element, attribute);
+                this.addLoader();
+                this.load({
+                    url: this.options.url+params,
+                    success: function () {
+                        this.removeLoader();
+                    }.bind(this)
+                });
+
                 this.sandbox.emit('husky.datagrid.data.sort');
                 this.sandbox.emit('husky.datagrid.update', 'update sort');
 
                 // TODO
-            }
-        },
-
-
-        setHeaderClasses: function($span, $element, attribute) {
-            var asc = 'icon-arrow-up',
-                desc = 'icon-arrow-down',
-                additionalClasses =' m-left-5 small-font';
-
-            // has to be this way because of selector for icon classes
-            if (this.sandbox.dom.hasClass($span, asc)) {
-                this.sandbox.dom.removeClass($span, asc + additionalClasses);
-                this.sandbox.dom.toggleClass($span, desc + additionalClasses);
-                this.options.url+= '?sortOrder=desc&sortBy='+attribute;
-            }
-            else if (this.sandbox.dom.hasClass($span, desc)) {
-                this.sandbox.dom.removeClass($span, desc + additionalClasses);
-                this.sandbox.dom.toggleClass($span, asc + additionalClasses);
-                this.options.url+= '?sortOrder=asc&sortBy='+attribute;
-            } else {
-                this.resetHeaderClasses(asc, desc, additionalClasses);
-                this.sandbox.dom.addClass($element, 'bold');
-                this.sandbox.dom.addClass($span, asc + additionalClasses);
-                this.options.url+= '?sortOrder=asc&sortBy='+attribute;
             }
         },
 
