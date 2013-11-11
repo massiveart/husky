@@ -18,7 +18,7 @@
  *          - content: column title
  *          - width: width of column
  *          - class: css class of th
- *          - attribute: mapping information to data
+ *          - attribute: mapping information to data (if not set it will just itterate of attributes)
  *      - url: url to fetch content
  *      - appendTBody: add TBODY to table
  *
@@ -93,7 +93,7 @@ define(function() {
             this.configs = {};
             this.allItemIds = [];
             this.selectedItemIds = [];
-            this.rowStructure = [];
+            this.rowStructure = ['id'];
 
             // append datagrid to html element
             this.$originalElement = this.sandbox.dom.$(this.options.el);
@@ -324,6 +324,11 @@ define(function() {
             return tblRows.join('');
         },
 
+        /**
+         * Returns table row with values and data attributes
+         * @param row
+         * @returns tr
+         */
         prepareTableRow: function(row) {
 
             if (!!(this.options.template && this.options.template.row)) {
@@ -332,8 +337,9 @@ define(function() {
 
             } else {
 
-                var tblRowAttributes, tblCellContent, tblCellClass,
-                    tblColumns, tblCellClasses, radioPrefix, key, column;
+                var radioPrefix, key;
+                this.tblColumns  = [];
+                this.tblRowAttributes = '';
 
                 if (!!this.options.className && this.options.className !== '') {
                     radioPrefix = '-' + this.options.className;
@@ -341,75 +347,66 @@ define(function() {
                     radioPrefix = '';
                 }
 
-                tblColumns = [];
-                tblRowAttributes = '';
-
                 !!row.id && this.allItemIds.push(parseInt(row.id, 10));
 
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     // add a checkbox to each row
-                    tblColumns.push('<td>', this.templates.checkbox(), '</td>');
+                    this.tblColumns.push('<td>', this.templates.checkbox(), '</td>');
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                     // add a radio to each row
 
-                    tblColumns.push('<td>', this.templates.radio({
+                    this.tblColumns.push('<td>', this.templates.radio({
                         name: 'husky-radio' + radioPrefix
                     }), '</td>');
                 }
 
-                // when row structure is set then use the structure to set values
-                if(this.rowStructure.length > 0) {
+                // when row structure contains more elments than the id then use the structure to set values
+                if(this.rowStructure.length > 1) {
                     this.rowStructure.forEach(function(key) {
-
-                        column = row[key];
-
-                        if (this.options.excludeFields.indexOf(key) < 0) {
-                            tblCellClasses = [];
-                            tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
-
-                            // prepare table cell classes
-                            !!column.class && tblCellClasses.push(column.class);
-                            !!column.thumb && tblCellClasses.push('thumb');
-
-                            tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
-
-                            tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
-                        } else {
-                            tblRowAttributes += ' data-' + key + '="' + column + '"';
-                        }
-
+                        this.setValueOfRowCell(key, row[key]);
                     }.bind(this));
                 } else {
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                            column = row[key];
-
-                            if (this.options.excludeFields.indexOf(key) < 0) {
-                                tblCellClasses = [];
-                                tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
-
-                                // prepare table cell classes
-                                !!column.class && tblCellClasses.push(column.class);
-                                !!column.thumb && tblCellClasses.push('thumb');
-
-                                tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
-
-                                tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
-                            } else {
-                                tblRowAttributes += ' data-' + key + '="' + column + '"';
-                            }
+                           this.setValueOfRowCell(key, row[key]);
                         }
                     }
                 }
 
                 if (!!this.options.removeRow) {
-                    tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
+                    this.tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
                 }
 
-                return '<tr' + tblRowAttributes + '>' + tblColumns.join('') + '</tr>';
+                return '<tr' + this.tblRowAttributes + '>' + this.tblColumns.join('') + '</tr>';
             }
         },
-        
+
+        /**
+         * Sets the value of row cell and the data-id attribute for the row
+         * @param key attribute name
+         * @param value attribute value
+         */
+        setValueOfRowCell: function(key, value){
+            var tblCellClasses,
+                tblCellContent,
+                tblCellClass;
+
+            if (this.options.excludeFields.indexOf(key) < 0) {
+                tblCellClasses = [];
+                tblCellContent = (!!value.thumb) ? '<img alt="' + (value.alt || '') + '" src="' + value.thumb + '"/>' : value;
+
+                // prepare table cell classes
+                !!value.class && tblCellClasses.push(value.class);
+                !!value.thumb && tblCellClasses.push('thumb');
+
+                tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
+
+                this.tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
+            } else {
+                this.tblRowAttributes += ' data-' + key + '="' + value + '"';
+            }
+        },
+
         resetItemSelection: function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
