@@ -289,7 +289,7 @@ define(function() {
                 if(column.attribute !== undefined) {
                     this.rowStructure.push(column.attribute);
                     dataAttribute = ' data-attribute="'+column.attribute+'"';
-                    tblColumns.push('<th' + tblCellClass + tblColumnWidth + dataAttribute + '>' + column.content + '</th>');
+                    tblColumns.push('<th' + tblCellClass + tblColumnWidth + dataAttribute + '>' + column.content + '<span></span></th>');
                 } else {
                     tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
                 }
@@ -684,36 +684,49 @@ define(function() {
          * Sets header classes and loads new data
          * @param event
          */
-        changeSorting: function(event){
+        changeSorting: function (event) {
 
-            var attribute = this.sandbox.dom.data(event.currentTarget,'attribute'),
-                $element = event.currentTarget;
+            var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
+                $element = event.currentTarget,
+                $span = this.sandbox.dom.children($element, 'span')[0],
+                asc = 'icon-arrow-up',
+                desc = 'icon-arrow-down',
+                additionalClasses =' m-left-5 small-font';
 
+            if (!!attribute) {
 
-            if(this.sandbox.dom.hasClass($element, 'asc') || this.sandbox.dom.hasClass($element, 'desc')) {
-                this.sandbox.dom.toggleClass($element, 'asc desc');
-            } else {
+                // has to be this way because of selector for icon classes
+                if (this.sandbox.dom.hasClass($span, asc)) {
+                    this.sandbox.dom.removeClass($span, asc + additionalClasses);
+                    this.sandbox.dom.toggleClass($span, desc + additionalClasses);
+                }
+                else if (this.sandbox.dom.hasClass($span, desc)) {
+                    this.sandbox.dom.removeClass($span, desc + additionalClasses);
+                    this.sandbox.dom.toggleClass($span, asc + additionalClasses);
+                } else {
+                    this.resetHeaderClasses(asc, desc, additionalClasses);
+                    this.sandbox.dom.addClass($element, 'bold');
+                    this.sandbox.dom.addClass($span, asc + additionalClasses);
 
-                // reset other headers
-                // set header
-                this.resetHeaderClasses();
-                this.sandbox.dom.addClass($element, 'bold asc');
+                }
 
+                this.sandbox.logger.log(this.options.url);
             }
-
 
             // load new list
             // spinner?
-            this.sandbox.logger.log(attribute);
         },
 
         /**
          * Removes header classes used for sorting (bold, asc, desc)
          */
-        resetHeaderClasses: function(){
+        resetHeaderClasses: function(asc, desc , additionalClasses){
             var $elements = this.sandbox.dom.$('thead th[data-attribute]');
+
             this.sandbox.util.each($elements, function(index, $el){
-                this.sandbox.dom.removeClass($el, 'bold asc desc');
+                var $span = this.sandbox.dom.children($el, 'span')[0];
+                this.sandbox.dom.removeClass($el, 'bold');
+                this.sandbox.dom.removeClass($span, asc+' '+desc + additionalClasses);
             }.bind(this));
         },
 

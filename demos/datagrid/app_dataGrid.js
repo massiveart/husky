@@ -13,7 +13,7 @@ require(['lib/husky'], function (Husky) {
     fakeServer = sinon.fakeServer.create();
 
     fakeServer.respondWith('GET', '/contacts?pageSize=4', [200, { 'Content-Type': 'application/json' },
-        '{"total": 56, "items": [{"id": "1", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, { "id": "2", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, { "id": "3", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, { "id": "4", "content1": "Hallo 1", "content2": "Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }] }'
+        '{"total": 56, "items": [{"id": "1", "content1": "Hallo 1.1", "content2": "Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, { "id": "2", "content1": "Hallo 2.1", "content2": "Hallo 2.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, { "id": "3", "content1": "Hallo 3.1", "content2": "Hallo 3.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, { "id": "4", "content1": "Hallo 4.1", "content2": "Hallo 4.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }] }'
     ]);
 
     fakeServer.respondWith('GET', '/contacts?pageSize=4&page=2', [200, { 'Content-Type': 'application/json' },
@@ -50,10 +50,14 @@ require(['lib/husky'], function (Husky) {
                 removeRow: true,
                 autoRemoveHandling: true,
                 tableHead: [
-                    {content: 'Content 1', width: "30%", attribute: "content1"},
-                    {content: 'Content 2', attribute: "content3"},
-                    {content: 'Content 3', attribute: "content2"},
+                    {content: 'Content 1', width: "30%", attribute: "content2"},
+                    {content: 'Content 2', width: "30%", attribute: "content3"},
+                    {content: 'Content 3', width: "30%", attribute: "content1"},
                     {content: ''}
+//                    {content: 'Content 1', width: "30%"},
+//                    {content: 'Content 2'},
+//                    {content: 'Content 3'},
+//                    {content: ''}
                 ],
                 sortable: true,
                 excludeFields: ['id'],

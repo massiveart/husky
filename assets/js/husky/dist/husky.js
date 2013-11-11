@@ -22329,17 +22329,23 @@ define('__component__$button@husky',[], function() {
  *    Name: Datagrid
  *
  *    Options:
- *        - autoRemoveHandling: raises an event before a row is removed
- *        - className: additional classname for the wrapping div
- *        - data: array of data to display (instead of using a url)
- *        - elementType: type of datagrid (table,..) ??
- *        - excludeFields: array of field to exclude
- *        - pagination: display a pagination
+ *      - autoRemoveHandling: raises an event before a row is removed
+ *      - className: additional classname for the wrapping div
+ *      - data: array of data to display (instead of using a url)
+ *      - elementType: type of datagrid (table,..) ??
+ *      - excludeFields: array of field to exclude
+ *      - pagination: display a pagination
  *      - pageSize: lines per page
  *      - showPages: amount of pages that will be shown
  *      - removeRow: displays in the last column an icon to remove a row
  *      - selectItem.type: typ of select [checkbox, radio]
  *      - selectItem.width: typ of select [checkbox, radio]
+ *      - sortable: is list sortable [true,false]
+ *      - tableHead: configuration of table header
+ *          - content: column title
+ *          - width: width of column
+ *          - class: css class of th
+ *          - attribute: mapping information to data (if not set it will just itterate of attributes)
  *      - url: url to fetch content
  *      - appendTBody: add TBODY to table
  *
@@ -22366,6 +22372,8 @@ define('__component__$button@husky',[], function() {
  *
  */
 
+
+
 define('__component__$datagrid@husky',[],function() {
 
     
@@ -22391,6 +22399,7 @@ define('__component__$datagrid@husky',[],function() {
             width: '50px'    // numerous value
             //clickable: false   // defines if background is clickable TODO do not use until fixed
         },
+        sortable: false,
         tableHead: [],
         url: null,
         appendTBody: true   // add TBODY to table
@@ -22411,6 +22420,7 @@ define('__component__$datagrid@husky',[],function() {
             this.configs = {};
             this.allItemIds = [];
             this.selectedItemIds = [];
+            this.rowStructure = ['id'];
 
             // append datagrid to html element
             this.$originalElement = this.sandbox.dom.$(this.options.el);
@@ -22473,6 +22483,25 @@ define('__component__$datagrid@husky',[],function() {
             });
         },
 
+        getSortingUrl: function () {
+            // TODO
+            // - make header clickable (icon + bold)
+            //      - get clicked element
+            //      - attribute <-> clicked column
+            //      - save clicked and asc/desc
+            // - on click load new data (spinner)
+            //      - change to different url
+            //      - remember asc/desc and column
+            // - display new data
+            // GET /admin/api/contact/contacts/list?fields=id,title,firstName,lastName,position&pageSize=10&sortOrder=asc&sortBy=id
+        },
+
+
+        /**
+         * Returns url with page size and page param at the end
+         * @param params
+         * @returns {string}
+         */
         getUrl: function(params) {
             var delimiter = '?', url;
 
@@ -22542,7 +22571,7 @@ define('__component__$datagrid@husky',[],function() {
         },
 
         prepareTableHead: function() {
-            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues;
+            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute;
 
             tblColumns = [];
             headData = this.options.tableHead || this.data.head;
@@ -22576,6 +22605,7 @@ define('__component__$datagrid@husky',[],function() {
 
             headData.forEach(function(column) {
                 tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
+
                 tblColumnWidth = '';
                 // get width and measureunit
                 if (!!column.width) {
@@ -22583,7 +22613,14 @@ define('__component__$datagrid@husky',[],function() {
                     tblColumnWidth = ' width="' + widthValues[0] + widthValues[1] + '"';
                 }
 
-                tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
+                if(column.attribute !== undefined) {
+                    this.rowStructure.push(column.attribute);
+                    dataAttribute = ' data-attribute="'+column.attribute+'"';
+                    tblColumns.push('<th' + tblCellClass + tblColumnWidth + dataAttribute + '>' + column.content + '<span></span></th>');
+                } else {
+                    tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
+                }
+
             }.bind(this));
 
             return '<tr>' + tblColumns.join('') + '</tr>';
@@ -22614,6 +22651,11 @@ define('__component__$datagrid@husky',[],function() {
             return tblRows.join('');
         },
 
+        /**
+         * Returns table row including values and data attributes
+         * @param row
+         * @returns string table row
+         */
         prepareTableRow: function(row) {
 
             if (!!(this.options.template && this.options.template.row)) {
@@ -22622,8 +22664,9 @@ define('__component__$datagrid@husky',[],function() {
 
             } else {
 
-                var tblRowAttributes, tblCellContent, tblCellClass,
-                    tblColumns, tblCellClasses, radioPrefix, key, column;
+                var radioPrefix, key;
+                this.tblColumns  = [];
+                this.tblRowAttributes = '';
 
                 if (!!this.options.className && this.options.className !== '') {
                     radioPrefix = '-' + this.options.className;
@@ -22631,48 +22674,63 @@ define('__component__$datagrid@husky',[],function() {
                     radioPrefix = '';
                 }
 
-                tblColumns = [];
-                tblRowAttributes = '';
-
                 !!row.id && this.allItemIds.push(parseInt(row.id, 10));
 
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     // add a checkbox to each row
-                    tblColumns.push('<td>', this.templates.checkbox(), '</td>');
+                    this.tblColumns.push('<td>', this.templates.checkbox(), '</td>');
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                     // add a radio to each row
 
-                    tblColumns.push('<td>', this.templates.radio({
+                    this.tblColumns.push('<td>', this.templates.radio({
                         name: 'husky-radio' + radioPrefix
                     }), '</td>');
                 }
 
-                for (key in row) {
-                    if (row.hasOwnProperty(key)) {
-                        column = row[key];
-
-                        if (this.options.excludeFields.indexOf(key) < 0) {
-                            tblCellClasses = [];
-                            tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
-
-                            // prepare table cell classes
-                            !!column.class && tblCellClasses.push(column.class);
-                            !!column.thumb && tblCellClasses.push('thumb');
-
-                            tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
-
-                            tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
-                        } else {
-                            tblRowAttributes += ' data-' + key + '="' + column + '"';
+                // when row structure contains more elments than the id then use the structure to set values
+                if(this.rowStructure.length > 1) {
+                    this.rowStructure.forEach(function(key) {
+                        this.setValueOfRowCell(key, row[key]);
+                    }.bind(this));
+                } else {
+                    for (key in row) {
+                        if (row.hasOwnProperty(key)) {
+                           this.setValueOfRowCell(key, row[key]);
                         }
                     }
                 }
 
                 if (!!this.options.removeRow) {
-                    tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
+                    this.tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
                 }
 
-                return '<tr' + tblRowAttributes + '>' + tblColumns.join('') + '</tr>';
+                return '<tr' + this.tblRowAttributes + '>' + this.tblColumns.join('') + '</tr>';
+            }
+        },
+
+        /**
+         * Sets the value of row cell and the data-id attribute for the row
+         * @param key attribute name
+         * @param value attribute value
+         */
+        setValueOfRowCell: function(key, value){
+            var tblCellClasses,
+                tblCellContent,
+                tblCellClass;
+
+            if (this.options.excludeFields.indexOf(key) < 0) {
+                tblCellClasses = [];
+                tblCellContent = (!!value.thumb) ? '<img alt="' + (value.alt || '') + '" src="' + value.thumb + '"/>' : value;
+
+                // prepare table cell classes
+                !!value.class && tblCellClasses.push(value.class);
+                !!value.thumb && tblCellClasses.push('thumb');
+
+                tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
+
+                this.tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
+            } else {
+                this.tblRowAttributes += ' data-' + key + '="' + value + '"';
             }
         },
 
@@ -22918,6 +22976,11 @@ define('__component__$datagrid@husky',[],function() {
                 this.$element.on('click', '.remove-row > span', this.prepareRemoveRow.bind(this));
             }
 
+            if(this.options.sortable) {
+                this.$element.on('click', 'thead th[data-attribute]', this.changeSorting.bind(this));
+            }
+
+
 
             // Todo
             // trigger event when click on clickable area
@@ -22942,6 +23005,49 @@ define('__component__$datagrid@husky',[],function() {
             // stop propagation
             //         event.stopPropagation();
             // }.bind(this));
+        },
+
+        /**
+         * Sets header classes and loads new data
+         * @param event
+         */
+        changeSorting: function(event){
+
+            var attribute = this.sandbox.dom.data(event.currentTarget,'attribute'),
+                $element = event.currentTarget,
+                $span = this.sandbox.dom.children($element, 'span')[0],
+                asc = 'icon-arrow-up',
+                desc = 'icon-arrow-down';
+
+            if(!!attribute) {
+
+                if(this.sandbox.dom.hasClass($span, asc) || this.sandbox.dom.hasClass($span, desc)) {
+                    this.sandbox.dom.toggleClass($span, asc + ' ' + desc);
+                } else {
+
+                    this.resetHeaderClasses(asc, desc);
+                    this.sandbox.dom.addClass($element, 'bold');
+                    this.sandbox.dom.addClass($span, asc);
+
+                }
+
+                // load new list
+                // spinner?
+            }
+
+        },
+
+        /**
+         * Removes header classes used for sorting (bold, asc, desc)
+         */
+        resetHeaderClasses: function(asc, desc){
+            var $elements = this.sandbox.dom.$('thead th[data-attribute]');
+
+            this.sandbox.util.each($elements, function(index, $el){
+                var $span = this.sandbox.dom.children($el, 'span')[0];
+                this.sandbox.dom.removeClass($el, 'bold');
+                this.sandbox.dom.removeClass($span, asc+' '+desc);
+            }.bind(this));
         },
 
         bindCustomEvents: function() {
