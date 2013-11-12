@@ -6,8 +6,8 @@
 
 <div class="grid">
 	<ul>
-		<li><a href="/demos/aurajs/datagrid/app_dataGrid_doc.html">Example using an <b>url</b> as datasource</a></li>
-		<li><a href="/demos/aurajs/datagrid/app_dataGrid_array_doc.html">Example using an <b>array</b> as datasource</a></li>
+		<li><a href="/demos/datagrid/app_dataGrid.html">Example using an <b>url</b> as datasource</a></li>
+		<li><a href="/demos/datagrid/app_dataGrid_array.html">Example using an <b>array</b> as datasource</a></li>
 	</ul>
 </div>
 
@@ -57,7 +57,7 @@
 	                                '<td class="remove-row">',
 	                                    '<span class="icon-remove"></span>',
 	                                '</td>',
-	                            '</tr>'].join(''),
+	                            '</tr>'].join('')
 	                }
 	            }
 	        }
@@ -80,7 +80,7 @@
 <h2>Example-Code using an array</h2>
 <div class="doc-code">
 	{% highlight html %}
-	<div id="datagrid" class="grid-row"></div>
+	<div id="datagrid1" class="grid-row"></div>
 
 	<script lang="javascript">
 		var app = Husky({ debug: { enable: true }}),
@@ -110,7 +110,7 @@
                     ],
                     sortable: true,
 	                excludeFields: ['id'],
-	                el: '#datagrid'
+	                el: '#datagrid1'
 	            }
 	        }
 	    ]).then(function() {

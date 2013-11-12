@@ -110,6 +110,7 @@ define(function() {
 
             this.getData();
 
+            // Should happen only once because off method does not really work
             this.bindCustomEvents();
         },
 
