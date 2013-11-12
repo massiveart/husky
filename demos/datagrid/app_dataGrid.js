@@ -76,6 +76,21 @@ require(['lib/husky'], function (Husky) {
             '{ "id": "4", "content1": "D Hallo 1", "content2": "A Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }] }'
     ]);
 
+    fakeServer.respondWith('GET', '/contacts?sortOrder=asc&sortBy=content3&pageSize=4', [200, { 'Content-Type': 'application/json' },
+        '{"total": 56, "items": [' +
+            '{"id": "1", "content1": "D Hallo 1", "content2": "A Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "2", "content1": "C Hallo 1", "content2": "B Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "3", "content1": "B Hallo 1", "content2": "C Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "4", "content1": "A Hallo 1", "content2": "D Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }] }'
+    ]);
+
+    fakeServer.respondWith('GET', '/contacts?sortOrder=desc&sortBy=content3&pageSize=4', [200, { 'Content-Type': 'application/json' },
+        '{"total": 56, "items": [' +
+            '{"id": "1", "content1": "A Hallo 1", "content2": "D Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "2", "content1": "C Hallo 1", "content2": "C Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "3", "content1": "B Hallo 1", "content2": "B Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "4", "content1": "D Hallo 1", "content2": "A Hallo 2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }] }'
+    ]);
 
 
     app = new Husky({ debug: { enable: true }});
@@ -103,10 +118,6 @@ require(['lib/husky'], function (Husky) {
                     {content: 'Content 3', width: "30%", attribute: "content3"},
                     {content: 'Content 1', width: "30%", attribute: "content1"},
                     {content: ''}
-//                    {content: 'Content 1', width: "30%"},
-//                    {content: 'Content 2'},
-//                    {content: 'Content 3'},
-//                    {content: ''}
                 ],
                 sortable: true,
                 excludeFields: ['id'],
