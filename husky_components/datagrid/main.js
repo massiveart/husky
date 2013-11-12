@@ -109,6 +109,8 @@ define(function() {
             this.options.pagination = (this.options.pagination !== undefined) ? !!this.options.pagination : !!this.options.url;
 
             this.getData();
+
+            this.bindCustomEvents();
         },
 
         /*
@@ -133,12 +135,10 @@ define(function() {
                     .render();
             }
 
-            this.sandbox.logger.log('data in datagrid', this.data);
+
         },
 
         load: function(params) {
-
-            this.sandbox.logger.log('loading data');
 
             this.sandbox.util.ajax({
 
@@ -146,7 +146,6 @@ define(function() {
                 data: params.data,
 
                 success: function(response) {
-                    this.sandbox.logger.log('load', params);
 
                     this.data = response;
                     this.setConfigs();
@@ -182,7 +181,6 @@ define(function() {
                 url += '&page=' + params.page;
             }
 
-            this.sandbox.logger.log("url: "+url);
             return url;
         },
 
@@ -494,7 +492,6 @@ define(function() {
         },
 
         addRow: function(row) {
-
             var $table;
             // TODO check element type, list or table
 
@@ -599,8 +596,6 @@ define(function() {
 
             $element = this.sandbox.dom.$(event.currentTarget);
             page = $element.data('page');
-
-
             this.addLoader();
 
             this.load({
@@ -701,6 +696,7 @@ define(function() {
                 }
 
                 this.addLoader();
+
                 this.load({
                     url: this.options.url + params,
                     success: function () {
@@ -738,8 +734,8 @@ define(function() {
         },
 
         bindCustomEvents: function() {
-            // listen for private events
 
+            // listen for private events
             this.sandbox.on('husky.datagrid.update', this.updateHandler.bind(this));
 
             // listen for public events
@@ -764,7 +760,7 @@ define(function() {
         render: function() {
             this.$originalElement.html(this.$element);
 
-            this.bindCustomEvents();
+
             this.bindDOMEvents();
         },
 
