@@ -22421,6 +22421,12 @@ define('__component__$datagrid@husky',[],function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
             this.rowStructure = ['id'];
+            this.sort = {
+                ascClass : 'icon-arrow-up',
+                descClass : 'icon-arrow-down',
+                additionalClasses : ' m-left-5 small-font'
+            };
+
 
             // append datagrid to html element
             this.$originalElement = this.sandbox.dom.$(this.options.el);
@@ -22476,26 +22482,14 @@ define('__component__$datagrid@husky',[],function() {
                         .appendPagination()
                         .render();
 
+                    this.setHeaderClasses();
+
                     if (typeof params.success === 'function') {
                         params.success(response);
                     }
                 }.bind(this)
             });
         },
-
-        getSortingUrl: function () {
-            // TODO
-            // - make header clickable (icon + bold)
-            //      - get clicked element
-            //      - attribute <-> clicked column
-            //      - save clicked and asc/desc
-            // - on click load new data (spinner)
-            //      - change to different url
-            //      - remember asc/desc and column
-            // - display new data
-            // GET /admin/api/contact/contacts/list?fields=id,title,firstName,lastName,position&pageSize=10&sortOrder=asc&sortBy=id
-        },
-
 
         /**
          * Returns url with page size and page param at the end
@@ -22515,6 +22509,7 @@ define('__component__$datagrid@husky',[],function() {
                 url += '&page=' + params.page;
             }
 
+            this.sandbox.logger.log("url: "+url);
             return url;
         },
 
@@ -22602,6 +22597,8 @@ define('__component__$datagrid@husky',[],function() {
 
                 tblColumns.push('</th>');
             }
+
+            this.rowStructure = ['id'];
 
             headData.forEach(function(column) {
                 tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
@@ -23011,43 +23008,60 @@ define('__component__$datagrid@husky',[],function() {
          * Sets header classes and loads new data
          * @param event
          */
-        changeSorting: function(event){
+        changeSorting: function (event) {
 
-            var attribute = this.sandbox.dom.data(event.currentTarget,'attribute'),
+            var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
                 $element = event.currentTarget,
                 $span = this.sandbox.dom.children($element, 'span')[0],
-                asc = 'icon-arrow-up',
-                desc = 'icon-arrow-down';
+                params = "";
 
-            if(!!attribute) {
+            if (!!attribute) {
 
-                if(this.sandbox.dom.hasClass($span, asc) || this.sandbox.dom.hasClass($span, desc)) {
-                    this.sandbox.dom.toggleClass($span, asc + ' ' + desc);
+                this.sort.attribute = attribute;
+
+                if (this.sandbox.dom.hasClass($span, this.sort.ascClass)) {
+                    this.sort.direction = "desc";
+                    params = '?sortOrder=desc&sortBy=' + attribute;
                 } else {
-
-                    this.resetHeaderClasses(asc, desc);
-                    this.sandbox.dom.addClass($element, 'bold');
-                    this.sandbox.dom.addClass($span, asc);
-
+                    this.sort.direction = "asc";
+                    params = '?sortOrder=asc&sortBy=' + attribute;
                 }
 
-                // load new list
-                // spinner?
-            }
+                this.addLoader();
+                this.load({
+                    url: this.options.url + params,
+                    success: function () {
+                        this.removeLoader();
+                    }.bind(this)
+                });
 
+                this.sandbox.emit('husky.datagrid.data.sort');
+                this.sandbox.emit('husky.datagrid.update', 'update sort');
+
+            }
         },
 
         /**
-         * Removes header classes used for sorting (bold, asc, desc)
+         * Sets the header classes used for sorting purposes
+         * needs this.sort to be correctly initialized
          */
-        resetHeaderClasses: function(asc, desc){
-            var $elements = this.sandbox.dom.$('thead th[data-attribute]');
+        setHeaderClasses: function () {
+            var attribute = this.sort.attribute,
+                direction = this.sort.direction,
+                $element = this.sandbox.dom.find('thead th[data-attribute=' + attribute + ']', this.$element),
+                $span = this.sandbox.dom.children($element, 'span')[0];
 
-            this.sandbox.util.each($elements, function(index, $el){
-                var $span = this.sandbox.dom.children($el, 'span')[0];
-                this.sandbox.dom.removeClass($el, 'bold');
-                this.sandbox.dom.removeClass($span, asc+' '+desc);
-            }.bind(this));
+            if (!!attribute) {
+
+                this.sandbox.dom.addClass($element, 'bold');
+
+                if (direction === 'asc') {
+                    this.sandbox.dom.addClass($span, this.sort.ascClass + this.sort.additionalClasses);
+                } else {
+                    this.sandbox.dom.addClass($span, this.sort.descClass + this.sort.additionalClasses);
+                }
+
+            }
         },
 
         bindCustomEvents: function() {
@@ -23085,9 +23099,10 @@ define('__component__$datagrid@husky',[],function() {
             return this.$element
                 .outerWidth(this.$element.outerWidth())
                 .outerHeight(this.$element.outerHeight())
-                .empty();
-            //.addClass('is-loading');
+                .empty()
+                .addClass('is-loading');
         },
+
         removeLoader: function() {
             return this.$element.removeClass('is-loading');
         },
