@@ -187,14 +187,14 @@ define([], function() {
         },
 
         // toggle dropDown visible
-        toggleDropDown: function() {
+        toggleDropDown: function () {
             this.sandbox.logger.log('toggle dropdown ' + this.options.instanceName);
 
-                        if (this.sandbox.dom.is(this.$dropDown,':visible')) {
-                               this.hideDropDown();
-                            } else {
-                                this.showDropDown();
-                            }
+            if (this.sandbox.dom.is(this.$dropDown, ':visible')) {
+                this.hideDropDown();
+            } else {
+                this.showDropDown();
+            }
         },
 
         // make dropDown visible
@@ -209,7 +209,6 @@ define([], function() {
             this.sandbox.logger.log('hide dropdown ' + this.options.instanceName);
             this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');
             this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
-
         },
 
         // return checked values
