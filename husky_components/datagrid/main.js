@@ -2,17 +2,23 @@
  *    Name: Datagrid
  *
  *    Options:
- *        - autoRemoveHandling: raises an event before a row is removed
- *        - className: additional classname for the wrapping div
- *        - data: array of data to display (instead of using a url)
- *        - elementType: type of datagrid (table,..) ??
- *        - excludeFields: array of field to exclude
- *        - pagination: display a pagination
+ *      - autoRemoveHandling: raises an event before a row is removed
+ *      - className: additional classname for the wrapping div
+ *      - data: array of data to display (instead of using a url)
+ *      - elementType: type of datagrid (table,..) ??
+ *      - excludeFields: array of field to exclude
+ *      - pagination: display a pagination
  *      - pageSize: lines per page
  *      - showPages: amount of pages that will be shown
  *      - removeRow: displays in the last column an icon to remove a row
  *      - selectItem.type: typ of select [checkbox, radio]
  *      - selectItem.width: typ of select [checkbox, radio]
+ *      - sortable: is list sortable [true,false]
+ *      - tableHead: configuration of table header
+ *          - content: column title
+ *          - width: width of column
+ *          - class: css class of th
+ *          - attribute: mapping information to data (if not set it will just itterate of attributes)
  *      - url: url to fetch content
  *      - appendTBody: add TBODY to table
  *
@@ -39,6 +45,8 @@
  *
  */
 
+
+
 define(function() {
 
     'use strict';
@@ -64,6 +72,7 @@ define(function() {
             width: '50px'    // numerous value
             //clickable: false   // defines if background is clickable TODO do not use until fixed
         },
+        sortable: false,
         tableHead: [],
         url: null,
         appendTBody: true   // add TBODY to table
@@ -84,6 +93,13 @@ define(function() {
             this.configs = {};
             this.allItemIds = [];
             this.selectedItemIds = [];
+            this.rowStructure = ['id'];
+            this.sort = {
+                ascClass : 'icon-arrow-up',
+                descClass : 'icon-arrow-down',
+                additionalClasses : ' m-left-5 small-font'
+            };
+
 
             // append datagrid to html element
             this.$originalElement = this.sandbox.dom.$(this.options.el);
@@ -93,6 +109,9 @@ define(function() {
             this.options.pagination = (this.options.pagination !== undefined) ? !!this.options.pagination : !!this.options.url;
 
             this.getData();
+
+            // Should happen only once because off method does not really work
+            this.bindCustomEvents();
         },
 
         /*
@@ -117,12 +136,10 @@ define(function() {
                     .render();
             }
 
-            this.sandbox.logger.log('data in datagrid', this.data);
+
         },
 
         load: function(params) {
-
-            this.sandbox.logger.log('loading data');
 
             this.sandbox.util.ajax({
 
@@ -130,7 +147,6 @@ define(function() {
                 data: params.data,
 
                 success: function(response) {
-                    this.sandbox.logger.log('load', params);
 
                     this.data = response;
                     this.setConfigs();
@@ -139,6 +155,8 @@ define(function() {
                         .appendPagination()
                         .render();
 
+                    this.setHeaderClasses();
+
                     if (typeof params.success === 'function') {
                         params.success(response);
                     }
@@ -146,6 +164,11 @@ define(function() {
             });
         },
 
+        /**
+         * Returns url with page size and page param at the end
+         * @param params
+         * @returns {string}
+         */
         getUrl: function(params) {
             var delimiter = '?', url;
 
@@ -215,7 +238,7 @@ define(function() {
         },
 
         prepareTableHead: function() {
-            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues;
+            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute;
 
             tblColumns = [];
             headData = this.options.tableHead || this.data.head;
@@ -247,8 +270,11 @@ define(function() {
                 tblColumns.push('</th>');
             }
 
+            this.rowStructure = ['id'];
+
             headData.forEach(function(column) {
                 tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
+
                 tblColumnWidth = '';
                 // get width and measureunit
                 if (!!column.width) {
@@ -256,7 +282,14 @@ define(function() {
                     tblColumnWidth = ' width="' + widthValues[0] + widthValues[1] + '"';
                 }
 
-                tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
+                if(column.attribute !== undefined) {
+                    this.rowStructure.push(column.attribute);
+                    dataAttribute = ' data-attribute="'+column.attribute+'"';
+                    tblColumns.push('<th' + tblCellClass + tblColumnWidth + dataAttribute + '>' + column.content + '<span></span></th>');
+                } else {
+                    tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
+                }
+
             }.bind(this));
 
             return '<tr>' + tblColumns.join('') + '</tr>';
@@ -287,6 +320,11 @@ define(function() {
             return tblRows.join('');
         },
 
+        /**
+         * Returns table row including values and data attributes
+         * @param row
+         * @returns string table row
+         */
         prepareTableRow: function(row) {
 
             if (!!(this.options.template && this.options.template.row)) {
@@ -295,8 +333,9 @@ define(function() {
 
             } else {
 
-                var tblRowAttributes, tblCellContent, tblCellClass,
-                    tblColumns, tblCellClasses, radioPrefix, key, column;
+                var radioPrefix, key;
+                this.tblColumns  = [];
+                this.tblRowAttributes = '';
 
                 if (!!this.options.className && this.options.className !== '') {
                     radioPrefix = '-' + this.options.className;
@@ -304,48 +343,63 @@ define(function() {
                     radioPrefix = '';
                 }
 
-                tblColumns = [];
-                tblRowAttributes = '';
-
                 !!row.id && this.allItemIds.push(parseInt(row.id, 10));
 
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     // add a checkbox to each row
-                    tblColumns.push('<td>', this.templates.checkbox(), '</td>');
+                    this.tblColumns.push('<td>', this.templates.checkbox(), '</td>');
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                     // add a radio to each row
 
-                    tblColumns.push('<td>', this.templates.radio({
+                    this.tblColumns.push('<td>', this.templates.radio({
                         name: 'husky-radio' + radioPrefix
                     }), '</td>');
                 }
 
-                for (key in row) {
-                    if (row.hasOwnProperty(key)) {
-                        column = row[key];
-
-                        if (this.options.excludeFields.indexOf(key) < 0) {
-                            tblCellClasses = [];
-                            tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
-
-                            // prepare table cell classes
-                            !!column.class && tblCellClasses.push(column.class);
-                            !!column.thumb && tblCellClasses.push('thumb');
-
-                            tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
-
-                            tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
-                        } else {
-                            tblRowAttributes += ' data-' + key + '="' + column + '"';
+                // when row structure contains more elments than the id then use the structure to set values
+                if(this.rowStructure.length > 1) {
+                    this.rowStructure.forEach(function(key) {
+                        this.setValueOfRowCell(key, row[key]);
+                    }.bind(this));
+                } else {
+                    for (key in row) {
+                        if (row.hasOwnProperty(key)) {
+                           this.setValueOfRowCell(key, row[key]);
                         }
                     }
                 }
 
                 if (!!this.options.removeRow) {
-                    tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
+                    this.tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
                 }
 
-                return '<tr' + tblRowAttributes + '>' + tblColumns.join('') + '</tr>';
+                return '<tr' + this.tblRowAttributes + '>' + this.tblColumns.join('') + '</tr>';
+            }
+        },
+
+        /**
+         * Sets the value of row cell and the data-id attribute for the row
+         * @param key attribute name
+         * @param value attribute value
+         */
+        setValueOfRowCell: function(key, value){
+            var tblCellClasses,
+                tblCellContent,
+                tblCellClass;
+
+            if (this.options.excludeFields.indexOf(key) < 0) {
+                tblCellClasses = [];
+                tblCellContent = (!!value.thumb) ? '<img alt="' + (value.alt || '') + '" src="' + value.thumb + '"/>' : value;
+
+                // prepare table cell classes
+                !!value.class && tblCellClasses.push(value.class);
+                !!value.thumb && tblCellClasses.push('thumb');
+
+                tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
+
+                this.tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
+            } else {
+                this.tblRowAttributes += ' data-' + key + '="' + value + '"';
             }
         },
 
@@ -439,7 +493,6 @@ define(function() {
         },
 
         addRow: function(row) {
-
             var $table;
             // TODO check element type, list or table
 
@@ -544,8 +597,6 @@ define(function() {
 
             $element = this.sandbox.dom.$(event.currentTarget);
             page = $element.data('page');
-
-
             this.addLoader();
 
             this.load({
@@ -591,6 +642,11 @@ define(function() {
                 this.$element.on('click', '.remove-row > span', this.prepareRemoveRow.bind(this));
             }
 
+            if(this.options.sortable) {
+                this.$element.on('click', 'thead th[data-attribute]', this.changeSorting.bind(this));
+            }
+
+
 
             // Todo
             // trigger event when click on clickable area
@@ -617,9 +673,70 @@ define(function() {
             // }.bind(this));
         },
 
-        bindCustomEvents: function() {
-            // listen for private events
+        /**
+         * Sets header classes and loads new data
+         * @param event
+         */
+        changeSorting: function (event) {
 
+            var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
+                $element = event.currentTarget,
+                $span = this.sandbox.dom.children($element, 'span')[0],
+                params = "";
+
+            if (!!attribute) {
+
+                this.sort.attribute = attribute;
+
+                if (this.sandbox.dom.hasClass($span, this.sort.ascClass)) {
+                    this.sort.direction = "desc";
+                    params = '?sortOrder=desc&sortBy=' + attribute;
+                } else {
+                    this.sort.direction = "asc";
+                    params = '?sortOrder=asc&sortBy=' + attribute;
+                }
+
+                this.addLoader();
+
+                this.load({
+                    url: this.options.url + params,
+                    success: function () {
+                        this.removeLoader();
+                    }.bind(this)
+                });
+
+                this.sandbox.emit('husky.datagrid.data.sort');
+                this.sandbox.emit('husky.datagrid.update', 'update sort');
+
+            }
+        },
+
+        /**
+         * Sets the header classes used for sorting purposes
+         * needs this.sort to be correctly initialized
+         */
+        setHeaderClasses: function () {
+            var attribute = this.sort.attribute,
+                direction = this.sort.direction,
+                $element = this.sandbox.dom.find('thead th[data-attribute=' + attribute + ']', this.$element),
+                $span = this.sandbox.dom.children($element, 'span')[0];
+
+            if (!!attribute) {
+
+                this.sandbox.dom.addClass($element, 'bold');
+
+                if (direction === 'asc') {
+                    this.sandbox.dom.addClass($span, this.sort.ascClass + this.sort.additionalClasses);
+                } else {
+                    this.sandbox.dom.addClass($span, this.sort.descClass + this.sort.additionalClasses);
+                }
+
+            }
+        },
+
+        bindCustomEvents: function() {
+
+            // listen for private events
             this.sandbox.on('husky.datagrid.update', this.updateHandler.bind(this));
 
             // listen for public events
@@ -644,7 +761,7 @@ define(function() {
         render: function() {
             this.$originalElement.html(this.$element);
 
-            this.bindCustomEvents();
+
             this.bindDOMEvents();
         },
 
@@ -652,9 +769,10 @@ define(function() {
             return this.$element
                 .outerWidth(this.$element.outerWidth())
                 .outerHeight(this.$element.outerHeight())
-                .empty();
-            //.addClass('is-loading');
+                .empty()
+                .addClass('is-loading');
         },
+
         removeLoader: function() {
             return this.$element.removeClass('is-loading');
         },

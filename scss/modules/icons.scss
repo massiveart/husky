@@ -216,3 +216,29 @@
         display: inline-block;
     }
 }
+
+.icon-arrow-down {
+  &::after {
+    content: "\e224"; // TODO change to correct icons when included in font,  remove rotate
+    display: inline-block;
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+
+    transform: rotate(90deg);
+  }
+}
+
+.icon-arrow-up {
+  &::after {
+    content: "\e225"; // TODO change to correct icons when included in font,  remove rotate
+    display: inline-block;
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+
+    transform: rotate(90deg);
+  }
+}
