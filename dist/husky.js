@@ -23382,13 +23382,6 @@ define('__component__$dropdown@husky',[], function() {
                 event.stopPropagation();
                 this.clickItem(this.sandbox.dom.data(event.currentTarget, 'id'));
             }.bind(this), 'li');
-
-
-            // on click on trigger check
-            this.sandbox.dom.on(this.sandbox.dom.window, 'click', function() {
-                this.hideDropDown.call(this);
-            }.bind(this));
-
         },
 
         bindCustomEvents: function() {
@@ -23502,18 +23495,27 @@ define('__component__$dropdown@husky',[], function() {
         // toggle dropDown visible
         toggleDropDown: function() {
             this.sandbox.logger.log(this.name, 'toggle dropdown');
-            this.sandbox.dom.toggle(this.$dropDown);
+//            this.sandbox.dom.toggle(this.$dropDown);
+            if (this.sandbox.dom.is(this.$dropDown,':visible')) {
+                this.hideDropDown();
+            } else {
+                this.showDropDown();
+            }
         },
 
         // make dropDown visible
         showDropDown: function() {
             this.sandbox.logger.log(this.name, 'show dropdown');
+            // on click on trigger outside check
+            this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.show(this.$dropDown);
         },
 
         // hide dropDown
         hideDropDown: function() {
             this.sandbox.logger.log(this.name, 'hide dropdown');
+            // remove global click event
+            this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.hide(this.$dropDown);
         },
 
@@ -24371,8 +24373,6 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
         // bind dom elements
         bindDOMEvents: function() {
 
-            this.sandbox.dom.on(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
-
             // toggle drop-down
             this.sandbox.dom.on('#' + this.options.instanceName, 'click', function(event) {
                 this.sandbox.dom.stopPropagation(event);
@@ -24445,21 +24445,28 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
         },
 
         // toggle dropDown visible
-        toggleDropDown: function() {
+        toggleDropDown: function () {
             this.sandbox.logger.log('toggle dropdown ' + this.options.instanceName);
-            this.sandbox.dom.toggleClass(this.$dropdownContainer, 'hidden');
+
+            if (this.sandbox.dom.is(this.$dropDown, ':visible')) {
+                this.hideDropDown();
+            } else {
+                this.showDropDown();
+            }
         },
 
         // make dropDown visible
         showDropDown: function() {
             this.sandbox.logger.log('show dropdown ' + this.options.instanceName);
             this.sandbox.dom.removeClass(this.$dropdownContainer, 'hidden');
+            this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
         },
 
         // hide dropDown
         hideDropDown: function() {
             this.sandbox.logger.log('hide dropdown ' + this.options.instanceName);
             this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');
+            this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
         },
 
         // return checked values
