@@ -2,6 +2,10 @@
 // Icons
 // --------------------------------------------------
 
+.icon-class {
+    font-family: 'Glyphicons';
+}
+
 [class^="icon-"] {
     font-family: 'Glyphicons';
 }
@@ -196,3 +200,9 @@
     }
 }
 
+.icon-shevron-right {
+    &::after {
+        content: "\e224";
+        display: inline-block;
+    }
+}

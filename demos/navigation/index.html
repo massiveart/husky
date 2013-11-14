@@ -1,30 +1,107 @@
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        <link rel="stylesheet" href="../../dist/husky.css">
-    </head>
-    <body>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../dist/husky.min.css">
+</head>
+<body>
+    <div id="navigation-container" class="navigation-container" data-aura-component="navigation@husky">
+        <nav class="navigation">
+            <div class="navigation-content">
+                <div class="navigation-header">
+                    <div class="navigation-header-image">
+                        <img alt="#" src="http://lorempixel.com/32/32/people"/>
+                    </div>
+                    <h2 class="navigation-header-title">Ivoclar Vivadent</h2>
+                </div>
+                <div class="navigation-search">
+                    <a class="navigation-search-icon" href="#"></a>
+                    <input id="navigation-search" type="text" class="form-element input-round navigation-search-input" placeholder="Suche..."/>
+                </div>
+                <div class="navigation-item-container">
+                    <div class="navigation-items">
+                        <div class="navigation-items-toggle">
+                            <a class="js-navigation-item navigation-item" href="#">
+                                <span class="icon-book navigation-item-icon"></span>
+                                <span class="navigation-item-title">CSS</span>
+                            </a>
+                            <a class="icon-shevron-right navigation-toggle-icon" href="#"></a>
+                        </div>
+                        <ul>
+                            <li class="js-navigation-sub-item">
+                                <a href="#">Grid System</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="navigation-items">
+                        <div class="navigation-items-toggle">
+                            <a class="js-navigation-item navigation-item" href="#">
+                                <span class="icon-building navigation-item-icon"></span>
+                                <span class="navigation-item-title">Husky Components</span>
+                            </a>
+                            <a class="icon-shevron-right navigation-toggle-icon" href="#"></a>
+                        </div>
+                        <ul>
+                            <li class="js-navigation-sub-item">
+                                <a href="#">Header</a>
+                            </li>
+                            <li class="js-navigation-sub-item">
+                                <a href="#">Buttons</a>
+                            </li>
+                            <li class="js-navigation-sub-item">
+                                <a href="#">Datagrid</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="navigation-footer">
+                    <ul>
+                        <li>
+                            <a href="#">Logout</a>
+                        </li>
+                        <li>
+                            <span>Husky v0.1.0</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
 
-        <div data-aura-component="header@husky" data-aura-button-type="saveDelete"></div>
-        <div data-aura-component="navigation@husky" data-aura-url="/navigation"></div>
+<script src="../js/sinon.js"></script>
+<script src="../js/jquery.js"></script>
 
-        <div class="grid" id="content" style="margin-left: 300px; margin-top: 100px"><div class="grid-row">
-            <div class="grid-col-2 pointer" id="load"><span class="icon-book-open"></span> Load Content</div>
-            <div id="print"></div>
-        </div></div>
+<script src="../js/require.js"></script>
 
-        <script src="../js/sinon.js"></script>
-        <script src="../js/jquery.js"></script>
+<script>
+    require.config({
+        baseUrl: '../../'
+    });
 
-        <script data-main="app" src="../../bower_components/requirejs/require.js"></script>
-    </body>
+    require(['lib/husky'], function(Husky) {
+        'use strict';
+
+        var app = Husky({ debug: { enable: true }}),
+              _ = app.sandbox.util._;
+
+        app.start().then(function() {
+            app.logger.log('Aura started...');
+        });
+    });
+    
+</script>
+
+</body>
 </html>

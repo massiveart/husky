@@ -29,6 +29,12 @@
     }
 }
 
+input[type="text"] {
+    &.input-round {
+        border-radius: 30px;
+    }
+}
+
 // Labels
 // -------------------------
 label {
