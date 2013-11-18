@@ -51,7 +51,7 @@ define(function() {
 
     'use strict';
 
-    /*
+    /**
      *	Default values for options
      */
     var defaults = {
@@ -83,7 +83,7 @@ define(function() {
 
         view: true,
 
-        initialize: function() {
+        initialize: function () {
             this.sandbox.logger.log('initialized datagrid');
 
             // extend default options and set variables
@@ -95,11 +95,10 @@ define(function() {
             this.selectedItemIds = [];
             this.rowStructure = ['id'];
             this.sort = {
-                ascClass : 'icon-arrow-up',
-                descClass : 'icon-arrow-down',
-                additionalClasses : ' m-left-5 small-font'
+                ascClass: 'icon-arrow-up',
+                descClass: 'icon-arrow-down',
+                additionalClasses: ' m-left-5 small-font'
             };
-
 
             // append datagrid to html element
             this.$originalElement = this.sandbox.dom.$(this.options.el);
@@ -115,7 +114,7 @@ define(function() {
         /**
          * Gets the data either via the url or the array
          */
-        getData: function() {
+        getData: function () {
 
             if (!!this.options.url) {
 
@@ -133,18 +132,20 @@ define(function() {
                     .appendPagination()
                     .render();
             }
-
-
         },
 
-        load: function(params) {
+        /**
+         * Loads contents via ajax
+         * @param params url
+         */
+        load: function (params) {
 
             this.sandbox.util.ajax({
 
                 url: this.getUrl(params),
                 data: params.data,
 
-                success: function(response) {
+                success: function (response) {
 
                     this.data = response;
                     this.setConfigs();
@@ -167,7 +168,7 @@ define(function() {
          * @param params
          * @returns {string}
          */
-        getUrl: function(params) {
+        getUrl: function (params) {
             var delimiter = '?', url;
 
             if (params.url.indexOf('?') !== -1) {
@@ -183,14 +184,21 @@ define(function() {
             return url;
         },
 
-        setConfigs: function() {
+        /**
+         * Sets config object (total amount of elements, page size, page number)
+         */
+        setConfigs: function () {
             this.configs = {};
             this.configs.total = this.data.total;
             this.configs.pageSize = this.data.pageSize;
             this.configs.page = this.data.page;
         },
 
-        prepare: function() {
+        /**
+         * Prepares the structure of the datagrid (list, table)
+         * @returns {*}
+         */
+        prepare: function () {
             this.$element.empty();
 
             if (this.options.elementType === 'list') {
@@ -204,10 +212,11 @@ define(function() {
             return this;
         },
 
-        //
-        // elementType === 'table'
-        //
-        prepareTable: function() {
+        /**
+         * Perapres the structure of the datagrid when element type is table
+         * @returns {table} returns table element
+         */
+        prepareTable: function () {
             var $table, $thead, $tbody, tblClasses;
 
             $table = this.sandbox.dom.$('<table/>');
@@ -236,7 +245,11 @@ define(function() {
             return $table;
         },
 
-        prepareTableHead: function() {
+        /**
+         * Prepares table head
+         * @returns {string} returns table head
+         */
+        prepareTableHead: function () {
             var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute;
 
             tblColumns = [];
@@ -271,7 +284,7 @@ define(function() {
 
             this.rowStructure = ['id'];
 
-            headData.forEach(function(column) {
+            headData.forEach(function (column) {
                 tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
 
                 tblColumnWidth = '';
@@ -281,9 +294,9 @@ define(function() {
                     tblColumnWidth = ' width="' + widthValues[0] + widthValues[1] + '"';
                 }
 
-                if(column.attribute !== undefined) {
+                if (column.attribute !== undefined) {
                     this.rowStructure.push(column.attribute);
-                    dataAttribute = ' data-attribute="'+column.attribute+'"';
+                    dataAttribute = ' data-attribute="' + column.attribute + '"';
                     tblColumns.push('<th' + tblCellClass + tblColumnWidth + dataAttribute + '>' + column.content + '<span></span></th>');
                 } else {
                     tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
@@ -305,13 +318,17 @@ define(function() {
             return [regex[1], regex[2]];
         },
 
-        prepareTableRows: function() {
+        /**
+         * Itterates over all items and prepares the rows
+         * @returns {string} returns a string of all rows
+         */
+        prepareTableRows: function () {
             var tblRows;
 
             tblRows = [];
             this.allItemIds = [];
 
-            this.data.items.forEach(function(row) {
+            this.data.items.forEach(function (row) {
                 tblRows.push(this.prepareTableRow(row));
             }.bind(this));
 
@@ -320,11 +337,11 @@ define(function() {
         },
 
         /**
-         * Returns table row including values and data attributes
+         * Returns a table row including values and data attributes
          * @param row
          * @returns string table row
          */
-        prepareTableRow: function(row) {
+        prepareTableRow: function (row) {
 
             if (!!(this.options.template && this.options.template.row)) {
 
@@ -333,7 +350,7 @@ define(function() {
             } else {
 
                 var radioPrefix, key;
-                this.tblColumns  = [];
+                this.tblColumns = [];
                 this.tblRowAttributes = '';
 
                 if (!!this.options.className && this.options.className !== '') {
@@ -356,14 +373,14 @@ define(function() {
                 }
 
                 // when row structure contains more elments than the id then use the structure to set values
-                if(this.rowStructure.length > 1) {
-                    this.rowStructure.forEach(function(key) {
+                if (this.rowStructure.length > 1) {
+                    this.rowStructure.forEach(function (key) {
                         this.setValueOfRowCell(key, row[key]);
                     }.bind(this));
                 } else {
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                           this.setValueOfRowCell(key, row[key]);
+                            this.setValueOfRowCell(key, row[key]);
                         }
                     }
                 }
@@ -381,7 +398,7 @@ define(function() {
          * @param key attribute name
          * @param value attribute value
          */
-        setValueOfRowCell: function(key, value){
+        setValueOfRowCell: function (key, value) {
             var tblCellClasses,
                 tblCellContent,
                 tblCellClass;
@@ -402,12 +419,19 @@ define(function() {
             }
         },
 
-        resetItemSelection: function() {
+        /**
+         * Resets the arrays for selected items
+         */
+        resetItemSelection: function () {
             this.allItemIds = [];
             this.selectedItemIds = [];
         },
 
-        selectItem: function(event) {
+        /**
+         * Selectes or deselects the clicked item
+         * @param event
+         */
+        selectItem: function (event) {
 
             // Todo review handling of events for new rows in datagrid (itemId empty?)
 
@@ -469,7 +493,11 @@ define(function() {
             }
         },
 
-        selectAllItems: function(event) {
+        /**
+         * Selects or deselect all available items of the list
+         * @param event
+         */
+        selectAllItems: function (event) {
 
             event.stopPropagation();
             if (this.sandbox.util.compare(this.selectedItemIds, this.allItemIds)) {
@@ -491,16 +519,24 @@ define(function() {
             }
         },
 
-        addRow: function(row) {
+        /**
+         * Adds a row to the datagrid
+         * @param row
+         */
+        addRow: function (row) {
             var $table;
             // TODO check element type, list or table
 
             $table = this.$element.find('table');
-
             $table.append(this.prepareTableRow(row));
         },
 
-        prepareRemoveRow: function(event) {
+        /**
+         * Prepares for removing a row
+         * Raises the husky.datagrid.row.remove-click event when auto remove handling is not set to true
+         * @param event
+         */
+        prepareRemoveRow: function (event) {
             if (!!this.options.autoRemoveHandling) {
                 this.removeRow(event);
             } else {
@@ -517,7 +553,12 @@ define(function() {
             }
         },
 
-        removeRow: function(event) {
+        /**
+         * Removes a row from the datagrid
+         * Raises husky.datagrid.row.removed event
+         * @param event
+         */
+        removeRow: function (event) {
 
             var $element, $tblRow, id, idx;
 
@@ -542,10 +583,11 @@ define(function() {
             $tblRow.remove();
         },
 
-        //
-        // Pagination
         // TODO: create pagination module
-        //
+        /**
+         * Appends pagination when option is set
+         * @returns {*}
+         */
         appendPagination: function() {
             if (this.options.pagination) {
                 this.$element.append(this.preparePagination());
@@ -590,6 +632,10 @@ define(function() {
             });
         },
 
+        /**
+         *
+         * @param event
+         */
         changePage: function(event) {
 
             var $element, page;
@@ -733,7 +779,7 @@ define(function() {
             }
         },
 
-        bindCustomEvents: function() {
+        bindCustomEvents: function () {
 
             // listen for private events
             this.sandbox.on('husky.datagrid.update', this.updateHandler.bind(this));
@@ -757,14 +803,20 @@ define(function() {
             this.resetItemSelection();
         },
 
+        /**
+         * Renders datagrid element in container
+         * Binds DOM events
+         */
         render: function() {
             this.$originalElement.html(this.$element);
-
-
             this.bindDOMEvents();
         },
 
-        addLoader: function() {
+        /**
+         * Adds loading icon
+         * @returns {*}
+         */
+        addLoader: function () {
             return this.$element
                 .outerWidth(this.$element.outerWidth())
                 .outerHeight(this.$element.outerHeight())
@@ -772,12 +824,20 @@ define(function() {
                 .addClass('is-loading');
         },
 
-        removeLoader: function() {
+        /**
+         * Removes loading icon
+         * @returns {*}
+         */
+        removeLoader: function () {
             return this.$element.removeClass('is-loading').outerHeight("").outerWidth("");
         },
 
-        // trigger selected items
-        getSelectedItemsIds: function(callback) {
+        /**
+         * Returns selected items either via callback or else via husky.datagrid.items.selected event
+         * Gets called on husky.datagrid.items.get-selected event
+         * @param callback
+         */
+        getSelectedItemsIds: function (callback) {
             if (typeof callback === 'function') {
                 callback(this.selectedItemIds);
             } else {
