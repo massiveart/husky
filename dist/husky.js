@@ -22379,7 +22379,7 @@ define('__component__$datagrid@husky',[],function() {
     
 
     /**
-     *	Default values for options
+     *    Default values for options
      */
     var defaults = {
         autoRemoveHandling: true,
@@ -22410,7 +22410,7 @@ define('__component__$datagrid@husky',[],function() {
 
         view: true,
 
-        initialize: function () {
+        initialize: function() {
             this.sandbox.logger.log('initialized datagrid');
 
             // extend default options and set variables
@@ -22441,7 +22441,7 @@ define('__component__$datagrid@husky',[],function() {
         /**
          * Gets the data either via the url or the array
          */
-        getData: function () {
+        getData: function() {
 
             if (!!this.options.url) {
 
@@ -22465,25 +22465,25 @@ define('__component__$datagrid@husky',[],function() {
          * Loads contents via ajax
          * @param params url
          */
-        load: function (params) {
+        load: function(params) {
 
             this.sandbox.util.ajax({
 
                 url: this.getUrl(params),
                 data: params.data,
 
-                error: function ( jqXHR, textStatus, errorThrown) {
+                error: function(jqXHR, textStatus, errorThrown) {
                     this.sandbox.logger.log("An error occured while fetching data from: " + this.getUrl(params));
                     this.sandbox.logger.log(textStatus);
                     this.sandbox.logger.log(errorThrown);
                 }.bind(this),
 
-                complete: function (response) {
+                complete: function(response) {
                     this.sandbox.logger.log("An complete occured while fetching data from: " + this.getUrl(params));
                     this.sandbox.logger.log(response);
                 }.bind(this),
 
-                success: function (response) {
+                success: function(response) {
 
                     this.data = response;
                     this.setConfigs();
@@ -22506,7 +22506,7 @@ define('__component__$datagrid@husky',[],function() {
          * @param params
          * @returns {string}
          */
-        getUrl: function (params) {
+        getUrl: function(params) {
             var delimiter = '?', url;
 
             if (params.url.indexOf('?') !== -1) {
@@ -22525,7 +22525,7 @@ define('__component__$datagrid@husky',[],function() {
         /**
          * Sets config object (total amount of elements, page size, page number)
          */
-        setConfigs: function () {
+        setConfigs: function() {
             this.configs = {};
             this.configs.total = this.data.total;
             this.configs.pageSize = this.data.pageSize;
@@ -22536,7 +22536,7 @@ define('__component__$datagrid@husky',[],function() {
          * Prepares the structure of the datagrid (list, table)
          * @returns {*}
          */
-        prepare: function () {
+        prepare: function() {
             this.$element.empty();
 
             if (this.options.elementType === 'list') {
@@ -22554,7 +22554,7 @@ define('__component__$datagrid@husky',[],function() {
          * Perapres the structure of the datagrid when element type is table
          * @returns {table} returns table element
          */
-        prepareTable: function () {
+        prepareTable: function() {
             var $table, $thead, $tbody, tblClasses;
 
             $table = this.sandbox.dom.$('<table/>');
@@ -22587,7 +22587,7 @@ define('__component__$datagrid@husky',[],function() {
          * Prepares table head
          * @returns {string} returns table head
          */
-        prepareTableHead: function () {
+        prepareTableHead: function() {
             var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute;
 
             tblColumns = [];
@@ -22622,7 +22622,7 @@ define('__component__$datagrid@husky',[],function() {
 
             this.rowStructure = ['id'];
 
-            headData.forEach(function (column) {
+            headData.forEach(function(column) {
                 tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
 
                 tblColumnWidth = '';
@@ -22660,13 +22660,13 @@ define('__component__$datagrid@husky',[],function() {
          * Itterates over all items and prepares the rows
          * @returns {string} returns a string of all rows
          */
-        prepareTableRows: function () {
+        prepareTableRows: function() {
             var tblRows;
 
             tblRows = [];
             this.allItemIds = [];
 
-            this.data.items.forEach(function (row) {
+            this.data.items.forEach(function(row) {
                 tblRows.push(this.prepareTableRow(row));
             }.bind(this));
 
@@ -22679,7 +22679,7 @@ define('__component__$datagrid@husky',[],function() {
          * @param row
          * @returns string table row
          */
-        prepareTableRow: function (row) {
+        prepareTableRow: function(row) {
 
             if (!!(this.options.template && this.options.template.row)) {
 
@@ -22712,7 +22712,7 @@ define('__component__$datagrid@husky',[],function() {
 
                 // when row structure contains more elments than the id then use the structure to set values
                 if (this.rowStructure.length > 1) {
-                    this.rowStructure.forEach(function (key) {
+                    this.rowStructure.forEach(function(key) {
                         this.setValueOfRowCell(key, row[key]);
                     }.bind(this));
                 } else {
@@ -22736,7 +22736,7 @@ define('__component__$datagrid@husky',[],function() {
          * @param key attribute name
          * @param value attribute value
          */
-        setValueOfRowCell: function (key, value) {
+        setValueOfRowCell: function(key, value) {
             var tblCellClasses,
                 tblCellContent,
                 tblCellClass;
@@ -22760,7 +22760,7 @@ define('__component__$datagrid@husky',[],function() {
         /**
          * Resets the arrays for selected items
          */
-        resetItemSelection: function () {
+        resetItemSelection: function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
         },
@@ -22769,7 +22769,7 @@ define('__component__$datagrid@husky',[],function() {
          * Selectes or deselects the clicked item
          * @param event
          */
-        selectItem: function (event) {
+        selectItem: function(event) {
 
             // Todo review handling of events for new rows in datagrid (itemId empty?)
 
@@ -22835,7 +22835,7 @@ define('__component__$datagrid@husky',[],function() {
          * Selects or deselect all available items of the list
          * @param event
          */
-        selectAllItems: function (event) {
+        selectAllItems: function(event) {
 
             event.stopPropagation();
             if (this.sandbox.util.compare(this.selectedItemIds, this.allItemIds)) {
@@ -22861,7 +22861,7 @@ define('__component__$datagrid@husky',[],function() {
          * Adds a row to the datagrid
          * @param row
          */
-        addRow: function (row) {
+        addRow: function(row) {
             var $table;
             // check for other element types when implemented
             $table = this.$element.find('table');
@@ -22873,7 +22873,7 @@ define('__component__$datagrid@husky',[],function() {
          * Raises the husky.datagrid.row.remove-click event when auto remove handling is not set to true
          * @param event
          */
-        prepareRemoveRow: function (event) {
+        prepareRemoveRow: function(event) {
             if (!!this.options.autoRemoveHandling) {
                 this.removeRow(event);
             } else {
@@ -22895,7 +22895,7 @@ define('__component__$datagrid@husky',[],function() {
          * Raises husky.datagrid.row.removed event
          * @param event
          */
-        removeRow: function (event) {
+        removeRow: function(event) {
 
             var $element, $tblRow, id, idx;
 
@@ -22994,7 +22994,7 @@ define('__component__$datagrid@husky',[],function() {
             });
         },
 
-        resetSortingOptions: function () {
+        resetSortingOptions: function() {
             this.sort.attribute = null;
             this.sort.direction = null;
         },
@@ -23029,10 +23029,9 @@ define('__component__$datagrid@husky',[],function() {
                 this.$element.on('click', '.remove-row > span', this.prepareRemoveRow.bind(this));
             }
 
-            if(this.options.sortable) {
+            if (this.options.sortable) {
                 this.$element.on('click', 'thead th[data-attribute]', this.changeSorting.bind(this));
             }
-
 
 
             // Todo
@@ -23065,7 +23064,7 @@ define('__component__$datagrid@husky',[],function() {
          * Emits husky.datagrid.updated event on success
          * @param event
          */
-        changeSorting: function (event) {
+        changeSorting: function(event) {
 
             var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
                 $element = event.currentTarget,
@@ -23089,7 +23088,7 @@ define('__component__$datagrid@husky',[],function() {
 
                 this.load({
                     url: this.options.url + params,
-                    success: function () {
+                    success: function() {
                         this.removeLoader();
                         this.sandbox.emit('husky.datagrid.updated', 'updated sort');
                     }.bind(this)
@@ -23101,7 +23100,7 @@ define('__component__$datagrid@husky',[],function() {
          * Sets the header classes used for sorting purposes
          * needs this.sort to be correctly initialized
          */
-        setHeaderClasses: function () {
+        setHeaderClasses: function() {
             var attribute = this.sort.attribute,
                 direction = this.sort.direction,
                 $element = this.sandbox.dom.find('thead th[data-attribute=' + attribute + ']', this.$element),
@@ -23120,7 +23119,7 @@ define('__component__$datagrid@husky',[],function() {
             }
         },
 
-        bindCustomEvents: function () {
+        bindCustomEvents: function() {
 
             // listen for private events
             this.sandbox.on('husky.datagrid.update', this.updateHandler.bind(this));
@@ -23150,7 +23149,7 @@ define('__component__$datagrid@husky',[],function() {
             this.resetSortingOptions();
             this.load({
                 url: this.options.url,
-                success: function () {
+                success: function() {
                     this.removeLoader();
                     this.sandbox.emit('husky.datagrid.updated', 'updated data 123');
                 }.bind(this)
@@ -23170,7 +23169,7 @@ define('__component__$datagrid@husky',[],function() {
          * Adds loading icon and keeps width and height
          * @returns {*}
          */
-        addLoader: function () {
+        addLoader: function() {
             return this.$element
                 .outerWidth(this.$element.outerWidth())
                 .outerHeight(this.$element.outerHeight())
@@ -23182,7 +23181,7 @@ define('__component__$datagrid@husky',[],function() {
          * Removes loading icon, width and height of container
          * @returns {*}
          */
-        removeLoader: function () {
+        removeLoader: function() {
             return this.$element.removeClass('is-loading').outerHeight("").outerWidth("");
         },
 
@@ -23191,7 +23190,7 @@ define('__component__$datagrid@husky',[],function() {
          * Gets called on husky.datagrid.items.get-selected event
          * @param callback
          */
-        getSelectedItemsIds: function (callback) {
+        getSelectedItemsIds: function(callback) {
             if (typeof callback === 'function') {
                 callback(this.selectedItemIds);
             } else {
