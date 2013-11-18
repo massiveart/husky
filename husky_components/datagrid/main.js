@@ -174,15 +174,18 @@ define(function() {
          * @param params
          * @returns {string}
          */
-        getUrl: function (params) {
-            var delimiter = '?', url;
+        getUrl: function(params) {
 
+            if (!!this.data && this.data._links) {
+                return params.url;
+            }
+
+            var delimiter = '?', url;
             if (params.url.indexOf('?') !== -1) {
                 delimiter = '&';
             }
 
             url = params.url + delimiter + 'pageSize=' + this.options.paginationOptions.pageSize;
-
             if (params.page > 1) {
                 url += '&page=' + params.page;
             }
@@ -764,8 +767,7 @@ define(function() {
             var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
                 $element = event.currentTarget,
                 $span = this.sandbox.dom.children($element, 'span')[0],
-                url,
-                params = "";
+                url;
 
             if (!!attribute && !!this.data._links.sortable[attribute]) {
 
@@ -774,18 +776,15 @@ define(function() {
 
                 if (this.sandbox.dom.hasClass($span, this.sort.ascClass)) {
                     this.sort.direction = "desc";
-                    url = this.data._links.sortable[attribute].desc;
-                    params = '?sortOrder=desc&sortBy=' + attribute;
                 } else {
                     this.sort.direction = "asc";
-                    url = this.data._links.sortable[attribute].asc;
-                    params = '?sortOrder=asc&sortBy=' + attribute;
                 }
 
                 this.addLoader();
+                url = this.data._links.sortable[attribute][this.sort.direction];
 
                 this.load({
-                    url: this.options.url + params,
+                    url: url,
                     success: function () {
                         this.removeLoader();
                         this.sandbox.emit('husky.datagrid.updated', 'updated sort');

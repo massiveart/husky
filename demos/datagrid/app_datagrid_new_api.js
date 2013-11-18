@@ -12,7 +12,7 @@ require(['lib/husky'], function (Husky) {
 
     fakeServer = sinon.fakeServer.create();
 
-    fakeServer.respondWith('GET', '/contacts?sortOrder=asc&sortBy=content1&pageSize=4', [200, { 'Content-Type': 'application/json' },
+        fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=asc', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
@@ -41,7 +41,7 @@ require(['lib/husky'], function (Husky) {
         '}'
     ]);
 
-    fakeServer.respondWith('GET', '/contacts?sortOrder=desc&sortBy=content1&pageSize=4', [200, { 'Content-Type': 'application/json' },
+    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=desc', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
@@ -71,7 +71,7 @@ require(['lib/husky'], function (Husky) {
     ]);
 
 
-    fakeServer.respondWith('GET', '/contacts?sortOrder=desc&sortBy=content2&pageSize=4', [200, { 'Content-Type': 'application/json' },
+    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=desc', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
@@ -100,7 +100,7 @@ require(['lib/husky'], function (Husky) {
             '}'
     ]);
 
-    fakeServer.respondWith('GET', '/contacts?sortOrder=asc&sortBy=content2&pageSize=4', [200, { 'Content-Type': 'application/json' },
+    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=asc', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
@@ -130,7 +130,7 @@ require(['lib/husky'], function (Husky) {
     ]);
 
 
-    fakeServer.respondWith('GET', '/contacts?pageSize=4', [200, { 'Content-Type': 'application/json' },
+    fakeServer.respondWith('GET', '/contacts?flat=true&pageSize=4', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
@@ -166,7 +166,7 @@ require(['lib/husky'], function (Husky) {
     app.start([
             {
                 name: 'datagrid@husky', options: {
-                url: '/contacts',
+                url: '/contacts?flat=true',
                 selectItem: {
                     type: 'checkbox'
                 },
