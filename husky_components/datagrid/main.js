@@ -774,7 +774,7 @@ define(function() {
         },
 
         removeLoader: function() {
-            return this.$element.removeClass('is-loading');
+            return this.$element.removeClass('is-loading').outerHeight("").outerWidth("");
         },
 
         // trigger selected items
