@@ -176,6 +176,7 @@ define(function() {
          */
         getUrl: function(params) {
 
+            // TODO adjust when new api is finished
             if (!!this.data && this.data._links) {
                 return params.url;
             }
@@ -200,10 +201,11 @@ define(function() {
             this.configs = {};
 
             // TODO adjust when added to new api
+
             if(!!this.data.items) {
-                this.configs.total = this.data.total;
-                this.configs.pageSize = this.data.pageSize;
-                this.configs.page = this.data.page;
+                this.configs.total = this.data._total;
+                this.configs.pageSize = this.data._pageSize;
+                this.configs.page = this.data._page;
             }
         },
 
@@ -628,7 +630,9 @@ define(function() {
          * @returns {*}
          */
         appendPagination: function() {
-            if (this.options.pagination) {
+
+            // TODO adjust when api is finished
+            if (this.options.pagination && !!this.data._links) {
                 this.$element.append(this.preparePagination());
             }
             return this;
@@ -641,8 +645,10 @@ define(function() {
                 $pagination = this.sandbox.dom.$('<div/>');
                 $pagination.addClass('pagination');
 
+
                 $pagination.append(this.preparePaginationPrevNavigation());
-                $pagination.append(this.preparePaginationPageNavigation());
+                // TODO adjust when api is finished
+//                $pagination.append(this.preparePaginationPageNavigation());
                 $pagination.append(this.preparePaginationNextNavigation());
             }
 
@@ -843,6 +849,8 @@ define(function() {
          */
         updateHandler: function() {
             this.resetItemSelection();
+
+            // TODO does not work
             this.load({
                 url: this.options.url,
                 success: function () {
