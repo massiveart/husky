@@ -22981,6 +22981,7 @@ define('__component__$datagrid@husky',[],function() {
             $element = this.sandbox.dom.$(event.currentTarget);
             page = $element.data('page');
             this.addLoader();
+            this.resetSortingOptions();
             this.sandbox.emit('husky.datagrid.page.change', 'change page');
 
             this.load({
@@ -22993,6 +22994,10 @@ define('__component__$datagrid@husky',[],function() {
             });
         },
 
+        resetSortingOptions: function () {
+            this.sort.attribute = null;
+            this.sort.direction = null;
+        },
 
         bindDOMEvents: function() {
 
@@ -23142,6 +23147,7 @@ define('__component__$datagrid@husky',[],function() {
          */
         updateHandler: function() {
             this.resetItemSelection();
+            this.resetSortingOptions();
             this.load({
                 url: this.options.url,
                 success: function () {
