@@ -106,15 +106,13 @@ define(function() {
             this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
             this.$originalElement.append(this.$element);
 
-            this.options.pagination = (this.options.pagination !== undefined) ? !!this.options.pagination : !!this.options.url;
-
             this.getData();
 
-            // Should happen only once because off method does not really work
+            // Should only be be called once
             this.bindCustomEvents();
         },
 
-        /*
+        /**
          * Gets the data either via the url or the array
          */
         getData: function() {
@@ -198,6 +196,7 @@ define(function() {
             if (this.options.elementType === 'list') {
                 // TODO:
                 //this.$element = this.prepareList();
+                this.sandbox.logger.log("list is not yet implemented!");
             } else {
                 this.$element.append(this.prepareTable());
             }
