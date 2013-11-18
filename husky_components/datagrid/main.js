@@ -5,7 +5,7 @@
  *      - autoRemoveHandling: raises an event before a row is removed
  *      - className: additional classname for the wrapping div
  *      - data: array of data to display (instead of using a url)
- *      - elementType: type of datagrid (table,..) ??
+ *      - elementType: type of datagrid (currently is only table available)
  *      - excludeFields: array of field to exclude
  *      - pagination: display a pagination
  *      - pageSize: lines per page
@@ -30,14 +30,14 @@
  *       - husky.datagrid.row.remove-click - raised when clicked on the remove-row-icon
  *       - husky.datagrid.row.removed - raised when row got removed
  *       - husky.datagrid.page.change - raised when the the current page changes
- *       - husky.datagrid.update - raised when the data needs to be updated
+ *       - husky.datagrid.updated - raised when the data is updated
  *       - husky.datagrid.item.click - raised when clicked on an item
  *       - husky.datagrid.items.selected - raised when husky.datagrid.items.get-selected is triggered
  *       - husky.datagrid.data.provide - raised when when husky.datagrid.data.get is triggered
  *
  *
  *    Used Events:
- *       - husky.datagrid.update
+ *       - husky.datagrid.update - used to trigger an update of the data
  *       - husky.datagrid.row.add - used to add a row
  *       - husky.datagrid.row.remove - used to remove a row
  *       - husky.datagrid.items.get-selected - triggers husky.datagrid.items.selected event, which returns all selected item ids
@@ -57,7 +57,7 @@ define(function() {
     var defaults = {
         autoRemoveHandling: true,
         className: 'datagridcontainer',
-        elementType: 'table', //??
+        elementType: 'table',
         data: null,
         defaultMeasureUnit: 'px',
         excludeFields: ['id'],
@@ -144,6 +144,17 @@ define(function() {
 
                 url: this.getUrl(params),
                 data: params.data,
+
+                error: function ( jqXHR, textStatus, errorThrown) {
+                    this.sandbox.logger.log("An error occured while fetching data from: " + this.getUrl(params));
+                    this.sandbox.logger.log(textStatus);
+                    this.sandbox.logger.log(errorThrown);
+                }.bind(this),
+
+                complete: function (response) {
+                    this.sandbox.logger.log("An complete occured while fetching data from: " + this.getUrl(params));
+                    this.sandbox.logger.log(response);
+                }.bind(this),
 
                 success: function (response) {
 
@@ -525,8 +536,7 @@ define(function() {
          */
         addRow: function (row) {
             var $table;
-            // TODO check element type, list or table
-
+            // check for other element types when implemented
             $table = this.$element.find('table');
             $table.append(this.prepareTableRow(row));
         },
@@ -633,7 +643,8 @@ define(function() {
         },
 
         /**
-         *
+         * Called when the current page should change
+         * Emits husky.datagrid.updated event on success
          * @param event
          */
         changePage: function(event) {
@@ -643,17 +654,16 @@ define(function() {
             $element = this.sandbox.dom.$(event.currentTarget);
             page = $element.data('page');
             this.addLoader();
+            this.sandbox.emit('husky.datagrid.page.change', 'change page');
 
             this.load({
                 url: this.options.url,
                 page: page,
                 success: function() {
                     this.removeLoader();
+                    this.sandbox.emit('husky.datagrid.updated', 'updated page');
                 }.bind(this)
             });
-
-            this.sandbox.emit('husky.datagrid.page.change', 'change page');
-            this.sandbox.emit('husky.datagrid.update', 'update page');
         },
 
 
@@ -720,6 +730,7 @@ define(function() {
 
         /**
          * Sets header classes and loads new data
+         * Emits husky.datagrid.updated event on success
          * @param event
          */
         changeSorting: function (event) {
@@ -731,6 +742,7 @@ define(function() {
 
             if (!!attribute) {
 
+                this.sandbox.emit('husky.datagrid.data.sort');
                 this.sort.attribute = attribute;
 
                 if (this.sandbox.dom.hasClass($span, this.sort.ascClass)) {
@@ -747,12 +759,9 @@ define(function() {
                     url: this.options.url + params,
                     success: function () {
                         this.removeLoader();
+                        this.sandbox.emit('husky.datagrid.updated', 'updated sort');
                     }.bind(this)
                 });
-
-                this.sandbox.emit('husky.datagrid.data.sort');
-                this.sandbox.emit('husky.datagrid.update', 'update sort');
-
             }
         },
 
@@ -799,8 +808,20 @@ define(function() {
             this.sandbox.emit('husky.datagrid.data.provide', this.data);
         },
 
+        /**
+         * Updates data in datagrid
+         * Called when husky.datagrid.update event emitted
+         * Emits husky.datagrid.updated event on success
+         */
         updateHandler: function() {
             this.resetItemSelection();
+            this.load({
+                url: this.options.url,
+                success: function () {
+                    this.removeLoader();
+                    this.sandbox.emit('husky.datagrid.updated', 'updated data 123');
+                }.bind(this)
+            });
         },
 
         /**
@@ -813,7 +834,7 @@ define(function() {
         },
 
         /**
-         * Adds loading icon
+         * Adds loading icon and keeps width and height
          * @returns {*}
          */
         addLoader: function () {
@@ -825,7 +846,7 @@ define(function() {
         },
 
         /**
-         * Removes loading icon
+         * Removes loading icon, width and height of container
          * @returns {*}
          */
         removeLoader: function () {

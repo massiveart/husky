@@ -191,5 +191,9 @@ require(['lib/husky'], function (Husky) {
                 app.logger.log('Husky.Ui.DataGrid items selected ' + event);
             });
 
+            $('#update').on('click', function () {
+                app.sandbox.emit('husky.datagrid.update');
+            });
+
         });
 });
