@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="stylesheet" href="../../.tmp/husky.css">
+    <link rel="stylesheet" href="../../dist/husky.css">
 
     <style type="text/css">
         #content {
@@ -24,14 +24,13 @@
 </head>
 <body>
 
-    <!-- <div data-aura-component="headerbar@husky" data-aura-margin="55"></div>
-
-    <div data-aura-component="navigation@husky" data-aura-url="/navigation" data-aura-collapse="true"></div> -->
-
     <div id="content" class="grid">
         <div id="datagrid" class="grid-row"></div>
-        <div id="add-row" class="grid-row m-top-30"><span>Add Row</span></div>
-        <div id="get-selected" class="grid-row m-top-30"><span>Get Selected</span></div>
+        <div class="grid-row  m-top-30">
+            <div id="add-row" class="grid-col-4"><span>Add Row</span></div>
+            <div id="get-selected" class="grid-col-4"><span>Get Selected</span></div>
+            <div id="update" class="grid-col-4"><span>Update</span></div>
+        </div>
     </div>
 
 

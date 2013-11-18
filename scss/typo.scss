@@ -85,3 +85,7 @@ h5 {
 .bold {
   @extend %bold;
 }
+
+.small-font {
+  font-size: $smallFontSize;
+}
