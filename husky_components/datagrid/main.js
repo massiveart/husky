@@ -63,7 +63,7 @@ define(function() {
         excludeFields: ['id'],
         pagination: false,
         paginationOptions: {
-            pageSize: 10,
+            pageSize: 4,
             showPages: 5
         },
         removeRow: true,
@@ -147,13 +147,8 @@ define(function() {
 
                 error: function ( jqXHR, textStatus, errorThrown) {
                     this.sandbox.logger.log("An error occured while fetching data from: " + this.getUrl(params));
-                    this.sandbox.logger.log(textStatus);
-                    this.sandbox.logger.log(errorThrown);
-                }.bind(this),
-
-                complete: function (response) {
-                    this.sandbox.logger.log("An complete occured while fetching data from: " + this.getUrl(params));
-                    this.sandbox.logger.log(response);
+                    this.sandbox.logger.log("textstatus: "+textStatus);
+                    this.sandbox.logger.log("errorthrown",errorThrown);
                 }.bind(this),
 
                 success: function (response) {
@@ -200,9 +195,13 @@ define(function() {
          */
         setConfigs: function () {
             this.configs = {};
-            this.configs.total = this.data.total;
-            this.configs.pageSize = this.data.pageSize;
-            this.configs.page = this.data.page;
+
+            // TODO adjust when added to new api
+            if(!!this.data.items) {
+                this.configs.total = this.data.total;
+                this.configs.pageSize = this.data.pageSize;
+                this.configs.page = this.data.page;
+            }
         },
 
         /**
@@ -238,7 +237,8 @@ define(function() {
                 $table.append($thead);
             }
 
-            if (!!this.data.items) {
+            // TODO adjust when api is fully implemented
+            if (!!this.data.items || !!this.data._embedded) {
                 if (!!this.options.appendTBody) {
                     $tbody = this.sandbox.dom.$('<tbody/>');
                 }
@@ -261,7 +261,7 @@ define(function() {
          * @returns {string} returns table head
          */
         prepareTableHead: function () {
-            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute;
+            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute, isSortable;
 
             tblColumns = [];
             headData = this.options.tableHead || this.data.head;
@@ -305,8 +305,27 @@ define(function() {
                     tblColumnWidth = ' width="' + widthValues[0] + widthValues[1] + '"';
                 }
 
-                if (column.attribute !== undefined) {
+                isSortable = false;
+
+                // TODO adjust when new api fully implemented
+                if(!!this.data._links && !!this.data._links.sortable) {
+
+                    //is column sortable - check with received sort-links
+                    this.sandbox.util.each(this.data._links.sortable, function(index) {
+                        if(index === column.attribute){
+                            isSortable = true;
+                            return false;
+                        }
+                    }.bind(this));
+                }
+
+                // add to row structure when valid entry
+                if(column.attribute !== undefined) {
                     this.rowStructure.push(column.attribute);
+                }
+
+                // add html to table header cell if sortable
+                if (!!isSortable) {
                     dataAttribute = ' data-attribute="' + column.attribute + '"';
                     tblColumns.push('<th' + tblCellClass + tblColumnWidth + dataAttribute + '>' + column.content + '<span></span></th>');
                 } else {
@@ -339,10 +358,17 @@ define(function() {
             tblRows = [];
             this.allItemIds = [];
 
-            this.data.items.forEach(function (row) {
-                tblRows.push(this.prepareTableRow(row));
-            }.bind(this));
 
+            // TODO adjust when new api is fully implemented
+            if(!!this.data.items) {
+                this.data.items.forEach(function (row) {
+                    tblRows.push(this.prepareTableRow(row));
+                }.bind(this));
+            } else if(!!this.data._embedded) {
+                this.data._embedded.forEach(function (row) {
+                    tblRows.push(this.prepareTableRow(row));
+                }.bind(this));
+            }
 
             return tblRows.join('');
         },
@@ -383,7 +409,7 @@ define(function() {
                     }), '</td>');
                 }
 
-                // when row structure contains more elments than the id then use the structure to set values
+                // when row structure contains more elements than the id then use the structure to set values
                 if (this.rowStructure.length > 1) {
                     this.rowStructure.forEach(function (key) {
                         this.setValueOfRowCell(key, row[key]);
@@ -738,18 +764,21 @@ define(function() {
             var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
                 $element = event.currentTarget,
                 $span = this.sandbox.dom.children($element, 'span')[0],
+                url,
                 params = "";
 
-            if (!!attribute) {
+            if (!!attribute && !!this.data._links.sortable[attribute]) {
 
                 this.sandbox.emit('husky.datagrid.data.sort');
                 this.sort.attribute = attribute;
 
                 if (this.sandbox.dom.hasClass($span, this.sort.ascClass)) {
                     this.sort.direction = "desc";
+                    url = this.data._links.sortable[attribute].desc;
                     params = '?sortOrder=desc&sortBy=' + attribute;
                 } else {
                     this.sort.direction = "asc";
+                    url = this.data._links.sortable[attribute].asc;
                     params = '?sortOrder=asc&sortBy=' + attribute;
                 }
 
