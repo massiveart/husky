@@ -3,10 +3,10 @@
     'use strict';
 
     require.config({
-        paths: { "uri-template": 'bower_components/uri-template/...' } // TODO
+        paths: { "uri-template": 'bower_components/massiveart-uritemplate/uritemplate' }
     });
 
-    define(['uri-template'], function(URITemplate) {
+    define(['uri-template'], function(UriTemplate) {
 
         return  {
 
@@ -17,11 +17,11 @@
                 app.core.uritemplate = {
 
                     parse: function(param) {
-                        return URITemplate.parse(param);
+                        return UriTemplate.parse(param);
                     },
 
-                    expand: function(selector) {
-                        return URITemplate.parse(selector);
+                    expand: function(template, params) {
+                        return template.expand(params);
                     }
 
                 };
