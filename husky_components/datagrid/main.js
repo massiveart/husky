@@ -125,8 +125,6 @@ define(function() {
                 this.sandbox.logger.log('load data from array');
                 this.data = this.options.data;
 
-                //this.setConfigs();
-
                 this.prepare()
                     .appendPagination()
                     .render();
@@ -165,8 +163,6 @@ define(function() {
                         this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
                         this.data.pageDisplay = this.options.paginationOptions.showPages;
                     }
-
-                    //this.setConfigs();
 
                     this.prepare()
                         .appendPagination()
@@ -636,10 +632,14 @@ define(function() {
             return this;
         },
 
+        /**
+         * Delegates the rendering of the pagination when paginations is needed
+         * @returns {*}
+         */
         preparePagination: function() {
             var $pagination;
 
-            if (parseInt(this.data.pages, 10) > 1) {
+            if (!!this.options.pagination && parseInt(this.data.pages, 10) > 1) {
                 $pagination = this.sandbox.dom.$('<div/>');
                 $pagination.addClass('pagination');
 
@@ -652,6 +652,10 @@ define(function() {
             return $pagination;
         },
 
+        /**
+         * Triggers rendering of the numbers in the pagination
+         * @returns {*}
+         */
         preparePaginationPageNavigation: function() {
             return this.templates.paginationPageNavigation({
                 pageSize: this.data.pageSize,
@@ -661,6 +665,10 @@ define(function() {
             });
         },
 
+        /**
+         * Triggers rendering for last and next link
+         * @returns {*|string}
+         */
         preparePaginationBackwardNavigation: function() {
 
             var $next = '',
@@ -676,6 +684,11 @@ define(function() {
             return ["<ul>",$next,$last,"</ul>"].join('');
         },
 
+
+        /**
+         * Triggers rendering for first and previous link
+         * @returns {*|string}
+         */
         preparePaginationForwardNavigation: function() {
             var $prev = '',
                 $first = '';
@@ -976,7 +989,7 @@ define(function() {
                     pageClass,
                     i;
 
-                // add pages after current page
+                // add pages for current after current page
                 for (i = data.page; i <= data.pagesDisplay; i++) {
                     pageClass = (data.page === i) ? 'class="page is-selected bold"' : 'class="page"';
                     pageItemsCurrentAfter.push('<li '+pageClass+' data-page="'+ i + '">' + i + '</li>');
