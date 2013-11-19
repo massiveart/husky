@@ -738,7 +738,15 @@ define('form/mapper',[
                     // remember first child remove the rest
                     var $element = $($el[0]),
                         collectionElement = $element.data('element'),
-                        $child = collectionElement.$children;
+                        $child = collectionElement.$children,
+                        count = collection.length,
+                        dfd = $.Deferred(),
+                        resolve = function() {
+                            count--;
+                            if (count === 0) {
+                                dfd.resolve();
+                            }
+                        };
 
                     // remove children
                     $element.children().each(function(key, value) {
@@ -748,16 +756,20 @@ define('form/mapper',[
                     // foreach collection elements: create a new dom element, call setData recursively
                     $.each(collection, function(key, value) {
                         that.appendChildren($element, $child).then(function($newElement) {
-                            form.mapper.setData(value, $newElement);
+                            form.mapper.setData(value, $newElement).then(function() {
+                                resolve();
+                            });
                         });
                     });
 
                     // set current length of collection
                     $('#current-counter-' + $element.data('mapper-property')).text(collection.length);
+
+                    return dfd.promise();
                 },
 
                 appendChildren: function($element, $child) {
-                    var $newElement =$child.clone(),
+                    var $newElement = $child.clone(),
                         $newFields = Util.getFields($newElement),
                         dfd = $.Deferred(),
                         counter = $newFields.length,
@@ -797,20 +809,37 @@ define('form/mapper',[
                         $el = form.$el;
                     }
 
+                    var dfd = $.Deferred(),
+                        selector,
+                        $element,
+                        element,
+                        count = 1,
+                        resolve = function() {
+                            count--;
+                            if (count === 0) {
+                                dfd.resolve();
+                            }
+                        };
+
                     if (typeof data !== 'object') {
-                        var selector = '*[data-mapper-property]',
-                            $element = $el.find(selector),
-                            element = $element.data('element');
+                        selector = '*[data-mapper-property]';
+                        $element = $el.find(selector);
+                        element = $element.data('element');
                         // if element is not in form add it
                         if (!element) {
                             element = form.addField($element);
                             element.initialized.then(function() {
                                 element.setValue(data);
+                                // resolve this set data
+                                resolve();
                             });
                         } else {
                             element.setValue(data);
+                            // resolve this set data
+                            resolve();
                         }
                     } else {
+                        count = Object.keys(data).length;
                         $.each(data, function(key, value) {
                             // search field with mapper property
                             var selector = '*[data-mapper-property="' + key + '"]',
@@ -820,21 +849,31 @@ define('form/mapper',[
                             if ($element.length > 0) {
                                 // if field is an collection
                                 if ($.isArray(value)) {
-                                    that.setCollectionData.call(this, value, $element);
+                                    that.setCollectionData.call(this, value, $element).then(function() {
+                                        resolve();
+                                    });
                                 } else {
                                     // if element is not in form add it
                                     if (!element) {
                                         element = form.addField($element);
                                         element.initialized.then(function() {
                                             element.setValue(value);
+                                            // resolve this set data
+                                            resolve();
                                         });
                                     } else {
                                         element.setValue(value);
+                                        // resolve this set data
+                                        resolve();
                                     }
                                 }
+                            }else{
+                                resolve();
                             }
                         }.bind(this));
                     }
+
+                    return dfd.promise();
                 },
 
                 getData: function($el) {
