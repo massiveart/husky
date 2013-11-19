@@ -711,7 +711,7 @@ define(function() {
                 if(!!uri) {
                     url = uri;
                 } else {
-                    template = this.sandbox.uritemplate.parse(uri);
+                    template = this.sandbox.uritemplate.parse(this.data.links.pagination);
                     url = this.sandbox.uritemplate.expand(template, {page: page});
                 }
 

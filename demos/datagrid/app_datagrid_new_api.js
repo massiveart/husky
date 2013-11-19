@@ -147,7 +147,7 @@ require(['lib/husky'], function (Husky) {
                 '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
 
-                '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
+                '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
                 '"sortable": {' +
                         '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
@@ -163,7 +163,8 @@ require(['lib/husky'], function (Husky) {
             '],'+
             '"total":12,'+
             '"pages": 3,' +
-            '"page": 1' +
+            '"page": 1,' +
+            '"pageSize": 4' +
         '}'
     ]);
 
@@ -177,7 +178,7 @@ require(['lib/husky'], function (Husky) {
                 '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
                 '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
-                '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
+                '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
                 '"sortable": {' +
                 '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
@@ -209,7 +210,7 @@ require(['lib/husky'], function (Husky) {
                 '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"prev":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
-                '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
+                '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
                 '"sortable": {' +
                 '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
@@ -240,7 +241,7 @@ require(['lib/husky'], function (Husky) {
                 '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
                 '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"prev":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
-                '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
+                '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
                 '"sortable": {' +
                     '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
