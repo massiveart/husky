@@ -717,6 +717,7 @@ define(function() {
 
             if(!!page) {
                 this.addLoader();
+                this.resetSortingOptions();
                 this.sandbox.emit('husky.datagrid.page.change', 'change page');
 
                 uri = this.data.links[page];
@@ -737,6 +738,11 @@ define(function() {
                     }.bind(this)
                 });
             }
+        },
+
+        resetSortingOptions: function() {
+            this.sort.attribute = null;
+            this.sort.direction = null;
         },
 
 
@@ -887,7 +893,7 @@ define(function() {
          */
         updateHandler: function() {
             this.resetItemSelection();
-
+            this.resetSortingOptions();
             // TODO does not work?
             this.load({
                 url: this.data.links.self,
