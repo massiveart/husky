@@ -645,7 +645,7 @@ define(function() {
 
                 // TODO next / prev not set when on last / first page
                 $pagination.append(this.preparePaginationForwardNavigation());
-//                $pagination.append(this.preparePaginationPageNavigation());
+                $pagination.append(this.preparePaginationPageNavigation());
                 $pagination.append(this.preparePaginationBackwardNavigation());
             }
 
@@ -655,7 +655,8 @@ define(function() {
         preparePaginationPageNavigation: function() {
             return this.templates.paginationPageNavigation({
                 pageSize: this.data.pageSize,
-                selectedPage: this.data.page,
+                pages: this.data.pages,
+                page: this.data.page,
                 pagesDisplay: this.data.pageDisplay
             });
         },
@@ -876,7 +877,7 @@ define(function() {
 
             // TODO does not work?
             this.load({
-                url: this.options.url,
+                url: this.data.links.self,
                 success: function () {
                     this.removeLoader();
                     this.sandbox.emit('husky.datagrid.updated', 'updated data 123');
@@ -967,22 +968,31 @@ define(function() {
 
 
             paginationPageNavigation: function(data) {
-                var pageSize, i, pageItems, selectedPage, pageClass;
 
-                data = data || {};
-                pageSize = data.pageSize || 10;
-                selectedPage = (!!data.selectedPage) ? parseInt(data.selectedPage, 10) : 0;
+                // TODO currect page + this.options.paginationOptions.showPages: 5
+                var rest,
+                    pageItemsCurrentAfter = [],
+                    pageItemsBefore = [],
+                    pageClass,
+                    i;
 
-                pageItems = [];
-
-                for (i = 1; i <= pageSize; i++) {
-                    pageClass = (selectedPage === i) ? 'class="page is-selected"' : 'class="page"';
-                    pageItems.push('<li ', pageClass, ' data-page="', i, '">', i, '</li>');
+                // add pages after current page
+                for (i = data.page; i <= data.pagesDisplay; i++) {
+                    pageClass = (data.page === i) ? 'class="page is-selected bold"' : 'class="page"';
+                    pageItemsCurrentAfter.push('<li '+pageClass+' data-page="'+ i + '">' + i + '</li>');
                 }
 
-                pageItems.push('<li class="is-disabled">...</li>');
 
-                return '<ul>' + pageItems.join('') + '</ul>';
+                rest = data.pagesDisplay - pageItemsCurrentAfter.length;
+
+                // add pages before current page if needed
+                if(rest > 0) {
+                    for (i = data.page-rest; i < data.page ; i++) {
+                        pageItemsBefore.push('<li class="page" data-page="'+ i + '">' + i + '</li>');
+                    }
+                }
+
+                return '<ul>'+ pageItemsBefore.join('') + pageItemsCurrentAfter.join('') + '</ul>';
             }
         }
 

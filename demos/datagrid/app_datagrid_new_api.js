@@ -145,7 +145,7 @@ require(['lib/husky'], function (Husky) {
 
                 '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
                 '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
-                '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
+                '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
 
                 '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
 
@@ -226,7 +226,7 @@ require(['lib/husky'], function (Husky) {
             '"total":12,'+
             '"pages": 3,' +
             '"pageSize": 4,' +
-            '"page": 1' +
+            '"page": 2' +
             '}'
     ]);
 
@@ -257,7 +257,7 @@ require(['lib/husky'], function (Husky) {
             '"total":12,'+
             '"pages": 3,' +
             '"pageSize": 4,' +
-            '"page": 1' +
+            '"page": 3' +
             '}'
     ]);
 
@@ -274,7 +274,7 @@ require(['lib/husky'], function (Husky) {
                 },
                 paginationOptions: {
                     pageSize: 4,
-                    showPages: 5
+                    showPages: 3
                 },
                 className: "myClass",
                 removeRow: true,
