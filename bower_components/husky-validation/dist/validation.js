@@ -867,7 +867,7 @@ define('form/mapper',[
                                         resolve();
                                     }
                                 }
-                            }else{
+                            } else {
                                 resolve();
                             }
                         }.bind(this));
@@ -1410,11 +1410,15 @@ define('type/label',[
             typeInterface = {
                 setValue: function(value) {
                     if (!!value[this.options.label]) {
-                        var label = value[this.options.label];
+                        var label = value[this.options.label],
+                            labelValue = value[this.options.label];
                         if (!!this.options.translate) {
-                            label = Globalize.localize(label, Globalize.culture().name);
+                            labelValue = Globalize.localize(label, Globalize.culture().name);
+                            if (labelValue === undefined) {
+                                labelValue = label;
+                            }
                         }
-                        this.$el.text(label);
+                        this.$el.text(labelValue);
                     }
 
                     if (!!value[this.options.id]) {
