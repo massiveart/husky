@@ -153,7 +153,10 @@ define(function() {
 
                 success: function (response) {
 
-                    this.data = response;
+                    this.data = {};
+                    this.data.links = response._links;
+                    this.data.embedded = response._embedded;
+
                     this.setConfigs();
 
                     this.prepare()
@@ -176,8 +179,8 @@ define(function() {
          */
         getUrl: function(params) {
 
-            // TODO adjust when new api is finished
-            if (!!this.data && this.data._links) {
+            // TODO adjust when new api is finished and no backwards compatibility needed
+            if (!!this.data && this.data.links) {
                 return params.url;
             }
 
@@ -200,13 +203,9 @@ define(function() {
         setConfigs: function () {
             this.configs = {};
 
-            // TODO adjust when added to new api
-
-            if(!!this.data.items) {
-                this.configs.total = this.data._total;
-                this.configs.pageSize = this.data._pageSize;
-                this.configs.page = this.data._page;
-            }
+            this.configs.total = this.data.total;
+            this.configs.pageSize = this.data.pageSize || this.options.paginationOptions.pageSize;
+            this.configs.page = this.data.page;
         },
 
         /**
@@ -242,8 +241,8 @@ define(function() {
                 $table.append($thead);
             }
 
-            // TODO adjust when api is fully implemented
-            if (!!this.data.items || !!this.data._embedded) {
+            // TODO adjust when api is fully implemented and no backwards compatibility needed
+            if (!!this.data.items || !!this.data.embedded) {
                 if (!!this.options.appendTBody) {
                     $tbody = this.sandbox.dom.$('<tbody/>');
                 }
@@ -312,11 +311,11 @@ define(function() {
 
                 isSortable = false;
 
-                // TODO adjust when new api fully implemented
-                if(!!this.data._links && !!this.data._links.sortable) {
+                // TODO adjust when new api fully implemented and no backwards compatibility needed
+                if(!!this.data.links && !!this.data.links.sortable) {
 
                     //is column sortable - check with received sort-links
-                    this.sandbox.util.each(this.data._links.sortable, function(index) {
+                    this.sandbox.util.each(this.data.links.sortable, function(index) {
                         if(index === column.attribute){
                             isSortable = true;
                             return false;
@@ -364,13 +363,13 @@ define(function() {
             this.allItemIds = [];
 
 
-            // TODO adjust when new api is fully implemented
+            // TODO adjust when new api is fully implemented and no backwards compatibility needed
             if(!!this.data.items) {
                 this.data.items.forEach(function (row) {
                     tblRows.push(this.prepareTableRow(row));
                 }.bind(this));
-            } else if(!!this.data._embedded) {
-                this.data._embedded.forEach(function (row) {
+            } else if(!!this.data.embedded) {
+                this.data.embedded.forEach(function (row) {
                     tblRows.push(this.prepareTableRow(row));
                 }.bind(this));
             }
@@ -632,7 +631,7 @@ define(function() {
         appendPagination: function() {
 
             // TODO adjust when api is finished
-            if (this.options.pagination && !!this.data._links) {
+            if (this.options.pagination && !!this.data.links) {
                 this.$element.append(this.preparePagination());
             }
             return this;
@@ -645,10 +644,9 @@ define(function() {
                 $pagination = this.sandbox.dom.$('<div/>');
                 $pagination.addClass('pagination');
 
-
-                $pagination.append(this.preparePaginationPrevNavigation());
                 // TODO adjust when api is finished
-//                $pagination.append(this.preparePaginationPageNavigation());
+                $pagination.append(this.preparePaginationPrevNavigation());
+                $pagination.append(this.preparePaginationPageNavigation());
                 $pagination.append(this.preparePaginationNextNavigation());
             }
 
@@ -775,7 +773,7 @@ define(function() {
                 $span = this.sandbox.dom.children($element, 'span')[0],
                 url;
 
-            if (!!attribute && !!this.data._links.sortable[attribute]) {
+            if (!!attribute && !!this.data.links.sortable[attribute]) {
 
                 this.sandbox.emit('husky.datagrid.data.sort');
                 this.sort.attribute = attribute;
@@ -787,7 +785,7 @@ define(function() {
                 }
 
                 this.addLoader();
-                url = this.data._links.sortable[attribute][this.sort.direction];
+                url = this.data.links.sortable[attribute][this.sort.direction];
 
                 this.load({
                     url: url,
@@ -850,7 +848,7 @@ define(function() {
         updateHandler: function() {
             this.resetItemSelection();
 
-            // TODO does not work
+            // TODO does not work?
             this.load({
                 url: this.options.url,
                 success: function () {

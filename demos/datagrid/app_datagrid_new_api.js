@@ -16,6 +16,8 @@ require(['lib/husky'], function (Husky) {
         '{' +
             '"_links":' +
             '{' +
+            '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
+            '"last": "/admin/api/contacts?flat=true&page=14&pageSize=4",' +
                 '"self":"/admin/api/contacts?flat=true",' +
                 '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
                 '"prev":"/admin/api/contacts?flat=true",' +
@@ -37,7 +39,9 @@ require(['lib/husky'], function (Husky) {
                 '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
                 '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
             '],'+
-            '"_total":56'+
+            '"total":56,'+
+            '"page": 1,' +
+            '"pageSize": 4' +
         '}'
     ]);
 
@@ -45,6 +49,8 @@ require(['lib/husky'], function (Husky) {
         '{' +
             '"_links":' +
             '{' +
+                '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
+                '"last": "/admin/api/contacts?flat=true&page=14&pageSize=4",' +
                 '"self":"/admin/api/contacts?flat=true",' +
                 '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"prev":"/admin/api/contacts?flat=true",' +
@@ -66,7 +72,9 @@ require(['lib/husky'], function (Husky) {
                 '{ "id": "3", "content1": "B Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
                 '{ "id": "4", "content1": "A Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
             '],'+
-            '"_total":56'+
+            '"total":56,'+
+            '"page": 1,' +
+            '"pageSize": 4' +
         '}'
     ]);
 
@@ -75,6 +83,8 @@ require(['lib/husky'], function (Husky) {
         '{' +
             '"_links":' +
             '{' +
+                '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
+                '"last": "/admin/api/contacts?flat=true&page=14&pageSize=4",' +
                 '"self":"/admin/api/contacts?flat=true",' +
                 '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"prev":"/admin/api/contacts?flat=true",' +
@@ -96,14 +106,18 @@ require(['lib/husky'], function (Husky) {
                 '{ "id": "3", "content1": "C Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
                 '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
             '],'+
-            '"_total":56'+
-            '}'
+            '"total":56,'+
+            '"page": 1,' +
+            '"pageSize": 4' +
+        '}'
     ]);
 
     fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=asc', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
+                '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
+                '"last": "/admin/api/contacts?flat=true&page=14&pageSize=4",' +
                 '"self":"/admin/api/contacts?flat=true",' +
                 '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"prev":"/admin/api/contacts?flat=true",' +
@@ -125,8 +139,10 @@ require(['lib/husky'], function (Husky) {
                 '{ "id": "3", "content1": "C Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
                 '{ "id": "4", "content1": "D Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
             '],'+
-            '"_total":56'+
-            '}'
+            '"total":56,'+
+            '"page": 1,' +
+            '"pageSize": 4' +
+        '}'
     ]);
 
 
@@ -135,18 +151,16 @@ require(['lib/husky'], function (Husky) {
             '"_links":' +
             '{' +
                 '"self":"/admin/api/contacts?flat=true",' +
+
+                '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
+                '"last": "/admin/api/contacts?flat=true&page=14&pageSize=4",' +
                 '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"prev":"/admin/api/contacts?flat=true",' +
+
                 '"sortable": {' +
-                        '"content1" : {' +
-                            '"asc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=asc",' +
-                            '"desc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=desc"' +
-                        '},' +
-                        '"content2" : {' +
-                            '"asc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=asc",' +
-                            '"desc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=desc"' +
-                        '}' +
-                    '}'+
+                        '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                        '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
+                '}'+
             '},' +
             '"_embedded":'+
             '['+
@@ -155,7 +169,8 @@ require(['lib/husky'], function (Husky) {
                 '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
                 '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
             '],'+
-            '"_total":56'+
+            '"total":56,'+
+            '"page": 1' +
         '}'
     ]);
 
@@ -169,6 +184,10 @@ require(['lib/husky'], function (Husky) {
                 url: '/contacts?flat=true',
                 selectItem: {
                     type: 'checkbox'
+                },
+                paginationOptions: {
+                    pageSize: 4,
+                    showPages: 5
                 },
                 className: "myClass",
                 removeRow: true,
