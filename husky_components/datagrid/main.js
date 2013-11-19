@@ -153,12 +153,16 @@ define(function() {
 
                 success: function (response) {
 
-                    this.data = {};
-                    this.data.links = response._links;
-                    this.data.embedded = response._embedded;
-                    this.data.total = response.total;
-                    this.data.page = response.page;
-                    this.data.pageSize = response.pageSize;
+                    if(!!response.items) {
+                        this.data = response;
+                    } else {
+                        this.data = {};
+                        this.data.links = response._links;
+                        this.data.embedded = response._embedded;
+                        this.data.total = response.total;
+                        this.data.page = response.page;
+                        this.data.pageSize = response.pageSize;
+                    }
 
                     this.setConfigs();
 
@@ -650,6 +654,7 @@ define(function() {
 
                 // TODO adjust when api is finished
                 // TODO next / prev not set when on last / first page
+                // TODO only when pagination exists
                 $pagination.append(this.preparePaginationPrevNavigation());
                 $pagination.append(this.preparePaginationPageNavigation());
                 $pagination.append(this.preparePaginationNextNavigation());
