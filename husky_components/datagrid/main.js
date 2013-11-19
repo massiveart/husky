@@ -156,6 +156,9 @@ define(function() {
                     this.data = {};
                     this.data.links = response._links;
                     this.data.embedded = response._embedded;
+                    this.data.total = response.total;
+                    this.data.page = response.page;
+                    this.data.pageSize = response.pageSize;
 
                     this.setConfigs();
 
@@ -300,7 +303,6 @@ define(function() {
             this.rowStructure = ['id'];
 
             headData.forEach(function (column) {
-                tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
 
                 tblColumnWidth = '';
                 // get width and measureunit
@@ -331,8 +333,10 @@ define(function() {
                 // add html to table header cell if sortable
                 if (!!isSortable) {
                     dataAttribute = ' data-attribute="' + column.attribute + '"';
+                    tblCellClass = ((!!column.class) ? ' class="' + column.class + ' pointer"' : ' class="pointer"');
                     tblColumns.push('<th' + tblCellClass + tblColumnWidth + dataAttribute + '>' + column.content + '<span></span></th>');
                 } else {
+                    tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
                     tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
                 }
 
@@ -640,11 +644,12 @@ define(function() {
         preparePagination: function() {
             var $pagination;
 
-            if (!!this.configs.total && parseInt(this.configs.total, 10) >= 1) {
+            if (!!this.configs.total && parseInt(this.configs.total, 10) > this.configs.pageSize) {
                 $pagination = this.sandbox.dom.$('<div/>');
                 $pagination.addClass('pagination');
 
                 // TODO adjust when api is finished
+                // TODO next / prev not set when on last / first page
                 $pagination.append(this.preparePaginationPrevNavigation());
                 $pagination.append(this.preparePaginationPageNavigation());
                 $pagination.append(this.preparePaginationNextNavigation());
@@ -655,7 +660,7 @@ define(function() {
 
         preparePaginationPageNavigation: function() {
             return this.templates.paginationPageNavigation({
-                pageSize: this.options.paginationOptions.pageSize,
+                pageSize: this.configs.pageSize,
                 selectedPage: this.configs.page
             });
         },
@@ -771,7 +776,7 @@ define(function() {
             var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
                 $element = event.currentTarget,
                 $span = this.sandbox.dom.children($element, 'span')[0],
-                url;
+                url, template;
 
             if (!!attribute && !!this.data.links.sortable[attribute]) {
 
@@ -785,7 +790,8 @@ define(function() {
                 }
 
                 this.addLoader();
-                url = this.data.links.sortable[attribute][this.sort.direction];
+                template = this.sandbox.uritemplate.parse(this.data.links.sortable[attribute]);
+                url = this.sandbox.uritemplate.expand(template, {sortOrder: this.sort.direction});
 
                 this.load({
                     url: url,
