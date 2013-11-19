@@ -24,14 +24,8 @@ require(['lib/husky'], function (Husky) {
                 '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
 
                 '"sortable": {' +
-                    '"content1" : {' +
-                    '"asc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=asc",' +
-                    '"desc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=desc"' +
-                    '},' +
-                    '"content2" : {' +
-                    '"asc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=asc",' +
-                    '"desc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=desc"' +
-                    '}' +
+                    '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                    '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
                 '}'+
             '},' +
             '"_embedded":'+
@@ -59,14 +53,8 @@ require(['lib/husky'], function (Husky) {
                 '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
 
                 '"sortable": {' +
-                    '"content1" : {' +
-                        '"asc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=asc",' +
-                        '"desc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=desc"' +
-                    '},' +
-                    '"content2" : {' +
-                        '"asc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=asc",' +
-                        '"desc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=desc"' +
-                    '}' +
+                    '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                    '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
                 '}'+
             '},' +
             '"_embedded":'+
@@ -95,14 +83,8 @@ require(['lib/husky'], function (Husky) {
                 '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
 
                 '"sortable": {' +
-                    '"content1" : {' +
-                        '"asc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=asc",' +
-                        '"desc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=desc"' +
-                    '},' +
-                    '"content2" : {' +
-                        '"asc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=asc",' +
-                        '"desc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=desc"' +
-                    '}' +
+                    '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                    '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
                 '}'+
             '},' +
             '"_embedded":'+
@@ -130,14 +112,8 @@ require(['lib/husky'], function (Husky) {
                 '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
 
                 '"sortable": {' +
-                    '"content1" : {' +
-                        '"asc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=asc",' +
-                        '"desc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=desc"' +
-                    '},' +
-                    '"content2" : {' +
-                        '"asc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=asc",' +
-                        '"desc": "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=desc"' +
-                    '}' +
+                    '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                    '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
                 '}'+
             '},' +
             '"_embedded":'+
