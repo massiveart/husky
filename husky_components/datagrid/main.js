@@ -90,7 +90,6 @@ define(function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.name = this.options.name;
             this.data = null;
-            this.configs = {};
             this.allItemIds = [];
             this.selectedItemIds = [];
             this.rowStructure = ['id'];
@@ -126,7 +125,7 @@ define(function() {
                 this.sandbox.logger.log('load data from array');
                 this.data = this.options.data;
 
-                this.setConfigs();
+                //this.setConfigs();
 
                 this.prepare()
                     .appendPagination()
@@ -153,6 +152,7 @@ define(function() {
 
                 success: function (response) {
 
+                    // TODO adjust when new api is finished and no backwards compatibility needed
                     if(!!response.items) {
                         this.data = response;
                     } else {
@@ -161,10 +161,12 @@ define(function() {
                         this.data.embedded = response._embedded;
                         this.data.total = response.total;
                         this.data.page = response.page;
-                        this.data.pageSize = response.pageSize;
+                        this.data.pages = response.pages;
+                        this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
+                        this.data.pageDisplay = this.options.paginationOptions.showPages;
                     }
 
-                    this.setConfigs();
+                    //this.setConfigs();
 
                     this.prepare()
                         .appendPagination()
@@ -202,17 +204,6 @@ define(function() {
             }
 
             return url;
-        },
-
-        /**
-         * Sets config object (total amount of elements, page size, page number)
-         */
-        setConfigs: function () {
-            this.configs = {};
-
-            this.configs.total = this.data.total;
-            this.configs.pageSize = this.data.pageSize || this.options.paginationOptions.pageSize;
-            this.configs.page = this.data.page;
         },
 
         /**
@@ -648,16 +639,14 @@ define(function() {
         preparePagination: function() {
             var $pagination;
 
-            if (!!this.configs.total && parseInt(this.configs.total, 10) > this.configs.pageSize) {
+            if (parseInt(this.data.pages, 10) > 1) {
                 $pagination = this.sandbox.dom.$('<div/>');
                 $pagination.addClass('pagination');
 
-                // TODO adjust when api is finished
                 // TODO next / prev not set when on last / first page
-                // TODO only when pagination exists
-                $pagination.append(this.preparePaginationPrevNavigation());
-                $pagination.append(this.preparePaginationPageNavigation());
-                $pagination.append(this.preparePaginationNextNavigation());
+                $pagination.append(this.preparePaginationForwardNavigation());
+//                $pagination.append(this.preparePaginationPageNavigation());
+                $pagination.append(this.preparePaginationBackwardNavigation());
             }
 
             return $pagination;
@@ -665,24 +654,39 @@ define(function() {
 
         preparePaginationPageNavigation: function() {
             return this.templates.paginationPageNavigation({
-                pageSize: this.configs.pageSize,
-                selectedPage: this.configs.page
+                pageSize: this.data.pageSize,
+                selectedPage: this.data.page,
+                pagesDisplay: this.data.pageDisplay
             });
         },
 
-        preparePaginationNextNavigation: function() {
-            return this.templates.paginationNextNavigation({
-                next: this.options.pagination.next,
-                selectedPage: this.configs.page,
-                pageSize: this.configs.total
-            });
+        preparePaginationBackwardNavigation: function() {
+
+            var $next = '',
+                $last = '';
+
+            if(this.data.links.next) {
+                $next = this.templates.paginationNavigation("next", "Next");
+            }
+            if(this.data.links.last) {
+                $last = this.templates.paginationNavigation("last", "");
+            }
+
+            return ["<ul>",$next,$last,"</ul>"].join('');
         },
 
-        preparePaginationPrevNavigation: function() {
-            return this.templates.paginationPrevNavigation({
-                prev: this.options.pagination.prev,
-                selectedPage: this.configs.page
-            });
+        preparePaginationForwardNavigation: function() {
+            var $prev = '',
+                $first = '';
+
+            if(this.data.links.first) {
+                $first = this.templates.paginationNavigation("first", "");
+            }
+            if(this.data.links.prev) {
+                $prev = this.templates.paginationNavigation("prev", "Previous");
+            }
+
+            return ["<ul>",$first,$prev,"</ul>"].join('');
         },
 
         /**
@@ -692,21 +696,33 @@ define(function() {
          */
         changePage: function(event) {
 
-            var $element, page;
+            var $element, page, template, url, uri;
 
             $element = this.sandbox.dom.$(event.currentTarget);
             page = $element.data('page');
-            this.addLoader();
-            this.sandbox.emit('husky.datagrid.page.change', 'change page');
 
-            this.load({
-                url: this.options.url,
-                page: page,
-                success: function() {
-                    this.removeLoader();
-                    this.sandbox.emit('husky.datagrid.updated', 'updated page');
-                }.bind(this)
-            });
+            if(!!page) {
+                this.addLoader();
+                this.sandbox.emit('husky.datagrid.page.change', 'change page');
+
+                uri = this.data.links[page];
+
+                if(!!uri) {
+                    url = uri;
+                } else {
+                    template = this.sandbox.uritemplate.parse(uri);
+                    url = this.sandbox.uritemplate.expand(template, {page: page});
+                }
+
+                this.load({
+                    url: url,
+                    page: page,
+                    success: function() {
+                        this.removeLoader();
+                        this.sandbox.emit('husky.datagrid.updated', 'updated page');
+                    }.bind(this)
+                });
+            }
         },
 
 
@@ -743,7 +759,6 @@ define(function() {
             if(this.options.sortable) {
                 this.$element.on('click', 'thead th[data-attribute]', this.changeSorting.bind(this));
             }
-
 
 
             // Todo
@@ -945,36 +960,11 @@ define(function() {
             },
 
             // Pagination
-            paginationPrevNavigation: function(data) {
-                var selectedPage;
+            paginationNavigation: function(data , label) {
 
-                data = data || {};
-                selectedPage = parseInt(data.selectedPage, 10);
-
-                return [
-                    '<ul>',
-                    '<li class="pagination-first page" data-page="1"></li>',
-                    '<li class="pagination-prev page" data-page="', selectedPage - 1, '">', 'Previous', '</li>',
-                    '</ul>'
-                ].join('');
+                return ['<li class="pagination-',data,' page" data-page="', data, '">',label,'</li>'].join('');
             },
 
-            paginationNextNavigation: function(data) {
-                var next, last, pageSize, selectedPage;
-
-                data = data || {};
-                next = data.next || 'Next';
-                last = data.last || 'Last';
-                pageSize = data.pageSize || 10;
-                selectedPage = (!!data.selectedPage) ? parseInt(data.selectedPage, 10) : 0;
-
-                return [
-                    '<ul>',
-                    '<li class="pagination-next page" data-page="', selectedPage + 1, '">', next, '</li>',
-                    '<li class="pagination-last page" data-page="', pageSize, '"></li>',
-                    '</ul>'
-                ].join('');
-            },
 
             paginationPageNavigation: function(data) {
                 var pageSize, i, pageItems, selectedPage, pageClass;

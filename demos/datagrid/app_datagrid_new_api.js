@@ -12,13 +12,14 @@ require(['lib/husky'], function (Husky) {
 
     fakeServer = sinon.fakeServer.create();
 
-        fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=asc', [200, { 'Content-Type': 'application/json' },
+    // content1 asc
+    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=asc', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
-            '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
-            '"last": "/admin/api/contacts?flat=true&page=14&pageSize=4",' +
-                '"self":"/admin/api/contacts?flat=true",' +
+                '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
+                '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
+                '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=asc",' +
                 '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
                 '"prev":"/admin/api/contacts?flat=true",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
@@ -35,19 +36,21 @@ require(['lib/husky'], function (Husky) {
                 '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
                 '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
             '],'+
-            '"total":56,'+
+            '"total":12,'+
+            '"pages": 3,' +
             '"page": 1,' +
             '"pageSize": 4' +
         '}'
     ]);
 
+    // content1 desc
     fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=desc', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
                 '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
-                '"last": "/admin/api/contacts?flat=true&page=14&pageSize=4",' +
-                '"self":"/admin/api/contacts?flat=true",' +
+                '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
+                '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=desc",' +
                 '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"prev":"/admin/api/contacts?flat=true",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
@@ -64,20 +67,21 @@ require(['lib/husky'], function (Husky) {
                 '{ "id": "3", "content1": "B Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
                 '{ "id": "4", "content1": "A Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
             '],'+
-            '"total":56,'+
+            '"total":12,'+
+            '"pages": 3,' +
             '"page": 1,' +
             '"pageSize": 4' +
         '}'
     ]);
 
-
+    // content2 desc
     fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=desc', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
                 '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
-                '"last": "/admin/api/contacts?flat=true&page=14&pageSize=4",' +
-                '"self":"/admin/api/contacts?flat=true",' +
+                '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
+                '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=desc",' +
                 '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"prev":"/admin/api/contacts?flat=true",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
@@ -94,19 +98,21 @@ require(['lib/husky'], function (Husky) {
                 '{ "id": "3", "content1": "C Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
                 '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
             '],'+
-            '"total":56,'+
+            '"total":12,'+
+            '"pages": 3,' +
             '"page": 1,' +
             '"pageSize": 4' +
         '}'
     ]);
 
+    // content2 asc
     fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=asc', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
                 '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
-                '"last": "/admin/api/contacts?flat=true&page=14&pageSize=4",' +
-                '"self":"/admin/api/contacts?flat=true",' +
+                '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
+                '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=asc",' +
                 '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"prev":"/admin/api/contacts?flat=true",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
@@ -123,23 +129,24 @@ require(['lib/husky'], function (Husky) {
                 '{ "id": "3", "content1": "C Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
                 '{ "id": "4", "content1": "D Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
             '],'+
-            '"total":56,'+
+            '"total":12,'+
+            '"pages": 3,' +
             '"page": 1,' +
             '"pageSize": 4' +
         '}'
     ]);
 
-
-    fakeServer.respondWith('GET', '/contacts?flat=true&pageSize=4', [200, { 'Content-Type': 'application/json' },
+    // initial load
+    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
-                '"self":"/admin/api/contacts?flat=true",' +
+                '"self":"/admin/api/contacts?flat=true&pageSize=4",' +
 
                 '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
-                '"last": "/admin/api/contacts?flat=true&page=14&pageSize=4",' +
+                '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
-                '"prev":"/admin/api/contacts?flat=true",' +
+
                 '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
 
                 '"sortable": {' +
@@ -154,9 +161,104 @@ require(['lib/husky'], function (Husky) {
                 '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
                 '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
             '],'+
-            '"total":56,'+
+            '"total":12,'+
+            '"pages": 3,' +
             '"page": 1' +
         '}'
+    ]);
+
+    // first page
+    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&page=1&pageSize=4', [200, { 'Content-Type': 'application/json' },
+        '{' +
+            '"_links":' +
+            '{' +
+                '"self":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
+
+                '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
+                '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
+                '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
+                '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
+
+                '"sortable": {' +
+                '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
+                '}'+
+            '},' +
+            '"_embedded":'+
+            '['+
+                '{ "id": "1", "content1": "B Hallo 1.1 1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+                '{ "id": "2", "content1": "A Hallo 1.1 1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+                '{ "id": "3", "content1": "C Hallo 1.1 1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+                '{ "id": "4", "content1": "D Hallo 1.1 1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
+            '],'+
+            '"total":12,'+
+            '"pages": 3,' +
+            '"page": 1,' +
+            '"pageSize": 4' +
+            '}'
+    ]);
+
+    // second page
+    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&page=2&pageSize=4', [200, { 'Content-Type': 'application/json' },
+        '{' +
+            '"_links":' +
+            '{' +
+                '"self":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
+
+                '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
+                '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
+                '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
+                '"prev":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
+                '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
+
+                '"sortable": {' +
+                '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
+                '}'+
+            '},' +
+            '"_embedded":'+
+            '['+
+                '{ "id": "1", "content1": "B Hallo 1.1 2", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+                '{ "id": "2", "content1": "A Hallo 1.1 2", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+                '{ "id": "3", "content1": "C Hallo 1.1 2", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+                '{ "id": "4", "content1": "D Hallo 1.1 2", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
+            '],'+
+            '"total":12,'+
+            '"pages": 3,' +
+            '"pageSize": 4,' +
+            '"page": 1' +
+            '}'
+    ]);
+
+    // last page
+    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&page=3&pageSize=4', [200, { 'Content-Type': 'application/json' },
+        '{' +
+            '"_links":' +
+            '{' +
+                '"self":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
+
+                '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
+                '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
+                '"prev":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
+                '"pagination": "/admin/api/contacts?flat=true&page={page}",'+
+
+                '"sortable": {' +
+                    '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                    '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
+                '}'+
+            '},' +
+            '"_embedded":'+
+            '['+
+                '{ "id": "1", "content1": "B Hallo 1.1 3", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+                '{ "id": "2", "content1": "A Hallo 1.1 3", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+                '{ "id": "3", "content1": "C Hallo 1.1 3", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+                '{ "id": "4", "content1": "D Hallo 1.1 3", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
+            '],'+
+            '"total":12,'+
+            '"pages": 3,' +
+            '"pageSize": 4,' +
+            '"page": 1' +
+            '}'
     ]);
 
 
@@ -166,7 +268,7 @@ require(['lib/husky'], function (Husky) {
     app.start([
             {
                 name: 'datagrid@husky', options: {
-                url: '/contacts?flat=true',
+                url: '/admin/api/contacts?flat=true',
                 selectItem: {
                     type: 'checkbox'
                 },
