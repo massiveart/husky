@@ -13,7 +13,7 @@ require(['lib/husky'], function (Husky) {
     fakeServer = sinon.fakeServer.create();
 
     // content1 asc
-    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=asc', [200, { 'Content-Type': 'application/json' },
+    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder=asc', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
@@ -21,12 +21,11 @@ require(['lib/husky'], function (Husky) {
                 '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=asc",' +
                 '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
-                '"prev":"/admin/api/contacts?flat=true",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
                 '"sortable": {' +
-                    '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
-                    '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
+                    '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                    '"content2" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
                 '}'+
             '},' +
             '"_embedded":'+
@@ -44,7 +43,7 @@ require(['lib/husky'], function (Husky) {
     ]);
 
     // content1 desc
-    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=desc', [200, { 'Content-Type': 'application/json' },
+    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder=desc', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
@@ -52,12 +51,11 @@ require(['lib/husky'], function (Husky) {
                 '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=desc",' +
                 '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
-                '"prev":"/admin/api/contacts?flat=true",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
                 '"sortable": {' +
-                    '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
-                    '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
+                    '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                    '"content2" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
                 '}'+
             '},' +
             '"_embedded":'+
@@ -75,7 +73,7 @@ require(['lib/husky'], function (Husky) {
     ]);
 
     // content2 desc
-    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=desc', [200, { 'Content-Type': 'application/json' },
+    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content2&sortOrder=desc', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
@@ -83,12 +81,11 @@ require(['lib/husky'], function (Husky) {
                 '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=desc",' +
                 '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
-                '"prev":"/admin/api/contacts?flat=true",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
                 '"sortable": {' +
-                    '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
-                    '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
+                    '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                    '"content2" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
                 '}'+
             '},' +
             '"_embedded":'+
@@ -106,7 +103,7 @@ require(['lib/husky'], function (Husky) {
     ]);
 
     // content2 asc
-    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=asc', [200, { 'Content-Type': 'application/json' },
+    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content2&sortOrder=asc', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
@@ -114,12 +111,11 @@ require(['lib/husky'], function (Husky) {
                 '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=asc",' +
                 '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
-                '"prev":"/admin/api/contacts?flat=true",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
                 '"sortable": {' +
-                    '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
-                    '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
+                    '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                    '"content2" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
                 '}'+
             '},' +
             '"_embedded":'+
@@ -150,8 +146,8 @@ require(['lib/husky'], function (Husky) {
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
                 '"sortable": {' +
-                        '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
-                        '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
+                        '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                        '"content2" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
                 '}'+
             '},' +
             '"_embedded":'+
@@ -181,8 +177,8 @@ require(['lib/husky'], function (Husky) {
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
                 '"sortable": {' +
-                '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
-                '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
+                '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                '"content2" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
                 '}'+
             '},' +
             '"_embedded":'+
@@ -213,8 +209,8 @@ require(['lib/husky'], function (Husky) {
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
                 '"sortable": {' +
-                '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
-                '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
+                '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                '"content2" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
                 '}'+
             '},' +
             '"_embedded":'+
@@ -244,8 +240,8 @@ require(['lib/husky'], function (Husky) {
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
                 '"sortable": {' +
-                    '"content1" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
-                    '"content2" : "/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
+                    '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+                    '"content2" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
                 '}'+
             '},' +
             '"_embedded":'+

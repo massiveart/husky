@@ -717,7 +717,9 @@ define(function() {
 
             if(!!page) {
                 this.addLoader();
-                this.resetSortingOptions();
+                this.resetItemSelection();
+                //this.resetSortingOptions(); // browsing through sorted pages
+                
                 this.sandbox.emit('husky.datagrid.page.change', 'change page');
 
                 uri = this.data.links[page];
