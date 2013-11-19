@@ -14,7 +14,7 @@
 
             initialize: function(app) {
 
-                app.core.uritemplate = {
+                app.sandbox.uritemplate = {
 
                     parse: function(param) {
                         return UriTemplate.parse(param);
