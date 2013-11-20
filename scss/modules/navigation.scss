@@ -14,13 +14,13 @@
 .navigation-content {
     overflow: hidden;
     padding: 40px 20px 20px;
-    color: #999999;
+    color: $grayLight;
     font-size: 14px;
     
     a {
         display: inline-block;
         text-decoration: none;
-        color: #999999;
+        color: $grayLight;
     }
 
     ul {
@@ -40,7 +40,7 @@
     display: inline-block;
     font-size: 18px;
     font-weight: bold;
-    color: #fff;
+    color: $white;
     margin: 0;
     line-height: 35px;
 }
@@ -68,7 +68,7 @@
     padding-left: 40px;
     border: 0;
     margin: 0;
-    background-color: #999999;
+    background-color: $grayLight;
     color: #3e3e3e;
 
     @include input-placeholder {
@@ -76,7 +76,7 @@
     }
 
     &:focus {
-        background-color: #ffffff;
+        background-color: $white;
     }
 }
 
@@ -95,9 +95,9 @@
     margin: 10px 0;
 
     &.is-active {
-        color: #fff;
+        color: $white;
         a {
-            color: #fff;
+            color: $white;
         }
     }
 
@@ -165,7 +165,7 @@
 .navigation-footer {
     width: 170px;
     float: right;
-    border-top: 2px solid #999999;
+    border-top: 2px solid $grayLight;
     margin-top: 20px;
     padding-top: 15px;
     font-size: 12px;
