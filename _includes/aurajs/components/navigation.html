@@ -1,0 +1,44 @@
+<div id="navigation-documentation" class="grid-row m-top-30">
+    <h1>Navigation</h1>
+    <ul>
+        <li>handling with arrowkeys should be possible</li>
+        <li>footer should be configurable via options and with a full html template</li>
+        <li>navigation should be scrollable without scrollbar</li>
+    </ul>
+
+    <div class="grid-row m-top-30">
+        <h2>Events</h2>
+
+        <h3>navigation.initialized</h3>
+        <p>triggered when navigation is fully loaded and displayed</p>
+
+        <h3>navigation.item.toggle[state, name, id, event]</h3>
+        <p>triggered when an item with subitems is clicked</p>
+
+        <h3>naviagtion.item.select[name, id, event, parents]</h3>
+        <p>triggered when an item without subitems is clicked</p>
+    </div>
+
+    <div class="grid-row m-top-30">
+        <h2>Search</h2>
+        <ul>
+            <li>separate aura component</li>
+            <li>communicates with navigation via change event</li>
+        </ul>
+
+        <h3>Events</h3>
+        <h4>search.change[query] event with the query as parameter</h4>
+        <ul>
+            <li>triggered on key press and when query is at least three signs long</li>
+            <li>navigation listens for this event and filters navigation items according to query</li>
+            <li>filtering as full-text search</li>
+        </ul>
+
+        <h4>search.submit[query] event with the query as parameter</h4>
+        <ul>
+            <li>triggered when submit of form happend</li>
+            <li>relevant for searching on the right</li>
+        </ul>
+    </div>
+</div>
+
