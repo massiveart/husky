@@ -50,7 +50,7 @@ require(['lib/husky'], function (Husky) {
                 '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
                 '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=desc",' +
-                '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
+                '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
                 '"sortable": {' +
@@ -80,7 +80,7 @@ require(['lib/husky'], function (Husky) {
                 '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
                 '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=desc",' +
-                '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
+                '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
                 '"sortable": {' +
@@ -110,7 +110,7 @@ require(['lib/husky'], function (Husky) {
                 '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
                 '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=asc",' +
-                '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
+                '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
                 '"sortable": {' +

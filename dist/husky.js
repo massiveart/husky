@@ -17062,7 +17062,15 @@ define('form/mapper',[
                     // remember first child remove the rest
                     var $element = $($el[0]),
                         collectionElement = $element.data('element'),
-                        $child = collectionElement.$children;
+                        $child = collectionElement.$children,
+                        count = collection.length,
+                        dfd = $.Deferred(),
+                        resolve = function() {
+                            count--;
+                            if (count === 0) {
+                                dfd.resolve();
+                            }
+                        };
 
                     // remove children
                     $element.children().each(function(key, value) {
@@ -17072,16 +17080,20 @@ define('form/mapper',[
                     // foreach collection elements: create a new dom element, call setData recursively
                     $.each(collection, function(key, value) {
                         that.appendChildren($element, $child).then(function($newElement) {
-                            form.mapper.setData(value, $newElement);
+                            form.mapper.setData(value, $newElement).then(function() {
+                                resolve();
+                            });
                         });
                     });
 
                     // set current length of collection
                     $('#current-counter-' + $element.data('mapper-property')).text(collection.length);
+
+                    return dfd.promise();
                 },
 
                 appendChildren: function($element, $child) {
-                    var $newElement =$child.clone(),
+                    var $newElement = $child.clone(),
                         $newFields = Util.getFields($newElement),
                         dfd = $.Deferred(),
                         counter = $newFields.length,
@@ -17121,20 +17133,37 @@ define('form/mapper',[
                         $el = form.$el;
                     }
 
+                    var dfd = $.Deferred(),
+                        selector,
+                        $element,
+                        element,
+                        count = 1,
+                        resolve = function() {
+                            count--;
+                            if (count === 0) {
+                                dfd.resolve();
+                            }
+                        };
+
                     if (typeof data !== 'object') {
-                        var selector = '*[data-mapper-property]',
-                            $element = $el.find(selector),
-                            element = $element.data('element');
+                        selector = '*[data-mapper-property]';
+                        $element = $el.find(selector);
+                        element = $element.data('element');
                         // if element is not in form add it
                         if (!element) {
                             element = form.addField($element);
                             element.initialized.then(function() {
                                 element.setValue(data);
+                                // resolve this set data
+                                resolve();
                             });
                         } else {
                             element.setValue(data);
+                            // resolve this set data
+                            resolve();
                         }
                     } else {
+                        count = Object.keys(data).length;
                         $.each(data, function(key, value) {
                             // search field with mapper property
                             var selector = '*[data-mapper-property="' + key + '"]',
@@ -17144,21 +17173,31 @@ define('form/mapper',[
                             if ($element.length > 0) {
                                 // if field is an collection
                                 if ($.isArray(value)) {
-                                    that.setCollectionData.call(this, value, $element);
+                                    that.setCollectionData.call(this, value, $element).then(function() {
+                                        resolve();
+                                    });
                                 } else {
                                     // if element is not in form add it
                                     if (!element) {
                                         element = form.addField($element);
                                         element.initialized.then(function() {
                                             element.setValue(value);
+                                            // resolve this set data
+                                            resolve();
                                         });
                                     } else {
                                         element.setValue(value);
+                                        // resolve this set data
+                                        resolve();
                                     }
                                 }
+                            } else {
+                                resolve();
                             }
                         }.bind(this));
                     }
+
+                    return dfd.promise();
                 },
 
                 getData: function($el) {
@@ -17695,11 +17734,15 @@ define('type/label',[
             typeInterface = {
                 setValue: function(value) {
                     if (!!value[this.options.label]) {
-                        var label = value[this.options.label];
+                        var label = value[this.options.label],
+                            labelValue = value[this.options.label];
                         if (!!this.options.translate) {
-                            label = Globalize.localize(label, Globalize.culture().name);
+                            labelValue = Globalize.localize(label, Globalize.culture().name);
+                            if (labelValue === undefined) {
+                                labelValue = label;
+                            }
                         }
-                        this.$el.text(label);
+                        this.$el.text(labelValue);
                     }
 
                     if (!!value[this.options.id]) {
@@ -19915,6 +19958,892 @@ Globalize.culture = function( cultureSelector ) {
 
 define("globalize_lib", function(){});
 
+/*global unescape, module, define, window, global*/
+
+/*
+ UriTemplate Copyright (c) 2012-2013 Franz Antesberger. All Rights Reserved.
+ Available via the MIT license.
+*/
+
+(function (exportCallback) {
+    
+
+var UriTemplateError = (function () {
+
+    function UriTemplateError (options) {
+        this.options = options;
+    }
+
+    UriTemplateError.prototype.toString = function () {
+        if (JSON && JSON.stringify) {
+            return JSON.stringify(this.options);
+        }
+        else {
+            return this.options;
+        }
+    };
+
+    return UriTemplateError;
+}());
+
+var objectHelper = (function () {
+    function isArray (value) {
+        return Object.prototype.toString.apply(value) === '[object Array]';
+    }
+
+    function isString (value) {
+        return Object.prototype.toString.apply(value) === '[object String]';
+    }
+    
+    function isNumber (value) {
+        return Object.prototype.toString.apply(value) === '[object Number]';
+    }
+    
+    function isBoolean (value) {
+        return Object.prototype.toString.apply(value) === '[object Boolean]';
+    }
+    
+    function join (arr, separator) {
+        var
+            result = '',
+            first = true,
+            index;
+        for (index = 0; index < arr.length; index += 1) {
+            if (first) {
+                first = false;
+            }
+            else {
+                result += separator;
+            }
+            result += arr[index];
+        }
+        return result;
+    }
+
+    function map (arr, mapper) {
+        var
+            result = [],
+            index = 0;
+        for (; index < arr.length; index += 1) {
+            result.push(mapper(arr[index]));
+        }
+        return result;
+    }
+
+    function filter (arr, predicate) {
+        var
+            result = [],
+            index = 0;
+        for (; index < arr.length; index += 1) {
+            if (predicate(arr[index])) {
+                result.push(arr[index]);
+            }
+        }
+        return result;
+    }
+
+    function deepFreezeUsingObjectFreeze (object) {
+        if (typeof object !== "object" || object === null) {
+            return object;
+        }
+        Object.freeze(object);
+        var property, propertyName;
+        for (propertyName in object) {
+            if (object.hasOwnProperty(propertyName)) {
+                property = object[propertyName];
+                // be aware, arrays are 'object', too
+                if (typeof property === "object") {
+                    deepFreeze(property);
+                }
+            }
+        }
+        return object;
+    }
+
+    function deepFreeze (object) {
+        if (typeof Object.freeze === 'function') {
+            return deepFreezeUsingObjectFreeze(object);
+        }
+        return object;
+    }
+
+
+    return {
+        isArray: isArray,
+        isString: isString,
+        isNumber: isNumber,
+        isBoolean: isBoolean,
+        join: join,
+        map: map,
+        filter: filter,
+        deepFreeze: deepFreeze
+    };
+}());
+
+var charHelper = (function () {
+
+    function isAlpha (chr) {
+        return (chr >= 'a' && chr <= 'z') || ((chr >= 'A' && chr <= 'Z'));
+    }
+
+    function isDigit (chr) {
+        return chr >= '0' && chr <= '9';
+    }
+
+    function isHexDigit (chr) {
+        return isDigit(chr) || (chr >= 'a' && chr <= 'f') || (chr >= 'A' && chr <= 'F');
+    }
+
+    return {
+        isAlpha: isAlpha,
+        isDigit: isDigit,
+        isHexDigit: isHexDigit
+    };
+}());
+
+var pctEncoder = (function () {
+    var utf8 = {
+        encode: function (chr) {
+            // see http://ecmanaut.blogspot.de/2006/07/encoding-decoding-utf8-in-javascript.html
+            return unescape(encodeURIComponent(chr));
+        },
+        numBytes: function (firstCharCode) {
+            if (firstCharCode <= 0x7F) {
+                return 1;
+            }
+            else if (0xC2 <= firstCharCode && firstCharCode <= 0xDF) {
+                return 2;
+            }
+            else if (0xE0 <= firstCharCode && firstCharCode <= 0xEF) {
+                return 3;
+            }
+            else if (0xF0 <= firstCharCode && firstCharCode <= 0xF4) {
+                return 4;
+            }
+            // no valid first octet
+            return 0;
+        },
+        isValidFollowingCharCode: function (charCode) {
+            return 0x80 <= charCode && charCode <= 0xBF;
+        }
+    };
+
+    /**
+     * encodes a character, if needed or not.
+     * @param chr
+     * @return pct-encoded character
+     */
+    function encodeCharacter (chr) {
+        var
+            result = '',
+            octets = utf8.encode(chr),
+            octet,
+            index;
+        for (index = 0; index < octets.length; index += 1) {
+            octet = octets.charCodeAt(index);
+            result += '%' + (octet < 0x10 ? '0' : '') + octet.toString(16).toUpperCase();
+        }
+        return result;
+    }
+
+    /**
+     * Returns, whether the given text at start is in the form 'percent hex-digit hex-digit', like '%3F'
+     * @param text
+     * @param start
+     * @return {boolean|*|*}
+     */
+    function isPercentDigitDigit (text, start) {
+        return text.charAt(start) === '%' && charHelper.isHexDigit(text.charAt(start + 1)) && charHelper.isHexDigit(text.charAt(start + 2));
+    }
+
+    /**
+     * Parses a hex number from start with length 2.
+     * @param text a string
+     * @param start the start index of the 2-digit hex number
+     * @return {Number}
+     */
+    function parseHex2 (text, start) {
+        return parseInt(text.substr(start, 2), 16);
+    }
+
+    /**
+     * Returns whether or not the given char sequence is a correctly pct-encoded sequence.
+     * @param chr
+     * @return {boolean}
+     */
+    function isPctEncoded (chr) {
+        if (!isPercentDigitDigit(chr, 0)) {
+            return false;
+        }
+        var firstCharCode = parseHex2(chr, 1);
+        var numBytes = utf8.numBytes(firstCharCode);
+        if (numBytes === 0) {
+            return false;
+        }
+        for (var byteNumber = 1; byteNumber < numBytes; byteNumber += 1) {
+            if (!isPercentDigitDigit(chr, 3*byteNumber) || !utf8.isValidFollowingCharCode(parseHex2(chr, 3*byteNumber + 1))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Reads as much as needed from the text, e.g. '%20' or '%C3%B6'. It does not decode!
+     * @param text
+     * @param startIndex
+     * @return the character or pct-string of the text at startIndex
+     */
+    function pctCharAt(text, startIndex) {
+        var chr = text.charAt(startIndex);
+        if (!isPercentDigitDigit(text, startIndex)) {
+            return chr;
+        }
+        var utf8CharCode = parseHex2(text, startIndex + 1);
+        var numBytes = utf8.numBytes(utf8CharCode);
+        if (numBytes === 0) {
+            return chr;
+        }
+        for (var byteNumber = 1; byteNumber < numBytes; byteNumber += 1) {
+            if (!isPercentDigitDigit(text, startIndex + 3 * byteNumber) || !utf8.isValidFollowingCharCode(parseHex2(text, startIndex + 3 * byteNumber + 1))) {
+                return chr;
+            }
+        }
+        return text.substr(startIndex, 3 * numBytes);
+    }
+
+    return {
+        encodeCharacter: encodeCharacter,
+        isPctEncoded: isPctEncoded,
+        pctCharAt: pctCharAt
+    };
+}());
+
+var rfcCharHelper = (function () {
+
+    /**
+     * Returns if an character is an varchar character according 2.3 of rfc 6570
+     * @param chr
+     * @return (Boolean)
+     */
+    function isVarchar (chr) {
+        return charHelper.isAlpha(chr) || charHelper.isDigit(chr) || chr === '_' || pctEncoder.isPctEncoded(chr);
+    }
+
+    /**
+     * Returns if chr is an unreserved character according 1.5 of rfc 6570
+     * @param chr
+     * @return {Boolean}
+     */
+    function isUnreserved (chr) {
+        return charHelper.isAlpha(chr) || charHelper.isDigit(chr) || chr === '-' || chr === '.' || chr === '_' || chr === '~';
+    }
+
+    /**
+     * Returns if chr is an reserved character according 1.5 of rfc 6570
+     * or the percent character mentioned in 3.2.1.
+     * @param chr
+     * @return {Boolean}
+     */
+    function isReserved (chr) {
+        return chr === ':' || chr === '/' || chr === '?' || chr === '#' || chr === '[' || chr === ']' || chr === '@' || chr === '!' || chr === '$' || chr === '&' || chr === '(' ||
+            chr === ')' || chr === '*' || chr === '+' || chr === ',' || chr === ';' || chr === '=' || chr === "'";
+    }
+
+    return {
+        isVarchar: isVarchar,
+        isUnreserved: isUnreserved,
+        isReserved: isReserved
+    };
+
+}());
+
+/**
+ * encoding of rfc 6570
+ */
+var encodingHelper = (function () {
+
+    function encode (text, passReserved) {
+        var
+            result = '',
+            index,
+            chr = '';
+        if (typeof text === "number" || typeof text === "boolean") {
+            text = text.toString();
+        }
+        for (index = 0; index < text.length; index += chr.length) {
+            chr = text.charAt(index);
+            result += rfcCharHelper.isUnreserved(chr) || (passReserved && rfcCharHelper.isReserved(chr)) ? chr : pctEncoder.encodeCharacter(chr);
+        }
+        return result;
+    }
+
+    function encodePassReserved (text) {
+        return encode(text, true);
+    }
+
+    function encodeLiteralCharacter (literal, index) {
+        var chr = pctEncoder.pctCharAt(literal, index);
+        if (chr.length > 1) {
+            return chr;
+        }
+        else {
+            return rfcCharHelper.isReserved(chr) || rfcCharHelper.isUnreserved(chr) ? chr : pctEncoder.encodeCharacter(chr);
+        }
+    }
+
+    function encodeLiteral (literal) {
+        var
+            result = '',
+            index,
+            chr = '';
+        for (index = 0; index < literal.length; index += chr.length) {
+            chr = pctEncoder.pctCharAt(literal, index);
+            if (chr.length > 1) {
+                result += chr;
+            }
+            else {
+                result += rfcCharHelper.isReserved(chr) || rfcCharHelper.isUnreserved(chr) ? chr : pctEncoder.encodeCharacter(chr);
+            }
+        }
+        return result;
+    }
+
+    return {
+        encode: encode,
+        encodePassReserved: encodePassReserved,
+        encodeLiteral: encodeLiteral,
+        encodeLiteralCharacter: encodeLiteralCharacter
+    };
+
+}());
+
+
+// the operators defined by rfc 6570
+var operators = (function () {
+
+    var
+        bySymbol = {};
+
+    function create (symbol) {
+        bySymbol[symbol] = {
+            symbol: symbol,
+            separator: (symbol === '?') ? '&' : (symbol === '' || symbol === '+' || symbol === '#') ? ',' : symbol,
+            named: symbol === ';' || symbol === '&' || symbol === '?',
+            ifEmpty: (symbol === '&' || symbol === '?') ? '=' : '',
+            first: (symbol === '+' ) ? '' : symbol,
+            encode: (symbol === '+' || symbol === '#') ? encodingHelper.encodePassReserved : encodingHelper.encode,
+            toString: function () {
+                return this.symbol;
+            }
+        };
+    }
+
+    create('');
+    create('+');
+    create('#');
+    create('.');
+    create('/');
+    create(';');
+    create('?');
+    create('&');
+    return {
+        valueOf: function (chr) {
+            if (bySymbol[chr]) {
+                return bySymbol[chr];
+            }
+            if ("=,!@|".indexOf(chr) >= 0) {
+                return null;
+            }
+            return bySymbol[''];
+        }
+    };
+}());
+
+
+/**
+ * Detects, whether a given element is defined in the sense of rfc 6570
+ * Section 2.3 of the RFC makes clear defintions:
+ * * undefined and null are not defined.
+ * * the empty string is defined
+ * * an array ("list") is defined, if it is not empty (even if all elements are not defined)
+ * * an object ("map") is defined, if it contains at least one property with defined value
+ * @param object
+ * @return {Boolean}
+ */
+function isDefined (object) {
+    var
+        propertyName;
+    if (object === null || object === undefined) {
+        return false;
+    }
+    if (objectHelper.isArray(object)) {
+        // Section 2.3: A variable defined as a list value is considered undefined if the list contains zero members
+        return object.length > 0;
+    }
+    if (typeof object === "string" || typeof object === "number" || typeof object === "boolean") {
+        // falsy values like empty strings, false or 0 are "defined"
+        return true;
+    }
+    // else Object
+    for (propertyName in object) {
+        if (object.hasOwnProperty(propertyName) && isDefined(object[propertyName])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+var LiteralExpression = (function () {
+    function LiteralExpression (literal) {
+        this.literal = encodingHelper.encodeLiteral(literal);
+    }
+
+    LiteralExpression.prototype.expand = function () {
+        return this.literal;
+    };
+
+    LiteralExpression.prototype.toString = LiteralExpression.prototype.expand;
+
+    return LiteralExpression;
+}());
+
+var parse = (function () {
+
+    function parseExpression (expressionText) {
+        var
+            operator,
+            varspecs = [],
+            varspec = null,
+            varnameStart = null,
+            maxLengthStart = null,
+            index,
+            chr = '';
+
+        function closeVarname () {
+            var varname = expressionText.substring(varnameStart, index);
+            if (varname.length === 0) {
+                throw new UriTemplateError({expressionText: expressionText, message: "a varname must be specified", position: index});
+            }
+            varspec = {varname: varname, exploded: false, maxLength: null};
+            varnameStart = null;
+        }
+
+        function closeMaxLength () {
+            if (maxLengthStart === index) {
+                throw new UriTemplateError({expressionText: expressionText, message: "after a ':' you have to specify the length", position: index});
+            }
+            varspec.maxLength = parseInt(expressionText.substring(maxLengthStart, index), 10);
+            maxLengthStart = null;
+        }
+
+        operator = (function (operatorText) {
+            var op = operators.valueOf(operatorText);
+            if (op === null) {
+                throw new UriTemplateError({expressionText: expressionText, message: "illegal use of reserved operator", position: index, operator: operatorText});
+            }
+            return op;
+        }(expressionText.charAt(0)));
+        index = operator.symbol.length;
+
+        varnameStart = index;
+
+        for (; index < expressionText.length; index += chr.length) {
+            chr = pctEncoder.pctCharAt(expressionText, index);
+
+            if (varnameStart !== null) {
+                // the spec says: varname =  varchar *( ["."] varchar )
+                // so a dot is allowed except for the first char
+                if (chr === '.') {
+                    if (varnameStart === index) {
+                        throw new UriTemplateError({expressionText: expressionText, message: "a varname MUST NOT start with a dot", position: index});
+                    }
+                    continue;
+                }
+                if (rfcCharHelper.isVarchar(chr)) {
+                    continue;
+                }
+                closeVarname();
+            }
+            if (maxLengthStart !== null) {
+                if (index === maxLengthStart && chr === '0') {
+                    throw new UriTemplateError({expressionText: expressionText, message: "A :prefix must not start with digit 0", position: index});
+                }
+                if (charHelper.isDigit(chr)) {
+                    if (index - maxLengthStart >= 4) {
+                        throw new UriTemplateError({expressionText: expressionText, message: "A :prefix must have max 4 digits", position: index});
+                    }
+                    continue;
+                }
+                closeMaxLength();
+            }
+            if (chr === ':') {
+                if (varspec.maxLength !== null) {
+                    throw new UriTemplateError({expressionText: expressionText, message: "only one :maxLength is allowed per varspec", position: index});
+                }
+                if (varspec.exploded) {
+                    throw new UriTemplateError({expressionText: expressionText, message: "an exploeded varspec MUST NOT be varspeced", position: index});
+                }
+                maxLengthStart = index + 1;
+                continue;
+            }
+            if (chr === '*') {
+                if (varspec === null) {
+                    throw new UriTemplateError({expressionText: expressionText, message: "exploded without varspec", position: index});
+                }
+                if (varspec.exploded) {
+                    throw new UriTemplateError({expressionText: expressionText, message: "exploded twice", position: index});
+                }
+                if (varspec.maxLength) {
+                    throw new UriTemplateError({expressionText: expressionText, message: "an explode (*) MUST NOT follow to a prefix", position: index});
+                }
+                varspec.exploded = true;
+                continue;
+            }
+            // the only legal character now is the comma
+            if (chr === ',') {
+                varspecs.push(varspec);
+                varspec = null;
+                varnameStart = index + 1;
+                continue;
+            }
+            throw new UriTemplateError({expressionText: expressionText, message: "illegal character", character: chr, position: index});
+        } // for chr
+        if (varnameStart !== null) {
+            closeVarname();
+        }
+        if (maxLengthStart !== null) {
+            closeMaxLength();
+        }
+        varspecs.push(varspec);
+        return new VariableExpression(expressionText, operator, varspecs);
+    }
+
+    function parse (uriTemplateText) {
+        // assert filled string
+        var
+            index,
+            chr,
+            expressions = [],
+            braceOpenIndex = null,
+            literalStart = 0;
+        for (index = 0; index < uriTemplateText.length; index += 1) {
+            chr = uriTemplateText.charAt(index);
+            if (literalStart !== null) {
+                if (chr === '}') {
+                    throw new UriTemplateError({templateText: uriTemplateText, message: "unopened brace closed", position: index});
+                }
+                if (chr === '{') {
+                    if (literalStart < index) {
+                        expressions.push(new LiteralExpression(uriTemplateText.substring(literalStart, index)));
+                    }
+                    literalStart = null;
+                    braceOpenIndex = index;
+                }
+                continue;
+            }
+
+            if (braceOpenIndex !== null) {
+                // here just { is forbidden
+                if (chr === '{') {
+                    throw new UriTemplateError({templateText: uriTemplateText, message: "brace already opened", position: index});
+                }
+                if (chr === '}') {
+                    if (braceOpenIndex + 1 === index) {
+                        throw new UriTemplateError({templateText: uriTemplateText, message: "empty braces", position: braceOpenIndex});
+                    }
+                    try {
+                        expressions.push(parseExpression(uriTemplateText.substring(braceOpenIndex + 1, index)));
+                    }
+                    catch (error) {
+                        if (error.prototype === UriTemplateError.prototype) {
+                            throw new UriTemplateError({templateText: uriTemplateText, message: error.options.message, position: braceOpenIndex + error.options.position, details: error.options});
+                        }
+                        throw error;
+                    }
+                    braceOpenIndex = null;
+                    literalStart = index + 1;
+                }
+                continue;
+            }
+            throw new Error('reached unreachable code');
+        }
+        if (braceOpenIndex !== null) {
+            throw new UriTemplateError({templateText: uriTemplateText, message: "unclosed brace", position: braceOpenIndex});
+        }
+        if (literalStart < uriTemplateText.length) {
+            expressions.push(new LiteralExpression(uriTemplateText.substr(literalStart)));
+        }
+        return new UriTemplate(uriTemplateText, expressions);
+    }
+
+    return parse;
+}());
+
+var VariableExpression = (function () {
+    // helper function if JSON is not available
+    function prettyPrint (value) {
+        return (JSON && JSON.stringify) ? JSON.stringify(value) : value;
+    }
+
+    function isEmpty (value) {
+        if (!isDefined(value)) {
+            return true;
+        }
+        if (objectHelper.isString(value)) {
+            return value === '';
+        }
+        if (objectHelper.isNumber(value) || objectHelper.isBoolean(value)) {
+            return false;
+        }
+        if (objectHelper.isArray(value)) {
+            return value.length === 0;
+        }
+        for (var propertyName in value) {
+            if (value.hasOwnProperty(propertyName)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function propertyArray (object) {
+        var
+            result = [],
+            propertyName;
+        for (propertyName in object) {
+            if (object.hasOwnProperty(propertyName)) {
+                result.push({name: propertyName, value: object[propertyName]});
+            }
+        }
+        return result;
+    }
+
+    function VariableExpression (templateText, operator, varspecs) {
+        this.templateText = templateText;
+        this.operator = operator;
+        this.varspecs = varspecs;
+    }
+
+    VariableExpression.prototype.toString = function () {
+        return this.templateText;
+    };
+
+    function expandSimpleValue(varspec, operator, value) {
+        var result = '';
+        value = value.toString();
+        if (operator.named) {
+            result += encodingHelper.encodeLiteral(varspec.varname);
+            if (value === '') {
+                result += operator.ifEmpty;
+                return result;
+            }
+            result += '=';
+        }
+        if (varspec.maxLength !== null) {
+            value = value.substr(0, varspec.maxLength);
+        }
+        result += operator.encode(value);
+        return result;
+    }
+
+    function valueDefined (nameValue) {
+        return isDefined(nameValue.value);
+    }
+
+    function expandNotExploded(varspec, operator, value) {
+        var
+            arr = [],
+            result = '';
+        if (operator.named) {
+            result += encodingHelper.encodeLiteral(varspec.varname);
+            if (isEmpty(value)) {
+                result += operator.ifEmpty;
+                return result;
+            }
+            result += '=';
+        }
+        if (objectHelper.isArray(value)) {
+            arr = value;
+            arr = objectHelper.filter(arr, isDefined);
+            arr = objectHelper.map(arr, operator.encode);
+            result += objectHelper.join(arr, ',');
+        }
+        else {
+            arr = propertyArray(value);
+            arr = objectHelper.filter(arr, valueDefined);
+            arr = objectHelper.map(arr, function (nameValue) {
+                return operator.encode(nameValue.name) + ',' + operator.encode(nameValue.value);
+            });
+            result += objectHelper.join(arr, ',');
+        }
+        return result;
+    }
+
+    function expandExplodedNamed (varspec, operator, value) {
+        var
+            isArray = objectHelper.isArray(value),
+            arr = [];
+        if (isArray) {
+            arr = value;
+            arr = objectHelper.filter(arr, isDefined);
+            arr = objectHelper.map(arr, function (listElement) {
+                var tmp = encodingHelper.encodeLiteral(varspec.varname);
+                if (isEmpty(listElement)) {
+                    tmp += operator.ifEmpty;
+                }
+                else {
+                    tmp += '=' + operator.encode(listElement);
+                }
+                return tmp;
+            });
+        }
+        else {
+            arr = propertyArray(value);
+            arr = objectHelper.filter(arr, valueDefined);
+            arr = objectHelper.map(arr, function (nameValue) {
+                var tmp = encodingHelper.encodeLiteral(nameValue.name);
+                if (isEmpty(nameValue.value)) {
+                    tmp += operator.ifEmpty;
+                }
+                else {
+                    tmp += '=' + operator.encode(nameValue.value);
+                }
+                return tmp;
+            });
+        }
+        return objectHelper.join(arr, operator.separator);
+    }
+
+    function expandExplodedUnnamed (operator, value) {
+        var
+            arr = [],
+            result = '';
+        if (objectHelper.isArray(value)) {
+            arr = value;
+            arr = objectHelper.filter(arr, isDefined);
+            arr = objectHelper.map(arr, operator.encode);
+            result += objectHelper.join(arr, operator.separator);
+        }
+        else {
+            arr = propertyArray(value);
+            arr = objectHelper.filter(arr, function (nameValue) {
+                return isDefined(nameValue.value);
+            });
+            arr = objectHelper.map(arr, function (nameValue) {
+                return operator.encode(nameValue.name) + '=' + operator.encode(nameValue.value);
+            });
+            result += objectHelper.join(arr, operator.separator);
+        }
+        return result;
+    }
+
+
+    VariableExpression.prototype.expand = function (variables) {
+        var
+            expanded = [],
+            index,
+            varspec,
+            value,
+            valueIsArr,
+            oneExploded = false,
+            operator = this.operator;
+
+        // expand each varspec and join with operator's separator
+        for (index = 0; index < this.varspecs.length; index += 1) {
+            varspec = this.varspecs[index];
+            value = variables[varspec.varname];
+            // if (!isDefined(value)) {
+            // if (variables.hasOwnProperty(varspec.name)) {
+            if (value === null || value === undefined) {
+                continue;
+            }
+            if (varspec.exploded) {
+                oneExploded = true;
+            }
+            valueIsArr = objectHelper.isArray(value);
+            if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+                expanded.push(expandSimpleValue(varspec, operator, value));
+            }
+            else if (varspec.maxLength && isDefined(value)) {
+                // 2.4.1 of the spec says: "Prefix modifiers are not applicable to variables that have composite values."
+                throw new Error('Prefix modifiers are not applicable to variables that have composite values. You tried to expand ' + this + " with " + prettyPrint(value));
+            }
+            else if (!varspec.exploded) {
+                if (operator.named || !isEmpty(value)) {
+                    expanded.push(expandNotExploded(varspec, operator, value));
+                }
+            }
+            else if (isDefined(value)) {
+                if (operator.named) {
+                    expanded.push(expandExplodedNamed(varspec, operator, value));
+                }
+                else {
+                    expanded.push(expandExplodedUnnamed(operator, value));
+                }
+            }
+        }
+
+        if (expanded.length === 0) {
+            return "";
+        }
+        else {
+            return operator.first + objectHelper.join(expanded, operator.separator);
+        }
+    };
+
+    return VariableExpression;
+}());
+
+var UriTemplate = (function () {
+    function UriTemplate (templateText, expressions) {
+        this.templateText = templateText;
+        this.expressions = expressions;
+        objectHelper.deepFreeze(this);
+    }
+
+    UriTemplate.prototype.toString = function () {
+        return this.templateText;
+    };
+
+    UriTemplate.prototype.expand = function (variables) {
+        // this.expressions.map(function (expression) {return expression.expand(variables);}).join('');
+        var
+            index,
+            result = '';
+        for (index = 0; index < this.expressions.length; index += 1) {
+            result += this.expressions[index].expand(variables);
+        }
+        return result;
+    };
+
+    UriTemplate.parse = parse;
+    UriTemplate.UriTemplateError = UriTemplateError;
+    return UriTemplate;
+}());
+
+    exportCallback(UriTemplate);
+
+}(function (UriTemplate) {
+        
+        // export UriTemplate, when module is present, or pass it to window or global
+        if (typeof module !== "undefined") {
+            module.exports = UriTemplate;
+        }
+        else if (typeof define === "function") {
+            define('uri-template',[],function() {
+                return UriTemplate;
+            });
+        }
+        else if (typeof window !== "undefined") {
+            window.UriTemplate = UriTemplate;
+        }
+        else {
+            global.UriTemplate = UriTemplate;
+        }
+    }
+));
+
 define('bower_components/aura/lib/platform',[],function() {
   // The bind method is used for callbacks.
   //
@@ -20717,6 +21646,7 @@ define('husky',[
         app.use('./husky_extensions/util');
         app.use('./husky_extensions/template');
         app.use('./husky_extensions/globalize');
+        app.use('./husky_extensions/uri-template');
 
     }
 
@@ -22332,7 +23262,7 @@ define('__component__$button@husky',[], function() {
  *      - autoRemoveHandling: raises an event before a row is removed
  *      - className: additional classname for the wrapping div
  *      - data: array of data to display (instead of using a url)
- *      - elementType: type of datagrid (table,..) ??
+ *      - elementType: type of datagrid (currently is only table available)
  *      - excludeFields: array of field to exclude
  *      - pagination: display a pagination
  *      - pageSize: lines per page
@@ -22357,14 +23287,14 @@ define('__component__$button@husky',[], function() {
  *       - husky.datagrid.row.remove-click - raised when clicked on the remove-row-icon
  *       - husky.datagrid.row.removed - raised when row got removed
  *       - husky.datagrid.page.change - raised when the the current page changes
- *       - husky.datagrid.update - raised when the data needs to be updated
+ *       - husky.datagrid.updated - raised when the data is updated
  *       - husky.datagrid.item.click - raised when clicked on an item
  *       - husky.datagrid.items.selected - raised when husky.datagrid.items.get-selected is triggered
  *       - husky.datagrid.data.provide - raised when when husky.datagrid.data.get is triggered
  *
  *
  *    Used Events:
- *       - husky.datagrid.update
+ *       - husky.datagrid.update - used to trigger an update of the data
  *       - husky.datagrid.row.add - used to add a row
  *       - husky.datagrid.row.remove - used to remove a row
  *       - husky.datagrid.items.get-selected - triggers husky.datagrid.items.selected event, which returns all selected item ids
@@ -22378,19 +23308,19 @@ define('__component__$datagrid@husky',[],function() {
 
     
 
-    /*
+    /**
      *	Default values for options
      */
     var defaults = {
         autoRemoveHandling: true,
         className: 'datagridcontainer',
-        elementType: 'table', //??
+        elementType: 'table',
         data: null,
         defaultMeasureUnit: 'px',
         excludeFields: ['id'],
         pagination: false,
         paginationOptions: {
-            pageSize: 10,
+            pageSize: 4,
             showPages: 5
         },
         removeRow: true,
@@ -22410,38 +23340,37 @@ define('__component__$datagrid@husky',[],function() {
 
         view: true,
 
-        initialize: function() {
+        initialize: function () {
             this.sandbox.logger.log('initialized datagrid');
 
             // extend default options and set variables
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.name = this.options.name;
             this.data = null;
-            this.configs = {};
             this.allItemIds = [];
             this.selectedItemIds = [];
             this.rowStructure = ['id'];
             this.sort = {
-                ascClass : 'icon-arrow-up',
-                descClass : 'icon-arrow-down',
-                additionalClasses : ' m-left-5 small-font'
+                ascClass: 'icon-arrow-up',
+                descClass: 'icon-arrow-down',
+                additionalClasses: ' m-left-5 small-font'
             };
-
 
             // append datagrid to html element
             this.$originalElement = this.sandbox.dom.$(this.options.el);
             this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
             this.$originalElement.append(this.$element);
 
-            this.options.pagination = (this.options.pagination !== undefined) ? !!this.options.pagination : !!this.options.url;
-
             this.getData();
+
+            // Should only be be called once
+            this.bindCustomEvents();
         },
 
-        /*
+        /**
          * Gets the data either via the url or the array
          */
-        getData: function() {
+        getData: function () {
 
             if (!!this.options.url) {
 
@@ -22453,30 +23382,44 @@ define('__component__$datagrid@husky',[],function() {
                 this.sandbox.logger.log('load data from array');
                 this.data = this.options.data;
 
-                this.setConfigs();
-
                 this.prepare()
                     .appendPagination()
                     .render();
             }
-
-            this.sandbox.logger.log('data in datagrid', this.data);
         },
 
-        load: function(params) {
-
-            this.sandbox.logger.log('loading data');
+        /**
+         * Loads contents via ajax
+         * @param params url
+         */
+        load: function (params) {
 
             this.sandbox.util.ajax({
 
                 url: this.getUrl(params),
                 data: params.data,
 
-                success: function(response) {
-                    this.sandbox.logger.log('load', params);
+                error: function ( jqXHR, textStatus, errorThrown) {
+                    this.sandbox.logger.log("An error occured while fetching data from: " + this.getUrl(params));
+                    this.sandbox.logger.log("textstatus: "+textStatus);
+                    this.sandbox.logger.log("errorthrown",errorThrown);
+                }.bind(this),
 
-                    this.data = response;
-                    this.setConfigs();
+                success: function (response) {
+
+                    // TODO adjust when new api is finished and no backwards compatibility needed
+                    if(!!response.items) {
+                        this.data = response;
+                    } else {
+                        this.data = {};
+                        this.data.links = response._links;
+                        this.data.embedded = response._embedded;
+                        this.data.total = response.total;
+                        this.data.page = response.page;
+                        this.data.pages = response.pages;
+                        this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
+                        this.data.pageDisplay = this.options.paginationOptions.showPages;
+                    }
 
                     this.prepare()
                         .appendPagination()
@@ -22497,35 +23440,36 @@ define('__component__$datagrid@husky',[],function() {
          * @returns {string}
          */
         getUrl: function(params) {
-            var delimiter = '?', url;
 
+            // TODO adjust when new api is finished and no backwards compatibility needed
+            if (!!this.data && this.data.links) {
+                return params.url;
+            }
+
+            var delimiter = '?', url;
             if (params.url.indexOf('?') !== -1) {
                 delimiter = '&';
             }
 
             url = params.url + delimiter + 'pageSize=' + this.options.paginationOptions.pageSize;
-
             if (params.page > 1) {
                 url += '&page=' + params.page;
             }
 
-            this.sandbox.logger.log("url: "+url);
             return url;
         },
 
-        setConfigs: function() {
-            this.configs = {};
-            this.configs.total = this.data.total;
-            this.configs.pageSize = this.data.pageSize;
-            this.configs.page = this.data.page;
-        },
-
-        prepare: function() {
+        /**
+         * Prepares the structure of the datagrid (list, table)
+         * @returns {*}
+         */
+        prepare: function () {
             this.$element.empty();
 
             if (this.options.elementType === 'list') {
                 // TODO:
                 //this.$element = this.prepareList();
+                this.sandbox.logger.log("list is not yet implemented!");
             } else {
                 this.$element.append(this.prepareTable());
             }
@@ -22533,10 +23477,11 @@ define('__component__$datagrid@husky',[],function() {
             return this;
         },
 
-        //
-        // elementType === 'table'
-        //
-        prepareTable: function() {
+        /**
+         * Perapres the structure of the datagrid when element type is table
+         * @returns {table} returns table element
+         */
+        prepareTable: function () {
             var $table, $thead, $tbody, tblClasses;
 
             $table = this.sandbox.dom.$('<table/>');
@@ -22547,7 +23492,8 @@ define('__component__$datagrid@husky',[],function() {
                 $table.append($thead);
             }
 
-            if (!!this.data.items) {
+            // TODO adjust when api is fully implemented and no backwards compatibility needed
+            if (!!this.data.items || !!this.data.embedded) {
                 if (!!this.options.appendTBody) {
                     $tbody = this.sandbox.dom.$('<tbody/>');
                 }
@@ -22565,8 +23511,12 @@ define('__component__$datagrid@husky',[],function() {
             return $table;
         },
 
-        prepareTableHead: function() {
-            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute;
+        /**
+         * Prepares table head
+         * @returns {string} returns table head
+         */
+        prepareTableHead: function () {
+            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute, isSortable;
 
             tblColumns = [];
             headData = this.options.tableHead || this.data.head;
@@ -22600,8 +23550,7 @@ define('__component__$datagrid@husky',[],function() {
 
             this.rowStructure = ['id'];
 
-            headData.forEach(function(column) {
-                tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
+            headData.forEach(function (column) {
 
                 tblColumnWidth = '';
                 // get width and measureunit
@@ -22610,11 +23559,32 @@ define('__component__$datagrid@husky',[],function() {
                     tblColumnWidth = ' width="' + widthValues[0] + widthValues[1] + '"';
                 }
 
+                isSortable = false;
+
+                // TODO adjust when new api fully implemented and no backwards compatibility needed
+                if(!!this.data.links && !!this.data.links.sortable) {
+
+                    //is column sortable - check with received sort-links
+                    this.sandbox.util.each(this.data.links.sortable, function(index) {
+                        if(index === column.attribute){
+                            isSortable = true;
+                            return false;
+                        }
+                    }.bind(this));
+                }
+
+                // add to row structure when valid entry
                 if(column.attribute !== undefined) {
                     this.rowStructure.push(column.attribute);
-                    dataAttribute = ' data-attribute="'+column.attribute+'"';
+                }
+
+                // add html to table header cell if sortable
+                if (!!isSortable) {
+                    dataAttribute = ' data-attribute="' + column.attribute + '"';
+                    tblCellClass = ((!!column.class) ? ' class="' + column.class + ' pointer"' : ' class="pointer"');
                     tblColumns.push('<th' + tblCellClass + tblColumnWidth + dataAttribute + '>' + column.content + '<span></span></th>');
                 } else {
+                    tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
                     tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
                 }
 
@@ -22634,26 +23604,37 @@ define('__component__$datagrid@husky',[],function() {
             return [regex[1], regex[2]];
         },
 
-        prepareTableRows: function() {
+        /**
+         * Itterates over all items and prepares the rows
+         * @returns {string} returns a string of all rows
+         */
+        prepareTableRows: function () {
             var tblRows;
 
             tblRows = [];
             this.allItemIds = [];
 
-            this.data.items.forEach(function(row) {
-                tblRows.push(this.prepareTableRow(row));
-            }.bind(this));
 
+            // TODO adjust when new api is fully implemented and no backwards compatibility needed
+            if(!!this.data.items) {
+                this.data.items.forEach(function (row) {
+                    tblRows.push(this.prepareTableRow(row));
+                }.bind(this));
+            } else if(!!this.data.embedded) {
+                this.data.embedded.forEach(function (row) {
+                    tblRows.push(this.prepareTableRow(row));
+                }.bind(this));
+            }
 
             return tblRows.join('');
         },
 
         /**
-         * Returns table row including values and data attributes
+         * Returns a table row including values and data attributes
          * @param row
          * @returns string table row
          */
-        prepareTableRow: function(row) {
+        prepareTableRow: function (row) {
 
             if (!!(this.options.template && this.options.template.row)) {
 
@@ -22662,7 +23643,7 @@ define('__component__$datagrid@husky',[],function() {
             } else {
 
                 var radioPrefix, key;
-                this.tblColumns  = [];
+                this.tblColumns = [];
                 this.tblRowAttributes = '';
 
                 if (!!this.options.className && this.options.className !== '') {
@@ -22684,15 +23665,15 @@ define('__component__$datagrid@husky',[],function() {
                     }), '</td>');
                 }
 
-                // when row structure contains more elments than the id then use the structure to set values
-                if(this.rowStructure.length > 1) {
-                    this.rowStructure.forEach(function(key) {
+                // when row structure contains more elements than the id then use the structure to set values
+                if (this.rowStructure.length > 1) {
+                    this.rowStructure.forEach(function (key) {
                         this.setValueOfRowCell(key, row[key]);
                     }.bind(this));
                 } else {
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                           this.setValueOfRowCell(key, row[key]);
+                            this.setValueOfRowCell(key, row[key]);
                         }
                     }
                 }
@@ -22710,7 +23691,7 @@ define('__component__$datagrid@husky',[],function() {
          * @param key attribute name
          * @param value attribute value
          */
-        setValueOfRowCell: function(key, value){
+        setValueOfRowCell: function (key, value) {
             var tblCellClasses,
                 tblCellContent,
                 tblCellClass;
@@ -22731,12 +23712,19 @@ define('__component__$datagrid@husky',[],function() {
             }
         },
 
-        resetItemSelection: function() {
+        /**
+         * Resets the arrays for selected items
+         */
+        resetItemSelection: function () {
             this.allItemIds = [];
             this.selectedItemIds = [];
         },
 
-        selectItem: function(event) {
+        /**
+         * Selectes or deselects the clicked item
+         * @param event
+         */
+        selectItem: function (event) {
 
             // Todo review handling of events for new rows in datagrid (itemId empty?)
 
@@ -22798,7 +23786,11 @@ define('__component__$datagrid@husky',[],function() {
             }
         },
 
-        selectAllItems: function(event) {
+        /**
+         * Selects or deselect all available items of the list
+         * @param event
+         */
+        selectAllItems: function (event) {
 
             event.stopPropagation();
             if (this.sandbox.util.compare(this.selectedItemIds, this.allItemIds)) {
@@ -22820,17 +23812,23 @@ define('__component__$datagrid@husky',[],function() {
             }
         },
 
-        addRow: function(row) {
-
+        /**
+         * Adds a row to the datagrid
+         * @param row
+         */
+        addRow: function (row) {
             var $table;
-            // TODO check element type, list or table
-
+            // check for other element types when implemented
             $table = this.$element.find('table');
-
             $table.append(this.prepareTableRow(row));
         },
 
-        prepareRemoveRow: function(event) {
+        /**
+         * Prepares for removing a row
+         * Raises the husky.datagrid.row.remove-click event when auto remove handling is not set to true
+         * @param event
+         */
+        prepareRemoveRow: function (event) {
             if (!!this.options.autoRemoveHandling) {
                 this.removeRow(event);
             } else {
@@ -22847,7 +23845,12 @@ define('__component__$datagrid@husky',[],function() {
             }
         },
 
-        removeRow: function(event) {
+        /**
+         * Removes a row from the datagrid
+         * Raises husky.datagrid.row.removed event
+         * @param event
+         */
+        removeRow: function (event) {
 
             var $element, $tblRow, id, idx;
 
@@ -22872,74 +23875,133 @@ define('__component__$datagrid@husky',[],function() {
             $tblRow.remove();
         },
 
-        //
-        // Pagination
         // TODO: create pagination module
-        //
+        /**
+         * Appends pagination when option is set
+         * @returns {*}
+         */
         appendPagination: function() {
-            if (this.options.pagination) {
+
+            // TODO adjust when api is finished
+            if (this.options.pagination && !!this.data.links) {
                 this.$element.append(this.preparePagination());
             }
             return this;
         },
 
+        /**
+         * Delegates the rendering of the pagination when paginations is needed
+         * @returns {*}
+         */
         preparePagination: function() {
             var $pagination;
 
-            if (!!this.configs.total && parseInt(this.configs.total, 10) >= 1) {
+            if (!!this.options.pagination && parseInt(this.data.pages, 10) > 1) {
                 $pagination = this.sandbox.dom.$('<div/>');
                 $pagination.addClass('pagination');
 
-                $pagination.append(this.preparePaginationPrevNavigation());
+                // TODO next / prev not set when on last / first page
+                $pagination.append(this.preparePaginationForwardNavigation());
                 $pagination.append(this.preparePaginationPageNavigation());
-                $pagination.append(this.preparePaginationNextNavigation());
+                $pagination.append(this.preparePaginationBackwardNavigation());
             }
 
             return $pagination;
         },
 
+        /**
+         * Triggers rendering of the numbers in the pagination
+         * @returns {*}
+         */
         preparePaginationPageNavigation: function() {
             return this.templates.paginationPageNavigation({
-                pageSize: this.options.paginationOptions.pageSize,
-                selectedPage: this.configs.page
+                pageSize: this.data.pageSize,
+                pages: this.data.pages,
+                page: this.data.page,
+                pagesDisplay: this.data.pageDisplay
             });
         },
 
-        preparePaginationNextNavigation: function() {
-            return this.templates.paginationNextNavigation({
-                next: this.options.pagination.next,
-                selectedPage: this.configs.page,
-                pageSize: this.configs.total
-            });
+        /**
+         * Triggers rendering for last and next link
+         * @returns {*|string}
+         */
+        preparePaginationBackwardNavigation: function() {
+
+            var $next = '',
+                $last = '';
+
+            if(this.data.links.next) {
+                $next = this.templates.paginationNavigation("next", "Next");
+            }
+            if(this.data.links.last) {
+                $last = this.templates.paginationNavigation("last", "");
+            }
+
+            return ["<ul>",$next,$last,"</ul>"].join('');
         },
 
-        preparePaginationPrevNavigation: function() {
-            return this.templates.paginationPrevNavigation({
-                prev: this.options.pagination.prev,
-                selectedPage: this.configs.page
-            });
+
+        /**
+         * Triggers rendering for first and previous link
+         * @returns {*|string}
+         */
+        preparePaginationForwardNavigation: function() {
+            var $prev = '',
+                $first = '';
+
+            if(this.data.links.first) {
+                $first = this.templates.paginationNavigation("first", "");
+            }
+            if(this.data.links.prev) {
+                $prev = this.templates.paginationNavigation("prev", "Previous");
+            }
+
+            return ["<ul>",$first,$prev,"</ul>"].join('');
         },
 
+        /**
+         * Called when the current page should change
+         * Emits husky.datagrid.updated event on success
+         * @param event
+         */
         changePage: function(event) {
 
-            var $element, page;
+            var $element, page, template, url, uri;
 
             $element = this.sandbox.dom.$(event.currentTarget);
             page = $element.data('page');
 
+            if(!!page) {
+                this.addLoader();
+                this.resetItemSelection();
+                //this.resetSortingOptions(); // browsing through sorted pages
+                
+                this.sandbox.emit('husky.datagrid.page.change', 'change page');
 
-            this.addLoader();
+                uri = this.data.links[page];
 
-            this.load({
-                url: this.options.url,
-                page: page,
-                success: function() {
-                    this.removeLoader();
-                }.bind(this)
-            });
+                if(!!uri) {
+                    url = uri;
+                } else {
+                    template = this.sandbox.uritemplate.parse(this.data.links.pagination);
+                    url = this.sandbox.uritemplate.expand(template, {page: page});
+                }
 
-            this.sandbox.emit('husky.datagrid.page.change', 'change page');
-            this.sandbox.emit('husky.datagrid.update', 'update page');
+                this.load({
+                    url: url,
+                    page: page,
+                    success: function() {
+                        this.removeLoader();
+                        this.sandbox.emit('husky.datagrid.updated', 'updated page');
+                    }.bind(this)
+                });
+            }
+        },
+
+        resetSortingOptions: function() {
+            this.sort.attribute = null;
+            this.sort.direction = null;
         },
 
 
@@ -22978,7 +24040,6 @@ define('__component__$datagrid@husky',[],function() {
             }
 
 
-
             // Todo
             // trigger event when click on clickable area
             // different handling when clicked on checkbox and when clicked on td
@@ -23006,6 +24067,7 @@ define('__component__$datagrid@husky',[],function() {
 
         /**
          * Sets header classes and loads new data
+         * Emits husky.datagrid.updated event on success
          * @param event
          */
         changeSorting: function (event) {
@@ -23013,31 +24075,30 @@ define('__component__$datagrid@husky',[],function() {
             var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
                 $element = event.currentTarget,
                 $span = this.sandbox.dom.children($element, 'span')[0],
-                params = "";
+                url, template;
 
-            if (!!attribute) {
+            if (!!attribute && !!this.data.links.sortable[attribute]) {
 
+                this.sandbox.emit('husky.datagrid.data.sort');
                 this.sort.attribute = attribute;
 
                 if (this.sandbox.dom.hasClass($span, this.sort.ascClass)) {
                     this.sort.direction = "desc";
-                    params = '?sortOrder=desc&sortBy=' + attribute;
                 } else {
                     this.sort.direction = "asc";
-                    params = '?sortOrder=asc&sortBy=' + attribute;
                 }
 
                 this.addLoader();
+                template = this.sandbox.uritemplate.parse(this.data.links.sortable[attribute]);
+                url = this.sandbox.uritemplate.expand(template, {sortOrder: this.sort.direction});
+
                 this.load({
-                    url: this.options.url + params,
+                    url: url,
                     success: function () {
                         this.removeLoader();
+                        this.sandbox.emit('husky.datagrid.updated', 'updated sort');
                     }.bind(this)
                 });
-
-                this.sandbox.emit('husky.datagrid.data.sort');
-                this.sandbox.emit('husky.datagrid.update', 'update sort');
-
             }
         },
 
@@ -23064,9 +24125,9 @@ define('__component__$datagrid@husky',[],function() {
             }
         },
 
-        bindCustomEvents: function() {
-            // listen for private events
+        bindCustomEvents: function () {
 
+            // listen for private events
             this.sandbox.on('husky.datagrid.update', this.updateHandler.bind(this));
 
             // listen for public events
@@ -23084,18 +24145,38 @@ define('__component__$datagrid@husky',[],function() {
             this.sandbox.emit('husky.datagrid.data.provide', this.data);
         },
 
+        /**
+         * Updates data in datagrid
+         * Called when husky.datagrid.update event emitted
+         * Emits husky.datagrid.updated event on success
+         */
         updateHandler: function() {
             this.resetItemSelection();
+            this.resetSortingOptions();
+            // TODO does not work?
+            this.load({
+                url: this.data.links.self,
+                success: function () {
+                    this.removeLoader();
+                    this.sandbox.emit('husky.datagrid.updated', 'updated data 123');
+                }.bind(this)
+            });
         },
 
+        /**
+         * Renders datagrid element in container
+         * Binds DOM events
+         */
         render: function() {
             this.$originalElement.html(this.$element);
-
-            this.bindCustomEvents();
             this.bindDOMEvents();
         },
 
-        addLoader: function() {
+        /**
+         * Adds loading icon and keeps width and height
+         * @returns {*}
+         */
+        addLoader: function () {
             return this.$element
                 .outerWidth(this.$element.outerWidth())
                 .outerHeight(this.$element.outerHeight())
@@ -23103,12 +24184,20 @@ define('__component__$datagrid@husky',[],function() {
                 .addClass('is-loading');
         },
 
-        removeLoader: function() {
-            return this.$element.removeClass('is-loading');
+        /**
+         * Removes loading icon, width and height of container
+         * @returns {*}
+         */
+        removeLoader: function () {
+            return this.$element.removeClass('is-loading').outerHeight("").outerWidth("");
         },
 
-        // trigger selected items
-        getSelectedItemsIds: function(callback) {
+        /**
+         * Returns selected items either via callback or else via husky.datagrid.items.selected event
+         * Gets called on husky.datagrid.items.get-selected event
+         * @param callback
+         */
+        getSelectedItemsIds: function (callback) {
             if (typeof callback === 'function') {
                 callback(this.selectedItemIds);
             } else {
@@ -23150,54 +24239,38 @@ define('__component__$datagrid@husky',[],function() {
             },
 
             // Pagination
-            paginationPrevNavigation: function(data) {
-                var selectedPage;
+            paginationNavigation: function(data , label) {
 
-                data = data || {};
-                selectedPage = parseInt(data.selectedPage, 10);
-
-                return [
-                    '<ul>',
-                    '<li class="pagination-first page" data-page="1"></li>',
-                    '<li class="pagination-prev page" data-page="', selectedPage - 1, '">', 'Previous', '</li>',
-                    '</ul>'
-                ].join('');
+                return ['<li class="pagination-',data,' page" data-page="', data, '">',label,'</li>'].join('');
             },
 
-            paginationNextNavigation: function(data) {
-                var next, last, pageSize, selectedPage;
-
-                data = data || {};
-                next = data.next || 'Next';
-                last = data.last || 'Last';
-                pageSize = data.pageSize || 10;
-                selectedPage = (!!data.selectedPage) ? parseInt(data.selectedPage, 10) : 0;
-
-                return [
-                    '<ul>',
-                    '<li class="pagination-next page" data-page="', selectedPage + 1, '">', next, '</li>',
-                    '<li class="pagination-last page" data-page="', pageSize, '"></li>',
-                    '</ul>'
-                ].join('');
-            },
 
             paginationPageNavigation: function(data) {
-                var pageSize, i, pageItems, selectedPage, pageClass;
 
-                data = data || {};
-                pageSize = data.pageSize || 10;
-                selectedPage = (!!data.selectedPage) ? parseInt(data.selectedPage, 10) : 0;
+                // TODO currect page + this.options.paginationOptions.showPages: 5
+                var rest,
+                    pageItemsCurrentAfter = [],
+                    pageItemsBefore = [],
+                    pageClass,
+                    i;
 
-                pageItems = [];
-
-                for (i = 1; i <= pageSize; i++) {
-                    pageClass = (selectedPage === i) ? 'class="page is-selected"' : 'class="page"';
-                    pageItems.push('<li ', pageClass, ' data-page="', i, '">', i, '</li>');
+                // add pages for current after current page
+                for (i = data.page; i <= data.pagesDisplay; i++) {
+                    pageClass = (data.page === i) ? 'class="page is-selected bold"' : 'class="page"';
+                    pageItemsCurrentAfter.push('<li '+pageClass+' data-page="'+ i + '">' + i + '</li>');
                 }
 
-                pageItems.push('<li class="is-disabled">...</li>');
 
-                return '<ul>' + pageItems.join('') + '</ul>';
+                rest = data.pagesDisplay - pageItemsCurrentAfter.length;
+
+                // add pages before current page if needed
+                if(rest > 0) {
+                    for (i = data.page-rest; i < data.page ; i++) {
+                        pageItemsBefore.push('<li class="page" data-page="'+ i + '">' + i + '</li>');
+                    }
+                }
+
+                return '<ul>'+ pageItemsBefore.join('') + pageItemsCurrentAfter.join('') + '</ul>';
             }
         }
 
@@ -25515,6 +26588,39 @@ define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
     };
 
 });
+
+(function() {
+
+    
+
+    require.config({
+        paths: { "uri-template": 'bower_components/massiveart-uritemplate/uritemplate' }
+    });
+
+    define('husky_extensions/uri-template',['uri-template'], function(UriTemplate) {
+
+        return  {
+
+            name: 'uri-template',
+
+            initialize: function(app) {
+
+                app.sandbox.uritemplate = {
+
+                    parse: function(param) {
+                        return UriTemplate.parse(param);
+                    },
+
+                    expand: function(template, params) {
+                        return template.expand(params);
+                    }
+
+                };
+
+            }
+        };
+    });
+})();
 
 define('husky_extensions/util',[],function() {
 
