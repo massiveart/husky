@@ -106,9 +106,10 @@
             font-weight: bold;
         }
 
-        ul {
+        > ul {
             display: block;
         }
+
     }
 
     ul {
@@ -116,8 +117,11 @@
         padding-left: 40px;
     }
 
+    ul ul {
+      padding-left: 10px;
+    }
+
     li {
-        height: 30px;
         padding: 5px 0 5px 10px;
         margin: 0 0 0 -10px;
         border-radius: 4px;
@@ -128,11 +132,17 @@
         }
 
         a {
-            width: 100%;
             display: inline-block;
         }
     }
 }
+
+.navigation-subitems {
+  &.is-expanded > ul {
+      display: block;
+    }
+}
+
 
 .navigation-item {
     width: 100%;
@@ -170,3 +180,14 @@
     padding-top: 15px;
     font-size: 12px;
 }
+
+.navigation-subitems-toggle {
+  padding: 5px 0;
+  position: relative;
+
+  .navigation-toggle-icon {
+    top:5px;
+  }
+
+}
+
