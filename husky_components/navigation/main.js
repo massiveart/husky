@@ -5,41 +5,43 @@ define(function() {
     return {
 
         initialize: function() {
-            this.sandbox.logger.log('Initialized Navigation');
+
+
 
             this.bindDOMEvents();
+            this.sandbox.logger.log('Initialized Navigation');
         },
 
         bindDOMEvents: function() {
-            this.$el.on('click', '.js-navigation-item', this.toggleItems.bind(this));
-            this.$el.on('click', '.js-navigation-sub-item', this.selectSubItem.bind(this));
+            this.sandbox.dom.on(this.$el, 'click', this.toggleItems.bind(this),'.js-navigation-item');
+            this.sandbox.dom.on(this.$el, 'click', this.selectSubItem.bind(this),'.js-navigation-sub-item');
         },
 
         toggleItems: function(event) {
 
             event.preventDefault();
 
-            var $items = $(event.currentTarget).parents('.navigation-items');
+            var $items = this.sandbox.dom.parents(event.currentTarget, '.navigation-items');
 
-            if ($items.hasClass('is-expanded')) {
-                $items.removeClass('is-expanded');
+            if (this.sandbox.dom.hasClass($items, 'is-expanded')) {
+                this.sandbox.dom.removeClass($items, 'is-expanded');
                 return;
             }
-            $items.addClass('is-expanded');
+            this.sandbox.dom.addClass($items, 'is-expanded');
         },
 
         selectSubItem: function(event) {
 
             event.preventDefault();
 
-            var $subItem = $(event.currentTarget),
-                $items = $(event.currentTarget).parents('.navigation-items');
+            var $subItem = this.sandbox.dom.createElement(event.currentTarget),
+                $items = this.sandbox.dom.parents(event.currentTarget, '.navigation-items');
 
-            this.$el.find('.is-selected').removeClass('is-selected');
-            $subItem.addClass('is-selected');
+            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected'),'is-selected');
+            this.sandbox.dom.addClass($subItem, 'is-selected');
 
-            this.$el.find('.is-active').removeClass('is-active');
-            $items.addClass('is-active');
+            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-active'),'is-active');
+            this.sandbox.dom.addClass($items, 'is-active');
         }
     };
 
