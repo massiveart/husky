@@ -33,20 +33,6 @@
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
 }
 
-/* line 16, ../scss/abstract/abstract_validation.scss */
-.husky-auto-complete-success label::after, .husky-validate-success label::after,
-.husky-auto-complete-success .control-label::after,
-.husky-validate-success .control-label::after {
-  content: '';
-  font-family: 'Glyphicons';
-  z-index: 100;
-  float: right;
-  display: inline-block;
-  position: relative;
-  top: 35px;
-  right: 7px;
-  content: "\e199";
-}
 /* line 30, ../scss/abstract/abstract_validation.scss */
 .husky-auto-complete-success label, .husky-validate-success label,
 .husky-auto-complete-success .control-label,
@@ -500,7 +486,7 @@ table {
 
 /* line 31, ../scss/utilities.scss */
 .is-loading:not(.navigation-column-item) {
-  background: url("../../img/loader.gif") center center no-repeat;
+  background: url(data:image/gif;base64,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) center center no-repeat;
 }
 
 /* line 35, ../scss/utilities.scss */
@@ -584,66 +570,91 @@ table {
 }
 
 /* line 101, ../scss/utilities.scss */
+.p-top-10 {
+  padding-top: 10px !important;
+}
+
+/* line 106, ../scss/utilities.scss */
 .m-top-15 {
   margin-top: 15px !important;
 }
 
-/* line 105, ../scss/utilities.scss */
+/* line 110, ../scss/utilities.scss */
 .m-bottom-15 {
   margin-bottom: 15px !important;
 }
 
-/* line 109, ../scss/utilities.scss */
+/* line 114, ../scss/utilities.scss */
 .m-right-15 {
   margin-right: 15px !important;
 }
 
-/* line 113, ../scss/utilities.scss */
+/* line 118, ../scss/utilities.scss */
 .m-left-15 {
   margin-left: 15px !important;
 }
 
-/* line 118, ../scss/utilities.scss */
+/* line 123, ../scss/utilities.scss */
 .m-top-20 {
   margin-top: 20px !important;
 }
 
-/* line 122, ../scss/utilities.scss */
+/* line 127, ../scss/utilities.scss */
 .m-bottom-20 {
   margin-bottom: 20px !important;
 }
 
-/* line 126, ../scss/utilities.scss */
+/* line 131, ../scss/utilities.scss */
 .m-right-20 {
   margin-right: 20px !important;
 }
 
-/* line 130, ../scss/utilities.scss */
+/* line 135, ../scss/utilities.scss */
 .m-left-20 {
   margin-left: 20px !important;
 }
 
-/* line 135, ../scss/utilities.scss */
+/* line 141, ../scss/utilities.scss */
+.m-top-25 {
+  margin-top: 25px !important;
+}
+
+/* line 145, ../scss/utilities.scss */
+.m-bottom-25 {
+  margin-bottom: 25px !important;
+}
+
+/* line 149, ../scss/utilities.scss */
+.m-right-25 {
+  margin-right: 25px !important;
+}
+
+/* line 153, ../scss/utilities.scss */
+.m-left-25 {
+  margin-left: 25px !important;
+}
+
+/* line 158, ../scss/utilities.scss */
 .m-top-30 {
   margin-top: 30px !important;
 }
 
-/* line 139, ../scss/utilities.scss */
+/* line 162, ../scss/utilities.scss */
 .m-bottom-30 {
   margin-bottom: 30px !important;
 }
 
-/* line 143, ../scss/utilities.scss */
+/* line 166, ../scss/utilities.scss */
 .m-right-30 {
   margin-right: 30px !important;
 }
 
-/* line 147, ../scss/utilities.scss */
+/* line 170, ../scss/utilities.scss */
 .m-left-30 {
   margin-left: 30px !important;
 }
 
-/* line 155, ../scss/utilities.scss */
+/* line 178, ../scss/utilities.scss */
 .m-height-25 {
   height: 25px !important;
 }
@@ -701,6 +712,11 @@ h5 {
 /* line 56, ../scss/typo.scss */
 .bold, .header .header-left .username {
   font-family: Helvetica, Arial, sans-serif !important;
+}
+
+/* line 65, ../scss/typo.scss */
+.small-font {
+  font-size: 12px;
 }
 
 @font-face {
@@ -2986,33 +3002,73 @@ h5 {
 }
 
 /* line 176, ../scss/modules/icons.scss */
+.icon-chevron-right::after {
+  content: "\e244";
+  display: inline-block;
+}
+
+/* line 183, ../scss/modules/icons.scss */
 .icon-archive::after {
   content: "\e150";
   display: inline-block;
 }
 
-/* line 183, ../scss/modules/icons.scss */
+/* line 190, ../scss/modules/icons.scss */
 .icon-check::after {
   content: "\e153";
   display: inline-block;
 }
 
-/* line 190, ../scss/modules/icons.scss */
+/* line 197, ../scss/modules/icons.scss */
 .icon-adjust-alt::after {
   content: "\e140";
   display: inline-block;
 }
 
-/* line 197, ../scss/modules/icons.scss */
+/* line 204, ../scss/modules/icons.scss */
 .icon-list::after {
   content: "\e115";
   display: inline-block;
 }
 
-/* line 204, ../scss/modules/icons.scss */
+/* line 211, ../scss/modules/icons.scss */
 .icon-shevron-right::after {
   content: "\e224";
   display: inline-block;
+}
+
+/* line 217, ../scss/modules/icons.scss */
+.icon-items::after {
+  content: "\e319";
+  display: inline-block;
+}
+
+/* line 224, ../scss/modules/icons.scss */
+.icon-star::after {
+  content: "\e050";
+  display: inline-block;
+}
+
+/* line 231, ../scss/modules/icons.scss */
+.icon-arrow-down::after {
+  content: "\e224";
+  display: inline-block;
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+/* line 244, ../scss/modules/icons.scss */
+.icon-arrow-up::after {
+  content: "\e225";
+  display: inline-block;
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 
 /* line 8, ../scss/modules/core.scss */
@@ -3211,44 +3267,45 @@ hr.divider {
   background: none;
   border: 0;
   font-style: italic;
+  color: #999999;
 }
 
-/* line 33, ../scss/modules/form.scss */
+/* line 34, ../scss/modules/form.scss */
 input[type="text"].input-round {
   border-radius: 30px;
 }
 
-/* line 38, ../scss/modules/form.scss */
+/* line 39, ../scss/modules/form.scss */
 .input-description {
   margin-top: -5px;
   font-size: 10px;
   color: #999999;
 }
 
-/* line 46, ../scss/modules/form.scss */
+/* line 47, ../scss/modules/form.scss */
 label {
   display: block;
   font-size: 14px;
   color: #999999;
   cursor: pointer;
 }
-/* line 52, ../scss/modules/form.scss */
+/* line 53, ../scss/modules/form.scss */
 label.large {
   font-size: 16px;
   font-weight: bold;
 }
-/* line 57, ../scss/modules/form.scss */
+/* line 58, ../scss/modules/form.scss */
 label .form-element {
   margin-top: 6px;
 }
-/* line 61, ../scss/modules/form.scss */
+/* line 62, ../scss/modules/form.scss */
 label.inline {
   font-size: 1em;
   font-weight: normal;
   display: inline;
 }
 
-/* line 70, ../scss/modules/form.scss */
+/* line 71, ../scss/modules/form.scss */
 .custom-checkbox {
   width: 14px;
   height: 14px;
@@ -3256,13 +3313,13 @@ label.inline {
   opacity: 0;
   cursor: pointer;
 }
-/* line 84, ../scss/modules/form.scss */
+/* line 85, ../scss/modules/form.scss */
 .custom-checkbox:checked + .custom-checkbox-icon::after, .custom-checkbox.is-checked + .custom-checkbox-icon::after {
   content: "\e207";
   position: relative;
   top: -3px;
 }
-/* line 92, ../scss/modules/form.scss */
+/* line 93, ../scss/modules/form.scss */
 .custom-checkbox + .custom-checkbox-icon {
   display: inline-block;
   width: 14px;
@@ -3276,27 +3333,27 @@ label.inline {
   vertical-align: middle;
 }
 
-/* line 111, ../scss/modules/form.scss */
+/* line 112, ../scss/modules/form.scss */
 textarea {
   resize: both;
 }
 
-/* line 112, ../scss/modules/form.scss */
+/* line 113, ../scss/modules/form.scss */
 textarea.vertical {
   resize: vertical;
 }
 
-/* line 113, ../scss/modules/form.scss */
+/* line 114, ../scss/modules/form.scss */
 textarea.horizontal {
   resize: horizontal;
 }
 
-/* line 114, ../scss/modules/form.scss */
+/* line 115, ../scss/modules/form.scss */
 textarea.noResize {
   resize: none;
 }
 
-/* line 116, ../scss/modules/form.scss */
+/* line 117, ../scss/modules/form.scss */
 textarea.form-element {
   height: 40px;
   padding: 10px;
@@ -3304,7 +3361,7 @@ textarea.form-element {
   font-family: inherit;
 }
 
-/* line 127, ../scss/modules/form.scss */
+/* line 128, ../scss/modules/form.scss */
 .custom-radio {
   width: 18px;
   height: 18px;
@@ -3312,7 +3369,7 @@ textarea.form-element {
   opacity: 0;
   cursor: pointer;
 }
-/* line 139, ../scss/modules/form.scss */
+/* line 140, ../scss/modules/form.scss */
 .custom-radio:checked + .custom-radio-icon::after, .custom-radio.is-checked + .custom-radio-icon::after {
   content: "";
   display: block;
@@ -3321,7 +3378,7 @@ textarea.form-element {
   border-radius: 18px;
   background-color: #999;
 }
-/* line 150, ../scss/modules/form.scss */
+/* line 151, ../scss/modules/form.scss */
 .custom-radio + .custom-radio-icon {
   display: inline-block;
   width: 18px;
@@ -3746,38 +3803,49 @@ table {
 /* line 19, ../scss/modules/tables.scss */
 .table tr {
   border-bottom: 1px solid #cccccc;
+  height: 50px;
 }
-/* line 24, ../scss/modules/tables.scss */
+/* line 25, ../scss/modules/tables.scss */
 .table thead th {
   vertical-align: bottom;
-  font-weight: 600;
   color: #999999;
+  font-size: 18px;
 }
 /* line 30, ../scss/modules/tables.scss */
+.table thead th a {
+  color: black;
+  text-decoration: none;
+}
+/* line 34, ../scss/modules/tables.scss */
+.table thead th a .selected {
+  font-weight: bold;
+}
+/* line 41, ../scss/modules/tables.scss */
 .table thead tr {
   border-bottom: 2px solid #999999;
 }
-/* line 36, ../scss/modules/tables.scss */
+/* line 47, ../scss/modules/tables.scss */
 .table tbody td {
   vertical-align: middle;
+  font-family: Helvetica, Arial;
 }
-/* line 42, ../scss/modules/tables.scss */
+/* line 54, ../scss/modules/tables.scss */
 .table.is-selectable tr {
   cursor: pointer;
 }
-/* line 44, ../scss/modules/tables.scss */
+/* line 56, ../scss/modules/tables.scss */
 .table.is-selectable tr:hover > td {
   background-color: #fff;
 }
-/* line 50, ../scss/modules/tables.scss */
+/* line 62, ../scss/modules/tables.scss */
 .table .thumb {
   text-align: center;
 }
-/* line 53, ../scss/modules/tables.scss */
+/* line 65, ../scss/modules/tables.scss */
 .table .thumb img {
   vertical-align: middle;
 }
-/* line 58, ../scss/modules/tables.scss */
+/* line 70, ../scss/modules/tables.scss */
 .table .remove-row {
   text-align: center;
 }

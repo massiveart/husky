@@ -60,19 +60,19 @@
                     },
 
                     setData: function(selector, data) {
-                        app.sandbox.form.getObject(selector).mapper.setData(data);
+                        return app.sandbox.form.getObject(selector).mapper.setData(data);
                     },
 
                     getData: function(selector) {
                         return  app.sandbox.form.getObject(selector).mapper.getData();
                     },
 
-                    addArrayFilter: function(selector, arrayName, callback) {
-                        app.sandbox.form.getObject(selector).mapper.addArrayFilter(arrayName, callback);
+                    addCollectionFilter: function(selector, arrayName, callback) {
+                        app.sandbox.form.getObject(selector).mapper.addCollectionFilter(arrayName, callback);
                     },
 
-                    removeArrayFilter: function(selector, arrayName) {
-                        app.sandbox.form.getObject(selector).mapper.removeArrayFilter(arrayName);
+                    removeCollectionFilter: function(selector, arrayName) {
+                        app.sandbox.form.getObject(selector).mapper.removeCollectionFilter(arrayName);
                     },
 
                     element: {
