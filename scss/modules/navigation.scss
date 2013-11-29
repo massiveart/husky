@@ -1,4 +1,42 @@
 @import "../mixins.scss";
+@import "compass/css3/text-shadow";
+
+
+
+@mixin  toggle-item {
+  border-bottom: 1px solid $gray;
+  height: inherit;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+$verticalMargin: 20px;
+$verticalItemPadding: 35px;
+
+
+.section-headline {
+  font-size: 12px;
+  padding: 2px 0 3px;
+  margin: 10px $verticalMargin 0;
+  color: $grayDark;
+  font-weight: bold;
+  cursor: default;
+  //@include text-shadow($gray 1px 1px);
+
+  .section-toggle {
+    display: none;
+    float: right;
+    a {
+      color: $grayDark;
+    }
+  }
+
+  &:hover {
+    .section-toggle {
+      display: block;
+    }
+  }
+}
 
 .navigation-container {
     float: left;
@@ -13,9 +51,9 @@
 
 .navigation-content {
     overflow: hidden;
-    padding: 40px 20px 20px;
+    padding: 40px 0px 20px;
     color: $grayLight;
-    font-size: 14px;
+    font-size: 16px;
 
     a {
         display: inline-block;
@@ -31,15 +69,14 @@
 }
 
 .navigation-header {
-    height: 35px;
+    height: 40px;
     overflow: hidden;
-    margin-bottom: 30px;
+    margin: 0 $verticalMargin 30px;
 }
 
 .navigation-header-title {
     display: inline-block;
     font-size: 18px;
-    font-weight: bold;
     color: $white;
     margin: 0;
     line-height: 35px;
@@ -57,7 +94,7 @@
 
 .navigation-search {
     position: relative;
-    margin: 5px 0;
+    margin: 5px $verticalMargin 10px;
 
     a {
         color: #3e3e3e;
@@ -90,20 +127,41 @@
     @extend .icon-search;
 }
 
+li.is-active {
+  > .navigation-items-toggle a,
+  > .navigation-subitems-toggle a {
+    color: $white;
+  }
+
+  > div > a.navigation-settings-icon {
+    display: block;
+    color: $grayLight;
+  }
+}
+
 .navigation-items {
+    padding: 9px $verticalMargin;
     overflow: hidden;
-    margin: 10px 0;
+    //margin: 6px 0;
+    height: 50px;
+
+    &:hover:not(.is-active) {
+      background-color: rgba(black, 0.05);
+    }
+
+    > div {
+      padding: 5px;
+    }
+
 
     &.is-active {
-        color: $white;
-        a {
-            color: $white;
-        }
+      background-color: black;
     }
 
     &.is-expanded {
-        .navigation-item-title {
-            font-weight: bold;
+        height: inherit;
+        .navigation-items-toggle {
+          @include toggle-item;
         }
 
         > ul {
@@ -112,81 +170,153 @@
 
     }
 
+  .is-selected {
+      color: white;
+  }
+
+  /* sub-items */
     ul {
         display: none;
-        padding-left: 40px;
+        font-size: 14px;
+        padding-left: 55px;
+
     }
 
+    /* sub-sub-items */
     ul ul {
-      padding-left: 10px;
+      font-size: 12px;
+      padding-left: 20px;
+
     }
+
 
     li {
-        padding: 5px 0 5px 10px;
+        padding: 0px 0 0px 10px;
         margin: 0 0 0 -10px;
         border-radius: 4px;
+        cursor: pointer;
+
+        &:hover:not(.navigation-subitems)::before {
+          font-family: $baseIconFont;
+          font-size: 9px;
+          content: "\e174";
+          display: inline-block;
+          margin-left: -15px;
+          width: 15px;
+          overflow: visible;
+        }
 
         &.is-selected {
-            font-weight: bold;
-            background-color: #249fbe;
+
+            a {
+              color: white;
+
+              &::before {
+                font-family: $baseIconFont;
+                font-size: 9px;
+                content: "\e174";
+                display: inline-block;
+                margin-left: -15px;
+                width: 15px;
+                overflow: visible;
+              }
+            }
         }
 
         a {
             display: inline-block;
+            height: 30px; /* prohibits height changes on select */
         }
     }
 }
 
+
 .navigation-subitems {
-  &.is-expanded > ul {
+  &.is-expanded {
+    > ul {
       display: block;
     }
+    .navigation-subitems-toggle {
+      @include toggle-item;
+      padding-bottom: 0;
+    }
+
+    li {
+      &:hover::before {
+        font-size: 8px;
+        height:25px;
+      }
+    }
+  }
+
+  &:hover:not(.is-active):not(.is-expanded) {
+    //background-color: rgba(black,0.05);
+  }
 }
 
 
 .navigation-item {
     width: 100%;
     display: inline-block;
+    padding: 0 5px;
+    position: relative;
+    top: 2px;
 }
 
 .navigation-item-title {
-    padding-left: 40px;
+    padding-left: $verticalItemPadding;
 }
 
 .navigation-item-icon {
     position: absolute;
     font-size: 18px;
+    top: -2px;
 }
 
 .navigation-items-toggle {
-    height: 35px;
-    padding: 10px 0;
     position: relative;
+}
+
+li a.navigation-settings-icon {
+  width: auto;
+  position: absolute;
+  right: 20px;
+  top: 5px;
+  font-size: 14px;
+  display:none;
 }
 
 .navigation-toggle-icon {
     width: auto;
     position: absolute;
     right: 0;
-    top: 10px;
+    top: 5px;
     font-size: 10px;
 }
 
-.navigation-footer {
-    width: 170px;
-    float: right;
-    border-top: 2px solid $grayLight;
-    margin-top: 20px;
-    padding-top: 15px;
-    font-size: 12px;
+.navigation footer {
+  border-top: 1px solid #5B5B5B;
+  padding-top: 20px;
+  margin: 80px $verticalMargin 0 $verticalMargin + $verticalItemPadding;
+  font-size: 12px;
+
+  .version {
+    font-size: 10px;
+  }
+
 }
 
 .navigation-subitems-toggle {
-  padding: 5px 0;
+  padding: 2px 0 2px;
   position: relative;
+  height: 26px;
 
   .navigation-toggle-icon {
     top:5px;
+  }
+
+  .navigation-item {
+    padding: 0px;
   }
 
 }

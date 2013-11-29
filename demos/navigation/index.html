@@ -15,17 +15,11 @@
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="stylesheet" href="../../dist/husky.min.css">
-
-
-    <script type="text/javascript" >
-        var menu = {"title":"Root","hasSub":true,"contentDisplay":["new","edit"],"id":"5294789633cd7","sub":{"items":[{"title":"Settings","icon":"settings","hasSub":true,"contentDisplay":["new","edit"],"id":"5294789633d1f","sub":{"items":[{"title":"Roles &amp; Permissions","icon":"settings","action":"settings\/roles","hasSub":false,"type":"content","contentDisplay":["new","edit"],"id":"5294789633d61"},{"title":"Translate","icon":"book-open","action":"settings\/translate","hasSub":false,"type":"content","contentDisplay":["new","edit"],"id":"5294789633d7e"}]}},{"title":"Portals","icon":"star","hasSub":true,"contentDisplay":["new","edit"],"displayOption":"portals","id":"5294789633d9b","sub":{"items":[{"title":"Sulu CMF","hasSub":true,"contentDisplay":["new","edit"],"id":"5294789633db6","sub":{"items":[{"title":"Pages","icon":"items","hasSub":false,"contentDisplay":["new","edit"],"id":"5294789633dd6"}]}}]}},{"title":"Contacts","icon":"contact-book","hasSub":true,"contentDisplay":["new","edit"],"id":"5294789633df4","sub":{"items":[{"title":"People","icon":"parents","action":"contacts\/contacts","hasSub":false,"type":"content","contentDisplay":["new","edit"],"id":"5294789633e0f"},{"title":"Companies","icon":"bank","action":"contacts\/accounts","hasSub":false,"type":"content","contentDisplay":["new","edit"],"id":"5294789633e2b"}]}}]}}
-
-    </script>
 </head>
 <body>
 
 
-<div data-aura-component="navigation@husky" data-aura-url="/navigation"></div>
+<div data-aura-component="navigation@husky" data-aura-url="/navigation" data-aura-footer-template="<div>Hubert Gruber</div><div><a href='#'>logout</a></div><div class='version'>husky 2.1.2</div>"></div>
 
 <script src="../js/sinon.js"></script>
 <script src="../js/jquery.js"></script>
@@ -48,7 +42,38 @@
                 _ = app.sandbox.util._;
 
         fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
-            '{"title":"Root","hasSub":true,"contentDisplay":["new","edit"],"id":"5294789633cd7","sub":{"items":[{"title":"Settings","icon":"settings","hasSub":true,"contentDisplay":["new","edit"],"id":"5294789633d1f","sub":{"items":[{"title":"Roles &amp; Permissions","icon":"settings","action":"settings\/roles","hasSub":false,"type":"content","contentDisplay":["new","edit"],"id":"5294789633d61"},{"title":"Translate","icon":"book-open","action":"settings\/translate","hasSub":false,"type":"content","contentDisplay":["new","edit"],"id":"5294789633d7e"}]}},{"title":"Portals","icon":"star","hasSub":true,"contentDisplay":["new","edit"],"displayOption":"portals","id":"5294789633d9b","sub":{"items":[{"title":"Sulu CMF","hasSub":true,"contentDisplay":["new","edit"],"id":"5294789633db6","sub":{"items":[{"title":"Pages","icon":"items","hasSub":false,"contentDisplay":["new","edit"],"id":"5294789633dd6"}]}}]}},{"title":"Contacts","icon":"contact-book","hasSub":true,"contentDisplay":["new","edit"],"id":"5294789633df4","sub":{"items":[{"title":"People","icon":"parents","action":"contacts\/contacts","hasSub":false,"type":"content","contentDisplay":["new","edit"],"id":"5294789633e0f"},{"title":"Companies","icon":"bank","action":"contacts\/accounts","hasSub":false,"type":"content","contentDisplay":["new","edit"],"id":"5294789633e2b"}]}}]}}'
+            '{"title":"Sulu 2.0","icon":"..\/..\/img\/tmp\/husky.png","id":"5294789633cd7","items":[' +
+                '{"title":"Tools","items":[' +
+                    '{"title":"Dashboard","icon":"dashboard","id":"529478934633d1f"},' +
+                    '{"title":"Contacts","icon":"contact-book","id":"5294789633df4","items":[' +
+                        '{"title":"People","icon":"parents","action":"contacts\/contacts","type":"content","id":"5294789633e0f"},' +
+                        '{"title":"Companies","icon":"bank","action":"contacts\/accounts","type":"content","id":"5294789633e2b"}' +
+                    ']},' +
+                    '{"title":"Web Content","icon":"star","hasSettings":"true","displayOption":"portals","id":"5294789633d9b","items":[' +
+                        '{"title":"Europa","hasSettings":"true","id":"5294789633db6","items":[' +
+                            '{"title":"de","icon":"items","id":"5294789633dd6"},' +
+                            '{"title":"uk","icon":"items","id":"5294789633dd6"}' +
+                        ']},' +
+                        '{"title":"Americas","hasSettings":"true","id":"5294789633db6","items":[' +
+                            '{"title":"en_us","icon":"items","id":"5294789633dd6"},' +
+                            '{"title":"en_uk","icon":"items","id":"5294789633dd6"},' +
+                            '{"title":"en_au","icon":"items","id":"5294789633dd6"}' +
+                        ']},' +
+                        '{"title":"Asia","icon":"dashboard","id":"529478934633d1f"},' +
+                        '{"title":"Africa","icon":"dashboard","id":"529478934633d1f"}' +
+                    ']},' +
+                    '{"title":"Settings","icon":"settings","id":"5294789633d1f","items":[' +
+                        '{"title":"Roles &amp; Permissions","icon":"settings","action":"settings\/roles","type":"content","id":"5294789633d61"},' +
+                        '{"title":"Translate","icon":"book-open","action":"settings\/translate","type":"content","id":"5294789633d7e"}' +
+                    ']}' +
+                ']},' +
+                '{"title":"Web-Spaces","items":[' +
+                    '{"title":"Contacts","icon":"contact-book","id":"5294789633df4","items":[' +
+                        '{"title":"People","icon":"parents","action":"contacts\/contacts","type":"content","id":"5294789633e0f"},' +
+                        '{"title":"Companies","icon":"bank","action":"contacts\/accounts","type":"content","id":"5294789633e2b"}' +
+                    ']}' +
+                ']}'+
+            ']}'
         ]);
 
         app.start().then(function() {

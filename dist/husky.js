@@ -20778,91 +20778,101 @@ define('__component__$navigation@husky',[],function() {
     
 
     var templates = {
+        /** component skeleton */
         skeleton: [
                 '<nav class="navigation">',
                 '   <div class="navigation-content">',
                 '       <div class="navigation-header">',
                 '           <div class="navigation-header-image">',
-                '               <img alt="#" src="<%= navigation.icon %>"/>',
+                '               <% if (icon) { %>',
+                '               <img alt="#" src="<%= icon %>"/>',
+                '               <% } %>',
                 '           </div>',
-                '       <div class="navigation-header-title"><%= navigation.title %></div>',
+                '       <div class="navigation-header-title"><% if (title) { %> <%= title %><% } %></div>',
                 '   </div>',
                 '   <div id="navigation-search" class="navigation-search"></div>',
                 '   <ul id="navigation-item-container" class="navigation-item-container"></ul>',
                 '</nav>'].join(''),
+        /** main navigation items (with icons)*/
         mainItem: [
                 '<li class="js-navigation-items navigation-items">',
-                '   <div class="navigation-items-toggle">',
+                '   <div <% if (toggle) { %> class="navigation-items-toggle" <% } %> >',
                 '       <a class="js-navigation-item navigation-item" href="#">',
                 '           <span class="<%= icon %> navigation-item-icon"></span>',
                 '           <span class="navigation-item-title"><%= title %></span>',
                 '       </a>',
-                '       <a class="icon-shevron-right navigation-toggle-icon" href="#"></a>',
+                '       <% if (toggle) { %> <a class="icon-shevron-right navigation-toggle-icon" href="#"></a> <% } %>',
                 '   </div>',
                 '</li>'].join(''),
+        /** sub navigation items */
         subToggleItem: [
-                '<li class="asdfasdf">',
-                '   <div class="js-navigation-items navigation-subitems">',
+                '   <li class="js-navigation-items navigation-subitems">',
                 '       <div class="navigation-subitems-toggle">',
                 '           <a class="js-navigation-item navigation-item" href="#"><%= title %></a>',
                 '           <a class="icon-shevron-right navigation-toggle-icon" href="#"></a>',
                 '       </div>',
-                '   </div>',
                 '</li>'].join('')
-
     };
 
 
 
     return {
+
+
         initialize: function() {
-            this.bindDOMEvents();
+
             this.sandbox.logger.log('Initialized Navigation');
 
+            this.bindDOMEvents();
 
-            this.render();
+            // load Data
+            if (!!this.options.url) {
+                this.sandbox.util.load(this.options.url)
+                    .then(this.render.bind(this));
+            }
         },
 
 
-        render : function() {
+        render : function(data) {
+
+            this.options.data = data;
 
             // add container class to current div
             this.sandbox.dom.addClass(this.$el,'navigation-container');
 
             // render skeleton
             this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton,{
-                navigation: {
-                    title: 'title',
-                    icon: '../../img/tmp/husky.png'
-                }
+                title: this.options.data.title,
+                icon: this.options.data.icon
             }));
 
             // start search component
             this.sandbox.start([ {name:'search@husky', options: {el:'#navigation-search'}}]);
 
+            // render navigation items
+            this.renderNavigationItems(this.options.data);
 
-            // load Data
-            if (!!this.options.url) {
-                this.sandbox.util.load(this.options.url)
-                    .then(this.renderNavigationItems.bind(this));
-            }
         },
 
-        // renders main navigation elements
+        /**
+         *  renders main navigation elements
+         */
         renderNavigationItems : function(data) {
             var elem;
             if(data.hasSub) {
                 this.sandbox.util.foreach(data.sub.items, function(item) {
-                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.mainItem, {title: item.title, icon:'icon-'+item.icon}));
-                    this.sandbox.dom.append('#navigation-item-container', elem);
+                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.mainItem, {title: item.title, icon:'icon-'+item.icon, toggle: item.hasSub}));
                     if (item.hasSub) {
                         this.renderSubNavigationItems(item, this.sandbox.dom.find('div',elem));
                     }
+                    this.sandbox.dom.append('#navigation-item-container', elem);
                 }.bind(this));
             }
         },
 
-        // renders sub-navigation elements
+        /**
+         * renders sub-navigation elements
+         */
         renderSubNavigationItems: function(data, after) {
             var elem,
                 list = this.sandbox.dom.createElement('<ul />');
@@ -20870,7 +20880,7 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.util.foreach(data.sub.items, function(item) {
                 if (item.hasSub) {
                     elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subToggleItem, {title: item.title}));
-                    this.renderSubNavigationItems(item, this.sandbox.dom.find('div',elem));
+                    this.renderSubNavigationItems(item, this.sandbox.dom.find('div', elem));
                 } else {
                     elem = this.sandbox.dom.createElement('<li class="js-navigation-sub-item"><a href="#">'+item.title+'</a></li>');
                 }
@@ -20884,10 +20894,10 @@ define('__component__$navigation@husky',[],function() {
         /**
          * Interaction
          */
-
         bindDOMEvents: function() {
-            this.sandbox.dom.on(this.$el, 'click', this.toggleItems.bind(this),'.js-navigation-item');
-            this.sandbox.dom.on(this.$el, 'click', this.selectSubItem.bind(this),'.js-navigation-sub-item');
+            this.sandbox.dom.on(this.$el, 'click', this.toggleItems.bind(this),'.navigation-items-toggle, .navigation-subitems-toggle');
+
+            this.sandbox.dom.on(this.$el, 'click', this.selectSubItem.bind(this),'.js-navigation-sub-item, .js-navigation-item');
         },
 
         /**
@@ -20896,6 +20906,8 @@ define('__component__$navigation@husky',[],function() {
          * @param event
          */
         toggleItems: function(event) {
+
+            console.log("TOGGLE");
 
             event.preventDefault();
 
@@ -20918,7 +20930,13 @@ define('__component__$navigation@husky',[],function() {
             event.preventDefault();
 
             var $subItem = this.sandbox.dom.createElement(event.currentTarget),
-                $items = this.sandbox.dom.parents(event.currentTarget, '.js-navigation-items');
+                $items = this.sandbox.dom.parents(event.currentTarget, '.js-navigation-items'),
+                $parent = this.sandbox.dom.parent(event.currentTarget);
+
+            // if toggle was clicked, do not set active and selected
+            if (this.sandbox.dom.hasClass($parent, 'navigation-items-toggle') || this.sandbox.dom.hasClass($parent, 'navigation-subitems-toggle')) {
+                return;
+            }
 
             this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el),'is-selected');
             this.sandbox.dom.addClass($subItem, 'is-selected');
@@ -20927,6 +20945,7 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.dom.addClass($items, 'is-active');
 
         }
+
     };
 
 });

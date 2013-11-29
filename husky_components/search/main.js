@@ -9,11 +9,13 @@
  * Name: search
  * Options:
  *      instanceName: instance name of this component
+ *      placeholderText: text to show in search field
  *
  * Provided Events:
- * husky.search.<<instanceName>> , string  - triggered when search is performed - returns the searchstring
  *
- * Use Events:
+ *
+ * Emits Events:
+ *  husky.search.<<instanceName>> , string  - triggered when search is performed - returns the searchstring
  *
  */
 
@@ -22,15 +24,14 @@ define([], function() {
     'use strict';
 
     var templates = {
-            skeleton: function() {
-                return [
+            skeleton: [
                     '<a class="navigation-search-icon" href="#"></a>',
-                    '<input id="navigation-search-input" type="text" class="form-element input-round navigation-search-input" placeholder="Suche..."/>'
-                ].join('');
-            }
+                    '<input id="navigation-search-input" type="text" class="form-element input-round navigation-search-input" placeholder="<%= placeholderText %>"/>'
+                ].join('')
         },
         defaults = {
-            instanceName: null
+            instanceName: null,
+            placeholderText: 'Search...'
         };
 
 
@@ -50,7 +51,7 @@ define([], function() {
         },
 
         render: function() {
-            this.sandbox.dom.html(this.$el,this.sandbox.template.parse(templates.skeleton()));
+            this.sandbox.dom.html(this.$el,this.sandbox.template.parse(templates.skeleton, {placeholderText: this.options.placeholderText}));
         },
 
         // bind dom elements

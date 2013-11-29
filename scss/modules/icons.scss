@@ -227,6 +227,13 @@
     }
 }
 
+.icon-dashboard {
+  &::after {
+    content: "\e332";
+    display: inline-block;
+  }
+}
+
 .icon-arrow-down {
   &::after {
     content: "\e224"; // TODO change to correct icons when included in font,  remove rotate
