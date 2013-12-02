@@ -94,6 +94,15 @@
                 return $(selector).hasClass(classes);
             };
 
+            app.core.dom.prependClass = function(selector, classes) {
+                var $el = $(selector),
+                    oldClasses = $el.attr('class');
+
+                /* prepend class */
+                classes = classes + ' ' + oldClasses;
+                $el.attr('class', classes);
+            };
+
             app.core.dom.parent = function(selector) {
                 return $(selector).parent();
             };
@@ -250,10 +259,16 @@
             };
 
 
-            app.core.dom.scrollAnimate = function(position) {
-                $('html, body').animate({
-                    scrollTop: position
-                }, 500);
+            app.core.dom.scrollAnimate = function(position, selector) {
+                if (!!selector) {
+                    $(selector).animate({
+                        scrollTop: position
+                    }, 500);
+                } else {
+                    $('html, body').animate({
+                        scrollTop: position
+                    }, 500);
+                }
             };
 
             app.core.dom.slideUp = function(selector, duration, complete) {
