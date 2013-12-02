@@ -94,6 +94,15 @@
                 return $(selector).hasClass(classes);
             };
 
+            app.core.dom.prependClass = function(selector, classes) {
+                var $el = $(selector),
+                    oldClasses = $el.attr('class');
+
+                /* prepend class */
+                classes = classes + ' ' + oldClasses;
+                $el.attr('class', classes);
+            };
+
             app.core.dom.parent = function(selector) {
                 return $(selector).parent();
             };

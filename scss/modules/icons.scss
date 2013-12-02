@@ -174,7 +174,14 @@
 
 .icon-chevron-right {
   &::after {
-    content: "\e244";
+    content: "\e224";
+    display: inline-block;
+  }
+}
+
+.icon-chevron-down {
+  &::after {
+    content: "\e227";
     display: inline-block;
   }
 }
@@ -207,12 +214,6 @@
   }
 }
 
-.icon-shevron-right {
-  &::after {
-    content: "\e224";
-    display: inline-block;
-  }
-}
 .icon-items {
   &::after {
     content: "\e319";
@@ -223,6 +224,13 @@
 .icon-star {
   &::after {
     content: "\e050";
+    display: inline-block;
+  }
+}
+
+.icon-globe {
+  &::after {
+    content: "\e341";
     display: inline-block;
   }
 }

@@ -55,9 +55,11 @@ define(function() {
                 '           <span class="<%= icon %> navigation-item-icon"></span>',
                 '           <span class="navigation-item-title"><%= item.title %></span>',
                 '       </a>',
-                '       <% if (item.items && item.items.length > 0) { %> <a class="icon-shevron-right navigation-toggle-icon" href="#"></a> <% } %>',
                 '       <% if (item.hasSettings) { %>',
                 '           <a class="icon-cogwheel navigation-settings-icon js-navigation-settings" href="#"></a>',
+                '       <% } %>',
+                '       <% if (item.items && item.items.length > 0) { %>',
+                '           <a class="icon-chevron-right navigation-toggle-icon" href="#"></a>',
                 '       <% } %>',
                 '   </div>',
                 '</li>'].join(''),
@@ -69,7 +71,7 @@ define(function() {
                 '           <% if (item.hasSettings) { %>',
                 '           <a class="icon-cogwheel navigation-settings-icon js-navigation-settings" href="#"></a>',
                 '           <% } %>',
-                '           <a class="icon-shevron-right navigation-toggle-icon" href="#"></a>',
+                '           <a class="icon-chevron-right navigation-toggle-icon" href="#"></a>',
                 '       </div>',
                 '</li>'].join(''),
             /** siple sub item */
@@ -241,18 +243,32 @@ define(function() {
 
             var $items = this.sandbox.dom.closest(event.currentTarget, '.js-navigation-items'),
                 item, xBottom, windowHeight, itemHeight, itemTop,
+                $toggle,
 
                 $childList = this.sandbox.dom.find('ul:first', $items),
                 isExpanded = this.sandbox.dom.hasClass($items, 'is-expanded');
 
+
             if (isExpanded) {
                 this.sandbox.dom.slideUp($childList, 200, function() {
+
                     this.sandbox.dom.removeClass($items, 'is-expanded');
+
+                    // change toggle item
+                    $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
+                    this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
+                    this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
+
                 }.bind(this));
             } else {
                 this.sandbox.dom.addClass($items, 'is-expanded');
+                // change toggle item
+                $toggle = this.sandbox.dom.find('.icon-chevron-right', event.currentTarget);
+                this.sandbox.dom.removeClass($toggle, 'icon-chevron-right');
+                this.sandbox.dom.prependClass($toggle, 'icon-chevron-down');
 
                 this.sandbox.dom.slideDown($childList, 200, function() {
+
 
                     // check if collapsed element overlaps browser border
                     itemTop = this.sandbox.dom.offset($items).top;
@@ -285,14 +301,14 @@ define(function() {
 
             var $list = this.sandbox.dom.find('.section-items', this.sandbox.dom.closest(event.currentTarget,'.section'));
 
-            // show section
             if (this.sandbox.dom.hasClass($list, 'is-expanded')) {
+                // hide section
                 this.sandbox.dom.slideDown($list, 200, function() {
                     this.sandbox.dom.html(event.currentTarget, this.options.hideText);
                     this.sandbox.dom.removeClass($list, 'is-expanded');
                 }.bind(this));
-            // hide section
             } else {
+                // show section
                 this.sandbox.dom.html(event.currentTarget, this.options.showText);
                 this.sandbox.dom.slideUp($list, 200, function() {
                     this.sandbox.dom.addClass($list, 'is-expanded');
