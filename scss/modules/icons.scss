@@ -172,6 +172,13 @@
     }
 }
 
+.icon-chevron-right {
+  &::after {
+    content: "\e244";
+    display: inline-block;
+  }
+}
+
 .icon-archive {
     &::after {
         content: "\e150";
@@ -205,4 +212,50 @@
         content: "\e224";
         display: inline-block;
     }
+}
+.icon-items {
+    &::after {
+        content: "\e319";
+        display: inline-block;
+    }
+}
+
+.icon-star {
+    &::after {
+        content: "\e050";
+        display: inline-block;
+    }
+}
+
+.icon-dashboard {
+  &::after {
+    content: "\e332";
+    display: inline-block;
+  }
+}
+
+.icon-arrow-down {
+  &::after {
+    content: "\e224"; // TODO change to correct icons when included in font,  remove rotate
+    display: inline-block;
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+
+    transform: rotate(90deg);
+  }
+}
+
+.icon-arrow-up {
+  &::after {
+    content: "\e225"; // TODO change to correct icons when included in font,  remove rotate
+    display: inline-block;
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+
+    transform: rotate(90deg);
+  }
 }

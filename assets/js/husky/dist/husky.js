@@ -16347,7 +16347,7 @@ define('form/util',[], function() {
 
         // get form fields
         getFields: function(element) {
-            return $(element).find('input:not([data-form="false"], [type="submit"], [type="button"]), textarea:not([data-form="false"]), select:not([data-form="false"]), *[data-form="true"]');
+            return $(element).find('input:not([data-form="false"], [type="submit"], [type="button"]), textarea:not([data-form="false"]), select:not([data-form="false"]), *[data-form="true"], *[data-type="collection"]');
         },
 
         /**
@@ -16607,19 +16607,19 @@ define('form/element',['form/util'], function(Util) {
 
                     // HTML 5 attributes
                     // required
-                    if (this.$el.attr('required') === 'required' && !validators['required']) {
+                    if (this.$el.attr('required') === 'required' && !validators.required) {
                         addFunction('required', {required: true});
                     }
                     // min
-                    if (!!this.$el.attr('min') && !validators['min']) {
+                    if (!!this.$el.attr('min') && !validators.min) {
                         addFunction('min', {min: parseInt(this.$el.attr('min'), 10)});
                     }
                     // max
-                    if (!!this.$el.attr('max') && !validators['max']) {
+                    if (!!this.$el.attr('max') && !validators.max) {
                         addFunction('max', {max: parseInt(this.$el.attr('max'), 10)});
                     }
                     // regex
-                    if (!!this.$el.attr('pattern') && !validators['pattern']) {
+                    if (!!this.$el.attr('pattern') && !validators.pattern) {
                         addFunction('regex', {regex: this.$el.attr('pattern')});
                     }
                 },
@@ -16706,10 +16706,6 @@ define('form/element',['form/util'], function(Util) {
                             $element.addClass(this.options.validationErrorClass);
                         }
                     }
-                },
-
-                validateCallback: function(validatorCallback) {
-
                 }
             },
 
@@ -16837,6 +16833,10 @@ define('form/element',['form/util'], function(Util) {
 
                 getValue: function(data) {
                     return type.getValue(data);
+                },
+
+                getType: function() {
+                    return type;
                 }
             };
 
@@ -16973,6 +16973,55 @@ define('form/mapper',[
             that = {
                 initialize: function() {
                     Util.debug('INIT Mapper');
+
+                    form.initialized.then(function() {
+                        var selector = '*[data-type="collection"]',
+                            $elements = form.$el.find(selector);
+
+                        $elements.each(that.initCollection.bind(this));
+                    });
+                },
+
+                initCollection: function(key, value) {
+                    var $element = $(value),
+                        element = $element.data('element');
+
+                    // save first child element
+                    element.$children = $element.children().first().clone();
+                    element.$children.find('*').removeAttr('id');
+
+                    // init add button
+                    form.$el.on('click', '*[data-mapper-add="' + $element.data('mapper-property') + '"]', that.addClick.bind(this));
+
+                    // init remove button
+                    form.$el.on('click', '*[data-mapper-remove="' + $element.data('mapper-property') + '"]', that.removeClick.bind(this));
+                },
+
+                addClick: function(event) {
+                    var $addButton = $(event.currentTarget),
+                        propertyName = $addButton.data('mapper-add'),
+                        $collectionElement = $('#' + propertyName),
+                        collectionElement = $collectionElement.data('element');
+
+                    if (collectionElement.getType().canAdd()) {
+                        that.appendChildren.call(this, $collectionElement, collectionElement.$children);
+
+                        $('#current-counter-' + $collectionElement.data('mapper-property')).text($collectionElement.children().length);
+                    }
+                },
+
+                removeClick: function(event) {
+                    var $removeButton = $(event.currentTarget),
+                        propertyName = $removeButton.data('mapper-remove'),
+                        $collectionElement = $('#' + propertyName),
+                        $element = $removeButton.closest('.' + propertyName + '-element'),
+                        collectionElement = $collectionElement.data('element');
+
+                    if (collectionElement.getType().canRemove()) {
+                        that.remove.call(this, $element);
+
+                        $('#current-counter-' + $collectionElement.data('mapper-property')).text($collectionElement.children().length);
+                    }
                 },
 
                 processData: function(el) {
@@ -16983,8 +17032,8 @@ define('form/mapper',[
                         element = $el.data('element'),
                         result, item;
 
-                    // if type == array process children, else get value
-                    if (type !== 'array') {
+                    // if type == collection process children, else get value
+                    if (type !== 'collection') {
                         if (!!element) {
                             return element.getValue();
                         } else {
@@ -16994,7 +17043,13 @@ define('form/mapper',[
                         result = [];
                         $.each($el.children(), function(key, value) {
                             item = form.mapper.getData($(value));
-                            if (!filters[property] || (!!filters[property] && filters[property](item))) {
+
+                            var keys = Object.keys(item);
+                            if (keys.length === 1) { // for value only collection
+                                if (item[keys[0]] !== '') {
+                                    result.push(item[keys[0]]);
+                                }
+                            } else if (!filters[property] || (!!filters[property] && filters[property](item))) {
                                 result.push(item);
                             }
                         });
@@ -17002,42 +17057,71 @@ define('form/mapper',[
                     }
                 },
 
-                setArrayData: function(array, $element) {
+                setCollectionData: function(collection, $el) {
+
                     // remember first child remove the rest
-                    var $child = $element.children().first(),
+                    var $element = $($el[0]),
+                        collectionElement = $element.data('element'),
+                        $child = collectionElement.$children,
+                        count = collection.length,
+                        dfd = $.Deferred(),
+                        resolve = function() {
+                            count--;
+                            if (count === 0) {
+                                dfd.resolve();
+                            }
+                        };
+
+                    // remove children
+                    $element.children().each(function(key, value) {
+                        that.remove.call(this, $(value));
+                    }.bind(this));
+
+                    // foreach collection elements: create a new dom element, call setData recursively
+                    $.each(collection, function(key, value) {
+                        that.appendChildren($element, $child).then(function($newElement) {
+                            form.mapper.setData(value, $newElement).then(function() {
+                                resolve();
+                            });
+                        });
+                    });
+
+                    // set current length of collection
+                    $('#current-counter-' + $element.data('mapper-property')).text(collection.length);
+
+                    return dfd.promise();
+                },
+
+                appendChildren: function($element, $child) {
+                    var $newElement = $child.clone(),
+                        $newFields = Util.getFields($newElement),
+                        dfd = $.Deferred(),
+                        counter = $newFields.length,
                         element;
 
-                    // remove fields
+                    // add fields
+                    $.each($newFields, function(key, field) {
+                        element = form.addField($(field));
+                        element.initialized.then(function() {
+                            counter--;
+                            if (counter === 0) {
+                                $element.append($newElement);
+                                dfd.resolve($newElement);
+                            }
+                        });
+                    }.bind(this));
+
+                    return dfd.promise();
+                },
+
+                remove: function($element) {
+                    // remove all fields of element
                     $.each(Util.getFields($element), function(key, value) {
                         form.removeField(value);
                     }.bind(this));
-                    $element.children().remove();
 
-                    // foreach array elements: create a new dom element, call setData recursively
-                    $.each(array, function(key, value) {
-                        var $newElement = $child.clone(),
-                            $newFields = Util.getFields($newElement),
-                            dfd = $.Deferred(), counter = $newFields.length;
-
-                        $element.append($newElement);
-
-                        // set data after fields has been added
-                        dfd.then(function() {
-                            form.mapper.setData(value, $newElement);
-                        });
-
-                        // add fields
-                        $.each($newFields, function(key, field) {
-                            element = form.addField($(field));
-                            element.initialized.then(function() {
-                                counter--;
-                                if (counter === 0) {
-                                    dfd.resolve();
-                                }
-                            });
-                        }.bind(this));
-
-                    });
+                    // remove element
+                    $element.remove();
                 }
 
             },
@@ -17049,29 +17133,71 @@ define('form/mapper',[
                         $el = form.$el;
                     }
 
-                    $.each(data, function(key, value) {
-                        // search field with mapper property
-                        var selector = '*[data-mapper-property="' + key + '"]',
-                            $element = $el.find(selector),
-                            element = $element.data('element');
+                    var dfd = $.Deferred(),
+                        selector,
+                        $element,
+                        element,
+                        count = 1,
+                        resolve = function() {
+                            count--;
+                            if (count === 0) {
+                                dfd.resolve();
+                            }
+                        };
 
-                        if ($element.length > 0) {
-                            // if field is an array
-                            if ($.isArray(value)) {
-                                that.setArrayData.call(this, value, $element);
-                            } else {
-                                // if element is not in form add it
-                                if (!element) {
-                                    element = form.addField($element);
-                                    element.initialized.then(function() {
-                                        element.setValue(value);
+                    if (typeof data !== 'object') {
+                        selector = '*[data-mapper-property]';
+                        $element = $el.find(selector);
+                        element = $element.data('element');
+                        // if element is not in form add it
+                        if (!element) {
+                            element = form.addField($element);
+                            element.initialized.then(function() {
+                                element.setValue(data);
+                                // resolve this set data
+                                resolve();
+                            });
+                        } else {
+                            element.setValue(data);
+                            // resolve this set data
+                            resolve();
+                        }
+                    } else {
+                        count = Object.keys(data).length;
+                        $.each(data, function(key, value) {
+                            // search field with mapper property
+                            var selector = '*[data-mapper-property="' + key + '"]',
+                                $element = $el.find(selector),
+                                element = $element.data('element');
+
+                            if ($element.length > 0) {
+                                // if field is an collection
+                                if ($.isArray(value)) {
+                                    that.setCollectionData.call(this, value, $element).then(function() {
+                                        resolve();
                                     });
                                 } else {
-                                    element.setValue(value);
+                                    // if element is not in form add it
+                                    if (!element) {
+                                        element = form.addField($element);
+                                        element.initialized.then(function() {
+                                            element.setValue(value);
+                                            // resolve this set data
+                                            resolve();
+                                        });
+                                    } else {
+                                        element.setValue(value);
+                                        // resolve this set data
+                                        resolve();
+                                    }
                                 }
+                            } else {
+                                resolve();
                             }
-                        }
-                    }.bind(this));
+                        }.bind(this));
+                    }
+
+                    return dfd.promise();
                 },
 
                 getData: function($el) {
@@ -17110,11 +17236,11 @@ define('form/mapper',[
                     return data;
                 },
 
-                addArrayFilter: function(name, callback) {
+                addCollectionFilter: function(name, callback) {
                     filters[name] = callback;
                 },
 
-                removeArrayFilter: function(name) {
+                removeCollectionFilter: function(name) {
                     delete filters[name];
                 }
 
@@ -17152,6 +17278,7 @@ require.config({
         'type/url': 'js/types/url',
         'type/label': 'js/types/label',
         'type/select': 'js/types/select',
+        'type/collection': 'js/types/collection',
 
         'validator/default': 'js/validators/default',
         'validator/min': 'js/validators/min',
@@ -17220,7 +17347,7 @@ define('form',[
                     $.each(Util.getFields(this.$el), function(key, value) {
                         this.requireCounter++;
                         that.addField.call(this, value, false).initialized.then(function() {
-                            that.resolveInitialization.call(this)
+                            that.resolveInitialization.call(this);
                         }.bind(this));
                     }.bind(this));
                 },
@@ -17607,11 +17734,15 @@ define('type/label',[
             typeInterface = {
                 setValue: function(value) {
                     if (!!value[this.options.label]) {
-                        var label = value[this.options.label];
+                        var label = value[this.options.label],
+                            labelValue = value[this.options.label];
                         if (!!this.options.translate) {
-                            label = Globalize.localize(label, Globalize.culture().name);
+                            labelValue = Globalize.localize(label, Globalize.culture().name);
+                            if (labelValue === undefined) {
+                                labelValue = label;
+                            }
                         }
-                        this.$el.text(label);
+                        this.$el.text(labelValue);
                     }
 
                     if (!!value[this.options.id]) {
@@ -17683,6 +17814,53 @@ define('type/select',[
             };
 
         return new Default($el, defaults, options, 'select', typeInterface);
+    };
+});
+
+/*
+ * This file is part of the Husky Validation.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
+define('type/collection',[
+    'type/default',
+    'form/util'
+], function(Default) {
+
+    
+
+    return function($el, options) {
+        var defaults = {
+                min: 1,
+                max: 2
+            },
+
+            subType = {
+                validate: function() {
+                    return true;
+                },
+
+                needsValidation: function() {
+                    return false;
+                },
+
+                canAdd: function() {
+                    var length = this.$el.children().length;
+                    return length < this.options.max;
+                },
+
+                canRemove: function() {
+                    var length = this.$el.children().length;
+                    return length > this.options.min;
+                }
+            };
+
+        return new Default($el, defaults, options, 'collection', subType);
     };
 });
 
@@ -20599,45 +20777,175 @@ define('__component__$navigation@husky',[],function() {
 
     
 
+    var templates = {
+        /** component skeleton */
+        skeleton: [
+                '<nav class="navigation">',
+                '   <div class="navigation-content">',
+                '       <div class="navigation-header">',
+                '           <div class="navigation-header-image">',
+                '               <% if (icon) { %>',
+                '               <img alt="#" src="<%= icon %>"/>',
+                '               <% } %>',
+                '           </div>',
+                '       <div class="navigation-header-title"><% if (title) { %> <%= title %><% } %></div>',
+                '   </div>',
+                '   <div id="navigation-search" class="navigation-search"></div>',
+                '   <ul id="navigation-item-container" class="navigation-item-container"></ul>',
+                '</nav>'].join(''),
+        /** main navigation items (with icons)*/
+        mainItem: [
+                '<li class="js-navigation-items navigation-items">',
+                '   <div <% if (toggle) { %> class="navigation-items-toggle" <% } %> >',
+                '       <a class="js-navigation-item navigation-item" href="#">',
+                '           <span class="<%= icon %> navigation-item-icon"></span>',
+                '           <span class="navigation-item-title"><%= title %></span>',
+                '       </a>',
+                '       <% if (toggle) { %> <a class="icon-shevron-right navigation-toggle-icon" href="#"></a> <% } %>',
+                '   </div>',
+                '</li>'].join(''),
+        /** sub navigation items */
+        subToggleItem: [
+                '   <li class="js-navigation-items navigation-subitems">',
+                '       <div class="navigation-subitems-toggle">',
+                '           <a class="js-navigation-item navigation-item" href="#"><%= title %></a>',
+                '           <a class="icon-shevron-right navigation-toggle-icon" href="#"></a>',
+                '       </div>',
+                '</li>'].join('')
+    };
+
+
+
     return {
 
+
         initialize: function() {
+
             this.sandbox.logger.log('Initialized Navigation');
 
             this.bindDOMEvents();
+
+            // load Data
+            if (!!this.options.url) {
+                this.sandbox.util.load(this.options.url)
+                    .then(this.render.bind(this));
+            }
         },
 
+
+        render : function(data) {
+
+            this.options.data = data;
+
+            // add container class to current div
+            this.sandbox.dom.addClass(this.$el,'navigation-container');
+
+            // render skeleton
+            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton,{
+                title: this.options.data.title,
+                icon: this.options.data.icon
+            }));
+
+            // start search component
+            this.sandbox.start([ {name:'search@husky', options: {el:'#navigation-search'}}]);
+
+            // render navigation items
+            this.renderNavigationItems(this.options.data);
+
+        },
+
+        /**
+         *  renders main navigation elements
+         */
+        renderNavigationItems : function(data) {
+            var elem;
+            if(data.hasSub) {
+                this.sandbox.util.foreach(data.sub.items, function(item) {
+                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.mainItem, {title: item.title, icon:'icon-'+item.icon, toggle: item.hasSub}));
+                    if (item.hasSub) {
+                        this.renderSubNavigationItems(item, this.sandbox.dom.find('div',elem));
+                    }
+                    this.sandbox.dom.append('#navigation-item-container', elem);
+                }.bind(this));
+            }
+        },
+
+        /**
+         * renders sub-navigation elements
+         */
+        renderSubNavigationItems: function(data, after) {
+            var elem,
+                list = this.sandbox.dom.createElement('<ul />');
+
+            this.sandbox.util.foreach(data.sub.items, function(item) {
+                if (item.hasSub) {
+                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subToggleItem, {title: item.title}));
+                    this.renderSubNavigationItems(item, this.sandbox.dom.find('div', elem));
+                } else {
+                    elem = this.sandbox.dom.createElement('<li class="js-navigation-sub-item"><a href="#">'+item.title+'</a></li>');
+                }
+                this.sandbox.dom.append(list, elem);
+            }.bind(this));
+
+            this.sandbox.dom.after(after, list);
+        },
+
+
+        /**
+         * Interaction
+         */
         bindDOMEvents: function() {
-            this.$el.on('click', '.js-navigation-item', this.toggleItems.bind(this));
-            this.$el.on('click', '.js-navigation-sub-item', this.selectSubItem.bind(this));
+            this.sandbox.dom.on(this.$el, 'click', this.toggleItems.bind(this),'.navigation-items-toggle, .navigation-subitems-toggle');
+
+            this.sandbox.dom.on(this.$el, 'click', this.selectSubItem.bind(this),'.js-navigation-sub-item, .js-navigation-item');
         },
 
+        /**
+         * Toggles menu element with submenu
+         * Raises navigation.toggle
+         * @param event
+         */
         toggleItems: function(event) {
+
+            console.log("TOGGLE");
 
             event.preventDefault();
 
-            var $items = $(event.currentTarget).parents('.navigation-items');
+            var $items = this.sandbox.dom.parents(event.currentTarget, '.js-navigation-items')[0];
 
-            if ($items.hasClass('is-expanded')) {
-                $items.removeClass('is-expanded');
-                return;
+            if (this.sandbox.dom.hasClass($items, 'is-expanded')) {
+                this.sandbox.dom.removeClass($items, 'is-expanded');
+            } else {
+                this.sandbox.dom.addClass($items, 'is-expanded');
             }
-            $items.addClass('is-expanded');
         },
 
+        /**
+         * Selects menu element without submenu
+         * Raises navigation.select
+         * @param event
+         */
         selectSubItem: function(event) {
 
             event.preventDefault();
 
-            var $subItem = $(event.currentTarget),
-                $items = $(event.currentTarget).parents('.navigation-items');
+            var $subItem = this.sandbox.dom.createElement(event.currentTarget),
+                $items = this.sandbox.dom.parents(event.currentTarget, '.js-navigation-items'),
+                $parent = this.sandbox.dom.parent(event.currentTarget);
 
-            this.$el.find('.is-selected').removeClass('is-selected');
-            $subItem.addClass('is-selected');
+            // if toggle was clicked, do not set active and selected
+            if (this.sandbox.dom.hasClass($parent, 'navigation-items-toggle') || this.sandbox.dom.hasClass($parent, 'navigation-subitems-toggle')) {
+                return;
+            }
 
-            this.$el.find('.is-active').removeClass('is-active');
-            $items.addClass('is-active');
+            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el),'is-selected');
+            this.sandbox.dom.addClass($subItem, 'is-selected');
+
+            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-active', this.$el),'is-active');
+            this.sandbox.dom.addClass($items, 'is-active');
+
         }
+
     };
 
 });
@@ -21100,17 +21408,23 @@ define('__component__$button@husky',[], function() {
  *    Name: Datagrid
  *
  *    Options:
- *        - autoRemoveHandling: raises an event before a row is removed
- *        - className: additional classname for the wrapping div
- *        - data: array of data to display (instead of using a url)
- *        - elementType: type of datagrid (table,..) ??
- *        - excludeFields: array of field to exclude
- *        - pagination: display a pagination
+ *      - autoRemoveHandling: raises an event before a row is removed
+ *      - className: additional classname for the wrapping div
+ *      - data: array of data to display (instead of using a url)
+ *      - elementType: type of datagrid (currently is only table available)
+ *      - excludeFields: array of field to exclude
+ *      - pagination: display a pagination
  *      - pageSize: lines per page
  *      - showPages: amount of pages that will be shown
  *      - removeRow: displays in the last column an icon to remove a row
  *      - selectItem.type: typ of select [checkbox, radio]
  *      - selectItem.width: typ of select [checkbox, radio]
+ *      - sortable: is list sortable [true,false]
+ *      - tableHead: configuration of table header
+ *          - content: column title
+ *          - width: width of column
+ *          - class: css class of th
+ *          - attribute: mapping information to data (if not set it will just itterate of attributes)
  *      - url: url to fetch content
  *      - appendTBody: add TBODY to table
  *
@@ -21122,14 +21436,14 @@ define('__component__$button@husky',[], function() {
  *       - husky.datagrid.row.remove-click - raised when clicked on the remove-row-icon
  *       - husky.datagrid.row.removed - raised when row got removed
  *       - husky.datagrid.page.change - raised when the the current page changes
- *       - husky.datagrid.update - raised when the data needs to be updated
+ *       - husky.datagrid.updated - raised when the data is updated
  *       - husky.datagrid.item.click - raised when clicked on an item
  *       - husky.datagrid.items.selected - raised when husky.datagrid.items.get-selected is triggered
  *       - husky.datagrid.data.provide - raised when when husky.datagrid.data.get is triggered
  *
  *
  *    Used Events:
- *       - husky.datagrid.update
+ *       - husky.datagrid.update - used to trigger an update of the data
  *       - husky.datagrid.row.add - used to add a row
  *       - husky.datagrid.row.remove - used to remove a row
  *       - husky.datagrid.items.get-selected - triggers husky.datagrid.items.selected event, which returns all selected item ids
@@ -21137,17 +21451,19 @@ define('__component__$button@husky',[], function() {
  *
  */
 
+
+
 define('__component__$datagrid@husky',[],function() {
 
     
 
-    /*
-     *	Default values for options
+    /**
+     *    Default values for options
      */
     var defaults = {
         autoRemoveHandling: true,
         className: 'datagridcontainer',
-        elementType: 'table', //??
+        elementType: 'table',
         data: null,
         defaultMeasureUnit: 'px',
         excludeFields: ['id'],
@@ -21162,6 +21478,7 @@ define('__component__$datagrid@husky',[],function() {
             width: '50px'    // numerous value
             //clickable: false   // defines if background is clickable TODO do not use until fixed
         },
+        sortable: false,
         tableHead: [],
         url: null,
         appendTBody: true   // add TBODY to table
@@ -21182,18 +21499,25 @@ define('__component__$datagrid@husky',[],function() {
             this.configs = {};
             this.allItemIds = [];
             this.selectedItemIds = [];
+            this.rowStructure = ['id'];
+            this.sort = {
+                ascClass: 'icon-arrow-up',
+                descClass: 'icon-arrow-down',
+                additionalClasses: ' m-left-5 small-font'
+            };
 
             // append datagrid to html element
             this.$originalElement = this.sandbox.dom.$(this.options.el);
             this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
             this.$originalElement.append(this.$element);
 
-            this.options.pagination = (this.options.pagination !== undefined) ? !!this.options.pagination : !!this.options.url;
-
             this.getData();
+
+            // Should only be be called once
+            this.bindCustomEvents();
         },
 
-        /*
+        /**
          * Gets the data either via the url or the array
          */
         getData: function() {
@@ -21214,21 +21538,31 @@ define('__component__$datagrid@husky',[],function() {
                     .appendPagination()
                     .render();
             }
-
-            this.sandbox.logger.log('data in datagrid', this.data);
         },
 
+        /**
+         * Loads contents via ajax
+         * @param params url
+         */
         load: function(params) {
-
-            this.sandbox.logger.log('loading data');
 
             this.sandbox.util.ajax({
 
                 url: this.getUrl(params),
                 data: params.data,
 
+                error: function(jqXHR, textStatus, errorThrown) {
+                    this.sandbox.logger.log("An error occured while fetching data from: " + this.getUrl(params));
+                    this.sandbox.logger.log(textStatus);
+                    this.sandbox.logger.log(errorThrown);
+                }.bind(this),
+
+                complete: function(response) {
+                    this.sandbox.logger.log("An complete occured while fetching data from: " + this.getUrl(params));
+                    this.sandbox.logger.log(response);
+                }.bind(this),
+
                 success: function(response) {
-                    this.sandbox.logger.log('load', params);
 
                     this.data = response;
                     this.setConfigs();
@@ -21237,6 +21571,8 @@ define('__component__$datagrid@husky',[],function() {
                         .appendPagination()
                         .render();
 
+                    this.setHeaderClasses();
+
                     if (typeof params.success === 'function') {
                         params.success(response);
                     }
@@ -21244,6 +21580,11 @@ define('__component__$datagrid@husky',[],function() {
             });
         },
 
+        /**
+         * Returns url with page size and page param at the end
+         * @param params
+         * @returns {string}
+         */
         getUrl: function(params) {
             var delimiter = '?', url;
 
@@ -21260,6 +21601,9 @@ define('__component__$datagrid@husky',[],function() {
             return url;
         },
 
+        /**
+         * Sets config object (total amount of elements, page size, page number)
+         */
         setConfigs: function() {
             this.configs = {};
             this.configs.total = this.data.total;
@@ -21267,12 +21611,17 @@ define('__component__$datagrid@husky',[],function() {
             this.configs.page = this.data.page;
         },
 
+        /**
+         * Prepares the structure of the datagrid (list, table)
+         * @returns {*}
+         */
         prepare: function() {
             this.$element.empty();
 
             if (this.options.elementType === 'list') {
                 // TODO:
                 //this.$element = this.prepareList();
+                this.sandbox.logger.log("list is not yet implemented!");
             } else {
                 this.$element.append(this.prepareTable());
             }
@@ -21280,9 +21629,10 @@ define('__component__$datagrid@husky',[],function() {
             return this;
         },
 
-        //
-        // elementType === 'table'
-        //
+        /**
+         * Perapres the structure of the datagrid when element type is table
+         * @returns {table} returns table element
+         */
         prepareTable: function() {
             var $table, $thead, $tbody, tblClasses;
 
@@ -21312,8 +21662,12 @@ define('__component__$datagrid@husky',[],function() {
             return $table;
         },
 
+        /**
+         * Prepares table head
+         * @returns {string} returns table head
+         */
         prepareTableHead: function() {
-            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues;
+            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute;
 
             tblColumns = [];
             headData = this.options.tableHead || this.data.head;
@@ -21345,8 +21699,11 @@ define('__component__$datagrid@husky',[],function() {
                 tblColumns.push('</th>');
             }
 
+            this.rowStructure = ['id'];
+
             headData.forEach(function(column) {
                 tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
+
                 tblColumnWidth = '';
                 // get width and measureunit
                 if (!!column.width) {
@@ -21354,7 +21711,14 @@ define('__component__$datagrid@husky',[],function() {
                     tblColumnWidth = ' width="' + widthValues[0] + widthValues[1] + '"';
                 }
 
-                tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
+                if (column.attribute !== undefined) {
+                    this.rowStructure.push(column.attribute);
+                    dataAttribute = ' data-attribute="' + column.attribute + '"';
+                    tblColumns.push('<th' + tblCellClass + tblColumnWidth + dataAttribute + '>' + column.content + '<span></span></th>');
+                } else {
+                    tblColumns.push('<th' + tblCellClass + tblColumnWidth + '>' + column.content + '</th>');
+                }
+
             }.bind(this));
 
             return '<tr>' + tblColumns.join('') + '</tr>';
@@ -21371,6 +21735,10 @@ define('__component__$datagrid@husky',[],function() {
             return [regex[1], regex[2]];
         },
 
+        /**
+         * Itterates over all items and prepares the rows
+         * @returns {string} returns a string of all rows
+         */
         prepareTableRows: function() {
             var tblRows;
 
@@ -21385,6 +21753,11 @@ define('__component__$datagrid@husky',[],function() {
             return tblRows.join('');
         },
 
+        /**
+         * Returns a table row including values and data attributes
+         * @param row
+         * @returns string table row
+         */
         prepareTableRow: function(row) {
 
             if (!!(this.options.template && this.options.template.row)) {
@@ -21393,8 +21766,9 @@ define('__component__$datagrid@husky',[],function() {
 
             } else {
 
-                var tblRowAttributes, tblCellContent, tblCellClass,
-                    tblColumns, tblCellClasses, radioPrefix, key, column;
+                var radioPrefix, key;
+                this.tblColumns = [];
+                this.tblRowAttributes = '';
 
                 if (!!this.options.className && this.options.className !== '') {
                     radioPrefix = '-' + this.options.className;
@@ -21402,56 +21776,78 @@ define('__component__$datagrid@husky',[],function() {
                     radioPrefix = '';
                 }
 
-                tblColumns = [];
-                tblRowAttributes = '';
-
                 !!row.id && this.allItemIds.push(parseInt(row.id, 10));
 
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     // add a checkbox to each row
-                    tblColumns.push('<td>', this.templates.checkbox(), '</td>');
+                    this.tblColumns.push('<td>', this.templates.checkbox(), '</td>');
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                     // add a radio to each row
 
-                    tblColumns.push('<td>', this.templates.radio({
+                    this.tblColumns.push('<td>', this.templates.radio({
                         name: 'husky-radio' + radioPrefix
                     }), '</td>');
                 }
 
-                for (key in row) {
-                    if (row.hasOwnProperty(key)) {
-                        column = row[key];
-
-                        if (this.options.excludeFields.indexOf(key) < 0) {
-                            tblCellClasses = [];
-                            tblCellContent = (!!column.thumb) ? '<img alt="' + (column.alt || '') + '" src="' + column.thumb + '"/>' : column;
-
-                            // prepare table cell classes
-                            !!column.class && tblCellClasses.push(column.class);
-                            !!column.thumb && tblCellClasses.push('thumb');
-
-                            tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
-
-                            tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
-                        } else {
-                            tblRowAttributes += ' data-' + key + '="' + column + '"';
+                // when row structure contains more elments than the id then use the structure to set values
+                if (this.rowStructure.length > 1) {
+                    this.rowStructure.forEach(function(key) {
+                        this.setValueOfRowCell(key, row[key]);
+                    }.bind(this));
+                } else {
+                    for (key in row) {
+                        if (row.hasOwnProperty(key)) {
+                            this.setValueOfRowCell(key, row[key]);
                         }
                     }
                 }
 
                 if (!!this.options.removeRow) {
-                    tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
+                    this.tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
                 }
 
-                return '<tr' + tblRowAttributes + '>' + tblColumns.join('') + '</tr>';
+                return '<tr' + this.tblRowAttributes + '>' + this.tblColumns.join('') + '</tr>';
             }
         },
 
+        /**
+         * Sets the value of row cell and the data-id attribute for the row
+         * @param key attribute name
+         * @param value attribute value
+         */
+        setValueOfRowCell: function(key, value) {
+            var tblCellClasses,
+                tblCellContent,
+                tblCellClass;
+
+            if (this.options.excludeFields.indexOf(key) < 0) {
+                tblCellClasses = [];
+                tblCellContent = (!!value.thumb) ? '<img alt="' + (value.alt || '') + '" src="' + value.thumb + '"/>' : value;
+
+                // prepare table cell classes
+                !!value.class && tblCellClasses.push(value.class);
+                !!value.thumb && tblCellClasses.push('thumb');
+
+                tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
+
+                this.tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
+            } else {
+                this.tblRowAttributes += ' data-' + key + '="' + value + '"';
+            }
+        },
+
+        /**
+         * Resets the arrays for selected items
+         */
         resetItemSelection: function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
         },
 
+        /**
+         * Selectes or deselects the clicked item
+         * @param event
+         */
         selectItem: function(event) {
 
             // Todo review handling of events for new rows in datagrid (itemId empty?)
@@ -21514,6 +21910,10 @@ define('__component__$datagrid@husky',[],function() {
             }
         },
 
+        /**
+         * Selects or deselect all available items of the list
+         * @param event
+         */
         selectAllItems: function(event) {
 
             event.stopPropagation();
@@ -21536,16 +21936,22 @@ define('__component__$datagrid@husky',[],function() {
             }
         },
 
+        /**
+         * Adds a row to the datagrid
+         * @param row
+         */
         addRow: function(row) {
-
             var $table;
-            // TODO check element type, list or table
-
+            // check for other element types when implemented
             $table = this.$element.find('table');
-
             $table.append(this.prepareTableRow(row));
         },
 
+        /**
+         * Prepares for removing a row
+         * Raises the husky.datagrid.row.remove-click event when auto remove handling is not set to true
+         * @param event
+         */
         prepareRemoveRow: function(event) {
             if (!!this.options.autoRemoveHandling) {
                 this.removeRow(event);
@@ -21563,6 +21969,11 @@ define('__component__$datagrid@husky',[],function() {
             }
         },
 
+        /**
+         * Removes a row from the datagrid
+         * Raises husky.datagrid.row.removed event
+         * @param event
+         */
         removeRow: function(event) {
 
             var $element, $tblRow, id, idx;
@@ -21588,10 +21999,11 @@ define('__component__$datagrid@husky',[],function() {
             $tblRow.remove();
         },
 
-        //
-        // Pagination
         // TODO: create pagination module
-        //
+        /**
+         * Appends pagination when option is set
+         * @returns {*}
+         */
         appendPagination: function() {
             if (this.options.pagination) {
                 this.$element.append(this.preparePagination());
@@ -21636,28 +22048,35 @@ define('__component__$datagrid@husky',[],function() {
             });
         },
 
+        /**
+         * Called when the current page should change
+         * Emits husky.datagrid.updated event on success
+         * @param event
+         */
         changePage: function(event) {
 
             var $element, page;
 
             $element = this.sandbox.dom.$(event.currentTarget);
             page = $element.data('page');
-
-
             this.addLoader();
+            this.resetSortingOptions();
+            this.sandbox.emit('husky.datagrid.page.change', 'change page');
 
             this.load({
                 url: this.options.url,
                 page: page,
                 success: function() {
                     this.removeLoader();
+                    this.sandbox.emit('husky.datagrid.updated', 'updated page');
                 }.bind(this)
             });
-
-            this.sandbox.emit('husky.datagrid.page.change', 'change page');
-            this.sandbox.emit('husky.datagrid.update', 'update page');
         },
 
+        resetSortingOptions: function() {
+            this.sort.attribute = null;
+            this.sort.direction = null;
+        },
 
         bindDOMEvents: function() {
 
@@ -21689,6 +22108,10 @@ define('__component__$datagrid@husky',[],function() {
                 this.$element.on('click', '.remove-row > span', this.prepareRemoveRow.bind(this));
             }
 
+            if (this.options.sortable) {
+                this.$element.on('click', 'thead th[data-attribute]', this.changeSorting.bind(this));
+            }
+
 
             // Todo
             // trigger event when click on clickable area
@@ -21715,9 +22138,69 @@ define('__component__$datagrid@husky',[],function() {
             // }.bind(this));
         },
 
-        bindCustomEvents: function() {
-            // listen for private events
+        /**
+         * Sets header classes and loads new data
+         * Emits husky.datagrid.updated event on success
+         * @param event
+         */
+        changeSorting: function(event) {
 
+            var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
+                $element = event.currentTarget,
+                $span = this.sandbox.dom.children($element, 'span')[0],
+                params = "";
+
+            if (!!attribute) {
+
+                this.sandbox.emit('husky.datagrid.data.sort');
+                this.sort.attribute = attribute;
+
+                if (this.sandbox.dom.hasClass($span, this.sort.ascClass)) {
+                    this.sort.direction = "desc";
+                    params = '?sortOrder=desc&sortBy=' + attribute;
+                } else {
+                    this.sort.direction = "asc";
+                    params = '?sortOrder=asc&sortBy=' + attribute;
+                }
+
+                this.addLoader();
+
+                this.load({
+                    url: this.options.url + params,
+                    success: function() {
+                        this.removeLoader();
+                        this.sandbox.emit('husky.datagrid.updated', 'updated sort');
+                    }.bind(this)
+                });
+            }
+        },
+
+        /**
+         * Sets the header classes used for sorting purposes
+         * needs this.sort to be correctly initialized
+         */
+        setHeaderClasses: function() {
+            var attribute = this.sort.attribute,
+                direction = this.sort.direction,
+                $element = this.sandbox.dom.find('thead th[data-attribute=' + attribute + ']', this.$element),
+                $span = this.sandbox.dom.children($element, 'span')[0];
+
+            if (!!attribute) {
+
+                this.sandbox.dom.addClass($element, 'bold');
+
+                if (direction === 'asc') {
+                    this.sandbox.dom.addClass($span, this.sort.ascClass + this.sort.additionalClasses);
+                } else {
+                    this.sandbox.dom.addClass($span, this.sort.descClass + this.sort.additionalClasses);
+                }
+
+            }
+        },
+
+        bindCustomEvents: function() {
+
+            // listen for private events
             this.sandbox.on('husky.datagrid.update', this.updateHandler.bind(this));
 
             // listen for public events
@@ -21735,29 +22218,57 @@ define('__component__$datagrid@husky',[],function() {
             this.sandbox.emit('husky.datagrid.data.provide', this.data);
         },
 
+        /**
+         * Updates data in datagrid
+         * Called when husky.datagrid.update event emitted
+         * Emits husky.datagrid.updated event on success
+         */
         updateHandler: function() {
             this.resetItemSelection();
+            this.resetSortingOptions();
+            this.load({
+                url: this.options.url,
+                success: function() {
+                    this.removeLoader();
+                    this.sandbox.emit('husky.datagrid.updated', 'updated data 123');
+                }.bind(this)
+            });
         },
 
+        /**
+         * Renders datagrid element in container
+         * Binds DOM events
+         */
         render: function() {
             this.$originalElement.html(this.$element);
-
-            this.bindCustomEvents();
             this.bindDOMEvents();
         },
 
+        /**
+         * Adds loading icon and keeps width and height
+         * @returns {*}
+         */
         addLoader: function() {
             return this.$element
                 .outerWidth(this.$element.outerWidth())
                 .outerHeight(this.$element.outerHeight())
-                .empty();
-            //.addClass('is-loading');
-        },
-        removeLoader: function() {
-            return this.$element.removeClass('is-loading');
+                .empty()
+                .addClass('is-loading');
         },
 
-        // trigger selected items
+        /**
+         * Removes loading icon, width and height of container
+         * @returns {*}
+         */
+        removeLoader: function() {
+            return this.$element.removeClass('is-loading').outerHeight("").outerWidth("");
+        },
+
+        /**
+         * Returns selected items either via callback or else via husky.datagrid.items.selected event
+         * Gets called on husky.datagrid.items.get-selected event
+         * @param callback
+         */
         getSelectedItemsIds: function(callback) {
             if (typeof callback === 'function') {
                 callback(this.selectedItemIds);
@@ -22054,12 +22565,11 @@ define('__component__$dialog@husky',['jquery'], function($) {
  * husky.dropdown.<<instanceName>>.hide       - hide dropdown menu
  */
 
-define('__component__$dropdown@husky',['jquery'], function($) {
+define('__component__$dropdown@husky',[], function() {
 
     
 
-    var sandbox,
-        moduleName = 'Husky.Ui.DropDown',
+    var moduleName = 'Husky.Ui.DropDown',
         defaults = {
             url: '',     // url for lazy loading
             data: [],    // data array
@@ -22075,8 +22585,6 @@ define('__component__$dropdown@husky',['jquery'], function($) {
 
     return {
         initialize: function() {
-            sandbox = this.sandbox;
-
             this.name = moduleName;
 
             this.options = this.sandbox.util.extend({}, defaults, this.options);
@@ -22090,34 +22598,39 @@ define('__component__$dropdown@husky',['jquery'], function($) {
 //           this. $element.data(moduleName, new Husky.Ui.DropDown(this, options));
 
 
-            this.$element = $('<div class="husky-drop-down"/>');
+            this.$element = this.sandbox.dom.createElement('<div/>', {
+                'class': 'husky-drop-down'
+            });
 
-            $(this.options.el).append(this.$element);
+            this.sandbox.dom.append(this.options.el, this.$element);
 
             this.init();
         },
 
         init: function() {
-            sandbox.logger.log('initialize', this);
+            this.sandbox.logger.log('initialize', this);
 
 
             // ------------------------------------------------------------
             // initialization
             // ------------------------------------------------------------
-            this.$dropDown = $('<div class="dropdown-menu" />');
-            this.$dropDownList = $('<ul/>');
-            this.$element.append(this.$dropDown);
-            this.$dropDown.append(this.$dropDownList);
+            this.$dropDown = this.sandbox.dom.createElement('<div/>', {
+                'class': 'dropdown-menu'
+            });
+            this.$dropDownList = this.sandbox.dom.createElement('<ul/>');
+
+            this.sandbox.dom.append(this.$element, this.$dropDown);
+            this.sandbox.dom.append(this.$dropDown, this.$dropDownList);
             this.hideDropDown();
 
             if (this.options.setParentDropDown) {
                 // add class dropdown to parent
-                this.$element.parent().addClass('dropdown');
+                this.sandbox.dom.addClass(this.sandbox.dom.parent(this.$element),'dropdown');
             }
 
             // check alginment
             if (this.options.alignment === 'right') {
-                this.$dropDown.addClass('dropdown-align-right');
+                this.sandbox.dom.addClass(this.$dropDown, 'dropdown-align-right');
             }
 
             // bind dom elements
@@ -22132,29 +22645,25 @@ define('__component__$dropdown@husky',['jquery'], function($) {
         // bind dom elements
         bindDOMEvents: function() {
 
-            // turn off all events
-            this.$element.off();
+             // turn off all events
+             this.sandbox.dom.off(this.$element);
 
-            // ------------------------------------------------------------
-            // DOM events
-            // ------------------------------------------------------------
+             // ------------------------------------------------------------
+             // DOM events
+             // ------------------------------------------------------------
 
-            // init drop-down
+             // init drop-down
+             if (this.options.trigger !== '') {
+                this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this), this.options.trigger);
+             } else {
+                this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this));
+             }
 
-            if (this.options.trigger !== '') {
-                $(this.options.el).on('click', this.options.trigger, this.triggerClick.bind(this));
-            } else {
-                $(this.options.el).on('click', this.triggerClick.bind(this));
-            }
-
-            // mouse control
-            this.$dropDownList.on('click', 'li', function(event) {
-                var $element = $(event.currentTarget),
-                    id = $element.data('id');
-                this.clickItem(id);
-            }.bind(this));
-
-
+            // on click on list item
+            this.sandbox.dom.on(this.$dropDownList, 'click', function (event) {
+                event.stopPropagation();
+                this.clickItem(this.sandbox.dom.data(event.currentTarget, 'id'));
+            }.bind(this), 'li');
         },
 
         bindCustomEvents: function() {
@@ -22169,14 +22678,14 @@ define('__component__$dropdown@husky',['jquery'], function($) {
 
         // trigger event with clicked item
         clickItem: function(id) {
-            this.options.data.forEach(function(item) {
-                if (item.id === id) {
-                    sandbox.logger.log(this.name, 'item.click: ' + id, 'success');
+            this.sandbox.util.foreach(this.options.data, function(item) {
+                if (parseInt(item.id, 10) === id) {
+                    this.sandbox.logger.log(this.name, 'item.click: ' + id, 'success');
 
                     if (!!this.options.clickCallback && typeof this.options.clickCallback === 'function') {
                         this.options.clickCallback(item, this.$el);
                     } else {
-                        sandbox.emit(this.getEvent('item.click'), item, this.$el);
+                        this.sandbox.emit(this.getEvent('item.click'), item, this.$el);
                     }
 
                     return false;
@@ -22186,7 +22695,8 @@ define('__component__$dropdown@husky',['jquery'], function($) {
         },
 
         // trigger click event handler toggles the dropDown
-        triggerClick: function() {
+        triggerClick: function(event) {
+            event.stopPropagation();
             this.toggleDropDown();
         },
 
@@ -22203,7 +22713,7 @@ define('__component__$dropdown@husky',['jquery'], function($) {
             var url = this.getUrl();
             this.sandbox.logger.log(this.name, 'load: ' + url);
 
-            sandbox.util.ajax({
+            this.sandbox.util.ajax({
                 url: url,
                 success: function(response) {
                     this.sandbox.logger.log(this.name, 'load', 'success');
@@ -22223,7 +22733,7 @@ define('__component__$dropdown@husky',['jquery'], function($) {
                 }.bind(this)
             });
 
-            // FIXME event will be binded later
+            // FIXME event will be bound later
             setTimeout(function() {
                 this.sandbox.emit(this.getEvent('data.load'));
             }.bind(this), 200);
@@ -22239,11 +22749,11 @@ define('__component__$dropdown@husky',['jquery'], function($) {
                         if (this.options.translateLabels) {
                             label = this.sandbox.translate(label);
                         }
-                        this.$dropDownList.append('<li data-id="' + item.id + '">' + label + '</li>');
+                        this.sandbox.dom.append(this.$dropDownList, '<li data-id="' + item.id + '">' + label + '</li>');
                     }
                 }.bind(this));
             } else {
-                this.$dropDownList.append('<li>No data received</li>');
+                this.sandbox.dom.append(this.$dropDownList, '<li>No data received</li>');
             }
         },
 
@@ -22261,25 +22771,34 @@ define('__component__$dropdown@husky',['jquery'], function($) {
         // clear childs of list
         clearDropDown: function() {
             // FIXME make it easier
-            this.$dropDown.children('ul').children('li').remove();
+            this.sandbox.dom.remove(this.sandbox.dom.children(this.sandbox.dom.children(this.$dropDown,'ul'),'li'));
         },
 
         // toggle dropDown visible
         toggleDropDown: function() {
             this.sandbox.logger.log(this.name, 'toggle dropdown');
-            this.$dropDown.toggle();
+//            this.sandbox.dom.toggle(this.$dropDown);
+            if (this.sandbox.dom.is(this.$dropDown,':visible')) {
+                this.hideDropDown();
+            } else {
+                this.showDropDown();
+            }
         },
 
         // make dropDown visible
         showDropDown: function() {
             this.sandbox.logger.log(this.name, 'show dropdown');
-            this.$dropDown.show();
+            // on click on trigger outside check
+            this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
+            this.sandbox.dom.show(this.$dropDown);
         },
 
         // hide dropDown
         hideDropDown: function() {
             this.sandbox.logger.log(this.name, 'hide dropdown');
-            this.$dropDown.hide();
+            // remove global click event
+            this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
+            this.sandbox.dom.hide(this.$dropDown);
         },
 
         // get url for pattern
@@ -22445,7 +22964,7 @@ define('__component__$matrix@husky',[],function() {
         prepareTableBody: function() {
             var $tbody = sandbox.dom.createElement('<tbody/>'),
                 i, $tr, $tdHead, $tdAll,
-                j, $tdValue, $span;
+                j, $tdValue, $span, title;
 
             for (i = 0; i < this.options.captions.vertical.length; i++) {
                 $tr = sandbox.dom.createElement('<tr/>');
@@ -22465,8 +22984,14 @@ define('__component__$matrix@husky',[],function() {
                 // insert values of matrix
                 for (j = 0; j < this.options.values.horizontal.length; j++) {
                     $tdValue = sandbox.dom.createElement('<td class="value"/>');
+
+                    if (this.options.values.titles) {
+                        title = 'title="' + this.options.values.titles[j] + '"';
+                    } else {
+                        title = '';
+                    }
                     $span = sandbox.dom.createElement(
-                        '<span class="icon-' + this.options.values.horizontal[j] + ' pointer"/>'
+                        '<span ' + title + ' class="icon-' + this.options.values.horizontal[j] + ' pointer"/>'
                     );
                     sandbox.dom.data($span, 'value', this.options.values.horizontal[j]);
                     sandbox.dom.data($span, 'section', this.options.values.vertical[i]);
@@ -22481,7 +23006,7 @@ define('__component__$matrix@husky',[],function() {
                 }
 
                 //add all link
-                sandbox.dom.html($tdAll, '<span class="pointer">'+this.options.captions.all+'</span>');
+                sandbox.dom.html($tdAll, '<span class="pointer">' + this.options.captions.all + '</span>');
                 sandbox.dom.append($tr, $tdAll);
 
                 sandbox.dom.append($tbody, $tr);
@@ -23096,8 +23621,6 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
 
         // generate dropDown with given items
         generateDropDown: function(items) {
-            // remove all elements
-            this.sandbox.dom.remove(this.$list, 'li');
 
             if (items.length > 0) {
 
@@ -23131,8 +23654,6 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
 
         // bind dom elements
         bindDOMEvents: function() {
-
-            this.sandbox.dom.on(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
 
             // toggle drop-down
             this.sandbox.dom.on('#' + this.options.instanceName, 'click', function(event) {
@@ -23206,21 +23727,28 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
         },
 
         // toggle dropDown visible
-        toggleDropDown: function() {
+        toggleDropDown: function () {
             this.sandbox.logger.log('toggle dropdown ' + this.options.instanceName);
-            this.sandbox.dom.toggleClass(this.$dropdownContainer, 'hidden');
+
+            if (this.sandbox.dom.is(this.$dropDown, ':visible')) {
+                this.hideDropDown();
+            } else {
+                this.showDropDown();
+            }
         },
 
         // make dropDown visible
         showDropDown: function() {
             this.sandbox.logger.log('show dropdown ' + this.options.instanceName);
             this.sandbox.dom.removeClass(this.$dropdownContainer, 'hidden');
+            this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
         },
 
         // hide dropDown
         hideDropDown: function() {
             this.sandbox.logger.log('hide dropdown ' + this.options.instanceName);
             this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');
+            this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
         },
 
         // return checked values
@@ -23607,6 +24135,19 @@ define('husky_extensions/collection',[],function() {
                     return !!translation ? translation : key;
                 };
 
+                /**
+                 * function calls this.sandbox.translate for an array of keys and returns an array of translations
+                 * @param array
+                 * @returns {Array}
+                 */
+                app.sandbox.translateArray = function(array) {
+                    var translations = [];
+                    app.sandbox.util.foreach(array, function(key) {
+                        translations.push(app.sandbox.translate(key));
+                    }.bind(this));
+                    return translations;
+                };
+
                 app.setLanguage = function(cultureName, messages) {
                     var setLanguage = function() {
                         Globalize.culture(cultureName);
@@ -23694,19 +24235,19 @@ define('husky_extensions/collection',[],function() {
                     },
 
                     setData: function(selector, data) {
-                        app.sandbox.form.getObject(selector).mapper.setData(data);
+                        return app.sandbox.form.getObject(selector).mapper.setData(data);
                     },
 
                     getData: function(selector) {
                         return  app.sandbox.form.getObject(selector).mapper.getData();
                     },
 
-                    addArrayFilter: function(selector, arrayName, callback) {
-                        app.sandbox.form.getObject(selector).mapper.addArrayFilter(arrayName, callback);
+                    addCollectionFilter: function(selector, arrayName, callback) {
+                        app.sandbox.form.getObject(selector).mapper.addCollectionFilter(arrayName, callback);
                     },
 
-                    removeArrayFilter: function(selector, arrayName) {
-                        app.sandbox.form.getObject(selector).mapper.removeArrayFilter(arrayName);
+                    removeCollectionFilter: function(selector, arrayName) {
+                        app.sandbox.form.getObject(selector).mapper.removeCollectionFilter(arrayName);
                     },
 
                     element: {
@@ -23910,6 +24451,10 @@ define('husky_extensions/collection',[],function() {
                 }
             };
 
+            app.core.dom.off = function(selector, event, filter, handler) {
+                $(selector).off(event, filter, handler);
+            };
+
             app.core.dom.toggleClass = function(selector, className) {
                 $(selector).toggleClass(className);
             };
@@ -23922,12 +24467,20 @@ define('husky_extensions/collection',[],function() {
                 return $(selector).parents(filter);
             };
 
+            app.core.dom.children = function(selector, filter) {
+                return $(selector).children(filter);
+            };
+
             app.core.dom.next = function(selector, filter) {
                 return $(selector).next(filter);
             };
 
             app.core.dom.prev = function(selector, filter) {
                 return $(selector).prev(filter);
+            };
+
+            app.core.dom.closest = function(selector, filter) {
+                return $(selector).closest(filter);
             };
 
             app.core.dom.text = function(selector, value) {
@@ -23946,6 +24499,10 @@ define('husky_extensions/collection',[],function() {
                 }
             };
 
+            app.core.dom.mouseleave = function(selector, handler) {
+                $(selector).mouseleave(handler);
+            };
+
             app.core.dom.stopPropagation = function(event) {
                 event.stopPropagation();
             };
@@ -23956,6 +24513,10 @@ define('husky_extensions/collection',[],function() {
 
             app.core.dom.show = function(selector) {
                 return $(selector).show();
+            };
+
+            app.core.dom.toggle = function(selector) {
+                return $(selector).toggle();
             };
 
             app.core.dom.keypress = function(selector, callback) {

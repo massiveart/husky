@@ -54,10 +54,14 @@ h5 {
 // -------------------------
 
 %bold {
-  font-family: 'MuseoSansCondensed700' !important;
+  font-family: $baseFontFamily !important;
 
 }
 
 .bold {
   @extend %bold;
+}
+
+.small-font {
+  font-size: $smallFontSize;
 }

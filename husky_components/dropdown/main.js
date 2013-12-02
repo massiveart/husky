@@ -20,12 +20,11 @@
  * husky.dropdown.<<instanceName>>.hide       - hide dropdown menu
  */
 
-define(['jquery'], function($) {
+define([], function() {
 
     'use strict';
 
-    var sandbox,
-        moduleName = 'Husky.Ui.DropDown',
+    var moduleName = 'Husky.Ui.DropDown',
         defaults = {
             url: '',     // url for lazy loading
             data: [],    // data array
@@ -41,8 +40,6 @@ define(['jquery'], function($) {
 
     return {
         initialize: function() {
-            sandbox = this.sandbox;
-
             this.name = moduleName;
 
             this.options = this.sandbox.util.extend({}, defaults, this.options);
@@ -56,34 +53,39 @@ define(['jquery'], function($) {
 //           this. $element.data(moduleName, new Husky.Ui.DropDown(this, options));
 
 
-            this.$element = $('<div class="husky-drop-down"/>');
+            this.$element = this.sandbox.dom.createElement('<div/>', {
+                'class': 'husky-drop-down'
+            });
 
-            $(this.options.el).append(this.$element);
+            this.sandbox.dom.append(this.options.el, this.$element);
 
             this.init();
         },
 
         init: function() {
-            sandbox.logger.log('initialize', this);
+            this.sandbox.logger.log('initialize', this);
 
 
             // ------------------------------------------------------------
             // initialization
             // ------------------------------------------------------------
-            this.$dropDown = $('<div class="dropdown-menu" />');
-            this.$dropDownList = $('<ul/>');
-            this.$element.append(this.$dropDown);
-            this.$dropDown.append(this.$dropDownList);
+            this.$dropDown = this.sandbox.dom.createElement('<div/>', {
+                'class': 'dropdown-menu'
+            });
+            this.$dropDownList = this.sandbox.dom.createElement('<ul/>');
+
+            this.sandbox.dom.append(this.$element, this.$dropDown);
+            this.sandbox.dom.append(this.$dropDown, this.$dropDownList);
             this.hideDropDown();
 
             if (this.options.setParentDropDown) {
                 // add class dropdown to parent
-                this.$element.parent().addClass('dropdown');
+                this.sandbox.dom.addClass(this.sandbox.dom.parent(this.$element),'dropdown');
             }
 
             // check alginment
             if (this.options.alignment === 'right') {
-                this.$dropDown.addClass('dropdown-align-right');
+                this.sandbox.dom.addClass(this.$dropDown, 'dropdown-align-right');
             }
 
             // bind dom elements
@@ -98,29 +100,25 @@ define(['jquery'], function($) {
         // bind dom elements
         bindDOMEvents: function() {
 
-            // turn off all events
-            this.$element.off();
+             // turn off all events
+             this.sandbox.dom.off(this.$element);
 
-            // ------------------------------------------------------------
-            // DOM events
-            // ------------------------------------------------------------
+             // ------------------------------------------------------------
+             // DOM events
+             // ------------------------------------------------------------
 
-            // init drop-down
+             // init drop-down
+             if (this.options.trigger !== '') {
+                this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this), this.options.trigger);
+             } else {
+                this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this));
+             }
 
-            if (this.options.trigger !== '') {
-                $(this.options.el).on('click', this.options.trigger, this.triggerClick.bind(this));
-            } else {
-                $(this.options.el).on('click', this.triggerClick.bind(this));
-            }
-
-            // mouse control
-            this.$dropDownList.on('click', 'li', function(event) {
-                var $element = $(event.currentTarget),
-                    id = $element.data('id');
-                this.clickItem(id);
-            }.bind(this));
-
-
+            // on click on list item
+            this.sandbox.dom.on(this.$dropDownList, 'click', function (event) {
+                event.stopPropagation();
+                this.clickItem(this.sandbox.dom.data(event.currentTarget, 'id'));
+            }.bind(this), 'li');
         },
 
         bindCustomEvents: function() {
@@ -135,14 +133,14 @@ define(['jquery'], function($) {
 
         // trigger event with clicked item
         clickItem: function(id) {
-            this.options.data.forEach(function(item) {
-                if (item.id === id) {
-                    sandbox.logger.log(this.name, 'item.click: ' + id, 'success');
+            this.sandbox.util.foreach(this.options.data, function(item) {
+                if (parseInt(item.id, 10) === id) {
+                    this.sandbox.logger.log(this.name, 'item.click: ' + id, 'success');
 
                     if (!!this.options.clickCallback && typeof this.options.clickCallback === 'function') {
                         this.options.clickCallback(item, this.$el);
                     } else {
-                        sandbox.emit(this.getEvent('item.click'), item, this.$el);
+                        this.sandbox.emit(this.getEvent('item.click'), item, this.$el);
                     }
 
                     return false;
@@ -152,7 +150,8 @@ define(['jquery'], function($) {
         },
 
         // trigger click event handler toggles the dropDown
-        triggerClick: function() {
+        triggerClick: function(event) {
+            event.stopPropagation();
             this.toggleDropDown();
         },
 
@@ -169,7 +168,7 @@ define(['jquery'], function($) {
             var url = this.getUrl();
             this.sandbox.logger.log(this.name, 'load: ' + url);
 
-            sandbox.util.ajax({
+            this.sandbox.util.ajax({
                 url: url,
                 success: function(response) {
                     this.sandbox.logger.log(this.name, 'load', 'success');
@@ -189,7 +188,7 @@ define(['jquery'], function($) {
                 }.bind(this)
             });
 
-            // FIXME event will be binded later
+            // FIXME event will be bound later
             setTimeout(function() {
                 this.sandbox.emit(this.getEvent('data.load'));
             }.bind(this), 200);
@@ -205,11 +204,11 @@ define(['jquery'], function($) {
                         if (this.options.translateLabels) {
                             label = this.sandbox.translate(label);
                         }
-                        this.$dropDownList.append('<li data-id="' + item.id + '">' + label + '</li>');
+                        this.sandbox.dom.append(this.$dropDownList, '<li data-id="' + item.id + '">' + label + '</li>');
                     }
                 }.bind(this));
             } else {
-                this.$dropDownList.append('<li>No data received</li>');
+                this.sandbox.dom.append(this.$dropDownList, '<li>No data received</li>');
             }
         },
 
@@ -227,25 +226,34 @@ define(['jquery'], function($) {
         // clear childs of list
         clearDropDown: function() {
             // FIXME make it easier
-            this.$dropDown.children('ul').children('li').remove();
+            this.sandbox.dom.remove(this.sandbox.dom.children(this.sandbox.dom.children(this.$dropDown,'ul'),'li'));
         },
 
         // toggle dropDown visible
         toggleDropDown: function() {
             this.sandbox.logger.log(this.name, 'toggle dropdown');
-            this.$dropDown.toggle();
+//            this.sandbox.dom.toggle(this.$dropDown);
+            if (this.sandbox.dom.is(this.$dropDown,':visible')) {
+                this.hideDropDown();
+            } else {
+                this.showDropDown();
+            }
         },
 
         // make dropDown visible
         showDropDown: function() {
             this.sandbox.logger.log(this.name, 'show dropdown');
-            this.$dropDown.show();
+            // on click on trigger outside check
+            this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
+            this.sandbox.dom.show(this.$dropDown);
         },
 
         // hide dropDown
         hideDropDown: function() {
             this.sandbox.logger.log(this.name, 'hide dropdown');
-            this.$dropDown.hide();
+            // remove global click event
+            this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
+            this.sandbox.dom.hide(this.$dropDown);
         },
 
         // get url for pattern

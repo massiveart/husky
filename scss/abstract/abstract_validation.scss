@@ -12,19 +12,19 @@
 }
 
 %abstract-success {
-    label::after,
-    .control-label::after {
-        content: '';
-        font-family: 'Glyphicons';
-        z-index: 100;
-        float: right;
-        display: inline-block;
-        position: relative;
-        top: 35px;
-        right: 7px;
-
-        content: "\e199";
-    }
+    //label::after,
+    //.control-label::after {
+    //    content: '';
+    //    font-family: 'Glyphicons';
+    //    z-index: 99;
+    //    float: right;
+    //    display: inline-block;
+    //    position: relative;
+    //    top: 35px;
+    //    right: 7px;
+    //
+    //    content: "\e199";
+    //}
 
     label,
     .control-label {

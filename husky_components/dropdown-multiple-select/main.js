@@ -81,8 +81,6 @@ define([], function() {
 
         // generate dropDown with given items
         generateDropDown: function(items) {
-            // remove all elements
-            this.sandbox.dom.remove(this.$list, 'li');
 
             if (items.length > 0) {
 
@@ -116,8 +114,6 @@ define([], function() {
 
         // bind dom elements
         bindDOMEvents: function() {
-
-            this.sandbox.dom.on(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
 
             // toggle drop-down
             this.sandbox.dom.on('#' + this.options.instanceName, 'click', function(event) {
@@ -191,21 +187,28 @@ define([], function() {
         },
 
         // toggle dropDown visible
-        toggleDropDown: function() {
+        toggleDropDown: function () {
             this.sandbox.logger.log('toggle dropdown ' + this.options.instanceName);
-            this.sandbox.dom.toggleClass(this.$dropdownContainer, 'hidden');
+
+            if (this.sandbox.dom.is(this.$dropDown, ':visible')) {
+                this.hideDropDown();
+            } else {
+                this.showDropDown();
+            }
         },
 
         // make dropDown visible
         showDropDown: function() {
             this.sandbox.logger.log('show dropdown ' + this.options.instanceName);
             this.sandbox.dom.removeClass(this.$dropdownContainer, 'hidden');
+            this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
         },
 
         // hide dropDown
         hideDropDown: function() {
             this.sandbox.logger.log('hide dropdown ' + this.options.instanceName);
             this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');
+            this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
         },
 
         // return checked values
