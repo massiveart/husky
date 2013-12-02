@@ -13,7 +13,52 @@ define(['husky'], function(husky) {
             fakeServer = sinon.fakeServer.create();
 
             fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
-                '{"title":"Root","hasSub":true,"id":"5242c58c3a494", "header": { "title":"Ivoclar", "logo":"../../img/tmp/logo.png" },"sub":{"items":[{"title":"Audits","icon":"check","action":"audit","hasSub":false,"type":"content","id":"5242c58c3a4f2"},{"title":"Profiles","icon":"adjust-alt","action":"profile","hasSub":false,"type":"content","id":"5242c58c3a53e"},{"title":"Portals", "route":"portals","icon":"caution","hasSub":true,"id":"52f258bc2e47f","action":"/navigation/portals"},{"title":"Contacts","icon":"contact-book","hasSub":true,"id":"5242c58c3a591","sub":{"items":[{"title":"People","icon":"parents","action":"contacts\/people","hasSub":false,"type":"content","id":"5242c58c3a5f6"},{"title":"Companies","icon":"bank","action":"contacts\/companies","hasSub":false,"type":"content","id":"5242c58c3a64c"}]}},{"title":"Settings","route":"settings","icon":"cogwheels","hasSub":true,"id":"5242c58c3a69b","sub":{"items":[{"title":"Translate","icon":"book-open","route":"translate","action":"settings\/translate","hasSub":false,"type":"content","id":"5242c58c3a6dd"}]}}]}}'
+                '{"title":"Sulu 2.0", "icon":"..\/..\/img\/tmp\/husky.png", "id":"1", "items":[' +
+
+                    '{"title":"Tools", "items":[' +
+
+                        '{"title":"Dashboard", "icon":"dashboard", "id":"2", "hasSettings":"true"},' +
+
+                        '{"title":"Contacts", "hasSettings":"true", "icon":"contact-book", "id":"3", "items":[' +
+                            '{"title":"Companies", "action":"contacts\/contacts", "id":"4"},' +
+                            '{"title":"People", "action":"contacts\/accounts", "id":"5"}' +
+                        ']},' +
+
+                        '{"title":"Media", "icon":"star", "hasSettings":"true", "id":"6", "items":[' +
+                            '{"title":"Images", "id":"7", "action":"media\/images"},' +
+                            '{"title":"Documents", "id":"8", "action":"media\/documents"},' +
+                            '{"title":"Movies", "id":"9", "action":"media\/movies"}' +
+                        ']},' +
+
+                        '{"title":"Messages", "icon":"settings", "id":"10"},' +
+
+                        '{"title":"Settings", "icon":"settings", "id":"11", "items":[' +
+                            '{"title":"Roles &amp; Permissions", "action":"settings\/roles", "type":"content", "id":"12"},' +
+                            '{"title":"Translate", "action":"settings\/translate", "id":"13"}' +
+                        ']}' +
+                    ']},' +
+
+                    '{"title":"Web-Spaces", "items":[' +
+
+                        '{"title":"Americas", "icon":"globe", "hasSettings":"true", "id":"14", "items":[' +
+                            '{"title":"en_us", "action":"contacts\/contacts", "id":"15"},' +
+                            '{"title":"en_cn", "action":"contacts\/contacts", "id":"16"},' +
+                            '{"title":"es_mx", "action":"contacts\/accounts", "id":"17"}' +
+                        ']},' +
+
+                        '{"title":"Europe", "icon":"globe", "hasSettings":"true", "id":"18", "items":[' +
+                            '{"title":"en_gb", "action":"contacts\/contacts", "id":"19"},' +
+                            '{"title":"de_de", "action":"contacts\/contacts", "id":"20"},' +
+                            '{"title":"de_at", "action":"contacts\/accounts", "id":"21"}' +
+                        ']},' +
+
+                        '{"title":"Asia", "icon":"globe", "id":"22", "items":[' +
+                            '{"title":"cn_cn", "action":"contacts\/contacts", "id":"23"},' +
+                            '{"title":"jp_jp", "action":"contacts\/accounts", "id":"24"}' +
+                        ']}' +
+
+                    ']}'+
+                ']}'
             ]);
 
 
@@ -36,7 +81,7 @@ define(['husky'], function(husky) {
 
             waitsFor(function() {
                 return respond;
-            }, 'Fake server should have respond!', 500);
+            }, 'Fake server should have respond!', 750);
         });
 
         afterEach(function() {
@@ -53,21 +98,189 @@ define(['husky'], function(husky) {
         });
 
         /**
+         *
+         * DOM related tests
+         *
+         */
+
+        /**
             check if the navigation was initialized by checking
             if it appears in the dom
          */
-        it('should be started after app start', function() {
-            $navigation = $('.navigation');
+        it('should have class navigation-container', function() {
+            $navigation = $('.navigation-container');
             expect($navigation.size()).toEqual(1);
         });
 
         /**
-         * - klassen gesetzt
-         * - aufklappen
-         * - zuklappen
-         * - selektieren
-         * - selektierung aendern
+         check if navigation header was inserted into the dom
          */
+        it('should have class navigation-header', function() {
+            var $header = $('.navigation-header');
+            expect($header.size()).toEqual(1);
+        });
+
+        /**
+            check if navigation search was inserted into the dom
+         */
+        it('should have class navigation-search', function() {
+            var $search = $('.navigation-search');
+            expect($search.size()).toEqual(1);
+        });
+
+        /**
+            check if the navigation item-container was inserted into the dom
+         */
+        it('should have class navigation-item-container', function() {
+            var $navigationItem = $('.navigation-container');
+            expect($navigationItem.size()).toEqual(1);
+        });
+
+
+        /**
+            check if two sections have been inserted into the navigation-item-container
+         */
+        it('should have two sections in the navigation-item-container', function() {
+            var $sections = $('.navigation-item-container .section');
+            expect($sections.size()).toEqual(2);
+        });
+
+        /**
+            check if section-head-title has been inserted into section
+         */
+        it('should have class section-headline-title', function() {
+            var $headTitle = $('.section-headline-title');
+            expect($headTitle.size()).toEqual(2);
+        });
+
+        /**
+            check if two section-toggle items have been inserted into dom
+         */
+        it('should have class section-toggle', function() {
+            var $toggle = $('.navigation-container .section-toggle');
+            expect($toggle.size()).toEqual(2);
+        });
+
+        /**
+             check if correct amount of section-items (lists) have been inserted
+         */
+        it('should have two section-items', function() {
+            var $sectionItems = $('.navigation-container .section-items');
+            expect($sectionItems.size()).toEqual(2);
+        });
+
+        /**
+            check if navigation-sub-items have been added to dom
+         */
+        it('should have 15 js-navigation-sub-items', function() {
+            var $subItems = $('.js-navigation-sub-item');
+            expect($subItems.size()).toEqual(15);
+        });
+
+        /**
+            check if navigation-item data-id is set in dom
+         */
+        it('should have class set data attribute for all navigation-items', function() {
+            var $itemsWithData = $('.navigation-items[data-id]').size() + $('.js-navigation-sub-item[data-id]').size(),
+                $itemsWithoutData = $('.navigation-items').size()  + $('.js-navigation-sub-item').size();
+            expect($itemsWithData).toEqual($itemsWithoutData);
+        });
+
+        /**
+            check if settings icons has been inserted into dom
+         */
+        it('should be started after app start and should have class', function() {
+            var $iconElement = $('.navigation-items[data-id="2"] .navigation-settings-icon');
+            expect($iconElement.size()).toEqual(1);
+        });
+
+
+        /**
+         *
+         * Dom-event related tests
+         *
+         */
+
+        /**
+            check if class of section changes to hide after click
+         */
+//        it('should change class of section', function() {
+//            $navigation = $('.navigation-container');
+//            expect($navigation.size()).toEqual(1);
+//        });
+//
+//        /**
+//            check if class of section changes to show
+//         */
+//        it('should be started after app start and should have class', function() {
+//            $navigation = $('.navigation-container');
+//            expect($navigation.size()).toEqual(1);
+//        });
+//
+//        /**
+//            check if class of navigation item changes to is-expanded after click
+//            and subnav is displayed
+//         */
+//        it('should be started after app start and should have class', function() {
+//            $navigation = $('.navigation-container');
+//            expect($navigation.size()).toEqual(1);
+//        });
+//
+//        /**
+//             check if class  is-expanded of navigation item is removed oafter click
+//             and subnav is hidden
+//         */
+//        it('should be started after app start and should have class', function() {
+//            $navigation = $('.navigation-container');
+//            expect($navigation.size()).toEqual(1);
+//        });
+//
+//        /**
+//         check if class is-selected is set on navigation-sub-item after click
+//         */
+//        it('should be started after app start and should have class', function() {
+//            $navigation = $('.navigation-container');
+//            expect($navigation.size()).toEqual(1);
+//        });
+//
+//        /**
+//             check if class is-selected of navigation-sub-item is removed after click
+//         */
+//        it('should be started after app start and should have class', function() {
+//            $navigation = $('.navigation-container');
+//            expect($navigation.size()).toEqual(1);
+//        });
+//
+//
+//        /**
+//         *
+//         * Custom-event related tests
+//         *
+//         */
+//
+//        /**
+//            check if selected event is emitted
+//         */
+//        it('should be started after app start and should have class', function() {
+//            $navigation = $('.navigation-container');
+//            expect($navigation.size()).toEqual(1);
+//        });
+//
+//        /**
+//            check if toggled event is emitted
+//         */
+//        it('should be started after app start and should have class', function() {
+//            $navigation = $('.navigation-container');
+//            expect($navigation.size()).toEqual(1);
+//        });
+//
+//        /**
+//            check if initialized event is emitted
+//         */
+//        it('should be started after app start and should have class', function() {
+//            $navigation = $('.navigation-container');
+//            expect($navigation.size()).toEqual(1);
+//        });
 
     });
 });
