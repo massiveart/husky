@@ -95,7 +95,7 @@ define(function() {
 
         // TODO: arrow keys
         // TODO: assign grid (pixel precision)
-        // TODO: events as specified 
+        // TODO: events as specified
 
 
         initialize: function() {
@@ -323,17 +323,20 @@ define(function() {
 
             event.preventDefault();
 
-            var $list = this.sandbox.dom.find('.section-items', this.sandbox.dom.closest(event.currentTarget,'.section'));
+            var $list = this.sandbox.dom.find('.section-items', this.sandbox.dom.closest(event.currentTarget,'.section')),
+
+                toggleLink = this.sandbox.dom.find('a', event.currentTarget);
+
 
             if (this.sandbox.dom.hasClass($list, 'is-expanded')) {
                 // hide section
                 this.sandbox.dom.slideDown($list, 200, function() {
-                    this.sandbox.dom.html(event.currentTarget, this.options.labels.hide);
+                    this.sandbox.dom.html(toggleLink, this.options.labels.hide);
                     this.sandbox.dom.removeClass($list, 'is-expanded');
                 }.bind(this));
             } else {
                 // show section
-                this.sandbox.dom.html(event.currentTarget, this.options.labels.show);
+                this.sandbox.dom.html(toggleLink, this.options.labels.show);
                 this.sandbox.dom.slideUp($list, 200, function() {
                     this.sandbox.dom.addClass($list, 'is-expanded');
                 }.bind(this));

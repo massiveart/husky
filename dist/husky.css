@@ -3521,7 +3521,7 @@ textarea.form-element {
   width: 250px;
   height: 100%;
   background-color: #3e3e3e;
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 /* line 49, ../scss/modules/navigation.scss */
