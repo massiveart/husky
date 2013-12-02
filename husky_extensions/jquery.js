@@ -259,10 +259,16 @@
             };
 
 
-            app.core.dom.scrollAnimate = function(position) {
-                $('html, body').animate({
-                    scrollTop: position
-                }, 500);
+            app.core.dom.scrollAnimate = function(position, selector) {
+                if (!!selector) {
+                    $(selector).animate({
+                        scrollTop: position
+                    }, 500);
+                } else {
+                    $('html, body').animate({
+                        scrollTop: position
+                    }, 500);
+                }
             };
 
             app.core.dom.slideUp = function(selector, duration, complete) {

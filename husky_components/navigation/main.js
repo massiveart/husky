@@ -16,7 +16,7 @@
  *  footerTemplate  - html template to define the footer
  *
  * Provides Events:
- *  husky.navigation.footer - template
+ *  husky.navigation.footer.set - set template
  *
  * Triggers Events:
  *  husky.navigation.item.select - {item}
@@ -83,12 +83,19 @@ define(function() {
         },
         defaults = {
             footerTemplate: '',
-            hideText: 'Hide',
-            showText: 'Show'
+            labels: {
+                hide:'Hide',
+                show: 'Show'
+            }
         };
 
 
     return {
+
+
+        // TODO: arrow keys
+        // TODO: assign grid (pixel precision)
+        // TODO: events as specified 
 
 
         initialize: function() {
@@ -101,10 +108,15 @@ define(function() {
             // binding dom events
             this.bindDOMEvents();
 
+            this.bindCustomEvents();
+
             // load Data
             if (!!this.options.url) {
                 this.sandbox.util.load(this.options.url)
-                    .then(this.render.bind(this));
+                    .then(this.render.bind(this))
+                    .fail(function(data) {
+                        this.sandbox.logger.log("data could not be loaded:", data);
+                    }.bind(this));
             }
         },
 
@@ -140,7 +152,7 @@ define(function() {
             this.renderNavigationItems(this.options.data);
 
             // render footer
-            this.renderFooter();
+            this.renderFooter(this.options.footerTemplate);
 
         },
 
@@ -153,7 +165,7 @@ define(function() {
             this.sandbox.util.foreach(data.items, function(section) {
                 $sectionDiv = this.sandbox.dom.createElement('<div class="section">');
                 $sectionList = this.sandbox.dom.createElement('<ul class="section-items">');
-                this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + section.title.toUpperCase() + '</span><span class="section-toggle"><a href="#">' + this.options.hideText + '</a></span></div>');
+                this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + section.title.toUpperCase() + '</span><span class="section-toggle"><a href="#">' + this.options.labels.hide + '</a></span></div>');
 
                 // iterate through section items
                 this.sandbox.util.foreach(section.items, function(item) {
@@ -198,9 +210,9 @@ define(function() {
             this.sandbox.dom.after(after, list);
         },
 
-        renderFooter: function() {
+        renderFooter: function(footerTemplate) {
             var $footer = this.sandbox.dom.find('footer',this.$el);
-            this.sandbox.dom.html($footer, this.options.footerTemplate);
+            this.sandbox.dom.html($footer, footerTemplate);
         },
 
         /**
@@ -211,6 +223,18 @@ define(function() {
             this.sandbox.dom.on(this.$el, 'click', this.toggleSections.bind(this), '.section-toggle');
             this.sandbox.dom.on(this.$el, 'click', this.settingsClicked.bind(this), '.js-navigation-settings');
             this.sandbox.dom.on(this.$el, 'click', this.selectSubItem.bind(this), '.js-navigation-sub-item, .js-navigation-item');
+        },
+
+        /**
+         * event listener
+         */
+        bindCustomEvents: function() {
+            // change footer template
+            this.sandbox.on('husky.navigation.footer.set', function(template) {
+                this.options.footerTemplate = template;
+                this.renderFooter(template);
+            }.bind(this));
+
         },
 
 
@@ -277,9 +301,9 @@ define(function() {
                     windowHeight = this.sandbox.dom.height(this.sandbox.dom.window);
                     if (xBottom > windowHeight ) {
                         if (itemHeight < windowHeight) {
-                            this.sandbox.dom.scrollAnimate((xBottom - windowHeight + 40));
+                            this.sandbox.dom.scrollAnimate((xBottom - windowHeight + 40), '.navigation-container');
                         } else {
-                            this.sandbox.dom.scrollAnimate(itemTop);
+                            this.sandbox.dom.scrollAnimate(itemTop, '.navigation-container');
                         }
                     }
                 }.bind(this));
@@ -304,12 +328,12 @@ define(function() {
             if (this.sandbox.dom.hasClass($list, 'is-expanded')) {
                 // hide section
                 this.sandbox.dom.slideDown($list, 200, function() {
-                    this.sandbox.dom.html(event.currentTarget, this.options.hideText);
+                    this.sandbox.dom.html(event.currentTarget, this.options.labels.hide);
                     this.sandbox.dom.removeClass($list, 'is-expanded');
                 }.bind(this));
             } else {
                 // show section
-                this.sandbox.dom.html(event.currentTarget, this.options.showText);
+                this.sandbox.dom.html(event.currentTarget, this.options.labels.show);
                 this.sandbox.dom.slideUp($list, 200, function() {
                     this.sandbox.dom.addClass($list, 'is-expanded');
                 }.bind(this));
@@ -332,6 +356,10 @@ define(function() {
                 $parent = this.sandbox.dom.parent(event.currentTarget),
                 item;
 
+            if (this.sandbox.dom.hasClass($subItem, 'js-navigation-item')) {
+                $subItem = this.sandbox.dom.createElement(this.sandbox.dom.closest(event.currentTarget,'li'));
+            }
+
             // if toggle was clicked, do not set active and selected
             if (this.sandbox.dom.hasClass($parent, 'navigation-items-toggle') || this.sandbox.dom.hasClass($parent, 'navigation-subitems-toggle')) {
                 return;
@@ -342,6 +370,7 @@ define(function() {
 
             this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-active', this.$el), 'is-active');
             this.sandbox.dom.addClass($items, 'is-active');
+
 
             // emit event
             item = this.items[this.sandbox.dom.data($subItem, 'id')];

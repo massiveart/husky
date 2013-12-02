@@ -43,6 +43,7 @@ $verticalItemPadding: 35px;
     width: 250px;
     height: 100%;
     background-color: #3e3e3e;
+    overflow: scroll;
 }
 
 .navigation {
@@ -139,6 +140,13 @@ li.is-active {
   }
 }
 
+/* show settings when hover */
+//li:hover > div > a.navigation-settings-icon {
+//  display:block;
+//  color: $grayLight;
+//}
+
+
 .navigation-items {
     padding: 9px $verticalMargin;
     overflow: hidden;
@@ -151,6 +159,7 @@ li.is-active {
 
     > div {
       padding: 5px;
+      position: relative;
     }
 
 
@@ -170,8 +179,10 @@ li.is-active {
 
     }
 
-  .is-selected {
-      color: white;
+  &.is-selected {
+      a {
+        color: white;
+      }
   }
 
   /* sub-items */
@@ -264,13 +275,15 @@ li.is-active {
 }
 
 .navigation-item-title {
-    padding-left: $verticalItemPadding;
+  position: relative;
+  top: -2px;
+  padding-left: $verticalItemPadding;
 }
 
 .navigation-item-icon {
     position: absolute;
+    top: -3px;
     font-size: 18px;
-    top: -2px;
 }
 
 .navigation-items-toggle {

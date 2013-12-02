@@ -56,8 +56,8 @@ define(function() {
                         deferred.resolve(data);
                     }.bind(this),
 
-                    error: function() {
-                        deferred.reject();
+                    error: function(error) {
+                        deferred.reject(error);
                     }
                 });
 
