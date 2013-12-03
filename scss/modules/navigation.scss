@@ -206,7 +206,7 @@ li.is-active {
         border-radius: 4px;
         cursor: pointer;
 
-        a:hover:not(.navigation-subitems)::before {
+        &:hover:not(.navigation-subitems) a::before {
           font-family: $baseIconFont;
           font-size: 9px;
           content: "\e174";
@@ -214,6 +214,8 @@ li.is-active {
           margin-left: -15px;
           width: 15px;
           overflow: visible;
+          position: relative;
+          top: -2px;
         }
 
         &.is-selected {
@@ -229,6 +231,8 @@ li.is-active {
                 margin-left: -15px;
                 width: 15px;
                 overflow: visible;
+                position: relative;
+                top: -2px;
               }
             }
         }
