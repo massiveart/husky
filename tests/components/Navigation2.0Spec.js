@@ -374,27 +374,5 @@ define(['husky'], function(husky) {
             });
         });
 
-        // TODO not yet implemented
-//        /**
-//            check if initialized event is emitted
-//         */
-//        it('should emmit init event after navigation is initialized', function() {
-//            var emitted = false;
-//
-//            runs(function() {
-//                app.sandbox.on('husky.navigation.item.initialized', function() {
-//                    emitted = true;
-//                });
-//            });
-//
-//            waitsFor(function() {
-//                return emitted;
-//            }, '"husky.navigation.item.toggle event wasn\'t emitted"', 500);
-//
-//            runs(function() {
-//                expect(emitted).toBe(true);
-//            });
-//        });
-
-    });
+    }); 
 });

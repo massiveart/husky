@@ -157,7 +157,7 @@ define(function() {
             this.renderFooter(this.options.footerTemplate);
 
 
-            this.sandbox.dom('husky.navigation.initialized');
+            this.sandbox.emit('husky.navigation.initialized');
 
         },
 
