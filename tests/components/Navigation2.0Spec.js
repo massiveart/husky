@@ -13,7 +13,7 @@ define(['husky'], function(husky) {
             fakeServer = sinon.fakeServer.create();
 
             fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
-                '{"title":"Sulu 2.0", "icon":"..\/..\/img\/tmp\/husky.png", "id":"1", "items":[' +
+                '{"title":"Sulu 2.0", "id":"1", "items":[' +
 
                     '{"title":"Tools", "items":[' +
 
@@ -65,6 +65,8 @@ define(['husky'], function(husky) {
             runs(function() {
                 app = husky({ debug: { enable: true }});
 
+                // Fix multiple events
+                $('body').off();
                 app.start(document.body).then(function() {
 
                     app.sandbox.start([
@@ -204,30 +206,54 @@ define(['husky'], function(husky) {
         /**
             check if class of section changes to hide after click
          */
-//        it('should change class of section', function() {
-//            $navigation = $('.navigation-container');
-//            expect($navigation.size()).toEqual(1);
-//        });
-//
+        it('should change value of section-toggle to show', function() {
+            var flag = false;
+
+            runs(function() {
+                _.delay(function() {
+                    $('.section').first().find('.section-toggle a').trigger('click');
+                    flag = true;
+                }, 100);
+
+            });
+
+            waitsFor(function() {
+                return flag;
+            }, 100);
+
+            runs(function() {
+                var $section = $('.section').first().find('.section-toggle a');
+                expect($section.html()).toEqual('Show');
+            });
+        });
+
+        /**
+            check if class of navigation item changes to is-expanded after click
+            and subnav is displayed
+         */
+        it('should have class is-expanded after click on navigation-items and show submenu', function() {
+            var flag = false;
+
+            runs(function() {
+                _.delay(function() {
+                    $('.navigation-items-toggle').eq(1).trigger('click');
+                    flag = true;
+                }, 200);
+
+            });
+
+            waitsFor(function() {
+                return flag;
+            }, 200);
+
+            runs(function() {
+                var $item = $('.navigation-items-toggle').eq(1);
+                expect($item.parent().hasClass('is-expanded')).toEqual(true);
+            });
+        });
+
 //        /**
-//            check if class of section changes to show
-//         */
-//        it('should be started after app start and should have class', function() {
-//            $navigation = $('.navigation-container');
-//            expect($navigation.size()).toEqual(1);
-//        });
-//
-//        /**
-//            check if class of navigation item changes to is-expanded after click
-//            and subnav is displayed
-//         */
-//        it('should be started after app start and should have class', function() {
-//            $navigation = $('.navigation-container');
-//            expect($navigation.size()).toEqual(1);
-//        });
-//
-//        /**
-//             check if class  is-expanded of navigation item is removed oafter click
+//             check if class  is-expanded of navigation item is removed after click
 //             and subnav is hidden
 //         */
 //        it('should be started after app start and should have class', function() {
