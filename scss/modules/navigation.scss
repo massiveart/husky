@@ -49,6 +49,7 @@ $verticalItemPadding: 35px;
 }
 
 .navigation {
+
     background-color: #3e3e3e;
 }
 
@@ -62,6 +63,7 @@ $verticalItemPadding: 35px;
         display: inline-block;
         text-decoration: none;
         color: $grayLight;
+        outline: none;
     }
 
     ul {
@@ -143,6 +145,7 @@ li.is-active {
 }
 
 
+
 .navigation-items {
     padding: 9px $verticalMargin;
     overflow: hidden;
@@ -203,7 +206,7 @@ li.is-active {
         border-radius: 4px;
         cursor: pointer;
 
-        &:hover:not(.navigation-subitems)::before {
+        a:hover:not(.navigation-subitems)::before {
           font-family: $baseIconFont;
           font-size: 9px;
           content: "\e174";
@@ -250,8 +253,8 @@ li.is-active {
 
     li {
       &:hover::before {
-        font-size: 8px;
-        height:25px;
+        //font-size: 8px;
+        //height:25px;
       }
     }
   }
