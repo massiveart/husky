@@ -231,48 +231,39 @@ define(['husky'], function(husky) {
         });
 
 //        // TODO also for sections?
-//        /**
-//             check if class  is-expanded of navigation item is removed after click
-//             and subnav is hidden
-//         */
-//        it('item should have class is-expanded removed and submenu hidden', function() {
-//
-//            var flag1 = false,
-//                flag2 = false,
-//                $toggleItem = $('.navigation-items-toggle').eq(1);
-//
-//            runs(function() {
-////                _.delay(function(){
-//                    $toggleItem.click();
-//                    flag1 = true;
-////                },100);
-//            });
-//
-//            waitsFor(function() {
-//                return flag1;
-//            }, 'Element should have been clicked!', 500);
-//
-////            runs(function() {
-////                console.log($toggleItem.parent().hasClass('is-expanded'));
-////                expect($toggleItem.parent().hasClass('is-expanded')).toBe(false);
-////            });
-//
-//            runs(function() {
-////                _.delay(function(){
-//                    $toggleItem.click();
-//                    flag2 = true;
-////                },600);
-//            });
-//
-//            waitsFor(function() {
-//                return flag2 && flag1;
-//            }, 'Element should have been clicked!', 700);
-//
-//            runs(function() {
-//                console.log($toggleItem.parent().hasClass('is-expanded'));
-//                expect($toggleItem.parent().hasClass('is-expanded')).toBe(false);
-//            });
-//        });
+        /**
+             check if class  is-expanded of navigation item is removed after click
+             and subnav is hidden
+         */
+        it('item should have class is-expanded removed and submenu hidden', function() {
+
+            var flag1 = false,
+                flag2 = false,
+                $toggleItem = $('.navigation-items-toggle').eq(1);
+
+            runs(function() {
+
+                $toggleItem.click();
+                flag1 = true;
+
+                _.delay(function(){
+                    $toggleItem.click();
+                    flag2 = true;
+                },200);
+            });
+
+            waitsFor(function() {
+                return flag2 && flag1;
+            }, 'Element should have been clicked!', 1000);
+
+            runs(function() {
+
+                _.delay(function(){
+                    console.log($toggleItem.parent().hasClass('is-expanded'));
+                    expect($toggleItem.parent().hasClass('is-expanded')).toBe(false);
+                },250);
+            });
+        });
 
         /**
          check if class is-selected is set on navigation-sub-item after click
