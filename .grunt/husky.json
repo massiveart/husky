@@ -13,6 +13,7 @@
             "jquery": "bower_components/jquery/jquery",
             "husky-validation": "bower_components/husky-validation/dist/validation",
             "globalize_lib": "bower_components/globalize/lib/globalize",
+            "uri-template": "bower_components/massiveart-uritemplate/uritemplate",
             "husky": "lib/husky",
 
             "__component__$navigation@husky": "husky_components/navigation/main",
@@ -47,6 +48,7 @@
             "aura/ext/components",
             "husky-validation",
             "globalize_lib",
+            "uri-template",
 
             "husky",
             "__component__$navigation@husky",
