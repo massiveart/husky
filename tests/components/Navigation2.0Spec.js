@@ -217,6 +217,37 @@ define(['husky'], function(husky) {
         });
 
         /**
+            check if show and hide of modules works
+         */
+        it('section should hide and show modules on click', function() {
+
+            var flag1 = false,
+                flag2 = false,
+                $toggleSection = $('.section-toggle').eq(1);
+
+            runs(function() {
+
+                $toggleSection.click();
+                flag1 = true;
+
+                _.delay(function(){
+                    $toggleSection.click();
+                    flag2 = true;
+                },200);
+            });
+
+            waitsFor(function() {
+                return flag2 && flag1;
+            }, 'Element should have been clicked!', 1000);
+
+            runs(function() {
+                _.delay(function(){
+                    expect($toggleSection.parent().hasClass('is-expanded')).toBe(false);
+                },250);
+            });
+        });
+
+        /**
             checks if class of navigation item changes to is-expanded after click
             and subnav is displayed
          */
@@ -230,40 +261,37 @@ define(['husky'], function(husky) {
 
         });
 
-//        // TODO also for sections?
-        /**
-             check if class  is-expanded of navigation item is removed after click
-             and subnav is hidden
-         */
-        it('item should have class is-expanded removed and submenu hidden', function() {
-
-            var flag1 = false,
-                flag2 = false,
-                $toggleItem = $('.navigation-items-toggle').eq(1);
-
-            runs(function() {
-
-                $toggleItem.click();
-                flag1 = true;
-
-                _.delay(function(){
-                    $toggleItem.click();
-                    flag2 = true;
-                },200);
-            });
-
-            waitsFor(function() {
-                return flag2 && flag1;
-            }, 'Element should have been clicked!', 1000);
-
-            runs(function() {
-
-                _.delay(function(){
-                    console.log($toggleItem.parent().hasClass('is-expanded'));
-                    expect($toggleItem.parent().hasClass('is-expanded')).toBe(false);
-                },250);
-            });
-        });
+//        /**
+//             check if class  is-expanded of navigation item is removed after click
+//             and subnav is hidden
+//         */
+//        it('item should have class is-expanded removed and submenu hidden', function() {
+//
+//            var flag1 = false,
+//                flag2 = false,
+//                $toggleItem = $('.navigation-items-toggle').eq(1);
+//
+//            runs(function() {
+//
+//                $toggleItem.click();
+//                flag1 = true;
+//
+//                _.delay(function(){
+//                    $toggleItem.click();
+//                    flag2 = true;
+//                },200);
+//            });
+//
+//            waitsFor(function() {
+//                return flag2 && flag1;
+//            }, 'Element should have been clicked!', 1000);
+//
+//            runs(function() {
+//                _.delay(function(){
+//                    expect($toggleItem.parent().hasClass('is-expanded')).toBe(false);
+//                },250);
+//            });
+//        });
 
         /**
          check if class is-selected is set on navigation-sub-item after click
@@ -274,15 +302,26 @@ define(['husky'], function(husky) {
             expect($item.hasClass('is-selected')).toEqual(true);
         });
 
-//        /**
-//             check if class is-selected of navigation-sub-item is removed after click
-//         */
-//        it('should be started after app start and should have class', function() {
-//            $navigation = $('.navigation-container');
-//            expect($navigation.size()).toEqual(1);
-//        });
-//
-//
+        /**
+             check if class is-selected of navigation-sub-item is removed after click
+         */
+        it('should be started after app start and should have class', function() {
+
+            var $item1 = $('.js-navigation-sub-item').eq(1),
+                $item2 = $('.js-navigation-sub-item').eq(2);
+
+            runs(function() {
+                $item1.trigger('click');
+                $item2.trigger('click');
+            });
+
+            runs(function() {
+                expect($item1.hasClass('is-selected')).toBe(false);
+                expect($item2.hasClass('is-selected')).toBe(true);
+            });
+        });
+
+
         /**
          *
          * Custom-event related tests
@@ -335,7 +374,7 @@ define(['husky'], function(husky) {
             });
         });
 
-        // TODO not implemented
+        // TODO not yet implemented
 //        /**
 //            check if initialized event is emitted
 //         */
