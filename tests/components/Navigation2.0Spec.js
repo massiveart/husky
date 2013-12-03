@@ -182,7 +182,7 @@ define(['husky'], function(husky) {
         /**
             check if navigation-item data-id is set in dom
          */
-        it('should have class set data attribute for all navigation-items', function() {
+        it('item should have class set data attribute for all navigation-items', function() {
             var $itemsWithData = $('.navigation-items[data-id]').size() + $('.js-navigation-sub-item[data-id]').size(),
                 $itemsWithoutData = $('.navigation-items').size()  + $('.js-navigation-sub-item').size();
             expect($itemsWithData).toEqual($itemsWithoutData);
@@ -191,7 +191,7 @@ define(['husky'], function(husky) {
         /**
             check if settings icons has been inserted into dom
          */
-        it('should be started after app start and should have class', function() {
+        it('item should have icon', function() {
             var $iconElement = $('.navigation-items[data-id="2"] .navigation-settings-icon');
             expect($iconElement.size()).toEqual(1);
         });
@@ -206,69 +206,78 @@ define(['husky'], function(husky) {
         /**
             check if class of section changes to hide after click
          */
-        it('should change value of section-toggle to show', function() {
-            var flag = false;
+        it('section should change value of section-toggle to show', function() {
 
             runs(function() {
-                _.delay(function() {
-                    $('.section').first().find('.section-toggle a').trigger('click');
-                    flag = true;
-                }, 100);
 
-            });
-
-            waitsFor(function() {
-                return flag;
-            }, 100);
-
-            runs(function() {
-                var $section = $('.section').first().find('.section-toggle a');
-                expect($section.html()).toEqual('Show');
+                var $sectionLink = $('.section').first().find('.section-toggle a');
+                $sectionLink.trigger('click');
+                expect($sectionLink.html()).toEqual('Show');
             });
         });
 
         /**
-            check if class of navigation item changes to is-expanded after click
+            checks if class of navigation item changes to is-expanded after click
             and subnav is displayed
          */
-        it('should have class is-expanded after click on navigation-items and show submenu', function() {
-            var flag = false;
+        it('item should have class is-expanded after click on navigation-items and show submenu', function() {
 
             runs(function() {
-                _.delay(function() {
-                    $('.navigation-items-toggle').eq(1).trigger('click');
-                    flag = true;
-                }, 200);
-
+                var $toggleItem = $('.navigation-items-toggle').eq(1);
+                $toggleItem.trigger('click');
+                expect($toggleItem.parent().hasClass('is-expanded')).toBe(true);
             });
 
-            waitsFor(function() {
-                return flag;
-            }, 200);
-
-            runs(function() {
-                var $item = $('.navigation-items-toggle').eq(1);
-                expect($item.parent().hasClass('is-expanded')).toEqual(true);
-            });
         });
 
+        // TODO also for sections?
 //        /**
 //             check if class  is-expanded of navigation item is removed after click
 //             and subnav is hidden
 //         */
-//        it('should be started after app start and should have class', function() {
-//            $navigation = $('.navigation-container');
-//            expect($navigation.size()).toEqual(1);
+//        it('should have class is-expanded removed and submenu hidden', function() {
+//
+//            var flag1 = false,
+//                flag2 = false,
+//                $toggleItem = $('.navigation-items-toggle').eq(1);
+//
+//            runs(function() {
+//                _.delay(function(){
+//                    $toggleItem.trigger('click');
+//                    flag1 = true;
+//                },100);
+//            });
+//
+//
+//            waitsFor(function() {
+//                return flag1;
+//            }, 'Element should have been clicked!', 200);
+//
+//            runs(function() {
+//                _.delay(function(){
+//                    $toggleItem.trigger('click');
+//                    flag2 = true;
+//                },100);
+//            });
+//
+//            waitsFor(function() {
+//                return flag2;
+//            }, 'Element should have been clicked!', 200);
+//
+//            runs(function() {
+//                expect($toggleItem.parent().hasClass('is-expanded')).toBe(false);
+//            });
 //        });
 //
-//        /**
-//         check if class is-selected is set on navigation-sub-item after click
-//         */
-//        it('should be started after app start and should have class', function() {
-//            $navigation = $('.navigation-container');
-//            expect($navigation.size()).toEqual(1);
-//        });
-//
+        /**
+         check if class is-selected is set on navigation-sub-item after click
+         */
+        it('sub-item should have class is-selected after click', function() {
+            var $item = $('.js-navigation-sub-item').eq(1);
+            $item.trigger('click');
+            expect($item.hasClass('is-selected')).toEqual(true);
+        });
+
 //        /**
 //             check if class is-selected of navigation-sub-item is removed after click
 //         */
@@ -278,34 +287,77 @@ define(['husky'], function(husky) {
 //        });
 //
 //
-//        /**
-//         *
-//         * Custom-event related tests
-//         *
-//         */
-//
-//        /**
-//            check if selected event is emitted
-//         */
-//        it('should be started after app start and should have class', function() {
-//            $navigation = $('.navigation-container');
-//            expect($navigation.size()).toEqual(1);
-//        });
-//
-//        /**
-//            check if toggled event is emitted
-//         */
-//        it('should be started after app start and should have class', function() {
-//            $navigation = $('.navigation-container');
-//            expect($navigation.size()).toEqual(1);
-//        });
-//
+        /**
+         *
+         * Custom-event related tests
+         *
+         */
+
+        /**
+            check if selected event is emitted
+         */
+        it('should emmit select event after click on item', function() {
+            var emitted = false;
+
+            runs(function() {
+                app.sandbox.on('husky.navigation.item.select', function() {
+                    emitted = true;
+                });
+
+                $('.js-navigation-sub-item').eq(1).trigger('click');
+            });
+
+            waitsFor(function() {
+                return emitted;
+            }, '"husky.navigation.item.select event wasn\'t emitted"', 500);
+
+            runs(function() {
+                expect(emitted).toBe(true);
+            });
+        });
+
+        /**
+            check if toggled event is emitted
+         */
+        it('should emmit toggle event after click on toggle item', function() {
+            var emitted = false;
+
+            runs(function() {
+                app.sandbox.on('husky.navigation.item.toggle', function() {
+                    emitted = true;
+                });
+
+                $('.navigation-items-toggle').eq(1).trigger('click');
+            });
+
+            waitsFor(function() {
+                return emitted;
+            }, '"husky.navigation.item.toggle event wasn\'t emitted"', 500);
+
+            runs(function() {
+                expect(emitted).toBe(true);
+            });
+        });
+
 //        /**
 //            check if initialized event is emitted
 //         */
-//        it('should be started after app start and should have class', function() {
-//            $navigation = $('.navigation-container');
-//            expect($navigation.size()).toEqual(1);
+//        it('should emmit init event after navigation is initialized', function() {
+//            var emitted = false;
+//
+//            runs(function() {
+//                app.sandbox.on('husky.navigation.item.initialized', function() {
+//                    emitted = true;
+//                });
+//            });
+//
+//            waitsFor(function() {
+//                return emitted;
+//            }, '"husky.navigation.item.toggle event wasn\'t emitted"', 500);
+//
+//            runs(function() {
+//                expect(emitted).toBe(true);
+//            });
 //        });
 
     });
