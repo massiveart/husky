@@ -24,6 +24,13 @@
  *  husky.navigation.item.settings - {item}
  *
  */
+
+// TODO: arrow keys
+// TODO: assign grid (pixel precision)
+// TODO: events as specified
+// TODO: move functions into private space
+// TODO: cleanup css-classes
+
 define(function() {
 
     'use strict';
@@ -51,7 +58,7 @@ define(function() {
             mainItem: [
                 '<li class="js-navigation-items navigation-items" data-id="<%= item.id %>">',
                 '   <div <% if (item.items && item.items.length > 0) { %> class="navigation-items-toggle" <% } %> >',
-                '       <a class="js-navigation-item navigation-item" href="#">',
+                '       <a class="<% if (!!item.action) { %>js-navigation-item <% } %>navigation-item" href="#">',
                 '           <span class="<%= icon %> navigation-item-icon"></span>',
                 '           <span class="navigation-item-title"><%= item.title %></span>',
                 '       </a>',
@@ -67,7 +74,7 @@ define(function() {
             subToggleItem: [
                 '   <li class="js-navigation-items navigation-subitems" data-id="<%= item.id %>">',
                 '       <div class="navigation-subitems-toggle">',
-                '           <a class="js-navigation-item navigation-item" href="#"><%= item.title %></a>',
+                '           <a class="<% if (!!item.action) { %>js-navigation-item <% } %> navigation-item" href="#"><%= item.title %></a>',
                 '           <% if (item.hasSettings) { %>',
                 '           <a class="icon-cogwheel navigation-settings-icon js-navigation-settings" href="#"></a>',
                 '           <% } %>',
@@ -91,11 +98,6 @@ define(function() {
 
 
     return {
-
-
-        // TODO: arrow keys
-        // TODO: assign grid (pixel precision)
-        // TODO: events as specified
 
 
         initialize: function() {
@@ -365,6 +367,7 @@ define(function() {
 
             // if toggle was clicked, do not set active and selected
             if (this.sandbox.dom.hasClass($parent, 'navigation-items-toggle') || this.sandbox.dom.hasClass($parent, 'navigation-subitems-toggle')) {
+                console.log("is a toggle");
                 return;
             }
 

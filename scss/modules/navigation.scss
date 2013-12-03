@@ -44,6 +44,8 @@ $verticalItemPadding: 35px;
     height: 100%;
     background-color: #3e3e3e;
     overflow-y: scroll;
+    position: absolute;
+    top: 0px;
 }
 
 .navigation {
@@ -95,7 +97,7 @@ $verticalItemPadding: 35px;
 
 .navigation-search {
     position: relative;
-    margin: 5px $verticalMargin 10px;
+    margin: 5px $verticalMargin 20px;
 
     a {
         color: #3e3e3e;
@@ -139,12 +141,6 @@ li.is-active {
     color: $grayLight;
   }
 }
-
-/* show settings when hover */
-//li:hover > div > a.navigation-settings-icon {
-//  display:block;
-//  color: $grayLight;
-//}
 
 
 .navigation-items {
