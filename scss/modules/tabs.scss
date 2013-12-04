@@ -1,0 +1,39 @@
+//
+// Tabs
+// --------------------------------------------------
+
+.husky-tabs {
+
+  ul {
+    width: 100%;
+    padding: 0 0 5px;
+    border-bottom: 2px solid $grayLighter;
+
+    li {
+      display: inline;
+      list-style-type: none;
+
+      a {
+        color: black;
+        font-weight: bold;
+        text-decoration: none;
+
+        &:hover {
+          color: $gray;
+        }
+      }
+
+      &.is-selected {
+        a {
+          color: $highlightColor;
+        }
+      }
+
+      &:not(:last-child) {
+        padding-right: 30px;
+      }
+    }
+  }
+}
+
+

@@ -24,6 +24,7 @@
             "__component__$matrix@husky": "husky_components/matrix/main",
             "__component__$select@husky": "husky_components/select/main",
             "__component__$search@husky": "husky_components/search/main",
+            "__component__$tabs@husky": "husky_components/tabs/main",
             "__component__$auto-complete@husky": "husky_components/auto-complete/main",
             "__component__$dropdown-multiple-select@husky": "husky_components/dropdown-multiple-select/main",
             "__component__$password-fields@husky": "husky_components/password-fields/main"
@@ -59,6 +60,7 @@
             "__component__$matrix@husky",
             "__component__$select@husky",
             "__component__$search@husky",
+            "__component__$tabs@husky",
             "__component__$auto-complete@husky",
             "__component__$dropdown-multiple-select@husky",
             "__component__$password-fields@husky"

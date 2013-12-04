@@ -4119,6 +4119,36 @@ a.btn-black {
   top: 40px;
 }
 
+/* line 7, ../scss/modules/tabs.scss */
+.husky-tabs ul {
+  width: 100%;
+  padding: 0 0 5px;
+  border-bottom: 2px solid #cccccc;
+}
+/* line 12, ../scss/modules/tabs.scss */
+.husky-tabs ul li {
+  display: inline;
+  list-style-type: none;
+}
+/* line 16, ../scss/modules/tabs.scss */
+.husky-tabs ul li a {
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+}
+/* line 21, ../scss/modules/tabs.scss */
+.husky-tabs ul li a:hover {
+  color: #666666;
+}
+/* line 27, ../scss/modules/tabs.scss */
+.husky-tabs ul li.is-selected a {
+  color: #249fbe;
+}
+/* line 32, ../scss/modules/tabs.scss */
+.husky-tabs ul li:not(:last-child) {
+  padding-right: 30px;
+}
+
 /* line 17, ../scss/modules/dialog.scss */
 .husky-dialog-backdrop {
   position: fixed;
