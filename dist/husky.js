@@ -20805,6 +20805,7 @@ define('husky',[
 // TODO: events as specified
 // TODO: move functions into private space
 // TODO: cleanup css-classes
+// TODO: responsive collapsed navigation
 
 define('__component__$navigation@husky',[],function() {
 
@@ -20930,6 +20931,9 @@ define('__component__$navigation@husky',[],function() {
 
             // render footer
             this.renderFooter(this.options.footerTemplate);
+
+
+            this.sandbox.emit('husky.navigation.initialized');
 
         },
 
@@ -21100,22 +21104,22 @@ define('__component__$navigation@husky',[],function() {
 
             event.preventDefault();
 
-            var $list = this.sandbox.dom.find('.section-items', this.sandbox.dom.closest(event.currentTarget,'.section')),
-
+            var $section = this.sandbox.dom.closest(event.currentTarget,'.section'),
+                $list = this.sandbox.dom.find('.section-items', $section),
                 toggleLink = this.sandbox.dom.find('a', event.currentTarget);
 
 
-            if (this.sandbox.dom.hasClass($list, 'is-expanded')) {
+            if (this.sandbox.dom.hasClass($section, 'is-hidden')) {
                 // hide section
                 this.sandbox.dom.slideDown($list, 200, function() {
                     this.sandbox.dom.html(toggleLink, this.options.labels.hide);
-                    this.sandbox.dom.removeClass($list, 'is-expanded');
+                    this.sandbox.dom.removeClass($section, 'is-hidden');
                 }.bind(this));
             } else {
                 // show section
                 this.sandbox.dom.html(toggleLink, this.options.labels.show);
                 this.sandbox.dom.slideUp($list, 200, function() {
-                    this.sandbox.dom.addClass($list, 'is-expanded');
+                    this.sandbox.dom.addClass($section, 'is-hidden');
                 }.bind(this));
             }
 

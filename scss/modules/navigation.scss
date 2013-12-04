@@ -6,7 +6,7 @@
 @mixin  toggle-item {
   border-bottom: 1px solid $gray;
   height: inherit;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
   margin-bottom: 10px;
 }
 
@@ -43,7 +43,7 @@ $verticalItemPadding: 35px;
     width: 250px;
     height: 100%;
     background-color: #3e3e3e;
-    overflow-y: scroll;
+    overflow-y: auto;
     position: absolute;
     top: 0px;
 }
@@ -147,7 +147,7 @@ li.is-active {
 
 
 .navigation-items {
-    padding: 9px $verticalMargin;
+    padding: 0px $verticalMargin;
     overflow: hidden;
     //margin: 6px 0;
     height: 50px;
@@ -157,8 +157,12 @@ li.is-active {
     }
 
     > div {
-      padding: 5px;
       position: relative;
+      padding-left: 5px;
+
+      > a {
+        padding: 12px 0;
+      }
     }
 
 
@@ -168,8 +172,11 @@ li.is-active {
 
     &.is-expanded {
         height: inherit;
+        padding-bottom: 20px;
+
         .navigation-items-toggle {
           @include toggle-item;
+          height:50px;
         }
 
         > ul {
@@ -201,21 +208,22 @@ li.is-active {
 
 
     li {
-        padding: 0px 0 0px 10px;
+        padding: 5px 0 0px 10px;
         margin: 0 0 0 -10px;
         border-radius: 4px;
         cursor: pointer;
+        height: 30px;
 
         &:hover:not(.navigation-subitems) a::before {
           font-family: $baseIconFont;
-          font-size: 9px;
+          font-size: 11px;
           content: "\e174";
           display: inline-block;
           margin-left: -15px;
           width: 15px;
           overflow: visible;
           position: relative;
-          top: -2px;
+          top: -1px;
         }
 
         &.is-selected {
@@ -225,14 +233,14 @@ li.is-active {
 
               &::before {
                 font-family: $baseIconFont;
-                font-size: 9px;
+                font-size: 11px;
                 content: "\e174";
                 display: inline-block;
                 margin-left: -15px;
                 width: 15px;
                 overflow: visible;
                 position: relative;
-                top: -2px;
+                top: -1px;
               }
             }
         }
@@ -252,6 +260,7 @@ li.is-active {
     }
     .navigation-subitems-toggle {
       @include toggle-item;
+      //height: 38px;
       padding-bottom: 0;
     }
 
@@ -279,13 +288,14 @@ li.is-active {
 
 .navigation-item-title {
   position: relative;
-  top: -2px;
+  top: 2px;
   padding-left: $verticalItemPadding;
 }
 
 .navigation-item-icon {
     position: absolute;
-    top: -3px;
+    //top: -3px;
+    padding-left:3px;
     font-size: 18px;
 }
 
@@ -297,7 +307,7 @@ li a.navigation-settings-icon {
   width: auto;
   position: absolute;
   right: 20px;
-  top: 5px;
+  top: 4px;
   font-size: 14px;
   display:none;
 }

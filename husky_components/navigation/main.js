@@ -26,10 +26,10 @@
  */
 
 // TODO: arrow keys
-// TODO: assign grid (pixel precision)
 // TODO: events as specified
 // TODO: move functions into private space
 // TODO: cleanup css-classes
+// TODO: responsive collapsed navigation
 
 define(function() {
 
