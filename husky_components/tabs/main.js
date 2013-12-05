@@ -23,7 +23,6 @@ define(function() {
     var defaults = {
         url: null,
         data: [],
-        selected: null,
         instanceName: '',
         preselect: true
     },
@@ -38,7 +37,12 @@ define(function() {
     triggerSelectEvent = function(item) {
         var instanceName = this.options.instanceName ? this.options.instanceName+'.':'';
         this.sandbox.emit('husky.tabs.'+instanceName+'item.select', item);
-    };
+    },
+
+    bindDOMEvents = function() {
+        this.sandbox.dom.on(this.$el,'click',selectItem.bind(this),'li');
+    }
+    ;
 
     return {
 
@@ -49,7 +53,7 @@ define(function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.$el = this.sandbox.dom.$(this.options.el);
 
-            // load Data
+            // load data and call render
             if (!!this.options.url) {
                 this.sandbox.util.load(this.options.url)
                     .then(this.render.bind(this))
@@ -62,12 +66,12 @@ define(function() {
                 this.sandbox.logger.log('no data provided for tabs!');
             }
 
-            this.bindDOMEvents();
+            bindDOMEvents.call(this);
         },
 
         render: function(data) {
 
-            var $element = this.sandbox.dom.createElement('<div class="husky-tabs"></div>'),
+            var $element = this.sandbox.dom.createElement('<div class="tabs-container"></div>'),
                 $list = this.sandbox.dom.createElement('<ul/>'),
                 selected = '';
 
@@ -86,13 +90,10 @@ define(function() {
                 this.items[item.id] = item;
                 this.sandbox.dom.append($list,'<li '+selected+' data-id="'+item.id+'"><a href="#">'+item.title+'</a></li>');
             }.bind(this));
-        },
 
-        // bind dom elements
-        bindDOMEvents: function() {
-            this.sandbox.dom.on(this.$el,'click',selectItem.bind(this),'li');
+            // initialization finished
+            this.sandbox.emit('husky.tabs.initialized');
         }
-
     };
 
 });

@@ -20,7 +20,9 @@
     </style>
 </head>
 <body>
-<div data-aura-component="tabs@husky" data-aura-data='{"id":"529f1f5b7783e","title":"Contacts","header":null,"items":[{"title":"Details","icon":null,"action":"details","hasSettings":null,"type":null,"id":"529f1f5b777f1"},{"title":"Permissions","icon":null,"action":"permissions","hasSettings":null,"type":null,"id":"529f1f5b7782f"}]}'></div>
+<h3>tabs loaded by passing data</h3>
+<div data-aura-component="tabs@husky" data-aura-data='{"id":"529f1f5b7783e","title":"Contacts","header":null,"items":[{"title":"Details","action":"details","id":"529f1f5b777f1"},{"title":"Permissions","action":"permissions","id":"529f1f5b7782f"}]}'></div>
+<h3>tabs loaded by passing url</h3>
 <div data-aura-component="tabs@husky" data-aura-url="/content/navigation" data-aura-instance-name="contacts"></div>
 
 
@@ -42,9 +44,9 @@
                 _ = app.sandbox.util._;
 
         fakeServer.respondWith('GET', '/content/navigation', [200, { 'Content-Type': 'application/json' },
-            '{"id":"529f1f5b7783e","title":"Contacts","header":null,"items":[' +
-                    '{"title":"Details","icon":null,"action":"details","hasSettings":null,"type":null,"id":"529f1f5b777f1"},' +
-                    '{"title":"Permissions","icon":null,"action":"permissions","hasSettings":null,"type":null,"id":"529f1f5b7782f"}' +
+            '{"id":"529f1f5b7783e","title":"Contacts","items":[' +
+                    '{"title":"Details","action":"details","id":"529f1f5b777f1"},' +
+                    '{"title":"Permissions","action":"permissions","id":"529f1f5b7782f"}' +
             ']}'
         ]);
 

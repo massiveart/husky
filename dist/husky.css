@@ -3522,7 +3522,7 @@ textarea.form-element {
   height: 100%;
   background-color: #3e3e3e;
   overflow-y: auto;
-  position: absolute;
+  position: fixed;
   top: 0px;
 }
 
@@ -4120,32 +4120,32 @@ a.btn-black {
 }
 
 /* line 7, ../scss/modules/tabs.scss */
-.husky-tabs ul {
+.tabs-container ul {
   width: 100%;
   padding: 0 0 5px;
   border-bottom: 2px solid #cccccc;
 }
 /* line 12, ../scss/modules/tabs.scss */
-.husky-tabs ul li {
+.tabs-container ul li {
   display: inline;
   list-style-type: none;
 }
 /* line 16, ../scss/modules/tabs.scss */
-.husky-tabs ul li a {
+.tabs-container ul li a {
   color: black;
   font-weight: bold;
   text-decoration: none;
 }
 /* line 21, ../scss/modules/tabs.scss */
-.husky-tabs ul li a:hover {
+.tabs-container ul li a:hover {
   color: #666666;
 }
 /* line 27, ../scss/modules/tabs.scss */
-.husky-tabs ul li.is-selected a {
+.tabs-container ul li.is-selected a {
   color: #249fbe;
 }
 /* line 32, ../scss/modules/tabs.scss */
-.husky-tabs ul li:not(:last-child) {
+.tabs-container ul li:not(:last-child) {
   padding-right: 30px;
 }
 

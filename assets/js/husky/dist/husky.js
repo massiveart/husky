@@ -23508,7 +23508,6 @@ define('__component__$tabs@husky',[],function() {
     var defaults = {
         url: null,
         data: [],
-        selected: null,
         instanceName: '',
         preselect: true
     },
@@ -23525,9 +23524,10 @@ define('__component__$tabs@husky',[],function() {
         this.sandbox.emit('husky.tabs.'+instanceName+'item.select', item);
     },
 
-    renderTabs = function(data){
-
-    };
+    bindDOMEvents = function() {
+        this.sandbox.dom.on(this.$el,'click',selectItem.bind(this),'li');
+    }
+    ;
 
     return {
 
@@ -23538,7 +23538,7 @@ define('__component__$tabs@husky',[],function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.$el = this.sandbox.dom.$(this.options.el);
 
-            // load Data
+            // load data and call render
             if (!!this.options.url) {
                 this.sandbox.util.load(this.options.url)
                     .then(this.render.bind(this))
@@ -23551,12 +23551,12 @@ define('__component__$tabs@husky',[],function() {
                 this.sandbox.logger.log('no data provided for tabs!');
             }
 
-            this.bindDOMEvents();
+            bindDOMEvents.call(this);
         },
 
         render: function(data) {
 
-            var $element = this.sandbox.dom.createElement('<div class="husky-tabs"></div>'),
+            var $element = this.sandbox.dom.createElement('<div class="tabs-container"></div>'),
                 $list = this.sandbox.dom.createElement('<ul/>'),
                 selected = '';
 
@@ -23566,20 +23566,19 @@ define('__component__$tabs@husky',[],function() {
             this.items = [];
 
             this.sandbox.util.foreach(data.items, function(item) {
-                selected='';
+                // check if item got selected
                 if (this.options.preselect && !!data.url && data.url === item.action) {
                     selected = ' class="is-selected"';
+                } else {
+                    selected = '';
                 }
                 this.items[item.id] = item;
                 this.sandbox.dom.append($list,'<li '+selected+' data-id="'+item.id+'"><a href="#">'+item.title+'</a></li>');
             }.bind(this));
-        },
 
-        // bind dom elements
-        bindDOMEvents: function() {
-            this.sandbox.dom.on(this.$el,'click',selectItem.bind(this),'li');
+            // initialization finished
+            this.sandbox.emit('husky.tabs.initialized');
         }
-
     };
 
 });
