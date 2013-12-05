@@ -3019,54 +3019,60 @@ h5 {
 }
 
 /* line 190, ../scss/modules/icons.scss */
+.icon-chevron-up::after {
+  content: "\e22a";
+  display: inline-block;
+}
+
+/* line 197, ../scss/modules/icons.scss */
 .icon-archive::after {
   content: "\e150";
   display: inline-block;
 }
 
-/* line 197, ../scss/modules/icons.scss */
+/* line 204, ../scss/modules/icons.scss */
 .icon-check::after {
   content: "\e153";
   display: inline-block;
 }
 
-/* line 204, ../scss/modules/icons.scss */
+/* line 211, ../scss/modules/icons.scss */
 .icon-adjust-alt::after {
   content: "\e140";
   display: inline-block;
 }
 
-/* line 211, ../scss/modules/icons.scss */
+/* line 218, ../scss/modules/icons.scss */
 .icon-list::after {
   content: "\e115";
   display: inline-block;
 }
 
-/* line 218, ../scss/modules/icons.scss */
+/* line 225, ../scss/modules/icons.scss */
 .icon-items::after {
   content: "\e319";
   display: inline-block;
 }
 
-/* line 225, ../scss/modules/icons.scss */
+/* line 232, ../scss/modules/icons.scss */
 .icon-star::after {
   content: "\e050";
   display: inline-block;
 }
 
-/* line 232, ../scss/modules/icons.scss */
+/* line 239, ../scss/modules/icons.scss */
 .icon-globe::after {
   content: "\e341";
   display: inline-block;
 }
 
-/* line 239, ../scss/modules/icons.scss */
+/* line 246, ../scss/modules/icons.scss */
 .icon-dashboard::after {
   content: "\e332";
   display: inline-block;
 }
 
-/* line 246, ../scss/modules/icons.scss */
+/* line 253, ../scss/modules/icons.scss */
 .icon-arrow-down::after {
   content: "\e224";
   display: inline-block;
@@ -3077,7 +3083,7 @@ h5 {
   transform: rotate(90deg);
 }
 
-/* line 259, ../scss/modules/icons.scss */
+/* line 266, ../scss/modules/icons.scss */
 .icon-arrow-up::after {
   content: "\e225";
   display: inline-block;
@@ -3086,6 +3092,12 @@ h5 {
   -o-transform: rotate(90deg);
   -webkit-transform: rotate(90deg);
   transform: rotate(90deg);
+}
+
+/* line 279, ../scss/modules/icons.scss */
+.icon-user-add::after {
+  content: "\e007";
+  display: inline-block;
 }
 
 /* line 8, ../scss/modules/core.scss */
@@ -4146,6 +4158,34 @@ a.btn-black {
 }
 /* line 32, ../scss/modules/tabs.scss */
 .tabs-container ul li:not(:last-child) {
+  padding-right: 30px;
+}
+
+/* line 7, ../scss/modules/toolbar.scss */
+.toolbar-container ul {
+  padding: 0;
+}
+/* line 10, ../scss/modules/toolbar.scss */
+.toolbar-container ul li {
+  display: inline;
+  list-style-type: none;
+}
+/* line 14, ../scss/modules/toolbar.scss */
+.toolbar-container ul li a {
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+}
+/* line 19, ../scss/modules/toolbar.scss */
+.toolbar-container ul li a:hover {
+  color: #666666;
+}
+/* line 25, ../scss/modules/toolbar.scss */
+.toolbar-container ul li.is-selected a {
+  color: #249fbe;
+}
+/* line 30, ../scss/modules/toolbar.scss */
+.toolbar-container ul li:not(:last-child) {
   padding-right: 30px;
 }
 

@@ -1,0 +1,76 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../dist/husky.min.css">
+    <style>
+        body {
+            margin: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+<!--<div data-aura-component="tabs@husky" data-aura-data='{"id":"529f1f5b7783e","title":"Contacts","header":null,"items":[{"title":"Details","action":"details","id":"529f1f5b777f1"},{"title":"Permissions","action":"permissions","id":"529f1f5b7782f"}]}'></div>-->
+
+<div class="toolbar-container">
+    <ul>
+        <li class="icon-user-add" title="add user"></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+
+<script src="../js/sinon.js"></script>
+<script src="../js/jquery.js"></script>
+
+<script src="../js/require.js"></script>
+
+<script type="text/javascript">
+    require.config({
+        baseUrl: '../../'
+    });
+
+    require(['lib/husky'], function(Husky) {
+        'use strict';
+
+        var fakeServer = sinon.fakeServer.create(),
+                app = Husky({ debug: { enable: true }}),
+                _ = app.sandbox.util._;
+
+        fakeServer.respondWith('GET', '/content/navigation', [200, { 'Content-Type': 'application/json' },
+            '{"id":"529f1f5b7783e","title":"Contacts","items":[' +
+                    '{"title":"Details","action":"details","id":"529f1f5b777f1"},' +
+                    '{"title":"Permissions","action":"permissions","id":"529f1f5b7782f"}' +
+            ']}'
+        ]);
+
+        app.start().then(function() {
+            app.logger.log('Aura started...');
+
+            app.sandbox.on('husky.util.load.data', function() {
+                setTimeout(function() {
+                    fakeServer.respond();
+                }, 100);
+            });
+
+
+        });
+    });
+</script>
+
+</body>
+</html>

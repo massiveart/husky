@@ -186,6 +186,13 @@
   }
 }
 
+.icon-chevron-up {
+  &::after {
+    content: "\e22a";
+    display: inline-block;
+  }
+}
+
 .icon-archive {
   &::after {
     content: "\e150";
@@ -265,5 +272,12 @@
     -webkit-transform: rotate(90deg);
 
     transform: rotate(90deg);
+  }
+}
+
+.icon-user-add {
+  &::after {
+    content: "\e007";
+    display: inline-block;
   }
 }
