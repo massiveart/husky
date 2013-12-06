@@ -281,3 +281,38 @@
     display: inline-block;
   }
 }
+
+.icon-bin {
+  &::after {
+    content: "\e017";
+    display: inline-block;
+  }
+}
+
+.icon-retweet {
+  &::after {
+    content: "\e081";
+    display: inline-block;
+  }
+}
+
+.icon-file-import {
+  &::after {
+    content: "\e359";
+    display: inline-block;
+  }
+}
+
+.icon-file-export {
+  &::after {
+    content: "\e360";
+    display: inline-block;
+  }
+}
+
+.icon-show-thumbnails {
+  &::after {
+    content: "\e157";
+    display: inline-block;
+  }
+}

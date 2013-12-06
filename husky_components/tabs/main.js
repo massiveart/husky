@@ -12,6 +12,7 @@
  *      -
  *  Triggers Events
  *      - husky.tabs.<<instanceName>>.item.select - triggered when item was clicked
+ *      - husky.tabs.initialized - triggered when tabs are fully initialized
  *
  *
  *****************************************************************************/
