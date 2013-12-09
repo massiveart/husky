@@ -675,7 +675,7 @@ define(function() {
             //          ...
             // adjust previous and next link
             // first and last will be removed
-            // add show all 
+            // add show all
 
 //            var pageSets = [],
 //                i;
