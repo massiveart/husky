@@ -4342,7 +4342,7 @@ a.btn-black {
 }
 /* line 17, ../scss/modules/column-navigation.scss */
 .column-navigation .column ul li {
-  width: 250px;
+  width: 235px;
   padding: 15px 10px 15px 25px;
   display: inline-block;
   height: 50px;

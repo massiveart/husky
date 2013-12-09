@@ -35,14 +35,13 @@ define([], function() {
 
         initialize: function() {
 
-            this.sandbox.logger.log("column navigation initializing ...");
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.columns = [];
 
             this.render();
             this.load();
+            this.bindDOMEvents();
 
-            this.sandbox.emit('husky.column.navigation.initialized');
         },
 
         /**
@@ -79,8 +78,8 @@ define([], function() {
 
                     success: function(response) {
 
-                        this.sandbox.emit('husky.column.navigation.data.loaded', response);
                         this.parseData(response, columnNumber);
+                        this.sandbox.emit('husky.column.navigation.loaded');
 
                     }.bind(this)
                 });
@@ -124,6 +123,23 @@ define([], function() {
 
         },
 
+
+        bindDOMEvents: function(){
+
+            this.sandbox.dom.on('click', this.$element , this.itemSelected.bind(this));
+
+        },
+
+        itemSelected: function(event){
+
+            // TODO
+            // select element - deselect old in same column if set
+            // remove subcolumns
+            // reload
+
+            this.sandbox.logger.log(event);
+        },
+
         template : {
             column : function (columnNumber, height){
                 return ['<div class="column pull-left" style="height:',height,'" data-column="',columnNumber,'"><ul></ul></div>'].join('');
@@ -131,17 +147,21 @@ define([], function() {
 
             item : function (data){
 
-                var item = [];
+                var item = ['<li data-id="',data.id,'" class="pointer">'];
 
+                // TODO
+                // has status (online, offline, ghost, shadow, linked)
 
-                item.push('<li data-id="',data.id,'">');
+                // TODO
+                // is editable, is selected, is ghost
+
                 item.push('<span class="column-navigation-item-text pull-left">',data.title,'</span>');
 
                 if(!!data.hasSub) {
-                    item.push('<span class="column-navigation-item-icons-right pull-right">bb</span>');
+                    item.push('<span class="column-navigation-item-icons-right pull-right">',
+                        '<span class="icon-chevron-right"></span>',
+                        '</span></li>');
                 }
-
-                item.push('</li>');
 
                 return item.join('');
             }
