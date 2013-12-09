@@ -139,7 +139,7 @@
 
             app.core.dom.data = function(selector, key, value) {
                 if (!!value) {
-                    return $(selector).data(key, value);
+                    $(selector).data(key, value);
                 } else {
                     return $(selector).data(key);
                 }

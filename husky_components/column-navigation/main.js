@@ -25,6 +25,9 @@ define([], function() {
         wrapper: {
             height: "300px"
         },
+        column: {
+            width: "200px"
+        },
         url: null
     };
 
@@ -34,6 +37,7 @@ define([], function() {
 
             this.sandbox.logger.log("column navigation initializing ...");
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+            this.columns = [];
 
             this.render();
             this.load();
@@ -45,48 +49,105 @@ define([], function() {
          * Renders basic structure (wrapper) of column navigation
          */
         render: function() {
-            var $wrapper;
 
-            $wrapper = this.sandbox.dom.$('<div/>');
-            this.sandbox.dom.addClass($wrapper, 'column-navigation');
-            this.sandbox.dom.css($wrapper, 'height', this.options.wrapper.height);
+            this.$container = this.sandbox.dom.$('<div/>');
+            this.sandbox.dom.addClass(this.$container, 'column-navigation');
+            this.sandbox.dom.css(this.$container, 'height', this.options.wrapper.height);
 
             this.$element = this.sandbox.dom.$(this.options.el);
-            this.sandbox.dom.append(this.$element, $wrapper);
+            this.sandbox.dom.append(this.$element, this.$container);
 
             // TODO
             // add and settings button
         },
 
         /**
-         * Loads data from a specific url
+         * Loads data from a specific url and triggers the parsing
          */
-        load: function() {
+        load: function(columnNumber) {
 
-            this.sandbox.util.ajax({
+            if(!!this.options.url) {
 
-                url: this.options.url,
+                this.sandbox.util.ajax({
 
-                error: function(jqXHR, textStatus, errorThrown) {
-                    this.sandbox.logger.log("An error occured while fetching data from: " + this.options.url);
-                    this.sandbox.logger.log("errorthrown",errorThrown.message);
-                }.bind(this),
+                    url: this.options.url,
 
-                success: function(response) {
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        this.sandbox.logger.log("An error occured while fetching data from: " + this.options.url);
+                        this.sandbox.logger.log("errorthrown",errorThrown.message);
+                    }.bind(this),
 
-                    this.data = {};
-                    this.data.links = response._links;
-                    this.data.embedded = response._embedded;
-                    this.data.title = response.title;
-                    this.data.id = response.id;
-                    this.data.hasSub = response.hasSub;
+                    success: function(response) {
 
-                    this.sandbox.emit('husky.column.navigation.data.loaded');
+                        this.sandbox.emit('husky.column.navigation.data.loaded', response);
+                        this.parseData(response, columnNumber);
 
-                }.bind(this)
-            });
+                    }.bind(this)
+                });
+            } else {
+                this.sandbox.logger.log("husky.column.navigation - invalid url, aborted loading of data");
+            }
+        },
+
+        /**
+         * Parses the received data and renders first column
+         */
+        parseData: function(data, columnNumber){
+
+            this.data = {};
+            this.data.links = data._links;
+            this.data.embedded = data._embedded;
+            this.data.title = data.title;
+            this.data.id = data.id;
+            this.data.hasSub = data.hasSub;
 
 
+            if (!columnNumber && !this.columns[columnNumber]){  // case 1: no elements in container
+
+                var $column,
+                    $list;
+
+                $column = this.sandbox.dom.$(this.template.column('1', this.options.wrapper.height));
+                $list = this.sandbox.dom.find('ul', $column);
+
+                this.sandbox.util.each(this.data.embedded, function(index,value){
+                    this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(value)));
+                }.bind(this));
+
+                this.sandbox.dom.append(this.$container, $column);
+
+
+            } else { // case 2: columns in container replace level after clicked column and clear following levels
+                this.sandbox.logger.log("not yet implemented!");
+                // TODO
+            }
+
+        },
+
+        template : {
+            column : function (columnNumber, height){
+                return ['<div class="column pull-left" style="height:',height,'" data-column="',columnNumber,'"><ul></ul></div>'].join('');
+            },
+
+            item : function (data){
+
+                var item = [];
+
+
+                item.push('<li data-id="',data.id,'">');
+                item.push('<span class="column-navigation-item-text pull-left">',data.title,'</span>');
+
+                if(!!data.hasSub) {
+                    item.push('<span class="column-navigation-item-icons-right pull-right">bb</span>');
+                }
+
+                item.push('</li>');
+
+                return item.join('');
+            }
         }
+
+
+
     };
 });

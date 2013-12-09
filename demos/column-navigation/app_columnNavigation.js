@@ -20,7 +20,7 @@ require(['lib/husky'], function (Husky) {
             '},'+
             '"_embedded": ['+
                 '{'+
-                    '"title": "Page 121",'+
+                    '"title": "I am an online folder",'+
                     '"id": "121",'+
                     '"hasSub": true,'+
                     '"_links" : {'+
@@ -30,7 +30,7 @@ require(['lib/husky'], function (Husky) {
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "Page 122",'+
+                    '"title": "I am an offline folder",'+
                     '"id": "122",'+
                     '"hasSub": true,'+
                     '"_links" : {'+
@@ -40,7 +40,7 @@ require(['lib/husky'], function (Husky) {
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "Page 123",'+
+                    '"title": "I am a folder you cant edit",'+
                     '"id": "123",'+
                     '"hasSub": true,'+
                     '"_links" : {'+
@@ -50,7 +50,7 @@ require(['lib/husky'], function (Husky) {
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "Page 124",'+
+                    '"title": "I am a ghost folder",'+
                     '"id": "124",'+
                     '"hasSub": true,'+
                     '"_links" : {'+
@@ -60,7 +60,7 @@ require(['lib/husky'], function (Husky) {
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "Page 125",'+
+                    '"title": "I am a shadow folder",'+
                     '"id": "125",'+
                     '"hasSub": true,'+
                     '"_links" : {'+
@@ -70,7 +70,7 @@ require(['lib/husky'], function (Husky) {
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "Page 126",'+
+                    '"title": "I am a selected folder",'+
                     '"id": "126",'+
                     '"hasSub": true,'+
                     '"_links" : {'+
@@ -80,7 +80,7 @@ require(['lib/husky'], function (Husky) {
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "Page 127",'+
+                    '"title": "I am a linked folder",'+
                     '"id": "127",'+
                     '"hasSub": true,'+
                     '"_links" : {'+

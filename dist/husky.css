@@ -4326,6 +4326,26 @@ a.btn-black {
   background-color: white;
   border: 1px solid #cccccc;
   overflow-x: scroll;
+  overflow-y: hidden;
+}
+/* line 7, ../scss/modules/column-navigation.scss */
+.column-navigation .column {
+  width: 250px;
+  border-right: 1px solid #cccccc;
+  overflow-y: scroll;
+}
+/* line 12, ../scss/modules/column-navigation.scss */
+.column-navigation .column ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+/* line 17, ../scss/modules/column-navigation.scss */
+.column-navigation .column ul li {
+  width: 250px;
+  padding: 15px 10px 15px 25px;
+  display: inline-block;
+  height: 50px;
 }
 
 /* line 1, ../scss/modules/dropdown-multiple-select.scss */
