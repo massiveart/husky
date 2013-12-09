@@ -94,6 +94,15 @@
                 return $(selector).hasClass(classes);
             };
 
+            app.core.dom.prependClass = function(selector, classes) {
+                var $el = $(selector),
+                    oldClasses = $el.attr('class');
+
+                /* prepend class */
+                classes = classes + ' ' + oldClasses;
+                $el.attr('class', classes);
+            };
+
             app.core.dom.parent = function(selector) {
                 return $(selector).parent();
             };
@@ -104,6 +113,15 @@
 
             app.core.dom.height = function(selector) {
                 return $(selector).height();
+            };
+
+            app.core.dom.offset = function(selector, attributes) {
+                if (attributes) {
+                    return $(selector).offset(attributes);
+                } else {
+                    return $(selector).offset();
+                }
+
             };
 
             app.core.dom.remove = function(context, selector) {
@@ -239,6 +257,28 @@
             app.core.dom.scrollTop = function(itemSelector) {
                 $(window).scrollTop($(itemSelector).offset().top);
             };
+
+
+            app.core.dom.scrollAnimate = function(position, selector) {
+                if (!!selector) {
+                    $(selector).animate({
+                        scrollTop: position
+                    }, 500);
+                } else {
+                    $('html, body').animate({
+                        scrollTop: position
+                    }, 500);
+                }
+            };
+
+            app.core.dom.slideUp = function(selector, duration, complete) {
+                $(selector).slideUp(duration,complete);
+            };
+
+            app.core.dom.slideDown = function(selector, duration, complete) {
+                $(selector).slideDown(duration,complete);
+            };
+
 
             app.core.util.ajax = $.ajax;
         }

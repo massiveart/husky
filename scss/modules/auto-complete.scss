@@ -1,7 +1,7 @@
 .husky-auto-complete-loading {
 	label::after {
 		content: '';
-		font-family: 'Glyphicons';
+		font-family: $baseIconFont;
 		z-index: 100;
 		float: right;
 		display: inline-block;

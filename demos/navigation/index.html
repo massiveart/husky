@@ -1,30 +1,99 @@
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        <link rel="stylesheet" href="../../dist/husky.css">
-    </head>
-    <body>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../dist/husky.min.css">
+</head>
+<body>
 
-        <div data-aura-component="header@husky" data-aura-button-type="saveDelete"></div>
-        <div data-aura-component="navigation@husky" data-aura-url="/navigation"></div>
 
-        <div class="grid" id="content" style="margin-left: 300px; margin-top: 100px"><div class="grid-row">
-            <div class="grid-col-2 pointer" id="load"><span class="icon-book-open"></span> Load Content</div>
-            <div id="print"></div>
-        </div></div>
+<div data-aura-component="navigation@husky" data-aura-url="/navigation" data-aura-footer-template="<div>Hubert Gruber</div><div><a href='#'>logout</a></div><div class='version'>husky 2.1.2</div>"></div>
 
-        <script src="../js/sinon.js"></script>
-        <script src="../js/jquery.js"></script>
+<script src="../js/sinon.js"></script>
+<script src="../js/jquery.js"></script>
 
-        <script data-main="app" src="../../bower_components/requirejs/require.js"></script>
-    </body>
+<script src="../js/require.js"></script>
+
+<script>
+    require.config({
+        baseUrl: '../../'
+    });
+
+    require(['lib/husky'], function(Husky) {
+        'use strict';
+
+        var fakeServer = sinon.fakeServer.create(),
+                app = Husky({ debug: { enable: true }}),
+                _ = app.sandbox.util._;
+
+        fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
+            '{"title":"Sulu 2.0", "icon":"..\/..\/img\/tmp\/husky.png", "id":"1", "items":[' +
+
+                '{"title":"Tools", "items":[' +
+                    '{"title":"Dashboard", "action":"contacts\/dashboard", "icon":"dashboard", "id":"2", "hasSettings":"true"},' +
+
+                    '{"title":"Contacts", "hasSettings":"true", "icon":"contact-book", "id":"3", "items":[' +
+                        '{"title":"Companies", "action":"contacts\/contacts", "id":"4"},' +
+                        '{"title":"People", "action":"contacts\/accounts", "id":"5"}' +
+                    ']},' +
+
+                    '{"title":"Media", "icon":"star", "hasSettings":"true", "id":"6", "items":[' +
+                        '{"title":"Images", "id":"7", "action":"media\/images"},' +
+                        '{"title":"Documents", "id":"8", "action":"media\/documents"},' +
+                        '{"title":"Movies", "id":"9", "action":"media\/movies"}' +
+                    ']},' +
+
+                    '{"title":"Messages", "icon":"settings", "id":"10"},' +
+
+                    '{"title":"Settings", "icon":"settings", "id":"11", "items":[' +
+                        '{"title":"Roles &amp; Permissions", "action":"settings\/roles", "type":"content", "id":"12"},' +
+                        '{"title":"Translate", "action":"settings\/translate", "id":"13"}' +
+                    ']}' +
+                ']},' +
+
+                '{"title":"Web-Spaces", "items":[' +
+                    '{"title":"Americas", "icon":"globe", "hasSettings":"true", "id":"14", "items":[' +
+                        '{"title":"en_us", "action":"contacts\/contacts", "id":"15"},' +
+                        '{"title":"en_cn", "action":"contacts\/contacts", "id":"16"},' +
+                        '{"title":"es_mx", "action":"contacts\/accounts", "id":"17"}' +
+                    ']},' +
+                    '{"title":"Europe", "icon":"globe", "hasSettings":"true", "id":"18", "items":[' +
+                        '{"title":"en_gb", "action":"contacts\/contacts", "id":"19"},' +
+                        '{"title":"de_de", "action":"contacts\/contacts", "id":"20"},' +
+                        '{"title":"de_at", "action":"contacts\/accounts", "id":"21"}' +
+                    ']},' +
+                    '{"title":"Asia", "icon":"globe", "id":"22", "items":[' +
+                        '{"title":"cn_cn", "action":"contacts\/contacts", "id":"23"},' +
+                        '{"title":"jp_jp", "action":"contacts\/accounts", "id":"24"}' +
+                    ']}' +
+                ']}'+
+            ']}'
+        ]);
+
+        app.start().then(function() {
+            app.logger.log('Aura started...');
+
+            app.sandbox.on('husky.util.load.data', function() {
+                setTimeout(function() {
+                    fakeServer.respond();
+                }, 500);
+            });
+        });
+    });
+    
+</script>
+
+</body>
 </html>

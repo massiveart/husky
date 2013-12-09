@@ -2,184 +2,195 @@
 // Icons
 // --------------------------------------------------
 
+.icon-class {
+  font-family: $baseIconFont;
+}
+
 [class^="icon-"] {
-    font-family: 'Glyphicons';
+  font-family: $baseIconFont;
 }
 
 .icon-remove {
-    &::after {
-        content: "\E208";
-        display: inline-block;
-    }
+  &::after {
+    content: "\E208";
+    display: inline-block;
+  }
 }
 
 .icon-add {
-    &::after {
-        content: "\E191";
-        display: inline-block;
-    }
+  &::after {
+    content: "\E191";
+    display: inline-block;
+  }
 }
 
 .icon-down {
-    &::after {
-        content: "\e159";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e159";
+    display: inline-block;
+  }
 }
 
 .icon-search {
-    &::after {
-        content: "\e028";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e028";
+    display: inline-block;
+  }
 }
 
 .icon-circle-remove {
-    &::after {
-        content: "\e193";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e193";
+    display: inline-block;
+  }
 }
 
 .icon-circle-arrow-down {
-    &::after {
-        content: "\e220";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e220";
+    display: inline-block;
+  }
 }
 
 .icon-circle-ok {
-    &::after {
-        content: "\e199";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e199";
+    display: inline-block;
+  }
 }
 
 .icon-edit {
-    &::after {
-        content: "\e151";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e151";
+    display: inline-block;
+  }
 }
 
 .icon-settings {
-    &::after {
-        content: "\e281";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e281";
+    display: inline-block;
+  }
 }
 
 .icon-cogwheel {
-    &::after {
-        content: "\e137";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e137";
+    display: inline-block;
+  }
 }
 
 .icon-cogwheels {
-    &::after {
-        content: "\e138";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e138";
+    display: inline-block;
+  }
 }
 
 .icon-caution {
-    &::after {
-        content: "\e197";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e197";
+    display: inline-block;
+  }
 }
 
 .icon-contact-book {
-    &::after {
-        content: "\e089";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e089";
+    display: inline-block;
+  }
 }
 
 .icon-parents {
-    &::after {
-        content: "\e025";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e025";
+    display: inline-block;
+  }
 }
 
 .icon-keys {
-    cursor: pointer;
-    &::after {
-        content: "\e045";
-        display: inline-block;
-    }
+  cursor: pointer;
+  &::after {
+    content: "\e045";
+    display: inline-block;
+  }
 }
 
 .icon-building {
-    &::after {
-        content: "\e090";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e090";
+    display: inline-block;
+  }
 }
 
 .icon-bank {
-    &::after {
-        content: "\e264";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e264";
+    display: inline-block;
+  }
 }
 
 .icon-book {
-    &::after {
-        content: "\e072";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e072";
+    display: inline-block;
+  }
 }
 
 .icon-book-open {
-    &::after {
-        content: "\e352";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e352";
+    display: inline-block;
+  }
 }
 
 .icon-view {
-    &::after {
-        content: "\e052";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e052";
+    display: inline-block;
+  }
 }
 
 .icon-delete {
-    &::after {
-        content: "\e017";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e017";
+    display: inline-block;
+  }
 }
 
 .icon-live {
-    &::after {
-        content: "\e033";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e033";
+    display: inline-block;
+  }
 }
 
 .icon-security {
-    &::after {
-        content: "\e205";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e205";
+    display: inline-block;
+  }
 }
 
 .icon-chevron-right {
   &::after {
-    content: "\e244";
+    content: "\e224";
+    display: inline-block;
+  }
+}
+
+.icon-chevron-down {
+  &::after {
+    content: "\e227";
     display: inline-block;
   }
 }
 
 .icon-archive {
-    &::after {
-        content: "\e150";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e150";
+    display: inline-block;
+  }
 }
 
 .icon-check {
@@ -190,31 +201,45 @@
 }
 
 .icon-adjust-alt {
-    &::after {
-        content: "\e140";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e140";
+    display: inline-block;
+  }
 }
 
 .icon-list {
-    &::after {
-        content: "\e115";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e115";
+    display: inline-block;
+  }
 }
 
 .icon-items {
-    &::after {
-        content: "\e319";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e319";
+    display: inline-block;
+  }
 }
 
 .icon-star {
-    &::after {
-        content: "\e050";
-        display: inline-block;
-    }
+  &::after {
+    content: "\e050";
+    display: inline-block;
+  }
+}
+
+.icon-globe {
+  &::after {
+    content: "\e341";
+    display: inline-block;
+  }
+}
+
+.icon-dashboard {
+  &::after {
+    content: "\e332";
+    display: inline-block;
+  }
 }
 
 .icon-arrow-down {

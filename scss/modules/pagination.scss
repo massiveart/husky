@@ -27,7 +27,7 @@
 .pagination-first,
 .pagination-last {
     padding: 0 5px;
-    font-family: "Glyphicons";
+    font-family: $baseIconFont;
 
     &::after {
         position: relative;

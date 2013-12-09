@@ -10,8 +10,11 @@
 // Base Colors
 // -------------------------
 $black: #000;
+$gray: #666;
 $grayLight: #999;
 $grayLighter: #ccc;
+$grayLightest: #efefef;
+$grayDark: #1e1e1e;
 $white:#fff;
 
 
@@ -38,14 +41,14 @@ $sansFontFamily: Helvetica, Arial, sans-serif;
 
 $baseFontSize: 14px;
 $smallFontSize: 12px;
-$baseFontFamily: "MuseoSansCondensed300", $sansFontFamily;
+$baseFontFamily: $sansFontFamily;
 $baseLineHeight: 20px;
 
 $headingsFontFamily: inherit;
 $headingsFontWeight: normal;
 $headingsColor: inherit;
 
-$baseIconFont: "Glyphicons";
+$baseIconFont: "icomoon";
 
 
 // Componenet values
@@ -59,7 +62,8 @@ $baseIconFont: "Glyphicons";
 
 // Form Elements
 // -------------------------
-$inputBorderColor: $grayLighter;
+$inputBorderColor: $white;
+$inputBorderFocusColor: $grayLightest;
 $labelColor: $grayLighter;
 
 

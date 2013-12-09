@@ -1,0 +1,104 @@
+<div id="navigation-documentation" class="grid-row m-top-30">
+    <h1>Navigation</h1>
+    <ul>
+        <li>handling with arrowkeys should be possible</li>
+        <li>footer should be configurable via options and with a full html template</li>
+        <li>navigation should be scrollable without scrollbar</li>
+    </ul>
+
+    <div class="grid-row m-top-30">
+        <h2>JSON-Format</h2>
+        <p>The data provided for the navigation should look like this:</p>
+        <div class="doc-code">
+            {% highlight javascript %}
+                {"title":"Sulu 2.0", "icon":"..\/..\/img\/tmp\/husky.png", "id":"1", "items":[
+
+                {"title":"Tools", "items":[
+                    {"title":"Dashboard", "icon":"dashboard", "id":"2", "hasSettings":"true"},
+
+                    {"title":"Contacts", "hasSettings":"true", "icon":"contact-book", "id":"3", "items":[
+                        {"title":"Companies", "action":"contacts\/contacts", "id":"4"},
+                        {"title":"People", "action":"contacts\/accounts", "id":"5"}
+                    ]},
+
+                    {"title":"Media", "icon":"star", "hasSettings":"true", "id":"6", "items":[
+                        {"title":"Images", "id":"7", "action":"media\/images"},
+                        {"title":"Documents", "id":"8", "action":"media\/documents"},
+                        {"title":"Movies", "id":"9", "action":"media\/movies"}
+                    ]},
+
+                    {"title":"Messages", "icon":"settings", "id":"10"},
+
+                    {"title":"Settings", "icon":"settings", "id":"11", "items":[
+                    {"title":"Roles &amp; Permissions", "action":"settings\/roles", "type":"content", "id":"12"},
+                    {"title":"Translate", "action":"settings\/translate", "id":"13"}
+                    ]}
+                ]},
+
+                {"title":"Web-Spaces", "items":[
+                    {"title":"Americas", "icon":"globe", "hasSettings":"true", "id":"14", "items":[
+                        {"title":"en_us", "action":"contacts\/contacts", "id":"15"},
+                        {"title":"en_cn", "action":"contacts\/contacts", "id":"16"},
+                        {"title":"es_mx", "action":"contacts\/accounts", "id":"17"}
+                    ]},
+                    {"title":"Europe", "icon":"globe", "hasSettings":"true", "id":"18", "items":[
+                        {"title":"en_gb", "action":"contacts\/contacts", "id":"19"},
+                        {"title":"de_de", "action":"contacts\/contacts", "id":"20"},
+                        {"title":"de_at", "action":"contacts\/accounts", "id":"21"}
+                    ]},
+                    {"title":"Asia", "icon":"globe", "id":"22", "items":[
+                        {"title":"cn_cn", "action":"contacts\/contacts", "id":"23"},
+                        {"title":"jp_jp", "action":"contacts\/accounts", "id":"24"}
+                    ]}
+                ]}
+            ]}
+            {% endhighlight %}
+        </div>
+
+        <h3>Options</h3>
+        <ul>
+            <li><b>title</b> - title which should be displayed as menu label</li>
+            <li><b>icon</b> - icon which should be displayed (only for thir level menu items)</li>
+            <li><b>id</b> - used internally for events</li>
+            <li><b>items</b> - subitems for an item</li>
+            <li><b>hasSettings</b> - whether settings icon gets displayed or not</li>
+            <li><b>action</b> - action behind menu item</li>
+        </ul>
+    </div>
+
+    <div class="grid-row m-top-30">
+        <h2>Events</h2>
+
+        <h3>husky.navigation.initialized</h3>
+        <p>triggered when navigation is fully loaded and displayed</p>
+
+        <h3>husky.navigation.item.toggle[state, name, id, event]</h3>
+        <p>triggered when an item with subitems is clicked</p>
+
+        <h3>husky.naviagtion.item.select[name, id, event, parents]</h3>
+        <p>triggered when an item without subitems is clicked</p>
+    </div>
+
+    <div class="grid-row m-top-30">
+        <h2>Search</h2>
+        <ul>
+            <li>separate aura component</li>
+            <li>communicates with navigation via change event</li>
+        </ul>
+
+        <h3>Events</h3>
+        <h4>search.change[query] event with the query as parameter</h4>
+        <ul>
+            <li>triggered on key press and when query is at least three signs long</li>
+            <li>navigation listens for this event and filters navigation items according to query</li>
+            <li>filtering as full-text search</li>
+        </ul>
+
+        <h4>search.submit[query] event with the query as parameter</h4>
+        <ul>
+            <li>triggered when submit of form happend</li>
+            <li>relevant for searching on the right</li>
+        </ul>
+    </div>
+</div>
+
