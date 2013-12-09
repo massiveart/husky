@@ -2,27 +2,27 @@
 // Pagination
 // --------------------------------------------------
 
-
 .pagination {
-    padding: 10px 0;
-    ul {
-        margin: 0;
-        padding: 0;
-        display: inline-block;
-        list-style: none;
-    }
 
-    li {
-        font-size: $smallFontSize;
-        display: inline-block;
-        margin-right: 5px;
-        cursor: pointer;
-        & > a {
-            text-decoration: none;
-            color: $black;
-        }
-    }
+  ul {
+      margin: 0;
+      padding: 0;
+      display: inline-block;
+      list-style: none;
+  }
+
+  li {
+      font-size: $smallFontSize;
+      display: inline-block;
+      margin-right: 5px;
+      cursor: pointer;
+      & > a {
+          text-decoration: none;
+          color: $black;
+      }
+  }
 }
+
 
 .pagination-first,
 .pagination-last {

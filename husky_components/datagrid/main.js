@@ -637,19 +637,29 @@ define(function() {
          * @returns {*}
          */
         preparePagination: function() {
-            var $pagination;
+            var $pagination,
+                $paginationWrapper,
+                $showAll;
 
             if (!!this.options.pagination && parseInt(this.data.pages, 10) > 1) {
-                $pagination = this.sandbox.dom.$('<div/>');
-                $pagination.addClass('pagination');
+                $paginationWrapper = this.sandbox.dom.$('<div/>');
+                $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row');
 
-                // TODO next / prev not set when on last / first page
+                $showAll = this.sandbox.dom.$('<div>test</div>');
+                $showAll.addClass('show-all grid-col-4');
+
+                $pagination = this.sandbox.dom.$('<div/>');
+                $pagination.addClass('pagination grid-col-8 align-right');
+
+                $paginationWrapper.append($showAll);
+                $paginationWrapper.append($pagination);
+
                 $pagination.append(this.preparePaginationForwardNavigation());
                 $pagination.append(this.preparePaginationPageNavigation());
                 $pagination.append(this.preparePaginationBackwardNavigation());
             }
 
-            return $pagination;
+            return $paginationWrapper;
         },
 
         /**
@@ -657,6 +667,24 @@ define(function() {
          * @returns {*}
          */
         preparePaginationPageNavigation: function() {
+
+            // TODO
+            // pageSets to render dropdown
+            //          [0] [1,4]
+            //          [1] [5,9]
+            //          ...
+            // adjust previous and next link
+            // first and last will be removed
+            // add show all 
+
+//            var pageSets = [],
+//                i;
+//
+//            for(i = 0; i <= this.data.pages; i++){
+//                pageSets.push([(i*this.data.pageSize)+1,this.data.pageSize*(i+1)]);
+//            }
+
+
             return this.templates.paginationPageNavigation({
                 pageSize: this.data.pageSize,
                 pages: this.data.pages,
