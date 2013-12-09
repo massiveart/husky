@@ -39,7 +39,7 @@ define([], function() {
             this.columns = [];
 
             this.render();
-            this.load();
+            this.load(this.options.url, null);
             this.bindDOMEvents();
 
         },
@@ -63,13 +63,13 @@ define([], function() {
         /**
          * Loads data from a specific url and triggers the parsing
          */
-        load: function(columnNumber) {
+        load: function(url, columnNumber) {
 
             if(!!this.options.url) {
 
                 this.sandbox.util.ajax({
 
-                    url: this.options.url,
+                    url: url,
 
                     error: function(jqXHR, textStatus, errorThrown) {
                         this.sandbox.logger.log("An error occured while fetching data from: " + this.options.url);
@@ -125,8 +125,7 @@ define([], function() {
 
 
         bindDOMEvents: function(){
-
-            this.sandbox.dom.on('click', this.$element , this.itemSelected.bind(this));
+            this.sandbox.dom.on(this.$el, 'click', this.itemSelected.bind(this), 'li');
 
         },
 
@@ -134,10 +133,32 @@ define([], function() {
 
             // TODO
             // select element - deselect old in same column if set
-            // remove subcolumns
+            // remove old subcolumns
             // reload
+            // add new columns
 
-            this.sandbox.logger.log(event);
+            var $target = this.sandbox.dom.$(event.currentTarget),
+                id = this.sandbox.dom.data($target, 'id'),
+                selectedItem = null,
+                column = this.sandbox.dom.data(
+                            this.sandbox.dom.parent(
+                                this.sandbox.dom.parent($target)), 'column');
+
+
+            this.sandbox.emit('husky.column.navigation.selected', id, event);
+
+            this.sandbox.util.each(this.data.embedded, function(index,value) {
+                if(parseInt(value.id, 10) === id) {
+                    selectedItem = value;
+                    return false;
+                }
+            }.bind(this));
+
+            if(!!selectedItem) {
+                this.load(selectedItem._links.children, column);
+            } else {
+                this.sandbox.logger.log("invalid id");
+            }
         },
 
         template : {
