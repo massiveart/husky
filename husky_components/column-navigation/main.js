@@ -65,7 +65,7 @@ define([], function() {
          */
         load: function(url, columnNumber) {
 
-            if(!!this.options.url) {
+            if(!!url) {
 
                 this.sandbox.util.ajax({
 
@@ -100,6 +100,7 @@ define([], function() {
             this.data.id = data.id;
             this.data.hasSub = data.hasSub;
 
+            this.storeData(data, columnNumber);
 
             if (!columnNumber && !this.columns[columnNumber]){  // case 1: no elements in container
 
@@ -123,12 +124,39 @@ define([], function() {
 
         },
 
+        /**
+         * Stores data in internal structor - seperated by column number
+         * @param data
+         * @param columnNumber
+         */
+        storeData: function(data, columnNumber) {
+            if(!columnNumber) {
+
+                this.columns[0] = [];
+                this.columns[0][data.id] = data;
+                this.columns[1] = [];
+
+                this.sandbox.util.each(this.data.embedded, function(index,value){
+                    this.columns[1][value.id] = value;
+                }.bind(this));
+
+            } else {
+                // TODO
+                this.sandbox.logger.log("not yet implemented!");
+            }
+
+        },
+
 
         bindDOMEvents: function(){
             this.sandbox.dom.on(this.$el, 'click', this.itemSelected.bind(this), 'li');
 
         },
 
+        /**
+         * Item was selected and data will be loaded if has sub
+         * @param event
+         */
         itemSelected: function(event){
 
             // TODO
@@ -139,31 +167,19 @@ define([], function() {
 
             var $target = this.sandbox.dom.$(event.currentTarget),
                 id = this.sandbox.dom.data($target, 'id'),
-                selectedItem = null,
-                column = this.sandbox.dom.data(
-                            this.sandbox.dom.parent(
-                                this.sandbox.dom.parent($target)), 'column');
+                column = this.sandbox.dom.data(this.sandbox.dom.parent($target), 'column'),
+                selectedItem = this.columns[column][id];
 
+            this.sandbox.emit('husky.column.navigation.selected', selectedItem);
 
-            this.sandbox.emit('husky.column.navigation.selected', id, event);
-
-            this.sandbox.util.each(this.data.embedded, function(index,value) {
-                if(parseInt(value.id, 10) === id) {
-                    selectedItem = value;
-                    return false;
-                }
-            }.bind(this));
-
-            if(!!selectedItem) {
+            if(!!selectedItem && !!selectedItem.hasSub) {
                 this.load(selectedItem._links.children, column);
-            } else {
-                this.sandbox.logger.log("invalid id");
             }
         },
 
         template : {
             column : function (columnNumber, height){
-                return ['<div class="column pull-left" style="height:',height,'" data-column="',columnNumber,'"><ul></ul></div>'].join('');
+                return ['<div class="column pull-left" style="height:',height,'"><ul id="column-',columnNumber,'" data-column="',columnNumber,'"></ul></div>'].join('');
             },
 
             item : function (data){
