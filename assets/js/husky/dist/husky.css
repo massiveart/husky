@@ -4331,19 +4331,18 @@ a.btn-black {
 }
 /* line 8, ../scss/modules/column-navigation.scss */
 .column-navigation .column {
-  width: 250px;
   border-right: 1px solid #cccccc;
   overflow-y: scroll;
   overflow-x: hidden;
   display: inline-block;
 }
-/* line 15, ../scss/modules/column-navigation.scss */
+/* line 14, ../scss/modules/column-navigation.scss */
 .column-navigation .column ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
-/* line 20, ../scss/modules/column-navigation.scss */
+/* line 19, ../scss/modules/column-navigation.scss */
 .column-navigation .column ul li {
   width: 235px;
   padding: 15px 10px 15px 25px;

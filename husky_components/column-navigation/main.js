@@ -10,12 +10,15 @@
  * Options:
  *
  * Emits:
- *  husky.column.navigation.initialized
  *  husky.column.navigation.data.loaded
  *  husky.column.navigation.selected
+ *  husky.column.navigation.add
  *
  * Listens:
  */
+
+// TODO
+// browser compatibility
 
 define([], function() {
 
@@ -23,10 +26,10 @@ define([], function() {
 
     var defaults = {
         wrapper: {
-            height: "300px"
+            height: "300"
         },
         column: {
-            width: "200px"
+            width: "250"
         },
         url: null
     };
@@ -52,7 +55,7 @@ define([], function() {
 
             this.$container = this.sandbox.dom.$('<div/>');
             this.sandbox.dom.addClass(this.$container, 'column-navigation');
-            this.sandbox.dom.css(this.$container, 'height', this.options.wrapper.height);
+            this.sandbox.dom.css(this.$container, 'height', (parseInt(this.options.wrapper.height,10)+15)+'px');
 
             this.$element = this.sandbox.dom.$(this.options.el);
             this.sandbox.dom.append(this.$element, this.$container);
@@ -212,8 +215,8 @@ define([], function() {
         },
 
         template : {
-            column : function (columnNumber, height){
-                return ['<div class="column" id="column-',columnNumber,'" style="height:',height,'"><ul data-column="',columnNumber,'"></ul></div>'].join('');
+            column : function (columnNumber, height, width){
+                return ['<div class="column" id="column-',columnNumber,'" style="height:',height,'px; width: ',width,'px"><ul data-column="',columnNumber,'"></ul></div>'].join('');
             },
 
             item : function (data){
