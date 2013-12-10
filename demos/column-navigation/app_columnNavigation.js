@@ -48,7 +48,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "I am a folder you cant edit",'+
                     '"id": "123",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
@@ -61,7 +61,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "I am a ghost folder",'+
                     '"id": "124",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
@@ -74,7 +74,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "I am a shadow folder",'+
                     '"id": "125",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
@@ -87,7 +87,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "I am a selected folder",'+
                     '"id": "126",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
@@ -100,7 +100,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "I am a linked folder",'+
                     '"id": "127",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
@@ -126,7 +126,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "Page 129",'+
                     '"id": "129",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
@@ -270,6 +270,138 @@ require(['lib/husky'], function (Husky) {
             '],'+
             '"title": "I am an online folder",'+
             '"id": "121",'+
+            '"hasSub": true'+
+            '}'
+    ]);
+
+
+    fakeServer.respondWith('GET', '/nodes?parent=122&depth=1', [200, { 'Content-Type': 'application/json' },
+        '{'+
+            '"_links" : {'+
+                '"self": "/nodes/122",'+
+                '"children" : "/nodes?parent=122&depth=1"'+
+            '},'+
+            '"_embedded": ['+
+                '{'+
+                    '"title": "I am an online folder 2.2",'+
+                    '"id": "221.2",'+
+                    '"hasSub": true,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/221",'+
+                        '"children" : "/nodes?parent=221&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "I am an offline folder 2.2",'+
+                    '"id": "222.2",'+
+                    '"hasSub": true,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/1222",'+
+                        '"children" : "/nodes?parent=222&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "Im a folder you cant edit 2.2",'+
+                    '"id": "223.2",'+
+                    '"hasSub": true,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/223",'+
+                        '"children" : "/nodes?parent=223&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "I am a ghost folder 2.2",'+
+                    '"id": "224.2",'+
+                    '"hasSub": true,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/224",'+
+                        '"children" : "/nodes?parent=224&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "I am a shadow folder 2.2",'+
+                    '"id": "225.2",'+
+                    '"hasSub": true,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/225",'+
+                        '"children" : "/nodes?parent=225&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "I am a selected folder 2.2",'+
+                    '"id": "226.2",'+
+                    '"hasSub": true,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/226",'+
+                        '"children" : "/nodes?parent=226&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "I am a linked folder 2.2",'+
+                    '"id": "227.2",'+
+                    '"hasSub": true,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/227",'+
+                        '"children" : "/nodes?parent=227&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "Page 228.2",'+
+                    '"id": "228.2",'+
+                    '"hasSub": true,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/228",'+
+                        '"children" : "/nodes?parent=228&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "Page 329.2",'+
+                    '"id": "229.2",'+
+                    '"hasSub": true,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/229",'+
+                        '"children" : "/nodes?parent=229&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '}'+
+            '],'+
+            '"title": "I am an offline folder 2",'+
+            '"id": "122",'+
             '"hasSub": true'+
             '}'
     ]);
