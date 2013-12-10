@@ -266,7 +266,17 @@ module.exports = function(grunt) {
                             '.bower_components/underscore/underscore-min.map'
                         ],
                         dest: 'bower_components/underscore/'
-                    }
+                    },
+                    // uri template
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            '.bower_components/massiveart-uritemplate/bin/uritemplate-min.js',
+                            '.bower_components/massiveart-uritemplate/bin/uritemplate.js'
+                        ],
+                        dest: 'bower_components/massiveart-uritemplate/'
+                    },
                 ]
             }
         },

@@ -13,7 +13,7 @@
  *  also loads search component
  *
  * Options:
- *  footerTemplate  - html template to define the footer
+ *  footerTemplate - html template to define the footer
  *
  * Provides Events:
  *  husky.navigation.footer.set - set template
@@ -26,6 +26,8 @@
  */
 
 // TODO: arrow keys
+// TODO: action as link for ux -> footer where it will link
+// TODO: cogwheel at dashboard in the middle
 // TODO: events as specified
 // TODO: move functions into private space
 // TODO: cleanup css-classes
@@ -56,14 +58,14 @@ define(function() {
                 '</nav>'].join(''),
             /** main navigation items (with icons)*/
             mainItem: [
-                '<li class="js-navigation-items navigation-items" data-id="<%= item.id %>">',
+                '<li class="js-navigation-items navigation-items" id="<%= item.id %>" data-id="<%= item.id %>">',
                 '   <div <% if (item.items && item.items.length > 0) { %> class="navigation-items-toggle" <% } %> >',
                 '       <a class="<% if (!!item.action) { %>js-navigation-item <% } %>navigation-item" href="#">',
                 '           <span class="<%= icon %> navigation-item-icon"></span>',
                 '           <span class="navigation-item-title"><%= item.title %></span>',
                 '       </a>',
                 '       <% if (item.hasSettings) { %>',
-                '           <a class="icon-cogwheel navigation-settings-icon js-navigation-settings" href="#"></a>',
+                '           <a class="icon-cogwheel navigation-settings-icon js-navigation-settings" id="<%= item.id %>" href="#"></a>',
                 '       <% } %>',
                 '       <% if (item.items && item.items.length > 0) { %>',
                 '           <a class="icon-chevron-right navigation-toggle-icon" href="#"></a>',
@@ -72,7 +74,7 @@ define(function() {
                 '</li>'].join(''),
             /** sub navigation items */
             subToggleItem: [
-                '   <li class="js-navigation-items navigation-subitems" data-id="<%= item.id %>">',
+                '   <li class="js-navigation-items navigation-subitems" id="<%= item.id %>" data-id="<%= item.id %>">',
                 '       <div class="navigation-subitems-toggle">',
                 '           <a class="<% if (!!item.action) { %>js-navigation-item <% } %> navigation-item" href="#"><%= item.title %></a>',
                 '           <% if (item.hasSettings) { %>',
@@ -83,7 +85,7 @@ define(function() {
                 '</li>'].join(''),
             /** siple sub item */
             subItem: [
-                '<li class="js-navigation-sub-item" data-id="<%= item.id %>">',
+                '<li class="js-navigation-sub-item" id="<%= item.id %>" data-id="<%= item.id %>">',
                 '   <a href="#"><%= item.title %></a>',
                 '</li>'
             ].join('')
@@ -91,14 +93,13 @@ define(function() {
         defaults = {
             footerTemplate: '',
             labels: {
-                hide:'Hide',
+                hide: 'Hide',
                 show: 'Show'
             }
         };
 
 
     return {
-
 
         initialize: function() {
 
@@ -121,7 +122,6 @@ define(function() {
                     }.bind(this));
             }
         },
-
 
         /**
          * renders the navigation
@@ -154,11 +154,12 @@ define(function() {
             this.renderNavigationItems(this.options.data);
 
             // render footer
-            this.renderFooter(this.options.footerTemplate);
+            if (!!this.options.footerTemplate && this.options.footerTemplate !== '') {
+                this.renderFooter(this.options.footerTemplate);
+            }
 
-
+            // emit initialized event
             this.sandbox.emit('husky.navigation.initialized');
-
         },
 
         /**
@@ -187,7 +188,6 @@ define(function() {
                     this.items[item.id] = item;
                 }.bind(this));
 
-//                    this.sandbox.dom.append('#navigation-item-container', '<div class="section-headline">'+section.title.toUpperCase()+'<span class="section-toggle"><a href="#">'+this.options.hideText+'</a></span></div>');
                 this.sandbox.dom.append($sectionDiv, $sectionList);
                 this.sandbox.dom.append('#navigation-item-container', $sectionDiv);
 
@@ -216,7 +216,7 @@ define(function() {
         },
 
         renderFooter: function(footerTemplate) {
-            var $footer = this.sandbox.dom.find('footer',this.$el);
+            var $footer = this.sandbox.dom.find('footer', this.$el);
             this.sandbox.dom.html($footer, footerTemplate);
         },
 
@@ -304,7 +304,7 @@ define(function() {
                     itemHeight = this.sandbox.dom.height($items);
                     xBottom = itemTop + itemHeight;
                     windowHeight = this.sandbox.dom.height(this.sandbox.dom.window);
-                    if (xBottom > windowHeight ) {
+                    if (xBottom > windowHeight) {
                         if (itemHeight < windowHeight) {
                             this.sandbox.dom.scrollAnimate((xBottom - windowHeight + 40), '.navigation-container');
                         } else {
@@ -316,7 +316,7 @@ define(function() {
 
             // emit event
             item = this.items[this.sandbox.dom.data($items, 'id')];
-            this.sandbox.emit('husky.navigation.item.toggle', !isExpanded , item);
+            this.sandbox.emit('husky.navigation.item.toggle', !isExpanded, item);
         },
 
 
@@ -328,7 +328,7 @@ define(function() {
 
             event.preventDefault();
 
-            var $section = this.sandbox.dom.closest(event.currentTarget,'.section'),
+            var $section = this.sandbox.dom.closest(event.currentTarget, '.section'),
                 $list = this.sandbox.dom.find('.section-items', $section),
                 toggleLink = this.sandbox.dom.find('a', event.currentTarget);
 
@@ -365,12 +365,11 @@ define(function() {
                 item;
 
             if (this.sandbox.dom.hasClass($subItem, 'js-navigation-item')) {
-                $subItem = this.sandbox.dom.createElement(this.sandbox.dom.closest(event.currentTarget,'li'));
+                $subItem = this.sandbox.dom.createElement(this.sandbox.dom.closest(event.currentTarget, 'li'));
             }
 
             // if toggle was clicked, do not set active and selected
             if (this.sandbox.dom.hasClass($parent, 'navigation-items-toggle') || this.sandbox.dom.hasClass($parent, 'navigation-subitems-toggle')) {
-                console.log("is a toggle");
                 return;
             }
 

@@ -25,18 +25,14 @@ define([], function() {
 
     var templates = {
             skeleton: [
-                    '<a class="navigation-search-icon" href="#"></a>',
-                    '<input id="navigation-search-input" type="text" class="form-element input-round navigation-search-input" placeholder="<%= placeholderText %>"/>'
-                ].join('')
+                '<a class="navigation-search-icon" href="#"></a>',
+                '<input id="navigation-search-input" type="text" class="form-element input-round navigation-search-input" placeholder="<%= placeholderText %>"/>'
+            ].join('')
         },
         defaults = {
             instanceName: null,
             placeholderText: 'Search...'
         };
-
-
-
-
 
     return {
 
@@ -47,11 +43,10 @@ define([], function() {
             this.render();
 
             this.bindDOMEvents();
-
         },
 
         render: function() {
-            this.sandbox.dom.html(this.$el,this.sandbox.template.parse(templates.skeleton, {placeholderText: this.options.placeholderText}));
+            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {placeholderText: this.options.placeholderText}));
         },
 
         // bind dom elements
@@ -65,8 +60,7 @@ define([], function() {
         },
 
         checkEnterPressed: function(event) {
-            if(event.keyCode === 13)
-            {
+            if (event.keyCode === 13) {
                 this.submitSearch();
             }
         },
@@ -94,7 +88,7 @@ define([], function() {
 
             var event = 'husky.search';
             if (this.options.instanceName) {
-                event += '.'+this.options.instanceName;
+                event += '.' + this.options.instanceName;
             }
 
             // trigger sandbox event
