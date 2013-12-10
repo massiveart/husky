@@ -52,7 +52,9 @@ define([], function() {
          * Renders basic structure (wrapper) of column navigation
          */
         render: function() {
+            var $add, $settings;
 
+            // main container
             this.$container = this.sandbox.dom.$('<div/>');
             this.sandbox.dom.addClass(this.$container, 'column-navigation');
             this.sandbox.dom.css(this.$container, 'height', (parseInt(this.options.wrapper.height,10)+15)+'px');
@@ -60,8 +62,18 @@ define([], function() {
             this.$element = this.sandbox.dom.$(this.options.el);
             this.sandbox.dom.append(this.$element, this.$container);
 
-            // TODO
             // add and settings button
+            this.$optionContainer = this.sandbox.dom.$('<div/>');
+            this.sandbox.dom.addClass(this.$optionContainer, 'options grid-row');
+            this.sandbox.dom.css(this.$optionContainer, 'width', this.options.column.width+'px');
+
+            $add = this.sandbox.dom.$(this.template.options.add());
+            $settings = this.sandbox.dom.$(this.template.options.settings());
+
+            this.sandbox.dom.append(this.$optionContainer, $add);
+            this.sandbox.dom.append(this.$optionContainer, $settings);
+
+            this.sandbox.dom.append(this.$element, this.$optionContainer);
         },
 
         /**
@@ -240,6 +252,23 @@ define([], function() {
                 item.push('</span></li>');
 
                 return item.join('');
+            },
+
+            options: {
+                add : function (){
+
+                    return ['<div id="column-navigation-add" class="align-center grid-col-6 column-navigation-add pointer">' +
+                                '<span class="icon-add"></span>' +
+                            '</div>'].join('');
+
+                },
+                settings : function() {
+
+                    return ['<div id="column-navigation-settings" class="align-center grid-col-6 column-navigation-settings pointer">' +
+                                '<span class="icon-cogwheel"></span>' +
+                             '</div>'].join('');
+
+                }
             }
         }
 

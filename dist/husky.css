@@ -4349,6 +4349,25 @@ a.btn-black {
   height: 50px;
 }
 
+/* line 30, ../scss/modules/column-navigation.scss */
+.column-navigation-add {
+  background-color: #009fc0;
+  padding: 5px 0;
+  color: white;
+  border-bottom-left-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+}
+
+/* line 39, ../scss/modules/column-navigation.scss */
+.column-navigation-settings {
+  background-color: #cccccc;
+  padding: 5px 0;
+  border-bottom-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+}
+
 /* line 1, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select {
   position: relative;
