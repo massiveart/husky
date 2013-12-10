@@ -9,10 +9,10 @@
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
  *      - preselect - defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url)
  *  Provides Events
- *      -
+ *      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback
  *  Triggers Events
- *      - husky.tabs.<<instanceName>>.item.select - triggered when item was clicked
- *      - husky.tabs.<<instanceName>>.initialized - triggered when tabs have been initialized
+ *      - husky.tabs.<<instanceName>>.item.select [item] - triggered when item was clicked
+ *      - husky.tabs.<<instanceName>>.initialized [selectedItem]- triggered when tabs have been initialized
  *
  *  TODO select first (or with parameter) item after load
  *
@@ -37,16 +37,23 @@ define(function() {
         },
 
         triggerSelectEvent = function(item) {
-            this.sandbox.emit(getEventName.call(this, 'item.select'), item);
+            this.sandbox.emit(createEventString.call(this, 'item.select'), item);
         },
 
         bindDOMEvents = function() {
             this.sandbox.dom.on(this.$el, 'click', selectItem.bind(this), 'li');
         },
 
-        getEventName = function(postFix) {
+        bindCustomEvents = function() {
+            this.sandbox.on(createEventString.call(this, 'getSelected'), function(callback) {
+                var selection = this.sandbox.dom.find('.is-selected', this.options.el);
+                callback.call(this.items[this.sandbox.dom.data(selection, 'id')]);
+            }.bind(this));
+        },
+
+        createEventString = function(ending) {
             var instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
-            return 'husky.tabs.' + instanceName + postFix;
+            return 'husky.tabs.' + instanceName + ending;
         };
 
     return {
@@ -72,13 +79,15 @@ define(function() {
             }
 
             bindDOMEvents.call(this);
+
+            bindCustomEvents.call(this);
         },
 
         render: function(data) {
 
             var $element = this.sandbox.dom.createElement('<div class="tabs-container"></div>'),
                 $list = this.sandbox.dom.createElement('<ul/>'),
-                selected = '';
+                selected = '', selectedItem = null;
 
             this.sandbox.dom.append(this.$el, $element);
             this.sandbox.dom.append($element, $list);
@@ -89,6 +98,7 @@ define(function() {
                 // check if item got selected
                 if (this.options.preselect && !!data.url && data.url === item.action) {
                     selected = ' class="is-selected"';
+                    selectedItem = item;
                 } else {
                     selected = '';
                 }
@@ -97,7 +107,7 @@ define(function() {
             }.bind(this));
 
             // initialization finished
-            this.sandbox.emit(getEventName.call(this, 'initialized'));
+            this.sandbox.emit(createEventString.call(this, 'initialized'), selectedItem);
         }
     };
 
