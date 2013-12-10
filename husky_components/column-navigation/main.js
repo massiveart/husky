@@ -89,12 +89,30 @@ define([], function() {
         },
 
         /**
-         * Parses the received data and renders first column
+         * Removes removes data and removes dom elements
+         * @param newColumn
+         */
+        removeColumns: function(newColumn){
+
+            // remove old data and remove old dom elements
+            var length = this.columns.length -1,
+                i;
+
+            for(i = length; i >= newColumn; i--){
+                delete this.columns[i];
+                this.sandbox.dom.remove('#column-'+i);
+            }
+
+        },
+
+        /**
+         * Parses the received data and renders columns
          */
         parseData: function(data, columnNumber){
             var $column,
                 $list,
-                newColumn;
+                newColumn,
+                i;
 
             this.data = {};
             this.data.links = data._links;
@@ -112,8 +130,6 @@ define([], function() {
 
             } else { // case 2: columns in container replace level after clicked column and clear following levels
 
-                // TODO remove from dom
-                // TODO remove old data
                 newColumn = columnNumber + 1;
 
             }
@@ -171,6 +187,7 @@ define([], function() {
             this.sandbox.emit('husky.column.navigation.selected', selectedItem);
 
             if(!!selectedItem && !!selectedItem.hasSub) {
+                this.removeColumns(column +1);
                 this.load(selectedItem._links.children, column);
             }
         },

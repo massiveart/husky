@@ -274,7 +274,6 @@ require(['lib/husky'], function (Husky) {
             '}'
     ]);
 
-
     fakeServer.respondWith('GET', '/nodes?parent=122&depth=1', [200, { 'Content-Type': 'application/json' },
         '{'+
             '"_links" : {'+
