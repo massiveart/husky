@@ -3712,7 +3712,7 @@ li.is-active > div > a.navigation-settings-icon {
   height: 30px;
 }
 /* line 217, ../scss/modules/navigation.scss */
-.navigation-items li:hover:not(.navigation-subitems) a::before {
+.navigation-items li:hover:not(.navigation-subitems) a::before, .navigation-items .column-navigation-wrapper .column-navigation .column ul li.selected:not(.navigation-subitems) a::before, .column-navigation-wrapper .column-navigation .column ul .navigation-items li.selected:not(.navigation-subitems) a::before {
   font-family: "icomoon";
   font-size: 11px;
   content: "\e174";
@@ -3898,7 +3898,7 @@ li a.navigation-settings-icon {
   padding: 5px 10px;
 }
 /* line 71, ../scss/modules/dropdown.scss */
-.dropdown-menu > ul > li:hover, .dropdown-menu > ul > li.hover {
+.dropdown-menu > ul > li:hover, .column-navigation-wrapper .column-navigation .column .dropdown-menu > ul > li.selected, .dropdown-menu > ul > li.hover {
   background-color: #ccc;
   cursor: pointer;
 }
@@ -4360,19 +4360,22 @@ a.btn-black {
   height: 50px;
 }
 /* line 30, ../scss/modules/column-navigation.scss */
-.column-navigation-wrapper .column-navigation .column ul li:hover,
-.column-navigation-wrapper .column-navigation .column ul li.selected {
+.column-navigation-wrapper .column-navigation .column ul li:hover, .column-navigation-wrapper .column-navigation .column ul li.selected {
   background-color: #f1f1f1;
 }
-/* line 34, ../scss/modules/column-navigation.scss */
+/* line 33, ../scss/modules/column-navigation.scss */
+.column-navigation-wrapper .column-navigation .column ul li.selected {
+  font-weight: bold;
+}
+/* line 38, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul .inactive {
   color: #999999;
 }
-/* line 40, ../scss/modules/column-navigation.scss */
+/* line 44, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .item-text {
   padding-top: 2px;
 }
-/* line 44, ../scss/modules/column-navigation.scss */
+/* line 48, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .edit {
   margin-right: 5px;
   background-color: #009fc0;
@@ -4381,11 +4384,11 @@ a.btn-black {
   color: white;
   border-radius: 3px;
 }
-/* line 53, ../scss/modules/column-navigation.scss */
+/* line 57, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .arrow {
   vertical-align: middle;
 }
-/* line 59, ../scss/modules/column-navigation.scss */
+/* line 63, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .add {
   background-color: #009fc0;
   padding: 5px 0;
@@ -4394,7 +4397,7 @@ a.btn-black {
   -webkit-border-bottom-left-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
 }
-/* line 68, ../scss/modules/column-navigation.scss */
+/* line 72, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .settings {
   background-color: #cccccc;
   padding: 5px 0;
@@ -4468,7 +4471,7 @@ a.btn-black {
   padding: 5px 10px;
 }
 /* line 66, ../scss/modules/dropdown-multiple-select.scss */
-.husky-dropdown-multiple-select .dropdown-list > ul > li:hover, .husky-dropdown-multiple-select .dropdown-list > ul > li.hover {
+.husky-dropdown-multiple-select .dropdown-list > ul > li:hover, .husky-dropdown-multiple-select .column-navigation-wrapper .column-navigation .column .dropdown-list > ul > li.selected, .column-navigation-wrapper .column-navigation .column .husky-dropdown-multiple-select .dropdown-list > ul > li.selected, .husky-dropdown-multiple-select .dropdown-list > ul > li.hover {
   background-color: #ccc;
   cursor: pointer;
 }

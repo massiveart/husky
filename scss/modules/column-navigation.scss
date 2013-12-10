@@ -26,9 +26,13 @@
           height: 50px;
         }
 
-        li:hover,
-        li.selected {
+
+        li:hover {
           background-color: $baseBackgroundColor;
+        }
+        li.selected{
+          @extend li:hover;
+          font-weight:bold;
         }
 
         .inactive {
