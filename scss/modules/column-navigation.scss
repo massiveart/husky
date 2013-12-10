@@ -1,47 +1,51 @@
-.column-navigation {
-  background-color: $white;
-  border: 1px solid $grayLighter;
-  overflow-x: scroll;
-  overflow-y: hidden;
-  white-space: nowrap;
+.column-navigation-wrapper {
+  overflow: hidden;
 
-  .column {
-    border-right: 1px solid $grayLighter;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    display: inline-block;
-    font-size: 0;
+  .column-navigation {
+    background-color: $white;
+    border: 1px solid $grayLighter;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
 
-    ul {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-      font-size: $baseFontSize;
+    .column {
+      border-right: 1px solid $grayLighter;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      display: inline-block;
+      font-size: 0;
 
-      li {
-        padding: 15px 10px 15px 25px;
-        height: 50px;
+      ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        font-size: $baseFontSize;
 
+        li {
+          padding: 15px 10px 15px 25px;
+          height: 50px;
+
+        }
       }
     }
+
+  }
+
+  .column-navigation-add {
+    background-color: $accentColor;
+    padding: 5px 0;
+    color: $white;
+    border-bottom-left-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+  }
+
+  .column-navigation-settings {
+    background-color: $grayLighter;
+    padding: 5px 0;
+    border-bottom-right-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
   }
 
 }
-
-.column-navigation-add {
-  background-color: $accentColor;
-  padding: 5px 0;
-  color: $white;
-  border-bottom-left-radius: 5px;
-  -webkit-border-bottom-left-radius: 5px;
-  -moz-border-radius-bottomleft: 5px;
-}
-
-.column-navigation-settings {
-  background-color: $grayLighter;
-  padding: 5px 0;
-  border-bottom-right-radius: 5px;
-  -webkit-border-bottom-right-radius: 5px;
-  -moz-border-radius-bottomright: 5px;
-}
-

@@ -54,30 +54,23 @@ define([], function() {
          * Renders basic structure (wrapper) of column navigation
          */
         render: function() {
-            var $add, $settings;
+            var $add, $settings, $wrapper;
 
-            // TODO
-            // wrapping container
+            $wrapper = this.sandbox.dom.$(this.template.wrapper());
+            this.sandbox.dom.append(this.$element, $wrapper);
 
             // navigation container
-            this.$columnContainer = this.sandbox.dom.$('<div/>');
-            this.sandbox.dom.addClass(this.$columnContainer, 'column-navigation');
-            this.sandbox.dom.css(this.$columnContainer, 'height', (this.options.wrapper.height + this.options.scrollBarWidth) + 'px');
-
-            this.sandbox.dom.append(this.$element, this.$columnContainer);
+            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer(this.options.wrapper.height + this.options.scrollBarWidth));
+            this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
-            this.$optionsContainer = this.sandbox.dom.$('<div id="column-navigation-options"/>');
-            this.sandbox.dom.addClass(this.$optionsContainer, 'options grid-row hidden');
-            this.sandbox.dom.css(this.$optionsContainer, 'width', this.options.column.width + 'px');
-
+            this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer(this.options.column.width));
             $add = this.sandbox.dom.$(this.template.options.add());
             $settings = this.sandbox.dom.$(this.template.options.settings());
-
             this.sandbox.dom.append(this.$optionsContainer, $add);
             this.sandbox.dom.append(this.$optionsContainer, $settings);
 
-            this.sandbox.dom.append(this.$element, this.$optionsContainer);
+            this.sandbox.dom.append($wrapper, this.$optionsContainer);
         },
 
         /**
@@ -242,6 +235,15 @@ define([], function() {
          * Templates for various parts
          */
         template : {
+
+            wrapper : function() {
+              return '<div class="column-navigation-wrapper"></div>';
+            },
+
+            columnContainer: function(height) {
+                return ['<div class="column-navigation" style="height:',height,'px"></div>'].join('');
+            },
+
             column : function (columnNumber, height, width){
                 return ['<div data-column="',columnNumber,'" class="column" id="column-',columnNumber,'" style="height:',height,'px; width: ',width,'px"><ul></ul></div>'].join('');
             },
@@ -267,6 +269,10 @@ define([], function() {
                 item.push('</span></li>');
 
                 return item.join('');
+            },
+
+            optionsContainer: function(width){
+                return ['<div class="options grid-row hidden" style="width:',width,'px"></div>'].join('');
             },
 
             options: {
