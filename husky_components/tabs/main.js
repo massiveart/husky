@@ -14,6 +14,7 @@
  *      - husky.tabs.<<instanceName>>.item.select - triggered when item was clicked
  *      - husky.tabs.<<instanceName>>.initialized - triggered when tabs have been initialized
  *
+ *  TODO select first (or with parameter) item after load
  *
  *****************************************************************************/
 
@@ -36,14 +37,17 @@ define(function() {
         },
 
         triggerSelectEvent = function(item) {
-            var instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
-            this.sandbox.emit('husky.tabs.' + instanceName + 'item.select', item);
+            this.sandbox.emit(getEventName.call(this, 'item.select'), item);
         },
 
         bindDOMEvents = function() {
             this.sandbox.dom.on(this.$el, 'click', selectItem.bind(this), 'li');
-        }
-        ;
+        },
+
+        getEventName = function(postFix) {
+            var instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
+            return 'husky.tabs.' + instanceName + postFix;
+        };
 
     return {
 
@@ -93,8 +97,7 @@ define(function() {
             }.bind(this));
 
             // initialization finished
-            var instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
-            this.sandbox.emit('husky.tabs.' + instanceName + 'initialized');
+            this.sandbox.emit(getEventName.call(this, 'initialized'));
         }
     };
 

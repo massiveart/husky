@@ -1,3 +1,5 @@
+// TODO initialized
+
 define(['husky'], function(husky) {
 
     'use strict';
@@ -16,7 +18,7 @@ define(['husky'], function(husky) {
                 '{"id":"529f1f5b7783e","title":"Contacts","url":"details","items":[' +
                     '{"title":"Details","action":"details","id":"529f1f5b777f1"},' +
                     '{"title":"Permissions","action":"permissions","id":"529f1f5b7782f"}' +
-                ']}'
+                    ']}'
             ]);
 
 
@@ -50,9 +52,9 @@ define(['husky'], function(husky) {
             fakeServer.restore();
 
             // check if any have failed
-            if(this.results_.failedCount > 0) {
+            if (this.results_.failedCount > 0) {
                 // if so, change the function which should move to the next test
-                jasmine.Queue.prototype.next_ = function () {
+                jasmine.Queue.prototype.next_ = function() {
                     // to instead skip to the end
                     this.onComplete();
                 };
@@ -66,8 +68,8 @@ define(['husky'], function(husky) {
          */
 
         /**
-            check if the tabs have been initialized by checking
-            if they appear in the dom
+         check if the tabs have been initialized by checking
+         if they appear in the dom
          */
         it('should have class tabs-container', function() {
             var $tabs = $('.tabs-container');
@@ -83,7 +85,7 @@ define(['husky'], function(husky) {
         });
 
         /**
-            check if number of list elements is 2
+         check if number of list elements is 2
          */
         it('should contain 2 objects', function() {
             var $tabs = $('.tabs-container ul li');
@@ -91,7 +93,7 @@ define(['husky'], function(husky) {
         });
 
         /**
-            check if first element was selected
+         check if first element was selected
          */
         it('first element should be selected', function() {
             var $listElement = $('.tabs-container ul li').eq(0);
@@ -107,7 +109,7 @@ define(['husky'], function(husky) {
         });
 
         /**
-             check title of element
+         check title of element
          */
         it('elements should have the correct title', function() {
             var $listElement = $('.tabs-container ul li a');
@@ -116,9 +118,8 @@ define(['husky'], function(husky) {
         });
 
 
-
         /**
-            check if data-id is set in dom
+         check if data-id is set in dom
          */
         it('list should contain data id', function() {
             var $listElements = $('.tabs-container ul li'),
@@ -128,16 +129,11 @@ define(['husky'], function(husky) {
             }
         });
 
-
-
-
         /**
          *
          * Dom-event related tests
          *
          */
-
-
 
         /**
          check if class is-selected is set on navigation-sub-item after click
@@ -149,8 +145,6 @@ define(['husky'], function(husky) {
             expect($items.eq(0).hasClass('is-selected')).toEqual(false);
         });
 
-
-
         /**
          *
          * Custom-event related tests
@@ -158,7 +152,7 @@ define(['husky'], function(husky) {
          */
 
         /**
-            check if select event is emitted
+         check if select event is emitted
          */
         it('should emmit select event after click on item', function() {
             var emitted = false;
@@ -179,6 +173,5 @@ define(['husky'], function(husky) {
                 expect(emitted).toBe(true);
             });
         });
-
     });
 });

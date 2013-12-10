@@ -23497,7 +23497,9 @@ define('__component__$search@husky',[], function() {
  *      -
  *  Triggers Events
  *      - husky.tabs.<<instanceName>>.item.select - triggered when item was clicked
+ *      - husky.tabs.<<instanceName>>.initialized - triggered when tabs have been initialized
  *
+ *  TODO select first (or with parameter) item after load
  *
  *****************************************************************************/
 
@@ -23506,28 +23508,31 @@ define('__component__$tabs@husky',[],function() {
     
 
     var defaults = {
-        url: null,
-        data: [],
-        instanceName: '',
-        preselect: true
-    },
+            url: null,
+            data: [],
+            instanceName: '',
+            preselect: true
+        },
 
-    selectItem = function(event) {
-        event.preventDefault();
-        this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
-        this.sandbox.dom.addClass(event.currentTarget, 'is-selected');
-        triggerSelectEvent.call(this, this.items[this.sandbox.dom.data(event.currentTarget, 'id')]);
-    },
+        selectItem = function(event) {
+            event.preventDefault();
+            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
+            this.sandbox.dom.addClass(event.currentTarget, 'is-selected');
+            triggerSelectEvent.call(this, this.items[this.sandbox.dom.data(event.currentTarget, 'id')]);
+        },
 
-    triggerSelectEvent = function(item) {
-        var instanceName = this.options.instanceName ? this.options.instanceName+'.':'';
-        this.sandbox.emit('husky.tabs.'+instanceName+'item.select', item);
-    },
+        triggerSelectEvent = function(item) {
+            this.sandbox.emit(getEventName.call(this, 'item.select'), item);
+        },
 
-    bindDOMEvents = function() {
-        this.sandbox.dom.on(this.$el,'click',selectItem.bind(this),'li');
-    }
-    ;
+        bindDOMEvents = function() {
+            this.sandbox.dom.on(this.$el, 'click', selectItem.bind(this), 'li');
+        },
+
+        getEventName = function(postFix) {
+            var instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
+            return 'husky.tabs.' + instanceName + postFix;
+        };
 
     return {
 
@@ -23573,11 +23578,11 @@ define('__component__$tabs@husky',[],function() {
                     selected = '';
                 }
                 this.items[item.id] = item;
-                this.sandbox.dom.append($list,'<li '+selected+' data-id="'+item.id+'"><a href="#">'+item.title+'</a></li>');
+                this.sandbox.dom.append($list, '<li ' + selected + ' data-id="' + item.id + '"><a href="#">' + item.title + '</a></li>');
             }.bind(this));
 
             // initialization finished
-            this.sandbox.emit('husky.tabs.initialized');
+            this.sandbox.emit(getEventName.call(this, 'initialized'));
         }
     };
 
