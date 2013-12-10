@@ -12,7 +12,140 @@ require(['lib/husky'], function (Husky) {
 
     fakeServer = sinon.fakeServer.create();
 
+    // first column
     fakeServer.respondWith('GET', '/nodes?depth=1', [200, { 'Content-Type': 'application/json' },
+        '{'+
+            '"_links" : {'+
+                '"self": "/nodes/0",'+
+                '"children" : "/nodes?parent=0&depth=1"'+
+            '},'+
+            '"_embedded": ['+
+                '{'+
+                    '"title": "Page 1",'+
+                    '"id": "1",'+
+                    '"hasSub": true,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/1",'+
+                        '"children" : "/nodes?parent=1&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "Page 2",'+
+                    '"id": "2",'+
+                    '"hasSub": true,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/2",'+
+                        '"children" : "/nodes?parent=2&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "Page 3",'+
+                    '"id": "3",'+
+                    '"hasSub": false,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/3",'+
+                        '"children" : "/nodes?parent=3&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "Page 4",'+
+                    '"id": "4",'+
+                    '"hasSub": false,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/4",'+
+                        '"children" : "/nodes?parent=4&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "Page 5",'+
+                    '"id": "5",'+
+                    '"hasSub": false,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/5",'+
+                        '"children" : "/nodes?parent=5&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "Page 6",'+
+                    '"id": "6",'+
+                    '"hasSub": false,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/6",'+
+                        '"children" : "/nodes?parent=6&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "Page 7",'+
+                    '"id": "7",'+
+                    '"hasSub": false,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/7",'+
+                        '"children" : "/nodes?parent=7&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "Page 8",'+
+                    '"id": "8",'+
+                    '"hasSub": true,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/8",'+
+                        '"children" : "/nodes?parent=8&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "Page 9",'+
+                    '"id": "9",'+
+                    '"hasSub": false,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/9",'+
+                        '"children" : "/nodes?parent=9&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '}'+
+            '],'+
+            '"title": "Root",'+
+            '"id": "0",'+
+            '"hasSub": true'+
+        '}'
+    ]);
+
+    // menu item 1 - second column
+    fakeServer.respondWith('GET', '/nodes?parent=1&depth=1', [200, { 'Content-Type': 'application/json' },
         '{'+
             '"_links" : {'+
                 '"self": "/nodes/1",'+
@@ -20,387 +153,419 @@ require(['lib/husky'], function (Husky) {
             '},'+
             '"_embedded": ['+
                 '{'+
-                    '"title": "I am an online folder",'+
-                    '"id": "121",'+
+                    '"title": "Page 1.1",'+
+                    '"id": "1.1",'+
                     '"hasSub": true,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/121",'+
-                        '"children" : "/nodes?parent=121&depth=1"'+
+                        '"self" : "/nodes/1.1",'+
+                        '"children" : "/nodes?parent=1.1&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "I am an offline folder",'+
-                    '"id": "122",'+
+                    '"title": "Page 1.2",'+
+                    '"id": "1.2",'+
                     '"hasSub": true,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/122",'+
-                        '"children" : "/nodes?parent=122&depth=1"'+
+                        '"self" : "/nodes/1.2",'+
+                        '"children" : "/nodes?parent=1.2&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "I am a folder you cant edit",'+
-                    '"id": "123",'+
+                    '"title": "Page 1.3",'+
+                    '"id": "1.3",'+
                     '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/123",'+
-                        '"children" : "/nodes?parent=123&depth=1"'+
+                        '"self" : "/nodes/1.3",'+
+                        '"children" : "/nodes?parent=1.3&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "I am a ghost folder",'+
-                    '"id": "124",'+
+                    '"title": "Page 1.4",'+
+                    '"id": "1.4",'+
                     '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/124",'+
-                        '"children" : "/nodes?parent=124&depth=1"'+
+                        '"self" : "/nodes/1.4",'+
+                        '"children" : "/nodes?parent=1.4&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "I am a shadow folder",'+
-                    '"id": "125",'+
+                    '"title": "Page 1.5",'+
+                    '"id": "1.5",'+
                     '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/125",'+
-                        '"children" : "/nodes?parent=125&depth=1"'+
+                        '"self" : "/nodes/1.5",'+
+                        '"children" : "/nodes?parent=1.5&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "I am a selected folder",'+
-                    '"id": "126",'+
+                    '"title": "Page 1.6",'+
+                    '"id": "1.6",'+
                     '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/126",'+
-                        '"children" : "/nodes?parent=126&depth=1"'+
+                        '"self" : "/nodes/1.6",'+
+                        '"children" : "/nodes?parent=1.6&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "I am a linked folder",'+
-                    '"id": "127",'+
+                    '"title": "Page 1.7",'+
+                    '"id": "1.7",'+
                     '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/127",'+
-                        '"children" : "/nodes?parent=127&depth=1"'+
+                        '"self" : "/nodes/1.7",'+
+                        '"children" : "/nodes?parent=1.7&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "Page 128",'+
-                    '"id": "128",'+
-                    '"hasSub": true,'+
-                    '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
-                    '"_links" : {'+
-                        '"self" : "/nodes/128",'+
-                        '"children" : "/nodes?parent=128&depth=1"'+
-                    '},'+
-                    '"_embedded": []'+
-                '},'+
-                '{'+
-                    '"title": "Page 129",'+
-                    '"id": "129",'+
+                    '"title": "Page 1.8",'+
+                    '"id": "1.8",'+
                     '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/129",'+
-                        '"children" : "/nodes?parent=129&depth=1"'+
+                        '"self" : "/nodes/1.8",'+
+                        '"children" : "/nodes?parent=1.8&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "Page 1.9",'+
+                    '"id": "1.9",'+
+                    '"hasSub": false,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/1.9",'+
+                        '"children" : "/nodes?parent=1.9&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '}'+
             '],'+
-            '"title": "Root",'+
+            '"title": "Page 1",'+
             '"id": "1",'+
-            '"hasSub": true'+
-        '}'
-    ]);
-
-    fakeServer.respondWith('GET', '/nodes?parent=121&depth=1', [200, { 'Content-Type': 'application/json' },
-        '{'+
-            '"_links" : {'+
-                '"self": "/nodes/121",'+
-                '"children" : "/nodes?parent=121&depth=1"'+
-            '},'+
-            '"_embedded": ['+
-                '{'+
-                    '"title": "I am an online folder 2",'+
-                    '"id": "221",'+
-                    '"hasSub": true,'+
-                    '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
-                    '"_links" : {'+
-                        '"self" : "/nodes/221",'+
-                        '"children" : "/nodes?parent=221&depth=1"'+
-                    '},'+
-                    '"_embedded": []'+
-                '},'+
-                '{'+
-                    '"title": "I am an offline folder 2",'+
-                    '"id": "222",'+
-                    '"hasSub": true,'+
-                    '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
-                    '"_links" : {'+
-                        '"self" : "/nodes/1222",'+
-                        '"children" : "/nodes?parent=222&depth=1"'+
-                    '},'+
-                    '"_embedded": []'+
-                '},'+
-                '{'+
-                    '"title": "I am a folder you cant edit 2",'+
-                    '"id": "223",'+
-                    '"hasSub": true,'+
-                    '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
-                    '"_links" : {'+
-                        '"self" : "/nodes/223",'+
-                        '"children" : "/nodes?parent=223&depth=1"'+
-                    '},'+
-                    '"_embedded": []'+
-                '},'+
-                '{'+
-                    '"title": "I am a ghost folder 2",'+
-                    '"id": "224",'+
-                    '"hasSub": true,'+
-                    '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
-                    '"_links" : {'+
-                        '"self" : "/nodes/224",'+
-                        '"children" : "/nodes?parent=224&depth=1"'+
-                    '},'+
-                    '"_embedded": []'+
-                '},'+
-                '{'+
-                    '"title": "I am a shadow folder 2",'+
-                    '"id": "225",'+
-                    '"hasSub": true,'+
-                    '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
-                    '"_links" : {'+
-                        '"self" : "/nodes/225",'+
-                        '"children" : "/nodes?parent=225&depth=1"'+
-                    '},'+
-                    '"_embedded": []'+
-                '},'+
-                '{'+
-                    '"title": "I am a selected folder 2",'+
-                    '"id": "226",'+
-                    '"hasSub": true,'+
-                    '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
-                    '"_links" : {'+
-                        '"self" : "/nodes/226",'+
-                        '"children" : "/nodes?parent=226&depth=1"'+
-                    '},'+
-                    '"_embedded": []'+
-                '},'+
-                '{'+
-                    '"title": "I am a linked folder 2",'+
-                    '"id": "227",'+
-                    '"hasSub": true,'+
-                    '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
-                    '"_links" : {'+
-                        '"self" : "/nodes/227",'+
-                        '"children" : "/nodes?parent=227&depth=1"'+
-                    '},'+
-                    '"_embedded": []'+
-                '},'+
-                '{'+
-                    '"title": "Page 228",'+
-                    '"id": "228",'+
-                    '"hasSub": true,'+
-                    '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
-                    '"_links" : {'+
-                        '"self" : "/nodes/228",'+
-                        '"children" : "/nodes?parent=228&depth=1"'+
-                    '},'+
-                    '"_embedded": []'+
-                '},'+
-                '{'+
-                    '"title": "Page 229",'+
-                    '"id": "229",'+
-                    '"hasSub": true,'+
-                    '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
-                    '"_links" : {'+
-                        '"self" : "/nodes/229",'+
-                        '"children" : "/nodes?parent=229&depth=1"'+
-                    '},'+
-                    '"_embedded": []'+
-                '}'+
-            '],'+
-            '"title": "I am an online folder",'+
-            '"id": "121",'+
             '"hasSub": true'+
             '}'
     ]);
 
-    fakeServer.respondWith('GET', '/nodes?parent=122&depth=1', [200, { 'Content-Type': 'application/json' },
+    // menu item 2 - second column
+    fakeServer.respondWith('GET', '/nodes?parent=2&depth=1', [200, { 'Content-Type': 'application/json' },
         '{'+
             '"_links" : {'+
-                '"self": "/nodes/122",'+
-                '"children" : "/nodes?parent=122&depth=1"'+
+                '"self": "/nodes/2",'+
+                '"children" : "/nodes?parent=2&depth=1"'+
             '},'+
             '"_embedded": ['+
                 '{'+
-                    '"title": "I am an online folder 2.2",'+
-                    '"id": "221.2",'+
+                    '"title": "Page 2.1",'+
+                    '"id": "2.1",'+
                     '"hasSub": true,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/221",'+
-                        '"children" : "/nodes?parent=221&depth=1"'+
+                        '"self" : "/nodes/2.1",'+
+                        '"children" : "/nodes?parent=2.1&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "I am an offline folder 2.2",'+
-                    '"id": "222.2",'+
+                    '"title": "Page 2.2",'+
+                    '"id": "2.2",'+
                     '"hasSub": true,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/1222",'+
-                        '"children" : "/nodes?parent=222&depth=1"'+
+                        '"self" : "/nodes/2.2",'+
+                        '"children" : "/nodes?parent=2.2&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "Im a folder you cant edit 2.2",'+
-                    '"id": "223.2",'+
+                    '"title": "Page 2.3",'+
+                    '"id": "2.3",'+
                     '"hasSub": true,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/223",'+
-                        '"children" : "/nodes?parent=223&depth=1"'+
+                        '"self" : "/nodes/2.3",'+
+                        '"children" : "/nodes?parent=2.3&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "I am a ghost folder 2.2",'+
-                    '"id": "224.2",'+
+                    '"title": "Page 2.4",'+
+                    '"id": "2.4",'+
                     '"hasSub": true,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/224",'+
-                        '"children" : "/nodes?parent=224&depth=1"'+
+                        '"self" : "/nodes/2.4",'+
+                        '"children" : "/nodes?parent=2.4&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "I am a shadow folder 2.2",'+
-                    '"id": "225.2",'+
+                    '"title": "Page 2.5",'+
+                    '"id": "2.5",'+
                     '"hasSub": true,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/225",'+
-                        '"children" : "/nodes?parent=225&depth=1"'+
+                        '"self" : "/nodes/2.5",'+
+                        '"children" : "/nodes?parent=2.5&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "I am a selected folder 2.2",'+
-                    '"id": "226.2",'+
+                    '"title": "Page 2.6",'+
+                    '"id": "2.6",'+
                     '"hasSub": true,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/226",'+
-                        '"children" : "/nodes?parent=226&depth=1"'+
+                        '"self" : "/nodes/2.6",'+
+                        '"children" : "/nodes?parent=2.6&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "I am a linked folder 2.2",'+
-                    '"id": "227.2",'+
+                    '"title": "Page 2.7",'+
+                    '"id": "2.7",'+
                     '"hasSub": true,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/227",'+
-                        '"children" : "/nodes?parent=227&depth=1"'+
+                        '"self" : "/nodes/2.7",'+
+                        '"children" : "/nodes?parent=2.7&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "Page 228.2",'+
-                    '"id": "228.2",'+
+                    '"title": "Page 2.8",'+
+                    '"id": "2.8",'+
                     '"hasSub": true,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/228",'+
-                        '"children" : "/nodes?parent=228&depth=1"'+
+                        '"self" : "/nodes/2.8",'+
+                        '"children" : "/nodes?parent=2.8&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '},'+
                 '{'+
-                    '"title": "Page 329.2",'+
-                    '"id": "229.2",'+
+                    '"title": "Page 2.9",'+
+                    '"id": "2.9",'+
                     '"hasSub": true,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
                     '"_links" : {'+
-                        '"self" : "/nodes/229",'+
-                        '"children" : "/nodes?parent=229&depth=1"'+
+                        '"self" : "/nodes/2.9",'+
+                        '"children" : "/nodes?parent=2.9&depth=1"'+
                     '},'+
                     '"_embedded": []'+
                 '}'+
             '],'+
-            '"title": "I am an offline folder 2",'+
-            '"id": "122",'+
+            '"title": "Page 2",'+
+            '"id": "2",'+
+            '"hasSub": true'+
+            '}'
+    ]);
+
+    // menu item 1.1 - third column
+    fakeServer.respondWith('GET', '/nodes?parent=1.1&depth=1', [200, { 'Content-Type': 'application/json' },
+        '{'+
+            '"_links" : {'+
+                '"self": "/nodes/1.1",'+
+                '"children" : "/nodes?parent=1.1&depth=1"'+
+            '},'+
+            '"_embedded": ['+
+                '{'+
+                '"title": "Page 1.1.1",'+
+                '"id": "1.1.1",'+
+                '"hasSub": false,'+
+                '"published":true,'+
+                '"linked": true,'+
+                '"type": "ghost",'+
+                '"_links" : {'+
+                '"self" : "/nodes/1.1.1",'+
+                '"children" : "/nodes?parent=1.1.1&depth=1"'+
+                '},'+
+                '"_embedded": []'+
+                '},'+
+                '{'+
+                '"title": "Page 1.1.2",'+
+                '"id": "1.1.2",'+
+                '"hasSub": false,'+
+                '"published":true,'+
+                '"linked": true,'+
+                '"type": "ghost",'+
+                '"_links" : {'+
+                '"self" : "/nodes/1.1.2",'+
+                '"children" : "/nodes?parent=222.3&depth=1"'+
+                '},'+
+                '"_embedded": []'+
+                '},'+
+                '{'+
+                '"title": "Page 1.1.3",'+
+                '"id": "1.1.3",'+
+                '"hasSub": true,'+
+                '"published":true,'+
+                '"linked": true,'+
+                '"type": "ghost",'+
+                '"_links" : {'+
+                '"self" : "/nodes/1.1.3",'+
+                '"children" : "/nodes?parent=1.1.3&depth=1"'+
+                '},'+
+                '"_embedded": []'+
+                '}'+
+            '],'+
+            '"title": "Page 1.1",'+
+            '"id": "1.1",'+
+            '"hasSub": true'+
+            '}'
+    ]);
+
+    // menu item 1.2 - third column
+    fakeServer.respondWith('GET', '/nodes?parent=1.2&depth=1', [200, { 'Content-Type': 'application/json' },
+        '{'+
+            '"_links" : {'+
+                '"self": "/nodes/1.2",'+
+                '"children" : "/nodes?parent=1.2&depth=1"'+
+            '},'+
+            '"_embedded": ['+
+                '{'+
+                    '"title": "Page 1.2.1",'+
+                    '"id": "1.2.1",'+
+                    '"hasSub": false,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                        '"self" : "/nodes/1.2.1",'+
+                        '"children" : "/nodes?parent=1.2.1&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                    '},'+
+                    '{'+
+                        '"title": "Page 1.2.2",'+
+                        '"id": "1.2.2",'+
+                        '"hasSub": false,'+
+                        '"published":true,'+
+                        '"linked": true,'+
+                        '"type": "ghost",'+
+                        '"_links" : {'+
+                            '"self" : "/nodes/1.2.2",'+
+                            '"children" : "/nodes?parent=1.2.2&depth=1"'+
+                        '},'+
+                        '"_embedded": []'+
+                    '},'+
+                    '{'+
+                        '"title": "Page 1.2.3",'+
+                        '"id": "1.2.3",'+
+                        '"hasSub": true,'+
+                        '"published":true,'+
+                        '"linked": true,'+
+                        '"type": "ghost",'+
+                        '"_links" : {'+
+                            '"self" : "/nodes/1.2.3",'+
+                            '"children" : "/nodes?parent=1.2.3&depth=1"'+
+                        '},'+
+                        '"_embedded": []'+
+                    '}'+
+            '],'+
+            '"title": "Page 1.2",'+
+            '"id": "1.2",'+
+            '"hasSub": true'+
+            '}'
+    ]);
+
+    // menu item 1.2.3 - fourth column
+    fakeServer.respondWith('GET', '/nodes?parent=1.2.3&depth=1', [200, { 'Content-Type': 'application/json' },
+        '{'+
+            '"_links" : {'+
+                '"self": "/nodes/1.2.3",'+
+                '"children" : "/nodes?parent=1.2.3&depth=1"'+
+            '},'+
+            '"_embedded": ['+
+                '{'+
+                    '"title": "Page 1.2.3.1",'+
+                    '"id": "1.2.3.1",'+
+                    '"hasSub": false,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                    '"self" : "/nodes/1.2.3.1",'+
+                    '"children" : "/nodes?parent=1.2.3.1&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "Page 1.2.3.2",'+
+                    '"id": "1.2.3.2",'+
+                    '"hasSub": false,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                    '"self" : "/nodes/222.4",'+
+                    '"children" : "/nodes?parent=1.2.3.2&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '},'+
+                '{'+
+                    '"title": "Page 1.2.3.3",'+
+                    '"id": "1.2.3.3",'+
+                    '"hasSub": true,'+
+                    '"published":true,'+
+                    '"linked": true,'+
+                    '"type": "ghost",'+
+                    '"_links" : {'+
+                    '"self" : "/nodes/1.2.3.3",'+
+                    '"children" : "/nodes?parent=1.2.3.3&depth=1"'+
+                    '},'+
+                    '"_embedded": []'+
+                '}'+
+            '],'+
+            '"title": "Page 1.2.3",'+
+            '"id": "1.2.3",'+
             '"hasSub": true'+
             '}'
     ]);
