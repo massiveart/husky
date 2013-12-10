@@ -217,7 +217,7 @@ require(['lib/husky'], function (Husky) {
                 '},'+
                 '{'+
                     '"title": "I am a selected folder 2",'+
-                    '"id": "1226",'+
+                    '"id": "226",'+
                     '"hasSub": true,'+
                     '"published":true,'+
                     '"linked": true,'+

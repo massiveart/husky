@@ -39,7 +39,7 @@ define([], function() {
             this.columns = [];
 
             this.render();
-            this.load(this.options.url, null);
+            this.load(this.options.url, 0);
             this.bindDOMEvents();
 
         },
@@ -92,6 +92,9 @@ define([], function() {
          * Parses the received data and renders first column
          */
         parseData: function(data, columnNumber){
+            var $column,
+                $list,
+                newColumn;
 
             this.data = {};
             this.data.links = data._links;
@@ -100,27 +103,30 @@ define([], function() {
             this.data.id = data.id;
             this.data.hasSub = data.hasSub;
 
-            this.storeData(data, columnNumber);
 
-            if (!columnNumber && !this.columns[columnNumber]){  // case 1: no elements in container
+            if (columnNumber === 0){  // case 1: no elements in container
 
-                var $column,
-                    $list;
-
-                $column = this.sandbox.dom.$(this.template.column('1', this.options.wrapper.height));
-                $list = this.sandbox.dom.find('ul', $column);
-
-                this.sandbox.util.each(this.data.embedded, function(index,value){
-                    this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(value)));
-                }.bind(this));
-
-                this.sandbox.dom.append(this.$container, $column);
-
+                this.columns[0] = [];
+                this.columns[0][data.id] = data;
+                newColumn = 1;
 
             } else { // case 2: columns in container replace level after clicked column and clear following levels
-                this.sandbox.logger.log("not yet implemented!");
-                // TODO
+
+                // TODO remove from dom
+                // TODO remove old data
+                newColumn = columnNumber + 1;
+
             }
+
+            $column = this.sandbox.dom.$(this.template.column(newColumn , this.options.wrapper.height));
+            $list = this.sandbox.dom.find('ul', $column);
+
+            this.sandbox.util.each(this.data.embedded, function(index,value){
+                this.storeDataItem(newColumn, value);
+                this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(value)));
+            }.bind(this));
+
+            this.sandbox.dom.append(this.$container, $column);
 
         },
 
@@ -129,21 +135,13 @@ define([], function() {
          * @param data
          * @param columnNumber
          */
-        storeData: function(data, columnNumber) {
-            if(!columnNumber) {
+        storeDataItem: function(columnNumber, item) {
 
-                this.columns[0] = [];
-                this.columns[0][data.id] = data;
-                this.columns[1] = [];
-
-                this.sandbox.util.each(this.data.embedded, function(index,value){
-                    this.columns[1][value.id] = value;
-                }.bind(this));
-
-            } else {
-                // TODO
-                this.sandbox.logger.log("not yet implemented!");
+            if (!this.columns[columnNumber]) {
+                this.columns[columnNumber] = [];
             }
+
+            this.columns[columnNumber][item.id] = item;
 
         },
 
@@ -179,7 +177,7 @@ define([], function() {
 
         template : {
             column : function (columnNumber, height){
-                return ['<div class="column pull-left" style="height:',height,'"><ul id="column-',columnNumber,'" data-column="',columnNumber,'"></ul></div>'].join('');
+                return ['<div class="column pull-left" id="column-',columnNumber,'" style="height:',height,'"><ul data-column="',columnNumber,'"></ul></div>'].join('');
             },
 
             item : function (data){
