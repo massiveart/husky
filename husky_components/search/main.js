@@ -17,7 +17,7 @@
  *
  * Triggers Events:
  *  husky.search.<<instanceName>> , string  - triggered when search is performed - returns the searchstring
- *  husky.search.initialized - triggered when search is initialized
+ *  husky.search.<<instanceName>>.initialized - triggered when search is initialized
  *
  */
 
@@ -37,10 +37,6 @@ define([], function() {
             appearance: 'gray'
         };
 
-
-
-
-
     return {
 
         initialize: function() {
@@ -51,7 +47,8 @@ define([], function() {
 
             this.bindDOMEvents();
 
-            this.sandbox.emit('husky.search.initialized');
+            var instanceName = this.options.instanceName ? this.options.instanceName+'.' : '';
+            this.sandbox.emit('husky.search.'+instanceName+'initialized');
 
         },
 
@@ -72,8 +69,7 @@ define([], function() {
         },
 
         checkEnterPressed: function(event) {
-            if(event.keyCode === 13)
-            {
+            if (event.keyCode === 13) {
                 this.submitSearch();
             }
         },
@@ -102,7 +98,7 @@ define([], function() {
 
             var event = 'husky.search';
             if (this.options.instanceName) {
-                event += '.'+this.options.instanceName;
+                event += '.' + this.options.instanceName;
             }
 
             // trigger sandbox event

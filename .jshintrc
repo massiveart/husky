@@ -12,7 +12,8 @@
         "afterEach": false,
         "sinon": false,
         "runs": false,
-        "waitsFor": false
+        "waitsFor": false,
+        "jasmine": false
     },
     "bitwise": true,
     "camelcase": true,
