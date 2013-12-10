@@ -111,8 +111,7 @@ define([], function() {
         parseData: function(data, columnNumber){
             var $column,
                 $list,
-                newColumn,
-                i;
+                newColumn;
 
             this.data = {};
             this.data.links = data._links;
