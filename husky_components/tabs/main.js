@@ -14,6 +14,7 @@
  *      - husky.tabs.<<instanceName>>.item.select [item] - triggered when item was clicked
  *      - husky.tabs.<<instanceName>>.initialized [selectedItem]- triggered when tabs have been initialized
  *
+ *  TODO select first (or with parameter) item after load
  *
  *****************************************************************************/
 
@@ -86,7 +87,7 @@ define(function() {
 
             var $element = this.sandbox.dom.createElement('<div class="tabs-container"></div>'),
                 $list = this.sandbox.dom.createElement('<ul/>'),
-                selected = '', selectedItem;
+                selected = '', selectedItem = null;
 
             this.sandbox.dom.append(this.$el, $element);
             this.sandbox.dom.append($element, $list);
