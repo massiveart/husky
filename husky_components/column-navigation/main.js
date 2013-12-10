@@ -56,20 +56,20 @@ define([], function() {
         render: function() {
             var $add, $settings;
 
-
+            // TODO
+            // wrapping container
 
             // navigation container
             this.$columnContainer = this.sandbox.dom.$('<div/>');
             this.sandbox.dom.addClass(this.$columnContainer, 'column-navigation');
-            this.sandbox.dom.css(this.$columnContainer, 'height', (this.options.wrapper.height+this.options.scrollBarWidth)+'px');
+            this.sandbox.dom.css(this.$columnContainer, 'height', (this.options.wrapper.height + this.options.scrollBarWidth) + 'px');
 
             this.sandbox.dom.append(this.$element, this.$columnContainer);
-
 
             // options container - add and settings button
             this.$optionsContainer = this.sandbox.dom.$('<div id="column-navigation-options"/>');
             this.sandbox.dom.addClass(this.$optionsContainer, 'options grid-row hidden');
-            this.sandbox.dom.css(this.$optionsContainer, 'width', this.options.column.width+'px');
+            this.sandbox.dom.css(this.$optionsContainer, 'width', this.options.column.width + 'px');
 
             $add = this.sandbox.dom.$(this.template.options.add());
             $settings = this.sandbox.dom.$(this.template.options.settings());
@@ -85,7 +85,7 @@ define([], function() {
          */
         load: function(url, columnNumber) {
 
-            if(!!url) {
+            if (!!url) {
 
                 this.sandbox.util.ajax({
 
@@ -93,7 +93,7 @@ define([], function() {
 
                     error: function(jqXHR, textStatus, errorThrown) {
                         this.sandbox.logger.log("An error occured while fetching data from: " + this.options.url);
-                        this.sandbox.logger.log("errorthrown",errorThrown.message);
+                        this.sandbox.logger.log("errorthrown", errorThrown.message);
                     }.bind(this),
 
                     success: function(response) {
@@ -104,7 +104,7 @@ define([], function() {
                     }.bind(this)
                 });
             } else {
-                this.sandbox.logger.log("husky.column.navigation - invalid url, aborted loading of data");
+                this.sandbox.logger.log("husky.column.navigation -  url not set, aborted loading of data");
             }
         },
 
@@ -112,23 +112,21 @@ define([], function() {
          * Removes removes data and removes dom elements
          * @param newColumn
          */
-        removeColumns: function(newColumn){
+        removeColumns: function(newColumn) {
 
-            // remove old data and remove old dom elements
-            var length = this.columns.length -1,
+            var length = this.columns.length - 1,
                 i;
 
-            for(i = length; i >= newColumn; i--){
+            for (i = length; i >= newColumn; i--) {
                 delete this.columns[i];
-                this.sandbox.dom.remove('#column-'+i);
+                this.sandbox.dom.remove('#column-' + i);
             }
-
         },
 
         /**
          * Parses the received data and renders columns
          */
-        parseData: function(data, columnNumber){
+        parseData: function(data, columnNumber) {
             var $column,
                 $list,
                 newColumn;
@@ -140,22 +138,18 @@ define([], function() {
             this.data.id = data.id;
             this.data.hasSub = data.hasSub;
 
-            if (columnNumber === 0){  // case 1: no elements in container
-
+            if (columnNumber === 0) {  // case 1: no elements in container
                 this.columns[0] = [];
                 this.columns[0][data.id] = data;
                 newColumn = 1;
-
             } else { // case 2: columns in container replace level after clicked column and clear following levels
-
                 newColumn = columnNumber + 1;
-
             }
 
-            $column = this.sandbox.dom.$(this.template.column(newColumn , this.options.wrapper.height));
+            $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.wrapper.height));
             $list = this.sandbox.dom.find('ul', $column);
 
-            this.sandbox.util.each(this.data.embedded, function(index,value){
+            this.sandbox.util.each(this.data.embedded, function(index, value) {
                 this.storeDataItem(newColumn, value);
                 this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width - this.options.scrollBarWidth, value)));
             }.bind(this));
@@ -174,42 +168,31 @@ define([], function() {
             if (!this.columns[columnNumber]) {
                 this.columns[columnNumber] = [];
             }
-
             this.columns[columnNumber][item.id] = item;
 
         },
 
 
-        bindDOMEvents: function(){
+        bindDOMEvents: function() {
             this.sandbox.dom.on(this.$el, 'click', this.itemSelected.bind(this), 'li');
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
-            //this.sandbox.dom.on(this.$el, 'mouseleave', this.hideOptions.bind(this), '.column, #column-navigation-options');
-
             this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#column-navigation-add');
             this.sandbox.dom.on(this.$el, 'click', this.toggleSettings.bind(this), '#column-navigation-settings');
 
         },
 
-        showOptions: function(event){
-            this.lastHoveredColumn = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget),'column');
+        showOptions: function(event) {
+            this.lastHoveredColumn = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget), 'column');
             this.sandbox.dom.show(this.$optionsContainer);
-            this.sandbox.dom.css(this.$optionsContainer, 'margin-left', ((this.lastHoveredColumn-1)*this.options.column.width)+'px');
-//            this.sandbox.logger.log("hovered: ", ((column-1)*this.options.column.width)+'px');
+            this.sandbox.dom.css(this.$optionsContainer, 'margin-left', ((this.lastHoveredColumn - 1) * this.options.column.width) + 'px');
         },
-
-//        hideOptions: function(event){
-//            this.sandbox.logger.log("hovered: ", event.currentTarget.offsetLeft);
-//            this.sandbox.dom.css(this.$optionsContainer, 'margin-left', 0);
-//            this.sandbox.dom.hide(this.$optionsContainer);
-//        },
-
 
 
         /**
          * Item was selected and data will be loaded if has sub
          * @param event
          */
-        itemSelected: function(event){
+        itemSelected: function(event) {
 
             // TODO
             // css
@@ -221,21 +204,19 @@ define([], function() {
                 length = this.selected.length - 1,
                 i;
 
-            if(!!selectedItem) {
+            if (!!selectedItem) {
 
                 // remove old elements from breadcrumb
-                for(i = length; i >= column; i--){
+                for (i = length; i >= column; i--) {
                     delete this.selected[i];
                 }
 
                 // add element to breadcrumb
                 this.selected[column] = selectedItem;
-
-                this.sandbox.logger.log('Breadcrumb: ', this.selected);
                 this.sandbox.emit('husky.column.navigation.selected', selectedItem);
 
-                if(!!selectedItem.hasSub) {
-                    this.removeColumns(column +1);
+                if (!!selectedItem.hasSub) {
+                    this.removeColumns(column + 1);
                     this.load(selectedItem._links.children, column);
                 }
             }
@@ -250,13 +231,16 @@ define([], function() {
         },
 
         /**
-         * Shows or thides the settings dropdown
+         * Shows or hides the settings dropdown
          */
         toggleSettings: function() {
             var parent = this.selected[this.lastHoveredColumn-1] || null;
             this.sandbox.emit('husky.column.navigation.settings', parent);
         },
 
+        /**
+         * Templates for various parts
+         */
         template : {
             column : function (columnNumber, height, width){
                 return ['<div data-column="',columnNumber,'" class="column" id="column-',columnNumber,'" style="height:',height,'px; width: ',width,'px"><ul></ul></div>'].join('');
@@ -287,18 +271,15 @@ define([], function() {
 
             options: {
                 add : function (){
-
                     return ['<div id="column-navigation-add" class="align-center grid-col-6 column-navigation-add pointer">' +
                                 '<span class="icon-add"></span>' +
                             '</div>'].join('');
-
                 },
-                settings : function() {
 
+                settings : function() {
                     return ['<div id="column-navigation-settings" class="align-center grid-col-6 column-navigation-settings pointer">' +
                                 '<span class="icon-cogwheel"></span>' +
                              '</div>'].join('');
-
                 }
             }
         }
