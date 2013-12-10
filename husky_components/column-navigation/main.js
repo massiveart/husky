@@ -37,6 +37,7 @@ define([], function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.columns = [];
+            this.selected = [];
 
             this.render();
             this.load(this.options.url, 0);
@@ -120,7 +121,6 @@ define([], function() {
             this.data.id = data.id;
             this.data.hasSub = data.hasSub;
 
-
             if (columnNumber === 0){  // case 1: no elements in container
 
                 this.columns[0] = [];
@@ -173,22 +173,42 @@ define([], function() {
         itemSelected: function(event){
 
             // TODO
-            // select element - deselect old in same column if set
-            // remove old subcolumns
-            // reload
-            // add new columns
+            // css
 
             var $target = this.sandbox.dom.$(event.currentTarget),
                 id = this.sandbox.dom.data($target, 'id'),
                 column = this.sandbox.dom.data(this.sandbox.dom.parent($target), 'column'),
-                selectedItem = this.columns[column][id];
+                selectedItem = this.columns[column][id],
+                length = this.selected.length - 1,
+                i;
 
-            this.sandbox.emit('husky.column.navigation.selected', selectedItem);
+            if(!!selectedItem) {
 
-            if(!!selectedItem && !!selectedItem.hasSub) {
-                this.removeColumns(column +1);
-                this.load(selectedItem._links.children, column);
+                // remove old elements from breadcrumb
+                for(i = length; i >= column; i--){
+                    delete this.selected[i];
+                }
+
+                // add element to breadcrumb
+                this.selected[column] = selectedItem;
+
+                this.sandbox.logger.log('Breadcrumb: ', this.selected);
+                this.sandbox.emit('husky.column.navigation.selected', selectedItem);
+
+                if(!!selectedItem.hasSub) {
+                    this.removeColumns(column +1);
+                    this.load(selectedItem._links.children, column);
+                }
             }
+        },
+
+        /**
+         * Emits an add event
+         */
+        addNode: function(column){
+
+            var parent = this.selected[column-1];
+            this.sandbox.dom.emit('husky.column.navigation.add', parent);
         },
 
         template : {
@@ -206,13 +226,15 @@ define([], function() {
                 // TODO
                 // is editable, is selected, is ghost
 
+                // text
                 item.push('<span class="column-navigation-item-text pull-left">',data.title,'</span>');
 
-                if(!!data.hasSub) {
-                    item.push('<span class="column-navigation-item-icons-right pull-right">',
-                        '<span class="icon-chevron-right"></span>',
-                        '</span></li>');
-                }
+
+                // icons right (subpage, edit)
+                item.push('<span class="column-navigation-item-icons-right pull-right">');
+//                item.push('<span class="icon-chevron-right"></span>');
+                !!data.hasSub ? item.push('<span class="icon-chevron-right"></span>') : '';
+                item.push('</span></li>');
 
                 return item.join('');
             }
