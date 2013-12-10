@@ -4332,23 +4332,41 @@ a.btn-black {
 }
 /* line 8, ../scss/modules/column-navigation.scss */
 .column-navigation .column {
-  width: 250px;
   border-right: 1px solid #cccccc;
   overflow-y: scroll;
   overflow-x: hidden;
   display: inline-block;
 }
-/* line 15, ../scss/modules/column-navigation.scss */
+/* line 14, ../scss/modules/column-navigation.scss */
 .column-navigation .column ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
-/* line 20, ../scss/modules/column-navigation.scss */
+/* line 19, ../scss/modules/column-navigation.scss */
 .column-navigation .column ul li {
   width: 235px;
   padding: 15px 10px 15px 25px;
   height: 50px;
+}
+
+/* line 30, ../scss/modules/column-navigation.scss */
+.column-navigation-add {
+  background-color: #009fc0;
+  padding: 5px 0;
+  color: white;
+  border-bottom-left-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+}
+
+/* line 39, ../scss/modules/column-navigation.scss */
+.column-navigation-settings {
+  background-color: #cccccc;
+  padding: 5px 0;
+  border-bottom-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
 }
 
 /* line 1, ../scss/modules/dropdown-multiple-select.scss */

@@ -6,7 +6,6 @@
   white-space: nowrap;
 
   .column {
-    width: 250px;
     border-right: 1px solid $grayLighter;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -26,4 +25,21 @@
     }
   }
 
+}
+
+.column-navigation-add {
+  background-color: $accentColor;
+  padding:5px 0;
+  color: $white;
+  border-bottom-left-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+}
+
+.column-navigation-settings {
+  background-color: $grayLighter;
+  padding:5px 0;
+  border-bottom-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
 }
