@@ -170,6 +170,10 @@ define([], function() {
 
         bindDOMEvents: function() {
             this.sandbox.dom.on(this.$el, 'click', this.itemSelected.bind(this), 'li');
+
+            this.sandbox.dom.on(this.$el, 'mouseenter', this.itemMouseEnter.bind(this), 'li');
+            this.sandbox.dom.on(this.$el, 'mouseleave', this.itemMouseLeave.bind(this), 'li');
+
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
             this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#column-navigation-add');
             this.sandbox.dom.on(this.$el, 'click', this.toggleSettings.bind(this), '#column-navigation-settings');
@@ -178,6 +182,16 @@ define([], function() {
 
         bindCustomEvents: function(){
             this.sandbox.on('husky.column.navigation.get-breadcrumb', this.getBreadCrumb.bind(this));
+        },
+
+        itemMouseEnter: function(event){
+            var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
+            this.sandbox.dom.toggle($edit);
+        },
+
+        itemMouseLeave: function(event){
+            var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
+            this.sandbox.dom.toggle($edit);
         },
 
         getBreadCrumb: function(callback){
@@ -285,13 +299,13 @@ define([], function() {
                 // is editable, is selected, is ghost
 
                 // text
-                item.push('<span class="column-navigation-item-text pull-left">',data.title,'</span>');
+                item.push('<span class="item-text pull-left">',data.title,'</span>');
 
 
                 // icons right (subpage, edit)
                 item.push('<span class="column-navigation-item-icons-right pull-right">');
-                item.push('<span class="icon-edit-pen edit highlighted"></span>');
-                !!data.hasSub ? item.push('<span class="icon-chevron-right"></span>') : '';
+                item.push('<span class="icon-edit-pen edit hidden"></span>');
+                !!data.hasSub ? item.push('<span class="icon-chevron-right arrow"></span>') : '';
                 item.push('</span></li>');
 
                 return item.join('');
@@ -303,13 +317,13 @@ define([], function() {
 
             options: {
                 add : function (){
-                    return ['<div id="column-navigation-add" class="align-center grid-col-6 column-navigation-add pointer">' +
+                    return ['<div id="column-navigation-add" class="align-center grid-col-6 add pointer">' +
                                 '<span class="icon-add"></span>' +
                             '</div>'].join('');
                 },
 
                 settings : function() {
-                    return ['<div id="column-navigation-settings" class="align-center grid-col-6 column-navigation-settings pointer">' +
+                    return ['<div id="column-navigation-settings" class="align-center grid-col-6 settings pointer">' +
                                 '<span class="icon-cogwheel"></span>' +
                              '</div>'].join('');
                 }

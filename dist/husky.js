@@ -25233,10 +25233,11 @@ define('__component__$password-fields@husky',[], function() {
  *
  * Emits:
  *  husky.column.navigation.data.loaded
- *  husky.column.navigation.selected
- *  husky.column.navigation.add
+ *  husky.column.navigation.selected[item]
+ *  husky.column.navigation.add[parent]
  *
  * Listens:
+ * husky.column.navigation.get-breadcrumb[callback]
  */
 
 // TODO
@@ -25269,6 +25270,7 @@ define('__component__$column-navigation@husky',[], function() {
             this.render();
             this.load(this.options.url, 0);
             this.bindDOMEvents();
+            this.bindCustomEvents();
 
         },
 
@@ -25390,11 +25392,28 @@ define('__component__$column-navigation@husky',[], function() {
 
         bindDOMEvents: function() {
             this.sandbox.dom.on(this.$el, 'click', this.itemSelected.bind(this), 'li');
+            this.sandbox.dom.on(this.$el, 'mouseover', this.itemHover.bind(this), 'li');
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
             this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#column-navigation-add');
             this.sandbox.dom.on(this.$el, 'click', this.toggleSettings.bind(this), '#column-navigation-settings');
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
+        },
 
+        bindCustomEvents: function(){
+            this.sandbox.on('husky.column.navigation.get-breadcrumb', this.getBreadCrumb.bind(this));
+        },
+
+        itemHover: function(event){
+            var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
+            this.sandbox.dom.toggle($edit);
+        },
+
+        getBreadCrumb: function(callback){
+            if(typeof callback === 'function') {
+                callback(this.selected);
+            } else {
+                this.sandbox.logger.log("callback is not a function");
+            }
         },
 
         showOptions: function(event) {
@@ -25494,13 +25513,13 @@ define('__component__$column-navigation@husky',[], function() {
                 // is editable, is selected, is ghost
 
                 // text
-                item.push('<span class="column-navigation-item-text pull-left">',data.title,'</span>');
+                item.push('<span class="item-text pull-left">',data.title,'</span>');
 
 
                 // icons right (subpage, edit)
                 item.push('<span class="column-navigation-item-icons-right pull-right">');
-                item.push('<span class="icon-edit-pen edit highlighted"></span>');
-                !!data.hasSub ? item.push('<span class="icon-chevron-right"></span>') : '';
+                item.push('<span class="icon-edit-pen edit hidden"></span>');
+                !!data.hasSub ? item.push('<span class="icon-chevron-right arrow"></span>') : '';
                 item.push('</span></li>');
 
                 return item.join('');
@@ -25512,13 +25531,13 @@ define('__component__$column-navigation@husky',[], function() {
 
             options: {
                 add : function (){
-                    return ['<div id="column-navigation-add" class="align-center grid-col-6 column-navigation-add pointer">' +
+                    return ['<div id="column-navigation-add" class="align-center grid-col-6 add pointer">' +
                                 '<span class="icon-add"></span>' +
                             '</div>'].join('');
                 },
 
                 settings : function() {
-                    return ['<div id="column-navigation-settings" class="align-center grid-col-6 column-navigation-settings pointer">' +
+                    return ['<div id="column-navigation-settings" class="align-center grid-col-6 settings pointer">' +
                                 '<span class="icon-cogwheel"></span>' +
                              '</div>'].join('');
                 }
@@ -26106,7 +26125,7 @@ define('husky_extensions/collection',[],function() {
                 return $(selector).show();
             };
 
-            app.core.dom.h = function(selector) {
+            app.core.dom.toggle= function(selector) {
                 return $(selector).toggle();
             };
 

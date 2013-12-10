@@ -4359,8 +4359,25 @@ a.btn-black {
   padding: 15px 10px 15px 25px;
   height: 50px;
 }
-/* line 34, ../scss/modules/column-navigation.scss */
-.column-navigation-wrapper .column-navigation-add {
+/* line 32, ../scss/modules/column-navigation.scss */
+.column-navigation-wrapper .column-navigation .item-text {
+  padding-top: 2px;
+}
+/* line 36, ../scss/modules/column-navigation.scss */
+.column-navigation-wrapper .column-navigation .edit {
+  margin-right: 5px;
+  background-color: #009fc0;
+  padding: 5px 10px;
+  font-size: 10px;
+  color: white;
+  border-radius: 3px;
+}
+/* line 45, ../scss/modules/column-navigation.scss */
+.column-navigation-wrapper .column-navigation .arrow {
+  vertical-align: middle;
+}
+/* line 51, ../scss/modules/column-navigation.scss */
+.column-navigation-wrapper .add {
   background-color: #009fc0;
   padding: 5px 0;
   color: white;
@@ -4368,8 +4385,8 @@ a.btn-black {
   -webkit-border-bottom-left-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
 }
-/* line 43, ../scss/modules/column-navigation.scss */
-.column-navigation-wrapper .column-navigation-settings {
+/* line 60, ../scss/modules/column-navigation.scss */
+.column-navigation-wrapper .settings {
   background-color: #cccccc;
   padding: 5px 0;
   border-bottom-right-radius: 5px;

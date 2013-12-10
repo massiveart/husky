@@ -237,7 +237,7 @@
                 return $(selector).show();
             };
 
-            app.core.dom.h = function(selector) {
+            app.core.dom.toggle= function(selector) {
                 return $(selector).toggle();
             };
 

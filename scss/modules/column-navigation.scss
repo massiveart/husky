@@ -29,9 +29,26 @@
       }
     }
 
+    .item-text {
+      padding-top: 2px;
+    }
+
+    .edit {
+      margin-right: 5px;
+      background-color: $accentColor;
+      padding: 5px 10px;
+      font-size: 10px;
+      color: $white;
+      border-radius: 3px;
+    }
+
+    .arrow {
+      vertical-align: middle;
+    }
+
   }
 
-  .column-navigation-add {
+  .add {
     background-color: $accentColor;
     padding: 5px 0;
     color: $white;
@@ -40,7 +57,7 @@
     -moz-border-radius-bottomleft: 5px;
   }
 
-  .column-navigation-settings {
+  .settings {
     background-color: $grayLighter;
     padding: 5px 0;
     border-bottom-right-radius: 5px;
