@@ -3,11 +3,14 @@
   border: 1px solid $grayLighter;
   overflow-x: scroll;
   overflow-y: hidden;
+  white-space: nowrap;
 
   .column {
     width: 250px;
     border-right: 1px solid $grayLighter;
     overflow-y: scroll;
+    overflow-x: hidden;
+    display:inline-block;
 
     ul {
       list-style-type: none;

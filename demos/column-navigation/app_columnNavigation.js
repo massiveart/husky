@@ -287,7 +287,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "Page 2.1",'+
                     '"id": "2.1",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
@@ -300,7 +300,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "Page 2.2",'+
                     '"id": "2.2",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
@@ -313,7 +313,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "Page 2.3",'+
                     '"id": "2.3",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
@@ -326,7 +326,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "Page 2.4",'+
                     '"id": "2.4",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
@@ -339,7 +339,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "Page 2.5",'+
                     '"id": "2.5",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
@@ -352,7 +352,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "Page 2.6",'+
                     '"id": "2.6",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
@@ -365,7 +365,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "Page 2.7",'+
                     '"id": "2.7",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
@@ -378,7 +378,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "Page 2.8",'+
                     '"id": "2.8",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
@@ -391,7 +391,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "Page 2.9",'+
                     '"id": "2.9",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": true,'+
                     '"type": "ghost",'+
@@ -445,7 +445,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                 '"title": "Page 1.1.3",'+
                 '"id": "1.1.3",'+
-                '"hasSub": true,'+
+                '"hasSub": false,'+
                 '"published":true,'+
                 '"linked": true,'+
                 '"type": "ghost",'+

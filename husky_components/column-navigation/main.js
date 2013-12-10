@@ -193,7 +193,7 @@ define([], function() {
 
         template : {
             column : function (columnNumber, height){
-                return ['<div class="column pull-left" id="column-',columnNumber,'" style="height:',height,'"><ul data-column="',columnNumber,'"></ul></div>'].join('');
+                return ['<div class="column" id="column-',columnNumber,'" style="height:',height,'"><ul data-column="',columnNumber,'"></ul></div>'].join('');
             },
 
             item : function (data){
