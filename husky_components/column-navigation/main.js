@@ -154,7 +154,7 @@ define([], function() {
 
             this.sandbox.util.each(this.data.embedded, function(index,value){
                 this.storeDataItem(newColumn, value);
-                this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(value)));
+                this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width - this.options.scrollBarWidth, value)));
             }.bind(this));
 
             this.sandbox.dom.append(this.$container, $column);
@@ -182,19 +182,21 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column, #column-navigation-options');
             this.sandbox.dom.on(this.$el, 'mouseleave', this.hideOptions.bind(this), '.column, #column-navigation-options');
 
-            // click on add
-            // click on settings
+            this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#column-navigation-add');
+            this.sandbox.dom.on(this.$el, 'click', this.toggleSettings.bind(this), '#column-navigation-settings');
 
         },
 
         showOptions: function(event){
             var column = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget),'column');
             this.sandbox.dom.show(this.$options);
-            this.sandbox.dom.css(this.$options, 'margin-left', column*(this.options.wrapper.width+this.options.scrollBarWidth)+'px');
+            this.sandbox.dom.css(this.$options, 'margin-left', ((column-1)*this.options.column.width)+'px');
+            this.sandbox.logger.log("hovered: ", (column*this.options.column.width)+'px');
         },
 
         hideOptions: function(event){
             this.sandbox.logger.log("hovered: ", event.currentTarget.offsetLeft);
+            this.sandbox.dom.css(this.$options, 'margin-left', 0);
             this.sandbox.dom.hide(this.$options);
         },
 
@@ -239,10 +241,18 @@ define([], function() {
         /**
          * Emits an add event
          */
-        addNode: function(column){
+        addNode: function(event){
 
-            var parent = this.selected[column-1];
+            var column = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget), 'column'),
+                parent = this.selected[column-1];
             this.sandbox.dom.emit('husky.column.navigation.add', parent);
+        },
+
+        /**
+         * Shows or thides the settings dropdown
+         */
+        toggleSettings: function() {
+            this.sandbox.dom.emit('husky.column.navigation.settings');
         },
 
         template : {
@@ -250,9 +260,9 @@ define([], function() {
                 return ['<div data-column="',columnNumber,'" class="column" id="column-',columnNumber,'" style="height:',height,'px; width: ',width,'px"><ul></ul></div>'].join('');
             },
 
-            item : function (data){
+            item : function (width, data){
 
-                var item = ['<li data-id="',data.id,'" class="pointer">'];
+                var item = ['<li data-id="',data.id,'" class="pointer" style="width:',width,'px">'];
 
                 // TODO
                 // has status (online, offline, ghost, shadow, linked)
