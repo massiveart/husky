@@ -4335,21 +4335,23 @@ a.btn-black {
   overflow-y: scroll;
   overflow-x: hidden;
   display: inline-block;
+  font-size: 0;
 }
-/* line 14, ../scss/modules/column-navigation.scss */
+/* line 15, ../scss/modules/column-navigation.scss */
 .column-navigation .column ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
+  font-size: 14px;
 }
-/* line 19, ../scss/modules/column-navigation.scss */
+/* line 21, ../scss/modules/column-navigation.scss */
 .column-navigation .column ul li {
   width: 235px;
   padding: 15px 10px 15px 25px;
   height: 50px;
 }
 
-/* line 30, ../scss/modules/column-navigation.scss */
+/* line 32, ../scss/modules/column-navigation.scss */
 .column-navigation-add {
   background-color: #009fc0;
   padding: 5px 0;
@@ -4359,7 +4361,7 @@ a.btn-black {
   -moz-border-radius-bottomleft: 5px;
 }
 
-/* line 39, ../scss/modules/column-navigation.scss */
+/* line 41, ../scss/modules/column-navigation.scss */
 .column-navigation-settings {
   background-color: #cccccc;
   padding: 5px 0;

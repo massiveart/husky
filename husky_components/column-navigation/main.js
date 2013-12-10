@@ -26,11 +26,12 @@ define([], function() {
 
     var defaults = {
         wrapper: {
-            height: "300"
+            height: 300
         },
         column: {
-            width: "250"
+            width: 250
         },
+        scrollBarWidth: 15,
         url: null
     };
 
@@ -57,23 +58,23 @@ define([], function() {
             // main container
             this.$container = this.sandbox.dom.$('<div/>');
             this.sandbox.dom.addClass(this.$container, 'column-navigation');
-            this.sandbox.dom.css(this.$container, 'height', (parseInt(this.options.wrapper.height,10)+15)+'px');
+            this.sandbox.dom.css(this.$container, 'height', (this.options.wrapper.height+this.options.scrollBarWidth)+'px');
 
             this.$element = this.sandbox.dom.$(this.options.el);
             this.sandbox.dom.append(this.$element, this.$container);
 
             // add and settings button
-            this.$optionContainer = this.sandbox.dom.$('<div/>');
-            this.sandbox.dom.addClass(this.$optionContainer, 'options grid-row');
-            this.sandbox.dom.css(this.$optionContainer, 'width', this.options.column.width+'px');
+            this.$options = this.sandbox.dom.$('<div id="column-navigation-options"/>');
+            this.sandbox.dom.addClass(this.$options, 'options grid-row hidden');
+            this.sandbox.dom.css(this.$options, 'width', this.options.column.width+'px');
 
             $add = this.sandbox.dom.$(this.template.options.add());
             $settings = this.sandbox.dom.$(this.template.options.settings());
 
-            this.sandbox.dom.append(this.$optionContainer, $add);
-            this.sandbox.dom.append(this.$optionContainer, $settings);
+            this.sandbox.dom.append(this.$options, $add);
+            this.sandbox.dom.append(this.$options, $settings);
 
-            this.sandbox.dom.append(this.$element, this.$optionContainer);
+            this.sandbox.dom.append(this.$element, this.$options);
         },
 
         /**
@@ -178,8 +179,26 @@ define([], function() {
 
         bindDOMEvents: function(){
             this.sandbox.dom.on(this.$el, 'click', this.itemSelected.bind(this), 'li');
+            this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column, #column-navigation-options');
+            this.sandbox.dom.on(this.$el, 'mouseleave', this.hideOptions.bind(this), '.column, #column-navigation-options');
+
+            // click on add
+            // click on settings
 
         },
+
+        showOptions: function(event){
+            var column = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget),'column');
+            this.sandbox.dom.show(this.$options);
+            this.sandbox.dom.css(this.$options, 'margin-left', column*(this.options.wrapper.width+this.options.scrollBarWidth)+'px');
+        },
+
+        hideOptions: function(event){
+            this.sandbox.logger.log("hovered: ", event.currentTarget.offsetLeft);
+            this.sandbox.dom.hide(this.$options);
+        },
+
+
 
         /**
          * Item was selected and data will be loaded if has sub
@@ -192,7 +211,7 @@ define([], function() {
 
             var $target = this.sandbox.dom.$(event.currentTarget),
                 id = this.sandbox.dom.data($target, 'id'),
-                column = this.sandbox.dom.data(this.sandbox.dom.parent($target), 'column'),
+                column = this.sandbox.dom.data(this.sandbox.dom.parent(this.sandbox.dom.parent($target)), 'column'),
                 selectedItem = this.columns[column][id],
                 length = this.selected.length - 1,
                 i;
@@ -228,7 +247,7 @@ define([], function() {
 
         template : {
             column : function (columnNumber, height, width){
-                return ['<div class="column" id="column-',columnNumber,'" style="height:',height,'px; width: ',width,'px"><ul data-column="',columnNumber,'"></ul></div>'].join('');
+                return ['<div data-column="',columnNumber,'" class="column" id="column-',columnNumber,'" style="height:',height,'px; width: ',width,'px"><ul></ul></div>'].join('');
             },
 
             item : function (data){

@@ -10,11 +10,13 @@
     overflow-y: scroll;
     overflow-x: hidden;
     display: inline-block;
+    font-size: 0;
 
     ul {
       list-style-type: none;
       margin: 0;
       padding: 0;
+      font-size: $baseFontSize;
 
       li {
         width: 235px;
@@ -29,7 +31,7 @@
 
 .column-navigation-add {
   background-color: $accentColor;
-  padding:5px 0;
+  padding: 5px 0;
   color: $white;
   border-bottom-left-radius: 5px;
   -webkit-border-bottom-left-radius: 5px;
@@ -38,8 +40,9 @@
 
 .column-navigation-settings {
   background-color: $grayLighter;
-  padding:5px 0;
+  padding: 5px 0;
   border-bottom-right-radius: 5px;
   -webkit-border-bottom-right-radius: 5px;
   -moz-border-radius-bottomright: 5px;
 }
+
