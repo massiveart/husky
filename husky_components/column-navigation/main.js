@@ -215,8 +215,7 @@ define([], function() {
          */
         itemSelected: function(event) {
 
-            // TODO
-            // css
+
 
             var $target = this.sandbox.dom.$(event.currentTarget),
                 id = this.sandbox.dom.data($target, 'id'),
@@ -224,6 +223,9 @@ define([], function() {
                 selectedItem = this.columns[column][id],
                 length = this.selected.length - 1,
                 i;
+
+            this.removeCurrentSelected(column);
+            this.sandbox.dom.addClass($target, 'selected');
 
             if (!!selectedItem) {
 
@@ -241,6 +243,17 @@ define([], function() {
                     this.load(selectedItem._links.children, column);
                 }
             }
+        },
+
+        /**
+         * Removes the selected class from old elements
+         * @param column
+         */
+        removeCurrentSelected: function(column) {
+            var items = this.sandbox.dom.find('li', '#column-'+column);
+            this.sandbox.util.each(items, function(index, $el){
+                this.sandbox.dom.removeClass($el, 'selected');
+            }.bind(this));
         },
 
         /**
@@ -293,10 +306,10 @@ define([], function() {
                 var item = ['<li data-id="',data.id,'" class="pointer" style="width:',width,'px">'];
 
                 // TODO
-                // has status (online, offline, ghost, shadow, linked)
+                // has status (link, type, published)
 
                 // TODO
-                // is editable, is selected, is ghost
+                // is editable
 
                 // text
                 item.push('<span class="item-text pull-left">',data.title,'</span>');
