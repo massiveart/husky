@@ -66,6 +66,13 @@
   }
 }
 
+.icon-edit-pen {
+  &::after {
+    content: "\270f";
+    display: inline-block;
+  }
+}
+
 .icon-settings {
   &::after {
     content: "\e281";

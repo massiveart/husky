@@ -11,10 +11,11 @@
  *
  * Emits:
  *  husky.column.navigation.data.loaded
- *  husky.column.navigation.selected
- *  husky.column.navigation.add
+ *  husky.column.navigation.selected[item]
+ *  husky.column.navigation.add[parent]
  *
  * Listens:
+ * husky.column.navigation.get-breadcrumb[callback]
  */
 
 // TODO
@@ -47,6 +48,7 @@ define([], function() {
             this.render();
             this.load(this.options.url, 0);
             this.bindDOMEvents();
+            this.bindCustomEvents();
 
         },
 
@@ -171,7 +173,19 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
             this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#column-navigation-add');
             this.sandbox.dom.on(this.$el, 'click', this.toggleSettings.bind(this), '#column-navigation-settings');
+            this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
+        },
 
+        bindCustomEvents: function(){
+            this.sandbox.on('husky.column.navigation.get-breadcrumb', this.getBreadCrumb.bind(this));
+        },
+
+        getBreadCrumb: function(callback){
+            if(typeof callback === 'function') {
+                callback(this.selected);
+            } else {
+                this.sandbox.logger.log("callback is not a function");
+            }
         },
 
         showOptions: function(event) {
@@ -224,6 +238,18 @@ define([], function() {
         },
 
         /**
+         * Emits an edit event
+         */
+        editNode: function(event){
+            var $listItem = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget)),
+                id = this.sandbox.dom.data($listItem,'id'),
+                item = this.columns[this.lastHoveredColumn][id];
+
+            this.sandbox.dom.stopPropagation(event);
+            this.sandbox.emit('husky.column.navigation.edit', item);
+        },
+
+        /**
          * Shows or hides the settings dropdown
          */
         toggleSettings: function() {
@@ -264,7 +290,7 @@ define([], function() {
 
                 // icons right (subpage, edit)
                 item.push('<span class="column-navigation-item-icons-right pull-right">');
-//                item.push('<span class="icon-chevron-right"></span>');
+                item.push('<span class="icon-edit-pen edit highlighted"></span>');
                 !!data.hasSub ? item.push('<span class="icon-chevron-right"></span>') : '';
                 item.push('</span></li>');
 
