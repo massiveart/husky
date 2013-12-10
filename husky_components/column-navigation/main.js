@@ -253,7 +253,8 @@ define([], function() {
          * Shows or thides the settings dropdown
          */
         toggleSettings: function() {
-            this.sandbox.dom.emit('husky.column.navigation.settings');
+            var parent = this.selected[this.lastHoveredColumn-1] || null;
+            this.sandbox.emit('husky.column.navigation.settings', parent);
         },
 
         template : {
