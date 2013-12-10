@@ -215,17 +215,17 @@ define([], function() {
          */
         itemSelected: function(event) {
 
-
-
             var $target = this.sandbox.dom.$(event.currentTarget),
                 id = this.sandbox.dom.data($target, 'id'),
                 column = this.sandbox.dom.data(this.sandbox.dom.parent(this.sandbox.dom.parent($target)), 'column'),
                 selectedItem = this.columns[column][id],
                 length = this.selected.length - 1,
-                i;
+                i, $arrowElement;
 
             this.removeCurrentSelected(column);
             this.sandbox.dom.addClass($target, 'selected');
+            $arrowElement = this.sandbox.dom.find('.arrow', $target);
+            this.sandbox.dom.removeClass($arrowElement, 'inactive');
 
             if (!!selectedItem) {
 
@@ -239,9 +239,10 @@ define([], function() {
                 this.sandbox.emit('husky.column.navigation.selected', selectedItem);
 
                 if (!!selectedItem.hasSub) {
-                    this.removeColumns(column + 1);
                     this.load(selectedItem._links.children, column);
                 }
+
+                this.removeColumns(column + 1);
             }
         },
 
@@ -253,6 +254,8 @@ define([], function() {
             var items = this.sandbox.dom.find('li', '#column-'+column);
             this.sandbox.util.each(items, function(index, $el){
                 this.sandbox.dom.removeClass($el, 'selected');
+                var $arrowElement = this.sandbox.dom.find('.arrow', $el);
+                this.sandbox.dom.addClass($arrowElement, 'inactive');
             }.bind(this));
         },
 
@@ -318,7 +321,7 @@ define([], function() {
                 // icons right (subpage, edit)
                 item.push('<span class="column-navigation-item-icons-right pull-right">');
                 item.push('<span class="icon-edit-pen edit hidden"></span>');
-                !!data.hasSub ? item.push('<span class="icon-chevron-right arrow"></span>') : '';
+                !!data.hasSub ? item.push('<span class="icon-chevron-right arrow inactive"></span>') : '';
                 item.push('</span></li>');
 
                 return item.join('');

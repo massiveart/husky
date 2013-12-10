@@ -30,6 +30,10 @@
         li.selected {
           background-color: $baseBackgroundColor;
         }
+
+        .inactive {
+          color: $grayLight;
+        }
       }
     }
 
