@@ -40,6 +40,7 @@ define([], function() {
         initialize: function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+            this.$element = this.sandbox.dom.$(this.options.el);
             this.columns = [];
             this.selected = [];
 
@@ -55,26 +56,28 @@ define([], function() {
         render: function() {
             var $add, $settings;
 
-            // main container
-            this.$container = this.sandbox.dom.$('<div/>');
-            this.sandbox.dom.addClass(this.$container, 'column-navigation');
-            this.sandbox.dom.css(this.$container, 'height', (this.options.wrapper.height+this.options.scrollBarWidth)+'px');
 
-            this.$element = this.sandbox.dom.$(this.options.el);
-            this.sandbox.dom.append(this.$element, this.$container);
 
-            // add and settings button
-            this.$options = this.sandbox.dom.$('<div id="column-navigation-options"/>');
-            this.sandbox.dom.addClass(this.$options, 'options grid-row hidden');
-            this.sandbox.dom.css(this.$options, 'width', this.options.column.width+'px');
+            // navigation container
+            this.$columnContainer = this.sandbox.dom.$('<div/>');
+            this.sandbox.dom.addClass(this.$columnContainer, 'column-navigation');
+            this.sandbox.dom.css(this.$columnContainer, 'height', (this.options.wrapper.height+this.options.scrollBarWidth)+'px');
+
+            this.sandbox.dom.append(this.$element, this.$columnContainer);
+
+
+            // options container - add and settings button
+            this.$optionsContainer = this.sandbox.dom.$('<div id="column-navigation-options"/>');
+            this.sandbox.dom.addClass(this.$optionsContainer, 'options grid-row hidden');
+            this.sandbox.dom.css(this.$optionsContainer, 'width', this.options.column.width+'px');
 
             $add = this.sandbox.dom.$(this.template.options.add());
             $settings = this.sandbox.dom.$(this.template.options.settings());
 
-            this.sandbox.dom.append(this.$options, $add);
-            this.sandbox.dom.append(this.$options, $settings);
+            this.sandbox.dom.append(this.$optionsContainer, $add);
+            this.sandbox.dom.append(this.$optionsContainer, $settings);
 
-            this.sandbox.dom.append(this.$element, this.$options);
+            this.sandbox.dom.append(this.$element, this.$optionsContainer);
         },
 
         /**
@@ -157,7 +160,7 @@ define([], function() {
                 this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width - this.options.scrollBarWidth, value)));
             }.bind(this));
 
-            this.sandbox.dom.append(this.$container, $column);
+            this.sandbox.dom.append(this.$columnContainer, $column);
 
         },
 
@@ -179,8 +182,8 @@ define([], function() {
 
         bindDOMEvents: function(){
             this.sandbox.dom.on(this.$el, 'click', this.itemSelected.bind(this), 'li');
-            this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column, #column-navigation-options');
-            this.sandbox.dom.on(this.$el, 'mouseleave', this.hideOptions.bind(this), '.column, #column-navigation-options');
+            this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
+            //this.sandbox.dom.on(this.$el, 'mouseleave', this.hideOptions.bind(this), '.column, #column-navigation-options');
 
             this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#column-navigation-add');
             this.sandbox.dom.on(this.$el, 'click', this.toggleSettings.bind(this), '#column-navigation-settings');
@@ -188,17 +191,17 @@ define([], function() {
         },
 
         showOptions: function(event){
-            var column = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget),'column');
-            this.sandbox.dom.show(this.$options);
-            this.sandbox.dom.css(this.$options, 'margin-left', ((column-1)*this.options.column.width)+'px');
-            this.sandbox.logger.log("hovered: ", (column*this.options.column.width)+'px');
+            this.lastHoveredColumn = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget),'column');
+            this.sandbox.dom.show(this.$optionsContainer);
+            this.sandbox.dom.css(this.$optionsContainer, 'margin-left', ((this.lastHoveredColumn-1)*this.options.column.width)+'px');
+//            this.sandbox.logger.log("hovered: ", ((column-1)*this.options.column.width)+'px');
         },
 
-        hideOptions: function(event){
-            this.sandbox.logger.log("hovered: ", event.currentTarget.offsetLeft);
-            this.sandbox.dom.css(this.$options, 'margin-left', 0);
-            this.sandbox.dom.hide(this.$options);
-        },
+//        hideOptions: function(event){
+//            this.sandbox.logger.log("hovered: ", event.currentTarget.offsetLeft);
+//            this.sandbox.dom.css(this.$optionsContainer, 'margin-left', 0);
+//            this.sandbox.dom.hide(this.$optionsContainer);
+//        },
 
 
 
@@ -241,11 +244,9 @@ define([], function() {
         /**
          * Emits an add event
          */
-        addNode: function(event){
-
-            var column = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget), 'column'),
-                parent = this.selected[column-1];
-            this.sandbox.dom.emit('husky.column.navigation.add', parent);
+        addNode: function(){
+            var parent = this.selected[this.lastHoveredColumn-1] || null;
+            this.sandbox.emit('husky.column.navigation.add', parent);
         },
 
         /**
