@@ -141,7 +141,7 @@
         @include background-and-border(lighten($highlightColor, 5%));
 
       }
-      &:disabled, disabled:hover, disabled:focus {
+      &:disabled, &:disabled:hover, &:disabled:focus {
         @include background-and-border($grayLight);
       }
     }

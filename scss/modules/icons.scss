@@ -174,21 +174,32 @@
 
 .icon-chevron-right {
   &::after {
-    content: "\e224";
+    font-family: $baseIconHalflingsFont;
+    content: "\e080";
+    display: inline-block;
+  }
+}
+
+.icon-chevron-left {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e079";
     display: inline-block;
   }
 }
 
 .icon-chevron-down {
   &::after {
-    content: "\e227";
+    font-family: $baseIconHalflingsFont;
+    content: "\e114";
     display: inline-block;
   }
 }
 
 .icon-chevron-up {
   &::after {
-    content: "\e22a";
+    font-family: $baseIconHalflingsFont;
+    content: "\e113";
     display: inline-block;
   }
 }
@@ -313,6 +324,20 @@
 .icon-show-thumbnails {
   &::after {
     content: "\e157";
+    display: inline-block;
+  }
+}
+
+.icon-floppy-save {
+  &::after {
+    content: "\e447";
+    display: inline-block;
+  }
+}
+
+.icon-eye-open {
+  &::after {
+    content: "\e052";
     display: inline-block;
   }
 }

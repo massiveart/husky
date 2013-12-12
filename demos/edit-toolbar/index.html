@@ -24,13 +24,14 @@
     </style>
 </head>
 <body>
-<h1>list toolbars</h1>
+
+
+
+
+<h1>edit toolbars</h1>
 <h3>default (large)</h3>
-<div id="toolbar1"></div>
-<h3>medium</h3>
-<div id="toolbar2"></div>
-<h3>small</h3>
-<div id="toolbar3"></div>
+<div id="edit-toolbar2"></div>
+
 
 <script src="../js/sinon.js"></script>
 <script src="../js/jquery.js"></script>
@@ -53,52 +54,69 @@
                     {
                         'id': 1,
                         'icon': 'user-add',
-                        'title': 'Add User',
+                        'iconSize': 'large',
                         'class': 'highlight',
                         'callback': function() {
-                            console.log("highlight was clicked!");
+                            console.log("user-add was clicked!");
                         }
                     },
                     {
-                        'id': 2,
-                        'icon': 'bin',
-                        'title': 'Delete User',
-                        'group': '1',
-                        'disabled': true,
-                        'callback': function() {
-
-                        }
+                        'icon': 'cogwheel',
+                        'iconSize': 'large',
+                        'title': '',
+                        'group': 'right',
+                        'items': [
+                            {
+                                'title': 'Refresh',
+                                'callback': function() {
+                                    console.log("refresh was clicked");
+                                }
+                            },
+                            {
+                                'title': 'no refresh',
+                                'callback': function() {
+                                    console.log("no refresh was clicked");
+                                }
+                            }
+                        ]
                     },
                     {
                         'id': 3,
                         'icon': 'retweet',
-                        'title': 'Refresh',
-                        'group': '1',
-                        'items': {
-
+                        'group': 'right',
+                        'title': 'unpublished',
+                        'class': 'highlight-gray',
+                        'type': 'select',
+                        'items': [
+                        {
+                            'title': 'Publish',
+                            'callback': function() {
+                                console.log("refresh was clicked");
+                            }
+                        },
+                        {
+                            'icon': 'bin',
+                            'title': 'Private',
+                            'callback': function() {
+                                console.log("no refresh was clicked");
+                            }
                         }
+                    ]
                     },
                     {
                         'icon': 'file-import',
                         'title': 'Import',
-                        'group': '2',
                         'callback': function() {
-
+                            console.log("import was clicked");
                         }
                     },
                     {
                         'icon': 'file-import',
-                        'title': 'Work',
-                        'class': 'highlight',
-                        'disabled': true
+                        'title': 'Work'
                     },
                     {
                         'icon': 'file-export',
-                        'title': 'Export',
-                        'group': '2',
-                        'callback': function() {
-
-                        }
+                        'title': 'Export'
                     }
                 ];
 
@@ -113,41 +131,21 @@
             ]);
 
             app.sandbox.start([{
-                name: 'toolbar@husky',
+                name: 'edit-toolbar@husky',
                 options: {
-                    el: '#toolbar1',
+                    el: '#edit-toolbar2',
                     instanceName: 'contact',
-                    hasSearch: true,
-                    appearance: 'large',
+                    pageFunction: {
+                        icon: 'chevron-left',
+                        callback: function() {
+                            console.log("go back to last page");
+                        }
+                    },
 
                     data: testData
                 }
             }]);
 
-            app.sandbox.start([{
-                name: 'toolbar@husky',
-                options: {
-                    el: '#toolbar2',
-                    instanceName: 'contact2',
-                    hasSearch: false,
-                    appearance: 'medium',
-
-                    url: '/toolbar'
-                }
-            }]);
-
-
-            app.sandbox.start([{
-                name: 'toolbar@husky',
-                options: {
-                    el: '#toolbar3',
-                    instanceName: 'contact3',
-                    hasSearch: false,
-                    appearance: 'small',
-
-                    url: '/toolbar'
-                }
-            }]);
 
             app.sandbox.on('husky.util.load.data', function() {
                 setTimeout(function() {
