@@ -47,6 +47,7 @@ $editToolbarHeight: 40px;
 
 .edit-toolbar-container
 {
+  z-index: 101;
 
   div.navbar {
     display: block !important;
@@ -61,7 +62,7 @@ $editToolbarHeight: 40px;
     border-radius: 4px;
     background-color: $grayLighter;
     @include clear-float;
-    @include box-shadow(#bababa 0 2px 0 0 );
+    @include box-shadow(rgba(0,0,0,0.2) 0 2px 0 0 );
 
 
     > ul {
@@ -159,7 +160,7 @@ $editToolbarHeight: 40px;
             font-size: 14px;
           }
 
-          .icon+.title {
+          .icon+.title:not(:empty) {
             padding-left: 10px;
           }
 
