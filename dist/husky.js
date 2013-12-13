@@ -24444,12 +24444,17 @@ define('__component__$search@husky',[], function() {
  *      - selected: the item that's selected on initialize
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
  *      - preselect - defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url)
+ *      - forceReload - defines if tabs are forcing page to reload
  *  Provides Events
  *      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback
  *  Triggers Events
  *      - husky.tabs.<<instanceName>>.item.select [item] - triggered when item was clicked
  *      - husky.tabs.<<instanceName>>.initialized [selectedItem]- triggered when tabs have been initialized
  *
+ *  Data options
+ *      - items
+ *          - forceReload: overwrites default-setting for certain item
+*
  *
  *****************************************************************************/
 
@@ -24461,7 +24466,8 @@ define('__component__$tabs@husky',[],function() {
             url: null,
             data: [],
             instanceName: '',
-            preselect: true
+            preselect: true,
+            forceReload: false
         },
 
         selectItem = function(event) {
@@ -24472,6 +24478,8 @@ define('__component__$tabs@husky',[],function() {
         },
 
         triggerSelectEvent = function(item) {
+
+            item.forceReload = (item.forceReload && typeof item.forceReload !== "undefined") ? item.forceReload : this.options.forceReload;
             this.sandbox.emit(createEventString.call(this, 'item.select'), item);
         },
 
