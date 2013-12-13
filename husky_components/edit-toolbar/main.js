@@ -26,6 +26,7 @@
  *          - title
  *          - icon (optional) NOICON will remove icon
  *          - callback
+ *          - divider = true; takes item as divider element
  *
  *
  *****************************************************************************/
@@ -192,6 +193,11 @@ define(function() {
             var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />');
             this.sandbox.dom.append(listItem, $list);
             this.sandbox.util.foreach(parent.items, function(item) {
+
+                if (item.divider) {
+                    this.sandbox.dom.append($list, '<li class="divider"></li>');
+                    return;
+                }
 
                 item.parentId = parent.id;
                 // check id for uniqueness
