@@ -139,9 +139,8 @@ $grid-padding-right: 10px;
     width: 100%;
 }
 
-
-/// data-grid
-
-.icon-remove {
-  cursor: pointer;
+@media (max-width: 460px) {
+    [class*='grid-col-'] {
+        width: 100% !important;
+    }
 }
