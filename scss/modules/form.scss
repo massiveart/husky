@@ -1,0 +1,177 @@
+//
+// Form Elements
+// --------------------------------------------------
+
+.form-element {
+    width: 100%;
+    height: 30px;
+    margin: 10px 0;
+    border: 1px solid $inputBorderColor;
+    padding: 0 5px;
+    font-size: 14px;
+    border-radius: 3px;
+
+    &:focus {
+        outline: 0;
+        border-color: $inputBorderFocusColor;
+    }
+
+    &.input-large {
+        height: 40px;
+        padding: 0 10px;
+        font-size: 18px;
+    }
+
+    &[readonly] {
+        background:none;
+        border:0;
+        font-style: italic;
+        color: $grayLight;
+    }
+}
+
+input[type="text"] {
+    &.input-round {
+      border-radius: 30px;
+    }
+}
+
+.input-description {
+  margin-top: -5px;
+  font-size: 10px;
+  color: $grayLight;
+}
+
+// Labels
+// -------------------------
+label {
+    display: block;
+    font-size: 14px;
+    color: #999999;
+    cursor: pointer;
+
+    &.large {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .form-element {
+        margin-top: 5px;
+    }
+
+    &.inline {
+        font-size: 1em;
+        font-weight: normal;
+        display: inline;
+    }
+}
+
+// Checkboxes
+// -------------------------
+.custom-checkbox {
+    $checkboxSize: 14px;
+    $checkboxIconFont: $baseIconFont;
+    $checkboxIcon: "\e207";
+
+    width: $checkboxSize;
+    height: $checkboxSize;
+    vertical-align: middle;
+    opacity: 0;
+    cursor: pointer;
+
+    &:checked,
+    &.is-checked {
+        & + .custom-checkbox-icon {
+            &::after {
+                content: $checkboxIcon;
+                position: relative;
+                top: -3px;
+            }
+        }
+    }
+
+    & + .custom-checkbox-icon {
+        // custom checkbox styling
+        display: inline-block;
+        width: $checkboxSize;
+        height: $checkboxSize;
+        margin-left: -$checkboxSize;
+
+        border: 1px solid $inputBorderColor;
+        background-color: #fff;
+        font-family: $checkboxIconFont;
+        font-size: 12px;
+        text-align: center;
+        vertical-align: middle;
+    }
+}
+
+// Textarea
+// -------------------------
+
+textarea { 
+    resize:both;
+}
+
+textarea.vertical { 
+    resize:vertical; 
+}
+
+textarea.horizontal {
+    resize:horizontal; 
+}
+
+textarea.noResize { 
+    resize:none; 
+}
+
+textarea.form-element {
+    width: 100%;
+    height: 40px;
+    min-height: 150px;
+    padding: 10px;
+    font-size:18px;
+    font-family: inherit;
+}
+
+
+// Radio
+// -------------------------
+.custom-radio {
+    $radioSize: 18px;
+
+    width: $radioSize;
+    height: $radioSize;
+    vertical-align: middle;
+    opacity: 0;
+    cursor: pointer;
+
+    &:checked,
+    &.is-checked {
+        & + .custom-radio-icon {
+            &::after {
+                content: "";
+                display: block;
+                width: 100%;
+                height: 100%;
+                border-radius: $radioSize;
+                background-color: #999;
+            }
+        }
+    }
+
+    & + .custom-radio-icon {
+        //  custom checkbox styling
+        display: inline-block;
+        width: $radioSize;
+        height: $radioSize;
+        margin-left: -$radioSize;
+        padding: 2px;
+        border-radius: $radioSize;
+        border: 1px solid $inputBorderColor;
+        background-color: #fff;
+        text-align: center;
+        line-height: 1;
+        vertical-align: middle;
+    }
+}

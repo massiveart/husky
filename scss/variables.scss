@@ -1,0 +1,74 @@
+//
+// Variables
+// --------------------------------------------------
+
+
+// Global values
+// --------------------------------------------------
+
+
+// Base Colors
+// -------------------------
+$black: #000;
+$gray: #666;
+$grayLight: #999;
+$grayLighter: #ccc;
+$grayLightest: #efefef;
+$grayDark: #1e1e1e;
+$white:#fff;
+
+
+// Base colors
+// -------------------------
+$baseColor: #333333;
+$baseBackgroundColor: #f1f1f1;
+
+// Accent colors
+// -------------------------
+$accentColor: #41DDE0;
+
+
+// Font Colors
+// -------------------------
+$baseFontColor: $black;
+$highlightColor: #249FBE;
+$errorColor: #e60000;
+
+
+// Typography
+// -------------------------
+$sansFontFamily: Helvetica, Arial, sans-serif;
+
+$baseFontSize: 14px;
+$smallFontSize: 12px;
+$baseFontFamily: $sansFontFamily;
+$baseLineHeight: 20px;
+
+$headingsFontFamily: inherit;
+$headingsFontWeight: normal;
+$headingsColor: inherit;
+
+$baseIconFont: "icomoon";
+
+
+// Componenet values
+// --------------------------------------------------
+
+
+// Buttons
+// -------------------------
+ $btnBorderRadius: 4px;
+
+
+// Form Elements
+// -------------------------
+$inputBorderColor: $white;
+$inputBorderFocusColor: $grayLightest;
+$labelColor: $grayLighter;
+
+
+// Navigation
+// -------------------------
+$navigationColumnColorActive: #E0E0E0;
+$navigationMainColumnColor: #333333;
+$navigationMainColumnColorActive: #fff;

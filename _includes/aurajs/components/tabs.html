@@ -1,0 +1,43 @@
+<div id="navigation-documentation" class="grid-row m-top-30">
+    <h1>Tabs</h1>
+
+    <div class="grid-row m-top-30">
+        <h2>Passing Data</h2>
+
+        <p>There are two ways on how to pass data to the tabs component</p>
+        <ul>
+            <li>Either by <strong>url</strong></li>
+            <li>or by <strong>data</strong></li>
+        </ul>
+
+        <p>The JSON data provided for the tabs could look like this:</p>
+        <div class="doc-code">
+            {% highlight javascript %}
+            '{"id":"529f1f5b7783e","title":"Contacts","url":"details","items":[' +
+                '{"title":"Details","action":"details","id":"529f1f5b777f1"},' +
+                '{"title":"Permissions","action":"permissions","id":"529f1f5b7782f"}' +
+            ']}'
+            {% endhighlight %}
+        </div>
+
+        <h3>Options</h3>
+        <ul>
+            <li><b>url</b> - url to get json data</li>
+            <li><b>data</b> - alternatively passing data</li>
+            <li><b>instanceName</b> - by defining an instanceName the name of triggered events can be affected</li>
+            <li><b>preselect</b> (default: true) - if data.url is provided, the matching tabs element is preselected</li>
+        </ul>
+    </div>
+
+    <div class="grid-row m-top-30">
+        <h2>Events</h2>
+
+        <h3>husky.tabs.<<instanceName>>.initialized</h3>
+        <p>triggered when tabs are fully loaded</p>
+
+        <h3>husky.navigation.<<instanceName>>.item.select[item object]</h3>
+        <p>triggered when an item has been clicked</p>
+    </div>
+
+</div>
+

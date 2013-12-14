@@ -1,0 +1,19 @@
+//
+// Validation
+// --------------------------------------------------
+
+.husky-validate-success {
+    @extend %abstract-success;
+}
+
+.husky-validate-error {
+    @extend %abstract-error;
+}
+
+.required {
+    font-family: $baseFontFamily !important;
+
+    &::after {
+        content: " *";
+    }
+}

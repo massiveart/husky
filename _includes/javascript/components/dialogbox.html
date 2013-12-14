@@ -1,0 +1,156 @@
+<h1 id="auto-complete">Dialogbox</h1>
+
+<p>The dialogbox shows some content in a container floating above the content of the website. </p>
+
+<h2>Example 1</h2>
+<p>The open dialog.</p>
+<div class="doc-example m-bottom-30">
+	<div class="example">
+		<div class="grid">
+			<div class="grid-row">
+				<div id="dialog-example" class="husky-dialog-example">
+					<div class="husky-dialog" style="width: 800px; display: block;">
+						<div class="husky-dialog-header align-right">
+							<button type="button" class="close">×</button>
+						</div>
+						<div class="husky-dialog-body">
+							<h3>This is the headline!</h3>
+							<p>This is the content</p>
+						</div>
+						<div class="husky-dialog-footer">
+							<button class="btn btn-black closeButton">Abort</button>
+							<button class="btn btn-black saveButton">Save</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<h2>Example 2</h2>
+<p>A fully working example - click the button!.</p>
+<div class="doc-example m-bottom-30">
+	<div class="example">
+		<div class="grid">
+			<div class="grid-row">
+				<div class="grid-col-2">
+					<p><a href="#" id="showDialog" class="btn btn-black btn-large">Click for dialog</a></p>
+				</div>
+				<div id="dialog"></div>
+				<div id="backdrop"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="doc-code m-bottom-30">
+	{% highlight html %}
+
+	<div id="dialog"></div>
+
+	<script lang="javascript">
+		var $dialog = $('#dialog').huskyDialog({
+		    backdrop: true,
+		    width: '800px'
+		});
+
+		$('#showDialog').on('click', function() {
+			$dialog.data('Husky.Ui.Dialog').trigger('dialog:show', {
+			    data: {
+			        content: {
+			            title: "This is the headline!",
+			            content: "This is the content"
+			        },
+			        footer: {
+			            buttonCancelText: "Abort",
+			            buttonSaveText: "Save"
+			        }
+			    }
+			});
+		});
+
+		$dialog.on('click', '.closeButton', function() {
+			$dialog.data('Husky.Ui.Dialog').trigger('dialog:hide');
+		});
+
+
+		$dialog.on('click', '.saveButton', function() {
+			$dialog.data('Husky.Ui.Dialog').trigger('dialog:hide');
+		});
+
+	</script>
+	
+	{% endhighlight %}
+</div>
+
+<h2>Events</h2>
+
+<table class="table m-bottom-30">
+	<thead>
+		<tr>
+			<th width="20%">Event Name</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>dialog:hide</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>dialog:show</td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
+<h2>Options</h2>
+
+<table class="table m-bottom-30">
+	<thead>
+		<tr>
+			<th width="20%">Option Name</th>
+			<th width="10%">Type</th>
+			<th width="10%">Default</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>backdrop</td>
+			<td>boolean</td>
+			<td>true</td>
+			<td>Dark background on top of the website but under the dialogbox.</td>
+		</tr>
+		<tr>
+			<td>width</td>
+			<td>string</td>
+			<td>560px</td>
+			<td>Width of the dialogbox.</td>
+		</tr>
+		<tr>
+			<td>data</td>
+			<td>array</td>
+			<td>-</td>
+			<td>Data for the template. Consists of a <strong>content</strong>, <strong>footer</strong> and <strong>header</strong>.</td>
+		</tr>
+		<tr>
+			<td>template</td>
+			<td>array</td>
+			<td>See below</td>
+			<td>Templates for the different parts of the dialog box. Consists of a <strong>content</strong>, <strong>footer</strong> and <strong>header</strong>.</td>
+		</tr>
+	</tbody>
+</table>
+
+<h4>Default template</h4>
+<div class="doc-code m-bottom-30">
+	{% highlight javascript %}
+		template: {
+			content: '<h3><%= title %></h3><p><%= content %></p>',
+			footer: '<button class="btn btn-black closeButton"><%= buttonCancelText %></button><button class="btn btn-black saveButton"><%= buttonSaveText %></button>',
+			header: '<button type="button" class="close">×</button>'
+		}
+	{% endhighlight %}
+</div>

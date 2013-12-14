@@ -1,0 +1,87 @@
+<form id="form" class="grid" data-debug="true">
+    <div class="grid-row">
+        <div class="grid-col-6">
+            <label class="required"><%=translate('demo.firstName') %>:</label>
+            <input type="text"
+                   class="form-element"
+                   id="firstName"
+                   name="firstName"
+                   data-mapper-property="firstName"
+                   data-validation-required="true"/>
+        </div>
+        <div class="grid-col-6">
+            <label><%=translate('lastName') %>:</label>
+            <input type="text"
+                   class="form-element"
+                   id="lastName"
+                   name="lastName"
+                   data-mapper-property="lastName"
+                   data-validation-min-length="6"/>
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="grid-col-6">
+            <label><%=translate('birthDay') %>:</label>
+            <input type="text"
+                   class="form-element"
+                   id="birthday"
+                   name="birthday"
+                   data-type="date"
+                   data-mapper-property="birthDay"
+                   data-validation-trigger="keyup focusout"/>
+        </div>
+        <div class="grid-col-6">
+            <label><%=translate('wage') %>:</label>
+            <input type="text"
+                   class="form-element"
+                   id="wage"
+                   name="wage"
+                   data-type="decimal"
+                   data-mapper-property="wage"
+                   data-validation-min="1000"
+                   data-validation-max="1500"/>
+        </div>
+    </div>
+    <div class="grid-row" id="phones" data-mapper-property="phones" data-type="array">
+        <div class="grid-col-4 floating">
+            <label data-mapper-property="type"
+                   data-type="label"
+                   data-type-label="name"
+                   data-type-id="id">
+                <%=translate('phone') %>:
+            </label>
+            <input type="text"
+                   class="form-element"
+                   id="phone"
+                   name="phone"
+                   data-mapper-property="phone"
+                   data-validation-min-length="6"
+                   data-validation-max-length="30"/>
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="grid-col-4 floating">
+            <label for="undefined">
+               <%=translate('company') %>
+            </label>
+            <div data-aura-component="auto-complete@husky" data-aura-url="/contacts"></div>
+        </div>
+        <div class="grid-col-4 floating">
+            <label>
+              <%=translate('country') %>
+            </label>
+            <div data-aura-component="select@husky" data-aura-data='[{"id":1,"name":"country.austria"},{"id":2,"name":"country.germany"},{"id":3,"name":"country.switzerland"}]' data-aura-property="country"></div>
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="grid-col-2">
+            <div id="check" class="btn pointer"><%=translate('check') %></div>
+        </div>
+        <div class="grid-col-2">
+            <div id="set" class="btn pointer"><%=translate('setData') %></div>
+        </div>
+        <div class="grid-col-2">
+            <div id="get" class="btn pointer"><%=translate('getData') %></div>
+        </div>
+    </div>
+</form>
