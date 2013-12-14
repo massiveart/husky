@@ -23,7 +23,7 @@ define([], function() {
         var defaults = {
                 url: '' // url to load data
             },
-            eventNamespace = 'husky.auto-complete-list',
+            eventNamespace = 'husky.auto-complete-list.',
 
             /**
              * @event husky.auto-complete-list.rendered
