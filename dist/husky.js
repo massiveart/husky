@@ -21907,7 +21907,7 @@ define('__component__$navigation@husky',[],function() {
 
         /**
          * gets called when settings icon is clicked
-         * @emits husky.navigation.settings (name, id, parent)
+         * @emits husky.navigation.item.settings (name, id, parent)
          * @param event
          */
         settingsClicked: function(event) {
