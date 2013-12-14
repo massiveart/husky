@@ -2,8 +2,8 @@
 // Grid System
 // --------------------------------------------------
 
-$grid-padding-left: 10px;
-$grid-padding-right: 10px;
+$grid-padding-left: 8px;
+$grid-padding-right: 8px;
 
 .grid {
     display: block;
@@ -21,7 +21,7 @@ $grid-padding-right: 10px;
     }
 }
 
-[class*='grid-col-'] {
+[class*="grid-col-"] {
     float: left;
     padding-left: $grid-padding-left;
     padding-right: $grid-padding-right;
@@ -140,7 +140,14 @@ $grid-padding-right: 10px;
 }
 
 @media (max-width: 460px) {
-    [class*='grid-col-'] {
-        width: 100% !important;
+    [class*="grid-col-"] {
+        width: 100%;
+        margin-top: 15px;
+        padding: 0;
+
+        &:first-of-type {
+            margin-top: 0;
+            padding-right: 0;
+        }
     }
 }

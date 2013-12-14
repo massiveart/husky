@@ -3133,18 +3133,18 @@ hr.divider {
 }
 
 /* line 24, ../scss/modules/grid.scss */
-[class*='grid-col-'] {
+[class*="grid-col-"] {
   float: left;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 /* line 29, ../scss/modules/grid.scss */
-[class*='grid-col-']:first-of-type {
+[class*="grid-col-"]:first-of-type {
   padding-left: 0;
-  padding-right: 10px;
+  padding-right: 8px;
 }
 /* line 34, ../scss/modules/grid.scss */
-[class*='grid-col-']:last-of-type {
+[class*="grid-col-"]:last-of-type {
   padding-right: 0;
 }
 
@@ -3155,7 +3155,7 @@ hr.divider {
 /* line 43, ../scss/modules/grid.scss */
 .grid-col-1.floating:nth-child(12n+1) {
   padding-left: 0;
-  padding-right: 10px;
+  padding-right: 8px;
 }
 /* line 48, ../scss/modules/grid.scss */
 .grid-col-1.floating:nth-child(12n) {
@@ -3169,7 +3169,7 @@ hr.divider {
 /* line 58, ../scss/modules/grid.scss */
 .grid-col-2.floating:nth-child(6n+1) {
   padding-left: 0;
-  padding-right: 10px;
+  padding-right: 8px;
 }
 /* line 63, ../scss/modules/grid.scss */
 .grid-col-2.floating:nth-child(6n) {
@@ -3183,7 +3183,7 @@ hr.divider {
 /* line 73, ../scss/modules/grid.scss */
 .grid-col-3.floating:nth-child(4n+1) {
   padding-left: 0;
-  padding-right: 10px;
+  padding-right: 8px;
 }
 /* line 78, ../scss/modules/grid.scss */
 .grid-col-3.floating:nth-child(4n) {
@@ -3197,7 +3197,7 @@ hr.divider {
 /* line 88, ../scss/modules/grid.scss */
 .grid-col-4.floating:nth-child(3n+1) {
   padding-left: 0;
-  padding-right: 10px;
+  padding-right: 8px;
 }
 /* line 93, ../scss/modules/grid.scss */
 .grid-col-4.floating:nth-child(3n) {
@@ -3216,7 +3216,7 @@ hr.divider {
 /* line 107, ../scss/modules/grid.scss */
 .grid-col-6.floating:nth-child(2n+1) {
   padding-left: 0;
-  padding-right: 10px;
+  padding-right: 8px;
 }
 /* line 112, ../scss/modules/grid.scss */
 .grid-col-6.floating:nth-child(2n) {
@@ -3255,8 +3255,15 @@ hr.divider {
 
 @media (max-width: 460px) {
   /* line 143, ../scss/modules/grid.scss */
-  [class*='grid-col-'] {
-    width: 100% !important;
+  [class*="grid-col-"] {
+    width: 100%;
+    margin-top: 15px;
+    padding: 0;
+  }
+  /* line 148, ../scss/modules/grid.scss */
+  [class*="grid-col-"]:first-of-type {
+    margin-top: 0;
+    padding-right: 0;
   }
 }
 /* line 5, ../scss/modules/form.scss */
@@ -3314,7 +3321,7 @@ label.large {
 }
 /* line 58, ../scss/modules/form.scss */
 label .form-element {
-  margin-top: 6px;
+  margin-top: 5px;
 }
 /* line 62, ../scss/modules/form.scss */
 label.inline {
@@ -3356,30 +3363,32 @@ textarea {
   resize: both;
 }
 
-/* line 113, ../scss/modules/form.scss */
+/* line 116, ../scss/modules/form.scss */
 textarea.vertical {
   resize: vertical;
 }
 
-/* line 114, ../scss/modules/form.scss */
+/* line 120, ../scss/modules/form.scss */
 textarea.horizontal {
   resize: horizontal;
 }
 
-/* line 115, ../scss/modules/form.scss */
+/* line 124, ../scss/modules/form.scss */
 textarea.noResize {
   resize: none;
 }
 
-/* line 117, ../scss/modules/form.scss */
+/* line 128, ../scss/modules/form.scss */
 textarea.form-element {
+  width: 100%;
   height: 40px;
+  min-height: 150px;
   padding: 10px;
   font-size: 18px;
   font-family: inherit;
 }
 
-/* line 128, ../scss/modules/form.scss */
+/* line 140, ../scss/modules/form.scss */
 .custom-radio {
   width: 18px;
   height: 18px;
@@ -3387,7 +3396,7 @@ textarea.form-element {
   opacity: 0;
   cursor: pointer;
 }
-/* line 140, ../scss/modules/form.scss */
+/* line 152, ../scss/modules/form.scss */
 .custom-radio:checked + .custom-radio-icon::after, .custom-radio.is-checked + .custom-radio-icon::after {
   content: "";
   display: block;
@@ -3396,7 +3405,7 @@ textarea.form-element {
   border-radius: 18px;
   background-color: #999;
 }
-/* line 151, ../scss/modules/form.scss */
+/* line 163, ../scss/modules/form.scss */
 .custom-radio + .custom-radio-icon {
   display: inline-block;
   width: 18px;
