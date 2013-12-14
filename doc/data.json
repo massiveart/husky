@@ -1,0 +1,963 @@
+{
+    "project": {
+        "name": "husky",
+        "description": "awesome sh*t",
+        "version": "0.1.0",
+        "url": ""
+    },
+    "files": {
+        "husky_extensions/globalize.js": {
+            "name": "husky_extensions/globalize.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "husky_extensions/util.js": {
+            "name": "husky_extensions/util.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "husky_components/auto-complete-list/main.js": {
+            "name": "husky_components/auto-complete-list/main.js",
+            "modules": {
+                "husky/components/auto-complete-list": 1
+            },
+            "classes": {
+                "AutoCompleteList": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "husky_components/datagrid/main.js": {
+            "name": "husky_components/datagrid/main.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "husky_components/dialog/main.js": {
+            "name": "husky_components/dialog/main.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "husky_components/navigation/main.js": {
+            "name": "husky_components/navigation/main.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "husky_components/search/main.js": {
+            "name": "husky_components/search/main.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "husky_components/select/main.js": {
+            "name": "husky_components/select/main.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "husky_components/tabs/main.js": {
+            "name": "husky_components/tabs/main.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {
+        "husky/components/auto-complete-list": {
+            "name": "husky/components/auto-complete-list",
+            "submodules": {},
+            "classes": {
+                "AutoCompleteList": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "husky_components/auto-complete-list/main.js",
+            "line": 12,
+            "description": "This file is part of Husky frontend development framework.\n\n(c) MASSIVE ART WebServices GmbH\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE."
+        }
+    },
+    "classes": {
+        "AutoCompleteList": {
+            "name": "AutoCompleteList",
+            "shortname": "AutoCompleteList",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "husky/components/auto-complete-list",
+            "namespace": "",
+            "file": "husky_components/auto-complete-list/main.js",
+            "line": 12,
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration object",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "url",
+                            "description": "url to load data",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "classitems": [
+        {
+            "file": "husky_extensions/globalize.js",
+            "line": 45,
+            "description": "function calls this.sandbox.translate for an array of keys and returns an array of translations",
+            "params": [
+                {
+                    "name": "array",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Array"
+            },
+            "class": "AutoCompleteList"
+        },
+        {
+            "file": "husky_extensions/util.js",
+            "line": 32,
+            "description": "cool guy loop implementation of foreach: http://jsperf.com/loops3/2\nreturns -> callback(value, index)",
+            "class": "AutoCompleteList"
+        },
+        {
+            "file": "husky_components/auto-complete-list/main.js",
+            "line": 39,
+            "itemtype": "event",
+            "name": "husky.auto-complete-list.rendered",
+            "description": "fires when an animation begins.",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "Name of the ...",
+                    "type": "String"
+                }
+            ],
+            "class": "AutoCompleteList",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/auto-complete-list/main.js",
+            "line": 46,
+            "itemtype": "event",
+            "name": "husky.auto-complete-list.rendered",
+            "description": "fires when an animation begins.",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "Name of the ...",
+                    "type": "String"
+                }
+            ],
+            "class": "AutoCompleteList",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/auto-complete-list/main.js",
+            "line": 60,
+            "description": "get url for pattern",
+            "itemtype": "method",
+            "name": "getUrl",
+            "params": [
+                {
+                    "name": "pattern",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "String"
+            },
+            "class": "AutoCompleteList",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 1,
+            "description": "Name: Datagrid\n\nOptions:\n  - autoRemoveHandling: raises an event before a row is removed\n  - className: additional classname for the wrapping div\n  - data: array of data to display (instead of using a url)\n  - elementType: type of datagrid (currently is only table available)\n  - excludeFields: array of field to exclude\n  - pagination: display a pagination\n  - pageSize: lines per page\n  - showPages: amount of pages that will be shown\n  - removeRow: displays in the last column an icon to remove a row\n  - selectItem.type: typ of select [checkbox, radio]\n  - selectItem.width: typ of select [checkbox, radio]\n  - sortable: is list sortable [true,false]\n  - tableHead: configuration of table header\n      - content: column title\n      - width: width of column\n      - class: css class of th\n      - attribute: mapping information to data (if not set it will just itterate of attributes)\n  - url: url to fetch content\n  - appendTBody: add TBODY to table\n\nProvided Events:\n   - husky.datagrid.item.deselect - raised when item is deselected\n   - husky.datagrid.item.select - raised when item is selected\n   - husky.datagrid.all.deselect - raised when all items get deselected via the header checkbox\n   - husky.datagrid.all.select - raised when all items get selected via the header checkbox\n   - husky.datagrid.row.remove-click - raised when clicked on the remove-row-icon\n   - husky.datagrid.row.removed - raised when row got removed\n   - husky.datagrid.page.change - raised when the the current page changes\n   - husky.datagrid.updated - raised when the data is updated\n   - husky.datagrid.item.click - raised when clicked on an item\n   - husky.datagrid.items.selected - raised when husky.datagrid.items.get-selected is triggered\n   - husky.datagrid.data.provide - raised when when husky.datagrid.data.get is triggered\n\n\nUsed Events:\n   - husky.datagrid.update - used to trigger an update of the data\n   - husky.datagrid.row.add - used to add a row\n   - husky.datagrid.row.remove - used to remove a row\n   - husky.datagrid.items.get-selected - triggers husky.datagrid.items.selected event, which returns all selected item ids\n   - husky.datagrid.data.get - triggers husky.datagrid.data.provide",
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 54,
+            "description": "Default values for options",
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 113,
+            "description": "Gets the data either via the url or the array",
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 134,
+            "description": "Loads contents via ajax",
+            "params": [
+                {
+                    "name": "params",
+                    "description": "url"
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 180,
+            "description": "Returns url with page size and page param at the end",
+            "params": [
+                {
+                    "name": "params",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "String"
+            },
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 205,
+            "description": "Prepares the structure of the datagrid (list, table)",
+            "return": {
+                "description": "",
+                "type": "*"
+            },
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 223,
+            "description": "Perapres the structure of the datagrid when element type is table",
+            "return": {
+                "description": "returns table element",
+                "type": "Table"
+            },
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 257,
+            "description": "Prepares table head",
+            "return": {
+                "description": "returns table head",
+                "type": "String"
+            },
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 351,
+            "description": "Itterates over all items and prepares the rows",
+            "return": {
+                "description": "returns a string of all rows",
+                "type": "String"
+            },
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 375,
+            "description": "Returns a table row including values and data attributes",
+            "params": [
+                {
+                    "name": "row",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "string table row"
+            },
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 432,
+            "description": "Sets the value of row cell and the data-id attribute for the row",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "attribute name"
+                },
+                {
+                    "name": "value",
+                    "description": "attribute value"
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 458,
+            "description": "Resets the arrays for selected items",
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 466,
+            "description": "Selectes or deselects the clicked item",
+            "params": [
+                {
+                    "name": "event",
+                    "description": ""
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 532,
+            "description": "Selects or deselect all available items of the list",
+            "params": [
+                {
+                    "name": "event",
+                    "description": ""
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 558,
+            "description": "Adds a row to the datagrid",
+            "params": [
+                {
+                    "name": "row",
+                    "description": ""
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 569,
+            "description": "Prepares for removing a row\nRaises the husky.datagrid.row.remove-click event when auto remove handling is not set to true",
+            "params": [
+                {
+                    "name": "event",
+                    "description": ""
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 591,
+            "description": "Removes a row from the datagrid\nRaises husky.datagrid.row.removed event",
+            "params": [
+                {
+                    "name": "event",
+                    "description": ""
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 622,
+            "description": "Appends pagination when option is set",
+            "return": {
+                "description": "",
+                "type": "*"
+            },
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 635,
+            "description": "Delegates the rendering of the pagination when paginations is needed",
+            "return": {
+                "description": "",
+                "type": "*"
+            },
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 655,
+            "description": "Triggers rendering of the numbers in the pagination",
+            "return": {
+                "description": "",
+                "type": "*"
+            },
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 668,
+            "description": "Triggers rendering for last and next link",
+            "return": {
+                "description": "",
+                "type": "*|string"
+            },
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 688,
+            "description": "Triggers rendering for first and previous link",
+            "return": {
+                "description": "",
+                "type": "*|string"
+            },
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 706,
+            "description": "Called when the current page should change\nEmits husky.datagrid.updated event on success",
+            "params": [
+                {
+                    "name": "event",
+                    "description": ""
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 810,
+            "description": "Sets header classes and loads new data\nEmits husky.datagrid.updated event on success",
+            "params": [
+                {
+                    "name": "event",
+                    "description": ""
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 847,
+            "description": "Sets the header classes used for sorting purposes\nneeds this.sort to be correctly initialized",
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 890,
+            "description": "Updates data in datagrid\nCalled when husky.datagrid.update event emitted\nEmits husky.datagrid.updated event on success",
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 909,
+            "description": "Renders datagrid element in container\nBinds DOM events",
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 918,
+            "description": "Adds loading icon and keeps width and height",
+            "return": {
+                "description": "",
+                "type": "*"
+            },
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 930,
+            "description": "Removes loading icon, width and height of container",
+            "return": {
+                "description": "",
+                "type": "*"
+            },
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/datagrid/main.js",
+            "line": 938,
+            "description": "Returns selected items either via callback or else via husky.datagrid.items.selected event\nGets called on husky.datagrid.items.get-selected event",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": ""
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/dialog/main.js",
+            "line": 158,
+            "deprecated": true,
+            "deprecationMessage": "use callback functions",
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/dialog/main.js",
+            "line": 169,
+            "deprecated": true,
+            "deprecationMessage": "use callback functions",
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 41,
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 59,
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 75,
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 86,
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 126,
+            "description": "renders the navigation\ngets called after navigation data was loaded",
+            "params": [
+                {
+                    "name": "data",
+                    "description": ""
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 165,
+            "description": "renders main navigation elements",
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 197,
+            "description": "renders sub-navigation elements",
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 223,
+            "description": "Interaction",
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 233,
+            "description": "event listener",
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 246,
+            "description": "gets called when settings icon is clicked",
+            "emit": "husky.navigation.item.settings (name, id, parent)",
+            "params": [
+                {
+                    "name": "event",
+                    "description": ""
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 264,
+            "description": "Toggles menu element with submenu\nRaises navigation.toggle",
+            "params": [
+                {
+                    "name": "event",
+                    "description": ""
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 323,
+            "description": "toggles sections",
+            "params": [
+                {
+                    "name": "event",
+                    "description": ""
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 353,
+            "description": "Selects menu element without submenu\nRaises navigation.select",
+            "params": [
+                {
+                    "name": "event",
+                    "description": ""
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/search/main.js",
+            "line": 83,
+            "description": "function emits event based on options.name",
+            "params": [
+                {
+                    "name": "searchString",
+                    "description": ""
+                }
+            ],
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/select/main.js",
+            "line": 1,
+            "description": "Select\n      - url: url to fetch data from\n      - data: array of objects\n      - valueName: name of the attribute used for display\n      - selected: object with an id attribute e.g. {id : 1}\n      - defaultItem: object with an id attribute e.g. {id : 1}\n      - property: data-mapper-property\n      - type: data-type\n      - typeId: id property\n      - typeLabel: label property\nProvided Events\n      - select.item.changed - raised when the selected element changed",
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        },
+        {
+            "file": "husky_components/tabs/main.js",
+            "line": 1,
+            "description": "Tabs\nOptions (defaults)\n      - url: url to fetch data from\n      - data: if no url is provided\n      - selected: the item that's selected on initialize\n      - instanceName - enables custom events (in case of multiple tabs on one page)\n      - preselect - defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url)\n  Provides Events\n      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback\n  Triggers Events\n      - husky.tabs.<<instanceName>>.item.select [item] - triggered when item was clicked\n      - husky.tabs.<<instanceName>>.initialized [selectedItem]- triggered when tabs have been initialized\nTODO select first (or with parameter) item after load",
+            "class": "",
+            "module": "husky/components/auto-complete-list"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " husky_extensions/globalize.js:45"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " husky_components/auto-complete-list/main.js:60"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " husky_components/datagrid/main.js:180"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " husky_components/datagrid/main.js:205"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " husky_components/datagrid/main.js:223"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " husky_components/datagrid/main.js:257"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " husky_components/datagrid/main.js:351"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " husky_components/datagrid/main.js:375"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " husky_components/datagrid/main.js:622"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " husky_components/datagrid/main.js:635"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " husky_components/datagrid/main.js:655"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " husky_components/datagrid/main.js:668"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " husky_components/datagrid/main.js:688"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " husky_components/datagrid/main.js:918"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " husky_components/datagrid/main.js:930"
+        },
+        {
+            "message": "unknown tag: emit",
+            "line": " husky_components/navigation/main.js:246"
+        },
+        {
+            "message": "Missing item type\nfunction calls this.sandbox.translate for an array of keys and returns an array of translations",
+            "line": " husky_extensions/globalize.js:45"
+        },
+        {
+            "message": "Missing item type\ncool guy loop implementation of foreach: http://jsperf.com/loops3/2\nreturns -> callback(value, index)",
+            "line": " husky_extensions/util.js:32"
+        },
+        {
+            "message": "Missing item type\nName: Datagrid\n\nOptions:\n  - autoRemoveHandling: raises an event before a row is removed\n  - className: additional classname for the wrapping div\n  - data: array of data to display (instead of using a url)\n  - elementType: type of datagrid (currently is only table available)\n  - excludeFields: array of field to exclude\n  - pagination: display a pagination\n  - pageSize: lines per page\n  - showPages: amount of pages that will be shown\n  - removeRow: displays in the last column an icon to remove a row\n  - selectItem.type: typ of select [checkbox, radio]\n  - selectItem.width: typ of select [checkbox, radio]\n  - sortable: is list sortable [true,false]\n  - tableHead: configuration of table header\n      - content: column title\n      - width: width of column\n      - class: css class of th\n      - attribute: mapping information to data (if not set it will just itterate of attributes)\n  - url: url to fetch content\n  - appendTBody: add TBODY to table\n\nProvided Events:\n   - husky.datagrid.item.deselect - raised when item is deselected\n   - husky.datagrid.item.select - raised when item is selected\n   - husky.datagrid.all.deselect - raised when all items get deselected via the header checkbox\n   - husky.datagrid.all.select - raised when all items get selected via the header checkbox\n   - husky.datagrid.row.remove-click - raised when clicked on the remove-row-icon\n   - husky.datagrid.row.removed - raised when row got removed\n   - husky.datagrid.page.change - raised when the the current page changes\n   - husky.datagrid.updated - raised when the data is updated\n   - husky.datagrid.item.click - raised when clicked on an item\n   - husky.datagrid.items.selected - raised when husky.datagrid.items.get-selected is triggered\n   - husky.datagrid.data.provide - raised when when husky.datagrid.data.get is triggered\n\n\nUsed Events:\n   - husky.datagrid.update - used to trigger an update of the data\n   - husky.datagrid.row.add - used to add a row\n   - husky.datagrid.row.remove - used to remove a row\n   - husky.datagrid.items.get-selected - triggers husky.datagrid.items.selected event, which returns all selected item ids\n   - husky.datagrid.data.get - triggers husky.datagrid.data.provide",
+            "line": " husky_components/datagrid/main.js:1"
+        },
+        {
+            "message": "Missing item type\nDefault values for options",
+            "line": " husky_components/datagrid/main.js:54"
+        },
+        {
+            "message": "Missing item type\nGets the data either via the url or the array",
+            "line": " husky_components/datagrid/main.js:113"
+        },
+        {
+            "message": "Missing item type\nLoads contents via ajax",
+            "line": " husky_components/datagrid/main.js:134"
+        },
+        {
+            "message": "Missing item type\nReturns url with page size and page param at the end",
+            "line": " husky_components/datagrid/main.js:180"
+        },
+        {
+            "message": "Missing item type\nPrepares the structure of the datagrid (list, table)",
+            "line": " husky_components/datagrid/main.js:205"
+        },
+        {
+            "message": "Missing item type\nPerapres the structure of the datagrid when element type is table",
+            "line": " husky_components/datagrid/main.js:223"
+        },
+        {
+            "message": "Missing item type\nPrepares table head",
+            "line": " husky_components/datagrid/main.js:257"
+        },
+        {
+            "message": "Missing item type\nItterates over all items and prepares the rows",
+            "line": " husky_components/datagrid/main.js:351"
+        },
+        {
+            "message": "Missing item type\nReturns a table row including values and data attributes",
+            "line": " husky_components/datagrid/main.js:375"
+        },
+        {
+            "message": "Missing item type\nSets the value of row cell and the data-id attribute for the row",
+            "line": " husky_components/datagrid/main.js:432"
+        },
+        {
+            "message": "Missing item type\nResets the arrays for selected items",
+            "line": " husky_components/datagrid/main.js:458"
+        },
+        {
+            "message": "Missing item type\nSelectes or deselects the clicked item",
+            "line": " husky_components/datagrid/main.js:466"
+        },
+        {
+            "message": "Missing item type\nSelects or deselect all available items of the list",
+            "line": " husky_components/datagrid/main.js:532"
+        },
+        {
+            "message": "Missing item type\nAdds a row to the datagrid",
+            "line": " husky_components/datagrid/main.js:558"
+        },
+        {
+            "message": "Missing item type\nPrepares for removing a row\nRaises the husky.datagrid.row.remove-click event when auto remove handling is not set to true",
+            "line": " husky_components/datagrid/main.js:569"
+        },
+        {
+            "message": "Missing item type\nRemoves a row from the datagrid\nRaises husky.datagrid.row.removed event",
+            "line": " husky_components/datagrid/main.js:591"
+        },
+        {
+            "message": "Missing item type\nAppends pagination when option is set",
+            "line": " husky_components/datagrid/main.js:622"
+        },
+        {
+            "message": "Missing item type\nDelegates the rendering of the pagination when paginations is needed",
+            "line": " husky_components/datagrid/main.js:635"
+        },
+        {
+            "message": "Missing item type\nTriggers rendering of the numbers in the pagination",
+            "line": " husky_components/datagrid/main.js:655"
+        },
+        {
+            "message": "Missing item type\nTriggers rendering for last and next link",
+            "line": " husky_components/datagrid/main.js:668"
+        },
+        {
+            "message": "Missing item type\nTriggers rendering for first and previous link",
+            "line": " husky_components/datagrid/main.js:688"
+        },
+        {
+            "message": "Missing item type\nCalled when the current page should change\nEmits husky.datagrid.updated event on success",
+            "line": " husky_components/datagrid/main.js:706"
+        },
+        {
+            "message": "Missing item type\nSets header classes and loads new data\nEmits husky.datagrid.updated event on success",
+            "line": " husky_components/datagrid/main.js:810"
+        },
+        {
+            "message": "Missing item type\nSets the header classes used for sorting purposes\nneeds this.sort to be correctly initialized",
+            "line": " husky_components/datagrid/main.js:847"
+        },
+        {
+            "message": "Missing item type\nUpdates data in datagrid\nCalled when husky.datagrid.update event emitted\nEmits husky.datagrid.updated event on success",
+            "line": " husky_components/datagrid/main.js:890"
+        },
+        {
+            "message": "Missing item type\nRenders datagrid element in container\nBinds DOM events",
+            "line": " husky_components/datagrid/main.js:909"
+        },
+        {
+            "message": "Missing item type\nAdds loading icon and keeps width and height",
+            "line": " husky_components/datagrid/main.js:918"
+        },
+        {
+            "message": "Missing item type\nRemoves loading icon, width and height of container",
+            "line": " husky_components/datagrid/main.js:930"
+        },
+        {
+            "message": "Missing item type\nReturns selected items either via callback or else via husky.datagrid.items.selected event\nGets called on husky.datagrid.items.get-selected event",
+            "line": " husky_components/datagrid/main.js:938"
+        },
+        {
+            "message": "Missing item type",
+            "line": " husky_components/dialog/main.js:158"
+        },
+        {
+            "message": "Missing item type",
+            "line": " husky_components/dialog/main.js:169"
+        },
+        {
+            "message": "Missing item type",
+            "line": " husky_components/navigation/main.js:41"
+        },
+        {
+            "message": "Missing item type",
+            "line": " husky_components/navigation/main.js:59"
+        },
+        {
+            "message": "Missing item type",
+            "line": " husky_components/navigation/main.js:75"
+        },
+        {
+            "message": "Missing item type",
+            "line": " husky_components/navigation/main.js:86"
+        },
+        {
+            "message": "Missing item type\nrenders the navigation\ngets called after navigation data was loaded",
+            "line": " husky_components/navigation/main.js:126"
+        },
+        {
+            "message": "Missing item type\nrenders main navigation elements",
+            "line": " husky_components/navigation/main.js:165"
+        },
+        {
+            "message": "Missing item type\nrenders sub-navigation elements",
+            "line": " husky_components/navigation/main.js:197"
+        },
+        {
+            "message": "Missing item type\nInteraction",
+            "line": " husky_components/navigation/main.js:223"
+        },
+        {
+            "message": "Missing item type\nevent listener",
+            "line": " husky_components/navigation/main.js:233"
+        },
+        {
+            "message": "Missing item type\ngets called when settings icon is clicked",
+            "line": " husky_components/navigation/main.js:246"
+        },
+        {
+            "message": "Missing item type\nToggles menu element with submenu\nRaises navigation.toggle",
+            "line": " husky_components/navigation/main.js:264"
+        },
+        {
+            "message": "Missing item type\ntoggles sections",
+            "line": " husky_components/navigation/main.js:323"
+        },
+        {
+            "message": "Missing item type\nSelects menu element without submenu\nRaises navigation.select",
+            "line": " husky_components/navigation/main.js:353"
+        },
+        {
+            "message": "Missing item type\nfunction emits event based on options.name",
+            "line": " husky_components/search/main.js:83"
+        },
+        {
+            "message": "Missing item type\nSelect\n      - url: url to fetch data from\n      - data: array of objects\n      - valueName: name of the attribute used for display\n      - selected: object with an id attribute e.g. {id : 1}\n      - defaultItem: object with an id attribute e.g. {id : 1}\n      - property: data-mapper-property\n      - type: data-type\n      - typeId: id property\n      - typeLabel: label property\nProvided Events\n      - select.item.changed - raised when the selected element changed",
+            "line": " husky_components/select/main.js:1"
+        },
+        {
+            "message": "Missing item type\nTabs\nOptions (defaults)\n      - url: url to fetch data from\n      - data: if no url is provided\n      - selected: the item that's selected on initialize\n      - instanceName - enables custom events (in case of multiple tabs on one page)\n      - preselect - defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url)\n  Provides Events\n      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback\n  Triggers Events\n      - husky.tabs.<<instanceName>>.item.select [item] - triggered when item was clicked\n      - husky.tabs.<<instanceName>>.initialized [selectedItem]- triggered when tabs have been initialized\nTODO select first (or with parameter) item after load",
+            "line": " husky_components/tabs/main.js:1"
+        }
+    ]
+}

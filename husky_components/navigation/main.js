@@ -245,7 +245,7 @@ define(function() {
 
         /**
          * gets called when settings icon is clicked
-         * @emits husky.navigation.settings (name, id, parent)
+         * @emit husky.navigation.item.settings (name, id, parent)
          * @param event
          */
         settingsClicked: function(event) {
