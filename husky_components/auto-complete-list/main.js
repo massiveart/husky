@@ -27,17 +27,9 @@ define([], function() {
 
             /**
              * @event husky.auto-complete-list.rendered
-             * @description fires when an animation begins.
-             * @param {String} name Name of the ...
+             * @description the component has been rendered
              */
-                RENDERED = eventNamespace + 'rendered',
-
-            /**
-             * @event husky.auto-complete-list.rendered
-             * @description fires when an animation begins.
-             * @param {String} name Name of the ...
-             */
-                LOADED = eventNamespace + 'loaded';
+            RENDERED = eventNamespace + 'rendered';
 
         return {
 
@@ -55,6 +47,7 @@ define([], function() {
 
             render: function() {
 
+                this.sandbox.emit(RENDERED);
             }
 
         };
