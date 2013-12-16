@@ -25612,7 +25612,7 @@ define('__component__$edit-toolbar@husky',[],function() {
          * @param parent
          */
         createDropdownMenu = function(listItem, parent) {
-            var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />'),
+            var $list = this.sandbox.dom.createElement('<ul class="edit-toolbar-dropdown-menu" />'),
                 classString = '';
             this.sandbox.dom.append(listItem, $list);
             this.sandbox.util.foreach(parent.items, function(item) {
@@ -25721,7 +25721,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                 this.items[item.id] = item;
 
                 // create class array
-                classArray = [];
+                classArray = ['edit-toolbar-item'];
                 if (!!item.class) {
                     classArray.push(item.class);
                 }

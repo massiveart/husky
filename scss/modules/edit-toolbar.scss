@@ -3,222 +3,225 @@
 // --------------------------------------------------
 
 @mixin clear-float {
-    &:after {
-        clear: both;
-        content: " ";
-        display: block;
-    }
+  &:after {
+    clear: both;
+    content: " ";
+    display: block;
+  }
 }
 
 $hoverColor: #bbb;
 
 $editToolbarHeight: 40px;
 
-.edit-toolbar-container {
+/** navigation container **/
+.edit-toolbar-nav {
+  display: block;
+  height: auto;
+  overflow: visible;
+  width: auto;
+  max-height: 100px;
+  box-sizing: border-box;
 
-    nav.edit-toolbar-nav {
-        display: block;
-        height: auto;
-        overflow: visible;
-        width: auto;
-        max-height: 100px;
-        box-sizing: border-box;
+  border-radius: 4px;
+  background-color: $grayLighter;
+  @include clear-float;
+  @include box-shadow(#bababa 0 2px 0 0);
 
-        border-radius: 4px;
-        background-color: $grayLighter;
-        @include clear-float;
-        @include box-shadow(#bababa 0 2px 0 0);
+  > ul {
+    float: left;
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    height: $editToolbarHeight;
 
-        > ul {
-            float: left;
-            margin: 0;
-            padding-left: 0;
-            list-style: none;
-            height: $editToolbarHeight;
-
-            li.dropdown {
-                position: relative;
-                display: block;
-                list-style: none;
-                float: left;
-            }
-
-            > li {
-                min-width: 80px;
-                float: left;
-                position: relative;
-                display: block;
-                list-style: none;
-                background-color: $grayLighter;
-                height: 100%;
-                line-height: $editToolbarHeight;
-
-                &.highlight {
-                    min-width: 100px;
-                    background-color: $highlightColor;
-
-                    &:hover {
-                        background-color: lighten($highlightColor, 3%);
-                    }
-                    &:active {
-                        background-color: lighten($highlightColor, 5%);
-                    }
-
-                    a {
-                        color: white;
-                    }
-                }
-
-                &.highlight-gray {
-                    background-color: #a7a7a7;
-
-                    &:hover {
-                        background-color: lighten(#a7a7a7, 3%);
-                    }
-                    &:active {
-                        background-color: lighten(#a7a7a7, 5%);
-                    }
-
-                }
-
-                &.is-expanded {
-
-                    background-color: $hoverColor;
-
-                    ul.toolbar-dropdown-menu {
-                        display: block;
-                    }
-                }
-
-                &:hover {
-                    background-color: $hoverColor;
-                }
-                &:active {
-                    background-color: darken($hoverColor, 3%);
-                }
-
-                a {
-                    text-align: center;
-                    color: black;
-                    padding: 0 15px;
-                    display: block;
-                    text-decoration: none;
-                    height: 100%;
-
-                    .icon, &.icon {
-                        font-size: 18px;
-                        padding-right: 0px;
-                        line-height: 1;
-                        vertical-align: middle;
-
-                        &.large {
-                            font-size: 20px;
-                        }
-                        &.small {
-                            font-size: 12px;
-                        }
-                    }
-
-                    .title {
-                        font-size: 14px;
-                    }
-
-                    .icon + .title {
-                        padding-left: 10px;
-                    }
-
-                }
-            }
-
-            &.edit-toolbar-left {
-                float: left;
-
-                > :first-child {
-                    border-bottom-left-radius: 4px;
-                    border-top-left-radius: 4px;
-                }
-            }
-
-            &.edit-toolbar-right {
-                float: right;
-
-                > :last-child {
-                    border-bottom-right-radius: 4px;
-                    border-top-right-radius: 4px;
-                }
-            }
-
-            // dropdown
-            ul.toolbar-dropdown-menu {
-                background-color: white;
-                border: 0px solid $grayLighter;
-
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                z-index: 1000;
-                float: left;
-                min-width: 160px;
-                list-style: none;
-
-                padding: 5px 0;
-                margin-top: 0px;
-                margin-left: 0px;
-
-                @include standard-box-shadow;
-
-                &.right-aligned {
-                    left: auto;
-                    right: 0;
-                }
-
-                li {
-                    display: list-item;
-                    float: none;
-                    height: 30px;
-                    line-height: 30px;
-                    white-space: nowrap;
-
-                    &.is-selected,
-                    &:hover {
-                        background-color: $highlightColor;
-                        a {
-                            color: white;
-                        }
-                    }
-
-                    &.disabled:hover,
-                    &.disabled {
-                        cursor: default;
-                        background-color: inherit;
-                        a {
-                            cursor: default;
-                            color: $grayLight;
-                        }
-                    }
-
-                    &:active {
-                        background-color: lighten($highlightColor, 5%);
-                    }
-
-                    &.divider {
-                        height: 1px;
-                        margin: 5px 0;
-                        overflow: hidden;
-                        background-color: $grayLighterer;
-                    }
-
-                    a {
-                        clear: both;
-                        text-align: left;
-                    }
-
-                }
-
-            }
-        }
+    li.dropdown {
+      position: relative;
+      display: block;
+      list-style: none;
+      float: left;
     }
+
+    &.edit-toolbar-left {
+      float: left;
+
+      > :first-child {
+        border-bottom-left-radius: 4px;
+        border-top-left-radius: 4px;
+      }
+    }
+
+    &.edit-toolbar-right {
+      float: right;
+
+      > :last-child {
+        border-bottom-right-radius: 4px;
+        border-top-right-radius: 4px;
+      }
+    }
+
+  }
 }
 
+/** navigation element **/
+.edit-toolbar-item {
+  min-width: 80px;
+  float: left;
+  position: relative;
+  display: block;
+  list-style: none;
+  background-color: $grayLighter;
+  height: 100%;
+  line-height: $editToolbarHeight;
+
+  &.highlight {
+    min-width: 100px;
+    background-color: $highlightColor;
+
+    &:hover {
+      background-color: lighten($highlightColor, 3%);
+    }
+    &:active {
+      background-color: lighten($highlightColor, 5%);
+    }
+
+    a {
+      color: white;
+    }
+  }
+
+  &.highlight-gray {
+    background-color: #a7a7a7;
+
+    &:hover {
+      background-color: lighten(#a7a7a7, 3%);
+    }
+    &:active {
+      background-color: lighten(#a7a7a7, 5%);
+    }
+
+  }
+
+  &.is-expanded {
+
+    background-color: $hoverColor;
+
+    ul.edit-toolbar-dropdown-menu {
+      display: block;
+    }
+  }
+
+  &:hover {
+    background-color: $hoverColor;
+  }
+  &:active {
+    background-color: darken($hoverColor, 3%);
+  }
+
+  /** link styling **/
+  a {
+    text-align: center;
+    color: black;
+    padding: 0 15px;
+    display: block;
+    text-decoration: none;
+    height: 100%;
+
+    .icon, &.icon {
+      font-size: 18px;
+      padding-right: 0px;
+      line-height: 1;
+      vertical-align: middle;
+
+      &.large {
+        font-size: 20px;
+      }
+      &.small {
+        font-size: 12px;
+      }
+    }
+
+    .title {
+      font-size: 14px;
+    }
+
+    .icon + .title:not(:empty) {
+      padding-left: 10px;
+    }
+
+  }
+
+}
+
+
+
+/**  dropdown **/
+.edit-toolbar-dropdown-menu {
+  background-color: white;
+  border: 0px solid $grayLighter;
+
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  float: left;
+  min-width: 160px;
+  list-style: none;
+
+  padding: 5px 0;
+  margin-top: 0px;
+  margin-left: 0px;
+
+  @include standard-box-shadow;
+
+  &.right-aligned {
+    left: auto;
+    right: 0;
+  }
+
+  li {
+    display: list-item;
+    float: none;
+    height: 30px;
+    line-height: 30px;
+    white-space: nowrap;
+
+    &.is-selected,
+    &:hover {
+      background-color: $highlightColor;
+      a {
+        color: white;
+      }
+    }
+
+    &.disabled:hover,
+    &.disabled {
+      cursor: default;
+      background-color: inherit;
+      a {
+        cursor: default;
+        color: $grayLight;
+      }
+    }
+
+    &:active {
+      background-color: lighten($highlightColor, 5%);
+    }
+
+    &.divider {
+      height: 1px;
+      margin: 5px 0;
+      overflow: hidden;
+      background-color: $grayLighterer;
+    }
+
+    a {
+      clear: both;
+      text-align: left;
+    }
+
+  }
+
+}
 

@@ -266,7 +266,7 @@ define(function() {
          * @param parent
          */
         createDropdownMenu = function(listItem, parent) {
-            var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />'),
+            var $list = this.sandbox.dom.createElement('<ul class="edit-toolbar-dropdown-menu" />'),
                 classString = '';
             this.sandbox.dom.append(listItem, $list);
             this.sandbox.util.foreach(parent.items, function(item) {
@@ -375,7 +375,7 @@ define(function() {
                 this.items[item.id] = item;
 
                 // create class array
-                classArray = [];
+                classArray = ['edit-toolbar-item'];
                 if (!!item.class) {
                     classArray.push(item.class);
                 }
@@ -387,7 +387,7 @@ define(function() {
                     addTo = $left;
                 }
 
-                $listItem = this.sandbox.dom.createElement('<li class="' + classArray.join(',') + '" data-id="' + item.id + '"/>');
+                $listItem = this.sandbox.dom.createElement('<li class="' + classArray.join(' ') + '" data-id="' + item.id + '"/>');
                 $listLink = this.sandbox.dom.createElement('<a href="#" />');
                 this.sandbox.dom.append($listItem, $listLink);
 
