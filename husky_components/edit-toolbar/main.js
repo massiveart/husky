@@ -66,8 +66,31 @@ define(function() {
         },
 
         /** events bound to sandbox */
-            bindCustomEvents = function() {
-            this.sandbox.on()
+        bindCustomEvents = function() {
+            this.sandbox.on(createEventName.call(this, 'item.disable'), function(id) {
+                enableItem.call(this, false, id);
+            }.bind(this));
+        },
+
+        /** set item enable or disable */
+        enableItem = function(enabled, id){
+            var item = this.items[id],
+                $item = this.sandbox.dom.find('*[data-id="' + id + '"]'),
+                $iconItem = this.sandbox.dom.find('*[data-id="' + id + '"] .icon'),
+                enabledIconClass = createIconClass.call(this, item, true),
+                disabledIconClass = createIconClass.call(this, item, false);
+
+            this.items[id].disabled = !enabled;
+
+            if (!!enabled) {
+                this.sandbox.dom.removeClass($item, 'disable');
+                this.sandbox.dom.removeClass($iconItem, disabledIconClass);
+                this.sandbox.dom.prependClass($iconItem, enabledIconClass);
+            } else {
+                this.sandbox.dom.addClass($item, 'disable');
+                this.sandbox.dom.removeClass($iconItem, enabledIconClass);
+                this.sandbox.dom.prependClass($iconItem, disabledIconClass);
+            }
         },
 
         /**
@@ -81,20 +104,24 @@ define(function() {
             event.stopPropagation();
 
             var $list = this.sandbox.dom.parent(event.currentTarget),
+                id = this.sandbox.dom.data($list, 'id'),
+                item = this.items[id],
                 visible;
 
-            if (this.sandbox.dom.hasClass($list, 'is-expanded')) {
-                visible = true;
-            }
-            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-expanded', this.$el), 'is-expanded');
+            if (!item || !item.disabled) {
+                if (this.sandbox.dom.hasClass($list, 'is-expanded')) {
+                    visible = true;
+                }
+                this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-expanded', this.$el), 'is-expanded');
 
-            if (!visible) {
-                this.sandbox.dom.addClass($list, 'is-expanded');
+                if (!visible) {
+                    this.sandbox.dom.addClass($list, 'is-expanded');
 
-                // TODO: check if dropdown overlaps screen: set ul to .right-aligned
+                    // TODO: check if dropdown overlaps screen: set ul to .right-aligned
 
-                // on every click remove submenu
-                this.sandbox.dom.one('body', 'click', toggleItem.bind(this));
+                    // on every click remove submenu
+                    this.sandbox.dom.one('body', 'click', toggleItem.bind(this));
+                }
             }
         },
 
@@ -115,16 +142,19 @@ define(function() {
                 return;
             }
 
-            triggerSelectEvent.call(this, item, $parent);
+            if (!item.disabled) {
+                triggerSelectEvent.call(this, item, $parent);
+            }
         },
 
         /**
          * either calls items callback (if set) or triggers select event
          * @param item
+         * @param $parent
          */
         triggerSelectEvent = function(item, $parent) {
 
-            var instanceName, parentItem;
+            var parentItem;
 
             // check if has parent and type of parent
             if (item.parentId) {
@@ -154,8 +184,8 @@ define(function() {
             var listItems = this.sandbox.dom.find('span',listelement);
             if (!!item.icon) {
                 this.sandbox.dom.removeClass(listItems.eq(0),'');
-                if (item.icon !== 'NOICON') {
-                    this.sandbox.dom.addClass(listItems.eq(0), createIconClass.call(this, item));
+                if (item.icon !== false) {
+                    this.sandbox.dom.addClass(listItems.eq(0), createIconSupportClass.call(this, item));
                 }
             }
             if (!!item.title) {
@@ -166,31 +196,46 @@ define(function() {
         /**
          * creates icon span with icon classes
          * @param item
+         * @param enabled
          * @returns {HTMLElement|*}
          */
-        createIconClass = function(item) {
+        createIconSupportClass = function(item, enabled) {
             var classArray,
-                classString = '';
+                classString = '',
+                icon = createIconClass.call(this, item, enabled);
 
             // create icon class
             if (item.icon) {
                 classArray = [];
-                classArray.push('icon-'+item.icon);
+                classArray.push(icon);
                 classArray.push('icon');
-                if(item.iconSize) {
+                if (item.iconSize) {
                     classArray.push(item.iconSize);
                 }
 
-                classString=classArray.join(' ');
+                classString = classArray.join(' ');
             }
 
             return classString;
         },
 
         /**
+         * returns valid class for item and state
+         * @param item
+         * @param enabled
+         */
+        createIconClass = function(item, enabled) {
+            if (enabled === undefined) {
+                enabled = true;
+            }
+            var icon = (!!enabled ? item.icon : !!item.disabledIcon ? item.disabledIcon : item.icon);
+            return 'icon-' + icon;
+        },
+
+        /**
          * created dropdown menu
          * @param listItem
-         * @param items
+         * @param parent
          */
         createDropdownMenu = function(listItem, parent) {
             var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />');
@@ -218,6 +263,10 @@ define(function() {
                     item.id = createUniqueId();
                 } while (!!this.items[item.id]);
             }
+            // set enabled default
+            if (!item.disabled) {
+                item.disabled = false;
+            }
         },
 
         /**
@@ -233,12 +282,17 @@ define(function() {
 
         /** emits event */
         emitEvent = function(postFix, data) {
-            var eventName = 'husky.edittoolbar.' + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+            var eventName = createEventName.call(this, postFix);
             if (!!data) {
                 this.sandbox.emit(eventName, data);
             } else {
                 this.sandbox.emit(eventName);
             }
+        },
+
+        /** returns normalized event names */
+        createEventName = function(postFix) {
+            return 'husky.edittoolbar.' + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         };
 
     return {
@@ -263,6 +317,7 @@ define(function() {
             }
 
             bindDOMEvents.call(this);
+            bindCustomEvents.call(this);
         },
 
         render: function(data) {
@@ -318,7 +373,7 @@ define(function() {
                 this.sandbox.dom.append($listItem, $listLink);
 
                 // create icon span
-                this.sandbox.dom.append($listLink, '<span class="'+createIconClass.call(this, item)+'" />');
+                this.sandbox.dom.append($listLink, '<span class="'+createIconSupportClass.call(this, item)+'" />');
 
                 // create title span
                 title = item.title ? item.title : '';
