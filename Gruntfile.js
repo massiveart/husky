@@ -58,10 +58,6 @@ module.exports = function(grunt) {
             compass: {
                 files: ['scss/{,*/}*.{scss,sass}'],
                 tasks: ['compass:dev', 'copy:dist']
-            },
-            jshint: {
-                files: ['js/{,*/}*.{js,js}'],
-                tasks: ['jshint']
             }
         },
         jshint: {
@@ -101,7 +97,7 @@ module.exports = function(grunt) {
             dev: {
                 options: {
                     sassDir: 'scss/',
-                    specify: ['scss/husky.scss'],
+                    specify: 'scss/husky.scss',
                     cssDir: '.tmp/',
                     require: ['animation'],
                     relativeAssets: false
@@ -329,7 +325,6 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('default', [
-        'copy:dev',
         'watch'
     ]);
 };

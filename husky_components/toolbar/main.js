@@ -31,25 +31,128 @@ define(function() {
         selectItem = function(event) {
             event.preventDefault();
 
-            triggerSelectEvent.call(this, this.items[this.sandbox.dom.data(event.currentTarget, 'id')]);
+            var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')],
+                $parent;
+
+            if (item.disabled) {
+                return;
+            }
+
+            // if toggle item do not trigger event
+            if (!item.items) {
+                $parent = this.sandbox.dom.find('button',this.sandbox.dom.closest(event.currentTarget,'.group'));
+                triggerSelectEvent.call(this, item, $parent);
+            }
         },
 
-        triggerSelectEvent = function(item) {
+        triggerSelectEvent = function(item, $parent) {
+            var instanceName, parentId, icon;
+            parentId = this.sandbox.dom.data($parent, 'id');
+
+            if (this.items[parentId].type === "select") {
+                icon =this.sandbox.dom.find('span', $parent);
+                this.sandbox.dom.removeClass(icon);
+                this.sandbox.dom.addClass(icon, item.icon);
+            }
+
             // if callback is set call it, else trigger event
             if (item.callback) {
                 item.callback();
             } else {
-                this.sandbox.emit(createEventString.call(this, 'item.select'), item);
+                instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
+                this.sandbox.emit('husky.toolbar.' + instanceName + 'item.select', item);
             }
         },
 
         bindDOMEvents = function() {
-            this.sandbox.dom.on(this.options.el, 'click', selectItem.bind(this), 'button:not(:disabled)');
+            this.sandbox.dom.on(this.options.el, 'click', selectItem.bind(this), 'button:not(:disabled), li');
+            this.sandbox.dom.on(this.options.el, 'click', toggleItem.bind(this), '.dropdown-toggle');
         },
 
-        createEventString = function(ending) {
-            var instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
-            return 'husky.toolbar.' + instanceName + ending;
+        /**
+         * created dropdown menu
+         * @param listItem
+         * @param items
+         **/
+            createDropdownMenu = function(listItem, parent) {
+            var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />'),
+                classString = '';
+            this.sandbox.dom.after(listItem, $list);
+            this.sandbox.util.foreach(parent.items, function(item) {
+
+                if (item.divider) {
+                    this.sandbox.dom.append($list, '<li class="divider"></li>');
+                    return;
+                }
+
+                item.parentId = parent.id;
+                // check id for uniqueness
+                checkItemId.call(this, item);
+                this.items[item.id] = item;
+
+                if (item.disabled) {
+                    classString = ' class="disabled"';
+                }
+
+                this.sandbox.dom.append($list, '<li data-id="' + item.id + '"' + classString + '><a href="#">' + item.title + '</a></li>');
+            }.bind(this));
+        },
+
+        /**
+         * function checks if id is set and unique among all items
+         * otherwise a new id is generated for the element
+         * @param item
+         */
+            checkItemId = function(item) {
+            // if item has no id, generate random id
+            if (!item.id || !!this.items[item.id]) {
+                do {
+                    item.id = createUniqueId();
+                } while (!!this.items[item.id]);
+            }
+        },
+
+        /**
+         * gets called when toggle item is clicked
+         * opens dropdown submenu
+         * @param event
+         */
+            toggleItem = function(event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            var $list = this.sandbox.dom.parent(event.currentTarget),
+                visible;
+
+            if (this.sandbox.dom.hasClass($list, 'is-expanded')) {
+                visible = true;
+            }
+            hideDropdowns.call(this);
+
+            if (!visible) {
+                this.sandbox.dom.addClass($list, 'is-expanded');
+
+                // TODO: check if dropdown overlaps screen: set ul to .right-aligned
+
+                // on every click remove submenu
+                this.sandbox.dom.one('body', 'click', hideDropdowns.bind(this));
+            }
+        },
+
+        hideDropdowns = function() {
+            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-expanded', this.$el), 'is-expanded');
+        },
+
+        /**
+         * function generates a unique id
+         * @returns string
+         */
+            createUniqueId = function() {
+            return 'xxxxyxxyx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
         };
 
     return {
@@ -82,7 +185,7 @@ define(function() {
             // TODO: add appearance class
 
             var $container = this.sandbox.dom.createElement('<div class="toolbar-container" />'),
-                classArray, addTo, disabledString;
+                classArray, addTo, disabledString, button, $group;
 
             this.sandbox.dom.append(this.options.el, $container);
 
@@ -91,23 +194,15 @@ define(function() {
             // save item groups in array
             this.itemGroup = [];
 
+
             // create all elements
             this.sandbox.util.foreach(data, function(item) {
 
-                // if item has no id, generate random id
-                if (!item.id) {
-                    item.id = 'xxxxyxxx'.replace(/[xy]/g, function(c) {
-                        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                        return v.toString(16);
-                    });
-                }
+                checkItemId.call(this, item);
                 // save to items array
                 this.items[item.id] = item;
                 // create classes array
                 classArray = [];
-                if (item.icon) {
-                    classArray.push('icon-' + item.icon);
-                }
 
                 // check if item is in a group
                 if (!!item.group) {
@@ -120,8 +215,8 @@ define(function() {
                     addTo = this.itemGroup[item.group];
                 } else {
                     addTo = $container;
-                    classArray.push(this.options.appearance);
                 }
+
 
                 if (!!item.class) {
                     classArray.push(item.class);
@@ -132,7 +227,16 @@ define(function() {
                     disabledString = 'disabled';
                 }
                 // create button
-                this.sandbox.dom.append(addTo, '<button data-id="' + item.id + '" class="' + classArray.join(' ') + '" title="' + item.title + '" ' + disabledString + '/>');
+                $group = this.sandbox.dom.createElement('<div class="group ' + this.options.appearance + '" />');
+                this.sandbox.dom.append(addTo, $group);
+                button = this.sandbox.dom.createElement('<button data-id="' + item.id + '" class="' + classArray.join(' ') + '" title="' + item.title + '" ' + disabledString + '><span class="icon-' + item.icon + '"/></button>');
+                this.sandbox.dom.append($group, button);
+
+                // now create subitems
+                if (!!item.items) {
+                    this.sandbox.dom.addClass(button, 'dropdown-toggle');
+                    createDropdownMenu.call(this, button, item);
+                }
 
             }.bind(this));
 
@@ -146,7 +250,7 @@ define(function() {
             ]);
 
             // initialization finished
-            this.sandbox.emit(createEventString.call(this, 'initialized'));
+            this.sandbox.emit('husky.tabs.initialized');
         }
     };
 

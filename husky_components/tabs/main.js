@@ -8,11 +8,17 @@
  *      - selected: the item that's selected on initialize
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
  *      - preselect - defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url)
+ *      - forceReload - defines if tabs are forcing page to reload
+ *      - forceSelect - forces tabs to select first item, if no selected item has been found
  *  Provides Events
  *      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback
  *  Triggers Events
  *      - husky.tabs.<<instanceName>>.item.select [item] - triggered when item was clicked
  *      - husky.tabs.<<instanceName>>.initialized [selectedItem]- triggered when tabs have been initialized
+ *
+ *  Data options
+ *      - items
+ *          - forceReload: overwrites default-setting for certain item
  *
  *  TODO select first (or with parameter) item after load
  *
@@ -26,7 +32,9 @@ define(function() {
             url: null,
             data: [],
             instanceName: '',
-            preselect: true
+            preselect: true,
+            forceReload: false,
+            forceSelect: true
         },
 
         selectItem = function(event) {
@@ -37,6 +45,8 @@ define(function() {
         },
 
         triggerSelectEvent = function(item) {
+
+            item.forceReload = (item.forceReload && typeof item.forceReload !== "undefined") ? item.forceReload : this.options.forceReload;
             this.sandbox.emit(createEventString.call(this, 'item.select'), item);
         },
 
@@ -102,9 +112,16 @@ define(function() {
                 } else {
                     selected = '';
                 }
+
                 this.items[item.id] = item;
                 this.sandbox.dom.append($list, '<li ' + selected + ' data-id="' + item.id + '"><a href="#">' + item.title + '</a></li>');
             }.bind(this));
+
+            // force selection of first element
+            if (!selectedItem && this.options.forceSelect) {
+                selectedItem = this.options.data[0];
+                this.sandbox.dom.addClass(this.sandbox.dom.find('li',$list).eq(0),'is-selected');
+            }
 
             // initialization finished
             this.sandbox.emit(createEventString.call(this, 'initialized'), selectedItem);

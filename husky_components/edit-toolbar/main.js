@@ -40,6 +40,7 @@
  *          - title
  *          - icon (optional) false will remove icon
  *          - callback
+ *          - divider = true; takes item as divider element
  *
  *
  */
