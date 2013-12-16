@@ -112,7 +112,7 @@ define(function() {
                 if (this.sandbox.dom.hasClass($list, 'is-expanded')) {
                     visible = true;
                 }
-                this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-expanded', this.$el), 'is-expanded');
+                hideDropdowns.call(this);
 
                 if (!visible) {
                     this.sandbox.dom.addClass($list, 'is-expanded');
@@ -120,9 +120,16 @@ define(function() {
                     // TODO: check if dropdown overlaps screen: set ul to .right-aligned
 
                     // on every click remove submenu
-                    this.sandbox.dom.one('body', 'click', toggleItem.bind(this));
+                    this.sandbox.dom.one('body', 'click', hideDropdowns.bind(this));
                 }
             }
+        },
+
+        /**
+         * hides dropdowns of this instance
+         */
+        hideDropdowns = function() {
+            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-expanded', this.$el), 'is-expanded');
         },
 
         /**
@@ -237,17 +244,27 @@ define(function() {
          * @param listItem
          * @param parent
          */
-        createDropdownMenu = function(listItem, parent) {
-            var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />');
+            createDropdownMenu = function(listItem, parent) {
+            var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />'),
+                classString = '';
             this.sandbox.dom.append(listItem, $list);
             this.sandbox.util.foreach(parent.items, function(item) {
+
+                if (item.divider) {
+                    this.sandbox.dom.append($list, '<li class="divider"></li>');
+                    return;
+                }
 
                 item.parentId = parent.id;
                 // check id for uniqueness
                 checkItemId.call(this, item);
                 this.items[item.id] = item;
 
-                this.sandbox.dom.append($list, '<li data-id="' + item.id + '"><a href="#">' + item.title + '</a></li>');
+                if (item.disabled) {
+                    classString = ' class="disabled"';
+                }
+
+                this.sandbox.dom.append($list, '<li data-id="' + item.id + '"' + classString + '><a href="#">' + item.title + '</a></li>');
             }.bind(this));
         },
 
@@ -263,7 +280,7 @@ define(function() {
                     item.id = this.sandbox.util.createUniqueId();
                 } while (!!this.items[item.id]);
             }
-            // set enabled default
+            // set enabled defaults
             if (!item.disabled) {
                 item.disabled = false;
             }
