@@ -56,7 +56,7 @@ define(function() {
             ].join(''),
             pageFunction: [
                 '<div class="page-function"> ',
-                '   <a href="#"><span class="icon-<%= icon %>"></span></a>',
+                '   <a href="#" id="back-page-function"><span class="icon-<%= icon %>"></span></a>',
                 '</div>'
             ].join('')
         },
@@ -65,6 +65,12 @@ define(function() {
         bindDOMEvents = function() {
             this.sandbox.dom.on(this.options.el, 'click', toggleItem.bind(this), '.dropdown-toggle');
             this.sandbox.dom.on(this.options.el, 'click', selectItem.bind(this), 'li');
+            this.sandbox.dom.on(this.options.el, 'click', backPageFunctionClick.bind(this), '#back-page-function');
+        },
+
+        // FIXME to be replaced by own component
+        backPageFunctionClick = function() {
+            emitEvent.call(this, 'back');
         },
 
         /** events bound to sandbox */
