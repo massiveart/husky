@@ -25354,11 +25354,11 @@ define('__component__$password-fields@husky',[], function() {
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
  *      - appearance -
  *  Provides Events
- *      - husky.edittoolbar.<<instanceName>>.item.disable - disable item with given id
- *      - husky.edittoolbar.<<instanceName>>.item.enable - enable item with given id
+ *      - husky.edit-toolbar.<<instanceName>>.item.disable - disable item with given id
+ *      - husky.edit-toolbar.<<instanceName>>.item.enable - enable item with given id
  *
  *  Triggers Events
- *      - husky.edittoolbar.<<instanceName>>.item.select - triggered when item was clicked
+ *      - husky.edit-toolbar.<<instanceName>>.item.select - triggered when item was clicked
  *
  *  data structure:
  *      - title
@@ -25398,11 +25398,6 @@ define('__component__$edit-toolbar@husky',[],function() {
                 '       <ul class="edit-toolbar-left" />',
                 '       <ul class="edit-toolbar-right" />',
                 '   </div>',
-                '</div>'
-            ].join(''),
-            pageFunction: [
-                '<div class="page-function"> ',
-                '   <a href="#" id="back-page-function"><span class="icon-<%= icon %>"></span></a>',
                 '</div>'
             ].join('')
         },
@@ -25618,24 +25613,13 @@ define('__component__$edit-toolbar@husky',[],function() {
             // if item has no id, generate random id
             if (!item.id || !!this.items[item.id]) {
                 do {
-                    item.id = createUniqueId();
+                    item.id = this.sandbox.util.createUniqueId();
                 } while (!!this.items[item.id]);
             }
             // set enabled default
             if (!item.disabled) {
                 item.disabled = false;
             }
-        },
-
-        /**
-         * function generates a unique id
-         * @returns string
-         */
-        createUniqueId = function() {
-            return 'xxxxyxxyx'.replace(/[xy]/g, function(c) {
-                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
         },
 
         /** emits event */
@@ -25683,14 +25667,6 @@ define('__component__$edit-toolbar@husky',[],function() {
             var classArray, addTo, $left, $right,
                 $listItem, $listLink,
                 title;
-
-            // first render page function
-            if (this.options.pageFunction) {
-                // render skeleton
-                this.sandbox.dom.append(this.options.el, this.sandbox.template.parse(templates.pageFunction, {
-                    icon: this.options.pageFunction.icon
-                }));
-            }
 
             // create navbar skeleton
             this.sandbox.dom.append(this.options.el, templates.skeleton);
@@ -26630,6 +26606,17 @@ define('husky_extensions/util',[],function() {
 
             app.core.util.contains = function(list, value){
                 return _.contains(list, value);
+            };
+
+            /**
+             * function generates a unique id
+             * @returns string
+             */
+            app.core.util.createUniqueId = function() {
+                return 'xxxxyxxyx'.replace(/[xy]/g, function(c) {
+                    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
             };
 
         }

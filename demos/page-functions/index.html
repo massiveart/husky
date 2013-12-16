@@ -1,0 +1,183 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="stylesheet" href="../../dist/husky.min.css">
+        <style>
+            body {
+                margin: 20px;
+                overflow: hidden;
+            }
+
+            #content {
+                width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            #content #edit-toolbar {
+                z-index: 100;
+                position: fixed;
+                top: 30px;
+                min-width: 800px;
+            }
+
+            #content .tabs-content {
+                margin-top: 100px;
+            }
+
+            #edit-toolbar .edit-toolbar-left {
+                margin-left: -50px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="grid" id="content">
+            <div class="grid-col-12">
+                <div id="edit-toolbar">
+                    <div id="page-functions">
+
+                    </div>
+                    <div id="toolbar">
+
+                    </div>
+                </div>
+
+                <div class="tabs-content">
+                    <h1>Page-Functions and Edit-Toolbar</h1>
+                </div>
+
+            </div>
+        </div>
+
+        <script src="../js/sinon.js"></script>
+        <script src="../js/jquery.js"></script>
+
+        <script src="../js/require.js"></script>
+
+        <script type="text/javascript">
+            require.config({
+                baseUrl: '../../'
+            });
+
+            require(['lib/husky'], function(Husky) {
+                'use strict';
+
+                var app = Husky({ debug: { enable: true }}),
+                        testData = [
+                            {
+                                'id': '1',
+                                'icon': 'user-add',
+                                'disabledIcon': 'cogwheel',
+                                'iconSize': 'large',
+                                'class': 'highlight',
+                                'callback': function() {
+                                    console.log("user-add was clicked!");
+                                }
+                            },
+                            {
+                                'id': 'edit',
+                                'icon': 'cogwheel',
+                                'iconSize': 'large',
+                                'disabledIcon': 'user-add',
+                                'title': '',
+                                'group': 'right',
+                                'items': [
+                                    {
+                                        'title': 'Refresh',
+                                        'callback': function() {
+                                            console.log("refresh was clicked");
+                                        }
+                                    },
+                                    {
+                                        'title': 'no refresh',
+                                        'callback': function() {
+                                            console.log("no refresh was clicked");
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                'id': '3',
+                                'icon': 'retweet',
+                                'group': 'right',
+                                'title': 'unpublished',
+                                'class': 'highlight-gray',
+                                'type': 'select',
+                                'items': [
+                                    {
+                                        'title': 'Publish',
+                                        'callback': function() {
+                                            console.log("refresh was clicked");
+                                        }
+                                    },
+                                    {
+                                        'icon': 'bin',
+                                        'title': 'Private',
+                                        'callback': function() {
+                                            console.log("no refresh was clicked");
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                'icon': 'file-import',
+                                'title': 'Import',
+                                'callback': function() {
+                                    console.log("import was clicked");
+                                }
+                            },
+                            {
+                                'icon': 'file-import',
+                                'title': 'Work'
+                            },
+                            {
+                                'icon': 'file-export',
+                                'title': 'Export'
+                            }
+                        ];
+
+                app.start().then(function() {
+                    app.logger.log('Aura started...');
+
+                    app.sandbox.start([
+                        {
+                            name: 'page-functions@husky',
+                            options: {
+                                el: '#page-functions',
+                                instanceName: 'contact',
+                                data: {
+                                    icon: 'chevron-left',
+                                    callback: function() {
+                                        console.log("go back to last page");
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            name: 'edit-toolbar@husky',
+                            options: {
+                                el: '#toolbar',
+                                instanceName: 'contact',
+                                data: testData
+                            }
+                        }
+                    ]);
+                });
+            });
+        </script>
+
+    </body>
+</html>
