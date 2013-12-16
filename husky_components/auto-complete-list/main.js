@@ -15,7 +15,7 @@
  *
  * @param {Object} [options] Configuration object
  * @param {String} [options.url] url to load data
- **/
+ */
 define([], function() {
 
         'use strict';
