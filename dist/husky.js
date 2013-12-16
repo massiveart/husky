@@ -25346,9 +25346,6 @@ define('__component__$password-fields@husky',[], function() {
  * @module husky/components/column-navigation
  */
 
-// TODO
-// browser compatibility testing (scrollbar position and width);
-
 /**
  * @class ColumnNavigation
  * @constructor
@@ -25374,7 +25371,7 @@ define('__component__$column-navigation@husky',[], function() {
             url: null
         },
 
-        SCROLLBARWIDTH = 15, // width of scrollbars
+        SCROLLBARWIDTH = 17, // width of scrollbars
         DISPLAYEDCOLUMNS = 3, // number of displayed columns
 
         eventNamespace = 'husky.column-navigation.',
