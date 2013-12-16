@@ -46,7 +46,7 @@
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #7aba7b;
 }
 
-/*! normalize.css v2.1.2 | MIT License | git.io/normalize */
+/* normalize.css v2.1.2 | MIT License | git.io/normalize */
 /* ==========================================================================
    HTML5 display definitions
    ========================================================================== */
@@ -3952,7 +3952,7 @@ li a.navigation-settings-icon {
 
 /** navigation container **/
 /* line 18, ../scss/modules/edit-toolbar.scss */
-nav.edit-toolbar-nav {
+.edit-toolbar-nav {
   display: block;
   height: auto;
   overflow: visible;
@@ -3966,13 +3966,13 @@ nav.edit-toolbar-nav {
   box-shadow: #bababa 0 2px 0 0;
 }
 /* line 6, ../scss/modules/edit-toolbar.scss */
-nav.edit-toolbar-nav:after {
+.edit-toolbar-nav:after {
   clear: both;
-  content: " ";
+  content: ' ';
   display: block;
 }
 /* line 31, ../scss/modules/edit-toolbar.scss */
-nav.edit-toolbar-nav > ul {
+.edit-toolbar-nav > ul {
   float: left;
   margin: 0;
   padding-left: 0;
@@ -3980,27 +3980,27 @@ nav.edit-toolbar-nav > ul {
   height: 40px;
 }
 /* line 38, ../scss/modules/edit-toolbar.scss */
-nav.edit-toolbar-nav > ul li.dropdown {
+.edit-toolbar-nav > ul li.dropdown {
   position: relative;
   display: block;
   list-style: none;
   float: left;
 }
 /* line 45, ../scss/modules/edit-toolbar.scss */
-nav.edit-toolbar-nav > ul.edit-toolbar-left {
+.edit-toolbar-nav > ul.edit-toolbar-left {
   float: left;
 }
 /* line 48, ../scss/modules/edit-toolbar.scss */
-nav.edit-toolbar-nav > ul.edit-toolbar-left > :first-child {
+.edit-toolbar-nav > ul.edit-toolbar-left > :first-child {
   border-bottom-left-radius: 4px;
   border-top-left-radius: 4px;
 }
 /* line 54, ../scss/modules/edit-toolbar.scss */
-nav.edit-toolbar-nav > ul.edit-toolbar-right {
+.edit-toolbar-nav > ul.edit-toolbar-right {
   float: right;
 }
 /* line 57, ../scss/modules/edit-toolbar.scss */
-nav.edit-toolbar-nav > ul.edit-toolbar-right > :last-child {
+.edit-toolbar-nav > ul.edit-toolbar-right > :last-child {
   border-bottom-right-radius: 4px;
   border-top-right-radius: 4px;
 }
@@ -4097,8 +4097,8 @@ nav.edit-toolbar-nav > ul.edit-toolbar-right > :last-child {
 }
 
 /**  dropdown **/
-/* line 159, ../scss/modules/edit-toolbar.scss */
-ul.edit-toolbar-dropdown-menu {
+/* line 157, ../scss/modules/edit-toolbar.scss */
+.edit-toolbar-dropdown-menu {
   background-color: white;
   border: 0px solid #cccccc;
   display: none;
@@ -4116,50 +4116,50 @@ ul.edit-toolbar-dropdown-menu {
   -moz-box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 0px 0px;
   box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 0px 0px;
 }
-/* line 178, ../scss/modules/edit-toolbar.scss */
-ul.edit-toolbar-dropdown-menu.right-aligned {
+/* line 176, ../scss/modules/edit-toolbar.scss */
+.edit-toolbar-dropdown-menu.right-aligned {
   left: auto;
   right: 0;
 }
-/* line 183, ../scss/modules/edit-toolbar.scss */
-ul.edit-toolbar-dropdown-menu li {
+/* line 181, ../scss/modules/edit-toolbar.scss */
+.edit-toolbar-dropdown-menu li {
   display: list-item;
   float: none;
   height: 30px;
   line-height: 30px;
   white-space: nowrap;
 }
-/* line 191, ../scss/modules/edit-toolbar.scss */
-ul.edit-toolbar-dropdown-menu li.is-selected, ul.edit-toolbar-dropdown-menu li:hover {
+/* line 189, ../scss/modules/edit-toolbar.scss */
+.edit-toolbar-dropdown-menu li.is-selected, .edit-toolbar-dropdown-menu li:hover {
   background-color: #249fbe;
 }
-/* line 193, ../scss/modules/edit-toolbar.scss */
-ul.edit-toolbar-dropdown-menu li.is-selected a, ul.edit-toolbar-dropdown-menu li:hover a {
+/* line 191, ../scss/modules/edit-toolbar.scss */
+.edit-toolbar-dropdown-menu li.is-selected a, .edit-toolbar-dropdown-menu li:hover a {
   color: white;
 }
-/* line 199, ../scss/modules/edit-toolbar.scss */
-ul.edit-toolbar-dropdown-menu li.disabled:hover, ul.edit-toolbar-dropdown-menu li.disabled {
+/* line 197, ../scss/modules/edit-toolbar.scss */
+.edit-toolbar-dropdown-menu li.disabled:hover, .edit-toolbar-dropdown-menu li.disabled {
   cursor: default;
   background-color: inherit;
 }
-/* line 202, ../scss/modules/edit-toolbar.scss */
-ul.edit-toolbar-dropdown-menu li.disabled:hover a, ul.edit-toolbar-dropdown-menu li.disabled a {
+/* line 200, ../scss/modules/edit-toolbar.scss */
+.edit-toolbar-dropdown-menu li.disabled:hover a, .edit-toolbar-dropdown-menu li.disabled a {
   cursor: default;
   color: #999999;
 }
-/* line 208, ../scss/modules/edit-toolbar.scss */
-ul.edit-toolbar-dropdown-menu li:active {
+/* line 206, ../scss/modules/edit-toolbar.scss */
+.edit-toolbar-dropdown-menu li:active {
   background-color: #28b1d3;
 }
-/* line 212, ../scss/modules/edit-toolbar.scss */
-ul.edit-toolbar-dropdown-menu li.divider {
+/* line 210, ../scss/modules/edit-toolbar.scss */
+.edit-toolbar-dropdown-menu li.divider {
   height: 1px;
   margin: 5px 0;
   overflow: hidden;
   background-color: #dddddd;
 }
-/* line 219, ../scss/modules/edit-toolbar.scss */
-ul.edit-toolbar-dropdown-menu li a {
+/* line 217, ../scss/modules/edit-toolbar.scss */
+.edit-toolbar-dropdown-menu li a {
   clear: both;
   text-align: left;
 }

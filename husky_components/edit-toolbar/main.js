@@ -96,8 +96,8 @@ define(function() {
         /** set item enable or disable */
         enableItem = function(enabled, id) {
             var item = this.items[id],
-                $item = this.sandbox.dom.find('*[data-id="' + id + '"]'),
-                $iconItem = this.sandbox.dom.find('*[data-id="' + id + '"] .icon'),
+                $item = this.sandbox.dom.find('[data-id="' + id + '"]', this.$el),
+                $iconItem = this.sandbox.dom.find('[data-id="' + id + '"] .icon', this.$el),
                 enabledIconClass = createIconClass.call(this, item, true),
                 disabledIconClass = createIconClass.call(this, item, false);
 
@@ -140,7 +140,7 @@ define(function() {
 
                     // TODO: check if dropdown overlaps screen: set ul to .right-aligned
 
-                    // on every click remove submenu
+                    // on every click remove sub-menu
                     this.sandbox.dom.one('body', 'click', hideDropdowns.bind(this));
                 }
             }
@@ -201,15 +201,15 @@ define(function() {
         },
 
         /**
-         * changes the listitems icon and title
-         * @param listelement
+         * changes the list items icon and title
+         * @param listElement
          * @param item
          */
-        changeMainListItem = function(listelement, item) {
+        changeMainListItem = function(listElement, item) {
 
             // TODO: do not change size of element on change title
             // first get title
-            var listItems = this.sandbox.dom.find('span', listelement);
+            var listItems = this.sandbox.dom.find('span', listElement);
             if (!!item.icon) {
                 this.sandbox.dom.removeClass(listItems.eq(0), '');
                 if (item.icon !== false) {
