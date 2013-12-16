@@ -28,12 +28,21 @@
 
         <h1>edit toolbars</h1>
 
-        <div class="btn pointer" id="disable">Disable "Add user" button</div>
+        <div class="grid">
+            <div class="grid-col-2">&nbsp;</div>
+            <div class="btn pointer grid-col-3 align-center" id="disable">Disable "Add user" and "Edit" button</div>
+            <div class="grid-col-2">&nbsp;</div>
+            <div class="btn pointer grid-col-3 align-center" id="enable">Enable "Add user" and "Edit" button</div>
+            <div class="grid-col-2">&nbsp;</div>
+        </div>
 
-        <h3>default (large)</h3>
+        <div class="grid">
+            <div class="grid-col-12">
+                <h3>default (large)</h3>
 
-        <div id="edit-toolbar2"></div>
-
+                <div id="edit-toolbar2"></div>
+            </div>
+        </div>
 
         <script src="../js/sinon.js"></script>
         <script src="../js/jquery.js"></script>
@@ -159,9 +168,14 @@
                         }, 100);
                     });
 
-                    $('#disable').on('click', function(){
+                    $('#disable').on('click', function() {
                         app.sandbox.emit('husky.edittoolbar.contact.item.disable', '1');
                         app.sandbox.emit('husky.edittoolbar.contact.item.disable', 'edit');
+                    });
+
+                    $('#enable').on('click', function() {
+                        app.sandbox.emit('husky.edittoolbar.contact.item.enable', '1');
+                        app.sandbox.emit('husky.edittoolbar.contact.item.enable', 'edit');
                     });
 
                 });

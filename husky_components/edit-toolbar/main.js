@@ -70,10 +70,13 @@ define(function() {
             this.sandbox.on(createEventName.call(this, 'item.disable'), function(id) {
                 enableItem.call(this, false, id);
             }.bind(this));
+            this.sandbox.on(createEventName.call(this, 'item.enable'), function(id) {
+                enableItem.call(this, true, id);
+            }.bind(this));
         },
 
         /** set item enable or disable */
-        enableItem = function(enabled, id){
+        enableItem = function(enabled, id) {
             var item = this.items[id],
                 $item = this.sandbox.dom.find('*[data-id="' + id + '"]'),
                 $iconItem = this.sandbox.dom.find('*[data-id="' + id + '"] .icon'),
