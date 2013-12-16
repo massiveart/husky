@@ -24916,6 +24916,65 @@ define('__component__$auto-complete@husky',[], function() {
     };
 });
 
+define('text!husky_components/auto-complete-list/main.html',[],function () { return '<div class="auto-complete-list-container">\n    <label>\n        <%= label %>\n        <div class="auto-complete-list">\n            <ul id="auto-complete-list-selections" class="auto-complete-list-selections">\n                <li class="auto-complete-list-selection">\n                    Testtag\n                    <span class="icon-remove"></span>\n                </li>\n                <li class="auto-complete-list-selection">\n                    Testtag\n                    <span class="icon-remove"></span>\n                </li>\n                <li class="auto-complete-list-selection">\n                    Testtag\n                    <span class="icon-remove"></span>\n                </li>\n                <li class="auto-complete-list-input">\n                    <input type="text"/>\n                <li>\n            </ul>\n            <div class="auto-complete-list-suggestions">\n                <h5>Recent Tags</h5>\n                <ul>\n                    <li>Testtag</li>\n                    <li>Testtag</li>\n                    <li>Testtag</li>\n                </ul>\n            </div>\n        </div>\n    </label>\n</div>\n';});
+
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/auto-complete-list
+ */
+
+/**
+ * @class AutoCompleteList
+ * @constructor
+ *
+ * @param {Object} [options] Configuration object
+ * @param {String} [options.url] url to load data
+ */
+define('__component__$auto-complete-list@husky',['text!husky_components/auto-complete-list/main.html'], function(mainTpl) {
+
+        
+
+        var defaults = {
+                url: '' // url to load data
+            },
+            eventNamespace = 'husky.auto-complete-list.',
+
+            /**
+             * @event husky.auto-complete-list.rendered
+             * @description the component has been rendered
+             */
+            RENDERED = eventNamespace + 'rendered';
+
+        return {
+
+            view: true,
+
+            initialize: function() {
+                this.sandbox.logger.log('initialize', this);
+
+                // extend default options
+                this.options = this.sandbox.util.extend({}, defaults, this.options);
+
+                this.render();
+            },
+
+            render: function() {
+
+                this.$el.html(_.template(mainTpl).render());
+
+                this.sandbox.emit(RENDERED);
+            }
+
+        };
+    }
+);
+
 /*
  * This file is part of the Sulu CMS.
  *

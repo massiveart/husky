@@ -14,14 +14,24 @@
  * @constructor
  *
  * @param {Object} [options] Configuration object
- * @param {String} [options.url] url to load data
+ * @param {String} [options.tags]
+ * @param {String} [options.url] url to load autocomplete data
+ * @param {String} [options.suggestions]
+ * @param {String} [options.suggestionUrl] url to load suggestions
  */
-define([], function() {
+define([
+    'text!husky_components/auto-complete-list/main.html',
+    'text!husky_components/auto-complete-list/tag.html',
+    'text!husky_components/auto-complete-list/suggestions.html'
+], function(tplMain, tplTag, tplSuggestions) {
 
         'use strict';
 
         var defaults = {
-                url: '' // url to load data
+                tags: [],
+                url: '', // url to load autocomplete data
+                suggestions: [],
+                suggestionUrl: '' // url to load suggestions
             },
             eventNamespace = 'husky.auto-complete-list.',
 
@@ -31,13 +41,14 @@ define([], function() {
              */
             RENDERED = eventNamespace + 'rendered';
 
+
+
         return {
 
             view: true,
 
             initialize: function() {
                 this.sandbox.logger.log('initialize', this);
-                this.sandbox.logger.log(arguments);
 
                 // extend default options
                 this.options = this.sandbox.util.extend({}, defaults, this.options);
@@ -46,6 +57,12 @@ define([], function() {
             },
 
             render: function() {
+
+                this.$el.html(
+                    _.template(tplMain)({
+                        label: 'Tags' // todo translate
+                    })
+                );
 
                 this.sandbox.emit(RENDERED);
             }

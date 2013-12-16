@@ -14,55 +14,25 @@
         <link rel="stylesheet" href="../../dist/husky.min.css">
         <style>
             .container {
-                width: 800px;
-                margin-left: 300px;
-                margin-top: 100px;
+                margin: 60px auto;
+                max-width: 1024px;
+                width: 80%;
             }
         </style>
     </head>
     <body>
-        <div class="container">
-            <!-- Autocomplete -->
-            <div data-aura-component="auto-complete-list@husky"></div>
-        </div>
 
         <div class="container">
             <div class="grid">
                 <div class="grid-row">
-                    <div class="grid-col-6">
-                        <div class="auto-complete-list-container">
-                            <label>
-                                Tags
-                                <div class="auto-complete-list">
-                                    <ul id="auto-complete-list-selections" class="auto-complete-list-selections">
-                                        <li class="auto-complete-list-selection">
-                                            Testtag
-                                            <span class="icon-remove"></span>
-                                        </li>
-                                        <li class="auto-complete-list-selection">
-                                            Testtag
-                                            <span class="icon-remove"></span>
-                                        </li>
-                                        <li class="auto-complete-list-selection">
-                                            Testtag
-                                            <span class="icon-remove"></span>
-                                        </li>
-                                        <li class="auto-complete-list-input">
-                                            <input type="text"/>
-                                        <li>
-                                    </ul>
-                                    <div class="auto-complete-list-suggestions">
-                                        <h5>Recent Tags</h5>
-                                        <ul>
-                                            <li>Testtag</li>
-                                            <li>Testtag</li>
-                                            <li>Testtag</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
+                    <div class="grid-col-12" data-aura-component="auto-complete-list@husky"></div>
+                </div>
+                <div class="grid-row">
+                    <div class="grid-col-12">&nbsp;</div>
+                </div>
+                <div>
+                    <div class="grid-col-6" id="auto-complete-list-1"></div>
+                    <div class="grid-col-6" id="auto-complete-list-2"></div>
                 </div>
             </div>
         </div>
@@ -86,6 +56,19 @@
                 app.start().then(function() {
                     app.logger.log('Aura started...');
 
+                    app.sandbox.start([
+                        {
+                            name: 'auto-complete-list@husky',
+                            options: {
+                                el: '#auto-complete-list-1'
+                            }
+                        },{
+                            name: 'auto-complete-list@husky',
+                            options: {
+                                el: '#auto-complete-list-2'
+                            }
+                        }
+                    ]);
 
                 });
             });
