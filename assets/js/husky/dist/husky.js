@@ -24451,10 +24451,14 @@ define('__component__$search@husky',[], function() {
  *      - husky.tabs.<<instanceName>>.item.select [item] - triggered when item was clicked
  *      - husky.tabs.<<instanceName>>.initialized [selectedItem]- triggered when tabs have been initialized
  *
+<<<<<<< HEAD
  *  Data options
  *      - items
  *          - forceReload: overwrites default-setting for certain item
 *
+=======
+ *  TODO select first (or with parameter) item after load
+>>>>>>> 81e5fa8b841ffa7a1314b5346cb180f9f606feda
  *
  *****************************************************************************/
 
@@ -24530,7 +24534,7 @@ define('__component__$tabs@husky',[],function() {
 
             var $element = this.sandbox.dom.createElement('<div class="tabs-container"></div>'),
                 $list = this.sandbox.dom.createElement('<ul/>'),
-                selected = '', selectedItem;
+                selected = '', selectedItem = null;
 
             this.sandbox.dom.append(this.$el, $element);
             this.sandbox.dom.append($element, $list);
@@ -24666,7 +24670,7 @@ define('__component__$toolbar@husky',[],function() {
             if (this.sandbox.dom.hasClass($list, 'is-expanded')) {
                 visible = true;
             }
-            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-expanded', this.$el), 'is-expanded');
+            hideDropdowns.call(this);
 
             if (!visible) {
                 this.sandbox.dom.addClass($list, 'is-expanded');
@@ -24674,8 +24678,12 @@ define('__component__$toolbar@husky',[],function() {
                 // TODO: check if dropdown overlaps screen: set ul to .right-aligned
 
                 // on every click remove submenu
-                this.sandbox.dom.one('body', 'click', toggleItem.bind(this));
+                this.sandbox.dom.one('body', 'click', hideDropdowns.bind(this));
             }
+        },
+
+        hideDropdowns = function(event) {
+            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-expanded', this.$el), 'is-expanded');
         },
 
         /**

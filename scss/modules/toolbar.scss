@@ -87,7 +87,6 @@
     display: inline-block;
     vertical-align: middle;
     font-size: 0;
-    margin-right: $marginRightLarge;
 
 
     // button of button group
@@ -195,6 +194,7 @@
 
   .toolbar-search {
     display: inline-block;
+    width: 130px;
   }
 
 
@@ -243,6 +243,7 @@
       height: 30px;
       line-height: 30px;
       white-space: nowrap;
+      cursor: pointer;
 
       padding: 0 20px;
 
@@ -257,6 +258,16 @@
         background-color: $highlightColor;
         a {
           color: white;
+        }
+      }
+
+      &.disabled:hover,
+      &.disabled {
+        cursor: default;
+        background-color: inherit;
+        a {
+          cursor: default;
+          color: $grayLight;
         }
       }
 

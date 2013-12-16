@@ -59,6 +59,13 @@
   }
 }
 
+.icon-circle-plus {
+  &::after {
+    content: "\e191";
+    display: inline-block;
+  }
+}
+
 .icon-edit {
   &::after {
     content: "\e151";

@@ -33,6 +33,10 @@ define(function() {
 
             var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')];
 
+            if (item.disabled) {
+                return;
+            }
+
             // if toggle item do not trigger event
             if (!item.items) {
                 triggerSelectEvent.call(this, item);
@@ -58,9 +62,10 @@ define(function() {
          * created dropdown menu
          * @param listItem
          * @param items
-         */
-        createDropdownMenu = function(listItem, parent) {
-            var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />');
+         **/
+            createDropdownMenu = function(listItem, parent) {
+            var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />'),
+                classString = '';
             this.sandbox.dom.after(listItem, $list);
             this.sandbox.util.foreach(parent.items, function(item) {
 
@@ -74,7 +79,11 @@ define(function() {
                 checkItemId.call(this, item);
                 this.items[item.id] = item;
 
-                this.sandbox.dom.append($list, '<li data-id="' + item.id + '"><a href="#">' + item.title + '</a></li>');
+                if (item.disabled) {
+                    classString = ' class="disabled"';
+                }
+
+                this.sandbox.dom.append($list, '<li data-id="' + item.id + '"' + classString + '><a href="#">' + item.title + '</a></li>');
             }.bind(this));
         },
 
@@ -83,7 +92,7 @@ define(function() {
          * otherwise a new id is generated for the element
          * @param item
          */
-        checkItemId = function(item) {
+            checkItemId = function(item) {
             // if item has no id, generate random id
             if (!item.id || !!this.items[item.id]) {
                 do {
@@ -97,7 +106,7 @@ define(function() {
          * opens dropdown submenu
          * @param event
          */
-        toggleItem = function(event) {
+            toggleItem = function(event) {
 
             event.preventDefault();
             event.stopPropagation();
@@ -108,7 +117,7 @@ define(function() {
             if (this.sandbox.dom.hasClass($list, 'is-expanded')) {
                 visible = true;
             }
-            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-expanded', this.$el), 'is-expanded');
+            hideDropdowns.call(this);
 
             if (!visible) {
                 this.sandbox.dom.addClass($list, 'is-expanded');
@@ -116,15 +125,19 @@ define(function() {
                 // TODO: check if dropdown overlaps screen: set ul to .right-aligned
 
                 // on every click remove submenu
-                this.sandbox.dom.one('body', 'click', toggleItem.bind(this));
+                this.sandbox.dom.one('body', 'click', hideDropdowns.bind(this));
             }
+        },
+
+        hideDropdowns = function() {
+            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-expanded', this.$el), 'is-expanded');
         },
 
         /**
          * function generates a unique id
          * @returns string
          */
-        createUniqueId = function() {
+            createUniqueId = function() {
             return 'xxxxyxxyx'.replace(/[xy]/g, function(c) {
                 var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
                 return v.toString(16);
@@ -179,9 +192,6 @@ define(function() {
                 this.items[item.id] = item;
                 // create classes array
                 classArray = [];
-                if (item.icon) {
-//                    classArray.push('icon-' + item.icon);
-                }
 
                 // check if item is in a group
                 if (!!item.group) {
@@ -193,8 +203,6 @@ define(function() {
                     }
                     addTo = this.itemGroup[item.group];
                 } else {
-//                    classArray.push(this.options.appearance);
-
                     addTo = $container;
                 }
 
