@@ -1,4 +1,15 @@
-/*****************************************************************************
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/edit-toolbar
+ */
+
+/*
  *
  *  edit-toolbar
  *
@@ -32,8 +43,18 @@
  *          - divider = true; takes item as divider element
  *
  *
- *****************************************************************************/
+ */
 
+/**
+ * @class EditToolbar
+ * @constructor
+ *
+ * @param {Object} [options] Configuration object
+ * @param {String} [options.url] url to fetch data from
+ * @param {String} [options.data] if no url is provided
+ * @param {String} [options.instanceName] enables custom events (in case of multiple tabs on one page)
+ * @param {String} [options.appearance]
+ */
 define(function() {
 
     'use strict';
@@ -46,18 +67,13 @@ define(function() {
         },
 
         /** templates container */
-        templates = {
+            templates = {
             skeleton: [
                 '<div class="edit-toolbar-container">',
-                '   <div class="navbar">',
+                '   <nav class="edit-toolbar-nav">',
                 '       <ul class="edit-toolbar-left" />',
                 '       <ul class="edit-toolbar-right" />',
-                '   </div>',
-                '</div>'
-            ].join(''),
-            pageFunction: [
-                '<div class="page-function"> ',
-                '   <a href="#" id="back-page-function"><span class="icon-<%= icon %>"></span></a>',
+                '   </nav>',
                 '</div>'
             ].join('')
         },
@@ -66,13 +82,6 @@ define(function() {
         bindDOMEvents = function() {
             this.sandbox.dom.on(this.options.el, 'click', toggleItem.bind(this), '.dropdown-toggle');
             this.sandbox.dom.on(this.options.el, 'click', selectItem.bind(this), 'li');
-            this.sandbox.dom.on(this.options.el, 'click', backPageFunctionClick.bind(this), '#back-page-function');
-        },
-
-        // FIXME to be replaced by own component
-        backPageFunctionClick = function() {
-            emitEvent.call(this, 'back');
-            return false;
         },
 
         /** events bound to sandbox */
@@ -88,8 +97,8 @@ define(function() {
         /** set item enable or disable */
         enableItem = function(enabled, id) {
             var item = this.items[id],
-                $item = this.sandbox.dom.find('*[data-id="' + id + '"]'),
-                $iconItem = this.sandbox.dom.find('*[data-id="' + id + '"] .icon'),
+                $item = this.sandbox.dom.find('[data-id="' + id + '"]', this.$el),
+                $iconItem = this.sandbox.dom.find('[data-id="' + id + '"] .icon', this.$el),
                 enabledIconClass = createIconClass.call(this, item, true),
                 disabledIconClass = createIconClass.call(this, item, false);
 
@@ -132,7 +141,7 @@ define(function() {
 
                     // TODO: check if dropdown overlaps screen: set ul to .right-aligned
 
-                    // on every click remove submenu
+                    // on every click remove sub-menu
                     this.sandbox.dom.one('body', 'click', hideDropdowns.bind(this));
                 }
             }
@@ -158,7 +167,7 @@ define(function() {
                 $parent = this.sandbox.dom.parents(event.currentTarget, 'li').eq(0);
 
             // stop if item has subitems
-            if (item.items && item.items.length>0) {
+            if (item.items && item.items.length > 0) {
                 return;
             }
 
@@ -193,17 +202,17 @@ define(function() {
         },
 
         /**
-         * changes the listitems icon and title
-         * @param listelement
+         * changes the list items icon and title
+         * @param listElement
          * @param item
          */
-        changeMainListItem = function(listelement, item) {
+        changeMainListItem = function(listElement, item) {
 
             // TODO: do not change size of element on change title
             // first get title
-            var listItems = this.sandbox.dom.find('span',listelement);
+            var listItems = this.sandbox.dom.find('span', listElement);
             if (!!item.icon) {
-                this.sandbox.dom.removeClass(listItems.eq(0),'');
+                this.sandbox.dom.removeClass(listItems.eq(0), '');
                 if (item.icon !== false) {
                     this.sandbox.dom.addClass(listItems.eq(0), createIconSupportClass.call(this, item));
                 }
@@ -257,8 +266,8 @@ define(function() {
          * @param listItem
          * @param parent
          */
-            createDropdownMenu = function(listItem, parent) {
-            var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />'),
+        createDropdownMenu = function(listItem, parent) {
+            var $list = this.sandbox.dom.createElement('<ul class="edit-toolbar-dropdown-menu" />'),
                 classString = '';
             this.sandbox.dom.append(listItem, $list);
             this.sandbox.util.foreach(parent.items, function(item) {
@@ -290,24 +299,13 @@ define(function() {
             // if item has no id, generate random id
             if (!item.id || !!this.items[item.id]) {
                 do {
-                    item.id = createUniqueId();
+                    item.id = this.sandbox.util.createUniqueId();
                 } while (!!this.items[item.id]);
             }
             // set enabled defaults
             if (!item.disabled) {
                 item.disabled = false;
             }
-        },
-
-        /**
-         * function generates a unique id
-         * @returns string
-         */
-        createUniqueId = function() {
-            return 'xxxxyxxyx'.replace(/[xy]/g, function(c) {
-                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
         },
 
         /** emits event */
@@ -356,14 +354,6 @@ define(function() {
                 $listItem, $listLink,
                 title;
 
-            // first render page function
-            if (this.options.pageFunction) {
-                // render skeleton
-                this.sandbox.dom.append(this.options.el, this.sandbox.template.parse(templates.pageFunction, {
-                    icon: this.options.pageFunction.icon
-                }));
-            }
-
             // create navbar skeleton
             this.sandbox.dom.append(this.options.el, templates.skeleton);
 
@@ -386,7 +376,7 @@ define(function() {
                 this.items[item.id] = item;
 
                 // create class array
-                classArray = [];
+                classArray = ['edit-toolbar-item'];
                 if (!!item.class) {
                     classArray.push(item.class);
                 }
@@ -398,12 +388,12 @@ define(function() {
                     addTo = $left;
                 }
 
-                $listItem = this.sandbox.dom.createElement('<li class="' + classArray.join(',') + '" data-id="' + item.id + '"/>');
+                $listItem = this.sandbox.dom.createElement('<li class="' + classArray.join(' ') + '" data-id="' + item.id + '"/>');
                 $listLink = this.sandbox.dom.createElement('<a href="#" />');
                 this.sandbox.dom.append($listItem, $listLink);
 
                 // create icon span
-                this.sandbox.dom.append($listLink, '<span class="'+createIconSupportClass.call(this, item)+'" />');
+                this.sandbox.dom.append($listLink, '<span class="' + createIconSupportClass.call(this, item) + '" />');
 
                 // create title span
                 title = item.title ? item.title : '';
@@ -420,7 +410,6 @@ define(function() {
                 this.sandbox.dom.append(addTo, $listItem);
 
             }.bind(this));
-
 
             // initialization finished
             emitEvent.call(this, 'initialized');

@@ -70,6 +70,17 @@ define(function() {
                 return _.contains(list, value);
             };
 
+            /**
+             * function generates a unique id
+             * @returns string
+             */
+            app.core.util.createUniqueId = function() {
+                return 'xxxxyxxyx'.replace(/[xy]/g, function(c) {
+                    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            };
+
         }
     };
 });

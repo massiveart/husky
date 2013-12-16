@@ -1,8 +1,12 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -16,26 +20,45 @@
                 margin: 20px;
                 overflow: hidden;
             }
+
+            #content {
+                width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            #content #edit-toolbar {
+                z-index: 100;
+                position: fixed;
+                top: 30px;
+                min-width: 800px;
+            }
+
+            #content .tabs-content {
+                margin-top: 100px;
+            }
+
+            #edit-toolbar .edit-toolbar-left {
+                margin-left: -50px;
+            }
         </style>
     </head>
     <body>
-
-
-        <h1>edit toolbars</h1>
-
-        <div class="grid">
-            <div class="grid-col-2">&nbsp;</div>
-            <div class="btn pointer grid-col-3 align-center" id="disable">Disable "Add user" and "Edit" button</div>
-            <div class="grid-col-2">&nbsp;</div>
-            <div class="btn pointer grid-col-3 align-center" id="enable">Enable "Add user" and "Edit" button</div>
-            <div class="grid-col-2">&nbsp;</div>
-        </div>
-
-        <div class="grid">
+        <div class="grid" id="content">
             <div class="grid-col-12">
-                <h3>default (large)</h3>
+                <div id="edit-toolbar">
+                    <div id="page-functions">
 
-                <div id="edit-toolbar2"></div>
+                    </div>
+                    <div id="toolbar">
+
+                    </div>
+                </div>
+
+                <div class="tabs-content">
+                    <h1>Page-Functions and Edit-Toolbar</h1>
+                </div>
+
             </div>
         </div>
 
@@ -52,10 +75,7 @@
             require(['lib/husky'], function(Husky) {
                 'use strict';
 
-                var fakeServer = sinon.fakeServer.create(),
-                        app = Husky({ debug: { enable: true }}),
-                        _ = app.sandbox.util._,
-
+                var app = Husky({ debug: { enable: true }}),
                         testData = [
                             {
                                 'id': '1',
@@ -129,50 +149,32 @@
                             }
                         ];
 
-
                 app.start().then(function() {
                     app.logger.log('Aura started...');
 
-
-                    fakeServer.respondWith('GET', '/toolbar', [200, { 'Content-Type': 'application/json' },
-                        JSON.stringify(testData)
-                    ]);
-
                     app.sandbox.start([
                         {
-                            name: 'edit-toolbar@husky',
+                            name: 'page-functions@husky',
                             options: {
-                                el: '#edit-toolbar2',
+                                el: '#page-functions',
                                 instanceName: 'contact',
-                                pageFunction: {
+                                data: {
                                     icon: 'chevron-left',
                                     callback: function() {
                                         console.log("go back to last page");
                                     }
-                                },
-
+                                }
+                            }
+                        },
+                        {
+                            name: 'edit-toolbar@husky',
+                            options: {
+                                el: '#toolbar',
+                                instanceName: 'contact',
                                 data: testData
                             }
                         }
                     ]);
-
-
-                    app.sandbox.on('husky.util.load.data', function() {
-                        setTimeout(function() {
-                            fakeServer.respond();
-                        }, 100);
-                    });
-
-                    $('#disable').on('click', function() {
-                        app.sandbox.emit('husky.edit-toolbar.contact.item.disable', '1');
-                        app.sandbox.emit('husky.edit-toolbar.contact.item.disable', 'edit');
-                    });
-
-                    $('#enable').on('click', function() {
-                        app.sandbox.emit('husky.edit-toolbar.contact.item.enable', '1');
-                        app.sandbox.emit('husky.edit-toolbar.contact.item.enable', 'edit');
-                    });
-
                 });
             });
         </script>
