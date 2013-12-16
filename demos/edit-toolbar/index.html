@@ -169,13 +169,13 @@
                     });
 
                     $('#disable').on('click', function() {
-                        app.sandbox.emit('husky.edittoolbar.contact.item.disable', '1');
-                        app.sandbox.emit('husky.edittoolbar.contact.item.disable', 'edit');
+                        app.sandbox.emit('husky.edit-toolbar.contact.item.disable', '1');
+                        app.sandbox.emit('husky.edit-toolbar.contact.item.disable', 'edit');
                     });
 
                     $('#enable').on('click', function() {
-                        app.sandbox.emit('husky.edittoolbar.contact.item.enable', '1');
-                        app.sandbox.emit('husky.edittoolbar.contact.item.enable', 'edit');
+                        app.sandbox.emit('husky.edit-toolbar.contact.item.enable', '1');
+                        app.sandbox.emit('husky.edit-toolbar.contact.item.enable', 'edit');
                     });
 
                 });
