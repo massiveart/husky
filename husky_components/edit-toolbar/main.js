@@ -8,15 +8,18 @@
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
  *      - appearance -
  *  Provides Events
- *      -
- *  Triggers Events
- *      - husky.toolbar.<<instanceName>>.item.select - triggered when item was clicked
+ *      - husky.edittoolbar.<<instanceName>>.item.disable - disable item with given id
+ *      - husky.edittoolbar.<<instanceName>>.item.enable - enable item with given id
  *
+ *  Triggers Events
+ *      - husky.edittoolbar.<<instanceName>>.item.select - triggered when item was clicked
  *
  *  data structure:
  *      - title
  *      - id (optional - will be generated otherwise)
  *      - icon (optional)
+ *      - disableIcon (optional): icon when item is disabled
+ *      - disabled (optional): is item disabled or enabled
  *      - iconSize (optional: large/medium/small)
  *      - class (optional: highlight/highlight-gray)
  *      - group (optional: left/right)
@@ -24,7 +27,7 @@
  *      - callback (optional) - callback function
  *      - items (optional - if dropdown):
  *          - title
- *          - icon (optional) NOICON will remove icon
+ *          - icon (optional) false will remove icon
  *          - callback
  *
  *
@@ -40,7 +43,6 @@ define(function() {
             instanceName: '',
             appearance: null // TODO: implement small version
         },
-
 
         /** templates container */
         templates = {
