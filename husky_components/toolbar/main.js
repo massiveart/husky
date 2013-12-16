@@ -1,4 +1,15 @@
-/*****************************************************************************
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/toolbar
+ */
+
+/*
  *
  *  Tabs
  *
@@ -14,8 +25,19 @@
  *      - husky.toolbar.<<instanceName>>.item.select - triggered when item was clicked
  *
  *
- *****************************************************************************/
+ */
 
+/**
+ * @class Toolbar
+ * @constructor
+ *
+ * @param {Object} [options] Configuration object
+ * @param {String} [options.url] url to fetch data from
+ * @param {String} [options.data] if no url is provided
+ * @param {String} [options.selected] the item that's selected on initialize
+ * @param {String} [options.instanceName] enables custom events (in case of multiple tabs on one page)
+ * @param {String} [options.hasSearch] adds a search element at the end
+ */
 define(function() {
 
     'use strict';
@@ -72,9 +94,9 @@ define(function() {
         /**
          * created dropdown menu
          * @param listItem
-         * @param items
-         **/
-            createDropdownMenu = function(listItem, parent) {
+         * @param parent
+         */
+        createDropdownMenu = function(listItem, parent) {
             var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />'),
                 classString = '';
             this.sandbox.dom.after(listItem, $list);
@@ -103,11 +125,11 @@ define(function() {
          * otherwise a new id is generated for the element
          * @param item
          */
-            checkItemId = function(item) {
+        checkItemId = function(item) {
             // if item has no id, generate random id
             if (!item.id || !!this.items[item.id]) {
                 do {
-                    item.id = createUniqueId();
+                    item.id = this.sandbox.util._.uniqueId();
                 } while (!!this.items[item.id]);
             }
         },
@@ -117,7 +139,7 @@ define(function() {
          * opens dropdown submenu
          * @param event
          */
-            toggleItem = function(event) {
+        toggleItem = function(event) {
 
             event.preventDefault();
             event.stopPropagation();
@@ -142,17 +164,6 @@ define(function() {
 
         hideDropdowns = function() {
             this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-expanded', this.$el), 'is-expanded');
-        },
-
-        /**
-         * function generates a unique id
-         * @returns string
-         */
-            createUniqueId = function() {
-            return 'xxxxyxxyx'.replace(/[xy]/g, function(c) {
-                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
         };
 
     return {
