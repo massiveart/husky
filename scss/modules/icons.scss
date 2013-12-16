@@ -186,6 +186,13 @@
   }
 }
 
+.icon-chevron-up {
+  &::after {
+    content: "\e22a";
+    display: inline-block;
+  }
+}
+
 .icon-archive {
   &::after {
     content: "\e150";
@@ -265,5 +272,47 @@
     -webkit-transform: rotate(90deg);
 
     transform: rotate(90deg);
+  }
+}
+
+.icon-user-add {
+  &::after {
+    content: "\e007";
+    display: inline-block;
+  }
+}
+
+.icon-bin {
+  &::after {
+    content: "\e017";
+    display: inline-block;
+  }
+}
+
+.icon-retweet {
+  &::after {
+    content: "\e081";
+    display: inline-block;
+  }
+}
+
+.icon-file-import {
+  &::after {
+    content: "\e359";
+    display: inline-block;
+  }
+}
+
+.icon-file-export {
+  &::after {
+    content: "\e360";
+    display: inline-block;
+  }
+}
+
+.icon-show-thumbnails {
+  &::after {
+    content: "\e157";
+    display: inline-block;
   }
 }

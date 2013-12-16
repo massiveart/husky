@@ -1,0 +1,158 @@
+//
+// Tabs
+// --------------------------------------------------
+@import "compass/css3/user-interface";
+
+
+@mixin background-and-border($color) {
+  background-color: $color;
+  border-color: $color;
+}
+
+
+.toolbar-container {
+
+  line-height: 1;
+
+  $marginRightLarge : 20px;
+  $marginRightMedium : 10px;
+  $marginRightSmall : 5px;
+
+
+  // large buttons
+  .btn-group.large > button, button.large {
+    width: 50px;
+    height: 40px;
+    font-size: 18px;
+  }
+  .btn-group.large,  button.large {
+    &:not(:last-child) {
+      margin-right: $marginRightLarge;
+    }
+  }
+
+  // medium buttons
+  .btn-group.medium > button, button.medium {
+      width: 40px;
+      height: 30px;
+      font-size: 14px;
+  }
+  .btn-group.medium,  button.medium {
+    &:not(:last-child) {
+      margin-right: $marginRightMedium;
+    }
+  }
+
+  // small buttons
+  .btn-group.small > button, button.small {
+      width: 30px;
+      height: 20px;
+      font-size: 10px;
+  }
+  .btn-group.small, button.small {
+    &:not(:last-child) {
+      margin-right: $marginRightSmall;
+    }
+  }
+
+  .btn-group, .btn-group-vertical {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 0;
+    margin-right: $marginRightLarge;
+
+
+    // button of button group
+    > button {
+
+      margin-right: 0;
+
+      // inbetween element
+      &:not(:first-child):not(:last-child):not(.dropdown-toggle) {
+        margin: 0 0 0 -1px;
+        border-radius: 0;
+      }
+
+      // last element of button group
+      &:last-child {
+        margin-left: -1px;
+
+        &:not(:first-child):not(.dropdown-toggle) {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+        }
+      }
+
+      // first element of button group
+      &:first-child {
+        margin-left: 0;
+
+        &:not(:last-child):not(.dropdown-toggle) {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+      }
+    }
+
+    &:not(:last-child) {
+      margin-right: $marginRightLarge;
+    }
+  }
+
+  button {
+    cursor: pointer;
+
+    width: 50px;
+    height: 40px;
+    font-size: 18px;
+
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    background-image: none;
+    background-color: transparent;
+    outline: none;
+    margin-right: 20px;
+
+    border: 1px solid $grayLighter;
+    border-radius: 3px;
+
+    &:disabled {
+      color: $grayLight;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: $grayLighterer;
+    }
+    &:active:not(:disabled) {
+      background-color: $grayLighter;
+    }
+
+    &.highlight {
+      color: #FFF;
+      background-color: $highlightColor;
+      border-color: $highlightColor;
+
+      &:hover {
+        @include background-and-border(lighten($highlightColor, 3%));
+      }
+      &:active {
+        @include background-and-border(lighten($highlightColor, 5%));
+
+      }
+      &:disabled, disabled:hover, disabled:focus {
+        @include background-and-border($grayLight);
+      }
+    }
+
+    @include user-select(none);
+  }
+
+  .toolbar-search {
+    display: inline-block;
+  }
+
+}
+
+

@@ -100,36 +100,6 @@ $verticalItemPadding: 35px;
 .navigation-search {
     position: relative;
     margin: 5px $verticalMargin 20px;
-
-    a {
-        color: #3e3e3e;
-    }
-}
-
-.navigation-search-input {
-    padding-left: 40px;
-    border: 0;
-    margin: 0;
-    background-color: $grayLight;
-    color: #3e3e3e;
-
-    @include input-placeholder {
-        color: #3e3e3e;
-    }
-
-    &:focus {
-        background-color: $white;
-    }
-}
-
-.navigation-search-icon {
-    position: absolute;
-    top: 6px;
-    left: 8px;
-    font-size: 16px;
-
-    @extend .icon-class;
-    @extend .icon-search;
 }
 
 li.is-active {
