@@ -9,6 +9,10 @@
  * @module husky/components/column-navigation
  */
 
+// TODO
+// replace arrow with spinner while loading
+// do not remove last column but empty it an refill it
+
 /**
  * @class ColumnNavigation
  * @constructor
@@ -126,7 +130,7 @@ define([], function() {
          * @param {String} url
          * @param {Number} columnNumber
          */
-        load: function(url, columnNumber) {
+        load: function(url, columnNumber, $element) {
 
             if (!!url) {
 
@@ -140,6 +144,13 @@ define([], function() {
                     }.bind(this),
 
                     success: function(response) {
+
+                        //TODO
+                        if(!!$element) {
+                            var $arrow = this.sandbox.dom.find('.arrow', $element);
+                            this.sandbox.dom.removeClass($arrow, 'is-loading');
+                            this.sandbox.dom.prependClass($arrow, 'icon-chevron-right');
+                        }
 
                         this.parseData(response, columnNumber);
                         this.sandbox.emit(LOADED);
@@ -317,12 +328,13 @@ define([], function() {
 
                 this.sandbox.emit(SELECTED, selectedItem);
 
-            } else {
+            } else { // element not selected
 
                 this.removeCurrentSelected(column);
                 this.sandbox.dom.addClass($target, 'selected');
                 $arrowElement = this.sandbox.dom.find('.arrow', $target);
-                this.sandbox.dom.removeClass($arrowElement, 'inactive');
+                this.sandbox.dom.removeClass($arrowElement, 'inactive icon-chevron-right');
+                this.sandbox.dom.addClass($arrowElement, 'is-loading');
 
                 // when is not scrolled and column > 3 then scroll
                 if (column > DISPLAYEDCOLUMNS) {
@@ -342,7 +354,7 @@ define([], function() {
                     this.sandbox.emit(SELECTED, selectedItem);
 
                     if (!!selectedItem.hasSub) {
-                        this.load(selectedItem._links.children, column);
+                        this.load(selectedItem._links.children, column, $target);
                     }
 
                     this.removeColumns(column + 1);
@@ -453,8 +465,8 @@ define([], function() {
 
                 // icons right (subpage, edit)
                 item.push('<span class="pull-right">');
-                item.push('<span class="icon-edit-pen edit hidden"></span>');
-                !!data.hasSub ? item.push('<span class="icon-chevron-right arrow inactive"></span>') : '';
+                item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
+                !!data.hasSub ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
 
                 return item.join('');
