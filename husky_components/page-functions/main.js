@@ -79,8 +79,11 @@ define([], function() {
             },
 
             bindDomEvents: function() {
-                this.sandbox.dom.on(this.options.el, 'click', function() {
+                this.sandbox.dom.on(this.options.el, 'click', function(e) {
+                    e.preventDefault();
                     this.sandbox.emit(CLICK);
+
+                    return false;
                 }.bind(this), '#' + this.options.data.id);
             }
 
