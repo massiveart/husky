@@ -38,11 +38,29 @@
         .inactive {
           color: $grayLight;
         }
+
+        .not-published {
+          color: $highlightColor;
+          margin-top: 2px;
+          font-size: 40px;
+        }
       }
     }
 
     .item-text {
       padding-top: 2px;
+    }
+
+    .item-text.ghost {
+      color: $grayLight;
+    }
+
+    .ghost {
+      background: $accentColor;
+      padding: 0 2px;
+      font-size: 10px;
+      color: $white;
+      border-radius: 3px;
     }
 
     .edit {

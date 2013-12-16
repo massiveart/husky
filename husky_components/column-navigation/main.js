@@ -19,7 +19,7 @@
  */
 
 // TODO
-// browser compatibility
+// browser compatibility testing
 
 define([], function() {
 
@@ -308,18 +308,45 @@ define([], function() {
 
                 var item = ['<li data-id="',data.id,'" class="pointer" style="width:',width,'px">'];
 
-                // TODO
-                // has status (link, type, published)
+                // icons left
+                item.push('<span class="pull-left">');
 
-                // TODO
-                // is editable
+                // link
+                if(!!data.linked) {
+                    if(data.linked === 'internal') {
+                        item.push('<span class="icon-internal-link pull-left m-right-5"></span>');
+                    } else if(data.linked === 'external') {
+                        item.push('<span class="icon-external-link pull-left m-right-5"></span>');
+                    }
+                }
 
-                // text
-                item.push('<span class="item-text pull-left">',data.title,'</span>');
+                // type (ghost, shadow)
+                if(!!data.type) {
+                    if(data.type.name === 'ghost') {
+                        item.push('<span class="ghost pull-left m-right-5">',data.type.value,'</span>');
+                    } else if(data.type.name === 'shadow') {
+                        item.push('<span class="icon-shadow-node pull-left m-right-5"></span>');
+                    }
+                }
 
+
+                // published
+                if(!data.published) {
+                    item.push('<span class="not-published pull-left m-right-5">&bull;</span>');
+                }
+
+                item.push('</span>');
+
+
+                // text center
+                if(!!data.type && data.type.name === 'ghost') {
+                    item.push('<span class="item-text inactive pull-left">',data.title,'</span>');
+                } else {
+                    item.push('<span class="item-text pull-left">',data.title,'</span>');
+                }
 
                 // icons right (subpage, edit)
-                item.push('<span class="column-navigation-item-icons-right pull-right">');
+                item.push('<span class="pull-right">');
                 item.push('<span class="icon-edit-pen edit hidden"></span>');
                 !!data.hasSub ? item.push('<span class="icon-chevron-right arrow inactive"></span>') : '';
                 item.push('</span></li>');

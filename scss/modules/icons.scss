@@ -274,3 +274,34 @@
     transform: rotate(90deg);
   }
 }
+
+
+.icon-arrow {
+  &::after {
+    content: "\e223";
+    display: inline-block;
+  }
+}
+
+
+.icon-internal-link {
+  &::after {
+    content: "\e051";
+    display: inline-block;
+  }
+}
+
+.icon-external-link {
+  &::after {
+    content: "\e242";
+    display: inline-block;
+  }
+}
+
+.icon-shadow-node {
+  &::after {
+    content: "\e223";
+    display: inline-block;
+  }
+}
+

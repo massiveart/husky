@@ -25,8 +25,11 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1",'+
                     '"hasSub": true,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked" : "internal",' +
+                    '"type": { '+
+                        '"name": "false",'+
+                        '"value": "false"'+
+                    '},'+
                     '"_links" : {'+
                         '"self" : "/nodes/1",'+
                         '"children" : "/nodes?parent=1&depth=1"'+
@@ -38,8 +41,11 @@ require(['lib/husky'], function (Husky) {
                     '"id": "2",'+
                     '"hasSub": true,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": "external",'+
+                    '"type": { '+
+                        '"name": "false",'+
+                        '"value": "false"'+
+                    '},'+
                     '"_links" : {'+
                         '"self" : "/nodes/2",'+
                         '"children" : "/nodes?parent=2&depth=1"'+
@@ -50,9 +56,12 @@ require(['lib/husky'], function (Husky) {
                     '"title": "Page 3",'+
                     '"id": "3",'+
                     '"hasSub": false,'+
-                    '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"published":false,'+
+                    '"linked": false,'+
+                    '"type": { '+
+                        '"name": "ghost",'+
+                        '"value": "us_en"'+
+                    '},'+
                     '"_links" : {'+
                         '"self" : "/nodes/3",'+
                         '"children" : "/nodes?parent=3&depth=1"'+
@@ -64,8 +73,11 @@ require(['lib/husky'], function (Husky) {
                     '"id": "4",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": { '+
+                        '"name": "shadow",'+
+                        '"value": "true"'+
+                    '},'+
                     '"_links" : {'+
                         '"self" : "/nodes/4",'+
                         '"children" : "/nodes?parent=4&depth=1"'+
@@ -76,9 +88,12 @@ require(['lib/husky'], function (Husky) {
                     '"title": "Page 5",'+
                     '"id": "5",'+
                     '"hasSub": false,'+
-                    '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"published":false,'+
+                    '"linked": "internal",'+
+                    '"type": { '+
+                        '"name": "ghost",'+
+                        '"value": "us_en"'+
+                    '},'+
                     '"_links" : {'+
                         '"self" : "/nodes/5",'+
                         '"children" : "/nodes?parent=5&depth=1"'+
@@ -90,8 +105,11 @@ require(['lib/husky'], function (Husky) {
                     '"id": "6",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": "external",'+
+                    '"type": { '+
+                        '"name": "shadow",'+
+                        '"value": true'+
+                    '},'+
                     '"_links" : {'+
                         '"self" : "/nodes/6",'+
                         '"children" : "/nodes?parent=6&depth=1"'+
@@ -102,9 +120,9 @@ require(['lib/husky'], function (Husky) {
                     '"title": "Page 7",'+
                     '"id": "7",'+
                     '"hasSub": false,'+
-                    '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"published":false,'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/7",'+
                         '"children" : "/nodes?parent=7&depth=1"'+
@@ -115,9 +133,9 @@ require(['lib/husky'], function (Husky) {
                     '"title": "Page 8",'+
                     '"id": "8",'+
                     '"hasSub": true,'+
-                    '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"published":false,'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/8",'+
                         '"children" : "/nodes?parent=8&depth=1"'+
@@ -128,9 +146,9 @@ require(['lib/husky'], function (Husky) {
                     '"title": "Page 9",'+
                     '"id": "9",'+
                     '"hasSub": false,'+
-                    '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"published":false,'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/9",'+
                         '"children" : "/nodes?parent=9&depth=1"'+
@@ -157,8 +175,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1.1",'+
                     '"hasSub": true,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/1.1",'+
                         '"children" : "/nodes?parent=1.1&depth=1"'+
@@ -170,8 +188,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1.2",'+
                     '"hasSub": true,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/1.2",'+
                         '"children" : "/nodes?parent=1.2&depth=1"'+
@@ -183,8 +201,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1.3",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/1.3",'+
                         '"children" : "/nodes?parent=1.3&depth=1"'+
@@ -196,8 +214,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1.4",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/1.4",'+
                         '"children" : "/nodes?parent=1.4&depth=1"'+
@@ -209,8 +227,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1.5",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/1.5",'+
                         '"children" : "/nodes?parent=1.5&depth=1"'+
@@ -222,8 +240,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1.6",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/1.6",'+
                         '"children" : "/nodes?parent=1.6&depth=1"'+
@@ -235,8 +253,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1.7",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/1.7",'+
                         '"children" : "/nodes?parent=1.7&depth=1"'+
@@ -248,8 +266,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1.8",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/1.8",'+
                         '"children" : "/nodes?parent=1.8&depth=1"'+
@@ -261,8 +279,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1.9",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/1.9",'+
                         '"children" : "/nodes?parent=1.9&depth=1"'+
@@ -289,8 +307,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "2.1",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/2.1",'+
                         '"children" : "/nodes?parent=2.1&depth=1"'+
@@ -302,8 +320,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "2.2",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/2.2",'+
                         '"children" : "/nodes?parent=2.2&depth=1"'+
@@ -315,8 +333,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "2.3",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/2.3",'+
                         '"children" : "/nodes?parent=2.3&depth=1"'+
@@ -328,8 +346,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "2.4",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/2.4",'+
                         '"children" : "/nodes?parent=2.4&depth=1"'+
@@ -341,8 +359,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "2.5",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/2.5",'+
                         '"children" : "/nodes?parent=2.5&depth=1"'+
@@ -354,8 +372,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "2.6",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/2.6",'+
                         '"children" : "/nodes?parent=2.6&depth=1"'+
@@ -367,8 +385,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "2.7",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/2.7",'+
                         '"children" : "/nodes?parent=2.7&depth=1"'+
@@ -380,8 +398,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "2.8",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/2.8",'+
                         '"children" : "/nodes?parent=2.8&depth=1"'+
@@ -393,8 +411,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "2.9",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/2.9",'+
                         '"children" : "/nodes?parent=2.9&depth=1"'+
@@ -421,8 +439,8 @@ require(['lib/husky'], function (Husky) {
                 '"id": "1.1.1",'+
                 '"hasSub": false,'+
                 '"published":true,'+
-                '"linked": true,'+
-                '"type": "ghost",'+
+                '"linked": false,'+
+                '"type": false,'+
                 '"_links" : {'+
                 '"self" : "/nodes/1.1.1",'+
                 '"children" : "/nodes?parent=1.1.1&depth=1"'+
@@ -434,8 +452,8 @@ require(['lib/husky'], function (Husky) {
                 '"id": "1.1.2",'+
                 '"hasSub": false,'+
                 '"published":true,'+
-                '"linked": true,'+
-                '"type": "ghost",'+
+                '"linked": false,'+
+                '"type": false,'+
                 '"_links" : {'+
                 '"self" : "/nodes/1.1.2",'+
                 '"children" : "/nodes?parent=222.3&depth=1"'+
@@ -447,8 +465,8 @@ require(['lib/husky'], function (Husky) {
                 '"id": "1.1.3",'+
                 '"hasSub": false,'+
                 '"published":true,'+
-                '"linked": true,'+
-                '"type": "ghost",'+
+                '"linked": false,'+
+                '"type": false,'+
                 '"_links" : {'+
                 '"self" : "/nodes/1.1.3",'+
                 '"children" : "/nodes?parent=1.1.3&depth=1"'+
@@ -475,8 +493,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1.2.1",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/1.2.1",'+
                         '"children" : "/nodes?parent=1.2.1&depth=1"'+
@@ -488,8 +506,8 @@ require(['lib/husky'], function (Husky) {
                         '"id": "1.2.2",'+
                         '"hasSub": false,'+
                         '"published":true,'+
-                        '"linked": true,'+
-                        '"type": "ghost",'+
+                        '"linked": false,'+
+                        '"type": false,'+
                         '"_links" : {'+
                             '"self" : "/nodes/1.2.2",'+
                             '"children" : "/nodes?parent=1.2.2&depth=1"'+
@@ -501,8 +519,8 @@ require(['lib/husky'], function (Husky) {
                         '"id": "1.2.3",'+
                         '"hasSub": true,'+
                         '"published":true,'+
-                        '"linked": true,'+
-                        '"type": "ghost",'+
+                        '"linked": false,'+
+                        '"type": false,'+
                         '"_links" : {'+
                             '"self" : "/nodes/1.2.3",'+
                             '"children" : "/nodes?parent=1.2.3&depth=1"'+
@@ -529,8 +547,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1.2.3.1",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                     '"self" : "/nodes/1.2.3.1",'+
                     '"children" : "/nodes?parent=1.2.3.1&depth=1"'+
@@ -542,8 +560,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1.2.3.2",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                     '"self" : "/nodes/222.4",'+
                     '"children" : "/nodes?parent=1.2.3.2&depth=1"'+
@@ -555,8 +573,8 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1.2.3.3",'+
                     '"hasSub": true,'+
                     '"published":true,'+
-                    '"linked": true,'+
-                    '"type": "ghost",'+
+                    '"linked": false,'+
+                    '"type": false,'+
                     '"_links" : {'+
                     '"self" : "/nodes/1.2.3.3",'+
                     '"children" : "/nodes?parent=1.2.3.3&depth=1"'+
