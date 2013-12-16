@@ -312,33 +312,41 @@ define([], function() {
                 length = this.selected.length - 1,
                 i, $arrowElement, margin;
 
-            this.removeCurrentSelected(column);
-            this.sandbox.dom.addClass($target, 'selected');
-            $arrowElement = this.sandbox.dom.find('.arrow', $target);
-            this.sandbox.dom.removeClass($arrowElement, 'inactive');
 
-            // when is not scrolled and column > 3 then scroll
-            if(column > DISPLAYEDCOLUMNS) {
-                margin = (((column*this.options.column.width)+SCROLLBARWIDTH) - this.containerWidth);
-                this.sandbox.dom.scrollLeft(this.$columnContainer, (margin > 0) ? margin : 0);
-            }
+            if (this.sandbox.dom.hasClass($target, 'selected')) { // is element already selected
 
-            if (!!selectedItem) {
-
-                // remove old elements from breadcrumb
-                for (i = length; i >= column; i--) {
-                    delete this.selected[i];
-                }
-
-                // add element to breadcrumb
-                this.selected[column] = selectedItem;
                 this.sandbox.emit(SELECTED, selectedItem);
 
-                if (!!selectedItem.hasSub) {
-                    this.load(selectedItem._links.children, column);
+            } else {
+
+                this.removeCurrentSelected(column);
+                this.sandbox.dom.addClass($target, 'selected');
+                $arrowElement = this.sandbox.dom.find('.arrow', $target);
+                this.sandbox.dom.removeClass($arrowElement, 'inactive');
+
+                // when is not scrolled and column > 3 then scroll
+                if (column > DISPLAYEDCOLUMNS) {
+                    margin = (((column * this.options.column.width) + SCROLLBARWIDTH) - this.containerWidth);
+                    this.sandbox.dom.scrollLeft(this.$columnContainer, (margin > 0) ? margin : 0);
                 }
 
-                this.removeColumns(column + 1);
+                if (!!selectedItem) {
+
+                    // remove old elements from breadcrumb
+                    for (i = length; i >= column; i--) {
+                        delete this.selected[i];
+                    }
+
+                    // add element to breadcrumb
+                    this.selected[column] = selectedItem;
+                    this.sandbox.emit(SELECTED, selectedItem);
+
+                    if (!!selectedItem.hasSub) {
+                        this.load(selectedItem._links.children, column);
+                    }
+
+                    this.removeColumns(column + 1);
+                }
             }
 
         },
