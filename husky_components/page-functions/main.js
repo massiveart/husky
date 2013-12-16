@@ -68,7 +68,7 @@ define([], function() {
 
             render: function() {
                 if (!this.options.data.id) {
-                    this.options.data.id = this.sandbox.util.createUniqueId();
+                    this.options.data.id = this.sandbox.util.uniqueId();
                 }
 
                 this.sandbox.dom.append(this.options.el, this.sandbox.template.parse(template(), this.options.data));

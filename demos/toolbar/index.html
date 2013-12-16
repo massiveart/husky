@@ -3,7 +3,6 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -23,7 +22,7 @@
         <h1>list toolbars</h1>
 
         <h3>default (large)</h3>
-        
+
         <div id="toolbar1"></div>
         <h3>medium</h3>
 
@@ -74,9 +73,21 @@
                                 'icon': 'retweet',
                                 'title': 'Refresh',
                                 'group': '1',
-                                'callback': function() {
-
-                                }
+                                'items': [
+                                    {
+                                        'title': 'move'
+                                    },
+                                    {
+                                        'title': 'duplicate'
+                                    },
+                                    {
+                                        divider: true
+                                    },
+                                    {
+                                        'title': 'remove',
+                                        disabled: true
+                                    }
+                                ]
                             },
                             {
                                 'icon': 'file-import',
@@ -139,6 +150,7 @@
                         }
                     ]);
 
+
                     app.sandbox.start([
                         {
                             name: 'toolbar@husky',
@@ -158,6 +170,7 @@
                             fakeServer.respond();
                         }, 100);
                     });
+
 
                 });
             });

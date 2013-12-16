@@ -40,6 +40,7 @@
  *          - title
  *          - icon (optional) false will remove icon
  *          - callback
+ *          - divider = true; takes item as divider element
  *
  *
  */
@@ -298,7 +299,7 @@ define(function() {
             // if item has no id, generate random id
             if (!item.id || !!this.items[item.id]) {
                 do {
-                    item.id = this.sandbox.util.createUniqueId();
+                    item.id = this.sandbox.util.uniqueId();
                 } while (!!this.items[item.id]);
             }
             // set enabled defaults

@@ -26,7 +26,8 @@ $editToolbarHeight: 40px;
     border-radius: 4px;
     background-color: $grayLighter;
     @include clear-float;
-    @include box-shadow(#bababa 0 2px 0 0);
+
+    @include box-shadow(rgba(0, 0, 0, 0.2) 0 2px 0 0);
 
     > ul {
         float: left;

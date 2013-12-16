@@ -20,65 +20,93 @@
 
 
   // large buttons
-  .btn-group.large > button, button.large {
-    width: 50px;
-    height: 40px;
-    font-size: 18px;
+  .large {
+    button {
+      width: 50px;
+      height: 40px;
+      font-size: 18px;
+      margin-right: $marginRightLarge;
+    }
   }
-  .btn-group.large,  button.large {
+
+  .btn-group.large,
+  :not(.btn-group) .group.large {
     &:not(:last-child) {
       margin-right: $marginRightLarge;
     }
   }
 
   // medium buttons
-  .btn-group.medium > button, button.medium {
+  .medium {
+    button {
       width: 40px;
       height: 30px;
       font-size: 14px;
+      margin-right: $marginRightMedium;
+
+      &.dropdown-toggle:after{
+        top: -1px;
+      }
+    }
   }
-  .btn-group.medium,  button.medium {
+  .btn-group.medium,
+  :not(.btn-group) .group.medium {
     &:not(:last-child) {
       margin-right: $marginRightMedium;
     }
   }
 
   // small buttons
-  .btn-group.small > button, button.small {
+  .small {
+    button {
       width: 30px;
       height: 20px;
       font-size: 10px;
+      margin-right: $marginRightSmall;
+
+      // styling triangle
+      &.dropdown-toggle:after{
+        top: -1px;
+        margin-left: 3px;
+        border-left-width: 3px;
+        border-right-width: 3px;
+        border-top-width: 4px;
+      }
+    }
   }
-  .btn-group.small, button.small {
+  .btn-group.small,
+  :not(.btn-group) .group.small {
     &:not(:last-child) {
       margin-right: $marginRightSmall;
     }
   }
 
-  .btn-group, .btn-group-vertical {
+
+  .btn-group {
     position: relative;
     display: inline-block;
     vertical-align: middle;
     font-size: 0;
-    margin-right: $marginRightLarge;
 
 
     // button of button group
-    > button {
-
-      margin-right: 0;
+    > .group {
+      button {
+        margin-right: 0;
+      }
 
       // inbetween element
-      &:not(:first-child):not(:last-child):not(.dropdown-toggle) {
+      &:not(:first-child):not(:last-child):not(.dropdown-toggle) button{
         margin: 0 0 0 -1px;
         border-radius: 0;
       }
 
       // last element of button group
       &:last-child {
-        margin-left: -1px;
-
-        &:not(:first-child):not(.dropdown-toggle) {
+        button {
+          margin-left: -1px;
+        }
+        &:not(:first-child):not(.dropdown-toggle)  button {
           border-top-left-radius: 0;
           border-bottom-left-radius: 0;
         }
@@ -86,9 +114,10 @@
 
       // first element of button group
       &:first-child {
-        margin-left: 0;
-
-        &:not(:last-child):not(.dropdown-toggle) {
+        button {
+          margin-left: 0;
+        }
+        &:not(:last-child):not(.dropdown-toggle) button{
           border-top-right-radius: 0;
           border-bottom-right-radius: 0;
         }
@@ -100,8 +129,17 @@
     }
   }
 
+  .group {
+    display: inline-block;
+    font-size:14px;
+  }
+
   button {
     cursor: pointer;
+
+    display: inline-block;
+
+    line-height:1;
 
     width: 50px;
     height: 40px;
@@ -113,10 +151,12 @@
     background-image: none;
     background-color: transparent;
     outline: none;
+
     margin-right: 20px;
 
     border: 1px solid $grayLighter;
     border-radius: 3px;
+    @include user-select(none);
 
     &:disabled {
       color: $grayLight;
@@ -146,11 +186,108 @@
       }
     }
 
-    @include user-select(none);
+    span {
+      vertical-align: middle;
+    }
+
   }
 
   .toolbar-search {
     display: inline-block;
+    width: 130px;
+  }
+
+
+
+  // dropdown
+
+  .is-expanded {
+    ul.toolbar-dropdown-menu {
+      display: block;
+    }
+  }
+
+  .medium, .small {
+    ul.toolbar-dropdown-menu {
+      font-size: 12px;
+    }
+  }
+
+  ul.toolbar-dropdown-menu {
+    background-color: white;
+    border: 0px solid $grayLighter;
+
+    display: none;
+    position: absolute;
+    top: 100%;
+    z-index: 1000;
+    float: left;
+    min-width: 160px;
+    list-style: none;
+
+    padding: 5px 0;
+    margin-top: 0px;
+    margin-left: 0px;
+
+    @include standard-box-shadow;
+
+    &.right-aligned {
+      left: auto;
+      right: 0;
+    }
+
+    li {
+      display: list-item;
+      float: none;
+      line-height: 1;
+      height: 30px;
+      line-height: 30px;
+      white-space: nowrap;
+      cursor: pointer;
+
+      padding: 0 20px;
+
+
+      a {
+        color: black;
+        text-decoration: none;
+      }
+
+      &.is-selected,
+      &:hover {
+        background-color: $highlightColor;
+        a {
+          color: white;
+        }
+      }
+
+      &.disabled:hover,
+      &.disabled {
+        cursor: default;
+        background-color: inherit;
+        a {
+          cursor: default;
+          color: $grayLight;
+        }
+      }
+
+      &:active {
+        background-color: lighten($highlightColor, 5%);
+      }
+
+      &.divider {
+        height: 1px;
+        margin: 5px 0;
+        overflow: hidden;
+        background-color: $grayLighterer;
+      }
+
+      a {
+        clear:both;
+        text-align: left;
+      }
+
+    }
   }
 
 }

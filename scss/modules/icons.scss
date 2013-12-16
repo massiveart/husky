@@ -59,6 +59,13 @@
   }
 }
 
+.icon-circle-plus {
+  &::after {
+    content: "\e191";
+    display: inline-block;
+  }
+}
+
 .icon-edit {
   &::after {
     content: "\e151";
@@ -328,16 +335,25 @@
   }
 }
 
-.icon-floppy-save {
+.icon-eye-open {
   &::after {
-    content: "\e447";
+    content: "\e052";
     display: inline-block;
   }
 }
 
-.icon-eye-open {
+.icon-floppy-save {
   &::after {
-    content: "\e052";
+    font-family: $baseIconHalflingsFont;
+    content: "\e175";
+    display: inline-block;
+  }
+}
+
+.icon-floppy-saved {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e173";
     display: inline-block;
   }
 }
