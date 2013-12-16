@@ -28,7 +28,9 @@
             "__component__$tabs@husky": "husky_components/tabs/main",
             "__component__$auto-complete@husky": "husky_components/auto-complete/main",
             "__component__$dropdown-multiple-select@husky": "husky_components/dropdown-multiple-select/main",
-            "__component__$password-fields@husky": "husky_components/password-fields/main"
+            "__component__$password-fields@husky": "husky_components/password-fields/main",
+            "__component__$edit-toolbar@husky": "husky_components/edit-toolbar/main",
+            "__component__$page-functions@husky": "husky_components/page-functions/main"
         },
         "shim": {
             "backbone": {
@@ -65,7 +67,9 @@
             "__component__$tabs@husky",
             "__component__$auto-complete@husky",
             "__component__$dropdown-multiple-select@husky",
-            "__component__$password-fields@husky"
+            "__component__$password-fields@husky",
+            "__component__$edit-toolbar@husky",
+            "__component__$page-functions@husky"
         ]
     }
 }
