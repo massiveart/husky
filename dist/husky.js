@@ -25804,19 +25804,19 @@ define('__component__$page-functions@husky',[], function() {
              * Namespace of events
              * @type {string}
              */
-                eventNamespace = 'husky.page-functions.',
+            eventNamespace = 'husky.page-functions.',
 
             /**
              * @event husky.page-functions.rendered
              * @description the component has been rendered
              */
-                RENDERED = eventNamespace + 'rendered',
+            RENDERED = eventNamespace + 'rendered',
 
             /**
              * @event husky.page-functions.clicked
              * @description link was clicked
              */
-                CLICK = eventNamespace + 'clicked';
+            CLICK = eventNamespace + 'clicked';
 
         return {
 
