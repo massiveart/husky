@@ -258,6 +258,14 @@
                 $(window).scrollTop($(itemSelector).offset().top);
             };
 
+            app.core.dom.scrollLeft = function(selector, value) {
+                if(!!value) {
+                    $(selector).scrollLeft(value);
+                } else {
+                    return $(selector).scrollLeft();
+                }
+            };
+
 
             app.core.dom.scrollAnimate = function(position, selector) {
                 if (!!selector) {
@@ -278,6 +286,7 @@
             app.core.dom.slideDown = function(selector, duration, complete) {
                 $(selector).slideDown(duration,complete);
             };
+
 
 
             app.core.util.ajax = $.ajax;

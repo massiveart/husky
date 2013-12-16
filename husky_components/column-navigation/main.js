@@ -6,25 +6,31 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  *
- * Name: column navigation
- * Options:
- *
- * Emits:
- *  husky.column.navigation.data.loaded
- *  husky.column.navigation.selected[item]
- *  husky.column.navigation.add[parent]
- *
- * Listens:
- * husky.column.navigation.get-breadcrumb[callback]
+ * @module husky/components/column-navigation
  */
 
 // TODO
 // browser compatibility testing
 
+/**
+ * @class ColumnNavigation
+ * @constructor
+ *
+ * @params {Object} [options] Configuration object
+ * @params {Number} [options.wrapper.height] height of container
+ * @params {Number} [options.column.width] width of a column in within the navigation
+ * @params {Number} [options.scrollBarWidth] with of scrollbar // TODO??
+ * @params {url} [options.url] url to load data
+ *
+ */
 define([], function() {
 
     'use strict';
 
+    /**
+     * Defaults
+     * @type {{wrapper: {height: number}, column: {width: number}, scrollBarWidth: number, url: null}}
+     */
     var defaults = {
         wrapper: {
             height: 300
@@ -77,6 +83,8 @@ define([], function() {
 
         /**
          * Loads data from a specific url and triggers the parsing
+         * @param {String} url
+         * @param {Number} columnNumber
          */
         load: function(url, columnNumber) {
 
@@ -105,7 +113,7 @@ define([], function() {
 
         /**
          * Removes removes data and removes dom elements
-         * @param newColumn
+         * @param {Number} newColumn
          */
         removeColumns: function(newColumn) {
 
@@ -120,6 +128,8 @@ define([], function() {
 
         /**
          * Parses the received data and renders columns
+         * @param {String} data
+         * @param {Number} columnNumber
          */
         parseData: function(data, columnNumber) {
             var $column,
@@ -141,6 +151,7 @@ define([], function() {
                 newColumn = columnNumber + 1;
             }
 
+
             $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.wrapper.height));
             $list = this.sandbox.dom.find('ul', $column);
 
@@ -151,12 +162,15 @@ define([], function() {
 
             this.sandbox.dom.append(this.$columnContainer, $column);
 
+            if(newColumn > 3){
+                this.adjustScrollPosition();
+            }
         },
 
         /**
-         * Stores data in internal structor - seperated by column number
-         * @param data
-         * @param columnNumber
+         * Stores data in internal structure - seperated by column number
+         * @param {Object} item
+         * @param {Number} columnNumber
          */
         storeDataItem: function(columnNumber, item) {
 
@@ -178,22 +192,36 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#column-navigation-add');
             this.sandbox.dom.on(this.$el, 'click', this.toggleSettings.bind(this), '#column-navigation-settings');
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
+
+            this.sandbox.dom.on(this.$columnContainer, 'scroll', this.hideOptions.bind(this));
         },
 
         bindCustomEvents: function(){
             this.sandbox.on('husky.column.navigation.get-breadcrumb', this.getBreadCrumb.bind(this));
         },
 
+        /**
+         * Shows the edit icon
+         * @param {Object} event
+         */
         itemMouseEnter: function(event){
             var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
             this.sandbox.dom.toggle($edit);
         },
 
+        /**
+         * Hides the edit icon
+         * @param {Object} event
+         */
         itemMouseLeave: function(event){
             var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
             this.sandbox.dom.toggle($edit);
         },
 
+        /**
+         * Returns the breadcrumb
+         * @param {Function} callback
+         */
         getBreadCrumb: function(callback){
             if(typeof callback === 'function') {
                 callback(this.selected);
@@ -202,16 +230,50 @@ define([], function() {
             }
         },
 
+        /**
+         * Shows the options below the last hovered column
+         * @param {Object} event
+         */
         showOptions: function(event) {
+
             this.lastHoveredColumn = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget), 'column');
+
+            var scrollPositionX =  this.sandbox.dom.scrollLeft(this.sandbox.dom.parent(event.currentTarget)),
+                marginLeft = ((this.lastHoveredColumn - 1) * this.options.column.width);
+
+            this.sandbox.logger.log("Scroll Position",scrollPositionX);
+
+            if(scrollPositionX > 0) { // correc
+                marginLeft -= scrollPositionX;
+            }
+
             this.sandbox.dom.show(this.$optionsContainer);
-            this.sandbox.dom.css(this.$optionsContainer, 'margin-left', ((this.lastHoveredColumn - 1) * this.options.column.width) + 'px');
+            this.sandbox.dom.css(this.$optionsContainer, 'margin-left',  marginLeft+ 'px');
+        },
+
+        /**
+         * Hides options
+         */
+        hideOptions: function() {
+            this.sandbox.dom.hide(this.$optionsContainer);
+        },
+
+        /**
+         * Adjusts the scroll position when new column is added and there is not enough space
+         */
+        adjustScrollPosition: function(){
+
+            this.sandbox.logger.log("test");
+
+            // scroll one column
+            this.sandbox.dom.scrollLeft(this.$columnContainer, this.options.column.width);
+            this.sandbox.logger.log("Scroll Position",this.sandbox.dom.scrollLeft(this.$columnContainer));
         },
 
 
         /**
          * Item was selected and data will be loaded if has sub
-         * @param event
+         * @param {Object} event
          */
         itemSelected: function(event) {
 
@@ -248,7 +310,7 @@ define([], function() {
 
         /**
          * Removes the selected class from old elements
-         * @param column
+         * @param {Number} column
          */
         removeCurrentSelected: function(column) {
             var items = this.sandbox.dom.find('li', '#column-'+column);
@@ -269,6 +331,7 @@ define([], function() {
 
         /**
          * Emits an edit event
+         * @param {Object} event
          */
         editNode: function(event){
             var $listItem = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget)),
