@@ -3175,18 +3175,18 @@ hr.divider {
 }
 
 /* line 24, ../scss/modules/grid.scss */
-[class*='grid-col-'] {
+[class*="grid-col-"] {
   float: left;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 /* line 29, ../scss/modules/grid.scss */
-[class*='grid-col-']:first-of-type {
+[class*="grid-col-"]:first-of-type {
   padding-left: 0;
-  padding-right: 10px;
+  padding-right: 8px;
 }
 /* line 34, ../scss/modules/grid.scss */
-[class*='grid-col-']:last-of-type {
+[class*="grid-col-"]:last-of-type {
   padding-right: 0;
 }
 
@@ -3197,7 +3197,7 @@ hr.divider {
 /* line 43, ../scss/modules/grid.scss */
 .grid-col-1.floating:nth-child(12n+1) {
   padding-left: 0;
-  padding-right: 10px;
+  padding-right: 8px;
 }
 /* line 48, ../scss/modules/grid.scss */
 .grid-col-1.floating:nth-child(12n) {
@@ -3211,7 +3211,7 @@ hr.divider {
 /* line 58, ../scss/modules/grid.scss */
 .grid-col-2.floating:nth-child(6n+1) {
   padding-left: 0;
-  padding-right: 10px;
+  padding-right: 8px;
 }
 /* line 63, ../scss/modules/grid.scss */
 .grid-col-2.floating:nth-child(6n) {
@@ -3225,7 +3225,7 @@ hr.divider {
 /* line 73, ../scss/modules/grid.scss */
 .grid-col-3.floating:nth-child(4n+1) {
   padding-left: 0;
-  padding-right: 10px;
+  padding-right: 8px;
 }
 /* line 78, ../scss/modules/grid.scss */
 .grid-col-3.floating:nth-child(4n) {
@@ -3239,7 +3239,7 @@ hr.divider {
 /* line 88, ../scss/modules/grid.scss */
 .grid-col-4.floating:nth-child(3n+1) {
   padding-left: 0;
-  padding-right: 10px;
+  padding-right: 8px;
 }
 /* line 93, ../scss/modules/grid.scss */
 .grid-col-4.floating:nth-child(3n) {
@@ -3258,7 +3258,7 @@ hr.divider {
 /* line 107, ../scss/modules/grid.scss */
 .grid-col-6.floating:nth-child(2n+1) {
   padding-left: 0;
-  padding-right: 10px;
+  padding-right: 8px;
 }
 /* line 112, ../scss/modules/grid.scss */
 .grid-col-6.floating:nth-child(2n) {
@@ -3295,11 +3295,19 @@ hr.divider {
   width: 100%;
 }
 
-/* line 145, ../scss/modules/grid.scss */
-.icon-remove {
-  cursor: pointer;
+@media (max-width: 460px) {
+  /* line 143, ../scss/modules/grid.scss */
+  [class*="grid-col-"] {
+    width: 100%;
+    margin-top: 15px;
+    padding: 0;
+  }
+  /* line 148, ../scss/modules/grid.scss */
+  [class*="grid-col-"]:first-of-type {
+    margin-top: 0;
+    padding-right: 0;
+  }
 }
-
 /* line 5, ../scss/modules/form.scss */
 .form-element {
   width: 100%;
@@ -3355,7 +3363,7 @@ label.large {
 }
 /* line 58, ../scss/modules/form.scss */
 label .form-element {
-  margin-top: 6px;
+  margin-top: 5px;
 }
 /* line 62, ../scss/modules/form.scss */
 label.inline {
@@ -3397,30 +3405,32 @@ textarea {
   resize: both;
 }
 
-/* line 113, ../scss/modules/form.scss */
+/* line 116, ../scss/modules/form.scss */
 textarea.vertical {
   resize: vertical;
 }
 
-/* line 114, ../scss/modules/form.scss */
+/* line 120, ../scss/modules/form.scss */
 textarea.horizontal {
   resize: horizontal;
 }
 
-/* line 115, ../scss/modules/form.scss */
+/* line 124, ../scss/modules/form.scss */
 textarea.noResize {
   resize: none;
 }
 
-/* line 117, ../scss/modules/form.scss */
+/* line 128, ../scss/modules/form.scss */
 textarea.form-element {
+  width: 100%;
   height: 40px;
+  min-height: 150px;
   padding: 10px;
   font-size: 18px;
   font-family: inherit;
 }
 
-/* line 128, ../scss/modules/form.scss */
+/* line 140, ../scss/modules/form.scss */
 .custom-radio {
   width: 18px;
   height: 18px;
@@ -3428,7 +3438,7 @@ textarea.form-element {
   opacity: 0;
   cursor: pointer;
 }
-/* line 140, ../scss/modules/form.scss */
+/* line 152, ../scss/modules/form.scss */
 .custom-radio:checked + .custom-radio-icon::after, .custom-radio.is-checked + .custom-radio-icon::after {
   content: "";
   display: block;
@@ -3437,7 +3447,7 @@ textarea.form-element {
   border-radius: 18px;
   background-color: #999;
 }
-/* line 151, ../scss/modules/form.scss */
+/* line 163, ../scss/modules/form.scss */
 .custom-radio + .custom-radio-icon {
   display: inline-block;
   width: 18px;
@@ -3839,74 +3849,43 @@ li a.navigation-settings-icon {
 .dropdown-menu {
   width: 250px;
   display: inline-block;
-  border: 1px solid #ccc;
   position: absolute;
   top: 20px;
   left: 0;
   margin-top: 10px;
-  background-color: #FFF;
-  box-shadow: 5px 5px 0 0 rgba(0, 0, 0, 0.25);
+  background-color: white;
+  box-shadow: 3px 3px 0 0 #cccccc;
   z-index: 95;
 }
-/* line 29, ../scss/modules/dropdown.scss */
-.dropdown-menu::after, .dropdown-menu::before {
-  content: "";
-  display: block;
-  position: absolute;
-  top: -10px;
-  left: 5px;
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid #FFF;
-}
-/* line 43, ../scss/modules/dropdown.scss */
-.dropdown-menu::before {
-  top: -11px;
-  left: 4px;
-  border-left: 11px solid transparent;
-  border-right: 11px solid transparent;
-  border-bottom: 11px solid #ccc;
-}
-/* line 52, ../scss/modules/dropdown.scss */
-.dropdown-menu.dropdown-align-right {
-  left: auto !important;
-  right: 0;
-}
-/* line 56, ../scss/modules/dropdown.scss */
-.dropdown-menu.dropdown-align-right::after, .dropdown-menu.dropdown-align-right::before {
-  left: auto !important;
-  right: 5px;
-}
-/* line 62, ../scss/modules/dropdown.scss */
+/* line 27, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul {
   list-style: none;
   margin: 0;
   padding: 10px 0;
 }
-/* line 67, ../scss/modules/dropdown.scss */
+/* line 32, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul > li {
-  padding: 5px 10px;
+  padding: 5px 20px;
 }
-/* line 71, ../scss/modules/dropdown.scss */
+/* line 35, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul > li:hover, .dropdown-menu > ul > li.hover {
-  background-color: #ccc;
+  background-color: #249fbe;
   cursor: pointer;
+  color: white;
 }
 
-/* line 79, ../scss/modules/dropdown.scss */
+/* line 44, ../scss/modules/dropdown.scss */
 .dropdown-footer {
   border-top: 1px solid #ccc;
   padding: 10px 10px;
 }
 
-/* line 84, ../scss/modules/dropdown.scss */
+/* line 49, ../scss/modules/dropdown.scss */
 .dropdown-toggle {
   display: block;
   cursor: pointer;
 }
-/* line 87, ../scss/modules/dropdown.scss */
+/* line 52, ../scss/modules/dropdown.scss */
 .dropdown-toggle::after {
   content: "";
   display: inline-block;
@@ -4551,6 +4530,94 @@ a.btn-black {
 /* line 24, ../scss/modules/loading.scss */
 .loading-gray .loading-content {
   display: none;
+}
+
+/* line 1, ../scss/modules/auto-complete-list.scss */
+.auto-complete-list-container {
+  position: relative;
+}
+/* line 3, ../scss/modules/auto-complete-list.scss */
+.auto-complete-list-container ul {
+  margin: 0;
+  list-style: none;
+}
+/* line 8, ../scss/modules/auto-complete-list.scss */
+.auto-complete-list-container .icon-arrow-down {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+}
+/* line 14, ../scss/modules/auto-complete-list.scss */
+.auto-complete-list-container label {
+  cursor: default;
+}
+
+/* line 19, ../scss/modules/auto-complete-list.scss */
+.auto-complete-list-input {
+  display: inline-block;
+  position: relative;
+  width: 35%;
+}
+/* line 24, ../scss/modules/auto-complete-list.scss */
+.auto-complete-list-input input[type="text"] {
+  width: 100%;
+  border: 0;
+  outline: 0;
+}
+
+/* line 31, ../scss/modules/auto-complete-list.scss */
+.auto-complete-list-selections {
+  position: relative;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #fff;
+}
+/* line 37, ../scss/modules/auto-complete-list.scss */
+.auto-complete-list-selections .auto-complete-list-selection {
+  display: inline-block;
+  margin-top: 2px;
+  margin-right: 5px;
+  padding: 0 4px;
+  border-radius: 2px;
+  background-color: #ccc;
+  color: #000;
+  font-size: 12px;
+}
+/* line 47, ../scss/modules/auto-complete-list.scss */
+.auto-complete-list-selections .auto-complete-list-selection .icon-remove {
+  position: relative;
+  top: 2px;
+  cursor: pointer;
+}
+
+/* line 55, ../scss/modules/auto-complete-list.scss */
+.auto-complete-list-suggestions {
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ddd;
+}
+/* line 61, ../scss/modules/auto-complete-list.scss */
+.auto-complete-list-suggestions h5 {
+  margin: 0;
+  padding: 5px 8px;
+  border-bottom: 1px solid #e9e9e9;
+  color: #999999;
+  font-size: 12px;
+}
+/* line 69, ../scss/modules/auto-complete-list.scss */
+.auto-complete-list-suggestions ul {
+  padding: 8px 8px 15px;
+}
+/* line 73, ../scss/modules/auto-complete-list.scss */
+.auto-complete-list-suggestions li {
+  display: inline-block;
+  margin-right: 5px;
+  padding: 0 4px;
+  border-radius: 2px;
+  background-color: #fff;
+  color: #000;
+  font-size: 12px;
 }
 
 /* line 1, ../scss/modules/dropdown-multiple-select.scss */
