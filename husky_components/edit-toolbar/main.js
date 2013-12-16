@@ -71,6 +71,7 @@ define(function() {
         // FIXME to be replaced by own component
         backPageFunctionClick = function() {
             emitEvent.call(this, 'back');
+            return false;
         },
 
         /** events bound to sandbox */
