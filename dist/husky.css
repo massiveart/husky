@@ -4160,18 +4160,28 @@ li a.navigation-settings-icon {
 .edit-toolbar-container div.navbar > ul ul.toolbar-dropdown-menu li.is-selected a, .edit-toolbar-container div.navbar > ul ul.toolbar-dropdown-menu li:hover a {
   color: white;
 }
-/* line 230, ../scss/modules/edit-toolbar.scss */
+/* line 231, ../scss/modules/edit-toolbar.scss */
+.edit-toolbar-container div.navbar > ul ul.toolbar-dropdown-menu li.disabled:hover, .edit-toolbar-container div.navbar > ul ul.toolbar-dropdown-menu li.disabled {
+  cursor: default;
+  background-color: inherit;
+}
+/* line 234, ../scss/modules/edit-toolbar.scss */
+.edit-toolbar-container div.navbar > ul ul.toolbar-dropdown-menu li.disabled:hover a, .edit-toolbar-container div.navbar > ul ul.toolbar-dropdown-menu li.disabled a {
+  cursor: default;
+  color: #999999;
+}
+/* line 240, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-container div.navbar > ul ul.toolbar-dropdown-menu li:active {
   background-color: #28b1d3;
 }
-/* line 234, ../scss/modules/edit-toolbar.scss */
+/* line 244, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-container div.navbar > ul ul.toolbar-dropdown-menu li.divider {
   height: 1px;
   margin: 5px 0;
   overflow: hidden;
   background-color: #dddddd;
 }
-/* line 241, ../scss/modules/edit-toolbar.scss */
+/* line 251, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-container div.navbar > ul ul.toolbar-dropdown-menu li a {
   clear: both;
   text-align: left;
