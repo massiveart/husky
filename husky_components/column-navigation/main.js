@@ -37,7 +37,7 @@ define([], function() {
             url: null
         },
 
-        SCROLLBARWIDTH = 15, // width of scrollbars
+        SCROLLBARWIDTH = 16, // width of scrollbars
         DISPLAYEDCOLUMNS = 3, // number of displayed columns
 
         eventNamespace = 'husky.column-navigation.',

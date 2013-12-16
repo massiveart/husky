@@ -24424,6 +24424,121 @@ define('__component__$search@husky',[], function() {
 
 });
 
+/*****************************************************************************
+ *
+ *  Tabs
+ *
+ *  Options (defaults)
+ *      - url: url to fetch data from
+ *      - data: if no url is provided
+ *      - selected: the item that's selected on initialize
+ *      - instanceName - enables custom events (in case of multiple tabs on one page)
+ *      - preselect - defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url)
+ *  Provides Events
+ *      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback
+ *  Triggers Events
+ *      - husky.tabs.<<instanceName>>.item.select [item] - triggered when item was clicked
+ *      - husky.tabs.<<instanceName>>.initialized [selectedItem]- triggered when tabs have been initialized
+ *
+ *  TODO select first (or with parameter) item after load
+ *
+ *****************************************************************************/
+
+define('__component__$tabs@husky',[],function() {
+
+    
+
+    var defaults = {
+            url: null,
+            data: [],
+            instanceName: '',
+            preselect: true
+        },
+
+        selectItem = function(event) {
+            event.preventDefault();
+            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
+            this.sandbox.dom.addClass(event.currentTarget, 'is-selected');
+            triggerSelectEvent.call(this, this.items[this.sandbox.dom.data(event.currentTarget, 'id')]);
+        },
+
+        triggerSelectEvent = function(item) {
+            this.sandbox.emit(createEventString.call(this, 'item.select'), item);
+        },
+
+        bindDOMEvents = function() {
+            this.sandbox.dom.on(this.$el, 'click', selectItem.bind(this), 'li');
+        },
+
+        bindCustomEvents = function() {
+            this.sandbox.on(createEventString.call(this, 'getSelected'), function(callback) {
+                var selection = this.sandbox.dom.find('.is-selected', this.options.el);
+                callback.call(this.items[this.sandbox.dom.data(selection, 'id')]);
+            }.bind(this));
+        },
+
+        createEventString = function(ending) {
+            var instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
+            return 'husky.tabs.' + instanceName + ending;
+        };
+
+    return {
+
+        view: true,
+
+        initialize: function() {
+
+            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+            this.$el = this.sandbox.dom.$(this.options.el);
+
+            // load data and call render
+            if (!!this.options.url) {
+                this.sandbox.util.load(this.options.url)
+                    .then(this.render.bind(this))
+                    .fail(function(data) {
+                        this.sandbox.logger.log('data could not be loaded:', data);
+                    }.bind(this));
+            } else if (!!this.options.data) {
+                this.render((this.options.data));
+            } else {
+                this.sandbox.logger.log('no data provided for tabs!');
+            }
+
+            bindDOMEvents.call(this);
+
+            bindCustomEvents.call(this);
+        },
+
+        render: function(data) {
+
+            var $element = this.sandbox.dom.createElement('<div class="tabs-container"></div>'),
+                $list = this.sandbox.dom.createElement('<ul/>'),
+                selected = '', selectedItem = null;
+
+            this.sandbox.dom.append(this.$el, $element);
+            this.sandbox.dom.append($element, $list);
+
+            this.items = [];
+
+            this.sandbox.util.foreach(data.items, function(item) {
+                // check if item got selected
+                if (this.options.preselect && !!data.url && data.url === item.action) {
+                    selected = ' class="is-selected"';
+                    selectedItem = item;
+                } else {
+                    selected = '';
+                }
+                this.items[item.id] = item;
+                this.sandbox.dom.append($list, '<li ' + selected + ' data-id="' + item.id + '"><a href="#">' + item.title + '</a></li>');
+            }.bind(this));
+
+            // initialization finished
+            this.sandbox.emit(createEventString.call(this, 'initialized'), selectedItem);
+        }
+    };
+
+});
+
 /*
  * This file is part of the Sulu CMS.
  *
@@ -25220,43 +25335,90 @@ define('__component__$password-fields@husky',[], function() {
     };
 });
 
-/*
- * This file is part of the Sulu CMS.
+/**
+ * This file is part of Husky frontend development framework.
  *
  * (c) MASSIVE ART WebServices GmbH
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  *
- * Name: column navigation
- * Options:
- *
- * Emits:
- *  husky.column.navigation.data.loaded
- *  husky.column.navigation.selected[item]
- *  husky.column.navigation.add[parent]
- *
- * Listens:
- * husky.column.navigation.get-breadcrumb[callback]
+ * @module husky/components/column-navigation
  */
 
 // TODO
-// browser compatibility
+// browser compatibility testing (scrollbar position and width);
 
+/**
+ * @class ColumnNavigation
+ * @constructor
+ *
+ * @params {Object} [options] Configuration object
+ * @params {Number} [options.wrapper.height] height of container
+ * @params {Number} [options.column.width] width of a column in within the navigation
+ * @params {Number} [options.scrollBarWidth] with of scrollbar
+ * @params {url} [options.url] url to load data
+ *
+ */
 define('__component__$column-navigation@husky',[], function() {
 
     
 
     var defaults = {
-        wrapper: {
-            height: 300
+            wrapper: {
+                height: 300
+            },
+            column: {
+                width: 250
+            },
+            url: null
         },
-        column: {
-            width: 250
-        },
-        scrollBarWidth: 15,
-        url: null
-    };
+
+        SCROLLBARWIDTH = 15, // width of scrollbars
+        DISPLAYEDCOLUMNS = 3, // number of displayed columns
+
+        eventNamespace = 'husky.column-navigation.',
+
+        /**
+         * @event husky.column-navigation.loaded
+         * @description the component has loaded everything successfully and will be rendered
+         */
+        LOADED = eventNamespace + 'loaded',
+
+        /**
+         * @event husky.column-navigation.selected
+         * @description an navigation element has been selected
+         * @param {Object} selected object
+         */
+        SELECTED = eventNamespace + 'selected',
+
+        /**
+         * @event husky.column-navigation.add
+         * @description the add button has been clicked
+         * @param {Object} parent object from active column level
+         */
+        ADD = eventNamespace + 'add',
+
+        /**
+         * @event husky.column-navigation.edit
+         * @description the edit icon has been clicked
+         * @param {Object} clicked object
+         */
+        EDIT = eventNamespace + 'edit',
+
+        /**
+         * @event husky.column-navigation.settings
+         * @description the settings button has been clicked
+         * @param {Object} parent object from active column level
+         */
+        SETTINGS = eventNamespace + 'settings',
+
+        /**
+         * @event husky.column-navigation.get-breadcrumb
+         * @description the breadcrumb will be returned
+         * @param {Function} callback function which will process the breadcrumb objects
+         */
+        BREADCRUMB = eventNamespace + 'get-breadcrumb';
 
     return {
 
@@ -25264,6 +25426,8 @@ define('__component__$column-navigation@husky',[], function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.$element = this.sandbox.dom.$(this.options.el);
+
+            this.containerWidth = this.sandbox.dom.width(this.$element);
             this.columns = [];
             this.selected = [];
 
@@ -25284,7 +25448,7 @@ define('__component__$column-navigation@husky',[], function() {
             this.sandbox.dom.append(this.$element, $wrapper);
 
             // navigation container
-            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer(this.options.wrapper.height + this.options.scrollBarWidth));
+            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer(this.options.wrapper.height + SCROLLBARWIDTH));
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
@@ -25299,6 +25463,8 @@ define('__component__$column-navigation@husky',[], function() {
 
         /**
          * Loads data from a specific url and triggers the parsing
+         * @param {String} url
+         * @param {Number} columnNumber
          */
         load: function(url, columnNumber) {
 
@@ -25316,7 +25482,7 @@ define('__component__$column-navigation@husky',[], function() {
                     success: function(response) {
 
                         this.parseData(response, columnNumber);
-                        this.sandbox.emit('husky.column.navigation.loaded');
+                        this.sandbox.emit(LOADED);
 
                     }.bind(this)
                 });
@@ -25327,7 +25493,7 @@ define('__component__$column-navigation@husky',[], function() {
 
         /**
          * Removes removes data and removes dom elements
-         * @param newColumn
+         * @param {Number} newColumn
          */
         removeColumns: function(newColumn) {
 
@@ -25342,6 +25508,8 @@ define('__component__$column-navigation@husky',[], function() {
 
         /**
          * Parses the received data and renders columns
+         * @param {String} data
+         * @param {Number} columnNumber
          */
         parseData: function(data, columnNumber) {
             var $column,
@@ -25363,22 +25531,27 @@ define('__component__$column-navigation@husky',[], function() {
                 newColumn = columnNumber + 1;
             }
 
+
             $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.wrapper.height));
             $list = this.sandbox.dom.find('ul', $column);
 
             this.sandbox.util.each(this.data.embedded, function(index, value) {
                 this.storeDataItem(newColumn, value);
-                this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width - this.options.scrollBarWidth, value)));
+                this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width - SCROLLBARWIDTH, value)));
             }.bind(this));
 
             this.sandbox.dom.append(this.$columnContainer, $column);
 
+            if(newColumn > DISPLAYEDCOLUMNS){
+                // scroll one column to the right
+                this.sandbox.dom.scrollLeft(this.$columnContainer, this.options.column.width);
+            }
         },
 
         /**
-         * Stores data in internal structor - seperated by column number
-         * @param data
-         * @param columnNumber
+         * Stores data in internal structure - seperated by column number
+         * @param {Object} item
+         * @param {Number} columnNumber
          */
         storeDataItem: function(columnNumber, item) {
 
@@ -25392,7 +25565,10 @@ define('__component__$column-navigation@husky',[], function() {
 
         bindDOMEvents: function() {
             this.sandbox.dom.on(this.$el, 'click', this.itemSelected.bind(this), 'li');
-            this.sandbox.dom.on(this.$el, 'mouseover', this.itemHover.bind(this), 'li');
+
+            this.sandbox.dom.on(this.$el, 'mouseenter', this.itemMouseEnter.bind(this), 'li');
+            this.sandbox.dom.on(this.$el, 'mouseleave', this.itemMouseLeave.bind(this), 'li');
+
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
             this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#column-navigation-add');
             this.sandbox.dom.on(this.$el, 'click', this.toggleSettings.bind(this), '#column-navigation-settings');
@@ -25400,14 +25576,31 @@ define('__component__$column-navigation@husky',[], function() {
         },
 
         bindCustomEvents: function(){
-            this.sandbox.on('husky.column.navigation.get-breadcrumb', this.getBreadCrumb.bind(this));
+            this.sandbox.on(BREADCRUMB, this.getBreadCrumb.bind(this));
         },
 
-        itemHover: function(event){
+        /**
+         * Shows the edit icon
+         * @param {Object} event
+         */
+        itemMouseEnter: function(event){
             var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
             this.sandbox.dom.toggle($edit);
         },
 
+        /**
+         * Hides the edit icon
+         * @param {Object} event
+         */
+        itemMouseLeave: function(event){
+            var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
+            this.sandbox.dom.toggle($edit);
+        },
+
+        /**
+         * Returns the breadcrumb
+         * @param {Function} callback
+         */
         getBreadCrumb: function(callback){
             if(typeof callback === 'function') {
                 callback(this.selected);
@@ -25416,28 +25609,59 @@ define('__component__$column-navigation@husky',[], function() {
             }
         },
 
+        /**
+         * Shows the options below the last hovered column
+         * @param {Object} event
+         */
         showOptions: function(event) {
+
+            this.sandbox.dom.one(this.$columnContainer, 'scroll', this.hideOptions.bind(this));
+
             this.lastHoveredColumn = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget), 'column');
+
+            var scrollPositionX =  this.sandbox.dom.scrollLeft(this.sandbox.dom.parent(event.currentTarget)),
+                marginLeft = ((this.lastHoveredColumn - 1) * this.options.column.width);
+
+            if(scrollPositionX > 0) { // correct difference through scrolling
+                marginLeft -= scrollPositionX;
+            }
+
             this.sandbox.dom.show(this.$optionsContainer);
-            this.sandbox.dom.css(this.$optionsContainer, 'margin-left', ((this.lastHoveredColumn - 1) * this.options.column.width) + 'px');
+            this.sandbox.dom.css(this.$optionsContainer, 'margin-left',  marginLeft+ 'px');
+
+
         },
 
+        /**
+         * Hides options
+         */
+        hideOptions: function() {
+            this.sandbox.dom.hide(this.$optionsContainer);
+        },
 
         /**
          * Item was selected and data will be loaded if has sub
-         * @param event
+         * @param {Object} event
          */
         itemSelected: function(event) {
-
-            // TODO
-            // css
 
             var $target = this.sandbox.dom.$(event.currentTarget),
                 id = this.sandbox.dom.data($target, 'id'),
                 column = this.sandbox.dom.data(this.sandbox.dom.parent(this.sandbox.dom.parent($target)), 'column'),
                 selectedItem = this.columns[column][id],
                 length = this.selected.length - 1,
-                i;
+                i, $arrowElement, margin;
+
+            this.removeCurrentSelected(column);
+            this.sandbox.dom.addClass($target, 'selected');
+            $arrowElement = this.sandbox.dom.find('.arrow', $target);
+            this.sandbox.dom.removeClass($arrowElement, 'inactive');
+
+            // when is not scrolled and column > 3 then scroll
+            if(column > DISPLAYEDCOLUMNS) {
+                margin = (((column*this.options.column.width)+SCROLLBARWIDTH) - this.containerWidth);
+                this.sandbox.dom.scrollLeft(this.$columnContainer, (margin > 0) ? margin : 0);
+            }
 
             if (!!selectedItem) {
 
@@ -25448,13 +25672,28 @@ define('__component__$column-navigation@husky',[], function() {
 
                 // add element to breadcrumb
                 this.selected[column] = selectedItem;
-                this.sandbox.emit('husky.column.navigation.selected', selectedItem);
+                this.sandbox.emit(SELECTED, selectedItem);
 
                 if (!!selectedItem.hasSub) {
-                    this.removeColumns(column + 1);
                     this.load(selectedItem._links.children, column);
                 }
+
+                this.removeColumns(column + 1);
             }
+
+        },
+
+        /**
+         * Removes the selected class from old elements
+         * @param {Number} column
+         */
+        removeCurrentSelected: function(column) {
+            var items = this.sandbox.dom.find('li', '#column-'+column);
+            this.sandbox.util.each(items, function(index, $el){
+                this.sandbox.dom.removeClass($el, 'selected');
+                var $arrowElement = this.sandbox.dom.find('.arrow', $el);
+                this.sandbox.dom.addClass($arrowElement, 'inactive');
+            }.bind(this));
         },
 
         /**
@@ -25462,11 +25701,12 @@ define('__component__$column-navigation@husky',[], function() {
          */
         addNode: function(){
             var parent = this.selected[this.lastHoveredColumn-1] || null;
-            this.sandbox.emit('husky.column.navigation.add', parent);
+            this.sandbox.emit(ADD, parent);
         },
 
         /**
          * Emits an edit event
+         * @param {Object} event
          */
         editNode: function(event){
             var $listItem = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget)),
@@ -25474,7 +25714,7 @@ define('__component__$column-navigation@husky',[], function() {
                 item = this.columns[this.lastHoveredColumn][id];
 
             this.sandbox.dom.stopPropagation(event);
-            this.sandbox.emit('husky.column.navigation.edit', item);
+            this.sandbox.emit(EDIT, item);
         },
 
         /**
@@ -25482,7 +25722,7 @@ define('__component__$column-navigation@husky',[], function() {
          */
         toggleSettings: function() {
             var parent = this.selected[this.lastHoveredColumn-1] || null;
-            this.sandbox.emit('husky.column.navigation.settings', parent);
+            this.sandbox.emit(SETTINGS, parent);
         },
 
         /**
@@ -25506,20 +25746,47 @@ define('__component__$column-navigation@husky',[], function() {
 
                 var item = ['<li data-id="',data.id,'" class="pointer" style="width:',width,'px">'];
 
-                // TODO
-                // has status (online, offline, ghost, shadow, linked)
+                // icons left
+                item.push('<span class="pull-left">');
 
-                // TODO
-                // is editable, is selected, is ghost
+                // link
+                if(!!data.linked) {
+                    if(data.linked === 'internal') {
+                        item.push('<span class="icon-internal-link pull-left m-right-5"></span>');
+                    } else if(data.linked === 'external') {
+                        item.push('<span class="icon-external-link pull-left m-right-5"></span>');
+                    }
+                }
 
-                // text
-                item.push('<span class="item-text pull-left">',data.title,'</span>');
+                // type (ghost, shadow)
+                if(!!data.type) {
+                    if(data.type.name === 'ghost') {
+                        item.push('<span class="ghost pull-left m-right-5">',data.type.value,'</span>');
+                    } else if(data.type.name === 'shadow') {
+                        item.push('<span class="icon-shadow-node pull-left m-right-5"></span>');
+                    }
+                }
 
+
+                // published
+                if(!data.published) {
+                    item.push('<span class="not-published pull-left m-right-5">&bull;</span>');
+                }
+
+                item.push('</span>');
+
+
+                // text center
+                if(!!data.type && data.type.name === 'ghost') {
+                    item.push('<span class="item-text inactive pull-left">',data.title,'</span>');
+                } else {
+                    item.push('<span class="item-text pull-left">',data.title,'</span>');
+                }
 
                 // icons right (subpage, edit)
-                item.push('<span class="column-navigation-item-icons-right pull-right">');
+                item.push('<span class="pull-right">');
                 item.push('<span class="icon-edit-pen edit hidden"></span>');
-                !!data.hasSub ? item.push('<span class="icon-chevron-right arrow"></span>') : '';
+                !!data.hasSub ? item.push('<span class="icon-chevron-right arrow inactive"></span>') : '';
                 item.push('</span></li>');
 
                 return item.join('');
@@ -26146,6 +26413,14 @@ define('husky_extensions/collection',[],function() {
                 $(window).scrollTop($(itemSelector).offset().top);
             };
 
+            app.core.dom.scrollLeft = function(selector, value) {
+                if(!!value) {
+                    $(selector).scrollLeft(value);
+                } else {
+                    return $(selector).scrollLeft();
+                }
+            };
+
 
             app.core.dom.scrollAnimate = function(position, selector) {
                 if (!!selector) {
@@ -26166,6 +26441,7 @@ define('husky_extensions/collection',[],function() {
             app.core.dom.slideDown = function(selector, duration, complete) {
                 $(selector).slideDown(duration,complete);
             };
+
 
 
             app.core.util.ajax = $.ajax;
