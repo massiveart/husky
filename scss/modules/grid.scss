@@ -22,7 +22,6 @@ $grid-padding-right: 8px;
 }
 
 [class*="grid-col-"] {
-    background-color: blue;
     float: left;
     padding-left: $grid-padding-left;
     padding-right: $grid-padding-right;

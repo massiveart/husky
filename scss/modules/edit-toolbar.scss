@@ -228,6 +228,16 @@ $editToolbarHeight: 40px;
             }
           }
 
+          &.disabled:hover,
+          &.disabled {
+            cursor: default;
+            background-color: inherit;
+            a {
+              cursor: default;
+              color: $grayLight;
+            }
+          }
+
           &:active {
             background-color: lighten($highlightColor, 5%);
           }

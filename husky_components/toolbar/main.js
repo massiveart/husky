@@ -31,7 +31,8 @@ define(function() {
         selectItem = function(event) {
             event.preventDefault();
 
-            var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')];
+            var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')],
+                $parent;
 
             if (item.disabled) {
                 return;
@@ -39,16 +40,26 @@ define(function() {
 
             // if toggle item do not trigger event
             if (!item.items) {
-                triggerSelectEvent.call(this, item);
+                $parent = this.sandbox.dom.find('button',this.sandbox.dom.closest(event.currentTarget,'.group'));
+                triggerSelectEvent.call(this, item, $parent);
             }
         },
 
-        triggerSelectEvent = function(item) {
+        triggerSelectEvent = function(item, $parent) {
+            var instanceName, parentId, icon;
+            parentId = this.sandbox.dom.data($parent, 'id');
+
+            if (this.items[parentId].type === "select") {
+                icon =this.sandbox.dom.find('span', $parent);
+                this.sandbox.dom.removeClass(icon);
+                this.sandbox.dom.addClass(icon, item.icon);
+            }
+
             // if callback is set call it, else trigger event
             if (item.callback) {
                 item.callback();
             } else {
-                var instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
+                instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
                 this.sandbox.emit('husky.toolbar.' + instanceName + 'item.select', item);
             }
         },
