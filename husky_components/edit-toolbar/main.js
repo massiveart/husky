@@ -304,7 +304,7 @@ define(function() {
 
         /** returns normalized event names */
         createEventName = function(postFix) {
-            return 'husky.edittoolbar.' + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+            return 'husky.edit-toolbar.' + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         };
 
     return {
