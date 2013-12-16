@@ -175,7 +175,7 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1.1",'+
                     '"hasSub": true,'+
                     '"published":true,'+
-                    '"linked": false,'+
+                    '"linked": "internal",'+
                     '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/1.1",'+
@@ -188,7 +188,7 @@ require(['lib/husky'], function (Husky) {
                     '"id": "1.2",'+
                     '"hasSub": true,'+
                     '"published":true,'+
-                    '"linked": false,'+
+                    '"linked": "external",'+
                     '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/1.2",'+
@@ -200,7 +200,7 @@ require(['lib/husky'], function (Husky) {
                     '"title": "Page 1.3",'+
                     '"id": "1.3",'+
                     '"hasSub": false,'+
-                    '"published":true,'+
+                    '"published":false,'+
                     '"linked": false,'+
                     '"type": false,'+
                     '"_links" : {'+
@@ -213,8 +213,8 @@ require(['lib/husky'], function (Husky) {
                     '"title": "Page 1.4",'+
                     '"id": "1.4",'+
                     '"hasSub": false,'+
-                    '"published":true,'+
-                    '"linked": false,'+
+                    '"published":false,'+
+                    '"linked": "external",'+
                     '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/1.4",'+
@@ -306,7 +306,7 @@ require(['lib/husky'], function (Husky) {
                     '"title": "Page 2.1",'+
                     '"id": "2.1",'+
                     '"hasSub": false,'+
-                    '"published":true,'+
+                    '"published":false,'+
                     '"linked": false,'+
                     '"type": false,'+
                     '"_links" : {'+
@@ -320,7 +320,7 @@ require(['lib/husky'], function (Husky) {
                     '"id": "2.2",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": false,'+
+                    '"linked": "internal",'+
                     '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/2.2",'+
@@ -333,7 +333,7 @@ require(['lib/husky'], function (Husky) {
                     '"id": "2.3",'+
                     '"hasSub": false,'+
                     '"published":true,'+
-                    '"linked": false,'+
+                    '"linked": "external",'+
                     '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/2.3",'+
@@ -345,8 +345,8 @@ require(['lib/husky'], function (Husky) {
                     '"title": "Page 2.4",'+
                     '"id": "2.4",'+
                     '"hasSub": false,'+
-                    '"published":true,'+
-                    '"linked": false,'+
+                    '"published":false,'+
+                    '"linked": "external",'+
                     '"type": false,'+
                     '"_links" : {'+
                         '"self" : "/nodes/2.4",'+
@@ -360,7 +360,10 @@ require(['lib/husky'], function (Husky) {
                     '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": false,'+
-                    '"type": false,'+
+                    '"type": {'+
+                        '"name": "ghost",'+
+                        '"value": "en_en"'+
+                    '},'+
                     '"_links" : {'+
                         '"self" : "/nodes/2.5",'+
                         '"children" : "/nodes?parent=2.5&depth=1"'+
@@ -571,7 +574,7 @@ require(['lib/husky'], function (Husky) {
                 '{'+
                     '"title": "Page 1.2.3.3",'+
                     '"id": "1.2.3.3",'+
-                    '"hasSub": true,'+
+                    '"hasSub": false,'+
                     '"published":true,'+
                     '"linked": false,'+
                     '"type": false,'+
