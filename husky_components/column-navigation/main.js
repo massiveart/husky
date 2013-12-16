@@ -231,8 +231,6 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#column-navigation-add');
             this.sandbox.dom.on(this.$el, 'click', this.toggleSettings.bind(this), '#column-navigation-settings');
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
-
-            //this.sandbox.dom.on(this.$columnContainer, 'scroll', this.hideOptions.bind(this));
         },
 
         bindCustomEvents: function(){
@@ -282,12 +280,14 @@ define([], function() {
 
             this.sandbox.logger.log("Scroll Position",scrollPositionX);
 
-            if(scrollPositionX > 0) { // correc
+            if(scrollPositionX > 0) { // correct difference through scrolling
                 marginLeft -= scrollPositionX;
             }
 
             this.sandbox.dom.show(this.$optionsContainer);
             this.sandbox.dom.css(this.$optionsContainer, 'margin-left',  marginLeft+ 'px');
+
+            this.sandbox.dom.one(this.$columnContainer, 'scroll', this.hideOptions.bind(this));
         },
 
         /**
