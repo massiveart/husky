@@ -34,9 +34,11 @@ define([], function() {
             column: {
                 width: 250
             },
-            scrollBarWidth: 15,
             url: null
         },
+
+        SCROLLBARWIDTH = 15, // width of scrollbars
+        DISPLAYEDCOLUMNS = 3, // number of displayed columns
 
         eventNamespace = 'husky.column-navigation.',
 
@@ -87,6 +89,8 @@ define([], function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.$element = this.sandbox.dom.$(this.options.el);
+
+            this.containerWidth = this.sandbox.dom.width(this.$element);
             this.columns = [];
             this.selected = [];
 
@@ -107,7 +111,7 @@ define([], function() {
             this.sandbox.dom.append(this.$element, $wrapper);
 
             // navigation container
-            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer(this.options.wrapper.height + this.options.scrollBarWidth));
+            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer(this.options.wrapper.height + SCROLLBARWIDTH));
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
@@ -196,13 +200,14 @@ define([], function() {
 
             this.sandbox.util.each(this.data.embedded, function(index, value) {
                 this.storeDataItem(newColumn, value);
-                this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width - this.options.scrollBarWidth, value)));
+                this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width - SCROLLBARWIDTH, value)));
             }.bind(this));
 
             this.sandbox.dom.append(this.$columnContainer, $column);
 
-            if(newColumn > 3){
-                this.adjustScrollPosition();
+            if(newColumn > DISPLAYEDCOLUMNS){
+                // scroll one column to the right
+                this.sandbox.dom.scrollLeft(this.$columnContainer, this.options.column.width);
             }
         },
 
@@ -273,12 +278,12 @@ define([], function() {
          */
         showOptions: function(event) {
 
+            this.sandbox.dom.one(this.$columnContainer, 'scroll', this.hideOptions.bind(this));
+
             this.lastHoveredColumn = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget), 'column');
 
             var scrollPositionX =  this.sandbox.dom.scrollLeft(this.sandbox.dom.parent(event.currentTarget)),
                 marginLeft = ((this.lastHoveredColumn - 1) * this.options.column.width);
-
-            this.sandbox.logger.log("Scroll Position",scrollPositionX);
 
             if(scrollPositionX > 0) { // correct difference through scrolling
                 marginLeft -= scrollPositionX;
@@ -287,7 +292,7 @@ define([], function() {
             this.sandbox.dom.show(this.$optionsContainer);
             this.sandbox.dom.css(this.$optionsContainer, 'margin-left',  marginLeft+ 'px');
 
-            this.sandbox.dom.one(this.$columnContainer, 'scroll', this.hideOptions.bind(this));
+
         },
 
         /**
@@ -296,19 +301,6 @@ define([], function() {
         hideOptions: function() {
             this.sandbox.dom.hide(this.$optionsContainer);
         },
-
-        /**
-         * Adjusts the scroll position when new column is added and there is not enough space
-         */
-        adjustScrollPosition: function(){
-
-            this.sandbox.logger.log("test");
-
-            // scroll one column
-            this.sandbox.dom.scrollLeft(this.$columnContainer, this.options.column.width);
-            this.sandbox.logger.log("Scroll Position",this.sandbox.dom.scrollLeft(this.$columnContainer));
-        },
-
 
         /**
          * Item was selected and data will be loaded if has sub
@@ -321,12 +313,18 @@ define([], function() {
                 column = this.sandbox.dom.data(this.sandbox.dom.parent(this.sandbox.dom.parent($target)), 'column'),
                 selectedItem = this.columns[column][id],
                 length = this.selected.length - 1,
-                i, $arrowElement;
+                i, $arrowElement, margin;
 
             this.removeCurrentSelected(column);
             this.sandbox.dom.addClass($target, 'selected');
             $arrowElement = this.sandbox.dom.find('.arrow', $target);
             this.sandbox.dom.removeClass($arrowElement, 'inactive');
+
+            // when is not scrolled and column > 3 then scroll
+            if(column > DISPLAYEDCOLUMNS) {
+                margin = (((column*this.options.column.width)+SCROLLBARWIDTH) - this.containerWidth);
+                this.sandbox.dom.scrollLeft(this.$columnContainer, (margin > 0) ? margin : 0);
+            }
 
             if (!!selectedItem) {
 
@@ -345,6 +343,7 @@ define([], function() {
 
                 this.removeColumns(column + 1);
             }
+
         },
 
         /**
