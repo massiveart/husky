@@ -65,6 +65,11 @@ define(function() {
             this.sandbox.dom.on(this.options.el, 'click', selectItem.bind(this), 'li');
         },
 
+        /** events bound to sandbox */
+            bindCustomEvents = function() {
+            this.sandbox.on()
+        },
+
         /**
          * gets called when toggle item is clicked
          * opens dropdown submenu
@@ -133,8 +138,7 @@ define(function() {
             if (item.callback) {
                 item.callback();
             } else {
-                instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
-                this.sandbox.emit('husky.edittoolbar.' + instanceName + 'item.select', item);
+                emitEvent.call(this, 'item.select', item);
             }
         },
 
@@ -225,6 +229,11 @@ define(function() {
                 var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
                 return v.toString(16);
             });
+        },
+
+        /** emits event */
+        emitEvent = function(postFix, data) {
+            this.sandbox.emit('husky.edittoolbar.' + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix, data);
         };
 
     return {
@@ -324,7 +333,7 @@ define(function() {
 
 
             // initialization finished
-            this.sandbox.emit('husky.edittoolbar.initialized');
+            emitEvent.call(this, 'initialized');
         }
     };
 
