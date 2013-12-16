@@ -1,5 +1,5 @@
-/*
- * This file is part of the Sulu CMS.
+/**
+ * This file is part of Husky frontend development framework.
  *
  * (c) MASSIVE ART WebServices GmbH
  *
@@ -10,7 +10,7 @@
  */
 
 // TODO
-// browser compatibility testing
+// browser compatibility testing (scrollbar position and width);
 
 /**
  * @class ColumnNavigation
@@ -19,7 +19,7 @@
  * @params {Object} [options] Configuration object
  * @params {Number} [options.wrapper.height] height of container
  * @params {Number} [options.column.width] width of a column in within the navigation
- * @params {Number} [options.scrollBarWidth] with of scrollbar // TODO??
+ * @params {Number} [options.scrollBarWidth] with of scrollbar
  * @params {url} [options.url] url to load data
  *
  */
@@ -27,20 +27,59 @@ define([], function() {
 
     'use strict';
 
-    /**
-     * Defaults
-     * @type {{wrapper: {height: number}, column: {width: number}, scrollBarWidth: number, url: null}}
-     */
     var defaults = {
-        wrapper: {
-            height: 300
+            wrapper: {
+                height: 300
+            },
+            column: {
+                width: 250
+            },
+            scrollBarWidth: 15,
+            url: null
         },
-        column: {
-            width: 250
-        },
-        scrollBarWidth: 15,
-        url: null
-    };
+
+        eventNamespace = 'husky.column-navigation.',
+
+        /**
+         * @event husky.column-navigation.loaded
+         * @description the component has loaded everything successfully and will be rendered
+         */
+        LOADED = eventNamespace + 'loaded',
+
+        /**
+         * @event husky.column-navigation.selected
+         * @description an navigation element has been selected
+         * @param {Object} selected object
+         */
+        SELECTED = eventNamespace + 'selected',
+
+        /**
+         * @event husky.column-navigation.add
+         * @description the add button has been clicked
+         * @param {Object} parent object from active column level
+         */
+        ADD = eventNamespace + 'add',
+
+        /**
+         * @event husky.column-navigation.edit
+         * @description the edit icon has been clicked
+         * @param {Object} clicked object
+         */
+        EDIT = eventNamespace + 'edit',
+
+        /**
+         * @event husky.column-navigation.settings
+         * @description the settings button has been clicked
+         * @param {Object} parent object from active column level
+         */
+        SETTINGS = eventNamespace + 'settings',
+
+        /**
+         * @event husky.column-navigation.get-breadcrumb
+         * @description the breadcrumb will be returned
+         * @param {Function} callback function which will process the breadcrumb objects
+         */
+        BREADCRUMB = eventNamespace + 'get-breadcrumb';
 
     return {
 
@@ -102,7 +141,7 @@ define([], function() {
                     success: function(response) {
 
                         this.parseData(response, columnNumber);
-                        this.sandbox.emit('husky.column.navigation.loaded');
+                        this.sandbox.emit(LOADED);
 
                     }.bind(this)
                 });
@@ -193,11 +232,11 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'click', this.toggleSettings.bind(this), '#column-navigation-settings');
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
 
-            this.sandbox.dom.on(this.$columnContainer, 'scroll', this.hideOptions.bind(this));
+            //this.sandbox.dom.on(this.$columnContainer, 'scroll', this.hideOptions.bind(this));
         },
 
         bindCustomEvents: function(){
-            this.sandbox.on('husky.column.navigation.get-breadcrumb', this.getBreadCrumb.bind(this));
+            this.sandbox.on(BREADCRUMB, this.getBreadCrumb.bind(this));
         },
 
         /**
@@ -298,7 +337,7 @@ define([], function() {
 
                 // add element to breadcrumb
                 this.selected[column] = selectedItem;
-                this.sandbox.emit('husky.column.navigation.selected', selectedItem);
+                this.sandbox.emit(SELECTED, selectedItem);
 
                 if (!!selectedItem.hasSub) {
                     this.load(selectedItem._links.children, column);
@@ -326,7 +365,7 @@ define([], function() {
          */
         addNode: function(){
             var parent = this.selected[this.lastHoveredColumn-1] || null;
-            this.sandbox.emit('husky.column.navigation.add', parent);
+            this.sandbox.emit(ADD, parent);
         },
 
         /**
@@ -339,7 +378,7 @@ define([], function() {
                 item = this.columns[this.lastHoveredColumn][id];
 
             this.sandbox.dom.stopPropagation(event);
-            this.sandbox.emit('husky.column.navigation.edit', item);
+            this.sandbox.emit(EDIT, item);
         },
 
         /**
@@ -347,7 +386,7 @@ define([], function() {
          */
         toggleSettings: function() {
             var parent = this.selected[this.lastHoveredColumn-1] || null;
-            this.sandbox.emit('husky.column.navigation.settings', parent);
+            this.sandbox.emit(SETTINGS, parent);
         },
 
         /**

@@ -609,8 +609,8 @@ require(['lib/husky'], function (Husky) {
                 fakeServer.respond();
             }, 500);
 
-            app.sandbox.on('husky.column.navigation.selected', function (item) {
-                app.logger.log('husky.column.navigation.selected item selected');
+            app.sandbox.on('husky.column-navigation.selected', function (item) {
+                app.logger.log('husky.column-navigation.selected item selected');
                 if(!!item.hasSub) {
                     setTimeout(function () {
                         fakeServer.respond();
