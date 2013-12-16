@@ -25344,7 +25344,18 @@ define('__component__$password-fields@husky',[], function() {
     };
 });
 
-/*****************************************************************************
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/edit-toolbar
+ */
+
+/*
  *
  *  edit-toolbar
  *
@@ -25377,8 +25388,18 @@ define('__component__$password-fields@husky',[], function() {
  *          - callback
  *
  *
- *****************************************************************************/
+ */
 
+/**
+ * @class EditToolbar
+ * @constructor
+ *
+ * @param {Object} [options] Configuration object
+ * @param {String} [options.url] url to fetch data from
+ * @param {String} [options.data] if no url is provided
+ * @param {String} [options.instanceName] enables custom events (in case of multiple tabs on one page)
+ * @param {String} [options.appearance]
+ */
 define('__component__$edit-toolbar@husky',[],function() {
 
     
@@ -25391,13 +25412,13 @@ define('__component__$edit-toolbar@husky',[],function() {
         },
 
         /** templates container */
-        templates = {
+            templates = {
             skeleton: [
                 '<div class="edit-toolbar-container">',
-                '   <div class="navbar">',
+                '   <nav class="edit-toolbar-nav">',
                 '       <ul class="edit-toolbar-left" />',
                 '       <ul class="edit-toolbar-right" />',
-                '   </div>',
+                '   </nav>',
                 '</div>'
             ].join('')
         },
@@ -25491,7 +25512,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                 $parent = this.sandbox.dom.parents(event.currentTarget, 'li').eq(0);
 
             // stop if item has subitems
-            if (item.items && item.items.length>0) {
+            if (item.items && item.items.length > 0) {
                 return;
             }
 
@@ -25534,9 +25555,9 @@ define('__component__$edit-toolbar@husky',[],function() {
 
             // TODO: do not change size of element on change title
             // first get title
-            var listItems = this.sandbox.dom.find('span',listelement);
+            var listItems = this.sandbox.dom.find('span', listelement);
             if (!!item.icon) {
-                this.sandbox.dom.removeClass(listItems.eq(0),'');
+                this.sandbox.dom.removeClass(listItems.eq(0), '');
                 if (item.icon !== false) {
                     this.sandbox.dom.addClass(listItems.eq(0), createIconSupportClass.call(this, item));
                 }
@@ -25590,7 +25611,7 @@ define('__component__$edit-toolbar@husky',[],function() {
          * @param listItem
          * @param parent
          */
-            createDropdownMenu = function(listItem, parent) {
+        createDropdownMenu = function(listItem, parent) {
             var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />'),
                 classString = '';
             this.sandbox.dom.append(listItem, $list);
@@ -25717,7 +25738,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                 this.sandbox.dom.append($listItem, $listLink);
 
                 // create icon span
-                this.sandbox.dom.append($listLink, '<span class="'+createIconSupportClass.call(this, item)+'" />');
+                this.sandbox.dom.append($listLink, '<span class="' + createIconSupportClass.call(this, item) + '" />');
 
                 // create title span
                 title = item.title ? item.title : '';
@@ -25734,7 +25755,6 @@ define('__component__$edit-toolbar@husky',[],function() {
                 this.sandbox.dom.append(addTo, $listItem);
 
             }.bind(this));
-
 
             // initialization finished
             emitEvent.call(this, 'initialized');

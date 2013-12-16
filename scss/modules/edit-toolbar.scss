@@ -16,15 +16,13 @@ $editToolbarHeight: 40px;
 
 .edit-toolbar-container {
 
-    div.navbar {
-        display: block !important;
-        height: auto !important;
-        overflow: visible !important;
+    nav.edit-toolbar-nav {
+        display: block;
+        height: auto;
+        overflow: visible;
         width: auto;
         max-height: 100px;
         box-sizing: border-box;
-
-        //    font-size:
 
         border-radius: 4px;
         background-color: $grayLighter;
