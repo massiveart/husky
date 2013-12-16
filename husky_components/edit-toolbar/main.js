@@ -233,7 +233,12 @@ define(function() {
 
         /** emits event */
         emitEvent = function(postFix, data) {
-            this.sandbox.emit('husky.edittoolbar.' + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix, data);
+            var eventName = 'husky.edittoolbar.' + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+            if (!!data) {
+                this.sandbox.emit(eventName, data);
+            } else {
+                this.sandbox.emit(eventName);
+            }
         };
 
     return {
