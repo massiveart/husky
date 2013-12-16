@@ -8,11 +8,11 @@
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
  *      - appearance -
  *  Provides Events
- *      - husky.edittoolbar.<<instanceName>>.item.disable - disable item with given id
- *      - husky.edittoolbar.<<instanceName>>.item.enable - enable item with given id
+ *      - husky.edit-toolbar.<<instanceName>>.item.disable - disable item with given id
+ *      - husky.edit-toolbar.<<instanceName>>.item.enable - enable item with given id
  *
  *  Triggers Events
- *      - husky.edittoolbar.<<instanceName>>.item.select - triggered when item was clicked
+ *      - husky.edit-toolbar.<<instanceName>>.item.select - triggered when item was clicked
  *
  *  data structure:
  *      - title
