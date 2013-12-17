@@ -515,14 +515,14 @@ define([], function() {
 
             options: {
                 add: function() {
-                    return ['<div id="column-navigation-add" class="align-center grid-col-6 add pointer">' +
-                        '<span class="icon-add"></span>' +
+                    return ['<div id="column-navigation-add" class="align-center grid-col-6 add pointer">',
+                        '<span class="icon-add"></span>',
                         '</div>'].join('');
                 },
 
                 settings: function() {
-                    return ['<div id="column-navigation-settings" class="align-center grid-col-6 settings pointer">' +
-                        '<span class="icon-cogwheel"></span>' +
+                    return ['<div id="column-navigation-settings" class="align-center grid-col-6 settings pointer">',
+                        '<span class="icon-cogwheel"></span>',
                         '</div>'].join('');
                 }
             }
