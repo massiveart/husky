@@ -247,7 +247,6 @@ define([], function() {
             this.scrollIfNeeded(newColumn);
         },
 
-
         /**
          * Stores data in internal structure - seperated by column number
          * @param {Object} item
@@ -406,7 +405,6 @@ define([], function() {
             }
         },
 
-
         /**
          * Removes the selected class from old elements
          * @param {Number} column
@@ -492,14 +490,12 @@ define([], function() {
                     }
                 }
 
-
                 // published
                 if (!data.published) {
                     item.push('<span class="not-published pull-left m-right-5">&bull;</span>');
                 }
 
                 item.push('</span>');
-
 
                 // text center
                 if (!!data.type && data.type.name === 'ghost') {
