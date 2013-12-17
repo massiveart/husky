@@ -105,11 +105,11 @@ define(function() {
             this.items[id].disabled = !enabled;
 
             if (!!enabled) {
-                this.sandbox.dom.removeClass($item, 'disable');
+                this.sandbox.dom.removeClass($item, 'disabled');
                 this.sandbox.dom.removeClass($iconItem, disabledIconClass);
                 this.sandbox.dom.prependClass($iconItem, enabledIconClass);
             } else {
-                this.sandbox.dom.addClass($item, 'disable');
+                this.sandbox.dom.addClass($item, 'disabled');
                 this.sandbox.dom.removeClass($iconItem, enabledIconClass);
                 this.sandbox.dom.prependClass($iconItem, disabledIconClass);
             }
