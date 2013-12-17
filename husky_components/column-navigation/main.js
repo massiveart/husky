@@ -10,8 +10,8 @@
  */
 
 // TODO
-// replace arrow with spinner while loading
 // do not remove last column but empty it an refill it
+// add empty last column to add subpages
 
 /**
  * @class ColumnNavigation
@@ -90,6 +90,7 @@ define([], function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.$element = this.sandbox.dom.$(this.options.el);
+            this.$selectedElement = null;
 
             this.containerWidth = this.sandbox.dom.width(this.$element);
             this.columns = [];
@@ -99,6 +100,7 @@ define([], function() {
             this.load(this.options.url, 0);
             this.bindDOMEvents();
             this.bindCustomEvents();
+
 
         },
 
@@ -130,7 +132,7 @@ define([], function() {
          * @param {String} url
          * @param {Number} columnNumber
          */
-        load: function(url, columnNumber, $element) {
+        load: function(url, columnNumber) {
 
             if (!!url) {
 
@@ -144,14 +146,6 @@ define([], function() {
                     }.bind(this),
 
                     success: function(response) {
-
-                        //TODO
-                        if(!!$element) {
-                            var $arrow = this.sandbox.dom.find('.arrow', $element);
-                            this.sandbox.dom.removeClass($arrow, 'is-loading');
-                            this.sandbox.dom.prependClass($arrow, 'icon-chevron-right');
-                        }
-
                         this.parseData(response, columnNumber);
                         this.sandbox.emit(LOADED);
 
@@ -185,7 +179,8 @@ define([], function() {
         parseData: function(data, columnNumber) {
             var $column,
                 $list,
-                newColumn;
+                newColumn,
+                $arrow;
 
             this.data = {};
             this.data.links = data._links;
@@ -193,6 +188,9 @@ define([], function() {
             this.data.title = data.title;
             this.data.id = data.id;
             this.data.hasSub = data.hasSub;
+            this.data.linked = data.linked;
+            this.data.linked = data.type;
+            this.data.published = data.published;
 
             if (columnNumber === 0) {  // case 1: no elements in container
                 this.columns[0] = [];
@@ -210,6 +208,14 @@ define([], function() {
                 this.storeDataItem(newColumn, value);
                 this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width - SCROLLBARWIDTH, value)));
             }.bind(this));
+
+            // remove loading icon
+            if(!!this.$selectedElement) {
+                $arrow = this.sandbox.dom.find('.arrow', this.$selectedElement);
+                this.sandbox.dom.removeClass($arrow, 'is-loading');
+                this.sandbox.dom.prependClass($arrow, 'icon-chevron-right');
+            }
+
 
             this.sandbox.dom.append(this.$columnContainer, $column);
 
@@ -316,23 +322,25 @@ define([], function() {
          */
         itemSelected: function(event) {
 
-            var $target = this.sandbox.dom.$(event.currentTarget),
-                id = this.sandbox.dom.data($target, 'id'),
-                column = this.sandbox.dom.data(this.sandbox.dom.parent(this.sandbox.dom.parent($target)), 'column'),
+            // TODO jump to clicked item
+
+            this.$selectedElement = this.sandbox.dom.$(event.currentTarget);
+            var id = this.sandbox.dom.data(this.$selectedElement, 'id'),
+                column = this.sandbox.dom.data(this.sandbox.dom.parent(this.sandbox.dom.parent(this.$selectedElement)), 'column'),
                 selectedItem = this.columns[column][id],
                 length = this.selected.length - 1,
                 i, $arrowElement, margin;
 
 
-            if (this.sandbox.dom.hasClass($target, 'selected')) { // is element already selected
+            if (this.sandbox.dom.hasClass(this.$selectedElement, 'selected')) { // is element already selected
 
                 this.sandbox.emit(SELECTED, selectedItem);
 
             } else { // element not selected
 
                 this.removeCurrentSelected(column);
-                this.sandbox.dom.addClass($target, 'selected');
-                $arrowElement = this.sandbox.dom.find('.arrow', $target);
+                this.sandbox.dom.addClass(this.$selectedElement, 'selected');
+                $arrowElement = this.sandbox.dom.find('.arrow', this.$selectedElement);
                 this.sandbox.dom.removeClass($arrowElement, 'inactive icon-chevron-right');
                 this.sandbox.dom.addClass($arrowElement, 'is-loading');
 
@@ -354,7 +362,7 @@ define([], function() {
                     this.sandbox.emit(SELECTED, selectedItem);
 
                     if (!!selectedItem.hasSub) {
-                        this.load(selectedItem._links.children, column, $target);
+                        this.load(selectedItem._links.children, column);
                     }
 
                     this.removeColumns(column + 1);
