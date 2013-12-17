@@ -1,98 +1,97 @@
 .column-navigation-wrapper {
-  overflow: hidden;
+    overflow: hidden;
 
-  .column-navigation {
-    background-color: $white;
-    border: 1px solid $grayLighter;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    white-space: nowrap;
+    .column-navigation {
+        background-color: $white;
+        border: 1px solid $grayLighter;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        white-space: nowrap;
 
-    .column {
-      border-right: 1px solid $grayLighter;
-      overflow-y: scroll;
-      overflow-x: hidden;
-      display: inline-block;
-      font-size: 0;
+        .column {
+            border-right: 1px solid $grayLighter;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            display: inline-block;
+            font-size: 0;
 
-      ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        font-size: $baseFontSize;
+            ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                font-size: $baseFontSize;
 
-        li {
-          padding: 15px 10px 15px 25px;
-          height: 50px;
+                li {
+                    padding: 15px 10px 15px 25px;
+                    height: 50px;
+                }
+
+                li:hover {
+                    background-color: $baseBackgroundColor;
+                }
+                li.selected {
+                    @extend li:hover;
+                    font-weight: bold;
+                }
+
+                .inactive {
+                    color: $grayLight;
+                }
+
+                .not-published {
+                    color: $infoColor;
+                    margin-top: 2px;
+                    font-size: 40px;
+                }
+            }
         }
 
-
-        li:hover {
-          background-color: $baseBackgroundColor;
-        }
-        li.selected{
-          @extend li:hover;
-          font-weight:bold;
+        .item-text {
+            padding-top: 2px;
         }
 
-        .inactive {
-          color: $grayLight;
+        .item-text.ghost {
+            color: $grayLight;
         }
 
-        .not-published {
-          color: $infoColor;
-          margin-top: 2px;
-          font-size: 40px;
+        .ghost {
+            background: $accentColor;
+            padding: 0 2px;
+            font-size: 10px;
+            color: $white;
+            border-radius: 3px;
         }
-      }
+
+        .edit {
+            margin-right: 5px;
+            background-color: $accentColor;
+            padding: 5px 10px;
+            font-size: 10px;
+            color: $white;
+            border-radius: 3px;
+        }
+
+        .arrow {
+            vertical-align: middle;
+        }
+
     }
 
-    .item-text {
-      padding-top: 2px;
+    .add {
+        background-color: $accentColor;
+        padding: 5px 0;
+        color: $white;
+        border-bottom-left-radius: 5px;
+        -webkit-border-bottom-left-radius: 5px;
+        -moz-border-radius-bottomleft: 5px;
+
     }
 
-    .item-text.ghost {
-      color: $grayLight;
+    .settings {
+        background-color: $grayLighter;
+        padding: 5px 0;
+        border-bottom-right-radius: 5px;
+        -webkit-border-bottom-right-radius: 5px;
+        -moz-border-radius-bottomright: 5px;
     }
-
-    .ghost {
-      background: $accentColor;
-      padding: 0 2px;
-      font-size: 10px;
-      color: $white;
-      border-radius: 3px;
-    }
-
-    .edit {
-      margin-right: 5px;
-      background-color: $accentColor;
-      padding: 1px 10px;
-      font-size: 10px;
-      color: $white;
-      border-radius: 3px;
-    }
-
-    .arrow {
-      vertical-align: middle;
-    }
-
-  }
-
-  .add {
-    background-color: $accentColor;
-    padding: 5px 0;
-    color: $white;
-    border-bottom-left-radius: 5px;
-    -webkit-border-bottom-left-radius: 5px;
-    -moz-border-radius-bottomleft: 5px;
-  }
-
-  .settings {
-    background-color: $grayLighter;
-    padding: 5px 0;
-    border-bottom-right-radius: 5px;
-    -webkit-border-bottom-right-radius: 5px;
-    -moz-border-radius-bottomright: 5px;
-  }
-
 }

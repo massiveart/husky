@@ -3088,25 +3088,25 @@ h5 {
   transform: rotate(90deg);
 }
 
-/* line 280, ../scss/modules/icons.scss */
+/* line 279, ../scss/modules/icons.scss */
 .icon-arrow::after {
   content: "\e223";
   display: inline-block;
 }
 
-/* line 288, ../scss/modules/icons.scss */
+/* line 286, ../scss/modules/icons.scss */
 .icon-internal-link::after {
   content: "\e051";
   display: inline-block;
 }
 
-/* line 295, ../scss/modules/icons.scss */
+/* line 293, ../scss/modules/icons.scss */
 .icon-external-link::after {
   content: "\e242";
   display: inline-block;
 }
 
-/* line 302, ../scss/modules/icons.scss */
+/* line 300, ../scss/modules/icons.scss */
 .icon-shadow-node::after {
   content: "\e223";
   display: inline-block;
@@ -4418,33 +4418,33 @@ a.btn-black {
   padding: 15px 10px 15px 25px;
   height: 50px;
 }
-/* line 30, ../scss/modules/column-navigation.scss */
+/* line 29, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul li:hover, .column-navigation-wrapper .column-navigation .column ul li.selected {
   background-color: #f1f1f1;
 }
-/* line 33, ../scss/modules/column-navigation.scss */
+/* line 32, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul li.selected {
   font-weight: bold;
 }
-/* line 38, ../scss/modules/column-navigation.scss */
+/* line 37, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul .inactive {
   color: #999999;
 }
-/* line 42, ../scss/modules/column-navigation.scss */
+/* line 41, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul .not-published {
   color: #fda502;
   margin-top: 2px;
   font-size: 40px;
 }
-/* line 50, ../scss/modules/column-navigation.scss */
+/* line 49, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .item-text {
   padding-top: 2px;
 }
-/* line 54, ../scss/modules/column-navigation.scss */
+/* line 53, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .item-text.ghost {
   color: #999999;
 }
-/* line 58, ../scss/modules/column-navigation.scss */
+/* line 57, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .ghost {
   background: #009fc0;
   padding: 0 2px;
@@ -4452,20 +4452,20 @@ a.btn-black {
   color: white;
   border-radius: 3px;
 }
-/* line 66, ../scss/modules/column-navigation.scss */
+/* line 65, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .edit {
   margin-right: 5px;
   background-color: #009fc0;
-  padding: 1px 10px;
+  padding: 5px 10px;
   font-size: 10px;
   color: white;
   border-radius: 3px;
 }
-/* line 75, ../scss/modules/column-navigation.scss */
+/* line 74, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .arrow {
   vertical-align: middle;
 }
-/* line 81, ../scss/modules/column-navigation.scss */
+/* line 80, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .add {
   background-color: #009fc0;
   padding: 5px 0;

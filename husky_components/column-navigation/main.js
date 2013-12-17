@@ -41,54 +41,59 @@ define([], function() {
         SCROLLBARWIDTH = 17, // width of scrollbars
         DISPLAYEDCOLUMNS = 3, // number of displayed columns
 
-        eventNamespace = 'husky.column-navigation.',
+        /**
+         * namespace for events
+         * @type {string}
+         */
+            eventNamespace = 'husky.column-navigation.',
 
         /**
          * @event husky.column-navigation.loaded
          * @description the component has loaded everything successfully and will be rendered
          */
-        LOADED = eventNamespace + 'loaded',
+            LOADED = eventNamespace + 'loaded',
 
         /**
          * @event husky.column-navigation.selected
          * @description an navigation element has been selected
          * @param {Object} selected object
          */
-        SELECTED = eventNamespace + 'selected',
+            SELECTED = eventNamespace + 'selected',
 
         /**
          * @event husky.column-navigation.add
          * @description the add button has been clicked
          * @param {Object} parent object from active column level
          */
-        ADD = eventNamespace + 'add',
+            ADD = eventNamespace + 'add',
 
         /**
          * @event husky.column-navigation.edit
          * @description the edit icon has been clicked
          * @param {Object} clicked object
          */
-        EDIT = eventNamespace + 'edit',
+            EDIT = eventNamespace + 'edit',
 
         /**
          * @event husky.column-navigation.settings
          * @description the settings button has been clicked
          * @param {Object} parent object from active column level
          */
-        SETTINGS = eventNamespace + 'settings',
+            SETTINGS = eventNamespace + 'settings',
 
         /**
          * @event husky.column-navigation.get-breadcrumb
          * @description the breadcrumb will be returned
          * @param {Function} callback function which will process the breadcrumb objects
          */
-        BREADCRUMB = eventNamespace + 'get-breadcrumb';
+            BREADCRUMB = eventNamespace + 'get-breadcrumb';
 
     return {
 
         initialize: function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
             this.$element = this.sandbox.dom.$(this.options.el);
             this.$selectedElement = null;
 
@@ -100,8 +105,6 @@ define([], function() {
             this.load(this.options.url, 0);
             this.bindDOMEvents();
             this.bindCustomEvents();
-
-
         },
 
         /**
@@ -110,17 +113,17 @@ define([], function() {
         render: function() {
             var $add, $settings, $wrapper;
 
-            $wrapper = this.sandbox.dom.$(this.template.wrapper());
+            $wrapper = this.sandbox.dom.createElement(this.template.wrapper());
             this.sandbox.dom.append(this.$element, $wrapper);
 
             // navigation container
-            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer(this.options.wrapper.height + SCROLLBARWIDTH));
+            this.$columnContainer = this.sandbox.dom.createElement(this.template.columnContainer(this.options.wrapper.height + SCROLLBARWIDTH));
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
-            this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer(this.options.column.width));
-            $add = this.sandbox.dom.$(this.template.options.add());
-            $settings = this.sandbox.dom.$(this.template.options.settings());
+            this.$optionsContainer = this.sandbox.dom.createElement(this.template.optionsContainer(this.options.column.width));
+            $add = this.sandbox.dom.createElement(this.template.options.add());
+            $settings = this.sandbox.dom.createElement(this.template.options.settings());
             this.sandbox.dom.append(this.$optionsContainer, $add);
             this.sandbox.dom.append(this.$optionsContainer, $settings);
 
@@ -141,8 +144,8 @@ define([], function() {
                     url: url,
 
                     error: function(jqXHR, textStatus, errorThrown) {
-                        this.sandbox.logger.log("An error occured while fetching data from: " + this.options.url);
-                        this.sandbox.logger.log("errorthrown", errorThrown.message);
+                        this.sandbox.logger.error("An error occured while fetching data from: " + this.options.url);
+                        this.sandbox.logger.error("errorthrown", errorThrown.message);
                     }.bind(this),
 
                     success: function(response) {
@@ -200,17 +203,16 @@ define([], function() {
                 newColumn = columnNumber + 1;
             }
 
-
-            $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.wrapper.height));
+            $column = this.sandbox.dom.create(this.template.column(newColumn, this.options.wrapper.height));
             $list = this.sandbox.dom.find('ul', $column);
 
             this.sandbox.util.each(this.data.embedded, function(index, value) {
                 this.storeDataItem(newColumn, value);
-                this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width - SCROLLBARWIDTH, value)));
+                this.sandbox.dom.append($list, this.sandbox.dom.createElement(this.template.item(this.options.column.width - SCROLLBARWIDTH, value)));
             }.bind(this));
 
             // remove loading icon
-            if(!!this.$selectedElement) {
+            if (!!this.$selectedElement) {
                 $arrow = this.sandbox.dom.find('.arrow', this.$selectedElement);
                 this.sandbox.dom.removeClass($arrow, 'is-loading');
                 this.sandbox.dom.prependClass($arrow, 'icon-chevron-right');
@@ -219,7 +221,7 @@ define([], function() {
 
             this.sandbox.dom.append(this.$columnContainer, $column);
 
-            if(newColumn > DISPLAYEDCOLUMNS){
+            if (newColumn > DISPLAYEDCOLUMNS) {
                 // scroll one column to the right
                 this.sandbox.dom.scrollLeft(this.$columnContainer, this.options.column.width);
             }
@@ -239,7 +241,6 @@ define([], function() {
 
         },
 
-
         bindDOMEvents: function() {
             this.sandbox.dom.on(this.$el, 'click', this.itemSelected.bind(this), 'li');
 
@@ -252,7 +253,7 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
         },
 
-        bindCustomEvents: function(){
+        bindCustomEvents: function() {
             this.sandbox.on(BREADCRUMB, this.getBreadCrumb.bind(this));
         },
 
@@ -260,7 +261,7 @@ define([], function() {
          * Shows the edit icon
          * @param {Object} event
          */
-        itemMouseEnter: function(event){
+        itemMouseEnter: function(event) {
             var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
             this.sandbox.dom.toggle($edit);
         },
@@ -269,7 +270,7 @@ define([], function() {
          * Hides the edit icon
          * @param {Object} event
          */
-        itemMouseLeave: function(event){
+        itemMouseLeave: function(event) {
             var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
             this.sandbox.dom.toggle($edit);
         },
@@ -278,8 +279,8 @@ define([], function() {
          * Returns the breadcrumb
          * @param {Function} callback
          */
-        getBreadCrumb: function(callback){
-            if(typeof callback === 'function') {
+        getBreadCrumb: function(callback) {
+            if (typeof callback === 'function') {
                 callback(this.selected);
             } else {
                 this.sandbox.logger.log("callback is not a function");
@@ -294,19 +295,17 @@ define([], function() {
 
             this.sandbox.dom.one(this.$columnContainer, 'scroll', this.hideOptions.bind(this));
 
-            this.lastHoveredColumn = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget), 'column');
+            this.lastHoveredColumn = this.sandbox.dom.data(this.sandbox.dom.createElement(event.currentTarget), 'column');
 
-            var scrollPositionX =  this.sandbox.dom.scrollLeft(this.sandbox.dom.parent(event.currentTarget)),
+            var scrollPositionX = this.sandbox.dom.scrollLeft(this.sandbox.dom.parent(event.currentTarget)),
                 marginLeft = ((this.lastHoveredColumn - 1) * this.options.column.width);
 
-            if(scrollPositionX > 0) { // correct difference through scrolling
+            if (scrollPositionX > 0) { // correct difference through scrolling
                 marginLeft -= scrollPositionX;
             }
 
             this.sandbox.dom.show(this.$optionsContainer);
-            this.sandbox.dom.css(this.$optionsContainer, 'margin-left',  marginLeft+ 'px');
-
-
+            this.sandbox.dom.css(this.$optionsContainer, 'margin-left', marginLeft + 'px');
         },
 
         /**
@@ -368,7 +367,6 @@ define([], function() {
                     this.removeColumns(column + 1);
                 }
             }
-
         },
 
         /**
@@ -376,8 +374,8 @@ define([], function() {
          * @param {Number} column
          */
         removeCurrentSelected: function(column) {
-            var items = this.sandbox.dom.find('li', '#column-'+column);
-            this.sandbox.util.each(items, function(index, $el){
+            var items = this.sandbox.dom.find('li', '#column-' + column);
+            this.sandbox.util.each(items, function(index, $el) {
                 this.sandbox.dom.removeClass($el, 'selected');
                 var $arrowElement = this.sandbox.dom.find('.arrow', $el);
                 this.sandbox.dom.addClass($arrowElement, 'inactive');
@@ -387,8 +385,8 @@ define([], function() {
         /**
          * Emits an add event
          */
-        addNode: function(){
-            var parent = this.selected[this.lastHoveredColumn-1] || null;
+        addNode: function() {
+            var parent = this.selected[this.lastHoveredColumn - 1] || null;
             this.sandbox.emit(ADD, parent);
         },
 
@@ -396,9 +394,9 @@ define([], function() {
          * Emits an edit event
          * @param {Object} event
          */
-        editNode: function(event){
+        editNode: function(event) {
             var $listItem = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget)),
-                id = this.sandbox.dom.data($listItem,'id'),
+                id = this.sandbox.dom.data($listItem, 'id'),
                 item = this.columns[this.lastHoveredColumn][id];
 
             this.sandbox.dom.stopPropagation(event);
@@ -409,55 +407,55 @@ define([], function() {
          * Shows or hides the settings dropdown
          */
         toggleSettings: function() {
-            var parent = this.selected[this.lastHoveredColumn-1] || null;
+            var parent = this.selected[this.lastHoveredColumn - 1] || null;
             this.sandbox.emit(SETTINGS, parent);
         },
 
         /**
          * Templates for various parts
          */
-        template : {
+        template: {
 
-            wrapper : function() {
-              return '<div class="column-navigation-wrapper"></div>';
+            wrapper: function() {
+                return '<div class="column-navigation-wrapper"></div>';
             },
 
             columnContainer: function(height) {
-                return ['<div class="column-navigation" style="height:',height,'px"></div>'].join('');
+                return ['<div class="column-navigation" style="height:', height, 'px"></div>'].join('');
             },
 
-            column : function (columnNumber, height, width){
-                return ['<div data-column="',columnNumber,'" class="column" id="column-',columnNumber,'" style="height:',height,'px; width: ',width,'px"><ul></ul></div>'].join('');
+            column: function(columnNumber, height, width) {
+                return ['<div data-column="', columnNumber, '" class="column" id="column-', columnNumber, '" style="height:', height, 'px; width: ', width, 'px"><ul></ul></div>'].join('');
             },
 
-            item : function (width, data){
+            item: function(width, data) {
 
-                var item = ['<li data-id="',data.id,'" class="pointer" style="width:',width,'px">'];
+                var item = ['<li data-id="', data.id, '" class="pointer" style="width:', width, 'px">'];
 
                 // icons left
                 item.push('<span class="pull-left">');
 
                 // link
-                if(!!data.linked) {
-                    if(data.linked === 'internal') {
+                if (!!data.linked) {
+                    if (data.linked === 'internal') {
                         item.push('<span class="icon-internal-link pull-left m-right-5"></span>');
-                    } else if(data.linked === 'external') {
+                    } else if (data.linked === 'external') {
                         item.push('<span class="icon-external-link pull-left m-right-5"></span>');
                     }
                 }
 
                 // type (ghost, shadow)
-                if(!!data.type) {
-                    if(data.type.name === 'ghost') {
-                        item.push('<span class="ghost pull-left m-right-5">',data.type.value,'</span>');
-                    } else if(data.type.name === 'shadow') {
+                if (!!data.type) {
+                    if (data.type.name === 'ghost') {
+                        item.push('<span class="ghost pull-left m-right-5">', data.type.value, '</span>');
+                    } else if (data.type.name === 'shadow') {
                         item.push('<span class="icon-shadow-node pull-left m-right-5"></span>');
                     }
                 }
 
 
                 // published
-                if(!data.published) {
+                if (!data.published) {
                     item.push('<span class="not-published pull-left m-right-5">&bull;</span>');
                 }
 
@@ -465,10 +463,10 @@ define([], function() {
 
 
                 // text center
-                if(!!data.type && data.type.name === 'ghost') {
-                    item.push('<span class="item-text inactive pull-left">',data.title,'</span>');
+                if (!!data.type && data.type.name === 'ghost') {
+                    item.push('<span class="item-text inactive pull-left">', data.title, '</span>');
                 } else {
-                    item.push('<span class="item-text pull-left">',data.title,'</span>');
+                    item.push('<span class="item-text pull-left">', data.title, '</span>');
                 }
 
                 // icons right (subpage, edit)
@@ -480,26 +478,23 @@ define([], function() {
                 return item.join('');
             },
 
-            optionsContainer: function(width){
-                return ['<div class="options grid-row hidden" style="width:',width,'px"></div>'].join('');
+            optionsContainer: function(width) {
+                return ['<div class="options grid-row hidden" style="width:', width, 'px"></div>'].join('');
             },
 
             options: {
-                add : function (){
+                add: function() {
                     return ['<div id="column-navigation-add" class="align-center grid-col-6 add pointer">' +
-                                '<span class="icon-add"></span>' +
-                            '</div>'].join('');
+                        '<span class="icon-add"></span>' +
+                        '</div>'].join('');
                 },
 
-                settings : function() {
+                settings: function() {
                     return ['<div id="column-navigation-settings" class="align-center grid-col-6 settings pointer">' +
-                                '<span class="icon-cogwheel"></span>' +
-                             '</div>'].join('');
+                        '<span class="icon-cogwheel"></span>' +
+                        '</div>'].join('');
                 }
             }
         }
-
-
-
     };
 });
