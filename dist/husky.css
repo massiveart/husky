@@ -4196,13 +4196,13 @@ a.btn-black {
 }
 
 /* line 39, ../scss/modules/pagination.scss */
-.pagination-first::after {
-  content: "\e173";
+.pagination-next::after {
+  content: "\e225";
 }
 
 /* line 45, ../scss/modules/pagination.scss */
-.pagination-last::after {
-  content: "\e177";
+.pagination-prev::after {
+  content: "\e224";
 }
 
 /* line 8, ../scss/modules/avatar.scss */

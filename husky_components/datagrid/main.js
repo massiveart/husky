@@ -645,13 +645,14 @@ define(function() {
                 $paginationWrapper = this.sandbox.dom.$('<div/>');
                 $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row');
 
-                $showAll = this.sandbox.dom.$('<div>test</div>');
-                $showAll.addClass('show-all grid-col-4');
+                if(!!this.data.total && !!this.data.links.all) {
+                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total));
+                    $paginationWrapper.append($showAll);
+                }
 
                 $pagination = this.sandbox.dom.$('<div/>');
-                $pagination.addClass('pagination grid-col-8 align-right');
+                $pagination.addClass('pagination grid-col-8 align-right pull-right');
 
-                $paginationWrapper.append($showAll);
                 $paginationWrapper.append($pagination);
 
                 $pagination.append(this.preparePaginationForwardNavigation());
@@ -699,17 +700,13 @@ define(function() {
          */
         preparePaginationBackwardNavigation: function() {
 
-            var $next = '',
-                $last = '';
+            var $next = '';
 
             if(this.data.links.next) {
-                $next = this.templates.paginationNavigation("next", "Next");
-            }
-            if(this.data.links.last) {
-                $last = this.templates.paginationNavigation("last", "");
+                $next = this.templates.paginationNavigation("next", "");
             }
 
-            return ["<ul>",$next,$last,"</ul>"].join('');
+            return ["<ul>",$next,"</ul>"].join('');
         },
 
 
@@ -718,17 +715,13 @@ define(function() {
          * @returns {*|string}
          */
         preparePaginationForwardNavigation: function() {
-            var $prev = '',
-                $first = '';
+            var $prev = '';
 
-            if(this.data.links.first) {
-                $first = this.templates.paginationNavigation("first", "");
-            }
             if(this.data.links.prev) {
-                $prev = this.templates.paginationNavigation("prev", "Previous");
+                $prev = this.templates.paginationNavigation("prev", "");
             }
 
-            return ["<ul>",$first,$prev,"</ul>"].join('');
+            return ["<ul>",$prev,"</ul>"].join('');
         },
 
         /**
@@ -799,6 +792,7 @@ define(function() {
 
             if (this.options.pagination) {
                 this.$element.on('click', '.pagination li.page', this.changePage.bind(this));
+                this.$element.on('click', '#show-all', this.loadAll.bind(this));
             }
 
             if (this.options.removeRow) {
@@ -833,6 +827,15 @@ define(function() {
             // stop propagation
             //         event.stopPropagation();
             // }.bind(this));
+        },
+
+        loadAll: function(){
+
+            this.load({url: this.data.links.all});
+
+            // TODO
+            // loads wrong data? error in testdata?
+
         },
 
         /**
@@ -977,6 +980,13 @@ define(function() {
         },
 
         templates: {
+
+            showAll: function(total){
+
+                return ['<div class="show-all grid-col-4">',total
+                            ,' Elements (<a id="show-all" href="">show all</a>)</div>'].join('');
+            },
+
             removeRow: function() {
                 return [
                     '<span class="icon-remove"></span>'

@@ -35,14 +35,14 @@
     }
 }
 
-.pagination-first {
+.pagination-next {
     &::after {
-        content: "\e173";
+        content: "\e225";
     }
 }
 
-.pagination-last {
+.pagination-prev {
     &::after {
-        content: "\e177";
+        content: "\e224";
     }
 }
