@@ -9,8 +9,6 @@
  * @module husky/components/column-navigation
  */
 
-// TODO
-// margin bottom
 
 /**
  * @class ColumnNavigation
@@ -216,7 +214,6 @@ define([], function() {
                 newColumn = columnNumber + 1;
             }
 
-
             // fill old add column
             if (!!this.$addColumn) {
                 $column = this.$addColumn;
@@ -347,7 +344,6 @@ define([], function() {
                 selectedItem = this.columns[column][id],
                 length = this.selected.length - 1,
                 i, $arrowElement;
-
 
             if (this.sandbox.dom.hasClass(this.$selectedElement, 'selected')) { // is element already selected
 
