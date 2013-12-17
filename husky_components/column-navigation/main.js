@@ -10,8 +10,8 @@
  */
 
 // TODO
-// do not remove last column but empty it an refill it
-// add empty last column to add subpages
+// scrolling
+// margin bottom
 
 /**
  * @class ColumnNavigation
@@ -96,6 +96,7 @@ define([], function() {
 
             this.$element = this.sandbox.dom.$(this.options.el);
             this.$selectedElement = null;
+            this.$addColumn = null;
 
             this.containerWidth = this.sandbox.dom.width(this.$element);
             this.columns = [];
@@ -165,13 +166,16 @@ define([], function() {
          */
         removeColumns: function(newColumn) {
 
-            var length = this.columns.length - 1,
+            var length = this.selected.length,
                 i;
 
             for (i = length; i >= newColumn; i--) {
                 delete this.columns[i];
                 this.sandbox.dom.remove('#column-' + i);
             }
+
+            // reset add column when load new data
+            this.$addColumn = null;
         },
 
         /**
@@ -203,7 +207,15 @@ define([], function() {
                 newColumn = columnNumber + 1;
             }
 
-            $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.wrapper.height));
+
+            // fill old add column
+            if(!!this.$addColumn) {
+                $column = this.$addColumn;
+                this.$addColumn = null;
+            } else {
+                $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.wrapper.height, this.options.column.width));
+            }
+
             $list = this.sandbox.dom.find('ul', $column);
 
             this.sandbox.util.each(this.data.embedded, function(index, value) {
@@ -217,7 +229,6 @@ define([], function() {
                 this.sandbox.dom.removeClass($arrow, 'is-loading');
                 this.sandbox.dom.prependClass($arrow, 'icon-chevron-right');
             }
-
 
             this.sandbox.dom.append(this.$columnContainer, $column);
 
@@ -321,8 +332,6 @@ define([], function() {
          */
         itemSelected: function(event) {
 
-            // TODO jump to clicked item
-
             this.$selectedElement = this.sandbox.dom.$(event.currentTarget);
             var id = this.sandbox.dom.data(this.$selectedElement, 'id'),
                 column = this.sandbox.dom.data(this.sandbox.dom.parent(this.sandbox.dom.parent(this.$selectedElement)), 'column'),
@@ -338,6 +347,7 @@ define([], function() {
             } else { // element not selected
 
                 this.removeCurrentSelected(column);
+
                 this.sandbox.dom.addClass(this.$selectedElement, 'selected');
                 $arrowElement = this.sandbox.dom.find('.arrow', this.$selectedElement);
                 this.sandbox.dom.removeClass($arrowElement, 'inactive icon-chevron-right');
@@ -367,6 +377,14 @@ define([], function() {
                     this.removeColumns(column + 1);
                 }
             }
+
+            // insert add column when clicked element
+            if(!this.$addColumn && !selectedItem.hasSub) {
+                // append empty column to add subpages
+                this.$addColumn =  this.sandbox.dom.createElement(this.template.column(column+1, this.options.wrapper.height, this.options.column.width));
+                this.sandbox.dom.append(this.$columnContainer,this.$addColumn);
+            }
+
         },
 
         /**
@@ -374,8 +392,9 @@ define([], function() {
          * @param {Number} column
          */
         removeCurrentSelected: function(column) {
-            var items = this.sandbox.dom.find('li', '#column-' + column);
-            this.sandbox.util.each(items, function(index, $el) {
+            var $items = this.sandbox.dom.find('li', '#column-' + column);
+
+            this.sandbox.util.each($items, function(index, $el) {
                 this.sandbox.dom.removeClass($el, 'selected');
                 var $arrowElement = this.sandbox.dom.find('.arrow', $el);
                 this.sandbox.dom.addClass($arrowElement, 'inactive');
