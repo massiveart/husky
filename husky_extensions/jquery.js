@@ -142,7 +142,7 @@
 
             app.core.dom.data = function(selector, key, value) {
                 if (!!value) {
-                    return $(selector).data(key, value);
+                    $(selector).data(key, value);
                 } else {
                     return $(selector).data(key);
                 }
@@ -240,7 +240,7 @@
                 return $(selector).show();
             };
 
-            app.core.dom.toggle = function(selector) {
+            app.core.dom.toggle= function(selector) {
                 return $(selector).toggle();
             };
 
@@ -259,6 +259,14 @@
 
             app.core.dom.scrollTop = function(itemSelector) {
                 $(window).scrollTop($(itemSelector).offset().top);
+            };
+
+            app.core.dom.scrollLeft = function(selector, value) {
+                if(!!value) {
+                    $(selector).scrollLeft(value);
+                } else {
+                    return $(selector).scrollLeft();
+                }
             };
 
 
@@ -281,6 +289,7 @@
             app.core.dom.slideDown = function(selector, duration, complete) {
                 $(selector).slideDown(duration,complete);
             };
+
 
 
             app.core.util.ajax = $.ajax;

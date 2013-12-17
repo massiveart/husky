@@ -33,7 +33,6 @@
     "trailing": true,
     "browser": true,
     "jquery": true,
-    "nomen": true,
     "onevar": true,
     "expr": true
 }
