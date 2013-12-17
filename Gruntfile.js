@@ -50,14 +50,13 @@ module.exports = function(grunt) {
                 ' * with this source code in the file LICENSE.\n' +
                 ' */\n\n'
         },
-
         watch: {
             options: {
                 nospawn: true
             },
             compass: {
                 files: ['scss/{,*/}*.{scss,sass}'],
-                tasks: ['compass:dev', 'copy:dist']
+                tasks: ['compass:dev', 'copy:dist', 'cssmin']
             }
         },
         jshint: {
@@ -287,6 +286,14 @@ module.exports = function(grunt) {
                     cleanBowerDir: false
                 }
             }
+        },
+        connect: {
+            server: {
+                options: {
+                    port: 9000,
+                    base: '.'
+                }
+            }
         }
     });
 
@@ -325,6 +332,10 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('default', [
+        'compass',
+        'cssmin',
+        'copy:dist',
+        'connect',
         'watch'
     ]);
 };
