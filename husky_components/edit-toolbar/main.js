@@ -214,7 +214,7 @@ define(function() {
             if (!!item.icon) {
                 this.sandbox.dom.removeClass(listItems.eq(0), '');
                 if (item.icon !== false) {
-                    this.sandbox.dom.addClass(listItems.eq(0), createIconSupportClass.call(this, item, item.disabled));
+                    this.sandbox.dom.addClass(listItems.eq(0), createIconSupportClass.call(this, item, !item.disabled));
                 }
             }
             if (!!item.title) {
@@ -380,6 +380,9 @@ define(function() {
                 if (!!item.class) {
                     classArray.push(item.class);
                 }
+                if (item.disabled) {
+                    classArray.push('disabled');
+                }
 
                 // if group is set to right, add to right list, otherwise always add to left list
                 if (!!item.group && item.group === 'right') {
@@ -393,7 +396,7 @@ define(function() {
                 this.sandbox.dom.append($listItem, $listLink);
 
                 // create icon span
-                this.sandbox.dom.append($listLink, '<span class="' + createIconSupportClass.call(this, item) + '" />');
+                this.sandbox.dom.append($listLink, '<span class="' + createIconSupportClass.call(this, item, !item.disabled) + '" />');
 
                 // create title span
                 title = item.title ? item.title : '';
