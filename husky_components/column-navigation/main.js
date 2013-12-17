@@ -10,7 +10,6 @@
  */
 
 // TODO
-// scrolling
 // margin bottom
 
 /**
@@ -169,7 +168,7 @@ define([], function() {
 
             // removes all old columns except of next after clicked
             // next column after clicked will be emptied and used again
-            var length = this.filledColumns+1,
+            var length = this.filledColumns + 1,
                 i, tmp;
 
             for (i = length; i > newColumn; i--) {
@@ -179,12 +178,12 @@ define([], function() {
             }
 
             // check if element in dom exists
-            tmp = this.sandbox.dom.find('#column-'+newColumn);
-            if(tmp.length === 1) {
+            tmp = this.sandbox.dom.find('#column-' + newColumn);
+            if (tmp.length === 1) {
                 this.$addColumn = tmp[0];
             }
 
-            this.sandbox.dom.remove('#column-'+newColumn+' li');
+            this.sandbox.dom.remove('#column-' + newColumn + ' li');
 
         },
 
@@ -219,10 +218,10 @@ define([], function() {
 
 
             // fill old add column
-            if(!!this.$addColumn) {
+            if (!!this.$addColumn) {
                 $column = this.$addColumn;
                 this.sandbox.dom.data(this.$addColumn, 'id', newColumn);
-                this.sandbox.dom.attr(this.$addColumn, 'id', 'column-'+newColumn);
+                this.sandbox.dom.attr(this.$addColumn, 'id', 'column-' + newColumn);
                 this.$addColumn = null;
             } else {
                 $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.wrapper.height, this.options.column.width));
@@ -247,8 +246,6 @@ define([], function() {
 
             this.scrollIfNeeded(newColumn);
         },
-
-
 
 
         /**
@@ -386,14 +383,14 @@ define([], function() {
             }
 
             // insert add column when clicked element
-            if(!this.$addColumn && !selectedItem.hasSub) {
+            if (!this.$addColumn && !selectedItem.hasSub) {
                 // append empty column to add subpages
-                this.$addColumn =  this.sandbox.dom.createElement(this.template.column(column+1, this.options.wrapper.height, this.options.column.width));
-                this.sandbox.dom.append(this.$columnContainer,this.$addColumn);
+                this.$addColumn = this.sandbox.dom.createElement(this.template.column(column + 1, this.options.wrapper.height, this.options.column.width));
+                this.sandbox.dom.append(this.$columnContainer, this.$addColumn);
             }
 
             // scroll for add column
-            if(!selectedItem.hasSub) {
+            if (!selectedItem.hasSub) {
                 this.scrollIfNeeded(column);
             }
 
@@ -405,7 +402,7 @@ define([], function() {
          */
         scrollIfNeeded: function(column) {
             if (column > DISPLAYEDCOLUMNS) {
-                this.sandbox.dom.scrollLeft(this.$columnContainer, (column-DISPLAYEDCOLUMNS)*this.options.column.width);
+                this.sandbox.dom.scrollLeft(this.$columnContainer, (column - DISPLAYEDCOLUMNS) * this.options.column.width);
             }
         },
 
