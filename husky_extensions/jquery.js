@@ -83,6 +83,9 @@
             };
 
             app.core.dom.removeClass = function(selector, classes) {
+                if (!classes) {
+                    return $(selector).removeClass();
+                }
                 return $(selector).removeClass(classes);
             };
 

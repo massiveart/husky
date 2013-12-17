@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="stylesheet" href="../../dist/husky.min.css">
+        <style>
+            body {
+                margin: 20px;
+                overflow: hidden;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>list toolbars</h1>
+
+        <h3>default (large)</h3>
+
+        <div id="toolbar1"></div>
+        <h3>medium</h3>
+
+        <div id="toolbar2"></div>
+        <h3>small</h3>
+
+        <div id="toolbar3"></div>
+
+        <script src="../js/sinon.js"></script>
+        <script src="../js/jquery.js"></script>
+
+        <script src="../js/require.js"></script>
+
+        <script type="text/javascript">
+            require.config({
+                baseUrl: '../../'
+            });
+
+            require(['lib/husky'], function(Husky) {
+                'use strict';
+
+                var fakeServer = sinon.fakeServer.create(),
+                        app = Husky({ debug: { enable: true }}),
+                        _ = app.sandbox.util._,
+
+                        testData = [
+                            {
+                                'id': 1,
+                                'icon': 'user-add',
+                                'title': 'Add User',
+                                'class': 'highlight',
+                                'callback': function() {
+                                    console.log("highlight was clicked!");
+                                }
+                            },
+                            {
+                                'id': 2,
+                                'icon': 'bin',
+                                'title': 'Delete User',
+                                'group': '1',
+                                'disabled': true,
+                                'callback': function() {
+
+                                }
+                            },
+                            {
+                                'id': 3,
+                                'icon': 'retweet',
+                                'title': 'Refresh',
+                                'group': '1',
+                                'items': [
+                                    {
+                                        'title': 'move'
+                                    },
+                                    {
+                                        'title': 'duplicate'
+                                    },
+                                    {
+                                        divider: true
+                                    },
+                                    {
+                                        'title': 'remove',
+                                        disabled: true
+                                    }
+                                ]
+                            },
+                            {
+                                'icon': 'file-import',
+                                'title': 'Import',
+                                'group': '2',
+                                'callback': function() {
+
+                                }
+                            },
+                            {
+                                'icon': 'file-import',
+                                'title': 'Work',
+                                'class': 'highlight',
+                                'disabled': true
+                            },
+                            {
+                                'icon': 'file-export',
+                                'title': 'Export',
+                                'group': '2',
+                                'callback': function() {
+
+                                }
+                            }
+                        ];
+
+
+                app.start().then(function() {
+                    app.logger.log('Aura started...');
+
+
+                    fakeServer.respondWith('GET', '/toolbar', [200, { 'Content-Type': 'application/json' },
+                        JSON.stringify(testData)
+                    ]);
+
+                    app.sandbox.start([
+                        {
+                            name: 'toolbar@husky',
+                            options: {
+                                el: '#toolbar1',
+                                instanceName: 'contact',
+                                hasSearch: true,
+                                appearance: 'large',
+
+                                data: testData
+                            }
+                        }
+                    ]);
+
+                    app.sandbox.start([
+                        {
+                            name: 'toolbar@husky',
+                            options: {
+                                el: '#toolbar2',
+                                instanceName: 'contact2',
+                                hasSearch: false,
+                                appearance: 'medium',
+
+                                url: '/toolbar'
+                            }
+                        }
+                    ]);
+
+
+                    app.sandbox.start([
+                        {
+                            name: 'toolbar@husky',
+                            options: {
+                                el: '#toolbar3',
+                                instanceName: 'contact3',
+                                hasSearch: false,
+                                appearance: 'small',
+
+                                url: '/toolbar'
+                            }
+                        }
+                    ]);
+
+                    app.sandbox.on('husky.util.load.data', function() {
+                        setTimeout(function() {
+                            fakeServer.respond();
+                        }, 100);
+                    });
+
+
+                });
+            });
+        </script>
+
+    </body>
+</html>

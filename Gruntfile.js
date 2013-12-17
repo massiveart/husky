@@ -50,18 +50,13 @@ module.exports = function(grunt) {
                 ' * with this source code in the file LICENSE.\n' +
                 ' */\n\n'
         },
-
         watch: {
             options: {
                 nospawn: true
             },
             compass: {
                 files: ['scss/{,*/}*.{scss,sass}'],
-                tasks: ['compass:dev', 'copy:dist']
-            },
-            jshint: {
-                files: ['js/{,*/}*.{js,js}'],
-                tasks: ['jshint']
+                tasks: ['compass:dev', 'copy:dist', 'cssmin']
             }
         },
         jshint: {
@@ -101,7 +96,7 @@ module.exports = function(grunt) {
             dev: {
                 options: {
                     sassDir: 'scss/',
-                    specify: ['scss/husky.scss'],
+                    specify: 'scss/husky.scss',
                     cssDir: '.tmp/',
                     require: ['animation'],
                     relativeAssets: false
@@ -292,6 +287,7 @@ module.exports = function(grunt) {
                 }
             }
         },
+
         yuidoc: {
             compile: {
                 name: '<%= pkg.name %>',
@@ -301,6 +297,15 @@ module.exports = function(grunt) {
                 options: {
                     paths: ['lib/', 'husky_extensions/', 'husky_components/'],
                     outdir: 'doc'
+                }
+            }
+        },
+        connect: {
+            server: {
+                options: {
+                    port: 9000,
+                    base: '.'
+
                 }
             }
         }
@@ -341,7 +346,10 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('default', [
-        'copy:dev',
+        'compass',
+        'cssmin',
+        'copy:dist',
+        'connect',
         'watch'
     ]);
 };

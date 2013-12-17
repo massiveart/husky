@@ -36,7 +36,7 @@ define(function() {
             app.core.util.foreach = function(array, callbackValue) {
                 if (array.length && array.length > 0) {
                     for (var i = -1, length = array.length; ++i < length;) {
-                        callbackValue( array[i], i);
+                        callbackValue(array[i], i);
                     }
                 } else {
                     app.sandbox.logger.log('error at util.foreach: no array given');
@@ -66,10 +66,13 @@ define(function() {
                 return deferred.promise();
             };
 
-            app.core.util.contains = function(list, value){
+            app.core.util.contains = function(list, value) {
                 return _.contains(list, value);
             };
 
+            app.core.util.uniqueId = function(prefix) {
+                return _.uniqueId(prefix);
+            };
         }
     };
 });

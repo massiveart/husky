@@ -7157,6 +7157,23 @@
 				"name": "uniE227",
 				"ligatures": ""
 			}
+		},
+		{
+			"icon": {
+				"paths": [
+					"M802.987 765.44l-290.987-290.987-290.987 290.987-156.587-156.587 447.573-448 447.573 448z"
+				],
+				"defaultCode": 57892,
+				"grid": 0
+			},
+			"properties": {
+				"order": 422,
+				"id": 422,
+				"prevSize": 32,
+				"code": 57898,
+				"name": "uniE22A",
+				"ligatures": ""
+			}
 		}
 	],
 	"height": 1024,

@@ -59,6 +59,13 @@
   }
 }
 
+.icon-circle-plus {
+  &::after {
+    content: "\e191";
+    display: inline-block;
+  }
+}
+
 .icon-edit {
   &::after {
     content: "\e151";
@@ -174,14 +181,32 @@
 
 .icon-chevron-right {
   &::after {
-    content: "\e224";
+    font-family: $baseIconHalflingsFont;
+    content: "\e080";
+    display: inline-block;
+  }
+}
+
+.icon-chevron-left {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e079";
     display: inline-block;
   }
 }
 
 .icon-chevron-down {
   &::after {
-    content: "\e227";
+    font-family: $baseIconHalflingsFont;
+    content: "\e114";
+    display: inline-block;
+  }
+}
+
+.icon-chevron-up {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e113";
     display: inline-block;
   }
 }
@@ -265,5 +290,70 @@
     -webkit-transform: rotate(90deg);
 
     transform: rotate(90deg);
+  }
+}
+
+.icon-user-add {
+  &::after {
+    content: "\e007";
+    display: inline-block;
+  }
+}
+
+.icon-bin {
+  &::after {
+    content: "\e017";
+    display: inline-block;
+  }
+}
+
+.icon-retweet {
+  &::after {
+    content: "\e081";
+    display: inline-block;
+  }
+}
+
+.icon-file-import {
+  &::after {
+    content: "\e359";
+    display: inline-block;
+  }
+}
+
+.icon-file-export {
+  &::after {
+    content: "\e360";
+    display: inline-block;
+  }
+}
+
+.icon-show-thumbnails {
+  &::after {
+    content: "\e157";
+    display: inline-block;
+  }
+}
+
+.icon-eye-open {
+  &::after {
+    content: "\e052";
+    display: inline-block;
+  }
+}
+
+.icon-floppy-save {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e175";
+    display: inline-block;
+  }
+}
+
+.icon-floppy-saved {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e173";
+    display: inline-block;
   }
 }
