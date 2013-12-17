@@ -25426,7 +25426,7 @@ define('__component__$column-navigation@husky',[], function() {
         initialize: function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
-            this.$element = this.sandbox.dom.createElement(this.options.el);
+            this.$element = this.sandbox.dom.$(this.options.el);
 
             this.containerWidth = this.sandbox.dom.width(this.$element);
             this.columns = [];
@@ -25444,17 +25444,17 @@ define('__component__$column-navigation@husky',[], function() {
         render: function() {
             var $add, $settings, $wrapper;
 
-            $wrapper = this.sandbox.dom.createElement(this.template.wrapper());
+            $wrapper = this.sandbox.dom.$(this.template.wrapper());
             this.sandbox.dom.append(this.$element, $wrapper);
 
             // navigation container
-            this.$columnContainer = this.sandbox.dom.createElement(this.template.columnContainer(this.options.wrapper.height + SCROLLBARWIDTH));
+            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer(this.options.wrapper.height + SCROLLBARWIDTH));
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
-            this.$optionsContainer = this.sandbox.dom.createElement(this.template.optionsContainer(this.options.column.width));
-            $add = this.sandbox.dom.createElement(this.template.options.add());
-            $settings = this.sandbox.dom.createElement(this.template.options.settings());
+            this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer(this.options.column.width));
+            $add = this.sandbox.dom.$(this.template.options.add());
+            $settings = this.sandbox.dom.$(this.template.options.settings());
             this.sandbox.dom.append(this.$optionsContainer, $add);
             this.sandbox.dom.append(this.$optionsContainer, $settings);
 
@@ -25531,12 +25531,12 @@ define('__component__$column-navigation@husky',[], function() {
                 newColumn = columnNumber + 1;
             }
 
-            $column = this.sandbox.dom.create(this.template.column(newColumn, this.options.wrapper.height));
+            $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.wrapper.height));
             $list = this.sandbox.dom.find('ul', $column);
 
             this.sandbox.util.each(this.data.embedded, function(index, value) {
                 this.storeDataItem(newColumn, value);
-                this.sandbox.dom.append($list, this.sandbox.dom.createElement(this.template.item(this.options.column.width - SCROLLBARWIDTH, value)));
+                this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width - SCROLLBARWIDTH, value)));
             }.bind(this));
 
             this.sandbox.dom.append(this.$columnContainer, $column);
@@ -25615,7 +25615,7 @@ define('__component__$column-navigation@husky',[], function() {
 
             this.sandbox.dom.one(this.$columnContainer, 'scroll', this.hideOptions.bind(this));
 
-            this.lastHoveredColumn = this.sandbox.dom.data(this.sandbox.dom.createElement(event.currentTarget), 'column');
+            this.lastHoveredColumn = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget), 'column');
 
             var scrollPositionX = this.sandbox.dom.scrollLeft(this.sandbox.dom.parent(event.currentTarget)),
                 marginLeft = ((this.lastHoveredColumn - 1) * this.options.column.width);
@@ -25641,7 +25641,7 @@ define('__component__$column-navigation@husky',[], function() {
          */
         itemSelected: function(event) {
 
-            var $target = this.sandbox.dom.createElement(event.currentTarget),
+            var $target = this.sandbox.dom.$(event.currentTarget),
                 id = this.sandbox.dom.data($target, 'id'),
                 column = this.sandbox.dom.data(this.sandbox.dom.parent(this.sandbox.dom.parent($target)), 'column'),
                 selectedItem = this.columns[column][id],
