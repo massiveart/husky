@@ -21,7 +21,7 @@
  * @params {Number} [options.wrapper.height] height of container
  * @params {Number} [options.column.width] width of a column in within the navigation
  * @params {Number} [options.scrollBarWidth] with of scrollbar
- * @params {url} [options.url] url to load data
+ * @params {String} [options.url] url to load data
  *
  */
 define([], function() {
@@ -97,6 +97,7 @@ define([], function() {
             this.$element = this.sandbox.dom.$(this.options.el);
             this.$selectedElement = null;
             this.$addColumn = null;
+            this.filledColumns = 0;
 
             this.containerWidth = this.sandbox.dom.width(this.$element);
             this.columns = [];
@@ -166,16 +167,28 @@ define([], function() {
          */
         removeColumns: function(newColumn) {
 
-            var length = this.selected.length,
-                i;
+            // removes all old columns except of next after clicked
+            // next column after clicked will be emptied and used again
 
-            for (i = length; i >= newColumn; i--) {
+            var length = this.filledColumns+1,
+                i, tmp;
+
+            this.sandbox.logger.log(this.filledColumns);
+
+            for (i = length; i > newColumn; i--) {
                 delete this.columns[i];
                 this.sandbox.dom.remove('#column-' + i);
+                this.filledColumns--;
             }
 
-            // reset add column when load new data
-            this.$addColumn = null;
+            // check if element in dom exists
+            tmp = this.sandbox.dom.find('#column-'+newColumn);
+            if(tmp.length === 1) {
+                this.$addColumn = tmp[0];
+            }
+
+            this.sandbox.dom.remove('#column-'+newColumn+' li');
+
         },
 
         /**
@@ -211,6 +224,8 @@ define([], function() {
             // fill old add column
             if(!!this.$addColumn) {
                 $column = this.$addColumn;
+                this.sandbox.dom.data(this.$addColumn, 'id', newColumn);
+                this.sandbox.dom.attr(this.$addColumn, 'id', 'column-'+newColumn);
                 this.$addColumn = null;
             } else {
                 $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.wrapper.height, this.options.column.width));
@@ -231,6 +246,7 @@ define([], function() {
             }
 
             this.sandbox.dom.append(this.$columnContainer, $column);
+            this.filledColumns++;
 
             if (newColumn > DISPLAYEDCOLUMNS) {
                 // scroll one column to the right
