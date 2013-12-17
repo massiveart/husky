@@ -214,7 +214,7 @@ define(function() {
             if (!!item.icon) {
                 this.sandbox.dom.removeClass(listItems.eq(0), '');
                 if (item.icon !== false) {
-                    this.sandbox.dom.addClass(listItems.eq(0), createIconSupportClass.call(this, item));
+                    this.sandbox.dom.addClass(listItems.eq(0), createIconSupportClass.call(this, item, item.disabled));
                 }
             }
             if (!!item.title) {
