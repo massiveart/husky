@@ -39,7 +39,7 @@ define([], function() {
         },
 
         SCROLLBARWIDTH = 17, // width of scrollbars
-        DISPLAYEDCOLUMNS = 3, // number of displayed columns
+        DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
 
         /**
          * namespace for events
@@ -169,11 +169,8 @@ define([], function() {
 
             // removes all old columns except of next after clicked
             // next column after clicked will be emptied and used again
-
             var length = this.filledColumns+1,
                 i, tmp;
-
-            this.sandbox.logger.log(this.filledColumns);
 
             for (i = length; i > newColumn; i--) {
                 delete this.columns[i];
@@ -248,11 +245,11 @@ define([], function() {
             this.sandbox.dom.append(this.$columnContainer, $column);
             this.filledColumns++;
 
-            if (newColumn > DISPLAYEDCOLUMNS) {
-                // scroll one column to the right
-                this.sandbox.dom.scrollLeft(this.$columnContainer, this.options.column.width);
-            }
+            this.scrollIfNeeded(newColumn);
         },
+
+
+
 
         /**
          * Stores data in internal structure - seperated by column number
@@ -353,7 +350,7 @@ define([], function() {
                 column = this.sandbox.dom.data(this.sandbox.dom.parent(this.sandbox.dom.parent(this.$selectedElement)), 'column'),
                 selectedItem = this.columns[column][id],
                 length = this.selected.length - 1,
-                i, $arrowElement, margin;
+                i, $arrowElement;
 
 
             if (this.sandbox.dom.hasClass(this.$selectedElement, 'selected')) { // is element already selected
@@ -368,12 +365,6 @@ define([], function() {
                 $arrowElement = this.sandbox.dom.find('.arrow', this.$selectedElement);
                 this.sandbox.dom.removeClass($arrowElement, 'inactive icon-chevron-right');
                 this.sandbox.dom.addClass($arrowElement, 'is-loading');
-
-                // when is not scrolled and column > 3 then scroll
-                if (column > DISPLAYEDCOLUMNS) {
-                    margin = (((column * this.options.column.width) + SCROLLBARWIDTH) - this.containerWidth);
-                    this.sandbox.dom.scrollLeft(this.$columnContainer, (margin > 0) ? margin : 0);
-                }
 
                 if (!!selectedItem) {
 
@@ -401,7 +392,23 @@ define([], function() {
                 this.sandbox.dom.append(this.$columnContainer,this.$addColumn);
             }
 
+            // scroll for add column
+            if(!selectedItem.hasSub) {
+                this.scrollIfNeeded(column);
+            }
+
         },
+
+        /**
+         * Scrolls if needed
+         * @param column
+         */
+        scrollIfNeeded: function(column) {
+            if (column > DISPLAYEDCOLUMNS) {
+                this.sandbox.dom.scrollLeft(this.$columnContainer, (column-DISPLAYEDCOLUMNS)*this.options.column.width);
+            }
+        },
+
 
         /**
          * Removes the selected class from old elements
