@@ -137,7 +137,14 @@ define([], function() {
         load: function(url, columnNumber) {
 
             if (!!url) {
-
+                /**
+                 * FIXME change ajax method to this!
+                 * this.sandbox.util.load(url)
+                 * .then(function(data){
+                 * })
+                 * .fail(function(error){
+                 * });
+                 */
                 this.sandbox.util.ajax({
 
                     url: url,
