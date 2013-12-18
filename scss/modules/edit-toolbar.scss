@@ -75,9 +75,26 @@ $editToolbarHeight: 40px;
     height: 100%;
     line-height: $editToolbarHeight;
 
+    &.disabled:hover,
+    &.disabled {
+        cursor: default;
+        a {
+            cursor: default;
+            color: $grayLight;
+        }
+    }
+
     &.highlight {
         min-width: 100px;
         background-color: $highlightColor;
+
+        &.disabled:hover,
+        &.disabled {
+            background-color: #a7a7a7 !important;
+            a {
+                color: $grayDark !important;
+            }
+        }
 
         &:hover {
             background-color: lighten($highlightColor, 3%);
@@ -88,6 +105,16 @@ $editToolbarHeight: 40px;
 
         a {
             color: white;
+        }
+
+        &.disabled:hover,
+        &.disabled {
+            cursor: default;
+            background-color: inherit;
+            a {
+                cursor: default;
+                color: $grayLight;
+            }
         }
     }
 

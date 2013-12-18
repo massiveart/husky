@@ -77,6 +77,7 @@ module.exports = function(grunt) {
         clean: {
             dist: ['dist', 'docs/packages/husky/'],
             temp: ['dist/temp'],
+            tmp: ['.tmp'],
             bower_after: {
                 files: {
                     src: [
@@ -308,6 +309,7 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('build', [
+        'clean:tmp',
         'clean:dist',
         'requirejs:dist',
         'requirejs:dev',
