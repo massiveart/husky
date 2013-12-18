@@ -25448,7 +25448,7 @@ define('__component__$auto-complete@husky',[], function() {
                     this.noState();
 
                     // if only one result this is it, if no result hideDropDown, else generateDropDown
-                    this.updateData(response.items);
+                    this.updateData(response._embedded);
                     if (this.data.length > 1) {
                         this.generateDropDown(this.data);
                     } else if (this.data.length === 1) {
@@ -27019,7 +27019,7 @@ define('husky_extensions/util',[],function() {
                 return _.contains(list, value);
             };
 
-            app.core.util.prefix = function(prefix) {
+            app.core.util.uniqueId = function(prefix) {
                 return _.uniqueId(prefix);
             };
         }
