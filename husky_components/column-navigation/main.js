@@ -116,7 +116,7 @@ define([], function() {
             this.sandbox.dom.append(this.$element, $wrapper);
 
             // navigation container
-            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer(this.options.wrapper.height));
+            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer());
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
@@ -460,8 +460,8 @@ define([], function() {
                 return '<div class="column-navigation-wrapper"></div>';
             },
 
-            columnContainer: function(height) {
-                return ['<div class="column-navigation" style="height:', height, 'px"></div>'].join('');
+            columnContainer: function() {
+                return ['<div class="column-navigation"></div>'].join('');
             },
 
             column: function(columnNumber, height, width) {
