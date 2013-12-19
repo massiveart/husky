@@ -32,9 +32,55 @@
 <script src="../../node_modules/sinon/pkg/sinon.js"></script>
 <script src="../../bower_components/jquery/jquery.js"></script>
 
-<script>
+<script src="../js/require.js"></script>
+
+<script type="text/javascript">
+    require.config({
+        baseUrl: '../../'
+    });
+
+    require(['lib/husky'], function(Husky) {
+        'use strict';
+
+        var app = Husky({ debug: { enable: true }}),
+                _ = app.sandbox.util._;
+
+        app.start().then(function() {
+            app.logger.log('Aura started...');
+
+//            $('#showDialog').on('click', function(event) {
+//                event.preventDefault();
+//                app.sandbox.start([
+//                    {
+//                        name: 'dialog@husky',
+//                        options: {
+//                            el: '#dialog',
+//                            data: {
+//                                content: {
+//                                    title: "This is the headline!",
+//                                    content: "This is the content"
+//                                },
+//                                footer: {
+//                                    buttonCancelText: "Cancel",
+//                                    buttonSubmitText: "Save"
+//                                }
+//                            }
+//                        }
+//                    }
+//                ]);
+//            });
 
 
+//            app.sandbox.on('husky.dialog.cancel', function() {
+//                app.sandbox.emit('husky.dialog.hide');
+//            });
+//
+//            app.sandbox.on('husky.dialog.submit', function() {
+//                app.sandbox.emit('husky.dialog.hide');
+//            });
+
+        });
+    });
 </script>
 
 

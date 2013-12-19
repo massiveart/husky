@@ -29,7 +29,6 @@
             "__component__$search@husky": "husky_components/search/main",
             "__component__$tabs@husky": "husky_components/tabs/main",
             "__component__$toolbar@husky": "husky_components/toolbar/main",
-            "__component__$edit-toolbar@husky": "husky_components/edit-toolbar/main",
             "__component__$auto-complete@husky": "husky_components/auto-complete/main",
             "__component__$dropdown-multiple-select@husky": "husky_components/dropdown-multiple-select/main",
             "__component__$password-fields@husky": "husky_components/password-fields/main",
@@ -58,6 +57,8 @@
             "aura/ext/components",
             "husky-validation",
             "globalize_lib",
+            "ckeditor",
+            "jqueryAdapter",
             "uri-template",
 
             "husky",

@@ -4,12 +4,17 @@
 
     require.config({
         paths: {
-            "ckeditor": 'bower_components/ckeditor/ckeditor',
-            "jqueryAdapter": 'bower_components/ckeditor/jquery'
+            ckeditor: 'bower_components/ckeditor/ckeditor',
+            jqueryAdapter: 'bower_components/ckeditor/jquery'
+        },
+        shim: {
+            jqueryAdapter: {
+                deps: ['jquery', 'ckeditor']
+            }
         }
     });
 
-    define(['ckeditor', 'jqueryAdapter'], function(CKEditor, jQueryAdapter) {
+    define(['ckeditor', 'jqueryAdapter'], function() {
 
         return  {
 
