@@ -116,7 +116,7 @@ define([], function() {
             this.sandbox.dom.append(this.$element, $wrapper);
 
             // navigation container
-            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer(this.options.wrapper.height + SCROLLBARWIDTH));
+            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer(this.options.wrapper.height));
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
@@ -235,7 +235,7 @@ define([], function() {
 
             this.sandbox.util.each(this.data.embedded, function(index, value) {
                 this.storeDataItem(newColumn, value);
-                this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width - SCROLLBARWIDTH, value)));
+                this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width, value)));
             }.bind(this));
 
             // remove loading icon
