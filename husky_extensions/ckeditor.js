@@ -5,7 +5,7 @@
     require.config({
         paths: {
             "ckeditor": 'bower_components/ckeditor/ckeditor',
-            "jqueryAdapter": 'bower_components/ckeditor/adapters/jquery'
+            "jqueryAdapter": 'bower_components/ckeditor/jquery'
         }
     });
 
