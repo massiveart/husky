@@ -35,7 +35,6 @@ define([], function() {
             url: null
         },
 
-        SCROLLBARWIDTH = 17, // width of scrollbars
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
 
         /**
@@ -96,7 +95,6 @@ define([], function() {
             this.$addColumn = null;
             this.filledColumns = 0;
 
-            this.containerWidth = this.sandbox.dom.width(this.$element);
             this.columns = [];
             this.selected = [];
 
@@ -127,6 +125,7 @@ define([], function() {
             this.sandbox.dom.append(this.$optionsContainer, $settings);
 
             this.sandbox.dom.append($wrapper, this.$optionsContainer);
+
         },
 
         /**
@@ -137,29 +136,16 @@ define([], function() {
         load: function(url, columnNumber) {
 
             if (!!url) {
-                /**
-                 * FIXME change ajax method to this!
-                 * this.sandbox.util.load(url)
-                 * .then(function(data){
-                 * })
-                 * .fail(function(error){
-                 * });
-                 */
-                this.sandbox.util.ajax({
 
-                    url: url,
-
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        this.sandbox.logger.error("An error occured while fetching data from: " + this.options.url);
-                        this.sandbox.logger.error("errorthrown", errorThrown.message);
-                    }.bind(this),
-
-                    success: function(response) {
+                this.sandbox.util.load(url)
+                    .then(function(response) {
                         this.parseData(response, columnNumber);
                         this.sandbox.emit(LOADED);
+                    }.bind(this))
+                    .fail(function(error) {
+                        this.sandbox.logger.error("An error occured while fetching data from: ", error);
+                    }.bind(this));
 
-                    }.bind(this)
-                });
             } else {
                 this.sandbox.logger.log("husky.column.navigation -  url not set, aborted loading of data");
             }
