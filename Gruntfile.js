@@ -273,6 +273,16 @@ module.exports = function(grunt) {
                         ],
                         dest: 'bower_components/massiveart-uritemplate/'
                     },
+                    // ck editor
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            '.bower_components/ckeditor/ckeditor.js',
+                            '.bower_components/ckeditor/adapters/jquery.js'
+                        ],
+                        dest: 'bower_components/ckeditor/'
+                    }
                 ]
             }
         },
