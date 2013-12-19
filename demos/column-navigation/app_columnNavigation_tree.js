@@ -1001,7 +1001,8 @@ require(['lib/husky'], function (Husky) {
                 name: 'column-navigation@husky',
                 options: {
                     el: '#column-navigation',
-                    url: '/nodes?children=1.2.3.1'
+                    url: '/nodes?children=1.2.3.1',
+                    selected: '1.2.3.1'
                 }
             }
         ]).then(function () {
