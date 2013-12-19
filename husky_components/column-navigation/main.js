@@ -210,10 +210,12 @@ define([], function() {
                 if(!!value.hasSub && value._embedded.length > 0) {
                     nodeWithSubNodes = value;
                     this.setElementSelected($element);
+                    this.selected[newColumn] = value;
                 }
 
                 if(!!this.options.selected && this.options.selected === value.id) {
                     this.setElementSelected($element);
+                    this.selected[newColumn] = value;
                 }
 
             }.bind(this));
@@ -405,17 +407,22 @@ define([], function() {
             }
 
             // insert add column when clicked element
-            if (!this.$addColumn && !selectedItem.hasSub) {
-                // append empty column to add subpages
-                this.$addColumn = this.sandbox.dom.createElement(this.template.column(column + 1, this.options.wrapper.height, this.options.column.width));
-                this.sandbox.dom.append(this.$columnContainer, this.$addColumn);
-            }
+            this.insertAddColumn(selectedItem);
 
             // scroll for add column
             if (!selectedItem.hasSub) {
                 this.scrollIfNeeded(column);
             }
 
+        },
+
+        insertAddColumn: function(selectedItem){
+
+            if (!this.$addColumn && !selectedItem.hasSub) {
+                // append empty column to add subpages
+                this.$addColumn = this.sandbox.dom.createElement(this.template.column(column + 1, this.options.wrapper.height, this.options.column.width));
+                this.sandbox.dom.append(this.$columnContainer, this.$addColumn);
+            }
         },
 
         /**
