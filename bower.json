@@ -8,6 +8,7 @@
         "aura": "latest",
         "husky-validation": "#develop",
         "globalize": "0.1.*",
-        "massiveart-uritemplate": "0.3.*"
+        "massiveart-uritemplate": "0.3.*",
+        "ckeditor" : "latest"
     }
 }
