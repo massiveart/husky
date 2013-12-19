@@ -141,8 +141,8 @@ define([], function() {
 
                 this.sandbox.util.load(url)
                     .then(function(response) {
-//                        this.mapData(response);
                         this.parseData(response, columnNumber);
+                        this.scrollIfNeeded(this.filledColumns+1);
                         this.sandbox.emit(LOADED);
                     }.bind(this))
                     .fail(function(error) {
@@ -228,8 +228,6 @@ define([], function() {
                 this.parseData(nodeWithSubNodes, newColumn);
             }
 
-            // todo call once?
-            this.scrollIfNeeded(newColumn);
         },
 
         /**
