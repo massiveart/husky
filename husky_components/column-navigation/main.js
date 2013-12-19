@@ -187,7 +187,7 @@ define([], function() {
          * @param {Number} columnNumber
          */
         parseData: function(data, columnNumber) {
-            var $column,$list, newColumn, nodeWithSubNodes = null;
+            var $column,$list, newColumn, nodeWithSubNodes = null, lastSelected = null;
 
             if (columnNumber === 0) {  // case 1: no elements in container
                 this.columns[0] = [];
@@ -213,9 +213,11 @@ define([], function() {
                     this.selected[newColumn] = value;
                 }
 
+                // needed to select node in last level of nodes
                 if(!!this.options.selected && this.options.selected === value.id) {
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
+                    lastSelected = value;
                 }
 
             }.bind(this));
@@ -225,9 +227,11 @@ define([], function() {
             this.sandbox.dom.append(this.$columnContainer, $column);
             this.filledColumns++;
 
-            // parse next column if data exists
-            if(!!nodeWithSubNodes) {
+
+            if(!!nodeWithSubNodes) { // parse next column if data exists
                 this.parseData(nodeWithSubNodes, newColumn);
+            } else if (!!lastSelected && !lastSelected.hasSub) { // append add column if no children
+                this.insertAddColumn(lastSelected, newColumn);
             }
 
         },
@@ -407,7 +411,7 @@ define([], function() {
             }
 
             // insert add column when clicked element
-            this.insertAddColumn(selectedItem);
+            this.insertAddColumn(selectedItem ,column);
 
             // scroll for add column
             if (!selectedItem.hasSub) {
@@ -416,7 +420,7 @@ define([], function() {
 
         },
 
-        insertAddColumn: function(selectedItem){
+        insertAddColumn: function(selectedItem, column){
 
             if (!this.$addColumn && !selectedItem.hasSub) {
                 // append empty column to add subpages
