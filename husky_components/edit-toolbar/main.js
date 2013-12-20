@@ -78,6 +78,14 @@ define(function() {
             ].join('')
         },
 
+        namespace = 'husky.edit-toolbar.[<< instanceName >>.]',
+
+        /**
+         * @event husky.edit-toolbar.[<< instanceName >>.]initialized
+         * @description the component has been initialized
+         */
+        INITIALIZED = namespace+'initialized',
+
         /** events bound to dom */
         bindDOMEvents = function() {
             this.sandbox.dom.on(this.options.el, 'click', toggleItem.bind(this), '.dropdown-toggle');
@@ -223,10 +231,10 @@ define(function() {
         },
 
         /**
-         * creates icon span with icon classes
+         * creates the class string of an icon
          * @param item
          * @param enabled
-         * @returns {HTMLElement|*}
+         * @returns {string}
          */
         createIconSupportClass = function(item, enabled) {
             var classArray,
@@ -327,6 +335,10 @@ define(function() {
 
         view: true,
 
+
+        /**
+         * initialize component
+         */
         initialize: function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
@@ -348,6 +360,10 @@ define(function() {
             bindCustomEvents.call(this);
         },
 
+        /**
+         * renders the toolbar
+         * @param {Object} data t
+         */
         render: function(data) {
 
             var classArray, addTo, $left, $right,

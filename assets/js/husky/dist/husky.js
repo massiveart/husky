@@ -21907,7 +21907,7 @@ define('__component__$navigation@husky',[],function() {
 
         /**
          * gets called when settings icon is clicked
-         * @emits husky.navigation.settings (name, id, parent)
+         * @emits husky.navigation.item.settings (name, id, parent)
          * @param event
          */
         settingsClicked: function(event) {
@@ -24915,6 +24915,14 @@ define('__component__$edit-toolbar@husky',[],function() {
             ].join('')
         },
 
+        namespace = 'husky.edit-toolbar.[<< instanceName >>.]',
+
+        /**
+         * @event husky.edit-toolbar[.<< instanceName >>].initialized
+         * @description the component has been initialized
+         */
+        INITIALIZED = namespace+'initialized',
+
         /** events bound to dom */
         bindDOMEvents = function() {
             this.sandbox.dom.on(this.options.el, 'click', toggleItem.bind(this), '.dropdown-toggle');
@@ -25060,10 +25068,10 @@ define('__component__$edit-toolbar@husky',[],function() {
         },
 
         /**
-         * creates icon span with icon classes
+         * creates the class string of an icon
          * @param item
          * @param enabled
-         * @returns {HTMLElement|*}
+         * @returns {string}
          */
         createIconSupportClass = function(item, enabled) {
             var classArray,
@@ -25164,6 +25172,10 @@ define('__component__$edit-toolbar@husky',[],function() {
 
         view: true,
 
+
+        /**
+         * initialize component
+         */
         initialize: function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
@@ -25185,6 +25197,10 @@ define('__component__$edit-toolbar@husky',[],function() {
             bindCustomEvents.call(this);
         },
 
+        /**
+         * renders the toolbar
+         * @param {Object} data t
+         */
         render: function(data) {
 
             var classArray, addTo, $left, $right,
@@ -25634,6 +25650,85 @@ define('__component__$auto-complete@husky',[], function() {
         }
     };
 });
+
+define('text!husky_components/auto-complete-list/main.html',[],function () { return '<div class="auto-complete-list-container">\n    <label>\n        <%= label %>\n        <div class="auto-complete-list">\n            <ul id="auto-complete-list-selections" class="auto-complete-list-selections">\n                <li class="auto-complete-list-input">\n                    <input type="text"/>\n                <li>\n            </ul>\n        </div>\n    </label>\n</div>\n';});
+
+define('text!husky_components/auto-complete-list/tag.html',[],function () { return '<li class="auto-complete-list-selection">\n    <%= name %>\n    <span class="icon-remove"></span>\n</li>\n';});
+
+define('text!husky_components/auto-complete-list/suggestions.html',[],function () { return '<div class="auto-complete-list-suggestions">\n    <h5><%= headline %></h5>\n    <ul>\n        <% _.each(suggestions, function(suggestion) { %>\n        <li><%= suggestion %></li>\n        <% }; %>\n    </ul>\n</div>\n';});
+
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/auto-complete-list
+ */
+
+/**
+ * @class AutoCompleteList
+ * @constructor
+ *
+ * @param {Object} [options] Configuration object
+ * @param {String} [options.tags]
+ * @param {String} [options.url] url to load autocomplete data
+ * @param {String} [options.suggestions]
+ * @param {String} [options.suggestionUrl] url to load suggestions
+ */
+define('__component__$auto-complete-list@husky',[
+    'text!husky_components/auto-complete-list/main.html',
+    'text!husky_components/auto-complete-list/tag.html',
+    'text!husky_components/auto-complete-list/suggestions.html'
+], function(tplMain, tplTag, tplSuggestions) {
+
+        
+
+        var defaults = {
+                tags: [],
+                url: '', // url to load autocomplete data
+                suggestions: [],
+                suggestionUrl: '' // url to load suggestions
+            },
+            eventNamespace = 'husky.auto-complete-list.',
+
+            /**
+             * @event husky.auto-complete-list.rendered
+             * @description the component has been rendered
+             */
+            RENDERED = eventNamespace + 'rendered';
+
+
+
+        return {
+
+            view: true,
+
+            initialize: function() {
+                this.sandbox.logger.log('initialize', this);
+
+                // extend default options
+                this.options = this.sandbox.util.extend({}, defaults, this.options);
+
+                this.render();
+            },
+
+            render: function() {
+
+                this.$el.html(
+                    _.template(tplMain)({
+                        label: 'Tags' // todo translate
+                    })
+                );
+
+                this.sandbox.emit(RENDERED);
+            }
+
+        };
+    }
+);
 
 /*
  * This file is part of the Sulu CMS.

@@ -288,11 +288,25 @@ module.exports = function(grunt) {
                 }
             }
         },
+
+        yuidoc: {
+            compile: {
+                name: '<%= pkg.name %>',
+                description: '<%= pkg.description %>',
+                version: '<%= pkg.version %>',
+                url: '<%= pkg.homepage %>',
+                options: {
+                    paths: ['lib/', 'husky_extensions/', 'husky_components/'],
+                    outdir: 'doc'
+                }
+            }
+        },
         connect: {
             server: {
                 options: {
                     port: 9000,
                     base: '.'
+
                 }
             }
         }

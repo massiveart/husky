@@ -208,6 +208,10 @@
                 return $(selector).closest(filter);
             };
 
+            app.core.dom.clone = function(selector) {
+                return $(selector).clone();
+            };
+
             app.core.dom.text = function(selector, value) {
                 if (!!value) {
                     $(selector).text(value);
