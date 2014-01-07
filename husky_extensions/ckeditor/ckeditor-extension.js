@@ -4,7 +4,7 @@
 
     require.config({
         paths: {
-            ckeditor: 'ckeditor',
+            ckeditor: 'husky_extensions/ckeditor/ckeditor',
             jqueryAdapter: 'husky_extensions/ckeditor/adapters/jquery'
         },
         shim: {
@@ -15,7 +15,7 @@
     });
 
 
-    define(['ckeditor'], {
+    define(['ckeditor','jqueryAdapter'], {
 
         name: 'ckeditor',
 
