@@ -54,7 +54,12 @@
                     {
                         name: 'ckeditor@husky',
                         options: {
-                            el: '#ckeditor'
+                            el: '#ckeditor',
+                            height: 400,
+                            initializedCallback: function(){
+                                app.logger.log("finished!");
+                            }
+
                         }
                     }
                 ]).then(function() {

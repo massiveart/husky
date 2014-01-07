@@ -15,7 +15,7 @@
     });
 
 
-    define(['ckeditor','jqueryAdapter'], {
+    define(['ckeditor', 'jqueryAdapter'], {
 
         name: 'ckeditor',
 
@@ -23,11 +23,12 @@
 
             app.sandbox.ckeditor = {
 
-                ckeditor: function(selector, callback) {
+                // callback when editor is ready
+                init: function(selector, callback, config) {
                     if (!!callback && typeof callback === 'function') {
-                        return $(selector).ckeditor(callback);
+                        return $(selector).ckeditor(callback, config);
                     } else {
-                        return $(selector).ckeditor();
+                        return $(selector).ckeditor(config);
                     }
                 }
             };
