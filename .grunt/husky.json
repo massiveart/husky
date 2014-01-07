@@ -14,8 +14,8 @@
             "husky-validation": "bower_components/husky-validation/dist/validation",
             "globalize_lib": "bower_components/globalize/lib/globalize",
             "uri-template": "bower_components/massiveart-uritemplate/uritemplate",
-            "ckeditor" : "bower_components/ckeditor/ckeditor",
-            "jqueryAdapter" : "bower_components/ckeditor/jquery",
+            "ckeditor" : "husky_extensions/ckeditor/ckeditor",
+            "jqueryAdapter" : "husky_extensions/ckeditor/adapters/jquery",
             "husky": "lib/husky",
 
             "__component__$navigation@husky": "husky_components/navigation/main",

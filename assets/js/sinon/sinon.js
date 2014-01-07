@@ -4009,7 +4009,7 @@ if (typeof module == "object" && typeof require == "function") {
 
 /**
  * @depend ../sinon.js
- * @depend test.js
+ * @depend ckeditor-extension.js
  */
 /*jslint eqeqeq: false, onevar: false, eqeqeq: false*/
 /*global module, require, sinon*/

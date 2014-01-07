@@ -276,12 +276,9 @@ module.exports = function(grunt) {
                     // ck editor
                     {
                         expand: true,
-                        flatten: true,
-                        src: [
-                            '.bower_components/ckeditor/ckeditor.js',
-                            '.bower_components/ckeditor/adapters/jquery.js'
-                        ],
-                        dest: 'bower_components/ckeditor/'
+                        cwd: '.bower_components/ckeditor/',
+                        src: ['**'],
+                        dest: '.husky_extensions/ckeditor/'
                     }
                 ]
             }
