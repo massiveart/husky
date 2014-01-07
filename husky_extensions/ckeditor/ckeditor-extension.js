@@ -5,7 +5,8 @@
     require.config({
         paths: {
             ckeditor: 'husky_extensions/ckeditor/ckeditor',
-            jqueryAdapter: 'husky_extensions/ckeditor/adapters/jquery'
+            jqueryAdapter: 'husky_extensions/ckeditor/adapters/jquery',
+            ckeditorConfig: 'husky_extensions/ckeditor/custom/ckeditor_config'
         },
         shim: {
             jqueryAdapter: {
@@ -15,23 +16,31 @@
     });
 
 
-    define(['ckeditor', 'jqueryAdapter'], {
+    define(['ckeditorConfig', 'ckeditor', 'jqueryAdapter'], function(ckeditorConfig, ckeditor, jqueryAdapter) {
 
-        name: 'ckeditor',
+        return {
 
-        initialize: function(app) {
+            name: 'ckeditor',
 
-            app.sandbox.ckeditor = {
+            initialize: function(app) {
 
-                // callback when editor is ready
-                init: function(selector, callback, config) {
-                    if (!!callback && typeof callback === 'function') {
-                        return $(selector).ckeditor(callback, config);
-                    } else {
-                        return $(selector).ckeditor(config);
+                app.sandbox.ckeditor = {
+
+                    // callback when editor is ready
+                    init: function(selector, callback, config) {
+
+                        var configuration = app.sandbox.util.extend(true, {}, ckeditorConfig, config);
+
+                        if (!!callback && typeof callback === 'function') {
+                            return $(selector).ckeditor(callback, configuration);
+                        } else {
+                            return $(selector).ckeditor(configuration);
+                        }
+
                     }
-                }
-            };
-        }
+                };
+            }
+
+        };
     });
 })();

@@ -36,6 +36,7 @@ define([], function() {
         delete config.ref;
         delete config._ref;
         delete config.require;
+
         return config;
     };
 
