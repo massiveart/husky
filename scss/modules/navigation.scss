@@ -1,41 +1,38 @@
 @import "../mixins.scss";
 @import "compass/css3/text-shadow";
 
-
-
-@mixin  toggle-item {
-  border-bottom: 1px solid $gray;
-  height: inherit;
-  padding-bottom: 15px;
-  margin-bottom: 10px;
+@mixin toggle-item {
+    border-bottom: 1px solid $gray;
+    height: inherit;
+    padding-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 $verticalMargin: 20px;
 $verticalItemPadding: 35px;
 
-
 .section-headline {
-  font-size: 12px;
-  padding: 2px 0 3px;
-  margin: 10px $verticalMargin 0;
-  color: $grayDark;
-  font-weight: bold;
-  cursor: default;
-  //@include text-shadow($gray 1px 1px);
+    font-size: 12px;
+    padding: 2px 0 3px;
+    margin: 10px $verticalMargin 0;
+    color: $grayDark;
+    font-weight: bold;
+    cursor: default;
+    //@include text-shadow($gray 1px 1px);
 
-  .section-toggle {
-    display: none;
-    float: right;
-    a {
-      color: $grayDark;
-    }
-  }
-
-  &:hover {
     .section-toggle {
-      display: block;
+        display: none;
+        float: right;
+        a {
+            color: $grayDark;
+        }
     }
-  }
+
+    &:hover {
+        .section-toggle {
+            display: block;
+        }
+    }
 }
 
 .navigation-container {
@@ -103,18 +100,16 @@ $verticalItemPadding: 35px;
 }
 
 li.is-active {
-  > .navigation-items-toggle a,
-  > .navigation-subitems-toggle a {
-    color: $white;
-  }
+    > .navigation-items-toggle a,
+    > .navigation-subitems-toggle a {
+        color: $white;
+    }
 
-  > div > a.navigation-settings-icon {
-    display: block;
-    color: $grayLight;
-  }
+    > div > a.navigation-settings-icon {
+        display: block;
+        color: $grayLight;
+    }
 }
-
-
 
 .navigation-items {
     padding: 0px $verticalMargin;
@@ -123,21 +118,20 @@ li.is-active {
     height: 50px;
 
     &:hover:not(.is-active) {
-      background-color: rgba(black, 0.05);
+        background-color: rgba(black, 0.05);
     }
 
     > div {
-      position: relative;
-      padding-left: 5px;
+        position: relative;
+        padding-left: 5px;
 
-      > a {
-        padding: 12px 0;
-      }
+        > a {
+            padding: 12px 0;
+        }
     }
 
-
     &.is-active {
-      background-color: #282828;
+        background-color: #282828;
     }
 
     &.is-expanded {
@@ -145,8 +139,8 @@ li.is-active {
         padding-bottom: 20px;
 
         .navigation-items-toggle {
-          @include toggle-item;
-          height:50px;
+            @include toggle-item;
+            height: 50px;
         }
 
         > ul {
@@ -155,13 +149,13 @@ li.is-active {
 
     }
 
-  &.is-selected {
-      a {
-        color: white;
-      }
-  }
+    &.is-selected {
+        a {
+            color: white;
+        }
+    }
 
-  /* sub-items */
+    /* sub-items */
     ul {
         display: none;
         font-size: 14px;
@@ -171,47 +165,48 @@ li.is-active {
 
     /* sub-sub-items */
     ul ul {
-      font-size: 12px;
-      padding-left: 20px;
+        font-size: 12px;
+        padding-left: 20px;
 
     }
-
 
     li {
         padding: 5px 0 0px 10px;
         margin: 0 0 0 -10px;
         border-radius: 4px;
         cursor: pointer;
-        height: 30px;
+        min-height: 30px;
 
         &:hover:not(.navigation-subitems) a::before {
-          font-family: $baseIconFont;
-          font-size: 11px;
-          content: "\e174";
-          display: inline-block;
-          margin-left: -15px;
-          width: 15px;
-          overflow: visible;
-          position: relative;
-          top: -1px;
+            font-family: $baseIconFont;
+            font-size: 11px;
+            content: "\e174";
+            display: inline-block;
+            margin-left: -15px;
+            width: 15px;
+            overflow: visible;
+            position: relative;
+            top: -1px;
+            line-height: 0;
         }
 
         &.is-selected {
 
             a {
-              color: white;
+                color: white;
 
-              &::before {
-                font-family: $baseIconFont;
-                font-size: 11px;
-                content: "\e174";
-                display: inline-block;
-                margin-left: -15px;
-                width: 15px;
-                overflow: visible;
-                position: relative;
-                top: -1px;
-              }
+                &::before {
+                    font-family: $baseIconFont;
+                    font-size: 11px;
+                    content: "\e174";
+                    display: inline-block;
+                    margin-left: -15px;
+                    width: 15px;
+                    overflow: visible;
+                    position: relative;
+                    top: -1px;
+                    line-height: 0;
+                }
             }
         }
 
@@ -222,31 +217,29 @@ li.is-active {
     }
 }
 
-
 .navigation-subitems {
-  &.is-expanded {
-    > ul {
-      display: block;
-    }
-    .navigation-subitems-toggle {
-      @include toggle-item;
-      //height: 38px;
-      padding-bottom: 0;
+    &.is-expanded {
+        > ul {
+            display: block;
+        }
+        .navigation-subitems-toggle {
+            @include toggle-item;
+            //height: 38px;
+            padding-bottom: 0;
+        }
+
+        li {
+            &:hover::before {
+                //font-size: 8px;
+                //height:25px;
+            }
+        }
     }
 
-    li {
-      &:hover::before {
-        //font-size: 8px;
-        //height:25px;
-      }
+    &:hover:not(.is-active):not(.is-expanded) {
+        //background-color: rgba(black,0.05);
     }
-  }
-
-  &:hover:not(.is-active):not(.is-expanded) {
-    //background-color: rgba(black,0.05);
-  }
 }
-
 
 .navigation-item {
     width: 100%;
@@ -257,15 +250,15 @@ li.is-active {
 }
 
 .navigation-item-title {
-  position: relative;
-  top: 2px;
-  padding-left: $verticalItemPadding;
+    position: relative;
+    top: 2px;
+    padding-left: $verticalItemPadding;
 }
 
 .navigation-item-icon {
     position: absolute;
     //top: -3px;
-    padding-left:3px;
+    padding-left: 3px;
     font-size: 18px;
 }
 
@@ -274,12 +267,12 @@ li.is-active {
 }
 
 li a.navigation-settings-icon {
-  width: auto;
-  position: absolute;
-  right: 20px;
-  top: 4px;
-  font-size: 14px;
-  display:none;
+    width: auto;
+    position: absolute;
+    right: 20px;
+    top: 4px;
+    font-size: 14px;
+    display: none;
 }
 
 .navigation-toggle-icon {
@@ -291,29 +284,29 @@ li a.navigation-settings-icon {
 }
 
 .navigation footer {
-  border-top: 1px solid #5B5B5B;
-  padding-top: 20px;
-  margin: 80px $verticalMargin 0 $verticalMargin + $verticalItemPadding;
-  font-size: 12px;
+    border-top: 1px solid #5B5B5B;
+    padding-top: 20px;
+    margin: 80px $verticalMargin 0 $verticalMargin + $verticalItemPadding;
+    font-size: 12px;
 
-  .version {
-    font-size: 10px;
-  }
+    .version {
+        font-size: 10px;
+    }
 
 }
 
 .navigation-subitems-toggle {
-  padding: 2px 0 2px;
-  position: relative;
-  height: 30px;
+    padding: 2px 0 2px;
+    position: relative;
+    height: 30px;
 
-  .navigation-toggle-icon {
-    top:5px;
-  }
+    .navigation-toggle-icon {
+        top: 5px;
+    }
 
-  .navigation-item {
-    padding: 0px;
-  }
+    .navigation-item {
+        padding: 0px;
+    }
 
 }
 

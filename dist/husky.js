@@ -24797,8 +24797,8 @@ define('__component__$toolbar@husky',[],function() {
                 }
 
 
-                if (!!item.class) {
-                    classArray.push(item.class);
+                if (!!item['class']) {
+                    classArray.push(item['class']);
                 }
 
                 disabledString = '';
@@ -25309,8 +25309,8 @@ define('__component__$edit-toolbar@husky',[],function() {
 
                 // create class array
                 classArray = ['edit-toolbar-item'];
-                if (!!item.class) {
-                    classArray.push(item.class);
+                if (!!item['class']) {
+                    classArray.push(item['class']);
                 }
                 if (item.disabled) {
                     classArray.push('disabled');
