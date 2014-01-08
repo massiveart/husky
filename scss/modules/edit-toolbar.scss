@@ -78,6 +78,13 @@ $editToolbarHeight: 40px;
     height: 100%;
     line-height: $editToolbarHeight;
 
+    text-align:center;
+
+    .item-loader {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
     &.disabled:hover,
     &.disabled {
         background-color: inherit;
@@ -94,9 +101,11 @@ $editToolbarHeight: 40px;
 
         &.disabled:hover,
         &.disabled {
-            background-color: #a7a7a7 !important;
+            background-color: #a7a7a7;
+            cursor: default;
             a {
-                color: $grayDark !important;
+                cursor: default;
+                color: $grayDark;
             }
         }
 
@@ -109,16 +118,6 @@ $editToolbarHeight: 40px;
 
         a {
             color: white;
-        }
-
-        &.disabled:hover,
-        &.disabled {
-            cursor: default;
-            background-color: inherit;
-            a {
-                cursor: default;
-                color: $grayLight;
-            }
         }
     }
 
@@ -254,3 +253,13 @@ $editToolbarHeight: 40px;
     }
 
 }
+
+$higlightAnimationDuration: 1500ms;
+
+.highlight-animation {
+    -webkit-animation: HIGHLIGHT-ANIMATION $higlightAnimationDuration; /* Safari 4+ */
+    -moz-animation:    HIGHLIGHT-ANIMATION $higlightAnimationDuration; /* Fx 5+ */
+    -o-animation:      HIGHLIGHT-ANIMATION $higlightAnimationDuration; /* Opera 12+ */
+    animation:         HIGHLIGHT-ANIMATION $higlightAnimationDuration; /* IE 10+ */
+}
+

@@ -8,12 +8,13 @@
 @import
     "variables.scss",
     "normalize.scss",
-    "utilities.scss";
+    "animations.scss",
+    "utilities.scss",
+    "typo.scss";
 
 
 // Husky Modules
 @import
-    "typo.scss",
     "modules/glyphicons.scss",
     "modules/icons.scss",
     "modules/core.scss",

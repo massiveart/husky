@@ -20,7 +20,7 @@
     </head>
     <body>
         <div id="content">
-            <div data-aura-component="loader@husky" data-aura-size="20px" data-aura-color="#f00" data-aura-hidden="true"></div>
+            <div data-aura-component="loader@husky" data-aura-size="60px" data-aura-color="#f00" data-aura-hidden="true"></div>
         </div>
 
 
@@ -48,7 +48,7 @@
                     app.sandbox.on('husky.loader.initialized', function() {
                         // show it
                         app.sandbox.emit('husky.loader.show');
-                        app.sandbox.emit('husky.loader.hide');
+//                        app.sandbox.emit('husky.loader.hide');
                     });
                 });
 
