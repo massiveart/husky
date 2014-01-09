@@ -38,20 +38,23 @@ define(function() {
         namespace = 'husky.loader.',
 
         /**
+         * makes loader visible
+         *
          * @event husky.loader.show
-         * @description makes loader visible
          */
         SHOW = namespace + 'show',
 
         /**
+         * hides the loader
+         *
          * @event husky.loader.hide
-         * @description hides the loader
          */
         HIDE = namespace + 'hide',
 
         /**
+         * called when loader is initialized
+         *
          * @event husky.loader.initialized
-         * @description called when loader is initialized
          */
         INITIALIZED = namespace + 'initialized',
 

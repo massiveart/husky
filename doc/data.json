@@ -67,6 +67,15 @@
             "fors": {},
             "namespaces": {}
         },
+        "husky_components/loader/main.js": {
+            "name": "husky_components/loader/main.js",
+            "modules": {},
+            "classes": {
+                "Loader": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
         "husky_components/navigation/main.js": {
             "name": "husky_components/navigation/main.js",
             "modules": {},
@@ -149,13 +158,14 @@
             "name": "husky/components/edit-toolbar",
             "submodules": {},
             "classes": {
-                "EditToolbar": 1
+                "EditToolbar": 1,
+                "Loader": 1
             },
             "fors": {},
             "namespaces": {},
             "tag": "module",
-            "file": "husky_components/edit-toolbar/main.js",
-            "line": 48,
+            "file": "husky_components/loader/main.js",
+            "line": 20,
             "description": "This file is part of Husky frontend development framework.\n\n(c) MASSIVE ART WebServices GmbH\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE."
         },
         "husky/components/page-functions": {
@@ -293,7 +303,7 @@
             "module": "husky/components/edit-toolbar",
             "namespace": "",
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 48,
+            "line": 49,
             "is_constructor": 1,
             "params": [
                 {
@@ -323,6 +333,42 @@
                         {
                             "name": "appearance",
                             "description": "",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ]
+        },
+        "Loader": {
+            "name": "Loader",
+            "shortname": "Loader",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "husky/components/edit-toolbar",
+            "namespace": "",
+            "file": "husky_components/loader/main.js",
+            "line": 20,
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "options",
+                    "description": "Configuration object",
+                    "type": "Object",
+                    "optional": true,
+                    "props": [
+                        {
+                            "name": "size",
+                            "description": "size of the spinner",
+                            "type": "String",
+                            "optional": true
+                        },
+                        {
+                            "name": "color",
+                            "description": "color of the spinner",
                             "type": "String",
                             "optional": true
                         }
@@ -1129,40 +1175,94 @@
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 69,
+            "line": 70,
             "class": "EditToolbar",
             "module": "husky/components/edit-toolbar"
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
             "line": 83,
+            "description": "triggered when edit-toolbar is initialized and ready to use",
             "itemtype": "event",
-            "name": "asdf",
-            "description": "the component has been initialized",
+            "name": "husky.edit-toolbar.[INSTANCE_NAME.]initialized",
             "class": "EditToolbar",
             "module": "husky/components/edit-toolbar"
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 89,
+            "line": 92,
+            "description": "enable a button",
+            "itemtype": "event",
+            "name": "husky.edit-toolbar.[INSTANCE_NAME.]item.enable",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "The id of the button which should be enabled",
+                    "type": "String"
+                }
+            ],
             "class": "EditToolbar",
             "module": "husky/components/edit-toolbar"
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 95,
+            "line": 102,
+            "description": "disable a button",
+            "itemtype": "event",
+            "name": "husky.edit-toolbar.[INSTANCE_NAME.]item.disable",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "The id of the button which should be disabled",
+                    "type": "String"
+                }
+            ],
             "class": "EditToolbar",
             "module": "husky/components/edit-toolbar"
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 105,
+            "line": 112,
+            "description": "event to set button into loading state",
+            "itemtype": "event",
+            "name": "husky.edit-toolbar.[INSTANCE_NAME.]item.loading",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "The id of the button",
+                    "type": "String"
+                }
+            ],
             "class": "EditToolbar",
             "module": "husky/components/edit-toolbar"
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 126,
+            "line": 122,
+            "class": "EditToolbar",
+            "module": "husky/components/edit-toolbar"
+        },
+        {
+            "file": "husky_components/edit-toolbar/main.js",
+            "line": 128,
+            "class": "EditToolbar",
+            "module": "husky/components/edit-toolbar"
+        },
+        {
+            "file": "husky_components/edit-toolbar/main.js",
+            "line": 141,
+            "class": "EditToolbar",
+            "module": "husky/components/edit-toolbar"
+        },
+        {
+            "file": "husky_components/edit-toolbar/main.js",
+            "line": 181,
+            "class": "EditToolbar",
+            "module": "husky/components/edit-toolbar"
+        },
+        {
+            "file": "husky_components/edit-toolbar/main.js",
+            "line": 209,
             "description": "gets called when toggle item is clicked\nopens dropdown submenu",
             "params": [
                 {
@@ -1175,14 +1275,14 @@
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 158,
+            "line": 241,
             "description": "hides dropdowns of this instance",
             "class": "EditToolbar",
             "module": "husky/components/edit-toolbar"
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 165,
+            "line": 248,
             "description": "when an element gets selected\ngets item from items array and delegates to triggerSelectEvent function",
             "params": [
                 {
@@ -1195,7 +1295,7 @@
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 187,
+            "line": 270,
             "description": "either calls items callback (if set) or triggers select event",
             "params": [
                 {
@@ -1212,7 +1312,7 @@
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 212,
+            "line": 295,
             "description": "changes the list items icon and title",
             "params": [
                 {
@@ -1229,7 +1329,7 @@
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 233,
+            "line": 316,
             "description": "creates the class string of an icon",
             "params": [
                 {
@@ -1250,7 +1350,7 @@
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 259,
+            "line": 342,
             "description": "returns valid class for item and state",
             "params": [
                 {
@@ -1267,7 +1367,7 @@
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 272,
+            "line": 355,
             "description": "created dropdown menu",
             "params": [
                 {
@@ -1284,7 +1384,7 @@
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 301,
+            "line": 384,
             "description": "function checks if id is set and unique among all items\notherwise a new id is generated for the element",
             "params": [
                 {
@@ -1297,26 +1397,26 @@
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 319,
+            "line": 402,
             "class": "EditToolbar",
             "module": "husky/components/edit-toolbar"
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 329,
+            "line": 412,
             "class": "EditToolbar",
             "module": "husky/components/edit-toolbar"
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 339,
+            "line": 422,
             "description": "initialize component",
             "class": "EditToolbar",
             "module": "husky/components/edit-toolbar"
         },
         {
             "file": "husky_components/edit-toolbar/main.js",
-            "line": 363,
+            "line": 446,
             "description": "renders the toolbar",
             "params": [
                 {
@@ -1326,6 +1426,40 @@
                 }
             ],
             "class": "EditToolbar",
+            "module": "husky/components/edit-toolbar"
+        },
+        {
+            "file": "husky_components/loader/main.js",
+            "line": 1,
+            "description": "Loader\n  makes use of bouncing balls of http://tobiasahlin.com/spinkit/\nOptions (defaults)\n      - size: size of element\n      - color: color of bouncers\n      - hidden: hide component on load\n  Provides Events\n      - husky.loader.show - shows loader\n      - husky.loader.hide - hides loader\nTODO: write tests",
+            "class": "Loader",
+            "module": "husky/components/edit-toolbar"
+        },
+        {
+            "file": "husky_components/loader/main.js",
+            "line": 40,
+            "itemtype": "event",
+            "name": "husky.loader.show",
+            "description": "makes loader visible",
+            "class": "Loader",
+            "module": "husky/components/edit-toolbar"
+        },
+        {
+            "file": "husky_components/loader/main.js",
+            "line": 46,
+            "itemtype": "event",
+            "name": "husky.loader.hide",
+            "description": "hides the loader",
+            "class": "Loader",
+            "module": "husky/components/edit-toolbar"
+        },
+        {
+            "file": "husky_components/loader/main.js",
+            "line": 52,
+            "itemtype": "event",
+            "name": "husky.loader.initialized",
+            "description": "called when loader is initialized",
+            "class": "Loader",
             "module": "husky/components/edit-toolbar"
         },
         {
@@ -1629,7 +1763,7 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/edit-toolbar/main.js:233"
+            "line": " husky_components/edit-toolbar/main.js:316"
         },
         {
             "message": "unknown tag: emits",
@@ -1849,71 +1983,79 @@
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/edit-toolbar/main.js:69"
+            "line": " husky_components/edit-toolbar/main.js:70"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/edit-toolbar/main.js:89"
+            "line": " husky_components/edit-toolbar/main.js:122"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/edit-toolbar/main.js:95"
+            "line": " husky_components/edit-toolbar/main.js:128"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/edit-toolbar/main.js:105"
+            "line": " husky_components/edit-toolbar/main.js:141"
+        },
+        {
+            "message": "Missing item type",
+            "line": " husky_components/edit-toolbar/main.js:181"
         },
         {
             "message": "Missing item type\ngets called when toggle item is clicked\nopens dropdown submenu",
-            "line": " husky_components/edit-toolbar/main.js:126"
+            "line": " husky_components/edit-toolbar/main.js:209"
         },
         {
             "message": "Missing item type\nhides dropdowns of this instance",
-            "line": " husky_components/edit-toolbar/main.js:158"
+            "line": " husky_components/edit-toolbar/main.js:241"
         },
         {
             "message": "Missing item type\nwhen an element gets selected\ngets item from items array and delegates to triggerSelectEvent function",
-            "line": " husky_components/edit-toolbar/main.js:165"
+            "line": " husky_components/edit-toolbar/main.js:248"
         },
         {
             "message": "Missing item type\neither calls items callback (if set) or triggers select event",
-            "line": " husky_components/edit-toolbar/main.js:187"
+            "line": " husky_components/edit-toolbar/main.js:270"
         },
         {
             "message": "Missing item type\nchanges the list items icon and title",
-            "line": " husky_components/edit-toolbar/main.js:212"
+            "line": " husky_components/edit-toolbar/main.js:295"
         },
         {
             "message": "Missing item type\ncreates the class string of an icon",
-            "line": " husky_components/edit-toolbar/main.js:233"
+            "line": " husky_components/edit-toolbar/main.js:316"
         },
         {
             "message": "Missing item type\nreturns valid class for item and state",
-            "line": " husky_components/edit-toolbar/main.js:259"
+            "line": " husky_components/edit-toolbar/main.js:342"
         },
         {
             "message": "Missing item type\ncreated dropdown menu",
-            "line": " husky_components/edit-toolbar/main.js:272"
+            "line": " husky_components/edit-toolbar/main.js:355"
         },
         {
             "message": "Missing item type\nfunction checks if id is set and unique among all items\notherwise a new id is generated for the element",
-            "line": " husky_components/edit-toolbar/main.js:301"
+            "line": " husky_components/edit-toolbar/main.js:384"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/edit-toolbar/main.js:319"
+            "line": " husky_components/edit-toolbar/main.js:402"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/edit-toolbar/main.js:329"
+            "line": " husky_components/edit-toolbar/main.js:412"
         },
         {
             "message": "Missing item type\ninitialize component",
-            "line": " husky_components/edit-toolbar/main.js:339"
+            "line": " husky_components/edit-toolbar/main.js:422"
         },
         {
             "message": "Missing item type\nrenders the toolbar",
-            "line": " husky_components/edit-toolbar/main.js:363"
+            "line": " husky_components/edit-toolbar/main.js:446"
+        },
+        {
+            "message": "Missing item type\nLoader\n  makes use of bouncing balls of http://tobiasahlin.com/spinkit/\nOptions (defaults)\n      - size: size of element\n      - color: color of bouncers\n      - hidden: hide component on load\n  Provides Events\n      - husky.loader.show - shows loader\n      - husky.loader.hide - hides loader\nTODO: write tests",
+            "line": " husky_components/loader/main.js:1"
         },
         {
             "message": "Missing item type",

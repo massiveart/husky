@@ -4,6 +4,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "AutoCompleteList",
         "ColumnNavigation",
         "EditToolbar",
+        "Loader",
         "PageFunctions",
         "Toolbar"
     ],

@@ -81,35 +81,39 @@ define(function() {
 
 
         /**
-         * @event husky.edit-toolbar.[<< instanceName >>.]initialized
-         * @description the component has been initialized
+         * triggered when edit-toolbar is initialized and ready to use
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]initialized
          */
         INITIALIZED = function() {
             return createEventName.call(this, 'initialized');
         },
 
         /**
-         * @event husky.edit-toolbar.[<< instanceName >>.]item.enable
-         * @
-         * @description enable a certain button with id
+         * enable a button
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]item.enable
+         * @param {string} id The id of the button which should be enabled
          */
         ITEM_ENABLE = function() {
             return createEventName.call(this, 'item.enable');
         },
 
         /**
-         * @event husky.edit-toolbar.[<< instanceName >>.]item.disable
-         * @
-         * @description enable a certain button with id
+         * disable a button
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]item.disable
+         * @param {string} id The id of the button which should be disabled
          */
         ITEM_DISABLE = function() {
             return createEventName.call(this, 'item.disable');
         },
 
         /**
-         * @event husky.edit-toolbar.[<< instanceName >>.]item.disable
-         * @
-         * @description enable a certain button with id
+         * event to set button into loading state
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]item.loading
+         * @param {string} id The id of the button
          */
         ITEM_LOADING = function() {
             return createEventName.call(this, 'item.loading');
