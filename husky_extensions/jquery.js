@@ -180,6 +180,10 @@
                 $(selector).off(event, filter, handler);
             };
 
+            app.core.dom.trigger = function(selector, event, extraParam) {
+                $(selector).off(event, extraParam);
+            };
+
             app.core.dom.toggleClass = function(selector, className) {
                 $(selector).toggleClass(className);
             };
