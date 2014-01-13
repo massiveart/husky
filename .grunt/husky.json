@@ -16,7 +16,6 @@
             "uri-template": "bower_components/massiveart-uritemplate/uritemplate",
             "ckeditor" : "bower_components/ckeditor/ckeditor",
             "jqueryAdapter" : "bower_components/ckeditor/adapters/jquery",
-            "ckeditorConfig" : "bower_components/ckeditor/custom/ckeditor_config",
             "husky": "lib/husky",
 
             "__component__$navigation@husky": "husky_components/navigation/main",
@@ -60,7 +59,6 @@
             "globalize_lib",
             "ckeditor",
             "jqueryAdapter",
-            "ckeditorConfig",
             "uri-template",
 
             "husky",

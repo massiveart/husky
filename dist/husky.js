@@ -20872,47 +20872,6 @@ return!1},null,null,20);if(e.config.autoUpdateElementJquery&&b.is("textarea")&&a
 return!0}return g.call(b,d)});if(i.length){var b=new a.Deferred;a.when.apply(this,i).done(function(){b.resolveWith(k)});return b.promise()}return f}var f=a(this).eq(0),c=f.data("ckeditorInstance");return f.is("textarea")&&c?c.getData():g.call(f)}})))})(window.jQuery);
 define("jqueryAdapter", function(){});
 
-/**
- * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
- */
-
-define('ckeditorConfig',[], function() {
-
-    
-
-    return {
-
-        toolbarGroups: [
-            { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
-            { name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ] },
-            { name: 'links' },
-            { name: 'insert' },
-            { name: 'forms' },
-            { name: 'tools' },
-            { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
-            { name: 'others' },
-            '/',
-            { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-            { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
-            { name: 'styles' },
-            { name: 'colors' },
-            { name: 'about' }
-        ],
-
-        // Remove some buttons, provided by the standard plugins, which we don't
-        // need to have in the Standard(s) toolbar.
-        removeButtons: 'Underline,Subscript,Superscript',
-
-        // Se the most common block elements.
-//        format_tags: 'p;h1;h2;h3;pre',
-
-        // Make dialogs simpler.
-        removeDialogTabs: 'image:advanced;link:advanced'
-
-    };
-});
-
 /*global unescape, module, define, window, global*/
 
 /*
@@ -27665,7 +27624,6 @@ define('__component__$ckeditor@husky',[], function() {
 
     var defaults = {
             initializedCallback: null,
-
             height: 200,
             defaultLanguage: 'de'
         },
@@ -27673,6 +27631,7 @@ define('__component__$ckeditor@husky',[], function() {
 
     getConfig = function() {
         var config = this.sandbox.util.extend(false, {}, this.options);
+
         delete config.initializedCallback;
         delete config.baseUrl;
         delete config.el;
@@ -27680,6 +27639,7 @@ define('__component__$ckeditor@husky',[], function() {
         delete config.ref;
         delete config._ref;
         delete config.require;
+        delete config.element;
 
         return config;
     };
@@ -27807,8 +27767,7 @@ define('__component__$ckeditor@husky',[], function() {
     require.config({
         paths: {
             ckeditor: 'bower_components/ckeditor/ckeditor',
-            jqueryAdapter: 'bower_components/ckeditor/adapters/jquery',
-            ckeditorConfig: 'bower_components/ckeditor/custom/ckeditor_config'
+            jqueryAdapter: 'bower_components/ckeditor/adapters/jquery'
         },
         shim: {
             jqueryAdapter: {
@@ -27817,9 +27776,29 @@ define('__component__$ckeditor@husky',[], function() {
         }
     });
 
+    define('husky_extensions/ckeditor-extension',['ckeditor', 'jqueryAdapter'], function() {
 
-
-    define('husky_extensions/ckeditor-extension',['ckeditorConfig','ckeditor', 'jqueryAdapter'], function(ckeditorConfig) {
+        var getConfig = function() {
+            return {toolbarGroups: [
+                { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+                { name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ] },
+                { name: 'links' },
+                { name: 'insert' },
+                { name: 'forms' },
+                { name: 'tools' },
+                { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+                { name: 'others' },
+                '/',
+                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+                { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+                { name: 'styles' },
+                { name: 'colors' },
+                { name: 'about' }
+            ],
+                removeButtons: '',
+                removeDialogTabs: 'image:advanced;link:advanced'
+            };
+        };
 
         return {
 
@@ -27832,7 +27811,7 @@ define('__component__$ckeditor@husky',[], function() {
                     // callback when editor is ready
                     init: function(selector, callback, config) {
 
-                        var configuration = app.sandbox.util.extend(true, {}, ckeditorConfig, config);
+                        var configuration = app.sandbox.util.extend(true, {}, getConfig.call(), config);
 
                         if (!!callback && typeof callback === 'function') {
                             return $(selector).ckeditor(callback, configuration);
@@ -27845,6 +27824,8 @@ define('__component__$ckeditor@husky',[], function() {
             }
 
         };
+
+
     });
 })();
 
