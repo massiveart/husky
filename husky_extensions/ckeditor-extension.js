@@ -4,8 +4,8 @@
 
     require.config({
         paths: {
-            ckeditor: 'ckeditor/ckeditor',
-            jqueryAdapter: 'ckeditor/adapters/jquery'
+            ckeditor: 'vendor/ckeditor/ckeditor',
+            jqueryAdapter: 'vendor/ckeditor/adapters/jquery'
         },
         shim: {
             jqueryAdapter: {
@@ -25,10 +25,12 @@
                 { name: 'code', items: [ 'Source'] }
             ],
                 removeButtons: '',
-                removePlugins: 'fakeobjects,scayt,wsc,dialog, a11yhelp, magicline,link,specialchar, table, tabletools, image,about,pastefromword,pastetext,clipboard',
+                removePlugins: 'elementspath, fakeobjects,scayt,wsc,dialog, a11yhelp, magicline,link,specialchar, table, tabletools, image,about,pastefromword,pastetext,clipboard',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify'
-//                skin: 'husky'
+                extraPlugins: 'justify',
+                resize_enabled: false,
+                uiColor: '#ffffff',
+                skin: 'husky'
             };
         };
 

@@ -27780,8 +27780,8 @@ define('__component__$ckeditor@husky',[], function() {
 
     require.config({
         paths: {
-            ckeditor: 'bower_components/ckeditor-dev/ckeditor',
-            jqueryAdapter: 'bower_components/ckeditor-dev/adapters/jquery'
+            ckeditor: 'vendor/ckeditor/ckeditor',
+            jqueryAdapter: 'vendor/ckeditor/adapters/jquery'
         },
         shim: {
             jqueryAdapter: {
@@ -27801,10 +27801,12 @@ define('__component__$ckeditor@husky',[], function() {
                 { name: 'code', items: [ 'Source'] }
             ],
                 removeButtons: '',
-                removePlugins: 'fakeobjects,scayt,wsc,dialog, a11yhelp, magicline,link,specialchar, table, tabletools, image,about,pastefromword,pastetext,clipboard',
+                removePlugins: 'elementspath, fakeobjects,scayt,wsc,dialog, a11yhelp, magicline,link,specialchar, table, tabletools, image,about,pastefromword,pastetext,clipboard',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify'
-//                skin: 'husky'
+                extraPlugins: 'justify',
+                resize_enabled: false,
+                uiColor: '#ffffff',
+                skin: 'husky'
             };
         };
 
