@@ -20872,6 +20872,47 @@ return!1},null,null,20);if(e.config.autoUpdateElementJquery&&b.is("textarea")&&a
 return!0}return g.call(b,d)});if(i.length){var b=new a.Deferred;a.when.apply(this,i).done(function(){b.resolveWith(k)});return b.promise()}return f}var f=a(this).eq(0),c=f.data("ckeditorInstance");return f.is("textarea")&&c?c.getData():g.call(f)}})))})(window.jQuery);
 define("jqueryAdapter", function(){});
 
+/**
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or http://ckeditor.com/license
+ */
+
+define('ckeditorConfig',[], function() {
+
+    
+
+    return {
+
+        toolbarGroups: [
+            { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+            { name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ] },
+            { name: 'links' },
+            { name: 'insert' },
+            { name: 'forms' },
+            { name: 'tools' },
+            { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+            { name: 'others' },
+            '/',
+            { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+            { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+            { name: 'styles' },
+            { name: 'colors' },
+            { name: 'about' }
+        ],
+
+        // Remove some buttons, provided by the standard plugins, which we don't
+        // need to have in the Standard(s) toolbar.
+        removeButtons: 'Underline,Subscript,Superscript',
+
+        // Se the most common block elements.
+//        format_tags: 'p;h1;h2;h3;pre',
+
+        // Make dialogs simpler.
+        removeDialogTabs: 'image:advanced;link:advanced'
+
+    };
+});
+
 /*global unescape, module, define, window, global*/
 
 /*
@@ -22561,7 +22602,7 @@ define('husky',[
         app.use('./husky_extensions/template');
         app.use('./husky_extensions/globalize');
         app.use('./husky_extensions/uri-template');
-        app.use('./husky_extensions/ckeditor');
+        app.use('./husky_extensions/ckeditor-extension');
 
     }
 
@@ -27623,37 +27664,36 @@ define('__component__$ckeditor@husky',[], function() {
     
 
     var defaults = {
+            initializedCallback: null,
 
-        };
+            height: 200,
+            defaultLanguage: 'de'
+        },
+
+
+    getConfig = function() {
+        var config = this.sandbox.util.extend(false, {}, this.options);
+        delete config.initializedCallback;
+        delete config.baseUrl;
+        delete config.el;
+        delete config.name;
+        delete config.ref;
+        delete config._ref;
+        delete config.require;
+
+        return config;
+    };
 
     return {
 
         initialize: function() {
-
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
-
-            this.render();
-        },
-
-        /**
-         * Renders basic structure (wrapper) of column navigation
-         */
-        render: function() {
-
-//            this.sandbox.ckeditor.ckeditor(this.$el);
-
-        },
-
-
-
-        /**
-         * Templates for various parts
-         */
-        template: {
-
-
+            var config = getConfig.call(this);
+            this.$ckeditor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
         }
+
     };
+
 });
 
 (function() {
@@ -27767,7 +27807,8 @@ define('__component__$ckeditor@husky',[], function() {
     require.config({
         paths: {
             ckeditor: 'bower_components/ckeditor/ckeditor',
-            jqueryAdapter: 'bower_components/ckeditor/adapters/jquery'
+            jqueryAdapter: 'bower_components/ckeditor/adapters/jquery',
+            ckeditorConfig: 'bower_components/ckeditor/custom/ckeditor_config'
         },
         shim: {
             jqueryAdapter: {
@@ -27776,9 +27817,11 @@ define('__component__$ckeditor@husky',[], function() {
         }
     });
 
-    define('husky_extensions/ckeditor',['ckeditor', 'jqueryAdapter'], function() {
 
-        return  {
+
+    define('husky_extensions/ckeditor-extension',['ckeditorConfig','ckeditor', 'jqueryAdapter'], function(ckeditorConfig) {
+
+        return {
 
             name: 'ckeditor',
 
@@ -27786,17 +27829,21 @@ define('__component__$ckeditor@husky',[], function() {
 
                 app.sandbox.ckeditor = {
 
-                    ckeditor: function(selector, callback) {
-                        if(!!callback && typeof callback === 'function') {
-                            return $(selector).ckeditor(callback);
+                    // callback when editor is ready
+                    init: function(selector, callback, config) {
+
+                        var configuration = app.sandbox.util.extend(true, {}, ckeditorConfig, config);
+
+                        if (!!callback && typeof callback === 'function') {
+                            return $(selector).ckeditor(callback, configuration);
                         } else {
-                            return $(selector).ckeditor();
+                            return $(selector).ckeditor(configuration);
                         }
+
                     }
-
                 };
-
             }
+
         };
     });
 })();

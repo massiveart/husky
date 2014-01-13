@@ -4,9 +4,9 @@
 
     require.config({
         paths: {
-            ckeditor: 'husky_extensions/ckeditor/ckeditor',
-            jqueryAdapter: 'husky_extensions/ckeditor/adapters/jquery',
-            ckeditorConfig: 'husky_extensions/ckeditor/custom/ckeditor_config'
+            ckeditor: 'bower_components/ckeditor/ckeditor',
+            jqueryAdapter: 'bower_components/ckeditor/adapters/jquery',
+            ckeditorConfig: 'bower_componentsgit/ckeditor/custom/ckeditor_config'
         },
         shim: {
             jqueryAdapter: {
@@ -16,7 +16,8 @@
     });
 
 
-    define(['ckeditorConfig', 'ckeditor', 'jqueryAdapter'], function(ckeditorConfig, ckeditor, jqueryAdapter) {
+
+    define(['ckeditorConfig','ckeditor', 'jqueryAdapter'], function(ckeditorConfig) {
 
         return {
 

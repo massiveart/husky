@@ -278,7 +278,7 @@ module.exports = function(grunt) {
                         expand: true,
                         cwd: '.bower_components/ckeditor/',
                         src: ['**'],
-                        dest: '.husky_extensions/ckeditor/'
+                        dest: 'bower_components/ckeditor/'
                     }
                 ]
             }

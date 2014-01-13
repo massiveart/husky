@@ -31,7 +31,7 @@ define([], function() {
         removeButtons: 'Underline,Subscript,Superscript',
 
         // Se the most common block elements.
-        format_tags: 'p;h1;h2;h3;pre',
+//        format_tags: 'p;h1;h2;h3;pre',
 
         // Make dialogs simpler.
         removeDialogTabs: 'image:advanced;link:advanced'

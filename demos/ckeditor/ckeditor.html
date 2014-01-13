@@ -29,7 +29,7 @@
 <body>
 
 <div id="content" class="grid">
-    <textarea id="ckeditor"></textarea>
+    <textarea id="ckeditor" data-aura-component="ckeditor@husky" data-aura-height="200"></textarea>
 </div>
 
 
@@ -50,22 +50,11 @@
         var app = Husky({ debug: { enable: true }}),
                 _ = app.sandbox.util._;
 
-        app.start([
-                    {
-                        name: 'ckeditor@husky',
-                        options: {
-                            el: '#ckeditor',
-                            initializedCallback: function(){
-                                app.logger.log("finished!");
-                            },
-                            height: 500
+        app.start().then(function() {
+            app.logger.log('Aura started...');
 
-                        }
-                    }
-                ]).then(function() {
-                    app.logger.log('Aura started...');
+        });
 
-                });
     });
 </script>
 
