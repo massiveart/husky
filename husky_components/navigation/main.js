@@ -147,7 +147,15 @@ define(function() {
 
             // start search component
             this.sandbox.start([
-                {name: 'search@husky', options: {el: '#navigation-search'}}
+                {
+                    name: 'search@husky',
+                    options: {
+                        el: '#navigation-search',
+                        searchOptions: {
+                            placeholderText: 'public.search'
+                        }
+                    }
+                }
             ]);
 
             // render navigation items
