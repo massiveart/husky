@@ -17,24 +17,18 @@
     define(['ckeditor', 'jqueryAdapter'], function() {
 
         var getConfig = function() {
-            return {toolbarGroups: [
-                { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
-                { name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ] },
-                { name: 'links' },
-                { name: 'insert' },
-                { name: 'forms' },
-                { name: 'tools' },
-                { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
-                { name: 'others' },
-                '/',
-                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-                { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
-                { name: 'styles' },
-                { name: 'colors' },
-                { name: 'about' }
+            return {toolbar: [
+                { name: 'fontsize', items: [ 'FontSize', ''] },
+                { name: 'basicstyles', items: [ 'Superscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
+                { name: 'blockstyles', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                { name: 'list', items: [ 'BulletedList'] },
+                { name: 'code', items: [ 'Source'] }
             ],
                 removeButtons: '',
-                removeDialogTabs: 'image:advanced;link:advanced'
+                removePlugins: 'fakeobjects,scayt,wsc,dialog, a11yhelp, magicline,link,specialchar, table, tabletools, image,about,pastefromword,pastetext,clipboard',
+                removeDialogTabs: 'image:advanced;link:advanced',
+                extraPlugins: 'justify'
+//                skin: 'husky'
             };
         };
 
