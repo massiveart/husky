@@ -151,9 +151,7 @@ define(function() {
                     name: 'search@husky',
                     options: {
                         el: '#navigation-search',
-                        searchOptions: {
-                            placeholderText: 'public.search'
-                        }
+                        placeholderText: 'public.search'
                     }
                 }
             ]);

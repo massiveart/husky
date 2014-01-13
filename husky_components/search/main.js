@@ -55,7 +55,7 @@ define([], function() {
         render: function() {
             this.sandbox.dom.addClass(this.options.el, 'search-container');
             this.sandbox.dom.addClass(this.options.el, this.options.appearance);
-            this.sandbox.dom.html(this.$el,this.sandbox.template.parse(templates.skeleton, {placeholderText: this.options.placeholderText}));
+            this.sandbox.dom.html(this.$el,this.sandbox.template.parse(templates.skeleton, {placeholderText: this.sandbox.translate(this.options.placeholderText)}));
         },
 
         // bind dom elements
