@@ -6,7 +6,7 @@
         paths: {
             ckeditor: 'bower_components/ckeditor/ckeditor',
             jqueryAdapter: 'bower_components/ckeditor/adapters/jquery',
-            ckeditorConfig: 'bower_componentsgit/ckeditor/custom/ckeditor_config'
+            ckeditorConfig: 'bower_components/ckeditor/custom/ckeditor_config'
         },
         shim: {
             jqueryAdapter: {
@@ -14,8 +14,6 @@
             }
         }
     });
-
-
 
     define(['ckeditorConfig','ckeditor', 'jqueryAdapter'], function(ckeditorConfig) {
 

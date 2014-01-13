@@ -21,7 +21,6 @@ define([], function() {
 
     var defaults = {
             initializedCallback: null,
-
             height: 200,
             defaultLanguage: 'de'
         },
@@ -29,6 +28,7 @@ define([], function() {
 
     getConfig = function() {
         var config = this.sandbox.util.extend(false, {}, this.options);
+
         delete config.initializedCallback;
         delete config.baseUrl;
         delete config.el;
@@ -36,6 +36,7 @@ define([], function() {
         delete config.ref;
         delete config._ref;
         delete config.require;
+        delete config.element;
 
         return config;
     };
