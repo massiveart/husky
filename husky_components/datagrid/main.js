@@ -75,7 +75,8 @@ define(function() {
         sortable: false,
         tableHead: [],
         url: null,
-        appendTBody: true   // add TBODY to table
+        appendTBody: true,   // add TBODY to table
+        searchInstanceName: null // at which search it should be listened to can be null|string|empty_string
     };
 
 
@@ -872,6 +873,7 @@ define(function() {
         },
 
         bindCustomEvents: function() {
+            var searchInstanceName;
 
             // listen for private events
             this.sandbox.on('husky.datagrid.update', this.updateHandler.bind(this));
@@ -885,6 +887,16 @@ define(function() {
             this.sandbox.on('husky.datagrid.items.get-selected', this.getSelectedItemsIds.bind(this));
 
             this.sandbox.on('husky.datagrid.data.get', this.provideData.bind(this));
+
+            // listen to search events
+            if (!!this.options.searchInstanceName) {
+                if (this.options.searchInstanceName === '') {
+                    searchInstanceName = '';
+                } else {
+                    searchInstanceName = '.'+this.options.searchInstanceName;
+                }
+            }
+            this.sandbox.on('husky.search'+searchInstanceName, this.triggerSearch.bind(this));
         },
 
         provideData: function() {
@@ -908,6 +920,27 @@ define(function() {
                     this.sandbox.emit('husky.datagrid.updated', 'updated data 123');
                 }.bind(this)
             });
+        },
+
+        /**
+         * this will trigger a api search
+         */
+        triggerSearch: function(searchString) {
+
+            var template, url;
+
+            this.addLoader();
+            template = this.sandbox.uritemplate.parse(this.data.links.find);
+            url = this.sandbox.uritemplate.expand(template, {searchString: searchString});
+
+            this.load({
+                url: url,
+                success: function () {
+                    this.removeLoader();
+                    this.sandbox.emit('husky.datagrid.updated', 'updated search');
+                }.bind(this)
+            });
+
         },
 
         /**
