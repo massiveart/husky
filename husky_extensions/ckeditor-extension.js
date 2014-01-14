@@ -17,17 +17,18 @@
     define(['ckeditor', 'jqueryAdapter'], function() {
 
         var getConfig = function() {
-            return {toolbar: [
-                { name: 'fontsize', items: [ 'FontSize', ''] },
-                { name: 'basicstyles', items: [ 'Superscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
-                { name: 'blockstyles', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-                { name: 'list', items: [ 'BulletedList'] },
-                { name: 'code', items: [ 'Source'] }
-            ],
+            return {
+                toolbar: [
+                    { name: 'fontsize', items: [ 'decreasefontsize','increasefontsize'] },
+                    { name: 'basicstyles', items: [ 'Superscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
+                    { name: 'blockstyles', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                    { name: 'list', items: [ 'BulletedList'] },
+                    { name: 'code', items: [ 'Source'] }
+                ],
                 removeButtons: '',
                 removePlugins: 'elementspath, fakeobjects,scayt,wsc,dialog, a11yhelp, magicline,link,specialchar, table, tabletools, image,about,pastefromword,pastetext,clipboard',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify',
+                extraPlugins: 'justify,fontsize',
                 resize_enabled: false,
                 uiColor: '#ffffff',
                 skin: 'husky'
