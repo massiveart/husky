@@ -19,16 +19,19 @@
         var getConfig = function() {
             return {
                 toolbar: [
-                    { name: 'fontsize', items: [ 'decreasefontsize','increasefontsize'] },
+                    { name: 'semantics', items: ['Format']},
                     { name: 'basicstyles', items: [ 'Superscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
                     { name: 'blockstyles', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
                     { name: 'list', items: [ 'BulletedList'] },
                     { name: 'code', items: [ 'Source'] }
                 ],
+
+                format_tags: 'p;h1;h2;h3;h4;h5;h6',
+
                 removeButtons: '',
-                removePlugins: 'elementspath, fakeobjects,scayt,wsc,dialog, a11yhelp, magicline,link,specialchar, table, tabletools, image,about,pastefromword,pastetext,clipboard',
+                removePlugins: 'elementspath,fakeobjects,scayt,wsc,dialog,a11yhelp,magicline,link,specialchar,table,tabletools,image,about,pastefromword,pastetext,clipboard',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify,fontsize',
+                extraPlugins: 'justify,fontsize,button,listblock,panel,floatpanel,richcombo,format',
                 resize_enabled: false,
                 uiColor: '#ffffff',
                 skin: 'husky'

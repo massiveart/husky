@@ -1,5 +1,7 @@
 (function() {
 
+    // plugin not finished!!!
+
     CKEDITOR.plugins.add('fontsize', {
         // lang: TODO
         icons: 'decreasefontsize,increasefontsize',
@@ -33,11 +35,11 @@
             exec: function(editor) {
 
                 var selectedText = editor.getSelection().getSelectedText(),
-                    $span = new CKEDITOR.dom.element("p");
+                    $span = new CKEDITOR.dom.element("span");
 
                 if (!!editor && !!selectedText) {
 
-                    $span.setAttributes({style: 'myclass'});
+                    $span.setAttributes({class: 'myClass'});
                     $span.setText(selectedText);
                     editor.insertElement($span);
 

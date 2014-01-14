@@ -1391,3 +1391,8 @@ legend.cke_voice_label {
     background: url(icons_hidpi.png) no-repeat 0 -1032px !important;
     background-size: 16px !important;
 }
+
+
+.myClass {
+    font-weight: bold;
+}
