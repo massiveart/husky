@@ -27623,7 +27623,7 @@ define('__component__$page-functions@husky',[], function() {
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  *
- * @module husky/components/ckeditor
+ * @module husky/components/column-navigation
  */
 
 
@@ -27631,32 +27631,37 @@ define('__component__$page-functions@husky',[], function() {
  * @class CKEditor
  * @constructor
  *
+ * @params {Object} [options] Configuration object
+ * @params {Function} [options.initialzedCallback] Callback when initialization is finished
+ *
  */
 define('__component__$ckeditor@husky',[], function() {
 
     
 
     var defaults = {
-            initializedCallback: null,
-            height: 200,
-            defaultLanguage: 'de'
+            initializedCallback: null
         },
 
 
-    getConfig = function() {
-        var config = this.sandbox.util.extend(false, {}, this.options);
+        /**
+         * Removes the not needed elements from the config object for the ckeditor
+         * @returns {Object} configuration object for ckeditor
+         */
+         getConfig = function() {
+            var config = this.sandbox.util.extend(false, {}, this.options);
 
-        delete config.initializedCallback;
-        delete config.baseUrl;
-        delete config.el;
-        delete config.name;
-        delete config.ref;
-        delete config._ref;
-        delete config.require;
-        delete config.element;
+            delete config.initializedCallback;
+            delete config.baseUrl;
+            delete config.el;
+            delete config.name;
+            delete config.ref;
+            delete config._ref;
+            delete config.require;
+            delete config.element;
 
-        return config;
-    };
+            return config;
+        };
 
     return {
 
@@ -27793,17 +27798,23 @@ define('__component__$ckeditor@husky',[], function() {
     define('husky_extensions/ckeditor-extension',['ckeditor', 'jqueryAdapter'], function() {
 
         var getConfig = function() {
-            return {toolbar: [
-                { name: 'fontsize', items: [ 'FontSize', ''] },
-                { name: 'basicstyles', items: [ 'Superscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
-                { name: 'blockstyles', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-                { name: 'list', items: [ 'BulletedList'] },
-                { name: 'code', items: [ 'Source'] }
-            ],
+            return {
+                toolbar: [
+                    { name: 'semantics', items: ['Format']},
+                    { name: 'basicstyles', items: [ 'Superscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
+                    { name: 'blockstyles', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                    { name: 'list', items: [ 'BulletedList'] },
+                    { name: 'code', items: [ 'Source'] }
+                ],
+
+                format_tags: 'p;h1;h2;h3;h4;h5;h6',
+                height:'300px',
+                width:'100%',
+                defaultLanguage: 'en',
                 removeButtons: '',
-                removePlugins: 'elementspath, fakeobjects,scayt,wsc,dialog, a11yhelp, magicline,link,specialchar, table, tabletools, image,about,pastefromword,pastetext,clipboard',
+                removePlugins: 'elementspath,link,magicline',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify',
+                extraPlugins: 'justify,button,listblock,panel,floatpanel,richcombo,format',
                 resize_enabled: false,
                 uiColor: '#ffffff',
                 skin: 'husky'
@@ -27821,7 +27832,7 @@ define('__component__$ckeditor@husky',[], function() {
                     // callback when editor is ready
                     init: function(selector, callback, config) {
 
-                        var configuration = app.sandbox.util.extend(true, {}, getConfig.call(), config);
+                        var configuration = app.sandbox.util.extend(true, {}, config, getConfig.call());
 
                         if (!!callback && typeof callback === 'function') {
                             return $(selector).ckeditor(callback, configuration);

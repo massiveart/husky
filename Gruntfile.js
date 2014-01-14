@@ -141,7 +141,8 @@ module.exports = function(grunt) {
                         cwd: './',
                         dest: 'dist',
                         src: [
-                            'fonts/{,*/}*'
+                            'fonts/{,*/}*',
+                            'vendor/ckeditor/{,**/}*'
                         ]
                     },
                     {
