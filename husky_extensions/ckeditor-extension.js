@@ -29,9 +29,9 @@
                 format_tags: 'p;h1;h2;h3;h4;h5;h6',
 
                 removeButtons: '',
-                removePlugins: 'elementspath,fakeobjects,scayt,wsc,dialog,a11yhelp,magicline,link,specialchar,table,tabletools,image,about,pastefromword,pastetext,clipboard',
+                removePlugins: 'elementspath,link',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify,fontsize,button,listblock,panel,floatpanel,richcombo,format',
+                extraPlugins: 'justify,button,listblock,panel,floatpanel,richcombo,format',
                 resize_enabled: false,
                 uiColor: '#ffffff',
                 skin: 'husky'
