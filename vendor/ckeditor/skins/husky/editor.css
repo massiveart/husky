@@ -104,7 +104,7 @@ For licensing, see LICENSE.md or http:ckeditor.com/license
 
 .cke_top {
     border-bottom: 1px solid #efefef;
-    padding: 13px;
+    padding: 10px 20px 6px 20px;
     white-space: normal;
     -moz-box-shadow: 0 1px 0 #fff inset;
     -webkit-box-shadow: 0 1px 0 #fff inset;
@@ -430,7 +430,8 @@ a.cke_button {
     outline: 0;
     cursor: default;
     float: left;
-    border: 0
+    border: 0;
+    margin-right: 3px;
 }
 
 .cke_rtl .cke_button {

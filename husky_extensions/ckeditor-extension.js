@@ -27,9 +27,11 @@
                 ],
 
                 format_tags: 'p;h1;h2;h3;h4;h5;h6',
-
+                height:'300px',
+                width:'100%',
+                defaultLanguage: 'en',
                 removeButtons: '',
-                removePlugins: 'elementspath,link',
+                removePlugins: 'elementspath,link,magicline',
                 removeDialogTabs: 'image:advanced;link:advanced',
                 extraPlugins: 'justify,button,listblock,panel,floatpanel,richcombo,format',
                 resize_enabled: false,
@@ -49,7 +51,7 @@
                     // callback when editor is ready
                     init: function(selector, callback, config) {
 
-                        var configuration = app.sandbox.util.extend(true, {}, getConfig.call(), config);
+                        var configuration = app.sandbox.util.extend(true, {}, config, getConfig.call());
 
                         if (!!callback && typeof callback === 'function') {
                             return $(selector).ckeditor(callback, configuration);
