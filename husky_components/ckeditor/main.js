@@ -26,6 +26,18 @@ define([], function() {
             initializedCallback: null
         },
 
+        /**
+         * namespace for events
+         * @type {string}
+         */
+            eventNamespace = 'husky.ckeditor.',
+
+        /**
+         * @event husky.column-navigation.loaded
+         * @description the component has loaded everything successfully and will be rendered
+         */
+            CHANGED = eventNamespace + 'changed',
+
 
         /**
          * Removes the not needed elements from the config object for the ckeditor
@@ -51,7 +63,11 @@ define([], function() {
         initialize: function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             var config = getConfig.call(this);
-            this.$ckeditor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
+            this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
+
+            this.editor.once('change',function(){
+               this.sandbox.emit(CHANGED);
+            }.bind(this));
         }
 
     };
