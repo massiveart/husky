@@ -145,14 +145,14 @@ define(function() {
 
                 error: function(jqXHR, textStatus, errorThrown) {
                     this.sandbox.logger.log("An error occured while fetching data from: " + this.getUrl(params));
-                    this.sandbox.logger.log("textstatus: "+textStatus);
-                    this.sandbox.logger.log("errorthrown",errorThrown);
+                    this.sandbox.logger.log("textstatus: " + textStatus);
+                    this.sandbox.logger.log("errorthrown", errorThrown);
                 }.bind(this),
 
                 success: function(response) {
 
                     // TODO adjust when new api is finished and no backwards compatibility needed
-                    if(!!response.items) {
+                    if (!!response.items) {
                         this.data = response;
                     } else {
                         this.data = {};
@@ -192,7 +192,7 @@ define(function() {
 
             var delimiter = '?', url = params.url;
 
-            if(!!this.options.pagination && !!this.options.paginationOptions.pageSize) {
+            if (!!this.options.pagination && !!this.options.paginationOptions.pageSize) {
 
                 if (params.url.indexOf('?') !== -1) {
                     delimiter = '&';
@@ -264,7 +264,7 @@ define(function() {
          * @returns {string} returns table head
          */
 
-        prepareTableHead: function () {
+        prepareTableHead: function() {
             var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute, isSortable;
 
             tblColumns = [];
@@ -299,7 +299,7 @@ define(function() {
 
             this.rowStructure = ['id'];
 
-            headData.forEach(function (column) {
+            headData.forEach(function(column) {
 
                 tblColumnWidth = '';
                 // get width and measureunit
@@ -311,11 +311,11 @@ define(function() {
                 isSortable = false;
 
                 // TODO adjust when new api fully implemented and no backwards compatibility needed
-                if(!!this.data.links && !!this.data.links.sortable) {
+                if (!!this.data.links && !!this.data.links.sortable) {
 
                     //is column sortable - check with received sort-links
                     this.sandbox.util.each(this.data.links.sortable, function(index) {
-                        if(index === column.attribute){
+                        if (index === column.attribute) {
                             isSortable = true;
                             return false;
                         }
@@ -323,7 +323,7 @@ define(function() {
                 }
 
                 // add to row structure when valid entry
-                if(column.attribute !== undefined) {
+                if (column.attribute !== undefined) {
                     this.rowStructure.push(column.attribute);
                 }
 
@@ -364,12 +364,12 @@ define(function() {
             this.allItemIds = [];
 
             // TODO adjust when new api is fully implemented and no backwards compatibility needed
-            if(!!this.data.items) {
-                this.data.items.forEach(function (row) {
+            if (!!this.data.items) {
+                this.data.items.forEach(function(row) {
                     tblRows.push(this.prepareTableRow(row));
                 }.bind(this));
-            } else if(!!this.data.embedded) {
-                this.data.embedded.forEach(function (row) {
+            } else if (!!this.data.embedded) {
+                this.data.embedded.forEach(function(row) {
                     tblRows.push(this.prepareTableRow(row));
                 }.bind(this));
             }
@@ -679,14 +679,14 @@ define(function() {
             var $next = '',
                 $last = '';
 
-            if(this.data.links.next) {
+            if (this.data.links.next) {
                 $next = this.templates.paginationNavigation("next", "Next");
             }
-            if(this.data.links.last) {
+            if (this.data.links.last) {
                 $last = this.templates.paginationNavigation("last", "");
             }
 
-            return ["<ul>",$next,$last,"</ul>"].join('');
+            return ["<ul>", $next, $last, "</ul>"].join('');
         },
 
 
@@ -698,14 +698,14 @@ define(function() {
             var $prev = '',
                 $first = '';
 
-            if(this.data.links.first) {
+            if (this.data.links.first) {
                 $first = this.templates.paginationNavigation("first", "");
             }
-            if(this.data.links.prev) {
+            if (this.data.links.prev) {
                 $prev = this.templates.paginationNavigation("prev", "Previous");
             }
 
-            return ["<ul>",$first,$prev,"</ul>"].join('');
+            return ["<ul>", $first, $prev, "</ul>"].join('');
         },
 
         /**
@@ -720,16 +720,16 @@ define(function() {
             $element = this.sandbox.dom.$(event.currentTarget);
             page = $element.data('page');
 
-            if(!!page) {
+            if (!!page) {
                 this.addLoader();
                 this.resetItemSelection();
                 //this.resetSortingOptions(); // browsing through sorted pages
-                
+
                 this.sandbox.emit('husky.datagrid.page.change', 'change page');
 
                 uri = this.data.links[page];
 
-                if(!!uri) {
+                if (!!uri) {
                     url = uri;
                 } else {
                     template = this.sandbox.uritemplate.parse(this.data.links.pagination);
@@ -841,7 +841,7 @@ define(function() {
 
                 this.load({
                     url: url,
-                    success: function () {
+                    success: function() {
                         this.removeLoader();
                         this.sandbox.emit('husky.datagrid.updated', 'updated sort');
                     }.bind(this)
@@ -873,7 +873,7 @@ define(function() {
         },
 
         bindCustomEvents: function() {
-            var searchInstanceName;
+            var searchInstanceName = '';
 
             // listen for private events
             this.sandbox.on('husky.datagrid.update', this.updateHandler.bind(this));
@@ -890,13 +890,11 @@ define(function() {
 
             // listen to search events
             if (!!this.options.searchInstanceName) {
-                if (this.options.searchInstanceName === '') {
-                    searchInstanceName = '';
-                } else {
-                    searchInstanceName = '.'+this.options.searchInstanceName;
+                if (this.options.searchInstanceName !== '') {
+                    searchInstanceName = '.' + this.options.searchInstanceName;
                 }
+                this.sandbox.on('husky.search' + searchInstanceName, this.triggerSearch.bind(this));
             }
-            this.sandbox.on('husky.search'+searchInstanceName, this.triggerSearch.bind(this));
         },
 
         provideData: function() {
@@ -915,7 +913,7 @@ define(function() {
             // TODO does not work?
             this.load({
                 url: this.data.links.self,
-                success: function () {
+                success: function() {
                     this.removeLoader();
                     this.sandbox.emit('husky.datagrid.updated', 'updated data 123');
                 }.bind(this)
@@ -927,18 +925,26 @@ define(function() {
          */
         triggerSearch: function(searchString) {
 
-            var template, url;
+            var template, url,
+            // TODO: get searchFields
+                searchFields;
 
             this.addLoader();
             template = this.sandbox.uritemplate.parse(this.data.links.find);
-            url = this.sandbox.uritemplate.expand(template, {searchString: searchString});
+            url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+
+            console.log("URRRRRL", url);
 
             this.load({
                 url: url,
-                success: function () {
+                success: function() {
+                    console.log('SUCCESSSSSSSsSSSSSSS');
                     this.removeLoader();
                     this.sandbox.emit('husky.datagrid.updated', 'updated search');
-                }.bind(this)
+                }.bind(this),
+                error: function() {
+                    console.log('NOOOOOOOOOOOOOO==00');
+                }
             });
 
         },
@@ -1019,9 +1025,9 @@ define(function() {
             },
 
             // Pagination
-            paginationNavigation: function(data , label) {
+            paginationNavigation: function(data, label) {
 
-                return ['<li class="pagination-',data,' page" data-page="', data, '">',label,'</li>'].join('');
+                return ['<li class="pagination-', data, ' page" data-page="', data, '">', label, '</li>'].join('');
             },
 
 
@@ -1037,20 +1043,20 @@ define(function() {
                 // add pages for current after current page
                 for (i = data.page; i <= data.pagesDisplay; i++) {
                     pageClass = (data.page === i) ? 'class="page is-selected bold"' : 'class="page"';
-                    pageItemsCurrentAfter.push('<li '+pageClass+' data-page="'+ i + '">' + i + '</li>');
+                    pageItemsCurrentAfter.push('<li ' + pageClass + ' data-page="' + i + '">' + i + '</li>');
                 }
 
 
                 rest = data.pagesDisplay - pageItemsCurrentAfter.length;
 
                 // add pages before current page if needed
-                if(rest > 0) {
-                    for (i = data.page-rest; i < data.page ; i++) {
-                        pageItemsBefore.push('<li class="page" data-page="'+ i + '">' + i + '</li>');
+                if (rest > 0) {
+                    for (i = data.page - rest; i < data.page; i++) {
+                        pageItemsBefore.push('<li class="page" data-page="' + i + '">' + i + '</li>');
                     }
                 }
 
-                return '<ul>'+ pageItemsBefore.join('') + pageItemsCurrentAfter.join('') + '</ul>';
+                return '<ul>' + pageItemsBefore.join('') + pageItemsCurrentAfter.join('') + '</ul>';
             }
         }
 
