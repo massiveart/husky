@@ -34,7 +34,7 @@ define([], function () {
         typeaheadName: 'name',									// identifier - used by typeahead to cache intelligently
         value: null,                                            // value to display at start
         instanceName: 'undefined',                              // name of the component instance
-        noNewValues: false,										// if false input value must be contained in autocomplete-list
+        noNewValues: false,										// if false input value must be contained in autocomplete-suggestions
         successClass: 'husky-auto-complete-success',			// success-class if nowNewValues is false
         failClass: 'husky-auto-complete-error',					// fail-class if noNewValues is false
         suggestionClass: 'suggestion',                          // CSS-class for autocomplete suggestions

@@ -4414,12 +4414,37 @@ a.btn-black {
   font-size: 12px;
 }
 
-/* line 11, ../scss/modules/auto-complete.scss */
+/* line 9, ../scss/modules/auto-complete.scss */
+.auto-complete-container {
+  position: relative;
+}
+/* line 12, ../scss/modules/auto-complete.scss */
+.auto-complete-container label {
+  cursor: default;
+}
+
+/* line 17, ../scss/modules/auto-complete.scss */
+.wrapper {
+  width: 400px;
+  background: white;
+  padding: 4px 8px;
+  border-radius: 4px 4px 0 0;
+  font-size: 12px;
+}
+/* line 24, ../scss/modules/auto-complete.scss */
+.wrapper input[type="text"] {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+}
+
+/* line 32, ../scss/modules/auto-complete.scss */
 .twitter-typeahead {
   width: 100%;
 }
 
-/* line 15, ../scss/modules/auto-complete.scss */
+/* line 36, ../scss/modules/auto-complete.scss */
 .tt-suggestions {
   width: 400px;
   top: 37px;
@@ -4427,45 +4452,45 @@ a.btn-black {
   background: white;
 }
 
-/* line 22, ../scss/modules/auto-complete.scss */
+/* line 43, ../scss/modules/auto-complete.scss */
 .tt-hint {
   display: none;
 }
 
-/* line 26, ../scss/modules/auto-complete.scss */
+/* line 47, ../scss/modules/auto-complete.scss */
 .tt-suggestion {
   height: 25px;
   padding: 0 15px;
 }
-/* line 30, ../scss/modules/auto-complete.scss */
+/* line 51, ../scss/modules/auto-complete.scss */
 .tt-suggestion .border {
   border-bottom: 1px solid #efefef;
   height: 25px;
   clear: both;
 }
-/* line 34, ../scss/modules/auto-complete.scss */
+/* line 55, ../scss/modules/auto-complete.scss */
 .tt-suggestion .border .img {
   float: left;
   padding: 5px 10px 0 5px;
 }
-/* line 38, ../scss/modules/auto-complete.scss */
+/* line 59, ../scss/modules/auto-complete.scss */
 .tt-suggestion .border .text {
   float: left;
   line-height: 25px;
 }
-/* line 43, ../scss/modules/auto-complete.scss */
+/* line 64, ../scss/modules/auto-complete.scss */
 .tt-suggestion:last-child .border {
   border-bottom: none;
 }
 
-/* line 49, ../scss/modules/auto-complete.scss */
+/* line 70, ../scss/modules/auto-complete.scss */
 .tt-suggestion:hover,
 .tt-is-under-cursor {
   background: #dddddd;
   border-color: transparent;
 }
 
-/* line 54, ../scss/modules/auto-complete.scss */
+/* line 75, ../scss/modules/auto-complete.scss */
 .suggestion {
   color: black;
 }
