@@ -1,6 +1,6 @@
 
 /** vim: et:ts=4:sw=4:sts=4
- * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
+ * @license RequireJS 2.1.10 Copyright (c) 2010-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/requirejs for details
  */
@@ -13,7 +13,7 @@ var requirejs, require, define;
 (function (global) {
     var req, s, head, baseElement, dataMain, src,
         interactiveScript, currentlyAddingScript, mainScript, subPath,
-        version = '2.1.9',
+        version = '2.1.10',
         commentRegExp = /(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/mg,
         cjsRequireRegExp = /[^.]\s*require\s*\(\s*["']([^'"\s]+)["']\s*\)/g,
         jsSuffixRegExp = /\.js$/,
@@ -109,7 +109,10 @@ var requirejs, require, define;
         if (source) {
             eachProp(source, function (value, prop) {
                 if (force || !hasProp(target, prop)) {
-                    if (deepStringMixin && typeof value !== 'string') {
+                    if (deepStringMixin && typeof value === 'object' && value &&
+                        !isArray(value) && !isFunction(value) &&
+                        !(value instanceof RegExp)) {
+
                         if (!target[prop]) {
                             target[prop] = {};
                         }
@@ -202,6 +205,7 @@ var requirejs, require, define;
                 waitSeconds: 7,
                 baseUrl: './',
                 paths: {},
+                bundles: {},
                 pkgs: {},
                 shim: {},
                 config: {}
@@ -215,6 +219,7 @@ var requirejs, require, define;
             defQueue = [],
             defined = {},
             urlFetched = {},
+            bundlesMap = {},
             requireCounter = 1,
             unnormalizedCounter = 1;
 
@@ -228,8 +233,8 @@ var requirejs, require, define;
          * @param {Array} ary the array of path segments.
          */
         function trimDots(ary) {
-            var i, part;
-            for (i = 0; ary[i]; i += 1) {
+            var i, part, length = ary.length;
+            for (i = 0; i < length; i++) {
                 part = ary[i];
                 if (part === '.') {
                     ary.splice(i, 1);
@@ -262,7 +267,7 @@ var requirejs, require, define;
          * @returns {String} normalized name
          */
         function normalize(name, baseName, applyMap) {
-            var pkgName, pkgConfig, mapValue, nameParts, i, j, nameSegment,
+            var pkgMain, mapValue, nameParts, i, j, nameSegment, lastIndex,
                 foundMap, foundI, foundStarMap, starI,
                 baseParts = baseName && baseName.split('/'),
                 normalizedBaseParts = baseParts,
@@ -275,29 +280,26 @@ var requirejs, require, define;
                 //otherwise, assume it is a top-level require that will
                 //be relative to baseUrl in the end.
                 if (baseName) {
-                    if (getOwn(config.pkgs, baseName)) {
-                        //If the baseName is a package name, then just treat it as one
-                        //name to concat the name with.
-                        normalizedBaseParts = baseParts = [baseName];
-                    } else {
-                        //Convert baseName to array, and lop off the last part,
-                        //so that . matches that 'directory' and not name of the baseName's
-                        //module. For instance, baseName of 'one/two/three', maps to
-                        //'one/two/three.js', but we want the directory, 'one/two' for
-                        //this normalization.
-                        normalizedBaseParts = baseParts.slice(0, baseParts.length - 1);
+                    //Convert baseName to array, and lop off the last part,
+                    //so that . matches that 'directory' and not name of the baseName's
+                    //module. For instance, baseName of 'one/two/three', maps to
+                    //'one/two/three.js', but we want the directory, 'one/two' for
+                    //this normalization.
+                    normalizedBaseParts = baseParts.slice(0, baseParts.length - 1);
+                    name = name.split('/');
+                    lastIndex = name.length - 1;
+
+                    // If wanting node ID compatibility, strip .js from end
+                    // of IDs. Have to do this here, and not in nameToUrl
+                    // because node allows either .js or non .js to map
+                    // to same file.
+                    if (config.nodeIdCompat && jsSuffixRegExp.test(name[lastIndex])) {
+                        name[lastIndex] = name[lastIndex].replace(jsSuffixRegExp, '');
                     }
 
-                    name = normalizedBaseParts.concat(name.split('/'));
+                    name = normalizedBaseParts.concat(name);
                     trimDots(name);
-
-                    //Some use of packages may use a . path to reference the
-                    //'main' module name, so normalize for that.
-                    pkgConfig = getOwn(config.pkgs, (pkgName = name[0]));
                     name = name.join('/');
-                    if (pkgConfig && name === pkgName + '/' + pkgConfig.main) {
-                        name = pkgName;
-                    }
                 } else if (name.indexOf('./') === 0) {
                     // No baseName, so this is ID is resolved relative
                     // to baseUrl, pull off the leading dot.
@@ -309,7 +311,7 @@ var requirejs, require, define;
             if (applyMap && map && (baseParts || starMap)) {
                 nameParts = name.split('/');
 
-                for (i = nameParts.length; i > 0; i -= 1) {
+                outerLoop: for (i = nameParts.length; i > 0; i -= 1) {
                     nameSegment = nameParts.slice(0, i).join('/');
 
                     if (baseParts) {
@@ -326,14 +328,10 @@ var requirejs, require, define;
                                     //Match, update name to the new value.
                                     foundMap = mapValue;
                                     foundI = i;
-                                    break;
+                                    break outerLoop;
                                 }
                             }
                         }
-                    }
-
-                    if (foundMap) {
-                        break;
                     }
 
                     //Check for a star map match, but just hold on to it,
@@ -356,7 +354,11 @@ var requirejs, require, define;
                 }
             }
 
-            return name;
+            // If the name points to a package's name, use
+            // the package main instead.
+            pkgMain = getOwn(config.pkgs, name);
+
+            return pkgMain ? pkgMain : name;
         }
 
         function removeScript(name) {
@@ -549,7 +551,7 @@ var requirejs, require, define;
                 //local var ref to defQueue, so cannot just reassign the one
                 //on context.
                 apsp.apply(defQueue,
-                           [defQueue.length - 1, 0].concat(globalDefQueue));
+                           [defQueue.length, 0].concat(globalDefQueue));
                 globalDefQueue = [];
             }
         }
@@ -580,15 +582,9 @@ var requirejs, require, define;
                         id: mod.map.id,
                         uri: mod.map.url,
                         config: function () {
-                            var c,
-                                pkg = getOwn(config.pkgs, mod.map.id);
-                            // For packages, only support config targeted
-                            // at the main module.
-                            c = pkg ? getOwn(config.config, mod.map.id + '/' + pkg.main) :
-                                      getOwn(config.config, mod.map.id);
-                            return  c || {};
+                            return  getOwn(config.config, mod.map.id) || {};
                         },
-                        exports: defined[mod.map.id]
+                        exports: handlers.exports(mod)
                     });
                 }
             }
@@ -629,7 +625,7 @@ var requirejs, require, define;
         }
 
         function checkLoaded() {
-            var map, modId, err, usingPathFallback,
+            var err, usingPathFallback,
                 waitInterval = config.waitSeconds * 1000,
                 //It is possible to disable the wait interval by using waitSeconds of 0.
                 expired = waitInterval && (context.startTime + waitInterval) < new Date().getTime(),
@@ -647,8 +643,8 @@ var requirejs, require, define;
 
             //Figure out the state of all the modules.
             eachProp(enabledRegistry, function (mod) {
-                map = mod.map;
-                modId = map.id;
+                var map = mod.map,
+                    modId = map.id;
 
                 //Skip things that are not enabled or in error state.
                 if (!mod.enabled) {
@@ -871,17 +867,14 @@ var requirejs, require, define;
                                 exports = context.execCb(id, factory, depExports, exports);
                             }
 
-                            if (this.map.isDefine) {
-                                //If setting exports via 'module' is in play,
-                                //favor that over return value and exports. After that,
-                                //favor a non-undefined return value over exports use.
+                            // Favor return value over exports. If node/cjs in play,
+                            // then will not have a return value anyway. Favor
+                            // module.exports assignment over exports object.
+                            if (this.map.isDefine && exports === undefined) {
                                 cjsModule = this.module;
-                                if (cjsModule &&
-                                        cjsModule.exports !== undefined &&
-                                        //Make sure it is not already the exports value
-                                        cjsModule.exports !== this.exports) {
+                                if (cjsModule) {
                                     exports = cjsModule.exports;
-                                } else if (exports === undefined && this.usingExports) {
+                                } else if (this.usingExports) {
                                     //exports already set the defined value.
                                     exports = this.exports;
                                 }
@@ -941,6 +934,7 @@ var requirejs, require, define;
 
                 on(pluginMap, 'defined', bind(this, function (plugin) {
                     var load, normalizedMap, normalizedMod,
+                        bundleId = getOwn(bundlesMap, this.map.id),
                         name = this.map.name,
                         parentName = this.map.parentMap ? this.map.parentMap.name : null,
                         localRequire = context.makeRequire(map.parentMap, {
@@ -983,6 +977,14 @@ var requirejs, require, define;
                             normalizedMod.enable();
                         }
 
+                        return;
+                    }
+
+                    //If a paths config, then just load that file instead to
+                    //resolve the plugin, as it is built into that paths layer.
+                    if (bundleId) {
+                        this.map.url = context.nameToUrl(bundleId);
+                        this.load();
                         return;
                     }
 
@@ -1250,30 +1252,37 @@ var requirejs, require, define;
                     }
                 }
 
-                //Save off the paths and packages since they require special processing,
+                //Save off the paths since they require special processing,
                 //they are additive.
-                var pkgs = config.pkgs,
-                    shim = config.shim,
+                var shim = config.shim,
                     objs = {
                         paths: true,
+                        bundles: true,
                         config: true,
                         map: true
                     };
 
                 eachProp(cfg, function (value, prop) {
                     if (objs[prop]) {
-                        if (prop === 'map') {
-                            if (!config.map) {
-                                config.map = {};
-                            }
-                            mixin(config[prop], value, true, true);
-                        } else {
-                            mixin(config[prop], value, true);
+                        if (!config[prop]) {
+                            config[prop] = {};
                         }
+                        mixin(config[prop], value, true, true);
                     } else {
                         config[prop] = value;
                     }
                 });
+
+                //Reverse map the bundles
+                if (cfg.bundles) {
+                    eachProp(cfg.bundles, function (value, prop) {
+                        each(value, function (v) {
+                            if (v !== prop) {
+                                bundlesMap[v] = prop;
+                            }
+                        });
+                    });
+                }
 
                 //Merge shim
                 if (cfg.shim) {
@@ -1295,29 +1304,25 @@ var requirejs, require, define;
                 //Adjust packages if necessary.
                 if (cfg.packages) {
                     each(cfg.packages, function (pkgObj) {
-                        var location;
+                        var location, name;
 
                         pkgObj = typeof pkgObj === 'string' ? { name: pkgObj } : pkgObj;
+
+                        name = pkgObj.name;
                         location = pkgObj.location;
+                        if (location) {
+                            config.paths[name] = pkgObj.location;
+                        }
 
-                        //Create a brand new object on pkgs, since currentPackages can
-                        //be passed in again, and config.pkgs is the internal transformed
-                        //state for all package configs.
-                        pkgs[pkgObj.name] = {
-                            name: pkgObj.name,
-                            location: location || pkgObj.name,
-                            //Remove leading dot in main, so main paths are normalized,
-                            //and remove any trailing .js, since different package
-                            //envs have different conventions: some use a module name,
-                            //some use a file name.
-                            main: (pkgObj.main || 'main')
-                                  .replace(currDirRegExp, '')
-                                  .replace(jsSuffixRegExp, '')
-                        };
+                        //Save pointer to main module ID for pkg name.
+                        //Remove leading dot in main, so main paths are normalized,
+                        //and remove any trailing .js, since different package
+                        //envs have different conventions: some use a module name,
+                        //some use a file name.
+                        config.pkgs[name] = pkgObj.name + '/' + (pkgObj.main || 'main')
+                                     .replace(currDirRegExp, '')
+                                     .replace(jsSuffixRegExp, '');
                     });
-
-                    //Done with modifications, assing packages back to context config
-                    config.pkgs = pkgs;
                 }
 
                 //If there are any "waiting to execute" modules in the registry,
@@ -1470,6 +1475,15 @@ var requirejs, require, define;
                         delete urlFetched[map.url];
                         delete undefEvents[id];
 
+                        //Clean queued defines too. Go backwards
+                        //in array so that the splices do not
+                        //mess up the iteration.
+                        eachReverse(defQueue, function(args, i) {
+                            if(args[0] === id) {
+                                defQueue.splice(i, 1);
+                            }
+                        });
+
                         if (mod) {
                             //Hold on to listeners in case the
                             //module will be attempted to be reloaded
@@ -1563,8 +1577,19 @@ var requirejs, require, define;
              * internal API, not a public one. Use toUrl for the public API.
              */
             nameToUrl: function (moduleName, ext, skipExt) {
-                var paths, pkgs, pkg, pkgPath, syms, i, parentModule, url,
-                    parentPath;
+                var paths, syms, i, parentModule, url,
+                    parentPath, bundleId,
+                    pkgMain = getOwn(config.pkgs, moduleName);
+
+                if (pkgMain) {
+                    moduleName = pkgMain;
+                }
+
+                bundleId = getOwn(bundlesMap, moduleName);
+
+                if (bundleId) {
+                    return context.nameToUrl(bundleId, ext, skipExt);
+                }
 
                 //If a colon is in the URL, it indicates a protocol is used and it is just
                 //an URL to a file, or if it starts with a slash, contains a query arg (i.e. ?)
@@ -1578,7 +1603,6 @@ var requirejs, require, define;
                 } else {
                     //A module that needs to be converted to a path.
                     paths = config.paths;
-                    pkgs = config.pkgs;
 
                     syms = moduleName.split('/');
                     //For each module name segment, see if there is a path
@@ -1586,7 +1610,7 @@ var requirejs, require, define;
                     //and work up from it.
                     for (i = syms.length; i > 0; i -= 1) {
                         parentModule = syms.slice(0, i).join('/');
-                        pkg = getOwn(pkgs, parentModule);
+
                         parentPath = getOwn(paths, parentModule);
                         if (parentPath) {
                             //If an array, it means there are a few choices,
@@ -1595,16 +1619,6 @@ var requirejs, require, define;
                                 parentPath = parentPath[0];
                             }
                             syms.splice(0, i, parentPath);
-                            break;
-                        } else if (pkg) {
-                            //If module name is just the package name, then looking
-                            //for the main module.
-                            if (moduleName === pkg.name) {
-                                pkgPath = pkg.location + '/' + pkg.main;
-                            } else {
-                                pkgPath = pkg.location;
-                            }
-                            syms.splice(0, i, pkgPath);
                             break;
                         }
                     }
@@ -21647,6 +21661,7 @@ define('husky',[
         app.use('./husky_extensions/template');
         app.use('./husky_extensions/globalize');
         app.use('./husky_extensions/uri-template');
+		app.use('./husky_extensions/typeahead');
 
     }
 
@@ -25302,41 +25317,37 @@ define('__component__$edit-toolbar@husky',[],function() {
  *  auto-complete.load-data ... event to append data
  */
 
-define('__component__$auto-complete@husky',[], function() {
+define('__component__$auto-complete@husky',[], function () {
 
     
 
     var defaults = {
-            url: '',                    // url to load data
-            valueName: 'name',          // propertyName for value
-            minLength: 3,               // min length for request
-            keyControl: true,           // control with up/down key
-            value: null,                // value to display at start
-            excludeItems: [],           // items to filter
-            instanceName: 'undefined'   // name of the component instance
-        },
-        successClass = 'husky-auto-complete-success',
-        failClass = 'husky-auto-complete-error',
-        loadingClass = 'husky-auto-complete-loading';
+        prefetchUrl: '',                                        // url to prefetch data
+        localData: [],                                          // array of local data
+        remoteUrl: '',                                          // url to fetch data if prefetch or local don't have matches
+        GETparameter: 'query',                                  // name for GET-parameter in remote query
+        valueKey: 'name',                                       // JSON-key for value
+        totalKey: 'total',										// JSON-key for total-value
+        resultKey: 'items',										// JSON-key for result
+        typeaheadName: 'name',									// identifier - used by typeahead to cache intelligently
+        value: null,                                            // value to display at start
+        instanceName: 'undefined',                              // name of the component instance
+        noNewValues: false,										// if false input value must be contained in autocomplete-suggestions
+        successClass: 'husky-auto-complete-success',			// success-class if nowNewValues is false
+        failClass: 'husky-auto-complete-error',					// fail-class if noNewValues is false
+        suggestionClass: 'suggestion',                          // CSS-class for autocomplete suggestions
+        suggestionImg: '<img src="../../img/sample.gif" />',    // HTML-Img Tag - Image gets rendered before every suggestion
+        stickToInput: false                                     // If true suggestions are always under the input field
+    };
 
     return {
         data: [],
 
-        getEvent: function(append) {
+        getEvent: function (append) {
             return 'husky.auto-complete.' + append;
         },
 
-        // get url for pattern
-        getUrl: function(pattern) {
-            var delimiter = '?';
-            if (this.options.url.indexOf('?') !== -1) {
-                delimiter = '&';
-            }
-
-            return this.options.url + delimiter + 'search=' + pattern;
-        },
-
-        getValueID: function() {
+        getValueID: function () {
             if (!!this.options.value) {
                 return this.options.value.id;
             } else {
@@ -25344,7 +25355,7 @@ define('__component__$auto-complete@husky',[], function() {
             }
         },
 
-        getValueName: function() {
+        getValueName: function () {
             if (!!this.options.value) {
                 return this.options.value[this.options.valueName];
             } else {
@@ -25352,308 +25363,171 @@ define('__component__$auto-complete@husky',[], function() {
             }
         },
 
-        initialize: function() {
+        initialize: function () {
             this.sandbox.logger.log('initialize', this);
             this.sandbox.logger.log(arguments);
+
+            this._template = null;
+            this.data = null;
+            this.total = 0;
+            this.matched = true;
+            this.matches = [];
 
             // extend default options
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
+            this.setTemplate();
+
             this.render();
+            this.setEvents();
         },
 
-        render: function() {
-            this.$el.addClass('dropdown husky-auto-complete');
+        setTemplate: function () {
+            this._template = this.sandbox.util.template('' +
+                '<div class="' + this.options.suggestionClass + '" data-id="<%= id %>">' +
+                '   <div class="border">' +
+                '		<div class="img">' + this.options.suggestionImg + '</div>' +
+                '		<div class="text"><%= name %></div>' +
+                '	</div>' +
+                '</div>');
+        },
+
+        buildTemplate: function (context) {
+            if (this._template !== null) {
+                return this._template(context);
+            }
+        },
+
+        render: function () {
+            this.$el.addClass('husky-auto-complete');
             // init form-element and dropdown menu
-            this.$valueField = $('<input id="'+this.options.instanceName+'" type="text" autofill="false" class="name-value form-element husky-validate" data-id="' + this.getValueID() + '" value="' + this.getValueName() + '"/>');
-            this.$dropDown = $('<div class="dropdown-menu" />');
-            this.$dropDownList = $('<ul/>');
+            this.$valueField = $('<input id="' + this.options.instanceName + '" class="husky-validate" type="text" autofill="false" data-id="' + this.getValueID() + '" value="' + this.getValueName() + '"/>');
             this.$el.append(this.$valueField);
-            this.$el.append(this.$dropDown);
-            this.$dropDown.append(this.$dropDownList);
-            this.hideDropDown();
 
-            // bind dom elements
-            this.bindDOMEvents();
-
-            if (!!this.options.value) {
-                this.successState();
-            }
+            this.bindTypeahead();
         },
 
-        // bind dom elements
-        bindDOMEvents: function() {
-            // turn off all events
-            this.$el.off();
-
-            // input value changed
-            this.$valueField.on('input', this.inputChanged.bind(this));
-
-            // mouse control
-            this.$dropDownList.on('click', 'li', function(event) {
-                var $element = $(event.currentTarget),
-                    id = $element.data('id'),
-                    item = {id: id};
-
-                item[this.options.valueName] = $element.text();
-                this.selectItem(item);
-            }.bind(this));
-
-            // focus in
-            this.$valueField.on('focusin', function() {
-                this.$valueField.trigger('input');
-            }.bind(this));
-
-            // focus out
-            this.$valueField.on('focusout', function() {
-                // FIXME may there is a better solution ???
-                setTimeout(function() {
-                    this.hideDropDown();
-                }.bind(this), 250);
-            }.bind(this));
-
-            // key control
-            if (this.options.keyControl) {
-                this.$valueField.on('keydown', function(event) {
-                    // key 40 = down, key 38 = up, key 13 = enter
-                    if ([40, 38, 13].indexOf(event.which) === -1) {
-                        return;
-                    }
-
-                    event.preventDefault();
-                    if (this.$dropDown.is(':visible')) {
-
-                        if (event.which === 40) {
-                            this.pressKeyDown();
-                        }
-                        else if (event.which === 38) {
-                            this.pressKeyUp();
-                        }
-                        else if (event.which === 13) {
-                            this.pressKeyEnter();
-                        }
-
-                    } else {
-                        // If dropdown not visible => search for given pattern
-                        this.noState();
-                        this.loadData(this.$valueField.val());
-                    }
-                }.bind(this));
-
-                // remove hover class by mouseover
-                this.$dropDownList.on('mouseover', 'li', function() {
-                    this.$dropDownList.children().removeClass('hover');
-                }.bind(this));
-            }
-        },
-
-        // value of input changed
-        inputChanged: function() {
-            this.sandbox.logger.log('inputChanged');
-
-            // value is not success
-            this.noState();
-
-            var val = this.$valueField.val();
-            if (val.length >= this.options.minLength) {
-                this.loadData(val);
-            }
-        },
-
-        // load data from server
-        loadData: function(pattern) {
-            var url = this.getUrl(pattern);
-            this.sandbox.logger.log('load: ' + url);
-            this.loadingState();
-
-            $.ajax({
-                url: url,
-                success: function(response) {
-                    this.sandbox.logger.log('load', 'success');
-
-                    this.noState();
-
-                    // if only one result this is it, if no result hideDropDown, else generateDropDown
-                    this.updateData(response._embedded);
-                    if (this.data.length > 1) {
-                        this.generateDropDown(this.data);
-                    } else if (this.data.length === 1) {
-                        this.selectItem(this.data[0]);
-                    } else {
-                        this.failState();
-                        this.hideDropDown();
-                    }
+        bindTypeahead: function () {
+            this.sandbox.autocomplete.init(this.$valueField, {
+                name: this.options.typeaheadName,
+                local: this.options.localData,
+                valueKey: this.options.valueKey,
+                template: function (context) {
+                    this.matches.push(context);
+                    this.matched = true;
+                    return this.buildTemplate(context);
                 }.bind(this),
-                error: function() {
-                    this.sandbox.logger.log('load', 'error');
-
-                    this.failState();
-                    this.hideDropDown();
-                }.bind(this)
+                prefetch: {
+                    url: this.options.prefetchUrl,
+                    ttl: 1,
+                    filter: function (data) {
+                        this.sandbox.emit(this.getEvent('prefetch-data'));
+                        this.handleData(data);
+                        return this.data;
+                    }.bind(this)
+                },
+                remote: {
+                    url: this.options.remoteUrl + '?' + this.options.GETparameter + '=%QUERY',
+                    beforeSend: function () {
+                        this.sandbox.emit(this.getEvent('remote-data-load'));
+                    }.bind(this),
+                    filter: function (data) {
+                        this.sandbox.emit(this.getEvent('remote-data'));
+                        this.handleData(data);
+                        return this.data;
+                    }.bind(this)
+                }
             });
-
-            this.sandbox.emit(this.getEvent('load-data'));
-        },
-
-        // update global data array
-        updateData: function(newData) {
-            this.data = [];
-            if (!!newData && $.isArray(newData)) {
-                newData.forEach(function(item) {
-                    if (this.isVisible(item)) {
-                        this.data.push(item);
-                    }
-                }.bind(this));
+            if (this.options.stickToInput === false) {
+                this.sandbox.dom.css('.twitter-typeahead', 'position', 'static');
             }
         },
 
-        // generate dropDown with given items
-        generateDropDown: function(items) {
-            this.clearDropDown();
-            items.forEach(function(item) {
-                if (this.isVisible(item)) {
-                    this.$dropDownList.append('<li data-id="' + item.id + '">' + item[this.options.valueName] + '</li>');
-                }
+        setEvents: function () {
+            this.sandbox.dom.on(this.$valueField, 'typeahead:selected', function (event, datum) {
+                this.sandbox.emit(this.getEvent('select'));
+                this.setValueFieldId(datum.id);
             }.bind(this));
-            this.showDropDown();
-        },
 
-        // is item visible (filter)
-        isVisible: function(item) {
-            var result = true;
-            this.options.excludeItems.forEach(function(testItem) {
-                if (parseInt(item.id, 10) === parseInt(testItem.id, 10)) {
-                    result = false;
-                }
+            this.sandbox.dom.on(this.$valueField, 'keydown', function () {
+                this.matched = false;
+                this.matches = [];
+                this.setNoState();
             }.bind(this));
-            return result;
+
+            this.sandbox.dom.on(this.$valueField, 'blur', function () {
+                this.handleBlur();
+            }.bind(this));
         },
 
-        // clear childs of list
-        clearDropDown: function() {
-            // FIXME make it easier
-            this.$dropDown.children('ul').children('li').remove();
-        },
-
-        // make dropDown visible
-        showDropDown: function() {
-            this.sandbox.logger.log('show dropdown');
-            this.$dropDown.show();
-        },
-
-        // hide dropDown
-        hideDropDown: function() {
-            this.sandbox.logger.log('hide dropdown');
-            this.clearDropDown();
-            this.$dropDown.hide();
-        },
-
-        // set class success to container
-        successState: function() {
-            this.sandbox.logger.log('set success');
-            this.clearDropDown();
-            this.$el.parent().removeClass(failClass);
-            this.$el.parent().removeClass(loadingClass);
-            this.$el.parent().addClass(successClass);
-        },
-
-        // remove class success, fail and loading of container
-        noState: function() {
-            this.sandbox.logger.log('remove success and fail');
-            this.$valueField.data('');
-            this.$el.parent().removeClass(failClass);
-            this.$el.parent().removeClass(loadingClass);
-            this.$el.parent().removeClass(successClass);
-        },
-
-        // add class fail to container
-        failState: function() {
-            this.sandbox.logger.log('set fail');
-            this.$el.parent().addClass(failClass);
-            this.$el.parent().removeClass(loadingClass);
-            this.$el.parent().removeClass(successClass);
-        },
-
-        // add class loading to container
-        loadingState: function() {
-            this.sandbox.logger.log('set loading');
-            this.$el.parent().removeClass(failClass);
-            this.$el.parent().addClass(loadingClass);
-            this.$el.parent().removeClass(successClass);
-        },
-
-        // handle key down
-        pressKeyDown: function() {
-            this.sandbox.logger.log('key down');
-
-            // get actual and next element
-            var $actual = this.$dropDownList.children('.hover'),
-                $next = $actual.next();
-
-            // no element selected
-            if ($next.length === 0) {
-                $next = this.$dropDownList.children().first();
-            }
-
-            $actual.removeClass('hover');
-            $next.addClass('hover');
-        },
-
-        // handle key up
-        pressKeyUp: function() {
-            this.sandbox.logger.log('key up');
-
-            // get actual and next element
-            var $actual = this.$dropDownList.children('.hover'),
-                $next = $actual.prev();
-            // no element selected
-            if ($next.length === 0) {
-                $next = this.$dropDownList.children().last();
-            }
-
-            $actual.removeClass('hover');
-            $next.addClass('hover');
-        },
-
-        // handle key enter
-        pressKeyEnter: function() {
-            this.sandbox.logger.log('key enter');
-
-            // if one element selected
-            var $actual = this.$dropDownList.children('.hover'),
-                item, value, childs, that;
-            if ($actual.length === 1) {
-                item = {id: $actual.data('id')};
-                item[this.options.valueName] = $actual.text();
-                this.selectItem(item);
+        handleBlur: function () {
+            if (this.options.noNewValues === true) {
+                if (this.isMatched() === true && this.getClosestMatch() !== null) {
+                    this.setValueFieldValue(this.getClosestMatch().name);
+                    this.setValueFieldId(this.getClosestMatch().id);
+                    this.setSuccessState();
+                } else {
+                    this.setFailState();
+                }
             } else {
-                // if it is one of the list
-                value = this.$valueField.val();
-                childs = this.$dropDownList.children();
-                that = this;
-
-                $(childs).each(function() {
-                    if ($(this).text() === value) {
-                        // found an item select it
-                        var item = {id: $(this).data('id')};
-                        item[that.options.valueName] = $(this).text();
-                        that.selectItem(item);
-                        return false;
-                    }
-                });
+                if (this.isMatchedExactly() === true) {
+                    this.setValueFieldValue(this.getClosestMatch().name);
+                    this.setValueFieldId(this.getClosestMatch().id);
+                }
             }
         },
 
-        // select an item
-        selectItem: function(item) {
-            this.sandbox.logger.log('select item: ' + item.id);
-            // set id to data-id
-            this.$valueField.data('id', item.id);
-            // set value to value
-            this.$valueField.val(item[this.options.valueName]);
+        getClosestMatch: function () {
+            if (!!this.matches.length) {
+                return this.matches[0];
+            }
+            return null;
+        },
 
-            this.hideDropDown();
-            this.successState();
+        getValueFieldValue: function () {
+            return this.sandbox.dom.val(this.$valueField).trim();
+        },
+
+        setValueFieldValue: function (value) {
+            this.sandbox.dom.val(this.$valueField, value);
+        },
+
+        setValueFieldId: function (id) {
+            this.sandbox.dom.attr(this.$valueField, {'data-id': id});
+        },
+
+        isMatched: function () {
+            return this.matched;
+        },
+
+        isMatchedExactly: function () {
+            if (this.isMatched() === true) {
+                if (this.getClosestMatch !== null) {
+                    if (this.getValueFieldValue().toLowerCase() === this.getClosestMatch().name.toLowerCase()) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        },
+
+        handleData: function (data) {
+            this.data = data[this.options.resultKey];
+            this.total = data[this.options.totalKey];
+            this.sandbox.logger.log(this.total);
+        },
+
+        setSuccessState: function () {
+            this.sandbox.dom.addClass(this.$el, this.options.successClass);
+        },
+
+        setFailState: function () {
+            this.sandbox.dom.addClass(this.$el, this.options.failClass);
+        },
+
+        setNoState: function () {
+            this.sandbox.dom.removeClass(this.$el, this.options.successClass);
+            this.sandbox.dom.removeClass(this.$el, this.options.failClass);
         }
     };
 });
@@ -27490,6 +27364,36 @@ define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
 
 (function() {
 
+	
+
+	if (window.Typeahead) {
+		define('typeahead', [], function() {
+			return window.Typeahead;
+		});
+	} else {
+		require.config({
+			paths: { "typeahead": 'bower_components/typeahead.js/typeahead' },
+			shim: { backbone: { deps: ['jquery'] } }
+		});
+	}
+
+	define('husky_extensions/typeahead',['typeahead'], {
+		name: 'typeahead',
+
+		initialize: function(app) {
+			app.sandbox.autocomplete = {
+
+				init: function(selector, configs) {
+					app.core.dom.$(selector).typeahead(configs);
+				}
+
+			};
+		}
+	});
+})();
+
+(function() {
+
     
 
     require.config({
@@ -27596,6 +27500,8 @@ define('husky_extensions/util',[],function() {
             app.core.util.uniqueId = function(prefix) {
                 return _.uniqueId(prefix);
             };
+
+			app.core.util.template = _.template;
         }
     };
 });
