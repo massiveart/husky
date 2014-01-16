@@ -77,6 +77,7 @@ module.exports = function(grunt) {
         clean: {
             dist: ['dist', 'docs/packages/husky/'],
             temp: ['dist/temp'],
+            tmp: ['.tmp'],
             bower_after: {
                 files: {
                     src: [
@@ -272,6 +273,25 @@ module.exports = function(grunt) {
                         ],
                         dest: 'bower_components/massiveart-uritemplate/'
                     },
+					// typeahead.js
+					{
+						expand: true,
+						flatten: true,
+						src: [
+							'.bower_components/typeahead.js/dist/typeahead.js',
+							'.bower_components/typeahead.js/dist/typeahead.min.js',
+						],
+						dest: 'bower_components/typeahead.js'
+					},
+                    // tagmanager.js
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            '.bower_components/tagmanager/tagmanager.js'
+                        ],
+                        dest: 'bower_components/tagmanager'
+                    }
                 ]
             }
         },
@@ -283,7 +303,10 @@ module.exports = function(grunt) {
                     install: true,
                     verbose: false,
                     cleanTargetDir: false,
-                    cleanBowerDir: false
+                    cleanBowerDir: false,
+					bowerOptions: {
+						forceLatest: true
+					}
                 }
             }
         },
@@ -322,6 +345,7 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('build', [
+        'clean:tmp',
         'clean:dist',
         'requirejs:dist',
         'requirejs:dev',

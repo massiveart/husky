@@ -14,42 +14,48 @@
     label {
         cursor: default;
     }
-}
 
-.auto-complete-list-input {
-    display: inline-block;
-    position: relative;
-    width: 35%;
-
-    input[type="text"] {
-        width: 100%;
-        border: 0;
-        outline: 0;
+	.auto-complete-list {
+	    font-size: $smallFontSize;
+        min-height: 30px;
+	}
+    .tt-suggestions {
+        width: 506px;
     }
 }
 
-.auto-complete-list-selections {
-    position: relative;
+.auto-complete-list {
     padding: 4px 8px;
     border-radius: 4px;
     background-color: #fff;
 
-    .auto-complete-list-selection {
-        display: inline-block;
-        margin-top: 2px;
-        margin-right: 5px;
-        padding: 0 4px;
-        border-radius: 2px;
-        background-color: #ccc;
-        color: #000;
-        font-size: 12px;
-
-        .icon-remove {
-            position: relative;
-            top: 2px;
-            cursor: pointer;
-        }
+    input[type="text"] {
+      margin: 5px 0;
+      width: 100px;
+      border: 0;
+      outline: 0;
     }
+}
+
+.auto-complete-list-selection {
+      display: inline-block;
+      margin: 2px 5px 2px 0;
+      padding: 0 4px;
+      border-radius: 2px;
+      background-color: #ccc;
+      color: #000;
+      font-size: 12px;
+
+      .tm-tag-remove{
+          @extend .icon-remove;
+          font-family: $baseIconFont;
+          position: relative;
+          top: 2px;
+          padding-left: 2px;
+          cursor: pointer;
+          text-decoration: none;
+          color: $black;
+      }
 }
 
 .auto-complete-list-suggestions {
@@ -68,6 +74,7 @@
 
     ul {
         padding: 8px 8px 15px;
+        margin: 0;
     }
 
     li {
@@ -78,5 +85,11 @@
         background-color: #fff;
         color: #000;
         font-size: 12px;
+        cursor: pointer;
+    }
+
+    .deactivated {
+        cursor: auto;
+        color: $grayLight;
     }
 }

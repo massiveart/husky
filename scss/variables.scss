@@ -26,14 +26,17 @@ $baseBackgroundColor: #f1f1f1;
 
 // Accent colors
 // -------------------------
-$accentColor: #41DDE0;
+$accentColor: #009fc0;
 
 
 // Font Colors
 // -------------------------
 $baseFontColor: $black;
-$highlightColor: #249FBE;
-$errorColor: #e60000;
+
+$highlightColor: #249FBE; // blue
+
+$infoColor: #fda502; // orange
+$errorColor: #e60000; // red
 
 
 // Typography

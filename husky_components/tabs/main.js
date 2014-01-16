@@ -114,7 +114,7 @@ define(function() {
                 }
 
                 this.items[item.id] = item;
-                this.sandbox.dom.append($list, '<li ' + selected + ' data-id="' + item.id + '"><a href="#">' + item.title + '</a></li>');
+                this.sandbox.dom.append($list, '<li ' + selected + ' data-id="' + item.id + '"><a href="#">' + this.sandbox.translate(item.title) + '</a></li>');
             }.bind(this));
 
             // force selection of first element

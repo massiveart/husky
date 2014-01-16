@@ -63,8 +63,8 @@ define(function() {
         excludeFields: ['id'],
         pagination: false,
         paginationOptions: {
-            pageSize: 4,
-            showPages: 5
+            pageSize: null,
+            showPages: null
         },
         removeRow: true,
         selectItem: {
@@ -189,14 +189,18 @@ define(function() {
                 return params.url;
             }
 
-            var delimiter = '?', url;
-            if (params.url.indexOf('?') !== -1) {
-                delimiter = '&';
-            }
+            var delimiter = '?', url = params.url;
 
-            url = params.url + delimiter + 'pageSize=' + this.options.paginationOptions.pageSize;
-            if (params.page > 1) {
-                url += '&page=' + params.page;
+            if(!!this.options.pagination && !!this.options.paginationOptions.pageSize) {
+
+                if (params.url.indexOf('?') !== -1) {
+                    delimiter = '&';
+                }
+
+                url = params.url + delimiter + 'pageSize=' + this.options.paginationOptions.pageSize;
+                if (params.page > 1) {
+                    url += '&page=' + params.page;
+                }
             }
 
             return url;

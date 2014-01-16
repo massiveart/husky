@@ -1,6 +1,6 @@
 
 /** vim: et:ts=4:sw=4:sts=4
- * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
+ * @license RequireJS 2.1.10 Copyright (c) 2010-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
  * see: http://github.com/jrburke/requirejs for details
  */
@@ -13,7 +13,7 @@ var requirejs, require, define;
 (function (global) {
     var req, s, head, baseElement, dataMain, src,
         interactiveScript, currentlyAddingScript, mainScript, subPath,
-        version = '2.1.9',
+        version = '2.1.10',
         commentRegExp = /(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/mg,
         cjsRequireRegExp = /[^.]\s*require\s*\(\s*["']([^'"\s]+)["']\s*\)/g,
         jsSuffixRegExp = /\.js$/,
@@ -109,7 +109,10 @@ var requirejs, require, define;
         if (source) {
             eachProp(source, function (value, prop) {
                 if (force || !hasProp(target, prop)) {
-                    if (deepStringMixin && typeof value !== 'string') {
+                    if (deepStringMixin && typeof value === 'object' && value &&
+                        !isArray(value) && !isFunction(value) &&
+                        !(value instanceof RegExp)) {
+
                         if (!target[prop]) {
                             target[prop] = {};
                         }
@@ -202,6 +205,7 @@ var requirejs, require, define;
                 waitSeconds: 7,
                 baseUrl: './',
                 paths: {},
+                bundles: {},
                 pkgs: {},
                 shim: {},
                 config: {}
@@ -215,6 +219,7 @@ var requirejs, require, define;
             defQueue = [],
             defined = {},
             urlFetched = {},
+            bundlesMap = {},
             requireCounter = 1,
             unnormalizedCounter = 1;
 
@@ -228,8 +233,8 @@ var requirejs, require, define;
          * @param {Array} ary the array of path segments.
          */
         function trimDots(ary) {
-            var i, part;
-            for (i = 0; ary[i]; i += 1) {
+            var i, part, length = ary.length;
+            for (i = 0; i < length; i++) {
                 part = ary[i];
                 if (part === '.') {
                     ary.splice(i, 1);
@@ -262,7 +267,7 @@ var requirejs, require, define;
          * @returns {String} normalized name
          */
         function normalize(name, baseName, applyMap) {
-            var pkgName, pkgConfig, mapValue, nameParts, i, j, nameSegment,
+            var pkgMain, mapValue, nameParts, i, j, nameSegment, lastIndex,
                 foundMap, foundI, foundStarMap, starI,
                 baseParts = baseName && baseName.split('/'),
                 normalizedBaseParts = baseParts,
@@ -275,29 +280,26 @@ var requirejs, require, define;
                 //otherwise, assume it is a top-level require that will
                 //be relative to baseUrl in the end.
                 if (baseName) {
-                    if (getOwn(config.pkgs, baseName)) {
-                        //If the baseName is a package name, then just treat it as one
-                        //name to concat the name with.
-                        normalizedBaseParts = baseParts = [baseName];
-                    } else {
-                        //Convert baseName to array, and lop off the last part,
-                        //so that . matches that 'directory' and not name of the baseName's
-                        //module. For instance, baseName of 'one/two/three', maps to
-                        //'one/two/three.js', but we want the directory, 'one/two' for
-                        //this normalization.
-                        normalizedBaseParts = baseParts.slice(0, baseParts.length - 1);
+                    //Convert baseName to array, and lop off the last part,
+                    //so that . matches that 'directory' and not name of the baseName's
+                    //module. For instance, baseName of 'one/two/three', maps to
+                    //'one/two/three.js', but we want the directory, 'one/two' for
+                    //this normalization.
+                    normalizedBaseParts = baseParts.slice(0, baseParts.length - 1);
+                    name = name.split('/');
+                    lastIndex = name.length - 1;
+
+                    // If wanting node ID compatibility, strip .js from end
+                    // of IDs. Have to do this here, and not in nameToUrl
+                    // because node allows either .js or non .js to map
+                    // to same file.
+                    if (config.nodeIdCompat && jsSuffixRegExp.test(name[lastIndex])) {
+                        name[lastIndex] = name[lastIndex].replace(jsSuffixRegExp, '');
                     }
 
-                    name = normalizedBaseParts.concat(name.split('/'));
+                    name = normalizedBaseParts.concat(name);
                     trimDots(name);
-
-                    //Some use of packages may use a . path to reference the
-                    //'main' module name, so normalize for that.
-                    pkgConfig = getOwn(config.pkgs, (pkgName = name[0]));
                     name = name.join('/');
-                    if (pkgConfig && name === pkgName + '/' + pkgConfig.main) {
-                        name = pkgName;
-                    }
                 } else if (name.indexOf('./') === 0) {
                     // No baseName, so this is ID is resolved relative
                     // to baseUrl, pull off the leading dot.
@@ -309,7 +311,7 @@ var requirejs, require, define;
             if (applyMap && map && (baseParts || starMap)) {
                 nameParts = name.split('/');
 
-                for (i = nameParts.length; i > 0; i -= 1) {
+                outerLoop: for (i = nameParts.length; i > 0; i -= 1) {
                     nameSegment = nameParts.slice(0, i).join('/');
 
                     if (baseParts) {
@@ -326,14 +328,10 @@ var requirejs, require, define;
                                     //Match, update name to the new value.
                                     foundMap = mapValue;
                                     foundI = i;
-                                    break;
+                                    break outerLoop;
                                 }
                             }
                         }
-                    }
-
-                    if (foundMap) {
-                        break;
                     }
 
                     //Check for a star map match, but just hold on to it,
@@ -356,7 +354,11 @@ var requirejs, require, define;
                 }
             }
 
-            return name;
+            // If the name points to a package's name, use
+            // the package main instead.
+            pkgMain = getOwn(config.pkgs, name);
+
+            return pkgMain ? pkgMain : name;
         }
 
         function removeScript(name) {
@@ -549,7 +551,7 @@ var requirejs, require, define;
                 //local var ref to defQueue, so cannot just reassign the one
                 //on context.
                 apsp.apply(defQueue,
-                           [defQueue.length - 1, 0].concat(globalDefQueue));
+                           [defQueue.length, 0].concat(globalDefQueue));
                 globalDefQueue = [];
             }
         }
@@ -580,15 +582,9 @@ var requirejs, require, define;
                         id: mod.map.id,
                         uri: mod.map.url,
                         config: function () {
-                            var c,
-                                pkg = getOwn(config.pkgs, mod.map.id);
-                            // For packages, only support config targeted
-                            // at the main module.
-                            c = pkg ? getOwn(config.config, mod.map.id + '/' + pkg.main) :
-                                      getOwn(config.config, mod.map.id);
-                            return  c || {};
+                            return  getOwn(config.config, mod.map.id) || {};
                         },
-                        exports: defined[mod.map.id]
+                        exports: handlers.exports(mod)
                     });
                 }
             }
@@ -629,7 +625,7 @@ var requirejs, require, define;
         }
 
         function checkLoaded() {
-            var map, modId, err, usingPathFallback,
+            var err, usingPathFallback,
                 waitInterval = config.waitSeconds * 1000,
                 //It is possible to disable the wait interval by using waitSeconds of 0.
                 expired = waitInterval && (context.startTime + waitInterval) < new Date().getTime(),
@@ -647,8 +643,8 @@ var requirejs, require, define;
 
             //Figure out the state of all the modules.
             eachProp(enabledRegistry, function (mod) {
-                map = mod.map;
-                modId = map.id;
+                var map = mod.map,
+                    modId = map.id;
 
                 //Skip things that are not enabled or in error state.
                 if (!mod.enabled) {
@@ -871,17 +867,14 @@ var requirejs, require, define;
                                 exports = context.execCb(id, factory, depExports, exports);
                             }
 
-                            if (this.map.isDefine) {
-                                //If setting exports via 'module' is in play,
-                                //favor that over return value and exports. After that,
-                                //favor a non-undefined return value over exports use.
+                            // Favor return value over exports. If node/cjs in play,
+                            // then will not have a return value anyway. Favor
+                            // module.exports assignment over exports object.
+                            if (this.map.isDefine && exports === undefined) {
                                 cjsModule = this.module;
-                                if (cjsModule &&
-                                        cjsModule.exports !== undefined &&
-                                        //Make sure it is not already the exports value
-                                        cjsModule.exports !== this.exports) {
+                                if (cjsModule) {
                                     exports = cjsModule.exports;
-                                } else if (exports === undefined && this.usingExports) {
+                                } else if (this.usingExports) {
                                     //exports already set the defined value.
                                     exports = this.exports;
                                 }
@@ -941,6 +934,7 @@ var requirejs, require, define;
 
                 on(pluginMap, 'defined', bind(this, function (plugin) {
                     var load, normalizedMap, normalizedMod,
+                        bundleId = getOwn(bundlesMap, this.map.id),
                         name = this.map.name,
                         parentName = this.map.parentMap ? this.map.parentMap.name : null,
                         localRequire = context.makeRequire(map.parentMap, {
@@ -983,6 +977,14 @@ var requirejs, require, define;
                             normalizedMod.enable();
                         }
 
+                        return;
+                    }
+
+                    //If a paths config, then just load that file instead to
+                    //resolve the plugin, as it is built into that paths layer.
+                    if (bundleId) {
+                        this.map.url = context.nameToUrl(bundleId);
+                        this.load();
                         return;
                     }
 
@@ -1250,30 +1252,37 @@ var requirejs, require, define;
                     }
                 }
 
-                //Save off the paths and packages since they require special processing,
+                //Save off the paths since they require special processing,
                 //they are additive.
-                var pkgs = config.pkgs,
-                    shim = config.shim,
+                var shim = config.shim,
                     objs = {
                         paths: true,
+                        bundles: true,
                         config: true,
                         map: true
                     };
 
                 eachProp(cfg, function (value, prop) {
                     if (objs[prop]) {
-                        if (prop === 'map') {
-                            if (!config.map) {
-                                config.map = {};
-                            }
-                            mixin(config[prop], value, true, true);
-                        } else {
-                            mixin(config[prop], value, true);
+                        if (!config[prop]) {
+                            config[prop] = {};
                         }
+                        mixin(config[prop], value, true, true);
                     } else {
                         config[prop] = value;
                     }
                 });
+
+                //Reverse map the bundles
+                if (cfg.bundles) {
+                    eachProp(cfg.bundles, function (value, prop) {
+                        each(value, function (v) {
+                            if (v !== prop) {
+                                bundlesMap[v] = prop;
+                            }
+                        });
+                    });
+                }
 
                 //Merge shim
                 if (cfg.shim) {
@@ -1295,29 +1304,25 @@ var requirejs, require, define;
                 //Adjust packages if necessary.
                 if (cfg.packages) {
                     each(cfg.packages, function (pkgObj) {
-                        var location;
+                        var location, name;
 
                         pkgObj = typeof pkgObj === 'string' ? { name: pkgObj } : pkgObj;
+
+                        name = pkgObj.name;
                         location = pkgObj.location;
+                        if (location) {
+                            config.paths[name] = pkgObj.location;
+                        }
 
-                        //Create a brand new object on pkgs, since currentPackages can
-                        //be passed in again, and config.pkgs is the internal transformed
-                        //state for all package configs.
-                        pkgs[pkgObj.name] = {
-                            name: pkgObj.name,
-                            location: location || pkgObj.name,
-                            //Remove leading dot in main, so main paths are normalized,
-                            //and remove any trailing .js, since different package
-                            //envs have different conventions: some use a module name,
-                            //some use a file name.
-                            main: (pkgObj.main || 'main')
-                                  .replace(currDirRegExp, '')
-                                  .replace(jsSuffixRegExp, '')
-                        };
+                        //Save pointer to main module ID for pkg name.
+                        //Remove leading dot in main, so main paths are normalized,
+                        //and remove any trailing .js, since different package
+                        //envs have different conventions: some use a module name,
+                        //some use a file name.
+                        config.pkgs[name] = pkgObj.name + '/' + (pkgObj.main || 'main')
+                                     .replace(currDirRegExp, '')
+                                     .replace(jsSuffixRegExp, '');
                     });
-
-                    //Done with modifications, assing packages back to context config
-                    config.pkgs = pkgs;
                 }
 
                 //If there are any "waiting to execute" modules in the registry,
@@ -1470,6 +1475,15 @@ var requirejs, require, define;
                         delete urlFetched[map.url];
                         delete undefEvents[id];
 
+                        //Clean queued defines too. Go backwards
+                        //in array so that the splices do not
+                        //mess up the iteration.
+                        eachReverse(defQueue, function(args, i) {
+                            if(args[0] === id) {
+                                defQueue.splice(i, 1);
+                            }
+                        });
+
                         if (mod) {
                             //Hold on to listeners in case the
                             //module will be attempted to be reloaded
@@ -1563,8 +1577,19 @@ var requirejs, require, define;
              * internal API, not a public one. Use toUrl for the public API.
              */
             nameToUrl: function (moduleName, ext, skipExt) {
-                var paths, pkgs, pkg, pkgPath, syms, i, parentModule, url,
-                    parentPath;
+                var paths, syms, i, parentModule, url,
+                    parentPath, bundleId,
+                    pkgMain = getOwn(config.pkgs, moduleName);
+
+                if (pkgMain) {
+                    moduleName = pkgMain;
+                }
+
+                bundleId = getOwn(bundlesMap, moduleName);
+
+                if (bundleId) {
+                    return context.nameToUrl(bundleId, ext, skipExt);
+                }
 
                 //If a colon is in the URL, it indicates a protocol is used and it is just
                 //an URL to a file, or if it starts with a slash, contains a query arg (i.e. ?)
@@ -1578,7 +1603,6 @@ var requirejs, require, define;
                 } else {
                     //A module that needs to be converted to a path.
                     paths = config.paths;
-                    pkgs = config.pkgs;
 
                     syms = moduleName.split('/');
                     //For each module name segment, see if there is a path
@@ -1586,7 +1610,7 @@ var requirejs, require, define;
                     //and work up from it.
                     for (i = syms.length; i > 0; i -= 1) {
                         parentModule = syms.slice(0, i).join('/');
-                        pkg = getOwn(pkgs, parentModule);
+
                         parentPath = getOwn(paths, parentModule);
                         if (parentPath) {
                             //If an array, it means there are a few choices,
@@ -1595,16 +1619,6 @@ var requirejs, require, define;
                                 parentPath = parentPath[0];
                             }
                             syms.splice(0, i, parentPath);
-                            break;
-                        } else if (pkg) {
-                            //If module name is just the package name, then looking
-                            //for the main module.
-                            if (moduleName === pkg.name) {
-                                pkgPath = pkg.location + '/' + pkg.main;
-                            } else {
-                                pkgPath = pkg.location;
-                            }
-                            syms.splice(0, i, pkgPath);
                             break;
                         }
                     }
@@ -21647,6 +21661,7 @@ define('husky',[
         app.use('./husky_extensions/template');
         app.use('./husky_extensions/globalize');
         app.use('./husky_extensions/uri-template');
+		app.use('./husky_extensions/typeahead');
 
     }
 
@@ -21710,7 +21725,7 @@ define('__component__$navigation@husky',[],function() {
                 '               <img alt="#" src="<%= icon %>"/>',
                 '               <% } %>',
                 '           </div>',
-                '           <div class="navigation-header-title"><% if (title) { %> <%= title %><% } %></div>',
+                '           <div class="navigation-header-title"><% if (title) { %> <%= translate(title) %><% } %></div>',
                 '       </header>',
                 '       <div id="navigation-search" class="navigation-search"></div>',
                 '       <div id="navigation-item-container" class="navigation-item-container"></div>',
@@ -21724,7 +21739,7 @@ define('__component__$navigation@husky',[],function() {
                 '   <div <% if (item.items && item.items.length > 0) { %> class="navigation-items-toggle" <% } %> >',
                 '       <a class="<% if (!!item.action) { %>js-navigation-item <% } %>navigation-item" href="#">',
                 '           <span class="<%= icon %> navigation-item-icon"></span>',
-                '           <span class="navigation-item-title"><%= item.title %></span>',
+                '           <span class="navigation-item-title"><%= translate(item.title) %></span>',
                 '       </a>',
                 '       <% if (item.hasSettings) { %>',
                 '           <a class="icon-cogwheel navigation-settings-icon js-navigation-settings" id="<%= item.id %>" href="#"></a>',
@@ -21738,7 +21753,7 @@ define('__component__$navigation@husky',[],function() {
             subToggleItem: [
                 '   <li class="js-navigation-items navigation-subitems" id="<%= item.id %>" data-id="<%= item.id %>">',
                 '       <div class="navigation-subitems-toggle">',
-                '           <a class="<% if (!!item.action) { %>js-navigation-item <% } %> navigation-item" href="#"><%= item.title %></a>',
+                '           <a class="<% if (!!item.action) { %>js-navigation-item <% } %> navigation-item" href="#"><%= translate(item.title) %></a>',
                 '           <% if (item.hasSettings) { %>',
                 '           <a class="icon-cogwheel navigation-settings-icon js-navigation-settings" href="#"></a>',
                 '           <% } %>',
@@ -21748,15 +21763,15 @@ define('__component__$navigation@husky',[],function() {
             /** siple sub item */
             subItem: [
                 '<li class="js-navigation-sub-item" id="<%= item.id %>" data-id="<%= item.id %>">',
-                '   <a href="#"><%= item.title %></a>',
+                '   <a href="#"><%= translate(item.title) %></a>',
                 '</li>'
             ].join('')
         },
         defaults = {
             footerTemplate: '',
             labels: {
-                hide: 'Hide',
-                show: 'Show'
+                hide: 'navigation.hide',
+                show: 'navigation.show'
             }
         };
 
@@ -21804,12 +21819,19 @@ define('__component__$navigation@husky',[],function() {
             // render skeleton
             this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {
                 title: this.options.data.title,
-                icon: this.options.data.icon
+                icon: this.options.data.icon,
+                translate: this.sandbox.translate
             }));
 
             // start search component
             this.sandbox.start([
-                {name: 'search@husky', options: {el: '#navigation-search'}}
+                {
+                    name: 'search@husky',
+                    options: {
+                        el: '#navigation-search',
+                        placeholderText: 'public.search'
+                    }
+                }
             ]);
 
             // render navigation items
@@ -21833,14 +21855,15 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.util.foreach(data.items, function(section) {
                 $sectionDiv = this.sandbox.dom.createElement('<div class="section">');
                 $sectionList = this.sandbox.dom.createElement('<ul class="section-items">');
-                this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + section.title.toUpperCase() + '</span><span class="section-toggle"><a href="#">' + this.options.labels.hide + '</a></span></div>');
+                this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + this.sandbox.translate(section.title).toUpperCase() + '</span><span class="section-toggle"><a href="#">' + this.sandbox.translate(this.options.labels.hide) + '</a></span></div>');
 
                 // iterate through section items
                 this.sandbox.util.foreach(section.items, function(item) {
                     // create item
                     $elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.mainItem, {
                         item: item,
-                        icon: item.icon ? 'icon-' + item.icon : ''
+                        icon: item.icon ? 'icon-' + item.icon : '',
+                        translate: this.sandbox.translate
                     }));
                     //render sub-items
                     if (item.items && item.items.length > 0) {
@@ -21866,10 +21889,10 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.util.foreach(data.items, function(item) {
                 this.items[item.id] = item;
                 if (item.items && item.items.length > 0) {
-                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subToggleItem, {item: item}));
+                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subToggleItem, {item: item, translate: this.sandbox.translate}));
                     this.renderSubNavigationItems(item, this.sandbox.dom.find('div', elem));
                 } else {
-                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subItem, {item: item}));
+                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subItem, {item: item, translate: this.sandbox.translate}));
                 }
                 this.sandbox.dom.append(list, elem);
             }.bind(this));
@@ -21998,12 +22021,12 @@ define('__component__$navigation@husky',[],function() {
             if (this.sandbox.dom.hasClass($section, 'is-hidden')) {
                 // hide section
                 this.sandbox.dom.slideDown($list, 200, function() {
-                    this.sandbox.dom.html(toggleLink, this.options.labels.hide);
+                    this.sandbox.dom.html(toggleLink, this.sandbox.translate(this.options.labels.hide));
                     this.sandbox.dom.removeClass($section, 'is-hidden');
                 }.bind(this));
             } else {
                 // show section
-                this.sandbox.dom.html(toggleLink, this.options.labels.show);
+                this.sandbox.dom.html(toggleLink, this.sandbox.translate(this.options.labels.show));
                 this.sandbox.dom.slideUp($list, 200, function() {
                     this.sandbox.dom.addClass($section, 'is-hidden');
                 }.bind(this));
@@ -22570,8 +22593,8 @@ define('__component__$datagrid@husky',[],function() {
         excludeFields: ['id'],
         pagination: false,
         paginationOptions: {
-            pageSize: 4,
-            showPages: 5
+            pageSize: null,
+            showPages: null
         },
         removeRow: true,
         selectItem: {
@@ -22696,14 +22719,18 @@ define('__component__$datagrid@husky',[],function() {
                 return params.url;
             }
 
-            var delimiter = '?', url;
-            if (params.url.indexOf('?') !== -1) {
-                delimiter = '&';
-            }
+            var delimiter = '?', url = params.url;
 
-            url = params.url + delimiter + 'pageSize=' + this.options.paginationOptions.pageSize;
-            if (params.page > 1) {
-                url += '&page=' + params.page;
+            if(!!this.options.pagination && !!this.options.paginationOptions.pageSize) {
+
+                if (params.url.indexOf('?') !== -1) {
+                    delimiter = '&';
+                }
+
+                url = params.url + delimiter + 'pageSize=' + this.options.paginationOptions.pageSize;
+                if (params.page > 1) {
+                    url += '&page=' + params.page;
+                }
             }
 
             return url;
@@ -24380,7 +24407,7 @@ define('__component__$search@husky',[], function() {
         render: function() {
             this.sandbox.dom.addClass(this.options.el, 'search-container');
             this.sandbox.dom.addClass(this.options.el, this.options.appearance);
-            this.sandbox.dom.html(this.$el,this.sandbox.template.parse(templates.skeleton, {placeholderText: this.options.placeholderText}));
+            this.sandbox.dom.html(this.$el,this.sandbox.template.parse(templates.skeleton, {placeholderText: this.sandbox.translate(this.options.placeholderText)}));
         },
 
         // bind dom elements
@@ -24550,7 +24577,7 @@ define('__component__$tabs@husky',[],function() {
                 }
 
                 this.items[item.id] = item;
-                this.sandbox.dom.append($list, '<li ' + selected + ' data-id="' + item.id + '"><a href="#">' + item.title + '</a></li>');
+                this.sandbox.dom.append($list, '<li ' + selected + ' data-id="' + item.id + '"><a href="#">' + this.sandbox.translate(item.title) + '</a></li>');
             }.bind(this));
 
             // force selection of first element
@@ -24615,7 +24642,8 @@ define('__component__$toolbar@husky',[],function() {
             data: [],
             instanceName: '',
             hasSearch: false,
-            appearance: 'large'
+            appearance: 'large',
+            searchOptions: null
         },
 
         selectItem = function(event) {
@@ -24630,7 +24658,7 @@ define('__component__$toolbar@husky',[],function() {
 
             // if toggle item do not trigger event
             if (!item.items) {
-                $parent = this.sandbox.dom.find('button',this.sandbox.dom.closest(event.currentTarget,'.group'));
+                $parent = this.sandbox.dom.find('button', this.sandbox.dom.closest(event.currentTarget, '.group'));
                 triggerSelectEvent.call(this, item, $parent);
             }
         },
@@ -24640,7 +24668,7 @@ define('__component__$toolbar@husky',[],function() {
             parentId = this.sandbox.dom.data($parent, 'id');
 
             if (this.items[parentId].type === "select") {
-                icon =this.sandbox.dom.find('span', $parent);
+                icon = this.sandbox.dom.find('span', $parent);
                 this.sandbox.dom.removeClass(icon);
                 this.sandbox.dom.addClass(icon, item.icon);
             }
@@ -24664,7 +24692,7 @@ define('__component__$toolbar@husky',[],function() {
          * @param listItem
          * @param parent
          */
-        createDropdownMenu = function(listItem, parent) {
+            createDropdownMenu = function(listItem, parent) {
             var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />'),
                 classString = '';
             this.sandbox.dom.after(listItem, $list);
@@ -24693,7 +24721,7 @@ define('__component__$toolbar@husky',[],function() {
          * otherwise a new id is generated for the element
          * @param item
          */
-        checkItemId = function(item) {
+            checkItemId = function(item) {
             // if item has no id, generate random id
             if (!item.id || !!this.items[item.id]) {
                 do {
@@ -24707,7 +24735,7 @@ define('__component__$toolbar@husky',[],function() {
          * opens dropdown submenu
          * @param event
          */
-        toggleItem = function(event) {
+            toggleItem = function(event) {
 
             event.preventDefault();
             event.stopPropagation();
@@ -24764,7 +24792,7 @@ define('__component__$toolbar@husky',[],function() {
             // TODO: add appearance class
 
             var $container = this.sandbox.dom.createElement('<div class="toolbar-container" />'),
-                classArray, addTo, disabledString, button, $group;
+                classArray, addTo, disabledString, button, $group, searchOptions;
 
             this.sandbox.dom.append(this.options.el, $container);
 
@@ -24822,11 +24850,21 @@ define('__component__$toolbar@husky',[],function() {
             // add search
             if (this.options.hasSearch) {
                 this.sandbox.dom.append($container, '<div id="' + this.options.instanceName + '-toolbar-search" class="toolbar-search" />');
+
+                searchOptions = {
+                    el: '#' + this.options.instanceName + '-toolbar-search',
+                    instanceName: this.options.instanceName,
+                    appearance: 'white small'
+                };
+                searchOptions = this.sandbox.util.extend(true, {}, searchOptions, this.options.searchOptions);
+                // start search component
+                this.sandbox.start([
+                    {
+                        name: 'search@husky',
+                        options: searchOptions
+                    }
+                ]);
             }
-            // start search component
-            this.sandbox.start([
-                {name: 'search@husky', options: {el: '#' + this.options.instanceName + '-toolbar-search', instanceName: this.options.instanceName, appearance: 'white small'}}
-            ]);
 
             // initialization finished
             this.sandbox.emit('husky.tabs.initialized');
@@ -24942,11 +24980,11 @@ define('__component__$edit-toolbar@husky',[],function() {
             this.items[id].disabled = !enabled;
 
             if (!!enabled) {
-                this.sandbox.dom.removeClass($item, 'disable');
+                this.sandbox.dom.removeClass($item, 'disabled');
                 this.sandbox.dom.removeClass($iconItem, disabledIconClass);
                 this.sandbox.dom.prependClass($iconItem, enabledIconClass);
             } else {
-                this.sandbox.dom.addClass($item, 'disable');
+                this.sandbox.dom.addClass($item, 'disabled');
                 this.sandbox.dom.removeClass($iconItem, enabledIconClass);
                 this.sandbox.dom.prependClass($iconItem, disabledIconClass);
             }
@@ -25051,7 +25089,7 @@ define('__component__$edit-toolbar@husky',[],function() {
             if (!!item.icon) {
                 this.sandbox.dom.removeClass(listItems.eq(0), '');
                 if (item.icon !== false) {
-                    this.sandbox.dom.addClass(listItems.eq(0), createIconSupportClass.call(this, item));
+                    this.sandbox.dom.addClass(listItems.eq(0), createIconSupportClass.call(this, item, !item.disabled));
                 }
             }
             if (!!item.title) {
@@ -25217,6 +25255,9 @@ define('__component__$edit-toolbar@husky',[],function() {
                 if (!!item.class) {
                     classArray.push(item.class);
                 }
+                if (item.disabled) {
+                    classArray.push('disabled');
+                }
 
                 // if group is set to right, add to right list, otherwise always add to left list
                 if (!!item.group && item.group === 'right') {
@@ -25230,7 +25271,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                 this.sandbox.dom.append($listItem, $listLink);
 
                 // create icon span
-                this.sandbox.dom.append($listLink, '<span class="' + createIconSupportClass.call(this, item) + '" />');
+                this.sandbox.dom.append($listLink, '<span class="' + createIconSupportClass.call(this, item, !item.disabled) + '" />');
 
                 // create title span
                 title = item.title ? item.title : '';
@@ -25276,41 +25317,37 @@ define('__component__$edit-toolbar@husky',[],function() {
  *  auto-complete.load-data ... event to append data
  */
 
-define('__component__$auto-complete@husky',[], function() {
+define('__component__$auto-complete@husky',[], function () {
 
     
 
     var defaults = {
-            url: '',                    // url to load data
-            valueName: 'name',          // propertyName for value
-            minLength: 3,               // min length for request
-            keyControl: true,           // control with up/down key
-            value: null,                // value to display at start
-            excludeItems: [],           // items to filter
-            instanceName: 'undefined'   // name of the component instance
-        },
-        successClass = 'husky-auto-complete-success',
-        failClass = 'husky-auto-complete-error',
-        loadingClass = 'husky-auto-complete-loading';
+        prefetchUrl: '',                                        // url to prefetch data
+        localData: [],                                          // array of local data
+        remoteUrl: '',                                          // url to fetch data if prefetch or local don't have matches
+        GETparameter: 'query',                                  // name for GET-parameter in remote query
+        valueKey: 'name',                                       // JSON-key for value
+        totalKey: 'total',										// JSON-key for total-value
+        resultKey: 'items',										// JSON-key for result
+        typeaheadName: 'name',									// identifier - used by typeahead to cache intelligently
+        value: null,                                            // value to display at start
+        instanceName: 'undefined',                              // name of the component instance
+        noNewValues: false,										// if false input value must be contained in autocomplete-suggestions
+        successClass: 'husky-auto-complete-success',			// success-class if nowNewValues is false
+        failClass: 'husky-auto-complete-error',					// fail-class if noNewValues is false
+        suggestionClass: 'suggestion',                          // CSS-class for autocomplete suggestions
+        suggestionImg: '<img src="../../img/sample.gif" />',    // HTML-Img Tag - Image gets rendered before every suggestion
+        stickToInput: false                                     // If true suggestions are always under the input field
+    };
 
     return {
         data: [],
 
-        getEvent: function(append) {
+        getEvent: function (append) {
             return 'husky.auto-complete.' + append;
         },
 
-        // get url for pattern
-        getUrl: function(pattern) {
-            var delimiter = '?';
-            if (this.options.url.indexOf('?') !== -1) {
-                delimiter = '&';
-            }
-
-            return this.options.url + delimiter + 'search=' + pattern;
-        },
-
-        getValueID: function() {
+        getValueID: function () {
             if (!!this.options.value) {
                 return this.options.value.id;
             } else {
@@ -25318,7 +25355,7 @@ define('__component__$auto-complete@husky',[], function() {
             }
         },
 
-        getValueName: function() {
+        getValueName: function () {
             if (!!this.options.value) {
                 return this.options.value[this.options.valueName];
             } else {
@@ -25326,317 +25363,180 @@ define('__component__$auto-complete@husky',[], function() {
             }
         },
 
-        initialize: function() {
+        initialize: function () {
             this.sandbox.logger.log('initialize', this);
             this.sandbox.logger.log(arguments);
+
+            this._template = null;
+            this.data = null;
+            this.total = 0;
+            this.matched = true;
+            this.matches = [];
 
             // extend default options
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
+            this.setTemplate();
+
             this.render();
+            this.setEvents();
         },
 
-        render: function() {
-            this.$el.addClass('dropdown husky-auto-complete');
+        setTemplate: function () {
+            this._template = this.sandbox.util.template('' +
+                '<div class="' + this.options.suggestionClass + '" data-id="<%= id %>">' +
+                '   <div class="border">' +
+                '		<div class="img">' + this.options.suggestionImg + '</div>' +
+                '		<div class="text"><%= name %></div>' +
+                '	</div>' +
+                '</div>');
+        },
+
+        buildTemplate: function (context) {
+            if (this._template !== null) {
+                return this._template(context);
+            }
+        },
+
+        render: function () {
+            this.$el.addClass('husky-auto-complete');
             // init form-element and dropdown menu
-            this.$valueField = $('<input id="'+this.options.instanceName+'" type="text" autofill="false" class="name-value form-element husky-validate" data-id="' + this.getValueID() + '" value="' + this.getValueName() + '"/>');
-            this.$dropDown = $('<div class="dropdown-menu" />');
-            this.$dropDownList = $('<ul/>');
+            this.$valueField = $('<input id="' + this.options.instanceName + '" class="husky-validate" type="text" autofill="false" data-id="' + this.getValueID() + '" value="' + this.getValueName() + '"/>');
             this.$el.append(this.$valueField);
-            this.$el.append(this.$dropDown);
-            this.$dropDown.append(this.$dropDownList);
-            this.hideDropDown();
 
-            // bind dom elements
-            this.bindDOMEvents();
-
-            if (!!this.options.value) {
-                this.successState();
-            }
+            this.bindTypeahead();
         },
 
-        // bind dom elements
-        bindDOMEvents: function() {
-            // turn off all events
-            this.$el.off();
-
-            // input value changed
-            this.$valueField.on('input', this.inputChanged.bind(this));
-
-            // mouse control
-            this.$dropDownList.on('click', 'li', function(event) {
-                var $element = $(event.currentTarget),
-                    id = $element.data('id'),
-                    item = {id: id};
-
-                item[this.options.valueName] = $element.text();
-                this.selectItem(item);
-            }.bind(this));
-
-            // focus in
-            this.$valueField.on('focusin', function() {
-                this.$valueField.trigger('input');
-            }.bind(this));
-
-            // focus out
-            this.$valueField.on('focusout', function() {
-                // FIXME may there is a better solution ???
-                setTimeout(function() {
-                    this.hideDropDown();
-                }.bind(this), 250);
-            }.bind(this));
-
-            // key control
-            if (this.options.keyControl) {
-                this.$valueField.on('keydown', function(event) {
-                    // key 40 = down, key 38 = up, key 13 = enter
-                    if ([40, 38, 13].indexOf(event.which) === -1) {
-                        return;
-                    }
-
-                    event.preventDefault();
-                    if (this.$dropDown.is(':visible')) {
-
-                        if (event.which === 40) {
-                            this.pressKeyDown();
-                        }
-                        else if (event.which === 38) {
-                            this.pressKeyUp();
-                        }
-                        else if (event.which === 13) {
-                            this.pressKeyEnter();
-                        }
-
-                    } else {
-                        // If dropdown not visible => search for given pattern
-                        this.noState();
-                        this.loadData(this.$valueField.val());
-                    }
-                }.bind(this));
-
-                // remove hover class by mouseover
-                this.$dropDownList.on('mouseover', 'li', function() {
-                    this.$dropDownList.children().removeClass('hover');
-                }.bind(this));
-            }
-        },
-
-        // value of input changed
-        inputChanged: function() {
-            this.sandbox.logger.log('inputChanged');
-
-            // value is not success
-            this.noState();
-
-            var val = this.$valueField.val();
-            if (val.length >= this.options.minLength) {
-                this.loadData(val);
-            }
-        },
-
-        // load data from server
-        loadData: function(pattern) {
-            var url = this.getUrl(pattern);
-            this.sandbox.logger.log('load: ' + url);
-            this.loadingState();
-
-            $.ajax({
-                url: url,
-                success: function(response) {
-                    this.sandbox.logger.log('load', 'success');
-
-                    this.noState();
-
-                    // if only one result this is it, if no result hideDropDown, else generateDropDown
-                    this.updateData(response.items);
-                    if (this.data.length > 1) {
-                        this.generateDropDown(this.data);
-                    } else if (this.data.length === 1) {
-                        this.selectItem(this.data[0]);
-                    } else {
-                        this.failState();
-                        this.hideDropDown();
-                    }
+        bindTypeahead: function () {
+            this.sandbox.autocomplete.init(this.$valueField, {
+                name: this.options.typeaheadName,
+                local: this.options.localData,
+                valueKey: this.options.valueKey,
+                template: function (context) {
+                    this.matches.push(context);
+                    this.matched = true;
+                    return this.buildTemplate(context);
                 }.bind(this),
-                error: function() {
-                    this.sandbox.logger.log('load', 'error');
-
-                    this.failState();
-                    this.hideDropDown();
-                }.bind(this)
+                prefetch: {
+                    url: this.options.prefetchUrl,
+                    ttl: 1,
+                    filter: function (data) {
+                        this.sandbox.emit(this.getEvent('prefetch-data'));
+                        this.handleData(data);
+                        return this.data;
+                    }.bind(this)
+                },
+                remote: {
+                    url: this.options.remoteUrl + '?' + this.options.GETparameter + '=%QUERY',
+                    beforeSend: function () {
+                        this.sandbox.emit(this.getEvent('remote-data-load'));
+                    }.bind(this),
+                    filter: function (data) {
+                        this.sandbox.emit(this.getEvent('remote-data'));
+                        this.handleData(data);
+                        return this.data;
+                    }.bind(this)
+                }
             });
-
-            this.sandbox.emit(this.getEvent('load-data'));
-        },
-
-        // update global data array
-        updateData: function(newData) {
-            this.data = [];
-            if (!!newData && $.isArray(newData)) {
-                newData.forEach(function(item) {
-                    if (this.isVisible(item)) {
-                        this.data.push(item);
-                    }
-                }.bind(this));
+            if (this.options.stickToInput === false) {
+                this.sandbox.dom.css('.twitter-typeahead', 'position', 'static');
             }
         },
 
-        // generate dropDown with given items
-        generateDropDown: function(items) {
-            this.clearDropDown();
-            items.forEach(function(item) {
-                if (this.isVisible(item)) {
-                    this.$dropDownList.append('<li data-id="' + item.id + '">' + item[this.options.valueName] + '</li>');
-                }
+        setEvents: function () {
+            this.sandbox.dom.on(this.$valueField, 'typeahead:selected', function (event, datum) {
+                this.sandbox.emit(this.getEvent('select'));
+                this.setValueFieldId(datum.id);
             }.bind(this));
-            this.showDropDown();
-        },
 
-        // is item visible (filter)
-        isVisible: function(item) {
-            var result = true;
-            this.options.excludeItems.forEach(function(testItem) {
-                if (parseInt(item.id, 10) === parseInt(testItem.id, 10)) {
-                    result = false;
-                }
+            this.sandbox.dom.on(this.$valueField, 'keydown', function () {
+                this.matched = false;
+                this.matches = [];
+                this.setNoState();
             }.bind(this));
-            return result;
+
+            this.sandbox.dom.on(this.$valueField, 'blur', function () {
+                this.handleBlur();
+            }.bind(this));
         },
 
-        // clear childs of list
-        clearDropDown: function() {
-            // FIXME make it easier
-            this.$dropDown.children('ul').children('li').remove();
-        },
-
-        // make dropDown visible
-        showDropDown: function() {
-            this.sandbox.logger.log('show dropdown');
-            this.$dropDown.show();
-        },
-
-        // hide dropDown
-        hideDropDown: function() {
-            this.sandbox.logger.log('hide dropdown');
-            this.clearDropDown();
-            this.$dropDown.hide();
-        },
-
-        // set class success to container
-        successState: function() {
-            this.sandbox.logger.log('set success');
-            this.clearDropDown();
-            this.$el.parent().removeClass(failClass);
-            this.$el.parent().removeClass(loadingClass);
-            this.$el.parent().addClass(successClass);
-        },
-
-        // remove class success, fail and loading of container
-        noState: function() {
-            this.sandbox.logger.log('remove success and fail');
-            this.$valueField.data('');
-            this.$el.parent().removeClass(failClass);
-            this.$el.parent().removeClass(loadingClass);
-            this.$el.parent().removeClass(successClass);
-        },
-
-        // add class fail to container
-        failState: function() {
-            this.sandbox.logger.log('set fail');
-            this.$el.parent().addClass(failClass);
-            this.$el.parent().removeClass(loadingClass);
-            this.$el.parent().removeClass(successClass);
-        },
-
-        // add class loading to container
-        loadingState: function() {
-            this.sandbox.logger.log('set loading');
-            this.$el.parent().removeClass(failClass);
-            this.$el.parent().addClass(loadingClass);
-            this.$el.parent().removeClass(successClass);
-        },
-
-        // handle key down
-        pressKeyDown: function() {
-            this.sandbox.logger.log('key down');
-
-            // get actual and next element
-            var $actual = this.$dropDownList.children('.hover'),
-                $next = $actual.next();
-
-            // no element selected
-            if ($next.length === 0) {
-                $next = this.$dropDownList.children().first();
-            }
-
-            $actual.removeClass('hover');
-            $next.addClass('hover');
-        },
-
-        // handle key up
-        pressKeyUp: function() {
-            this.sandbox.logger.log('key up');
-
-            // get actual and next element
-            var $actual = this.$dropDownList.children('.hover'),
-                $next = $actual.prev();
-            // no element selected
-            if ($next.length === 0) {
-                $next = this.$dropDownList.children().last();
-            }
-
-            $actual.removeClass('hover');
-            $next.addClass('hover');
-        },
-
-        // handle key enter
-        pressKeyEnter: function() {
-            this.sandbox.logger.log('key enter');
-
-            // if one element selected
-            var $actual = this.$dropDownList.children('.hover'),
-                item, value, childs, that;
-            if ($actual.length === 1) {
-                item = {id: $actual.data('id')};
-                item[this.options.valueName] = $actual.text();
-                this.selectItem(item);
+        handleBlur: function () {
+            if (this.options.noNewValues === true) {
+                if (this.isMatched() === true && this.getClosestMatch() !== null) {
+                    this.setValueFieldValue(this.getClosestMatch().name);
+                    this.setValueFieldId(this.getClosestMatch().id);
+                    this.setSuccessState();
+                } else {
+                    this.setFailState();
+                }
             } else {
-                // if it is one of the list
-                value = this.$valueField.val();
-                childs = this.$dropDownList.children();
-                that = this;
-
-                $(childs).each(function() {
-                    if ($(this).text() === value) {
-                        // found an item select it
-                        var item = {id: $(this).data('id')};
-                        item[that.options.valueName] = $(this).text();
-                        that.selectItem(item);
-                        return false;
-                    }
-                });
+                if (this.isMatchedExactly() === true) {
+                    this.setValueFieldValue(this.getClosestMatch().name);
+                    this.setValueFieldId(this.getClosestMatch().id);
+                }
             }
         },
 
-        // select an item
-        selectItem: function(item) {
-            this.sandbox.logger.log('select item: ' + item.id);
-            // set id to data-id
-            this.$valueField.data('id', item.id);
-            // set value to value
-            this.$valueField.val(item[this.options.valueName]);
+        getClosestMatch: function () {
+            if (!!this.matches.length) {
+                return this.matches[0];
+            }
+            return null;
+        },
 
-            this.hideDropDown();
-            this.successState();
+        getValueFieldValue: function () {
+            return this.sandbox.dom.val(this.$valueField).trim();
+        },
+
+        setValueFieldValue: function (value) {
+            this.sandbox.dom.val(this.$valueField, value);
+        },
+
+        setValueFieldId: function (id) {
+            this.sandbox.dom.attr(this.$valueField, {'data-id': id});
+        },
+
+        isMatched: function () {
+            return this.matched;
+        },
+
+        isMatchedExactly: function () {
+            if (this.isMatched() === true) {
+                if (this.getClosestMatch !== null) {
+                    if (this.getValueFieldValue().toLowerCase() === this.getClosestMatch().name.toLowerCase()) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        },
+
+        handleData: function (data) {
+            this.data = data[this.options.resultKey];
+            this.total = data[this.options.totalKey];
+            this.sandbox.logger.log(this.total);
+        },
+
+        setSuccessState: function () {
+            this.sandbox.dom.addClass(this.$el, this.options.successClass);
+        },
+
+        setFailState: function () {
+            this.sandbox.dom.addClass(this.$el, this.options.failClass);
+        },
+
+        setNoState: function () {
+            this.sandbox.dom.removeClass(this.$el, this.options.successClass);
+            this.sandbox.dom.removeClass(this.$el, this.options.failClass);
         }
     };
 });
 
-define('text!husky_components/auto-complete-list/main.html',[],function () { return '<div class="auto-complete-list-container">\n    <label>\n        <%= label %>\n        <div class="auto-complete-list">\n            <ul id="auto-complete-list-selections" class="auto-complete-list-selections">\n                <li class="auto-complete-list-input">\n                    <input type="text"/>\n                <li>\n            </ul>\n        </div>\n    </label>\n</div>\n';});
+define('text!husky_components/auto-complete-list/main.html',[],function () { return '<div class="auto-complete-list-container">\r\n    <label>\r\n        <%= label %>\r\n        <div class="auto-complete-list">\r\n            <ul id="auto-complete-list-selections" class="auto-complete-list-selections">\r\n                <li class="auto-complete-list-input">\r\n                    <div id="husky-autocomplete"></div>\r\n                <li>\r\n            </ul>\r\n        </div>\r\n    </label>\r\n</div>\r\n';});
 
-define('text!husky_components/auto-complete-list/tag.html',[],function () { return '<li class="auto-complete-list-selection">\n    <%= name %>\n    <span class="icon-remove"></span>\n</li>\n';});
+define('text!husky_components/auto-complete-list/suggestions.html',[],function () { return '<div class="auto-complete-list-suggestions">\r\n    <h5><%= headline %></h5>\r\n    <ul>\r\n    </ul>\r\n</div>\r\n';});
 
-define('text!husky_components/auto-complete-list/suggestions.html',[],function () { return '<div class="auto-complete-list-suggestions">\n    <h5><%= headline %></h5>\n    <ul>\n        <% _.each(suggestions, function(suggestion) { %>\n        <li><%= suggestion %></li>\n        <% }; %>\n    </ul>\n</div>\n';});
+define('text!husky_components/auto-complete-list/tag.html',[],function () { return '<li class="auto-complete-list-selection">\r\n    <%= name %>\r\n    <span class="icon-remove"></span>\r\n</li>\r\n';});
 
 /**
  * This file is part of Husky frontend development framework.
@@ -25661,17 +25561,21 @@ define('text!husky_components/auto-complete-list/suggestions.html',[],function (
  */
 define('__component__$auto-complete-list@husky',[
     'text!husky_components/auto-complete-list/main.html',
-    'text!husky_components/auto-complete-list/tag.html',
-    'text!husky_components/auto-complete-list/suggestions.html'
-], function(tplMain, tplTag, tplSuggestions) {
+    'text!husky_components/auto-complete-list/suggestions.html',
+    'text!husky_components/auto-complete-list/tag.html'
+], function(tplMain, tplSuggestions, tplTag) {
 
         
 
         var defaults = {
                 tags: [],
-                url: '', // url to load autocomplete data
-                suggestions: [],
-                suggestionUrl: '' // url to load suggestions
+                suggestions: [{"id": 1, "name": "Sugg1"}, {"id": 2, "name": "Sugg2"}, {"id": 3, "name": "Sugg3"}],
+                suggestionUrl: '', // url to load suggestions
+                label: '', //label (headline),
+                autocompleteSelector: '#husky-autocomplete', //Selector for auto-complete-container
+                autocompleteOptions: {
+                    localData: [{id: 1, name: 'Deutschland'}, {id: 2, name: 'Frankreich'}]
+                }
             },
             eventNamespace = 'husky.auto-complete-list.',
 
@@ -25686,6 +25590,7 @@ define('__component__$auto-complete-list@husky',[
         return {
 
             view: true,
+            suggestions: [],
 
             initialize: function() {
                 this.sandbox.logger.log('initialize', this);
@@ -25693,20 +25598,64 @@ define('__component__$auto-complete-list@husky',[
                 // extend default options
                 this.options = this.sandbox.util.extend({}, defaults, this.options);
 
+                this.loadSuggestions();
                 this.render();
+                this.startAutocomplete();
             },
 
             render: function() {
-
-                this.$el.html(
-                    _.template(tplMain)({
-                        label: 'Tags' // todo translate
-                    })
-                );
+                this.renderMain();
+                this.renderSuggestions();
 
                 this.sandbox.emit(RENDERED);
-            }
+            },
 
+            renderMain: function() {
+                this.sandbox.dom.html(this.$el,
+                    _.template(tplMain)({
+                        label: this.options.label
+                    })
+                );
+            },
+
+            renderSuggestions: function() {
+                if (!!this.suggestions.length) {
+                    var box, list, i = -1, length = this.suggestions.length;
+                    box = this.sandbox.dom.parseHTML(
+                               _.template(tplSuggestions)({
+                                    headline: 'Recent Tags'
+                               })
+                            );
+                    list = this.sandbox.dom.children(box, 'ul');
+                    for(;++i<length;) {
+                        this.sandbox.dom.append(list, this.suggestions[i].$el);
+                    }
+                    this.sandbox.dom.append(this.$el, box);
+                }
+            },
+
+            startAutocomplete: function() {
+                this.sandbox.start([{
+                    name: 'auto-complete@husky',
+                    options: this.sandbox.util.extend(
+                        {el: this.options.autocompleteSelector},
+                        this.options.autocompleteOptions
+                    )
+                }]);
+            },
+
+            loadSuggestions: function() {
+                if (!!this.options.suggestions.length) {
+                    for (var i = -1, length = this.options.suggestions.length; ++i<length;) {
+                        this.suggestions[i] = {
+                            id: this.options.suggestions[i].id,
+                            name: this.options.suggestions[i].name,
+                            $el: this.sandbox.dom.createElement('<li/>')
+                        }
+                        this.sandbox.dom.html(this.suggestions[i].$el, this.suggestions[i].name);
+                    }
+                }
+            }
         };
     }
 );
@@ -26126,6 +26075,545 @@ define('__component__$password-fields@husky',[], function() {
                 '    </div>',
                 '</div>'
             ].join('');
+        }
+    };
+});
+
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/column-navigation
+ */
+
+
+/**
+ * @class ColumnNavigation
+ * @constructor
+ *
+ * @params {Object} [options] Configuration object
+ * @params {Number} [options.wrapper.height] height of container
+ * @params {Number} [options.column.width] width of a column in within the navigation
+ * @params {Number} [options.scrollBarWidth] with of scrollbar
+ * @params {String} [options.url] url to load data
+ *
+ */
+define('__component__$column-navigation@husky',[], function() {
+
+    
+
+    var defaults = {
+            wrapper: {
+                height: 300
+            },
+            column: {
+                width: 250
+            },
+            url: null
+        },
+
+        SCROLLBARWIDTH = 17, // width of scrollbars
+        DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
+
+        /**
+         * namespace for events
+         * @type {string}
+         */
+            eventNamespace = 'husky.column-navigation.',
+
+        /**
+         * @event husky.column-navigation.loaded
+         * @description the component has loaded everything successfully and will be rendered
+         */
+            LOADED = eventNamespace + 'loaded',
+
+        /**
+         * @event husky.column-navigation.selected
+         * @description an navigation element has been selected
+         * @param {Object} selected object
+         */
+            SELECTED = eventNamespace + 'selected',
+
+        /**
+         * @event husky.column-navigation.add
+         * @description the add button has been clicked
+         * @param {Object} parent object from active column level
+         */
+            ADD = eventNamespace + 'add',
+
+        /**
+         * @event husky.column-navigation.edit
+         * @description the edit icon has been clicked
+         * @param {Object} clicked object
+         */
+            EDIT = eventNamespace + 'edit',
+
+        /**
+         * @event husky.column-navigation.settings
+         * @description the settings button has been clicked
+         * @param {Object} parent object from active column level
+         */
+            SETTINGS = eventNamespace + 'settings',
+
+        /**
+         * @event husky.column-navigation.get-breadcrumb
+         * @description the breadcrumb will be returned
+         * @param {Function} callback function which will process the breadcrumb objects
+         */
+            BREADCRUMB = eventNamespace + 'get-breadcrumb';
+
+    return {
+
+        initialize: function() {
+
+            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
+            this.$element = this.sandbox.dom.$(this.options.el);
+            this.$selectedElement = null;
+            this.$addColumn = null;
+            this.filledColumns = 0;
+
+            this.containerWidth = this.sandbox.dom.width(this.$element);
+            this.columns = [];
+            this.selected = [];
+
+            this.render();
+            this.load(this.options.url, 0);
+            this.bindDOMEvents();
+            this.bindCustomEvents();
+        },
+
+        /**
+         * Renders basic structure (wrapper) of column navigation
+         */
+        render: function() {
+            var $add, $settings, $wrapper;
+
+            $wrapper = this.sandbox.dom.$(this.template.wrapper());
+            this.sandbox.dom.append(this.$element, $wrapper);
+
+            // navigation container
+            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer(this.options.wrapper.height + SCROLLBARWIDTH));
+            this.sandbox.dom.append($wrapper, this.$columnContainer);
+
+            // options container - add and settings button
+            this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer(this.options.column.width));
+            $add = this.sandbox.dom.$(this.template.options.add());
+            $settings = this.sandbox.dom.$(this.template.options.settings());
+            this.sandbox.dom.append(this.$optionsContainer, $add);
+            this.sandbox.dom.append(this.$optionsContainer, $settings);
+
+            this.sandbox.dom.append($wrapper, this.$optionsContainer);
+        },
+
+        /**
+         * Loads data from a specific url and triggers the parsing
+         * @param {String} url
+         * @param {Number} columnNumber
+         */
+        load: function(url, columnNumber) {
+
+            if (!!url) {
+                /**
+                 * FIXME change ajax method to this!
+                 * this.sandbox.util.load(url)
+                 * .then(function(data){
+                 * })
+                 * .fail(function(error){
+                 * });
+                 */
+                this.sandbox.util.ajax({
+
+                    url: url,
+
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        this.sandbox.logger.error("An error occured while fetching data from: " + this.options.url);
+                        this.sandbox.logger.error("errorthrown", errorThrown.message);
+                    }.bind(this),
+
+                    success: function(response) {
+                        this.parseData(response, columnNumber);
+                        this.sandbox.emit(LOADED);
+
+                    }.bind(this)
+                });
+            } else {
+                this.sandbox.logger.log("husky.column.navigation -  url not set, aborted loading of data");
+            }
+        },
+
+        /**
+         * Removes removes data and removes dom elements
+         * @param {Number} newColumn
+         */
+        removeColumns: function(newColumn) {
+
+            // removes all old columns except of next after clicked
+            // next column after clicked will be emptied and used again
+            var length = this.filledColumns + 1,
+                i, tmp;
+
+            for (i = length; i > newColumn; i--) {
+                delete this.columns[i];
+                this.sandbox.dom.remove('#column-' + i);
+                this.filledColumns--;
+            }
+
+            // check if element in dom exists
+            tmp = this.sandbox.dom.find('#column-' + newColumn);
+            if (tmp.length === 1) {
+                this.$addColumn = tmp[0];
+            }
+
+            this.sandbox.dom.remove('#column-' + newColumn + ' li');
+
+        },
+
+        /**
+         * Parses the received data and renders columns
+         * @param {String} data
+         * @param {Number} columnNumber
+         */
+        parseData: function(data, columnNumber) {
+            var $column,
+                $list,
+                newColumn,
+                $arrow;
+
+            this.data = {};
+            this.data.links = data._links;
+            this.data.embedded = data._embedded;
+            this.data.title = data.title;
+            this.data.id = data.id;
+            this.data.hasSub = data.hasSub;
+            this.data.linked = data.linked;
+            this.data.linked = data.type;
+            this.data.published = data.published;
+
+            if (columnNumber === 0) {  // case 1: no elements in container
+                this.columns[0] = [];
+                this.columns[0][data.id] = data;
+                newColumn = 1;
+            } else { // case 2: columns in container replace level after clicked column and clear following levels
+                newColumn = columnNumber + 1;
+            }
+
+            // fill old add column
+            if (!!this.$addColumn) {
+                $column = this.$addColumn;
+                this.sandbox.dom.data(this.$addColumn, 'id', newColumn);
+                this.sandbox.dom.attr(this.$addColumn, 'id', 'column-' + newColumn);
+                this.$addColumn = null;
+            } else {
+                $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.wrapper.height, this.options.column.width));
+            }
+
+            $list = this.sandbox.dom.find('ul', $column);
+
+            this.sandbox.util.each(this.data.embedded, function(index, value) {
+                this.storeDataItem(newColumn, value);
+                this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width - SCROLLBARWIDTH, value)));
+            }.bind(this));
+
+            // remove loading icon
+            if (!!this.$selectedElement) {
+                $arrow = this.sandbox.dom.find('.arrow', this.$selectedElement);
+                this.sandbox.dom.removeClass($arrow, 'is-loading');
+                this.sandbox.dom.prependClass($arrow, 'icon-chevron-right');
+            }
+
+            this.sandbox.dom.append(this.$columnContainer, $column);
+            this.filledColumns++;
+
+            this.scrollIfNeeded(newColumn);
+        },
+
+        /**
+         * Stores data in internal structure - seperated by column number
+         * @param {Object} item
+         * @param {Number} columnNumber
+         */
+        storeDataItem: function(columnNumber, item) {
+
+            if (!this.columns[columnNumber]) {
+                this.columns[columnNumber] = [];
+            }
+            this.columns[columnNumber][item.id] = item;
+
+        },
+
+        bindDOMEvents: function() {
+            this.sandbox.dom.on(this.$el, 'click', this.itemSelected.bind(this), 'li');
+
+            this.sandbox.dom.on(this.$el, 'mouseenter', this.itemMouseEnter.bind(this), 'li');
+            this.sandbox.dom.on(this.$el, 'mouseleave', this.itemMouseLeave.bind(this), 'li');
+
+            this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
+            this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#column-navigation-add');
+            this.sandbox.dom.on(this.$el, 'click', this.toggleSettings.bind(this), '#column-navigation-settings');
+            this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
+        },
+
+        bindCustomEvents: function() {
+            this.sandbox.on(BREADCRUMB, this.getBreadCrumb.bind(this));
+        },
+
+        /**
+         * Shows the edit icon
+         * @param {Object} event
+         */
+        itemMouseEnter: function(event) {
+            var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
+            this.sandbox.dom.toggle($edit);
+        },
+
+        /**
+         * Hides the edit icon
+         * @param {Object} event
+         */
+        itemMouseLeave: function(event) {
+            var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
+            this.sandbox.dom.toggle($edit);
+        },
+
+        /**
+         * Returns the breadcrumb
+         * @param {Function} callback
+         */
+        getBreadCrumb: function(callback) {
+            if (typeof callback === 'function') {
+                callback(this.selected);
+            } else {
+                this.sandbox.logger.log("callback is not a function");
+            }
+        },
+
+        /**
+         * Shows the options below the last hovered column
+         * @param {Object} event
+         */
+        showOptions: function(event) {
+
+            this.sandbox.dom.one(this.$columnContainer, 'scroll', this.hideOptions.bind(this));
+
+            this.lastHoveredColumn = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget), 'column');
+
+            var scrollPositionX = this.sandbox.dom.scrollLeft(this.sandbox.dom.parent(event.currentTarget)),
+                marginLeft = ((this.lastHoveredColumn - 1) * this.options.column.width);
+
+            if (scrollPositionX > 0) { // correct difference through scrolling
+                marginLeft -= scrollPositionX;
+            }
+
+            this.sandbox.dom.show(this.$optionsContainer);
+            this.sandbox.dom.css(this.$optionsContainer, 'margin-left', marginLeft + 'px');
+        },
+
+        /**
+         * Hides options
+         */
+        hideOptions: function() {
+            this.sandbox.dom.hide(this.$optionsContainer);
+        },
+
+        /**
+         * Item was selected and data will be loaded if has sub
+         * @param {Object} event
+         */
+        itemSelected: function(event) {
+
+            this.$selectedElement = this.sandbox.dom.$(event.currentTarget);
+            var id = this.sandbox.dom.data(this.$selectedElement, 'id'),
+                column = this.sandbox.dom.data(this.sandbox.dom.parent(this.sandbox.dom.parent(this.$selectedElement)), 'column'),
+                selectedItem = this.columns[column][id],
+                length = this.selected.length - 1,
+                i, $arrowElement;
+
+            if (this.sandbox.dom.hasClass(this.$selectedElement, 'selected')) { // is element already selected
+
+                this.sandbox.emit(SELECTED, selectedItem);
+
+            } else { // element not selected
+
+                this.removeCurrentSelected(column);
+
+                this.sandbox.dom.addClass(this.$selectedElement, 'selected');
+                $arrowElement = this.sandbox.dom.find('.arrow', this.$selectedElement);
+                this.sandbox.dom.removeClass($arrowElement, 'inactive icon-chevron-right');
+                this.sandbox.dom.addClass($arrowElement, 'is-loading');
+
+                if (!!selectedItem) {
+
+                    // remove old elements from breadcrumb
+                    for (i = length; i >= column; i--) {
+                        delete this.selected[i];
+                    }
+
+                    // add element to breadcrumb
+                    this.selected[column] = selectedItem;
+                    this.sandbox.emit(SELECTED, selectedItem);
+
+                    if (!!selectedItem.hasSub) {
+                        this.load(selectedItem._links.children, column);
+                    }
+
+                    this.removeColumns(column + 1);
+                }
+            }
+
+            // insert add column when clicked element
+            if (!this.$addColumn && !selectedItem.hasSub) {
+                // append empty column to add subpages
+                this.$addColumn = this.sandbox.dom.createElement(this.template.column(column + 1, this.options.wrapper.height, this.options.column.width));
+                this.sandbox.dom.append(this.$columnContainer, this.$addColumn);
+            }
+
+            // scroll for add column
+            if (!selectedItem.hasSub) {
+                this.scrollIfNeeded(column);
+            }
+
+        },
+
+        /**
+         * Scrolls if needed
+         * @param column
+         */
+        scrollIfNeeded: function(column) {
+            if (column > DISPLAYEDCOLUMNS) {
+                this.sandbox.dom.scrollLeft(this.$columnContainer, (column - DISPLAYEDCOLUMNS) * this.options.column.width);
+            }
+        },
+
+        /**
+         * Removes the selected class from old elements
+         * @param {Number} column
+         */
+        removeCurrentSelected: function(column) {
+            var $items = this.sandbox.dom.find('li', '#column-' + column);
+
+            this.sandbox.util.each($items, function(index, $el) {
+                this.sandbox.dom.removeClass($el, 'selected');
+                var $arrowElement = this.sandbox.dom.find('.arrow', $el);
+                this.sandbox.dom.addClass($arrowElement, 'inactive');
+            }.bind(this));
+        },
+
+        /**
+         * Emits an add event
+         */
+        addNode: function() {
+            var parent = this.selected[this.lastHoveredColumn - 1] || null;
+            this.sandbox.emit(ADD, parent);
+        },
+
+        /**
+         * Emits an edit event
+         * @param {Object} event
+         */
+        editNode: function(event) {
+            var $listItem = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget)),
+                id = this.sandbox.dom.data($listItem, 'id'),
+                item = this.columns[this.lastHoveredColumn][id];
+
+            this.sandbox.dom.stopPropagation(event);
+            this.sandbox.emit(EDIT, item);
+        },
+
+        /**
+         * Shows or hides the settings dropdown
+         */
+        toggleSettings: function() {
+            var parent = this.selected[this.lastHoveredColumn - 1] || null;
+            this.sandbox.emit(SETTINGS, parent);
+        },
+
+        /**
+         * Templates for various parts
+         */
+        template: {
+
+            wrapper: function() {
+                return '<div class="column-navigation-wrapper"></div>';
+            },
+
+            columnContainer: function(height) {
+                return ['<div class="column-navigation" style="height:', height, 'px"></div>'].join('');
+            },
+
+            column: function(columnNumber, height, width) {
+                return ['<div data-column="', columnNumber, '" class="column" id="column-', columnNumber, '" style="height:', height, 'px; width: ', width, 'px"><ul></ul></div>'].join('');
+            },
+
+            item: function(width, data) {
+
+                var item = ['<li data-id="', data.id, '" class="pointer" style="width:', width, 'px">'];
+
+                // icons left
+                item.push('<span class="pull-left">');
+
+                // link
+                if (!!data.linked) {
+                    if (data.linked === 'internal') {
+                        item.push('<span class="icon-internal-link pull-left m-right-5"></span>');
+                    } else if (data.linked === 'external') {
+                        item.push('<span class="icon-external-link pull-left m-right-5"></span>');
+                    }
+                }
+
+                // type (ghost, shadow)
+                if (!!data.type) {
+                    if (data.type.name === 'ghost') {
+                        item.push('<span class="ghost pull-left m-right-5">', data.type.value, '</span>');
+                    } else if (data.type.name === 'shadow') {
+                        item.push('<span class="icon-shadow-node pull-left m-right-5"></span>');
+                    }
+                }
+
+                // published
+                if (!data.published) {
+                    item.push('<span class="not-published pull-left m-right-5">&bull;</span>');
+                }
+
+                item.push('</span>');
+
+                // text center
+                if (!!data.type && data.type.name === 'ghost') {
+                    item.push('<span class="item-text inactive pull-left">', data.title, '</span>');
+                } else {
+                    item.push('<span class="item-text pull-left">', data.title, '</span>');
+                }
+
+                // icons right (subpage, edit)
+                item.push('<span class="pull-right">');
+                item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
+                !!data.hasSub ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
+                item.push('</span></li>');
+
+                return item.join('');
+            },
+
+            optionsContainer: function(width) {
+                return ['<div class="options grid-row hidden" style="width:', width, 'px"></div>'].join('');
+            },
+
+            options: {
+                add: function() {
+                    return ['<div id="column-navigation-add" class="align-center grid-col-6 add pointer">',
+                        '<span class="icon-add"></span>',
+                        '</div>'].join('');
+                },
+
+                settings: function() {
+                    return ['<div id="column-navigation-settings" class="align-center grid-col-6 settings pointer">',
+                        '<span class="icon-cogwheel"></span>',
+                        '</div>'].join('');
+                }
+            }
         }
     };
 });
@@ -26612,6 +27100,10 @@ define('husky_extensions/collection',[],function() {
                 return $(selector).html(content);
             };
 
+            app.core.dom.parseHTML = function(data) {
+                return $.parseHTML(data);
+            };
+
             app.core.dom.each = function(selector, callback) {
                 $(selector).each(callback);
             };
@@ -26704,7 +27196,7 @@ define('husky_extensions/collection',[],function() {
 
             app.core.dom.data = function(selector, key, value) {
                 if (!!value) {
-                    return $(selector).data(key, value);
+                    $(selector).data(key, value);
                 } else {
                     return $(selector).data(key);
                 }
@@ -26802,7 +27294,7 @@ define('husky_extensions/collection',[],function() {
                 return $(selector).show();
             };
 
-            app.core.dom.toggle = function(selector) {
+            app.core.dom.toggle= function(selector) {
                 return $(selector).toggle();
             };
 
@@ -26821,6 +27313,14 @@ define('husky_extensions/collection',[],function() {
 
             app.core.dom.scrollTop = function(itemSelector) {
                 $(window).scrollTop($(itemSelector).offset().top);
+            };
+
+            app.core.dom.scrollLeft = function(selector, value) {
+                if(!!value) {
+                    $(selector).scrollLeft(value);
+                } else {
+                    return $(selector).scrollLeft();
+                }
             };
 
 
@@ -26843,6 +27343,7 @@ define('husky_extensions/collection',[],function() {
             app.core.dom.slideDown = function(selector, duration, complete) {
                 $(selector).slideDown(duration,complete);
             };
+
 
 
             app.core.util.ajax = $.ajax;
@@ -26995,6 +27496,36 @@ define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
 
 (function() {
 
+	
+
+	if (window.Typeahead) {
+		define('typeahead', [], function() {
+			return window.Typeahead;
+		});
+	} else {
+		require.config({
+			paths: { "typeahead": 'bower_components/typeahead.js/typeahead' },
+			shim: { backbone: { deps: ['jquery'] } }
+		});
+	}
+
+	define('husky_extensions/typeahead',['typeahead'], {
+		name: 'typeahead',
+
+		initialize: function(app) {
+			app.sandbox.autocomplete = {
+
+				init: function(selector, configs) {
+					app.core.dom.$(selector).typeahead(configs);
+				}
+
+			};
+		}
+	});
+})();
+
+(function() {
+
     
 
     require.config({
@@ -27101,6 +27632,8 @@ define('husky_extensions/util',[],function() {
             app.core.util.uniqueId = function(prefix) {
                 return _.uniqueId(prefix);
             };
+
+			app.core.util.template = _.template;
         }
     };
 });

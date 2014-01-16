@@ -10,7 +10,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="stylesheet" href="../dist/husky.css">
+    <link rel="stylesheet" href="../../dist/husky.css">
 
     <style type="text/css">
         #content {
@@ -24,20 +24,15 @@
 </head>
 <body>
 
-    <!-- <div data-aura-component="headerbar@husky" data-aura-margin="55"></div>
-
-    <div data-aura-component="navigation@husky" data-aura-url="/navigation" data-aura-collapse="true"></div> -->
-
-    <div id="content" class="grid">
-        <div id="datagrid" class="grid-row"></div>
-        <div id="add-row" class="grid-row m-top-30"><span>Add Row</span></div>
-    </div>
+<div id="content" class="grid">
+    <div id="column-navigation" class="grid-row"></div>
+</div>
 
 
-    <script src="../node_modules/sinon/pkg/sinon.js"></script>
-    <script src="../bower_components/jquery/jquery.js"></script>
+<script src="../../node_modules/sinon/pkg/sinon.js"></script>
+<script src="../../bower_components/jquery/jquery.js"></script>
 
-    <script data-main="app_dataGrid_array" src="../bower_components/requirejs/require.js"></script>
+<script data-main="app_columnNavigation" src="../../bower_components/requirejs/require.js"></script>
 
 
 </body>

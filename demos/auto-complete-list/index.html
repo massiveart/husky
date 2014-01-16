@@ -21,28 +21,20 @@
         </style>
     </head>
     <body>
-
         <div class="container">
             <div class="grid">
                 <div class="grid-row">
-                    <div class="grid-col-12" data-aura-component="auto-complete-list@husky"></div>
-                </div>
-                <div class="grid-row">
-                    <div class="grid-col-12">&nbsp;</div>
-                </div>
-                <div>
-                    <div class="grid-col-6" id="auto-complete-list-1"></div>
-                    <div class="grid-col-6" id="auto-complete-list-2"></div>
+                    <div class="grid-col-6">
+                        <div class="list-wrapper" data-aura-component="auto-complete-list@husky" data-aura-label="Tags" data-aura-suggestion-url="/suggestions"></div>
+                    </div>
                 </div>
             </div>
         </div>
-
         <script src="../js/sinon.js"></script>
         <script src="../js/jquery.js"></script>
-
         <script src="../js/require.js"></script>
-
-        <script type="text/javascript">
+        <script src="../../bower_components/tagmanager/tagmanager.js"></script>
+        <script>
             require.config({
                 baseUrl: '../../'
             });
@@ -55,20 +47,6 @@
 
                 app.start().then(function() {
                     app.logger.log('Aura started...');
-
-                    app.sandbox.start([
-                        {
-                            name: 'auto-complete-list@husky',
-                            options: {
-                                el: '#auto-complete-list-1'
-                            }
-                        },{
-                            name: 'auto-complete-list@husky',
-                            options: {
-                                el: '#auto-complete-list-2'
-                            }
-                        }
-                    ]);
 
                 });
             });
