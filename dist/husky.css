@@ -3193,13 +3193,27 @@ h5 {
 }
 
 /* line 381, ../scss/modules/icons.scss */
+.icon-half-eye-open::after {
+  font-family: "Glyphicons Halflings Regular";
+  content: "\e105";
+  display: inline-block;
+}
+
+/* line 389, ../scss/modules/icons.scss */
+.icon-half-eye-close::after {
+  font-family: "Glyphicons Halflings Regular";
+  content: "\e106";
+  display: inline-block;
+}
+
+/* line 397, ../scss/modules/icons.scss */
 .icon-floppy-save::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e175";
   display: inline-block;
 }
 
-/* line 389, ../scss/modules/icons.scss */
+/* line 405, ../scss/modules/icons.scss */
 .icon-floppy-saved::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e173";
@@ -3232,6 +3246,112 @@ hr.divider {
   height: 0;
   border: 1px solid #fff;
   margin: 30px 0 20px 0;
+}
+
+/* line 5, ../scss/modules/column-options.scss */
+.column-options-container {
+  display: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  width: 200px;
+  background-color: white;
+  border: 0px solid #cccccc;
+  position: absolute;
+  z-index: 1000;
+  float: left;
+  min-width: 160px;
+  list-style: none;
+  padding: 5px 0;
+  margin-top: 0px;
+  margin-left: 0px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 0px 0px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 0px 0px;
+  box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 0px 0px;
+}
+/* line 29, ../scss/modules/column-options.scss */
+.column-options-container.right-aligned {
+  left: auto;
+  right: 0;
+}
+
+/* line 35, ../scss/modules/column-options.scss */
+.column-options-footer {
+  margin-top: 5px;
+  padding: 20px 0 15px;
+  border-top: 1px solid #cccccc;
+  text-align: center;
+}
+
+/* line 42, ../scss/modules/column-options.scss */
+.column-options-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+/* line 48, ../scss/modules/column-options.scss */
+.column-options-list li {
+  display: list-item;
+  float: none;
+  line-height: 1;
+  height: 50px;
+  line-height: 50px;
+  white-space: nowrap;
+  padding-right: 20px;
+}
+
+/* line 66, ../scss/modules/column-options.scss */
+.column-options-list-item.is-selected, .column-options-list-item.hover-style {
+  background-color: #cccccc;
+}
+/* line 71, ../scss/modules/column-options.scss */
+.column-options-list-item.disabled {
+  cursor: default;
+  color: #999999;
+}
+/* line 74, ../scss/modules/column-options.scss */
+.column-options-list-item.disabled.hover-style {
+  background-color: #e6e6e6;
+}
+/* line 79, ../scss/modules/column-options.scss */
+.column-options-list-item .move {
+  line-height: 0;
+  vertical-align: middle;
+  padding-right: 10px;
+  padding-left: 20px;
+  font-size: 22px;
+  cursor: move;
+}
+/* line 88, ../scss/modules/column-options.scss */
+.column-options-list-item .visibility-toggle {
+  position: absolute;
+  padding-right: 10px;
+  padding-left: 5px;
+  right: 10px;
+  cursor: pointer;
+}
+/* line 93, ../scss/modules/column-options.scss */
+.column-options-list-item .visibility-toggle:after {
+  line-height: 0;
+}
+
+/* line 101, ../scss/modules/column-options.scss */
+.sortable-placeholder {
+  border: 1px dashed rgba(0, 0, 0, 0.3);
+  width: 95%;
+  height: 95%;
+  margin: auto;
+  text-align: center;
+}
+
+/* line 112, ../scss/modules/column-options.scss */
+.is-expanded ul.toolbar-dropdown-menu {
+  display: block;
+}
+
+/* line 118, ../scss/modules/column-options.scss */
+.medium ul.toolbar-dropdown-menu, .small ul.toolbar-dropdown-menu {
+  font-size: 12px;
 }
 
 /* line 8, ../scss/modules/grid.scss */
@@ -4312,7 +4432,7 @@ table {
 
 /* line 5, ../scss/modules/btns.scss */
 .btn {
-  padding: 5px 35px;
+  padding: 7px 35px;
   border: 0;
   border-radius: 4px;
   background-color: #FFF;
@@ -4444,13 +4564,14 @@ a.btn-black {
 
 /* line 5, ../scss/modules/search.scss */
 .search-container {
+  position: relative;
   /** look and feel **/
 }
-/* line 7, ../scss/modules/search.scss */
+/* line 9, ../scss/modules/search.scss */
 .search-container a {
   color: #3e3e3e;
 }
-/* line 11, ../scss/modules/search.scss */
+/* line 13, ../scss/modules/search.scss */
 .search-container .search-input {
   padding-left: 40px;
   border: 0;
@@ -4478,11 +4599,11 @@ a.btn-black {
 .search-container .search-input::-webkit-input-placeholder {
   color: #3e3e3e;
 }
-/* line 22, ../scss/modules/search.scss */
+/* line 24, ../scss/modules/search.scss */
 .search-container .search-input:focus {
   background-color: white;
 }
-/* line 27, ../scss/modules/search.scss */
+/* line 29, ../scss/modules/search.scss */
 .search-container .search-icon {
   position: absolute;
   padding-left: 8px;
@@ -4490,27 +4611,36 @@ a.btn-black {
   line-height: 30px;
   vertical-align: middle;
 }
-/* line 44, ../scss/modules/search.scss */
+/* line 40, ../scss/modules/search.scss */
+.search-container .remove-icon {
+  display: none;
+  position: absolute;
+  right: 10px;
+  line-height: 30px;
+  vertical-align: middle;
+  margin: auto;
+}
+/* line 53, ../scss/modules/search.scss */
 .search-container.gray .search-input {
   background-color: #999999;
 }
-/* line 46, ../scss/modules/search.scss */
+/* line 55, ../scss/modules/search.scss */
 .search-container.gray .search-input:focus {
   background-color: white;
 }
-/* line 54, ../scss/modules/search.scss */
+/* line 63, ../scss/modules/search.scss */
 .search-container.white .search-input {
   background-color: white;
 }
-/* line 56, ../scss/modules/search.scss */
+/* line 65, ../scss/modules/search.scss */
 .search-container.white .search-input:focus {
   background-color: white;
 }
-/* line 63, ../scss/modules/search.scss */
+/* line 72, ../scss/modules/search.scss */
 .search-container.small .search-input {
   font-size: 12px;
 }
-/* line 66, ../scss/modules/search.scss */
+/* line 75, ../scss/modules/search.scss */
 .search-container.small .search-icon {
   padding-right: 15px;
   font-size: 12px;

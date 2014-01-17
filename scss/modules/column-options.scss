@@ -1,0 +1,127 @@
+@import "compass/css3/user-interface";
+
+$optionsListItemHeight: 50px;
+
+.column-options-container {
+
+    display:none;
+
+    @include user-select(none);
+
+    width: 200px;
+
+    background-color: white;
+    border: 0px solid $grayLighter;
+
+    position: absolute;
+
+    z-index: 1000;
+    float: left;
+    min-width: 160px;
+    list-style: none;
+
+    padding: 5px 0;
+    margin-top: 0px;
+    margin-left: 0px;
+
+    @include standard-box-shadow;
+
+    &.right-aligned {
+        left: auto;
+        right: 0;
+    }
+}
+
+.column-options-footer {
+    margin-top: 5px;
+    padding: 20px 0 15px;
+    border-top: 1px solid $grayLighter;
+    text-align: center;
+}
+
+.column-options-list {
+
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+
+    li {
+        display: list-item;
+        float: none;
+        line-height: 1;
+        height: $optionsListItemHeight;
+        line-height: $optionsListItemHeight;
+        white-space: nowrap;
+        //    cursor: pointer;
+
+        padding-right: 20px;
+
+    }
+}
+
+.column-options-list-item {
+
+    &.is-selected,
+    &.hover-style,
+    {
+        background-color: $grayLighter;
+    }
+
+    //    &.disabled:hover,
+    &.disabled {
+        cursor: default;
+        color: $grayLight;
+        &.hover-style {
+            background-color: lighten($grayLighter, 10%);
+        }
+    }
+
+    .move {
+        line-height: 0;
+        vertical-align: middle;
+        padding-right: 10px;
+        padding-left: 20px;
+        font-size: 22px;
+        cursor: move;
+    }
+
+    .visibility-toggle {
+        position: absolute;
+        padding-right: 10px;
+        padding-left: 5px;
+        right: 10px;
+        &:after {
+            line-height: 0;
+        }
+        cursor:pointer;
+    }
+}
+
+
+.sortable-placeholder {
+    border: 1px dashed rgba(0,0,0,0.3);
+    width: 95%;
+    height: 95%;
+    margin: auto;
+    text-align: center;
+}
+
+// dropdown
+
+.is-expanded {
+    ul.toolbar-dropdown-menu {
+        display: block;
+    }
+}
+
+.medium, .small {
+    ul.toolbar-dropdown-menu {
+        font-size: 12px;
+    }
+}
+
+ul {
+
+}
+
+

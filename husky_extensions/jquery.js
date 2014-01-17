@@ -153,7 +153,7 @@
             };
 
             app.core.dom.val = function(selector, value) {
-                if (!!value) {
+                if (!!value || value === '') {
                     $(selector).val(value);
                 } else {
                     return $(selector).val();
@@ -179,6 +179,11 @@
             app.core.dom.off = function(selector, event, filter, handler) {
                 $(selector).off(event, filter, handler);
             };
+
+            app.core.dom.trigger = function(selector, eventType, params) {
+                $(selector).trigger(eventType, params);
+            };
+
 
             app.core.dom.toggleClass = function(selector, className) {
                 $(selector).toggleClass(className);

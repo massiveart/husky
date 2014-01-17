@@ -37,6 +37,7 @@
  * @param {String} [options.selected] the item that's selected on initialize
  * @param {String} [options.instanceName] enables custom events (in case of multiple tabs on one page)
  * @param {String} [options.hasSearch] adds a search element at the end
+ * @param {Object} [options.dropdownComponent=null] adds a dropdowncomponent as dropdown menu
  */
 define(function() {
 
@@ -48,7 +49,8 @@ define(function() {
             instanceName: '',
             hasSearch: false,
             appearance: 'large',
-            searchOptions: null
+            searchOptions: null,
+            dropdownComponent: null
         },
 
         selectItem = function(event) {
@@ -245,7 +247,15 @@ define(function() {
                 this.sandbox.dom.append($group, button);
 
                 // now create subitems
-                if (!!item.items) {
+                if (item.dropdownComponent) {
+                    this.sandbox.dom.addClass(button, 'dropdown-toggle');
+                    // define element
+                    item.dropdownComponent.options.el = $group;
+                    item.dropdownComponent.options.trigger = button;
+                    this.sandbox.start([
+                        item.dropdownComponent
+                    ]);
+                } else if (!!item.items) {
                     this.sandbox.dom.addClass(button, 'dropdown-toggle');
                     createDropdownMenu.call(this, button, item);
                 }

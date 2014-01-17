@@ -377,6 +377,22 @@
   }
 }
 
+.icon-half-eye-open {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e105";
+    display: inline-block;
+  }
+}
+
+.icon-half-eye-close {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e106";
+    display: inline-block;
+  }
+}
+
 .icon-floppy-save {
   &::after {
     font-family: $baseIconHalflingsFont;
