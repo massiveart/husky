@@ -1,29 +1,27 @@
 @import "compass/css3/user-interface";
 
-$optionsListItemHeight: 50px;
+$columnOptionsListItemHeight: 50px;
+$columnOptionsContainerWidth: 400px;
+
+
+.column-options-parent {
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    margin-left: -($columnOptionsContainerWidth / 2);
+}
 
 .column-options-container {
-
     display:none;
-
-    @include user-select(none);
-
-    width: 200px;
-
+    width: $columnOptionsContainerWidth;
+    position: relative;
     background-color: white;
     border: 0px solid $grayLighter;
-
-    position: absolute;
-
+    margin: auto;
     z-index: 1000;
-    float: left;
     min-width: 160px;
     list-style: none;
-
-    padding: 5px 0;
-    margin-top: 0px;
-    margin-left: 0px;
-
+    @include user-select(none);
     @include standard-box-shadow;
 
     &.right-aligned {
@@ -32,42 +30,59 @@ $optionsListItemHeight: 50px;
     }
 }
 
+.column-options-header {
+    padding: 15px 20px 15px;
+    height: 50px;
+    border-bottom: 1px solid $grayLighterer;
+    position: relative;
+
+    .title {
+        color: $grayLight;
+        font-size: 23px;
+    }
+
+    .close-button {
+        font-size: 20px;
+        float:right;
+        text-decoration: none;
+        color: black;
+    }
+
+}
+
 .column-options-footer {
-    margin-top: 5px;
-    padding: 20px 0 15px;
+    padding: 10px 0;
     border-top: 1px solid $grayLighter;
     text-align: center;
+
+    .save-button {
+        display: inline-block;
+    }
 }
 
 .column-options-list {
-
     list-style: none;
     padding-left: 0;
-    margin: 0;
+    margin: 10px 0;
 
     li {
         display: list-item;
         float: none;
         line-height: 1;
-        height: $optionsListItemHeight;
-        line-height: $optionsListItemHeight;
+        height: $columnOptionsListItemHeight;
+        line-height: $columnOptionsListItemHeight;
         white-space: nowrap;
-        //    cursor: pointer;
-
         padding-right: 20px;
-
     }
 }
 
 .column-options-list-item {
 
     &.is-selected,
-    &.hover-style,
-    {
+    &.hover-style {
         background-color: $grayLighter;
     }
 
-    //    &.disabled:hover,
     &.disabled {
         cursor: default;
         color: $grayLight;
@@ -97,7 +112,6 @@ $optionsListItemHeight: 50px;
     }
 }
 
-
 .sortable-placeholder {
     border: 1px dashed rgba(0,0,0,0.3);
     width: 95%;
@@ -105,23 +119,3 @@ $optionsListItemHeight: 50px;
     margin: auto;
     text-align: center;
 }
-
-// dropdown
-
-.is-expanded {
-    ul.toolbar-dropdown-menu {
-        display: block;
-    }
-}
-
-.medium, .small {
-    ul.toolbar-dropdown-menu {
-        font-size: 12px;
-    }
-}
-
-ul {
-
-}
-
-

@@ -23,8 +23,8 @@
 
         <h1>column options</h1>
 
-        <div id="open-options" style="float:left"><a href="javascript://" class="fufu">open column options</a></div>
-        <div id="options-container"><a href="javascript://" class="toggle">open column options</a></div>
+        <div id=""><a href="javascript://" class="toggle">open column options</a></div>
+
 
 
         <script src="../js/sinon.js"></script>
@@ -76,16 +76,27 @@
                         JSON.stringify(testData)
                     ]);
 
-                    app.sandbox.start([
-                        {
-                            name: 'column-options@husky',
-                            options: {
-                                el: '#options-container',
-                                data: testData,
-                                trigger: '.toggle'
+
+                    app.sandbox.dom.on('.toggle','click', function() {
+
+                        console.log("test");
+
+//                        $container = app.sandbox.dom.find('#options-container', )
+
+                        app.sandbox.dom.append('body', '<div id="options-container" />');
+                        app.sandbox.start([
+                            {
+                                name: 'column-options@husky',
+                                options: {
+                                    el: '#options-container',
+                                    data: testData,
+                                    hidden: false,
+                                    trigger: '.toggle'
+                                }
                             }
-                        }
-                    ]);
+                        ]);
+                    });
+
 
 
                     app.sandbox.on('husky.util.load.data', function() {

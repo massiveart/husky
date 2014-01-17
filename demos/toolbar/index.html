@@ -75,7 +75,8 @@
                                 'group': '1',
                                 'items': [
                                     {
-                                        'title': 'move'
+                                        'title': 'move',
+                                        disabled: true
                                     },
                                     {
                                         'title': 'duplicate'
@@ -93,31 +94,6 @@
                                 'icon': 'file-import',
                                 'title': 'Import',
                                 'group': '2',
-                                'dropdownComponent': {
-                                    name: 'column-options@husky',
-                                    options: {
-                                        data: [
-                                            {
-                                                'id': 'title',
-                                                'title': 'Title'
-                                            },
-                                            {
-                                                'id': 'firstName',
-                                                'title': 'First Name'
-
-                                            },
-                                            {
-                                                'id': 'lastName',
-                                                'title': 'Last Name'
-                                            },
-                                            {
-                                                'id': 'middleName',
-                                                'title': 'Middle Name',
-                                                'disabled': true,
-                                            }
-                                        ]
-                                    }
-                                },
                                 'callback': function() {
 
                                 }

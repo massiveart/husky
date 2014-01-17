@@ -62,7 +62,7 @@ define(function() {
         searchInstanceName: null // at which search it should be listened to can be null|string|empty_string
     },
 
-        namespace = 'husky.datagrid',
+        namespace = 'husky.datagrid.',
 
         /* TRIGGERS EVENTS */
 

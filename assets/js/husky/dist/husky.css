@@ -3220,6 +3220,26 @@ h5 {
   display: inline-block;
 }
 
+/* line 413, ../scss/modules/icons.scss */
+.icon-half-ok::after {
+  font-family: "Glyphicons Halflings Regular";
+  content: "\e013";
+  display: inline-block;
+}
+
+/* line 421, ../scss/modules/icons.scss */
+.icon-half-remove::after {
+  font-family: "Glyphicons Halflings Regular";
+  content: "\e014";
+  display: inline-block;
+}
+
+/* line 429, ../scss/modules/icons.scss */
+.icon-remove2::after {
+  content: "\e208";
+  display: inline-block;
+}
+
 /* line 8, ../scss/modules/core.scss */
 * {
   -webkit-box-sizing: border-box;
@@ -3248,48 +3268,76 @@ hr.divider {
   margin: 30px 0 20px 0;
 }
 
-/* line 5, ../scss/modules/column-options.scss */
+/* line 7, ../scss/modules/column-options.scss */
+.column-options-parent {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  margin-left: -200px;
+}
+
+/* line 14, ../scss/modules/column-options.scss */
 .column-options-container {
   display: none;
+  width: 400px;
+  position: relative;
+  background-color: white;
+  border: 0px solid #cccccc;
+  margin: auto;
+  z-index: 1000;
+  min-width: 160px;
+  list-style: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  width: 200px;
-  background-color: white;
-  border: 0px solid #cccccc;
-  position: absolute;
-  z-index: 1000;
-  float: left;
-  min-width: 160px;
-  list-style: none;
-  padding: 5px 0;
-  margin-top: 0px;
-  margin-left: 0px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 0px 0px;
   -moz-box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 0px 0px;
   box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 0px 0px;
 }
-/* line 29, ../scss/modules/column-options.scss */
+/* line 27, ../scss/modules/column-options.scss */
 .column-options-container.right-aligned {
   left: auto;
   right: 0;
 }
 
-/* line 35, ../scss/modules/column-options.scss */
+/* line 33, ../scss/modules/column-options.scss */
+.column-options-header {
+  padding: 15px 20px 15px;
+  height: 50px;
+  border-bottom: 1px solid #dddddd;
+  position: relative;
+}
+/* line 39, ../scss/modules/column-options.scss */
+.column-options-header .title {
+  color: #999999;
+  font-size: 23px;
+}
+/* line 44, ../scss/modules/column-options.scss */
+.column-options-header .close-button {
+  font-size: 20px;
+  float: right;
+  text-decoration: none;
+  color: black;
+}
+
+/* line 53, ../scss/modules/column-options.scss */
 .column-options-footer {
-  margin-top: 5px;
-  padding: 20px 0 15px;
+  padding: 10px 0;
   border-top: 1px solid #cccccc;
   text-align: center;
 }
+/* line 58, ../scss/modules/column-options.scss */
+.column-options-footer .save-button {
+  display: inline-block;
+}
 
-/* line 42, ../scss/modules/column-options.scss */
+/* line 63, ../scss/modules/column-options.scss */
 .column-options-list {
   list-style: none;
   padding-left: 0;
-  margin: 0;
+  margin: 10px 0;
 }
-/* line 48, ../scss/modules/column-options.scss */
+/* line 68, ../scss/modules/column-options.scss */
 .column-options-list li {
   display: list-item;
   float: none;
@@ -3300,20 +3348,20 @@ hr.divider {
   padding-right: 20px;
 }
 
-/* line 66, ../scss/modules/column-options.scss */
+/* line 82, ../scss/modules/column-options.scss */
 .column-options-list-item.is-selected, .column-options-list-item.hover-style {
   background-color: #cccccc;
 }
-/* line 71, ../scss/modules/column-options.scss */
+/* line 86, ../scss/modules/column-options.scss */
 .column-options-list-item.disabled {
   cursor: default;
   color: #999999;
 }
-/* line 74, ../scss/modules/column-options.scss */
+/* line 89, ../scss/modules/column-options.scss */
 .column-options-list-item.disabled.hover-style {
   background-color: #e6e6e6;
 }
-/* line 79, ../scss/modules/column-options.scss */
+/* line 94, ../scss/modules/column-options.scss */
 .column-options-list-item .move {
   line-height: 0;
   vertical-align: middle;
@@ -3322,7 +3370,7 @@ hr.divider {
   font-size: 22px;
   cursor: move;
 }
-/* line 88, ../scss/modules/column-options.scss */
+/* line 103, ../scss/modules/column-options.scss */
 .column-options-list-item .visibility-toggle {
   position: absolute;
   padding-right: 10px;
@@ -3330,28 +3378,18 @@ hr.divider {
   right: 10px;
   cursor: pointer;
 }
-/* line 93, ../scss/modules/column-options.scss */
+/* line 108, ../scss/modules/column-options.scss */
 .column-options-list-item .visibility-toggle:after {
   line-height: 0;
 }
 
-/* line 101, ../scss/modules/column-options.scss */
+/* line 115, ../scss/modules/column-options.scss */
 .sortable-placeholder {
   border: 1px dashed rgba(0, 0, 0, 0.3);
   width: 95%;
   height: 95%;
   margin: auto;
   text-align: center;
-}
-
-/* line 112, ../scss/modules/column-options.scss */
-.is-expanded ul.toolbar-dropdown-menu {
-  display: block;
-}
-
-/* line 118, ../scss/modules/column-options.scss */
-.medium ul.toolbar-dropdown-menu, .small ul.toolbar-dropdown-menu {
-  font-size: 12px;
 }
 
 /* line 8, ../scss/modules/grid.scss */
@@ -4457,12 +4495,17 @@ a.btn {
 }
 
 /* line 27, ../scss/modules/btns.scss */
-a.btn-black {
+.btn-highlight {
+  background-color: #249fbe;
   color: #FFF;
-  text-decoration: none;
 }
 
 /* line 32, ../scss/modules/btns.scss */
+a.btn-black, a.btn-highlight {
+  color: #FFF;
+}
+
+/* line 38, ../scss/modules/btns.scss */
 .btn-gray {
   background-color: #cccccc;
   color: #000;

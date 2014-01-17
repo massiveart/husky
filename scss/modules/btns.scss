@@ -24,10 +24,16 @@ a.btn {
     color: #FFF;
 }
 
-a.btn-black {
+.btn-highlight {
+    background-color: $highlightColor;
     color: #FFF;
-    text-decoration: none;
 }
+
+a.btn-black, a.btn-highlight {
+    color: #FFF;
+}
+
+
 
 .btn-gray {
   background-color: $grayLighter;
