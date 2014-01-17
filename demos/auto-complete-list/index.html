@@ -25,7 +25,7 @@
             <div class="grid">
                 <div class="grid-row">
                     <div class="grid-col-6">
-                        <div class="list-wrapper" data-aura-component="auto-complete-list@husky" data-aura-label="Tags" data-aura-suggestion-url="/suggestions"></div>
+                        <div class="list-wrapper"></div>
                     </div>
                 </div>
             </div>
@@ -33,7 +33,6 @@
         <script src="../js/sinon.js"></script>
         <script src="../js/jquery.js"></script>
         <script src="../js/require.js"></script>
-        <script src="../../bower_components/tagmanager/tagmanager.js"></script>
         <script>
             require.config({
                 baseUrl: '../../'
@@ -42,12 +41,43 @@
             require(['lib/husky'], function(Husky) {
                 'use strict';
 
+                /*var fakeServer = sinon.fakeServer.create();
+                fakeServer.respondWith('GET', '/suggestions', [200, { 'Content-Type': 'application/json' },
+                    '{"suggestions": ["Loaded 1", "Loaded 2", "Loaded 3"]}'
+                ]);*/
+                /*fakeServer.respondWith('GET', '/sags', [200, { 'Content-Type': 'application/json' },
+                    '{"items": ["Tag loaded 1", "Tag loaded 2", "Tag loaded 3"]}'
+                ]);*/
+
+                /*var initServer = function(app) {
+                    app.sandbox.on('husky.auto-complete-list.sug-request', function() {
+                        fakeServer.respond();
+                    });
+                     app.sandbox.on('husky.auto-complete-list.items-request', function() {
+                        fakeServer.respond();
+                     });
+                }*/
+
                 var app = Husky({ debug: { enable: true }}),
                         _ = app.sandbox.util._;
 
-                app.start().then(function() {
+                app.start([{
+                    name: 'auto-complete-list@husky',
+                    options: {
+                        el: '.list-wrapper',
+                        label: 'Tags',
+                        suggestionsUrl: '',
+                        itemsUrl: '',
+                        items: ['Tag1', 'Tag2', 'Tag3', 'Tag4'],
+                        suggestions: ["Sugg1", "Sugg2", "Sugg3", "Sugg4"],
+                        suggestionsHeadline: 'Recent Tags',
+                        autocompleteOptions: {
+                            localData: [{id: null, name: 'Tag A'}, {id: null, name: 'Tag B'}, {id: null, name: 'Tag C'}, {id: null, name: 'Tag D'}]
+                        }
+                    }
+                }]).then(function() {
                     app.logger.log('Aura started...');
-
+                    //initServer(app);
                 });
             });
         </script>

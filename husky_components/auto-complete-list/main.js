@@ -28,18 +28,32 @@ define([
         'use strict';
 
         var defaults = {
-                tags: ['Tag1', 'Tag2', 'Tag3', 'Tag4'],
-                suggestions: [{"id": 1, "name": "Sugg1"}, {"id": 2, "name": "Sugg2"}, {"id": 3, "name": "Sugg3"}],
-                suggestionUrl: '', // url to load suggestions
+                items: [], //preloaded tags
+                itemsUrl: '', //url to load tags
+                itemsKey: 'items', //Key for AJAX respons
+                suggestions: [], //suggestions for suggestions box
+                suggestionsHeadline: '', //Headline for suggestions bxo
+                suggestionsUrl: '', // url to load suggestions
+                suggestionsKey: 'suggestions', //Key for AJAX response
                 label: '', //label (headline),
                 inputSelector: '#husky-autocomplete', //Selector for input wrapper div
-                autocompleteOptions: {
-                    localData: [{id: 1, name: 'Deutschland'}, {id: 2, name: 'Frankreich'}]
-                },
+                autocomplete: true, //enable/disable autocomplete
+                autocompleteOptions: {}, //options to pass to the autocomplete component
+                maxListItems: 0, //maximum amount of list items accepted (0 = no limit)
+                CapitalizeFirstLetter: false, //if true the first letter of each item gets capitalized
                 listItemClass: 'auto-complete-list-selection', //class for list items
-                suggestionDeactivatedClass: 'deactivated' //class if suggestion is already used
+                suggestionDeactivatedClass: 'deactivated', //class if suggestion is already used,
+                AjaxPush: '', //url to which added list items get send via ajax POST
+                AjaxPushAllItems: false, //if true all list items get sent if an item is added
+                AjaxPushParameters: null, //additional parameter payload to push with each AJAX request
+                togglerSelector: '#toggler', //CSS-selector for suggestion-toggler
+                arrowDownClass: 'arrow-down', //CSS-class for arrow down icon
+                arrowUpClass: 'arrow-up' //CSS-class for arrow up icon
             },
             eventNamespace = 'husky.auto-complete-list.',
+
+            togglerPosUp = 'up',
+            togglerPosDown = 'down',
 
             /**
              * @event husky.auto-complete-list.rendered
@@ -53,8 +67,10 @@ define([
 
             view: true,
             suggestions: [],
+            $suggestions: null,
             $input: null,
             tagApi: null,
+            toggler: null,
 
             initialize: function() {
                 this.sandbox.logger.log('initialize', this);
@@ -62,17 +78,13 @@ define([
                 // extend default options
                 this.options = this.sandbox.util.extend({}, defaults, this.options);
 
-                this.loadSuggestions();
-                this.render();
-                this.startAutocomplete();
-                this.bindStartTmEvent();
+                this.renderMain();
+                this.initSuggestions();
+                this.initItems();
             },
 
-            render: function() {
-                this.renderMain();
-                this.renderSuggestions();
-
-                this.sandbox.emit(RENDERED);
+            getEvent: function (append) {
+                return 'husky.auto-complete-list.' + append;
             },
 
             renderMain: function() {
@@ -83,20 +95,25 @@ define([
                 );
             },
 
-            renderSuggestions: function() {
-                if (!!this.suggestions.length) {
-                    var box, list, i = -1, length = this.suggestions.length;
-                    box = this.sandbox.dom.parseHTML(
-                               _.template(tplSuggestions)({
-                                    headline: 'Recent Tags'
-                               })
-                            );
-                    list = this.sandbox.dom.children(box, 'ul');
-                    for(;++i<length;) {
-                        this.sandbox.dom.append(list, this.suggestions[i].$el);
-                        this.bindSuggestionEvents(this.suggestions[i]);
-                    }
-                    this.sandbox.dom.append(this.$el, box);
+            startPlugins: function() {
+                if (this.options.autocomplete === true) {
+                    this.bindStartTmEvent();
+                    this.startAutocomplete();
+                } else {
+                    this.initInput();
+                    this.appendInput();
+                    this.startTagmanager();
+                    this.bindEvents();
+                }
+            },
+
+            initInput: function() {
+                this.$input = this.sandbox.dom.createElement('<input type="text"/>');
+            },
+
+            appendInput: function() {
+                if (!!this.$input.length) {
+                    this.sandbox.dom.append(this.options.inputSelector, this.$input);
                 }
             },
 
@@ -105,22 +122,28 @@ define([
                     name: 'auto-complete@husky',
                     options: this.sandbox.util.extend(
                         {el: this.options.inputSelector},
+                        {emptyOnBlur: true},
                         this.options.autocompleteOptions
                     )
                 }]);
             },
 
             startTagmanager: function() {
-                this.tagApi = this.$input.tagsManager({
-                        tagClass: this.options.listItemClass,
-                        prefilled: this.options.tags,
-                        tagCloseIcon: ''
-                    });
+                this.tagApi = this.sandbox.autocompleteList.init(this.$input, {
+                                tagClass: this.options.listItemClass,
+                                prefilled: this.options.items,
+                                tagCloseIcon: '',
+                                maxTags: this.options.maxListItems,
+                                AjaxPush: this.options.AjaxPush,
+                                AjaxPushAllTags: this.options.AjaxPushAllItems,
+                                AjaxPushParameters: this.options.AjaxPushParameters,
+                                CapitalizeFirstLetter: this.options.CapitalizeFirstLetter
+                            });
             },
 
             bindStartTmEvent: function() {
                 this.sandbox.on('husky.auto-complete.initialized', function(data) {
-                    this.$input = data
+                    this.$input = data;
                     this.startTagmanager();
                     this.bindEvents();
                 }.bind(this));
@@ -136,24 +159,149 @@ define([
                         this.refreshSuggestions();
                     }
                 }.bind(this));
+
                 this.sandbox.dom.on(this.$el, 'click', function(event) {
                     if(this.sandbox.dom.hasClass(event.target, 'tm-tag-remove') === true) {
                         this.refreshSuggestions();
                     }
                 }.bind(this));
+
+                if (this.toggler !== null) {
+                    this.sandbox.dom.on(this.toggler.$el, 'click', function(event) {
+                        this.sandbox.dom.preventDefault(event);
+                        this.changeToggler();
+                        this.toggleSuggestions();
+                    }.bind(this));
+                }
+            },
+
+            initItems: function() {
+                if(this.options.itemsUrl !== '') {
+                    this.requestItems();
+                } else {
+                    this.startPlugins();
+                }
+            },
+
+            requestItems: function() {
+                this.sandbox.util.ajax({
+                    url: this.options.itemsUrl,
+
+                    success: function(data) {
+                        this.options.items = this.options.items.concat(data[this.options.itemsKey]);
+                        this.sandbox.logger.log(this.options.items);
+                        this.startPlugins();
+                    }.bind(this),
+
+                    error: function(error) {
+                        this.sandbox.logger.log(error);
+                    }
+                });
+                this.sandbox.emit(this.getEvent('items-request'));
+            },
+
+            initSuggestions: function() {
+                if(this.options.suggestionsUrl !== '') {
+                    this.requestSuggestions();
+                } else {
+                    this.loadSuggestions();
+                    this.renderSuggestions();
+                    this.initToggler();
+                }
+            },
+
+            requestSuggestions: function() {
+                this.sandbox.util.ajax({
+                    url: this.options.suggestionsUrl,
+
+                    success: function(data) {
+                        this.options.suggestions = this.options.suggestions.concat(data[this.options.suggestionsKey]);
+                        this.loadSuggestions();
+                        this.renderSuggestions();
+                        this.initToggler();
+                    }.bind(this),
+
+                    error: function(error) {
+                        this.sandbox.logger.log(error);
+                    }
+                });
+                this.sandbox.emit(this.getEvent('sug-request'));
             },
 
             loadSuggestions: function() {
                 if (!!this.options.suggestions.length) {
                     for (var i = -1, length = this.options.suggestions.length; ++i<length;) {
                         this.suggestions[i] = {
-                            id: this.options.suggestions[i].id,
-                            name: this.options.suggestions[i].name,
+                            name: this.options.suggestions[i],
                             $el: this.sandbox.dom.createElement('<li/>')
                         }
                         this.sandbox.dom.html(this.suggestions[i].$el, this.suggestions[i].name);
                     }
                 }
+            },
+
+            renderSuggestions: function() {
+                if (!!this.options.suggestions.length) {
+                    var box, list, i = -1, length = this.suggestions.length;
+                    box = this.sandbox.dom.parseHTML(
+                        _.template(tplSuggestions)({
+                            headline: this.options.suggestionsHeadline
+                        })
+                    );
+                    list = this.sandbox.dom.children(box, 'ul');
+                    for(;++i<length;) {
+                        this.sandbox.dom.append(list, this.suggestions[i].$el);
+                        this.bindSuggestionEvents(this.suggestions[i]);
+                    }
+                    this.$suggestions = box;
+                    this.sandbox.dom.append(this.$el, this.$suggestions);
+                }
+            },
+
+            initToggler: function() {
+                if (!!this.options.suggestions.length) {
+                    this.toggler = {
+                        $el: this.sandbox.dom.$(this.options.togglerSelector),
+                        pos: togglerPosUp
+                    };
+                    this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowUpClass);
+                }
+            },
+
+            changeToggler: function() {
+                if (this.toggler.pos === togglerPosDown) {
+                    this.togglerUp();
+                } else {
+                    this.togglerDown();
+                }
+            },
+
+            toggleSuggestions: function() {
+                if (this.toggler.pos === togglerPosDown) {
+                    this.hideSuggestions();
+                } else {
+                    this.showSuggestions();
+                }
+            },
+
+            hideSuggestions: function() {
+                this.sandbox.dom.hide(this.$suggestions);
+            },
+
+            showSuggestions: function() {
+                this.sandbox.dom.show(this.$suggestions);
+            },
+
+            togglerDown: function() {
+                this.sandbox.dom.removeClass(this.toggler.$el, this.options.arrowUpClass);
+                this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowDownClass);
+                this.toggler.pos = togglerPosDown;
+            },
+
+            togglerUp: function() {
+                this.sandbox.dom.removeClass(this.toggler.$el, this.options.arrowDownClass);
+                this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowUpClass);
+                this.toggler.pos = togglerPosUp;
             },
 
             bindSuggestionEvents: function(suggestion) {

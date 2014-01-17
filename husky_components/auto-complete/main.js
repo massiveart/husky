@@ -40,7 +40,8 @@ define([], function () {
         suggestionClass: 'suggestion',                          // CSS-class for autocomplete suggestions
         suggestionImg: '<img src="../../img/sample.gif" />',    // HTML-Img Tag - Image gets rendered before every suggestion
         stickToInput: false,                                    // If true suggestions are always under the input field
-        hint: false                                             // if true typeahead hint-field will not be removed
+        hint: false,                                            // if true typeahead hint-field will not be removed
+        emptyOnBlur: false                                      // If true input field value gets deleted on blur
     };
 
     return {
@@ -104,11 +105,25 @@ define([], function () {
 
         render: function () {
             this.sandbox.dom.addClass(this.$el, 'husky-auto-complete');
-            // init form-element and dropdown menu
-            this.$valueField = $('<input id="' + this.options.instanceName + '" class="husky-validate" type="text" autofill="false" data-id="' + this.getValueID() + '" value="' + this.getValueName() + '"/>');
-            this.$el.append(this.$valueField);
+            this.initValueField();
+            this.appendValueField();
 
             this.bindTypeahead();
+        },
+
+        initValueField: function() {
+            this.$valueField = this.sandbox.dom.createElement('<input id="' + this.options.instanceName + '" ' +
+                                                                     'class="husky-validate" ' +
+                                                                     'type="text" ' +
+                                                                     'autofill="false" ' +
+                                                                     'data-id="' + this.getValueID() + '" ' +
+                                                                     'value="' + this.getValueName() + '"/>');
+        },
+
+        appendValueField: function () {
+            if (!!this.$valueField.length) {
+                this.sandbox.dom.append(this.$el, this.$valueField);
+            }
         },
 
         bindTypeahead: function () {
@@ -163,7 +178,11 @@ define([], function () {
             }.bind(this));
 
             this.sandbox.dom.on(this.$valueField, 'blur', function () {
-                this.handleBlur();
+                if (this.options.emptyOnBlur === false) {
+                    this.handleBlur();
+                } else {
+                    this.clearValueFieldValue();
+                }
             }.bind(this));
         },
 
@@ -197,6 +216,10 @@ define([], function () {
 
         setValueFieldValue: function (value) {
             this.sandbox.dom.val(this.$valueField, value);
+        },
+
+        clearValueFieldValue: function () {
+            this.sandbox.dom.clearVal(this.$valueField);
         },
 
         setValueFieldId: function (id) {
