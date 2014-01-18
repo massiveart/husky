@@ -73,6 +73,8 @@ define(function() {
             app.core.util.uniqueId = function(prefix) {
                 return _.uniqueId(prefix);
             };
+
+			app.core.util.template = _.template;
         }
     };
 });

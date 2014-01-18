@@ -14,11 +14,14 @@
     label {
         cursor: default;
     }
+
+	.auto-complete-list {
+	  font-size: $smallFontSize;
+	}
 }
 
 .auto-complete-list-input {
     display: inline-block;
-    position: relative;
     width: 35%;
 
     input[type="text"] {

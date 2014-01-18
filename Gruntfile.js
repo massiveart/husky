@@ -273,7 +273,17 @@ module.exports = function(grunt) {
                             '.bower_components/massiveart-uritemplate/bin/uritemplate.js'
                         ],
                         dest: 'bower_components/massiveart-uritemplate/'
-                    }
+                    },
+					// typeahead.js
+					{
+						expand: true,
+						flatten: true,
+						src: [
+							'.bower_components/typeahead.js/dist/typeahead.js',
+							'.bower_components/typeahead.js/dist/typeahead.min.js',
+						],
+						dest: 'bower_components/typeahead.js'
+					}
                 ]
             }
         },
@@ -285,7 +295,10 @@ module.exports = function(grunt) {
                     install: true,
                     verbose: false,
                     cleanTargetDir: false,
-                    cleanBowerDir: false
+                    cleanBowerDir: false,
+					bowerOptions: {
+						forceLatest: true
+					}
                 }
             }
         },
