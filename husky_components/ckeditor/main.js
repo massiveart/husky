@@ -30,13 +30,13 @@ define([], function() {
          * namespace for events
          * @type {string}
          */
-            eventNamespace = 'husky.ckeditor.',
+         eventNamespace = 'husky.ckeditor.',
 
         /**
          * @event husky.column-navigation.loaded
          * @description the component has loaded everything successfully and will be rendered
          */
-            CHANGED = eventNamespace + 'changed',
+         CHANGED = eventNamespace + 'changed',
 
 
         /**
@@ -65,8 +65,8 @@ define([], function() {
             var config = getConfig.call(this);
             this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
 
-            this.editor.once('change',function(){
-               this.sandbox.emit(CHANGED);
+            this.editor.once('change', function() {
+                this.sandbox.emit(CHANGED);
             }.bind(this));
         }
 
