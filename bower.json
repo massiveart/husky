@@ -9,7 +9,8 @@
     "husky-validation": "#develop",
     "globalize": "0.1.*",
     "massiveart-uritemplate": "0.3.*",
-    "typeahead.js": "~0.9.3"
+    "typeahead.js": "~0.9.3",
+    "requirejs": "2.1.9"
   },
   "resolutions": {
     "jquery": "~1.10.x"
