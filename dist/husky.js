@@ -29117,7 +29117,7 @@ define('__component__$column-navigation@husky',[], function() {
 
             this.sandbox.util.each(this.data.embedded, function(index, value) {
                 this.storeDataItem(newColumn, value);
-                this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width - SCROLLBARWIDTH, value)));
+                this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width, value)));
             }.bind(this));
 
             // remove loading icon
@@ -29343,7 +29343,7 @@ define('__component__$column-navigation@husky',[], function() {
             },
 
             columnContainer: function(height) {
-                return ['<div class="column-navigation" style="height:', height, 'px"></div>'].join('');
+                return ['<div class="column-navigation"></div>'].join('');
             },
 
             column: function(columnNumber, height, width) {
@@ -29352,7 +29352,7 @@ define('__component__$column-navigation@husky',[], function() {
 
             item: function(width, data) {
 
-                var item = ['<li data-id="', data.id, '" class="pointer" style="width:', width, 'px">'];
+                var item = ['<li data-id="', data.id, '" class="pointer"'];
 
                 // icons left
                 item.push('<span class="pull-left">');

@@ -31,7 +31,10 @@
                 }
                 li.selected {
                     @extend li:hover;
-                    font-weight: bold;
+                    
+                    .item-text {
+                        font-weight: bold;
+                    }
                 }
 
                 .inactive {
@@ -72,6 +75,8 @@
         }
 
         .arrow {
+            display: inline-block;
+            width: 20px;
             vertical-align: middle;
         }
 
