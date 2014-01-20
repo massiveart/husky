@@ -5047,7 +5047,7 @@ a.btn-black {
 .column-navigation-wrapper .column-navigation {
   background-color: white;
   border: 1px solid #cccccc;
-  overflow-x: scroll;
+  overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
 }
@@ -5068,7 +5068,7 @@ a.btn-black {
 }
 /* line 24, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul li {
-  padding: 15px 10px 15px 25px;
+  padding: 15px 25px;
   height: 50px;
 }
 /* line 29, ../scss/modules/column-navigation.scss */
