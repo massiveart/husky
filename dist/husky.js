@@ -21662,6 +21662,7 @@ define('husky',[
         app.use('./husky_extensions/globalize');
         app.use('./husky_extensions/uri-template');
 		app.use('./husky_extensions/typeahead');
+        app.use('./husky_extensions/tagmanager');
 
     }
 
@@ -25337,7 +25338,9 @@ define('__component__$auto-complete@husky',[], function () {
         failClass: 'husky-auto-complete-error',					// fail-class if noNewValues is false
         suggestionClass: 'suggestion',                          // CSS-class for autocomplete suggestions
         suggestionImg: '<img src="../../img/sample.gif" />',    // HTML-Img Tag - Image gets rendered before every suggestion
-        stickToInput: false                                     // If true suggestions are always under the input field
+        stickToInput: false,                                    // If true suggestions are always under the input field
+        hint: false,                                            // if true typeahead hint-field will not be removed
+        emptyOnBlur: false                                      // If true input field value gets deleted on blur
     };
 
     return {
@@ -25380,6 +25383,7 @@ define('__component__$auto-complete@husky',[], function () {
 
             this.render();
             this.setEvents();
+            this.sandbox.emit(this.getEvent('initialized'), this.$valueField);
         },
 
         setTemplate: function () {
@@ -25399,12 +25403,26 @@ define('__component__$auto-complete@husky',[], function () {
         },
 
         render: function () {
-            this.$el.addClass('husky-auto-complete');
-            // init form-element and dropdown menu
-            this.$valueField = $('<input id="' + this.options.instanceName + '" class="husky-validate" type="text" autofill="false" data-id="' + this.getValueID() + '" value="' + this.getValueName() + '"/>');
-            this.$el.append(this.$valueField);
+            this.sandbox.dom.addClass(this.$el, 'husky-auto-complete');
+            this.initValueField();
+            this.appendValueField();
 
             this.bindTypeahead();
+        },
+
+        initValueField: function() {
+            this.$valueField = this.sandbox.dom.createElement('<input id="' + this.options.instanceName + '" ' +
+                                                                     'class="husky-validate" ' +
+                                                                     'type="text" ' +
+                                                                     'autofill="false" ' +
+                                                                     'data-id="' + this.getValueID() + '" ' +
+                                                                     'value="' + this.getValueName() + '"/>');
+        },
+
+        appendValueField: function () {
+            if (!!this.$valueField.length) {
+                this.sandbox.dom.append(this.$el, this.$valueField);
+            }
         },
 
         bindTypeahead: function () {
@@ -25441,11 +25459,14 @@ define('__component__$auto-complete@husky',[], function () {
             if (this.options.stickToInput === false) {
                 this.sandbox.dom.css('.twitter-typeahead', 'position', 'static');
             }
+            if (this.options.hint === false) {
+                this.sandbox.dom.remove('.tt-hint');
+            }
         },
 
         setEvents: function () {
             this.sandbox.dom.on(this.$valueField, 'typeahead:selected', function (event, datum) {
-                this.sandbox.emit(this.getEvent('select'));
+                this.sandbox.emit(this.getEvent('select'), datum);
                 this.setValueFieldId(datum.id);
             }.bind(this));
 
@@ -25456,7 +25477,11 @@ define('__component__$auto-complete@husky',[], function () {
             }.bind(this));
 
             this.sandbox.dom.on(this.$valueField, 'blur', function () {
-                this.handleBlur();
+                if (this.options.emptyOnBlur === false) {
+                    this.handleBlur();
+                } else {
+                    this.clearValueFieldValue();
+                }
             }.bind(this));
         },
 
@@ -25470,7 +25495,7 @@ define('__component__$auto-complete@husky',[], function () {
                     this.setFailState();
                 }
             } else {
-                if (this.isMatchedExactly() === true) {
+                if (this.isMatchedExactly() === true && this.getClosestMatch() !== null) {
                     this.setValueFieldValue(this.getClosestMatch().name);
                     this.setValueFieldId(this.getClosestMatch().id);
                 }
@@ -25478,7 +25503,7 @@ define('__component__$auto-complete@husky',[], function () {
         },
 
         getClosestMatch: function () {
-            if (!!this.matches.length) {
+            if (!!this.matches.length && this.getValueFieldValue() !== '') {
                 return this.matches[0];
             }
             return null;
@@ -25492,6 +25517,10 @@ define('__component__$auto-complete@husky',[], function () {
             this.sandbox.dom.val(this.$valueField, value);
         },
 
+        clearValueFieldValue: function () {
+            this.sandbox.dom.clearVal(this.$valueField);
+        },
+
         setValueFieldId: function (id) {
             this.sandbox.dom.attr(this.$valueField, {'data-id': id});
         },
@@ -25502,7 +25531,7 @@ define('__component__$auto-complete@husky',[], function () {
 
         isMatchedExactly: function () {
             if (this.isMatched() === true) {
-                if (this.getClosestMatch !== null) {
+                if (this.getClosestMatch() !== null) {
                     if (this.getValueFieldValue().toLowerCase() === this.getClosestMatch().name.toLowerCase()) {
                         return true;
                     }
@@ -25532,7 +25561,7 @@ define('__component__$auto-complete@husky',[], function () {
     };
 });
 
-define('text!husky_components/auto-complete-list/main.html',[],function () { return '<div class="auto-complete-list-container">\r\n    <label>\r\n        <%= label %>\r\n        <div class="auto-complete-list">\r\n            <ul id="auto-complete-list-selections" class="auto-complete-list-selections">\r\n                <li class="auto-complete-list-input">\r\n                    <div id="husky-autocomplete"></div>\r\n                <li>\r\n            </ul>\r\n        </div>\r\n    </label>\r\n</div>\r\n';});
+define('text!husky_components/auto-complete-list/main.html',[],function () { return '<div class="auto-complete-list-container">\r\n    <label>\r\n        <%= label %>\r\n        <div class="auto-complete-list">\r\n            <div id="husky-autocomplete"></div>\r\n            <div id="toggler"></div>\r\n        </div>\r\n    </label>\r\n</div>\r\n';});
 
 define('text!husky_components/auto-complete-list/suggestions.html',[],function () { return '<div class="auto-complete-list-suggestions">\r\n    <h5><%= headline %></h5>\r\n    <ul>\r\n    </ul>\r\n</div>\r\n';});
 
@@ -25568,16 +25597,32 @@ define('__component__$auto-complete-list@husky',[
         
 
         var defaults = {
-                tags: [],
-                suggestions: [{"id": 1, "name": "Sugg1"}, {"id": 2, "name": "Sugg2"}, {"id": 3, "name": "Sugg3"}],
-                suggestionUrl: '', // url to load suggestions
+                items: [], //preloaded tags
+                itemsUrl: '', //url to load tags
+                itemsKey: 'items', //Key for AJAX respons
+                suggestions: [], //suggestions for suggestions box
+                suggestionsHeadline: '', //Headline for suggestions bxo
+                suggestionsUrl: '', // url to load suggestions
+                suggestionsKey: 'suggestions', //Key for AJAX response
                 label: '', //label (headline),
-                autocompleteSelector: '#husky-autocomplete', //Selector for auto-complete-container
-                autocompleteOptions: {
-                    localData: [{id: 1, name: 'Deutschland'}, {id: 2, name: 'Frankreich'}]
-                }
+                inputSelector: '#husky-autocomplete', //Selector for input wrapper div
+                autocomplete: true, //enable/disable autocomplete
+                autocompleteOptions: {}, //options to pass to the autocomplete component
+                maxListItems: 0, //maximum amount of list items accepted (0 = no limit)
+                CapitalizeFirstLetter: false, //if true the first letter of each item gets capitalized
+                listItemClass: 'auto-complete-list-selection', //class for list items
+                suggestionDeactivatedClass: 'deactivated', //class if suggestion is already used,
+                AjaxPush: '', //url to which added list items get send via ajax POST
+                AjaxPushAllItems: false, //if true all list items get sent if an item is added
+                AjaxPushParameters: null, //additional parameter payload to push with each AJAX request
+                togglerSelector: '#toggler', //CSS-selector for suggestion-toggler
+                arrowDownClass: 'arrow-down', //CSS-class for arrow down icon
+                arrowUpClass: 'arrow-up' //CSS-class for arrow up icon
             },
             eventNamespace = 'husky.auto-complete-list.',
+
+            togglerPosUp = 'up',
+            togglerPosDown = 'down',
 
             /**
              * @event husky.auto-complete-list.rendered
@@ -25591,6 +25636,10 @@ define('__component__$auto-complete-list@husky',[
 
             view: true,
             suggestions: [],
+            $suggestions: null,
+            $input: null,
+            tagApi: null,
+            toggler: null,
 
             initialize: function() {
                 this.sandbox.logger.log('initialize', this);
@@ -25598,16 +25647,13 @@ define('__component__$auto-complete-list@husky',[
                 // extend default options
                 this.options = this.sandbox.util.extend({}, defaults, this.options);
 
-                this.loadSuggestions();
-                this.render();
-                this.startAutocomplete();
+                this.renderMain();
+                this.initSuggestions();
+                this.initItems();
             },
 
-            render: function() {
-                this.renderMain();
-                this.renderSuggestions();
-
-                this.sandbox.emit(RENDERED);
+            getEvent: function (append) {
+                return 'husky.auto-complete-list.' + append;
             },
 
             renderMain: function() {
@@ -25618,19 +25664,25 @@ define('__component__$auto-complete-list@husky',[
                 );
             },
 
-            renderSuggestions: function() {
-                if (!!this.suggestions.length) {
-                    var box, list, i = -1, length = this.suggestions.length;
-                    box = this.sandbox.dom.parseHTML(
-                               _.template(tplSuggestions)({
-                                    headline: 'Recent Tags'
-                               })
-                            );
-                    list = this.sandbox.dom.children(box, 'ul');
-                    for(;++i<length;) {
-                        this.sandbox.dom.append(list, this.suggestions[i].$el);
-                    }
-                    this.sandbox.dom.append(this.$el, box);
+            startPlugins: function() {
+                if (this.options.autocomplete === true) {
+                    this.bindStartTmEvent();
+                    this.startAutocomplete();
+                } else {
+                    this.initInput();
+                    this.appendInput();
+                    this.startTagmanager();
+                    this.bindEvents();
+                }
+            },
+
+            initInput: function() {
+                this.$input = this.sandbox.dom.createElement('<input type="text"/>');
+            },
+
+            appendInput: function() {
+                if (!!this.$input.length) {
+                    this.sandbox.dom.append(this.options.inputSelector, this.$input);
                 }
             },
 
@@ -25638,22 +25690,237 @@ define('__component__$auto-complete-list@husky',[
                 this.sandbox.start([{
                     name: 'auto-complete@husky',
                     options: this.sandbox.util.extend(
-                        {el: this.options.autocompleteSelector},
+                        {el: this.options.inputSelector},
+                        {emptyOnBlur: true},
                         this.options.autocompleteOptions
                     )
                 }]);
+            },
+
+            startTagmanager: function() {
+                this.tagApi = this.sandbox.autocompleteList.init(this.$input, {
+                                tagClass: this.options.listItemClass,
+                                prefilled: this.options.items,
+                                tagCloseIcon: '',
+                                maxTags: this.options.maxListItems,
+                                AjaxPush: this.options.AjaxPush,
+                                AjaxPushAllTags: this.options.AjaxPushAllItems,
+                                AjaxPushParameters: this.options.AjaxPushParameters,
+                                CapitalizeFirstLetter: this.options.CapitalizeFirstLetter
+                            });
+            },
+
+            bindStartTmEvent: function() {
+                this.sandbox.on('husky.auto-complete.initialized', function(data) {
+                    this.$input = data;
+                    this.startTagmanager();
+                    this.bindEvents();
+                }.bind(this));
+            },
+
+            bindEvents: function() {
+                this.sandbox.on('husky.auto-complete.select', function(d) {
+                    this.pushTag(d.name);
+                }.bind(this));
+
+                this.sandbox.dom.on(this.$input, 'keydown', function(event) {
+                    if(event.keyCode === 8 && this.sandbox.dom.val(this.$input).trim() === '') {
+                        this.refreshSuggestions();
+                    }
+                }.bind(this));
+
+                this.sandbox.dom.on(this.$el, 'click', function(event) {
+                    if(this.sandbox.dom.hasClass(event.target, 'tm-tag-remove') === true) {
+                        this.refreshSuggestions();
+                    }
+                }.bind(this));
+
+                if (this.toggler !== null) {
+                    this.sandbox.dom.on(this.toggler.$el, 'click', function(event) {
+                        this.sandbox.dom.preventDefault(event);
+                        this.changeToggler();
+                        this.toggleSuggestions();
+                    }.bind(this));
+                }
+            },
+
+            initItems: function() {
+                if(this.options.itemsUrl !== '') {
+                    this.requestItems();
+                } else {
+                    this.startPlugins();
+                }
+            },
+
+            requestItems: function() {
+                this.sandbox.util.ajax({
+                    url: this.options.itemsUrl,
+
+                    success: function(data) {
+                        this.options.items = this.options.items.concat(data[this.options.itemsKey]);
+                        this.sandbox.logger.log(this.options.items);
+                        this.startPlugins();
+                    }.bind(this),
+
+                    error: function(error) {
+                        this.sandbox.logger.log(error);
+                    }.bind(this)
+                });
+                this.sandbox.emit(this.getEvent('items-request'));
+            },
+
+            initSuggestions: function() {
+                if(this.options.suggestionsUrl !== '') {
+                    this.requestSuggestions();
+                } else {
+                    this.loadSuggestions();
+                    this.renderSuggestions();
+                    this.initToggler();
+                }
+            },
+
+            requestSuggestions: function() {
+                this.sandbox.util.ajax({
+                    url: this.options.suggestionsUrl,
+
+                    success: function(data) {
+                        this.options.suggestions = this.options.suggestions.concat(data[this.options.suggestionsKey]);
+                        this.loadSuggestions();
+                        this.renderSuggestions();
+                        this.initToggler();
+                    }.bind(this),
+
+                    error: function(error) {
+                        this.sandbox.logger.log(error);
+                    }.bind(this)
+                });
+                this.sandbox.emit(this.getEvent('sug-request'));
             },
 
             loadSuggestions: function() {
                 if (!!this.options.suggestions.length) {
                     for (var i = -1, length = this.options.suggestions.length; ++i<length;) {
                         this.suggestions[i] = {
-                            id: this.options.suggestions[i].id,
-                            name: this.options.suggestions[i].name,
+                            name: this.options.suggestions[i],
                             $el: this.sandbox.dom.createElement('<li/>')
                         }
                         this.sandbox.dom.html(this.suggestions[i].$el, this.suggestions[i].name);
                     }
+                }
+            },
+
+            renderSuggestions: function() {
+                if (!!this.options.suggestions.length) {
+                    var box, list, i = -1, length = this.suggestions.length;
+                    box = this.sandbox.dom.parseHTML(
+                        _.template(tplSuggestions)({
+                            headline: this.options.suggestionsHeadline
+                        })
+                    );
+                    list = this.sandbox.dom.children(box, 'ul');
+                    for(;++i<length;) {
+                        this.sandbox.dom.append(list, this.suggestions[i].$el);
+                        this.bindSuggestionEvents(this.suggestions[i]);
+                    }
+                    this.$suggestions = box;
+                    this.sandbox.dom.append(this.$el, this.$suggestions);
+                }
+            },
+
+            initToggler: function() {
+                if (!!this.options.suggestions.length) {
+                    this.toggler = {
+                        $el: this.sandbox.dom.$(this.options.togglerSelector),
+                        pos: togglerPosUp
+                    };
+                    this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowUpClass);
+                }
+            },
+
+            changeToggler: function() {
+                if (this.toggler.pos === togglerPosDown) {
+                    this.togglerUp();
+                } else {
+                    this.togglerDown();
+                }
+            },
+
+            toggleSuggestions: function() {
+                if (this.toggler.pos === togglerPosDown) {
+                    this.hideSuggestions();
+                } else {
+                    this.showSuggestions();
+                }
+            },
+
+            hideSuggestions: function() {
+                this.sandbox.dom.hide(this.$suggestions);
+            },
+
+            showSuggestions: function() {
+                this.sandbox.dom.show(this.$suggestions);
+            },
+
+            togglerDown: function() {
+                this.sandbox.dom.removeClass(this.toggler.$el, this.options.arrowUpClass);
+                this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowDownClass);
+                this.toggler.pos = togglerPosDown;
+            },
+
+            togglerUp: function() {
+                this.sandbox.dom.removeClass(this.toggler.$el, this.options.arrowDownClass);
+                this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowUpClass);
+                this.toggler.pos = togglerPosUp;
+            },
+
+            bindSuggestionEvents: function(suggestion) {
+                this.sandbox.dom.on(suggestion.$el, 'click', function() {
+                    this.pushTag(suggestion.name);
+                    this.deactivateSuggestion(suggestion);
+                }.bind(this));
+            },
+
+            deactivateSuggestion: function(suggestion) {
+                this.sandbox.dom.addClass(suggestion.$el, this.options.suggestionDeactivatedClass);
+            },
+
+            activateSuggestion: function(suggestion) {
+                this.sandbox.dom.removeClass(suggestion.$el, this.options.suggestionDeactivatedClass);
+            },
+
+            refreshSuggestions: function() {
+                for (var i = -1, length = this.suggestions.length; ++i < length;) {
+                    if(this.sandbox.dom.hasClass(this.suggestions[i].$el, this.options.suggestionDeactivatedClass) === true) {
+                        if (this.suggestionContainedInTags(this.suggestions[i]) === false) {
+                            this.activateSuggestion(this.suggestions[i]);
+                        }
+                    }
+                }
+            },
+
+            suggestionContainedInTags: function(suggestion) {
+                var tags = this.getTags(), i, length;
+                for (i = -1, length = tags.length; ++i < length;) {
+                    if (tags[i] === suggestion.name) {
+                        return true;
+                    }
+                }
+                return false
+            },
+
+            pushTag: function(value) {
+                if (this.tagApi !== null) {
+                    this.tagApi.tagsManager('pushTag', value);
+                } else {
+                    return false;
+                }
+            },
+
+            getTags: function() {
+                if (this.tagApi !== null) {
+                    return this.tagApi.tagsManager('tags');
+                } else {
+                    return [];
                 }
             }
         };
@@ -27214,6 +27481,14 @@ define('husky_extensions/collection',[],function() {
                 }
             };
 
+            app.core.dom.clearVal = function(selector) {
+                return $(selector).val('');
+            };
+
+            app.core.dom.blur = function(selector) {
+                return $(selector).blur();
+            };
+
             app.core.dom.on = function(selector, event, callback, filter) {
                 if (!!filter) {
                     $(selector).on(event, filter, callback);
@@ -27284,6 +27559,10 @@ define('husky_extensions/collection',[],function() {
 
             app.core.dom.stopPropagation = function(event) {
                 event.stopPropagation();
+            };
+
+            app.core.dom.preventDefault = function(event) {
+                event.preventDefault();
             };
 
             app.core.dom.hide = function(selector) {
@@ -27377,6 +27656,36 @@ define('husky_extensions/model',[],function() {
 
     };
 });
+
+(function() {
+
+    
+
+    if (window.TagsManager) {
+        define('tagsManager', [], function() {
+            return window.TagsManager;
+        });
+    } else {
+        require.config({
+            paths: { "tagsManager": 'bower_components/tagmanager/tagmanager' },
+            shim: { backbone: { deps: ['jquery'] } }
+        });
+    }
+
+    define('husky_extensions/tagmanager',['tagsManager'], {
+        name: 'tagsManager',
+
+        initialize: function(app) {
+            app.sandbox.autocompleteList = {
+
+                init: function(selector, configs) {
+                    return app.core.dom.$(selector).tagsManager(configs);
+                }
+
+            };
+        }
+    });
+})();
 
 define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
 
@@ -27516,7 +27825,7 @@ define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
 			app.sandbox.autocomplete = {
 
 				init: function(selector, configs) {
-					app.core.dom.$(selector).typeahead(configs);
+					return app.core.dom.$(selector).typeahead(configs);
 				}
 
 			};

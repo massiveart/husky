@@ -48,7 +48,7 @@ define([], function () {
         data: [],
 
         getEvent: function (append) {
-            return 'husky.auto-complete.' + append;
+            return 'husky.auto-complete.' + this.options.instanceName + '.' + append;
         },
 
         getValueID: function () {
@@ -128,7 +128,7 @@ define([], function () {
 
         bindTypeahead: function () {
             this.sandbox.autocomplete.init(this.$valueField, {
-                name: this.options.typeaheadName,
+                name: this.options.instanceName,
                 local: this.options.localData,
                 valueKey: this.options.valueKey,
                 template: function (context) {
