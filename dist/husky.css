@@ -3941,26 +3941,27 @@ li a.navigation-settings-icon {
 /* line 32, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul > li {
   padding: 5px 20px;
+  text-align: left;
 }
-/* line 35, ../scss/modules/dropdown.scss */
+/* line 36, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul > li:hover, .column-navigation-wrapper .column-navigation .column .dropdown-menu > ul > li.selected, .dropdown-menu > ul > li.hover {
   background-color: #249fbe;
   cursor: pointer;
   color: white;
 }
 
-/* line 44, ../scss/modules/dropdown.scss */
+/* line 45, ../scss/modules/dropdown.scss */
 .dropdown-footer {
   border-top: 1px solid #ccc;
   padding: 10px 10px;
 }
 
-/* line 49, ../scss/modules/dropdown.scss */
+/* line 50, ../scss/modules/dropdown.scss */
 .dropdown-toggle {
   display: block;
   cursor: pointer;
 }
-/* line 52, ../scss/modules/dropdown.scss */
+/* line 53, ../scss/modules/dropdown.scss */
 .dropdown-toggle::after {
   content: "";
   display: inline-block;
@@ -4365,14 +4366,14 @@ a.btn-black {
   border-bottom: 1px solid #cccccc;
   padding: 6px 13px 7px 13px;
 }
-/* line 41, ../scss/modules/pagination.scss */
-.pagination-wrapper .pagination .pagination-next {
+/* line 30, ../scss/modules/pagination.scss */
+.pagination-wrapper .pagination .pagination-prev {
   padding: 6px 13px;
   border: 1px solid #cccccc;
   border-radius: 0 5px 5px 0;
 }
-/* line 47, ../scss/modules/pagination.scss */
-.pagination-wrapper .pagination .pagination-prev {
+/* line 36, ../scss/modules/pagination.scss */
+.pagination-wrapper .pagination .pagination-next {
   padding: 6px 13px;
   border: 1px solid #cccccc;
   border-radius: 5px 0 0 5px;

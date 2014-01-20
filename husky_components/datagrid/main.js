@@ -677,9 +677,9 @@ define(function() {
 
                 paginationLabel = [this.sandbox.translate('pagination.page'),' ',this.data.page,' ',this.sandbox.translate('pagination.of'),' ',this.data.pages].join('');
 
-                $pagination.append('<div id="'+this.pagination.prevId+'" class="icon-chevron-right pagination-next pull-right pointer"></div>');
+                $pagination.append('<div id="'+this.pagination.nextId+'" class="icon-chevron-right pagination-prev pull-right pointer"></div>');
                 $pagination.append('<div id="'+this.pagination.dropdownId+'" class="pagination-main pull-right pointer"><span class="inline-block">'+paginationLabel+'</span><span class="dropdown-toggle inline-block"></span></div>');
-                $pagination.append('<div id="'+this.pagination.nextId+'" class="icon-chevron-left pagination-prev pull-right pointer"></div>');
+                $pagination.append('<div id="'+this.pagination.prevId+'" class="icon-chevron-left pagination-next pull-right pointer"></div>');
 
             }
 
@@ -693,6 +693,8 @@ define(function() {
         preparePaginationDropdown: function(){
 
             var data = [], i,name;
+            this.dropdownInstanceName = 'datagrid-pagination-dropdown';
+
             for (i = 1; i <= this.data.pages; i++) {
                 name = this.sandbox.translate('pagination.page') + ' ' + i + ' ' + this.sandbox.translate('pagination.of') + ' ' + this.data.pages;
                 data.push({id: i, name: name});
@@ -703,7 +705,7 @@ define(function() {
                 options: {
                     el: '#'+this.pagination.dropdownId,
                     setParentDropDown: true,
-                    instanceName: 'datagrid-pagination-dropdown',
+                    instanceName: this.dropdownInstanceName,
                     alignment: 'left',
                     data: data
                 }
@@ -779,9 +781,46 @@ define(function() {
 
             if (this.options.pagination) {
 
-                // TODO
-                //this.$element.on('click', '.pagination li.page', this.changePage.bind(this));
-                this.$element.on('click', '#'+this.pagination.showAllId, this.loadAll.bind(this));
+                // next page
+                this.$element.on('click', '#' + this.pagination.nextId, function(event) {
+                    event.preventDefault();
+                    if (!!this.data.links.next) {
+                        this.sandbox.emit('husky.datagrid.page.change', this.data.links.next);
+                        this.addLoader();
+                        this.load({
+                            url: this.data.links.next,
+                            success: function() {
+                                this.removeLoader();
+                                this.sandbox.emit('husky.datagrid.updated');
+                            }.bind(this)});
+                    }
+                }.bind(this));
+
+                // previous page
+                this.$element.on('click', '#' + this.pagination.prevId, function(event) {
+                    event.preventDefault();
+                    if (!!this.data.links.prev) {
+                        this.sandbox.emit('husky.datagrid.page.change', this.data.links.prev);
+                        this.addLoader();
+                        this.load({url: this.data.links.prev,
+                            success: function() {
+                                this.removeLoader();
+                                this.sandbox.emit('husky.datagrid.updated');
+                            }.bind(this)});
+                    }
+                }.bind(this));
+
+                // show all
+                this.$element.on('click', '#' + this.pagination.showAllId, function(event) {
+                    event.preventDefault();
+                    this.sandbox.emit('husky.datagrid.data.load.all', this.data.links.all);
+                    this.addLoader();
+                    this.load({url: this.data.links.all,
+                        success: function() {
+                            this.removeLoader();
+                            this.sandbox.emit('husky.datagrid.updated');
+                        }.bind(this)});
+                }.bind(this));
             }
 
             if (this.options.removeRow) {
@@ -816,15 +855,6 @@ define(function() {
             // stop propagation
             //         event.stopPropagation();
             // }.bind(this));
-        },
-
-        /**
-         * Loads the complete data available for this list
-         */
-        loadAll: function(event){
-            event.preventDefault();
-            this.sandbox.emit('husky.datagrid.data.load.all');
-            this.load({url: this.data.links.all});
         },
 
         /**
@@ -901,6 +931,10 @@ define(function() {
             this.sandbox.on('husky.datagrid.items.get-selected', this.getSelectedItemsIds.bind(this));
 
             this.sandbox.on('husky.datagrid.data.get', this.provideData.bind(this));
+
+            // pagination dropdown item clicked
+            this.sandbox.on('husky.dropdown.'+this.dropdownInstanceName+'.item.click',this.changePage.bind(this));
+
         },
 
         provideData: function() {
