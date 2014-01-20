@@ -27,17 +27,6 @@
             padding: 6px 13px 7px 13px;
         }
 
-        li {
-            font-size: $smallFontSize;
-            display: inline-block;
-            margin-right: 5px;
-            cursor: pointer;
-            & > a {
-                text-decoration: none;
-                color: $black;
-            }
-        }
-
         .pagination-next {
             padding: 6px 13px;
             border: 1px solid $grayLighter;

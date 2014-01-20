@@ -4365,18 +4365,6 @@ a.btn-black {
   border-bottom: 1px solid #cccccc;
   padding: 6px 13px 7px 13px;
 }
-/* line 30, ../scss/modules/pagination.scss */
-.pagination-wrapper .pagination li {
-  font-size: 12px;
-  display: inline-block;
-  margin-right: 5px;
-  cursor: pointer;
-}
-/* line 35, ../scss/modules/pagination.scss */
-.pagination-wrapper .pagination li > a {
-  text-decoration: none;
-  color: black;
-}
 /* line 41, ../scss/modules/pagination.scss */
 .pagination-wrapper .pagination .pagination-next {
   padding: 6px 13px;

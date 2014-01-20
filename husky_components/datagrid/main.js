@@ -639,6 +639,9 @@ define(function() {
             return this;
         },
 
+        /**
+         * inits the dom ids needed for the pagination
+         */
         initPaginationIds: function(){
             this.pagination = {
                 prevId : this.options.instance+'-prev',
@@ -668,7 +671,7 @@ define(function() {
                 }
 
                 $pagination = this.sandbox.dom.$('<div/>');
-                $pagination.addClass('pagination grid-col-8 align-right pull-right');
+                $pagination.addClass('pagination grid-col-8 pull-right');
 
                 $paginationWrapper.append($pagination);
 
@@ -676,7 +679,7 @@ define(function() {
 
                 $pagination.append('<div id="'+this.pagination.prevId+'" class="icon-chevron-right pagination-next pull-right pointer"></div>');
                 $pagination.append('<div id="'+this.pagination.dropdownId+'" class="pagination-main pull-right pointer"><span class="inline-block">'+paginationLabel+'</span><span class="dropdown-toggle inline-block"></span></div>');
-                $pagination.append('<div id="'+this.pagination.nextId+'" class="icon-chevron-left pagination-prev pull-right  pointer"></div>');
+                $pagination.append('<div id="'+this.pagination.nextId+'" class="icon-chevron-left pagination-prev pull-right pointer"></div>');
 
             }
 
@@ -684,68 +687,29 @@ define(function() {
         },
 
 
+        /**
+         * Prepares and initializes the dropdown used for the pagination
+         */
         preparePaginationDropdown: function(){
+
+            var data = [], i,name;
+            for (i = 1; i <= this.data.pages; i++) {
+                name = this.sandbox.translate('pagination.page') + ' ' + i + ' ' + this.sandbox.translate('pagination.of') + ' ' + this.data.pages;
+                data.push({id: i, name: name});
+            }
 
             this.sandbox.start([{
                 name: 'dropdown@husky',
                 options: {
                     el: '#'+this.pagination.dropdownId,
-                    trigger: '.drop-down-trigger',
                     setParentDropDown: true,
-                    instanceName: 'dialog1',
+                    instanceName: 'datagrid-pagination-dropdown',
                     alignment: 'left',
-                    data: [
-                        {
-                            'id': 1,
-                            'name': 'Private'
-                        },
-                        {
-                            'id': 2,
-                            'name': 'Mobile'
-                        },
-                        {
-                            'id': 3,
-                            'name': 'Work'
-                        }
-                    ]
+                    data: data
                 }
             }]);
 
-
-
         },
-
-//        /**
-//         * Triggers rendering of the numbers in the pagination
-//         * @returns {*}
-//         */
-//        preparePaginationPageNavigation: function() {
-//
-//            // TODO
-//            // pageSets to render dropdown
-//            //          [0] [1,4]
-//            //          [1] [5,9]
-//            //          ...
-//            // adjust previous and next link
-//            // first and last will be removed
-//            // add show all
-//
-////            var pageSets = [],
-////                i;
-////
-////            for(i = 0; i <= this.data.pages; i++){
-////                pageSets.push([(i*this.data.pageSize)+1,this.data.pageSize*(i+1)]);
-////            }
-//
-//
-////            return this.templates.paginationPageNavigation({
-////                pageSize: this.data.pageSize,
-////                pages: this.data.pages,
-////                page: this.data.page,
-////                pagesDisplay: this.data.pageDisplay,
-////                instance: this.options.instance
-////            });
-//        },
 
         /**
          * Called when the current page should change
@@ -814,8 +778,10 @@ define(function() {
             }.bind(this));
 
             if (this.options.pagination) {
-                this.$element.on('click', '.pagination li.page', this.changePage.bind(this));
-                this.$element.on('click', '#show-all', this.loadAll.bind(this));
+
+                // TODO
+                //this.$element.on('click', '.pagination li.page', this.changePage.bind(this));
+                this.$element.on('click', '#'+this.pagination.showAllId, this.loadAll.bind(this));
             }
 
             if (this.options.removeRow) {
@@ -852,13 +818,13 @@ define(function() {
             // }.bind(this));
         },
 
-        loadAll: function(){
-
+        /**
+         * Loads the complete data available for this list
+         */
+        loadAll: function(event){
+            event.preventDefault();
+            this.sandbox.emit('husky.datagrid.data.load.all');
             this.load({url: this.data.links.all});
-
-            // TODO
-            // loads wrong data? error in testdata?
-
         },
 
         /**
@@ -1041,37 +1007,6 @@ define(function() {
                 ].join('');
             }
 
-//            paginationPageNavigation: function(data, instance) {
-//
-//                // TODO generates dropdown
-//
-//
-//
-//                // TODO currect page + this.options.paginationOptions.showPages: 5
-//                var rest,
-//                    pageItemsCurrentAfter = [],
-//                    pageItemsBefore = [],
-//                    pageClass,
-//                    i;
-//
-//                // add pages for current after current page
-//                for (i = data.page; i <= data.pagesDisplay; i++) {
-//                    pageClass = (data.page === i) ? 'class="page is-selected bold"' : 'class="page"';
-//                    pageItemsCurrentAfter.push('<li '+pageClass+' data-page="'+ i + '">' + i + '</li>');
-//                }
-//
-//
-//                rest = data.pagesDisplay - pageItemsCurrentAfter.length;
-//
-//                // add pages before current page if needed
-//                if(rest > 0) {
-//                    for (i = data.page-rest; i < data.page ; i++) {
-//                        pageItemsBefore.push('<li class="page" data-page="'+ i + '">' + i + '</li>');
-//                    }
-//                }
-//
-//                return '<div id="'+instance+'-pagination-dropdown" class="pagination-main pull-right">Page 1 of 12</div>';
-//            }
         }
 
     };

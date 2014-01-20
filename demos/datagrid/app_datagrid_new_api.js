@@ -379,6 +379,13 @@ require(['lib/husky'], function (Husky) {
                 }, 500);
             });
 
+            app.sandbox.on('husky.datagrid.data.load.all', function () {
+                app.logger.log('Husky.Ui.DataGrid load all');
+                setTimeout(function () {
+                    fakeServer.respond();
+                }, 500);
+            });
+
             $('#get-selected').on('click', function () {
                 app.sandbox.emit('husky.datagrid.items.get-selected');
             });
