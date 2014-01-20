@@ -632,9 +632,20 @@ define(function() {
 
             // TODO adjust when api is finished
             if (this.options.pagination && !!this.data.links) {
+                this.initPaginationIds();
                 this.$element.append(this.preparePagination());
+                this.preparePaginationDropdown();
             }
             return this;
+        },
+
+        initPaginationIds: function(){
+            this.pagination = {
+                prevId : this.options.instance+'-prev',
+                nextId : this.options.instance+'-next',
+                dropdownId : this.options.instance+'-pagination-dropdown',
+                showAllId: this.options.instance+'-show-all'
+            };
         },
 
         /**
@@ -652,7 +663,7 @@ define(function() {
                 $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row small-font');
 
                 if(!!this.data.total && !!this.data.links.all) {
-                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total,this.sandbox.translate('pagination.elements'),this.sandbox.translate('paginations.showAll'),this.options.instance));
+                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total,this.sandbox.translate('pagination.elements'),this.sandbox.translate('paginations.showAll'),this.pagination.showAllId));
                     $paginationWrapper.append($showAll);
                 }
 
@@ -663,47 +674,78 @@ define(function() {
 
                 paginationLabel = [this.sandbox.translate('pagination.page'),' ',this.data.page,' ',this.sandbox.translate('pagination.of'),' ',this.data.pages].join('');
 
-                $pagination.append('<div id="'+this.options.instance+'-next" class="icon-chevron-right pagination-next pull-right pointer"></div>');
-                $pagination.append('<div id="'+this.options.instance+'-pagination-dropdown" class="pagination-main pull-right  pointer">'+paginationLabel+'</div>');
-                $pagination.append('<div id="'+this.options.instance+'-prev" class="icon-chevron-left pagination-prev pull-right  pointer"></div>');
+                $pagination.append('<div id="'+this.pagination.prevId+'" class="icon-chevron-right pagination-next pull-right pointer"></div>');
+                $pagination.append('<div id="'+this.pagination.dropdownId+'" class="pagination-main pull-right pointer"><span class="inline-block">'+paginationLabel+'</span><span class="dropdown-toggle inline-block"></span></div>');
+                $pagination.append('<div id="'+this.pagination.nextId+'" class="icon-chevron-left pagination-prev pull-right  pointer"></div>');
 
-                // TODO generate dropdown
             }
 
             return $paginationWrapper;
         },
 
-        /**
-         * Triggers rendering of the numbers in the pagination
-         * @returns {*}
-         */
-        preparePaginationPageNavigation: function() {
 
-            // TODO
-            // pageSets to render dropdown
-            //          [0] [1,4]
-            //          [1] [5,9]
-            //          ...
-            // adjust previous and next link
-            // first and last will be removed
-            // add show all
+        preparePaginationDropdown: function(){
 
-//            var pageSets = [],
-//                i;
-//
-//            for(i = 0; i <= this.data.pages; i++){
-//                pageSets.push([(i*this.data.pageSize)+1,this.data.pageSize*(i+1)]);
-//            }
+            this.sandbox.start([{
+                name: 'dropdown@husky',
+                options: {
+                    el: '#'+this.pagination.dropdownId,
+                    trigger: '.drop-down-trigger',
+                    setParentDropDown: true,
+                    instanceName: 'dialog1',
+                    alignment: 'left',
+                    data: [
+                        {
+                            'id': 1,
+                            'name': 'Private'
+                        },
+                        {
+                            'id': 2,
+                            'name': 'Mobile'
+                        },
+                        {
+                            'id': 3,
+                            'name': 'Work'
+                        }
+                    ]
+                }
+            }]);
 
 
-            return this.templates.paginationPageNavigation({
-                pageSize: this.data.pageSize,
-                pages: this.data.pages,
-                page: this.data.page,
-                pagesDisplay: this.data.pageDisplay,
-                instance: this.options.instance
-            });
+
         },
+
+//        /**
+//         * Triggers rendering of the numbers in the pagination
+//         * @returns {*}
+//         */
+//        preparePaginationPageNavigation: function() {
+//
+//            // TODO
+//            // pageSets to render dropdown
+//            //          [0] [1,4]
+//            //          [1] [5,9]
+//            //          ...
+//            // adjust previous and next link
+//            // first and last will be removed
+//            // add show all
+//
+////            var pageSets = [],
+////                i;
+////
+////            for(i = 0; i <= this.data.pages; i++){
+////                pageSets.push([(i*this.data.pageSize)+1,this.data.pageSize*(i+1)]);
+////            }
+//
+//
+////            return this.templates.paginationPageNavigation({
+////                pageSize: this.data.pageSize,
+////                pages: this.data.pages,
+////                page: this.data.page,
+////                pagesDisplay: this.data.pageDisplay,
+////                instance: this.options.instance
+////            });
+//        },
 
         /**
          * Called when the current page should change
@@ -962,9 +1004,9 @@ define(function() {
 
         templates: {
 
-            showAll: function(total , elementsLabel, showAllLabel, instance){
+            showAll: function(total , elementsLabel, showAllLabel, id){
 
-                return ['<div class="show-all grid-col-4 m-top-10">',total,' ',elementsLabel,' (<a id="'+instance+'-show-all" href="">',showAllLabel,'</a>)</div>'].join('');
+                return ['<div class="show-all grid-col-4 m-top-10">',total,' ',elementsLabel,' (<a id="'+id+'" href="">',showAllLabel,'</a>)</div>'].join('');
             },
 
             removeRow: function() {
@@ -997,39 +1039,39 @@ define(function() {
                     '<input', id, name, ' type="radio" class="custom-radio"/>',
                     '<span class="custom-radio-icon"></span>'
                 ].join('');
-            },
-
-            paginationPageNavigation: function(data, instance) {
-
-                // TODO generates dropdown
-
-
-
-                // TODO currect page + this.options.paginationOptions.showPages: 5
-                var rest,
-                    pageItemsCurrentAfter = [],
-                    pageItemsBefore = [],
-                    pageClass,
-                    i;
-
-                // add pages for current after current page
-                for (i = data.page; i <= data.pagesDisplay; i++) {
-                    pageClass = (data.page === i) ? 'class="page is-selected bold"' : 'class="page"';
-                    pageItemsCurrentAfter.push('<li '+pageClass+' data-page="'+ i + '">' + i + '</li>');
-                }
-
-
-                rest = data.pagesDisplay - pageItemsCurrentAfter.length;
-
-                // add pages before current page if needed
-                if(rest > 0) {
-                    for (i = data.page-rest; i < data.page ; i++) {
-                        pageItemsBefore.push('<li class="page" data-page="'+ i + '">' + i + '</li>');
-                    }
-                }
-
-                return '<div id="'+instance+'-pagination-dropdown" class="pagination-main pull-right">Page 1 of 12</div>';
             }
+
+//            paginationPageNavigation: function(data, instance) {
+//
+//                // TODO generates dropdown
+//
+//
+//
+//                // TODO currect page + this.options.paginationOptions.showPages: 5
+//                var rest,
+//                    pageItemsCurrentAfter = [],
+//                    pageItemsBefore = [],
+//                    pageClass,
+//                    i;
+//
+//                // add pages for current after current page
+//                for (i = data.page; i <= data.pagesDisplay; i++) {
+//                    pageClass = (data.page === i) ? 'class="page is-selected bold"' : 'class="page"';
+//                    pageItemsCurrentAfter.push('<li '+pageClass+' data-page="'+ i + '">' + i + '</li>');
+//                }
+//
+//
+//                rest = data.pagesDisplay - pageItemsCurrentAfter.length;
+//
+//                // add pages before current page if needed
+//                if(rest > 0) {
+//                    for (i = data.page-rest; i < data.page ; i++) {
+//                        pageItemsBefore.push('<li class="page" data-page="'+ i + '">' + i + '</li>');
+//                    }
+//                }
+//
+//                return '<div id="'+instance+'-pagination-dropdown" class="pagination-main pull-right">Page 1 of 12</div>';
+//            }
         }
 
     };
