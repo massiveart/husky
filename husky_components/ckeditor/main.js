@@ -65,7 +65,7 @@ define([], function() {
             var config = getConfig.call(this);
             this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
 
-            this.editor.once('change', function() {
+            this.editor.on('change', function() {
                 this.sandbox.emit(CHANGED);
             }.bind(this));
         }
