@@ -28901,6 +28901,7 @@ define('__component__$password-fields@husky',[], function() {
  * @params {Number} [options.column.width] width of a column in within the navigation
  * @params {Number} [options.scrollBarWidth] with of scrollbar
  * @params {String} [options.url] url to load data
+ * @params {String} [options.selected] id of selected element - needed to restore state
  *
  */
 define('__component__$column-navigation@husky',[], function() {
@@ -28914,10 +28915,10 @@ define('__component__$column-navigation@husky',[], function() {
             column: {
                 width: 250
             },
-            url: null
+            url: null,
+            selected: null
         },
 
-        SCROLLBARWIDTH = 17, // width of scrollbars
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
 
         /**
@@ -28978,7 +28979,6 @@ define('__component__$column-navigation@husky',[], function() {
             this.$addColumn = null;
             this.filledColumns = 0;
 
-            this.containerWidth = this.sandbox.dom.width(this.$element);
             this.columns = [];
             this.selected = [];
 
@@ -28998,7 +28998,7 @@ define('__component__$column-navigation@husky',[], function() {
             this.sandbox.dom.append(this.$element, $wrapper);
 
             // navigation container
-            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer(this.options.wrapper.height + SCROLLBARWIDTH));
+            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer());
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
@@ -29009,6 +29009,7 @@ define('__component__$column-navigation@husky',[], function() {
             this.sandbox.dom.append(this.$optionsContainer, $settings);
 
             this.sandbox.dom.append($wrapper, this.$optionsContainer);
+
         },
 
         /**
@@ -29019,29 +29020,17 @@ define('__component__$column-navigation@husky',[], function() {
         load: function(url, columnNumber) {
 
             if (!!url) {
-                /**
-                 * FIXME change ajax method to this!
-                 * this.sandbox.util.load(url)
-                 * .then(function(data){
-                 * })
-                 * .fail(function(error){
-                 * });
-                 */
-                this.sandbox.util.ajax({
 
-                    url: url,
-
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        this.sandbox.logger.error("An error occured while fetching data from: " + this.options.url);
-                        this.sandbox.logger.error("errorthrown", errorThrown.message);
-                    }.bind(this),
-
-                    success: function(response) {
+                this.sandbox.util.load(url)
+                    .then(function(response) {
                         this.parseData(response, columnNumber);
+                        this.scrollIfNeeded(this.filledColumns+1);
                         this.sandbox.emit(LOADED);
+                    }.bind(this))
+                    .fail(function(error) {
+                        this.sandbox.logger.error("An error occured while fetching data from: ", error);
+                    }.bind(this));
 
-                    }.bind(this)
-                });
             } else {
                 this.sandbox.logger.log("husky.column.navigation -  url not set, aborted loading of data");
             }
@@ -29080,20 +29069,7 @@ define('__component__$column-navigation@husky',[], function() {
          * @param {Number} columnNumber
          */
         parseData: function(data, columnNumber) {
-            var $column,
-                $list,
-                newColumn,
-                $arrow;
-
-            this.data = {};
-            this.data.links = data._links;
-            this.data.embedded = data._embedded;
-            this.data.title = data.title;
-            this.data.id = data.id;
-            this.data.hasSub = data.hasSub;
-            this.data.linked = data.linked;
-            this.data.linked = data.type;
-            this.data.published = data.published;
+            var $column,$list, newColumn, nodeWithSubNodes = null, lastSelected = null;
 
             if (columnNumber === 0) {  // case 1: no elements in container
                 this.columns[0] = [];
@@ -29103,34 +29079,84 @@ define('__component__$column-navigation@husky',[], function() {
                 newColumn = columnNumber + 1;
             }
 
-            // fill old add column
-            if (!!this.$addColumn) {
-                $column = this.$addColumn;
-                this.sandbox.dom.data(this.$addColumn, 'id', newColumn);
-                this.sandbox.dom.attr(this.$addColumn, 'id', 'column-' + newColumn);
-                this.$addColumn = null;
-            } else {
-                $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.wrapper.height, this.options.column.width));
-            }
-
+            $column = this.getDOMColumn(newColumn);
             $list = this.sandbox.dom.find('ul', $column);
 
-            this.sandbox.util.each(this.data.embedded, function(index, value) {
+            this.sandbox.util.each(data._embedded, function(index, value) {
+
                 this.storeDataItem(newColumn, value);
-                this.sandbox.dom.append($list, this.sandbox.dom.$(this.template.item(this.options.column.width - SCROLLBARWIDTH, value)));
+                var $element = this.sandbox.dom.$(this.template.item(this.options.column.width, value));
+                this.sandbox.dom.append($list, $element);
+
+                // remember which item has subitems to display a whole tree when column navigation should be restored
+                if(!!value.hasSub && value._embedded.length > 0) {
+                    nodeWithSubNodes = value;
+                    this.setElementSelected($element);
+                    this.selected[newColumn] = value;
+                }
+
+                // needed to select node in last level of nodes
+                if(!!this.options.selected && this.options.selected === value.id) {
+                    this.setElementSelected($element);
+                    this.selected[newColumn] = value;
+                    lastSelected = value;
+                }
+
             }.bind(this));
 
-            // remove loading icon
-            if (!!this.$selectedElement) {
-                $arrow = this.sandbox.dom.find('.arrow', this.$selectedElement);
-                this.sandbox.dom.removeClass($arrow, 'is-loading');
-                this.sandbox.dom.prependClass($arrow, 'icon-chevron-right');
-            }
+            this.removeLoadingIconForSelected();
 
             this.sandbox.dom.append(this.$columnContainer, $column);
             this.filledColumns++;
 
-            this.scrollIfNeeded(newColumn);
+
+            if(!!nodeWithSubNodes) { // parse next column if data exists
+                this.parseData(nodeWithSubNodes, newColumn);
+            } else if (!!lastSelected && !lastSelected.hasSub) { // append add column if no children
+                this.insertAddColumn(lastSelected, newColumn);
+            }
+
+        },
+
+        /**
+         * Sets/removes all needed classes to display a node as selected
+         * @param $element
+         */
+        setElementSelected: function($element) {
+            this.sandbox.dom.addClass($element, 'selected');
+            var $arrowElement = this.sandbox.dom.find('.arrow', $element);
+            this.sandbox.dom.removeClass($arrowElement, 'inactive');
+        },
+
+        /**
+         * Returns column to put the node elements in
+         * @param newColumn number of new column
+         * @returns {Object} DOM column
+         */
+        getDOMColumn: function(newColumn){
+            var $column;
+
+            if (!!this.$addColumn) { // take existing add-column
+                $column = this.$addColumn;
+                this.sandbox.dom.data(this.$addColumn, 'id', newColumn);
+                this.sandbox.dom.attr(this.$addColumn, 'id', 'column-' + newColumn);
+                this.$addColumn = null;
+            } else { // create new column
+                $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.wrapper.height, this.options.column.width));
+            }
+
+            return $column;
+        },
+
+        /**
+         * Removes loading icon from selected element
+         */
+        removeLoadingIconForSelected: function(){
+            if (!!this.$selectedElement) {
+                var $arrow = this.sandbox.dom.find('.arrow', this.$selectedElement);
+                this.sandbox.dom.removeClass($arrow, 'is-loading');
+                this.sandbox.dom.prependClass($arrow, 'icon-chevron-right');
+            }
         },
 
         /**
@@ -29267,17 +29293,22 @@ define('__component__$column-navigation@husky',[], function() {
             }
 
             // insert add column when clicked element
-            if (!this.$addColumn && !selectedItem.hasSub) {
-                // append empty column to add subpages
-                this.$addColumn = this.sandbox.dom.createElement(this.template.column(column + 1, this.options.wrapper.height, this.options.column.width));
-                this.sandbox.dom.append(this.$columnContainer, this.$addColumn);
-            }
+            this.insertAddColumn(selectedItem ,column);
 
             // scroll for add column
             if (!selectedItem.hasSub) {
                 this.scrollIfNeeded(column);
             }
 
+        },
+
+        insertAddColumn: function(selectedItem, column){
+
+            if (!this.$addColumn && !selectedItem.hasSub) {
+                // append empty column to add subpages
+                this.$addColumn = this.sandbox.dom.createElement(this.template.column(column + 1, this.options.wrapper.height, this.options.column.width));
+                this.sandbox.dom.append(this.$columnContainer, this.$addColumn);
+            }
         },
 
         /**
@@ -29342,8 +29373,8 @@ define('__component__$column-navigation@husky',[], function() {
                 return '<div class="column-navigation-wrapper"></div>';
             },
 
-            columnContainer: function(height) {
-                return ['<div class="column-navigation" style="height:', height, 'px"></div>'].join('');
+            columnContainer: function() {
+                return ['<div class="column-navigation"></div>'].join('');
             },
 
             column: function(columnNumber, height, width) {
@@ -29399,7 +29430,7 @@ define('__component__$column-navigation@husky',[], function() {
             },
 
             optionsContainer: function(width) {
-                return ['<div class="options grid-row hidden" style="width:', width, 'px"></div>'].join('');
+                return ['<div class="options grid-row hidden" style="width:', width+1, 'px"></div>'].join('');
             },
 
             options: {
