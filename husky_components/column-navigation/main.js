@@ -142,7 +142,7 @@ define([], function() {
                 this.sandbox.util.load(url)
                     .then(function(response) {
                         this.parseData(response, columnNumber);
-                        this.scrollIfNeeded(this.filledColumns+1);
+                        this.scrollIfNeeded(this.filledColumns + 1);
                         this.sandbox.emit(LOADED);
                     }.bind(this))
                     .fail(function(error) {
@@ -187,7 +187,7 @@ define([], function() {
          * @param {Number} columnNumber
          */
         parseData: function(data, columnNumber) {
-            var $column,$list, newColumn, nodeWithSubNodes = null, lastSelected = null;
+            var $column, $list, newColumn, nodeWithSubNodes = null, lastSelected = null;
 
             if (columnNumber === 0) {  // case 1: no elements in container
                 this.columns[0] = [];
@@ -207,14 +207,14 @@ define([], function() {
                 this.sandbox.dom.append($list, $element);
 
                 // remember which item has subitems to display a whole tree when column navigation should be restored
-                if(!!value.hasSub && value._embedded.length > 0) {
+                if (!!value.hasSub && value._embedded.length > 0) {
                     nodeWithSubNodes = value;
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
                 }
 
                 // needed to select node in last level of nodes
-                if(!!this.options.selected && this.options.selected === value.id) {
+                if (!!this.options.selected && this.options.selected === value.id) {
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
                     lastSelected = value;
@@ -228,7 +228,7 @@ define([], function() {
             this.filledColumns++;
 
 
-            if(!!nodeWithSubNodes) { // parse next column if data exists
+            if (!!nodeWithSubNodes) { // parse next column if data exists
                 this.parseData(nodeWithSubNodes, newColumn);
             } else if (!!lastSelected && !lastSelected.hasSub) { // append add column if no children
                 this.insertAddColumn(lastSelected, newColumn);
@@ -251,7 +251,7 @@ define([], function() {
          * @param newColumn number of new column
          * @returns {Object} DOM column
          */
-        getDOMColumn: function(newColumn){
+        getDOMColumn: function(newColumn) {
             var $column;
 
             if (!!this.$addColumn) { // take existing add-column
@@ -269,7 +269,7 @@ define([], function() {
         /**
          * Removes loading icon from selected element
          */
-        removeLoadingIconForSelected: function(){
+        removeLoadingIconForSelected: function() {
             if (!!this.$selectedElement) {
                 var $arrow = this.sandbox.dom.find('.arrow', this.$selectedElement);
                 this.sandbox.dom.removeClass($arrow, 'is-loading');
@@ -411,7 +411,7 @@ define([], function() {
             }
 
             // insert add column when clicked element
-            this.insertAddColumn(selectedItem ,column);
+            this.insertAddColumn(selectedItem, column);
 
             // scroll for add column
             if (!selectedItem.hasSub) {
@@ -420,7 +420,7 @@ define([], function() {
 
         },
 
-        insertAddColumn: function(selectedItem, column){
+        insertAddColumn: function(selectedItem, column) {
 
             if (!this.$addColumn && !selectedItem.hasSub) {
                 // append empty column to add subpages
@@ -548,7 +548,7 @@ define([], function() {
             },
 
             optionsContainer: function(width) {
-                return ['<div class="options grid-row hidden" style="width:', width+1, 'px"></div>'].join('');
+                return ['<div class="options grid-row hidden" style="width:', width + 1, 'px"></div>'].join('');
             },
 
             options: {
