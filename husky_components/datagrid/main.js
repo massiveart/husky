@@ -146,14 +146,14 @@ define(function() {
 
                 error: function(jqXHR, textStatus, errorThrown) {
                     this.sandbox.logger.log("An error occured while fetching data from: " + this.getUrl(params));
-                    this.sandbox.logger.log("textstatus: "+textStatus);
-                    this.sandbox.logger.log("errorthrown",errorThrown);
+                    this.sandbox.logger.log("textstatus: " + textStatus);
+                    this.sandbox.logger.log("errorthrown", errorThrown);
                 }.bind(this),
 
                 success: function(response) {
 
                     // TODO adjust when new api is finished and no backwards compatibility needed
-                    if(!!response.items) {
+                    if (!!response.items) {
                         this.data = response;
                     } else {
                         this.data = {};
@@ -193,7 +193,7 @@ define(function() {
 
             var delimiter = '?', url = params.url;
 
-            if(!!this.options.pagination && !!this.options.paginationOptions.pageSize) {
+            if (!!this.options.pagination && !!this.options.paginationOptions.pageSize) {
 
                 if (params.url.indexOf('?') !== -1) {
                     delimiter = '&';
@@ -216,7 +216,7 @@ define(function() {
             this.$element.empty();
 
             if (this.options.elementType === 'list') {
-                // TODO:
+                // TODO
                 //this.$element = this.prepareList();
                 this.sandbox.logger.log("list is not yet implemented!");
             } else {
@@ -265,7 +265,7 @@ define(function() {
          * @returns {string} returns table head
          */
 
-        prepareTableHead: function () {
+        prepareTableHead: function() {
             var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute, isSortable;
 
             tblColumns = [];
@@ -300,7 +300,7 @@ define(function() {
 
             this.rowStructure = ['id'];
 
-            headData.forEach(function (column) {
+            headData.forEach(function(column) {
 
                 tblColumnWidth = '';
                 // get width and measureunit
@@ -312,11 +312,11 @@ define(function() {
                 isSortable = false;
 
                 // TODO adjust when new api fully implemented and no backwards compatibility needed
-                if(!!this.data.links && !!this.data.links.sortable) {
+                if (!!this.data.links && !!this.data.links.sortable) {
 
                     //is column sortable - check with received sort-links
                     this.sandbox.util.each(this.data.links.sortable, function(index) {
-                        if(index === column.attribute){
+                        if (index === column.attribute) {
                             isSortable = true;
                             return false;
                         }
@@ -324,7 +324,7 @@ define(function() {
                 }
 
                 // add to row structure when valid entry
-                if(column.attribute !== undefined) {
+                if (column.attribute !== undefined) {
                     this.rowStructure.push(column.attribute);
                 }
 
@@ -365,12 +365,12 @@ define(function() {
             this.allItemIds = [];
 
             // TODO adjust when new api is fully implemented and no backwards compatibility needed
-            if(!!this.data.items) {
-                this.data.items.forEach(function (row) {
+            if (!!this.data.items) {
+                this.data.items.forEach(function(row) {
                     tblRows.push(this.prepareTableRow(row));
                 }.bind(this));
-            } else if(!!this.data.embedded) {
-                this.data.embedded.forEach(function (row) {
+            } else if (!!this.data.embedded) {
+                this.data.embedded.forEach(function(row) {
                     tblRows.push(this.prepareTableRow(row));
                 }.bind(this));
             }
@@ -643,12 +643,12 @@ define(function() {
         /**
          * inits the dom ids needed for the pagination
          */
-        initPaginationIds: function(){
+        initPaginationIds: function() {
             this.pagination = {
-                prevId : this.options.instance+'-prev',
-                nextId : this.options.instance+'-next',
-                dropdownId : this.options.instance+'-pagination-dropdown',
-                showAllId: this.options.instance+'-show-all'
+                prevId: this.options.instance + '-prev',
+                nextId: this.options.instance + '-next',
+                dropdownId: this.options.instance + '-pagination-dropdown',
+                showAllId: this.options.instance + '-show-all'
             };
         },
 
@@ -666,8 +666,8 @@ define(function() {
                 $paginationWrapper = this.sandbox.dom.$('<div/>');
                 $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row small-font');
 
-                if(!!this.data.total && !!this.data.links.all) {
-                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total,this.sandbox.translate('pagination.elements'),this.sandbox.translate('paginations.showAll'),this.pagination.showAllId));
+                if (!!this.data.total && !!this.data.links.all) {
+                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total, this.sandbox.translate('pagination.elements'), this.sandbox.translate('paginations.showAll'), this.pagination.showAllId));
                     $paginationWrapper.append($showAll);
                 }
 
@@ -676,11 +676,11 @@ define(function() {
 
                 $paginationWrapper.append($pagination);
 
-                paginationLabel = [this.sandbox.translate('pagination.page'),' ',this.data.page,' ',this.sandbox.translate('pagination.of'),' ',this.data.pages].join('');
+                paginationLabel = [this.sandbox.translate('pagination.page'), ' ', this.data.page, ' ', this.sandbox.translate('pagination.of'), ' ', this.data.pages].join('');
 
-                $pagination.append('<div id="'+this.pagination.nextId+'" class="icon-chevron-right pagination-prev pull-right pointer"></div>');
-                $pagination.append('<div id="'+this.pagination.dropdownId+'" class="pagination-main pull-right pointer"><span class="inline-block">'+paginationLabel+'</span><span class="dropdown-toggle inline-block"></span></div>');
-                $pagination.append('<div id="'+this.pagination.prevId+'" class="icon-chevron-left pagination-next pull-right pointer"></div>');
+                $pagination.append('<div id="' + this.pagination.nextId + '" class="icon-chevron-right pagination-prev pull-right pointer"></div>');
+                $pagination.append('<div id="' + this.pagination.dropdownId + '" class="pagination-main pull-right pointer"><span class="inline-block">' + paginationLabel + '</span><span class="dropdown-toggle inline-block"></span></div>');
+                $pagination.append('<div id="' + this.pagination.prevId + '" class="icon-chevron-left pagination-next pull-right pointer"></div>');
 
             }
 
@@ -691,25 +691,27 @@ define(function() {
         /**
          * Prepares and initializes the dropdown used for the pagination
          */
-        preparePaginationDropdown: function(){
+        preparePaginationDropdown: function() {
 
-            var data = [], i,name;
+            var data = [], i, name;
 
             for (i = 1; i <= this.data.pages; i++) {
                 name = this.sandbox.translate('pagination.page') + ' ' + i + ' ' + this.sandbox.translate('pagination.of') + ' ' + this.data.pages;
                 data.push({id: i, name: name});
             }
 
-            this.sandbox.start([{
-                name: 'dropdown@husky',
-                options: {
-                    el: '#'+this.pagination.dropdownId,
-                    setParentDropDown: true,
-                    instanceName: this.dropdownInstanceName,
-                    alignment: 'left',
-                    data: data
+            this.sandbox.start([
+                {
+                    name: 'dropdown@husky',
+                    options: {
+                        el: '#' + this.pagination.dropdownId,
+                        setParentDropDown: true,
+                        instanceName: this.dropdownInstanceName,
+                        alignment: 'left',
+                        data: data
+                    }
                 }
-            }]);
+            ]);
 
         },
 
@@ -725,7 +727,7 @@ define(function() {
             if (!!uri) {
                 event.preventDefault();
                 url = uri;
-            } else if(!!event.id && event.id > 0 && event.id <= this.data.pages) {
+            } else if (!!event.id && event.id > 0 && event.id <= this.data.pages) {
                 template = this.sandbox.uritemplate.parse(this.data.links.pagination);
                 url = this.sandbox.uritemplate.expand(template, {page: event.id});
             } else {
@@ -844,7 +846,7 @@ define(function() {
 
                 this.load({
                     url: url,
-                    success: function () {
+                    success: function() {
                         this.removeLoader();
                         this.sandbox.emit('husky.datagrid.updated', 'updated sort');
                     }.bind(this)
@@ -891,7 +893,7 @@ define(function() {
             this.sandbox.on('husky.datagrid.data.get', this.provideData.bind(this));
 
             // pagination dropdown item clicked
-            this.sandbox.on('husky.dropdown.'+this.dropdownInstanceName+'.item.click',this.changePage.bind(this, null));
+            this.sandbox.on('husky.dropdown.' + this.dropdownInstanceName + '.item.click', this.changePage.bind(this, null));
 
         },
 
@@ -911,7 +913,7 @@ define(function() {
             // TODO does not work?
             this.load({
                 url: this.data.links.self,
-                success: function () {
+                success: function() {
                     this.removeLoader();
                     this.sandbox.emit('husky.datagrid.updated', 'updated data 123');
                 }.bind(this)
@@ -962,9 +964,9 @@ define(function() {
 
         templates: {
 
-            showAll: function(total , elementsLabel, showAllLabel, id){
+            showAll: function(total, elementsLabel, showAllLabel, id) {
 
-                return ['<div class="show-all grid-col-4 m-top-10">',total,' ',elementsLabel,' (<a id="'+id+'" href="">',showAllLabel,'</a>)</div>'].join('');
+                return ['<div class="show-all grid-col-4 m-top-10">', total, ' ', elementsLabel, ' (<a id="' + id + '" href="">', showAllLabel, '</a>)</div>'].join('');
             },
 
             removeRow: function() {
