@@ -20,7 +20,7 @@
 			app.sandbox.autocomplete = {
 
 				init: function(selector, configs) {
-					app.core.dom.$(selector).typeahead(configs);
+					return app.core.dom.$(selector).typeahead(configs);
 				}
 
 			};

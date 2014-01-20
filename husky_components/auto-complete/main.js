@@ -39,14 +39,16 @@ define([], function () {
         failClass: 'husky-auto-complete-error',					// fail-class if noNewValues is false
         suggestionClass: 'suggestion',                          // CSS-class for autocomplete suggestions
         suggestionImg: '<img src="../../img/sample.gif" />',    // HTML-Img Tag - Image gets rendered before every suggestion
-        stickToInput: false                                     // If true suggestions are always under the input field
+        stickToInput: false,                                    // If true suggestions are always under the input field
+        hint: false,                                            // if true typeahead hint-field will not be removed
+        emptyOnBlur: false                                      // If true input field value gets deleted on blur
     };
 
     return {
         data: [],
 
         getEvent: function (append) {
-            return 'husky.auto-complete.' + append;
+            return 'husky.auto-complete.' + this.options.instanceName + '.' + append;
         },
 
         getValueID: function () {
@@ -82,6 +84,7 @@ define([], function () {
 
             this.render();
             this.setEvents();
+            this.sandbox.emit(this.getEvent('initialized'), this.$valueField);
         },
 
         setTemplate: function () {
@@ -101,17 +104,31 @@ define([], function () {
         },
 
         render: function () {
-            this.$el.addClass('husky-auto-complete');
-            // init form-element and dropdown menu
-            this.$valueField = $('<input id="' + this.options.instanceName + '" class="husky-validate" type="text" autofill="false" data-id="' + this.getValueID() + '" value="' + this.getValueName() + '"/>');
-            this.$el.append(this.$valueField);
+            this.sandbox.dom.addClass(this.$el, 'husky-auto-complete');
+            this.initValueField();
+            this.appendValueField();
 
             this.bindTypeahead();
         },
 
+        initValueField: function() {
+            this.$valueField = this.sandbox.dom.createElement('<input id="' + this.options.instanceName + '" ' +
+                                                                     'class="husky-validate" ' +
+                                                                     'type="text" ' +
+                                                                     'autofill="false" ' +
+                                                                     'data-id="' + this.getValueID() + '" ' +
+                                                                     'value="' + this.getValueName() + '"/>');
+        },
+
+        appendValueField: function () {
+            if (!!this.$valueField.length) {
+                this.sandbox.dom.append(this.$el, this.$valueField);
+            }
+        },
+
         bindTypeahead: function () {
             this.sandbox.autocomplete.init(this.$valueField, {
-                name: this.options.typeaheadName,
+                name: this.options.instanceName,
                 local: this.options.localData,
                 valueKey: this.options.valueKey,
                 template: function (context) {
@@ -143,11 +160,14 @@ define([], function () {
             if (this.options.stickToInput === false) {
                 this.sandbox.dom.css('.twitter-typeahead', 'position', 'static');
             }
+            if (this.options.hint === false) {
+                this.sandbox.dom.remove('.tt-hint');
+            }
         },
 
         setEvents: function () {
             this.sandbox.dom.on(this.$valueField, 'typeahead:selected', function (event, datum) {
-                this.sandbox.emit(this.getEvent('select'));
+                this.sandbox.emit(this.getEvent('select'), datum);
                 this.setValueFieldId(datum.id);
             }.bind(this));
 
@@ -158,7 +178,11 @@ define([], function () {
             }.bind(this));
 
             this.sandbox.dom.on(this.$valueField, 'blur', function () {
-                this.handleBlur();
+                if (this.options.emptyOnBlur === false) {
+                    this.handleBlur();
+                } else {
+                    this.clearValueFieldValue();
+                }
             }.bind(this));
         },
 
@@ -172,7 +196,7 @@ define([], function () {
                     this.setFailState();
                 }
             } else {
-                if (this.isMatchedExactly() === true) {
+                if (this.isMatchedExactly() === true && this.getClosestMatch() !== null) {
                     this.setValueFieldValue(this.getClosestMatch().name);
                     this.setValueFieldId(this.getClosestMatch().id);
                 }
@@ -180,7 +204,7 @@ define([], function () {
         },
 
         getClosestMatch: function () {
-            if (!!this.matches.length) {
+            if (!!this.matches.length && this.getValueFieldValue() !== '') {
                 return this.matches[0];
             }
             return null;
@@ -194,6 +218,10 @@ define([], function () {
             this.sandbox.dom.val(this.$valueField, value);
         },
 
+        clearValueFieldValue: function () {
+            this.sandbox.dom.clearVal(this.$valueField);
+        },
+
         setValueFieldId: function (id) {
             this.sandbox.dom.attr(this.$valueField, {'data-id': id});
         },
@@ -204,7 +232,7 @@ define([], function () {
 
         isMatchedExactly: function () {
             if (this.isMatched() === true) {
-                if (this.getClosestMatch !== null) {
+                if (this.getClosestMatch() !== null) {
                     if (this.getValueFieldValue().toLowerCase() === this.getClosestMatch().name.toLowerCase()) {
                         return true;
                     }

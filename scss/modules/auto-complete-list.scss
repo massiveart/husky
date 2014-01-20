@@ -5,10 +5,29 @@
         list-style: none;
     }
 
-    .icon-arrow-down {
+    .arrow-down,
+    .arrow-up {
         position: absolute;
-        right: 5px;
-        bottom: 5px;
+        right: 10px;
+        bottom: 13px;
+        content: "";
+        display: inline-block;
+        height: 0;
+        margin-left: 5px;
+        width: 0;
+        cursor: pointer;
+    }
+
+    .arrow-down {
+        border-left: 4px solid rgba(0, 0, 0, 0);
+        border-right: 4px solid rgba(0, 0, 0, 0);
+        border-top: 6px solid #000000;
+    }
+
+    .arrow-up {
+        border-left: 4px solid rgba(0, 0, 0, 0);
+        border-right: 4px solid rgba(0, 0, 0, 0);
+        border-bottom: 6px solid #000000;
     }
 
     label {
@@ -16,43 +35,47 @@
     }
 
 	.auto-complete-list {
-	  font-size: $smallFontSize;
+	    font-size: $smallFontSize;
+        min-height: 30px;
+        border-radius: 4px 4px 0 0;
 	}
-}
-
-.auto-complete-list-input {
-    display: inline-block;
-    width: 35%;
-
-    input[type="text"] {
-        width: 100%;
-        border: 0;
-        outline: 0;
+    .tt-suggestions {
+        width: 506px;
     }
 }
 
-.auto-complete-list-selections {
-    position: relative;
+.auto-complete-list {
     padding: 4px 8px;
     border-radius: 4px;
     background-color: #fff;
 
-    .auto-complete-list-selection {
-        display: inline-block;
-        margin-top: 2px;
-        margin-right: 5px;
-        padding: 0 4px;
-        border-radius: 2px;
-        background-color: #ccc;
-        color: #000;
-        font-size: 12px;
-
-        .icon-remove {
-            position: relative;
-            top: 2px;
-            cursor: pointer;
-        }
+    input[type="text"] {
+      margin: 5px 10px 5px 0;
+      width: 100px;
+      border: 0;
+      outline: 0;
     }
+}
+
+.auto-complete-list-selection {
+      display: inline-block;
+      margin: 2px 5px 2px 0;
+      padding: 0 4px;
+      border-radius: 2px;
+      background-color: #ccc;
+      color: #000;
+      font-size: 12px;
+
+      .tm-tag-remove{
+          @extend .icon-remove;
+          font-family: $baseIconFont;
+          position: relative;
+          top: 2px;
+          padding-left: 2px;
+          cursor: pointer;
+          text-decoration: none;
+          color: $black;
+      }
 }
 
 .auto-complete-list-suggestions {
@@ -71,6 +94,7 @@
 
     ul {
         padding: 8px 8px 15px;
+        margin: 0;
     }
 
     li {
@@ -81,5 +105,11 @@
         background-color: #fff;
         color: #000;
         font-size: 12px;
+        cursor: pointer;
+    }
+
+    .deactivated {
+        cursor: auto;
+        color: $grayLight;
     }
 }
