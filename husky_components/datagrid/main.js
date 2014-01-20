@@ -63,8 +63,8 @@ define(function() {
         excludeFields: ['id'],
         pagination: false,
         paginationOptions: {
-            pageSize: 4,
-            showPages: 5
+            pageSize: null,
+            showPages: null
         },
         removeRow: true,
         selectItem: {
@@ -189,14 +189,18 @@ define(function() {
                 return params.url;
             }
 
-            var delimiter = '?', url;
-            if (params.url.indexOf('?') !== -1) {
-                delimiter = '&';
-            }
+            var delimiter = '?', url = params.url;
 
-            url = params.url + delimiter + 'pageSize=' + this.options.paginationOptions.pageSize;
-            if (params.page > 1) {
-                url += '&page=' + params.page;
+            if(!!this.options.pagination && !!this.options.paginationOptions.pageSize) {
+
+                if (params.url.indexOf('?') !== -1) {
+                    delimiter = '&';
+                }
+
+                url = params.url + delimiter + 'pageSize=' + this.options.paginationOptions.pageSize;
+                if (params.page > 1) {
+                    url += '&page=' + params.page;
+                }
             }
 
             return url;
@@ -639,14 +643,15 @@ define(function() {
         preparePagination: function() {
             var $pagination,
                 $paginationWrapper,
-                $showAll;
+                $showAll,
+                paginationLabel;
 
             if (!!this.options.pagination && parseInt(this.data.pages, 10) > 1) {
                 $paginationWrapper = this.sandbox.dom.$('<div/>');
-                $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row');
+                $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row small-font');
 
                 if(!!this.data.total && !!this.data.links.all) {
-                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total));
+                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total,this.sandbox.translate('pagination.elements'),this.sandbox.translate('paginations.showAll')));
                     $paginationWrapper.append($showAll);
                 }
 
@@ -655,9 +660,13 @@ define(function() {
 
                 $paginationWrapper.append($pagination);
 
-                $pagination.append(this.preparePaginationForwardNavigation());
-                $pagination.append(this.preparePaginationPageNavigation());
-                $pagination.append(this.preparePaginationBackwardNavigation());
+                paginationLabel = [this.sandbox.translate('pagination.page'),' ',this.data.page,' ',this.sandbox.translate('pagination.of'),' ',this.data.pages].join('');
+
+                $pagination.append('<div id="next" class="icon-chevron-right pagination-next pull-right pointer"></div>');
+                $pagination.append('<div id="pagination-dropdown" class="pagination-main pull-right  pointer">'+paginationLabel+'</div>');
+                $pagination.append('<div id="prev" class="icon-chevron-left pagination-prev pull-right  pointer"></div>');
+
+                // TODO generate dropdown
             }
 
             return $paginationWrapper;
@@ -692,36 +701,6 @@ define(function() {
                 page: this.data.page,
                 pagesDisplay: this.data.pageDisplay
             });
-        },
-
-        /**
-         * Triggers rendering for last and next link
-         * @returns {*|string}
-         */
-        preparePaginationBackwardNavigation: function() {
-
-            var $next = '';
-
-            if(this.data.links.next) {
-                $next = this.templates.paginationNavigation("next", "");
-            }
-
-            return ["<ul>",$next,"</ul>"].join('');
-        },
-
-
-        /**
-         * Triggers rendering for first and previous link
-         * @returns {*|string}
-         */
-        preparePaginationForwardNavigation: function() {
-            var $prev = '';
-
-            if(this.data.links.prev) {
-                $prev = this.templates.paginationNavigation("prev", "");
-            }
-
-            return ["<ul>",$prev,"</ul>"].join('');
         },
 
         /**
@@ -981,10 +960,9 @@ define(function() {
 
         templates: {
 
-            showAll: function(total){
+            showAll: function(total , elementsLabel, showAllLabel){
 
-                return ['<div class="show-all grid-col-4">',total
-                            ,' Elements (<a id="show-all" href="">show all</a>)</div>'].join('');
+                return ['<div class="show-all grid-col-4 m-top-10">',total,' ',elementsLabel,' (<a id="show-all" href="">',showAllLabel,'</a>)</div>'].join('');
             },
 
             removeRow: function() {
@@ -1019,14 +997,11 @@ define(function() {
                 ].join('');
             },
 
-            // Pagination
-            paginationNavigation: function(data , label) {
-
-                return ['<li class="pagination-',data,' page" data-page="', data, '">',label,'</li>'].join('');
-            },
-
-
             paginationPageNavigation: function(data) {
+
+                // TODO generates dropdown
+
+
 
                 // TODO currect page + this.options.paginationOptions.showPages: 5
                 var rest,
@@ -1051,7 +1026,7 @@ define(function() {
                     }
                 }
 
-                return '<ul>'+ pageItemsBefore.join('') + pageItemsCurrentAfter.join('') + '</ul>';
+                return '<div id="pagination-dropdown" class="pagination-main pull-right">Page 1 of 12</div>';
             }
         }
 

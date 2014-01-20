@@ -10,8 +10,12 @@
 // Base Colors
 // -------------------------
 $black: #000;
+$gray: #666;
 $grayLight: #999;
 $grayLighter: #ccc;
+$grayLighterer: #ddd;
+$grayLightest: #efefef;
+$grayDark: #1e1e1e;
 $white:#fff;
 
 
@@ -22,14 +26,17 @@ $baseBackgroundColor: #f1f1f1;
 
 // Accent colors
 // -------------------------
-$accentColor: #41DDE0;
+$accentColor: #009fc0;
 
 
 // Font Colors
 // -------------------------
 $baseFontColor: $black;
-$highlightColor: #00aeff;
-$errorColor: #e60000;
+
+$highlightColor: #249FBE; // blue
+
+$infoColor: #fda502; // orange
+$errorColor: #e60000; // red
 
 
 // Typography
@@ -38,7 +45,7 @@ $sansFontFamily: Helvetica, Arial, sans-serif;
 
 $baseFontSize: 14px;
 $smallFontSize: 12px;
-$baseFontFamily: "MuseoSansCondensed300", $sansFontFamily;
+$baseFontFamily: $sansFontFamily;
 $baseLineHeight: 20px;
 
 $headingsFontFamily: inherit;
@@ -46,6 +53,7 @@ $headingsFontWeight: normal;
 $headingsColor: inherit;
 
 $baseIconFont: "Glyphicons";
+$baseIconHalflingsFont: "Glyphicons Halflings Regular";
 
 
 // Componenet values
@@ -59,7 +67,8 @@ $baseIconFont: "Glyphicons";
 
 // Form Elements
 // -------------------------
-$inputBorderColor: $grayLighter;
+$inputBorderColor: $white;
+$inputBorderFocusColor: $grayLightest;
 $labelColor: $grayLighter;
 
 

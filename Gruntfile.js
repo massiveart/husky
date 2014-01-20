@@ -50,18 +50,13 @@ module.exports = function(grunt) {
                 ' * with this source code in the file LICENSE.\n' +
                 ' */\n\n'
         },
-
         watch: {
             options: {
                 nospawn: true
             },
             compass: {
                 files: ['scss/{,*/}*.{scss,sass}'],
-                tasks: ['compass:dev', 'copy:dist']
-            },
-            jshint: {
-                files: ['js/{,*/}*.{js,js}'],
-                tasks: ['jshint']
+                tasks: ['compass:dev', 'copy:dist', 'cssmin']
             }
         },
         jshint: {
@@ -82,6 +77,7 @@ module.exports = function(grunt) {
         clean: {
             dist: ['dist', 'docs/packages/husky/'],
             temp: ['dist/temp'],
+            tmp: ['.tmp'],
             bower_after: {
                 files: {
                     src: [
@@ -101,7 +97,7 @@ module.exports = function(grunt) {
             dev: {
                 options: {
                     sassDir: 'scss/',
-                    specify: ['scss/husky.scss'],
+                    specify: 'scss/husky.scss',
                     cssDir: '.tmp/',
                     require: ['animation'],
                     relativeAssets: false
@@ -145,7 +141,8 @@ module.exports = function(grunt) {
                         cwd: './',
                         dest: 'dist',
                         src: [
-                            'fonts/{,*/}*'
+                            'fonts/{,*/}*',
+                            'vendor/ckeditor/{,**/}*'
                         ]
                     },
                     {
@@ -277,6 +274,16 @@ module.exports = function(grunt) {
                         ],
                         dest: 'bower_components/massiveart-uritemplate/'
                     },
+					// typeahead.js
+					{
+						expand: true,
+						flatten: true,
+						src: [
+							'.bower_components/typeahead.js/dist/typeahead.js',
+							'.bower_components/typeahead.js/dist/typeahead.min.js',
+						],
+						dest: 'bower_components/typeahead.js'
+					}
                 ]
             }
         },
@@ -288,7 +295,18 @@ module.exports = function(grunt) {
                     install: true,
                     verbose: false,
                     cleanTargetDir: false,
-                    cleanBowerDir: false
+                    cleanBowerDir: false,
+					bowerOptions: {
+						forceLatest: true
+					}
+                }
+            }
+        },
+        connect: {
+            server: {
+                options: {
+                    port: 9000,
+                    base: '.'
                 }
             }
         }
@@ -305,6 +323,7 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('build', [
+        'clean:tmp',
         'clean:dist',
         'requirejs:dist',
         'requirejs:dev',
@@ -329,7 +348,10 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask('default', [
-        'copy:dev',
+        'compass',
+        'cssmin',
+        'copy:dist',
+        'connect',
         'watch'
     ]);
 };

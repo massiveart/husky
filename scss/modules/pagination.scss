@@ -2,47 +2,55 @@
 // Pagination
 // --------------------------------------------------
 
-.pagination {
+.pagination-wrapper {
 
-  ul {
-      margin: 0;
-      padding: 0;
-      display: inline-block;
-      list-style: none;
-  }
+    .show-all {
+        color: $grayLight;
 
-  li {
-      font-size: $smallFontSize;
-      display: inline-block;
-      margin-right: 5px;
-      cursor: pointer;
-      & > a {
-          text-decoration: none;
-          color: $black;
-      }
-  }
-}
+        & > a,
+        & > a:hover,
+        & > a:visited {
+            text-decoration:none;
+            color: $black;
+        }
 
-
-.pagination-first,
-.pagination-last {
-    padding: 0 5px;
-    font-family: "Glyphicons";
-
-    &::after {
-        position: relative;
-        top: 2px;
     }
+
+    .pagination {
+
+        .pagination-main {
+            margin: 0;
+            display: inline-block;
+            list-style: none;
+            border-top: 1px solid $grayLighter;
+            border-bottom: 1px solid $grayLighter;
+            padding: 6px 13px 7px 13px;
+        }
+
+        li {
+            font-size: $smallFontSize;
+            display: inline-block;
+            margin-right: 5px;
+            cursor: pointer;
+            & > a {
+                text-decoration: none;
+                color: $black;
+            }
+        }
+
+        .pagination-next {
+            padding: 6px 13px;
+            border: 1px solid $grayLighter;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .pagination-prev {
+            padding: 6px 13px;
+            border: 1px solid $grayLighter;
+            border-radius: 5px 0 0 5px;
+        }
+    }
+
 }
 
-.pagination-next {
-    &::after {
-        content: "\e225";
-    }
-}
 
-.pagination-prev {
-    &::after {
-        content: "\e224";
-    }
-}

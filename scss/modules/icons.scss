@@ -2,8 +2,12 @@
 // Icons
 // --------------------------------------------------
 
+.icon-class {
+    font-family: $baseIconFont;
+}
+
 [class^="icon-"] {
-    font-family: 'Glyphicons';
+    font-family: $baseIconFont;
 }
 
 .icon-remove {
@@ -55,9 +59,23 @@
     }
 }
 
+.icon-circle-plus {
+  &::after {
+    content: "\e191";
+    display: inline-block;
+  }
+}
+
 .icon-edit {
     &::after {
         content: "\e151";
+        display: inline-block;
+    }
+}
+
+.icon-edit-pen {
+    &::after {
+        content: "\270f";
         display: inline-block;
     }
 }
@@ -170,7 +188,32 @@
 
 .icon-chevron-right {
   &::after {
-    content: "\e244";
+    font-family: $baseIconHalflingsFont;
+    content: "\e080";
+    display: inline-block;
+  }
+}
+
+.icon-chevron-left {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e079";
+    display: inline-block;
+  }
+}
+
+.icon-chevron-down {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e114";
+    display: inline-block;
+  }
+}
+
+.icon-chevron-up {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e113";
     display: inline-block;
   }
 }
@@ -183,10 +226,10 @@
 }
 
 .icon-check {
-  &::after {
-    content: "\e153";
-    display: inline-block;
-  }
+    &::after {
+        content: "\e153";
+        display: inline-block;
+    }
 }
 
 .icon-adjust-alt {
@@ -217,28 +260,135 @@
     }
 }
 
-.icon-arrow-down {
-  &::after {
-    content: "\e224"; // TODO change to correct icons when included in font,  remove rotate
-    display: inline-block;
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    -webkit-transform: rotate(90deg);
+.icon-globe {
+    &::after {
+        content: "\e341";
+        display: inline-block;
+    }
+}
 
-    transform: rotate(90deg);
-  }
+.icon-dashboard {
+    &::after {
+        content: "\e332";
+        display: inline-block;
+    }
+}
+
+.icon-arrow-down {
+    &::after {
+        content: "\e224"; // TODO change to correct icons when included in font,  remove rotate
+        display: inline-block;
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+
+        transform: rotate(90deg);
+    }
 }
 
 .icon-arrow-up {
-  &::after {
-    content: "\e225"; // TODO change to correct icons when included in font,  remove rotate
-    display: inline-block;
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    -webkit-transform: rotate(90deg);
+    &::after {
+        content: "\e225"; // TODO change to correct icons when included in font,  remove rotate
+        display: inline-block;
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
 
-    transform: rotate(90deg);
+        transform: rotate(90deg);
+    }
+}
+
+.icon-arrow {
+    &::after {
+        content: "\e223";
+        display: inline-block;
+    }
+}
+
+.icon-internal-link {
+    &::after {
+        content: "\e051";
+        display: inline-block;
+    }
+}
+
+.icon-external-link {
+    &::after {
+        content: "\e242";
+        display: inline-block;
+    }
+}
+
+.icon-shadow-node {
+    &::after {
+        content: "\e223";
+        display: inline-block;
+    }
+}
+
+.icon-user-add {
+  &::after {
+    content: "\e007";
+    display: inline-block;
+  }
+}
+
+.icon-bin {
+  &::after {
+    content: "\e017";
+    display: inline-block;
+  }
+}
+
+.icon-retweet {
+  &::after {
+    content: "\e081";
+    display: inline-block;
+  }
+}
+
+.icon-file-import {
+  &::after {
+    content: "\e359";
+    display: inline-block;
+  }
+}
+
+.icon-file-export {
+  &::after {
+    content: "\e360";
+    display: inline-block;
+  }
+}
+
+.icon-show-thumbnails {
+  &::after {
+    content: "\e157";
+    display: inline-block;
+  }
+}
+
+.icon-eye-open {
+  &::after {
+    content: "\e052";
+    display: inline-block;
+  }
+}
+
+.icon-floppy-save {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e175";
+    display: inline-block;
+  }
+}
+
+.icon-floppy-saved {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e173";
+    display: inline-block;
   }
 }

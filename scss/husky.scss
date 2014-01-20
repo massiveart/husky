@@ -1,8 +1,10 @@
 @charset "UTF-8";
 
 @import
-	"abstract/abstract_loader",
-	"abstract/abstract_validation";
+	"abstract/abstract-loader.scss",
+	"abstract/abstract-validation.scss";
+
+
 
 @import
     "variables.scss",
@@ -17,17 +19,24 @@
     "modules/icons.scss",
     "modules/core.scss",
     "modules/grid.scss",
+    "modules/form.scss",
     "modules/header.scss",
     "modules/navigation.scss",
-	"modules/form.scss",
     "modules/dropdown.scss",
+    "modules/edit-toolbar.scss",
+    "modules/page-functions.scss",
     "modules/tables.scss",
     "modules/btns.scss",
     "modules/pagination.scss",
     "modules/avatar.scss",
     "modules/auto-complete.scss",
+    "modules/search.scss",
+    "modules/tabs.scss",
+    "modules/toolbar.scss",
     "modules/dialog.scss",
     "modules/matrix.scss",
     "modules/validation.scss",
     "modules/loading.scss",
+    "modules/column-navigation.scss",
+    "modules/auto-complete-list.scss",
     "modules/dropdown-multiple-select.scss";

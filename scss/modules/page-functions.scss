@@ -1,0 +1,25 @@
+.page-function {
+    float: left;
+    left: -50px;
+    position: relative;
+
+    a {
+        display:block;
+        text-align: center;
+        font-size: 20px;
+        width: 40px;
+        margin-right: 10px;
+        height: $editToolbarHeight;
+        line-height: $editToolbarHeight;
+
+        color: black;
+
+        &:hover {
+            color: $grayDark;
+        }
+
+        &:active {
+            color: $gray;
+        }
+    }
+}

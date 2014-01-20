@@ -1,0 +1,13 @@
+@import "compass/css3/box-shadow";
+
+@mixin input-placeholder {
+    &.placeholder { @content; }
+    &:-moz-placeholder { @content; }
+    &::-moz-placeholder { @content; }
+    &:-ms-input-placeholder { @content; }
+    &::-webkit-input-placeholder { @content; } 
+}
+
+@mixin standard-box-shadow {
+  @include box-shadow(rgba(0,0,0,0.15) 3px 3px 0px 0px);
+}
