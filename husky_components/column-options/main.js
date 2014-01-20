@@ -39,7 +39,7 @@ define(function() {
                 title: 'Column Options'
             },
             footer: {
-                disabled: false,
+                disabled: false
             },
             hidden: false,
             destroyOnClose: true
