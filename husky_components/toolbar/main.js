@@ -47,7 +47,8 @@ define(function() {
             data: [],
             instanceName: '',
             hasSearch: false,
-            appearance: 'large'
+            appearance: 'large',
+            searchOptions: null
         },
 
         selectItem = function(event) {
@@ -62,7 +63,7 @@ define(function() {
 
             // if toggle item do not trigger event
             if (!item.items) {
-                $parent = this.sandbox.dom.find('button',this.sandbox.dom.closest(event.currentTarget,'.group'));
+                $parent = this.sandbox.dom.find('button', this.sandbox.dom.closest(event.currentTarget, '.group'));
                 triggerSelectEvent.call(this, item, $parent);
             }
         },
@@ -72,7 +73,7 @@ define(function() {
             parentId = this.sandbox.dom.data($parent, 'id');
 
             if (this.items[parentId].type === "select") {
-                icon =this.sandbox.dom.find('span', $parent);
+                icon = this.sandbox.dom.find('span', $parent);
                 this.sandbox.dom.removeClass(icon);
                 this.sandbox.dom.addClass(icon, item.icon);
             }
@@ -96,7 +97,7 @@ define(function() {
          * @param listItem
          * @param parent
          */
-        createDropdownMenu = function(listItem, parent) {
+            createDropdownMenu = function(listItem, parent) {
             var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />'),
                 classString = '';
             this.sandbox.dom.after(listItem, $list);
@@ -125,7 +126,7 @@ define(function() {
          * otherwise a new id is generated for the element
          * @param item
          */
-        checkItemId = function(item) {
+            checkItemId = function(item) {
             // if item has no id, generate random id
             if (!item.id || !!this.items[item.id]) {
                 do {
@@ -139,7 +140,7 @@ define(function() {
          * opens dropdown submenu
          * @param event
          */
-        toggleItem = function(event) {
+            toggleItem = function(event) {
 
             event.preventDefault();
             event.stopPropagation();
@@ -196,7 +197,7 @@ define(function() {
             // TODO: add appearance class
 
             var $container = this.sandbox.dom.createElement('<div class="toolbar-container" />'),
-                classArray, addTo, disabledString, button, $group;
+                classArray, addTo, disabledString, button, $group, searchOptions;
 
             this.sandbox.dom.append(this.options.el, $container);
 
@@ -254,11 +255,21 @@ define(function() {
             // add search
             if (this.options.hasSearch) {
                 this.sandbox.dom.append($container, '<div id="' + this.options.instanceName + '-toolbar-search" class="toolbar-search" />');
+
+                searchOptions = {
+                    el: '#' + this.options.instanceName + '-toolbar-search',
+                    instanceName: this.options.instanceName,
+                    appearance: 'white small'
+                };
+                searchOptions = this.sandbox.util.extend(true, {}, searchOptions, this.options.searchOptions);
+                // start search component
+                this.sandbox.start([
+                    {
+                        name: 'search@husky',
+                        options: searchOptions
+                    }
+                ]);
             }
-            // start search component
-            this.sandbox.start([
-                {name: 'search@husky', options: {el: '#' + this.options.instanceName + '-toolbar-search', instanceName: this.options.instanceName, appearance: 'white small'}}
-            ]);
 
             // initialization finished
             this.sandbox.emit('husky.tabs.initialized');

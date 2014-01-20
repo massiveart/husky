@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Husky UI Auto Complete</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../dist/husky.min.css">
+    <style>
+        .container {
+            margin: 60px auto;
+            max-width: 1024px;
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="grid">
+        <div class="grid-row">
+            <div class="grid-col-6">
+                <div class="list-wrapper">
+                    <div class="auto-complete-list-container">
+                        <label>
+                            Tags
+                            <div class="auto-complete-list">
+                                <ul id="auto-complete-list-selections" class="auto-complete-list-selections">
+                                    <li class="auto-complete-list-selection">
+                                        Tag 1
+                                        <span class="icon-remove"></span>
+                                    </li>
+                                    <li class="auto-complete-list-selection">
+                                        Tag 2
+                                        <span class="icon-remove"></span>
+                                    </li>
+                                    <li class="auto-complete-list-selection">
+                                        Tag 3
+                                        <span class="icon-remove"></span>
+                                    </li>
+                                    <li class="auto-complete-list-input">
+                                        <div id="husky-autocomplete"></div>
+                                    <li>
+                                </ul>
+                            </div>
+                        </label>
+                        <div class="auto-complete-list-suggestions">
+                            <h5>Recent Tags</h5>
+                            <ul>
+                                <li>Tag 1</li>
+                                <li>Tag 2</li>
+                                <li>Tag 3</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../js/sinon.js"></script>
+<script src="../js/jquery.js"></script>
+<script src="../js/require.js"></script>
+</body>
+</html>

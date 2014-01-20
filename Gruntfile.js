@@ -141,7 +141,8 @@ module.exports = function(grunt) {
                         cwd: './',
                         dest: 'dist',
                         src: [
-                            'fonts/{,*/}*'
+                            'fonts/{,*/}*',
+                            'vendor/ckeditor/{,**/}*'
                         ]
                     },
                     {
@@ -273,6 +274,25 @@ module.exports = function(grunt) {
                         ],
                         dest: 'bower_components/massiveart-uritemplate/'
                     },
+					// typeahead.js
+					{
+						expand: true,
+						flatten: true,
+						src: [
+							'.bower_components/typeahead.js/dist/typeahead.js',
+							'.bower_components/typeahead.js/dist/typeahead.min.js',
+						],
+						dest: 'bower_components/typeahead.js'
+					},
+                    // tagmanager.js
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            '.bower_components/tagmanager/tagmanager.js'
+                        ],
+                        dest: 'bower_components/tagmanager'
+                    }
                 ]
             }
         },
@@ -284,7 +304,10 @@ module.exports = function(grunt) {
                     install: true,
                     verbose: false,
                     cleanTargetDir: false,
-                    cleanBowerDir: false
+                    cleanBowerDir: false,
+					bowerOptions: {
+						forceLatest: true
+					}
                 }
             }
         },

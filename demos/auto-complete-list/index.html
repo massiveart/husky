@@ -21,28 +21,22 @@
         </style>
     </head>
     <body>
-
         <div class="container">
             <div class="grid">
                 <div class="grid-row">
-                    <div class="grid-col-12" data-aura-component="auto-complete-list@husky"></div>
-                </div>
-                <div class="grid-row">
-                    <div class="grid-col-12">&nbsp;</div>
-                </div>
-                <div>
-                    <div class="grid-col-6" id="auto-complete-list-1"></div>
-                    <div class="grid-col-6" id="auto-complete-list-2"></div>
+                    <div class="grid-col-6">
+                        <div class="list-wrapper"></div>
+                    </div>
+                    <div class="grid-col-6">
+                        <div class="list-wrapper2"></div>
+                    </div>
                 </div>
             </div>
         </div>
-
         <script src="../js/sinon.js"></script>
         <script src="../js/jquery.js"></script>
-
         <script src="../js/require.js"></script>
-
-        <script type="text/javascript">
+        <script>
             require.config({
                 baseUrl: '../../'
             });
@@ -53,24 +47,39 @@
                 var app = Husky({ debug: { enable: true }}),
                         _ = app.sandbox.util._;
 
-                app.start().then(function() {
-                    app.logger.log('Aura started...');
-
-                    app.sandbox.start([
-                        {
-                            name: 'auto-complete-list@husky',
-                            options: {
-                                el: '#auto-complete-list-1'
-                            }
-                        },{
-                            name: 'auto-complete-list@husky',
-                            options: {
-                                el: '#auto-complete-list-2'
+                app.start([{
+                    name: 'auto-complete-list@husky',
+                    options: {
+                        instanceName: 'I1',
+                        el: '.list-wrapper',
+                        label: 'Tags',
+                        suggestionsUrl: '',
+                        itemsUrl: '',
+                        items: ['Tag1', 'Tag2', 'Tag3', 'Tag4'],
+                        suggestions: ["Sugg1", "Sugg2", "Sugg3", "Sugg4"],
+                        suggestionsHeadline: 'Recent Tags',
+                        autocompleteOptions: {
+                            localData: [{id: null, name: 'Tag A'}, {id: null, name: 'Tag B'}, {id: null, name: 'Tag C'}, {id: null, name: 'Tag D'}]
+                        }
+                    }
+                }, {
+                        name: 'auto-complete-list@husky',
+                        options: {
+                            instanceName: 'I2',
+                            el: '.list-wrapper2',
+                            label: 'Links',
+                            suggestionsUrl: '',
+                            itemsUrl: '',
+                            items: ['Link1', 'Link2', 'Link3', 'Link4'],
+                            suggestions: ["SuggA", "SuggB", "SuggC", "SuggD"],
+                            suggestionsHeadline: 'Popular Links',
+                            autocompleteOptions: {
+                                localData: [{id: null, name: 'Link A'}, {id: null, name: 'Link B'}, {id: null, name: 'Link C'}, {id: null, name: 'Link D'}]
                             }
                         }
-                    ]);
-
-                });
+                    }]).then(function() {
+                        app.logger.log('Aura started...');
+                    });
             });
         </script>
     </body>

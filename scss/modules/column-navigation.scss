@@ -4,7 +4,7 @@
     .column-navigation {
         background-color: $white;
         border: 1px solid $grayLighter;
-        overflow-x: scroll;
+        overflow-x: auto;
         overflow-y: hidden;
         white-space: nowrap;
 
@@ -22,7 +22,7 @@
                 font-size: $baseFontSize;
 
                 li {
-                    padding: 15px 10px 15px 25px;
+                    padding: 15px 25px;
                     height: 50px;
                 }
 
