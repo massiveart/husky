@@ -13,7 +13,11 @@
             "jquery": "bower_components/jquery/jquery",
             "husky-validation": "bower_components/husky-validation/dist/validation",
             "globalize_lib": "bower_components/globalize/lib/globalize",
+            "typeahead": "bower_components/typeahead.js/typeahead",
+            "tagsManager": "bower_components/tagmanager/tagmanager",
             "uri-template": "bower_components/massiveart-uritemplate/uritemplate",
+            "ckeditor" : "vendor/ckeditor/ckeditor",
+            "jqueryAdapter" : "vendor/ckeditor/adapters/jquery",
             "husky": "lib/husky",
 
             "__component__$navigation@husky": "husky_components/navigation/main",
@@ -27,13 +31,14 @@
             "__component__$search@husky": "husky_components/search/main",
             "__component__$tabs@husky": "husky_components/tabs/main",
             "__component__$toolbar@husky": "husky_components/toolbar/main",
-            "__component__$edit-toolbar@husky": "husky_components/edit-toolbar/main",
             "__component__$auto-complete@husky": "husky_components/auto-complete/main",
+            "__component__$auto-complete-list@husky": "husky_components/auto-complete-list/main",
             "__component__$dropdown-multiple-select@husky": "husky_components/dropdown-multiple-select/main",
             "__component__$password-fields@husky": "husky_components/password-fields/main",
             "__component__$column-navigation@husky": "husky_components/column-navigation/main",
             "__component__$edit-toolbar@husky": "husky_components/edit-toolbar/main",
-            "__component__$page-functions@husky": "husky_components/page-functions/main"
+            "__component__$page-functions@husky": "husky_components/page-functions/main",
+            "__component__$ckeditor@husky": "husky_components/ckeditor/main"
         },
         "shim": {
             "backbone": {
@@ -55,7 +60,11 @@
             "aura/ext/components",
             "husky-validation",
             "globalize_lib",
+            "ckeditor",
+            "jqueryAdapter",
             "uri-template",
+            "typeahead",
+            "tagsManager",
 
             "husky",
             "__component__$navigation@husky",
@@ -71,11 +80,13 @@
             "__component__$toolbar@husky",
             "__component__$edit-toolbar@husky",
             "__component__$auto-complete@husky",
+            "__component__$auto-complete-list@husky",
             "__component__$dropdown-multiple-select@husky",
             "__component__$password-fields@husky",
             "__component__$column-navigation@husky",
             "__component__$edit-toolbar@husky",
-            "__component__$page-functions@husky"
+            "__component__$page-functions@husky",
+            "__component__$ckeditor@husky"
         ]
     }
 }
