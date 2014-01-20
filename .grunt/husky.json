@@ -13,6 +13,8 @@
             "jquery": "bower_components/jquery/jquery",
             "husky-validation": "bower_components/husky-validation/dist/validation",
             "globalize_lib": "bower_components/globalize/lib/globalize",
+            "typeahead": "bower_components/typeahead.js/typeahead",
+            "tagsManager": "bower_components/tagmanager/tagmanager",
             "uri-template": "bower_components/massiveart-uritemplate/uritemplate",
             "husky": "lib/husky",
 
@@ -33,7 +35,6 @@
             "__component__$dropdown-multiple-select@husky": "husky_components/dropdown-multiple-select/main",
             "__component__$password-fields@husky": "husky_components/password-fields/main",
             "__component__$column-navigation@husky": "husky_components/column-navigation/main",
-            "__component__$edit-toolbar@husky": "husky_components/edit-toolbar/main",
             "__component__$page-functions@husky": "husky_components/page-functions/main"
         },
         "shim": {
@@ -57,6 +58,8 @@
             "husky-validation",
             "globalize_lib",
             "uri-template",
+            "typeahead",
+            "tagsManager",
 
             "husky",
             "__component__$navigation@husky",
