@@ -718,38 +718,49 @@ define(function() {
          * Emits husky.datagrid.updated event on success
          * @param event
          */
-        changePage: function(event) {
+        changePage: function(uri, event) {
 
-            var $element, page, template, url, uri;
-
-            $element = this.sandbox.dom.$(event.currentTarget);
-            page = $element.data('page');
-
-            if(!!page) {
+            event.preventDefault();
+            if (!!uri) {
+                this.sandbox.emit('husky.datagrid.page.change', uri);
                 this.addLoader();
-                this.resetItemSelection();
-                //this.resetSortingOptions(); // browsing through sorted pages
-                
-                this.sandbox.emit('husky.datagrid.page.change', 'change page');
-
-                uri = this.data.links[page];
-
-                if(!!uri) {
-                    url = uri;
-                } else {
-                    template = this.sandbox.uritemplate.parse(this.data.links.pagination);
-                    url = this.sandbox.uritemplate.expand(template, {page: page});
-                }
-
-                this.load({
-                    url: url,
-                    page: page,
+                this.load({url: uri,
                     success: function() {
                         this.removeLoader();
-                        this.sandbox.emit('husky.datagrid.updated', 'updated page');
-                    }.bind(this)
-                });
+                        this.sandbox.emit('husky.datagrid.updated');
+                    }.bind(this)});
             }
+
+//            var $element, page, template, url, uri;
+//
+//            $element = this.sandbox.dom.$(event.currentTarget);
+//            page = $element.data('page');
+//
+//            if(!!page) {
+//                this.addLoader();
+//                this.resetItemSelection();
+//                //this.resetSortingOptions(); // browsing through sorted pages
+//
+//                this.sandbox.emit('husky.datagrid.page.change', 'change page');
+//
+//                uri = this.data.links[page];
+//
+//                if(!!uri) {
+//                    url = uri;
+//                } else {
+//                    template = this.sandbox.uritemplate.parse(this.data.links.pagination);
+//                    url = this.sandbox.uritemplate.expand(template, {page: page});
+//                }
+//
+//                this.load({
+//                    url: url,
+//                    page: page,
+//                    success: function() {
+//                        this.removeLoader();
+//                        this.sandbox.emit('husky.datagrid.updated', 'updated page');
+//                    }.bind(this)
+//                });
+//            }
         },
 
         resetSortingOptions: function() {
@@ -782,45 +793,13 @@ define(function() {
             if (this.options.pagination) {
 
                 // next page
-                this.$element.on('click', '#' + this.pagination.nextId, function(event) {
-                    event.preventDefault();
-                    if (!!this.data.links.next) {
-                        this.sandbox.emit('husky.datagrid.page.change', this.data.links.next);
-                        this.addLoader();
-                        this.load({
-                            url: this.data.links.next,
-                            success: function() {
-                                this.removeLoader();
-                                this.sandbox.emit('husky.datagrid.updated');
-                            }.bind(this)});
-                    }
-                }.bind(this));
+                this.$element.on('click', '#' + this.pagination.nextId, this.changePage.bind(this, this.data.links.next));
 
                 // previous page
-                this.$element.on('click', '#' + this.pagination.prevId, function(event) {
-                    event.preventDefault();
-                    if (!!this.data.links.prev) {
-                        this.sandbox.emit('husky.datagrid.page.change', this.data.links.prev);
-                        this.addLoader();
-                        this.load({url: this.data.links.prev,
-                            success: function() {
-                                this.removeLoader();
-                                this.sandbox.emit('husky.datagrid.updated');
-                            }.bind(this)});
-                    }
-                }.bind(this));
+                this.$element.on('click', '#' + this.pagination.prevId, this.changePage.bind(this, this.data.links.prev));
 
                 // show all
-                this.$element.on('click', '#' + this.pagination.showAllId, function(event) {
-                    event.preventDefault();
-                    this.sandbox.emit('husky.datagrid.data.load.all', this.data.links.all);
-                    this.addLoader();
-                    this.load({url: this.data.links.all,
-                        success: function() {
-                            this.removeLoader();
-                            this.sandbox.emit('husky.datagrid.updated');
-                        }.bind(this)});
-                }.bind(this));
+                this.$element.on('click', '#' + this.pagination.showAllId, this.changePage.bind(this, this.data.links.all));
             }
 
             if (this.options.removeRow) {
