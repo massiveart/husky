@@ -61,6 +61,7 @@ define(function() {
         data: null,
         defaultMeasureUnit: 'px',
         excludeFields: ['id'],
+        instance: 'undefined',
         pagination: false,
         paginationOptions: {
             pageSize: null,
@@ -651,7 +652,7 @@ define(function() {
                 $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row small-font');
 
                 if(!!this.data.total && !!this.data.links.all) {
-                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total,this.sandbox.translate('pagination.elements'),this.sandbox.translate('paginations.showAll')));
+                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total,this.sandbox.translate('pagination.elements'),this.sandbox.translate('paginations.showAll'),this.options.instance));
                     $paginationWrapper.append($showAll);
                 }
 
@@ -662,9 +663,9 @@ define(function() {
 
                 paginationLabel = [this.sandbox.translate('pagination.page'),' ',this.data.page,' ',this.sandbox.translate('pagination.of'),' ',this.data.pages].join('');
 
-                $pagination.append('<div id="next" class="icon-chevron-right pagination-next pull-right pointer"></div>');
-                $pagination.append('<div id="pagination-dropdown" class="pagination-main pull-right  pointer">'+paginationLabel+'</div>');
-                $pagination.append('<div id="prev" class="icon-chevron-left pagination-prev pull-right  pointer"></div>');
+                $pagination.append('<div id="'+this.options.instance+'-next" class="icon-chevron-right pagination-next pull-right pointer"></div>');
+                $pagination.append('<div id="'+this.options.instance+'-pagination-dropdown" class="pagination-main pull-right  pointer">'+paginationLabel+'</div>');
+                $pagination.append('<div id="'+this.options.instance+'-prev" class="icon-chevron-left pagination-prev pull-right  pointer"></div>');
 
                 // TODO generate dropdown
             }
@@ -699,7 +700,8 @@ define(function() {
                 pageSize: this.data.pageSize,
                 pages: this.data.pages,
                 page: this.data.page,
-                pagesDisplay: this.data.pageDisplay
+                pagesDisplay: this.data.pageDisplay,
+                instance: this.options.instance
             });
         },
 
@@ -960,9 +962,9 @@ define(function() {
 
         templates: {
 
-            showAll: function(total , elementsLabel, showAllLabel){
+            showAll: function(total , elementsLabel, showAllLabel, instance){
 
-                return ['<div class="show-all grid-col-4 m-top-10">',total,' ',elementsLabel,' (<a id="show-all" href="">',showAllLabel,'</a>)</div>'].join('');
+                return ['<div class="show-all grid-col-4 m-top-10">',total,' ',elementsLabel,' (<a id="'+instance+'-show-all" href="">',showAllLabel,'</a>)</div>'].join('');
             },
 
             removeRow: function() {
@@ -997,7 +999,7 @@ define(function() {
                 ].join('');
             },
 
-            paginationPageNavigation: function(data) {
+            paginationPageNavigation: function(data, instance) {
 
                 // TODO generates dropdown
 
@@ -1026,7 +1028,7 @@ define(function() {
                     }
                 }
 
-                return '<div id="pagination-dropdown" class="pagination-main pull-right">Page 1 of 12</div>';
+                return '<div id="'+instance+'-pagination-dropdown" class="pagination-main pull-right">Page 1 of 12</div>';
             }
         }
 
