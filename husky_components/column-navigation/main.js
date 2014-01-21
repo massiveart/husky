@@ -128,6 +128,49 @@ define([], function() {
 
             this.sandbox.dom.append($wrapper, this.$optionsContainer);
 
+            //init dropdown for settings in options container
+            this.initSettingsDropdown(this.sandbox.dom.attr($settings, 'id'));
+
+        },
+
+        /**
+         * Instantiats the dropdown component
+         * @param containerId dom id for element to start dropdown
+         */
+        initSettingsDropdown: function(containerId) {
+
+            // TODO
+            // show dropdown only if item is selected
+            // enable/disable certain elements of the dropdown depending on the selected element
+
+            this.sandbox.start([
+                {
+                    name: 'dropdown@husky',
+                    options: {
+                        el: '#' + containerId,
+                        setParentDropDown: true,
+                        instanceName: 'column-navigation-settings-dropdown',
+                        alignment: 'left',
+                        data: [
+                            {
+                                id: 1,
+                                name: 'Delete',
+                                action: 'delete'
+                            },
+                            {
+                                id: 2,
+                                name: 'Covert to shadow',
+                                action: 'convert to shadow'
+                            },
+                            {
+                                id: 3,
+                                name: 'Hide',
+                                action: 'hide'
+                            }
+                        ]
+                    }
+                }
+            ]);
         },
 
         /**
@@ -559,8 +602,8 @@ define([], function() {
                 },
 
                 settings: function() {
-                    return ['<div id="column-navigation-settings" class="align-center grid-col-6 settings pointer">',
-                        '<span class="icon-cogwheel"></span>',
+                    return ['<div id="column-navigation-settings" class="align-center grid-col-6 settings pointer drop-down-trigger">',
+                        '<span class="icon-cogwheel inline-block"></span><span class="dropdown-toggle inline-block"></span>',
                         '</div>'].join('');
                 }
             }
