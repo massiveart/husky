@@ -841,12 +841,17 @@ define(function() {
 
             var url, template;
 
+            // when a valid uri is passed to this function - load from the uri
             if (!!uri) {
                 event.preventDefault();
                 url = uri;
+
+            // determine wether the page number received via the event from the dropdown is valid
             } else if (!!event.id && event.id > 0 && event.id <= this.data.pages) {
                 template = this.sandbox.uritemplate.parse(this.data.links.pagination);
                 url = this.sandbox.uritemplate.expand(template, {page: event.id});
+
+            // invalid - wether page number nor uri are valid
             } else {
                 this.sandbox.logger.log("invalid page number or reached start/end!");
                 return;
