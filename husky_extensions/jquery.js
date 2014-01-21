@@ -263,7 +263,7 @@
             };
 
             app.core.dom.scrollTop = function(itemSelector) {
-                $(window).scrollTop($(itemSelector).offset().top);
+                $(window).scrollTop($(itemSelector).offsset().top);
             };
 
             app.core.dom.scrollLeft = function(selector, value) {
