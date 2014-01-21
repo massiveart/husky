@@ -31,6 +31,7 @@
 
 		& > li {
 			padding: 5px 20px;
+            text-align: left;
 			&:hover,
 			&.hover {
 				background-color: $highlightColor;

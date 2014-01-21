@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>EditToolbar - husky</title>
+    <title>Search - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -110,7 +110,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>EditToolbar Class</h1>
+                        <h1>Search Class</h1>
 <div class="box meta">
     
 
@@ -118,13 +118,13 @@
 
     
         <div class="foundat">
-            Defined in: <a href="../files/husky_components_edit-toolbar_main.js.html#l49"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:49</code></a>
+            Defined in: <a href="../files/husky_components_search_main.js.html#l10"><code>husky_components&#x2F;search&#x2F;main.js:10</code></a>
         </div>
     
 
     
         
-            Module: <a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a>
+            Module: <a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a>
         
     
 
@@ -140,8 +140,8 @@
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_EditToolbar" class="method item">
-    <h3 class="name"><code>EditToolbar</code></h3>
+        <div id="method_Search" class="method item">
+    <h3 class="name"><code>Search</code></h3>
 
     
         <div class="args">
@@ -182,7 +182,7 @@
             
         
         
-        <a href="../files/husky_components_edit-toolbar_main.js.html#l49"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:49</code></a>
+        <a href="../files/husky_components_search_main.js.html#l10"><code>husky_components&#x2F;search&#x2F;main.js:10</code></a>
         
         </p>
 
@@ -221,13 +221,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[url]</code>
+                                    <code class="param-name optional">[instanceName=null]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>url to fetch data from</p>
+                                    <p>allows to createa custom events (in case of multiple tabs on one page)</p>
 
                                 </div>
 
@@ -236,13 +236,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[data]</code>
+                                    <code class="param-name optional">[placeholderText=Search...]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>if no url is provided</p>
+                                    <p>the text to be shown as placeholder</p>
 
                                 </div>
 
@@ -251,28 +251,14 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[instanceName]</code>
+                                    <code class="param-name optional">[appearance=gray]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>enables custom events (in case of multiple tabs on one page)</p>
+                                    <p>appearance can be &#39;gray&#39;, &#39;white&#39; or &#39;small&#39;</p>
 
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[appearance]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    
                                 </div>
 
                                 
@@ -323,28 +309,21 @@
                     <ul class="index-list events">
                         
                             <li class="index-item event">
-                                <a href="#event_husky.edit-toolbar.[INSTANCE_NAME.]initialized">husky.edit-toolbar.[INSTANCE_NAME.]initialized</a>
+                                <a href="#event_husky.search[.INSTANCE_NAME]">husky.search[.INSTANCE_NAME]</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.edit-toolbar.[INSTANCE_NAME.]item.disable">husky.edit-toolbar.[INSTANCE_NAME.]item.disable</a>
+                                <a href="#event_husky.search[.INSTANCE_NAME].initialized">husky.search[.INSTANCE_NAME].initialized</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.edit-toolbar.[INSTANCE_NAME.]item.enable">husky.edit-toolbar.[INSTANCE_NAME.]item.enable</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
-                                <a href="#event_husky.edit-toolbar.[INSTANCE_NAME.]item.loading">husky.edit-toolbar.[INSTANCE_NAME.]item.loading</a>
+                                <a href="#event_husky.search[.INSTANCE_NAME].reset">husky.search[.INSTANCE_NAME].reset</a>
 
                                 
                                 
@@ -366,8 +345,8 @@
                 <h2 class="off-left">Events</h2>
 
                 
-                    <div id="event_husky.edit-toolbar.[INSTANCE_NAME.]initialized" class="events item">
-    <h3 class="name"><code>husky.edit-toolbar.[INSTANCE_NAME.]initialized</code></h3>
+                    <div id="event_husky.search[.INSTANCE_NAME]" class="events item">
+    <h3 class="name"><code>husky.search[.INSTANCE_NAME]</code></h3>
     <span class="type"></span>
 
     
@@ -389,7 +368,7 @@
             
         
         
-        <a href="../files/husky_components_edit-toolbar_main.js.html#l83"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:83</code></a>
+        <a href="../files/husky_components_search_main.js.html#l37"><code>husky_components&#x2F;search&#x2F;main.js:37</code></a>
         
         </p>
 
@@ -399,51 +378,7 @@
     </div>
 
     <div class="description">
-        <p>triggered when edit-toolbar is initialized and ready to use</p>
-
-    </div>
-
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.edit-toolbar.[INSTANCE_NAME.]item.disable" class="events item">
-    <h3 class="name"><code>husky.edit-toolbar.[INSTANCE_NAME.]item.disable</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_edit-toolbar_main.js.html#l102"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:102</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>disable a button</p>
+        <p>triggered when user clicked on search icon or pressed enter</p>
 
     </div>
 
@@ -455,14 +390,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name">id</code>
+                        <code class="param-name">the</code>
                         <span class="type">String</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The id of the button which should be disabled</p>
+                        <p>string thats been looked for</p>
 
                     </div>
 
@@ -478,8 +413,8 @@
 </div>
 
                 
-                    <div id="event_husky.edit-toolbar.[INSTANCE_NAME.]item.enable" class="events item">
-    <h3 class="name"><code>husky.edit-toolbar.[INSTANCE_NAME.]item.enable</code></h3>
+                    <div id="event_husky.search[.INSTANCE_NAME].initialized" class="events item">
+    <h3 class="name"><code>husky.search[.INSTANCE_NAME].initialized</code></h3>
     <span class="type"></span>
 
     
@@ -501,7 +436,7 @@
             
         
         
-        <a href="../files/husky_components_edit-toolbar_main.js.html#l92"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:92</code></a>
+        <a href="../files/husky_components_search_main.js.html#l54"><code>husky_components&#x2F;search&#x2F;main.js:54</code></a>
         
         </p>
 
@@ -511,34 +446,10 @@
     </div>
 
     <div class="description">
-        <p>enable a button</p>
+        <p>triggered when user clicks on search icon or pressed enter</p>
 
     </div>
 
-    
-        <div class="params">
-            <h4>Event Payload:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">id</code>
-                        <span class="type">String</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The id of the button which should be enabled</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
     
 
 
@@ -546,8 +457,8 @@
 </div>
 
                 
-                    <div id="event_husky.edit-toolbar.[INSTANCE_NAME.]item.loading" class="events item">
-    <h3 class="name"><code>husky.edit-toolbar.[INSTANCE_NAME.]item.loading</code></h3>
+                    <div id="event_husky.search[.INSTANCE_NAME].reset" class="events item">
+    <h3 class="name"><code>husky.search[.INSTANCE_NAME].reset</code></h3>
     <span class="type"></span>
 
     
@@ -569,7 +480,7 @@
             
         
         
-        <a href="../files/husky_components_edit-toolbar_main.js.html#l112"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:112</code></a>
+        <a href="../files/husky_components_search_main.js.html#l46"><code>husky_components&#x2F;search&#x2F;main.js:46</code></a>
         
         </p>
 
@@ -579,34 +490,10 @@
     </div>
 
     <div class="description">
-        <p>event to set button into loading state</p>
+        <p>triggered when user clicks on reset button of search</p>
 
     </div>
 
-    
-        <div class="params">
-            <h4>Event Payload:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">id</code>
-                        <span class="type">String</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The id of the button</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
     
 
 

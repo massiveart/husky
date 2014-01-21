@@ -28,6 +28,7 @@
  * @param {Boolean} [options.appendTBody] add TBODY to table
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search event
  * @param {String} [options.url] url to fetch data from
+ * @param {String} [options.paginationTemplate] template for pagination
  *
  */
 define(function() {
@@ -38,74 +39,76 @@ define(function() {
      *    Default values for options
      */
     var defaults = {
-        autoRemoveHandling: true,
-        className: 'datagridcontainer',
-        elementType: 'table',
-        data: null,
-        defaultMeasureUnit: 'px',
-        excludeFields: ['id'],
-        pagination: false,
-        paginationOptions: {
-            pageSize: null,
-            showPages: null
+            autoRemoveHandling: true,
+            className: 'datagridcontainer',
+            elementType: 'table',
+            data: null,
+            defaultMeasureUnit: 'px',
+            excludeFields: ['id'],
+            instance: 'undefined',
+            pagination: false,
+            paginationOptions: {
+                pageSize: null,
+                showPages: null
+            },
+            removeRow: true,
+            selectItem: {
+                type: null,      // checkbox, radiobutton
+                width: '50px'    // numerous value
+                //clickable: false   // defines if background is clickable TODO do not use until fixed
+            },
+            sortable: false,
+            tableHead: [],
+            url: null,
+            appendTBody: true,   // add TBODY to table
+            searchInstanceName: null, // at which search it should be listened to can be null|string|empty_string
+            paginationTemplate: '<%=translate("pagination.page")%> <%=i%> <%=translate("pagination.of")%> <%=pages%>'
         },
-        removeRow: true,
-        selectItem: {
-            type: null,      // checkbox, radiobutton
-            width: '50px'    // numerous value
-            //clickable: false   // defines if background is clickable TODO do not use until fixed
-        },
-        sortable: false,
-        tableHead: [],
-        url: null,
-        appendTBody: true,   // add TBODY to table
-        searchInstanceName: null // at which search it should be listened to can be null|string|empty_string
-    },
 
         namespace = 'husky.datagrid.',
 
-        /* TRIGGERS EVENTS */
+    /* TRIGGERS EVENTS */
 
         /**
          * raised when item is deselected
          * @event husky.datagrid.item.deselect
          * @param {String} id of deselected item
          */
-        ITEM_DESELECT = namespace + 'item.deselect',
+            ITEM_DESELECT = namespace + 'item.deselect',
 
         /**
          * raised when item is selected
          * @event husky.datagrid.item.select
          * @param {String} if of selected item
          */
-        ITEM_SELECT = namespace + 'item.select',
+            ITEM_SELECT = namespace + 'item.select',
 
         /**
          * raised when clicked on an item
          * @event husky.datagrid.item.click
          * @param {String} id of item that was clicked
          */
-        ITEM_CLICK = namespace + 'item.click',
+            ITEM_CLICK = namespace + 'item.click',
 
         /**
          * raised when husky.datagrid.items.get-selected is triggered
          * @event husky.datagrid.items.selected
          * @param {Array} ids of all items that have been clicked
          */
-        ITEMS_SELECTED = namespace + 'items.selected',
+            ITEMS_SELECTED = namespace + 'items.selected',
 
         /**
          * raised when all items get deselected via the header checkbox
          * @event husky.datagrid.all.deselect
          */
-        ALL_DESELECT = namespace + 'all.deselect',
+            ALL_DESELECT = namespace + 'all.deselect',
 
         /**
          * raised when all items get deselected via the header checkbox
          * @event husky.datagrid.all.select
          * @param {Array} ids of all items that have been clicked
          */
-        ALL_SELECT = namespace + 'all.select',
+            ALL_SELECT = namespace + 'all.select',
 
         /**
          * click - raised when clicked on the remove-row-icon
@@ -113,78 +116,74 @@ define(function() {
          * @param {Object} event object of click
          * @param {String} id of item that was clicked for removal
          */
-        ROW_REMOVE_CLICK = namespace + 'row.remove-click',
+            ROW_REMOVE_CLICK = namespace + 'row.remove-click',
 
         /**
          * raised when row got removed
          * @event husky.datagrid.row.removed
          * @param {String} id of item that was removed
          */
-        ROW_REMOVED = namespace + 'row.removed',
+            ROW_REMOVED = namespace + 'row.removed',
 
         /**
          * raised when the the current page changes
          * @event husky.datagrid.page.change
          */
-        PAGE_CHANGE = namespace + 'page.change',
+            PAGE_CHANGE = namespace + 'page.change',
 
         /**
          * raised when the data is updated
          * @event husky.datagrid.updated
          */
-        UPDATED = namespace + 'updated',
+            UPDATED = namespace + 'updated',
 
         /**
          * raised when when husky.datagrid.data.get is triggered
          * @event husky.datagrid.data.provide
          */
-        DATA_PROVIDE = namespace + 'data.provide',
+            DATA_PROVIDE = namespace + 'data.provide',
 
         /**
          * raised when when data is sorted
          * @event husky.datagrid.data.sort
          */
-        DATA_SORT = namespace + 'data.sort',
+            DATA_SORT = namespace + 'data.sort',
 
 
-        /* PROVIDED EVENTS */
+    /* PROVIDED EVENTS */
 
         /**
          * used to trigger an update of the data
          * @event husky.datagrid.update
          */
-        UPDATE = namespace + 'update',
+            UPDATE = namespace + 'update',
 
         /**
          * used to add a row
          * @event husky.datagrid.row.add
          * @param {String} id of the row to be removed
          */
-        ROW_ADD = namespace + 'row.add',
+            ROW_ADD = namespace + 'row.add',
 
         /**
          * used to remove a row
          * @event husky.datagrid.row.remove
          * @param {String} id of the row to be removed
          */
-        ROW_REMOVE = namespace + 'row.remove',
+            ROW_REMOVE = namespace + 'row.remove',
 
         /**
          * triggers husky.datagrid.items.selected event, which returns all selected item ids
          * @event husky.datagrid.items.get-selected
          * @param  {Callback} callback function receives array of selected items
          */
-        ITEMS_GET_SELECTED = namespace + 'items.get-selected',
+            ITEMS_GET_SELECTED = namespace + 'items.get-selected',
 
         /**
          * triggers husky.datagrid.data.provide
          * @event husky.datagrid.data.get
          */
-        DATA_GET = namespace + 'data.get';
-
-
-
-
+            DATA_GET = namespace + 'data.get';
 
     return {
 
@@ -196,6 +195,7 @@ define(function() {
             // extend default options and set variables
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.name = this.options.name;
+            this.dropdownInstanceName = 'datagrid-pagination-dropdown';
             this.data = null;
             this.allItemIds = [];
             this.selectedItemIds = [];
@@ -329,8 +329,7 @@ define(function() {
             this.$element.empty();
 
             if (this.options.elementType === 'list') {
-                // TODO:
-                //this.$element = this.prepareList();
+                // TODO this.$element = this.prepareList();
                 this.sandbox.logger.log("list is not yet implemented!");
             } else {
                 this.$element.append(this.prepareTable());
@@ -746,119 +745,133 @@ define(function() {
 
             // TODO adjust when api is finished
             if (this.options.pagination && !!this.data.links) {
+                this.initPaginationIds();
                 this.$element.append(this.preparePagination());
+                this.preparePaginationDropdown();
             }
             return this;
         },
 
         /**
-         * Delegates the rendering of the pagination when paginations is needed
+         * inits the dom ids needed for the pagination
+         */
+        initPaginationIds: function() {
+            this.pagination = {
+                prevId: this.options.instance + '-prev',
+                nextId: this.options.instance + '-next',
+                dropdownId: this.options.instance + '-pagination-dropdown',
+                showAllId: this.options.instance + '-show-all'
+            };
+        },
+
+        /**
+         * Delegates the rendering of the pagination when pagination is needed
          * @returns {*}
          */
         preparePagination: function() {
-            var $pagination;
+            var $pagination,
+                $paginationWrapper,
+                $showAll,
+                paginationLabel;
 
             if (!!this.options.pagination && parseInt(this.data.pages, 10) > 1) {
+                $paginationWrapper = this.sandbox.dom.$('<div/>');
+                $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row small-font');
+
+                if (!!this.data.total && !!this.data.links.all) {
+                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total, this.sandbox.translate('pagination.elements'), this.sandbox.translate('pagination.showAll'), this.pagination.showAllId));
+                    $paginationWrapper.append($showAll);
+                }
+
                 $pagination = this.sandbox.dom.$('<div/>');
-                $pagination.addClass('pagination');
+                $pagination.addClass('pagination grid-col-8 pull-right');
 
-                // TODO next / prev not set when on last / first page
-                $pagination.append(this.preparePaginationForwardNavigation());
-                $pagination.append(this.preparePaginationPageNavigation());
-                $pagination.append(this.preparePaginationBackwardNavigation());
+                $paginationWrapper.append($pagination);
+
+                paginationLabel = this.renderPaginationRow(this.data.page, this.data.pages);
+
+                $pagination.append('<div id="' + this.pagination.nextId + '" class="icon-chevron-right pagination-prev pull-right pointer"></div>');
+                $pagination.append('<div id="' + this.pagination.dropdownId + '" class="pagination-main pull-right pointer"><span class="inline-block">' + paginationLabel + '</span><span class="dropdown-toggle inline-block"></span></div>');
+                $pagination.append('<div id="' + this.pagination.prevId + '" class="icon-chevron-left pagination-next pull-right pointer"></div>');
             }
 
-            return $pagination;
-        },
-
-        /**
-         * Triggers rendering of the numbers in the pagination
-         * @returns {*}
-         */
-        preparePaginationPageNavigation: function() {
-            return this.templates.paginationPageNavigation({
-                pageSize: this.data.pageSize,
-                pages: this.data.pages,
-                page: this.data.page,
-                pagesDisplay: this.data.pageDisplay
-            });
-        },
-
-        /**
-         * Triggers rendering for last and next link
-         * @returns {*|string}
-         */
-        preparePaginationBackwardNavigation: function() {
-
-            var $next = '',
-                $last = '';
-
-            if (this.data.links.next) {
-                $next = this.templates.paginationNavigation("next", "Next");
-            }
-            if (this.data.links.last) {
-                $last = this.templates.paginationNavigation("last", "");
-            }
-
-            return ["<ul>", $next, $last, "</ul>"].join('');
+            return $paginationWrapper;
         },
 
 
         /**
-         * Triggers rendering for first and previous link
-         * @returns {*|string}
+         * Renders template for one row in the pagination
+         * @param i current page number
+         * @param pages total number of pages
          */
-        preparePaginationForwardNavigation: function() {
-            var $prev = '',
-                $first = '';
+        renderPaginationRow: function(i, pages) {
+            var defaults = {
+                translate: this.sandbox.translate,
+                i: i,
+                pages: pages
+            };
 
-            if (this.data.links.first) {
-                $first = this.templates.paginationNavigation("first", "");
-            }
-            if (this.data.links.prev) {
-                $prev = this.templates.paginationNavigation("prev", "Previous");
+            return this.sandbox.util.template(this.options.paginationTemplate, defaults);
+        },
+
+        /**
+         * Prepares and initializes the dropdown used for the pagination
+         */
+        preparePaginationDropdown: function() {
+
+            var data = [], i, name;
+
+            for (i = 1; i <= this.data.pages; i++) {
+                name = this.renderPaginationRow(i, this.data.pages);
+                data.push({id: i, name: name});
             }
 
-            return ["<ul>", $first, $prev, "</ul>"].join('');
+            this.sandbox.start([
+                {
+                    name: 'dropdown@husky',
+                    options: {
+                        el: '#' + this.pagination.dropdownId,
+                        setParentDropDown: true,
+                        instanceName: this.dropdownInstanceName,
+                        alignment: 'left',
+                        data: data
+                    }
+                }
+            ]);
         },
 
         /**
          * Called when the current page should change
          * Emits husky.datagrid.updated event on success
+         * @param uri
          * @param event
          */
-        changePage: function(event) {
+        changePage: function(uri, event) {
+            var url, template;
 
-            var $element, page, template, url, uri;
+            // when a valid uri is passed to this function - load from the uri
+            if (!!uri) {
+                event.preventDefault();
+                url = uri;
 
-            $element = this.sandbox.dom.$(event.currentTarget);
-            page = $element.data('page');
+                // determine wether the page number received via the event from the dropdown is valid
+            } else if (!!event.id && event.id > 0 && event.id <= this.data.pages) {
+                template = this.sandbox.uritemplate.parse(this.data.links.pagination);
+                url = this.sandbox.uritemplate.expand(template, {page: event.id});
 
-            if (!!page) {
-                this.addLoader();
-                this.resetItemSelection();
-                //this.resetSortingOptions(); // browsing through sorted pages
-
-                this.sandbox.emit(PAGE_CHANGE, 'change page');
-
-                uri = this.data.links[page];
-
-                if (!!uri) {
-                    url = uri;
-                } else {
-                    template = this.sandbox.uritemplate.parse(this.data.links.pagination);
-                    url = this.sandbox.uritemplate.expand(template, {page: page});
-                }
-
-                this.load({
-                    url: url,
-                    page: page,
-                    success: function() {
-                        this.removeLoader();
-                        this.sandbox.emit(UPDATED, 'updated page');
-                    }.bind(this)
-                });
+                // invalid - wether page number nor uri are valid
+            } else {
+                this.sandbox.logger.log("invalid page number or reached start/end!");
+                return;
             }
+
+            this.sandbox.emit(PAGE_CHANGE, url);
+            this.addLoader();
+            this.load({url: url,
+                success: function() {
+                    this.removeLoader();
+                    this.sandbox.emit(UPDATED, 'updated page');
+                }.bind(this)});
         },
 
         resetSortingOptions: function() {
@@ -889,7 +902,15 @@ define(function() {
             }.bind(this));
 
             if (this.options.pagination) {
-                this.$element.on('click', '.pagination li.page', this.changePage.bind(this));
+
+                // next page
+                this.$element.on('click', '#' + this.pagination.nextId, this.changePage.bind(this, this.data.links.next));
+
+                // previous page
+                this.$element.on('click', '#' + this.pagination.prevId, this.changePage.bind(this, this.data.links.prev));
+
+                // show all
+                this.$element.on('click', '#' + this.pagination.showAllId, this.changePage.bind(this, this.data.links.all));
             }
 
             if (this.options.removeRow) {
@@ -901,7 +922,7 @@ define(function() {
             }
 
 
-            // Todo
+            // Todo trigger event when click on clickable area
             // trigger event when click on clickable area
             // different handling when clicked on checkbox and when clicked on td
 
@@ -1000,7 +1021,11 @@ define(function() {
             // trigger selectedItems
             this.sandbox.on(ITEMS_GET_SELECTED, this.getSelectedItemsIds.bind(this));
 
+
             this.sandbox.on(DATA_GET, this.provideData.bind(this));
+
+            // pagination dropdown item clicked
+            this.sandbox.on('husky.dropdown.' + this.dropdownInstanceName + '.item.click', this.changePage.bind(this, null));
 
             // listen to search events
             if (!!this.options.searchInstanceName) {
@@ -1008,7 +1033,7 @@ define(function() {
                     searchInstanceName = '.' + this.options.searchInstanceName;
                 }
                 this.sandbox.on('husky.search' + searchInstanceName, this.triggerSearch.bind(this));
-                this.sandbox.on('husky.search' + searchInstanceName +'.reset', this.triggerSearch.bind(this,''));
+                this.sandbox.on('husky.search' + searchInstanceName + '.reset', this.triggerSearch.bind(this, ''));
             }
         },
 
@@ -1025,7 +1050,6 @@ define(function() {
             this.resetItemSelection();
             this.resetSortingOptions();
 
-            // TODO does not work?
             this.load({
                 url: this.data.links.self,
                 success: function() {
@@ -1101,6 +1125,12 @@ define(function() {
         },
 
         templates: {
+
+            showAll: function(total, elementsLabel, showAllLabel, id) {
+
+                return ['<div class="show-all grid-col-4 m-top-10">', total, ' ', elementsLabel, ' (<a id="' + id + '" href="">', showAllLabel, '</a>)</div>'].join('');
+            },
+
             removeRow: function() {
                 return [
                     '<span class="icon-remove"></span>'
@@ -1131,44 +1161,7 @@ define(function() {
                     '<input', id, name, ' type="radio" class="custom-radio"/>',
                     '<span class="custom-radio-icon"></span>'
                 ].join('');
-            },
-
-            // Pagination
-            paginationNavigation: function(data, label) {
-
-                return ['<li class="pagination-', data, ' page" data-page="', data, '">', label, '</li>'].join('');
-            },
-
-
-            paginationPageNavigation: function(data) {
-
-                // TODO currect page + this.options.paginationOptions.showPages: 5
-                var rest,
-                    pageItemsCurrentAfter = [],
-                    pageItemsBefore = [],
-                    pageClass,
-                    i;
-
-                // add pages for current after current page
-                for (i = data.page; i <= data.pagesDisplay; i++) {
-                    pageClass = (data.page === i) ? 'class="page is-selected bold"' : 'class="page"';
-                    pageItemsCurrentAfter.push('<li ' + pageClass + ' data-page="' + i + '">' + i + '</li>');
-                }
-
-
-                rest = data.pagesDisplay - pageItemsCurrentAfter.length;
-
-                // add pages before current page if needed
-                if (rest > 0) {
-                    for (i = data.page - rest; i < data.page; i++) {
-                        pageItemsBefore.push('<li class="page" data-page="' + i + '">' + i + '</li>');
-                    }
-                }
-
-                return '<ul>' + pageItemsBefore.join('') + pageItemsCurrentAfter.join('') + '</ul>';
             }
         }
-
     };
-
 });

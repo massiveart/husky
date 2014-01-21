@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>husky_extensions/util.js - husky</title>
+    <title>husky_extensions/html5sortable.js - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -110,90 +110,43 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: husky_extensions/util.js</h1>
+                        <h1 class="file-heading">File: husky_extensions/html5sortable.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-define(function() {
+/**
+ * see https://github.com/farhadi/html5sortable for documentation
+ */
+
+(function() {
 
     &#x27;use strict&#x27;;
 
-    return {
-        name: &#x27;Util&#x27;,
-
-        initialize: function(app) {
-
-            // for comparing arrays
-            app.core.util.compare = function(a, b) {
-                if (this.typeOf(a) === &#x27;array&#x27; &amp;&amp; this.typeOf(b) === &#x27;array&#x27;) {
-                    return JSON.stringify(a) === JSON.stringify(b);
-                }
-            };
-
-            // Crockfords better typeof
-            app.core.util.typeOf = function(value) {
-                var s = typeof value;
-                if (s === &#x27;object&#x27;) {
-                    if (value) {
-                        if (value instanceof Array) {
-                            s = &#x27;array&#x27;;
-                        }
-                    } else {
-                        s = &#x27;null&#x27;;
-                    }
-                }
-                return s;
-            };
-
-            /**
-             * cool guy loop implementation of foreach: http://jsperf.com/loops3/2
-             * returns -&gt; callback(value, index)
-             */
-            app.core.util.foreach = function(array, callbackValue) {
-                if (array.length &amp;&amp; array.length &gt; 0) {
-                    for (var i = -1, length = array.length; ++i &lt; length;) {
-                        callbackValue(array[i], i);
-                    }
-                } else {
-                    app.sandbox.logger.log(&#x27;error at util.foreach: no array given&#x27;);
-                }
-            };
-
-            app.core.util.load = function(url) {
-                var deferred = new app.sandbox.data.deferred();
-
-                app.logger.log(&#x27;load&#x27;, url);
-
-                app.sandbox.util.ajax({
-                    url: url,
-
-                    success: function(data) {
-                        app.logger.log(&#x27;data loaded&#x27;, data);
-                        deferred.resolve(data);
-                    }.bind(this),
-
-                    error: function(error) {
-                        deferred.reject(error);
-                    }
-                });
-
-                app.sandbox.emit(&#x27;husky.util.load.data&#x27;);
-
-                return deferred.promise();
-            };
-
-            app.core.util.contains = function(list, value) {
-                return _.contains(list, value);
-            };
-
-            app.core.util.uniqueId = function(prefix) {
-                return _.uniqueId(prefix);
-            };
-
-			app.core.util.template = _.template;
+    require.config({
+        paths: {
+            jquery: &#x27;bower_components/jquery/jquery&#x27;,
+            html5sortable: &#x27;vendor/html5sortable/html5sortable&#x27;
+        },
+        shim: {
+            jquery: { exports: &#x27;$&#x27; },
+            html5sortable: {deps: [&#x27;jquery&#x27;], exports: &#x27;jQuery.fn.sortable&#x27;}
         }
-    };
-});
+    });
+
+
+    define([&#x27;html5sortable&#x27;], function() {
+
+        return {
+            name: &#x27;html5sortable&#x27;,
+
+            initialize: function(app) {
+                app.core.dom.sortable = function(selector, options) {
+                    return $(selector).sortable(options);
+                };
+            }
+        };
+    });
+})();
 
     </pre>
 </div>

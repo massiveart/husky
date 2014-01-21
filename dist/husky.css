@@ -490,12 +490,12 @@ table {
 
 /* line 7, ../scss/utilities.scss */
 .pull-right {
-  float: right;
+  float: right !important;
 }
 
 /* line 11, ../scss/utilities.scss */
 .pull-left {
-  float: left;
+  float: left !important;
 }
 
 /* line 15, ../scss/utilities.scss */
@@ -4136,26 +4136,27 @@ li a.navigation-settings-icon {
 /* line 32, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul > li {
   padding: 5px 20px;
+  text-align: left;
 }
-/* line 35, ../scss/modules/dropdown.scss */
+/* line 36, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul > li:hover, .column-navigation-wrapper .column-navigation .column .dropdown-menu > ul > li.selected, .dropdown-menu > ul > li.hover {
   background-color: #249fbe;
   cursor: pointer;
   color: white;
 }
 
-/* line 44, ../scss/modules/dropdown.scss */
+/* line 45, ../scss/modules/dropdown.scss */
 .dropdown-footer {
   border-top: 1px solid #ccc;
   padding: 10px 10px;
 }
 
-/* line 49, ../scss/modules/dropdown.scss */
+/* line 50, ../scss/modules/dropdown.scss */
 .dropdown-toggle {
   display: block;
   cursor: pointer;
 }
-/* line 52, ../scss/modules/dropdown.scss */
+/* line 53, ../scss/modules/dropdown.scss */
 .dropdown-toggle::after {
   content: "";
   display: inline-block;
@@ -4565,51 +4566,35 @@ a.btn-black, a.btn-highlight {
   color: #000;
 }
 
-/* line 6, ../scss/modules/pagination.scss */
-.pagination {
-  padding: 10px 0;
+/* line 7, ../scss/modules/pagination.scss */
+.pagination-wrapper .show-all {
+  color: #999999;
 }
-/* line 8, ../scss/modules/pagination.scss */
-.pagination ul {
-  margin: 0;
-  padding: 0;
-  display: inline-block;
-  list-style: none;
-}
-/* line 15, ../scss/modules/pagination.scss */
-.pagination li {
-  font-size: 12px;
-  display: inline-block;
-  margin-right: 5px;
-  cursor: pointer;
-}
-/* line 20, ../scss/modules/pagination.scss */
-.pagination li > a {
+/* line 12, ../scss/modules/pagination.scss */
+.pagination-wrapper .show-all > a, .pagination-wrapper .show-all > a:hover, .pagination-wrapper .show-all > a:visited {
   text-decoration: none;
   color: black;
 }
-
-/* line 28, ../scss/modules/pagination.scss */
-.pagination-first,
-.pagination-last {
-  padding: 0 5px;
-  font-family: "Glyphicons";
+/* line 21, ../scss/modules/pagination.scss */
+.pagination-wrapper .pagination .pagination-main {
+  margin: 0;
+  display: inline-block;
+  list-style: none;
+  border-top: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
+  padding: 6px 13px 7px 13px;
 }
-/* line 32, ../scss/modules/pagination.scss */
-.pagination-first::after,
-.pagination-last::after {
-  position: relative;
-  top: 2px;
+/* line 30, ../scss/modules/pagination.scss */
+.pagination-wrapper .pagination .pagination-prev {
+  padding: 6px 13px;
+  border: 1px solid #cccccc;
+  border-radius: 0 5px 5px 0;
 }
-
-/* line 39, ../scss/modules/pagination.scss */
-.pagination-first::after {
-  content: "\e173";
-}
-
-/* line 45, ../scss/modules/pagination.scss */
-.pagination-last::after {
-  content: "\e177";
+/* line 36, ../scss/modules/pagination.scss */
+.pagination-wrapper .pagination .pagination-next {
+  padding: 6px 13px;
+  border: 1px solid #cccccc;
+  border-radius: 5px 0 0 5px;
 }
 
 /* line 8, ../scss/modules/avatar.scss */

@@ -47,11 +47,15 @@
             
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
+                <li><a href="../classes/DataGrid.html">DataGrid</a></li>
+            
                 <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
             
                 <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+            
+                <li><a href="../classes/Search.html">Search</a></li>
             
                 <li><a href="../classes/Toolbar.html">Toolbar</a></li>
             
@@ -62,6 +66,8 @@
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
             
                 <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
+            
+                <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
             
@@ -147,6 +153,7 @@
  * @param {String} [options.selected] the item that&#x27;s selected on initialize
  * @param {String} [options.instanceName] enables custom events (in case of multiple tabs on one page)
  * @param {String} [options.hasSearch] adds a search element at the end
+ * @param {Object} [options.dropdownComponent=null] adds a dropdowncomponent as dropdown menu
  */
 define(function() {
 
@@ -158,7 +165,8 @@ define(function() {
             instanceName: &#x27;&#x27;,
             hasSearch: false,
             appearance: &#x27;large&#x27;,
-            searchOptions: null
+            searchOptions: null,
+            dropdownComponent: null
         },
 
         selectItem = function(event) {
@@ -212,7 +220,6 @@ define(function() {
                 classString = &#x27;&#x27;;
             this.sandbox.dom.after(listItem, $list);
             this.sandbox.util.foreach(parent.items, function(item) {
-
                 if (item.divider) {
                     this.sandbox.dom.append($list, &#x27;&lt;li class=&quot;divider&quot;&gt;&lt;/li&gt;&#x27;);
                     return;
@@ -223,6 +230,7 @@ define(function() {
                 checkItemId.call(this, item);
                 this.items[item.id] = item;
 
+                classString = &#x27;&#x27;;
                 if (item.disabled) {
                     classString = &#x27; class=&quot;disabled&quot;&#x27;;
                 }
@@ -355,7 +363,15 @@ define(function() {
                 this.sandbox.dom.append($group, button);
 
                 // now create subitems
-                if (!!item.items) {
+                if (item.dropdownComponent) {
+                    this.sandbox.dom.addClass(button, &#x27;dropdown-toggle&#x27;);
+                    // define element
+                    item.dropdownComponent.options.el = $group;
+                    item.dropdownComponent.options.trigger = button;
+                    this.sandbox.start([
+                        item.dropdownComponent
+                    ]);
+                } else if (!!item.items) {
                     this.sandbox.dom.addClass(button, &#x27;dropdown-toggle&#x27;);
                     createDropdownMenu.call(this, button, item);
                 }
