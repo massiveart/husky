@@ -46,7 +46,28 @@
                         app = Husky({ debug: { enable: true }}),
                         _ = app.sandbox.util._,
 
-                        testData = [{"id":"id","translation":"public.id","disabled":"true"},{"id":"name","translation":"public.name","disabled":"false"},{"id":"changed","translation":"contact.accounts.changed","disabled":"false"},{"id":"user_username","translation":"contact.accounts.user_username","disabled":"false"},{"id":"created","translation":"contact.accounts.created","disabled":"true"}]
+                        testData = [
+                            {
+                                'id': 'title',
+                                'translation': 'Title',
+                                'disabled': 'true'
+                            },
+                            {
+                                'id': 'firstName',
+                                'translation': 'First Name',
+                                disabled: false
+
+                            },
+                            {
+                                'id': 'lastName',
+                                'translation': 'Last Name'
+                            },
+                            {
+                                'id': 'middleName',
+                                'translation': 'Middle Name',
+                                'disabled': true
+                            }
+                        ];
 
 
                 app.start().then(function() {
