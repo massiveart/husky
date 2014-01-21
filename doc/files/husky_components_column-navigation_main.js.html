@@ -47,11 +47,15 @@
             
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
+                <li><a href="../classes/DataGrid.html">DataGrid</a></li>
+            
                 <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
             
                 <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+            
+                <li><a href="../classes/Search.html">Search</a></li>
             
                 <li><a href="../classes/Toolbar.html">Toolbar</a></li>
             
@@ -62,6 +66,8 @@
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
             
                 <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
+            
+                <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
             
@@ -600,7 +606,7 @@ define([], function() {
             wrapper: function() {
                 return &#x27;&lt;div class=&quot;column-navigation-wrapper&quot;&gt;&lt;/div&gt;&#x27;;
             },
-
+            
             columnContainer: function() {
                 return [&#x27;&lt;div class=&quot;column-navigation&quot;&gt;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
             },
@@ -611,7 +617,7 @@ define([], function() {
 
             item: function(width, data) {
 
-                var item = [&#x27;&lt;li data-id=&quot;&#x27;, data.id, &#x27;&quot; class=&quot;pointer&quot; style=&quot;width:&#x27;, width, &#x27;px&quot;&gt;&#x27;];
+                var item = [&#x27;&lt;li data-id=&quot;&#x27;, data.id, &#x27;&quot; class=&quot;pointer&quot;&#x27;];
 
                 // icons left
                 item.push(&#x27;&lt;span class=&quot;pull-left&quot;&gt;&#x27;);

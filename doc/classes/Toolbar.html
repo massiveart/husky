@@ -47,11 +47,15 @@
             
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
+                <li><a href="../classes/DataGrid.html">DataGrid</a></li>
+            
                 <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
             
                 <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+            
+                <li><a href="../classes/Search.html">Search</a></li>
             
                 <li><a href="../classes/Toolbar.html">Toolbar</a></li>
             
@@ -62,6 +66,8 @@
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
             
                 <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
+            
+                <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
             
@@ -231,7 +237,7 @@
                             <li class="param">
                                 
                                     <code class="param-name optional">[data]</code>
-                                    <span class="type">String</span>
+                                    <span class="type">Object</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
@@ -245,13 +251,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[selected]</code>
+                                    <code class="param-name optional">[trigger]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>the item that&#39;s selected on initialize</p>
+                                    <p>the dom item which opens the component</p>
 
                                 </div>
 
@@ -260,13 +266,87 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[instanceName]</code>
-                                    <span class="type">String</span>
+                                    <code class="param-name optional">[header]</code>
+                                    <span class="type">Object</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>enables custom events (in case of multiple tabs on one page)</p>
+                                    <p>Configuration object for the header</p>
+
+                                </div>
+
+                                
+                                    <ul class="params-list">
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[disabled]</code>
+                                                <span class="type">Boolean</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                defines if header should be shown
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[title]</code>
+                                                <span class="type">String</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                headline of the header
+                                            </div>
+                                        </li>
+                                        
+                                    </ul>
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[footer]</code>
+                                    <span class="type">Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>Configuration object for the header</p>
+
+                                </div>
+
+                                
+                                    <ul class="params-list">
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[disabled]</code>
+                                                <span class="type">Boolean</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                defines if footer should be shown
+                                            </div>
+                                        </li>
+                                        
+                                    </ul>
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[hidden]</code>
+                                    <span class="type">Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>defines if component should be hidden when component is initialized</p>
 
                                 </div>
 
@@ -275,13 +355,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[hasSearch]</code>
-                                    <span class="type">String</span>
+                                    <code class="param-name optional">[destroyOnClose]</code>
+                                    <span class="type">Boolean</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>adds a search element at the end</p>
+                                    <p>will remove the container from dom, when closed</p>
 
                                 </div>
 
@@ -312,6 +392,8 @@
         
         
         
+            <li class="api-class-tab events"><a href="#events">Events</a></li>
+        
     </ul>
 
     <div>
@@ -325,6 +407,56 @@
             
 
             
+                <div class="index-section events">
+                    <h3>Events</h3>
+
+                    <ul class="index-list events">
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.column-options.get-all">husky.column-options.get-all</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.column-options.get-selected">husky.column-options.get-selected</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.column-options.initialized">husky.column-options.initialized</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.column-options.item.disabled">husky.column-options.item.disabled</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.column-options.item.enabled">husky.column-options.item.enabled</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.column-options.saved">husky.column-options.saved</a>
+
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
+            
         </div>
 
         
@@ -333,6 +465,360 @@
 
         
 
+        
+            <div id="events" class="api-class-tabpanel">
+                <h2 class="off-left">Events</h2>
+
+                
+                    <div id="event_husky.column-options.get-all" class="events item">
+    <h3 class="name"><code>husky.column-options.get-all</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                    <p>Provided by the <a href="../modules/husky/components/column-options.html">husky/components/column-options</a> module.</p>
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_column-options_main.js.html#l99"><code>husky_components&#x2F;column-options&#x2F;main.js:99</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>used for receiving all columns</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.column-options.get-selected" class="events item">
+    <h3 class="name"><code>husky.column-options.get-selected</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                    <p>Provided by the <a href="../modules/husky/components/column-options.html">husky/components/column-options</a> module.</p>
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_column-options_main.js.html#l93"><code>husky_components&#x2F;column-options&#x2F;main.js:93</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>used for receiving all visible columns</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.column-options.initialized" class="events item">
+    <h3 class="name"><code>husky.column-options.initialized</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                    <p>Provided by the <a href="../modules/husky/components/column-options.html">husky/components/column-options</a> module.</p>
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_column-options_main.js.html#l66"><code>husky_components&#x2F;column-options&#x2F;main.js:66</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>triggered when component is completely initialized</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.column-options.item.disabled" class="events item">
+    <h3 class="name"><code>husky.column-options.item.disabled</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                    <p>Provided by the <a href="../modules/husky/components/column-options.html">husky/components/column-options</a> module.</p>
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_column-options_main.js.html#l79"><code>husky_components&#x2F;column-options&#x2F;main.js:79</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>triggered when item was disabled</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">item</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>that was disabled</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.column-options.item.enabled" class="events item">
+    <h3 class="name"><code>husky.column-options.item.enabled</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                    <p>Provided by the <a href="../modules/husky/components/column-options.html">husky/components/column-options</a> module.</p>
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_column-options_main.js.html#l72"><code>husky_components&#x2F;column-options&#x2F;main.js:72</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>triggered when item was enabled</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">item</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>that was enabled</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.column-options.saved" class="events item">
+    <h3 class="name"><code>husky.column-options.saved</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                    <p>Provided by the <a href="../modules/husky/components/column-options.html">husky/components/column-options</a> module.</p>
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_column-options_main.js.html#l86"><code>husky_components&#x2F;column-options&#x2F;main.js:86</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>triggered when save was clicked</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">Contains</code>
+                        <span class="type">Array</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>all visible items</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
+
+                
+            </div>
         
     </div>
 </div>
