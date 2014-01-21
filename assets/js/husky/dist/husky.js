@@ -26067,6 +26067,10 @@ define('__component__$datagrid@husky',[],function() {
                 tblCellContent,
                 tblCellClass;
 
+            if(!value) {
+                value = '';
+            }
+
             if (this.options.excludeFields.indexOf(key) < 0) {
                 tblCellClasses = [];
                 tblCellContent = (!!value.thumb) ? '<img alt="' + (value.alt || '') + '" src="' + value.thumb + '"/>' : value;
