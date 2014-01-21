@@ -77,6 +77,7 @@ define([], function() {
             this.sandbox.dom.addClass(this.$el, 'search-container');
             this.sandbox.dom.addClass(this.$el, this.options.appearance);
             this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {placeholderText: this.options.placeholderText}));
+
         },
 
         // bind dom elements

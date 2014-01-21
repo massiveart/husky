@@ -244,6 +244,14 @@ define(function() {
          */
         load: function(params) {
 
+            /*
+             * TODO do that: this.sandbox.util.load
+             * this.sandbox.util.load(url)
+             *      .then(function(response) {
+             *      }.bind(this))
+             *      .fail(function(error) {
+             *      }.bind(this));
+             */
             this.sandbox.util.ajax({
 
                 url: this.getUrl(params),
@@ -1022,7 +1030,7 @@ define(function() {
                 url: this.data.links.self,
                 success: function() {
                     this.removeLoader();
-                    this.sandbox.emit(UPDATED, 'updated data 123');
+                    this.sandbox.emit(UPDATED);
                 }.bind(this)
             });
         },
