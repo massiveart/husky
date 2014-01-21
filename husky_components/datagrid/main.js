@@ -28,6 +28,7 @@
  * @param {Boolean} [options.appendTBody] add TBODY to table
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search event
  * @param {String} [options.url] url to fetch data from
+ * @param {String} [options.paginationTemplate] template for pagination
  *
  */
 define(function() {
@@ -60,7 +61,8 @@ define(function() {
         tableHead: [],
         url: null,
         appendTBody: true,   // add TBODY to table
-        searchInstanceName: null // at which search it should be listened to can be null|string|empty_string
+        searchInstanceName: null, // at which search it should be listened to can be null|string|empty_string
+        paginationTemplate: '<%=translate("pagination.page")%> <%=i%> <%=translate("pagination.of")%> <%=pages%>'
     },
 
         namespace = 'husky.datagrid.',
@@ -182,10 +184,6 @@ define(function() {
          * @event husky.datagrid.data.get
          */
         DATA_GET = namespace + 'data.get';
-
-
-
-
 
     return {
 
@@ -791,7 +789,7 @@ define(function() {
 
                 $paginationWrapper.append($pagination);
 
-                paginationLabel = [this.sandbox.translate('pagination.page'), ' ', this.data.page, ' ', this.sandbox.translate('pagination.of'), ' ', this.data.pages].join('');
+                paginationLabel = this.renderPaginationRow(this.data.page, this.data.pages);
 
                 $pagination.append('<div id="' + this.pagination.nextId + '" class="icon-chevron-right pagination-prev pull-right pointer"></div>');
                 $pagination.append('<div id="' + this.pagination.dropdownId + '" class="pagination-main pull-right pointer"><span class="inline-block">' + paginationLabel + '</span><span class="dropdown-toggle inline-block"></span></div>');
@@ -803,17 +801,31 @@ define(function() {
             return $paginationWrapper;
         },
 
+        /**
+         * Renders template for one row in the pagination
+         * @param i current page number
+         * @param pages total number of pages
+         */
+        renderPaginationRow: function(i, pages) {
+            var defaults = {
+                translate: this.sandbox.translate,
+                i: i,
+                pages: pages
+            };
+
+            return this.sandbox.util.template(this.options.paginationTemplate, defaults);
+        },
+
 
         /**
          * Prepares and initializes the dropdown used for the pagination
          */
         preparePaginationDropdown: function() {
 
-
             var data = [], i, name;
 
             for (i = 1; i <= this.data.pages; i++) {
-                name = this.sandbox.translate('pagination.page') + ' ' + i + ' ' + this.sandbox.translate('pagination.of') + ' ' + this.data.pages;
+                name = this.renderPaginationRow(i, this.data.pages);
                 data.push({id: i, name: name});
             }
 
