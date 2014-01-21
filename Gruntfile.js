@@ -283,7 +283,16 @@ module.exports = function(grunt) {
 							'.bower_components/typeahead.js/dist/typeahead.min.js',
 						],
 						dest: 'bower_components/typeahead.js'
-					}
+					},
+                    // tagmanager.js
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            '.bower_components/tagmanager/tagmanager.js'
+                        ],
+                        dest: 'bower_components/tagmanager'
+                    }
                 ]
             }
         },
@@ -302,11 +311,26 @@ module.exports = function(grunt) {
                 }
             }
         },
+
+        yuidoc: {
+            compile: {
+                name: '<%= pkg.name %>',
+                description: '<%= pkg.description %>',
+                version: '<%= pkg.version %>',
+                url: '<%= pkg.homepage %>',
+                options: {
+                    paths: ['lib/', 'husky_extensions/', 'husky_components/'],
+                    outdir: 'doc'
+                }
+            }
+        },
         connect: {
             server: {
                 options: {
+                    hostname: '0.0.0.0',
                     port: 9000,
                     base: '.'
+
                 }
             }
         }

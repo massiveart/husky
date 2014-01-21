@@ -31,11 +31,21 @@
 					<label>
 						Autocomplete
 						<div class="wrapper">
-						    <div data-aura-component="auto-complete@husky" data-aura-prefetch-url="/countries" data-aura-remote-url="/countries"></div>
+						    <div id="autocomplete1"></div>
 						</div>
 					</label>
 				</div>
 			</div>
+            <div class="grid-col-6">
+                <div class="auto-complete-container">
+                    <label>
+                        Autocomplete2
+                        <div class="wrapper">
+                            <div id="autocomplete2"></div>
+                        </div>
+                    </label>
+                </div>
+            </div>
 		</div>
 	</div>
 </div>
@@ -65,11 +75,16 @@
 			setTimeout(function() {
 				fakeServer.respond();
 			},50)
-			app.sandbox.on('husky.auto-complete.remote-data-load', function() {
+			app.sandbox.on('husky.auto-complete.I1.remote-data-load', function() {
 				setTimeout(function() {
 					fakeServer.respond();
 				}, 100);
 			});
+            app.sandbox.on('husky.auto-complete.I2.remote-data-load', function() {
+                setTimeout(function() {
+                    fakeServer.respond();
+                }, 100);
+            });
 		};
 
 		var app = Husky({
@@ -80,7 +95,26 @@
 				_ = app.sandbox.util._;
 
 
-		app.start().then(function() {
+		app.start([{
+                    name: 'auto-complete@husky',
+                    options: {
+                        el: '#autocomplete1',
+                        instanceName: 'I1',
+                        prefetchUrl: '/countries',
+                        remoteUrl: '/countries',
+                        localData: [{id: 89, name: 'Albanien'}, {id: 77, name: 'Altach'}, {id: 899, name: 'Andelsbuch'}]
+                    }
+                },
+                {
+                    name: 'auto-complete@husky',
+                    options: {
+                        el: '#autocomplete2',
+                        instanceName: 'I2',
+                        prefetchUrl: '/countries',
+                        remoteUrl: '/countries',
+                        localData: [{id: 81, name: 'Brüssel'}, {id: 71, name: 'Bern'}, {id: 891, name: 'Berlin'}]
+                    }
+                }]).then(function() {
 			app.logger.log('Aura started...');
 			initFakeServer(app);
 		});

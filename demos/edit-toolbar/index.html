@@ -65,7 +65,13 @@
                                 'class': 'highlight',
                                 'callback': function() {
                                     console.log("user-add was clicked!");
-                                }
+                                    app.sandbox.emit('husky.edit-toolbar.contact.item.loading', '1');
+
+                                    setTimeout(function() {
+                                        app.sandbox.emit('husky.edit-toolbar.contact.item.disable', '1');
+                                    }, 2000)
+
+                                }.bind(this)
                             },
                             {
                                 'id': 'edit',

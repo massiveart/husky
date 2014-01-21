@@ -8,16 +8,19 @@
 
 @import
     "variables.scss",
+    "mixins.scss",
     "normalize.scss",
-    "utilities.scss";
+    "animations.scss",
+    "utilities.scss",
+    "typo.scss";
 
 
 // Husky Modules
 @import
-    "typo.scss",
     "modules/glyphicons.scss",
     "modules/icons.scss",
     "modules/core.scss",
+    "modules/column-options.scss",
     "modules/grid.scss",
     "modules/form.scss",
     "modules/header.scss",
@@ -36,7 +39,7 @@
     "modules/dialog.scss",
     "modules/matrix.scss",
     "modules/validation.scss",
-    "modules/loading.scss",
+    "modules/loader.scss",
     "modules/column-navigation.scss",
     "modules/auto-complete-list.scss",
     "modules/dropdown-multiple-select.scss";

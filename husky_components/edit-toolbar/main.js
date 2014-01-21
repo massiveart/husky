@@ -19,8 +19,9 @@
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
  *      - appearance -
  *  Provides Events
- *      - husky.edit-toolbar.<<instanceName>>.item.disable - disable item with given id
- *      - husky.edit-toolbar.<<instanceName>>.item.enable - enable item with given id
+ *      - husky.edit-toolbar.<<instanceName>>.item.disable [id] - disable item with given id
+ *      - husky.edit-toolbar.<<instanceName>>.item.loading [id]- shows loading icon
+ *      - husky.edit-toolbar.<<instanceName>>.item.enable [id]- enable item with given id
  *
  *  Triggers Events
  *      - husky.edit-toolbar.<<instanceName>>.item.select - triggered when item was clicked
@@ -78,6 +79,46 @@ define(function() {
             ].join('')
         },
 
+
+        /**
+         * triggered when edit-toolbar is initialized and ready to use
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]initialized
+         */
+        INITIALIZED = function() {
+            return createEventName.call(this, 'initialized');
+        },
+
+        /**
+         * enable a button
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]item.enable
+         * @param {string} id The id of the button which should be enabled
+         */
+        ITEM_ENABLE = function() {
+            return createEventName.call(this, 'item.enable');
+        },
+
+        /**
+         * disable a button
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]item.disable
+         * @param {string} id The id of the button which should be disabled
+         */
+        ITEM_DISABLE = function() {
+            return createEventName.call(this, 'item.disable');
+        },
+
+        /**
+         * event to set button into loading state
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]item.loading
+         * @param {string} id The id of the button
+         */
+        ITEM_LOADING = function() {
+            return createEventName.call(this, 'item.loading');
+        },
+
         /** events bound to dom */
         bindDOMEvents = function() {
             this.sandbox.dom.on(this.options.el, 'click', toggleItem.bind(this), '.dropdown-toggle');
@@ -86,23 +127,45 @@ define(function() {
 
         /** events bound to sandbox */
         bindCustomEvents = function() {
-            this.sandbox.on(createEventName.call(this, 'item.disable'), function(id) {
-                enableItem.call(this, false, id);
+            this.sandbox.on(ITEM_DISABLE.call(this), function(id, highlight) {
+                toggleEnabled.call(this, false, id, highlight);
             }.bind(this));
-            this.sandbox.on(createEventName.call(this, 'item.enable'), function(id) {
-                enableItem.call(this, true, id);
+            this.sandbox.on(ITEM_ENABLE.call(this), function(id, highlight) {
+                toggleEnabled.call(this, true, id, highlight);
+            }.bind(this));
+            this.sandbox.on(ITEM_LOADING.call(this), function(id) {
+                itemLoading.call(this, id);
             }.bind(this));
         },
 
         /** set item enable or disable */
-        enableItem = function(enabled, id) {
+        toggleEnabled = function(enabled, id, highlight) {
             var item = this.items[id],
                 $item = this.sandbox.dom.find('[data-id="' + id + '"]', this.$el),
                 $iconItem = this.sandbox.dom.find('[data-id="' + id + '"] .icon', this.$el),
+                $itemLink,
                 enabledIconClass = createIconClass.call(this, item, true),
                 disabledIconClass = createIconClass.call(this, item, false);
 
             this.items[id].disabled = !enabled;
+
+            // in case of item has state loading, restore original state
+            if (item.loading) {
+                item.loading = false;
+                $itemLink = this.sandbox.dom.find('a', $item);
+                this.sandbox.dom.remove(this.sandbox.dom.find('.item-loader', $item));
+                this.sandbox.dom.show($itemLink);
+            }
+
+            if (highlight !== false) {
+                // add color fading effect
+                this.sandbox.dom.addClass($item, 'highlight-animation');
+
+                // remove class after effect has finished
+                this.sandbox.dom.on($item,'animationend webkitAnimationEnd oanimationend MSAnimationEnd', function(ev) {
+                    this.sandbox.dom.removeClass(ev.currentTarget, 'highlight-animation');
+                }.bind(this));
+            }
 
             if (!!enabled) {
                 this.sandbox.dom.removeClass($item, 'disabled');
@@ -114,6 +177,34 @@ define(function() {
                 this.sandbox.dom.prependClass($iconItem, disabledIconClass);
             }
         },
+
+        /** shows loader at some icon */
+        itemLoading = function(id) {
+            var item = this.items[id],
+                $item = this.sandbox.dom.find('[data-id="' + id + '"]', this.$el),
+                $itemLink = this.sandbox.dom.find('a', $item),
+                $loader;
+
+            if (item.loading) {
+                return;
+            }
+
+            item.loading = true;
+            this.sandbox.dom.hide($itemLink);
+
+            $loader = this.sandbox.dom.createElement('<span class="item-loader"></span>');
+            this.sandbox.dom.append($item, $loader);
+
+            this.sandbox.start([{
+                name: 'loader@husky',
+                options: {
+                    el: $loader,
+                    size: '30px',
+                    color: 'white'
+                }
+            }]);
+        },
+
 
         /**
          * gets called when toggle item is clicked
@@ -167,7 +258,7 @@ define(function() {
                 $parent = this.sandbox.dom.parents(event.currentTarget, 'li').eq(0);
 
             // stop if item has subitems
-            if (item.items && item.items.length > 0) {
+            if ((item.items && item.items.length > 0) || item.loading) {
                 return;
             }
 
@@ -223,10 +314,10 @@ define(function() {
         },
 
         /**
-         * creates icon span with icon classes
+         * creates the class string of an icon
          * @param item
          * @param enabled
-         * @returns {HTMLElement|*}
+         * @returns {string}
          */
         createIconSupportClass = function(item, enabled) {
             var classArray,
@@ -327,6 +418,10 @@ define(function() {
 
         view: true,
 
+
+        /**
+         * initialize component
+         */
         initialize: function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
@@ -348,6 +443,10 @@ define(function() {
             bindCustomEvents.call(this);
         },
 
+        /**
+         * renders the toolbar
+         * @param {Object} data t
+         */
         render: function(data) {
 
             var classArray, addTo, $left, $right,
@@ -377,8 +476,8 @@ define(function() {
 
                 // create class array
                 classArray = ['edit-toolbar-item'];
-                if (!!item.class) {
-                    classArray.push(item.class);
+                if (!!item['class']) {
+                    classArray.push(item['class']);
                 }
                 if (item.disabled) {
                     classArray.push('disabled');
@@ -415,7 +514,7 @@ define(function() {
             }.bind(this));
 
             // initialization finished
-            emitEvent.call(this, 'initialized');
+            this.sandbox.emit(INITIALIZED.call(this));
         }
     };
 

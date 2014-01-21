@@ -165,6 +165,9 @@ define(function() {
                 this.renderFooter(this.options.footerTemplate);
             }
 
+            // preselect item based on url
+            this.preselectItem();
+
             // emit initialized event
             this.sandbox.emit('husky.navigation.initialized');
         },
@@ -190,9 +193,10 @@ define(function() {
                     }));
                     //render sub-items
                     if (item.items && item.items.length > 0) {
-                        this.renderSubNavigationItems(item, this.sandbox.dom.find('div', $elem));
+                        this.renderSubNavigationItems(item, $elem);
                     }
                     this.sandbox.dom.append($sectionList, $elem);
+                    item.domObject = $elem;
                     this.items[item.id] = item;
                 }.bind(this));
 
@@ -205,7 +209,7 @@ define(function() {
         /**
          * renders sub-navigation elements
          */
-        renderSubNavigationItems: function(data, after) {
+        renderSubNavigationItems: function(data, $parentList) {
             var elem,
                 list = this.sandbox.dom.createElement('<ul style="display:none" />');
 
@@ -218,9 +222,10 @@ define(function() {
                     elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subItem, {item: item, translate: this.sandbox.translate}));
                 }
                 this.sandbox.dom.append(list, elem);
+                item.domObject = elem;
             }.bind(this));
 
-            this.sandbox.dom.after(after, list);
+            this.sandbox.dom.append($parentList, list);
         },
 
         renderFooter: function(footerTemplate) {
@@ -251,9 +256,40 @@ define(function() {
         },
 
 
+        preselectItem: function() {
+            if (!this.options.selectAction || this.options.selectAction.length < 1) {
+                return;
+            }
+
+            var matchLength = 0, matchItem, parent, match;
+            this.sandbox.util.foreach(this.items, function(item) {
+                if (!item || !item.action) {
+                    return;
+                }
+                if (this.options.selectAction.indexOf(item.action) !== -1 && item.action.length > matchLength) {
+                    matchItem = item;
+                    matchLength = item.action.length;
+                }
+            }.bind(this));
+
+            if (matchLength > 0) {
+                match = matchItem.domObject;
+
+                // TODO: use trigger instead of faking event
+                if (this.sandbox.dom.hasClass(match,'js-navigation-sub-item')) {
+                    parent = this.sandbox.dom.closest(match, '.navigation-items');
+                    this.toggleItems({currentTarget: parent, preventDefault: function(){}});
+//                    this.sandbox.dom.trigger(parent, 'click','.section-toggle');
+                }
+                this.selectSubItem({currentTarget: match, preventDefault:function(){}});
+            }
+        },
+
+
+
         /**
          * gets called when settings icon is clicked
-         * @emits husky.navigation.settings (name, id, parent)
+         * @emits husky.navigation.item.settings (name, id, parent)
          * @param event
          */
         settingsClicked: function(event) {
