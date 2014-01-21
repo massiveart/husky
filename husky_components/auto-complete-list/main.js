@@ -38,6 +38,9 @@ define([
                 label: '', //label (headline),
                 inputSelector: '.husky-autocomplete', //Selector for input wrapper div
                 autocomplete: true, //enable/disable autocomplete
+                localData: [], //local data passed to the autocomplete component
+                prefetchUrl: '', //url to prefetch data for the autocomplete component
+                remoteUrl: '', //url to fetch data on input for the autocomplete component
                 autocompleteOptions: {}, //options to pass to the autocomplete component
                 maxListItems: 0, //maximum amount of list items accepted (0 = no limit)
                 CapitalizeFirstLetter: false, //if true the first letter of each item gets capitalized
@@ -132,6 +135,9 @@ define([
                         {el: this.$inputCont},
                         {emptyOnBlur: true},
                         {instanceName: this.options.instanceName},
+                        {localData: this.options.localData},
+                        {prefetchUrl: this.options.prefetchUrl},
+                        {remoteUrl: this.options.remoteUrl},
                         this.options.autocompleteOptions
                     )
                 }]);
