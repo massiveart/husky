@@ -132,6 +132,38 @@ require(['lib/husky'], function (Husky) {
         '}'
     ]);
 
+    // search
+    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&search=D%20Hallo', [200, { 'Content-Type': 'application/json' },
+        '{' +
+            '"_links":' +
+            '{' +
+            '"self":"/admin/api/contacts?flat=true&pageSize=4&search=A%20Hallo%201.1",' +
+
+            '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
+            '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
+            '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
+
+            '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
+
+            '"find": "/admin/api/contacts?flat=true&pageSize=4&search={searchString}{&searchFields}",'+
+
+            '"sortable": {' +
+            '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+            '"content2" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
+            '}'+
+            '},' +
+            '"_embedded":'+
+            '['+
+            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } },'+
+            '{ "id": "4", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
+            '],'+
+            '"total":12,'+
+            '"pages": 3,' +
+            '"page": 1,' +
+            '"pageSize": 4' +
+            '}'
+    ]);
+
     // initial load
     fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4', [200, { 'Content-Type': 'application/json' },
         '{' +
@@ -144,6 +176,8 @@ require(['lib/husky'], function (Husky) {
                 '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
 
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
+
+                '"find": "/admin/api/contacts?flat=true&pageSize=4&search={searchString}{&searchFields}",'+
 
                 '"sortable": {' +
                         '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
@@ -284,8 +318,52 @@ require(['lib/husky'], function (Husky) {
                 ],
                 sortable: true,
                 excludeFields: ['id'],
+                searchInstanceName: 'test',
                 el: '#datagrid'
             }
+            },
+            {
+                name: 'toolbar@husky',
+                options: {
+                    el: '#toolbar',
+                    instanceName: 'test',
+                    hasSearch: true,
+                    data: [
+                        {
+                            id: 'add',
+                            icon: 'user-add',
+                            class: 'highlight',
+                            title: 'add',
+                            callback: function() {
+                                this.sandbox.emit('sulu.list-toolbar.add');
+                            }.bind(this)
+                        },
+                        {
+                            id: 'delete',
+                            icon: 'bin',
+                            title: 'delete',
+                            group: '1',
+                            callback: function() {
+                                this.sandbox.emit('sulu.list-toolbar.delete');
+                            }.bind(this)
+                        },
+                        {
+                            id: 'settings',
+                            icon: 'cogwheel',
+                            group: '1',
+                            items: [
+                                {
+                                    title: 'import',
+                                    disabled: true
+                                },
+                                {
+                                    title: 'export',
+                                    disabled: true
+                                }
+                            ]
+                        }
+                    ]
+                }
             }
         ]).then(function () {
             app.logger.log('Aura started...');
@@ -299,6 +377,12 @@ require(['lib/husky'], function (Husky) {
             });
 
             app.sandbox.on('husky.datagrid.page.change', function () {
+                setTimeout(function () {
+                    fakeServer.respond();
+                }, 500);
+            });
+
+            app.sandbox.on('husky.search.test', function () {
                 setTimeout(function () {
                     fakeServer.respond();
                 }, 500);
