@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>husky_extensions/globalize.js - husky</title>
+    <title>husky_components/ckeditor/main.js - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -104,91 +104,85 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: husky_extensions/globalize.js</h1>
+                        <h1 class="file-heading">File: husky_components/ckeditor/main.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-(function() {
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/column-navigation
+ */
+
+
+/**
+ * @class CKEditor
+ * @constructor
+ *
+ * @params {Object} [options] Configuration object
+ * @params {Function} [options.initialzedCallback] Callback when initialization is finished
+ *
+ */
+define([], function() {
 
     &#x27;use strict&#x27;;
 
-    require.config({
-        paths: {
-            &#x27;globalize_lib&#x27;: &#x27;bower_components/globalize/lib/globalize&#x27;,
-            &#x27;cultures&#x27;: &#x27;bower_components/globalize/lib/cultures&#x27;
-        }
-    });
+    var defaults = {
+            initializedCallback: null
+        },
 
-    define([&#x27;globalize_lib&#x27;], function() {
-        return  {
-            name: &#x27;husky-validation&#x27;,
+        /**
+         * namespace for events
+         * @type {string}
+         */
+         eventNamespace = &#x27;husky.ckeditor.&#x27;,
 
-            initialize: function(app) {
-                app.sandbox.globalize = {
-                    addCultureInfo: function(cultureName, messages) {
-                        Globalize.addCultureInfo(cultureName, {
-                            messages: messages
-                        });
-                    },
+        /**
+         * @event husky.column-navigation.loaded
+         * @description the component has loaded everything successfully and will be rendered
+         */
+         CHANGED = eventNamespace + &#x27;changed&#x27;,
 
-                    culture: function(cultureName) {
-                        var setLanguage = function() {
-                            Globalize.culture(cultureName);
-                        };
 
-                        if (cultureName !== &#x27;en&#x27;) {
-                            require([&#x27;cultures/globalize.culture.&#x27; + cultureName], setLanguage.bind(this));
-                        } else {
-                            setLanguage();
-                        }
-                    }
-                };
+        /**
+         * Removes the not needed elements from the config object for the ckeditor
+         * @returns {Object} configuration object for ckeditor
+         */
+         getConfig = function() {
+            var config = this.sandbox.util.extend(false, {}, this.options);
 
-                app.sandbox.translate = function(key) {
-                    if (!app.config.culture || !app.config.culture.name) {
-                        return key;
-                    }
-                    var translation = Globalize.localize(key, app.config.culture.name);
-                    return !!translation ? translation : key;
-                };
+            delete config.initializedCallback;
+            delete config.baseUrl;
+            delete config.el;
+            delete config.name;
+            delete config.ref;
+            delete config._ref;
+            delete config.require;
+            delete config.element;
 
-                /**
-                 * function calls this.sandbox.translate for an array of keys and returns an array of translations
-                 * @param array
-                 * @returns {Array}
-                 */
-                app.sandbox.translateArray = function(array) {
-                    var translations = [];
-                    app.sandbox.util.foreach(array, function(key) {
-                        translations.push(app.sandbox.translate(key));
-                    }.bind(this));
-                    return translations;
-                };
-
-                app.setLanguage = function(cultureName, messages) {
-                    var setLanguage = function() {
-                        Globalize.culture(cultureName);
-                        app.sandbox.globalize.addCultureInfo(cultureName, messages);
-                    };
-                    if (cultureName !== &#x27;en&#x27;) {
-                        require([&#x27;cultures/globalize.culture.&#x27; + cultureName], setLanguage.bind(this));
-                    } else {
-                        setLanguage();
-                    }
-                };
-            },
-
-            afterAppStart: function(app) {
-                if (!!app.config.culture &amp;&amp; !!app.config.culture) {
-                    if (!app.config.culture.messages) {
-                        app.config.culture.messages = { };
-                    }
-                    app.setLanguage(app.config.culture.name, app.config.culture.messages);
-                }
-            }
+            return config;
         };
-    });
-})();
+
+    return {
+
+        initialize: function() {
+            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+            var config = getConfig.call(this);
+            this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
+
+            this.editor.on(&#x27;change&#x27;, function() {
+                this.sandbox.emit(CHANGED, this.editor.getData(), this.$el);
+            }.bind(this));
+        }
+
+    };
+
+});
 
     </pre>
 </div>

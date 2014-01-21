@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>husky_extensions/globalize.js - husky</title>
+    <title>husky_components/page-functions/main.js - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -104,91 +104,102 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: husky_extensions/globalize.js</h1>
+                        <h1 class="file-heading">File: husky_components/page-functions/main.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-(function() {
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/page-functions
+ */
 
-    &#x27;use strict&#x27;;
+/**
+ * @class PageFunctions
+ * @constructor
+ *
+ * @param {Object} [options] Configuration object
+ * @param {String} [options.url] url to load data
+ * @param {Object} [options.data] data to view
+ */
+define([], function() {
 
-    require.config({
-        paths: {
-            &#x27;globalize_lib&#x27;: &#x27;bower_components/globalize/lib/globalize&#x27;,
-            &#x27;cultures&#x27;: &#x27;bower_components/globalize/lib/cultures&#x27;
-        }
-    });
+        &#x27;use strict&#x27;;
 
-    define([&#x27;globalize_lib&#x27;], function() {
-        return  {
-            name: &#x27;husky-validation&#x27;,
-
-            initialize: function(app) {
-                app.sandbox.globalize = {
-                    addCultureInfo: function(cultureName, messages) {
-                        Globalize.addCultureInfo(cultureName, {
-                            messages: messages
-                        });
-                    },
-
-                    culture: function(cultureName) {
-                        var setLanguage = function() {
-                            Globalize.culture(cultureName);
-                        };
-
-                        if (cultureName !== &#x27;en&#x27;) {
-                            require([&#x27;cultures/globalize.culture.&#x27; + cultureName], setLanguage.bind(this));
-                        } else {
-                            setLanguage();
-                        }
-                    }
-                };
-
-                app.sandbox.translate = function(key) {
-                    if (!app.config.culture || !app.config.culture.name) {
-                        return key;
-                    }
-                    var translation = Globalize.localize(key, app.config.culture.name);
-                    return !!translation ? translation : key;
-                };
-
-                /**
-                 * function calls this.sandbox.translate for an array of keys and returns an array of translations
-                 * @param array
-                 * @returns {Array}
-                 */
-                app.sandbox.translateArray = function(array) {
-                    var translations = [];
-                    app.sandbox.util.foreach(array, function(key) {
-                        translations.push(app.sandbox.translate(key));
-                    }.bind(this));
-                    return translations;
-                };
-
-                app.setLanguage = function(cultureName, messages) {
-                    var setLanguage = function() {
-                        Globalize.culture(cultureName);
-                        app.sandbox.globalize.addCultureInfo(cultureName, messages);
-                    };
-                    if (cultureName !== &#x27;en&#x27;) {
-                        require([&#x27;cultures/globalize.culture.&#x27; + cultureName], setLanguage.bind(this));
-                    } else {
-                        setLanguage();
-                    }
-                };
+        var defaults = {
+                url: &#x27;&#x27;, // url to load data
+                data: {}
             },
 
-            afterAppStart: function(app) {
-                if (!!app.config.culture &amp;&amp; !!app.config.culture) {
-                    if (!app.config.culture.messages) {
-                        app.config.culture.messages = { };
-                    }
-                    app.setLanguage(app.config.culture.name, app.config.culture.messages);
+            template = function() {
+                return [
+                    &#x27;&lt;div class=&quot;page-function&quot;&gt; &#x27;,
+                    &#x27;   &lt;a href=&quot;#&quot; id=&quot;&lt;%= id %&gt;&quot;&gt;&lt;span class=&quot;icon-&lt;%= icon %&gt;&quot;&gt;&lt;/span&gt;&lt;/a&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;
+                ].join(&#x27;&#x27;);
+            },
+
+            /**
+             * Namespace of events
+             * @type {string}
+             */
+            eventNamespace = &#x27;husky.page-functions.&#x27;,
+
+            /**
+             * @event husky.page-functions.rendered
+             * @description the component has been rendered
+             */
+            RENDERED = eventNamespace + &#x27;rendered&#x27;,
+
+            /**
+             * @event husky.page-functions.clicked
+             * @description link was clicked
+             */
+            CLICK = eventNamespace + &#x27;clicked&#x27;;
+
+        return {
+
+            view: true,
+
+            initialize: function() {
+                this.sandbox.logger.log(&#x27;initialize&#x27;, this);
+                this.sandbox.logger.log(arguments);
+
+                // extend default options
+                this.options = this.sandbox.util.extend({}, defaults, this.options);
+
+                this.render();
+            },
+
+            render: function() {
+                if (!this.options.data.id) {
+                    this.options.data.id = this.sandbox.util.uniqueId();
                 }
+
+                this.sandbox.dom.append(this.options.el, this.sandbox.template.parse(template(), this.options.data));
+
+                this.bindDomEvents();
+
+                this.sandbox.emit(RENDERED);
+            },
+
+            bindDomEvents: function() {
+                this.sandbox.dom.on(this.options.el, &#x27;click&#x27;, function(e) {
+                    e.preventDefault();
+                    this.sandbox.emit(CLICK);
+
+                    return false;
+                }.bind(this), &#x27;#&#x27; + this.options.data.id);
             }
+
         };
-    });
-})();
+    }
+);
 
     </pre>
 </div>

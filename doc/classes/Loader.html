@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>AutoCompleteList - husky</title>
+    <title>Loader - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -104,7 +104,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>AutoCompleteList Class</h1>
+                        <h1>Loader Class</h1>
 <div class="box meta">
     
 
@@ -112,13 +112,13 @@
 
     
         <div class="foundat">
-            Defined in: <a href="../files/husky_components_auto-complete-list_main.js.html#l12"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:12</code></a>
+            Defined in: <a href="../files/husky_components_loader_main.js.html#l20"><code>husky_components&#x2F;loader&#x2F;main.js:20</code></a>
         </div>
     
 
     
         
-            Module: <a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a>
+            Module: <a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a>
         
     
 
@@ -134,8 +134,8 @@
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_AutoCompleteList" class="method item">
-    <h3 class="name"><code>AutoCompleteList</code></h3>
+        <div id="method_Loader" class="method item">
+    <h3 class="name"><code>Loader</code></h3>
 
     
         <div class="args">
@@ -176,7 +176,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l12"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:12</code></a>
+        <a href="../files/husky_components_loader_main.js.html#l20"><code>husky_components&#x2F;loader&#x2F;main.js:20</code></a>
         
         </p>
 
@@ -215,27 +215,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[tags]</code>
+                                    <code class="param-name optional">[size]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[url]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>url to load autocomplete data</p>
+                                    <p>size of the spinner</p>
 
                                 </div>
 
@@ -244,27 +230,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[suggestions]</code>
+                                    <code class="param-name optional">[color]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[suggestionUrl]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>url to load suggestions</p>
+                                    <p>color of the spinner</p>
 
                                 </div>
 
@@ -295,6 +267,8 @@
         
         
         
+            <li class="api-class-tab events"><a href="#events">Events</a></li>
+        
     </ul>
 
     <div>
@@ -308,6 +282,35 @@
             
 
             
+                <div class="index-section events">
+                    <h3>Events</h3>
+
+                    <ul class="index-list events">
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.loader.hide">husky.loader.hide</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.loader.initialized">husky.loader.initialized</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.loader.show">husky.loader.show</a>
+
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
+            
         </div>
 
         
@@ -316,6 +319,144 @@
 
         
 
+        
+            <div id="events" class="api-class-tabpanel">
+                <h2 class="off-left">Events</h2>
+
+                
+                    <div id="event_husky.loader.hide" class="events item">
+    <h3 class="name"><code>husky.loader.hide</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_loader_main.js.html#l47"><code>husky_components&#x2F;loader&#x2F;main.js:47</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>hides the loader</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.loader.initialized" class="events item">
+    <h3 class="name"><code>husky.loader.initialized</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_loader_main.js.html#l54"><code>husky_components&#x2F;loader&#x2F;main.js:54</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>called when loader is initialized</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.loader.show" class="events item">
+    <h3 class="name"><code>husky.loader.show</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_loader_main.js.html#l40"><code>husky_components&#x2F;loader&#x2F;main.js:40</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>makes loader visible</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+            </div>
         
     </div>
 </div>

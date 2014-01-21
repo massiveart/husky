@@ -43,6 +43,8 @@
             
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
+                <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
                 <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
@@ -181,6 +183,8 @@ define(function() {
             app.core.util.uniqueId = function(prefix) {
                 return _.uniqueId(prefix);
             };
+
+			app.core.util.template = _.template;
         }
     };
 });

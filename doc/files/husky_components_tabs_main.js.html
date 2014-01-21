@@ -43,6 +43,8 @@
             
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
+                <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
                 <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
@@ -222,7 +224,7 @@ define(function() {
                 }
 
                 this.items[item.id] = item;
-                this.sandbox.dom.append($list, &#x27;&lt;li &#x27; + selected + &#x27; data-id=&quot;&#x27; + item.id + &#x27;&quot;&gt;&lt;a href=&quot;#&quot;&gt;&#x27; + item.title + &#x27;&lt;/a&gt;&lt;/li&gt;&#x27;);
+                this.sandbox.dom.append($list, &#x27;&lt;li &#x27; + selected + &#x27; data-id=&quot;&#x27; + item.id + &#x27;&quot;&gt;&lt;a href=&quot;#&quot;&gt;&#x27; + this.sandbox.translate(item.title) + &#x27;&lt;/a&gt;&lt;/li&gt;&#x27;);
             }.bind(this));
 
             // force selection of first element
