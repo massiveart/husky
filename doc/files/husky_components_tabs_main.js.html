@@ -43,11 +43,37 @@
             
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
+                <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
+            
+                <li><a href="../classes/DataGrid.html">DataGrid</a></li>
+            
+                <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
+            
+                <li><a href="../classes/Loader.html">Loader</a></li>
+            
+                <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+            
+                <li><a href="../classes/Search.html">Search</a></li>
+            
+                <li><a href="../classes/Toolbar.html">Toolbar</a></li>
+            
             </ul>
 
             <ul id="api-modules" class="apis modules">
             
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
+            
+                <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
+            
+                <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
+            
+                <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
+            
+                <li><a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a></li>
+            
+                <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
             </ul>
         </div>
@@ -98,11 +124,17 @@
  *      - selected: the item that&#x27;s selected on initialize
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
  *      - preselect - defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url)
+ *      - forceReload - defines if tabs are forcing page to reload
+ *      - forceSelect - forces tabs to select first item, if no selected item has been found
  *  Provides Events
  *      - husky.tabs.&lt;&lt;instanceName&gt;&gt;.getSelected [callback(item)] - returns item with callback
  *  Triggers Events
  *      - husky.tabs.&lt;&lt;instanceName&gt;&gt;.item.select [item] - triggered when item was clicked
  *      - husky.tabs.&lt;&lt;instanceName&gt;&gt;.initialized [selectedItem]- triggered when tabs have been initialized
+ *
+ *  Data options
+ *      - items
+ *          - forceReload: overwrites default-setting for certain item
  *
  *  TODO select first (or with parameter) item after load
  *
@@ -116,7 +148,9 @@ define(function() {
             url: null,
             data: [],
             instanceName: &#x27;&#x27;,
-            preselect: true
+            preselect: true,
+            forceReload: false,
+            forceSelect: true
         },
 
         selectItem = function(event) {
@@ -127,6 +161,8 @@ define(function() {
         },
 
         triggerSelectEvent = function(item) {
+
+            item.forceReload = (item.forceReload &amp;&amp; typeof item.forceReload !== &quot;undefined&quot;) ? item.forceReload : this.options.forceReload;
             this.sandbox.emit(createEventString.call(this, &#x27;item.select&#x27;), item);
         },
 
@@ -192,9 +228,16 @@ define(function() {
                 } else {
                     selected = &#x27;&#x27;;
                 }
+
                 this.items[item.id] = item;
-                this.sandbox.dom.append($list, &#x27;&lt;li &#x27; + selected + &#x27; data-id=&quot;&#x27; + item.id + &#x27;&quot;&gt;&lt;a href=&quot;#&quot;&gt;&#x27; + item.title + &#x27;&lt;/a&gt;&lt;/li&gt;&#x27;);
+                this.sandbox.dom.append($list, &#x27;&lt;li &#x27; + selected + &#x27; data-id=&quot;&#x27; + item.id + &#x27;&quot;&gt;&lt;a href=&quot;#&quot;&gt;&#x27; + this.sandbox.translate(item.title) + &#x27;&lt;/a&gt;&lt;/li&gt;&#x27;);
             }.bind(this));
+
+            // force selection of first element
+            if (!selectedItem &amp;&amp; this.options.forceSelect) {
+                selectedItem = this.options.data[0];
+                this.sandbox.dom.addClass(this.sandbox.dom.find(&#x27;li&#x27;,$list).eq(0),&#x27;is-selected&#x27;);
+            }
 
             // initialization finished
             this.sandbox.emit(createEventString.call(this, &#x27;initialized&#x27;), selectedItem);

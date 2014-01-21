@@ -157,7 +157,7 @@
             };
 
             app.core.dom.val = function(selector, value) {
-                if (!!value) {
+                if (!!value || value === '') {
                     $(selector).val(value);
                 } else {
                     return $(selector).val();
@@ -192,6 +192,10 @@
                 $(selector).off(event, filter, handler);
             };
 
+            app.core.dom.trigger = function(selector, eventType, params) {
+                $(selector).trigger(eventType, params);
+            };
+
             app.core.dom.toggleClass = function(selector, className) {
                 $(selector).toggleClass(className);
             };
@@ -218,6 +222,10 @@
 
             app.core.dom.closest = function(selector, filter) {
                 return $(selector).closest(filter);
+            };
+
+            app.core.dom.clone = function(selector) {
+                return $(selector).clone();
             };
 
             app.core.dom.text = function(selector, value) {
@@ -274,7 +282,7 @@
             };
 
             app.core.dom.scrollTop = function(itemSelector) {
-                $(window).scrollTop($(itemSelector).offset().top);
+                $(window).scrollTop($(itemSelector).offsset().top);
             };
 
             app.core.dom.scrollLeft = function(selector, value) {

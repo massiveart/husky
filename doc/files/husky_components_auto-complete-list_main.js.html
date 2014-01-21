@@ -43,11 +43,37 @@
             
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
+                <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
+            
+                <li><a href="../classes/DataGrid.html">DataGrid</a></li>
+            
+                <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
+            
+                <li><a href="../classes/Loader.html">Loader</a></li>
+            
+                <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+            
+                <li><a href="../classes/Search.html">Search</a></li>
+            
+                <li><a href="../classes/Toolbar.html">Toolbar</a></li>
+            
             </ul>
 
             <ul id="api-modules" class="apis modules">
             
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
+            
+                <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
+            
+                <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
+            
+                <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
+            
+                <li><a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a></li>
+            
+                <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
             </ul>
         </div>
@@ -104,382 +130,355 @@
  * @constructor
  *
  * @param {Object} [options] Configuration object
- * @param {String} [options.url] url to load data
- **/
-define([], function() {
+ * @param {String} [options.tags]
+ * @param {String} [options.url] url to load autocomplete data
+ * @param {String} [options.suggestions]
+ * @param {String} [options.suggestionUrl] url to load suggestions
+ */
+define([
+    &#x27;text!husky_components/auto-complete-list/main.html&#x27;,
+    &#x27;text!husky_components/auto-complete-list/suggestions.html&#x27;
+], function(tplMain, tplSuggestions) {
 
         &#x27;use strict&#x27;;
 
-
         var defaults = {
-                url: &#x27;&#x27;,                    // url to load data
-                valueName: &#x27;name&#x27;,          // propertyName for value
-                minLength: 3,               // min length for request
-                keyControl: true,           // control with up/down key
-                value: null,                // value to display at start
-                excludeItems: [],           // items to filter
-                instanceName: &#x27;undefined&#x27;   // name of the component instance
+                instanceName: &#x27;undefined&#x27;, //name of the component instance
+                items: [], //preloaded tags
+                itemsUrl: &#x27;&#x27;, //url to load tags
+                itemsKey: &#x27;items&#x27;, //Key for AJAX respons
+                suggestions: [], //suggestions for suggestions box
+                suggestionsHeadline: &#x27;&#x27;, //Headline for suggestions bxo
+                suggestionsUrl: &#x27;&#x27;, // url to load suggestions
+                suggestionsKey: &#x27;suggestions&#x27;, //Key for AJAX response
+                label: &#x27;&#x27;, //label (headline),
+                inputSelector: &#x27;.husky-autocomplete&#x27;, //Selector for input wrapper div
+                autocomplete: true, //enable/disable autocomplete
+                autocompleteOptions: {}, //options to pass to the autocomplete component
+                maxListItems: 0, //maximum amount of list items accepted (0 = no limit)
+                CapitalizeFirstLetter: false, //if true the first letter of each item gets capitalized
+                listItemClass: &#x27;auto-complete-list-selection&#x27;, //class for list items
+                suggestionDeactivatedClass: &#x27;deactivated&#x27;, //class if suggestion is already used,
+                AjaxPush: &#x27;&#x27;, //url to which added list items get send via ajax POST
+                AjaxPushAllItems: false, //if true all list items get sent if an item is added
+                AjaxPushParameters: null, //additional parameter payload to push with each AJAX request
+                togglerSelector: &#x27;.toggler&#x27;, //CSS-selector for suggestion-toggler
+                arrowDownClass: &#x27;arrow-down&#x27;, //CSS-class for arrow down icon
+                arrowUpClass: &#x27;arrow-up&#x27;, //CSS-class for arrow up icon
+                slideDuration: 500 //ms - duration for sliding suggestinos up/down
             },
-            successClass = &#x27;husky-auto-complete-success&#x27;,
-            failClass = &#x27;husky-auto-complete-error&#x27;,
-            loadingClass = &#x27;husky-auto-complete-loading&#x27;,
-            eventNamespace = &#x27;husky.auto-complete-list&#x27;,
-            EVENT = { };
+            eventNamespace = &#x27;husky.auto-complete-list.&#x27;,
 
-        /**
-         * @event husky.auto-complete-list.rendered
-         * @description fires when an animation begins.
-         * @param {String} name Name of the ...
-         */
-        EVENT.renderd = eventNamespace + &#x27;rendered&#x27;;
+            togglerPosUp = &#x27;up&#x27;,
+            togglerPosDown = &#x27;down&#x27;;
 
-        /**
-         * @event husky.auto-complete-list.rendered
-         * @description fires when an animation begins.
-         * @param {String} name Name of the ...
-         */
-        EVENT.loaded = eventNamespace + &#x27;loaded&#x27;;
 
         return {
-            data: [],
-
-            getEvent: function(append) {
-                return &#x27;husky.auto-complete-list.&#x27; + append;
-            },
-
-            /**
-             * get url for pattern
-             * @method getUrl
-             * @param pattern
-             * @returns {string}
-             */
-            getUrl: function(pattern) {
-                var delimiter = &#x27;?&#x27;;
-                if (this.options.url.indexOf(&#x27;?&#x27;) !== -1) {
-                    delimiter = &#x27;&amp;&#x27;;
-                }
-
-                return this.options.url + delimiter + &#x27;search=&#x27; + pattern;
-            },
-
-            getValueID: function() {
-                if (!!this.options.value) {
-                    return this.options.value.id;
-                } else {
-                    return null;
-                }
-            },
-
-            getValueName: function() {
-                if (!!this.options.value) {
-                    return this.options.value[this.options.valueName];
-                } else {
-                    return &#x27;&#x27;;
-                }
-            },
 
             initialize: function() {
                 this.sandbox.logger.log(&#x27;initialize&#x27;, this);
-                this.sandbox.logger.log(arguments);
+
+                this.setVars();
 
                 // extend default options
                 this.options = this.sandbox.util.extend({}, defaults, this.options);
+                this.sandbox.logger.log(this.options);
 
-                this.render();
+                this.renderMain();
+                this.initInputCont();
+                this.initSuggestions();
+                this.initItems();
             },
 
-            render: function() {
-                this.$el.addClass(&#x27;dropdown husky-auto-complete&#x27;);
-                // init form-element and dropdown menu
-                this.$valueField = $(&#x27;&lt;input id=&quot;&#x27; + this.options.instanceName + &#x27;&quot; type=&quot;text&quot; autofill=&quot;false&quot; class=&quot;name-value form-element husky-validate&quot; data-id=&quot;&#x27; + this.getValueID() + &#x27;&quot; value=&quot;&#x27; + this.getValueName() + &#x27;&quot;/&gt;&#x27;);
-                this.$dropDown = $(&#x27;&lt;div class=&quot;dropdown-menu&quot; /&gt;&#x27;);
-                this.$dropDownList = $(&#x27;&lt;ul/&gt;&#x27;);
-                this.$el.append(this.$valueField);
-                this.$el.append(this.$dropDown);
-                this.$dropDown.append(this.$dropDownList);
-                this.hideDropDown();
+            setVars: function() {
+                this.suggestions = [];
+                this.$suggestions = null;
+                this.$input = null;
+                this.tagApi = null;
+                this.toggler = null;
+                this.$inputCont = null;
+            },
 
-                // bind dom elements
-                this.bindDOMEvents();
+            getEvent: function (append) {
+                return eventNamespace + this.options.instanceName + &#x27;.&#x27; + append;
+            },
 
-                if (!!this.options.value) {
-                    this.successState();
+            renderMain: function() {
+                this.sandbox.dom.html(this.$el,
+                    _.template(tplMain)({
+                        label: this.options.label
+                    })
+                );
+            },
+
+            initInputCont: function() {
+                this.$inputCont = this.sandbox.dom.find(this.options.inputSelector, this.$el);
+                if (!this.$inputCont.length) {
+                    this.sandbox.logger.log(&#x27;Initializing input-container failed.&#x27;);
+                    return false;
                 }
             },
 
-            // bind dom elements
-            bindDOMEvents: function() {
-                // turn off all events
-                this.$el.off();
+            startPlugins: function() {
+                if (this.options.autocomplete === true) {
+                    this.bindStartTmEvent();
+                    this.startAutocomplete();
+                } else {
+                    this.initInput();
+                    this.appendInput();
+                    this.startTagmanager();
+                    this.bindEvents();
+                }
+            },
 
-                // input value changed
-                this.$valueField.on(&#x27;input&#x27;, this.inputChanged.bind(this));
+            initInput: function() {
+                this.$input = this.sandbox.dom.createElement(&#x27;&lt;input type=&quot;text&quot;/&gt;&#x27;);
+            },
 
-                // mouse control
-                this.$dropDownList.on(&#x27;click&#x27;, &#x27;li&#x27;, function(event) {
-                    var $element = $(event.currentTarget),
-                        id = $element.data(&#x27;id&#x27;),
-                        item = {id: id};
+            appendInput: function() {
+                if (!!this.$input.length) {
+                    this.sandbox.dom.append(this.$inputCont, this.$input);
+                }
+            },
 
-                    item[this.options.valueName] = $element.text();
-                    this.selectItem(item);
+            startAutocomplete: function() {
+                this.sandbox.start([{
+                    name: &#x27;auto-complete@husky&#x27;,
+                    options: this.sandbox.util.extend(
+                        {el: this.$inputCont},
+                        {emptyOnBlur: true},
+                        {instanceName: this.options.instanceName},
+                        this.options.autocompleteOptions
+                    )
+                }]);
+            },
+
+            startTagmanager: function() {
+                this.tagApi = this.sandbox.autocompleteList.init(this.$input, {
+                                tagClass: this.options.listItemClass,
+                                prefilled: this.options.items,
+                                tagCloseIcon: &#x27;&#x27;,
+                                maxTags: this.options.maxListItems,
+                                AjaxPush: this.options.AjaxPush,
+                                AjaxPushAllTags: this.options.AjaxPushAllItems,
+                                AjaxPushParameters: this.options.AjaxPushParameters,
+                                CapitalizeFirstLetter: this.options.CapitalizeFirstLetter
+                            });
+            },
+
+            bindStartTmEvent: function() {
+                this.sandbox.on(&#x27;husky.auto-complete.&#x27;+ this.options.instanceName +&#x27;.initialized&#x27;, function(data) {
+                    this.$input = data;
+                    this.startTagmanager();
+                    this.bindEvents();
+                }.bind(this));
+            },
+
+            bindEvents: function() {
+                this.sandbox.on(&#x27;husky.auto-complete.&#x27;+ this.options.instanceName +&#x27;.select&#x27;, function(d) {
+                    this.pushTag(d.name);
                 }.bind(this));
 
-                // focus in
-                this.$valueField.on(&#x27;focusin&#x27;, function() {
-                    this.$valueField.trigger(&#x27;input&#x27;);
+                this.sandbox.dom.on(this.$input, &#x27;keydown&#x27;, function(event) {
+                    if(event.keyCode === 8 &amp;&amp; this.sandbox.dom.val(this.$input).trim() === &#x27;&#x27;) {
+                        this.refreshSuggestions();
+                    }
                 }.bind(this));
 
-                // focus out
-                this.$valueField.on(&#x27;focusout&#x27;, function() {
-                    // FIXME may there is a better solution ???
-                    setTimeout(function() {
-                        this.hideDropDown();
-                    }.bind(this), 250);
+                this.sandbox.dom.on(this.$el, &#x27;click&#x27;, function(event) {
+                    if(this.sandbox.dom.hasClass(event.target, &#x27;tm-tag-remove&#x27;) === true) {
+                        this.refreshSuggestions();
+                    }
                 }.bind(this));
 
-                // key control
-                if (this.options.keyControl) {
-                    this.$valueField.on(&#x27;keydown&#x27;, function(event) {
-                        // key 40 = down, key 38 = up, key 13 = enter
-                        if ([40, 38, 13].indexOf(event.which) === -1) {
-                            return;
-                        }
-
-                        event.preventDefault();
-                        if (this.$dropDown.is(&#x27;:visible&#x27;)) {
-
-                            if (event.which === 40) {
-                                this.pressKeyDown();
-                            }
-                            else if (event.which === 38) {
-                                this.pressKeyUp();
-                            }
-                            else if (event.which === 13) {
-                                this.pressKeyEnter();
-                            }
-
-                        } else {
-                            // If dropdown not visible =&gt; search for given pattern
-                            this.noState();
-                            this.loadData(this.$valueField.val());
-                        }
+                if (this.toggler !== null) {
+                    this.sandbox.dom.on(this.toggler.$el, &#x27;click&#x27;, function(event) {
+                        this.sandbox.dom.preventDefault(event);
+                        this.changeToggler();
+                        this.toggleSuggestions();
                     }.bind(this));
-
-                    // remove hover class by mouseover
-                    this.$dropDownList.on(&#x27;mouseover&#x27;, &#x27;li&#x27;, function() {
-                        this.$dropDownList.children().removeClass(&#x27;hover&#x27;);
-                    }.bind(this));
                 }
             },
 
-            // value of input changed
-            inputChanged: function() {
-                this.sandbox.logger.log(&#x27;inputChanged&#x27;);
-
-                // value is not success
-                this.noState();
-
-                var val = this.$valueField.val();
-                if (val.length &gt;= this.options.minLength) {
-                    this.loadData(val);
+            initItems: function() {
+                if(this.options.itemsUrl !== &#x27;&#x27;) {
+                    this.requestItems();
+                } else {
+                    this.startPlugins();
                 }
             },
 
-            // load data from server
-            loadData: function(pattern) {
-                var url = this.getUrl(pattern);
-                this.sandbox.logger.log(&#x27;load: &#x27; + url);
-                this.loadingState();
+            requestItems: function() {
+                this.sandbox.util.ajax({
+                    url: this.options.itemsUrl,
 
-                $.ajax({
-                    url: url,
-                    success: function(response) {
-                        this.sandbox.logger.log(&#x27;load&#x27;, &#x27;success&#x27;);
-
-                        this.noState();
-
-                        // if only one result this is it, if no result hideDropDown, else generateDropDown
-                        this.updateData(response.items);
-                        if (this.data.length &gt; 1) {
-                            this.generateDropDown(this.data);
-                        } else if (this.data.length === 1) {
-                            this.selectItem(this.data[0]);
-                        } else {
-                            this.failState();
-                            this.hideDropDown();
-                        }
+                    success: function(data) {
+                        this.options.items = this.options.items.concat(data[this.options.itemsKey]);
+                        this.startPlugins();
                     }.bind(this),
-                    error: function() {
-                        this.sandbox.logger.log(&#x27;load&#x27;, &#x27;error&#x27;);
 
-                        this.failState();
-                        this.hideDropDown();
+                    error: function(error) {
+                        this.sandbox.logger.log(error);
                     }.bind(this)
                 });
-
-                this.sandbox.emit(this.getEvent(&#x27;load-data&#x27;));
+                this.sandbox.emit(this.getEvent(&#x27;items-request&#x27;));
             },
 
-            // update global data array
-            updateData: function(newData) {
-                this.data = [];
-                if (!!newData &amp;&amp; $.isArray(newData)) {
-                    newData.forEach(function(item) {
-                        if (this.isVisible(item)) {
-                            this.data.push(item);
-                        }
-                    }.bind(this));
-                }
-            },
-
-            // generate dropDown with given items
-            generateDropDown: function(items) {
-                this.clearDropDown();
-                items.forEach(function(item) {
-                    if (this.isVisible(item)) {
-                        this.$dropDownList.append(&#x27;&lt;li data-id=&quot;&#x27; + item.id + &#x27;&quot;&gt;&#x27; + item[this.options.valueName] + &#x27;&lt;/li&gt;&#x27;);
-                    }
-                }.bind(this));
-                this.showDropDown();
-            },
-
-            // is item visible (filter)
-            isVisible: function(item) {
-                var result = true;
-                this.options.excludeItems.forEach(function(testItem) {
-                    if (parseInt(item.id, 10) === parseInt(testItem.id, 10)) {
-                        result = false;
-                    }
-                }.bind(this));
-                return result;
-            },
-
-            // clear childs of list
-            clearDropDown: function() {
-                // FIXME make it easier
-                this.$dropDown.children(&#x27;ul&#x27;).children(&#x27;li&#x27;).remove();
-            },
-
-            // make dropDown visible
-            showDropDown: function() {
-                this.sandbox.logger.log(&#x27;show dropdown&#x27;);
-                this.$dropDown.show();
-            },
-
-            // hide dropDown
-            hideDropDown: function() {
-                this.sandbox.logger.log(&#x27;hide dropdown&#x27;);
-                this.clearDropDown();
-                this.$dropDown.hide();
-            },
-
-            // set class success to container
-            successState: function() {
-                this.sandbox.logger.log(&#x27;set success&#x27;);
-                this.clearDropDown();
-                this.$el.parent().removeClass(failClass);
-                this.$el.parent().removeClass(loadingClass);
-                this.$el.parent().addClass(successClass);
-            },
-
-            // remove class success, fail and loading of container
-            noState: function() {
-                this.sandbox.logger.log(&#x27;remove success and fail&#x27;);
-                this.$valueField.data(&#x27;&#x27;);
-                this.$el.parent().removeClass(failClass);
-                this.$el.parent().removeClass(loadingClass);
-                this.$el.parent().removeClass(successClass);
-            },
-
-            // add class fail to container
-            failState: function() {
-                this.sandbox.logger.log(&#x27;set fail&#x27;);
-                this.$el.parent().addClass(failClass);
-                this.$el.parent().removeClass(loadingClass);
-                this.$el.parent().removeClass(successClass);
-            },
-
-            // add class loading to container
-            loadingState: function() {
-                this.sandbox.logger.log(&#x27;set loading&#x27;);
-                this.$el.parent().removeClass(failClass);
-                this.$el.parent().addClass(loadingClass);
-                this.$el.parent().removeClass(successClass);
-            },
-
-            // handle key down
-            pressKeyDown: function() {
-                this.sandbox.logger.log(&#x27;key down&#x27;);
-
-                // get actual and next element
-                var $actual = this.$dropDownList.children(&#x27;.hover&#x27;),
-                    $next = $actual.next();
-
-                // no element selected
-                if ($next.length === 0) {
-                    $next = this.$dropDownList.children().first();
-                }
-
-                $actual.removeClass(&#x27;hover&#x27;);
-                $next.addClass(&#x27;hover&#x27;);
-            },
-
-            // handle key up
-            pressKeyUp: function() {
-                this.sandbox.logger.log(&#x27;key up&#x27;);
-
-                // get actual and next element
-                var $actual = this.$dropDownList.children(&#x27;.hover&#x27;),
-                    $next = $actual.prev();
-                // no element selected
-                if ($next.length === 0) {
-                    $next = this.$dropDownList.children().last();
-                }
-
-                $actual.removeClass(&#x27;hover&#x27;);
-                $next.addClass(&#x27;hover&#x27;);
-            },
-
-            // handle key enter
-            pressKeyEnter: function() {
-                this.sandbox.logger.log(&#x27;key enter&#x27;);
-
-                // if one element selected
-                var $actual = this.$dropDownList.children(&#x27;.hover&#x27;),
-                    item, value, childs, that;
-                if ($actual.length === 1) {
-                    item = {id: $actual.data(&#x27;id&#x27;)};
-                    item[this.options.valueName] = $actual.text();
-                    this.selectItem(item);
+            initSuggestions: function() {
+                if(this.options.suggestionsUrl !== &#x27;&#x27;) {
+                    this.requestSuggestions();
                 } else {
-                    // if it is one of the list
-                    value = this.$valueField.val();
-                    childs = this.$dropDownList.children();
-                    that = this;
 
-                    $(childs).each(function() {
-                        if ($(this).text() === value) {
-                            // found an item select it
-                            var item = {id: $(this).data(&#x27;id&#x27;)};
-                            item[that.options.valueName] = $(this).text();
-                            that.selectItem(item);
-                            return false;
-                        }
-                    });
+                    this.loadSuggestions();
+                    this.renderSuggestions();
+                    this.initToggler();
                 }
             },
 
-            // select an item
-            selectItem: function(item) {
-                this.sandbox.logger.log(&#x27;select item: &#x27; + item.id);
-                // set id to data-id
-                this.$valueField.data(&#x27;id&#x27;, item.id);
-                // set value to value
-                this.$valueField.val(item[this.options.valueName]);
+            requestSuggestions: function() {
+                this.sandbox.util.ajax({
+                    url: this.options.suggestionsUrl,
 
-                this.hideDropDown();
-                this.successState();
+                    success: function(data) {
+                        this.options.suggestions = this.options.suggestions.concat(data[this.options.suggestionsKey]);
+                        this.loadSuggestions();
+                        this.renderSuggestions();
+                        this.initToggler();
+                    }.bind(this),
+
+                    error: function(error) {
+                        this.sandbox.logger.log(error);
+                    }.bind(this)
+                });
+                this.sandbox.emit(this.getEvent(&#x27;sug-request&#x27;));
+            },
+
+            loadSuggestions: function() {
+                if (!!this.options.suggestions.length) {
+                    for (var i = -1, length = this.options.suggestions.length; ++i&lt;length;) {
+                        this.suggestions[i] = {
+                            name: this.options.suggestions[i],
+                            $el: this.sandbox.dom.createElement(&#x27;&lt;li/&gt;&#x27;)
+                        };
+                        this.sandbox.dom.html(this.suggestions[i].$el, this.suggestions[i].name);
+                    }
+                }
+            },
+
+            renderSuggestions: function() {
+                if (!!this.options.suggestions.length) {
+                    var box, list, i = -1, length = this.suggestions.length;
+                    box = this.sandbox.dom.parseHTML(
+                        _.template(tplSuggestions)({
+                            headline: this.options.suggestionsHeadline
+                        })
+                    );
+                    list = this.sandbox.dom.children(box, &#x27;ul&#x27;);
+                    for(;++i&lt;length;) {
+                        this.sandbox.dom.append(list, this.suggestions[i].$el);
+                        this.bindSuggestionEvents(this.suggestions[i]);
+                    }
+                    this.$suggestions = box;
+                    this.sandbox.dom.append(this.$el, this.$suggestions);
+                }
+            },
+
+            initToggler: function() {
+                if (!!this.options.suggestions.length) {
+                    this.toggler = {
+                        $el: this.sandbox.dom.find(this.options.togglerSelector, this.$el),
+                        pos: togglerPosUp
+                    };
+                    this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowUpClass);
+                }
+                this.sandbox.logger.log(this.toggler.$el);
+            },
+
+            changeToggler: function() {
+                if (this.toggler.pos === togglerPosDown) {
+                    this.togglerUp();
+                } else {
+                    this.togglerDown();
+                }
+            },
+
+            toggleSuggestions: function() {
+                if (this.toggler.pos === togglerPosDown) {
+                    this.hideSuggestions();
+                } else {
+                    this.showSuggestions();
+                }
+            },
+
+            hideSuggestions: function() {
+                this.sandbox.dom.slideUp(this.$suggestions, this.options.slideDuration);
+            },
+
+            showSuggestions: function() {
+                this.sandbox.dom.slideDown(this.$suggestions, this.options.slideDuration);
+            },
+
+            togglerDown: function() {
+                this.sandbox.dom.removeClass(this.toggler.$el, this.options.arrowUpClass);
+                this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowDownClass);
+                this.toggler.pos = togglerPosDown;
+            },
+
+            togglerUp: function() {
+                this.sandbox.dom.removeClass(this.toggler.$el, this.options.arrowDownClass);
+                this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowUpClass);
+                this.toggler.pos = togglerPosUp;
+            },
+
+            bindSuggestionEvents: function(suggestion) {
+                this.sandbox.dom.on(suggestion.$el, &#x27;click&#x27;, function() {
+                    this.pushTag(suggestion.name);
+                    this.deactivateSuggestion(suggestion);
+                }.bind(this));
+            },
+
+            deactivateSuggestion: function(suggestion) {
+                this.sandbox.dom.addClass(suggestion.$el, this.options.suggestionDeactivatedClass);
+            },
+
+            activateSuggestion: function(suggestion) {
+                this.sandbox.dom.removeClass(suggestion.$el, this.options.suggestionDeactivatedClass);
+            },
+
+            refreshSuggestions: function() {
+                for (var i = -1, length = this.suggestions.length; ++i &lt; length;) {
+                    if(this.sandbox.dom.hasClass(this.suggestions[i].$el, this.options.suggestionDeactivatedClass) === true) {
+                        if (this.suggestionContainedInTags(this.suggestions[i]) === false) {
+                            this.activateSuggestion(this.suggestions[i]);
+                        }
+                    }
+                }
+            },
+
+            suggestionContainedInTags: function(suggestion) {
+                var tags = this.getTags(), i, length;
+                for (i = -1, length = tags.length; ++i &lt; length;) {
+                    if (tags[i] === suggestion.name) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+
+            pushTag: function(value) {
+                if (this.tagApi !== null) {
+                    this.tagApi.tagsManager(&#x27;pushTag&#x27;, value);
+                } else {
+                    return false;
+                }
+            },
+
+            getTags: function() {
+                if (this.tagApi !== null) {
+                    return this.tagApi.tagsManager(&#x27;tags&#x27;);
+                } else {
+                    return [];
+                }
             }
         };
     }

@@ -377,6 +377,22 @@
   }
 }
 
+.icon-half-eye-open {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e105";
+    display: inline-block;
+  }
+}
+
+.icon-half-eye-close {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e106";
+    display: inline-block;
+  }
+}
+
 .icon-floppy-save {
   &::after {
     font-family: $baseIconHalflingsFont;
@@ -389,6 +405,29 @@
   &::after {
     font-family: $baseIconHalflingsFont;
     content: "\e173";
+    display: inline-block;
+  }
+}
+
+.icon-half-ok {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e013";
+    display: inline-block;
+  }
+}
+
+.icon-half-remove {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e014";
+    display: inline-block;
+  }
+}
+
+.icon-remove2 {
+  &::after {
+    content: "\e208";
     display: inline-block;
   }
 }

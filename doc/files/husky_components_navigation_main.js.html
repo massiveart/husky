@@ -43,11 +43,37 @@
             
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
+                <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
+            
+                <li><a href="../classes/DataGrid.html">DataGrid</a></li>
+            
+                <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
+            
+                <li><a href="../classes/Loader.html">Loader</a></li>
+            
+                <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+            
+                <li><a href="../classes/Search.html">Search</a></li>
+            
+                <li><a href="../classes/Toolbar.html">Toolbar</a></li>
+            
             </ul>
 
             <ul id="api-modules" class="apis modules">
             
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
+            
+                <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
+            
+                <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
+            
+                <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
+            
+                <li><a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a></li>
+            
+                <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
             </ul>
         </div>
@@ -138,7 +164,7 @@ define(function() {
                 &#x27;               &lt;img alt=&quot;#&quot; src=&quot;&lt;%= icon %&gt;&quot;/&gt;&#x27;,
                 &#x27;               &lt;% } %&gt;&#x27;,
                 &#x27;           &lt;/div&gt;&#x27;,
-                &#x27;           &lt;div class=&quot;navigation-header-title&quot;&gt;&lt;% if (title) { %&gt; &lt;%= title %&gt;&lt;% } %&gt;&lt;/div&gt;&#x27;,
+                &#x27;           &lt;div class=&quot;navigation-header-title&quot;&gt;&lt;% if (title) { %&gt; &lt;%= translate(title) %&gt;&lt;% } %&gt;&lt;/div&gt;&#x27;,
                 &#x27;       &lt;/header&gt;&#x27;,
                 &#x27;       &lt;div id=&quot;navigation-search&quot; class=&quot;navigation-search&quot;&gt;&lt;/div&gt;&#x27;,
                 &#x27;       &lt;div id=&quot;navigation-item-container&quot; class=&quot;navigation-item-container&quot;&gt;&lt;/div&gt;&#x27;,
@@ -152,7 +178,7 @@ define(function() {
                 &#x27;   &lt;div &lt;% if (item.items &amp;&amp; item.items.length &gt; 0) { %&gt; class=&quot;navigation-items-toggle&quot; &lt;% } %&gt; &gt;&#x27;,
                 &#x27;       &lt;a class=&quot;&lt;% if (!!item.action) { %&gt;js-navigation-item &lt;% } %&gt;navigation-item&quot; href=&quot;#&quot;&gt;&#x27;,
                 &#x27;           &lt;span class=&quot;&lt;%= icon %&gt; navigation-item-icon&quot;&gt;&lt;/span&gt;&#x27;,
-                &#x27;           &lt;span class=&quot;navigation-item-title&quot;&gt;&lt;%= item.title %&gt;&lt;/span&gt;&#x27;,
+                &#x27;           &lt;span class=&quot;navigation-item-title&quot;&gt;&lt;%= translate(item.title) %&gt;&lt;/span&gt;&#x27;,
                 &#x27;       &lt;/a&gt;&#x27;,
                 &#x27;       &lt;% if (item.hasSettings) { %&gt;&#x27;,
                 &#x27;           &lt;a class=&quot;icon-cogwheel navigation-settings-icon js-navigation-settings&quot; id=&quot;&lt;%= item.id %&gt;&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
@@ -166,7 +192,7 @@ define(function() {
             subToggleItem: [
                 &#x27;   &lt;li class=&quot;js-navigation-items navigation-subitems&quot; id=&quot;&lt;%= item.id %&gt;&quot; data-id=&quot;&lt;%= item.id %&gt;&quot;&gt;&#x27;,
                 &#x27;       &lt;div class=&quot;navigation-subitems-toggle&quot;&gt;&#x27;,
-                &#x27;           &lt;a class=&quot;&lt;% if (!!item.action) { %&gt;js-navigation-item &lt;% } %&gt; navigation-item&quot; href=&quot;#&quot;&gt;&lt;%= item.title %&gt;&lt;/a&gt;&#x27;,
+                &#x27;           &lt;a class=&quot;&lt;% if (!!item.action) { %&gt;js-navigation-item &lt;% } %&gt; navigation-item&quot; href=&quot;#&quot;&gt;&lt;%= translate(item.title) %&gt;&lt;/a&gt;&#x27;,
                 &#x27;           &lt;% if (item.hasSettings) { %&gt;&#x27;,
                 &#x27;           &lt;a class=&quot;icon-cogwheel navigation-settings-icon js-navigation-settings&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
                 &#x27;           &lt;% } %&gt;&#x27;,
@@ -176,15 +202,15 @@ define(function() {
             /** siple sub item */
             subItem: [
                 &#x27;&lt;li class=&quot;js-navigation-sub-item&quot; id=&quot;&lt;%= item.id %&gt;&quot; data-id=&quot;&lt;%= item.id %&gt;&quot;&gt;&#x27;,
-                &#x27;   &lt;a href=&quot;#&quot;&gt;&lt;%= item.title %&gt;&lt;/a&gt;&#x27;,
+                &#x27;   &lt;a href=&quot;#&quot;&gt;&lt;%= translate(item.title) %&gt;&lt;/a&gt;&#x27;,
                 &#x27;&lt;/li&gt;&#x27;
             ].join(&#x27;&#x27;)
         },
         defaults = {
             footerTemplate: &#x27;&#x27;,
             labels: {
-                hide: &#x27;Hide&#x27;,
-                show: &#x27;Show&#x27;
+                hide: &#x27;navigation.hide&#x27;,
+                show: &#x27;navigation.show&#x27;
             }
         };
 
@@ -232,12 +258,19 @@ define(function() {
             // render skeleton
             this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {
                 title: this.options.data.title,
-                icon: this.options.data.icon
+                icon: this.options.data.icon,
+                translate: this.sandbox.translate
             }));
 
             // start search component
             this.sandbox.start([
-                {name: &#x27;search@husky&#x27;, options: {el: &#x27;#navigation-search&#x27;}}
+                {
+                    name: &#x27;search@husky&#x27;,
+                    options: {
+                        el: &#x27;#navigation-search&#x27;,
+                        placeholderText: &#x27;public.search&#x27;
+                    }
+                }
             ]);
 
             // render navigation items
@@ -247,6 +280,9 @@ define(function() {
             if (!!this.options.footerTemplate &amp;&amp; this.options.footerTemplate !== &#x27;&#x27;) {
                 this.renderFooter(this.options.footerTemplate);
             }
+
+            // preselect item based on url
+            this.preselectItem();
 
             // emit initialized event
             this.sandbox.emit(&#x27;husky.navigation.initialized&#x27;);
@@ -261,20 +297,22 @@ define(function() {
             this.sandbox.util.foreach(data.items, function(section) {
                 $sectionDiv = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;section&quot;&gt;&#x27;);
                 $sectionList = this.sandbox.dom.createElement(&#x27;&lt;ul class=&quot;section-items&quot;&gt;&#x27;);
-                this.sandbox.dom.append($sectionDiv, &#x27;&lt;div class=&quot;section-headline&quot;&gt;&lt;span class=&quot;section-headline-title&quot;&gt;&#x27; + section.title.toUpperCase() + &#x27;&lt;/span&gt;&lt;span class=&quot;section-toggle&quot;&gt;&lt;a href=&quot;#&quot;&gt;&#x27; + this.options.labels.hide + &#x27;&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;&#x27;);
+                this.sandbox.dom.append($sectionDiv, &#x27;&lt;div class=&quot;section-headline&quot;&gt;&lt;span class=&quot;section-headline-title&quot;&gt;&#x27; + this.sandbox.translate(section.title).toUpperCase() + &#x27;&lt;/span&gt;&lt;span class=&quot;section-toggle&quot;&gt;&lt;a href=&quot;#&quot;&gt;&#x27; + this.sandbox.translate(this.options.labels.hide) + &#x27;&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;&#x27;);
 
                 // iterate through section items
                 this.sandbox.util.foreach(section.items, function(item) {
                     // create item
                     $elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.mainItem, {
                         item: item,
-                        icon: item.icon ? &#x27;icon-&#x27; + item.icon : &#x27;&#x27;
+                        icon: item.icon ? &#x27;icon-&#x27; + item.icon : &#x27;&#x27;,
+                        translate: this.sandbox.translate
                     }));
                     //render sub-items
                     if (item.items &amp;&amp; item.items.length &gt; 0) {
-                        this.renderSubNavigationItems(item, this.sandbox.dom.find(&#x27;div&#x27;, $elem));
+                        this.renderSubNavigationItems(item, $elem);
                     }
                     this.sandbox.dom.append($sectionList, $elem);
+                    item.domObject = $elem;
                     this.items[item.id] = item;
                 }.bind(this));
 
@@ -287,22 +325,23 @@ define(function() {
         /**
          * renders sub-navigation elements
          */
-        renderSubNavigationItems: function(data, after) {
+        renderSubNavigationItems: function(data, $parentList) {
             var elem,
                 list = this.sandbox.dom.createElement(&#x27;&lt;ul style=&quot;display:none&quot; /&gt;&#x27;);
 
             this.sandbox.util.foreach(data.items, function(item) {
                 this.items[item.id] = item;
                 if (item.items &amp;&amp; item.items.length &gt; 0) {
-                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subToggleItem, {item: item}));
+                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subToggleItem, {item: item, translate: this.sandbox.translate}));
                     this.renderSubNavigationItems(item, this.sandbox.dom.find(&#x27;div&#x27;, elem));
                 } else {
-                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subItem, {item: item}));
+                    elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subItem, {item: item, translate: this.sandbox.translate}));
                 }
                 this.sandbox.dom.append(list, elem);
+                item.domObject = elem;
             }.bind(this));
 
-            this.sandbox.dom.after(after, list);
+            this.sandbox.dom.append($parentList, list);
         },
 
         renderFooter: function(footerTemplate) {
@@ -333,9 +372,40 @@ define(function() {
         },
 
 
+        preselectItem: function() {
+            if (!this.options.selectAction || this.options.selectAction.length &lt; 1) {
+                return;
+            }
+
+            var matchLength = 0, matchItem, parent, match;
+            this.sandbox.util.foreach(this.items, function(item) {
+                if (!item || !item.action) {
+                    return;
+                }
+                if (this.options.selectAction.indexOf(item.action) !== -1 &amp;&amp; item.action.length &gt; matchLength) {
+                    matchItem = item;
+                    matchLength = item.action.length;
+                }
+            }.bind(this));
+
+            if (matchLength &gt; 0) {
+                match = matchItem.domObject;
+
+                // TODO: use trigger instead of faking event
+                if (this.sandbox.dom.hasClass(match,&#x27;js-navigation-sub-item&#x27;)) {
+                    parent = this.sandbox.dom.closest(match, &#x27;.navigation-items&#x27;);
+                    this.toggleItems({currentTarget: parent, preventDefault: function(){}});
+//                    this.sandbox.dom.trigger(parent, &#x27;click&#x27;,&#x27;.section-toggle&#x27;);
+                }
+                this.selectSubItem({currentTarget: match, preventDefault:function(){}});
+            }
+        },
+
+
+
         /**
          * gets called when settings icon is clicked
-         * @emit husky.navigation.item.settings (name, id, parent)
+         * @emits husky.navigation.item.settings (name, id, parent)
          * @param event
          */
         settingsClicked: function(event) {
@@ -426,12 +496,12 @@ define(function() {
             if (this.sandbox.dom.hasClass($section, &#x27;is-hidden&#x27;)) {
                 // hide section
                 this.sandbox.dom.slideDown($list, 200, function() {
-                    this.sandbox.dom.html(toggleLink, this.options.labels.hide);
+                    this.sandbox.dom.html(toggleLink, this.sandbox.translate(this.options.labels.hide));
                     this.sandbox.dom.removeClass($section, &#x27;is-hidden&#x27;);
                 }.bind(this));
             } else {
                 // show section
-                this.sandbox.dom.html(toggleLink, this.options.labels.show);
+                this.sandbox.dom.html(toggleLink, this.sandbox.translate(this.options.labels.show));
                 this.sandbox.dom.slideUp($list, 200, function() {
                     this.sandbox.dom.addClass($section, &#x27;is-hidden&#x27;);
                 }.bind(this));

@@ -4,72 +4,78 @@
 
 .search-container {
 
-  a {
-    color: #3e3e3e;
-  }
+    position: relative;
 
-  .search-input {
-    padding-left: 40px;
-    border: 0;
-    margin: 0;
-    background-color: $grayLight;
-    color: #3e3e3e;
-
-    @include input-placeholder {
-      color: #3e3e3e;
+    a {
+        color: #3e3e3e;
     }
 
-    &:focus {
-      background-color: $white;
-    }
-  }
-
-  .search-icon {
-    position: absolute;
-    padding-left: 8px;
-    font-size: 16px;
-    line-height: 30px;
-    vertical-align: middle;
-
-
-    @extend .icon-class;
-    @extend .icon-search;
-  }
-
-
-
-  /** look and feel **/
-
-  &.gray {
     .search-input {
-      background-color: $grayLight;
-      &:focus {
-        background-color: $white;
-      }
-    }
-  }
+        padding-left: 40px;
+        border: 0;
+        margin: 0;
+        background-color: $grayLight;
+        color: #3e3e3e;
 
-  // white
-  &.white {
-    .search-input {
-      background-color: $white;
-      &:focus {
-        background-color: $white;
-      }
-    }
-  }
+        @include input-placeholder {
+            color: #3e3e3e;
+        }
 
-  &.small {
-    .search-input {
-      font-size: 12px;
+        &:focus {
+            background-color: $white;
+        }
     }
+
     .search-icon {
-      padding-right: 15px;
-      font-size: 12px;
+        position: absolute;
+        padding-left: 8px;
+        font-size: 16px;
+        line-height: $inputHeight;
+        vertical-align: middle;
+
+        @extend .icon-class;
+        @extend .icon-search;
     }
-  }
 
+    .remove-icon {
+        display: none;
+        position: absolute;
+        right: 10px;
+        line-height: $inputHeight;
+        vertical-align: middle;
+        margin: auto;
+    }
 
+    /** look and feel **/
+
+    &.gray {
+        .search-input {
+            background-color: $grayLight;
+            &:focus {
+                background-color: $white;
+            }
+        }
+    }
+
+    // white
+    &.white {
+        .search-input {
+            background-color: $white;
+            &:focus {
+                background-color: $white;
+            }
+        }
+    }
+
+    &.small {
+        .search-input {
+            font-size: 12px;
+        }
+        .search-icon {
+            padding-right: 15px;
+            font-size: 12px;
+        }
+    }
 
 }
 
