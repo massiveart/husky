@@ -331,8 +331,7 @@ define(function() {
             this.$element.empty();
 
             if (this.options.elementType === 'list') {
-                // TODO
-                //this.$element = this.prepareList();
+                // TODO this.$element = this.prepareList();
                 this.sandbox.logger.log("list is not yet implemented!");
             } else {
                 this.$element.append(this.prepareTable());
@@ -768,7 +767,7 @@ define(function() {
         },
 
         /**
-         * Delegates the rendering of the pagination when paginations is needed
+         * Delegates the rendering of the pagination when pagination is needed
          * @returns {*}
          */
         preparePagination: function() {
@@ -782,7 +781,7 @@ define(function() {
                 $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row small-font');
 
                 if (!!this.data.total && !!this.data.links.all) {
-                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total, this.sandbox.translate('pagination.elements'), this.sandbox.translate('paginations.showAll'), this.pagination.showAllId));
+                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total, this.sandbox.translate('pagination.elements'), this.sandbox.translate('pagination.showAll'), this.pagination.showAllId));
                     $paginationWrapper.append($showAll);
                 }
 
@@ -796,20 +795,15 @@ define(function() {
                 $pagination.append('<div id="' + this.pagination.nextId + '" class="icon-chevron-right pagination-prev pull-right pointer"></div>');
                 $pagination.append('<div id="' + this.pagination.dropdownId + '" class="pagination-main pull-right pointer"><span class="inline-block">' + paginationLabel + '</span><span class="dropdown-toggle inline-block"></span></div>');
                 $pagination.append('<div id="' + this.pagination.prevId + '" class="icon-chevron-left pagination-next pull-right pointer"></div>');
-
-
             }
 
             return $paginationWrapper;
         },
 
-
         /**
          * Prepares and initializes the dropdown used for the pagination
          */
         preparePaginationDropdown: function() {
-
-
             var data = [], i, name;
 
             for (i = 1; i <= this.data.pages; i++) {
@@ -834,11 +828,10 @@ define(function() {
         /**
          * Called when the current page should change
          * Emits husky.datagrid.updated event on success
+         * @param uri
          * @param event
          */
-
         changePage: function(uri, event) {
-
             var url, template;
 
             if (!!uri) {
@@ -909,7 +902,7 @@ define(function() {
             }
 
 
-            // Todo
+            // Todo trigger event when click on clickable area
             // trigger event when click on clickable area
             // different handling when clicked on checkbox and when clicked on td
 
@@ -1037,7 +1030,6 @@ define(function() {
             this.resetItemSelection();
             this.resetSortingOptions();
 
-            // TODO does not work?
             this.load({
                 url: this.data.links.self,
                 success: function() {
