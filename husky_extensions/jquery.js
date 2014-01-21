@@ -50,6 +50,10 @@
                 return $(selector).html(content);
             };
 
+            app.core.dom.parseHTML = function(data) {
+                return $.parseHTML(data);
+            };
+
             app.core.dom.each = function(selector, callback) {
                 $(selector).each(callback);
             };
@@ -160,6 +164,14 @@
                 }
             };
 
+            app.core.dom.clearVal = function(selector) {
+                return $(selector).val('');
+            };
+
+            app.core.dom.blur = function(selector) {
+                return $(selector).blur();
+            };
+
             app.core.dom.on = function(selector, event, callback, filter) {
                 if (!!filter) {
                     $(selector).on(event, filter, callback);
@@ -178,6 +190,10 @@
 
             app.core.dom.off = function(selector, event, filter, handler) {
                 $(selector).off(event, filter, handler);
+            };
+
+            app.core.dom.trigger = function(selector, event, extraParam) {
+                $(selector).off(event, extraParam);
             };
 
             app.core.dom.toggleClass = function(selector, className) {
@@ -208,6 +224,10 @@
                 return $(selector).closest(filter);
             };
 
+            app.core.dom.clone = function(selector) {
+                return $(selector).clone();
+            };
+
             app.core.dom.text = function(selector, value) {
                 if (!!value) {
                     $(selector).text(value);
@@ -230,6 +250,10 @@
 
             app.core.dom.stopPropagation = function(event) {
                 event.stopPropagation();
+            };
+
+            app.core.dom.preventDefault = function(event) {
+                event.preventDefault();
             };
 
             app.core.dom.hide = function(selector) {
