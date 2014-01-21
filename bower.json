@@ -1,13 +1,19 @@
 {
-    "name": "husky",
-    "version": "0.1.0",
-    "main": "js/husky.js",
-    "dependencies": {
-        "backbone":"~1.0.0",
-        "underscore": "~1.5.1",
-        "aura": "latest",
-        "husky-validation": "#develop",
-        "globalize": "0.1.*",
-        "massiveart-uritemplate": "0.3.*"
-    }
+  "name": "husky",
+  "version": "0.1.0",
+  "main": "js/husky.js",
+  "dependencies": {
+    "backbone": "~1.0.0",
+    "underscore": "~1.5.1",
+    "aura": "latest",
+    "husky-validation": "#develop",
+    "globalize": "0.1.*",
+    "massiveart-uritemplate": "0.3.*",
+    "typeahead.js": "~0.9.3",
+    "tagmanager": "3.0.*",
+    "requirejs": "2.1.9"
+  },
+  "resolutions": {
+    "jquery": "~1.10.x"
+  }
 }

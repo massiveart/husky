@@ -12,34 +12,66 @@ require(['lib/husky'], function (Husky) {
 
     fakeServer = sinon.fakeServer.create();
 
+    // all
+    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true', [200, { 'Content-Type': 'application/json' },
+        '{' +
+            '"_links":' +
+            '{' +
+            '"self":"/admin/api/contacts?flat=true",' +
+            '"all":"/admin/api/contacts?flat=true",' +
+
+            '"sortable": {' +
+                '"content1" : "/admin/api/contacts?flat=true&sortBy=content1&sortOrder={sortOrder}",' +
+                '"content2" : "/admin/api/contacts?flat=true&sortBy=content2&sortOrder={sortOrder}"' +
+                '}'+
+            '},' +
+            '"_embedded":'+
+            '['+
+                '{ "id": "1", "content1": "B Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+                '{ "id": "2", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+                '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+                '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } },'+
+                '{ "id": "5", "content1": "B Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+                '{ "id": "6", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+                '{ "id": "7", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+                '{ "id": "8", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
+            '],'+
+            '"total":8,'+
+            '"pages": 1,' +
+            '"page": 1,' +
+            '"pageSize": 0' +
+            '}'
+    ]);
+
     // content1 asc
     fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder=asc', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
-                '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
-                '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
-                '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=asc",' +
-                '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
-                '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
+            '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
+            '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
+            '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=asc",' +
+            '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
+            '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
+            '"all": "/admin/api/contacts?flat=true",'+
 
-                '"sortable": {' +
-                    '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
-                    '"content2" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
-                '}'+
+            '"sortable": {' +
+            '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
+            '"content2" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
+            '}'+
             '},' +
             '"_embedded":'+
             '['+
-                '{ "id": "1", "content1": "A Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-                '{ "id": "2", "content1": "B Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-                '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-                '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
+            '{ "id": "1", "content1": "A Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "2", "content1": "B Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
             '],'+
             '"total":12,'+
             '"pages": 3,' +
             '"page": 1,' +
             '"pageSize": 4' +
-        '}'
+            '}'
     ]);
 
     // content1 desc
@@ -52,6 +84,7 @@ require(['lib/husky'], function (Husky) {
                 '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content1&sortOrder=desc",' +
                 '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
+                '"all": "/admin/api/contacts?flat=true",'+
 
                 '"sortable": {' +
                     '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
@@ -82,6 +115,7 @@ require(['lib/husky'], function (Husky) {
                 '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=desc",' +
                 '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
+                '"all": "/admin/api/contacts?flat=true",'+
 
                 '"sortable": {' +
                     '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
@@ -112,6 +146,7 @@ require(['lib/husky'], function (Husky) {
                 '"self":"/admin/api/contacts?flat=true&pageSize=4&sortBy=content2&sortOrder=asc",' +
                 '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
+                '"all": "/admin/api/contacts?flat=true",'+
 
                 '"sortable": {' +
                     '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
@@ -174,6 +209,7 @@ require(['lib/husky'], function (Husky) {
                 '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
                 '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
+                '"all": "/admin/api/contacts?flat=true",'+
 
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
 
@@ -209,6 +245,7 @@ require(['lib/husky'], function (Husky) {
                 '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
+                '"all": "/admin/api/contacts?flat=true",'+
 
                 '"sortable": {' +
                 '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
@@ -241,6 +278,7 @@ require(['lib/husky'], function (Husky) {
                 '"next":"/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"prev":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
+                '"all": "/admin/api/contacts?flat=true",'+
 
                 '"sortable": {' +
                 '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
@@ -272,6 +310,7 @@ require(['lib/husky'], function (Husky) {
                 '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
                 '"prev":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
                 '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",'+
+                '"all": "/admin/api/contacts?flat=true",'+
 
                 '"sortable": {' +
                     '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
@@ -425,6 +464,13 @@ require(['lib/husky'], function (Husky) {
 
             app.sandbox.on('husky.datagrid.data.sort', function () {
                 app.logger.log('Husky.Ui.DataGrid sort change');
+                setTimeout(function () {
+                    fakeServer.respond();
+                }, 500);
+            });
+
+            app.sandbox.on('husky.datagrid.data.load.all', function () {
+                app.logger.log('Husky.Ui.DataGrid load all');
                 setTimeout(function () {
                     fakeServer.respond();
                 }, 500);

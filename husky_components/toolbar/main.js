@@ -232,8 +232,8 @@ define(function() {
                 }
 
 
-                if (!!item.class) {
-                    classArray.push(item.class);
+                if (!!item['class']) {
+                    classArray.push(item['class']);
                 }
 
                 disabledString = '';
