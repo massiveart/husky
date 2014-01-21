@@ -96,6 +96,12 @@ define(function() {
          */
             GET_SELECTED = namespace + '.get-selected',
 
+        /**
+         * used for receiving all columns
+         * @event husky.column-options.get-all
+         */
+            GET_ALL = namespace + '.get-all',
+
 
         /**
          * DOM events
@@ -116,15 +122,33 @@ define(function() {
          */
             bindCustomEvents = function() {
             this.sandbox.on(GET_SELECTED, getSelectedItems.bind(this));
+            this.sandbox.on(GET_ALL, getAllItems.bind(this));
         },
 
-        /**s
+        /**
          * returns all items that are visible
          * @param callbackFunction
          */
             getSelectedItems = function(callbackFunction) {
             var id, items,
                 $visibleItems = this.sandbox.dom.find('li:not(.disabled)', this.$el);
+
+            items = [];
+            this.sandbox.util.foreach($visibleItems, function($domItem) {
+                id = this.sandbox.dom.data($domItem, 'id');
+                items.push(this.items[id]);
+            }.bind(this));
+
+            callbackFunction(items);
+        },
+
+        /**
+         * returns all items that are visible
+         * @param callbackFunction
+         */
+            getAllItems = function(callbackFunction) {
+            var id, items,
+                $visibleItems = this.sandbox.dom.find('li', this.$el);
 
             items = [];
             this.sandbox.util.foreach($visibleItems, function($domItem) {
@@ -209,9 +233,8 @@ define(function() {
             this.sandbox.dom.hide($container);
             if (this.options.destroyOnClose) {
                 this.sandbox.dom.remove(this.$el);
-//                this.sandbox.dom.html(this.$el,'');
             } else if (rerender) {
-                // TODO: reset unsaved changes
+                // reset unsaved changes
                 this.rerender();
             }
         },
@@ -235,7 +258,7 @@ define(function() {
             // make permanent
             this.options.data = this.data;
 
-            getSelectedItems.call(this, function(items) {
+            getAllItems.call(this, function(items) {
                 this.sandbox.emit(SAVED, items);
                 hideDropdown.call(this);
 
