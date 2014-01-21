@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>husky_extensions/globalize.js - husky</title>
+    <title>husky_components/loader/main.js - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -104,91 +104,128 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: husky_extensions/globalize.js</h1>
+                        <h1 class="file-heading">File: husky_components/loader/main.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-(function() {
+/*****************************************************************************
+ *
+ *  Loader
+ *  makes use of bouncing balls of http://tobiasahlin.com/spinkit/
+ *
+ *  Options (defaults)
+ *      - size: size of element
+ *      - color: color of bouncers
+ *      - hidden: hide component on load
+ *  Provides Events
+ *      - husky.loader.show - shows loader
+ *      - husky.loader.hide - hides loader
+ *
+ *  TODO: write tests
+ *
+ *****************************************************************************/
+
+
+
+/**
+ * @class Loader
+ * @constructor
+ *
+ * @param {Object} [options] Configuration object
+ * @param {String} [options.size] size of the spinner
+ * @param {String} [options.color] color of the spinner
+ */
+define(function() {
 
     &#x27;use strict&#x27;;
 
-    require.config({
-        paths: {
-            &#x27;globalize_lib&#x27;: &#x27;bower_components/globalize/lib/globalize&#x27;,
-            &#x27;cultures&#x27;: &#x27;bower_components/globalize/lib/cultures&#x27;
-        }
-    });
+    var defaults = {
+        size: &#x27;40px&#x27;,
+        color: &#x27;#666&#x27;,
+        hidden: false
+        },
 
-    define([&#x27;globalize_lib&#x27;], function() {
-        return  {
-            name: &#x27;husky-validation&#x27;,
+        namespace = &#x27;husky.loader.&#x27;,
 
-            initialize: function(app) {
-                app.sandbox.globalize = {
-                    addCultureInfo: function(cultureName, messages) {
-                        Globalize.addCultureInfo(cultureName, {
-                            messages: messages
-                        });
-                    },
+        /**
+         * makes loader visible
+         *
+         * @event husky.loader.show
+         */
+        SHOW = namespace + &#x27;show&#x27;,
 
-                    culture: function(cultureName) {
-                        var setLanguage = function() {
-                            Globalize.culture(cultureName);
-                        };
+        /**
+         * hides the loader
+         *
+         * @event husky.loader.hide
+         */
+        HIDE = namespace + &#x27;hide&#x27;,
 
-                        if (cultureName !== &#x27;en&#x27;) {
-                            require([&#x27;cultures/globalize.culture.&#x27; + cultureName], setLanguage.bind(this));
-                        } else {
-                            setLanguage();
-                        }
-                    }
-                };
+        /**
+         * called when loader is initialized
+         *
+         * @event husky.loader.initialized
+         */
+        INITIALIZED = namespace + &#x27;initialized&#x27;,
 
-                app.sandbox.translate = function(key) {
-                    if (!app.config.culture || !app.config.culture.name) {
-                        return key;
-                    }
-                    var translation = Globalize.localize(key, app.config.culture.name);
-                    return !!translation ? translation : key;
-                };
+        templates = {
+            doubleBounce: [
+                &#x27;&lt;div class=&quot;spinner&quot;&gt;&#x27;,
+                    &#x27;&lt;div class=&quot;double-bounce1&quot;&gt;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;div class=&quot;double-bounce2&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;)
+        },
 
-                /**
-                 * function calls this.sandbox.translate for an array of keys and returns an array of translations
-                 * @param array
-                 * @returns {Array}
-                 */
-                app.sandbox.translateArray = function(array) {
-                    var translations = [];
-                    app.sandbox.util.foreach(array, function(key) {
-                        translations.push(app.sandbox.translate(key));
-                    }.bind(this));
-                    return translations;
-                };
+        bindCustomEvents = function() {
+            this.sandbox.on(SHOW, showLoader.bind(this));
+            this.sandbox.on(HIDE, hideLoader.bind(this));
+        },
 
-                app.setLanguage = function(cultureName, messages) {
-                    var setLanguage = function() {
-                        Globalize.culture(cultureName);
-                        app.sandbox.globalize.addCultureInfo(cultureName, messages);
-                    };
-                    if (cultureName !== &#x27;en&#x27;) {
-                        require([&#x27;cultures/globalize.culture.&#x27; + cultureName], setLanguage.bind(this));
-                    } else {
-                        setLanguage();
-                    }
-                };
-            },
-
-            afterAppStart: function(app) {
-                if (!!app.config.culture &amp;&amp; !!app.config.culture) {
-                    if (!app.config.culture.messages) {
-                        app.config.culture.messages = { };
-                    }
-                    app.setLanguage(app.config.culture.name, app.config.culture.messages);
-                }
-            }
+        hideLoader = function() {
+            this.sandbox.dom.hide(this.$spinner);
+        },
+        showLoader = function() {
+            this.sandbox.dom.show(this.$spinner);
         };
-    });
-})();
+
+    return {
+
+        view: true,
+
+        initialize: function() {
+            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
+            this.render();
+
+            bindCustomEvents.call(this);
+
+            this.sandbox.emit(INITIALIZED);
+        },
+
+        render: function() {
+            this.$spinner = this.sandbox.dom.createElement(templates.doubleBounce);
+            var $elements, styles;
+
+            this.sandbox.dom.html(this.$el, this.$spinner);
+
+            // style adjustments
+            // size
+            styles = {
+                width: this.options.size,
+                height: this.options.size
+            };
+            this.sandbox.dom.css(this.$spinner, styles);
+            // color
+            $elements = this.sandbox.dom.find(&#x27;div&#x27;, this.$spinner);
+            this.sandbox.dom.css($elements, &#x27;background-color&#x27;, this.options.color);
+            // visibility
+            if (this.options.hidden) {
+                this.sandbox.dom.hide(this.$spinner);
+            }
+        }
+    };
+
+});
 
     </pre>
 </div>

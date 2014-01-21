@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>AutoCompleteList - husky</title>
+    <title>EditToolbar - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -104,7 +104,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>AutoCompleteList Class</h1>
+                        <h1>EditToolbar Class</h1>
 <div class="box meta">
     
 
@@ -112,13 +112,13 @@
 
     
         <div class="foundat">
-            Defined in: <a href="../files/husky_components_auto-complete-list_main.js.html#l12"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:12</code></a>
+            Defined in: <a href="../files/husky_components_edit-toolbar_main.js.html#l49"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:49</code></a>
         </div>
     
 
     
         
-            Module: <a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a>
+            Module: <a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a>
         
     
 
@@ -134,8 +134,8 @@
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_AutoCompleteList" class="method item">
-    <h3 class="name"><code>AutoCompleteList</code></h3>
+        <div id="method_EditToolbar" class="method item">
+    <h3 class="name"><code>EditToolbar</code></h3>
 
     
         <div class="args">
@@ -176,7 +176,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l12"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:12</code></a>
+        <a href="../files/husky_components_edit-toolbar_main.js.html#l49"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:49</code></a>
         
         </p>
 
@@ -215,27 +215,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[tags]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
                                     <code class="param-name optional">[url]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>url to load autocomplete data</p>
+                                    <p>url to fetch data from</p>
 
                                 </div>
 
@@ -244,28 +230,43 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[suggestions]</code>
+                                    <code class="param-name optional">[data]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>if no url is provided</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[instanceName]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>enables custom events (in case of multiple tabs on one page)</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[appearance]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
                                     
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[suggestionUrl]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>url to load suggestions</p>
-
                                 </div>
 
                                 
@@ -295,6 +296,8 @@
         
         
         
+            <li class="api-class-tab events"><a href="#events">Events</a></li>
+        
     </ul>
 
     <div>
@@ -308,6 +311,42 @@
             
 
             
+                <div class="index-section events">
+                    <h3>Events</h3>
+
+                    <ul class="index-list events">
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.edit-toolbar.[INSTANCE_NAME.]initialized">husky.edit-toolbar.[INSTANCE_NAME.]initialized</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.edit-toolbar.[INSTANCE_NAME.]item.disable">husky.edit-toolbar.[INSTANCE_NAME.]item.disable</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.edit-toolbar.[INSTANCE_NAME.]item.enable">husky.edit-toolbar.[INSTANCE_NAME.]item.enable</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.edit-toolbar.[INSTANCE_NAME.]item.loading">husky.edit-toolbar.[INSTANCE_NAME.]item.loading</a>
+
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
+            
         </div>
 
         
@@ -316,6 +355,260 @@
 
         
 
+        
+            <div id="events" class="api-class-tabpanel">
+                <h2 class="off-left">Events</h2>
+
+                
+                    <div id="event_husky.edit-toolbar.[INSTANCE_NAME.]initialized" class="events item">
+    <h3 class="name"><code>husky.edit-toolbar.[INSTANCE_NAME.]initialized</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_edit-toolbar_main.js.html#l83"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:83</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>triggered when edit-toolbar is initialized and ready to use</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.edit-toolbar.[INSTANCE_NAME.]item.disable" class="events item">
+    <h3 class="name"><code>husky.edit-toolbar.[INSTANCE_NAME.]item.disable</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_edit-toolbar_main.js.html#l102"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:102</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>disable a button</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">id</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The id of the button which should be disabled</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.edit-toolbar.[INSTANCE_NAME.]item.enable" class="events item">
+    <h3 class="name"><code>husky.edit-toolbar.[INSTANCE_NAME.]item.enable</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_edit-toolbar_main.js.html#l92"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:92</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>enable a button</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">id</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The id of the button which should be enabled</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.edit-toolbar.[INSTANCE_NAME.]item.loading" class="events item">
+    <h3 class="name"><code>husky.edit-toolbar.[INSTANCE_NAME.]item.loading</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_edit-toolbar_main.js.html#l112"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:112</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>event to set button into loading state</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">id</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The id of the button</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
+
+                
+            </div>
         
     </div>
 </div>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>husky_extensions/globalize.js - husky</title>
+    <title>husky/components/edit-toolbar - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -104,93 +104,59 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: husky_extensions/globalize.js</h1>
+                        <h1>husky_components_edit-toolbar Module</h1>
+<div class="box clearfix meta">
+    
 
-<div class="file">
-    <pre class="code prettyprint linenums">
-(function() {
+    
 
-    &#x27;use strict&#x27;;
+    
+        <div class="foundat">
+            Defined in: <a href="../files/husky_components_loader_main.js.html#l20"><code>husky_components&#x2F;loader&#x2F;main.js:20</code></a>
+        </div>
+    
 
-    require.config({
-        paths: {
-            &#x27;globalize_lib&#x27;: &#x27;bower_components/globalize/lib/globalize&#x27;,
-            &#x27;cultures&#x27;: &#x27;bower_components/globalize/lib/cultures&#x27;
-        }
-    });
+    
+</div>
 
-    define([&#x27;globalize_lib&#x27;], function() {
-        return  {
-            name: &#x27;husky-validation&#x27;,
 
-            initialize: function(app) {
-                app.sandbox.globalize = {
-                    addCultureInfo: function(cultureName, messages) {
-                        Globalize.addCultureInfo(cultureName, {
-                            messages: messages
-                        });
-                    },
 
-                    culture: function(cultureName) {
-                        var setLanguage = function() {
-                            Globalize.culture(cultureName);
-                        };
+<div class="box intro">
+    <p>This file is part of Husky frontend development framework.</p>
+<p>(c) MASSIVE ART WebServices GmbH</p>
+<p>This source file is subject to the MIT license that is bundled
+with this source code in the file LICENSE.</p>
 
-                        if (cultureName !== &#x27;en&#x27;) {
-                            require([&#x27;cultures/globalize.culture.&#x27; + cultureName], setLanguage.bind(this));
-                        } else {
-                            setLanguage();
-                        }
-                    }
-                };
+</div>
 
-                app.sandbox.translate = function(key) {
-                    if (!app.config.culture || !app.config.culture.name) {
-                        return key;
-                    }
-                    var translation = Globalize.localize(key, app.config.culture.name);
-                    return !!translation ? translation : key;
-                };
 
-                /**
-                 * function calls this.sandbox.translate for an array of keys and returns an array of translations
-                 * @param array
-                 * @returns {Array}
-                 */
-                app.sandbox.translateArray = function(array) {
-                    var translations = [];
-                    app.sandbox.util.foreach(array, function(key) {
-                        translations.push(app.sandbox.translate(key));
-                    }.bind(this));
-                    return translations;
-                };
 
-                app.setLanguage = function(cultureName, messages) {
-                    var setLanguage = function() {
-                        Globalize.culture(cultureName);
-                        app.sandbox.globalize.addCultureInfo(cultureName, messages);
-                    };
-                    if (cultureName !== &#x27;en&#x27;) {
-                        require([&#x27;cultures/globalize.culture.&#x27; + cultureName], setLanguage.bind(this));
-                    } else {
-                        setLanguage();
-                    }
-                };
-            },
+<div class="yui3-g">
+    <div class="yui3-u-1-2">
+        
+            <p>This module provides the following classes:</p>
 
-            afterAppStart: function(app) {
-                if (!!app.config.culture &amp;&amp; !!app.config.culture) {
-                    if (!app.config.culture.messages) {
-                        app.config.culture.messages = { };
-                    }
-                    app.setLanguage(app.config.culture.name, app.config.culture.messages);
-                }
-            }
-        };
-    });
-})();
+            <ul class="module-classes">
+            
+                <li class="module-class">
+                    <a href="../classes/EditToolbar.html">
+                        EditToolbar
+                    </a>
+                </li>
+            
+                <li class="module-class">
+                    <a href="../classes/Loader.html">
+                        Loader
+                    </a>
+                </li>
+            
+            </ul>
+        
+    </div>
 
-    </pre>
+    <div class="yui3-u-1-2">
+        
+    </div>
 </div>
 
                     </div>

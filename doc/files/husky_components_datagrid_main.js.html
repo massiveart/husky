@@ -43,11 +43,31 @@
             
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
+                <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
+            
+                <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
+            
+                <li><a href="../classes/Loader.html">Loader</a></li>
+            
+                <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+            
+                <li><a href="../classes/Toolbar.html">Toolbar</a></li>
+            
             </ul>
 
             <ul id="api-modules" class="apis modules">
             
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
+            
+                <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
+            
+                <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
+            
+                <li><a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a></li>
+            
+                <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
             </ul>
         </div>
@@ -153,8 +173,8 @@ define(function() {
         excludeFields: [&#x27;id&#x27;],
         pagination: false,
         paginationOptions: {
-            pageSize: 4,
-            showPages: 5
+            pageSize: null,
+            showPages: null
         },
         removeRow: true,
         selectItem: {
@@ -279,14 +299,18 @@ define(function() {
                 return params.url;
             }
 
-            var delimiter = &#x27;?&#x27;, url;
-            if (params.url.indexOf(&#x27;?&#x27;) !== -1) {
-                delimiter = &#x27;&amp;&#x27;;
-            }
+            var delimiter = &#x27;?&#x27;, url = params.url;
 
-            url = params.url + delimiter + &#x27;pageSize=&#x27; + this.options.paginationOptions.pageSize;
-            if (params.page &gt; 1) {
-                url += &#x27;&amp;page=&#x27; + params.page;
+            if(!!this.options.pagination &amp;&amp; !!this.options.paginationOptions.pageSize) {
+
+                if (params.url.indexOf(&#x27;?&#x27;) !== -1) {
+                    delimiter = &#x27;&amp;&#x27;;
+                }
+
+                url = params.url + delimiter + &#x27;pageSize=&#x27; + this.options.paginationOptions.pageSize;
+                if (params.page &gt; 1) {
+                    url += &#x27;&amp;page=&#x27; + params.page;
+                }
             }
 
             return url;

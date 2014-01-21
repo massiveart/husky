@@ -79,6 +79,7 @@ label {
     opacity: 0;
     cursor: pointer;
 
+
     &:checked,
     &.is-checked {
         & + .custom-checkbox-icon {
@@ -97,7 +98,7 @@ label {
         height: $checkboxSize;
         margin-left: -$checkboxSize;
 
-        border: 1px solid $inputBorderColor;
+        border: 1px solid $grayLighter;
         background-color: #fff;
         font-family: $checkboxIconFont;
         font-size: 12px;

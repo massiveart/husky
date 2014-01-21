@@ -43,11 +43,31 @@
             
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
+                <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
+            
+                <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
+            
+                <li><a href="../classes/Loader.html">Loader</a></li>
+            
+                <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+            
+                <li><a href="../classes/Toolbar.html">Toolbar</a></li>
+            
             </ul>
 
             <ul id="api-modules" class="apis modules">
             
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
+            
+                <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
+            
+                <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
+            
+                <li><a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a></li>
+            
+                <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
             </ul>
         </div>
@@ -88,7 +108,7 @@
 
 <div class="file">
     <pre class="code prettyprint linenums">
-/*
+/**
  * This file is part of the Sulu CMS.
  *
  * (c) MASSIVE ART WebServices GmbH
@@ -100,12 +120,14 @@
  * Options:
  *      instanceName: instance name of this component
  *      placeholderText: text to show in search field
+ *      appearance [gray, white, small]: look and feel of search
  *
  * Provided Events:
  *
  *
- * Emits Events:
+ * Triggers Events:
  *  husky.search.&lt;&lt;instanceName&gt;&gt; , string  - triggered when search is performed - returns the searchstring
+ *  husky.search.&lt;&lt;instanceName&gt;&gt;.initialized - triggered when search is initialized
  *
  */
 
@@ -115,13 +137,14 @@ define([], function() {
 
     var templates = {
             skeleton: [
-                &#x27;&lt;a class=&quot;navigation-search-icon&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
-                &#x27;&lt;input id=&quot;navigation-search-input&quot; type=&quot;text&quot; class=&quot;form-element input-round navigation-search-input&quot; placeholder=&quot;&lt;%= placeholderText %&gt;&quot;/&gt;&#x27;
-            ].join(&#x27;&#x27;)
+                    &#x27;&lt;a class=&quot;search-icon&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
+                    &#x27;&lt;input id=&quot;search-input&quot; type=&quot;text&quot; class=&quot;form-element input-round search-input&quot; placeholder=&quot;&lt;%= placeholderText %&gt;&quot;/&gt;&#x27;
+                ].join(&#x27;&#x27;)
         },
         defaults = {
             instanceName: null,
-            placeholderText: &#x27;Search...&#x27;
+            placeholderText: &#x27;Search...&#x27;,
+            appearance: &#x27;gray&#x27;
         };
 
     return {
@@ -133,16 +156,22 @@ define([], function() {
             this.render();
 
             this.bindDOMEvents();
+
+            var instanceName = this.options.instanceName ? this.options.instanceName+&#x27;.&#x27; : &#x27;&#x27;;
+            this.sandbox.emit(&#x27;husky.search.&#x27;+instanceName+&#x27;initialized&#x27;);
+
         },
 
         render: function() {
-            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {placeholderText: this.options.placeholderText}));
+            this.sandbox.dom.addClass(this.options.el, &#x27;search-container&#x27;);
+            this.sandbox.dom.addClass(this.options.el, this.options.appearance);
+            this.sandbox.dom.html(this.$el,this.sandbox.template.parse(templates.skeleton, {placeholderText: this.sandbox.translate(this.options.placeholderText)}));
         },
 
         // bind dom elements
         bindDOMEvents: function() {
-            this.sandbox.dom.on(&#x27;.navigation-search-icon&#x27;, &#x27;click&#x27;, this.submitSearch.bind(this));
-            this.sandbox.dom.on(&#x27;#navigation-search&#x27;, &#x27;keyup&#x27;, this.checkEnterPressed.bind(this));
+            this.sandbox.dom.on(this.options.el, &#x27;click&#x27;, this.submitSearch.bind(this), &#x27;.search-icon&#x27;);
+            this.sandbox.dom.on(this.options.el, &#x27;keyup&#x27;, this.checkEnterPressed.bind(this), &#x27;#search-input&#x27;);
         },
 
         bindCustomEvents: function() {
@@ -158,7 +187,8 @@ define([], function() {
         submitSearch: function() {
 
             // get search value
-            var searchString = this.sandbox.dom.val(&#x27;#navigation-search-input&#x27;);
+
+            var searchString = this.sandbox.dom.val(this.sandbox.dom.find(&#x27;#search-input&#x27;, this.options.el));
 
             // check if searchstring is emtpy
             if (searchString === &#x27;&#x27;) {

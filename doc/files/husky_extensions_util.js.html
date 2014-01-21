@@ -43,11 +43,31 @@
             
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
+                <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
+            
+                <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
+            
+                <li><a href="../classes/Loader.html">Loader</a></li>
+            
+                <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+            
+                <li><a href="../classes/Toolbar.html">Toolbar</a></li>
+            
             </ul>
 
             <ul id="api-modules" class="apis modules">
             
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
+            
+                <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
+            
+                <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
+            
+                <li><a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a></li>
+            
+                <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
             </ul>
         </div>
@@ -126,7 +146,7 @@ define(function() {
             app.core.util.foreach = function(array, callbackValue) {
                 if (array.length &amp;&amp; array.length &gt; 0) {
                     for (var i = -1, length = array.length; ++i &lt; length;) {
-                        callbackValue( array[i], i);
+                        callbackValue(array[i], i);
                     }
                 } else {
                     app.sandbox.logger.log(&#x27;error at util.foreach: no array given&#x27;);
@@ -156,10 +176,15 @@ define(function() {
                 return deferred.promise();
             };
 
-            app.core.util.contains = function(list, value){
+            app.core.util.contains = function(list, value) {
                 return _.contains(list, value);
             };
 
+            app.core.util.uniqueId = function(prefix) {
+                return _.uniqueId(prefix);
+            };
+
+			app.core.util.template = _.template;
         }
     };
 });

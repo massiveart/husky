@@ -192,6 +192,10 @@
                 $(selector).off(event, filter, handler);
             };
 
+            app.core.dom.trigger = function(selector, event, extraParam) {
+                $(selector).off(event, extraParam);
+            };
+
             app.core.dom.toggleClass = function(selector, className) {
                 $(selector).toggleClass(className);
             };
@@ -218,6 +222,10 @@
 
             app.core.dom.closest = function(selector, filter) {
                 return $(selector).closest(filter);
+            };
+
+            app.core.dom.clone = function(selector) {
+                return $(selector).clone();
             };
 
             app.core.dom.text = function(selector, value) {

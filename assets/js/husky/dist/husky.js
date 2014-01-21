@@ -24369,6 +24369,9 @@ define('__component__$navigation@husky',[],function() {
                 this.renderFooter(this.options.footerTemplate);
             }
 
+            // preselect item based on url
+            this.preselectItem();
+
             // emit initialized event
             this.sandbox.emit('husky.navigation.initialized');
         },
@@ -24394,9 +24397,10 @@ define('__component__$navigation@husky',[],function() {
                     }));
                     //render sub-items
                     if (item.items && item.items.length > 0) {
-                        this.renderSubNavigationItems(item, this.sandbox.dom.find('div', $elem));
+                        this.renderSubNavigationItems(item, $elem);
                     }
                     this.sandbox.dom.append($sectionList, $elem);
+                    item.domObject = $elem;
                     this.items[item.id] = item;
                 }.bind(this));
 
@@ -24409,7 +24413,7 @@ define('__component__$navigation@husky',[],function() {
         /**
          * renders sub-navigation elements
          */
-        renderSubNavigationItems: function(data, after) {
+        renderSubNavigationItems: function(data, $parentList) {
             var elem,
                 list = this.sandbox.dom.createElement('<ul style="display:none" />');
 
@@ -24422,9 +24426,10 @@ define('__component__$navigation@husky',[],function() {
                     elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subItem, {item: item, translate: this.sandbox.translate}));
                 }
                 this.sandbox.dom.append(list, elem);
+                item.domObject = elem;
             }.bind(this));
 
-            this.sandbox.dom.after(after, list);
+            this.sandbox.dom.append($parentList, list);
         },
 
         renderFooter: function(footerTemplate) {
@@ -24453,6 +24458,37 @@ define('__component__$navigation@husky',[],function() {
             }.bind(this));
 
         },
+
+
+        preselectItem: function() {
+            if (!this.options.selectAction || this.options.selectAction.length < 1) {
+                return;
+            }
+
+            var matchLength = 0, matchItem, parent, match;
+            this.sandbox.util.foreach(this.items, function(item) {
+                if (!item || !item.action) {
+                    return;
+                }
+                if (this.options.selectAction.indexOf(item.action) !== -1 && item.action.length > matchLength) {
+                    matchItem = item;
+                    matchLength = item.action.length;
+                }
+            }.bind(this));
+
+            if (matchLength > 0) {
+                match = matchItem.domObject;
+
+                // TODO: use trigger instead of faking event
+                if (this.sandbox.dom.hasClass(match,'js-navigation-sub-item')) {
+                    parent = this.sandbox.dom.closest(match, '.navigation-items');
+                    this.toggleItems({currentTarget: parent, preventDefault: function(){}});
+//                    this.sandbox.dom.trigger(parent, 'click','.section-toggle');
+                }
+                this.selectSubItem({currentTarget: match, preventDefault:function(){}});
+            }
+        },
+
 
 
         /**
@@ -27352,8 +27388,8 @@ define('__component__$toolbar@husky',[],function() {
                 }
 
 
-                if (!!item.class) {
-                    classArray.push(item.class);
+                if (!!item['class']) {
+                    classArray.push(item['class']);
                 }
 
                 disabledString = '';
@@ -27421,8 +27457,9 @@ define('__component__$toolbar@husky',[],function() {
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
  *      - appearance -
  *  Provides Events
- *      - husky.edit-toolbar.<<instanceName>>.item.disable - disable item with given id
- *      - husky.edit-toolbar.<<instanceName>>.item.enable - enable item with given id
+ *      - husky.edit-toolbar.<<instanceName>>.item.disable [id] - disable item with given id
+ *      - husky.edit-toolbar.<<instanceName>>.item.loading [id]- shows loading icon
+ *      - husky.edit-toolbar.<<instanceName>>.item.enable [id]- enable item with given id
  *
  *  Triggers Events
  *      - husky.edit-toolbar.<<instanceName>>.item.select - triggered when item was clicked
@@ -27480,6 +27517,46 @@ define('__component__$edit-toolbar@husky',[],function() {
             ].join('')
         },
 
+
+        /**
+         * triggered when edit-toolbar is initialized and ready to use
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]initialized
+         */
+        INITIALIZED = function() {
+            return createEventName.call(this, 'initialized');
+        },
+
+        /**
+         * enable a button
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]item.enable
+         * @param {string} id The id of the button which should be enabled
+         */
+        ITEM_ENABLE = function() {
+            return createEventName.call(this, 'item.enable');
+        },
+
+        /**
+         * disable a button
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]item.disable
+         * @param {string} id The id of the button which should be disabled
+         */
+        ITEM_DISABLE = function() {
+            return createEventName.call(this, 'item.disable');
+        },
+
+        /**
+         * event to set button into loading state
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]item.loading
+         * @param {string} id The id of the button
+         */
+        ITEM_LOADING = function() {
+            return createEventName.call(this, 'item.loading');
+        },
+
         /** events bound to dom */
         bindDOMEvents = function() {
             this.sandbox.dom.on(this.options.el, 'click', toggleItem.bind(this), '.dropdown-toggle');
@@ -27488,23 +27565,45 @@ define('__component__$edit-toolbar@husky',[],function() {
 
         /** events bound to sandbox */
         bindCustomEvents = function() {
-            this.sandbox.on(createEventName.call(this, 'item.disable'), function(id) {
-                enableItem.call(this, false, id);
+            this.sandbox.on(ITEM_DISABLE.call(this), function(id, highlight) {
+                toggleEnabled.call(this, false, id, highlight);
             }.bind(this));
-            this.sandbox.on(createEventName.call(this, 'item.enable'), function(id) {
-                enableItem.call(this, true, id);
+            this.sandbox.on(ITEM_ENABLE.call(this), function(id, highlight) {
+                toggleEnabled.call(this, true, id, highlight);
+            }.bind(this));
+            this.sandbox.on(ITEM_LOADING.call(this), function(id) {
+                itemLoading.call(this, id);
             }.bind(this));
         },
 
         /** set item enable or disable */
-        enableItem = function(enabled, id) {
+        toggleEnabled = function(enabled, id, highlight) {
             var item = this.items[id],
                 $item = this.sandbox.dom.find('[data-id="' + id + '"]', this.$el),
                 $iconItem = this.sandbox.dom.find('[data-id="' + id + '"] .icon', this.$el),
+                $itemLink,
                 enabledIconClass = createIconClass.call(this, item, true),
                 disabledIconClass = createIconClass.call(this, item, false);
 
             this.items[id].disabled = !enabled;
+
+            // in case of item has state loading, restore original state
+            if (item.loading) {
+                item.loading = false;
+                $itemLink = this.sandbox.dom.find('a', $item);
+                this.sandbox.dom.remove(this.sandbox.dom.find('.item-loader', $item));
+                this.sandbox.dom.show($itemLink);
+            }
+
+            if (highlight !== false) {
+                // add color fading effect
+                this.sandbox.dom.addClass($item, 'highlight-animation');
+
+                // remove class after effect has finished
+                this.sandbox.dom.on($item,'animationend webkitAnimationEnd oanimationend MSAnimationEnd', function(ev) {
+                    this.sandbox.dom.removeClass(ev.currentTarget, 'highlight-animation');
+                }.bind(this));
+            }
 
             if (!!enabled) {
                 this.sandbox.dom.removeClass($item, 'disabled');
@@ -27516,6 +27615,34 @@ define('__component__$edit-toolbar@husky',[],function() {
                 this.sandbox.dom.prependClass($iconItem, disabledIconClass);
             }
         },
+
+        /** shows loader at some icon */
+        itemLoading = function(id) {
+            var item = this.items[id],
+                $item = this.sandbox.dom.find('[data-id="' + id + '"]', this.$el),
+                $itemLink = this.sandbox.dom.find('a', $item),
+                $loader;
+
+            if (item.loading) {
+                return;
+            }
+
+            item.loading = true;
+            this.sandbox.dom.hide($itemLink);
+
+            $loader = this.sandbox.dom.createElement('<span class="item-loader"></span>');
+            this.sandbox.dom.append($item, $loader);
+
+            this.sandbox.start([{
+                name: 'loader@husky',
+                options: {
+                    el: $loader,
+                    size: '30px',
+                    color: 'white'
+                }
+            }]);
+        },
+
 
         /**
          * gets called when toggle item is clicked
@@ -27569,7 +27696,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                 $parent = this.sandbox.dom.parents(event.currentTarget, 'li').eq(0);
 
             // stop if item has subitems
-            if (item.items && item.items.length > 0) {
+            if ((item.items && item.items.length > 0) || item.loading) {
                 return;
             }
 
@@ -27625,10 +27752,10 @@ define('__component__$edit-toolbar@husky',[],function() {
         },
 
         /**
-         * creates icon span with icon classes
+         * creates the class string of an icon
          * @param item
          * @param enabled
-         * @returns {HTMLElement|*}
+         * @returns {string}
          */
         createIconSupportClass = function(item, enabled) {
             var classArray,
@@ -27729,6 +27856,10 @@ define('__component__$edit-toolbar@husky',[],function() {
 
         view: true,
 
+
+        /**
+         * initialize component
+         */
         initialize: function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
@@ -27750,6 +27881,10 @@ define('__component__$edit-toolbar@husky',[],function() {
             bindCustomEvents.call(this);
         },
 
+        /**
+         * renders the toolbar
+         * @param {Object} data t
+         */
         render: function(data) {
 
             var classArray, addTo, $left, $right,
@@ -27779,8 +27914,8 @@ define('__component__$edit-toolbar@husky',[],function() {
 
                 // create class array
                 classArray = ['edit-toolbar-item'];
-                if (!!item.class) {
-                    classArray.push(item.class);
+                if (!!item['class']) {
+                    classArray.push(item['class']);
                 }
                 if (item.disabled) {
                     classArray.push('disabled');
@@ -27817,7 +27952,7 @@ define('__component__$edit-toolbar@husky',[],function() {
             }.bind(this));
 
             // initialization finished
-            emitEvent.call(this, 'initialized');
+            this.sandbox.emit(INITIALIZED.call(this));
         }
     };
 
@@ -29024,7 +29159,7 @@ define('__component__$column-navigation@husky',[], function() {
                 this.sandbox.util.load(url)
                     .then(function(response) {
                         this.parseData(response, columnNumber);
-                        this.scrollIfNeeded(this.filledColumns+1);
+                        this.scrollIfNeeded(this.filledColumns + 1);
                         this.sandbox.emit(LOADED);
                     }.bind(this))
                     .fail(function(error) {
@@ -29069,7 +29204,7 @@ define('__component__$column-navigation@husky',[], function() {
          * @param {Number} columnNumber
          */
         parseData: function(data, columnNumber) {
-            var $column,$list, newColumn, nodeWithSubNodes = null, lastSelected = null;
+            var $column, $list, newColumn, nodeWithSubNodes = null, lastSelected = null;
 
             if (columnNumber === 0) {  // case 1: no elements in container
                 this.columns[0] = [];
@@ -29089,14 +29224,14 @@ define('__component__$column-navigation@husky',[], function() {
                 this.sandbox.dom.append($list, $element);
 
                 // remember which item has subitems to display a whole tree when column navigation should be restored
-                if(!!value.hasSub && value._embedded.length > 0) {
+                if (!!value.hasSub && value._embedded.length > 0) {
                     nodeWithSubNodes = value;
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
                 }
 
                 // needed to select node in last level of nodes
-                if(!!this.options.selected && this.options.selected === value.id) {
+                if (!!this.options.selected && this.options.selected === value.id) {
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
                     lastSelected = value;
@@ -29110,7 +29245,7 @@ define('__component__$column-navigation@husky',[], function() {
             this.filledColumns++;
 
 
-            if(!!nodeWithSubNodes) { // parse next column if data exists
+            if (!!nodeWithSubNodes) { // parse next column if data exists
                 this.parseData(nodeWithSubNodes, newColumn);
             } else if (!!lastSelected && !lastSelected.hasSub) { // append add column if no children
                 this.insertAddColumn(lastSelected, newColumn);
@@ -29133,7 +29268,7 @@ define('__component__$column-navigation@husky',[], function() {
          * @param newColumn number of new column
          * @returns {Object} DOM column
          */
-        getDOMColumn: function(newColumn){
+        getDOMColumn: function(newColumn) {
             var $column;
 
             if (!!this.$addColumn) { // take existing add-column
@@ -29151,7 +29286,7 @@ define('__component__$column-navigation@husky',[], function() {
         /**
          * Removes loading icon from selected element
          */
-        removeLoadingIconForSelected: function(){
+        removeLoadingIconForSelected: function() {
             if (!!this.$selectedElement) {
                 var $arrow = this.sandbox.dom.find('.arrow', this.$selectedElement);
                 this.sandbox.dom.removeClass($arrow, 'is-loading');
@@ -29293,7 +29428,7 @@ define('__component__$column-navigation@husky',[], function() {
             }
 
             // insert add column when clicked element
-            this.insertAddColumn(selectedItem ,column);
+            this.insertAddColumn(selectedItem, column);
 
             // scroll for add column
             if (!selectedItem.hasSub) {
@@ -29302,7 +29437,7 @@ define('__component__$column-navigation@husky',[], function() {
 
         },
 
-        insertAddColumn: function(selectedItem, column){
+        insertAddColumn: function(selectedItem, column) {
 
             if (!this.$addColumn && !selectedItem.hasSub) {
                 // append empty column to add subpages
@@ -29430,7 +29565,7 @@ define('__component__$column-navigation@husky',[], function() {
             },
 
             optionsContainer: function(width) {
-                return ['<div class="options grid-row hidden" style="width:', width+1, 'px"></div>'].join('');
+                return ['<div class="options grid-row hidden" style="width:', width + 1, 'px"></div>'].join('');
             },
 
             options: {
@@ -29448,6 +29583,125 @@ define('__component__$column-navigation@husky',[], function() {
             }
         }
     };
+});
+
+/*****************************************************************************
+ *
+ *  Loader
+ *  makes use of bouncing balls of http://tobiasahlin.com/spinkit/
+ *
+ *  Options (defaults)
+ *      - size: size of element
+ *      - color: color of bouncers
+ *      - hidden: hide component on load
+ *  Provides Events
+ *      - husky.loader.show - shows loader
+ *      - husky.loader.hide - hides loader
+ *
+ *  TODO: write tests
+ *
+ *****************************************************************************/
+
+
+
+/**
+ * @class Loader
+ * @constructor
+ *
+ * @param {Object} [options] Configuration object
+ * @param {String} [options.size] size of the spinner
+ * @param {String} [options.color] color of the spinner
+ */
+define('__component__$loader@husky',[],function() {
+
+    
+
+    var defaults = {
+        size: '40px',
+        color: '#666',
+        hidden: false
+        },
+
+        namespace = 'husky.loader.',
+
+        /**
+         * makes loader visible
+         *
+         * @event husky.loader.show
+         */
+        SHOW = namespace + 'show',
+
+        /**
+         * hides the loader
+         *
+         * @event husky.loader.hide
+         */
+        HIDE = namespace + 'hide',
+
+        /**
+         * called when loader is initialized
+         *
+         * @event husky.loader.initialized
+         */
+        INITIALIZED = namespace + 'initialized',
+
+        templates = {
+            doubleBounce: [
+                '<div class="spinner">',
+                    '<div class="double-bounce1"></div>',
+                    '<div class="double-bounce2"></div>',
+                '</div>'].join('')
+        },
+
+        bindCustomEvents = function() {
+            this.sandbox.on(SHOW, showLoader.bind(this));
+            this.sandbox.on(HIDE, hideLoader.bind(this));
+        },
+
+        hideLoader = function() {
+            this.sandbox.dom.hide(this.$spinner);
+        },
+        showLoader = function() {
+            this.sandbox.dom.show(this.$spinner);
+        };
+
+    return {
+
+        view: true,
+
+        initialize: function() {
+            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
+            this.render();
+
+            bindCustomEvents.call(this);
+
+            this.sandbox.emit(INITIALIZED);
+        },
+
+        render: function() {
+            this.$spinner = this.sandbox.dom.createElement(templates.doubleBounce);
+            var $elements, styles;
+
+            this.sandbox.dom.html(this.$el, this.$spinner);
+
+            // style adjustments
+            // size
+            styles = {
+                width: this.options.size,
+                height: this.options.size
+            };
+            this.sandbox.dom.css(this.$spinner, styles);
+            // color
+            $elements = this.sandbox.dom.find('div', this.$spinner);
+            this.sandbox.dom.css($elements, 'background-color', this.options.color);
+            // visibility
+            if (this.options.hidden) {
+                this.sandbox.dom.hide(this.$spinner);
+            }
+        }
+    };
+
 });
 
 /**
@@ -30224,6 +30478,10 @@ define('husky_extensions/collection',[],function() {
                 $(selector).off(event, filter, handler);
             };
 
+            app.core.dom.trigger = function(selector, event, extraParam) {
+                $(selector).off(event, extraParam);
+            };
+
             app.core.dom.toggleClass = function(selector, className) {
                 $(selector).toggleClass(className);
             };
@@ -30250,6 +30508,10 @@ define('husky_extensions/collection',[],function() {
 
             app.core.dom.closest = function(selector, filter) {
                 return $(selector).closest(filter);
+            };
+
+            app.core.dom.clone = function(selector) {
+                return $(selector).clone();
             };
 
             app.core.dom.text = function(selector, value) {

@@ -1,0 +1,16 @@
+@-webkit-keyframes HIGHLIGHT-ANIMATION {
+    0%   { background-color: rgba($yellowHighlightColor, 0.5); }
+    100% { opacity: 1; }
+}
+@-moz-keyframes HIGHLIGHT-ANIMATION {
+    0%   { background-color: rgba($yellowHighlightColor, 0.5); }
+    100% { opacity: 1; }
+}
+@-o-keyframes HIGHLIGHT-ANIMATION {
+    0%   { background-color: rgba($yellowHighlightColor, 0.5); }
+    100% { opacity: 1; }
+}
+@keyframes HIGHLIGHT-ANIMATION {
+    0%   { background-color: rgba($yellowHighlightColor, 0.5); }
+    100% { opacity: 1; }
+}
