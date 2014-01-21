@@ -20,6 +20,7 @@
  * @params {Number} [options.scrollBarWidth] with of scrollbar
  * @params {String} [options.url] url to load data
  * @params {String} [options.selected] id of selected element - needed to restore state
+ * @params {String} [options.instanceName] name of current instance
  *
  */
 define([], function() {
@@ -34,7 +35,8 @@ define([], function() {
                 width: 250
             },
             url: null,
-            selected: null
+            selected: null,
+            instanceName: 'undefined'
         },
 
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
@@ -120,9 +122,11 @@ define([], function() {
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
+            this.addId = this.options.instanceName+"-column-navigation-add";
+            this.settingsId = this.options.instanceName+"-column-navigation-settings";
             this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer(this.options.column.width));
-            $add = this.sandbox.dom.$(this.template.options.add());
-            $settings = this.sandbox.dom.$(this.template.options.settings());
+            $add = this.sandbox.dom.$(this.template.options.add(this.addId));
+            $settings = this.sandbox.dom.$(this.template.options.settings(this.settingsId));
             this.sandbox.dom.append(this.$optionsContainer, $add);
             this.sandbox.dom.append(this.$optionsContainer, $settings);
 
@@ -149,7 +153,7 @@ define([], function() {
                     options: {
                         el: '#' + containerId,
                         setParentDropDown: true,
-                        instanceName: 'column-navigation-settings-dropdown',
+                        instanceName: this.options.instanceName+'.settings.dropdown',
                         alignment: 'left',
                         data: [
                             {
@@ -341,8 +345,8 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'mouseleave', this.itemMouseLeave.bind(this), 'li');
 
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
-            this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#column-navigation-add');
-            this.sandbox.dom.on(this.$el, 'click', this.toggleSettings.bind(this), '#column-navigation-settings');
+            this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#'+this.addId);
+            this.sandbox.dom.on(this.$el, 'click', this.toggleSettings.bind(this), '#'+this.settingsId);
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
         },
 
@@ -595,14 +599,14 @@ define([], function() {
             },
 
             options: {
-                add: function() {
-                    return ['<div id="column-navigation-add" class="align-center grid-col-6 add pointer">',
+                add: function(id) {
+                    return ['<div id="',id,'" class="align-center grid-col-6 add pointer">',
                         '<span class="icon-add"></span>',
                         '</div>'].join('');
                 },
 
-                settings: function() {
-                    return ['<div id="column-navigation-settings" class="align-center grid-col-6 settings pointer drop-down-trigger">',
+                settings: function(id) {
+                    return ['<div id="',id,'" class="align-center grid-col-6 settings pointer drop-down-trigger">',
                         '<span class="icon-cogwheel inline-block"></span><span class="dropdown-toggle inline-block"></span>',
                         '</div>'].join('');
                 }
@@ -610,3 +614,4 @@ define([], function() {
         }
     };
 });
+
