@@ -36,6 +36,7 @@
             "__component__$dropdown-multiple-select@husky": "husky_components/dropdown-multiple-select/main",
             "__component__$password-fields@husky": "husky_components/password-fields/main",
             "__component__$column-navigation@husky": "husky_components/column-navigation/main",
+            "__component__$loader@husky": "husky_components/loader/main",
             "__component__$edit-toolbar@husky": "husky_components/edit-toolbar/main",
             "__component__$page-functions@husky": "husky_components/page-functions/main",
             "__component__$ckeditor@husky": "husky_components/ckeditor/main"
@@ -84,6 +85,7 @@
             "__component__$dropdown-multiple-select@husky",
             "__component__$password-fields@husky",
             "__component__$column-navigation@husky",
+            "__component__$loader@husky",
             "__component__$edit-toolbar@husky",
             "__component__$page-functions@husky",
             "__component__$ckeditor@husky"

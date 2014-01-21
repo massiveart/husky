@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>AutoCompleteList - husky</title>
+    <title>CKEditor - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -104,7 +104,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>AutoCompleteList Class</h1>
+                        <h1>CKEditor Class</h1>
 <div class="box meta">
     
 
@@ -112,13 +112,13 @@
 
     
         <div class="foundat">
-            Defined in: <a href="../files/husky_components_auto-complete-list_main.js.html#l12"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:12</code></a>
+            Defined in: <a href="../files/husky_components_ckeditor_main.js.html#l13"><code>husky_components&#x2F;ckeditor&#x2F;main.js:13</code></a>
         </div>
     
 
     
         
-            Module: <a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a>
+            Module: <a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a>
         
     
 
@@ -134,8 +134,8 @@
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_AutoCompleteList" class="method item">
-    <h3 class="name"><code>AutoCompleteList</code></h3>
+        <div id="method_CKEditor" class="method item">
+    <h3 class="name"><code>CKEditor</code></h3>
 
     
         <div class="args">
@@ -176,7 +176,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l12"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:12</code></a>
+        <a href="../files/husky_components_ckeditor_main.js.html#l13"><code>husky_components&#x2F;ckeditor&#x2F;main.js:13</code></a>
         
         </p>
 
@@ -215,56 +215,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[tags]</code>
-                                    <span class="type">String</span>
+                                    <code class="param-name optional">[initialzedCallback]</code>
+                                    <span class="type">Function</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[url]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>url to load autocomplete data</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[suggestions]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[suggestionUrl]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>url to load suggestions</p>
+                                    <p>Callback when initialization is finished</p>
 
                                 </div>
 
@@ -295,6 +252,8 @@
         
         
         
+            <li class="api-class-tab events"><a href="#events">Events</a></li>
+        
     </ul>
 
     <div>
@@ -308,6 +267,21 @@
             
 
             
+                <div class="index-section events">
+                    <h3>Events</h3>
+
+                    <ul class="index-list events">
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.column-navigation.loaded">husky.column-navigation.loaded</a>
+
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
+            
         </div>
 
         
@@ -316,6 +290,56 @@
 
         
 
+        
+            <div id="events" class="api-class-tabpanel">
+                <h2 class="off-left">Events</h2>
+
+                
+                    <div id="event_husky.column-navigation.loaded" class="events item">
+    <h3 class="name"><code>husky.column-navigation.loaded</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_ckeditor_main.js.html#l35"><code>husky_components&#x2F;ckeditor&#x2F;main.js:35</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>the component has loaded everything successfully and will be rendered</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+            </div>
         
     </div>
 </div>

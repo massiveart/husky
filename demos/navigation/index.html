@@ -19,7 +19,7 @@
 <body>
 
 
-<div data-aura-component="navigation@husky" data-aura-url="/navigation" data-aura-footer-template="<div>Hubert Gruber</div><div><a href='#'>logout</a></div><div class='version'>husky 2.1.2</div>"></div>
+<div data-aura-component="navigation@husky" data-aura-select-action="webspaces/cn_cn" data-aura-url="/navigation" data-aura-footer-template="<div>Hubert Gruber</div><div><a href='#'>logout</a></div><div class='version'>husky 2.1.2</div>"></div>
 
 <script src="../js/sinon.js"></script>
 <script src="../js/jquery.js"></script>
@@ -42,11 +42,11 @@
             '{"title":"Sulu 2.0", "icon":"..\/..\/img\/tmp\/husky.png", "id":"1", "items":[' +
 
                 '{"title":"Tools", "items":[' +
-                    '{"title":"Dashboard", "action":"contacts\/dashboard", "icon":"dashboard", "id":"2", "hasSettings":"true"},' +
+                    '{"title":"Dashboard", "action":"dashboard", "icon":"dashboard", "id":"2", "hasSettings":"true"},' +
 
                     '{"title":"Contacts", "hasSettings":"true", "icon":"contact-book", "id":"3", "items":[' +
-                        '{"title":"Companies", "action":"contacts\/contacts", "id":"4"},' +
-                        '{"title":"People", "action":"contacts\/accounts", "id":"5"}' +
+                        '{"title":"Companies", "action":"contacts\/accounts", "id":"4"},' +
+                        '{"title":"People", "action":"contacts\/contacts", "id":"5"}' +
                     ']},' +
 
                     '{"title":"Media", "icon":"star", "hasSettings":"true", "id":"6", "items":[' +
@@ -65,18 +65,18 @@
 
                 '{"title":"Web-Spaces", "items":[' +
                     '{"title":"Americas", "icon":"globe", "hasSettings":"true", "id":"14", "items":[' +
-                        '{"title":"en_us", "action":"contacts\/contacts", "id":"15"},' +
-                        '{"title":"en_cn", "action":"contacts\/contacts", "id":"16"},' +
-                        '{"title":"es_mx", "action":"contacts\/accounts", "id":"17"}' +
+                        '{"title":"en_us", "action":"webspaces\/en_us", "id":"15"},' +
+                        '{"title":"en_cn", "action":"webspaces\/en_cn", "id":"16"},' +
+                        '{"title":"es_mx", "action":"webspaces\/es_mx", "id":"17"}' +
                     ']},' +
                     '{"title":"Europe", "icon":"globe", "hasSettings":"true", "id":"18", "items":[' +
-                        '{"title":"en_gb", "action":"contacts\/contacts", "id":"19"},' +
-                        '{"title":"de_de", "action":"contacts\/contacts", "id":"20"},' +
-                        '{"title":"de_at", "action":"contacts\/accounts", "id":"21"}' +
+                        '{"title":"en_gb", "action":"webspaces\/en_gb", "id":"19"},' +
+                        '{"title":"de_de", "action":"webspaces\/de_de", "id":"20"},' +
+                        '{"title":"de_at", "action":"webspaces\/de_at", "id":"21"}' +
                     ']},' +
                     '{"title":"Asia", "icon":"globe", "id":"22", "items":[' +
-                        '{"title":"cn_cn", "action":"contacts\/contacts", "id":"23"},' +
-                        '{"title":"jp_jp", "action":"contacts\/accounts", "id":"24"}' +
+                        '{"title":"cn_cn", "action":"webspaces\/cn_cn", "id":"23"},' +
+                        '{"title":"jp_jp", "action":"webspaces\/jp_jp", "id":"24"}' +
                     ']}' +
                 ']}'+
             ']}'
