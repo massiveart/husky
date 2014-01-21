@@ -148,9 +148,7 @@ define([], function() {
          */
         initSettingsDropdown: function(containerId) {
 
-            // TODO
-            // show dropdown only if item is selected
-            // enable/disable certain elements of the dropdown depending on the selected element
+            // TODO show dropdown only if item is selected and enable/disable certain elements of the dropdown depending on the selected element
 
             this.sandbox.start([
                 {
