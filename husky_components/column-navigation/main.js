@@ -20,6 +20,7 @@
  * @params {Number} [options.scrollBarWidth] with of scrollbar
  * @params {String} [options.url] url to load data
  * @params {String} [options.selected] id of selected element - needed to restore state
+ * @params {Array}  [options.data] array of data displayed in the settings dropdown
  * @params {String} [options.instanceName] name of current instance
  *
  */
@@ -36,6 +37,7 @@ define([], function() {
             },
             url: null,
             selected: null,
+            data: null,
             instanceName: 'undefined'
         },
 
@@ -134,7 +136,9 @@ define([], function() {
             this.sandbox.dom.append($wrapper, this.$optionsContainer);
 
             //init dropdown for settings in options container
-            this.initSettingsDropdown(this.sandbox.dom.attr($settings, 'id'));
+            if(!!this.options.data) {
+                this.initSettingsDropdown(this.sandbox.dom.attr($settings, 'id'));
+            }
 
         },
 
@@ -156,23 +160,7 @@ define([], function() {
                         setParentDropDown: true,
                         instanceName: this.options.instanceName+'.settings.dropdown',
                         alignment: 'left',
-                        data: [
-                            {
-                                id: 1,
-                                name: 'Delete',
-                                action: 'delete'
-                            },
-                            {
-                                id: 2,
-                                name: 'Covert to shadow',
-                                action: 'convert to shadow'
-                            },
-                            {
-                                id: 3,
-                                name: 'Hide',
-                                action: 'hide'
-                            }
-                        ]
+                        data: this.options.data
                     }
                 }
             ]);

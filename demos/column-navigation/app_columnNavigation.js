@@ -599,7 +599,24 @@ require(['lib/husky'], function (Husky) {
                 name: 'column-navigation@husky',
                 options: {
                     el: '#column-navigation',
-                    url: '/nodes?depth=1'
+                    url: '/nodes?depth=1',
+                    data: [
+                        {
+                            id: 1,
+                            name: 'Delete',
+                            action: 'delete'
+                        },
+                        {
+                            id: 2,
+                            name: 'Covert to shadow',
+                            action: 'convert to shadow'
+                        },
+                        {
+                            id: 3,
+                            name: 'Hide',
+                            action: 'hide'
+                        }
+                    ]
                 }
             }
         ]).then(function () {
