@@ -63,14 +63,10 @@ define([
         return {
 
             initialize: function() {
-                this.sandbox.logger.log(this.$el);
-                this.sandbox.logger.log('initialize', this);
-
                 this.setVars();
 
                 // extend default options
                 this.options = this.sandbox.util.extend({}, defaults, this.options);
-                this.sandbox.logger.log(this.options);
 
                 this.renderMain();
                 this.initInputCont();
