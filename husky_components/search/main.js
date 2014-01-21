@@ -127,7 +127,9 @@ define([], function() {
         },
 
         removeSearch: function(event) {
-            event.preventDefault();
+            if (!!event) {
+                event.preventDefault();
+            }
             var $input;
             $input = this.sandbox.dom.next(event.currentTarget, 'input');
 
