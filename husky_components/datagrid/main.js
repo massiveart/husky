@@ -62,7 +62,7 @@ define(function() {
         searchInstanceName: null // at which search it should be listened to can be null|string|empty_string
     },
 
-        namespace = 'husky.datagrid',
+        namespace = 'husky.datagrid.',
 
         /* TRIGGERS EVENTS */
 
@@ -1008,6 +1008,7 @@ define(function() {
                     searchInstanceName = '.' + this.options.searchInstanceName;
                 }
                 this.sandbox.on('husky.search' + searchInstanceName, this.triggerSearch.bind(this));
+                this.sandbox.on('husky.search' + searchInstanceName +'.reset', this.triggerSearch.bind(this,''));
             }
         },
 
@@ -1054,8 +1055,8 @@ define(function() {
                     this.sandbox.emit(UPDATE, 'updated search');
                 }.bind(this)
             });
-
         },
+
 
         /**
          * Renders datagrid element in container

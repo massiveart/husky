@@ -157,7 +157,7 @@
             };
 
             app.core.dom.val = function(selector, value) {
-                if (!!value) {
+                if (!!value || value === '') {
                     $(selector).val(value);
                 } else {
                     return $(selector).val();
@@ -192,8 +192,8 @@
                 $(selector).off(event, filter, handler);
             };
 
-            app.core.dom.trigger = function(selector, event, extraParam) {
-                $(selector).off(event, extraParam);
+            app.core.dom.trigger = function(selector, eventType, params) {
+                $(selector).trigger(eventType, params);
             };
 
             app.core.dom.toggleClass = function(selector, className) {
@@ -282,7 +282,7 @@
             };
 
             app.core.dom.scrollTop = function(itemSelector) {
-                $(window).scrollTop($(itemSelector).offset().top);
+                $(window).scrollTop($(itemSelector).offsset().top);
             };
 
             app.core.dom.scrollLeft = function(selector, value) {

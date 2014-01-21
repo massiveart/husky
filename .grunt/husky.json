@@ -8,6 +8,7 @@
             "underscore": "bower_components/underscore/underscore",
             "eventemitter": "bower_components/eventemitter2/lib/eventemitter2",
             "backbone": "bower_components/backbone/backbone",
+            "html5sortable": "vendor/html5sortable/html5sortable",
             "requirejs": "bower_components/requirejs/require",
             "text": "bower_components/requirejs-text/text",
             "jquery": "bower_components/jquery/jquery",
@@ -21,6 +22,7 @@
             "husky": "lib/husky",
 
             "__component__$navigation@husky": "husky_components/navigation/main",
+            "__component__$column-options@husky": "husky_components/column-options/main",
             "__component__$header@husky": "husky_components/header/main",
             "__component__$button@husky": "husky_components/button/main",
             "__component__$datagrid@husky": "husky_components/datagrid/main",
@@ -71,6 +73,7 @@
             "__component__$navigation@husky",
             "__component__$header@husky",
             "__component__$button@husky",
+            "__component__$column-options@husky",
             "__component__$datagrid@husky",
             "__component__$dialog@husky",
             "__component__$dropdown@husky",
