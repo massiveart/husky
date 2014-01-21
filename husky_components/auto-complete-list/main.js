@@ -63,6 +63,7 @@ define([
         return {
 
             initialize: function() {
+                this.sandbox.logger.log(this.$el);
                 this.sandbox.logger.log('initialize', this);
 
                 this.setVars();
@@ -281,7 +282,6 @@ define([
                     };
                     this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowUpClass);
                 }
-                this.sandbox.logger.log(this.toggler.$el);
             },
 
             changeToggler: function() {
