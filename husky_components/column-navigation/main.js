@@ -490,7 +490,7 @@ define([], function() {
             wrapper: function() {
                 return '<div class="column-navigation-wrapper"></div>';
             },
-
+            
             columnContainer: function() {
                 return ['<div class="column-navigation"></div>'].join('');
             },
@@ -501,7 +501,7 @@ define([], function() {
 
             item: function(width, data) {
 
-                var item = ['<li data-id="', data.id, '" class="pointer" style="width:', width, 'px">'];
+                var item = ['<li data-id="', data.id, '" class="pointer"'];
 
                 // icons left
                 item.push('<span class="pull-left">');
