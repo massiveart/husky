@@ -104,21 +104,29 @@ define([], function() {
                 this.sandbox.dom.hide($removeIcon);
             }
 
-            // enter pressed
             if (event.keyCode === 13) {
+                // enter pressed
                 this.submitSearch();
+            } else if (event.keyCode === 27) {
+                // enter pressed
+                this.removeSearch();
             }
+
+
         },
 
         submitSearch: function(event) {
-            event.preventDefault();
+            if (!!event) {
+                event.preventDefault();
+            }
 
             // get search value
 
             var searchString = this.sandbox.dom.val(this.sandbox.dom.find('#search-input', this.$el));
 
-            // check if searchstring is emtpy
+            // if searchstring is emtpy, emit reset
             if (searchString === '') {
+                this.sandbox.emit(RESET.call(this));
                 return;
             }
 
@@ -129,6 +137,11 @@ define([], function() {
         removeSearch: function(event) {
             if (!!event) {
                 event.preventDefault();
+            } else {
+                event = {
+                    target: this.sandbox.dom.find('.remove-icon', this.$el),
+                    currentTarget: this.sandbox.dom.find('.remove-icon', this.$el)
+                };
             }
             var $input;
             $input = this.sandbox.dom.next(event.currentTarget, 'input');
