@@ -31650,8 +31650,6 @@ define('husky_extensions/util',[],function() {
                     for (var i = -1, length = array.length; ++i < length;) {
                         callbackValue(array[i], i);
                     }
-                } else {
-                    app.sandbox.logger.log('error at util.foreach: no array given');
                 }
             };
 
