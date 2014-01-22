@@ -135,6 +135,10 @@
                 return $(context).remove(selector);
             };
 
+            app.core.dom.detach = function(context, selector) {
+                return $(context).detach(selector);
+            };
+
             app.core.dom.attr = function(selector, attributes) {
                 attributes = attributes || {};
                 return $(selector).attr(attributes);

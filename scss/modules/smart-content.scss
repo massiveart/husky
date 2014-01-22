@@ -1,0 +1,74 @@
+//
+// Smart Content
+// --------------------------------------------------
+
+
+#smart-content {/*remove later*/
+    padding: 50px 0 0 50px;
+}
+
+
+.smart-content-container {
+    width: 820px;
+    background: $white;
+    border-radius: 0 0 4px 4px;
+}
+
+.smart-header {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    height: 50px;
+    border-bottom: 1px solid $grayLighterer;
+    line-height: 50px;
+    padding-left: 20px;
+    font-size: $smallFontSize;
+
+    .desc {
+        color: $grayLight;
+        padding-right: 3px;
+    }
+
+    .icon-adjust-alt {
+        display: block;
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 15px;
+        line-height: 15px;
+        color: $black;
+        padding: 5px 10px;
+        border: 1px solid $grayLighter;
+        border-radius: 2px;
+
+        &:hover {
+            background: $grayLightest;
+        }
+    }
+}
+
+.smart-content {
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    .no-content {
+        text-align: center;
+        height: 210px;
+
+        .icon-file {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            margin-left: -65px;
+            font-size: 125px;
+            color: $grayLightest;
+        }
+        .text {
+            padding-top: 160px;
+            font-weight: bold;
+            color: $grayLightMedium;
+            font-size: 24px;
+        }
+    }
+}
