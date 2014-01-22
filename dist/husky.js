@@ -26590,7 +26590,7 @@ define('__component__$datagrid@husky',[],function() {
                 url: url,
                 success: function() {
                     this.removeLoader();
-                    this.sandbox.emit(UPDATE, 'updated search');
+                    this.sandbox.emit(UPDATED, 'updated after search');
                 }.bind(this)
             });
         },
@@ -27604,7 +27604,9 @@ define('__component__$search@husky',[], function() {
         },
 
         removeSearch: function(event) {
-            event.preventDefault();
+            if (!!event) {
+                event.preventDefault();
+            }
             var $input;
             $input = this.sandbox.dom.next(event.currentTarget, 'input');
 
