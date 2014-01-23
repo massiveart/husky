@@ -14,6 +14,7 @@
  *      defaultLabel: default label which gets displayed
  *      checkedAllLabel: Label if all checked
  *      singleSelect: allows only one element to be selected
+ *      noDeselect: disables the possibility to deselect items
  *
  * Provided Events:
  * husky.dropdown.multiple.select.<<instanceName>>.selected.item   - triggered when item selected
@@ -37,7 +38,8 @@ define([], function() {
         defaultLabel: 'Please choose',    // default label which gets displayed
         checkedAllLabel: 'All Languages', // Label if all checked
         preSelectedElements: [],          // Elements selected by default
-        singleSelect: false               // Allows only one element to be selected
+        singleSelect: false,              // Allows only one element to be selected
+        noDeselect: false                  // Disables the possibility to deselect items
     };
 
 
@@ -140,7 +142,7 @@ define([], function() {
         },
 
         //unchecks all checked elements
-        uncheckAll: function() {
+        uncheckAll: function(clickedElementKey) {
             var elements = this.sandbox.dom.children('#' + this.listId),
                 i = -1,
                 length = elements.length,
@@ -152,11 +154,13 @@ define([], function() {
                 index = this.selectedElements.indexOf(key);
 
                 if (index >= 0) {
-                    this.sandbox.dom.removeClass($checkbox, 'is-selected');
-                    this.sandbox.dom.prop($checkbox, 'checked', false);
-                    this.selectedElements.splice(index, 1);
-                    this.selectedElementsValues.splice(index, 1);
-                    this.sandbox.emit(this.getEventName('deselected.item'), key);
+                    if (clickedElementKey !== key || this.options.noDeselect === false) {
+                        this.sandbox.dom.removeClass($checkbox, 'is-selected');
+                        this.sandbox.dom.prop($checkbox, 'checked', false);
+                        this.selectedElements.splice(index, 1);
+                        this.selectedElementsValues.splice(index, 1);
+                        this.sandbox.emit(this.getEventName('deselected.item'), key);
+                    }
                 }
             }
         },
@@ -170,16 +174,17 @@ define([], function() {
                 index = this.selectedElements.indexOf(key);
 
             if (this.options.singleSelect === true) {
-                this.uncheckAll(event);
+                this.uncheckAll(key);
             }
 
             if (index >= 0) {
-
-                this.sandbox.dom.removeClass($checkbox, 'is-selected');
-                this.sandbox.dom.prop($checkbox, 'checked', false);
-                this.selectedElements.splice(index, 1);
-                this.selectedElementsValues.splice(index, 1);
-                this.sandbox.emit(this.getEventName('deselected.item'), key);
+                if (this.options.noDeselect === false) {
+                    this.sandbox.dom.removeClass($checkbox, 'is-selected');
+                    this.sandbox.dom.prop($checkbox, 'checked', false);
+                    this.selectedElements.splice(index, 1);
+                    this.selectedElementsValues.splice(index, 1);
+                    this.sandbox.emit(this.getEventName('deselected.item'), key);
+                }
 
             } else {
 
