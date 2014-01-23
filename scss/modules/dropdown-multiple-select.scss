@@ -1,71 +1,64 @@
 .husky-dropdown-multiple-select {
 
-  position:relative;
+  position: relative;
 
   .dropdown-label {
     background: $grayLighter;
-    padding: 10px;
-    border-radius: 6px;
+    padding: 5px 5px 5px 10px;
+    border-radius: 4px;
+    clear: both;
+
+    .dropdown-toggle {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+    }
   }
 
   .dropdown-list {
-    width:100%;
+    width: 100%;
     /*display: inline-block;*/
-    border: 1px solid #ccc;
     position: absolute;
     top: 20px;
     left: 0;
-    margin-top: 20px;
+    margin-top: 10px;
     background-color: #FFF;
-    box-shadow: 5px 5px 0 0 rgba(0, 0, 0, .25);
+    box-shadow: 3px 3px 0 0 $grayLighter;
     z-index: 95;
 
-    &::after,
-    &::before {
-      content: "";
-      display: block;
-      position: absolute;
-      top: -10px;
-      left: 5px;
-      width: 0;
-      height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-
-      border-bottom: 10px solid #FFF;
+    .check {
+        float: left;
+        width: 20px;
+        margin-right: 10px;
+    }
+    .item-value {
+        float: left;
     }
 
-    &::before {
-      top: -11px;
-      left: 4px;
-      border-left: 11px solid transparent;
-      border-right: 11px solid transparent;
-
-      border-bottom: 11px solid #ccc;
-    }
-
-    &.dropdown-align-right {
-      left: auto !important;
-      right: 0;
-      &::after,
-      &::before {
-        left: auto !important;
-        right: 5px;
-      }
-    }
 
     & > ul {
       list-style: none;
       margin: 0;
       padding: 10px 0;
 
+      input {
+        margin: 0;
+      }
+      .custom-checkbox-icon {
+        margin-bottom: 2px;
+      }
+
       & > li {
-        padding: 5px 10px;
+        padding: 5px 10px 5px 20px;
+        clear: both;
 
         &:hover,
         &.hover {
-          background-color: #ccc;
+          background-color: $highlightColor;
           cursor: pointer;
+        }
+        &:hover .item-value {
+          color: $white;
         }
       }
     }

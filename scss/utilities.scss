@@ -28,6 +28,10 @@
     cursor: default !important;
 }
 
+.clear {
+  clear: both;
+}
+
 .is-loading:not(.navigation-column-item) {
   @extend %abstract-loader-black;
 

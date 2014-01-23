@@ -1,7 +1,7 @@
 .overlay-container {
   width: $overlayContainerWidth;
   position: fixed;
-  top: 50%;
+  top: 0;
   left: 50%;
   margin-left: -($overlayContainerWidth / 2);
   background-color: $white;

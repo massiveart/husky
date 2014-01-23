@@ -22,15 +22,25 @@ define([], function() {
     'use strict';
 
     var defaults = {
-        source: null,
+        visibleItems: 3,
+        dataSources: [],
         includeSubFolders: false,
+        preSelectedDataSource: 0,
         categories: [],
+        preSelectedCategory: 0,
         tags: [],
+        tagsAutoCompleteUrl: '',
         sortBy: null,
-        sortMethod: 'desc', //desc, asc
+        preSelectedSortBy: [],
+        preSelectedSortMethod: 'asc', //asc, desc
         presentAs: [],
-        limitResult: 0, //0 = no-limit
-        visibleItems: 3
+        preSelectedPresentAs: 0,
+        limitResult: 0 //0 = no-limit
+    },
+
+    sortMethods = {
+        asc: 'Ascending',
+        desc: 'Descanding'
     },
 
     constants = {
@@ -42,7 +52,13 @@ define([], function() {
         buttonClass: 'icon-adjust-alt',
         overlayCloseSelector: '.close-button',
         overlayOkSelector: '.save-button',
-        overlayContentSelector: '.overlay-content'
+        overlayContentSelector: '.smart-overlay-content',
+        dataSourceDDId: 'data-source-dropdown',
+        categoryDDId: 'category-dropdown',
+        tagListId: 'tag-list',
+        sortByDDId: 'sort-by-dropdown',
+        sortMethodDDId: 'sort-method-dropdown',
+        presentAsDDId: 'present-as-dropdown'
     },
 
     /** templates for component */
@@ -65,14 +81,52 @@ define([], function() {
                     '<span class="title"><%= title %></span>',
                     '<a class="icon-remove2 close-button" href="#"></a>',
                 '</div>',
-                '<div class="overlay-content"></div>',
+                '<div class="smart-overlay-content"></div>',
                 '<div class="overlay-footer">',
                 '   <a class="icon-half-ok save-button btn btn-highlight" href="#"></a>',
                 '</div>',
             '</div>'
         ].join(''),
         overlayContent: [
-            'here could be your template'
+            '<div class="item-half left">',
+                '<span class="desc"><%= data_source %></span>',
+                '<div id="' + constants.dataSourceDDId + '"></div>',
+            '</div>',
+            '<div class="item-half left">',
+                '<div class="check">',
+                    '<label>',
+                        '<input type="checkbox" class="form-element custom-checkbox"<%= include_sub_checked %>/>',
+                        '<span class="custom-checkbox-icon"></span>',
+                        '<span class="description"><%= include_sub %></span>',
+                    '</label>',
+                '</div>',
+            '</div>',
+            '<div class="clear"></div>',
+            '<div class="item">',
+                '<span class="desc"><%= filter_by_cat %></span>',
+                '<div id="' + constants.categoryDDId + '"></div>',
+            '</div>',
+            '<div class="item">',
+                '<span class="desc"><%= filter_by_tags %></span>',
+                '<div id="' + constants.tagListId + '" class="tag-list"></div>',
+            '</div>',
+            '<div class="item-half left">',
+                '<span class="desc"><%= sort_by %></span>',
+                '<div id="' + constants.sortByDDId + '"></div>',
+            '</div>',
+            '<div class="item-half">',
+                '<div id="' + constants.sortMethodDDId + '" class="sortMethod"></div>',
+            '</div>',
+            '<div class="clear"></div>',
+            '<div class="item-half left">',
+                '<span class="desc"><%= present_as %></span>',
+                '<div id="' + constants.presentAsDDId + '"></div>',
+            '</div>',
+            '<div class="item-half">',
+                '<span class="desc"><%= limit_result_to %></span>',
+                '<input type="text" value="<%= limit_result %>" class="limit-to"/>',
+            '</div>',
+            '<div class="clear"></div>'
         ].join('')
     },
 
@@ -204,6 +258,7 @@ define([], function() {
                 if (this.overlay.$el === null) {
                     this.loadOverlay();
                     this.loadOverlayContent();
+                    this.startOverlayComponents();
                     this.bindOverlayEvents();
                 }
                 this.sandbox.dom.append($('body'), this.overlay.$el);
@@ -229,8 +284,92 @@ define([], function() {
         loadOverlayContent: function() {
             this.sandbox.dom.html(this.overlay.$content,
                 _.template(templates.overlayContent)({
-
+                    data_source: 'Data source',
+                    include_sub: 'Include Sub folders',
+                    filter_by_cat: 'Filter by category',
+                    include_sub_checked: (this.options.includeSubFolders) ? ' checked' : '',
+                    filter_by_tags: 'Filter by Tags',
+                    sort_by: 'Sort by',
+                    present_as: 'Present as',
+                    limit_result_to: 'Limit result to',
+                    limit_result: (this.options.limitResult > 0) ? this.options.limitResult : ''
             }));
+
+        },
+
+        startOverlayComponents: function() {
+            this.sandbox.start([
+                {
+                    name: 'dropdown-multiple-select@husky',
+                    options: {
+                        el: '#' + constants.dataSourceDDId,
+                        instanceName: constants.dataSourceDDId,
+                        defaultLabel: 'Choose folder ...',
+                        value: 'name',
+                        data: this.options.dataSources,
+                        preSelectedElements: [this.options.preSelectedDataSource],
+                        singleSelect: true
+                    }
+                },
+                {
+                    name: 'dropdown-multiple-select@husky',
+                    options: {
+                        el: '#' + constants.categoryDDId,
+                        instanceName: constants.categoryDDId,
+                        defaultLabel: 'All categories',
+                        value: 'name',
+                        data: this.options.categories,
+                        preSelectedElements: [this.options.preSelectedCategory],
+                        singleSelect: true
+                    }
+                },
+                {
+                    name: 'auto-complete-list@husky',
+                    options: {
+                        el: '#' + constants.tagListId,
+                        instanceName: constants.tagListId,
+                        items: this.options.tags,
+                        remoteUrl: this.options.tagsAutoCompleteUrl,
+                        autocomplete: (this.options.tagsAutoCompleteUrl !== '')
+                    }
+                },
+                {
+                    name: 'dropdown-multiple-select@husky',
+                    options: {
+                        el: '#' + constants.sortByDDId,
+                        instanceName: constants.sortByDDId,
+                        defaultLabel: 'No sorting',
+                        value: 'name',
+                        data: this.options.sortBy,
+                        preSelectedElements: [this.options.preSelectedSortBy],
+                        singleSelect: true
+                    }
+                },
+                {
+                    name: 'dropdown-multiple-select@husky',
+                    options: {
+                        el: '#' + constants.sortMethodDDId,
+                        instanceName: constants.sortMethodDDId,
+                        defaultLabel: 'Select sort method',
+                        value: 'name',
+                        data: [sortMethods.asc, sortMethods.desc],
+                        preSelectedElements: [sortMethods[this.options.preSelectedSortMethod]],
+                        singleSelect: true
+                    }
+                },
+                {
+                    name: 'dropdown-multiple-select@husky',
+                    options: {
+                        el: '#' + constants.presentAsDDId,
+                        instanceName: constants.presentAsDDId,
+                        defaultLabel: 'Choose..',
+                        value: 'name',
+                        data: this.options.presentAs,
+                        preSelectedElements: [this.options.preSelectedPresentAs],
+                        singleSelect: true
+                    }
+                }
+            ]);
         },
 
         bindOverlayEvents: function() {
@@ -241,7 +380,7 @@ define([], function() {
 
             this.sandbox.dom.on(this.overlay.$ok, 'click', function(event) {
                 this.sandbox.dom.preventDefault(event);
-                //do some stuff
+                //generate request
                 this.closeOverlay();
             }.bind(this));
         }

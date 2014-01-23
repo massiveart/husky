@@ -13,6 +13,7 @@
  *      instanceName: instance name of this component
  *      defaultLabel: default label which gets displayed
  *      checkedAllLabel: Label if all checked
+ *      singleSelect: allows only one element to be selected
  *
  * Provided Events:
  * husky.dropdown.multiple.select.<<instanceName>>.selected.item   - triggered when item selected
@@ -35,7 +36,8 @@ define([], function() {
         instanceName: 'undefined',        // instance name
         defaultLabel: 'Please choose',    // default label which gets displayed
         checkedAllLabel: 'All Languages', // Label if all checked
-        preSelectedElements: []           // Elements selected by default
+        preSelectedElements: [],          // Elements selected by default
+        singleSelect: false               // Allows only one element to be selected
     };
 
 
@@ -48,6 +50,7 @@ define([], function() {
 
             this.selectedElements = [];
             this.selectedElementsValues = [];
+            this.dropdownVisible = false;
 
             this.labelId = 'husky-dropdown-multiple-select-' + this.options.instanceName + '-label';
             this.listId = 'husky-dropdown-multiple-select-' + this.options.instanceName + '-list';
@@ -116,8 +119,7 @@ define([], function() {
         bindDOMEvents: function() {
 
             // toggle drop-down
-            this.sandbox.dom.on('#' + this.options.instanceName, 'click', function(event) {
-                this.sandbox.dom.stopPropagation(event);
+            this.sandbox.dom.on(this.$el, 'click', function(event) {
                 this.toggleDropDown();
             }.bind(this), '.dropdown-label');
 
@@ -137,13 +139,39 @@ define([], function() {
             this.sandbox.on(this.getEventName('getChecked'), this.getChecked.bind(this));
         },
 
+        //unchecks all checked elements
+        uncheckAll: function() {
+            var elements = this.sandbox.dom.children('#' + this.listId),
+                i = -1,
+                length = elements.length,
+                key, index, $checkbox;
+
+            for(;++i < length;) {
+                key = this.sandbox.dom.attr(elements[i], 'data-id');
+                $checkbox = this.sandbox.dom.find('input[type=checkbox]', elements[i])[0];
+                index = this.selectedElements.indexOf(key);
+
+                if (index >= 0) {
+                    this.sandbox.dom.removeClass($checkbox, 'is-selected');
+                    this.sandbox.dom.prop($checkbox, 'checked', false);
+                    this.selectedElements.splice(index, 1);
+                    this.selectedElementsValues.splice(index, 1);
+                    this.sandbox.emit(this.getEventName('deselected.item'), key);
+                }
+            }
+        },
+
         // trigger event with clicked item
         clickItem: function(event) {
 
-            var key = this.sandbox.dom.attr(event.currentTarget, 'data-key'),
+            var key = this.sandbox.dom.attr(event.currentTarget, 'data-id'),
                 value = this.sandbox.dom.text(this.sandbox.dom.find('.item-value', event.currentTarget)),
                 $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget)[0],
                 index = this.selectedElements.indexOf(key);
+
+            if (this.options.singleSelect === true) {
+                this.uncheckAll(event);
+            }
 
             if (index >= 0) {
 
@@ -163,6 +191,10 @@ define([], function() {
             }
 
             this.changeLabel();
+
+            if(this.options.singleSelect === true) {
+                this.hideDropDown();
+            }
 
         },
 
@@ -190,7 +222,7 @@ define([], function() {
         toggleDropDown: function () {
             this.sandbox.logger.log('toggle dropdown ' + this.options.instanceName);
 
-            if (this.sandbox.dom.is(this.$dropDown, ':visible')) {
+            if (this.dropdownVisible === true) {
                 this.hideDropDown();
             } else {
                 this.showDropDown();
@@ -201,14 +233,22 @@ define([], function() {
         showDropDown: function() {
             this.sandbox.logger.log('show dropdown ' + this.options.instanceName);
             this.sandbox.dom.removeClass(this.$dropdownContainer, 'hidden');
-            this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
+            this.sandbox.dom.on(this.sandbox.dom.window, 'click.dropdown.' + this.options.instanceName, this.hideDropDown.bind(this));
+            this.dropdownVisible = true;
         },
 
         // hide dropDown
-        hideDropDown: function() {
+        hideDropDown: function(event) {
+            if (!!event) {
+                if (!!this.sandbox.dom.find(event.target, this.$el).length) {
+                    return false;
+                } else {
+                    this.sandbox.dom.off(this.sandbox.dom.window, 'click.dropdown.' + this.options.instanceName);
+                }
+            }
             this.sandbox.logger.log('hide dropdown ' + this.options.instanceName);
             this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');
-            this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
+            this.dropdownVisible = false;
         },
 
         // return checked values
@@ -227,12 +267,10 @@ define([], function() {
                 return [
                     '<div class="husky-dropdown-multiple-select">',
                     '    <div class="grid-row dropdown-label pointer">',
-                    '       <div class="grid-col-11 checkbox">',
+                    '       <div class="checkbox">',
                     '           <span id="', this.labelId, '">', defaultLabel, '</span>',
                     '       </div>',
-                    '       <div class="grid-col-1 align-right">',
-                    '           <span class="dropdown-toggle inline-block"></span>',
-                    '       </div>',
+                    '       <span class="dropdown-toggle inline-block"></span>',
                     '   </div>',
                     '   <div class="grid-row dropdown-list dropdown-align-right hidden" id="', this.dropdownContainerId, '">',
                     '       <ul id="', this.listId, '"></ul>',
@@ -241,17 +279,21 @@ define([], function() {
                 ].join('');
             },
             menuElement: function(value, property, checked) {
+                var hiddenClass = '';
+                if (this.options.singleSelect === true) {
+                    hiddenClass = ' hidden';
+                }
 
                 if (typeof value === 'string') {
 
                     return [
-                        '<li data-key="', value, '">',
+                        '<li data-id="', value, '">',
                         '    <div class="grid-row">',
-                        '        <div class="grid-col-2">',
+                        '        <div class="check'+ hiddenClass +'">',
                         '            <input type="checkbox" class="form-element custom-checkbox"',checked,'/>',
                         '            <span class="custom-checkbox-icon"></span>',
                         '        </div>',
-                        '        <div class="grid-col-10 m-top-10 item-value">', value, '</div>',
+                        '        <div class="item-value">', value, '</div>',
                         '    </div>',
                         '</li>'
                     ].join('');
@@ -259,13 +301,13 @@ define([], function() {
                 } else {
 
                     return [
-                        '<li data-key="', value.id, '">',
+                        '<li data-id="', value.id, '">',
                         '    <div class="grid-row">',
-                        '        <div class="grid-col-2">',
+                        '        <div class="check'+ hiddenClass +'">',
                         '            <input type="checkbox" class="form-element custom-checkbox"',checked,'/>',
                         '            <span class="custom-checkbox-icon"></span>',
                         '        </div>',
-                        '        <div class="grid-col-10 m-top-10 item-value">', value[property], '</div>',
+                        '        <div class="item-value">', value[property], '</div>',
                         '    </div>',
                         '</li>'
                     ].join('');

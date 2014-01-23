@@ -47,7 +47,18 @@
             options: {
                 el: '#smart-content',
                 source: '(...)/products/technical/emax/',
-                includeSubFolders: true
+                dataSources: [{id: 1, name: 'home/'},
+                              {id: 2, name: 'home/products/'},
+                              {id: 3, name: 'home/products/technical'}],
+                categories: [{id: 1, name: 'New products'},
+                             {id: 2, name: 'Old products'},
+                             {id: 3, name: 'technical products'}],
+                sortBy: [{id: 1, name: 'Description'},
+                         {id: 2, name: 'Name'},
+                         {id: 3, name: 'Price'}],
+                presentAs: [{id: 1, name: '2-columns with pictures'},
+                            {id: 2, name: '1-column with pictures'},
+                            {id: 3, name: 'only pictures'}]
             }
         }]).then(function() {
             app.logger.log('Aura started...');
