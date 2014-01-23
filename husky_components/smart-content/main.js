@@ -308,7 +308,8 @@ define([], function() {
                         value: 'name',
                         data: this.options.dataSources,
                         preSelectedElements: [this.options.preSelectedDataSource],
-                        singleSelect: true
+                        singleSelect: true,
+                        noDeselect: true
                     }
                 },
                 {
@@ -354,7 +355,8 @@ define([], function() {
                         value: 'name',
                         data: [sortMethods.asc, sortMethods.desc],
                         preSelectedElements: [sortMethods[this.options.preSelectedSortMethod]],
-                        singleSelect: true
+                        singleSelect: true,
+                        noDeselect: true
                     }
                 },
                 {
@@ -366,7 +368,8 @@ define([], function() {
                         value: 'name',
                         data: this.options.presentAs,
                         preSelectedElements: [this.options.preSelectedPresentAs],
-                        singleSelect: true
+                        singleSelect: true,
+                        noDeselect: true
                     }
                 }
             ]);
@@ -380,11 +383,21 @@ define([], function() {
 
             this.sandbox.dom.on(this.overlay.$ok, 'click', function(event) {
                 this.sandbox.dom.preventDefault(event);
+                this.getOverlayData();
                 //generate request
                 this.closeOverlay();
             }.bind(this));
-        }
+        },
 
+        getOverlayData: function() {
+            this.sandbox.emit('husky.dropdown.multiple.select.'+ constants.dataSourceDDId +'.getChecked', function(selected){
+                //this.sandbox.logger.log(selected);
+            }.bind(this));
+        },
+
+        setOverlayTop: function() {
+            this.sandbox.dom.css(this.overlay.$el, {'top': (this.sandbox.dom.$window.height() - this.overlay.$el.height())/2 + 'px'});
+        }
     };
 
 });
