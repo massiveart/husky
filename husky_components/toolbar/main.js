@@ -53,6 +53,47 @@ define(function() {
             dropdownComponent: null
         },
 
+
+        /**
+         * triggered when component is completely initialized
+         * @event husky.toolbar[.INSTANCE_NAME].initialized
+         */
+            INITIALIZED = function() {
+            return getEventName.call(this, 'initialized');
+
+        },
+
+        /**
+         * triggered when item got clicked
+         * @event husky.toolbar[.INSTANCE_NAME].item.selected
+         * @param {Object} item
+         */
+            ITEM_SELECTED = function() {
+            return getEventName.call(this, 'item.selected');
+
+        },
+
+        /**
+         * used to enable an item
+         * @event husky.toolbar[.INSTANCE_NAME].item.enable
+         * @param {String} itemId Id of item to enable
+         */
+            ITEM_ENABLE = function() {
+            return getEventName.call(this, 'item.enable');
+
+        },
+
+        /**
+         * used to disable an item
+         * @event husky.toolbar[.INSTANCE_NAME].initialized
+         * @param {String} itemId Id of item to disable
+         */
+            ITEM_DISABLE = function() {
+            return getEventName.call(this, 'item.disable');
+
+        },
+
+
         selectItem = function(event) {
             event.preventDefault();
 
@@ -70,6 +111,10 @@ define(function() {
             }
         },
 
+        getEventName = function(postFix) {
+            return 'husky.toolbar.' + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+        },
+
         triggerSelectEvent = function(item, $parent) {
             var instanceName, parentId, icon;
             parentId = this.sandbox.dom.data($parent, 'id');
@@ -85,13 +130,18 @@ define(function() {
                 item.callback();
             } else {
                 instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
-                this.sandbox.emit('husky.toolbar.' + instanceName + 'item.select', item);
+                this.sandbox.emit(ITEM_SELECTED.call(this), item);
             }
         },
 
         bindDOMEvents = function() {
-            this.sandbox.dom.on(this.options.el, 'click', selectItem.bind(this), 'button:not(:disabled), li');
-            this.sandbox.dom.on(this.options.el, 'click', toggleItem.bind(this), '.dropdown-toggle');
+            this.sandbox.dom.on(this.$el, 'click', selectItem.bind(this), 'button:not(:disabled), li');
+            this.sandbox.dom.on(this.$el, 'click', toggleItem.bind(this), '.dropdown-toggle');
+        },
+
+        bindCustomEvents = function() {
+            this.sandbox.on(ITEM_ENABLE.call(this), enableItem.bind(this));
+            this.sandbox.on(ITEM_DISABLE.call(this), disableItem.bind(this));
         },
 
         /**
@@ -167,6 +217,36 @@ define(function() {
 
         hideDropdowns = function() {
             this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-expanded', this.$el), 'is-expanded');
+        },
+
+        enableItem = function(id) {
+            var $domItem,
+                item = this.items[id];
+            if (item.disabled) {
+                item.disabled = false;
+                $domItem = this.sandbox.dom.find('[data-id="'+id+'"]');
+
+                if (this.sandbox.dom.is($domItem, 'button')) {
+                    this.sandbox.dom.removeAttr($domItem, 'disabled');
+                } else {
+                    this.sandbox.dom.removeClass($domItem, 'disabled');
+                }
+            }
+        },
+
+        disableItem = function(id) {
+            var $domItem,
+                item = this.items[id];
+            if (!item.disabled) {
+                item.disabled = true;
+                $domItem = this.sandbox.dom.find('[data-id="'+id+'"]');
+
+                if (this.sandbox.dom.is($domItem, 'button')) {
+                    this.sandbox.dom.attr($domItem, 'disabled', 'disabled');
+                } else {
+                    this.sandbox.dom.addClass($domItem, 'disabled');
+                }
+            }
         };
 
     return {
@@ -177,6 +257,8 @@ define(function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.$el = this.sandbox.dom.$(this.options.el);
+
+            bindCustomEvents.call(this);
 
             // load data and call render
             if (!!this.options.url) {
@@ -192,6 +274,7 @@ define(function() {
             }
 
             bindDOMEvents.call(this);
+
         },
 
         render: function(data) {
@@ -282,7 +365,7 @@ define(function() {
             }
 
             // initialization finished
-            this.sandbox.emit('husky.tabs.initialized');
+            this.sandbox.emit(INITIALIZED.call(this));
         }
     };
 

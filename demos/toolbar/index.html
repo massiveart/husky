@@ -75,8 +75,9 @@
                                 'group': '1',
                                 'items': [
                                     {
+                                        'id': 7,
                                         'title': 'move',
-                                        disabled: true
+                                        disabled: false
                                     },
                                     {
                                         'title': 'duplicate'
@@ -173,6 +174,13 @@
                         setTimeout(function() {
                             fakeServer.respond();
                         }, 100);
+                    });
+
+
+                    app.sandbox.on('husky.toolbar.contact.initialized',function(){
+                        app.sandbox.emit('husky.toolbar.contact.item.enable', 2);
+                        app.sandbox.emit('husky.toolbar.contact.item.disable', 3);
+                        app.sandbox.emit('husky.toolbar.contact.item.disable', 7);
                     });
 
 

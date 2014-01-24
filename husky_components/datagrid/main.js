@@ -4,6 +4,11 @@
  *
  * @param {Object} [options] Configuration object
  * @param {Boolean} [options.autoRemoveHandling] raises an event before a row is removed
+ * @param {Array} [options.fieldsData] fields data will extend url and set tableHead automatically
+ * @param {Object} [options.fieldsData.{}] fields object
+ * @param {String} [options.fieldsData.{}.id] field name
+ * @param {String} [options.fieldsData.{}.translation] translation key which will be translated automatically
+ * @param {String} [options.fieldsData.{}.disabled] either 'true' or 'false'
  * @param {String} [options.className] additional classname for the wrapping div
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
  * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
@@ -27,6 +32,7 @@
  * @param {String} [options.tableHead.attribute] mapping information to data (if not set it will just iterate of attributes)
  * @param {Boolean} [options.appendTBody] add TBODY to table
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search event
+ * @param {String} [options.searchInstanceName=null] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.paginationTemplate] template for pagination
  *
@@ -62,7 +68,9 @@ define(function() {
             url: null,
             appendTBody: true,   // add TBODY to table
             searchInstanceName: null, // at which search it should be listened to can be null|string|empty_string
-            paginationTemplate: '<%=translate("pagination.page")%> <%=i%> <%=translate("pagination.of")%> <%=pages%>'
+            columnOptionsInstanceName: null, // at which search it should be listened to can be null|string|empty_string
+            paginationTemplate: '<%=translate("pagination.page")%> <%=i%> <%=translate("pagination.of")%> <%=pages%>',
+            fieldsData: null
         },
 
         namespace = 'husky.datagrid.',
@@ -149,6 +157,12 @@ define(function() {
          */
             DATA_SORT = namespace + 'data.sort',
 
+        /**
+         * raised when selection of items changes
+         * @event husky.datagrid.number.selections
+         */
+            NUMBER_SELECTIONS = namespace + 'number.selections',
+
 
     /* PROVIDED EVENTS */
 
@@ -221,11 +235,20 @@ define(function() {
          * Gets the data either via the url or the array
          */
         getData: function() {
+            var fieldsData, url;
 
             if (!!this.options.url) {
+                url = this.options.url;
+
+                // parse fields data
+                if (this.options.fieldsData) {
+                    fieldsData = this.parseFieldsData(this.options.fieldsData);
+                    url += '&fields='+fieldsData.urlFields;
+                    this.options.tableHead = fieldsData.tableHead;
+                }
 
                 this.sandbox.logger.log('load data from url');
-                this.load({ url: this.options.url});
+                this.load({ url: url});
 
             } else if (!!this.options.data.items) {
 
@@ -236,6 +259,40 @@ define(function() {
                     .appendPagination()
                     .render();
             }
+        },
+
+        /**
+         * parses fields data retreived from api
+         * @param fields
+         * @returns {{tableHead: Array, urlFields: string}}
+         */
+        parseFieldsData: function(fields) {
+            var data = [],
+                urlfields = '',
+                fieldsCount = 0;
+            this.sandbox.util.foreach(fields, function(field) {
+                if (field.disabled !== 'true' && field.disabled !== true) {
+                    // data
+                    data.push({content: this.sandbox.translate(field.translation), attribute: field.id});
+                    // url
+                    if (fieldsCount > 0) {
+                        urlfields += ',';
+                    }
+                    fieldsCount++;
+                    urlfields += field.id;
+                } else if (field.id === 'id') {
+                    // url
+                    if (fieldsCount > 0) {
+                        urlfields += ',';
+                    }
+                    fieldsCount++;
+                    urlfields += field.id;
+                }
+            }.bind(this));
+            return {
+                tableHead: data,
+                urlFields: urlfields
+            };
         },
 
         /**
@@ -567,7 +624,7 @@ define(function() {
                 tblCellContent,
                 tblCellClass;
 
-            if(!value) {
+            if (!value) {
                 value = '';
             }
 
@@ -639,6 +696,7 @@ define(function() {
                         this.sandbox.emit(ITEM_SELECT, event);
                     }
                 }
+                this.sandbox.emit(NUMBER_SELECTIONS, this.selectedItemIds.length);
 
             } else if ($element.attr('type') === 'radio') {
 
@@ -657,7 +715,7 @@ define(function() {
                 } else {
                     this.sandbox.emit(ITEM_SELECT, event);
                 }
-
+                this.sandbox.emit(NUMBER_SELECTIONS, this.selectedItemIds.length);
             }
         },
 
@@ -685,6 +743,7 @@ define(function() {
                 this.selectedItemIds = this.allItemIds.slice(0);
                 this.sandbox.emit(ALL_SELECT, this.selectedItemIds);
             }
+            this.sandbox.emit(NUMBER_SELECTIONS, this.selectedItemIds.length);
         },
 
         /**
@@ -1022,7 +1081,7 @@ define(function() {
         },
 
         bindCustomEvents: function() {
-            var searchInstanceName = '';
+            var searchInstanceName = '', columnOptionsInstanceName = '';
 
             // listen for private events
             this.sandbox.on(UPDATE, this.updateHandler.bind(this));
@@ -1048,6 +1107,13 @@ define(function() {
                 }
                 this.sandbox.on('husky.search' + searchInstanceName, this.triggerSearch.bind(this));
                 this.sandbox.on('husky.search' + searchInstanceName + '.reset', this.triggerSearch.bind(this, ''));
+            }
+            // listen to search events
+            if (!!this.options.columnOptionsInstanceName) {
+                if (this.options.columnOptionsInstanceName !== '') {
+                    columnOptionsInstanceName = '.' + this.options.columnOptionsInstanceName;
+                }
+                this.sandbox.on('husky.column-options' + columnOptionsInstanceName+'.saved', this.filterColumns.bind(this));
             }
         },
 
@@ -1085,6 +1151,32 @@ define(function() {
             this.addLoader();
             template = this.sandbox.uritemplate.parse(this.data.links.find);
             url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+
+            this.load({
+                url: url,
+                success: function() {
+                    this.removeLoader();
+                    this.sandbox.emit(UPDATED, 'updated after search');
+                }.bind(this)
+            });
+        },
+
+
+        /**
+         * is called when columns are changed
+         */
+        filterColumns: function(fieldsData) {
+
+
+            var template, url,
+                parsed = this.parseFieldsData(fieldsData);
+
+            this.addLoader();
+
+            template = this.sandbox.uritemplate.parse(this.data.links.filter);
+            url = this.sandbox.uritemplate.expand(template, {fieldsList: parsed.urlFields.split(',')});
+
+            this.options.tableHead = parsed.tableHead;
 
             this.load({
                 url: url,

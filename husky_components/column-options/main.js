@@ -16,6 +16,7 @@
  *
  * @param {Object} [options] Configuration object
  * @param {String} [options.url] url to fetch data from
+ * @param {String} [options.instanceName] name of the instance - will affect events name
  * @param {Object} [options.data] if no url is provided
  * @param {String} [options.trigger] the dom item which opens the component
  * @param {Object} [options.header] Configuration object for the header
@@ -34,6 +35,7 @@ define(function() {
             url: null,
             data: [],
             trigger: null,
+            instanceName: null,
             header: {
                 disabled: false,
                 title: 'Column Options'
@@ -42,6 +44,7 @@ define(function() {
                 disabled: false
             },
             hidden: false,
+            backdropClick: false,
             destroyOnClose: true
         },
 
@@ -61,46 +64,63 @@ define(function() {
         },
 
 
-        namespace = 'husky.column-options',
 
         /**
          * triggered when component is completely initialized
-         * @event husky.column-options.initialized
+         * @event husky.column-options[.INSTANCE_NAME].initialized
          */
-            INITIALIZED = namespace + '.initialized',
+            INITIALIZED = function() {
+            return getEventName.call(this, 'initialized');
+
+        },
 
         /**
          * triggered when item was enabled
-         * @event husky.column-options.item.enabled
+         * @event husky.column-options[.INSTANCE_NAME].item.enabled
          * @param {Object} item that was enabled
          */
-            ENABLED = namespace + '.item.enabled',
+            ENABLED = function() {
+            return getEventName.call(this, 'item.enabled');
+
+        },
 
         /**
          * triggered when item was disabled
-         * @event husky.column-options.item.disabled
+         * @event husky.column-options[.INSTANCE_NAME].item.disabled
          * @param {Object} item that was disabled
          */
-            DISABLED = namespace + '.item.disabled',
+            DISABLED = function() {
+            return getEventName.call(this, 'item.disabled');
+
+        },
 
         /**
          * triggered when save was clicked
-         * @event husky.column-options.saved
+         * @event husky.column-options[.INSTANCE_NAME].saved
          * @param {Array} Contains all visible items
          */
-            SAVED = namespace + '.saved',
+            SAVED = function() {
+            return getEventName.call(this, 'saved');
+
+        },
 
         /**
          * used for receiving all visible columns
-         * @event husky.column-options.get-selected
+         * @event husky.column-options[.INSTANCE_NAME].get-selected
          */
-            GET_SELECTED = namespace + '.get-selected',
+            GET_SELECTED = function() {
+            return getEventName.call(this, 'get-selected');
+
+        },
 
         /**
          * used for receiving all columns
-         * @event husky.column-options.get-all
+         * @event husky.column-options[.INSTANCE_NAME].get-all
          */
-            GET_ALL = namespace + '.get-all',
+            GET_ALL = function() {
+            return getEventName.call(this, 'get-all');
+
+        },
 
 
         /**
@@ -121,8 +141,12 @@ define(function() {
          * custom events
          */
             bindCustomEvents = function() {
-            this.sandbox.on(GET_SELECTED, getSelectedItems.bind(this));
-            this.sandbox.on(GET_ALL, getAllItems.bind(this));
+            this.sandbox.on(GET_SELECTED.call(this), getSelectedItems.bind(this));
+            this.sandbox.on(GET_ALL.call(this), getAllItems.bind(this));
+        },
+
+        getEventName = function(postFix) {
+            return 'husky.column-options.' + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         },
 
         /**
@@ -190,7 +214,6 @@ define(function() {
          * @param event
          */
             stopPropagation = function(event) {
-
             event.preventDefault();
             event.stopPropagation();
         },
@@ -200,10 +223,12 @@ define(function() {
          * opens dropdown submenu
          * @param event
          */
-            toggleDropdown = function(event) {
-
-            event.preventDefault();
-            event.stopPropagation();
+            toggleDropdown = function(event)
+        {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
 
             var $container = this.sandbox.dom.find('.column-options-container', this.$el),
                 isVisible = this.sandbox.dom.is($container, ':visible');
@@ -212,7 +237,9 @@ define(function() {
                 closeDropdown.call(this, $container, true);
             } else {
                 this.sandbox.dom.show($container);
-                this.sandbox.dom.one('body', 'click', closeDropdown.bind(this, $container, true));
+                if (this.options.backdropClick) {
+                    this.sandbox.dom.on(this.sandbox.dom.window, 'click.columnoptions.'+this.options.instanceName, closeDropdown.bind(this, $container, true));
+                }
             }
         },
 
@@ -230,6 +257,9 @@ define(function() {
          * @param rerender - rerender list after close
          */
             closeDropdown = function($container, rerender) {
+            if (this.options.backdropClick) {
+                this.sandbox.dom.off(this.sandbox.dom.window, 'click.columnoptions.'+this.options.instanceName, closeDropdown.bind(this, $container, true));
+            }
             this.sandbox.dom.hide($container);
             if (this.options.destroyOnClose) {
                 this.sandbox.dom.remove(this.$el);
@@ -259,7 +289,7 @@ define(function() {
             this.options.data = this.data;
 
             getAllItems.call(this, function(items) {
-                this.sandbox.emit(SAVED, items);
+                this.sandbox.emit(SAVED.call(this), items);
                 hideDropdown.call(this);
 
                 this.sandbox.dom.off('body', 'click');
@@ -287,7 +317,7 @@ define(function() {
                 this.sandbox.dom.append(this.$list, $listItem);
 
                 // set to disabled
-                if (typeof item.disabled !== 'undefined' && item.disabled !== "false" && item.disabled !== false ) {
+                if (typeof item.disabled !== 'undefined' && item.disabled !== "false" && item.disabled !== false) {
                     toggleVisibility.call(this, {currentTarget: this.sandbox.dom.find('.visibility-toggle', $listItem), doNotEmitEvents: true, preventDefault: function() {
                     }});
                 }
@@ -321,7 +351,7 @@ define(function() {
             item.disabled = !isDisabled;
 
             if (!event.doNotEmitEvents) {
-                this.sandbox.emit(isDisabled ? ENABLED : DISABLED, item);
+                this.sandbox.emit(isDisabled ? ENABLED.call(this) : DISABLED.call(this), item);
             }
         };
 
@@ -394,11 +424,11 @@ define(function() {
 
             // show on startup
             if (!this.options.hidden) {
-                this.sandbox.dom.show($container);
+                toggleDropdown.call(this);
             }
 
             // initialization finished
-            this.sandbox.emit(INITIALIZED);
+            this.sandbox.emit(INITIALIZED.call(this));
         },
 
         /**

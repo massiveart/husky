@@ -135,10 +135,17 @@
                 return $(context).remove(selector);
             };
 
-            app.core.dom.attr = function(selector, attributes) {
-                attributes = attributes || {};
-                return $(selector).attr(attributes);
+            app.core.dom.attr = function(selector, attributeName, value) {
+                if (!value && value !== '') {
+                    attributeName = attributeName || {};
+                    return $(selector).attr(attributeName);
+                } else {
+                    return $(selector).attr(attributeName, value);
+                }
             };
+            app.core.dom.removeAttr = function(selector, attributeName) {
+                return $(selector).removeAttr(attributeName);
+            }
 
             app.core.dom.is = function(selector, type) {
                 return $(selector).is(type);
