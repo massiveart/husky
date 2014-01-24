@@ -279,7 +279,7 @@ define([
                                 CapitalizeFirstLetter: this.options.CapitalizeFirstLetter,
                                 validator: function(string) {
                                     this.sandbox.emit(ITEM_ADDED.call(this), string);
-                                    return true
+                                    return true;
                                 }.bind(this)
                             });
             },
@@ -300,6 +300,13 @@ define([
              * Bind several events
              */
             bindEvents: function() {
+                this.sandbox.on(createEventName.call(this, 'getTags'), function(callback) {
+                    if(typeof callback === 'function') {
+                        callback(this.getTags());
+                    } else {
+                        this.sandbox.logger.log('Error: Callback is not a function');
+                    }
+                }.bind(this));
 
                 //if an autocomplete-suggestion gets clicked on, it gets added to the list
                 this.sandbox.on('husky.auto-complete.'+ this.options.instanceName +'.select', function(d) {
