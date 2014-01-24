@@ -353,10 +353,9 @@ require(['lib/husky'], function (Husky) {
                     {content: 'Content 1', width: "30%", attribute: "content1"},
                     {content: 'Content 2', width: "30%", attribute: "content2"},
                     {content: 'Content 3', width: "30%", attribute: "content3"},
-                    {content: ''}
                 ],
                 sortable: true,
-                excludeFields: ['id'],
+                excludeFields: [''],
                 searchInstanceName: 'test',
                 el: '#datagrid'
             }

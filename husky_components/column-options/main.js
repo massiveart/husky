@@ -11,7 +11,7 @@
 
 
 /**
- * @class Toolbar
+ * @class Column-Options
  * @constructor
  *
  * @param {Object} [options] Configuration object
