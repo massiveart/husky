@@ -5501,7 +5501,7 @@ a.btn-black, a.btn-highlight {
 }
 /* line 42, ../scss/modules/auto-complete-list.scss */
 .auto-complete-list-container .tt-suggestions {
-  width: 506px;
+  width: 498px;
 }
 
 /* line 47, ../scss/modules/auto-complete-list.scss */
@@ -5792,4 +5792,8 @@ a.btn-black, a.btn-highlight {
 /* line 127, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list input {
   margin: 4px 0 0 0;
+}
+/* line 130, ../scss/modules/smart-content.scss */
+.smart-overlay-content .tag-list .tt-suggestions {
+  width: 360px;
 }

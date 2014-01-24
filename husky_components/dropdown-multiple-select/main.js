@@ -25,6 +25,7 @@
  * husky.dropdown.multiple.select.<<instanceName>>.toggle     - toggles (show/hide) dropdown menu
  * husky.dropdown.multiple.select.<<instanceName>>.show       - show dropdown menu
  * husky.dropdown.multiple.select.<<instanceName>>.hide       - hide dropdown menu
+ * husky.dropdown.multiple.select.<<instanceName>>.initialize - initialize component
  */
 
 define([], function() {
@@ -59,6 +60,7 @@ define([], function() {
             this.dropdownContainerId = 'husky-dropdown-multiple-select-' + this.options.instanceName + '-menu';
 
             this.render();
+            this.sandbox.emit(this.getEventName('initialize'));
         },
 
         render: function() {

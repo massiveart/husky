@@ -71,6 +71,38 @@
             font-size: 24px;
         }
     }
+    .items-list {
+        list-style-type: none;
+        margin: 0;
+        padding: 0 20px;
+        li {
+            font-size: $baseFontSize;
+            line-height: 50px;
+            border-bottom: 1px solid $grayLighter;
+
+            .num {
+                color: $grayLight;
+                padding-right: 10px;
+            }
+            &:last-child {
+                border-width: 2px;
+            }
+        }
+    }
+}
+
+.smart-footer {
+    padding: 15px 20px 30px 20px;
+    line-height: 14px;
+    color: $grayLight;
+    font-size: $smallFontSize;
+    span {
+        padding-right: 5px;
+    }
+    .view-toggler {
+        color: $black;
+        cursor: pointer;
+    }
 }
 
 .smart-overlay-content {
@@ -85,6 +117,7 @@
     }
     .item, .item-half {
         margin-bottom: 25px;
+        min-height: 55px;
     }
     label {
         color: $black;

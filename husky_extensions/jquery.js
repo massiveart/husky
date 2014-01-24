@@ -118,8 +118,11 @@
                 return $(selector).width();
             };
 
-            app.core.dom.height = function(selector) {
-                return $(selector).height();
+            app.core.dom.height = function(selector, value) {
+                if (!value) {
+                    return $(selector).height();
+                }
+                return $(selector).height(value);
             };
 
             app.core.dom.offset = function(selector, attributes) {
@@ -318,6 +321,9 @@
                 $(selector).slideDown(duration,complete);
             };
 
+            app.core.dom.when = function(deffereds) {
+                return $.when(deffereds);
+            };
 
 
             app.core.util.ajax = $.ajax;
