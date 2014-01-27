@@ -41,10 +41,7 @@
  * @param {String} [options.arrowUpClass] CSS-class for arrow up icon
  * @param {Integer} [options.slideDuration] ms - duration for sliding suggestinos up/down
  */
-define([
-    'text!husky_components/auto-complete-list/main.html',
-    'text!husky_components/auto-complete-list/suggestions.html'
-], function(tplMain, tplSuggestions) {
+define([], function() {
 
         'use strict';
 
@@ -78,6 +75,27 @@ define([
                 arrowDownClass: 'arrow-down',
                 arrowUpClass: 'arrow-up',
                 slideDuration: 500
+            },
+
+            templates = {
+                main: [
+                    '<div class="auto-complete-list-container">',
+                    '    <label>',
+                    '        <%= label %>',
+                    '            <div class="auto-complete-list">',
+                    '                <div class="husky-autocomplete"></div>',
+                    '                <div class="toggler"></div>',
+                    '            </div>',
+                    '        </label>',
+                    '    </div>'
+                    ].join(''),
+                suggestion: [
+                    '<div class="auto-complete-list-suggestions">',
+                    '    <h5><%= headline %></h5>',
+                    '    <ul>',
+                    '    </ul>',
+                    '</div>'
+                ].join('')
             },
 
             /** Position values for toggling suggestions */
@@ -194,7 +212,7 @@ define([
              */
             renderMain: function() {
                 this.sandbox.dom.html(this.$el,
-                    _.template(tplMain)({
+                    _.template(templates.main)({
                         label: this.options.label
                     })
                 );
@@ -422,7 +440,7 @@ define([
                 if (!!this.options.suggestions.length) {
                     var box, list, i = -1, length = this.suggestions.length;
                     box = this.sandbox.dom.parseHTML(
-                        _.template(tplSuggestions)({
+                        _.template(templates.suggestion)({
                             headline: this.options.suggestionsHeadline
                         })
                     );
