@@ -28618,7 +28618,7 @@ define('__component__$auto-complete@husky',[], function () {
         getParameter: 'query',                                  // name for GET-parameter in remote query
         valueKey: 'name',                                       // JSON-key for value
         totalKey: 'total',										// JSON-key for total-value
-        resultKey: 'items',										// JSON-key for result
+        resultKey: '_embedded',								    // JSON-key for result
         typeaheadName: 'name',									// identifier - used by typeahead to cache intelligently
         value: null,                                            // value to display at start
         instanceName: 'undefined',                              // name of the component instance
@@ -28887,7 +28887,7 @@ define('__component__$auto-complete-list@husky',[
                 instanceName: 'undefined', //name of the component instance
                 items: [], //preloaded tags
                 itemsUrl: '', //url to load tags
-                itemsKey: 'items', //Key for AJAX respons
+                itemsKey: '_embedded', //Key for AJAX respons
                 suggestions: [], //suggestions for suggestions box
                 suggestionsHeadline: '', //Headline for suggestions bxo
                 suggestionsUrl: '', // url to load suggestions
