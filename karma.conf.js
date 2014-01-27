@@ -13,6 +13,7 @@ files = [
     REQUIRE,
     REQUIRE_ADAPTER,
 
+    { pattern: './vendor/**/*.js', included: false},
     { pattern: './bower_components/**/*.js', included: false},
     { pattern: './bower_components/**/**/*.js', included: false},
     { pattern: './lib/*.js', included: false},
