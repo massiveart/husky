@@ -108,7 +108,7 @@ define([], function() {
                 // enter pressed
                 this.submitSearch();
             } else if (event.keyCode === 27) {
-                // enter pressed
+                // escape pressed
                 this.removeSearch();
             }
 
