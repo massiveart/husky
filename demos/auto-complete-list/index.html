@@ -75,6 +75,9 @@
                         }
                     }]).then(function() {
                         app.logger.log('Aura started...');
+                        setTimeout(function() {
+                            app.sandbox.emit('husky.auto-complete-list.I1.set-tags', ['Set1', 'Set2', 'Set3']);
+                        }, 3000);
                     });
             });
         </script>

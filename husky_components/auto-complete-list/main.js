@@ -333,6 +333,10 @@ define([], function() {
                     }
                 }.bind(this));
 
+                this.sandbox.on(createEventName.call(this, 'set-tags'), function(tags) {
+                    this.pushTags(tags);
+                }.bind(this));
+
                 this.sandbox.on(ITEM_ADDED.call(this), function(newTag) {
                     this.setElementDataTags(newTag);
                 }.bind(this));
@@ -345,12 +349,14 @@ define([], function() {
                 this.sandbox.dom.on(this.$input, 'keydown', function(event) {
                     if(event.keyCode === 8 && this.sandbox.dom.val(this.$input).trim() === '') {
                         this.itemDeleteHandler();
+                        this.setElementDataTags();
                     }
                 }.bind(this));
 
                 this.sandbox.dom.on(this.$el, 'click', function(event) {
                     if(this.sandbox.dom.hasClass(event.target, 'tm-tag-remove') === true) {
                         this.itemDeleteHandler();
+                        this.setElementDataTags();
                     }
                 }.bind(this));
 
@@ -365,12 +371,12 @@ define([], function() {
 
             /**
              * Binds the tags to the element
-             * @param neTag {String} newly added tag
+             * @param newTag {String} newly added tag
              */
             setElementDataTags: function(newTag) {
                 var tags = this.sandbox.util.extend([], this.getTags());
-                if (tags.indexOf(newTag) === -1) {
-                    tags = this.sandbox.util.extend([], tags, [newTag]);
+                if (tags.indexOf(newTag) === -1 && typeof newTag !== 'undefined') {
+                    tags = tags.concat([newTag]);
                 }
                 this.sandbox.dom.data(this.$el, this.options.elementTagDataName, tags);
             },
@@ -622,6 +628,16 @@ define([], function() {
                     this.tagApi.tagsManager('pushTag', value);
                 } else {
                     return false;
+                }
+            },
+
+            /**
+             * Pushes an array of items to the list
+             * @param value {Array} array with items to push to the list
+             */
+            pushTags: function(tags) {
+                for (var i = -1, length = tags.length; ++i < length;) {
+                    this.pushTag(tags[i]);
                 }
             },
 
