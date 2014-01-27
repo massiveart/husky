@@ -550,7 +550,7 @@ define(function() {
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     this.tblColumns.push('<td>', this.templates.checkbox(), '</td>');
 
-                // add a radio to each row
+                    // add a radio to each row
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                     this.tblColumns.push('<td>', this.templates.radio({
                         name: 'husky-radio' + radioPrefix
@@ -603,9 +603,9 @@ define(function() {
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
                 if (!!editable) {
-                    this.tblColumns.push('<td data-field="'+key+'" ' + tblCellClass + ' ><span class="editable" contenteditable="true">' + tblCellContent + '</span></td>');
+                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true">' + tblCellContent + '</span></td>');
                 } else {
-                    this.tblColumns.push('<td  data-field="'+key+'" ' + tblCellClass + ' >' + tblCellContent + '</td>');
+                    this.tblColumns.push('<td  data-field="' + key + '" ' + tblCellClass + ' >' + tblCellContent + '</td>');
                 }
             } else {
                 this.tblRowAttributes += ' data-' + key + '="' + value + '"';
@@ -1121,6 +1121,7 @@ define(function() {
             if (this.lastFocusedEditableElement.id === id) {
                 if (this.lastFocusedEditableElement.value !== value) {
 
+                    // element already changed in the past and therefor in the changed data array
                     this.sandbox.util.each(this.changedData, function(index, value) {
                         if (value.id === id) {
                             el = value;
