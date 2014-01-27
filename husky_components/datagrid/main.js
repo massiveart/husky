@@ -962,7 +962,7 @@ define(function() {
 
             if (!!this.options.editable) {
                 this.$element.on('focusin', '.editable', this.focusOnEditable.bind(this));
-                this.$element.on('focusout', '.editable', this.isDataChanged.bind(this));
+                this.$element.on('focusout', '.editable', this.focusOutEditable.bind(this));
             }
 
 
@@ -1109,7 +1109,7 @@ define(function() {
         /**
          * Triggered when editable field looses focus
          */
-        isDataChanged: function(event) {
+        focusOutEditable: function(event) {
             var $td = this.sandbox.dom.parent(event.currentTarget),
                 $tr = this.sandbox.dom.parent($td),
                 field = this.sandbox.dom.data($td, 'field'),
