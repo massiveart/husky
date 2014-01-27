@@ -187,6 +187,14 @@ define([], function() {
      eventNamespace = 'husky.smart-content.',
 
     /**
+     * raised after initialization process
+     * @event husky.smart-content.initialize
+     */
+    INITIALIZED = function() {
+        return createEventName.call(this, 'initialize');
+    },
+
+    /**
      * raised when all overlay components returned their value
      * @event husky.smart-content.input-retrieved
      */
@@ -217,11 +225,11 @@ define([], function() {
 
     return {
 
-            /**
-             * Initialize component
-             */
-            initialize: function() {
-                this.sandbox.logger.log('initialize', this);
+        /**
+         * Initialize component
+         */
+        initialize: function() {
+            this.sandbox.logger.log('initialize', this);
 
             //merge options with defaults
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
@@ -231,6 +239,8 @@ define([], function() {
             this.bindEvents();
             this.setURI();
             this.loadContent();
+
+            this.sandbox.emit(INITIALIZED.call(this));
         },
 
         /**
