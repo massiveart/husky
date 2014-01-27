@@ -62,6 +62,7 @@
             "aura/ext/mediator",
             "aura/ext/components",
             "husky-validation",
+            "html5sortable",
             "globalize_lib",
             "ckeditor",
             "jqueryAdapter",

@@ -5648,20 +5648,14 @@ a.btn-black, a.btn-highlight {
   color: white;
 }
 
-/* line 6, ../scss/modules/smart-content.scss */
-#smart-content {
-  /*remove later*/
-  padding: 50px 0 0 50px;
-}
-
-/* line 11, ../scss/modules/smart-content.scss */
+/* line 5, ../scss/modules/smart-content.scss */
 .smart-content-container {
   width: 820px;
   background: white;
   border-radius: 0 0 4px 4px;
 }
 
-/* line 17, ../scss/modules/smart-content.scss */
+/* line 11, ../scss/modules/smart-content.scss */
 .smart-header {
   position: relative;
   top: 0px;
@@ -5672,12 +5666,12 @@ a.btn-black, a.btn-highlight {
   padding-left: 20px;
   font-size: 12px;
 }
-/* line 27, ../scss/modules/smart-content.scss */
+/* line 21, ../scss/modules/smart-content.scss */
 .smart-header .desc {
   color: #999999;
   padding-right: 3px;
 }
-/* line 32, ../scss/modules/smart-content.scss */
+/* line 26, ../scss/modules/smart-content.scss */
 .smart-header .icon-adjust-alt {
   display: block;
   position: absolute;
@@ -5690,23 +5684,23 @@ a.btn-black, a.btn-highlight {
   border: 1px solid #cccccc;
   border-radius: 2px;
 }
-/* line 44, ../scss/modules/smart-content.scss */
+/* line 38, ../scss/modules/smart-content.scss */
 .smart-header .icon-adjust-alt:hover {
   background: #efefef;
 }
 
-/* line 50, ../scss/modules/smart-content.scss */
+/* line 44, ../scss/modules/smart-content.scss */
 .smart-content {
   position: relative;
   top: 0px;
   left: 0px;
 }
-/* line 55, ../scss/modules/smart-content.scss */
+/* line 49, ../scss/modules/smart-content.scss */
 .smart-content .no-content {
   text-align: center;
   height: 210px;
 }
-/* line 59, ../scss/modules/smart-content.scss */
+/* line 53, ../scss/modules/smart-content.scss */
 .smart-content .no-content .icon-file {
   position: absolute;
   top: 70px;
@@ -5715,124 +5709,124 @@ a.btn-black, a.btn-highlight {
   font-size: 125px;
   color: #efefef;
 }
-/* line 67, ../scss/modules/smart-content.scss */
+/* line 61, ../scss/modules/smart-content.scss */
 .smart-content .no-content .text {
   padding-top: 160px;
   font-weight: bold;
   color: #e4e4e4;
   font-size: 24px;
 }
-/* line 74, ../scss/modules/smart-content.scss */
+/* line 68, ../scss/modules/smart-content.scss */
 .smart-content .items-list {
   list-style-type: none;
   margin: 0;
   padding: 0 20px;
 }
-/* line 78, ../scss/modules/smart-content.scss */
+/* line 72, ../scss/modules/smart-content.scss */
 .smart-content .items-list li {
   font-size: 14px;
   line-height: 50px;
   border-bottom: 1px solid #cccccc;
 }
-/* line 83, ../scss/modules/smart-content.scss */
+/* line 77, ../scss/modules/smart-content.scss */
 .smart-content .items-list li .num {
   color: #999999;
   padding-right: 10px;
 }
-/* line 87, ../scss/modules/smart-content.scss */
+/* line 81, ../scss/modules/smart-content.scss */
 .smart-content .items-list li:last-child {
   border-width: 2px;
 }
 
-/* line 94, ../scss/modules/smart-content.scss */
+/* line 88, ../scss/modules/smart-content.scss */
 .smart-footer {
   padding: 15px 20px 30px 20px;
   line-height: 14px;
   color: #999999;
   font-size: 12px;
 }
-/* line 99, ../scss/modules/smart-content.scss */
+/* line 93, ../scss/modules/smart-content.scss */
 .smart-footer span {
   padding-right: 5px;
 }
-/* line 102, ../scss/modules/smart-content.scss */
+/* line 96, ../scss/modules/smart-content.scss */
 .smart-footer .view-toggler {
   color: black;
   cursor: pointer;
 }
 
-/* line 108, ../scss/modules/smart-content.scss */
+/* line 102, ../scss/modules/smart-content.scss */
 .smart-overlay-content {
   padding: 15px 0 5px 20px;
   font-size: 12px;
 }
-/* line 112, ../scss/modules/smart-content.scss */
+/* line 106, ../scss/modules/smart-content.scss */
 .smart-overlay-content .desc {
   font-size: 14px;
   color: #999999;
   padding-bottom: 5px;
   display: block;
 }
-/* line 118, ../scss/modules/smart-content.scss */
+/* line 112, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item, .smart-overlay-content .item-half {
   margin-bottom: 25px;
   min-height: 55px;
 }
-/* line 122, ../scss/modules/smart-content.scss */
+/* line 116, ../scss/modules/smart-content.scss */
 .smart-overlay-content label {
   color: black;
   font-size: 12px;
 }
-/* line 126, ../scss/modules/smart-content.scss */
+/* line 120, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item-half {
   float: left;
   width: 170px;
 }
-/* line 130, ../scss/modules/smart-content.scss */
+/* line 124, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item {
   padding-right: 20px;
 }
-/* line 133, ../scss/modules/smart-content.scss */
+/* line 127, ../scss/modules/smart-content.scss */
 .smart-overlay-content .left {
   margin-right: 20px;
 }
-/* line 136, ../scss/modules/smart-content.scss */
+/* line 130, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check {
   margin-top: 25px;
 }
-/* line 138, ../scss/modules/smart-content.scss */
+/* line 132, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check .description {
   padding-left: 10px;
 }
-/* line 141, ../scss/modules/smart-content.scss */
+/* line 135, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check .custom-checkbox-icon {
   margin-bottom: 2px;
 }
-/* line 145, ../scss/modules/smart-content.scss */
+/* line 139, ../scss/modules/smart-content.scss */
 .smart-overlay-content .sortMethod {
   margin-top: 25px;
 }
-/* line 148, ../scss/modules/smart-content.scss */
+/* line 142, ../scss/modules/smart-content.scss */
 .smart-overlay-content input.limit-to {
   height: 30px;
   width: 100%;
   padding-left: 10px;
 }
-/* line 153, ../scss/modules/smart-content.scss */
+/* line 147, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list {
   border: 1px solid #cccccc;
   border-radius: 4px 4px 0 0;
 }
-/* line 156, ../scss/modules/smart-content.scss */
+/* line 150, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list .auto-complete-list {
   padding-bottom: 2px;
   padding-top: 2px;
 }
-/* line 160, ../scss/modules/smart-content.scss */
+/* line 154, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list input {
   margin: 4px 0 0 0;
 }
-/* line 163, ../scss/modules/smart-content.scss */
+/* line 157, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list .tt-suggestions {
   width: 360px;
 }
