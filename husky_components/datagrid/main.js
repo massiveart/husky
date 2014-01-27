@@ -1107,7 +1107,7 @@ define(function() {
         },
 
         /**
-         * Triggered when data in field could be changed
+         * Triggered when editable field looses focus
          */
         isDataChanged: function(event) {
             var $td = this.sandbox.dom.parent(event.currentTarget),
@@ -1149,6 +1149,7 @@ define(function() {
 
         /**
          * Saves the changes for an editable list
+         * Triggered with the husky.datagrid.data.save event
          */
         saveChangedData: function() {
 
