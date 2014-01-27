@@ -6,16 +6,39 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  *
- * @module husky/components/column-navigation
+ * @module husky/components/smart-content
  */
-
 
 /**
  * @class SmartContent
  * @constructor
  *
  * @params {Object} [options] Configuration object
- *
+ * @params {Integer} [options.visibleItems] maximum of items visible at the start and in the view-less state
+ * @params {Array} [options.dataSources] array of sources with id and name property
+ * @params {Boolean} [options.includeSubFolders] if true sub folders are included right from the beginning
+ * @params {Integer} [options.preSelectedDataSource] id of the preselected source
+ * @params {Array} [options.categories] array of categories with id and name property
+ * @params {Integer} [options.preSelectedCategory] id of the preselected category
+ * @params {Array} [options.tags] array of tags which are inserted at the beginning
+ * @params {String} [options.tagsAutoCompleteUrl] url to which the tags input is sent and can be autocompleted
+ * @params {Array} [options.sortBy] array of sort-possibilities with id and name property
+ * @params {Integer} [options.preSelectedSortBy] id of the preselected sort-possibility
+ * @params {String} [options.preSelectedSortMethod] Sort-method to begin with (asc or desc)
+ * @params {Array} [options.presentAs] array of presentation-possibilities with id and name property
+ * @params {Integer} [options.preSelectedPresentAs] id presentation-possibility to begin with
+ * @params {Integer} [options.limitResult] maximum number of items returned on the request
+ * @params {String} [options.instanceName] name of the component instance
+ * @params {String} [options.url] url for requesting the items
+ * @params {String} [options.dataSourceParameter] parameter for the source id
+ * @params {String} [options.includeSubFoldersParameter] parameter for the include-sub-folders-value
+ * @params {String} [options.categoryParameter] parameter for the category id
+ * @params {String} [options.tagsParameter] parameter for the tags
+ * @params {String} [options.sortByParameter] parameter for the sort-possibility id
+ * @params {String} [options.sortMethodParameter] parameter for the sort method
+ * @params {String} [options.presentAsParameter] parameter for the presentation-possibility id
+ * @params {String} [options.limitResultParameter] parameter for the limit-result-value
+ * @params {String} [options.resultKey] key for the data in the returning JSON-result
  */
 define([], function() {
 
@@ -25,16 +48,16 @@ define([], function() {
         visibleItems: 3,
         dataSources: [],
         includeSubFolders: false,
-        preSelectedDataSource: [],
+        preSelectedDataSource: 0,
         categories: [],
-        preSelectedCategory: null,
+        preSelectedCategory: 0,
         tags: [],
         tagsAutoCompleteUrl: '',
-        sortBy: null,
-        preSelectedSortBy: null,
-        preSelectedSortMethod: 'asc', //asc, desc
+        sortBy: [],
+        preSelectedSortBy: 0,
+        preSelectedSortMethod: 'asc',
         presentAs: [],
-        preSelectedPresentAs: null,
+        preSelectedPresentAs: 0,
         limitResult: 0, //0 = no-limit
         instanceName: '',
         url: '',
@@ -46,7 +69,7 @@ define([], function() {
         sortMethodParameter: 'sortMethod',
         presentAsParameter: 'presentAs',
         limitResultParameter: 'limitResult',
-        resultKey: 'result' //key for JSON result
+        resultKey: 'result'
     },
 
     sortMethods = {
@@ -172,6 +195,14 @@ define([], function() {
      },
 
     /**
+     * raised before data is requested with AJAX
+     * @event husky.smart-content.data-request
+     */
+     DATA_REQUEST = function() {
+         return createEventName.call(this, 'data-request');
+     },
+
+    /**
      * raised when data has returned from the ajax request
      * @event husky.smart-content.data-retrieved
      */
@@ -202,6 +233,9 @@ define([], function() {
             this.loadContent();
         },
 
+        /**
+         * Sets the objects properties default values
+         */
         setVariables: function() {
             this.$container = null;
             this.$header = null;
@@ -233,16 +267,25 @@ define([], function() {
             };
         },
 
+        /**
+         * Renders the main container and the header
+         */
         render: function() {
             this.renderContainer();
             this.renderHeader();
         },
 
+        /**
+         * Inserts the skeleton-template and finds the main-container
+         */
         renderContainer: function() {
             this.sandbox.dom.html(this.$el, templates.skeleton);
             this.$container = this.sandbox.dom.find(constants.containerSelector, this.$el);
         },
 
+        /**
+         * Finds the header-container and renders the config-button
+         */
         renderHeader: function() {
             this.$header = this.sandbox.dom.find(constants.headerSelector, this.$el);
             if (!!this.$header.length) {
@@ -252,6 +295,9 @@ define([], function() {
             }
         },
 
+        /**
+         * Renders the source text and prepends it to the header
+         */
         prependSource: function() {
             var desc;
             if (!!this.overlay.data.dataSource.length) {
@@ -268,6 +314,11 @@ define([], function() {
             }
         },
 
+        /**
+         * Returns the name of a source based on its id
+         * @param id {Integer} id of a source
+         * @returns {String} name of the matching source
+         */
         getSourceNameById: function(id) {
             id = parseInt(id);
             for(var i = -1, length = this.options.dataSources.length; ++i < length;) {
@@ -278,24 +329,36 @@ define([], function() {
             return '';
         },
 
+        /**
+         * Removes the source element from the header
+         */
         removeSource: function() {
             this.sandbox.dom.remove(this.sandbox.dom.find(constants.sourceSelector, this.$header));
         },
 
+        /**
+         * Renders and appends the toggle-button
+         */
         renderButton: function() {
             this.$button = this.sandbox.dom.createElement('<a href="#"/>');
             this.sandbox.dom.addClass(this.$button, constants.buttonClass);
             this.sandbox.dom.append(this.$header, this.$button);
         },
 
+        /**
+         * Renders the content decides whether the footer is rendered or not
+         */
         renderContent: function() {
+            //if not already exists render content-container
             if(this.$content === null) {
                 this.$content = this.sandbox.dom.find(constants.contentSelector, this.$el);
             }
+
             if (this.items.length !== 0) {
                 var ul, i = -1, length = this.items.length;
                 ul = this.sandbox.dom.createElement('<ul class="'+ constants.contentListClass +'"/>');
 
+                //loop stops of no more items are left or if number of rendered items matches itemsVisible
                 for(;++i < length && i < this.itemsVisible;) {
                     this.sandbox.dom.append(ul, _.template(templates.contentItem)({
                                                     data_id: this.items[i].id,
@@ -307,6 +370,7 @@ define([], function() {
                 this.sandbox.dom.html(this.$content, ul);
                 this.renderFooter();
             } else {
+                //render no-content-template and detach the footer
                 this.sandbox.dom.html(this.$content, _.template(templates.noContent)({
                                                     no_content: 'No content selected'
                 }));
@@ -314,6 +378,9 @@ define([], function() {
             }
         },
 
+        /**
+         * Renders the footer and calls a method to bind the events for itself
+         */
         renderFooter: function() {
             if (this.$footer === null) {
                 this.$footer = this.sandbox.dom.createElement('<div/>');
@@ -332,6 +399,9 @@ define([], function() {
             this.bindFooterEvents();
         },
 
+        /**
+         * Appends the view-toggler to the footer
+         */
         appendViewToggler: function() {
             if (this.itemsVisible < this.items.length) {
                 this.sandbox.dom.append(this.$footer, '<span class="'+ constants.viewTogglerClass +'">(view all)</span>');
@@ -340,12 +410,18 @@ define([], function() {
             }
         },
 
+        /**
+         * Removes the footer
+         */
         detachFooter: function() {
             if (this.$footer !== null) {
                 this.sandbox.dom.remove(this.$footer);
             }
         },
 
+        /**
+         * Binds general events
+         */
         bindEvents: function() {
             this.sandbox.dom.on(this.$button, 'click', function(event) {
                 this.sandbox.dom.preventDefault(event);
@@ -359,12 +435,19 @@ define([], function() {
             }.bind(this));
         },
 
+        /**
+         * Binds footer events
+         */
         bindFooterEvents: function() {
             this.sandbox.dom.on(this.sandbox.dom.find('.' + constants.viewTogglerClass, this.$footer), 'click', function() {
                 this.toggleView();
             }.bind(this));
         },
 
+        /**
+         * Changes the itemsVisible property and calls the render content method
+         * (more or less items are visible)
+         */
         toggleView: function() {
             if (this.itemsVisible < this.items.length) {
                 this.itemsVisible = this.items.length;
@@ -374,25 +457,36 @@ define([], function() {
             this.renderContent();
         },
 
+        /**
+         * Appends the overlay-box to the body
+         */
         openOverlay: function() {
+            //only open if closed
             if (this.overlay.opened === false) {
+                //if overlay-element doesn't exist initialize it
                 if (this.overlay.$el === null) {
                     this.loadOverlay();
                     this.loadOverlayContent();
                     this.startOverlayComponents();
                     this.bindOverlayEvents();
                 }
-                this.sandbox.dom.append($('body'), this.overlay.$el);
+                this.sandbox.dom.append(this.sandbox.dom.$('body'), this.overlay.$el);
                 this.overlay.opened = true;
                 this.setOverlayTop();
             }
         },
 
+        /**
+         * Removes the overlay-element from the DOM
+         */
         closeOverlay: function() {
             this.sandbox.dom.detach(this.overlay.$el);
             this.overlay.opened = false;
         },
 
+        /**
+         * Creates the overlay-element with a skeleton-template
+         */
         loadOverlay: function() {
             this.overlay.$el = this.sandbox.dom.createElement(
                 _.template(templates.overlaySkeleton)({
@@ -403,6 +497,9 @@ define([], function() {
             this.overlay.$content = this.sandbox.dom.find(constants.overlayContentSelector, this.overlay.$el);
         },
 
+        /**
+         * Loads the overlay content based on a template
+         */
         loadOverlayContent: function() {
             this.sandbox.dom.html(this.overlay.$content,
                 _.template(templates.overlayContent)({
@@ -419,6 +516,9 @@ define([], function() {
 
         },
 
+        /**
+         * Starts all husky-components used by the overlay
+         */
         startOverlayComponents: function() {
             this.sandbox.start([
                 {
@@ -497,6 +597,9 @@ define([], function() {
             ]);
         },
 
+        /**
+         * Binds overlay events
+         */
         bindOverlayEvents: function() {
             this.sandbox.dom.on(this.overlay.$close, 'click', function(event) {
                 this.sandbox.dom.preventDefault(event);
@@ -515,6 +618,9 @@ define([], function() {
             }.bind(this));
         },
 
+        /**
+         * Generates the URI for the request
+         */
         setURI: function() {
             var newURI = [this.options.url,
                           '?', this.options.dataSourceParameter, '=', this.overlay.data.dataSource,
@@ -532,8 +638,14 @@ define([], function() {
             }
         },
 
+        /**
+         * Requests the data for the content
+         */
         loadContent: function() {
+            //only request if URI has changed
             if(this.URI.hasChanged === true) {
+                this.sandbox.emit(DATA_REQUEST.call(this));
+
                 this.sandbox.util.ajax({
                     url: this.URI.str,
 
@@ -549,6 +661,10 @@ define([], function() {
             }
         },
 
+        /**
+         * Gets the values of all user inputs of the overlay
+         * event is emited on which the associeted component responses
+         */
         getOverlayData: function() {
             var dataSourceDef, categoryDef, tagsDef, sortByDef, sortMethodDef, presentAsDef;
             dataSourceDef = categoryDef = tagsDef = sortByDef = sortMethodDef = presentAsDef = this.sandbox.data.deferred();
@@ -602,6 +718,9 @@ define([], function() {
             }.bind(this));
         },
 
+        /**
+         * Positions the overlay vertically in the middle of the screen
+         */
         setOverlayTop: function() {
             this.sandbox.dom.css(this.overlay.$el, {'top': (this.sandbox.dom.$window.height() - this.overlay.$el.outerHeight())/2 + 'px'});
         }
