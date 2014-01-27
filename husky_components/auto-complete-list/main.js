@@ -30,7 +30,7 @@ define([
                 instanceName: 'undefined', //name of the component instance
                 items: [], //preloaded tags
                 itemsUrl: '', //url to load tags
-                itemsKey: 'items', //Key for AJAX respons
+                itemsKey: '_embedded', //Key for AJAX respons
                 suggestions: [], //suggestions for suggestions box
                 suggestionsHeadline: '', //Headline for suggestions bxo
                 suggestionsUrl: '', // url to load suggestions

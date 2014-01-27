@@ -30,7 +30,7 @@ define([], function () {
         getParameter: 'query',                                  // name for GET-parameter in remote query
         valueKey: 'name',                                       // JSON-key for value
         totalKey: 'total',										// JSON-key for total-value
-        resultKey: 'items',										// JSON-key for result
+        resultKey: '_embedded',								    // JSON-key for result
         typeaheadName: 'name',									// identifier - used by typeahead to cache intelligently
         value: null,                                            // value to display at start
         instanceName: 'undefined',                              // name of the component instance
