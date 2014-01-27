@@ -40,6 +40,7 @@
  * @param {String} [options.arrowDownClass] CSS-class for arrow down icon
  * @param {String} [options.arrowUpClass] CSS-class for arrow up icon
  * @param {Integer} [options.slideDuration] ms - duration for sliding suggestinos up/down
+ * @param {String} [options.elementTagDataName] attribute name to store list of tags on element
  */
 define([], function() {
 
@@ -74,7 +75,8 @@ define([], function() {
                 togglerSelector: '.toggler',
                 arrowDownClass: 'arrow-down',
                 arrowUpClass: 'arrow-up',
-                slideDuration: 500
+                slideDuration: 500,
+                elementTagDataName: 'tags'
             },
 
             templates = {
@@ -304,6 +306,7 @@ define([], function() {
                                     return true;
                                 }.bind(this)
                             });
+                this.setElementDataTags();
             },
 
             /**
@@ -330,6 +333,10 @@ define([], function() {
                     }
                 }.bind(this));
 
+                this.sandbox.on(ITEM_ADDED.call(this), function(newTag) {
+                    this.setElementDataTags(newTag);
+                }.bind(this));
+
                 //if an autocomplete-suggestion gets clicked on, it gets added to the list
                 this.sandbox.on('husky.auto-complete.'+ this.options.instanceName +'.select', function(d) {
                     this.pushTag(d.name);
@@ -354,6 +361,18 @@ define([], function() {
                         this.toggleSuggestions();
                     }.bind(this));
                 }
+            },
+
+            /**
+             * Binds the tags to the element
+             * @param neTag {String} newly added tag
+             */
+            setElementDataTags: function(newTag) {
+                var tags = this.sandbox.util.extend([], this.getTags());
+                if (tags.indexOf(newTag) === -1) {
+                    tags = this.sandbox.util.extend([], tags, [newTag]);
+                }
+                this.sandbox.dom.data(this.$el, this.options.elementTagDataName, tags);
             },
 
             /**
