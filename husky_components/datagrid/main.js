@@ -4,6 +4,7 @@
  *
  * @param {Object} [options] Configuration object
  * @param {Boolean} [options.autoRemoveHandling] raises an event before a row is removed
+ * @param {Boolean} [options.editable] will not set class is-selectable to prevent hover effect for complete rows
  * @param {String} [options.className] additional classname for the wrapping div
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
  * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
@@ -40,6 +41,7 @@ define(function() {
      */
     var defaults = {
             autoRemoveHandling: true,
+            editable: false,
             className: 'datagridcontainer',
             elementType: 'table',
             data: null,
@@ -199,10 +201,12 @@ define(function() {
             this.data = null;
             this.allItemIds = [];
             this.selectedItemIds = [];
+
             this.rowStructure = [ {
                 attribute: 'id',
                 editable: false
             }];
+
             this.sort = {
                 ascClass: 'icon-arrow-up',
                 descClass: 'icon-arrow-down',
@@ -368,7 +372,11 @@ define(function() {
             // set html classes
             tblClasses = [];
             tblClasses.push((!!this.options.className && this.options.className !== 'table') ? 'table ' + this.options.className : 'table');
-            tblClasses.push((this.options.selectItem && this.options.selectItem.type === 'checkbox') ? 'is-selectable' : '');
+
+            // when list should not have the hover effect for whole rows do not set the is-selectable class
+            if(!this.options.editable) {
+                tblClasses.push((this.options.selectItem && this.options.selectItem.type === 'checkbox') ? 'is-selectable' : '');
+            }
 
             $table.addClass(tblClasses.join(' '));
 

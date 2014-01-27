@@ -350,6 +350,7 @@ require(['lib/husky'], function (Husky) {
                     className: "myClass",
                     removeRow: true,
                     pagination: true,
+                    editable: true,
                     columns: [
                         {content: 'Content 1', width: "30%", attribute: "content1", editable: true},
                         {content: 'Content 2', width: "30%", attribute: "content2"},

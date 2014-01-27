@@ -56,8 +56,8 @@
 // -------------------------
 
 .editable {
-    padding: 5px;
-    margin: 0 0 0 -5px;
+    padding: 4px 7px 4px 7px;
+    margin: 0 0 0 -4px;
     border: 1px solid transparent;
     border-radius: 5px;
     outline:0;
@@ -67,6 +67,11 @@
 .editable:focus,
 .editable:active {
     background: $white;
+    border: 1px solid $white;
+    outline:0;
+}
+
+.editable:hover {
     border: 1px solid $white;
     outline:0;
 }
