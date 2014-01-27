@@ -1080,7 +1080,7 @@ define(function() {
                 url: url,
                 success: function() {
                     this.removeLoader();
-                    this.sandbox.emit(UPDATE, 'updated search');
+                    this.sandbox.emit(UPDATED, 'updated after search');
                 }.bind(this)
             });
         },

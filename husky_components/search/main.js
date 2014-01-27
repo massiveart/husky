@@ -92,6 +92,11 @@ define([], function() {
 
         },
 
+        resetSearch : function() {
+            this.sandbox.emit(RESET.call(this));
+            this.searchSubmitted = false;
+        },
+
         checkKeyPressed: function(event) {
 
             var $removeIcon;
@@ -104,36 +109,57 @@ define([], function() {
                 this.sandbox.dom.hide($removeIcon);
             }
 
-            // enter pressed
             if (event.keyCode === 13) {
+                // enter pressed
                 this.submitSearch();
+            } else if (event.keyCode === 27) {
+                // escape pressed
+                this.removeSearch();
             }
+
+
         },
 
         submitSearch: function(event) {
-            event.preventDefault();
+            if (!!event) {
+                event.preventDefault();
+            }
 
             // get search value
 
             var searchString = this.sandbox.dom.val(this.sandbox.dom.find('#search-input', this.$el));
 
-            // check if searchstring is emtpy
+            // if searchstring is emtpy, emit reset
             if (searchString === '') {
+                if (this.searchSubmitted) {
+                    this.resetSearch();
+                }
                 return;
             }
+
+            this.searchSubmitted = true;
 
             // emit event
             this.sandbox.emit(SEARCH.call(this), searchString);
         },
 
         removeSearch: function(event) {
-            event.preventDefault();
+            if (!!event) {
+                event.preventDefault();
+            } else {
+                event = {
+                    target: this.sandbox.dom.find('.remove-icon', this.$el),
+                    currentTarget: this.sandbox.dom.find('.remove-icon', this.$el)
+                };
+            }
             var $input;
             $input = this.sandbox.dom.next(event.currentTarget, 'input');
 
             this.sandbox.dom.hide(event.target);
             this.sandbox.dom.val($input, '');
-            this.sandbox.emit(RESET.call(this), '');
+            if (this.searchSubmitted) {
+                this.resetSearch();
+            }
         },
 
         selectInput: function(event) {
