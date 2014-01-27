@@ -1,14 +1,10 @@
-// TODO: set footer template
-// TODO: initialized (own describe)
-// TODO: settings event
-
 define(['husky'], function(husky) {
 
     'use strict';
 
-    var app, fakeServer;
+    var app, fakeServer, $container;
 
-    describe('Smart-content', function() {
+    ddescribe('Smart-content', function() {
 
         beforeEach(function() {
             var respond = false;
@@ -22,7 +18,7 @@ define(['husky'], function(husky) {
                 app = husky({ debug: { enable: true }});
 
                 // Fix multiple events
-                /*$('body').off();
+                $('body').off();
                 app.start(document.body).then(function() {
 
                     app.sandbox.start([
@@ -50,13 +46,13 @@ define(['husky'], function(husky) {
                         fakeServer.respond();
                         respond = true;
                     }, 100);
-                });*/
+                });
 
             });
 
-            /*waitsFor(function() {
+            waitsFor(function() {
                 return respond;
-            }, 'Fake server should have respond!', 750);*/
+            }, 'Fake server should have respond!', 750);
         });
 
         afterEach(function() {
@@ -72,8 +68,38 @@ define(['husky'], function(husky) {
             }
         });
 
-        it('should test', function() {
-           expect(1).toEqual(1);
+        /**
+         *
+         * DOM related tests
+         *
+         */
+
+        /**
+         * Check if component gets initialized
+         */
+        it('should initialize the container', function() {
+           runs(function() {
+               $container = $('.smart-content-container');
+               expect($container.length).toEqual(1);
+           });
+        });
+
+        /**
+         * Check if the header gets initialized
+         */
+        it('should initialize the container', function() {
+            runs(function() {
+                expect($container.find('.smart-header').length).toEqual(1);
+            });
+        });
+
+        /**
+         * Check if the content gets initialized
+         */
+        it('should initialize the container', function() {
+            runs(function() {
+                expect($container.find('.smart-content').length).toEqual(1);
+            });
         });
 
     });

@@ -8,7 +8,7 @@ define(['husky'], function(husky) {
 
     var app, fakeServer, $navigation;
 
-    ddescribe('Navigation', function() {
+    describe('Navigation', function() {
 
         beforeEach(function() {
 
