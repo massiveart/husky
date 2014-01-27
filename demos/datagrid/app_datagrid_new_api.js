@@ -353,7 +353,7 @@ require(['lib/husky'], function (Husky) {
                     editable: true,
                     columns: [
                         {content: 'Content 1', width: "30%", attribute: "content1", editable: true},
-                        {content: 'Content 2', width: "30%", attribute: "content2"},
+                        {content: 'Content 2', width: "30%", attribute: "content2", editable: true},
                         {content: 'Content 3', width: "30%", attribute: "content3"},
                         {content: ''}
                     ],
@@ -488,6 +488,10 @@ require(['lib/husky'], function (Husky) {
 
             $('#update').on('click', function () {
                 app.sandbox.emit('husky.datagrid.update');
+            });
+
+            $('#save').on('click', function () {
+                app.sandbox.emit('husky.datagrid.data.save');
             });
 
         });

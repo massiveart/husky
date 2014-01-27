@@ -185,7 +185,13 @@ define(function() {
          * triggers husky.datagrid.data.provide
          * @event husky.datagrid.data.get
          */
-            DATA_GET = namespace + 'data.get';
+            DATA_GET = namespace + 'data.get',
+
+        /**
+         * used to trigger the save operation of changed data
+         * @event husky.datagrid.data.save
+         */
+            DATA_SAVE = namespace + 'data.save';
 
     return {
 
@@ -201,17 +207,22 @@ define(function() {
             this.data = null;
             this.allItemIds = [];
             this.selectedItemIds = [];
+            this.changedData = {};
 
-            this.rowStructure = [ {
-                attribute: 'id',
-                editable: false
-            }];
+            this.rowStructure = [
+                {
+                    attribute: 'id',
+                    editable: false
+                }
+            ];
 
             this.sort = {
                 ascClass: 'icon-arrow-up',
                 descClass: 'icon-arrow-down',
                 additionalClasses: ' m-left-5 small-font'
             };
+
+            this.changedData = [];
 
             // append datagrid to html element
             this.$originalElement = this.sandbox.dom.$(this.options.el);
@@ -374,7 +385,7 @@ define(function() {
             tblClasses.push((!!this.options.className && this.options.className !== 'table') ? 'table ' + this.options.className : 'table');
 
             // when list should not have the hover effect for whole rows do not set the is-selectable class
-            if(!this.options.editable) {
+            if (!this.options.editable) {
                 tblClasses.push((this.options.selectItem && this.options.selectItem.type === 'checkbox') ? 'is-selectable' : '');
             }
 
@@ -422,10 +433,12 @@ define(function() {
             }
 
             // reset row structure
-            this.rowStructure = [ {
-                attribute: 'id',
-                editable: false
-            }];
+            this.rowStructure = [
+                {
+                    attribute: 'id',
+                    editable: false
+                }
+            ];
 
             headData.forEach(function(column) {
 
@@ -533,12 +546,12 @@ define(function() {
 
                 !!row.id && this.allItemIds.push(parseInt(row.id, 10));
 
+                // add a checkbox to each row
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
-                    // add a checkbox to each row
                     this.tblColumns.push('<td>', this.templates.checkbox(), '</td>');
-                } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
-                    // add a radio to each row
 
+                // add a radio to each row
+                } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                     this.tblColumns.push('<td>', this.templates.radio({
                         name: 'husky-radio' + radioPrefix
                     }), '</td>');
@@ -570,12 +583,12 @@ define(function() {
          * @param key attribute name
          * @param value attribute value
          */
-        setValueOfRowCell: function(key, value ,editable) {
+        setValueOfRowCell: function(key, value, editable) {
             var tblCellClasses,
                 tblCellContent,
                 tblCellClass;
 
-            if(!value) {
+            if (!value) {
                 value = '';
             }
 
@@ -589,10 +602,10 @@ define(function() {
 
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
-                if(!!editable) {
-                    this.tblColumns.push('<td' + tblCellClass + ' ><span class="editable" contenteditable="true">' + tblCellContent + '</span></td>');
+                if (!!editable) {
+                    this.tblColumns.push('<td data-field="'+key+'" ' + tblCellClass + ' ><span class="editable" contenteditable="true">' + tblCellContent + '</span></td>');
                 } else {
-                    this.tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
+                    this.tblColumns.push('<td  data-field="'+key+'" ' + tblCellClass + ' >' + tblCellContent + '</td>');
                 }
             } else {
                 this.tblRowAttributes += ' data-' + key + '="' + value + '"';
@@ -947,6 +960,11 @@ define(function() {
                 this.$element.on('click', 'thead th[data-attribute]', this.changeSorting.bind(this));
             }
 
+            if (!!this.options.editable) {
+                this.$element.on('focusin', '.editable', this.focusOnEditable.bind(this));
+                this.$element.on('focusout', '.editable', this.isDataChanged.bind(this));
+            }
+
 
             // Todo trigger event when click on clickable area
             // trigger event when click on clickable area
@@ -1061,8 +1079,96 @@ define(function() {
                 this.sandbox.on('husky.search' + searchInstanceName, this.triggerSearch.bind(this));
                 this.sandbox.on('husky.search' + searchInstanceName + '.reset', this.triggerSearch.bind(this, ''));
             }
+
+            // listen for save event
+            if (!!this.options.editable) {
+                this.sandbox.on(DATA_SAVE, this.saveChangedData.bind(this));
+            }
+
         },
 
+        /**
+         * Remembers value of previously focused editable field
+         * Is used by isDataChanged to decide wether the value
+         * changed or not
+         */
+        focusOnEditable: function(event) {
+            var $td = this.sandbox.dom.parent(event.currentTarget),
+                $tr = this.sandbox.dom.parent($td),
+                field = this.sandbox.dom.data($td, 'field'),
+                id = this.sandbox.dom.data($tr, 'id'),
+                value = event.currentTarget.innerText;
+
+            this.lastFocusedEditableElement = {
+                id: id,
+                field: field,
+                value: value
+            };
+        },
+
+        /**
+         * Triggered when data in field could be changed
+         */
+        isDataChanged: function(event) {
+            var $td = this.sandbox.dom.parent(event.currentTarget),
+                $tr = this.sandbox.dom.parent($td),
+                field = this.sandbox.dom.data($td, 'field'),
+                id = this.sandbox.dom.data($tr, 'id'),
+                value = event.currentTarget.innerText,
+                el;
+
+            // last focused object should be same as the one previously left
+            if (this.lastFocusedEditableElement.id === id) {
+                if (this.lastFocusedEditableElement.value !== value) {
+
+                    this.sandbox.util.each(this.changedData, function(index, value) {
+                        if (value.id === id) {
+                            el = value;
+                        }
+                    }.bind(this));
+
+                    // changed for the first time
+                    if (!el) {
+                        el = {};
+                        el.id = id;
+                        el[field] = value;
+
+                        this.changedData.push(el);
+
+                        // changed changes
+                    } else {
+                        el[field] = value;
+                    }
+                }
+            } else {
+                this.sandbox.logger.log("Something went wrong!");
+            }
+
+        },
+
+        /**
+         * Saves the changes for an editable list
+         */
+        saveChangedData: function() {
+
+            this.sandbox.logger.log("saving data...");
+
+            var url = this.data.links.self,
+                type = 'PATCH';
+
+            this.sandbox.util.save(url, type, this.changedData)
+                .then(function() {
+                    this.sandbox.logger.log("saved successfully!");
+                })
+                .fail(function() {
+                    this.sandbox.logger.log("failed during save!");
+                }.bind(this));
+        },
+
+
+        /**
+         * Provides data of the list to the caller
+         */
         provideData: function() {
             this.sandbox.emit(DATA_PROVIDE, this.data);
         },
