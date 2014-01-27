@@ -53,7 +53,7 @@ define(function() {
                 '<li class="column-options-list-item" data-id="<%= id %>" draggable="true">',
                 '   <span class="move">&#8942;</span>',
                 '   <span class="text"><%= title %></span>',
-                '   <span class="icon-half-eye-open visibility-toggle"></span>',
+                '   <span class="<%= toggleIcon %> visibility-toggle"></span>',
                 '</li>'].join(''),
             header: [
                 '<div class="column-options-header">',
@@ -61,6 +61,11 @@ define(function() {
                 '   <a href="#" class="icon-remove2 close-button"></a>',
                 '</div>'
             ].join('')
+        },
+
+        iconClasses = {
+            eyeOpen: 'icon-half-eye-open',
+            eyeClose: 'icon-half-eye-close'
         },
 
 
@@ -313,7 +318,10 @@ define(function() {
                 this.items[item.id] = item;
 
                 // append to list
-                $listItem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.listItem, {id: item.id, title: this.sandbox.translate(item.translation)}));
+                $listItem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.listItem, {
+                    id: item.id,
+                    toggleIcon: (item.default === true || item.default === 'true') ? '': iconClasses.eyeOpen,
+                    title: this.sandbox.translate(item.translation)}));
                 this.sandbox.dom.append(this.$list, $listItem);
 
                 // set to disabled
@@ -335,19 +343,28 @@ define(function() {
                 isDisabled = this.sandbox.dom.hasClass($listItem, 'disabled'),
                 id = this.sandbox.dom.data($listItem, 'id'),
                 item = this.items[id],
-                classEyeOpen = 'icon-half-eye-open',
-                classEyeClose = 'icon-half-eye-close';
+                classEyeOpen = iconClasses.eyeOpen,
+                classEyeClose = iconClasses.eyeClose;
 
-            this.sandbox.dom.toggleClass($listItem, 'disabled');
 
             if (isDisabled) {
+                // enable
+                this.numVisible++;
                 this.sandbox.dom.removeClass(event.currentTarget, classEyeClose);
                 this.sandbox.dom.prependClass(event.currentTarget, classEyeOpen);
             } else {
+                // disable
+                // one column must stay visible
+                if (this.numVisible === 1) {
+                    return;
+                }
+                this.numVisible--;
                 this.sandbox.dom.prependClass(event.currentTarget, classEyeClose);
                 this.sandbox.dom.removeClass(event.currentTarget, classEyeOpen);
             }
 
+
+            this.sandbox.dom.toggleClass($listItem, 'disabled');
             item.disabled = !isDisabled;
 
             if (!event.doNotEmitEvents) {
@@ -391,6 +408,8 @@ define(function() {
          * @param data
          */
         render: function(data) {
+
+            this.numVisible = data.length;
 
             this.options.data = data;
             // temporary data save
