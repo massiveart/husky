@@ -53,7 +53,7 @@ define([], function() {
                 instanceName: 'undefined',
                 items: [],
                 itemsUrl: '',
-                itemsKey: 'items',
+                itemsKey: '_embedded',
                 suggestions: [],
                 suggestionsHeadline: '',
                 suggestionsUrl: '',
