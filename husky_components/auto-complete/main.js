@@ -27,7 +27,7 @@ define([], function () {
         prefetchUrl: '',                                        // url to prefetch data
         localData: [],                                          // array of local data
         remoteUrl: '',                                          // url to fetch data if prefetch or local don't have matches
-        GETparameter: 'query',                                  // name for GET-parameter in remote query
+        getParameter: 'query',                                  // name for GET-parameter in remote query
         valueKey: 'name',                                       // JSON-key for value
         totalKey: 'total',										// JSON-key for total-value
         resultKey: 'items',										// JSON-key for result
@@ -127,6 +127,7 @@ define([], function () {
         },
 
         bindTypeahead: function () {
+            var delimiter = (this.options.remoteUrl.indexOf('?') === -1) ? '?' : '&';
             this.sandbox.autocomplete.init(this.$valueField, {
                 name: this.options.instanceName,
                 local: this.options.localData,
@@ -146,7 +147,7 @@ define([], function () {
                     }.bind(this)
                 },
                 remote: {
-                    url: this.options.remoteUrl + '?' + this.options.GETparameter + '=%QUERY',
+                    url: this.options.remoteUrl + delimiter + this.options.getParameter + '=%QUERY',
                     beforeSend: function () {
                         this.sandbox.emit(this.getEvent('remote-data-load'));
                     }.bind(this),
