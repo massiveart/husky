@@ -20,11 +20,11 @@
  * @param {String} [options.selectItem.type] Type of select [checkbox, radio]
  * @param {String} [options.selectItem.width] Width of select column
  * @param {Boolean} [options.sortable] Defines if list is sortable
- * @param {Object} [options.tableHead] configuration of table header
- * @param {String} [options.tableHead.content] column title
- * @param {String} [options.tableHead.width] width of column
- * @param {String} [options.tableHead.class] css class of th
- * @param {String} [options.tableHead.attribute] mapping information to data (if not set it will just iterate of attributes)
+ * @param {Array} [options.columns] configuration array of columns
+ * @param {String} [options.columns.content] column title
+ * @param {String} [options.columns.width] width of column
+ * @param {String} [options.columns.class] css class of th
+ * @param {String} [options.columns.attribute] mapping information to data (if not set it will just iterate of attributes)
  * @param {Boolean} [options.appendTBody] add TBODY to table
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search event
  * @param {String} [options.url] url to fetch data from
@@ -58,7 +58,7 @@ define(function() {
                 //clickable: false   // defines if background is clickable TODO do not use until fixed
             },
             sortable: false,
-            tableHead: [],
+            columns: [],
             url: null,
             appendTBody: true,   // add TBODY to table
             searchInstanceName: null, // at which search it should be listened to can be null|string|empty_string
@@ -199,7 +199,10 @@ define(function() {
             this.data = null;
             this.allItemIds = [];
             this.selectedItemIds = [];
-            this.rowStructure = ['id'];
+            this.rowStructure = [ {
+                attribute: 'id',
+                editable: false
+            }];
             this.sort = {
                 ascClass: 'icon-arrow-up',
                 descClass: 'icon-arrow-down',
@@ -347,7 +350,7 @@ define(function() {
 
             $table = this.sandbox.dom.$('<table/>');
 
-            if (!!this.data.head || !!this.options.tableHead) {
+            if (!!this.data.head || !!this.options.columns) {
                 $thead = this.sandbox.dom.$('<thead/>');
                 $thead.append(this.prepareTableHead());
                 $table.append($thead);
@@ -381,7 +384,7 @@ define(function() {
             var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute, isSortable;
 
             tblColumns = [];
-            headData = this.options.tableHead || this.data.head;
+            headData = this.options.columns || this.data.head;
 
             // add a checkbox to head row
             if (!!this.options.selectItem && this.options.selectItem.type) {
@@ -410,7 +413,7 @@ define(function() {
                 tblColumns.push('</th>');
             }
 
-            this.rowStructure = ['id'];
+            //this.rowStructure = ['id'];
 
             headData.forEach(function(column) {
 
@@ -437,7 +440,10 @@ define(function() {
 
                 // add to row structure when valid entry
                 if (column.attribute !== undefined) {
-                    this.rowStructure.push(column.attribute);
+                    this.rowStructure.push({
+                        attribute: column.attribute,
+                        editable: column.editable
+                    });
                 }
 
                 // add html to table header cell if sortable
@@ -526,15 +532,15 @@ define(function() {
                     }), '</td>');
                 }
 
-                // when row structure contains more elements than the id then use the structure to set values
+                // when row-structure contains more elements than the id then use the structure to set values
                 if (this.rowStructure.length > 1) {
                     this.rowStructure.forEach(function(key) {
-                        this.setValueOfRowCell(key, row[key]);
+                        this.setValueOfRowCell(key.attribute, row[key.attribute], key.editable);
                     }.bind(this));
                 } else {
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                            this.setValueOfRowCell(key, row[key]);
+                            this.setValueOfRowCell(key, row[key], false);
                         }
                     }
                 }
@@ -552,7 +558,7 @@ define(function() {
          * @param key attribute name
          * @param value attribute value
          */
-        setValueOfRowCell: function(key, value) {
+        setValueOfRowCell: function(key, value ,editable) {
             var tblCellClasses,
                 tblCellContent,
                 tblCellClass;
@@ -571,7 +577,11 @@ define(function() {
 
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
-                this.tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
+                if(!!editable) {
+                    this.tblColumns.push('<td contenteditable="true"' + tblCellClass + ' >' + tblCellContent + '</td>');
+                } else {
+                    this.tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
+                }
             } else {
                 this.tblRowAttributes += ' data-' + key + '="' + value + '"';
             }

@@ -337,29 +337,30 @@ require(['lib/husky'], function (Husky) {
 
     app.start([
             {
-                name: 'datagrid@husky', options: {
-                url: '/admin/api/contacts?flat=true',
-                selectItem: {
-                    type: 'checkbox'
-                },
-                paginationOptions: {
-                    pageSize: 4,
-                    showPages: 3
-                },
-                className: "myClass",
-                removeRow: true,
-                pagination: true,
-                tableHead: [
-                    {content: 'Content 1', width: "30%", attribute: "content1"},
-                    {content: 'Content 2', width: "30%", attribute: "content2"},
-                    {content: 'Content 3', width: "30%", attribute: "content3"},
-                    {content: ''}
-                ],
-                sortable: true,
-                excludeFields: ['id'],
-                searchInstanceName: 'test',
-                el: '#datagrid'
-            }
+                name: 'datagrid@husky',
+                options: {
+                    url: '/admin/api/contacts?flat=true',
+                    selectItem: {
+                        type: 'checkbox'
+                    },
+                    paginationOptions: {
+                        pageSize: 4,
+                        showPages: 3
+                    },
+                    className: "myClass",
+                    removeRow: true,
+                    pagination: true,
+                    columns: [
+                        {content: 'Content 1', width: "30%", attribute: "content1", editable: true},
+                        {content: 'Content 2', width: "30%", attribute: "content2"},
+                        {content: 'Content 3', width: "30%", attribute: "content3"},
+                        {content: ''}
+                    ],
+                    sortable: true,
+                    excludeFields: ['id'],
+                    searchInstanceName: 'test',
+                    el: '#datagrid'
+                }
             },
             {
                 name: 'toolbar@husky',
