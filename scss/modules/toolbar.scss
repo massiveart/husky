@@ -215,7 +215,7 @@
 
   ul.toolbar-dropdown-menu {
     background-color: white;
-    border: 0px solid $grayLighter;
+    border: 1px solid $grayLighter;
 
     display: none;
     position: absolute;
@@ -226,10 +226,10 @@
     list-style: none;
 
     padding: 5px 0;
-    margin-top: 0px;
+    margin-top: -7px;
     margin-left: 0px;
 
-    @include standard-box-shadow;
+    @include standard-box-shadow(2px);
 
     &.right-aligned {
       left: auto;
