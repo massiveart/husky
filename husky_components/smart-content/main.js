@@ -17,16 +17,16 @@
  * @params {Integer} [options.visibleItems] maximum of items visible at the start and in the view-less state
  * @params {Array} [options.dataSources] array of sources with id and name property
  * @params {Boolean} [options.includeSubFolders] if true sub folders are included right from the beginning
- * @params {Integer} [options.preSelectedDataSource] id of the preselected source
+ * @params {Array} [options.preSelectedDataSource] array with id of the preselected source
  * @params {Array} [options.categories] array of categories with id and name property
- * @params {Integer} [options.preSelectedCategory] id of the preselected category
+ * @params {Array} [options.preSelectedCategory] array with id of the preselected category
  * @params {Array} [options.tags] array of tags which are inserted at the beginning
  * @params {String} [options.tagsAutoCompleteUrl] url to which the tags input is sent and can be autocompleted
  * @params {Array} [options.sortBy] array of sort-possibilities with id and name property
- * @params {Integer} [options.preSelectedSortBy] id of the preselected sort-possibility
+ * @params {Array} [options.preSelectedSortBy] array with id of the preselected sort-possibility
  * @params {String} [options.preSelectedSortMethod] Sort-method to begin with (asc or desc)
  * @params {Array} [options.presentAs] array of presentation-possibilities with id and name property
- * @params {Integer} [options.preSelectedPresentAs] id presentation-possibility to begin with
+ * @params {Array} [options.preSelectedPresentAs] array with id presentation-possibility to begin with
  * @params {Integer} [options.limitResult] maximum number of items returned on the request
  * @params {String} [options.instanceName] name of the component instance
  * @params {String} [options.url] url for requesting the items
@@ -48,16 +48,16 @@ define([], function() {
         visibleItems: 3,
         dataSources: [],
         includeSubFolders: false,
-        preSelectedDataSource: 0,
+        preSelectedDataSource: [],
         categories: [],
-        preSelectedCategory: 0,
+        preSelectedCategory: [],
         tags: [],
         tagsAutoCompleteUrl: '',
         sortBy: [],
-        preSelectedSortBy: 0,
+        preSelectedSortBy: [],
         preSelectedSortMethod: 'asc',
         presentAs: [],
-        preSelectedPresentAs: 0,
+        preSelectedPresentAs: [],
         limitResult: 0, //0 = no-limit
         instanceName: '',
         url: '',
@@ -69,7 +69,7 @@ define([], function() {
         sortMethodParameter: 'sortMethod',
         presentAsParameter: 'presentAs',
         limitResultParameter: 'limitResult',
-        resultKey: 'result'
+        resultKey: '_embedded'
     },
 
     sortMethods = {
@@ -217,11 +217,11 @@ define([], function() {
 
     return {
 
-        /**
-         * Initialize component
-         */
-        initialize: function() {
-            this.sandbox.logger.log('initialize', this);
+            /**
+             * Initialize component
+             */
+            initialize: function() {
+                this.sandbox.logger.log('initialize', this);
 
             //merge options with defaults
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
@@ -622,8 +622,9 @@ define([], function() {
          * Generates the URI for the request
          */
         setURI: function() {
-            var newURI = [this.options.url,
-                          '?', this.options.dataSourceParameter, '=', this.overlay.data.dataSource,
+            var delimiter = (this.options.url.indexOf('?') === -1) ? '?': '&',
+                newURI = [this.options.url,
+                          delimiter, this.options.dataSourceParameter, '=', this.overlay.data.dataSource,
                           '&', this.options.includeSubFoldersParameter, '=', this.overlay.data.includeSubFolders,
                           '&', this.options.categoryParameter, '=', this.overlay.data.category,
                           '&', this.options.tagsParameter, '=', this.overlay.data.tags,

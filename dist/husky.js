@@ -28996,10 +28996,6 @@ define('__component__$auto-complete@husky',[], function () {
     };
 });
 
-define('text!husky_components/auto-complete-list/main.html',[],function () { return '<div class="auto-complete-list-container">\r\n    <label>\r\n        <%= label %>\r\n        <div class="auto-complete-list">\r\n            <div class="husky-autocomplete"></div>\r\n            <div class="toggler"></div>\r\n        </div>\r\n    </label>\r\n</div>\r\n';});
-
-define('text!husky_components/auto-complete-list/suggestions.html',[],function () { return '<div class="auto-complete-list-suggestions">\r\n    <h5><%= headline %></h5>\r\n    <ul>\r\n    </ul>\r\n</div>\r\n';});
-
 /**
  * This file is part of Husky frontend development framework.
  *
@@ -29043,10 +29039,7 @@ define('text!husky_components/auto-complete-list/suggestions.html',[],function (
  * @param {String} [options.arrowUpClass] CSS-class for arrow up icon
  * @param {Integer} [options.slideDuration] ms - duration for sliding suggestinos up/down
  */
-define('__component__$auto-complete-list@husky',[
-    'text!husky_components/auto-complete-list/main.html',
-    'text!husky_components/auto-complete-list/suggestions.html'
-], function(tplMain, tplSuggestions) {
+define('__component__$auto-complete-list@husky',[], function() {
 
         
 
@@ -29080,6 +29073,27 @@ define('__component__$auto-complete-list@husky',[
                 arrowDownClass: 'arrow-down',
                 arrowUpClass: 'arrow-up',
                 slideDuration: 500
+            },
+
+            templates = {
+                main: [
+                    '<div class="auto-complete-list-container">',
+                    '    <label>',
+                    '        <%= label %>',
+                    '            <div class="auto-complete-list">',
+                    '                <div class="husky-autocomplete"></div>',
+                    '                <div class="toggler"></div>',
+                    '            </div>',
+                    '        </label>',
+                    '    </div>'
+                    ].join(''),
+                suggestion: [
+                    '<div class="auto-complete-list-suggestions">',
+                    '    <h5><%= headline %></h5>',
+                    '    <ul>',
+                    '    </ul>',
+                    '</div>'
+                ].join('')
             },
 
             /** Position values for toggling suggestions */
@@ -29195,7 +29209,7 @@ define('__component__$auto-complete-list@husky',[
              */
             renderMain: function() {
                 this.sandbox.dom.html(this.$el,
-                    _.template(tplMain)({
+                    _.template(templates.main)({
                         label: this.options.label
                     })
                 );
@@ -29423,7 +29437,7 @@ define('__component__$auto-complete-list@husky',[
                 if (!!this.options.suggestions.length) {
                     var box, list, i = -1, length = this.suggestions.length;
                     box = this.sandbox.dom.parseHTML(
-                        _.template(tplSuggestions)({
+                        _.template(templates.suggestion)({
                             headline: this.options.suggestionsHeadline
                         })
                     );
@@ -29627,6 +29641,7 @@ define('__component__$auto-complete-list@husky',[
  * husky.dropdown.multiple.select.<<instanceName>>.toggle     - toggles (show/hide) dropdown menu
  * husky.dropdown.multiple.select.<<instanceName>>.show       - show dropdown menu
  * husky.dropdown.multiple.select.<<instanceName>>.hide       - hide dropdown menu
+ * husky.dropdown.multiple.select.<<instanceName>>.initialize - initialize component
  */
 
 define('__component__$dropdown-multiple-select@husky',[], function() {
@@ -29661,6 +29676,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
             this.dropdownContainerId = 'husky-dropdown-multiple-select-' + this.options.instanceName + '-menu';
 
             this.render();
+            this.sandbox.emit(this.getEventName('initialize'));
         },
 
         render: function() {
@@ -31577,8 +31593,11 @@ define("html5sortable", function(){});
                 return $(selector).width();
             };
 
-            app.core.dom.height = function(selector) {
-                return $(selector).height();
+            app.core.dom.height = function(selector, value) {
+                if (!value) {
+                    return $(selector).height();
+                }
+                return $(selector).height(value);
             };
 
             app.core.dom.offset = function(selector, attributes) {
@@ -31777,6 +31796,9 @@ define("html5sortable", function(){});
                 $(selector).slideDown(duration,complete);
             };
 
+            app.core.dom.when = function(deffereds) {
+                return $.when(deffereds);
+            };
 
 
             app.core.util.ajax = $.ajax;
