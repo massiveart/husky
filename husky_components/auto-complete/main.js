@@ -215,6 +215,7 @@ define([], function () {
          * Starts the typeahead auto-complete plugin
          */
         bindTypeahead: function () {
+            var delimiter = (this.options.remoteUrl.indexOf('?') === -1) ? '?' : '&';
             this.sandbox.autocomplete.init(this.$valueField, {
                 name: this.options.instanceName,
                 local: this.options.localData,
@@ -236,7 +237,7 @@ define([], function () {
                     }.bind(this)
                 },
                 remote: {
-                    url: this.options.remoteUrl + '?' + this.options.GETparameter + '=%QUERY',
+                    url: this.options.remoteUrl + delimiter + this.options.getParameter + '=%QUERY',
                     beforeSend: function () {
                         this.sandbox.emit(REMOTE_LOAD.call(this));
                     }.bind(this),
