@@ -64,10 +64,10 @@
 
 		var fakeServer = sinon.fakeServer.create();
 		fakeServer.respondWith('GET', '/countries', [200, { 'Content-Type': 'application/json' },
-			'{"total": 4, "items": [{"id": 1, "name": "Deutschland"}, {"id": 2, "name": "Frankreich"}, {"id": 3, "name": "USA"}, {"id": 4, "name": "Kroatien"}]}'
+			'{"total": 4, "_embedded": [{"id": 1, "name": "Deutschland"}, {"id": 2, "name": "Frankreich"}, {"id": 3, "name": "USA"}, {"id": 4, "name": "Kroatien"}]}'
 		]);
 		fakeServer.respondWith('GET', '/countries?query=I', [200, { 'Content-Type': 'application/json' },
-			'{"total": 2, "items": [{"id": 5, "name": "Indien"}, {"id": 6, "name": "Irgendwo"}, {"id": 7, "name": "Irgendwo2"}]}'
+			'{"total": 2, "_embedded": [{"id": 5, "name": "Indien"}, {"id": 6, "name": "Irgendwo"}, {"id": 7, "name": "Irgendwo2"}]}'
 		]);
 
 		var initFakeServer = function(app) {

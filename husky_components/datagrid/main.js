@@ -151,6 +151,12 @@ define(function() {
          */
             DATA_SORT = namespace + 'data.sort',
 
+        /**
+         * raised when when data was saved
+         * @event husky.datagrid.data.saved
+         */
+            DATA_SAVED = namespace + 'data.saved',
+
 
     /* PROVIDED EVENTS */
 
@@ -1160,7 +1166,7 @@ define(function() {
 
             this.sandbox.util.save(url, type, this.changedData)
                 .then(function() {
-                    this.sandbox.logger.log("saved successfully!");
+                    this.sandbox.emit(DATA_SAVED);
                 })
                 .fail(function() {
                     this.sandbox.logger.log("failed during save!");
@@ -1210,7 +1216,7 @@ define(function() {
                 url: url,
                 success: function() {
                     this.removeLoader();
-                    this.sandbox.emit(UPDATE, 'updated search');
+                    this.sandbox.emit(UPDATED, 'updated after search');
                 }.bind(this)
             });
         },
