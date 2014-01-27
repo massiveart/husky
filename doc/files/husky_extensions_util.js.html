@@ -182,6 +182,36 @@ define(function() {
                 return deferred.promise();
             };
 
+            app.core.util.save = function(url, type, data) {
+                var deferred = new app.sandbox.data.deferred();
+
+                app.logger.log(&#x27;save&#x27;, url);
+
+                app.sandbox.util.ajax({
+
+                    headers: {
+                        &#x27;Content-Type&#x27;: &#x27;application/json&#x27;
+                    },
+
+                    url: url,
+                    type: type,
+                    data: JSON.stringify(data),
+
+                    success: function(data) {
+                        app.logger.log(&#x27;data saved&#x27;, data);
+                        deferred.resolve(data);
+                    }.bind(this),
+
+                    error: function(error) {
+                        deferred.reject(error);
+                    }
+                });
+
+                app.sandbox.emit(&#x27;husky.util.save.data&#x27;);
+
+                return deferred.promise();
+            };
+
             app.core.util.contains = function(list, value) {
                 return _.contains(list, value);
             };
