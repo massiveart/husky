@@ -25650,16 +25650,28 @@ define('__component__$datagrid@husky',[],function() {
             UPDATED = namespace + 'updated',
 
         /**
-         * raised when when husky.datagrid.data.get is triggered
+         * raised when husky.datagrid.data.get is triggered
          * @event husky.datagrid.data.provide
          */
             DATA_PROVIDE = namespace + 'data.provide',
 
         /**
-         * raised when when data is sorted
+         * raised when data is sorted
          * @event husky.datagrid.data.sort
          */
             DATA_SORT = namespace + 'data.sort',
+
+        /**
+         * raised when data was saved
+         * @event husky.datagrid.data.saved
+         */
+            DATA_SAVED = namespace + 'data.saved',
+
+        /**
+         * raised when editable list is changed
+         * @event husky.datagrid.data.save
+         */
+            DATA_CHANGED = namespace + 'data.changed',
 
 
     /* PROVIDED EVENTS */
@@ -25702,6 +25714,8 @@ define('__component__$datagrid@husky',[],function() {
          * @event husky.datagrid.data.save
          */
             DATA_SAVE = namespace + 'data.save';
+
+
 
     return {
 
@@ -26631,6 +26645,8 @@ define('__component__$datagrid@husky',[],function() {
             if (this.lastFocusedEditableElement.id === id) {
                 if (this.lastFocusedEditableElement.value !== value) {
 
+                    this.sandbox.emit(DATA_CHANGED);
+
                     // element already changed in the past and therefor in the changed data array
                     this.sandbox.util.each(this.changedData, function(index, value) {
                         if (value.id === id) {
@@ -26668,13 +26684,15 @@ define('__component__$datagrid@husky',[],function() {
             var url = this.data.links.self,
                 type = 'PATCH';
 
-            this.sandbox.util.save(url, type, this.changedData)
-                .then(function() {
-                    this.sandbox.logger.log("saved successfully!");
-                })
-                .fail(function() {
-                    this.sandbox.logger.log("failed during save!");
-                }.bind(this));
+            if (!!this.changedData && this.changedData.length > 0) {
+                this.sandbox.util.save(url, type, this.changedData)
+                    .then(function() {
+                        this.sandbox.emit(DATA_SAVED);
+                    }.bind(this))
+                    .fail(function() {
+                        this.sandbox.logger.log("failed during save!");
+                    }.bind(this));
+            }
         },
 
 
@@ -29488,6 +29506,10 @@ define('__component__$auto-complete-list@husky',[], function() {
                     }
                 }.bind(this));
 
+                this.sandbox.on(createEventName.call(this, 'set-tags'), function(tags) {
+                    this.pushTags(tags);
+                }.bind(this));
+
                 this.sandbox.on(ITEM_ADDED.call(this), function(newTag) {
                     this.setElementDataTags(newTag);
                 }.bind(this));
@@ -29500,12 +29522,14 @@ define('__component__$auto-complete-list@husky',[], function() {
                 this.sandbox.dom.on(this.$input, 'keydown', function(event) {
                     if(event.keyCode === 8 && this.sandbox.dom.val(this.$input).trim() === '') {
                         this.itemDeleteHandler();
+                        this.setElementDataTags();
                     }
                 }.bind(this));
 
                 this.sandbox.dom.on(this.$el, 'click', function(event) {
                     if(this.sandbox.dom.hasClass(event.target, 'tm-tag-remove') === true) {
                         this.itemDeleteHandler();
+                        this.setElementDataTags();
                     }
                 }.bind(this));
 
@@ -29520,12 +29544,12 @@ define('__component__$auto-complete-list@husky',[], function() {
 
             /**
              * Binds the tags to the element
-             * @param neTag {String} newly added tag
+             * @param newTag {String} newly added tag
              */
             setElementDataTags: function(newTag) {
                 var tags = this.sandbox.util.extend([], this.getTags());
-                if (tags.indexOf(newTag) === -1) {
-                    tags = this.sandbox.util.extend([], tags, [newTag]);
+                if (tags.indexOf(newTag) === -1 && typeof newTag !== 'undefined') {
+                    tags = tags.concat([newTag]);
                 }
                 this.sandbox.dom.data(this.$el, this.options.elementTagDataName, tags);
             },
@@ -29777,6 +29801,16 @@ define('__component__$auto-complete-list@husky',[], function() {
                     this.tagApi.tagsManager('pushTag', value);
                 } else {
                     return false;
+                }
+            },
+
+            /**
+             * Pushes an array of items to the list
+             * @param value {Array} array with items to push to the list
+             */
+            pushTags: function(tags) {
+                for (var i = -1, length = tags.length; ++i < length;) {
+                    this.pushTag(tags[i]);
                 }
             },
 
