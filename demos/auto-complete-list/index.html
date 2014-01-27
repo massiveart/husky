@@ -32,6 +32,15 @@
                     </div>
                 </div>
             </div>
+            <div class="grid">
+                <div class="grid-row">
+                    <div class="grid-col-6">
+                        <div data-aura-component="auto-complete-list@husky" data-aura-remote-url="test" data-aura-get-parameter="asdf">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <script src="../js/sinon.js"></script>
         <script src="../js/jquery.js"></script>
@@ -47,33 +56,7 @@
                 var app = Husky({ debug: { enable: true }}),
                         _ = app.sandbox.util._;
 
-                app.start([{
-                    name: 'auto-complete-list@husky',
-                    options: {
-                        instanceName: 'I1',
-                        el: '.list-wrapper',
-                        label: 'Tags',
-                        suggestionsUrl: '',
-                        itemsUrl: '',
-                        items: ['Tag1', 'Tag2', 'Tag3', 'Tag4'],
-                        suggestions: ["Sugg1", "Sugg2", "Sugg3", "Sugg4"],
-                        suggestionsHeadline: 'Recent Tags',
-                        localData: [{id: null, name: 'Tag A'}, {id: null, name: 'Tag B'}, {id: null, name: 'Tag C'}, {id: null, name: 'Tag D'}]
-                    }
-                }, {
-                        name: 'auto-complete-list@husky',
-                        options: {
-                            instanceName: 'I2',
-                            el: '.list-wrapper2',
-                            label: 'Links',
-                            suggestionsUrl: '',
-                            itemsUrl: '',
-                            items: ['Link1', 'Link2', 'Link3', 'Link4'],
-                            suggestions: ["SuggA", "SuggB", "SuggC", "SuggD"],
-                            suggestionsHeadline: 'Popular Links',
-                            localData: [{id: null, name: 'Link A'}, {id: null, name: 'Link B'}, {id: null, name: 'Link C'}, {id: null, name: 'Link D'}]
-                        }
-                    }]).then(function() {
+                app.start().then(function() {
                         app.logger.log('Aura started...');
                     });
             });
