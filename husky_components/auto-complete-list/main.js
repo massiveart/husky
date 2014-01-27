@@ -185,7 +185,6 @@ define([], function() {
 
                 // extend default options
                 this.options = this.sandbox.util.extend({}, defaults, this.options);
-                this.sandbox.logger.log(this.options);
 
                 this.renderMain();
                 this.initInputCont();
@@ -268,18 +267,23 @@ define([], function() {
              * husky-auto-complete component gets started
              */
             startAutocomplete: function() {
-                this.sandbox.start([{
-                    name: 'auto-complete@husky',
-                    options: this.sandbox.util.extend(
-                        {el: this.$inputCont},
-                        {emptyOnBlur: true},
-                        {instanceName: this.options.instanceName},
-                        {localData: this.options.localData},
-                        {prefetchUrl: this.options.prefetchUrl},
-                        {remoteUrl: this.options.remoteUrl},
-                        this.options.autocompleteOptions
-                    )
-                }]);
+                this.sandbox.start([
+                    {
+                        name: 'auto-complete@husky',
+                        options: this.sandbox.util.extend(
+                            {
+                                el: this.$inputCont,
+                                emptyOnBlur: true,
+                                instanceName: this.options.instanceName,
+                                localData: this.options.localData,
+                                prefetchUrl: this.options.prefetchUrl,
+                                remoteUrl: this.options.remoteUrl,
+                                getParameter: this.options.getParameter
+                            },
+                            this.options.autocompleteOptions
+                        )
+                    }
+                ]);
             },
 
             /**
@@ -307,7 +311,7 @@ define([], function() {
              * (autocomplete-component needs to be running to start tagmanager)
              */
             bindStartTmEvent: function() {
-                this.sandbox.on('husky.auto-complete.'+ this.options.instanceName +'.initialized', function(data) {
+                this.sandbox.on('husky.auto-complete.' + this.options.instanceName + '.initialized', function(data) {
                     this.$input = data;
                     this.startTagmanager();
                     this.bindEvents();
@@ -356,7 +360,7 @@ define([], function() {
              * items for the list get loaded and plugins get started
              */
             initItems: function() {
-                if(this.options.itemsUrl !== '') {
+                if (this.options.itemsUrl !== '') {
                     this.requestItems();
                 } else {
                     //if no items need to be loaded start the plugins right ahead
@@ -387,7 +391,7 @@ define([], function() {
              * Load the suggestions, render them, initialize toggler
              */
             initSuggestions: function() {
-                if(this.options.suggestionsUrl !== '') {
+                if (this.options.suggestionsUrl !== '') {
                     this.requestSuggestions();
                 } else {
                     //if no suggestions need to be loaded, render them right ahead
@@ -423,7 +427,7 @@ define([], function() {
              */
             loadSuggestions: function() {
                 if (!!this.options.suggestions.length) {
-                    for (var i = -1, length = this.options.suggestions.length; ++i<length;) {
+                    for (var i = -1, length = this.options.suggestions.length; ++i < length;) {
                         this.suggestions[i] = {
                             name: this.options.suggestions[i],
                             $el: this.sandbox.dom.createElement('<li/>')
@@ -445,7 +449,7 @@ define([], function() {
                         })
                     );
                     list = this.sandbox.dom.children(box, 'ul');
-                    for(;++i<length;) {
+                    for (; ++i < length;) {
                         this.sandbox.dom.append(list, this.suggestions[i].$el);
                         this.bindSuggestionEvents(this.suggestions[i]);
                     }
@@ -566,7 +570,7 @@ define([], function() {
              */
             refreshSuggestions: function() {
                 for (var i = -1, length = this.suggestions.length; ++i < length;) {
-                    if(this.sandbox.dom.hasClass(this.suggestions[i].$el, this.options.suggestionDeactivatedClass) === true) {
+                    if (this.sandbox.dom.hasClass(this.suggestions[i].$el, this.options.suggestionDeactivatedClass) === true) {
                         if (this.suggestionContainedInTags(this.suggestions[i]) === false) {
                             this.activateSuggestion(this.suggestions[i]);
                         }
