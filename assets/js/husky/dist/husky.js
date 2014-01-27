@@ -28615,7 +28615,7 @@ define('__component__$auto-complete@husky',[], function () {
         prefetchUrl: '',                                        // url to prefetch data
         localData: [],                                          // array of local data
         remoteUrl: '',                                          // url to fetch data if prefetch or local don't have matches
-        GETparameter: 'query',                                  // name for GET-parameter in remote query
+        getParameter: 'query',                                  // name for GET-parameter in remote query
         valueKey: 'name',                                       // JSON-key for value
         totalKey: 'total',										// JSON-key for total-value
         resultKey: 'items',										// JSON-key for result
@@ -28734,7 +28734,7 @@ define('__component__$auto-complete@husky',[], function () {
                     }.bind(this)
                 },
                 remote: {
-                    url: this.options.remoteUrl + '?' + this.options.GETparameter + '=%QUERY',
+                    url: this.options.remoteUrl + '?' + this.options.getParameter + '=%QUERY',
                     beforeSend: function () {
                         this.sandbox.emit(this.getEvent('remote-data-load'));
                     }.bind(this),
@@ -28897,6 +28897,7 @@ define('__component__$auto-complete-list@husky',[
                 localData: [], //local data passed to the autocomplete component
                 prefetchUrl: '', //url to prefetch data for the autocomplete component
                 remoteUrl: '', //url to fetch data on input for the autocomplete component
+                getParameter: 'query',
                 autocompleteOptions: {}, //options to pass to the autocomplete component
                 maxListItems: 0, //maximum amount of list items accepted (0 = no limit)
                 CapitalizeFirstLetter: false, //if true the first letter of each item gets capitalized
@@ -28939,7 +28940,7 @@ define('__component__$auto-complete-list@husky',[
                 this.$inputCont = null;
             },
 
-            getEvent: function (append) {
+            getEvent: function(append) {
                 return eventNamespace + this.options.instanceName + '.' + append;
             },
 
@@ -28982,35 +28983,40 @@ define('__component__$auto-complete-list@husky',[
             },
 
             startAutocomplete: function() {
-                this.sandbox.start([{
-                    name: 'auto-complete@husky',
-                    options: this.sandbox.util.extend(
-                        {el: this.$inputCont},
-                        {emptyOnBlur: true},
-                        {instanceName: this.options.instanceName},
-                        {localData: this.options.localData},
-                        {prefetchUrl: this.options.prefetchUrl},
-                        {remoteUrl: this.options.remoteUrl},
-                        this.options.autocompleteOptions
-                    )
-                }]);
+                this.sandbox.start([
+                    {
+                        name: 'auto-complete@husky',
+                        options: this.sandbox.util.extend(
+                            {
+                                el: this.$inputCont,
+                                emptyOnBlur: true,
+                                instanceName: this.options.instanceName,
+                                localData: this.options.localData,
+                                prefetchUrl: this.options.prefetchUrl,
+                                remoteUrl: this.options.remoteUrl,
+                                getParameter: this.options.getParameter
+                            },
+                            this.options.autocompleteOptions
+                        )
+                    }
+                ]);
             },
 
             startTagmanager: function() {
                 this.tagApi = this.sandbox.autocompleteList.init(this.$input, {
-                                tagClass: this.options.listItemClass,
-                                prefilled: this.options.items,
-                                tagCloseIcon: '',
-                                maxTags: this.options.maxListItems,
-                                AjaxPush: this.options.AjaxPush,
-                                AjaxPushAllTags: this.options.AjaxPushAllItems,
-                                AjaxPushParameters: this.options.AjaxPushParameters,
-                                CapitalizeFirstLetter: this.options.CapitalizeFirstLetter
-                            });
+                    tagClass: this.options.listItemClass,
+                    prefilled: this.options.items,
+                    tagCloseIcon: '',
+                    maxTags: this.options.maxListItems,
+                    AjaxPush: this.options.AjaxPush,
+                    AjaxPushAllTags: this.options.AjaxPushAllItems,
+                    AjaxPushParameters: this.options.AjaxPushParameters,
+                    CapitalizeFirstLetter: this.options.CapitalizeFirstLetter
+                });
             },
 
             bindStartTmEvent: function() {
-                this.sandbox.on('husky.auto-complete.'+ this.options.instanceName +'.initialized', function(data) {
+                this.sandbox.on('husky.auto-complete.' + this.options.instanceName + '.initialized', function(data) {
                     this.$input = data;
                     this.startTagmanager();
                     this.bindEvents();
@@ -29018,18 +29024,18 @@ define('__component__$auto-complete-list@husky',[
             },
 
             bindEvents: function() {
-                this.sandbox.on('husky.auto-complete.'+ this.options.instanceName +'.select', function(d) {
+                this.sandbox.on('husky.auto-complete.' + this.options.instanceName + '.select', function(d) {
                     this.pushTag(d.name);
                 }.bind(this));
 
                 this.sandbox.dom.on(this.$input, 'keydown', function(event) {
-                    if(event.keyCode === 8 && this.sandbox.dom.val(this.$input).trim() === '') {
+                    if (event.keyCode === 8 && this.sandbox.dom.val(this.$input).trim() === '') {
                         this.refreshSuggestions();
                     }
                 }.bind(this));
 
                 this.sandbox.dom.on(this.$el, 'click', function(event) {
-                    if(this.sandbox.dom.hasClass(event.target, 'tm-tag-remove') === true) {
+                    if (this.sandbox.dom.hasClass(event.target, 'tm-tag-remove') === true) {
                         this.refreshSuggestions();
                     }
                 }.bind(this));
@@ -29044,7 +29050,7 @@ define('__component__$auto-complete-list@husky',[
             },
 
             initItems: function() {
-                if(this.options.itemsUrl !== '') {
+                if (this.options.itemsUrl !== '') {
                     this.requestItems();
                 } else {
                     this.startPlugins();
@@ -29068,7 +29074,7 @@ define('__component__$auto-complete-list@husky',[
             },
 
             initSuggestions: function() {
-                if(this.options.suggestionsUrl !== '') {
+                if (this.options.suggestionsUrl !== '') {
                     this.requestSuggestions();
                 } else {
 
@@ -29098,7 +29104,7 @@ define('__component__$auto-complete-list@husky',[
 
             loadSuggestions: function() {
                 if (!!this.options.suggestions.length) {
-                    for (var i = -1, length = this.options.suggestions.length; ++i<length;) {
+                    for (var i = -1, length = this.options.suggestions.length; ++i < length;) {
                         this.suggestions[i] = {
                             name: this.options.suggestions[i],
                             $el: this.sandbox.dom.createElement('<li/>')
@@ -29117,7 +29123,7 @@ define('__component__$auto-complete-list@husky',[
                         })
                     );
                     list = this.sandbox.dom.children(box, 'ul');
-                    for(;++i<length;) {
+                    for (; ++i < length;) {
                         this.sandbox.dom.append(list, this.suggestions[i].$el);
                         this.bindSuggestionEvents(this.suggestions[i]);
                     }
@@ -29189,7 +29195,7 @@ define('__component__$auto-complete-list@husky',[
 
             refreshSuggestions: function() {
                 for (var i = -1, length = this.suggestions.length; ++i < length;) {
-                    if(this.sandbox.dom.hasClass(this.suggestions[i].$el, this.options.suggestionDeactivatedClass) === true) {
+                    if (this.sandbox.dom.hasClass(this.suggestions[i].$el, this.options.suggestionDeactivatedClass) === true) {
                         if (this.suggestionContainedInTags(this.suggestions[i]) === false) {
                             this.activateSuggestion(this.suggestions[i]);
                         }
