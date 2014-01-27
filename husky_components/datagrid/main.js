@@ -1164,13 +1164,23 @@ define(function() {
             var url = this.data.links.self,
                 type = 'PATCH';
 
-            this.sandbox.util.save(url, type, this.changedData)
-                .then(function() {
-                    this.sandbox.emit(DATA_SAVED);
-                })
-                .fail(function() {
-                    this.sandbox.logger.log("failed during save!");
-                }.bind(this));
+            this.addLoader();
+
+            if (!!this.changedData && this.changedData.length > 0) {
+                this.sandbox.util.save(url, type, this.changedData)
+                    .then(function() {
+                        this.removeLoader();
+                        this.sandbox.emit(DATA_SAVED);
+
+                        this.prepare()
+                            .appendPagination()
+                            .render();
+
+                    }.bind(this))
+                    .fail(function() {
+                        this.sandbox.logger.log("failed during save!");
+                    }.bind(this));
+            }
         },
 
 
