@@ -140,22 +140,28 @@ define(function() {
             UPDATED = namespace + 'updated',
 
         /**
-         * raised when when husky.datagrid.data.get is triggered
+         * raised when husky.datagrid.data.get is triggered
          * @event husky.datagrid.data.provide
          */
             DATA_PROVIDE = namespace + 'data.provide',
 
         /**
-         * raised when when data is sorted
+         * raised when data is sorted
          * @event husky.datagrid.data.sort
          */
             DATA_SORT = namespace + 'data.sort',
 
         /**
-         * raised when when data was saved
+         * raised when data was saved
          * @event husky.datagrid.data.saved
          */
             DATA_SAVED = namespace + 'data.saved',
+
+        /**
+         * raised when editable list is changed
+         * @event husky.datagrid.data.save
+         */
+            DATA_CHANGED = namespace + 'data.changed',
 
 
     /* PROVIDED EVENTS */
@@ -198,6 +204,8 @@ define(function() {
          * @event husky.datagrid.data.save
          */
             DATA_SAVE = namespace + 'data.save';
+
+
 
     return {
 
@@ -1126,6 +1134,8 @@ define(function() {
             // last focused object should be same as the one previously left
             if (this.lastFocusedEditableElement.id === id) {
                 if (this.lastFocusedEditableElement.value !== value) {
+
+                    this.sandbox.emit(DATA_CHANGED);
 
                     // element already changed in the past and therefor in the changed data array
                     this.sandbox.util.each(this.changedData, function(index, value) {
