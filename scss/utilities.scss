@@ -52,6 +52,25 @@
     cursor: pointer;
 }
 
+// Editable fields
+// -------------------------
+
+.editable {
+    padding: 5px;
+    margin: 0 0 0 -5px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    outline:0;
+    display: block;
+}
+
+.editable:focus,
+.editable:active {
+    background: $white;
+    border: 1px solid $white;
+    outline:0;
+}
+
 // Margin & paddings shorthands
 // -------------------------
 

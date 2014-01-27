@@ -413,7 +413,11 @@ define(function() {
                 tblColumns.push('</th>');
             }
 
-            //this.rowStructure = ['id'];
+            // reset row structure
+            this.rowStructure = [ {
+                attribute: 'id',
+                editable: false
+            }];
 
             headData.forEach(function(column) {
 
@@ -578,7 +582,7 @@ define(function() {
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
                 if(!!editable) {
-                    this.tblColumns.push('<td contenteditable="true"' + tblCellClass + ' >' + tblCellContent + '</td>');
+                    this.tblColumns.push('<td' + tblCellClass + ' ><span class="editable" contenteditable="true">' + tblCellContent + '</span></td>');
                 } else {
                     this.tblColumns.push('<td ' + tblCellClass + ' >' + tblCellContent + '</td>');
                 }
