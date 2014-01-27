@@ -48,7 +48,7 @@ define([], function () {
         GETparameter: 'query',
         valueKey: 'name',
         totalKey: 'total',
-        resultKey: 'items',
+        resultKey: '_embedded',
         value: null,
         valueName: 'value',
         instanceName: 'undefined',
