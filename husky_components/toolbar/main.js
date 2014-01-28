@@ -224,7 +224,7 @@ define(function() {
                 item = this.items[id];
             if (item.disabled) {
                 item.disabled = false;
-                $domItem = this.sandbox.dom.find('[data-id="'+id+'"]');
+                $domItem = this.sandbox.dom.find('[data-id="'+id+'"]', this.$el);
 
                 if (this.sandbox.dom.is($domItem, 'button')) {
                     this.sandbox.dom.removeAttr($domItem, 'disabled');
@@ -239,7 +239,7 @@ define(function() {
                 item = this.items[id];
             if (!item.disabled) {
                 item.disabled = true;
-                $domItem = this.sandbox.dom.find('[data-id="'+id+'"]');
+                $domItem = this.sandbox.dom.find('[data-id="'+id+'"]', this.$el);
 
                 if (this.sandbox.dom.is($domItem, 'button')) {
                     this.sandbox.dom.attr($domItem, 'disabled', 'disabled');
