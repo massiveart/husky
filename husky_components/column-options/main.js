@@ -26,6 +26,7 @@
  * @param {Boolean} [options.footer.disabled] defines if footer should be shown
  * @param {Boolean} [options.hidden] defines if component should be hidden when component is initialized
  * @param {Boolean} [options.destroyOnClose] will remove the container from dom, when closed
+ * @param {Boolean} [options.backdropClick] will enable/disable a click on backdrop handling
  */
 define(function() {
 
@@ -64,10 +65,9 @@ define(function() {
         },
 
         iconClasses = {
-            eyeOpen: 'icon-half-eye-open',
-            eyeClose: 'icon-half-eye-close'
+            visible: 'icon-half-eye-open',
+            hidden: 'icon-half-eye-close'
         },
-
 
 
         /**
@@ -228,8 +228,7 @@ define(function() {
          * opens dropdown submenu
          * @param event
          */
-            toggleDropdown = function(event)
-        {
+            toggleDropdown = function(event) {
             if (event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -243,7 +242,7 @@ define(function() {
             } else {
                 this.sandbox.dom.show($container);
                 if (this.options.backdropClick) {
-                    this.sandbox.dom.on(this.sandbox.dom.window, 'click.columnoptions.'+this.options.instanceName, closeDropdown.bind(this, $container, true));
+                    this.sandbox.dom.on(this.sandbox.dom.window, 'click.columnoptions.' + this.options.instanceName, closeDropdown.bind(this, $container, true));
                 }
             }
         },
@@ -263,7 +262,7 @@ define(function() {
          */
             closeDropdown = function($container, rerender) {
             if (this.options.backdropClick) {
-                this.sandbox.dom.off(this.sandbox.dom.window, 'click.columnoptions.'+this.options.instanceName, closeDropdown.bind(this, $container, true));
+                this.sandbox.dom.off(this.sandbox.dom.window, 'click.columnoptions.' + this.options.instanceName, closeDropdown.bind(this, $container, true));
             }
             this.sandbox.dom.hide($container);
             if (this.options.destroyOnClose) {
@@ -320,7 +319,7 @@ define(function() {
                 // append to list
                 $listItem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.listItem, {
                     id: item.id,
-                    toggleIcon: (item.default === true || item.default === 'true') ? '': iconClasses.eyeOpen,
+                    toggleIcon: (item.default === true || item.default === 'true') ? '' : iconClasses.visible,
                     title: this.sandbox.translate(item.translation)}));
                 this.sandbox.dom.append(this.$list, $listItem);
 
@@ -343,26 +342,25 @@ define(function() {
                 isDisabled = this.sandbox.dom.hasClass($listItem, 'disabled'),
                 id = this.sandbox.dom.data($listItem, 'id'),
                 item = this.items[id],
-                classEyeOpen = iconClasses.eyeOpen,
-                classEyeClose = iconClasses.eyeClose;
-
+                visible = iconClasses.visible,
+                hidden = iconClasses.hidden;
 
             if (isDisabled) {
                 // enable
                 this.numVisible++;
-                this.sandbox.dom.removeClass(event.currentTarget, classEyeClose);
-                this.sandbox.dom.prependClass(event.currentTarget, classEyeOpen);
+                this.sandbox.dom.removeClass(event.currentTarget, hidden);
+                this.sandbox.dom.prependClass(event.currentTarget, visible);
             } else {
                 // disable
                 // one column must stay visible
                 if (this.numVisible === 1) {
                     return;
                 }
-                this.numVisible--;
-                this.sandbox.dom.prependClass(event.currentTarget, classEyeClose);
-                this.sandbox.dom.removeClass(event.currentTarget, classEyeOpen);
-            }
 
+                this.numVisible--;
+                this.sandbox.dom.prependClass(event.currentTarget, hidden);
+                this.sandbox.dom.removeClass(event.currentTarget, visible);
+            }
 
             this.sandbox.dom.toggleClass($listItem, 'disabled');
             item.disabled = !isDisabled;
