@@ -1124,7 +1124,7 @@ define(function() {
         },
 
         bindCustomEvents: function() {
-            var searchInstanceName = '';
+            var searchInstanceName = '', columnOptionsInstanceName = '';
 
             // listen for private events
             this.sandbox.on(UPDATE, this.updateHandler.bind(this));
