@@ -307,6 +307,13 @@ define([], function() {
                                 }.bind(this)
                             });
                 this.setElementDataTags();
+                this.setDropdownWidth();
+            },
+
+            setDropdownWidth: function() {
+                this.sandbox.dom.css(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), {
+                    width: this.sandbox.dom.width(this.$el)+1+'px'
+                });
             },
 
             /**

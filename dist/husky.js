@@ -26127,7 +26127,7 @@ define('__component__$datagrid@husky',[],function() {
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
                 if (!!editable) {
-                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true">' + tblCellContent + '</span></td>');
+                    this.tblColumns.push('<td width="30%" data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true">' + tblCellContent + '</span></td>');
                 } else {
                     this.tblColumns.push('<td  data-field="' + key + '" ' + tblCellClass + ' >' + tblCellContent + '</td>');
                 }
@@ -29480,6 +29480,13 @@ define('__component__$auto-complete-list@husky',[], function() {
                                 }.bind(this)
                             });
                 this.setElementDataTags();
+                this.setDropdownWidth();
+            },
+
+            setDropdownWidth: function() {
+                this.sandbox.dom.css(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), {
+                    width: this.sandbox.dom.width(this.$el)+1+'px'
+                });
             },
 
             /**
