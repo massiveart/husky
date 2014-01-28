@@ -116,7 +116,7 @@ define(function() {
         },
 
         triggerSelectEvent = function(item, $parent) {
-            var instanceName, parentId, icon;
+            var parentId, icon;
             parentId = this.sandbox.dom.data($parent, 'id');
 
             if (this.items[parentId].type === "select") {
@@ -129,7 +129,6 @@ define(function() {
             if (item.callback) {
                 item.callback();
             } else {
-                instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
                 this.sandbox.emit(ITEM_SELECTED.call(this), item);
             }
         },
@@ -224,7 +223,7 @@ define(function() {
                 item = this.items[id];
             if (item.disabled) {
                 item.disabled = false;
-                $domItem = this.sandbox.dom.find('[data-id="'+id+'"]', this.$el);
+                $domItem = this.sandbox.dom.find('[data-id="' + id + '"]', this.$el);
 
                 if (this.sandbox.dom.is($domItem, 'button')) {
                     this.sandbox.dom.removeAttr($domItem, 'disabled');
@@ -239,7 +238,7 @@ define(function() {
                 item = this.items[id];
             if (!item.disabled) {
                 item.disabled = true;
-                $domItem = this.sandbox.dom.find('[data-id="'+id+'"]', this.$el);
+                $domItem = this.sandbox.dom.find('[data-id="' + id + '"]', this.$el);
 
                 if (this.sandbox.dom.is($domItem, 'button')) {
                     this.sandbox.dom.attr($domItem, 'disabled', 'disabled');

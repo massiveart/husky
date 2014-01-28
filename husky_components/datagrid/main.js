@@ -220,7 +220,6 @@ define(function() {
             DATA_SAVE = namespace + 'data.save';
 
 
-
     return {
 
         view: true,
@@ -238,10 +237,6 @@ define(function() {
             this.changedData = {};
 
             this.rowStructure = [
-//                {
-//                    attribute: 'id',
-//                    editable: false
-//                }
             ];
 
             this.sort = {
@@ -275,7 +270,7 @@ define(function() {
                 // parse fields data
                 if (this.options.fieldsData) {
                     fieldsData = this.parseFieldsData(this.options.fieldsData);
-                    url += '&fields='+fieldsData.urlFields;
+                    url += '&fields=' + fieldsData.urlFields;
                     this.options.columns = fieldsData.columns;
                 }
 
@@ -1129,7 +1124,7 @@ define(function() {
         },
 
         bindCustomEvents: function() {
-            var searchInstanceName = '', columnOptionsInstanceName = '';
+            var searchInstanceName = '';
 
             // listen for private events
             this.sandbox.on(UPDATE, this.updateHandler.bind(this));

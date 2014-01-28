@@ -25120,6 +25120,7 @@ define('__component__$button@husky',[], function() {
  * @param {Boolean} [options.footer.disabled] defines if footer should be shown
  * @param {Boolean} [options.hidden] defines if component should be hidden when component is initialized
  * @param {Boolean} [options.destroyOnClose] will remove the container from dom, when closed
+ * @param {Boolean} [options.backdropClick] will enable/disable a click on backdrop handling
  */
 define('__component__$column-options@husky',[],function() {
 
@@ -25158,10 +25159,9 @@ define('__component__$column-options@husky',[],function() {
         },
 
         iconClasses = {
-            eyeOpen: 'icon-half-eye-open',
-            eyeClose: 'icon-half-eye-close'
+            visible: 'icon-half-eye-open',
+            hidden: 'icon-half-eye-close'
         },
-
 
 
         /**
@@ -25327,10 +25327,8 @@ define('__component__$column-options@husky',[],function() {
          * opens dropdown submenu
          * @param event
          */
-            toggleDropdown = function(event)
-        {
 
-            console.log('called');
+            toggleDropdown = function(event) {
             if (event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -25344,7 +25342,7 @@ define('__component__$column-options@husky',[],function() {
             } else {
                 this.sandbox.dom.show($container);
                 if (this.options.backdropClick) {
-                    this.sandbox.dom.on(this.sandbox.dom.window, 'click.columnoptions.'+this.options.instanceName, closeDropdown.bind(this, $container, true));
+                    this.sandbox.dom.on(this.sandbox.dom.window, 'click.columnoptions.' + this.options.instanceName, closeDropdown.bind(this, $container, true));
                 }
             }
         },
@@ -25364,7 +25362,7 @@ define('__component__$column-options@husky',[],function() {
          */
             closeDropdown = function($container, rerender) {
             if (this.options.backdropClick) {
-                this.sandbox.dom.off(this.sandbox.dom.window, 'click.columnoptions.'+this.options.instanceName, closeDropdown.bind(this, $container, true));
+                this.sandbox.dom.off(this.sandbox.dom.window, 'click.columnoptions.' + this.options.instanceName, closeDropdown.bind(this, $container, true));
             }
             this.sandbox.dom.hide($container);
             if (this.options.destroyOnClose) {
@@ -25422,7 +25420,7 @@ define('__component__$column-options@husky',[],function() {
                 // append to list
                 $listItem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.listItem, {
                     id: item.id,
-                    toggleIcon: (item.default === true || item.default === 'true') ? '': iconClasses.eyeOpen,
+                    toggleIcon: (item.default === true || item.default === 'true') ? '' : iconClasses.visible,
                     title: this.sandbox.translate(item.translation)}));
                 this.sandbox.dom.append(this.$list, $listItem);
 
@@ -25445,26 +25443,25 @@ define('__component__$column-options@husky',[],function() {
                 isDisabled = this.sandbox.dom.hasClass($listItem, 'disabled'),
                 id = this.sandbox.dom.data($listItem, 'id'),
                 item = this.items[id],
-                classEyeOpen = iconClasses.eyeOpen,
-                classEyeClose = iconClasses.eyeClose;
-
+                visible = iconClasses.visible,
+                hidden = iconClasses.hidden;
 
             if (isDisabled) {
                 // enable
                 this.numVisible++;
-                this.sandbox.dom.removeClass(event.currentTarget, classEyeClose);
-                this.sandbox.dom.prependClass(event.currentTarget, classEyeOpen);
+                this.sandbox.dom.removeClass(event.currentTarget, hidden);
+                this.sandbox.dom.prependClass(event.currentTarget, visible);
             } else {
                 // disable
                 // one column must stay visible
                 if (this.numVisible === 1) {
                     return;
                 }
-                this.numVisible--;
-                this.sandbox.dom.prependClass(event.currentTarget, classEyeClose);
-                this.sandbox.dom.removeClass(event.currentTarget, classEyeOpen);
-            }
 
+                this.numVisible--;
+                this.sandbox.dom.prependClass(event.currentTarget, hidden);
+                this.sandbox.dom.removeClass(event.currentTarget, visible);
+            }
 
             this.sandbox.dom.toggleClass($listItem, 'disabled');
             item.disabled = !isDisabled;
@@ -25787,7 +25784,6 @@ define('__component__$datagrid@husky',[],function() {
             DATA_SAVE = namespace + 'data.save';
 
 
-
     return {
 
         view: true,
@@ -25805,10 +25801,6 @@ define('__component__$datagrid@husky',[],function() {
             this.changedData = {};
 
             this.rowStructure = [
-//                {
-//                    attribute: 'id',
-//                    editable: false
-//                }
             ];
 
             this.sort = {
@@ -25842,7 +25834,7 @@ define('__component__$datagrid@husky',[],function() {
                 // parse fields data
                 if (this.options.fieldsData) {
                     fieldsData = this.parseFieldsData(this.options.fieldsData);
-                    url += '&fields='+fieldsData.urlFields;
+                    url += '&fields=' + fieldsData.urlFields;
                     this.options.columns = fieldsData.columns;
                 }
 
@@ -26117,7 +26109,7 @@ define('__component__$datagrid@husky',[],function() {
 
             // remove-row entry
             if (this.options.removeRow) {
-                tblColumns.push('<th/>');
+                tblColumns.push('<th width="30px"/>');
             }
 
             return '<tr>' + tblColumns.join('') + '</tr>';
@@ -26696,7 +26688,7 @@ define('__component__$datagrid@husky',[],function() {
         },
 
         bindCustomEvents: function() {
-            var searchInstanceName = '', columnOptionsInstanceName = '';
+            var searchInstanceName = '';
 
             // listen for private events
             this.sandbox.on(UPDATE, this.updateHandler.bind(this));
@@ -28218,7 +28210,7 @@ define('__component__$toolbar@husky',[],function() {
         },
 
         triggerSelectEvent = function(item, $parent) {
-            var instanceName, parentId, icon;
+            var parentId, icon;
             parentId = this.sandbox.dom.data($parent, 'id');
 
             if (this.items[parentId].type === "select") {
@@ -28231,7 +28223,6 @@ define('__component__$toolbar@husky',[],function() {
             if (item.callback) {
                 item.callback();
             } else {
-                instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
                 this.sandbox.emit(ITEM_SELECTED.call(this), item);
             }
         },
@@ -28326,7 +28317,7 @@ define('__component__$toolbar@husky',[],function() {
                 item = this.items[id];
             if (item.disabled) {
                 item.disabled = false;
-                $domItem = this.sandbox.dom.find('[data-id="'+id+'"]', this.$el);
+                $domItem = this.sandbox.dom.find('[data-id="' + id + '"]', this.$el);
 
                 if (this.sandbox.dom.is($domItem, 'button')) {
                     this.sandbox.dom.removeAttr($domItem, 'disabled');
@@ -28341,7 +28332,7 @@ define('__component__$toolbar@husky',[],function() {
                 item = this.items[id];
             if (!item.disabled) {
                 item.disabled = true;
-                $domItem = this.sandbox.dom.find('[data-id="'+id+'"]', this.$el);
+                $domItem = this.sandbox.dom.find('[data-id="' + id + '"]', this.$el);
 
                 if (this.sandbox.dom.is($domItem, 'button')) {
                     this.sandbox.dom.attr($domItem, 'disabled', 'disabled');
