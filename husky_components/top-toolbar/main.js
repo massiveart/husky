@@ -24,7 +24,7 @@ define([], function () {
      * Default values for options
      */
     var defaults = {
-
+            data: []
         },
 
         constants = {
@@ -33,7 +33,11 @@ define([], function () {
             middleContainerClass: 'top-toolbar-middle',
             rightContainerClass: 'top-toolbar-right',
             rightListClass: 'right-list',
-            leftListClass: 'left-list'
+            leftListClass: 'left-list',
+            iconClassPrefix: 'icon-',
+            iconExtraClass: 'icon',
+            iconTitleClass: 'title',
+            dropdownClass: 'top-toolbar-dropdown-menu'
         },
 
         templates = {
@@ -81,6 +85,8 @@ define([], function () {
             this.setProperties();
 
             this.render();
+
+            this.sandbox.emit(INITIALIZED.call(this));
         },
 
         setProperties: function() {
@@ -101,10 +107,13 @@ define([], function () {
                     $rightList: null
                 }
             };
+            this.buttons = null;
         },
 
         render: function() {
             this.renderSkeleton();
+            this.renderButtons();
+            this.appendButtons();
         },
 
         renderSkeleton: function() {
@@ -130,6 +139,64 @@ define([], function () {
             this.containers.right.$el = this.sandbox.dom.find('.'+constants.rightContainerClass, this.$el);
             this.containers.right.$leftList = this.sandbox.dom.find('.'+constants.leftListClass, this.containers.right.$el);
             this.containers.right.$rightList = this.sandbox.dom.find('.'+constants.rightListClass, this.containers.right.$el);
+        },
+
+        renderButtons: function() {
+            this.initButtons();
+
+            var i = -1, length = this.buttons.length, button = null;
+            for (i = -1, length = this.buttons.length; ++i < length;) {
+                button = this.sandbox.dom.createElement('<li data-id="'+ this.buttons[i].id +'"/>');
+                this.sandbox.dom.addClass(button, this.buttons[i].customClass);
+                this.sandbox.dom.html(button, ['<a href="#">',
+                                                '<span class="',constants.iconExtraClass,' ',constants.iconClassPrefix + this.buttons[i].icon,'"></span>',
+                                                '<span class="',constants.iconTitleClass,'">',this.buttons[i].title,'</span>',
+                                          '</a>'].join(''));
+                this.sandbox.dom.append(button, this.renderDropdown(this.buttons[i]));
+                this.buttons[i].$el = button;
+            }
+        },
+
+        renderDropdown: function(button) {
+            if (!!button.items.length) {
+                var dropdown = this.sandbox.dom.createElement('<ul class="'+ constants.dropdownClass +'"/>'),
+                    i = -1, length = button.items.length, item = null;
+                for (;++i < length;) {
+                    item = this.sandbox.dom.createElement('<li/>');
+                    this.sandbox.dom.html(item, ['<a href="#">',button.items[i].title,'</a>'].join(''));
+                    this.sandbox.dom.append(dropdown, item);
+                }
+                return dropdown;
+            }
+            return '';
+        },
+
+        initButtons: function() {
+            this.buttons = this.options.data;
+        },
+
+        appendButtons: function() {
+            var i = -1, length = this.buttons.length, container = null;
+            for (; ++i < length;) {
+                switch (this.buttons[i].container) {
+                    case 'left':
+                        container = this.containers.left;
+                        break;
+                    case 'middle':
+                        container = this.containers.middle;
+                        break;
+                    case 'right':
+                        container = this.containers.right;
+                        break;
+                    default:
+                        this.sandbox.logger.log('ERROR: invalid container on button', this.buttons[i]);
+                }
+                if (this.buttons[i].align === 'left') {
+                    this.sandbox.dom.append(container.$leftList, this.buttons[i].$el);
+                } else {
+                    this.sandbox.dom.append(container.$rightList, this.buttons[i].$el);
+                }
+            }
         }
     };
 });

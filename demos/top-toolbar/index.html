@@ -61,7 +61,8 @@
         app.start([{
             name: 'top-toolbar@husky',
             options: {
-                el: '.toolbar'
+                el: '.toolbar',
+                data: testData
             }
         }]).then(function() {
             app.logger.log('Aura started...');
