@@ -1,0 +1,43 @@
+//
+// Top Toolbar
+// --------------------------------------------------
+
+.husky-top-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background: $grayDarkLighter;
+    z-index: 10000;
+    clear: both;
+    text-align: center;
+
+    .top-toolbar-left {
+        float: left;
+        width: 480px;
+        height: 100%;
+    }
+    .top-toolbar-middle {
+        float: left;
+        height: 100%;
+    }
+    .top-toolbar-right {
+        float: right;
+        width: 480px;
+        height: 100%;
+    }
+    .left-list,
+    .right-list {
+        height: 40px;
+        list-style: none outside none;
+        margin: 5px 0;
+        padding: 0;
+    }
+    .left-list {
+        float: left;
+    }
+    .right-list {
+        float: right;
+    }
+}

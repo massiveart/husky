@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Husky UI Top Toolbar</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../dist/husky.min.css">
+</head>
+<body>
+<div class="toolbar"></div>
+<script src="../js/sinon.js"></script>
+<script src="../js/jquery.js"></script>
+<script src="../js/require.js"></script>
+<script>
+    require.config({
+        baseUrl: '../../'
+    });
+
+    require(['lib/husky'], function(Husky) {
+        'use strict';
+
+        var app = Husky({ debug: { enable: true }}),
+                _ = app.sandbox.util._,
+
+            testData = [
+                {
+                    id: 1,
+                    icon: 'save',
+                    disabledIcon: 'cancel',
+                    container: 'left',
+                    align: 'right',
+                    title: 'Test',
+                    customClass: 'testme',
+                    callback: function() {
+                        console.log('super awsome callback');
+                    },
+                    items: [
+                        {
+                            title: "item 1",
+                            callback: function() {
+                                console.log('you clicked on item 1');
+                            }
+                        },
+                        {
+                            title: "item 2",
+                            callback: function() {
+                                console.log('you clicked on item 2');
+                            }
+                        }
+                    ]
+                }
+            ];
+
+        app.start([{
+            name: 'top-toolbar@husky',
+            options: {
+                el: '.toolbar'
+            }
+        }]).then(function() {
+            app.logger.log('Aura started...');
+        });
+    });
+</script>
+</body>
+</html>
