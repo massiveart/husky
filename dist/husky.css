@@ -5605,3 +5605,12 @@ a.btn-black, a.btn-highlight {
   background-color: #ccc;
   cursor: pointer;
 }
+
+/* line 2, ../scss/modules/datagrid.scss */
+.husky-datagrid table {
+  table-layout: fixed;
+}
+/* line 5, ../scss/modules/datagrid.scss */
+.husky-datagrid table td {
+  overflow: hidden;
+}
