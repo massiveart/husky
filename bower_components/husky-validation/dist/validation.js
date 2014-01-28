@@ -848,7 +848,7 @@ define('form/mapper',[
 
                             if ($element.length > 0) {
                                 // if field is an collection
-                                if ($.isArray(value)) {
+                                if ($.isArray(value) && $element.data('type') === 'collection') {
                                     that.setCollectionData.call(this, value, $element).then(function() {
                                         resolve();
                                     });
@@ -2024,9 +2024,9 @@ define('validator/regex',[
 
             result = $.extend(new Default($el, form, defaults, options, 'regex'), {
                 validate: function() {
-                    var flags = this.data.regex.replace(/.*\/([gimy]*)$/, '$1'),
-                        pattern = this.data.regex.replace(new RegExp('^/(.*?)/' + flags + '$'), '$1'),
-                        regex = new RegExp(pattern, flags),
+                    // TODO flags
+                    var pattern = this.data.regex,
+                        regex = new RegExp(pattern),
                         val = this.$el.val();
 
                     if (val === '') {

@@ -92,6 +92,11 @@ define([], function() {
 
         },
 
+        resetSearch : function() {
+            this.sandbox.emit(RESET.call(this));
+            this.searchSubmitted = false;
+        },
+
         checkKeyPressed: function(event) {
 
             var $removeIcon;
@@ -108,7 +113,7 @@ define([], function() {
                 // enter pressed
                 this.submitSearch();
             } else if (event.keyCode === 27) {
-                // enter pressed
+                // escape pressed
                 this.removeSearch();
             }
 
@@ -126,9 +131,13 @@ define([], function() {
 
             // if searchstring is emtpy, emit reset
             if (searchString === '') {
-                this.sandbox.emit(RESET.call(this));
+                if (this.searchSubmitted) {
+                    this.resetSearch();
+                }
                 return;
             }
+
+            this.searchSubmitted = true;
 
             // emit event
             this.sandbox.emit(SEARCH.call(this), searchString);
@@ -148,7 +157,9 @@ define([], function() {
 
             this.sandbox.dom.hide(event.target);
             this.sandbox.dom.val($input, '');
-            this.sandbox.emit(RESET.call(this), '');
+            if (this.searchSubmitted) {
+                this.resetSearch();
+            }
         },
 
         selectInput: function(event) {
