@@ -36,7 +36,7 @@
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.paginationTemplate] template for pagination
- *
+ * @param {Boolean} [options.validation] enables validation for datagrid
  */
 define(function() {
 
@@ -72,7 +72,8 @@ define(function() {
             searchInstanceName: null, // at which search it should be listened to can be null|string|empty_string
             columnOptionsInstanceName: null, // at which search it should be listened to can be null|string|empty_string
             paginationTemplate: '<%=translate("pagination.page")%> <%=i%> <%=translate("pagination.of")%> <%=pages%>',
-            fieldsData: null
+            fieldsData: null,
+            validation: true
         },
 
         namespace = 'husky.datagrid.',
@@ -235,13 +236,9 @@ define(function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
             this.changedData = {};
+//            this.domElId = this.sandbox.dom.attr(this.$el,'id');
 
-            this.rowStructure = [
-//                {
-//                    attribute: 'id',
-//                    editable: false
-//                }
-            ];
+            this.rowStructure = [];
 
             this.sort = {
                 ascClass: 'icon-arrow-up',
@@ -260,7 +257,14 @@ define(function() {
 
             // Should only be be called once
             this.bindCustomEvents();
+
         },
+
+//        initValidation: function(){
+//
+//            this.sandbox.form.create('#'+this.domElId);
+//
+//        },
 
         /**
          * Gets the data either via the url or the array
@@ -433,7 +437,7 @@ define(function() {
         prepareTable: function() {
             var $table, $thead, $tbody, tblClasses;
 
-            $table = this.sandbox.dom.$('<table/>');
+//            $table = this.sandbox.dom.$('<table data-debug="true"/>');
 
             if (!!this.data.head || !!this.options.columns) {
                 $thead = this.sandbox.dom.$('<thead/>');
@@ -532,6 +536,7 @@ define(function() {
                     this.rowStructure.push({
                         attribute: column.attribute,
                         editable: column.editable
+//                        validation: column.validation
                     });
                 }
 
@@ -634,6 +639,7 @@ define(function() {
                 // when row structure contains more elements than the id then use the structure to set values
                 if (this.rowStructure.length) {
                     this.rowStructure.forEach(function(key) {
+                        key.editable = key.editable || false;
                         this.setValueOfRowCell(key.attribute, row[key.attribute], key.editable);
                     }.bind(this));
                 } else {
@@ -677,10 +683,16 @@ define(function() {
 
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
-                if (!!editable) {
+//                if(!!validation) {
+//                  for(k in validation){
+//                      validationAttr+= ['data-validation-',k,'="',validation[k],'" '].join('');
+//                  }
+//                }
+
+                if(!!editable) {
                     this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true">' + tblCellContent + '</span></td>');
                 } else {
-                    this.tblColumns.push('<td  data-field="' + key + '" ' + tblCellClass + ' >' + tblCellContent + '</td>');
+                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' >' + tblCellContent + '</td>');
                 }
             } else {
                 this.tblRowAttributes += ' data-' + key + '="' + value + '"';
@@ -1242,6 +1254,14 @@ define(function() {
             var url = this.data.links.self,
                 type = 'PATCH';
 
+            // is validation configured
+//            if(!!this.options.validation){
+//                // is valid
+//                if(!this.sandbox.form.validate('#'+this.domElId)) {
+//                    return;
+//                }
+//            }
+
             if (!!this.changedData && this.changedData.length > 0) {
                 this.sandbox.util.save(url, type, this.changedData)
                     .then(function() {
@@ -1335,6 +1355,11 @@ define(function() {
         render: function() {
             this.$originalElement.html(this.$element);
             this.bindDOMEvents();
+
+            // initialize validation
+//            if(!!this.options.validation) {
+//                this.initValidation();
+//            }
         },
 
         /**

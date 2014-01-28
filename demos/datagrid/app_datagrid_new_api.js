@@ -421,6 +421,7 @@ require(['lib/husky'], function(Husky) {
                     removeRow: true,
                     pagination: true,
                     editable: true,
+                    validation:true,
                     columns: [
                         {
                             content: 'Content 1',
@@ -428,10 +429,7 @@ require(['lib/husky'], function(Husky) {
                             attribute: "content1",
                             editable: true,
                             validation: {
-                                'unique': true,
-                                'required': true,
-                                'min-length': 3,
-                                'max-length': 10
+                                'unique': true
                             }
                         },
                         {content: 'Content 2', width: "30%", attribute: "content2", editable: true},
