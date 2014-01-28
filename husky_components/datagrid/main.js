@@ -220,7 +220,6 @@ define(function() {
             DATA_SAVE = namespace + 'data.save';
 
 
-
     return {
 
         view: true,
@@ -275,7 +274,7 @@ define(function() {
                 // parse fields data
                 if (this.options.fieldsData) {
                     fieldsData = this.parseFieldsData(this.options.fieldsData);
-                    url += '&fields='+fieldsData.urlFields;
+                    url += '&fields=' + fieldsData.urlFields;
                     this.options.columns = fieldsData.columns;
                 }
 
@@ -1129,7 +1128,7 @@ define(function() {
         },
 
         bindCustomEvents: function() {
-            var searchInstanceName = '', columnOptionsInstanceName = '';
+            var searchInstanceName = '';
 
             // listen for private events
             this.sandbox.on(UPDATE, this.updateHandler.bind(this));
@@ -1158,11 +1157,8 @@ define(function() {
             }
 
             // listen to search events
-            if (!!this.options.columnOptionsInstanceName) {
-                if (this.options.columnOptionsInstanceName !== '') {
-                    columnOptionsInstanceName = '.' + this.options.columnOptionsInstanceName;
-                }
-                this.sandbox.on('husky.column-options' + columnOptionsInstanceName+'.saved', this.filterColumns.bind(this));
+            if (!!this.options.columnOptionsInstanceName && this.options.columnOptionsInstanceName !== '') {
+                this.sandbox.on('husky.column-options.' + this.options.columnOptionsInstanceName + '.saved', this.filterColumns.bind(this));
             }
 
             // listen for save event
