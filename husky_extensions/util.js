@@ -64,6 +64,36 @@ define(function() {
                 return deferred.promise();
             };
 
+            app.core.util.save = function(url, type, data) {
+                var deferred = new app.sandbox.data.deferred();
+
+                app.logger.log('save', url);
+
+                app.sandbox.util.ajax({
+
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    url: url,
+                    type: type,
+                    data: JSON.stringify(data),
+
+                    success: function(data) {
+                        app.logger.log('data saved', data);
+                        deferred.resolve(data);
+                    }.bind(this),
+
+                    error: function(error) {
+                        deferred.reject(error);
+                    }
+                });
+
+                app.sandbox.emit('husky.util.save.data');
+
+                return deferred.promise();
+            };
+
             app.core.util.contains = function(list, value) {
                 return _.contains(list, value);
             };

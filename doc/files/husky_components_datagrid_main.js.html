@@ -120,6 +120,7 @@
  *
  * @param {Object} [options] Configuration object
  * @param {Boolean} [options.autoRemoveHandling] raises an event before a row is removed
+ * @param {Boolean} [options.editable] will not set class is-selectable to prevent hover effect for complete rows
  * @param {String} [options.className] additional classname for the wrapping div
  * @param {Object} [options.data] if no url is provided (some functionality like search &amp; sort will not work)
  * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
@@ -136,11 +137,11 @@
  * @param {String} [options.selectItem.type] Type of select [checkbox, radio]
  * @param {String} [options.selectItem.width] Width of select column
  * @param {Boolean} [options.sortable] Defines if list is sortable
- * @param {Object} [options.tableHead] configuration of table header
- * @param {String} [options.tableHead.content] column title
- * @param {String} [options.tableHead.width] width of column
- * @param {String} [options.tableHead.class] css class of th
- * @param {String} [options.tableHead.attribute] mapping information to data (if not set it will just iterate of attributes)
+ * @param {Array} [options.columns] configuration array of columns
+ * @param {String} [options.columns.content] column title
+ * @param {String} [options.columns.width] width of column
+ * @param {String} [options.columns.class] css class of th
+ * @param {String} [options.columns.attribute] mapping information to data (if not set it will just iterate of attributes)
  * @param {Boolean} [options.appendTBody] add TBODY to table
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search event
  * @param {String} [options.url] url to fetch data from
@@ -156,6 +157,7 @@ define(function() {
      */
     var defaults = {
             autoRemoveHandling: true,
+            editable: false,
             className: &#x27;datagridcontainer&#x27;,
             elementType: &#x27;table&#x27;,
             data: null,
@@ -174,7 +176,7 @@ define(function() {
                 //clickable: false   // defines if background is clickable TODO do not use until fixed
             },
             sortable: false,
-            tableHead: [],
+            columns: [],
             url: null,
             appendTBody: true,   // add TBODY to table
             searchInstanceName: null, // at which search it should be listened to can be null|string|empty_string
@@ -299,7 +301,13 @@ define(function() {
          * triggers husky.datagrid.data.provide
          * @event husky.datagrid.data.get
          */
-            DATA_GET = namespace + &#x27;data.get&#x27;;
+            DATA_GET = namespace + &#x27;data.get&#x27;,
+
+        /**
+         * used to trigger the save operation of changed data
+         * @event husky.datagrid.data.save
+         */
+            DATA_SAVE = namespace + &#x27;data.save&#x27;;
 
     return {
 
@@ -315,12 +323,22 @@ define(function() {
             this.data = null;
             this.allItemIds = [];
             this.selectedItemIds = [];
-            this.rowStructure = [&#x27;id&#x27;];
+            this.changedData = {};
+
+            this.rowStructure = [
+                {
+                    attribute: &#x27;id&#x27;,
+                    editable: false
+                }
+            ];
+
             this.sort = {
                 ascClass: &#x27;icon-arrow-up&#x27;,
                 descClass: &#x27;icon-arrow-down&#x27;,
                 additionalClasses: &#x27; m-left-5 small-font&#x27;
             };
+
+            this.changedData = [];
 
             // append datagrid to html element
             this.$originalElement = this.sandbox.dom.$(this.options.el);
@@ -463,7 +481,7 @@ define(function() {
 
             $table = this.sandbox.dom.$(&#x27;&lt;table/&gt;&#x27;);
 
-            if (!!this.data.head || !!this.options.tableHead) {
+            if (!!this.data.head || !!this.options.columns) {
                 $thead = this.sandbox.dom.$(&#x27;&lt;thead/&gt;&#x27;);
                 $thead.append(this.prepareTableHead());
                 $table.append($thead);
@@ -481,7 +499,11 @@ define(function() {
             // set html classes
             tblClasses = [];
             tblClasses.push((!!this.options.className &amp;&amp; this.options.className !== &#x27;table&#x27;) ? &#x27;table &#x27; + this.options.className : &#x27;table&#x27;);
-            tblClasses.push((this.options.selectItem &amp;&amp; this.options.selectItem.type === &#x27;checkbox&#x27;) ? &#x27;is-selectable&#x27; : &#x27;&#x27;);
+
+            // when list should not have the hover effect for whole rows do not set the is-selectable class
+            if (!this.options.editable) {
+                tblClasses.push((this.options.selectItem &amp;&amp; this.options.selectItem.type === &#x27;checkbox&#x27;) ? &#x27;is-selectable&#x27; : &#x27;&#x27;);
+            }
 
             $table.addClass(tblClasses.join(&#x27; &#x27;));
 
@@ -497,7 +519,7 @@ define(function() {
             var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute, isSortable;
 
             tblColumns = [];
-            headData = this.options.tableHead || this.data.head;
+            headData = this.options.columns || this.data.head;
 
             // add a checkbox to head row
             if (!!this.options.selectItem &amp;&amp; this.options.selectItem.type) {
@@ -526,7 +548,13 @@ define(function() {
                 tblColumns.push(&#x27;&lt;/th&gt;&#x27;);
             }
 
-            this.rowStructure = [&#x27;id&#x27;];
+            // reset row structure
+            this.rowStructure = [
+                {
+                    attribute: &#x27;id&#x27;,
+                    editable: false
+                }
+            ];
 
             headData.forEach(function(column) {
 
@@ -553,7 +581,10 @@ define(function() {
 
                 // add to row structure when valid entry
                 if (column.attribute !== undefined) {
-                    this.rowStructure.push(column.attribute);
+                    this.rowStructure.push({
+                        attribute: column.attribute,
+                        editable: column.editable
+                    });
                 }
 
                 // add html to table header cell if sortable
@@ -631,26 +662,26 @@ define(function() {
 
                 !!row.id &amp;&amp; this.allItemIds.push(parseInt(row.id, 10));
 
+                // add a checkbox to each row
                 if (!!this.options.selectItem.type &amp;&amp; this.options.selectItem.type === &#x27;checkbox&#x27;) {
-                    // add a checkbox to each row
                     this.tblColumns.push(&#x27;&lt;td&gt;&#x27;, this.templates.checkbox(), &#x27;&lt;/td&gt;&#x27;);
-                } else if (!!this.options.selectItem.type &amp;&amp; this.options.selectItem.type === &#x27;radio&#x27;) {
-                    // add a radio to each row
 
+                    // add a radio to each row
+                } else if (!!this.options.selectItem.type &amp;&amp; this.options.selectItem.type === &#x27;radio&#x27;) {
                     this.tblColumns.push(&#x27;&lt;td&gt;&#x27;, this.templates.radio({
                         name: &#x27;husky-radio&#x27; + radioPrefix
                     }), &#x27;&lt;/td&gt;&#x27;);
                 }
 
-                // when row structure contains more elements than the id then use the structure to set values
+                // when row-structure contains more elements than the id then use the structure to set values
                 if (this.rowStructure.length &gt; 1) {
                     this.rowStructure.forEach(function(key) {
-                        this.setValueOfRowCell(key, row[key]);
+                        this.setValueOfRowCell(key.attribute, row[key.attribute], key.editable);
                     }.bind(this));
                 } else {
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                            this.setValueOfRowCell(key, row[key]);
+                            this.setValueOfRowCell(key, row[key], false);
                         }
                     }
                 }
@@ -668,10 +699,14 @@ define(function() {
          * @param key attribute name
          * @param value attribute value
          */
-        setValueOfRowCell: function(key, value) {
+        setValueOfRowCell: function(key, value, editable) {
             var tblCellClasses,
                 tblCellContent,
                 tblCellClass;
+
+            if (!value) {
+                value = &#x27;&#x27;;
+            }
 
             if (this.options.excludeFields.indexOf(key) &lt; 0) {
                 tblCellClasses = [];
@@ -683,7 +718,11 @@ define(function() {
 
                 tblCellClass = (!!tblCellClasses.length) ? &#x27;class=&quot;&#x27; + tblCellClasses.join(&#x27; &#x27;) + &#x27;&quot;&#x27; : &#x27;&#x27;;
 
-                this.tblColumns.push(&#x27;&lt;td &#x27; + tblCellClass + &#x27; &gt;&#x27; + tblCellContent + &#x27;&lt;/td&gt;&#x27;);
+                if (!!editable) {
+                    this.tblColumns.push(&#x27;&lt;td data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &gt;&lt;span class=&quot;editable&quot; contenteditable=&quot;true&quot;&gt;&#x27; + tblCellContent + &#x27;&lt;/span&gt;&lt;/td&gt;&#x27;);
+                } else {
+                    this.tblColumns.push(&#x27;&lt;td  data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &gt;&#x27; + tblCellContent + &#x27;&lt;/td&gt;&#x27;);
+                }
             } else {
                 this.tblRowAttributes += &#x27; data-&#x27; + key + &#x27;=&quot;&#x27; + value + &#x27;&quot;&#x27;;
             }
@@ -1037,6 +1076,11 @@ define(function() {
                 this.$element.on(&#x27;click&#x27;, &#x27;thead th[data-attribute]&#x27;, this.changeSorting.bind(this));
             }
 
+            if (!!this.options.editable) {
+                this.$element.on(&#x27;focusin&#x27;, &#x27;.editable&#x27;, this.focusOnEditable.bind(this));
+                this.$element.on(&#x27;focusout&#x27;, &#x27;.editable&#x27;, this.isDataChanged.bind(this));
+            }
+
 
             // Todo trigger event when click on clickable area
             // trigger event when click on clickable area
@@ -1151,8 +1195,98 @@ define(function() {
                 this.sandbox.on(&#x27;husky.search&#x27; + searchInstanceName, this.triggerSearch.bind(this));
                 this.sandbox.on(&#x27;husky.search&#x27; + searchInstanceName + &#x27;.reset&#x27;, this.triggerSearch.bind(this, &#x27;&#x27;));
             }
+
+            // listen for save event
+            if (!!this.options.editable) {
+                this.sandbox.on(DATA_SAVE, this.saveChangedData.bind(this));
+            }
+
         },
 
+        /**
+         * Remembers value of previously focused editable field
+         * Is used by isDataChanged to decide wether the value
+         * changed or not
+         */
+        focusOnEditable: function(event) {
+            var $td = this.sandbox.dom.parent(event.currentTarget),
+                $tr = this.sandbox.dom.parent($td),
+                field = this.sandbox.dom.data($td, &#x27;field&#x27;),
+                id = this.sandbox.dom.data($tr, &#x27;id&#x27;),
+                value = event.currentTarget.innerText;
+
+            this.lastFocusedEditableElement = {
+                id: id,
+                field: field,
+                value: value
+            };
+        },
+
+        /**
+         * Triggered when editable field looses focus
+         */
+        isDataChanged: function(event) {
+            var $td = this.sandbox.dom.parent(event.currentTarget),
+                $tr = this.sandbox.dom.parent($td),
+                field = this.sandbox.dom.data($td, &#x27;field&#x27;),
+                id = this.sandbox.dom.data($tr, &#x27;id&#x27;),
+                value = event.currentTarget.innerText,
+                el;
+
+            // last focused object should be same as the one previously left
+            if (this.lastFocusedEditableElement.id === id) {
+                if (this.lastFocusedEditableElement.value !== value) {
+
+                    // element already changed in the past and therefor in the changed data array
+                    this.sandbox.util.each(this.changedData, function(index, value) {
+                        if (value.id === id) {
+                            el = value;
+                        }
+                    }.bind(this));
+
+                    // changed for the first time
+                    if (!el) {
+                        el = {};
+                        el.id = id;
+                        el[field] = value;
+
+                        this.changedData.push(el);
+
+                        // changed changes
+                    } else {
+                        el[field] = value;
+                    }
+                }
+            } else {
+                this.sandbox.logger.log(&quot;Something went wrong!&quot;);
+            }
+
+        },
+
+        /**
+         * Saves the changes for an editable list
+         * Triggered with the husky.datagrid.data.save event
+         */
+        saveChangedData: function() {
+
+            this.sandbox.logger.log(&quot;saving data...&quot;);
+
+            var url = this.data.links.self,
+                type = &#x27;PATCH&#x27;;
+
+            this.sandbox.util.save(url, type, this.changedData)
+                .then(function() {
+                    this.sandbox.logger.log(&quot;saved successfully!&quot;);
+                })
+                .fail(function() {
+                    this.sandbox.logger.log(&quot;failed during save!&quot;);
+                }.bind(this));
+        },
+
+
+        /**
+         * Provides data of the list to the caller
+         */
         provideData: function() {
             this.sandbox.emit(DATA_PROVIDE, this.data);
         },
