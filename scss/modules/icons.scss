@@ -130,6 +130,14 @@
     }
 }
 
+.icon-floppy-save {
+  cursor: pointer;
+  &::after {
+    content: "\e447";
+    display: inline-block;
+  }
+}
+
 .icon-building {
     &::after {
         content: "\e090";

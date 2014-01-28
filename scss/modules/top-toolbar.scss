@@ -15,8 +15,9 @@
 
     .top-toolbar-left {
         float: left;
-        width: 480px;
+        width: 470px;
         height: 100%;
+        padding-left: 10px;
     }
     .top-toolbar-middle {
         float: left;
@@ -24,14 +25,15 @@
     }
     .top-toolbar-right {
         float: right;
-        width: 480px;
+        width: 470px;
         height: 100%;
+        padding-right: 10px;
     }
     .left-list,
     .right-list {
         height: 40px;
         list-style: none outside none;
-        margin: 5px 0;
+        margin: 10px 0;
         padding: 0;
     }
     .left-list {
@@ -39,5 +41,57 @@
     }
     .right-list {
         float: right;
+    }
+    .button {
+        position: relative;
+        top: 0px;
+        left: 0px;
+        a {
+          color: $white;
+        }
+    }
+    .exit {
+        font-size: 18px;
+        line-height: 30px;
+    }
+    .resolution {
+        border: 1px solid $grayLight;
+        border-radius: 3px;
+        font-size: 12px;
+        height: 30px;
+        padding: 3px 10px;
+        cursor: pointer;
+        a {
+            text-decoration: none;
+        }
+    }
+    .dropdown-toggle:after {
+        border-left: 4px solid rgba(0, 0, 0, 0);
+        border-right: 4px solid rgba(0, 0, 0, 0);
+        border-top: 6px solid $white;
+        content: "";
+        display: inline-block;
+        height: 0;
+        margin-left: 8px;
+        position: relative;
+        top: -1px;
+        width: 0;
+    }
+    .top-toolbar-dropdown-menu {
+        @extend .custom-dropdown-menu;
+        display: none;
+        text-align: left;
+        left: auto;
+        right: 0;
+        li {
+          padding-left: 15px;
+        }
+        a {
+          color: $black;
+          text-decoration: none;
+        }
+    }
+    .is-expanded .top-toolbar-dropdown-menu {
+        display: block;
     }
 }

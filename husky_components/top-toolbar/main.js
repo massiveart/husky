@@ -36,8 +36,11 @@ define([], function () {
             leftListClass: 'left-list',
             iconClassPrefix: 'icon-',
             iconExtraClass: 'icon',
+            buttonExtraClass: 'button',
             iconTitleClass: 'title',
-            dropdownClass: 'top-toolbar-dropdown-menu'
+            dropdownClass: 'top-toolbar-dropdown-menu',
+            dropdownExpandedClass: 'is-expanded',
+            dropdownTogglerClass: 'dropdown-toggle'
         },
 
         templates = {
@@ -123,7 +126,7 @@ define([], function () {
             //set the middle container width the remaining width of the container
             // (container.width - left.width - right.width)
             this.sandbox.dom.css(this.sandbox.dom.find('.' + constants.middleContainerClass, this.$el), {
-                width: (this.sandbox.dom.width(this.$el) - this.sandbox.dom.width(this.containers.left.$el) - this.sandbox.dom.width(this.containers.right.$el)) + 'px'
+                width: (this.sandbox.dom.outerWidth(this.$el) - this.sandbox.dom.outerWidth(this.containers.left.$el) - this.sandbox.dom.outerWidth(this.containers.right.$el)) + 'px'
             });
         },
 
@@ -144,31 +147,86 @@ define([], function () {
         renderButtons: function() {
             this.initButtons();
 
-            var i = -1, length = this.buttons.length, button = null;
+            var i = -1, length = this.buttons.length, button = null, ddClass = '';
             for (i = -1, length = this.buttons.length; ++i < length;) {
                 button = this.sandbox.dom.createElement('<li data-id="'+ this.buttons[i].id +'"/>');
+                ddClass = (typeof this.buttons[i].items === 'undefined') ? '' : constants.dropdownTogglerClass;
                 this.sandbox.dom.addClass(button, this.buttons[i].customClass);
-                this.sandbox.dom.html(button, ['<a href="#">',
-                                                '<span class="',constants.iconExtraClass,' ',constants.iconClassPrefix + this.buttons[i].icon,'"></span>',
+                this.sandbox.dom.addClass(button, constants.buttonExtraClass);
+                this.sandbox.dom.html(button, ['<a class="'+ ddClass +'" href="#">',
+                                                '<span class="',constants.iconClassPrefix + this.buttons[i].icon,' ',constants.iconExtraClass,'"></span>',
                                                 '<span class="',constants.iconTitleClass,'">',this.buttons[i].title,'</span>',
                                           '</a>'].join(''));
                 this.sandbox.dom.append(button, this.renderDropdown(this.buttons[i]));
                 this.buttons[i].$el = button;
+                this.bindButtonEvents(this.buttons[i]);
             }
         },
 
+        bindButtonEvents: function(button) {
+            if(typeof button.items !== 'undefined') {
+                this.sandbox.dom.on(button.$el, 'click', function(event) {
+                    this.sandbox.dom.stopPropagation(event);
+                    this.toggleDropdown(button);
+                }.bind(this));
+            }
+
+            if (typeof button.callback !== 'undefined') {
+                this.sandbox.dom.on(button.$el, 'click', function() {
+                    this.executeCallback(button.callback);
+                }.bind(this));
+            }
+        },
+
+        toggleDropdown: function(button) {
+            if (this.sandbox.dom.hasClass(button.$el, constants.dropdownExpandedClass) === true) {
+                this.closeDropdown(button);
+            } else {
+                this.openDropdown(button);
+                this.sandbox.dom.one(this.sandbox.dom.$window, 'click', this.closeDropdown.bind(this, button));
+            }
+        },
+
+        openDropdown: function(button) {
+            this.sandbox.dom.addClass(button.$el, constants.dropdownExpandedClass);
+        },
+
+        closeDropdown: function(button) {
+            this.sandbox.dom.removeClass(button.$el, constants.dropdownExpandedClass);
+        },
+
         renderDropdown: function(button) {
-            if (!!button.items.length) {
-                var dropdown = this.sandbox.dom.createElement('<ul class="'+ constants.dropdownClass +'"/>'),
-                    i = -1, length = button.items.length, item = null;
-                for (;++i < length;) {
-                    item = this.sandbox.dom.createElement('<li/>');
-                    this.sandbox.dom.html(item, ['<a href="#">',button.items[i].title,'</a>'].join(''));
-                    this.sandbox.dom.append(dropdown, item);
+            if (typeof button.items !== 'undefined') {
+                if (!!button.items.length) {
+                    var dropdown = this.sandbox.dom.createElement('<ul class="'+ constants.dropdownClass +'"/>'),
+                        i = -1, length = button.items.length, item = null;
+                    for (;++i < length;) {
+                        item = this.sandbox.dom.createElement('<li/>');
+                        this.sandbox.dom.html(item, ['<a href="#">',button.items[i].title,'</a>'].join(''));
+                        this.bindDropdownItemEvents(item, button, i);
+                        this.sandbox.dom.append(dropdown, item);
+                    }
+                    return dropdown;
                 }
-                return dropdown;
             }
             return '';
+        },
+
+        bindDropdownItemEvents: function($el, button, itemIndex) {
+            if(typeof button.items[itemIndex].callback !== 'undefined') {
+                this.sandbox.dom.on($el, 'click', function(event) {
+                    this.sandbox.dom.stopPropagation(event);
+                    this.refreshTitle(button, itemIndex);
+                    this.executeCallback(button.items[itemIndex].callback);
+                    this.closeDropdown(button);
+                }.bind(this));
+            }
+        },
+
+        refreshTitle: function(button, itemIndex) {
+            if (button.dropdownType === 'select') {
+                this.sandbox.dom.html(this.sandbox.dom.find('.'+constants.iconTitleClass, button.$el), button.items[itemIndex].title);
+            }
         },
 
         initButtons: function() {
@@ -196,6 +254,14 @@ define([], function () {
                 } else {
                     this.sandbox.dom.append(container.$rightList, this.buttons[i].$el);
                 }
+            }
+        },
+
+        executeCallback: function(callback) {
+            if(typeof callback === 'function') {
+                callback();
+            } else {
+                this.sandbox.logger.log('ERROR: Callback is not a function');
             }
         }
     };

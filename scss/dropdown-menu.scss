@@ -1,0 +1,71 @@
+//
+// Dropdown Menu
+// --------------------------------------------------
+.custom-dropdown-menu {
+    background-color: white;
+    border: 1px solid $grayLighter;
+
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    float: left;
+    min-width: 160px;
+    list-style: none;
+
+    padding: 5px 0;
+    margin-top: -7px;
+    margin-left: 0px;
+
+    @include standard-box-shadow(2px);
+
+    &.right-aligned {
+      left: auto;
+      right: 0;
+    }
+
+    li {
+      display: list-item;
+      float: none;
+      height: 30px;
+      line-height: 30px;
+      white-space: nowrap;
+
+      &.is-selected,
+      &:hover {
+        background-color: $highlightColor;
+        cursor: pointer;
+        a {
+          color: white;
+        }
+      }
+
+      &.disabled:hover,
+      &.disabled {
+        cursor: default;
+        background-color: inherit;
+        a {
+          cursor: default;
+          color: $grayLight;
+        }
+      }
+
+      &:active {
+        background-color: lighten($highlightColor, 5%);
+      }
+
+      &.divider {
+        height: 1px;
+        margin: 5px 0;
+        overflow: hidden;
+        background-color: $grayLighterer;
+      }
+
+      a {
+        clear: both;
+        text-align: left;
+      }
+
+    }
+}

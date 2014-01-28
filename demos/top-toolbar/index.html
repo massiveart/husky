@@ -32,29 +32,61 @@
             testData = [
                 {
                     id: 1,
-                    icon: 'save',
-                    disabledIcon: 'cancel',
+                    icon: 'remove',
+                    container: 'left',
+                    align: 'left',
+                    customClass: 'exit',
+                    callback: function() {
+                        console.log('You clicked on exit');
+                    }
+                },
+                {
+                    id: 2,
+                    icon: 'floppy-save',
                     container: 'left',
                     align: 'right',
-                    title: 'Test',
-                    customClass: 'testme',
+                    customClass: 'save',
                     callback: function() {
-                        console.log('super awsome callback');
-                    },
+                        console.log('You clicked on save');
+                    }
+                },
+                {
+                    id: 3,
+                    container: 'right',
+                    align: 'right',
+                    customClass: 'resolution',
+                    title: '1024 x 768',
+                    dropdownType: 'select',
                     items: [
                         {
-                            title: "item 1",
+                            title: '1024 x 768',
                             callback: function() {
-                                console.log('you clicked on item 1');
+                                console.log('Changed resolution to 1024 x 768');
                             }
                         },
                         {
-                            title: "item 2",
+                            title: '1280 x 800',
                             callback: function() {
-                                console.log('you clicked on item 2');
+                                console.log('Changed resolution to 1280 x 800');
+                            }
+                        },
+                        {
+                            title: '1920 x 1080',
+                            callback: function() {
+                                console.log('Changed resolution to 1920 x 1080');
                             }
                         }
                     ]
+                },
+                {
+                    id: 5,
+                    icon: 'delete',
+                    container: 'left',
+                    align: 'right',
+                    customClass: 'delete',
+                    callback: function() {
+                        console.log('You clicked on delete');
+                    }
                 }
             ];
 
