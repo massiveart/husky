@@ -312,7 +312,7 @@ define([], function() {
 
             setDropdownWidth: function() {
                 this.sandbox.dom.css(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), {
-                    width: this.sandbox.dom.width(this.$el)+1+'px'
+                    width: this.sandbox.dom.width(this.$el)+'px'
                 });
             },
 
