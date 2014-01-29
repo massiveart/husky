@@ -114,12 +114,20 @@
                 return $(selector).parent();
             };
 
-            app.core.dom.width = function(selector) {
-                return $(selector).width();
+            app.core.dom.width = function(selector, value) {
+                if (!!value) {
+                    return $(selector).width(value);
+                } else {
+                    return $(selector).width();
+                }
             };
 
-            app.core.dom.height = function(selector) {
-                return $(selector).height();
+            app.core.dom.height = function(selector, value) {
+                if (!!value) {
+                    return $(selector).height(value);
+                } else {
+                    return $(selector).height();
+                }
             };
 
             app.core.dom.offset = function(selector, attributes) {
