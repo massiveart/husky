@@ -24,7 +24,15 @@ define([], function () {
      * Default values for options
      */
     var defaults = {
-            data: []
+            data: [],
+            iconClassPrefix: 'icon-',
+            iconExtraClass: 'icon',
+            loadingClass: 'loading',
+            disabledClass: 'disabled',
+            animationClass: 'highlight-animation',
+            highlightClass: 'highlight',
+            buttonExtraClass: 'button',
+            iconTitleClass: 'title'
         },
 
         constants = {
@@ -34,10 +42,6 @@ define([], function () {
             rightContainerClass: 'top-toolbar-right',
             rightListClass: 'right-list',
             leftListClass: 'left-list',
-            iconClassPrefix: 'icon-',
-            iconExtraClass: 'icon',
-            buttonExtraClass: 'button',
-            iconTitleClass: 'title',
             dropdownClass: 'top-toolbar-dropdown-menu',
             dropdownExpandedClass: 'is-expanded',
             dropdownTogglerClass: 'dropdown-toggle'
@@ -70,6 +74,33 @@ define([], function () {
          */
         INITIALIZED = function() {
             return createEventName.call(this, 'initialized');
+        },
+
+        /**
+         * Components listens on and changes matched button state
+         * @event husky.top-toolbar.<button-id>.disable
+         * @param buttonId {Integer|String} id of a button
+         */
+        DISABLE = function(buttonId) {
+            return createEventName.call(this, buttonId+'.disable');
+        },
+
+        /**
+         * Components listens on and changes matched button state
+         * @event husky.top-toolbar.<button-id>.enable
+         * @param buttonId {Integer|String} id of a button
+         */
+        ENABLE = function(buttonId) {
+            return createEventName.call(this, buttonId+'.enable');
+        },
+
+        /**
+         * Components listens on and changes matched button state
+         * @event husky.top-toolbar.<button-id>.enable
+         * @param buttonId {Integer|String} id of a button
+         */
+        LOADING = function(buttonId) {
+            return createEventName.call(this, buttonId+'.loading');
         },
 
         /** returns normalized event names */
@@ -111,6 +142,12 @@ define([], function () {
                 }
             };
             this.buttons = null;
+
+            this.buttonStates = {
+                enabled: 'enabled',
+                disabled: 'disabled',
+                loading: 'loading'
+            }
         },
 
         render: function() {
@@ -147,18 +184,30 @@ define([], function () {
         renderButtons: function() {
             this.initButtons();
 
-            var i = -1, length = this.buttons.length, button = null, ddClass = '';
+            var i = -1, length = this.buttons.length, button = null, ddClass = '', html;
             for (i = -1, length = this.buttons.length; ++i < length;) {
                 button = this.sandbox.dom.createElement('<li data-id="'+ this.buttons[i].id +'"/>');
                 ddClass = (typeof this.buttons[i].items === 'undefined') ? '' : constants.dropdownTogglerClass;
                 this.sandbox.dom.addClass(button, this.buttons[i].customClass);
-                this.sandbox.dom.addClass(button, constants.buttonExtraClass);
-                this.sandbox.dom.html(button, ['<a class="'+ ddClass +'" href="#">',
-                                                '<span class="',constants.iconClassPrefix + this.buttons[i].icon,' ',constants.iconExtraClass,'"></span>',
-                                                '<span class="',constants.iconTitleClass,'">',this.buttons[i].title,'</span>',
-                                          '</a>'].join(''));
+                this.sandbox.dom.addClass(button, this.options.buttonExtraClass);
+                if (this.buttons[i].highlight === true) {
+                    this.sandbox.dom.addClass(button, this.options.highlightClass);
+                }
+
+                html = '<a class="'+ ddClass +'" href="#">';
+                if (typeof this.buttons[i].icon !== 'undefined') {
+                    html += '<span class="'+ this.options.iconClassPrefix + this.buttons[i].icon +' '+ this.options.iconExtraClass +'"></span>';
+                }
+                if (typeof this.buttons[i].title !== 'undefined') {
+                    html += '<span class="'+ this.options.iconTitleClass +'">'+ this.buttons[i].title +'</span>';
+                }
+                html += '</a>';
+                this.sandbox.dom.html(button, html);
+
                 this.sandbox.dom.append(button, this.renderDropdown(this.buttons[i]));
                 this.buttons[i].$el = button;
+                this.buttons[i].executeCallback = true;
+                this.buttons[i].loading = false;
                 this.bindButtonEvents(this.buttons[i]);
             }
         },
@@ -167,14 +216,94 @@ define([], function () {
             if(typeof button.items !== 'undefined') {
                 this.sandbox.dom.on(button.$el, 'click', function(event) {
                     this.sandbox.dom.stopPropagation(event);
-                    this.toggleDropdown(button);
+                    this.sandbox.dom.preventDefault(event);
+                    if (button.executeCallback === true) {
+                        this.toggleDropdown(button);
+                    }
                 }.bind(this));
             }
 
             if (typeof button.callback !== 'undefined') {
-                this.sandbox.dom.on(button.$el, 'click', function() {
-                    this.executeCallback(button.callback);
+                this.sandbox.dom.on(button.$el, 'click', function(event) {
+                    this.sandbox.dom.preventDefault(event);
+                    if (button.executeCallback === true) {
+                        this.executeCallback(button.callback);
+                    }
                 }.bind(this));
+            }
+
+            this.sandbox.on(DISABLE.call(this, button.id), function(highlight) {
+                this.changeButtonState(button, this.buttonStates.disabled, highlight);
+            }.bind(this));
+
+            this.sandbox.on(ENABLE.call(this, button.id), function(highlight) {
+                this.changeButtonState(button, this.buttonStates.enabled, highlight);
+            }.bind(this));
+
+            this.sandbox.on(LOADING.call(this, button.id), function(highlight) {
+                this.changeButtonState(button, this.buttonStates.loading, highlight);
+            }.bind(this));
+
+            // remove class after effect has finished
+            this.sandbox.dom.on(button.$el, 'animationend webkitAnimationEnd oanimationend MSAnimationEnd', function() {
+                this.sandbox.dom.removeClass(button.$el, this.options.animationClass);
+            }.bind(this));
+        },
+
+        changeButtonState: function(button, state, highlight) {
+            if (highlight === true) {
+                this.sandbox.dom.addClass(button.$el, this.options.animationClass);
+            }
+
+            if (state === this.buttonStates.enabled) {
+                this.resetButtonLoading(button);
+                this.enableButton(button);
+            } else if (state === this.buttonStates.disabled) {
+                this.resetButtonLoading(button);
+                this.disableButton(button);
+            } else if (state === this.buttonStates.loading) {
+                this.setButtonLoading(button);
+            }
+        },
+
+        resetButtonLoading: function(button) {
+            this.sandbox.dom.remove(this.sandbox.dom.find('.' + this.options.loadingClass, button.$el));
+            this.sandbox.dom.show(this.sandbox.dom.children(button.$el, 'a'));
+            button.loading = false;
+        },
+
+        disableButton: function(button) {
+            if (typeof button.disabledIcon !== 'undefined') {
+                this.removeIcon(button);
+                this.setIcon(button, button.disabledIcon);
+            }
+            this.sandbox.dom.addClass(button.$el, this.options.disabledClass);
+            button.executeCallback = false;
+        },
+
+        enableButton: function(button) {
+            this.sandbox.dom.removeClass(button.$el, this.options.disabledClass);
+            this.removeIcon(button);
+            this.setIcon(button, button.icon);
+            button.executeCallback = true;
+        },
+
+        setButtonLoading: function(button) {
+            if (button.loading === false) {
+                var $loadingCont = this.sandbox.dom.createElement('<span class="'+ this.options.loadingClass +'"></span>');
+                this.sandbox.dom.hide(this.sandbox.dom.children(button.$el, 'a'));
+                this.sandbox.dom.append(button.$el, $loadingCont);
+                button.executeCallback = false;
+                button.loading = true;
+
+                this.sandbox.start([{
+                    name: 'loader@husky',
+                    options: {
+                        el: $loadingCont,
+                        size: '20px',
+                        color: 'white'
+                    }
+                }]);
             }
         },
 
@@ -216,7 +345,9 @@ define([], function () {
             if(typeof button.items[itemIndex].callback !== 'undefined') {
                 this.sandbox.dom.on($el, 'click', function(event) {
                     this.sandbox.dom.stopPropagation(event);
+                    this.sandbox.dom.preventDefault(event);
                     this.refreshTitle(button, itemIndex);
+                    this.refreshIcon(button, itemIndex);
                     this.executeCallback(button.items[itemIndex].callback);
                     this.closeDropdown(button);
                 }.bind(this));
@@ -224,9 +355,26 @@ define([], function () {
         },
 
         refreshTitle: function(button, itemIndex) {
-            if (button.dropdownType === 'select') {
-                this.sandbox.dom.html(this.sandbox.dom.find('.'+constants.iconTitleClass, button.$el), button.items[itemIndex].title);
+            if (button.dynamicDDTitle === true) {
+                this.sandbox.dom.html(this.sandbox.dom.find('.'+this.options.iconTitleClass, button.$el), button.items[itemIndex].title);
             }
+        },
+
+        refreshIcon: function(button, itemIndex) {
+            if (button.dynamicDDIcon === true) {
+                this.removeIcon(button);
+                this.setIcon(button, button.items[itemIndex].selectedIcon);
+            }
+        },
+
+        removeIcon: function(button) {
+            var iconContainer = this.sandbox.dom.find('.' + this.options.iconExtraClass, button.$el),
+                iconClass = this.sandbox.dom.attr(iconContainer, 'class').match(this.options.iconClassPrefix+'[\\w|-]+')[0];
+            this.sandbox.dom.removeClass(iconContainer, iconClass);
+        },
+
+        setIcon: function(button, icon) {
+            this.sandbox.dom.prependClass( this.sandbox.dom.find('.' + this.options.iconExtraClass, button.$el), this.options.iconClassPrefix + icon);
         },
 
         initButtons: function() {

@@ -255,12 +255,3 @@ $editToolbarHeight: 40px;
 
 }
 
-$higlightAnimationDuration: 1500ms;
-
-.highlight-animation {
-    -webkit-animation: HIGHLIGHT-ANIMATION $higlightAnimationDuration; /* Safari 4+ */
-    -moz-animation:    HIGHLIGHT-ANIMATION $higlightAnimationDuration; /* Fx 5+ */
-    -o-animation:      HIGHLIGHT-ANIMATION $higlightAnimationDuration; /* Opera 12+ */
-    animation:         HIGHLIGHT-ANIMATION $higlightAnimationDuration; /* IE 10+ */
-}
-

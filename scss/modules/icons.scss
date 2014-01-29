@@ -439,3 +439,33 @@
     display: inline-block;
   }
 }
+
+.icon-publish {
+    &::after {
+        content: "";
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 1px solid $white;
+        background: $green;
+        position: relative;
+        top: 2px;
+        left: 0px;
+    }
+}
+
+.icon-unpublish {
+  &::after {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid $white;
+    background: $red;
+    position: relative;
+    top: 2px;
+    left: 0px;
+  }
+}

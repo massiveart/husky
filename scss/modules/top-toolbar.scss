@@ -17,7 +17,6 @@
         float: left;
         width: 470px;
         height: 100%;
-        padding-left: 10px;
     }
     .top-toolbar-middle {
         float: left;
@@ -27,42 +26,119 @@
         float: right;
         width: 470px;
         height: 100%;
-        padding-right: 10px;
     }
     .left-list,
     .right-list {
-        height: 40px;
+        height: 30px;
         list-style: none outside none;
         margin: 10px 0;
         padding: 0;
     }
     .left-list {
         float: left;
+        .button {
+            float: left;
+        }
     }
     .right-list {
         float: right;
+        .button {
+            float: right;
+        }
     }
     .button {
         position: relative;
         top: 0px;
         left: 0px;
+        display: block;
+        border: 1px solid $grayLight;
+        border-radius: 3px;
+        font-size: 12px;
+        height: 30px;
+        padding: 4px 10px;
+        cursor: pointer;
         a {
           color: $white;
+          text-decoration: none;
+        }
+        *:focus {
+          outline: none;
+        }
+        *::-moz-focus-inner {
+          border: 0;
         }
     }
     .exit {
         font-size: 18px;
         line-height: 30px;
+        border: none;
+        padding: 0;
+        padding-left: 10px;
+        padding-right: 10px;
+        .loading {
+            margin-top: 5px;
+        }
     }
     .resolution {
         border: 1px solid $grayLight;
         border-radius: 3px;
         font-size: 12px;
         height: 30px;
-        padding: 3px 10px;
         cursor: pointer;
-        a {
-            text-decoration: none;
+        padding-top: 5px;
+        width: 105px;
+        margin-right: 10px;
+        .top-toolbar-dropdown-menu {
+            left: auto;
+            right: 0;
+        }
+        .loading {
+            margin-top: -1px;
+        }
+    }
+    .save {
+        font-size: 16px;
+        margin-right: 20px;
+        width: 40px;
+    }
+    .delete {
+        font-size: 14px;
+        padding-left: 12px;
+        padding-right: 12px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        width: 40px;
+        .loading {
+            margin-left: -3px;
+        }
+    }
+    .state {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left-width: 0;
+        width: 50px;
+        .dropdown-toggle:after {
+            margin-left: 3px;
+        }
+    }
+    .highlight {
+        background: $highlightColor;
+        border-color: $highlightColor;
+    }
+    .disabled {
+        background: $grayLight;
+        border-color: $grayLight;
+        cursor: auto;
+        * {
+          cursor: auto;
+        }
+    }
+    .loading {
+        display: block;
+        margin-left: -1px;
+        cursor: auto;
+        * {
+          cursor: auto;
         }
     }
     .dropdown-toggle:after {
@@ -81,8 +157,6 @@
         @extend .custom-dropdown-menu;
         display: none;
         text-align: left;
-        left: auto;
-        right: 0;
         li {
           padding-left: 15px;
         }

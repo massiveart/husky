@@ -13,8 +13,15 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="stylesheet" href="../../dist/husky.min.css">
 </head>
+<style>
+    body {
+        padding-top: 100px;
+    }
+</style>
 <body>
-<div class="toolbar"></div>
+<div class="toolbar highlight-animation"></div>
+<button id="toggleState">Disable/Enable Save</button>
+<button id="loadingState">set Save loading</button>
 <script src="../js/sinon.js"></script>
 <script src="../js/jquery.js"></script>
 <script src="../js/require.js"></script>
@@ -29,6 +36,8 @@
         var app = Husky({ debug: { enable: true }}),
                 _ = app.sandbox.util._,
 
+            toggleState = 1,
+
             testData = [
                 {
                     id: 1,
@@ -42,21 +51,57 @@
                 },
                 {
                     id: 2,
+                    icon: 'publish',
+                    container: 'left',
+                    align: 'right',
+                    customClass: 'state',
+                    dynamicDDIcon: true,
+                    items: [
+                        {
+                            title: 'publish',
+                            selectedIcon: 'publish',
+                            callback: function() {
+                                console.log('Congrats! You are a publishing-champ');
+                            }
+                        },
+                        {
+                            title: 'unpublish',
+                            selectedIcon: 'unpublish',
+                            callback: function() {
+                                console.log(':( Why unpublish?');
+                            }
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    icon: 'delete',
+                    container: 'left',
+                    align: 'right',
+                    customClass: 'delete',
+                    callback: function() {
+                        console.log('You clicked on delete');
+                    }
+                },
+                {
+                    id: 4,
                     icon: 'floppy-save',
+                    disabledIcon: 'remove',
                     container: 'left',
                     align: 'right',
                     customClass: 'save',
+                    highlight: true,
                     callback: function() {
                         console.log('You clicked on save');
                     }
                 },
                 {
-                    id: 3,
+                    id: 5,
                     container: 'right',
                     align: 'right',
                     customClass: 'resolution',
                     title: '1024 x 768',
-                    dropdownType: 'select',
+                    dynamicDDTitle: true,
                     items: [
                         {
                             title: '1024 x 768',
@@ -77,16 +122,6 @@
                             }
                         }
                     ]
-                },
-                {
-                    id: 5,
-                    icon: 'delete',
-                    container: 'left',
-                    align: 'right',
-                    customClass: 'delete',
-                    callback: function() {
-                        console.log('You clicked on delete');
-                    }
                 }
             ];
 
@@ -98,6 +133,19 @@
             }
         }]).then(function() {
             app.logger.log('Aura started...');
+        });
+
+        $('#toggleState').on('click', function() {
+            if (toggleState === 1) {
+                app.sandbox.emit('husky.top-toolbar.4.disable', true);
+                toggleState = 0;
+            } else {
+                app.sandbox.emit('husky.top-toolbar.4.enable', true);
+                toggleState = 1;
+            }
+        });
+        $('#loadingState').on('click', function() {
+            app.sandbox.emit('husky.top-toolbar.4.loading');
         });
     });
 </script>
