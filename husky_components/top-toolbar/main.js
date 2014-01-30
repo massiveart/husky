@@ -14,6 +14,34 @@
  * @constructor
  *
  * @param {Object} [options] Configuration object
+ *
+ * @param {Array} [options.data] Array with data for the component
+ * @param {Integer|String} [options.data*.id] unique identifier for the button
+ * @param {String} [options.data*.icon] icon for the button
+ * @param {String} [options.data*.disabledIcon] icon for the button if it's disabled
+ * @param {String} [options.data*.container] container in which the button gets inserted (left, middle, right)
+ * @param {String} [options.data*.align] which side the button is aligned in its container (left, right)
+ * @param {String} [options.data*.title] title of the button
+ * @param {String} [options.data*.customClass] class that gets added to the button
+ * @param {Function} [options.data*.callback] callback which gets executed if the button is clicked on
+ * @param {Boolean} [options.data*.highlight] if true the higlight-class gets added to the button
+ * @param {Boolean} [options.data*.dynamicDDTitle] if true the button title always matches the selected dropdown-item
+ * @param {Boolean} [options.data*.dynamicDDIcon] if true the button icon always matches the selected dropdown-icon
+ * @param {Boolean} [options.data*.closeComponent] if true component closes if button is clicked on
+ * @param {Array} [options.data*.items] array with dropdown-options for the button
+ * @param {String} [options.data*.items*.title] title of the item
+ * @param {Function} [options.data*.items*.callback] callback which gets executed if the item is clicked on
+ * @param {selectedIcon} [options.data*.items*.title] icon to which the button-icon gets changed if the item is selected (data*.dynamicDDIcon must be true)
+ *
+ *
+ * @param {String} [options.iconClassPrefix] string that gets prepended to the button.icon string
+ * @param {String} [options.iconExtraClass] class that gets added to the icon element
+ * @param {String} [options.loadingClass] class that gets added to the loading container
+ * @param {String} [options.disabledClass] class that gets added to the button if it's disabled
+ * @param {String} [options.animationClass] class which handles a transition effect
+ * @param {String} [options.highlightClass] class that gets added if button.highlight is true
+ * @param {String} [options.buttonExtraClass] class that gets added to each button
+ * @param {String} [options.iconTitleClass] class that gets added to the title container
  */
 
 define([], function () {
@@ -110,6 +138,9 @@ define([], function () {
 
     return {
 
+        /**
+         * Initalize
+         */
         initialize: function () {
             this.sandbox.logger.log('initialize', this);
 
@@ -123,6 +154,9 @@ define([], function () {
             this.sandbox.emit(INITIALIZED.call(this));
         },
 
+        /**
+         * Sets the default values for the object's properties
+         */
         setProperties: function() {
             this.containers = {
                 left: {
@@ -150,12 +184,18 @@ define([], function () {
             }
         },
 
+        /**
+         * Renders the component
+         */
         render: function() {
             this.renderSkeleton();
             this.renderButtons();
             this.appendButtons();
         },
 
+        /**
+         * Renders the skeleton (main structure) of the component
+         */
         renderSkeleton: function() {
             this.sandbox.dom.html(this.$el, templates.skeleton);
             this.initContainers();
@@ -167,6 +207,9 @@ define([], function () {
             });
         },
 
+        /**
+         * Binds the toolbar button-containers to object properties
+         */
         initContainers: function() {
             this.containers.left.$el = this.sandbox.dom.find('.'+constants.leftContainerClass, this.$el);
             this.containers.left.$leftList = this.sandbox.dom.find('.'+constants.leftListClass, this.containers.left.$el);
@@ -181,19 +224,28 @@ define([], function () {
             this.containers.right.$rightList = this.sandbox.dom.find('.'+constants.rightListClass, this.containers.right.$el);
         },
 
+        /**
+         * Renders the buttons (creats the button-DOM-object, but not yet displays it)
+         */
         renderButtons: function() {
             this.initButtons();
 
             var i = -1, length = this.buttons.length, button = null, ddClass = '', html;
-            for (i = -1, length = this.buttons.length; ++i < length;) {
+            for (; ++i < length;) {
                 button = this.sandbox.dom.createElement('<li data-id="'+ this.buttons[i].id +'"/>');
+
+                //if dropdown items exist add dropdown class
                 ddClass = (typeof this.buttons[i].items === 'undefined') ? '' : constants.dropdownTogglerClass;
+
                 this.sandbox.dom.addClass(button, this.buttons[i].customClass);
                 this.sandbox.dom.addClass(button, this.options.buttonExtraClass);
+
+                //set the highlight class
                 if (this.buttons[i].highlight === true) {
                     this.sandbox.dom.addClass(button, this.options.highlightClass);
                 }
 
+                //construct the dom object
                 html = '<a class="'+ ddClass +'" href="#">';
                 if (typeof this.buttons[i].icon !== 'undefined') {
                     html += '<span class="'+ this.options.iconClassPrefix + this.buttons[i].icon +' '+ this.options.iconExtraClass +'"></span>';
@@ -204,7 +256,10 @@ define([], function () {
                 html += '</a>';
                 this.sandbox.dom.html(button, html);
 
+                //render dropdown-menu
                 this.sandbox.dom.append(button, this.renderDropdown(this.buttons[i]));
+
+                //set the button properties and bind the events
                 this.buttons[i].$el = button;
                 this.buttons[i].executeCallback = true;
                 this.buttons[i].loading = false;
@@ -212,7 +267,13 @@ define([], function () {
             }
         },
 
+        /**
+         * Binds events concerning buttons
+         * @param button {object} the button to bind events on
+         */
         bindButtonEvents: function(button) {
+
+            //enable dropdown toggling
             if(typeof button.items !== 'undefined') {
                 this.sandbox.dom.on(button.$el, 'click', function(event) {
                     this.sandbox.dom.stopPropagation(event);
@@ -223,23 +284,28 @@ define([], function () {
                 }.bind(this));
             }
 
+            //enable callback execution
             if (typeof button.callback !== 'undefined') {
                 this.sandbox.dom.on(button.$el, 'click', function(event) {
                     this.sandbox.dom.preventDefault(event);
                     if (button.executeCallback === true) {
                         this.executeCallback(button.callback);
                     }
+                    if (typeof button.closeComponent !== 'undefined') {
+                        if (button.closeComponent === true) {
+                            this.closeComponent();
+                        }
+                    }
                 }.bind(this));
             }
 
+            //listen if the button state needs to be changed
             this.sandbox.on(DISABLE.call(this, button.id), function(highlight) {
                 this.changeButtonState(button, this.buttonStates.disabled, highlight);
             }.bind(this));
-
             this.sandbox.on(ENABLE.call(this, button.id), function(highlight) {
                 this.changeButtonState(button, this.buttonStates.enabled, highlight);
             }.bind(this));
-
             this.sandbox.on(LOADING.call(this, button.id), function(highlight) {
                 this.changeButtonState(button, this.buttonStates.loading, highlight);
             }.bind(this));
@@ -250,6 +316,19 @@ define([], function () {
             }.bind(this));
         },
 
+        /**
+         * Closes the component
+         */
+        closeComponent: function() {
+            this.sandbox.dom.remove(this.$el);
+        },
+
+        /**
+         * Changes the state of the button
+         * @param button {object} the button which state needs to be changed
+         * @param state {String} (enabled, disabled, loading) state to change to
+         * @param highlight {Boolean} if true the button will play an animation
+         */
         changeButtonState: function(button, state, highlight) {
             if (highlight === true) {
                 this.sandbox.dom.addClass(button.$el, this.options.animationClass);
@@ -266,12 +345,20 @@ define([], function () {
             }
         },
 
+        /**
+         * Resets the loading state
+         * @param button {object} button context
+         */
         resetButtonLoading: function(button) {
             this.sandbox.dom.remove(this.sandbox.dom.find('.' + this.options.loadingClass, button.$el));
             this.sandbox.dom.show(this.sandbox.dom.children(button.$el, 'a'));
             button.loading = false;
         },
 
+        /**
+         * Disables the button
+         * @param button {object} button context
+         */
         disableButton: function(button) {
             if (typeof button.disabledIcon !== 'undefined') {
                 this.removeIcon(button);
@@ -281,6 +368,10 @@ define([], function () {
             button.executeCallback = false;
         },
 
+        /**
+         * Enables the button
+         * @param button {object} button context
+         */
         enableButton: function(button) {
             this.sandbox.dom.removeClass(button.$el, this.options.disabledClass);
             this.removeIcon(button);
@@ -288,6 +379,10 @@ define([], function () {
             button.executeCallback = true;
         },
 
+        /**
+         * Sets the loading state for a button
+         * @param button {object} button context
+         */
         setButtonLoading: function(button) {
             if (button.loading === false) {
                 var $loadingCont = this.sandbox.dom.createElement('<span class="'+ this.options.loadingClass +'"></span>');
@@ -307,6 +402,10 @@ define([], function () {
             }
         },
 
+        /**
+         * toggles the dropdown-menu of a button
+         * @param button {object} button context
+         */
         toggleDropdown: function(button) {
             if (this.sandbox.dom.hasClass(button.$el, constants.dropdownExpandedClass) === true) {
                 this.closeDropdown(button);
@@ -316,14 +415,27 @@ define([], function () {
             }
         },
 
+        /**
+         * opens the dropdown-menu of a button
+         * @param button {object} button context
+         */
         openDropdown: function(button) {
             this.sandbox.dom.addClass(button.$el, constants.dropdownExpandedClass);
         },
 
+        /**
+         * closes the dropdown-menu of a button
+         * @param button {object} button context
+         */
         closeDropdown: function(button) {
             this.sandbox.dom.removeClass(button.$el, constants.dropdownExpandedClass);
         },
 
+        /**
+         * renders a dropdown-menu for a button
+         * @param button {object} button to render the dropdown for
+         * @returns {Object|String} DOM-object or empty string
+         */
         renderDropdown: function(button) {
             if (typeof button.items !== 'undefined') {
                 if (!!button.items.length) {
@@ -341,6 +453,12 @@ define([], function () {
             return '';
         },
 
+        /**
+         * Binds events concerning the dropdown-menu items
+         * @param $el {object} DOM-object to bind events on
+         * @param button {object} button context
+         * @param itemIndex {Integer} index of the concerning item in button.items
+         */
         bindDropdownItemEvents: function($el, button, itemIndex) {
             if(typeof button.items[itemIndex].callback !== 'undefined') {
                 this.sandbox.dom.on($el, 'click', function(event) {
@@ -354,12 +472,22 @@ define([], function () {
             }
         },
 
+        /**
+         * Changes the button title to a title of a dropdown-item
+         * @param button {object} button context
+         * @param itemIndex {Integer} index of the concerning item in button.items
+         */
         refreshTitle: function(button, itemIndex) {
             if (button.dynamicDDTitle === true) {
                 this.sandbox.dom.html(this.sandbox.dom.find('.'+this.options.iconTitleClass, button.$el), button.items[itemIndex].title);
             }
         },
 
+        /**
+         * Changes the button icon to an icon of a dropdown-item
+         * @param button {object} button context
+         * @param itemIndex {Integer} index of the concerning item in button.items
+         */
         refreshIcon: function(button, itemIndex) {
             if (button.dynamicDDIcon === true) {
                 this.removeIcon(button);
@@ -367,20 +495,35 @@ define([], function () {
             }
         },
 
+        /**
+         * Removes the icon class of a button
+         * @param button {object} button context
+         */
         removeIcon: function(button) {
             var iconContainer = this.sandbox.dom.find('.' + this.options.iconExtraClass, button.$el),
                 iconClass = this.sandbox.dom.attr(iconContainer, 'class').match(this.options.iconClassPrefix+'[\\w|-]+')[0];
             this.sandbox.dom.removeClass(iconContainer, iconClass);
         },
 
+        /**
+         * Sets an icon class on a button
+         * @param button {object} button context
+         * @param icon {String} icon-class suffix
+         */
         setIcon: function(button, icon) {
             this.sandbox.dom.prependClass( this.sandbox.dom.find('.' + this.options.iconExtraClass, button.$el), this.options.iconClassPrefix + icon);
         },
 
+        /**
+         * Initializes the buttons
+         */
         initButtons: function() {
             this.buttons = this.options.data;
         },
 
+        /**
+         * Appends the buttons to their specified containers
+         */
         appendButtons: function() {
             var i = -1, length = this.buttons.length, container = null;
             for (; ++i < length;) {
@@ -405,6 +548,10 @@ define([], function () {
             }
         },
 
+        /**
+         * Executes a callback
+         * @param callback {Function} callback to execute
+         */
         executeCallback: function(callback) {
             if(typeof callback === 'function') {
                 callback();
