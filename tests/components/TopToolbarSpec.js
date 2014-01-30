@@ -4,7 +4,7 @@ define(['husky'], function(husky) {
 
     var app, callbackCalled = false;
 
-    ddescribe('Top-toolbar', function() {
+    describe('Top-toolbar', function() {
 
         beforeEach(function() {
 
