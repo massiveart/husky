@@ -23,6 +23,7 @@
  * @param {String} [options.data*.align] which side the button is aligned in its container (left, right)
  * @param {String} [options.data*.title] title of the button
  * @param {String} [options.data*.customClass] class that gets added to the button
+ * @param {Boolean} [options.data*.disabled] if true button starts in disabled-state
  * @param {Function} [options.data*.callback] callback which gets executed if the button is clicked on
  * @param {Boolean} [options.data*.highlight] if true the higlight-class gets added to the button
  * @param {Boolean} [options.data*.dynamicDDTitle] if true the button title always matches the selected dropdown-item
@@ -32,7 +33,7 @@
  * @param {String} [options.data*.items*.title] title of the item
  * @param {Function} [options.data*.items*.callback] callback which gets executed if the item is clicked on
  * @param {selectedIcon} [options.data*.items*.title] icon to which the button-icon gets changed if the item is selected (data*.dynamicDDIcon must be true)
- *
+ * @param {Boolean} [options.data*.disabled] if true button starts in disabled-state
  *
  * @param {String} [options.iconClassPrefix] string that gets prepended to the button.icon string
  * @param {String} [options.iconExtraClass] class that gets added to the icon element
@@ -263,6 +264,14 @@ define([], function () {
                 this.buttons[i].$el = button;
                 this.buttons[i].executeCallback = true;
                 this.buttons[i].loading = false;
+
+                //disable button if configured
+                if (typeof this.buttons[i].disabled !== 'undefined') {
+                    if (this.buttons[i].disabled === true) {
+                        this.disableButton(this.buttons[i]);
+                    }
+                }
+
                 this.bindButtonEvents(this.buttons[i]);
             }
         },

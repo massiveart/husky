@@ -107,6 +107,18 @@ define(['husky'], function(husky) {
                     callback: function() {
                         callbackCalled = true;
                     }
+                },
+                {
+                    id: 7,
+                    icon: 'ENABLED_ICON',
+                    disabledIcon: 'DISABLED_ICON',
+                    container: 'right',
+                    align: 'right',
+                    customClass: 'button7',
+                    disabled: true,
+                    callback: function() {
+                        return true;
+                    }
                 }
             ];
 
@@ -169,8 +181,8 @@ define(['husky'], function(husky) {
         /**
          * Check if all buttons get rendered
          */
-        it('should contain 6 buttons', function() {
-           expect($('.husky-top-toolbar').find('.button').length).toEqual(6);
+        it('should contain 7 buttons', function() {
+           expect($('.husky-top-toolbar').find('.button').length).toEqual(7);
         });
 
         /**
@@ -199,7 +211,7 @@ define(['husky'], function(husky) {
             expect($('.husky-top-toolbar .top-toolbar-middle .right-list').find('.button').length).toEqual(1);
 
             expect($('.husky-top-toolbar .top-toolbar-right .left-list').find('.button').length).toEqual(1);
-            expect($('.husky-top-toolbar .top-toolbar-right .right-list').find('.button').length).toEqual(1);
+            expect($('.husky-top-toolbar .top-toolbar-right .right-list').find('.button').length).toEqual(2);
         });
 
         /**
@@ -239,9 +251,16 @@ define(['husky'], function(husky) {
 
         /**
          * Check if dropdown-menu items contain their configured title
-         */
+        */
         it('should display the titles of dropdown-items', function() {
             expect($('.husky-top-toolbar .button5').find('.top-toolbar-dropdown-menu').html()).toContain('MyItemTitle');
+        });
+
+        /**
+         * Check if button starts in disabled state if configured
+         */
+        it('should start buttons in disabled state', function() {
+           expect($('.husky-top-toolbar .button7').hasClass('disabled')).toBe(true);
         });
 
         /**
