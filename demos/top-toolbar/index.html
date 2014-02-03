@@ -64,6 +64,11 @@
                             selectedIcon: 'publish',
                             callback: function() {
                                 console.log('Congrats! You are a publishing-champ');
+
+                                app.sandbox.emit('husky.top-toolbar.2.loading');
+                                setTimeout(function() {
+                                    app.sandbox.emit('husky.top-toolbar.2.enable', false, false);
+                                }, 1000);
                             }
                         },
                         {
@@ -71,6 +76,23 @@
                             selectedIcon: 'unpublish',
                             callback: function() {
                                 console.log(':( Why unpublish?');
+
+                                app.sandbox.emit('husky.top-toolbar.2.loading');
+                                setTimeout(function() {
+                                    app.sandbox.emit('husky.top-toolbar.2.enable', false, false);
+                                }, 1000);
+                            }
+                        },
+                        {
+                            title: 'unpublish broken',
+                            selectedIcon: 'cross',
+                            callback: function() {
+                                console.log(':( Why unpublish?');
+
+                                app.sandbox.emit('husky.top-toolbar.2.loading');
+                                setTimeout(function() {
+                                    app.sandbox.emit('husky.top-toolbar.2.enable', false, true);
+                                }, 1000);
                             }
                         }
                     ]
