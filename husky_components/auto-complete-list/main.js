@@ -41,6 +41,7 @@
  * @param {String} [options.arrowUpClass] CSS-class for arrow up icon
  * @param {Integer} [options.slideDuration] ms - duration for sliding suggestinos up/down
  * @param {String} [options.elementTagDataName] attribute name to store list of tags on element
+ * @param {String} [options.autoCompleteIcon] Icon Class-suffix for autocomplete-suggestion-icon
  */
 define([], function() {
 
@@ -76,7 +77,8 @@ define([], function() {
                 arrowDownClass: 'arrow-down',
                 arrowUpClass: 'arrow-up',
                 slideDuration: 500,
-                elementTagDataName: 'tags'
+                elementTagDataName: 'tags',
+                autoCompleteIcon: ''
             },
 
             templates = {
@@ -280,7 +282,8 @@ define([], function() {
                                 localData: this.options.localData,
                                 prefetchUrl: this.options.prefetchUrl,
                                 remoteUrl: this.options.remoteUrl,
-                                getParameter: this.options.getParameter
+                                getParameter: this.options.getParameter,
+                                suggestionImg: this.options.autoCompleteIcon
                             },
                             this.options.autocompleteOptions
                         )

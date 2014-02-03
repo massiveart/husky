@@ -10,6 +10,13 @@
     font-family: $baseIconFont;
 }
 
+.icon-tag {
+  &::after {
+    content: "\E066";
+    display: inline-block;
+  }
+}
+
 .icon-remove {
     &::after {
         content: "\E208";

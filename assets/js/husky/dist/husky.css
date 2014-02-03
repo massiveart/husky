@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /* line 7, ../scss/abstract/abstract-loader.scss */
 .is-loading:not(.navigation-column-item) {
   background-image: url("data:image/gif;base64,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");
@@ -2937,236 +2936,242 @@ h5 {
 }
 
 /* line 14, ../scss/modules/icons.scss */
+.icon-tag::after {
+  content: "\E066";
+  display: inline-block;
+}
+
+/* line 21, ../scss/modules/icons.scss */
 .icon-remove::after, .auto-complete-list-selection .tm-tag-remove::after {
   content: "\E208";
   display: inline-block;
 }
 
-/* line 21, ../scss/modules/icons.scss */
+/* line 28, ../scss/modules/icons.scss */
 .icon-add::after {
   content: "\E191";
   display: inline-block;
 }
 
-/* line 28, ../scss/modules/icons.scss */
+/* line 35, ../scss/modules/icons.scss */
 .icon-down::after {
   content: "\e159";
   display: inline-block;
 }
 
-/* line 35, ../scss/modules/icons.scss */
+/* line 42, ../scss/modules/icons.scss */
 .icon-search::after, .search-container .search-icon::after {
   content: "\e028";
   display: inline-block;
 }
 
-/* line 42, ../scss/modules/icons.scss */
+/* line 49, ../scss/modules/icons.scss */
 .icon-circle-remove::after {
   content: "\e193";
   display: inline-block;
 }
 
-/* line 49, ../scss/modules/icons.scss */
+/* line 56, ../scss/modules/icons.scss */
 .icon-circle-arrow-down::after {
   content: "\e220";
   display: inline-block;
 }
 
-/* line 56, ../scss/modules/icons.scss */
+/* line 63, ../scss/modules/icons.scss */
 .icon-circle-ok::after {
   content: "\e199";
   display: inline-block;
 }
 
-/* line 63, ../scss/modules/icons.scss */
+/* line 70, ../scss/modules/icons.scss */
 .icon-circle-plus::after {
   content: "\e191";
   display: inline-block;
 }
 
-/* line 70, ../scss/modules/icons.scss */
+/* line 77, ../scss/modules/icons.scss */
 .icon-edit::after {
   content: "\e151";
   display: inline-block;
 }
 
-/* line 77, ../scss/modules/icons.scss */
+/* line 84, ../scss/modules/icons.scss */
 .icon-edit-pen::after {
   content: "\270f";
   display: inline-block;
 }
 
-/* line 84, ../scss/modules/icons.scss */
+/* line 91, ../scss/modules/icons.scss */
 .icon-settings::after {
   content: "\e281";
   display: inline-block;
 }
 
-/* line 91, ../scss/modules/icons.scss */
+/* line 98, ../scss/modules/icons.scss */
 .icon-cogwheel::after {
   content: "\e137";
   display: inline-block;
 }
 
-/* line 98, ../scss/modules/icons.scss */
+/* line 105, ../scss/modules/icons.scss */
 .icon-cogwheels::after {
   content: "\e138";
   display: inline-block;
 }
 
-/* line 105, ../scss/modules/icons.scss */
+/* line 112, ../scss/modules/icons.scss */
 .icon-caution::after {
   content: "\e197";
   display: inline-block;
 }
 
-/* line 112, ../scss/modules/icons.scss */
+/* line 119, ../scss/modules/icons.scss */
 .icon-contact-book::after {
   content: "\e089";
   display: inline-block;
 }
 
-/* line 119, ../scss/modules/icons.scss */
+/* line 126, ../scss/modules/icons.scss */
 .icon-parents::after {
   content: "\e025";
   display: inline-block;
 }
 
-/* line 125, ../scss/modules/icons.scss */
+/* line 132, ../scss/modules/icons.scss */
 .icon-keys {
   cursor: pointer;
 }
-/* line 127, ../scss/modules/icons.scss */
+/* line 134, ../scss/modules/icons.scss */
 .icon-keys::after {
   content: "\e045";
   display: inline-block;
 }
 
-/* line 134, ../scss/modules/icons.scss */
+/* line 141, ../scss/modules/icons.scss */
 .icon-building::after {
   content: "\e090";
   display: inline-block;
 }
 
-/* line 141, ../scss/modules/icons.scss */
+/* line 148, ../scss/modules/icons.scss */
 .icon-bank::after {
   content: "\e264";
   display: inline-block;
 }
 
-/* line 148, ../scss/modules/icons.scss */
+/* line 155, ../scss/modules/icons.scss */
 .icon-book::after {
   content: "\e072";
   display: inline-block;
 }
 
-/* line 155, ../scss/modules/icons.scss */
+/* line 162, ../scss/modules/icons.scss */
 .icon-book-open::after {
   content: "\e352";
   display: inline-block;
 }
 
-/* line 162, ../scss/modules/icons.scss */
+/* line 169, ../scss/modules/icons.scss */
 .icon-view::after {
   content: "\e052";
   display: inline-block;
 }
 
-/* line 169, ../scss/modules/icons.scss */
+/* line 176, ../scss/modules/icons.scss */
 .icon-delete::after {
   content: "\e017";
   display: inline-block;
 }
 
-/* line 176, ../scss/modules/icons.scss */
+/* line 183, ../scss/modules/icons.scss */
 .icon-live::after {
   content: "\e033";
   display: inline-block;
 }
 
-/* line 183, ../scss/modules/icons.scss */
+/* line 190, ../scss/modules/icons.scss */
 .icon-security::after {
   content: "\e205";
   display: inline-block;
 }
 
-/* line 190, ../scss/modules/icons.scss */
+/* line 197, ../scss/modules/icons.scss */
 .icon-chevron-right::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e080";
   display: inline-block;
 }
 
-/* line 198, ../scss/modules/icons.scss */
+/* line 205, ../scss/modules/icons.scss */
 .icon-chevron-left::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e079";
   display: inline-block;
 }
 
-/* line 206, ../scss/modules/icons.scss */
+/* line 213, ../scss/modules/icons.scss */
 .icon-chevron-down::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e114";
   display: inline-block;
 }
 
-/* line 214, ../scss/modules/icons.scss */
+/* line 221, ../scss/modules/icons.scss */
 .icon-chevron-up::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e113";
   display: inline-block;
 }
 
-/* line 222, ../scss/modules/icons.scss */
+/* line 229, ../scss/modules/icons.scss */
 .icon-archive::after {
   content: "\e150";
   display: inline-block;
 }
 
-/* line 229, ../scss/modules/icons.scss */
+/* line 236, ../scss/modules/icons.scss */
 .icon-check::after {
   content: "\e153";
   display: inline-block;
 }
 
-/* line 236, ../scss/modules/icons.scss */
+/* line 243, ../scss/modules/icons.scss */
 .icon-adjust-alt::after {
   content: "\e140";
   display: inline-block;
 }
 
-/* line 243, ../scss/modules/icons.scss */
+/* line 250, ../scss/modules/icons.scss */
 .icon-list::after {
   content: "\e115";
   display: inline-block;
 }
 
-/* line 250, ../scss/modules/icons.scss */
+/* line 257, ../scss/modules/icons.scss */
 .icon-items::after {
   content: "\e319";
   display: inline-block;
 }
 
-/* line 257, ../scss/modules/icons.scss */
+/* line 264, ../scss/modules/icons.scss */
 .icon-star::after {
   content: "\e050";
   display: inline-block;
 }
 
-/* line 264, ../scss/modules/icons.scss */
+/* line 271, ../scss/modules/icons.scss */
 .icon-globe::after {
   content: "\e341";
   display: inline-block;
 }
 
-/* line 271, ../scss/modules/icons.scss */
+/* line 278, ../scss/modules/icons.scss */
 .icon-dashboard::after {
   content: "\e332";
   display: inline-block;
 }
 
-/* line 278, ../scss/modules/icons.scss */
+/* line 285, ../scss/modules/icons.scss */
 .icon-arrow-down::after {
   content: "\e224";
   display: inline-block;
@@ -3177,7 +3182,7 @@ h5 {
   transform: rotate(90deg);
 }
 
-/* line 291, ../scss/modules/icons.scss */
+/* line 298, ../scss/modules/icons.scss */
 .icon-arrow-up::after {
   content: "\e225";
   display: inline-block;
@@ -3188,115 +3193,115 @@ h5 {
   transform: rotate(90deg);
 }
 
-/* line 304, ../scss/modules/icons.scss */
+/* line 311, ../scss/modules/icons.scss */
 .icon-arrow::after {
   content: "\e223";
   display: inline-block;
 }
 
-/* line 311, ../scss/modules/icons.scss */
+/* line 318, ../scss/modules/icons.scss */
 .icon-internal-link::after {
   content: "\e051";
   display: inline-block;
 }
 
-/* line 318, ../scss/modules/icons.scss */
+/* line 325, ../scss/modules/icons.scss */
 .icon-external-link::after {
   content: "\e242";
   display: inline-block;
 }
 
-/* line 325, ../scss/modules/icons.scss */
+/* line 332, ../scss/modules/icons.scss */
 .icon-shadow-node::after {
   content: "\e223";
   display: inline-block;
 }
 
-/* line 332, ../scss/modules/icons.scss */
+/* line 339, ../scss/modules/icons.scss */
 .icon-user-add::after {
   content: "\e007";
   display: inline-block;
 }
 
-/* line 339, ../scss/modules/icons.scss */
+/* line 346, ../scss/modules/icons.scss */
 .icon-bin::after {
   content: "\e017";
   display: inline-block;
 }
 
-/* line 346, ../scss/modules/icons.scss */
+/* line 353, ../scss/modules/icons.scss */
 .icon-retweet::after {
   content: "\e081";
   display: inline-block;
 }
 
-/* line 353, ../scss/modules/icons.scss */
+/* line 360, ../scss/modules/icons.scss */
 .icon-file-import::after {
   content: "\e359";
   display: inline-block;
 }
 
-/* line 360, ../scss/modules/icons.scss */
+/* line 367, ../scss/modules/icons.scss */
 .icon-file-export::after {
   content: "\e360";
   display: inline-block;
 }
 
-/* line 367, ../scss/modules/icons.scss */
+/* line 374, ../scss/modules/icons.scss */
 .icon-show-thumbnails::after {
   content: "\e157";
   display: inline-block;
 }
 
-/* line 374, ../scss/modules/icons.scss */
+/* line 381, ../scss/modules/icons.scss */
 .icon-eye-open::after {
   content: "\e052";
   display: inline-block;
 }
 
-/* line 381, ../scss/modules/icons.scss */
+/* line 388, ../scss/modules/icons.scss */
 .icon-half-eye-open::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e105";
   display: inline-block;
 }
 
-/* line 389, ../scss/modules/icons.scss */
+/* line 396, ../scss/modules/icons.scss */
 .icon-half-eye-close::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e106";
   display: inline-block;
 }
 
-/* line 397, ../scss/modules/icons.scss */
+/* line 404, ../scss/modules/icons.scss */
 .icon-floppy-save::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e175";
   display: inline-block;
 }
 
-/* line 405, ../scss/modules/icons.scss */
+/* line 412, ../scss/modules/icons.scss */
 .icon-floppy-saved::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e173";
   display: inline-block;
 }
 
-/* line 413, ../scss/modules/icons.scss */
+/* line 420, ../scss/modules/icons.scss */
 .icon-half-ok::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e013";
   display: inline-block;
 }
 
-/* line 421, ../scss/modules/icons.scss */
+/* line 428, ../scss/modules/icons.scss */
 .icon-half-remove::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e014";
   display: inline-block;
 }
 
-/* line 429, ../scss/modules/icons.scss */
+/* line 436, ../scss/modules/icons.scss */
 .icon-remove2::after {
   content: "\e208";
   display: inline-block;
@@ -4703,28 +4708,32 @@ a.btn-black, a.btn-highlight {
   clear: both;
 }
 /* line 58, ../scss/modules/auto-complete.scss */
-.tt-suggestion .border .img {
+.tt-suggestion .border .icon {
+  display: block;
   float: left;
-  margin: 5px 10px 0 5px;
+  margin: 0 10px 0 5px;
   width: 12px;
+  height: 25px;
+  text-align: center;
+  line-height: 25px;
 }
-/* line 63, ../scss/modules/auto-complete.scss */
+/* line 67, ../scss/modules/auto-complete.scss */
 .tt-suggestion .border .text {
   float: left;
   line-height: 25px;
 }
-/* line 68, ../scss/modules/auto-complete.scss */
+/* line 72, ../scss/modules/auto-complete.scss */
 .tt-suggestion:last-child .border {
   border-bottom: none;
 }
 
-/* line 74, ../scss/modules/auto-complete.scss */
+/* line 78, ../scss/modules/auto-complete.scss */
 .tt-suggestion:hover,
 .tt-is-under-cursor {
   background: #efefef;
 }
 
-/* line 78, ../scss/modules/auto-complete.scss */
+/* line 82, ../scss/modules/auto-complete.scss */
 .suggestion {
   color: black;
 }

@@ -29016,7 +29016,7 @@ define('__component__$edit-toolbar@husky',[],function() {
  * @param {String} [options.successClass] success-class if nowNewValues is false
  * @param {String} [options.failClass] fail-class if noNewValues is false
  * @param {String} [options.suggestionClass] CSS-class for auto-complete suggestions
- * @param {String} [options.suggestionImg] HTML-Img Tag - Image gets rendered before every suggestion
+ * @param {String} [options.suggestionImg] Icon Class - Image gets rendered before every suggestion
  * @param {Boolean} [options.stickToInput] If true suggestions are always under the input field
  * @param {Boolean} [options.hint] if false typeahead hint-field will be removed
  * @param {Boolean} [options.emptyOnBlur] If true input field value gets deleted on blur
@@ -29044,7 +29044,7 @@ define('__component__$auto-complete@husky',[], function () {
         successClass: 'husky-auto-complete-success',
         failClass: 'husky-auto-complete-error',
         suggestionClass: 'suggestion',
-        suggestionImg: '<img src="../../img/sample.gif" />',
+        suggestionImg: '',
         stickToInput: false,
         hint: false,
         emptyOnBlur: false
@@ -29151,7 +29151,7 @@ define('__component__$auto-complete@husky',[], function () {
             this._template = this.sandbox.util.template('' +
                 '<div class="' + this.options.suggestionClass + '" data-id="<%= id %>">' +
                 '   <div class="border">' +
-                '		<div class="img">' + this.options.suggestionImg + '</div>' +
+                '		<span class="icon icon-'+ this.options.suggestionImg +'"></span>' +
                 '		<div class="text"><%= name %></div>' +
                 '	</div>' +
                 '</div>');
@@ -29440,6 +29440,7 @@ define('__component__$auto-complete@husky',[], function () {
  * @param {String} [options.arrowUpClass] CSS-class for arrow up icon
  * @param {Integer} [options.slideDuration] ms - duration for sliding suggestinos up/down
  * @param {String} [options.elementTagDataName] attribute name to store list of tags on element
+ * @param {String} [options.autoCompleteIcon] Icon Class-suffix for autocomplete-suggestion-icon
  */
 define('__component__$auto-complete-list@husky',[], function() {
 
@@ -29475,7 +29476,8 @@ define('__component__$auto-complete-list@husky',[], function() {
                 arrowDownClass: 'arrow-down',
                 arrowUpClass: 'arrow-up',
                 slideDuration: 500,
-                elementTagDataName: 'tags'
+                elementTagDataName: 'tags',
+                autoCompleteIcon: ''
             },
 
             templates = {
@@ -29679,7 +29681,8 @@ define('__component__$auto-complete-list@husky',[], function() {
                                 localData: this.options.localData,
                                 prefetchUrl: this.options.prefetchUrl,
                                 remoteUrl: this.options.remoteUrl,
-                                getParameter: this.options.getParameter
+                                getParameter: this.options.getParameter,
+                                suggestionImg: this.options.autoCompleteIcon
                             },
                             this.options.autocompleteOptions
                         )
@@ -31988,12 +31991,20 @@ define("html5sortable", function(){});
                 return $(selector).parent();
             };
 
-            app.core.dom.width = function(selector) {
-                return $(selector).width();
+            app.core.dom.width = function(selector, value) {
+                if (!!value) {
+                    return $(selector).width(value);
+                } else {
+                    return $(selector).width();
+                }
             };
 
-            app.core.dom.height = function(selector) {
-                return $(selector).height();
+            app.core.dom.height = function(selector, value) {
+                if (!!value) {
+                    return $(selector).height(value);
+                } else {
+                    return $(selector).height();
+                }
             };
 
             app.core.dom.offset = function(selector, attributes) {

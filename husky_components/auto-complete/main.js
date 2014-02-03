@@ -28,7 +28,7 @@
  * @param {String} [options.successClass] success-class if nowNewValues is false
  * @param {String} [options.failClass] fail-class if noNewValues is false
  * @param {String} [options.suggestionClass] CSS-class for auto-complete suggestions
- * @param {String} [options.suggestionImg] HTML-Img Tag - Image gets rendered before every suggestion
+ * @param {String} [options.suggestionImg] Icon Class - Image gets rendered before every suggestion
  * @param {Boolean} [options.stickToInput] If true suggestions are always under the input field
  * @param {Boolean} [options.hint] if false typeahead hint-field will be removed
  * @param {Boolean} [options.emptyOnBlur] If true input field value gets deleted on blur
@@ -56,7 +56,7 @@ define([], function () {
         successClass: 'husky-auto-complete-success',
         failClass: 'husky-auto-complete-error',
         suggestionClass: 'suggestion',
-        suggestionImg: '<img src="../../img/sample.gif" />',
+        suggestionImg: '',
         stickToInput: false,
         hint: false,
         emptyOnBlur: false
@@ -160,10 +160,14 @@ define([], function () {
          * Initializes the template for a suggestion element
          */
         setTemplate: function () {
+            var iconHTML = '';
+            if (this.options.suggestionImg !== '') {
+                iconHTML = '<span class="icon-'+ this.options.suggestionImg +' icon"></span>';
+            }
             this._template = this.sandbox.util.template('' +
                 '<div class="' + this.options.suggestionClass + '" data-id="<%= id %>">' +
                 '   <div class="border">' +
-                '		<div class="img">' + this.options.suggestionImg + '</div>' +
+                        iconHTML +
                 '		<div class="text"><%= name %></div>' +
                 '	</div>' +
                 '</div>');
