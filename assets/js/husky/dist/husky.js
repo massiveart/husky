@@ -24236,6 +24236,7 @@ define('husky',[
 // TODO: events as specified
 // TODO: move functions into private space
 // TODO: cleanup css-classes
+// TODO: complete yui-doc
 
 define('__component__$navigation@husky',[],function() {
 
@@ -24304,7 +24305,48 @@ define('__component__$navigation@husky',[],function() {
             },
             resizeWidth: 800,
             forceCollapse: false
-        };
+        },
+        constants = {
+            uncollapsedWidth: 250,
+            collapsedWidth: 50
+        },
+
+        namespace = 'husky.navigation.',
+
+        /**
+         * raised when navigation was collapsed
+         * @event husky.navigation.collapsed
+         * @param {Number} width The width of the collapsed navigation
+         */
+            EVENT_COLLAPSED = namespace + 'collapsed',
+
+        /**
+         * raised when navigation was un-collapsed
+         * @event husky.navigation.uncollapsed
+         * @param {Number} width The width of the un-collapsed navigation
+         */
+            EVENT_UNCOLLAPSED = namespace + 'uncollapsed',
+
+
+        /**
+         * forces navigation to uncollapse
+         * @event husky.navigation.collapse
+         */
+            EVENT_COLLAPSE = namespace + 'collapse',
+
+        /**
+         * forces navigation to uncollapse
+         * @event husky.navigation.uncollapse
+         */
+            EVENT_UNCOLLAPSE = namespace + 'uncollapse',
+
+
+        /**
+         * raised when navigation was un / collapsed
+         * @event husky.navigation.size.changed
+         */
+            EVENT_SIZE_CHANGED = namespace + 'size.changed'
+        ;
 
 
     return {
@@ -24356,6 +24398,7 @@ define('__component__$navigation@husky',[],function() {
             }));
 
             this.$navigation = this.$find('.navigation', this.$el);
+            this.$navigationContent = this.$find('.navigation-content', this.$navigation);
 
             // start search component
             this.sandbox.start([
@@ -24462,12 +24505,11 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.dom.on(this.$el, 'click', this.collapse.bind(this), '.navigation.collapseIcon .navigation-close-icon');
 
 
-
             // tooltip events
             this.sandbox.dom.on(this.$el, 'mouseenter', function(event) {
-                this.showToolTip.call(this, this.sandbox.dom.attr(this.sandbox.dom.find('input', '.navigation-search'),'placeholder'), event);
-            }.bind(this),'.navigation.collapsed .navigation-search');
-            this.sandbox.dom.on(this.$el, 'mouseenter', this.showToolTip.bind(this,''), '.navigation.collapsed .navigation-items');
+                this.showToolTip.call(this, this.sandbox.dom.attr(this.sandbox.dom.find('input', '.navigation-search'), 'placeholder'), event);
+            }.bind(this), '.navigation.collapsed .navigation-search');
+            this.sandbox.dom.on(this.$el, 'mouseenter', this.showToolTip.bind(this, ''), '.navigation.collapsed .navigation-items');
             this.sandbox.dom.on(this.$el, 'mouseleave', this.hideToolTip.bind(this), '.navigation.collapsed .navigation-items, .navigation.collapsed .navigation-search');
         },
 
@@ -24480,6 +24522,9 @@ define('__component__$navigation@husky',[],function() {
                 this.options.footerTemplate = template;
                 this.renderFooter(template);
             }.bind(this));
+
+            this.sandbox.on(EVENT_COLLAPSE, this.collapse.bind(this));
+            this.sandbox.on(EVENT_UNCOLLAPSE, this.unCollapse.bind(this));
 
         },
 
@@ -24501,12 +24546,12 @@ define('__component__$navigation@husky',[],function() {
                 title = this.sandbox.dom.html(this.sandbox.dom.find('.navigation-item-title', event.currentTarget));
             }
             if (!this.$tooltip) {
-                this.$tooltip = this.sandbox.dom.createElement('<div class="navigation-tooltip">'+title+'</div>');
-                this.sandbox.dom.append('body',this.$tooltip);
+                this.$tooltip = this.sandbox.dom.createElement('<div class="navigation-tooltip">' + title + '</div>');
+                this.sandbox.dom.append('body', this.$tooltip);
             }
             offset = this.sandbox.dom.offset(target);
             this.sandbox.dom.css(this.$tooltip, {
-                top: offset.top + (this.sandbox.dom.height(target)-30) /2
+                top: offset.top + (this.sandbox.dom.height(target) - 30) / 2
             });
         },
 
@@ -24581,11 +24626,10 @@ define('__component__$navigation@husky',[],function() {
             }
 
             var $items = this.sandbox.dom.closest(event.currentTarget, '.js-navigation-items'),
+                $childList = this.sandbox.dom.find('ul:first', $items),
                 item, $toggle,
-//                $childList = this.sandbox.dom.find('ul:first', $items),
                 isExpanded = this.sandbox.dom.hasClass($items, 'is-expanded'),
                 navWasCollapsed;
-
 
             // only check collapse if event was fired
             if (!customTarget) {
@@ -24593,28 +24637,25 @@ define('__component__$navigation@husky',[],function() {
             }
 
             if (isExpanded && !navWasCollapsed) {
+
 //                this.sandbox.dom.slideUp($childList, 200, function() {
 
                     this.sandbox.dom.removeClass($items, 'is-expanded');
-
 
                     // change toggle item
                     $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
                     this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
                     this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
-
 //                }.bind(this));
             } else {
+                this.sandbox.dom.show($childList);
                 this.sandbox.dom.addClass($items, 'is-expanded');
                 // change toggle item
                 $toggle = this.sandbox.dom.find('.icon-chevron-right', event.currentTarget);
                 this.sandbox.dom.removeClass($toggle, 'icon-chevron-right');
                 this.sandbox.dom.prependClass($toggle, 'icon-chevron-down');
 
-//                this.sandbox.dom.slideDown($childList, 200, function() {
-
                 this.sandbox.dom.one($items, 'transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd', this.checkBottomHit.bind(this));
-//                }.bind(this));
             }
 
             // emit event
@@ -24637,12 +24678,12 @@ define('__component__$navigation@husky',[],function() {
             itemHeight = this.sandbox.dom.height($items);
             xBottom = itemTop + itemHeight;
             windowHeight = this.sandbox.dom.height(this.sandbox.dom.window);
-            scrollTop = this.sandbox.dom.scrollTop(this.$navigation);
+            scrollTop = this.sandbox.dom.scrollTop(this.$navigationContent);
             if (xBottom > windowHeight) {
                 if (itemHeight < windowHeight) {
-                    this.sandbox.dom.scrollAnimate(scrollTop + (xBottom - windowHeight + 40), this.$navigation);
+                    this.sandbox.dom.scrollAnimate(scrollTop + (xBottom - windowHeight + 40), this.$navigationContent);
                 } else {
-                    this.sandbox.dom.scrollAnimate(itemTop, this.$navigation);
+                    this.sandbox.dom.scrollAnimate(itemTop, this.$navigationContent);
                 }
             }
         },
@@ -24690,9 +24731,14 @@ define('__component__$navigation@husky',[],function() {
         collapse: function() {
             this.sandbox.dom.addClass(this.$navigation, 'collapsed');
             this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
+            if (!this.collapsed) {
+                this.sandbox.emit(EVENT_COLLAPSED, constants.collapsedWidth);
+                this.sandbox.emit(EVENT_SIZE_CHANGED, constants.collapsedWidth);
+                this.collapsed = !this.collapsed;
+            }
         },
 
-        unCollapse : function(forced) {
+        unCollapse: function(forced) {
             this.sandbox.dom.removeClass(this.$navigation, 'collapsed');
             this.hideToolTip();
             if (forced) {
@@ -24700,6 +24746,11 @@ define('__component__$navigation@husky',[],function() {
                 this.sandbox.dom.addClass(this.$navigation, 'collapseIcon');
             } else {
                 this.collapseBack = false;
+            }
+            if (this.collapsed) {
+                this.sandbox.emit(EVENT_UNCOLLAPSED, constants.uncollapsedWidth);
+                this.sandbox.emit(EVENT_SIZE_CHANGED, constants.uncollapsedWidth);
+                this.collapsed = !this.collapsed;
             }
         },
 

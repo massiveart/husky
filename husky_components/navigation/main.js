@@ -31,6 +31,7 @@
 // TODO: events as specified
 // TODO: move functions into private space
 // TODO: cleanup css-classes
+// TODO: complete yui-doc
 
 define(function() {
 
@@ -99,7 +100,48 @@ define(function() {
             },
             resizeWidth: 800,
             forceCollapse: false
-        };
+        },
+        constants = {
+            uncollapsedWidth: 250,
+            collapsedWidth: 50
+        },
+
+        namespace = 'husky.navigation.',
+
+        /**
+         * raised when navigation was collapsed
+         * @event husky.navigation.collapsed
+         * @param {Number} width The width of the collapsed navigation
+         */
+            EVENT_COLLAPSED = namespace + 'collapsed',
+
+        /**
+         * raised when navigation was un-collapsed
+         * @event husky.navigation.uncollapsed
+         * @param {Number} width The width of the un-collapsed navigation
+         */
+            EVENT_UNCOLLAPSED = namespace + 'uncollapsed',
+
+
+        /**
+         * forces navigation to uncollapse
+         * @event husky.navigation.collapse
+         */
+            EVENT_COLLAPSE = namespace + 'collapse',
+
+        /**
+         * forces navigation to uncollapse
+         * @event husky.navigation.uncollapse
+         */
+            EVENT_UNCOLLAPSE = namespace + 'uncollapse',
+
+
+        /**
+         * raised when navigation was un / collapsed
+         * @event husky.navigation.size.changed
+         */
+            EVENT_SIZE_CHANGED = namespace + 'size.changed'
+        ;
 
 
     return {
@@ -151,6 +193,7 @@ define(function() {
             }));
 
             this.$navigation = this.$find('.navigation', this.$el);
+            this.$navigationContent = this.$find('.navigation-content', this.$navigation);
 
             // start search component
             this.sandbox.start([
@@ -275,6 +318,9 @@ define(function() {
                 this.renderFooter(template);
             }.bind(this));
 
+            this.sandbox.on(EVENT_COLLAPSE, this.collapse.bind(this));
+            this.sandbox.on(EVENT_UNCOLLAPSE, this.unCollapse.bind(this));
+
         },
 
         resizeListener: function() {
@@ -375,6 +421,7 @@ define(function() {
             }
 
             var $items = this.sandbox.dom.closest(event.currentTarget, '.js-navigation-items'),
+                $childList = this.sandbox.dom.find('ul:first', $items),
                 item, $toggle,
                 isExpanded = this.sandbox.dom.hasClass($items, 'is-expanded'),
                 navWasCollapsed;
@@ -385,13 +432,18 @@ define(function() {
             }
 
             if (isExpanded && !navWasCollapsed) {
-                this.sandbox.dom.removeClass($items, 'is-expanded');
 
-                // change toggle item
-                $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
-                this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
-                this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
+//                this.sandbox.dom.slideUp($childList, 200, function() {
+
+                    this.sandbox.dom.removeClass($items, 'is-expanded');
+
+                    // change toggle item
+                    $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
+                    this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
+                    this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
+//                }.bind(this));
             } else {
+                this.sandbox.dom.show($childList);
                 this.sandbox.dom.addClass($items, 'is-expanded');
                 // change toggle item
                 $toggle = this.sandbox.dom.find('.icon-chevron-right', event.currentTarget);
@@ -421,12 +473,12 @@ define(function() {
             itemHeight = this.sandbox.dom.height($items);
             xBottom = itemTop + itemHeight;
             windowHeight = this.sandbox.dom.height(this.sandbox.dom.window);
-            scrollTop = this.sandbox.dom.scrollTop(this.$navigation);
+            scrollTop = this.sandbox.dom.scrollTop(this.$navigationContent);
             if (xBottom > windowHeight) {
                 if (itemHeight < windowHeight) {
-                    this.sandbox.dom.scrollAnimate(scrollTop + (xBottom - windowHeight + 40), this.$navigation);
+                    this.sandbox.dom.scrollAnimate(scrollTop + (xBottom - windowHeight + 40), this.$navigationContent);
                 } else {
-                    this.sandbox.dom.scrollAnimate(itemTop, this.$navigation);
+                    this.sandbox.dom.scrollAnimate(itemTop, this.$navigationContent);
                 }
             }
         },
@@ -474,6 +526,11 @@ define(function() {
         collapse: function() {
             this.sandbox.dom.addClass(this.$navigation, 'collapsed');
             this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
+            if (!this.collapsed) {
+                this.sandbox.emit(EVENT_COLLAPSED, constants.collapsedWidth);
+                this.sandbox.emit(EVENT_SIZE_CHANGED, constants.collapsedWidth);
+                this.collapsed = !this.collapsed;
+            }
         },
 
         unCollapse: function(forced) {
@@ -484,6 +541,11 @@ define(function() {
                 this.sandbox.dom.addClass(this.$navigation, 'collapseIcon');
             } else {
                 this.collapseBack = false;
+            }
+            if (this.collapsed) {
+                this.sandbox.emit(EVENT_UNCOLLAPSED, constants.uncollapsedWidth);
+                this.sandbox.emit(EVENT_SIZE_CHANGED, constants.uncollapsedWidth);
+                this.collapsed = !this.collapsed;
             }
         },
 
