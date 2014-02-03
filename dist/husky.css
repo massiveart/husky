@@ -3840,74 +3840,99 @@ textarea.form-element {
   cursor: default !important;
 }
 
-/* line 14, ../scss/modules/navigation.scss */
+/* line 32, ../scss/modules/navigation.scss */
 .section-headline {
+  position: relative;
   font-size: 12px;
-  padding: 2px 0 3px;
+  padding: 2px 0 0px;
   margin: 10px 20px 0;
+  height: 20px;
   color: #1e1e1e;
   font-weight: bold;
   cursor: default;
 }
-/* line 23, ../scss/modules/navigation.scss */
+/* line 43, ../scss/modules/navigation.scss */
 .section-headline .section-toggle {
   display: none;
-  float: right;
+  position: absolute;
+  top: 2px;
+  right: 0;
 }
-/* line 26, ../scss/modules/navigation.scss */
+/* line 48, ../scss/modules/navigation.scss */
 .section-headline .section-toggle a {
   color: #1e1e1e;
 }
-/* line 32, ../scss/modules/navigation.scss */
+/* line 53, ../scss/modules/navigation.scss */
+.section-headline .section-headline-title {
+  white-space: nowrap;
+}
+/* line 58, ../scss/modules/navigation.scss */
 .section-headline:hover .section-toggle {
   display: block;
 }
 
-/* line 38, ../scss/modules/navigation.scss */
-.navigation-container {
+/* line 64, ../scss/modules/navigation.scss */
+.navigation {
   float: left;
   width: 250px;
   height: 100%;
   background-color: #3e3e3e;
-  overflow-y: auto;
+  overflow-x: visible;
   position: fixed;
   top: 0px;
 }
-
-/* line 48, ../scss/modules/navigation.scss */
-.navigation {
+/* line 75, ../scss/modules/navigation.scss */
+.navigation .navigation-close-icon {
+  display: none;
+}
+/* line 80, ../scss/modules/navigation.scss */
+.navigation.collapseIcon .navigation-close-icon {
+  position: absolute;
+  display: block;
+  height: 30px;
+  width: 30px;
+  left: 100%;
+  top: 0;
   background-color: #3e3e3e;
+  line-height: 30px;
+  vertical-align: center;
+  color: white;
+  text-align: center;
+  font-size: 18px;
+  cursor: pointer;
 }
 
-/* line 53, ../scss/modules/navigation.scss */
+/* line 97, ../scss/modules/navigation.scss */
 .navigation-content {
+  height: 100%;
+  overflow-y: auto;
   overflow: hidden;
   padding: 40px 0px 20px;
   color: #999999;
   font-size: 16px;
 }
-/* line 59, ../scss/modules/navigation.scss */
+/* line 105, ../scss/modules/navigation.scss */
 .navigation-content a {
   display: inline-block;
   text-decoration: none;
   color: #999999;
   outline: none;
 }
-/* line 66, ../scss/modules/navigation.scss */
+/* line 112, ../scss/modules/navigation.scss */
 .navigation-content ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* line 73, ../scss/modules/navigation.scss */
+/* line 119, ../scss/modules/navigation.scss */
 .navigation-header {
   height: 40px;
   overflow: hidden;
-  margin: 0 20px 30px;
+  margin: 0 20px 20px;
 }
 
-/* line 79, ../scss/modules/navigation.scss */
+/* line 125, ../scss/modules/navigation.scss */
 .navigation-header-title {
   display: inline-block;
   font-size: 18px;
@@ -3916,65 +3941,75 @@ textarea.form-element {
   line-height: 35px;
 }
 
-/* line 87, ../scss/modules/navigation.scss */
+/* line 133, ../scss/modules/navigation.scss */
 .navigation-header-image {
   display: inline-block;
   margin-right: 10px;
   float: left;
 }
-/* line 92, ../scss/modules/navigation.scss */
+/* line 138, ../scss/modules/navigation.scss */
 .navigation-header-image img {
   border-radius: 32px;
 }
 
-/* line 97, ../scss/modules/navigation.scss */
+/* line 143, ../scss/modules/navigation.scss */
 .navigation-search {
   position: relative;
-  margin: 5px 20px 20px;
+  margin: 0px 20px;
+  padding: 10px 0;
+  height: 50px;
+}
+/* line 149, ../scss/modules/navigation.scss */
+.navigation-search .search-icon {
+  opacity: 1;
 }
 
-/* line 104, ../scss/modules/navigation.scss */
+/* line 156, ../scss/modules/navigation.scss */
 li.is-active > .navigation-items-toggle a,
 li.is-active > .navigation-subitems-toggle a {
   color: white;
 }
-/* line 108, ../scss/modules/navigation.scss */
+/* line 160, ../scss/modules/navigation.scss */
 li.is-active > div > a.navigation-settings-icon {
   display: block;
   color: #999999;
 }
 
-/* line 114, ../scss/modules/navigation.scss */
+/* line 166, ../scss/modules/navigation.scss */
 .navigation-items {
   padding: 0px 20px;
   overflow: hidden;
-  height: 50px;
+  min-height: 50px;
+  max-height: 50px;
   /* sub-items */
   /* sub-sub-items */
 }
-/* line 120, ../scss/modules/navigation.scss */
+/* line 172, ../scss/modules/navigation.scss */
 .navigation-items:hover:not(.is-active) {
   background-color: rgba(0, 0, 0, 0.05);
 }
-/* line 124, ../scss/modules/navigation.scss */
+/* line 176, ../scss/modules/navigation.scss */
 .navigation-items > div {
   position: relative;
-  padding-left: 5px;
+  padding-left: 0px;
+  width: 210px;
 }
-/* line 128, ../scss/modules/navigation.scss */
+/* line 181, ../scss/modules/navigation.scss */
 .navigation-items > div > a {
-  padding: 12px 0;
+  line-height: 50px;
+  vertical-align: middle;
 }
-/* line 133, ../scss/modules/navigation.scss */
+/* line 187, ../scss/modules/navigation.scss */
 .navigation-items.is-active {
   background-color: #282828;
 }
-/* line 137, ../scss/modules/navigation.scss */
+/* line 191, ../scss/modules/navigation.scss */
 .navigation-items.is-expanded {
-  height: inherit;
+  min-height: 50px;
   padding-bottom: 20px;
+  max-height: 1000px;
 }
-/* line 141, ../scss/modules/navigation.scss */
+/* line 196, ../scss/modules/navigation.scss */
 .navigation-items.is-expanded .navigation-items-toggle {
   border-bottom: 1px solid #666666;
   height: inherit;
@@ -3982,34 +4017,32 @@ li.is-active > div > a.navigation-settings-icon {
   margin-bottom: 10px;
   height: 50px;
 }
-/* line 146, ../scss/modules/navigation.scss */
-.navigation-items.is-expanded > ul {
+/* line 201, ../scss/modules/navigation.scss */
+.navigation-items.is-expanded > .navigation-items-list {
   display: block;
 }
-/* line 153, ../scss/modules/navigation.scss */
+/* line 208, ../scss/modules/navigation.scss */
 .navigation-items.is-selected a {
   color: white;
 }
-/* line 159, ../scss/modules/navigation.scss */
-.navigation-items ul {
-  display: none;
+/* line 214, ../scss/modules/navigation.scss */
+.navigation-items .navigation-items-list {
+  opacity: 0;
   font-size: 14px;
   padding-left: 55px;
 }
-/* line 167, ../scss/modules/navigation.scss */
+/* line 221, ../scss/modules/navigation.scss */
 .navigation-items ul ul {
   font-size: 12px;
   padding-left: 20px;
 }
-/* line 173, ../scss/modules/navigation.scss */
+/* line 226, ../scss/modules/navigation.scss */
 .navigation-items li {
-  padding: 5px 0 0px 10px;
   margin: 0 0 0 -10px;
   border-radius: 4px;
   cursor: pointer;
-  min-height: 30px;
 }
-/* line 180, ../scss/modules/navigation.scss */
+/* line 231, ../scss/modules/navigation.scss */
 .navigation-items li:hover:not(.navigation-subitems) a::before, .navigation-items .column-navigation-wrapper .column-navigation .column ul li.selected:not(.navigation-subitems) a::before, .column-navigation-wrapper .column-navigation .column ul .navigation-items li.selected:not(.navigation-subitems) a::before {
   font-family: "Glyphicons";
   font-size: 11px;
@@ -4019,14 +4052,12 @@ li.is-active > div > a.navigation-settings-icon {
   width: 15px;
   overflow: visible;
   position: relative;
-  top: -1px;
-  line-height: 0;
 }
-/* line 195, ../scss/modules/navigation.scss */
+/* line 237, ../scss/modules/navigation.scss */
 .navigation-items li.is-selected a {
   color: white;
 }
-/* line 198, ../scss/modules/navigation.scss */
+/* line 240, ../scss/modules/navigation.scss */
 .navigation-items li.is-selected a::before {
   font-family: "Glyphicons";
   font-size: 11px;
@@ -4036,21 +4067,20 @@ li.is-active > div > a.navigation-settings-icon {
   width: 15px;
   overflow: visible;
   position: relative;
-  top: -1px;
-  line-height: 0;
 }
-/* line 213, ../scss/modules/navigation.scss */
+/* line 246, ../scss/modules/navigation.scss */
 .navigation-items li a {
+  padding: 5px 0 0px 10px;
   display: inline-block;
-  height: 30px;
+  min-height: 30px;
   /* prohibits height changes on select */
 }
 
-/* line 222, ../scss/modules/navigation.scss */
-.navigation-subitems.is-expanded > ul {
+/* line 256, ../scss/modules/navigation.scss */
+.navigation-subitems.is-expanded > .navigation-items-list {
   display: block;
 }
-/* line 225, ../scss/modules/navigation.scss */
+/* line 259, ../scss/modules/navigation.scss */
 .navigation-subitems.is-expanded .navigation-subitems-toggle {
   border-bottom: 1px solid #666666;
   height: inherit;
@@ -4059,35 +4089,37 @@ li.is-active > div > a.navigation-settings-icon {
   padding-bottom: 0;
 }
 
-/* line 244, ../scss/modules/navigation.scss */
+/* line 277, ../scss/modules/navigation.scss */
 .navigation-item {
   width: 100%;
   display: inline-block;
-  padding: 0 5px;
+  padding: 0 0px;
   position: relative;
   top: 2px;
+  min-height: 50px;
 }
 
-/* line 252, ../scss/modules/navigation.scss */
+/* line 286, ../scss/modules/navigation.scss */
 .navigation-item-title {
   position: relative;
   top: 2px;
   padding-left: 35px;
 }
 
-/* line 258, ../scss/modules/navigation.scss */
+/* line 292, ../scss/modules/navigation.scss */
 .navigation-item-icon {
   position: absolute;
   padding-left: 3px;
   font-size: 18px;
 }
 
-/* line 265, ../scss/modules/navigation.scss */
+/* line 299, ../scss/modules/navigation.scss */
 .navigation-items-toggle {
   position: relative;
+  height: 50px;
 }
 
-/* line 269, ../scss/modules/navigation.scss */
+/* line 304, ../scss/modules/navigation.scss */
 li a.navigation-settings-icon {
   width: auto;
   position: absolute;
@@ -4097,7 +4129,7 @@ li a.navigation-settings-icon {
   display: none;
 }
 
-/* line 278, ../scss/modules/navigation.scss */
+/* line 313, ../scss/modules/navigation.scss */
 .navigation-toggle-icon {
   width: auto;
   position: absolute;
@@ -4106,31 +4138,228 @@ li a.navigation-settings-icon {
   font-size: 10px;
 }
 
-/* line 286, ../scss/modules/navigation.scss */
+/* line 321, ../scss/modules/navigation.scss */
 .navigation footer {
   border-top: 1px solid #5B5B5B;
   padding-top: 20px;
   margin: 80px 20px 0 55px;
   font-size: 12px;
 }
-/* line 292, ../scss/modules/navigation.scss */
+/* line 327, ../scss/modules/navigation.scss */
 .navigation footer .version {
   font-size: 10px;
 }
 
-/* line 298, ../scss/modules/navigation.scss */
+/* line 333, ../scss/modules/navigation.scss */
 .navigation-subitems-toggle {
   padding: 2px 0 2px;
   position: relative;
   height: 30px;
 }
-/* line 303, ../scss/modules/navigation.scss */
+/* line 338, ../scss/modules/navigation.scss */
 .navigation-subitems-toggle .navigation-toggle-icon {
   top: 5px;
 }
-/* line 307, ../scss/modules/navigation.scss */
+/* line 342, ../scss/modules/navigation.scss */
 .navigation-subitems-toggle .navigation-item {
   padding: 0px;
+}
+
+/**
+ * MINIFIED NAVIGATION
+ */
+/* line 352, ../scss/modules/navigation.scss */
+.navigation.collapsed {
+  width: 50px;
+}
+/* line 355, ../scss/modules/navigation.scss */
+.navigation.collapsed .navigation-header {
+  margin-left: 10px;
+  margin-right: 0;
+}
+/* line 360, ../scss/modules/navigation.scss */
+.navigation.collapsed .navigation-header-title {
+  opacity: 0;
+}
+/* line 364, ../scss/modules/navigation.scss */
+.navigation.collapsed .section-headline {
+  opacity: 0;
+  height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+/* line 373, ../scss/modules/navigation.scss */
+.navigation.collapsed .navigation-search {
+  margin: 0;
+  margin-left: 8px;
+}
+/* line 377, ../scss/modules/navigation.scss */
+.navigation.collapsed .navigation-search input {
+  opacity: 0;
+  z-index: 0;
+}
+/* line 381, ../scss/modules/navigation.scss */
+.navigation.collapsed .navigation-search .search-icon {
+  opacity: 1;
+  z-index: 100;
+  color: #999999;
+}
+/* line 391, ../scss/modules/navigation.scss */
+.navigation.collapsed * .navigation-settings-icon,
+.navigation.collapsed * .navigation-toggle-icon, .navigation.collapsed .is-active .navigation-settings-icon,
+.navigation.collapsed .is-active .navigation-toggle-icon, .navigation.collapsed .is-expanded .navigation-settings-icon,
+.navigation.collapsed .is-expanded .navigation-toggle-icon {
+  opacity: 0;
+}
+/* line 395, ../scss/modules/navigation.scss */
+.navigation.collapsed .navigation-item-title {
+  opacity: 0;
+}
+/* line 400, ../scss/modules/navigation.scss */
+.navigation.collapsed .navigation-items div {
+  border: rgba(0, 0, 0, 0);
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 0;
+}
+/* line 407, ../scss/modules/navigation.scss */
+.navigation.collapsed .navigation-items a {
+  padding: 0;
+}
+/* line 411, ../scss/modules/navigation.scss */
+.navigation.collapsed .navigation-items .navigation-items-list {
+  opacity: 0;
+  display: none;
+}
+/* line 430, ../scss/modules/navigation.scss */
+.navigation.collapsed li {
+  padding: 0;
+}
+/* line 434, ../scss/modules/navigation.scss */
+.navigation.collapsed .navigation-item-icon {
+  margin-left: 13px;
+  line-height: 50px;
+  vertical-align: middle;
+}
+/* line 440, ../scss/modules/navigation.scss */
+.navigation.collapsed .section:not(:first-child) {
+  border-top: 1px solid #666666;
+}
+/* line 444, ../scss/modules/navigation.scss */
+.navigation.collapsed footer {
+  opacity: 0;
+  height: 0;
+}
+
+/* line 451, ../scss/modules/navigation.scss */
+.navigation-tooltip {
+  position: absolute;
+  height: 30px;
+  left: 60px;
+  line-height: 30px;
+  vertical-align: middle;
+  display: inline-block;
+  padding: 0 10px;
+  color: white;
+  background-color: #3e3e3e;
+}
+/* line 462, ../scss/modules/navigation.scss */
+.navigation-tooltip::before {
+  content: ' ';
+  position: absolute;
+  left: -10px;
+  top: 10px;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 10px solid #3e3e3e;
+}
+
+/* line 476, ../scss/modules/navigation.scss */
+.navigation {
+  -webkit-transition: width 1s;
+  -moz-transition: width 1s;
+  -o-transition: width 1s;
+  transition: width 1s;
+}
+
+/* line 480, ../scss/modules/navigation.scss */
+.navigation-items {
+  -webkit-transition: all 1s;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  transition: all 1s;
+}
+
+/* line 483, ../scss/modules/navigation.scss */
+.navigation-items * {
+  -webkit-transition: all 1s;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  transition: all 1s;
+}
+
+/* line 487, ../scss/modules/navigation.scss */
+.navigation-header {
+  -webkit-transition: margin 1s;
+  -moz-transition: margin 1s;
+  -o-transition: margin 1s;
+  transition: margin 1s;
+}
+/* line 490, ../scss/modules/navigation.scss */
+.navigation-header .navigation-header-title {
+  -webkit-transition: opacity 1s;
+  -moz-transition: opacity 1s;
+  -o-transition: opacity 1s;
+  transition: opacity 1s;
+}
+
+/* line 495, ../scss/modules/navigation.scss */
+.navigation-search {
+  -webkit-transition: margin 1s;
+  -moz-transition: margin 1s;
+  -o-transition: margin 1s;
+  transition: margin 1s;
+}
+/* line 497, ../scss/modules/navigation.scss */
+.navigation-search input {
+  -webkit-transition: width 1s;
+  -moz-transition: width 1s;
+  -o-transition: width 1s;
+  transition: width 1s;
+}
+
+/* line 503, ../scss/modules/navigation.scss */
+.section-headline,
+.section-headline * {
+  -webkit-transition: all 1s;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  transition: all 1s;
+}
+
+/* line 507, ../scss/modules/navigation.scss */
+.navigation-item-title {
+  -webkit-transition: opacity 1s;
+  -moz-transition: opacity 1s;
+  -o-transition: opacity 1s;
+  transition: opacity 1s;
+}
+
+/* line 511, ../scss/modules/navigation.scss */
+.search-icon {
+  -webkit-transition: color 1s;
+  -moz-transition: color 1s;
+  -o-transition: color 1s;
+  transition: color 1s;
+}
+
+/* line 516, ../scss/modules/navigation.scss */
+.navigation:not(.collapsed) * {
+  opacity: 1;
 }
 
 /* line 5, ../scss/modules/dropdown.scss */
@@ -5616,4 +5845,13 @@ a.btn-black, a.btn-highlight {
 /* line 5, ../scss/modules/datagrid.scss */
 .husky-datagrid table td {
   overflow: hidden;
+}
+/* line 11, ../scss/modules/datagrid.scss */
+.husky-datagrid thead tr {
+  height: 30px;
+  padding-top: 10px;
+}
+/* line 15, ../scss/modules/datagrid.scss */
+.husky-datagrid thead th {
+  padding-top: 0;
 }
