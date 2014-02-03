@@ -4,7 +4,7 @@ define(['husky'], function(husky) {
 
     var app, initialized = false, callbackCalled = false;
 
-    ddescribe('Edit-toolbar', function() {
+    describe('Edit-toolbar', function() {
 
         beforeEach(function() {
 
@@ -311,6 +311,75 @@ define(['husky'], function(husky) {
             runs(function() {
                 expect(callbackCalled).toBe(true);
             });
+        });
+
+        /**
+         *
+         * Custom-event related tests
+         *
+         */
+
+        /**
+         * Check if it's possible to disable items
+         */
+        it('should disable buttons', function() {
+            runs(function() {
+                app.sandbox.emit('husky.edit-toolbar.1.item.disable', '1');
+            });
+
+            waitsFor(function() {
+                return ($('.edit-toolbar-container li[data-id=1]').hasClass('disabled'));
+            }, 'Button should have been disabled', 500);
+
+            runs(function() {
+               expect($('.edit-toolbar-container li[data-id=1]').hasClass('disabled')).toBe(true);
+            });
+        });
+
+        /**
+         * Check if it's possible to enable items
+         */
+        it('should enable buttons', function() {
+            runs(function() {
+                app.sandbox.emit('husky.edit-toolbar.1.item.disable', '1');
+            });
+
+            waitsFor(function() {
+                return ($('.edit-toolbar-container li[data-id=1]').hasClass('disabled'));
+            }, 'Button should have been disabled', 500);
+
+            runs(function() {
+                app.sandbox.emit('husky.edit-toolbar.1.item.enable', '1');
+            });
+
+            waitsFor(function() {
+                return !($('.edit-toolbar-container li[data-id=1]').hasClass('disabled'));
+            }, 'Button should have been enabled', 500);
+
+            runs(function() {
+                expect($('.edit-toolbar-container li[data-id=1]').hasClass('disabled')).toBe(false);
+            });
+        });
+
+        /**
+         * Check if it's possible to set a loading state
+         */
+        it('should set buttons into loading state', function() {
+           var flag = false;
+           runs(function() {
+               app.sandbox.on('husky.loader.initialized', function() {
+                  flag = true;
+               });
+               app.sandbox.emit('husky.edit-toolbar.1.item.loading', '1');
+           });
+
+           waitsFor(function() {
+              return flag;
+           }, 'Loader should have been initialized', 500);
+
+           runs(function() {
+               expect(flag).toBe(true);
+           });
         });
     });
 });
