@@ -33,7 +33,7 @@
  * @param {String} [options.columns.attribute] mapping information to data (if not set it will just iterate of attributes)
  * @param {Boolean} [options.appendTBody] add TBODY to table
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search event
- * @param {String} [options.searchInstanceName=null] if set, a listener will be set for listening for column changes
+ * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.paginationTemplate] template for pagination
  * @param {Boolean} [options.validation] enables validation for datagrid
@@ -548,7 +548,7 @@ define(function() {
 
             // remove-row entry
             if (this.options.removeRow) {
-                tblColumns.push('<th/>');
+                tblColumns.push('<th width="30px"/>');
             }
 
             return '<tr>' + tblColumns.join('') + '</tr>';
@@ -1141,7 +1141,7 @@ define(function() {
         },
 
         bindCustomEvents: function() {
-            var searchInstanceName = '';
+            var searchInstanceName = '', columnOptionsInstanceName = '';
 
             // listen for private events
             this.sandbox.on(UPDATE, this.updateHandler.bind(this));
@@ -1170,8 +1170,9 @@ define(function() {
             }
 
             // listen to search events
-            if (!!this.options.columnOptionsInstanceName && this.options.columnOptionsInstanceName !== '') {
-                this.sandbox.on('husky.column-options.' + this.options.columnOptionsInstanceName + '.saved', this.filterColumns.bind(this));
+            if (this.options.columnOptionsInstanceName || this.options.columnOptionsInstanceName === '') {
+                columnOptionsInstanceName = (this.options.columnOptionsInstanceName !== '') ? '.' + this.options.columnOptionsInstanceName : '';
+                this.sandbox.on('husky.column-options' + columnOptionsInstanceName+'.saved', this.filterColumns.bind(this));
             }
 
             // listen for save event

@@ -133,14 +133,19 @@ define(function() {
          */
             bindDOMEvents = function() {
 
-            this.sandbox.dom.on(this.options.trigger, 'click', toggleDropdown.bind(this));
-            this.sandbox.dom.on(this.$el, 'click', stopPropagation.bind(this), '.column-options-container'); // prevent from unwanted events
+            this.sandbox.dom.on(this.options.trigger, 'click.column-options', toggleDropdown.bind(this));
+            this.sandbox.dom.on(this.$el, 'click', customStopPropagation.bind(this), '.column-options-container'); // prevent from unwanted events
             this.sandbox.dom.on(this.$el, 'mouseover', onMouseOver.bind(this), 'li');
             this.sandbox.dom.on(this.$el, 'mouseout', onMouseOut.bind(this), 'li');
             this.sandbox.dom.on(this.$el, 'click', toggleVisibility.bind(this), '.visibility-toggle');
             this.sandbox.dom.on(this.$el, 'click', submit.bind(this), '.save-button');
             this.sandbox.dom.on(this.$el, 'click', hideDropdown.bind(this, true), '.close-button');
         },
+
+        unbindDOMEvents = function() {
+            this.sandbox.dom.off(this.options.trigger, 'click.column-options');
+        },
+
 
         /**
          * custom events
@@ -218,7 +223,7 @@ define(function() {
          * opens dropdown submenu
          * @param event
          */
-            stopPropagation = function(event) {
+            customStopPropagation = function(event) {
             event.preventDefault();
             event.stopPropagation();
         },
@@ -228,6 +233,7 @@ define(function() {
          * opens dropdown submenu
          * @param event
          */
+
             toggleDropdown = function(event) {
             if (event) {
                 event.preventDefault();
@@ -266,6 +272,7 @@ define(function() {
             }
             this.sandbox.dom.hide($container);
             if (this.options.destroyOnClose) {
+                unbindDOMEvents.call(this);
                 this.sandbox.dom.remove(this.$el);
             } else if (rerender) {
                 // reset unsaved changes
