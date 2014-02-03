@@ -429,10 +429,16 @@ require(['lib/husky'], function(Husky) {
                             attribute: "content1",
                             editable: true,
                             validation: {
-                                'unique': true
+                                unique: true,
+                                required: true
                             }
                         },
-                        {content: 'Content 2', width: "30%", attribute: "content2", editable: true},
+                        {
+                            content: 'Content 2',
+                            width: "30%",
+                            attribute: "content2",
+                            editable: true
+                        },
                         {content: 'Content 3', width: "30%", attribute: "content3"}
                     ],
                     sortable: true,

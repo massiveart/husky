@@ -73,7 +73,7 @@ define(function() {
             columnOptionsInstanceName: null, // at which search it should be listened to can be null|string|empty_string
             paginationTemplate: '<%=translate("pagination.page")%> <%=i%> <%=translate("pagination.of")%> <%=pages%>',
             fieldsData: null,
-            validation: true
+            validation: false
         },
 
         namespace = 'husky.datagrid.',
@@ -236,8 +236,6 @@ define(function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
             this.changedData = {};
-//            this.domElId = this.sandbox.dom.attr(this.$el,'id');
-
             this.rowStructure = [];
 
             this.sort = {
@@ -259,12 +257,6 @@ define(function() {
             this.bindCustomEvents();
 
         },
-
-//        initValidation: function(){
-//
-//            this.sandbox.form.create('#'+this.domElId);
-//
-//        },
 
         /**
          * Gets the data either via the url or the array
@@ -437,7 +429,7 @@ define(function() {
         prepareTable: function() {
             var $table, $thead, $tbody, tblClasses;
 
-//            $table = this.sandbox.dom.$('<table data-debug="true"/>');
+            $table = this.sandbox.dom.$('<table data-debug="true"/>');
 
             if (!!this.data.head || !!this.options.columns) {
                 $thead = this.sandbox.dom.$('<thead/>');
@@ -535,8 +527,8 @@ define(function() {
                 if (column.attribute !== undefined) {
                     this.rowStructure.push({
                         attribute: column.attribute,
-                        editable: column.editable
-//                        validation: column.validation
+                        editable: column.editable,
+                        validation: column.validation
                     });
                 }
 
@@ -640,12 +632,12 @@ define(function() {
                 if (this.rowStructure.length) {
                     this.rowStructure.forEach(function(key) {
                         key.editable = key.editable || false;
-                        this.setValueOfRowCell(key.attribute, row[key.attribute], key.editable);
+                        this.setValueOfRowCell(key.attribute, row[key.attribute], key.editable, key.validation);
                     }.bind(this));
                 } else {
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                            this.setValueOfRowCell(key, row[key], false);
+                            this.setValueOfRowCell(key, row[key], false, null);
                         }
                     }
                 }
@@ -664,10 +656,12 @@ define(function() {
          * @param value attribute value
          * @param editable flag whether field is editable or not
          */
-        setValueOfRowCell: function(key, value, editable) {
+        setValueOfRowCell: function(key, value, editable, validation) {
             var tblCellClasses,
                 tblCellContent,
-                tblCellClass;
+                tblCellClass,
+                k,
+                validationAttr = 'data-form="true" ';
 
             if (!value) {
                 value = '';
@@ -683,14 +677,14 @@ define(function() {
 
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
-//                if(!!validation) {
-//                  for(k in validation){
-//                      validationAttr+= ['data-validation-',k,'="',validation[k],'" '].join('');
-//                  }
-//                }
+                if(!!validation) {
+                  for(k in validation){
+                      validationAttr+= ['data-validation-',k,'="',validation[k],'" '].join('');
+                  }
+                }
 
                 if(!!editable) {
-                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true">' + tblCellContent + '</span></td>');
+                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true" '+validationAttr+'>' + tblCellContent + '</span></td>');
                 } else {
                     this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' >' + tblCellContent + '</td>');
                 }
@@ -1255,12 +1249,12 @@ define(function() {
                 type = 'PATCH';
 
             // is validation configured
-//            if(!!this.options.validation){
-//                // is valid
-//                if(!this.sandbox.form.validate('#'+this.domElId)) {
-//                    return;
-//                }
-//            }
+            if(!!this.options.validation){
+                // is invalid
+                if(!this.sandbox.form.validate(this.$el)) {
+                    return;
+                }
+            }
 
             if (!!this.changedData && this.changedData.length > 0) {
                 this.sandbox.util.save(url, type, this.changedData)
@@ -1357,10 +1351,11 @@ define(function() {
             this.bindDOMEvents();
 
             // initialize validation
-//            if(!!this.options.validation) {
-//                this.initValidation();
-//            }
+            if(!!this.options.validation) {
+                this.sandbox.form.create(this.$el);
+            }
         },
+
 
         /**
          * Adds loading icon and keeps width and height
