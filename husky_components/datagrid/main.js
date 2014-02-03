@@ -238,6 +238,8 @@ define(function() {
             this.changedData = {};
             this.rowStructure = [];
 
+            this.elId = this.sandbox.dom.attr(this.$el, 'id');
+
             this.sort = {
                 ascClass: 'icon-arrow-up',
                 descClass: 'icon-arrow-down',
@@ -661,7 +663,7 @@ define(function() {
                 tblCellContent,
                 tblCellClass,
                 k,
-                validationAttr = 'data-form="true" ';
+                validationAttr = '';
 
             if (!value) {
                 value = '';
@@ -677,14 +679,18 @@ define(function() {
 
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
-                if(!!validation) {
-                  for(k in validation){
-                      validationAttr+= ['data-validation-',k,'="',validation[k],'" '].join('');
-                  }
+                if (!!validation) {
+
+                    // needed because fields are no real form fields
+                    validationAttr ='data-form="true" ';
+
+                    for (k in validation) {
+                        validationAttr += ['data-validation-', k, '="', validation[k], '" '].join('');
+                    }
                 }
 
-                if(!!editable) {
-                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true" '+validationAttr+'>' + tblCellContent + '</span></td>');
+                if (!!editable) {
+                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true" ' + validationAttr + '>' + tblCellContent + '</span></td>');
                 } else {
                     this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' >' + tblCellContent + '</td>');
                 }
@@ -1251,7 +1257,7 @@ define(function() {
             // is validation configured
             if(!!this.options.validation){
                 // is invalid
-                if(!this.sandbox.form.validate(this.$el)) {
+                if(!this.sandbox.form.validate('#'+this.elId)) {
                     return;
                 }
             }
@@ -1352,7 +1358,7 @@ define(function() {
 
             // initialize validation
             if(!!this.options.validation) {
-                this.sandbox.form.create(this.$el);
+                this.sandbox.form.create('#'+this.elId);
             }
         },
 

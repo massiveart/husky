@@ -436,8 +436,7 @@ require(['lib/husky'], function(Husky) {
                         {
                             content: 'Content 2',
                             width: "30%",
-                            attribute: "content2",
-                            editable: true
+                            attribute: "content2"
                         },
                         {content: 'Content 3', width: "30%", attribute: "content3"}
                     ],
