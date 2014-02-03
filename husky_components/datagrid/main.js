@@ -696,10 +696,6 @@ define(function() {
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
                 if (!!validation) {
-
-                    // needed because fields are no real form fields
-                    validationAttr ='data-form="true" ';
-
                     for (k in validation) {
                         validationAttr += ['data-validation-', k, '="', validation[k], '" '].join('');
                     }
