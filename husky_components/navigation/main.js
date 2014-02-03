@@ -257,12 +257,11 @@ define(function() {
             this.sandbox.dom.on(this.$el, 'click', this.collapse.bind(this), '.navigation.collapseIcon .navigation-close-icon');
 
 
-
             // tooltip events
             this.sandbox.dom.on(this.$el, 'mouseenter', function(event) {
-                this.showToolTip.call(this, this.sandbox.dom.attr(this.sandbox.dom.find('input', '.navigation-search'),'placeholder'), event);
-            }.bind(this),'.navigation.collapsed .navigation-search');
-            this.sandbox.dom.on(this.$el, 'mouseenter', this.showToolTip.bind(this,''), '.navigation.collapsed .navigation-items');
+                this.showToolTip.call(this, this.sandbox.dom.attr(this.sandbox.dom.find('input', '.navigation-search'), 'placeholder'), event);
+            }.bind(this), '.navigation.collapsed .navigation-search');
+            this.sandbox.dom.on(this.$el, 'mouseenter', this.showToolTip.bind(this, ''), '.navigation.collapsed .navigation-items');
             this.sandbox.dom.on(this.$el, 'mouseleave', this.hideToolTip.bind(this), '.navigation.collapsed .navigation-items, .navigation.collapsed .navigation-search');
         },
 
@@ -296,12 +295,12 @@ define(function() {
                 title = this.sandbox.dom.html(this.sandbox.dom.find('.navigation-item-title', event.currentTarget));
             }
             if (!this.$tooltip) {
-                this.$tooltip = this.sandbox.dom.createElement('<div class="navigation-tooltip">'+title+'</div>');
-                this.sandbox.dom.append('body',this.$tooltip);
+                this.$tooltip = this.sandbox.dom.createElement('<div class="navigation-tooltip">' + title + '</div>');
+                this.sandbox.dom.append('body', this.$tooltip);
             }
             offset = this.sandbox.dom.offset(target);
             this.sandbox.dom.css(this.$tooltip, {
-                top: offset.top + (this.sandbox.dom.height(target)-30) /2
+                top: offset.top + (this.sandbox.dom.height(target) - 30) / 2
             });
         },
 
@@ -377,10 +376,8 @@ define(function() {
 
             var $items = this.sandbox.dom.closest(event.currentTarget, '.js-navigation-items'),
                 item, $toggle,
-//                $childList = this.sandbox.dom.find('ul:first', $items),
                 isExpanded = this.sandbox.dom.hasClass($items, 'is-expanded'),
                 navWasCollapsed;
-
 
             // only check collapse if event was fired
             if (!customTarget) {
@@ -388,17 +385,12 @@ define(function() {
             }
 
             if (isExpanded && !navWasCollapsed) {
-//                this.sandbox.dom.slideUp($childList, 200, function() {
+                this.sandbox.dom.removeClass($items, 'is-expanded');
 
-                    this.sandbox.dom.removeClass($items, 'is-expanded');
-
-
-                    // change toggle item
-                    $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
-                    this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
-                    this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
-
-//                }.bind(this));
+                // change toggle item
+                $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
+                this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
+                this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
             } else {
                 this.sandbox.dom.addClass($items, 'is-expanded');
                 // change toggle item
@@ -406,10 +398,7 @@ define(function() {
                 this.sandbox.dom.removeClass($toggle, 'icon-chevron-right');
                 this.sandbox.dom.prependClass($toggle, 'icon-chevron-down');
 
-//                this.sandbox.dom.slideDown($childList, 200, function() {
-
                 this.sandbox.dom.one($items, 'transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd', this.checkBottomHit.bind(this));
-//                }.bind(this));
             }
 
             // emit event
@@ -487,7 +476,7 @@ define(function() {
             this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
         },
 
-        unCollapse : function(forced) {
+        unCollapse: function(forced) {
             this.sandbox.dom.removeClass(this.$navigation, 'collapsed');
             this.hideToolTip();
             if (forced) {
