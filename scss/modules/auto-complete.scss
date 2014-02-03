@@ -47,6 +47,9 @@
 .tt-suggestion {
 	height: 25px;
   	padding: 0 15px;
+    border-width: 0 2px 0 2px;
+    border-style: solid;
+    border-color: #fff;
 
   	.border {
 		border-bottom: 1px solid $grayLightest;
@@ -69,8 +72,7 @@
 
 .tt-suggestion:hover,
 .tt-is-under-cursor {
-	background: $grayLighter;
-  	border-color: transparent;
+	background: $grayLightest;
 }
 
 .suggestion {

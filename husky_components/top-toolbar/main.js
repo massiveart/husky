@@ -182,7 +182,7 @@ define([], function () {
                 enabled: 'enabled',
                 disabled: 'disabled',
                 loading: 'loading'
-            }
+            };
         },
 
         /**
@@ -201,7 +201,7 @@ define([], function () {
             this.sandbox.dom.html(this.$el, templates.skeleton);
             this.initContainers();
 
-            //set the middle container width the remaining width of the container
+            // set the middle container width the remaining width of the container
             // (container.width - left.width - right.width)
             this.sandbox.dom.css(this.sandbox.dom.find('.' + constants.middleContainerClass, this.$el), {
                 width: (this.sandbox.dom.outerWidth(this.$el) - this.sandbox.dom.outerWidth(this.containers.left.$el) - this.sandbox.dom.outerWidth(this.containers.right.$el)) + 'px'
@@ -339,6 +339,7 @@ define([], function () {
          * @param button {object} the button which state needs to be changed
          * @param state {String} (enabled, disabled, loading) state to change to
          * @param highlight {Boolean} if true the button will play an animation
+         * @param setBack {Boolean} if true the last state will be reseted
          */
         changeButtonState: function(button, state, highlight, setBack) {
             if (highlight === true) {

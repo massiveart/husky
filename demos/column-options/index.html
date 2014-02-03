@@ -61,6 +61,7 @@
                             {
                                 'id': 'lastName',
                                 'translation': 'Last Name'
+//                                'default': true
                             },
                             {
                                 'id': 'middleName',
@@ -86,9 +87,11 @@
                             {
                                 name: 'column-options@husky',
                                 options: {
+                                    instanceName: 'test',
                                     el: '#options-container',
                                     data: testData,
                                     hidden: false,
+                                    backdropClick: true,
                                     trigger: '.toggle'
                                 }
                             }
