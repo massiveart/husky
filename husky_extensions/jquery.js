@@ -47,7 +47,10 @@
             };
 
             app.core.dom.html = function(selector, content) {
-                return $(selector).html(content);
+                if (typeof content !== 'undefined') {
+                    return $(selector).html(content);
+                }
+                return $(selector).html();
             };
 
             app.core.dom.parseHTML = function(data) {

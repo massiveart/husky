@@ -26,13 +26,13 @@
  * @param {Boolean} [options.data*.disabled] if true button starts in disabled-state
  * @param {Function} [options.data*.callback] callback which gets executed if the button is clicked on
  * @param {Boolean} [options.data*.highlight] if true the higlight-class gets added to the button
- * @param {Boolean} [options.data*.dynamicDDTitle] if true the button title always matches the selected dropdown-item
- * @param {Boolean} [options.data*.dynamicDDIcon] if true the button icon always matches the selected dropdown-icon
+ * @param {Boolean} [options.data*.dynamicTitle] if true the button title always matches the selected dropdown-item
+ * @param {Boolean} [options.data*.dynamicIcon] if true the button icon always matches the selected dropdown-icon
  * @param {Boolean} [options.data*.closeComponent] if true component closes if button is clicked on
  * @param {Array} [options.data*.items] array with dropdown-options for the button
  * @param {String} [options.data*.items*.title] title of the item
  * @param {Function} [options.data*.items*.callback] callback which gets executed if the item is clicked on
- * @param {selectedIcon} [options.data*.items*.title] icon to which the button-icon gets changed if the item is selected (data*.dynamicDDIcon must be true)
+ * @param {selectedIcon} [options.data*.items*.title] icon to which the button-icon gets changed if the item is selected (data*.dynamicIcon must be true)
  * @param {Boolean} [options.data*.disabled] if true button starts in disabled-state
  *
  * @param {String} [options.iconClassPrefix] string that gets prepended to the button.icon string
@@ -264,6 +264,8 @@ define([], function () {
                 this.buttons[i].$el = button;
                 this.buttons[i].executeCallback = true;
                 this.buttons[i].loading = false;
+                this.buttons[i].previousItem = null;
+                this.buttons[i].currentItem = null;
 
                 //disable button if configured
                 if (typeof this.buttons[i].disabled !== 'undefined') {
@@ -309,14 +311,14 @@ define([], function () {
             }
 
             //listen if the button state needs to be changed
-            this.sandbox.on(DISABLE.call(this, button.id), function(highlight) {
-                this.changeButtonState(button, this.buttonStates.disabled, highlight);
+            this.sandbox.on(DISABLE.call(this, button.id), function(highlight, setBack) {
+                this.changeButtonState(button, this.buttonStates.disabled, highlight, setBack);
             }.bind(this));
-            this.sandbox.on(ENABLE.call(this, button.id), function(highlight) {
-                this.changeButtonState(button, this.buttonStates.enabled, highlight);
+            this.sandbox.on(ENABLE.call(this, button.id), function(highlight, setBack) {
+                this.changeButtonState(button, this.buttonStates.enabled, highlight, setBack);
             }.bind(this));
-            this.sandbox.on(LOADING.call(this, button.id), function(highlight) {
-                this.changeButtonState(button, this.buttonStates.loading, highlight);
+            this.sandbox.on(LOADING.call(this, button.id), function(highlight, setBack) {
+                this.changeButtonState(button, this.buttonStates.loading, highlight, setBack);
             }.bind(this));
 
             // remove class after effect has finished
@@ -338,9 +340,12 @@ define([], function () {
          * @param state {String} (enabled, disabled, loading) state to change to
          * @param highlight {Boolean} if true the button will play an animation
          */
-        changeButtonState: function(button, state, highlight) {
+        changeButtonState: function(button, state, highlight, setBack) {
             if (highlight === true) {
                 this.sandbox.dom.addClass(button.$el, this.options.animationClass);
+            }
+            if (setBack === true) {
+                this.setBackButton(button);
             }
 
             if (state === this.buttonStates.enabled) {
@@ -383,8 +388,12 @@ define([], function () {
          */
         enableButton: function(button) {
             this.sandbox.dom.removeClass(button.$el, this.options.disabledClass);
-            this.removeIcon(button);
-            this.setIcon(button, button.icon);
+            if (button.previousItem === null) {
+                this.removeIcon(button);
+                this.setIcon(button, button.icon);
+                this.setTitle(button, button.title);
+                button.currentItem = null;
+            }
             button.executeCallback = true;
         },
 
@@ -473,6 +482,8 @@ define([], function () {
                 this.sandbox.dom.on($el, 'click', function(event) {
                     this.sandbox.dom.stopPropagation(event);
                     this.sandbox.dom.preventDefault(event);
+                    button.previousItem = button.currentItem;
+                    button.currentItem = itemIndex;
                     this.refreshTitle(button, itemIndex);
                     this.refreshIcon(button, itemIndex);
                     this.executeCallback(button.items[itemIndex].callback);
@@ -482,13 +493,29 @@ define([], function () {
         },
 
         /**
+         * Sets the title and the icon of a button one step back
+         */
+        setBackButton: function(button) {
+            if (button.previousItem !== null) {
+                this.refreshIcon(button, button.previousItem, true);
+                this.refreshTitle(button, button.previousItem, true);
+            }
+        },
+
+        /**
          * Changes the button title to a title of a dropdown-item
          * @param button {object} button context
          * @param itemIndex {Integer} index of the concerning item in button.items
          */
-        refreshTitle: function(button, itemIndex) {
-            if (button.dynamicDDTitle === true) {
-                this.sandbox.dom.html(this.sandbox.dom.find('.'+this.options.iconTitleClass, button.$el), button.items[itemIndex].title);
+        refreshTitle: function(button, itemIndex, force) {
+            if (button.dynamicTitle === true || force === true) {
+                this.setTitle(button, button.items[itemIndex].title);
+            }
+        },
+
+        setTitle: function(button, title) {
+            if (!!this.sandbox.dom.find('.'+this.options.iconTitleClass, button.$el).length) {
+                this.sandbox.dom.html(this.sandbox.dom.find('.'+this.options.iconTitleClass, button.$el), title);
             }
         },
 
@@ -497,8 +524,8 @@ define([], function () {
          * @param button {object} button context
          * @param itemIndex {Integer} index of the concerning item in button.items
          */
-        refreshIcon: function(button, itemIndex) {
-            if (button.dynamicDDIcon === true) {
+        refreshIcon: function(button, itemIndex, force) {
+            if (button.dynamicIcon === true || force === true) {
                 this.removeIcon(button);
                 this.setIcon(button, button.items[itemIndex].selectedIcon);
             }
@@ -509,9 +536,12 @@ define([], function () {
          * @param button {object} button context
          */
         removeIcon: function(button) {
-            var iconContainer = this.sandbox.dom.find('.' + this.options.iconExtraClass, button.$el),
-                iconClass = this.sandbox.dom.attr(iconContainer, 'class').match(this.options.iconClassPrefix+'[\\w|-]+')[0];
-            this.sandbox.dom.removeClass(iconContainer, iconClass);
+            if (typeof button.icon !== 'undefined') {
+                var iconContainer = this.sandbox.dom.find('.' + this.options.iconExtraClass, button.$el),
+                    iconClass = this.sandbox.dom.attr(iconContainer, 'class').match(this.options.iconClassPrefix+'[\\w|-]+')[0];
+                this.sandbox.dom.removeClass(iconContainer, iconClass);
+                return iconClass;
+            }
         },
 
         /**

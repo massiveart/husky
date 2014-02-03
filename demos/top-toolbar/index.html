@@ -22,6 +22,7 @@
 <div class="toolbar highlight-animation"></div>
 <button id="toggleState">Disable/Enable Save</button>
 <button id="loadingState">set Save loading</button>
+<button id="setBack">enable dropdowns with set back</button>
 <script src="../js/sinon.js"></script>
 <script src="../js/jquery.js"></script>
 <script src="../js/require.js"></script>
@@ -56,7 +57,7 @@
                     container: 'left',
                     align: 'right',
                     customClass: 'state',
-                    dynamicDDIcon: true,
+                    dynamicIcon: true,
                     items: [
                         {
                             title: 'publish',
@@ -102,7 +103,7 @@
                     align: 'right',
                     customClass: 'resolution',
                     title: '1024 x 768',
-                    dynamicDDTitle: true,
+                    dynamicTitle: true,
                     items: [
                         {
                             title: '1024 x 768',
@@ -147,6 +148,10 @@
         });
         $('#loadingState').on('click', function() {
             app.sandbox.emit('husky.top-toolbar.4.loading');
+        });
+        $('#setBack').on('click', function() {
+            app.sandbox.emit('husky.top-toolbar.2.enable', false, true);
+            app.sandbox.emit('husky.top-toolbar.5.enable', false, true);
         });
     });
 </script>

@@ -27,7 +27,7 @@ define(['husky'], function(husky) {
                     container: 'left',
                     align: 'right',
                     customClass: 'button2',
-                    dynamicDDIcon: true,
+                    dynamicIcon: true,
                     title: 'MyTitle',
                     items: [
                         {
@@ -74,7 +74,7 @@ define(['husky'], function(husky) {
                     align: 'left',
                     customClass: 'button5',
                     title: '1024 x 768',
-                    dynamicDDTitle: true,
+                    dynamicTitle: true,
                     closeComponent: true,
                     items: [
                         {
@@ -306,7 +306,7 @@ define(['husky'], function(husky) {
 
         /**
          * Check if button title changes to the title of the clicked dropdown-item
-         * (dynamicDDTitle option must be true)
+         * (dynamicTitle option must be true)
          */
         it('should change button title to the title of the clicked dropdown-item', function() {
             runs(function() {
@@ -325,7 +325,7 @@ define(['husky'], function(husky) {
 
         /**
          * Check if button icon changes to the configured icon of the clicked dropdown item
-         * (dynamicDDIcon option must be treu)
+         * (dynamicIcon option must be treu)
          */
         it('should change button icon to the icon of the clicked dropdown-item', function() {
             runs(function() {
