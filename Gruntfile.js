@@ -1,4 +1,4 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
     'use strict';
 
@@ -11,11 +11,11 @@ module.exports = function(grunt) {
     // Lookup of the Aura Extensions and injects them in the requirejs build
         auraExtensions = grunt.file.glob
             .sync('husky_extensions/**/*.js')
-            .map(function(extension) {
+            .map(function (extension) {
                 return extension.replace('.js', '');
             }),
 
-        getConfig = function(dev) {
+        getConfig = function (dev) {
             var _c = clone(huskyConfig.requireJS);
             _c.include = _c.include.concat(auraExtensions);
             _c.optimize = !!dev ? "none" : "uglify";
@@ -74,10 +74,31 @@ module.exports = function(grunt) {
                 autoWatch: true
             }
         },
+        grunticon: {
+            svg: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: 'assets/svg/.tmp',
+                        src: ['*.svg'],
+                        dest: "dist/svg"
+                    }
+                ],
+                options: {
+                    colors: {
+                        black: '#000',
+                        white: '#FFF',
+                        gray: '#999'
+                    },
+                    template: 'assets/svg/svg-template.hbs'
+                }
+            }
+        },
         clean: {
             dist: ['dist', 'docs/packages/husky/'],
             temp: ['dist/temp'],
             tmp: ['.tmp'],
+            icon: ['assets/svg/.tmp'],
             bower_after: {
                 files: {
                     src: [
@@ -91,7 +112,7 @@ module.exports = function(grunt) {
                         'bower_components'
                     ]
                 }
-            }
+            },
         },
         compass: {
             dev: {
@@ -187,6 +208,27 @@ module.exports = function(grunt) {
                     }
                 ]
             },
+            icon: {
+                files: [
+                    {
+                        expand: true,
+                        dot: false,
+                        cwd: './assets/svg/',
+                        dest: 'assets/svg/.tmp/',
+                        src: [
+                            '{,*.svg/}*'
+                        ],
+                        rename: function(dest,src) {
+                            var colors;
+                            src = src.substr(0,src.length-4);
+                            if (src.indexOf('.colors')<0) {
+                                src += '.colors-black-white-gray'
+                            }
+                            return dest+src+'.svg';
+                        }
+                    }
+                ]
+            },
             bower: {
                 files: [
                     // aura
@@ -274,16 +316,16 @@ module.exports = function(grunt) {
                         ],
                         dest: 'bower_components/massiveart-uritemplate/'
                     },
-					// typeahead.js
-					{
-						expand: true,
-						flatten: true,
-						src: [
-							'.bower_components/typeahead.js/dist/typeahead.js',
-							'.bower_components/typeahead.js/dist/typeahead.min.js',
-						],
-						dest: 'bower_components/typeahead.js'
-					},
+                    // typeahead.js
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            '.bower_components/typeahead.js/dist/typeahead.js',
+                            '.bower_components/typeahead.js/dist/typeahead.min.js',
+                        ],
+                        dest: 'bower_components/typeahead.js'
+                    },
                     // tagmanager.js
                     {
                         expand: true,
@@ -305,9 +347,9 @@ module.exports = function(grunt) {
                     verbose: false,
                     cleanTargetDir: false,
                     cleanBowerDir: false,
-					bowerOptions: {
-						forceLatest: true
-					}
+                    bowerOptions: {
+                        forceLatest: true
+                    }
                 }
             }
         },
@@ -339,6 +381,12 @@ module.exports = function(grunt) {
     // register tasks
     grunt.registerTask('test', [
         'karma:unit'
+    ]);
+
+    grunt.registerTask('icon', [
+        'copy:icon',
+        'grunticon:svg',
+        'clean:icon'
     ]);
 
     // Travis CI task.
