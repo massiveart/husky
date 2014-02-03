@@ -654,7 +654,20 @@ require(['lib/husky'], function(Husky) {
 
             app.sandbox.dom.on('#change-columns','click', function () {
                 app.sandbox.emit('husky.column-options.saved',
-                    [{"id":"content1","translation":"content1","disabled":false},{"id":"content2","translation":"content2","disabled":false},{"id":"content3","translation":"content3","disabled":true}]
+                    [
+                        {
+                            id: 'content1',
+                            translation: 'content1',
+                            disabled: false,
+                            editable: true,
+                            validation: {
+                                unique: true,
+                                required: true
+                            }
+                        },
+                        {"id":"content2","translation":"content2","disabled":false},
+                        {"id":"content3","translation":"content3","disabled":true}
+                    ]
                 );
             });
 

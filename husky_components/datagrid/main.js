@@ -297,30 +297,40 @@ define(function() {
          */
         parseFieldsData: function(fields) {
             var data = [],
-                urlfields = '',
-                fieldsCount = 0;
+                urlfields = [],
+                fieldsCount = 0,
+                tmp;
+
             this.sandbox.util.foreach(fields, function(field) {
+
+                tmp = {};
+
                 if (field.disabled !== 'true' && field.disabled !== true) {
+
                     // data
-                    data.push({content: this.sandbox.translate(field.translation), attribute: field.id});
-                    // url
-                    if (fieldsCount > 0) {
-                        urlfields += ',';
+                    for(var key in field) {
+                        if(key === 'translation') {
+                            tmp.content = this.sandbox.translate(field.translation);
+                        } else if(key === 'id') {
+                            tmp.attribute = field.id;
+                        } else {
+                           tmp[key] = field[key];
+                        }
                     }
-                    fieldsCount++;
-                    urlfields += field.id;
+
+                    data.push(tmp);
+                    urlfields.push(field.id);
+
                 } else if (field.id === 'id') {
-                    // url
-                    if (fieldsCount > 0) {
-                        urlfields += ',';
-                    }
-                    fieldsCount++;
-                    urlfields += field.id;
+                    urlfields.push(field.id);
                 }
+
+                fieldsCount++;
+
             }.bind(this));
             return {
                 columns: data,
-                urlFields: urlfields
+                urlFields: urlfields.join(',')
             };
         },
 
