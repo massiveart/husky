@@ -351,7 +351,7 @@ define([], function () {
 
             if (state === this.buttonStates.enabled) {
                 this.resetButtonLoading(button);
-                this.enableButton(button);
+                this.enableButton(button, setBack);
             } else if (state === this.buttonStates.disabled) {
                 this.resetButtonLoading(button);
                 this.disableButton(button);
@@ -387,13 +387,16 @@ define([], function () {
          * Enables the button
          * @param button {object} button context
          */
-        enableButton: function(button) {
+        enableButton: function(button, setBack) {
             this.sandbox.dom.removeClass(button.$el, this.options.disabledClass);
-            if (button.previousItem === null) {
+            if (button.currentItem === null) {
                 this.removeIcon(button);
                 this.setIcon(button, button.icon);
                 this.setTitle(button, button.title);
-                button.currentItem = null;
+            } else if(setBack !== true) {
+                this.removeIcon(button);
+                this.setIcon(button, button.items[button.currentItem].selectedIcon);
+                this.setTitle(button, button.items[button.currentItem].title);
             }
             button.executeCallback = true;
         },
@@ -500,6 +503,11 @@ define([], function () {
             if (button.previousItem !== null) {
                 this.refreshIcon(button, button.previousItem, true);
                 this.refreshTitle(button, button.previousItem, true);
+            } else {
+                this.removeIcon(button);
+                this.setIcon(button, button.icon);
+                this.setTitle(button, button.title);
+                button.currentItem = null;
             }
         },
 
