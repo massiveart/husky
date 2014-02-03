@@ -73,7 +73,9 @@ define(function() {
             columnOptionsInstanceName: null, // at which search it should be listened to can be null|string|empty_string
             paginationTemplate: '<%=translate("pagination.page")%> <%=i%> <%=translate("pagination.of")%> <%=pages%>',
             fieldsData: null,
-            validation: false
+            validation: false,
+            validationDebug: false,
+            startTabIndex: 1
         },
 
         namespace = 'husky.datagrid.',
@@ -224,6 +226,8 @@ define(function() {
     return {
 
         view: true,
+
+        tabIndex: 0,
 
         initialize: function() {
             this.sandbox.logger.log('initialized datagrid');
@@ -441,7 +445,7 @@ define(function() {
         prepareTable: function() {
             var $table, $thead, $tbody, tblClasses;
 
-            $table = this.sandbox.dom.$('<table data-debug="true"/>');
+            $table = this.sandbox.dom.$('<table' + (!!this.options.validationDebug ? 'data-debug="true"' : '' ) + '/>');
 
             if (!!this.data.head || !!this.options.columns) {
                 $thead = this.sandbox.dom.$('<thead/>');
@@ -585,6 +589,8 @@ define(function() {
             tblRows = [];
             this.allItemIds = [];
 
+            this.tabIndex = this.options.startTabIndex;
+
             // TODO adjust when new api is fully implemented and no backwards compatibility needed
             if (!!this.data.items) {
                 this.data.items.forEach(function(row) {
@@ -644,12 +650,12 @@ define(function() {
                 if (this.rowStructure.length) {
                     this.rowStructure.forEach(function(key) {
                         key.editable = key.editable || false;
-                        this.setValueOfRowCell(key.attribute, row[key.attribute], key.editable, key.validation);
+                        this.createRowCell(key.attribute, row[key.attribute], key.editable, key.validation);
                     }.bind(this));
                 } else {
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                            this.setValueOfRowCell(key, row[key], false, null);
+                            this.createRowCell(key, row[key], false, null);
                         }
                     }
                 }
@@ -668,7 +674,7 @@ define(function() {
          * @param value attribute value
          * @param editable flag whether field is editable or not
          */
-        setValueOfRowCell: function(key, value, editable, validation) {
+        createRowCell: function(key, value, editable, validation) {
             var tblCellClasses,
                 tblCellContent,
                 tblCellClass,
@@ -700,7 +706,9 @@ define(function() {
                 }
 
                 if (!!editable) {
-                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true" ' + validationAttr + '>' + tblCellContent + '</span></td>');
+                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true" ' + validationAttr + ' tabindex="' + this.tabIndex + '">' + tblCellContent + '</span></td>');
+
+                    this.tabIndex++;
                 } else {
                     this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' >' + tblCellContent + '</td>');
                 }
