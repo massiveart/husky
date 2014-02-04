@@ -29,6 +29,7 @@
  * @param {String} [options.prefetchUrl] url to prefetch data for the autocomplete component
  * @param {String} [options.remoteUrl] url to fetch data  for the autocomplete component from on input
  * @param {Object} [options.autocompleteOptions] options to pass to the autocomplete component
+ * @param {String} [options.autocompleteParameter] name of parameter which contains the user's input (for auto-complete)
  * @param {Integer} [options.maxListItems] maximum amount of list items accepted (0 = no limit)
  * @param {Boolean} [options.CapitalizeFirstLetter] if true the first letter of each item gets capitalized
  * @param {String} [options.listItemClass] CSS-class for list items
@@ -66,6 +67,7 @@ define([], function() {
                 prefetchUrl: '',
                 remoteUrl: '',
                 autocompleteOptions: {},
+                autocompleteParameter: 'query',
                 maxListItems: 0,
                 CapitalizeFirstLetter: false,
                 listItemClass: 'auto-complete-list-selection',
@@ -88,7 +90,7 @@ define([], function() {
                     '        <%= label %>',
                     '            <div class="auto-complete-list">',
                     '                <div class="husky-autocomplete"></div>',
-                    '                <div class="toggler"></div>',
+                    '                <div class="toggler"><span></span></div>',
                     '            </div>',
                     '        </label>',
                     '    </div>'
@@ -282,7 +284,7 @@ define([], function() {
                                 localData: this.options.localData,
                                 prefetchUrl: this.options.prefetchUrl,
                                 remoteUrl: this.options.remoteUrl,
-                                getParameter: this.options.getParameter,
+                                getParameter: this.options.autocompleteParameter,
                                 suggestionImg: this.options.autoCompleteIcon
                             },
                             this.options.autocompleteOptions

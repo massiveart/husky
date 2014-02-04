@@ -241,7 +241,7 @@ define([], function () {
                     }.bind(this)
                 },
                 remote: {
-                    url: this.options.remoteUrl + delimiter + this.options.getParameter + '=%QUERY',
+                    url: this.options.remoteUrl + delimiter + this.options.GETparameter + '=%QUERY',
                     beforeSend: function () {
                         this.sandbox.emit(REMOTE_LOAD.call(this));
                     }.bind(this),

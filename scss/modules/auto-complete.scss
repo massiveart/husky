@@ -14,19 +14,22 @@
     }
 }
 
+.husky-auto-complete {
+    input[type="text"] {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      margin: 4px 0;
+    }
+}
+
 .wrapper {
     width: 400px;
     background: $white;
     padding: 4px 8px;
     border-radius: 4px 4px 0 0;
     font-size: $smallFontSize;
-
-    input[type="text"] {
-        width: 100%;
-        border: 0;
-        outline: 0;
-        background: transparent;
-    }
 }
 
 .twitter-typeahead {
@@ -46,7 +49,7 @@
 
 .tt-suggestion {
     height: 25px;
-    padding: 0 15px;
+    padding: 0 6px;
     border-width: 0 2px 0 2px;
     border-style: solid;
     border-color: #fff;
@@ -58,7 +61,7 @@
         .icon {
             display: block;
             float: left;
-            margin: 0 10px 0 5px;
+            margin: 0 10px 0 10px;
             width: 12px;
             height: 25px;
             text-align: center;
