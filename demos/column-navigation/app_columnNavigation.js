@@ -599,7 +599,8 @@ require(['lib/husky'], function (Husky) {
                 name: 'column-navigation@husky',
                 options: {
                     el: '#column-navigation',
-                    url: '/nodes?depth=1'
+                    url: '/nodes?depth=1',
+                    height: 20
                 }
             }
         ]).then(function () {
