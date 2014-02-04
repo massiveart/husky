@@ -22,7 +22,6 @@
  * @param {String} [options.totalKey] Key for total-property in JSON-result
  * @param {String} [options.resultKey] Key for suggestions-array in JSON result
  * @param {object} [options.value] with name (value of the input box), id (data-id of the input box)
- * @param {String} [options.valueName] Key for the value property in options.value
  * @param {String} [options.instanceName] name of the component instance
  * @param {Boolean} [options.noNewValues] if true input value must have been suggested by auto-complete
  * @param {String} [options.successClass] success-class if nowNewValues is false
@@ -52,7 +51,6 @@ define([], function () {
         totalKey: 'total',
         resultKey: '_embedded',
         value: null,
-        valueName: 'value',
         instanceName: 'undefined',
         noNewValues: false,
         successClass: 'husky-auto-complete-success',
@@ -134,7 +132,7 @@ define([], function () {
          */
         getValueName: function () {
             if (!!this.options.value) {
-                return this.options.value[this.options.valueName];
+                return this.options.value[this.options.valueKey];
             } else {
                 return '';
             }
