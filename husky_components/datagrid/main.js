@@ -248,6 +248,7 @@ define(function() {
             this.changedData = {};
             this.rowStructure = [];
 
+            this.domId = 0;
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
 
             this.sort = {
@@ -626,11 +627,12 @@ define(function() {
 
                 var radioPrefix, key;
                 this.tblColumns = [];
-                this.tblRowAttributes = '';
+                this.tblRowAttributes = ' data-dom-id="'+this.options.instance+'-'+this.domId+'"';
 
                 // special treatment for id
                 if (!!row.id) {
                     this.tblRowAttributes += ' data-id="' + row.id + '"';
+                    this.domId++;
                 }
 
                 if (!!this.options.className && this.options.className !== '') {
@@ -826,7 +828,7 @@ define(function() {
          * @param row
          */
         addRow: function(row) {
-            var $table, $row, $editableFields, key, validation;
+            var $table, $row, $editableFields, validation;
             // check for other element types when implemented
             $table = this.$element.find('table');
             $row = this.prepareTableRow(row);
@@ -838,7 +840,7 @@ define(function() {
             this.sandbox.util.foreach($editableFields, function($el,i){
                 this.sandbox.form.addField('#'+this.elId,$el);
                 validation = this.options.columns[i].validation;
-                for(key in validation){
+                for(var key in validation){
                     this.sandbox.form.addConstraint('#'+this.elId,$el, key, {key: validation[key]});
                 }
             }.bind(this));
@@ -1225,9 +1227,11 @@ define(function() {
                 $tr = this.sandbox.dom.parent($td),
                 field = this.sandbox.dom.data($td, 'field'),
                 id = this.sandbox.dom.data($tr, 'id'),
+                domId = this.sandbox.dom.data($tr, 'dom-id'),
                 value = event.currentTarget.innerText;
 
             this.lastFocusedEditableElement = {
+                domId: domId,
                 id: id,
                 field: field,
                 value: value
@@ -1242,33 +1246,31 @@ define(function() {
                 $tr = this.sandbox.dom.parent($td),
                 field = this.sandbox.dom.data($td, 'field'),
                 id = this.sandbox.dom.data($tr, 'id'),
+                domId = this.sandbox.dom.data($tr, 'dom-id'),
                 value = event.currentTarget.innerText,
-                el;
+                el, key = null;
 
             // last focused object should be same as the one previously left
-            if (this.lastFocusedEditableElement.id === id) {
+            if (this.lastFocusedEditableElement.domId === domId) {
                 if (this.lastFocusedEditableElement.value !== value) {
 
                     this.sandbox.emit(DATA_CHANGED);
 
-                    // TODO Bug when new added items --> no id
-
                     // element already changed in the past and therefor in the changed data array
-                    this.sandbox.util.each(this.changedData, function(index, value) {
-                        if (value.id === id) {
-                            el = value;
+                    for(key in this.changedData){
+                        if (key === domId) {
+                            el = this.changedData[key];
                         }
-                    }.bind(this));
+                    }
 
-                    // changed for the first time
+                    // add to the changedata list
                     if (!el) {
                         el = {};
                         el.id = id;
                         el[field] = value;
 
-                        this.changedData.push(el);
+                        this.changedData[domId] = el;
 
-                        // changed changes
                     } else {
                         el[field] = value;
                     }
@@ -1286,7 +1288,8 @@ define(function() {
         saveChangedData: function() {
 
             var url = this.data.links.self,
-                type = 'PATCH';
+                type = 'PATCH',
+                data = [], key = null;
 
             // is validation configured
             if (!!this.options.validation) {
@@ -1299,10 +1302,15 @@ define(function() {
 
             this.sandbox.logger.log("saving data...");
 
-            if (!!this.changedData && this.changedData.length > 0) {
-                this.sandbox.util.save(url, type, this.changedData)
+            for(key in this.changedData){
+                data.push(this.changedData[key]);
+            }
+
+            if (!!data && data.length > 0) {
+                this.sandbox.util.save(url, type, data)
                     .then(function() {
                         this.sandbox.emit(DATA_SAVED);
+                        this.changedData = [];
                     }.bind(this))
                     .fail(function(params) {
                         this.sandbox.emit(DATA_SAVE_FAILED, params);
