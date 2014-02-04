@@ -7,6 +7,7 @@
     padding: 5px 5px 5px 10px;
     border-radius: 6px;
     clear: both;
+    font-size: $smallFontSize;
     .checkbox {
         padding-right: 20px;
     }
@@ -32,9 +33,11 @@
         float: left;
         width: 20px;
         margin-right: 10px;
+        padding-top: 3px;
     }
     .item-value {
         float: left;
+        line-height: 30px;
     }
 
 
@@ -46,13 +49,11 @@
       input {
         margin: 0;
       }
-      .custom-checkbox-icon {
-        margin-bottom: 2px;
-      }
 
       & > li {
-        padding: 5px 10px 5px 20px;
+        padding: 0px 10px 0px 20px;
         clear: both;
+        height: 30px;
 
         &:hover,
         &.hover {
