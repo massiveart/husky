@@ -47,11 +47,10 @@
             };
 
             app.core.dom.html = function(selector, content) {
-                if (!!content) {
+                if (typeof content !== 'undefined') {
                     return $(selector).html(content);
-                } else {
-                    return $(selector).html();
                 }
+                return $(selector).html();
             };
 
             app.core.dom.parseHTML = function(data) {
@@ -124,6 +123,14 @@
                 } else {
                     return $(selector).width();
                 }
+            };
+
+            app.core.dom.outerWidth = function(selector) {
+                return $(selector).outerWidth();
+            };
+
+            app.core.dom.height = function(selector) {
+                return $(selector).height();
             };
 
             app.core.dom.height = function(selector, value) {

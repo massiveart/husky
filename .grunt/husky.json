@@ -41,7 +41,8 @@
             "__component__$loader@husky": "husky_components/loader/main",
             "__component__$edit-toolbar@husky": "husky_components/edit-toolbar/main",
             "__component__$page-functions@husky": "husky_components/page-functions/main",
-            "__component__$ckeditor@husky": "husky_components/ckeditor/main"
+            "__component__$ckeditor@husky": "husky_components/ckeditor/main",
+            "__component__$top-toolbar@husky": "husky_components/top-toolbar/main"
         },
         "shim": {
             "backbone": {
@@ -91,7 +92,8 @@
             "__component__$loader@husky",
             "__component__$edit-toolbar@husky",
             "__component__$page-functions@husky",
-            "__component__$ckeditor@husky"
+            "__component__$ckeditor@husky",
+            "__component__$top-toolbar@husky"
         ]
     }
 }
