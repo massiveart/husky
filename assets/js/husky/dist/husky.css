@@ -4852,7 +4852,7 @@ table {
 .table thead th {
   vertical-align: bottom;
   color: #999999;
-  font-size: 18px;
+  font-size: 16px;
 }
 /* line 30, ../scss/modules/tables.scss */
 .table thead th a {
@@ -6172,4 +6172,14 @@ a.btn-black, a.btn-highlight {
 /* line 15, ../scss/modules/datagrid.scss */
 .husky-datagrid thead th {
   padding-top: 0;
+  font-weight: normal;
+}
+/* line 19, ../scss/modules/datagrid.scss */
+.husky-datagrid thead th.is-sortable {
+  color: black;
+  cursor: pointer;
+}
+/* line 23, ../scss/modules/datagrid.scss */
+.husky-datagrid thead th.is-selected {
+  font-weight: bold;
 }
