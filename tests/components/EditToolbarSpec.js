@@ -179,7 +179,7 @@ define(['husky'], function(husky) {
          * Check if icon-class has been added
          */
         it('should add an icon class to buttons', function() {
-           expect($('.edit-toolbar-container li[data-id=1]').find('.icon-ICON_ENABLED').length).toEqual(1);
+            expect($('.edit-toolbar-container li[data-id=1]').find('.icon-ICON_ENABLED').length).toEqual(1);
         });
 
         /**
@@ -207,7 +207,7 @@ define(['husky'], function(husky) {
          * Check if divider-class gets add to dropdown items
          */
         it('should add a divider class to configured dropdown-items', function() {
-            expect( $('.edit-toolbar-container li[data-id=2]').find('.edit-toolbar-dropdown-menu li').eq(1).hasClass('divider')).toBe(true);
+            expect($('.edit-toolbar-container li[data-id=2]').find('.edit-toolbar-dropdown-menu li').eq(1).hasClass('divider')).toBe(true);
         });
 
         /**
@@ -271,7 +271,7 @@ define(['husky'], function(husky) {
             }, 'Callback should have been called', 500);
 
             runs(function() {
-                 expect(callbackCalled).toBe(true);
+                expect(callbackCalled).toBe(true);
             });
         });
 
@@ -332,7 +332,7 @@ define(['husky'], function(husky) {
             }, 'Button should have been disabled', 500);
 
             runs(function() {
-               expect($('.edit-toolbar-container li[data-id=1]').hasClass('disabled')).toBe(true);
+                expect($('.edit-toolbar-container li[data-id=1]').hasClass('disabled')).toBe(true);
             });
         });
 
@@ -365,21 +365,21 @@ define(['husky'], function(husky) {
          * Check if it's possible to set a loading state
          */
         it('should set buttons into loading state', function() {
-           var flag = false;
-           runs(function() {
-               app.sandbox.on('husky.loader.initialized', function() {
-                  flag = true;
-               });
-               app.sandbox.emit('husky.edit-toolbar.1.item.loading', '1');
-           });
+            var flag = false;
+            runs(function() {
+                app.sandbox.on('husky.loader.initialized', function() {
+                    flag = true;
+                });
+                app.sandbox.emit('husky.edit-toolbar.1.item.loading', '1');
+            });
 
-           waitsFor(function() {
-              return flag;
-           }, 'Loader should have been initialized', 500);
+            waitsFor(function() {
+                return flag;
+            }, 'Loader should have been initialized', 500);
 
-           runs(function() {
-               expect(flag).toBe(true);
-           });
+            runs(function() {
+                expect(flag).toBe(true);
+            });
         });
     });
 });
