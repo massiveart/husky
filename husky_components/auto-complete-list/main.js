@@ -67,7 +67,7 @@ define([], function() {
                 prefetchUrl: '',
                 remoteUrl: '',
                 autocompleteOptions: {},
-                autocompleteParameter: 'query',
+                getParameter: 'query',
                 maxListItems: 0,
                 CapitalizeFirstLetter: false,
                 listItemClass: 'auto-complete-list-selection',
@@ -284,7 +284,7 @@ define([], function() {
                                 localData: this.options.localData,
                                 prefetchUrl: this.options.prefetchUrl,
                                 remoteUrl: this.options.remoteUrl,
-                                getParameter: this.options.autocompleteParameter,
+                                getParameter: this.options.getParameter,
                                 suggestionImg: this.options.autoCompleteIcon
                             },
                             this.options.autocompleteOptions

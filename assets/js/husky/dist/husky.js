@@ -29130,7 +29130,7 @@ define('__component__$auto-complete@husky',[], function () {
         prefetchUrl: '',
         localData: [],
         remoteUrl: '',
-        GETparameter: 'query',
+        getParameter: 'query',
         valueKey: 'name',
         totalKey: 'total',
         resultKey: '_embedded',
@@ -29326,7 +29326,7 @@ define('__component__$auto-complete@husky',[], function () {
                     }.bind(this)
                 },
                 remote: {
-                    url: this.options.remoteUrl + delimiter + this.options.GETparameter + '=%QUERY',
+                    url: this.options.remoteUrl + delimiter + this.options.getParameter + '=%QUERY',
                     beforeSend: function () {
                         this.sandbox.emit(REMOTE_LOAD.call(this));
                     }.bind(this),
@@ -29567,7 +29567,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                 prefetchUrl: '',
                 remoteUrl: '',
                 autocompleteOptions: {},
-                autocompleteParameter: 'query',
+                getParameter: 'query',
                 maxListItems: 0,
                 CapitalizeFirstLetter: false,
                 listItemClass: 'auto-complete-list-selection',
@@ -29784,7 +29784,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                                 localData: this.options.localData,
                                 prefetchUrl: this.options.prefetchUrl,
                                 remoteUrl: this.options.remoteUrl,
-                                getParameter: this.options.autocompleteParameter,
+                                getParameter: this.options.getParameter,
                                 suggestionImg: this.options.autoCompleteIcon
                             },
                             this.options.autocompleteOptions

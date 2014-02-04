@@ -45,7 +45,7 @@ define([], function () {
         prefetchUrl: '',
         localData: [],
         remoteUrl: '',
-        GETparameter: 'query',
+        getParameter: 'query',
         valueKey: 'name',
         totalKey: 'total',
         resultKey: '_embedded',
@@ -241,7 +241,7 @@ define([], function () {
                     }.bind(this)
                 },
                 remote: {
-                    url: this.options.remoteUrl + delimiter + this.options.GETparameter + '=%QUERY',
+                    url: this.options.remoteUrl + delimiter + this.options.getParameter + '=%QUERY',
                     beforeSend: function () {
                         this.sandbox.emit(REMOTE_LOAD.call(this));
                     }.bind(this),
