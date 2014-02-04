@@ -175,6 +175,12 @@ define(function() {
             DATA_SAVED = namespace + 'data.saved',
 
         /**
+         * raised when save of data failed
+         * @event husky.datagrid.data.save.failed
+         */
+            DATA_SAVE_FAILED = namespace + 'data.save.failed',
+
+        /**
          * raised when editable list is changed
          * @event husky.datagrid.data.save
          */
@@ -820,10 +826,23 @@ define(function() {
          * @param row
          */
         addRow: function(row) {
-            var $table;
+            var $table, $row, $editableFields, key, validation;
             // check for other element types when implemented
             $table = this.$element.find('table');
-            $table.append(this.prepareTableRow(row));
+            $row = this.prepareTableRow(row);
+            $table.append($row);
+
+            // add new row to validation context and add contraints to element
+            $editableFields = this.sandbox.dom.find('.editable', $row);
+
+            this.sandbox.util.foreach($editableFields, function($el,i){
+                this.sandbox.form.addField('#'+this.elId,$el);
+                validation = this.options.columns[i].validation;
+                for(key in validation){
+                    this.sandbox.form.addConstraint('#'+this.elId,$el, key, {key: validation[key]});
+                }
+            }.bind(this));
+
         },
 
         /**
@@ -1232,6 +1251,8 @@ define(function() {
 
                     this.sandbox.emit(DATA_CHANGED);
 
+                    // TODO Bug when new added items --> no id
+
                     // element already changed in the past and therefor in the changed data array
                     this.sandbox.util.each(this.changedData, function(index, value) {
                         if (value.id === id) {
@@ -1283,8 +1304,8 @@ define(function() {
                     .then(function() {
                         this.sandbox.emit(DATA_SAVED);
                     }.bind(this))
-                    .fail(function() {
-                        this.sandbox.logger.log("failed during save!");
+                    .fail(function(params) {
+                        this.sandbox.emit(DATA_SAVE_FAILED, params);
                     }.bind(this));
             }
         },
