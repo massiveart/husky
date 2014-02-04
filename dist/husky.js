@@ -25668,7 +25668,7 @@ define('__component__$datagrid@husky',[],function() {
             data: null,
             defaultMeasureUnit: 'px',
             excludeFields: ['id'],
-            instance: 'undefined',
+            instance: 'datagrid',
             pagination: false,
             paginationOptions: {
                 pageSize: null,
@@ -25688,7 +25688,7 @@ define('__component__$datagrid@husky',[],function() {
             columnOptionsInstanceName: null, // at which search it should be listened to can be null|string|empty_string
             paginationTemplate: '<%=translate("pagination.page")%> <%=i%> <%=translate("pagination.of")%> <%=pages%>',
             fieldsData: null,
-            validation: false,
+            validation: false, // TODO does not work for added rows
             validationDebug: false,
             startTabIndex: 1
         },
@@ -25786,8 +25786,18 @@ define('__component__$datagrid@husky',[],function() {
         /**
          * raised when data was saved
          * @event husky.datagrid.data.saved
+         * @param {Object} data returned
          */
             DATA_SAVED = namespace + 'data.saved',
+
+        /**
+         * raised when save of data failed
+         * @event husky.datagrid.data.save.failed
+         * @param {String} text status
+         * @param {String} error thrown
+         *
+         */
+            DATA_SAVE_FAILED = namespace + 'data.save.failed',
 
         /**
          * raised when editable list is changed
@@ -25857,6 +25867,7 @@ define('__component__$datagrid@husky',[],function() {
             this.changedData = {};
             this.rowStructure = [];
 
+            this.domId = 0;
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
 
             this.sort = {
@@ -25980,31 +25991,40 @@ define('__component__$datagrid@husky',[],function() {
 
                 success: function(response) {
 
-                    // TODO adjust when new api is finished and no backwards compatibility needed
-                    if (!!response.items) {
-                        this.data = response;
-                    } else {
-                        this.data = {};
-                        this.data.links = response._links;
-                        this.data.embedded = response._embedded;
-                        this.data.total = response.total;
-                        this.data.page = response.page;
-                        this.data.pages = response.pages;
-                        this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
-                        this.data.pageDisplay = this.options.paginationOptions.showPages;
-                    }
+                    this.initRender(response, params);
 
-                    this.prepare()
-                        .appendPagination()
-                        .render();
-
-                    this.setHeaderClasses();
-
-                    if (typeof params.success === 'function') {
-                        params.success(response);
-                    }
                 }.bind(this)
             });
+        },
+
+
+        /**
+         * Initializes the rendering of the datagrid
+         */
+        initRender: function(response, params){
+            // TODO adjust when new api is finished and no backwards compatibility needed
+            if (!!response.items) {
+                this.data = response;
+            } else {
+                this.data = {};
+                this.data.links = response._links;
+                this.data.embedded = response._embedded;
+                this.data.total = response.total;
+                this.data.page = response.page;
+                this.data.pages = response.pages;
+                this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
+                this.data.pageDisplay = this.options.paginationOptions.showPages;
+            }
+
+            this.prepare()
+                .appendPagination()
+                .render();
+
+            this.setHeaderClasses();
+
+            if (!!params && typeof params.success === 'function') {
+                params.success(response);
+            }
         },
 
         /**
@@ -26235,7 +26255,8 @@ define('__component__$datagrid@husky',[],function() {
 
                 var radioPrefix, key;
                 this.tblColumns = [];
-                this.tblRowAttributes = '';
+                this.tblRowAttributes = ' data-dom-id="'+this.options.instance+'-'+this.domId+'"';
+                this.domId++;
 
                 // special treatment for id
                 if (!!row.id) {
@@ -26435,10 +26456,22 @@ define('__component__$datagrid@husky',[],function() {
          * @param row
          */
         addRow: function(row) {
-            var $table;
+            var $table, $row, $editableFields, validation;
             // check for other element types when implemented
             $table = this.$element.find('table');
-            $table.append(this.prepareTableRow(row));
+            $row = this.prepareTableRow(row);
+            $table.append($row);
+
+            // add new row to validation context and add contraints to element
+            $editableFields = this.sandbox.dom.find('.editable', $row);
+
+            this.sandbox.util.foreach($editableFields, function($el,i){
+                this.sandbox.form.addField('#'+this.elId,$el);
+                validation = this.options.columns[i].validation;
+                for(var key in validation){
+                    this.sandbox.form.addConstraint('#'+this.elId,$el, key, {key: validation[key]});
+                }
+            }.bind(this));
         },
 
         /**
@@ -26470,7 +26503,7 @@ define('__component__$datagrid@husky',[],function() {
          */
         removeRow: function(event) {
 
-            var $element, $tblRow, id, idx;
+            var $element, $tblRow, id, idx, $editableElements, domId;
 
             if (typeof event === 'object') {
 
@@ -26481,6 +26514,19 @@ define('__component__$datagrid@husky',[],function() {
             } else {
                 id = event;
                 $tblRow = this.$element.find('tr[data-id="' + id + '"]');
+            }
+
+            domId = this.sandbox.dom.data($tblRow, 'dom-id');
+
+            // remove row elements from validation
+            $editableElements = this.sandbox.dom.find('.editable',$tblRow);
+            this.sandbox.util.each($editableElements, function(index, $element){
+                this.sandbox.form.removeField('#'+this.elId, $element);
+            }.bind(this));
+
+            // remove deleted row from changedData
+            if(!!this.changedData && !!this.changedData[domId]){
+                delete this.changedData[domId];
             }
 
             idx = this.selectedItemIds.indexOf(id);
@@ -26821,9 +26867,11 @@ define('__component__$datagrid@husky',[],function() {
                 $tr = this.sandbox.dom.parent($td),
                 field = this.sandbox.dom.data($td, 'field'),
                 id = this.sandbox.dom.data($tr, 'id'),
+                domId = this.sandbox.dom.data($tr, 'dom-id'),
                 value = event.currentTarget.innerText;
 
             this.lastFocusedEditableElement = {
+                domId: domId,
                 id: id,
                 field: field,
                 value: value
@@ -26838,31 +26886,31 @@ define('__component__$datagrid@husky',[],function() {
                 $tr = this.sandbox.dom.parent($td),
                 field = this.sandbox.dom.data($td, 'field'),
                 id = this.sandbox.dom.data($tr, 'id'),
+                domId = this.sandbox.dom.data($tr, 'dom-id'),
                 value = event.currentTarget.innerText,
-                el;
+                el, key = null;
 
             // last focused object should be same as the one previously left
-            if (this.lastFocusedEditableElement.id === id) {
+            if (this.lastFocusedEditableElement.domId === domId) {
                 if (this.lastFocusedEditableElement.value !== value) {
 
                     this.sandbox.emit(DATA_CHANGED);
 
                     // element already changed in the past and therefor in the changed data array
-                    this.sandbox.util.each(this.changedData, function(index, value) {
-                        if (value.id === id) {
-                            el = value;
+                    for(key in this.changedData){
+                        if (key === domId) {
+                            el = this.changedData[key];
                         }
-                    }.bind(this));
+                    }
 
-                    // changed for the first time
+                    // add to the changedata list
                     if (!el) {
                         el = {};
                         el.id = id;
                         el[field] = value;
 
-                        this.changedData.push(el);
+                        this.changedData[domId] = el;
 
-                        // changed changes
                     } else {
                         el[field] = value;
                     }
@@ -26880,7 +26928,8 @@ define('__component__$datagrid@husky',[],function() {
         saveChangedData: function() {
 
             var url = this.data.links.self,
-                type = 'PATCH';
+                type = 'PATCH',
+                data = [], key = null;
 
             // is validation configured
             if (!!this.options.validation) {
@@ -26893,13 +26942,18 @@ define('__component__$datagrid@husky',[],function() {
 
             this.sandbox.logger.log("saving data...");
 
-            if (!!this.changedData && this.changedData.length > 0) {
-                this.sandbox.util.save(url, type, this.changedData)
-                    .then(function() {
-                        this.sandbox.emit(DATA_SAVED);
+            for(key in this.changedData){
+                data.push(this.changedData[key]);
+            }
+
+            if (!!data && data.length > 0) {
+                this.sandbox.util.save(url, type, data)
+                    .then(function(data, textStatus) {
+                        this.sandbox.emit(DATA_SAVED, data, textStatus);
+                        this.changedData = [];
                     }.bind(this))
-                    .fail(function() {
-                        this.sandbox.logger.log("failed during save!");
+                    .fail(function(textStatus, error) {
+                        this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
                     }.bind(this));
             }
         },
@@ -27048,7 +27102,7 @@ define('__component__$datagrid@husky',[],function() {
                 name = (!!data.name) ? ' name="' + data.name + '"' : '';
 
                 return [
-                    '<input', id, name, ' type="checkbox" class="custom-checkbox"/>',
+                    '<input', id, name, ' type="checkbox" class="custom-checkbox" data-form="false"/>',
                     '<span class="custom-checkbox-icon"></span>'
                 ].join('');
             },
@@ -29113,7 +29167,7 @@ define('__component__$edit-toolbar@husky',[],function() {
  * @param {String} [options.successClass] success-class if nowNewValues is false
  * @param {String} [options.failClass] fail-class if noNewValues is false
  * @param {String} [options.suggestionClass] CSS-class for auto-complete suggestions
- * @param {String} [options.suggestionImg] HTML-Img Tag - Image gets rendered before every suggestion
+ * @param {String} [options.suggestionImg] Icon Class - Image gets rendered before every suggestion
  * @param {Boolean} [options.stickToInput] If true suggestions are always under the input field
  * @param {Boolean} [options.hint] if false typeahead hint-field will be removed
  * @param {Boolean} [options.emptyOnBlur] If true input field value gets deleted on blur
@@ -29130,7 +29184,7 @@ define('__component__$auto-complete@husky',[], function () {
         prefetchUrl: '',
         localData: [],
         remoteUrl: '',
-        GETparameter: 'query',
+        getParameter: 'query',
         valueKey: 'name',
         totalKey: 'total',
         resultKey: '_embedded',
@@ -29141,7 +29195,7 @@ define('__component__$auto-complete@husky',[], function () {
         successClass: 'husky-auto-complete-success',
         failClass: 'husky-auto-complete-error',
         suggestionClass: 'suggestion',
-        suggestionImg: '<img src="../../img/sample.gif" />',
+        suggestionImg: '',
         stickToInput: false,
         hint: false,
         emptyOnBlur: false
@@ -29245,10 +29299,14 @@ define('__component__$auto-complete@husky',[], function () {
          * Initializes the template for a suggestion element
          */
         setTemplate: function () {
+            var iconHTML = '';
+            if (this.options.suggestionImg !== '') {
+                iconHTML = '<span class="icon-'+ this.options.suggestionImg +' icon"></span>';
+            }
             this._template = this.sandbox.util.template('' +
                 '<div class="' + this.options.suggestionClass + '" data-id="<%= id %>">' +
                 '   <div class="border">' +
-                '		<div class="img">' + this.options.suggestionImg + '</div>' +
+                        iconHTML +
                 '		<div class="text"><%= name %></div>' +
                 '	</div>' +
                 '</div>');
@@ -29525,6 +29583,7 @@ define('__component__$auto-complete@husky',[], function () {
  * @param {String} [options.prefetchUrl] url to prefetch data for the autocomplete component
  * @param {String} [options.remoteUrl] url to fetch data  for the autocomplete component from on input
  * @param {Object} [options.autocompleteOptions] options to pass to the autocomplete component
+ * @param {String} [options.autocompleteParameter] name of parameter which contains the user's input (for auto-complete)
  * @param {Integer} [options.maxListItems] maximum amount of list items accepted (0 = no limit)
  * @param {Boolean} [options.CapitalizeFirstLetter] if true the first letter of each item gets capitalized
  * @param {String} [options.listItemClass] CSS-class for list items
@@ -29537,6 +29596,7 @@ define('__component__$auto-complete@husky',[], function () {
  * @param {String} [options.arrowUpClass] CSS-class for arrow up icon
  * @param {Integer} [options.slideDuration] ms - duration for sliding suggestinos up/down
  * @param {String} [options.elementTagDataName] attribute name to store list of tags on element
+ * @param {String} [options.autoCompleteIcon] Icon Class-suffix for autocomplete-suggestion-icon
  */
 define('__component__$auto-complete-list@husky',[], function() {
 
@@ -29561,6 +29621,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                 prefetchUrl: '',
                 remoteUrl: '',
                 autocompleteOptions: {},
+                getParameter: 'query',
                 maxListItems: 0,
                 CapitalizeFirstLetter: false,
                 listItemClass: 'auto-complete-list-selection',
@@ -29572,7 +29633,8 @@ define('__component__$auto-complete-list@husky',[], function() {
                 arrowDownClass: 'arrow-down',
                 arrowUpClass: 'arrow-up',
                 slideDuration: 500,
-                elementTagDataName: 'tags'
+                elementTagDataName: 'tags',
+                autoCompleteIcon: ''
             },
 
             templates = {
@@ -29582,7 +29644,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                     '        <%= label %>',
                     '            <div class="auto-complete-list">',
                     '                <div class="husky-autocomplete"></div>',
-                    '                <div class="toggler"></div>',
+                    '                <div class="toggler"><span></span></div>',
                     '            </div>',
                     '        </label>',
                     '    </div>'
@@ -29776,7 +29838,8 @@ define('__component__$auto-complete-list@husky',[], function() {
                                 localData: this.options.localData,
                                 prefetchUrl: this.options.prefetchUrl,
                                 remoteUrl: this.options.remoteUrl,
-                                getParameter: this.options.getParameter
+                                getParameter: this.options.getParameter,
+                                suggestionImg: this.options.autoCompleteIcon
                             },
                             this.options.autocompleteOptions
                         )
@@ -30642,8 +30705,8 @@ define('__component__$password-fields@husky',[], function() {
  * @constructor
  *
  * @params {Object} [options] Configuration object
- * @params {Number} [options.wrapper.height] height of container
- * @params {Number} [options.column.width] width of a column in within the navigation
+ * @params {Number} [options.wrapper.height] height of container in percentage
+ * @params {Number} [options.column.width] width of a column in within the navigation in pixels
  * @params {Number} [options.scrollBarWidth] with of scrollbar
  * @params {String} [options.url] url to load data
  * @params {String} [options.selected] id of selected element - needed to restore state
@@ -30655,7 +30718,7 @@ define('__component__$column-navigation@husky',[], function() {
 
     var defaults = {
             wrapper: {
-                height: 300
+                height: 70
             },
             column: {
                 width: 250
@@ -30737,13 +30800,14 @@ define('__component__$column-navigation@husky',[], function() {
          * Renders basic structure (wrapper) of column navigation
          */
         render: function() {
-            var $add, $settings, $wrapper;
+            var $add, $settings, $wrapper, height;
 
             $wrapper = this.sandbox.dom.$(this.template.wrapper());
             this.sandbox.dom.append(this.$element, $wrapper);
 
             // navigation container
-            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer());
+            height = this.sandbox.dom.height(window) * this.options.wrapper.height/100;
+            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer(height));
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
@@ -30887,7 +30951,7 @@ define('__component__$column-navigation@husky',[], function() {
                 this.sandbox.dom.attr(this.$addColumn, 'id', 'column-' + newColumn);
                 this.$addColumn = null;
             } else { // create new column
-                $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.wrapper.height, this.options.column.width));
+                $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.column.width));
             }
 
             return $column;
@@ -31051,7 +31115,7 @@ define('__component__$column-navigation@husky',[], function() {
 
             if (!this.$addColumn && !selectedItem.hasSub) {
                 // append empty column to add subpages
-                this.$addColumn = this.sandbox.dom.createElement(this.template.column(column + 1, this.options.wrapper.height, this.options.column.width));
+                this.$addColumn = this.sandbox.dom.createElement(this.template.column(column + 1, this.options.column.width));
                 this.sandbox.dom.append(this.$columnContainer, this.$addColumn);
             }
         },
@@ -31118,12 +31182,12 @@ define('__component__$column-navigation@husky',[], function() {
                 return '<div class="column-navigation-wrapper"></div>';
             },
             
-            columnContainer: function() {
-                return ['<div class="column-navigation"></div>'].join('');
+            columnContainer: function(height) {
+                return ['<div class="column-navigation" style="height:'+height+'px"></div>'].join('');
             },
 
-            column: function(columnNumber, height, width) {
-                return ['<div data-column="', columnNumber, '" class="column" id="column-', columnNumber, '" style="height:', height, 'px; width: ', width, 'px"><ul></ul></div>'].join('');
+            column: function(columnNumber, width) {
+                return ['<div data-column="', columnNumber, '" class="column" id="column-', columnNumber, '" style="width: ', width, 'px"><ul></ul></div>'].join('');
             },
 
             item: function(width, data) {
@@ -33264,13 +33328,13 @@ define('husky_extensions/util',[],function() {
                 app.sandbox.util.ajax({
                     url: url,
 
-                    success: function(data) {
-                        app.logger.log('data loaded', data);
-                        deferred.resolve(data);
+                    success: function(data, textStatus) {
+                        app.logger.log('data loaded', data, textStatus);
+                        deferred.resolve(data, textStatus);
                     }.bind(this),
 
-                    error: function(error) {
-                        deferred.reject(error);
+                    error: function(jqXHR, textStatus, error) {
+                        deferred.reject(textStatus, error);
                     }
                 });
 
@@ -33294,13 +33358,13 @@ define('husky_extensions/util',[],function() {
                     type: type,
                     data: JSON.stringify(data),
 
-                    success: function(data) {
-                        app.logger.log('data saved', data);
-                        deferred.resolve(data);
+                    success: function(data, textStatus) {
+                        app.logger.log('data saved', data, textStatus);
+                        deferred.resolve(data, textStatus);
                     }.bind(this),
 
-                    error: function(error) {
-                        deferred.reject(error);
+                    error: function(jqXHR, textStatus, error) {
+                        deferred.reject(textStatus, error);
                     }
                 });
 
