@@ -36,7 +36,7 @@
  * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.paginationTemplate] template for pagination
- *
+ * @param {Boolean} [options.validation] enables validation for datagrid
  */
 define(function() {
 
@@ -53,7 +53,7 @@ define(function() {
             data: null,
             defaultMeasureUnit: 'px',
             excludeFields: ['id'],
-            instance: 'undefined',
+            instance: 'datagrid',
             pagination: false,
             paginationOptions: {
                 pageSize: null,
@@ -72,7 +72,10 @@ define(function() {
             searchInstanceName: null, // at which search it should be listened to can be null|string|empty_string
             columnOptionsInstanceName: null, // at which search it should be listened to can be null|string|empty_string
             paginationTemplate: '<%=translate("pagination.page")%> <%=i%> <%=translate("pagination.of")%> <%=pages%>',
-            fieldsData: null
+            fieldsData: null,
+            validation: false, // TODO does not work for added rows
+            validationDebug: false,
+            startTabIndex: 1
         },
 
         namespace = 'husky.datagrid.',
@@ -168,8 +171,18 @@ define(function() {
         /**
          * raised when data was saved
          * @event husky.datagrid.data.saved
+         * @param {Object} data returned
          */
             DATA_SAVED = namespace + 'data.saved',
+
+        /**
+         * raised when save of data failed
+         * @event husky.datagrid.data.save.failed
+         * @param {String} text status
+         * @param {String} error thrown
+         *
+         */
+            DATA_SAVE_FAILED = namespace + 'data.save.failed',
 
         /**
          * raised when editable list is changed
@@ -203,7 +216,7 @@ define(function() {
         /**
          * triggers husky.datagrid.items.selected event, which returns all selected item ids
          * @event husky.datagrid.items.get-selected
-         * @param  {Callback} callback function receives array of selected items
+         * @param  {Function} callback function receives array of selected items
          */
             ITEMS_GET_SELECTED = namespace + 'items.get-selected',
 
@@ -224,6 +237,8 @@ define(function() {
 
         view: true,
 
+        tabIndex: 0,
+
         initialize: function() {
             this.sandbox.logger.log('initialized datagrid');
 
@@ -235,9 +250,10 @@ define(function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
             this.changedData = {};
+            this.rowStructure = [];
 
-            this.rowStructure = [
-            ];
+            this.domId = 0;
+            this.elId = this.sandbox.dom.attr(this.$el, 'id');
 
             this.sort = {
                 ascClass: 'icon-arrow-up',
@@ -256,6 +272,7 @@ define(function() {
 
             // Should only be be called once
             this.bindCustomEvents();
+
         },
 
         /**
@@ -295,30 +312,40 @@ define(function() {
          */
         parseFieldsData: function(fields) {
             var data = [],
-                urlfields = '',
-                fieldsCount = 0;
+                urlfields = [],
+                fieldsCount = 0,
+                tmp;
+
             this.sandbox.util.foreach(fields, function(field) {
+
+                tmp = {};
+
                 if (field.disabled !== 'true' && field.disabled !== true) {
+
                     // data
-                    data.push({content: this.sandbox.translate(field.translation), attribute: field.id});
-                    // url
-                    if (fieldsCount > 0) {
-                        urlfields += ',';
+                    for (var key in field) {
+                        if (key === 'translation') {
+                            tmp.content = this.sandbox.translate(field.translation);
+                        } else if (key === 'id') {
+                            tmp.attribute = field.id;
+                        } else {
+                            tmp[key] = field[key];
+                        }
                     }
-                    fieldsCount++;
-                    urlfields += field.id;
+
+                    data.push(tmp);
+                    urlfields.push(field.id);
+
                 } else if (field.id === 'id') {
-                    // url
-                    if (fieldsCount > 0) {
-                        urlfields += ',';
-                    }
-                    fieldsCount++;
-                    urlfields += field.id;
+                    urlfields.push(field.id);
                 }
+
+                fieldsCount++;
+
             }.bind(this));
             return {
                 columns: data,
-                urlFields: urlfields
+                urlFields: urlfields.join(',')
             };
         },
 
@@ -349,31 +376,40 @@ define(function() {
 
                 success: function(response) {
 
-                    // TODO adjust when new api is finished and no backwards compatibility needed
-                    if (!!response.items) {
-                        this.data = response;
-                    } else {
-                        this.data = {};
-                        this.data.links = response._links;
-                        this.data.embedded = response._embedded;
-                        this.data.total = response.total;
-                        this.data.page = response.page;
-                        this.data.pages = response.pages;
-                        this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
-                        this.data.pageDisplay = this.options.paginationOptions.showPages;
-                    }
+                    this.initRender(response, params);
 
-                    this.prepare()
-                        .appendPagination()
-                        .render();
-
-                    this.setHeaderClasses();
-
-                    if (typeof params.success === 'function') {
-                        params.success(response);
-                    }
                 }.bind(this)
             });
+        },
+
+
+        /**
+         * Initializes the rendering of the datagrid
+         */
+        initRender: function(response, params){
+            // TODO adjust when new api is finished and no backwards compatibility needed
+            if (!!response.items) {
+                this.data = response;
+            } else {
+                this.data = {};
+                this.data.links = response._links;
+                this.data.embedded = response._embedded;
+                this.data.total = response.total;
+                this.data.page = response.page;
+                this.data.pages = response.pages;
+                this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
+                this.data.pageDisplay = this.options.paginationOptions.showPages;
+            }
+
+            this.prepare()
+                .appendPagination()
+                .render();
+
+            this.setHeaderClasses();
+
+            if (!!params && typeof params.success === 'function') {
+                params.success(response);
+            }
         },
 
         /**
@@ -429,7 +465,7 @@ define(function() {
         prepareTable: function() {
             var $table, $thead, $tbody, tblClasses;
 
-            $table = this.sandbox.dom.$('<table/>');
+            $table = this.sandbox.dom.$('<table' + (!!this.options.validationDebug ? 'data-debug="true"' : '' ) + '/>');
 
             if (!!this.data.head || !!this.options.columns) {
                 $thead = this.sandbox.dom.$('<thead/>');
@@ -527,7 +563,8 @@ define(function() {
                 if (column.attribute !== undefined) {
                     this.rowStructure.push({
                         attribute: column.attribute,
-                        editable: column.editable
+                        editable: column.editable,
+                        validation: column.validation
                     });
                 }
 
@@ -572,6 +609,8 @@ define(function() {
             tblRows = [];
             this.allItemIds = [];
 
+            this.tabIndex = this.options.startTabIndex;
+
             // TODO adjust when new api is fully implemented and no backwards compatibility needed
             if (!!this.data.items) {
                 this.data.items.forEach(function(row) {
@@ -601,7 +640,8 @@ define(function() {
 
                 var radioPrefix, key;
                 this.tblColumns = [];
-                this.tblRowAttributes = '';
+                this.tblRowAttributes = ' data-dom-id="'+this.options.instance+'-'+this.domId+'"';
+                this.domId++;
 
                 // special treatment for id
                 if (!!row.id) {
@@ -630,12 +670,13 @@ define(function() {
                 // when row structure contains more elements than the id then use the structure to set values
                 if (this.rowStructure.length) {
                     this.rowStructure.forEach(function(key) {
-                        this.setValueOfRowCell(key.attribute, row[key.attribute], key.editable);
+                        key.editable = key.editable || false;
+                        this.createRowCell(key.attribute, row[key.attribute], key.editable, key.validation);
                     }.bind(this));
                 } else {
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                            this.setValueOfRowCell(key, row[key], false);
+                            this.createRowCell(key, row[key], false, null);
                         }
                     }
                 }
@@ -652,11 +693,14 @@ define(function() {
          * Sets the value of row cell and the data-id attribute for the row
          * @param key attribute name
          * @param value attribute value
+         * @param editable flag whether field is editable or not
          */
-        setValueOfRowCell: function(key, value, editable) {
+        createRowCell: function(key, value, editable, validation) {
             var tblCellClasses,
                 tblCellContent,
-                tblCellClass;
+                tblCellClass,
+                k,
+                validationAttr = '';
 
             if (!value) {
                 value = '';
@@ -672,10 +716,18 @@ define(function() {
 
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
+                if (!!validation) {
+                    for (k in validation) {
+                        validationAttr += ['data-validation-', k, '="', validation[k], '" '].join('');
+                    }
+                }
+
                 if (!!editable) {
-                    this.tblColumns.push('<td width="30%" data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true">' + tblCellContent + '</span></td>');
+                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true" ' + validationAttr + ' tabindex="' + this.tabIndex + '">' + tblCellContent + '</span></td>');
+
+                    this.tabIndex++;
                 } else {
-                    this.tblColumns.push('<td  data-field="' + key + '" ' + tblCellClass + ' >' + tblCellContent + '</td>');
+                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' >' + tblCellContent + '</td>');
                 }
             } else {
                 this.tblRowAttributes += ' data-' + key + '="' + value + '"';
@@ -789,10 +841,22 @@ define(function() {
          * @param row
          */
         addRow: function(row) {
-            var $table;
+            var $table, $row, $editableFields, validation;
             // check for other element types when implemented
             $table = this.$element.find('table');
-            $table.append(this.prepareTableRow(row));
+            $row = this.prepareTableRow(row);
+            $table.append($row);
+
+            // add new row to validation context and add contraints to element
+            $editableFields = this.sandbox.dom.find('.editable', $row);
+
+            this.sandbox.util.foreach($editableFields, function($el,i){
+                this.sandbox.form.addField('#'+this.elId,$el);
+                validation = this.options.columns[i].validation;
+                for(var key in validation){
+                    this.sandbox.form.addConstraint('#'+this.elId,$el, key, {key: validation[key]});
+                }
+            }.bind(this));
         },
 
         /**
@@ -824,7 +888,7 @@ define(function() {
          */
         removeRow: function(event) {
 
-            var $element, $tblRow, id, idx;
+            var $element, $tblRow, id, idx, $editableElements, domId;
 
             if (typeof event === 'object') {
 
@@ -835,6 +899,19 @@ define(function() {
             } else {
                 id = event;
                 $tblRow = this.$element.find('tr[data-id="' + id + '"]');
+            }
+
+            domId = this.sandbox.dom.data($tblRow, 'dom-id');
+
+            // remove row elements from validation
+            $editableElements = this.sandbox.dom.find('.editable',$tblRow);
+            this.sandbox.util.each($editableElements, function(index, $element){
+                this.sandbox.form.removeField('#'+this.elId, $element);
+            }.bind(this));
+
+            // remove deleted row from changedData
+            if(!!this.changedData && !!this.changedData[domId]){
+                delete this.changedData[domId];
             }
 
             idx = this.selectedItemIds.indexOf(id);
@@ -1155,7 +1232,7 @@ define(function() {
             // listen to search events
             if (this.options.columnOptionsInstanceName || this.options.columnOptionsInstanceName === '') {
                 columnOptionsInstanceName = (this.options.columnOptionsInstanceName !== '') ? '.' + this.options.columnOptionsInstanceName : '';
-                this.sandbox.on('husky.column-options' + columnOptionsInstanceName+'.saved', this.filterColumns.bind(this));
+                this.sandbox.on('husky.column-options' + columnOptionsInstanceName + '.saved', this.filterColumns.bind(this));
             }
 
             // listen for save event
@@ -1175,9 +1252,11 @@ define(function() {
                 $tr = this.sandbox.dom.parent($td),
                 field = this.sandbox.dom.data($td, 'field'),
                 id = this.sandbox.dom.data($tr, 'id'),
+                domId = this.sandbox.dom.data($tr, 'dom-id'),
                 value = event.currentTarget.innerText;
 
             this.lastFocusedEditableElement = {
+                domId: domId,
                 id: id,
                 field: field,
                 value: value
@@ -1192,31 +1271,31 @@ define(function() {
                 $tr = this.sandbox.dom.parent($td),
                 field = this.sandbox.dom.data($td, 'field'),
                 id = this.sandbox.dom.data($tr, 'id'),
+                domId = this.sandbox.dom.data($tr, 'dom-id'),
                 value = event.currentTarget.innerText,
-                el;
+                el, key = null;
 
             // last focused object should be same as the one previously left
-            if (this.lastFocusedEditableElement.id === id) {
+            if (this.lastFocusedEditableElement.domId === domId) {
                 if (this.lastFocusedEditableElement.value !== value) {
 
                     this.sandbox.emit(DATA_CHANGED);
 
                     // element already changed in the past and therefor in the changed data array
-                    this.sandbox.util.each(this.changedData, function(index, value) {
-                        if (value.id === id) {
-                            el = value;
+                    for(key in this.changedData){
+                        if (key === domId) {
+                            el = this.changedData[key];
                         }
-                    }.bind(this));
+                    }
 
-                    // changed for the first time
+                    // add to the changedata list
                     if (!el) {
                         el = {};
                         el.id = id;
                         el[field] = value;
 
-                        this.changedData.push(el);
+                        this.changedData[domId] = el;
 
-                        // changed changes
                     } else {
                         el[field] = value;
                     }
@@ -1233,18 +1312,33 @@ define(function() {
          */
         saveChangedData: function() {
 
+            var url = this.data.links.self,
+                type = 'PATCH',
+                data = [], key = null;
+
+            // is validation configured
+            if (!!this.options.validation) {
+                // is invalid
+                if (!this.sandbox.form.validate('#' + this.elId)) {
+                    this.sandbox.logger.log("validation error...");
+                    return;
+                }
+            }
+
             this.sandbox.logger.log("saving data...");
 
-            var url = this.data.links.self,
-                type = 'PATCH';
+            for(key in this.changedData){
+                data.push(this.changedData[key]);
+            }
 
-            if (!!this.changedData && this.changedData.length > 0) {
-                this.sandbox.util.save(url, type, this.changedData)
-                    .then(function() {
-                        this.sandbox.emit(DATA_SAVED);
+            if (!!data && data.length > 0) {
+                this.sandbox.util.save(url, type, data)
+                    .then(function(data, textStatus) {
+                        this.sandbox.emit(DATA_SAVED, data, textStatus);
+                        this.changedData = [];
                     }.bind(this))
-                    .fail(function() {
-                        this.sandbox.logger.log("failed during save!");
+                    .fail(function(textStatus, error) {
+                        this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
                     }.bind(this));
             }
         },
@@ -1331,7 +1425,13 @@ define(function() {
         render: function() {
             this.$originalElement.html(this.$element);
             this.bindDOMEvents();
+
+            // initialize validation
+            if (!!this.options.validation) {
+                this.sandbox.form.create('#' + this.elId);
+            }
         },
+
 
         /**
          * Adds loading icon and keeps width and height
@@ -1387,7 +1487,7 @@ define(function() {
                 name = (!!data.name) ? ' name="' + data.name + '"' : '';
 
                 return [
-                    '<input', id, name, ' type="checkbox" class="custom-checkbox"/>',
+                    '<input', id, name, ' type="checkbox" class="custom-checkbox" data-form="false"/>',
                     '<span class="custom-checkbox-icon"></span>'
                 ].join('');
             },
