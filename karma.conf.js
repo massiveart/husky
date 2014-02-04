@@ -10,16 +10,27 @@ basePath = '';
 files = [
     JASMINE,
     JASMINE_ADAPTER,
-    'js/*.js', 
-    'js/**/*.js', 
-    'tests/*.js', 
-    'tests/**/*.js'
+    REQUIRE,
+    REQUIRE_ADAPTER,
+
+    { pattern: './vendor/**/*.js', included: false},
+    { pattern: './bower_components/**/*.js', included: false},
+    { pattern: './bower_components/**/**/*.js', included: false},
+    { pattern: './lib/*.js', included: false},
+    { pattern: './husky_extensions/*.js', included: false},
+    { pattern: './husky_components/**/*.js', included: false},
+
+    { pattern: './tests/*Spec.js', included: false},
+    { pattern: './tests/**/*Spec.js', included: false},
+
+    './node_modules/sinon/pkg/sinon.js',
+    './tests/runner.js'
 ];
 
 
 // test results reporter to use
 // possible values: 'dots', 'progress', 'junit'
-reporters = ['progress'];
+reporters = ['dots'];
 
 
 // web server port

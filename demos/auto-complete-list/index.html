@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Husky UI Auto Complete</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="stylesheet" href="../../dist/husky.min.css">
+        <style>
+            .container {
+                margin: 60px auto;
+                max-width: 1024px;
+                width: 80%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="list-wrapper"></div>
+            <div class="grid">
+                <div class="grid-row">
+                    <div class="grid-col-6">
+                    </div>
+                    <div class="grid-col-6">
+                        <div class="list-wrapper2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="../js/sinon.js"></script>
+        <script src="../js/jquery.js"></script>
+        <script src="../js/require.js"></script>
+        <script>
+            require.config({
+                baseUrl: '../../'
+            });
+
+            require(['lib/husky'], function(Husky) {
+                'use strict';
+
+                var app = Husky({ debug: { enable: true }}),
+                        _ = app.sandbox.util._;
+
+                app.start([{
+                    name: 'auto-complete-list@husky',
+                    options: {
+                        instanceName: 'I1',
+                        el: '.list-wrapper',
+                        label: 'Tags',
+                        suggestionsUrl: '',
+                        itemsUrl: '',
+                        items: ['Tag1', 'Tag2', 'Tag3', 'Tag4'],
+                        suggestions: ["Sugg1", "Sugg2", "Sugg3", "Sugg4"],
+                        suggestionsHeadline: 'Recent Tags',
+                        localData: [{id: null, name: 'Tag A'}, {id: null, name: 'Tag B'}, {id: null, name: 'Tag C'}, {id: null, name: 'Tag D'}]
+                    }
+                }, {
+                        name: 'auto-complete-list@husky',
+                        options: {
+                            instanceName: 'I2',
+                            el: '.list-wrapper2',
+                            label: 'Links',
+                            suggestionsUrl: '',
+                            itemsUrl: '',
+                            items: ['Link1', 'Link2', 'Link3', 'Link4'],
+                            suggestions: ["SuggA", "SuggB", "SuggC", "SuggD"],
+                            suggestionsHeadline: 'Popular Links',
+                            localData: [{id: null, name: 'Link A'}, {id: null, name: 'Link B'}, {id: null, name: 'Link C'}, {id: null, name: 'Link D'}]
+                        }
+                    }]).then(function() {
+                        app.logger.log('Aura started...');
+                        setTimeout(function() {
+                            app.sandbox.emit('husky.auto-complete-list.I1.set-tags', ['Set1', 'Set2', 'Set3']);
+                        }, 3000);
+                    });
+            });
+        </script>
+    </body>
+</html>

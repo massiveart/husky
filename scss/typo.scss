@@ -1,0 +1,68 @@
+//
+// Typography
+// --------------------------------------------------
+
+
+// Base font definitions
+// -------------------------
+body {
+    font-size: $baseFontSize;
+    font-family: $baseFontFamily;
+    line-height: $baseLineHeight;
+}
+
+
+// Heading
+// -------------------------
+h1, 
+h2, 
+h3, 
+h4, 
+h5, 
+h6 {
+    margin: 10px 0;
+    font-family: $headingsFontFamily;
+    font-weight: $headingsFontWeight;
+    color: $grayLight;
+}
+
+h1 {
+    color: $highlightColor;
+    font-size: 36px;
+    line-height: 40px;
+}
+
+h2 {
+    font-size: 24px;
+    line-height: 30px;
+}
+
+h3 {
+    font-size: 20px;
+    line-height: 25px;
+}
+
+h4 {
+    font-size: 18px;
+    line-height: 20px;
+}
+h5 {
+    font-size: 14px;
+    line-height: 15px;
+}
+
+// Bold fonts
+// -------------------------
+
+%bold {
+  font-family: $baseFontFamily !important;
+
+}
+
+.bold {
+  @extend %bold;
+}
+
+.small-font {
+  font-size: $smallFontSize;
+}

@@ -1,0 +1,28 @@
+.husky-datagrid {
+    table {
+        table-layout: fixed;
+
+        td {
+            overflow:hidden;
+        }
+    }
+
+    thead {
+        tr {
+            height: 30px;
+            padding-top: 10px;
+        }
+        th {
+            padding-top:0;
+            font-weight: normal;
+
+            &.is-sortable {
+                color: black;
+                cursor: pointer;
+            }
+            &.is-selected {
+                font-weight: bold;
+            }
+        }
+    }
+}

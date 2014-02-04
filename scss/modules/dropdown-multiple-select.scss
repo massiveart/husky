@@ -1,0 +1,69 @@
+.husky-dropdown-multiple-select {
+
+    position: relative;
+
+    .dropdown-label {
+        background: $grayLighter;
+        padding: 5px 5px 5px 10px;
+        border-radius: 6px;
+        clear: both;
+        font-size: $smallFontSize;
+        .checkbox {
+            padding-right: 20px;
+        }
+        .dropdown-toggle {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+        }
+    }
+
+    .dropdown-list {
+        width: 100%;
+        /*display: inline-block;*/
+        position: absolute;
+        top: 20px;
+        left: 0;
+        margin-top: 5px;
+        background-color: #FFF;
+        box-shadow: 3px 3px 0 0 $grayLighter;
+        z-index: 95;
+
+        .check {
+            float: left;
+            width: 20px;
+            margin-right: 10px;
+            padding-top: 3px;
+        }
+        .item-value {
+            float: left;
+            line-height: 30px;
+        }
+
+        & > ul {
+            list-style: none;
+            margin: 0;
+            padding: 10px 0;
+
+            input {
+                margin: 0;
+            }
+
+            & > li {
+                padding: 0px 10px 0px 20px;
+                clear: both;
+                height: 30px;
+
+                &:hover,
+                &.hover {
+                    background-color: $highlightColor;
+                    cursor: pointer;
+                }
+                &:hover .item-value {
+                    color: $white;
+                }
+            }
+        }
+    }
+
+}
