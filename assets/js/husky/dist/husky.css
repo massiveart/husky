@@ -5504,7 +5504,7 @@ a.btn-black, a.btn-highlight {
 .column-navigation-wrapper .column-navigation .arrow {
   display: inline-block;
   width: 11px;
-  font-size: 11px;
+  font-size: 10px;
   vertical-align: middle;
 }
 /* line 87, ../scss/modules/column-navigation.scss */
