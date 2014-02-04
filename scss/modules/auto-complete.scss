@@ -24,12 +24,16 @@
     }
 }
 
-.wrapper {
-    width: 400px;
+.husky-auto-complete-wrapper {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: 100%;
     background: $white;
     padding: 4px 8px;
     border-radius: 4px 4px 0 0;
     font-size: $smallFontSize;
+    margin-top: 10px;
 }
 
 .twitter-typeahead {
@@ -37,7 +41,7 @@
 }
 
 .tt-suggestions {
-    width: 400px;
+    width: 100%;
     top: 37px;
     border-top: 1px solid $grayLightest;
     background: $white;

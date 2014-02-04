@@ -32,6 +32,8 @@
  * @param {Boolean} [options.stickToInput] If true suggestions are always under the input field
  * @param {Boolean} [options.hint] if false typeahead hint-field will be removed
  * @param {Boolean} [options.emptyOnBlur] If true input field value gets deleted on blur
+ * @param {Boolean} [options.dropdownAsBigAsWrapper] If true dropdown width gets set to the outerWidth of the wrapper
+ * @param {String} [options.wrapperSelector] CSS-Selector for the component wrapper
  */
 
 define([], function () {
@@ -59,7 +61,9 @@ define([], function () {
         suggestionImg: '',
         stickToInput: false,
         hint: false,
-        emptyOnBlur: false
+        emptyOnBlur: false,
+        dropdownAsBigAsWrapper: true,
+        wrapperSelector: '.husky-auto-complete-wrapper'
     },
 
     eventNamespace = 'husky.auto-complete.',
@@ -261,6 +265,12 @@ define([], function () {
             //removes the typeahead hint box
             if (this.options.hint === false) {
                 this.sandbox.dom.remove('.tt-hint');
+            }
+
+            //sets the dropdown width equal to the width of the wrapper
+            if (this.options.dropdownAsBigAsWrapper) {
+                this.sandbox.dom.width(this.$el.find('.tt-dropdown-menu'),
+                                       this.sandbox.dom.outerWidth(this.sandbox.dom.parents(this.$el, this.options.wrapperSelector)));
             }
         },
 

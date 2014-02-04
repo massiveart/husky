@@ -122,6 +122,10 @@
                 }
             };
 
+            app.core.dom.outerWidth = function(selector) {
+                return $(selector).outerWidth();
+            };
+
             app.core.dom.height = function(selector, value) {
                 if (!!value) {
                     return $(selector).height(value);

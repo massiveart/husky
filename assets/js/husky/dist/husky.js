@@ -29020,6 +29020,8 @@ define('__component__$edit-toolbar@husky',[],function() {
  * @param {Boolean} [options.stickToInput] If true suggestions are always under the input field
  * @param {Boolean} [options.hint] if false typeahead hint-field will be removed
  * @param {Boolean} [options.emptyOnBlur] If true input field value gets deleted on blur
+ * @param {Boolean} [options.dropdownAsBigAsWrapper] If true dropdown width gets set to the outerWidth of the wrapper
+ * @param {String} [options.wrapperSelector] CSS-Selector for the component wrapper
  */
 
 define('__component__$auto-complete@husky',[], function () {
@@ -29047,7 +29049,9 @@ define('__component__$auto-complete@husky',[], function () {
         suggestionImg: '',
         stickToInput: false,
         hint: false,
-        emptyOnBlur: false
+        emptyOnBlur: false,
+        dropdownAsBigAsWrapper: true,
+        wrapperSelector: '.husky-auto-complete-wrapper'
     },
 
     eventNamespace = 'husky.auto-complete.',
@@ -29148,10 +29152,14 @@ define('__component__$auto-complete@husky',[], function () {
          * Initializes the template for a suggestion element
          */
         setTemplate: function () {
+            var iconHTML = '';
+            if (this.options.suggestionImg !== '') {
+                iconHTML = '<span class="icon-'+ this.options.suggestionImg +' icon"></span>';
+            }
             this._template = this.sandbox.util.template('' +
                 '<div class="' + this.options.suggestionClass + '" data-id="<%= id %>">' +
                 '   <div class="border">' +
-                '		<span class="icon icon-'+ this.options.suggestionImg +'"></span>' +
+                        iconHTML +
                 '		<div class="text"><%= name %></div>' +
                 '	</div>' +
                 '</div>');
@@ -29225,7 +29233,7 @@ define('__component__$auto-complete@husky',[], function () {
                     }.bind(this)
                 },
                 remote: {
-                    url: this.options.remoteUrl + delimiter + this.options.getParameter + '=%QUERY',
+                    url: this.options.remoteUrl + delimiter + this.options.GETparameter + '=%QUERY',
                     beforeSend: function () {
                         this.sandbox.emit(REMOTE_LOAD.call(this));
                     }.bind(this),
@@ -29245,6 +29253,12 @@ define('__component__$auto-complete@husky',[], function () {
             //removes the typeahead hint box
             if (this.options.hint === false) {
                 this.sandbox.dom.remove('.tt-hint');
+            }
+
+            //sets the dropdown width equal to the width of the wrapper
+            if (this.options.dropdownAsBigAsWrapper) {
+                this.sandbox.dom.width(this.$el.find('.tt-dropdown-menu'),
+                                       this.sandbox.dom.outerWidth(this.sandbox.dom.parents(this.$el, this.options.wrapperSelector)));
             }
         },
 
@@ -29428,6 +29442,7 @@ define('__component__$auto-complete@husky',[], function () {
  * @param {String} [options.prefetchUrl] url to prefetch data for the autocomplete component
  * @param {String} [options.remoteUrl] url to fetch data  for the autocomplete component from on input
  * @param {Object} [options.autocompleteOptions] options to pass to the autocomplete component
+ * @param {String} [options.autocompleteParameter] name of parameter which contains the user's input (for auto-complete)
  * @param {Integer} [options.maxListItems] maximum amount of list items accepted (0 = no limit)
  * @param {Boolean} [options.CapitalizeFirstLetter] if true the first letter of each item gets capitalized
  * @param {String} [options.listItemClass] CSS-class for list items
@@ -29465,6 +29480,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                 prefetchUrl: '',
                 remoteUrl: '',
                 autocompleteOptions: {},
+                autocompleteParameter: 'query',
                 maxListItems: 0,
                 CapitalizeFirstLetter: false,
                 listItemClass: 'auto-complete-list-selection',
@@ -29487,7 +29503,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                     '        <%= label %>',
                     '            <div class="auto-complete-list">',
                     '                <div class="husky-autocomplete"></div>',
-                    '                <div class="toggler"></div>',
+                    '                <div class="toggler"><span></span></div>',
                     '            </div>',
                     '        </label>',
                     '    </div>'
@@ -29681,7 +29697,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                                 localData: this.options.localData,
                                 prefetchUrl: this.options.prefetchUrl,
                                 remoteUrl: this.options.remoteUrl,
-                                getParameter: this.options.getParameter,
+                                getParameter: this.options.autocompleteParameter,
                                 suggestionImg: this.options.autoCompleteIcon
                             },
                             this.options.autocompleteOptions
@@ -31997,6 +32013,10 @@ define("html5sortable", function(){});
                 } else {
                     return $(selector).width();
                 }
+            };
+
+            app.core.dom.outerWidth = function(selector) {
+                return $(selector).outerWidth();
             };
 
             app.core.dom.height = function(selector, value) {
