@@ -5584,28 +5584,28 @@ a.btn-black, a.btn-highlight {
   float: left;
   line-height: 30px;
 }
-/* line 44, ../scss/modules/dropdown-multiple-select.scss */
+/* line 43, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul {
   list-style: none;
   margin: 0;
   padding: 10px 0;
 }
-/* line 49, ../scss/modules/dropdown-multiple-select.scss */
+/* line 48, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul input {
   margin: 0;
 }
-/* line 53, ../scss/modules/dropdown-multiple-select.scss */
+/* line 52, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul > li {
   padding: 0px 10px 0px 20px;
   clear: both;
   height: 30px;
 }
-/* line 59, ../scss/modules/dropdown-multiple-select.scss */
+/* line 58, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul > li:hover, .husky-dropdown-multiple-select .column-navigation-wrapper .column-navigation .column .dropdown-list > ul > li.selected, .column-navigation-wrapper .column-navigation .column .husky-dropdown-multiple-select .dropdown-list > ul > li.selected, .husky-dropdown-multiple-select .dropdown-list > ul > li.hover {
   background-color: #249fbe;
   cursor: pointer;
 }
-/* line 63, ../scss/modules/dropdown-multiple-select.scss */
+/* line 62, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul > li:hover .item-value, .husky-dropdown-multiple-select .column-navigation-wrapper .column-navigation .column .dropdown-list > ul > li.selected .item-value, .column-navigation-wrapper .column-navigation .column .husky-dropdown-multiple-select .dropdown-list > ul > li.selected .item-value {
   color: white;
 }
