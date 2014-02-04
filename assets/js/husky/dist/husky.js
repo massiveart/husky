@@ -16347,7 +16347,7 @@ define('form/util',[], function() {
 
         // get form fields
         getFields: function(element) {
-            return $(element).find('input:not([data-form="false"], [type="submit"], [type="button"]), textarea:not([data-form="false"]), select:not([data-form="false"]), *[data-form="true"], *[data-type="collection"]');
+            return $(element).find('input:not([data-form="false"], [type="submit"], [type="button"]), textarea:not([data-form="false"]), select:not([data-form="false"]), *[data-form="true"], *[data-type="collection"], *[contenteditable="true"]');
         },
 
         /**
@@ -16395,6 +16395,45 @@ define('form/util',[], function() {
             }.bind(this));
 
             return options;
+        },
+
+        /**
+         * returns true if .val can be used to this dom object
+         * @param el {String|Object} valid selector or dom-object
+         * @returns {Boolean}
+         */
+        isValueField: function(el) {
+            var $el = $(el);
+
+            return $el.is('input', 'select', 'textarea', 'option', 'button');
+        },
+
+        /**
+         * Returns input values for elements
+         * @param el {String|Object} valid selector or dom-object
+         * @returns {String} value or empty string
+         */
+        getValue: function(el) {
+            var $el = $(el);
+            if (this.isValueField($el)) {
+                return $el.val();
+            } else {
+                return $el.html();
+            }
+        },
+
+        /**
+         * Sets a value for an element
+         * @param el {String|Object} valid selector or dom-object to set the value for
+         * @param value {String|Number} value to insert
+         */
+        setValue: function(el, value) {
+            var $el = $(el);
+            if (this.isValueField($el)) {
+                $el.val(value);
+            } else {
+                $el.html(value);
+            }
         },
 
         debug: function(p1, p2, p3) {
@@ -16679,7 +16718,7 @@ define('form/element',['form/util'], function(Util) {
                 },
 
                 needsValidation: function() {
-                    return lastValue !== this.$el.val();
+                    return lastValue !== Util.getValue(this.$el);
                 },
 
                 reset: function() {
@@ -17429,7 +17468,9 @@ define('form',[
  *
  */
 
-define('type/default',[],function() {
+define('type/default',[
+    'form/util'
+],function(Util) {
 
     
 
@@ -17459,12 +17500,12 @@ define('type/default',[],function() {
 
                 // mapper functionality set value into input
                 setValue: function(value) {
-                    this.$el.val(this.getViewData.call(this, value));
+                    Util.setValue(this.$el, this.getViewData.call(this, value));
                 },
 
                 // mapper functionality get value from input
                 getValue: function() {
-                    return this.getModelData.call(this, this.$el.val());
+                    return this.getModelData.call(this, Util.getValue(this.$el));
                 },
 
                 // internationalization of view data: default none
@@ -17548,7 +17589,7 @@ define('type/date',[
 
             subType = {
                 validate: function() {
-                    var val = this.$el.val(), date;
+                    var val = Util.getValue(this.$el), date;
                     if (val === '') {
                         return true;
                     }
@@ -17558,7 +17599,7 @@ define('type/date',[
                 },
 
                 needsValidation: function() {
-                    var val = this.$el.val();
+                    var val = Util.getValue(this.$el);
                     return val !== '';
                 },
 
@@ -17593,8 +17634,9 @@ define('type/date',[
  */
 
 define('type/decimal',[
-    'type/default'
-], function(Default) {
+    'type/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -17609,13 +17651,13 @@ define('type/decimal',[
                 },
 
                 validate: function() {
-                    var val = this.$el.val();
+                    var val = Util.getValue(this.$el);
 
                     if (val === '') {
                         return true;
                     }
 
-                    return this.options.regExp.test(this.$el.val());
+                    return this.options.regExp.test(val);
                 }
             };
 
@@ -17634,8 +17676,9 @@ define('type/decimal',[
  */
 
 define('type/email',[
-    'type/default'
-], function(Default) {
+    'type/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -17646,12 +17689,12 @@ define('type/email',[
 
             typeInterface = {
                 validate: function() {
-                    var val = this.$el.val();
+                    var val = Util.getValue(this.$el);
                     if (val === '') {
                         return true;
                     }
 
-                    return this.options.regExp.test(this.$el.val());
+                    return this.options.regExp.test(val);
                 },
 
                 needsValidation: function() {
@@ -17675,8 +17718,9 @@ define('type/email',[
  */
 
 define('type/url',[
-    'type/default'
-], function(Default) {
+    'type/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -17687,7 +17731,7 @@ define('type/url',[
 
             typeInterface = {
                 validate: function() {
-                    var val = this.$el.val();
+                    var val = Util.getValue(this.$el);
                     if (val === '') {
                         return true;
                     }
@@ -17699,7 +17743,7 @@ define('type/url',[
                 },
 
                 needsValidation: function() {
-                    var val = this.$el.val();
+                    var val = Util.getValue(this.$el);
                     return val !== '';
                 }
             };
@@ -17781,8 +17825,9 @@ define('type/label',[
  */
 
 define('type/select',[
-    'type/default'
-], function(Default) {
+    'type/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -17799,7 +17844,7 @@ define('type/select',[
 
                 getValue: function() {
                     var result = {};
-                    result[this.options.id] = this.$el.val();
+                    result[this.options.id] = Util.getValue(this.$el);
                     result[this.options.label] = this.$el.find('option:selected').text();
                     return result;
                 },
@@ -17828,8 +17873,7 @@ define('type/select',[
  */
 
 define('type/collection',[
-    'type/default',
-    'form/util'
+    'type/default'
 ], function(Default) {
 
     
@@ -17937,8 +17981,9 @@ define('validator/default',[],function() {
  */
 
 define('validator/min',[
-    'validator/default'
-], function(Default) {
+    'validator/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -17949,7 +17994,7 @@ define('validator/min',[
 
             result = $.extend(new Default($el, form, defaults, options, 'min'), {
                 validate: function() {
-                    var val = this.$el.val();
+                    var val = Util.getValue(this.$el);
                     return Number(val) >= this.data.min;
                 }
             });
@@ -17971,8 +18016,9 @@ define('validator/min',[
  */
 
 define('validator/max',[
-    'validator/default'
-], function(Default) {
+    'validator/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -17983,7 +18029,7 @@ define('validator/max',[
 
             result = $.extend(new Default($el, form, defaults, options, 'max'), {
                 validate: function() {
-                    var val = this.$el.val();
+                    var val = Util.getValue(this.$el);
                     return Number(val) <= this.data.max;
                 }
             });
@@ -18005,8 +18051,9 @@ define('validator/max',[
  */
 
 define('validator/minLength',[
-    'validator/default'
-], function(Default) {
+    'validator/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -18017,7 +18064,7 @@ define('validator/minLength',[
 
             result = $.extend(new Default($el, form, defaults, options, 'min-length'), {
                 validate: function() {
-                    var val = this.$el.val();
+                    var val = Util.getValue(this.$el);
                     return val.length >= this.data.minLength;
                 }
             });
@@ -18039,8 +18086,9 @@ define('validator/minLength',[
  */
 
 define('validator/maxLength',[
-    'validator/default'
-], function(Default) {
+    'validator/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -18051,7 +18099,7 @@ define('validator/maxLength',[
 
             result = $.extend(new Default($el, form, defaults, options, 'max-length'), {
                 validate: function() {
-                    var val = this.$el.val();
+                    var val = Util.getValue(this.$el);
                     return val.length <= this.data.maxLength;
                 }
             });
@@ -18073,8 +18121,9 @@ define('validator/maxLength',[
  */
 
 define('validator/required',[
-    'validator/default'
-], function(Default) {
+    'validator/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -18084,7 +18133,7 @@ define('validator/required',[
             result = $.extend(new Default($el, form, defaults, options, 'required'), {
                 validate: function(value) {
                     if (!!this.data.required) {
-                        var val = value || this.$el.val(), i;
+                        var val = value || Util.getValue(this.$el), i;
                         // for checkboxes and select multiples.
                         // check there is at least one required value
                         if ('object' === typeof val) {
@@ -18179,7 +18228,7 @@ define('validator/unique',[
                 },
 
                 validate: function() {
-                    var val = this.$el.val(),
+                    var val = Util.getValue(this.$el),
                         result;
                     if (!!this.data.unique) {
                         result = validateElements(val);
@@ -18191,7 +18240,7 @@ define('validator/unique',[
                 },
 
                 update: function() {
-                    var val = this.$el.val(),
+                    var val = Util.getValue(this.$el),
                         result;
                     if (!!this.data.unique) {
                         result = validateElements(val);
@@ -18231,8 +18280,9 @@ define('validator/unique',[
  */
 
 define('validator/equal',[
-    'validator/default'
-], function(Default) {
+    'validator/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -18298,7 +18348,7 @@ define('validator/equal',[
                 },
 
                 update: function() {
-                    var val = this.$el.val(),
+                    var val = Util.getValue(this.$el),
                         result;
                     if (!!this.data.equal) {
                         result = validateElements(val);
@@ -18336,8 +18386,9 @@ define('validator/equal',[
  */
 
 define('validator/regex',[
-    'validator/default'
-], function(Default) {
+    'validator/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -18351,7 +18402,7 @@ define('validator/regex',[
                     // TODO flags
                     var pattern = this.data.regex,
                         regex = new RegExp(pattern),
-                        val = this.$el.val();
+                        val = Util.getValue(this.$el);
 
                     if (val === '') {
                         return true;
@@ -25600,7 +25651,7 @@ define('__component__$column-options@husky',[],function() {
  * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.paginationTemplate] template for pagination
- *
+ * @param {Boolean} [options.validation] enables validation for datagrid
  */
 define('__component__$datagrid@husky',[],function() {
 
@@ -25636,7 +25687,10 @@ define('__component__$datagrid@husky',[],function() {
             searchInstanceName: null, // at which search it should be listened to can be null|string|empty_string
             columnOptionsInstanceName: null, // at which search it should be listened to can be null|string|empty_string
             paginationTemplate: '<%=translate("pagination.page")%> <%=i%> <%=translate("pagination.of")%> <%=pages%>',
-            fieldsData: null
+            fieldsData: null,
+            validation: false,
+            validationDebug: false,
+            startTabIndex: 1
         },
 
         namespace = 'husky.datagrid.',
@@ -25767,7 +25821,7 @@ define('__component__$datagrid@husky',[],function() {
         /**
          * triggers husky.datagrid.items.selected event, which returns all selected item ids
          * @event husky.datagrid.items.get-selected
-         * @param  {Callback} callback function receives array of selected items
+         * @param  {Function} callback function receives array of selected items
          */
             ITEMS_GET_SELECTED = namespace + 'items.get-selected',
 
@@ -25788,6 +25842,8 @@ define('__component__$datagrid@husky',[],function() {
 
         view: true,
 
+        tabIndex: 0,
+
         initialize: function() {
             this.sandbox.logger.log('initialized datagrid');
 
@@ -25799,9 +25855,9 @@ define('__component__$datagrid@husky',[],function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
             this.changedData = {};
+            this.rowStructure = [];
 
-            this.rowStructure = [
-            ];
+            this.elId = this.sandbox.dom.attr(this.$el, 'id');
 
             this.sort = {
                 ascClass: 'icon-arrow-up',
@@ -25820,6 +25876,7 @@ define('__component__$datagrid@husky',[],function() {
 
             // Should only be be called once
             this.bindCustomEvents();
+
         },
 
         /**
@@ -25859,30 +25916,40 @@ define('__component__$datagrid@husky',[],function() {
          */
         parseFieldsData: function(fields) {
             var data = [],
-                urlfields = '',
-                fieldsCount = 0;
+                urlfields = [],
+                fieldsCount = 0,
+                tmp;
+
             this.sandbox.util.foreach(fields, function(field) {
+
+                tmp = {};
+
                 if (field.disabled !== 'true' && field.disabled !== true) {
+
                     // data
-                    data.push({content: this.sandbox.translate(field.translation), attribute: field.id});
-                    // url
-                    if (fieldsCount > 0) {
-                        urlfields += ',';
+                    for (var key in field) {
+                        if (key === 'translation') {
+                            tmp.content = this.sandbox.translate(field.translation);
+                        } else if (key === 'id') {
+                            tmp.attribute = field.id;
+                        } else {
+                            tmp[key] = field[key];
+                        }
                     }
-                    fieldsCount++;
-                    urlfields += field.id;
+
+                    data.push(tmp);
+                    urlfields.push(field.id);
+
                 } else if (field.id === 'id') {
-                    // url
-                    if (fieldsCount > 0) {
-                        urlfields += ',';
-                    }
-                    fieldsCount++;
-                    urlfields += field.id;
+                    urlfields.push(field.id);
                 }
+
+                fieldsCount++;
+
             }.bind(this));
             return {
                 columns: data,
-                urlFields: urlfields
+                urlFields: urlfields.join(',')
             };
         },
 
@@ -25993,7 +26060,7 @@ define('__component__$datagrid@husky',[],function() {
         prepareTable: function() {
             var $table, $thead, $tbody, tblClasses;
 
-            $table = this.sandbox.dom.$('<table/>');
+            $table = this.sandbox.dom.$('<table' + (!!this.options.validationDebug ? 'data-debug="true"' : '' ) + '/>');
 
             if (!!this.data.head || !!this.options.columns) {
                 $thead = this.sandbox.dom.$('<thead/>');
@@ -26091,7 +26158,8 @@ define('__component__$datagrid@husky',[],function() {
                 if (column.attribute !== undefined) {
                     this.rowStructure.push({
                         attribute: column.attribute,
-                        editable: column.editable
+                        editable: column.editable,
+                        validation: column.validation
                     });
                 }
 
@@ -26135,6 +26203,8 @@ define('__component__$datagrid@husky',[],function() {
 
             tblRows = [];
             this.allItemIds = [];
+
+            this.tabIndex = this.options.startTabIndex;
 
             // TODO adjust when new api is fully implemented and no backwards compatibility needed
             if (!!this.data.items) {
@@ -26194,12 +26264,13 @@ define('__component__$datagrid@husky',[],function() {
                 // when row structure contains more elements than the id then use the structure to set values
                 if (this.rowStructure.length) {
                     this.rowStructure.forEach(function(key) {
-                        this.setValueOfRowCell(key.attribute, row[key.attribute], key.editable);
+                        key.editable = key.editable || false;
+                        this.createRowCell(key.attribute, row[key.attribute], key.editable, key.validation);
                     }.bind(this));
                 } else {
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                            this.setValueOfRowCell(key, row[key], false);
+                            this.createRowCell(key, row[key], false, null);
                         }
                     }
                 }
@@ -26216,11 +26287,14 @@ define('__component__$datagrid@husky',[],function() {
          * Sets the value of row cell and the data-id attribute for the row
          * @param key attribute name
          * @param value attribute value
+         * @param editable flag whether field is editable or not
          */
-        setValueOfRowCell: function(key, value, editable) {
+        createRowCell: function(key, value, editable, validation) {
             var tblCellClasses,
                 tblCellContent,
-                tblCellClass;
+                tblCellClass,
+                k,
+                validationAttr = '';
 
             if (!value) {
                 value = '';
@@ -26236,10 +26310,18 @@ define('__component__$datagrid@husky',[],function() {
 
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
+                if (!!validation) {
+                    for (k in validation) {
+                        validationAttr += ['data-validation-', k, '="', validation[k], '" '].join('');
+                    }
+                }
+
                 if (!!editable) {
-                    this.tblColumns.push('<td width="30%" data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true">' + tblCellContent + '</span></td>');
+                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true" ' + validationAttr + ' tabindex="' + this.tabIndex + '">' + tblCellContent + '</span></td>');
+
+                    this.tabIndex++;
                 } else {
-                    this.tblColumns.push('<td  data-field="' + key + '" ' + tblCellClass + ' >' + tblCellContent + '</td>');
+                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' >' + tblCellContent + '</td>');
                 }
             } else {
                 this.tblRowAttributes += ' data-' + key + '="' + value + '"';
@@ -26719,7 +26801,7 @@ define('__component__$datagrid@husky',[],function() {
             // listen to search events
             if (this.options.columnOptionsInstanceName || this.options.columnOptionsInstanceName === '') {
                 columnOptionsInstanceName = (this.options.columnOptionsInstanceName !== '') ? '.' + this.options.columnOptionsInstanceName : '';
-                this.sandbox.on('husky.column-options' + columnOptionsInstanceName+'.saved', this.filterColumns.bind(this));
+                this.sandbox.on('husky.column-options' + columnOptionsInstanceName + '.saved', this.filterColumns.bind(this));
             }
 
             // listen for save event
@@ -26797,10 +26879,19 @@ define('__component__$datagrid@husky',[],function() {
          */
         saveChangedData: function() {
 
-            this.sandbox.logger.log("saving data...");
-
             var url = this.data.links.self,
                 type = 'PATCH';
+
+            // is validation configured
+            if (!!this.options.validation) {
+                // is invalid
+                if (!this.sandbox.form.validate('#' + this.elId)) {
+                    this.sandbox.logger.log("validation error...");
+                    return;
+                }
+            }
+
+            this.sandbox.logger.log("saving data...");
 
             if (!!this.changedData && this.changedData.length > 0) {
                 this.sandbox.util.save(url, type, this.changedData)
@@ -26895,7 +26986,13 @@ define('__component__$datagrid@husky',[],function() {
         render: function() {
             this.$originalElement.html(this.$element);
             this.bindDOMEvents();
+
+            // initialize validation
+            if (!!this.options.validation) {
+                this.sandbox.form.create('#' + this.elId);
+            }
         },
+
 
         /**
          * Adds loading icon and keeps width and height
