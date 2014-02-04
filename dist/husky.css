@@ -4679,14 +4679,15 @@ a.btn-black, a.btn-highlight {
   border-radius: 4px 4px 0 0;
   font-size: 12px;
   margin-top: 10px;
+  height: 30px;
 }
 
-/* line 39, ../scss/modules/auto-complete.scss */
+/* line 40, ../scss/modules/auto-complete.scss */
 .twitter-typeahead {
   width: 100%;
 }
 
-/* line 43, ../scss/modules/auto-complete.scss */
+/* line 44, ../scss/modules/auto-complete.scss */
 .tt-suggestions {
   width: 100%;
   top: 37px;
@@ -4694,12 +4695,12 @@ a.btn-black, a.btn-highlight {
   background: white;
 }
 
-/* line 50, ../scss/modules/auto-complete.scss */
+/* line 51, ../scss/modules/auto-complete.scss */
 .tt-hint {
   display: none;
 }
 
-/* line 54, ../scss/modules/auto-complete.scss */
+/* line 55, ../scss/modules/auto-complete.scss */
 .tt-suggestion {
   height: 25px;
   padding: 0 6px;
@@ -4707,13 +4708,13 @@ a.btn-black, a.btn-highlight {
   border-style: solid;
   border-color: #fff;
 }
-/* line 61, ../scss/modules/auto-complete.scss */
+/* line 62, ../scss/modules/auto-complete.scss */
 .tt-suggestion .border {
   border-bottom: 1px solid #efefef;
   height: 25px;
   clear: both;
 }
-/* line 65, ../scss/modules/auto-complete.scss */
+/* line 66, ../scss/modules/auto-complete.scss */
 .tt-suggestion .border .icon {
   display: block;
   float: left;
@@ -4723,23 +4724,23 @@ a.btn-black, a.btn-highlight {
   text-align: center;
   line-height: 25px;
 }
-/* line 74, ../scss/modules/auto-complete.scss */
+/* line 75, ../scss/modules/auto-complete.scss */
 .tt-suggestion .border .text {
   float: left;
   line-height: 25px;
 }
-/* line 79, ../scss/modules/auto-complete.scss */
+/* line 80, ../scss/modules/auto-complete.scss */
 .tt-suggestion:last-child .border {
   border-bottom: none;
 }
 
-/* line 85, ../scss/modules/auto-complete.scss */
+/* line 86, ../scss/modules/auto-complete.scss */
 .tt-suggestion:hover,
 .tt-is-under-cursor {
   background: #efefef;
 }
 
-/* line 89, ../scss/modules/auto-complete.scss */
+/* line 90, ../scss/modules/auto-complete.scss */
 .suggestion {
   color: black;
 }
