@@ -53,7 +53,7 @@ define(function() {
             data: null,
             defaultMeasureUnit: 'px',
             excludeFields: ['id'],
-            instance: 'undefined',
+            instance: 'datagrid',
             pagination: false,
             paginationOptions: {
                 pageSize: null,
@@ -171,12 +171,16 @@ define(function() {
         /**
          * raised when data was saved
          * @event husky.datagrid.data.saved
+         * @param {Object} data returned
          */
             DATA_SAVED = namespace + 'data.saved',
 
         /**
          * raised when save of data failed
          * @event husky.datagrid.data.save.failed
+         * @param {String} text status
+         * @param {String} error thrown
+         *
          */
             DATA_SAVE_FAILED = namespace + 'data.save.failed',
 
@@ -628,11 +632,11 @@ define(function() {
                 var radioPrefix, key;
                 this.tblColumns = [];
                 this.tblRowAttributes = ' data-dom-id="'+this.options.instance+'-'+this.domId+'"';
+                this.domId++;
 
                 // special treatment for id
                 if (!!row.id) {
                     this.tblRowAttributes += ' data-id="' + row.id + '"';
-                    this.domId++;
                 }
 
                 if (!!this.options.className && this.options.className !== '') {
@@ -835,15 +839,15 @@ define(function() {
             $table.append($row);
 
             // add new row to validation context and add contraints to element
-            $editableFields = this.sandbox.dom.find('.editable', $row);
+//            $editableFields = this.sandbox.dom.find('.editable', $row);
 
-            this.sandbox.util.foreach($editableFields, function($el,i){
-                this.sandbox.form.addField('#'+this.elId,$el);
-                validation = this.options.columns[i].validation;
-                for(var key in validation){
-                    this.sandbox.form.addConstraint('#'+this.elId,$el, key, {key: validation[key]});
-                }
-            }.bind(this));
+//            this.sandbox.util.foreach($editableFields, function($el,i){
+////                this.sandbox.form.addField('#'+this.elId,$el);
+//                validation = this.options.columns[i].validation;
+//                for(var key in validation){
+//                    this.sandbox.form.addConstraint('#'+this.elId,$el, key, {key: validation[key]});
+//                }
+//            }.bind(this));
 
         },
 
@@ -876,7 +880,7 @@ define(function() {
          */
         removeRow: function(event) {
 
-            var $element, $tblRow, id, idx;
+            var $element, $tblRow, id, idx, $editableElements, domId;
 
             if (typeof event === 'object') {
 
@@ -887,6 +891,19 @@ define(function() {
             } else {
                 id = event;
                 $tblRow = this.$element.find('tr[data-id="' + id + '"]');
+            }
+
+            domId = this.sandbox.dom.data($tblRow, 'dom-id');
+
+            // remove row elements from validation
+            $editableElements = this.sandbox.dom.find('.editable',$tblRow);
+            this.sandbox.util.each($editableElements, function(index, $element){
+                this.sandbox.form.removeField('#'+this.elId, $element);
+            }.bind(this));
+
+            // remove deleted row from changedData
+            if(!!this.changedData && !!this.changedData[domId]){
+                delete this.changedData[domId];
             }
 
             idx = this.selectedItemIds.indexOf(id);
@@ -1308,12 +1325,12 @@ define(function() {
 
             if (!!data && data.length > 0) {
                 this.sandbox.util.save(url, type, data)
-                    .then(function() {
-                        this.sandbox.emit(DATA_SAVED);
+                    .then(function(data, textStatus) {
+                        this.sandbox.emit(DATA_SAVED, data, textStatus);
                         this.changedData = [];
                     }.bind(this))
-                    .fail(function(params) {
-                        this.sandbox.emit(DATA_SAVE_FAILED, params);
+                    .fail(function(textStatus, error) {
+                        this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
                     }.bind(this));
             }
         },
