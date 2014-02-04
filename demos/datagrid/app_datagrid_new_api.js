@@ -516,7 +516,7 @@ require(['lib/husky'], function(Husky) {
                             class: 'highlight',
                             title: 'add',
                             callback: function() {
-                                this.sandbox.emit('sulu.list-toolbar.add');
+                                app.sandbox.emit('sulu.list-toolbar.add');
                             }.bind(this)
                         },
                         {
@@ -525,7 +525,7 @@ require(['lib/husky'], function(Husky) {
                             title: 'delete',
                             group: '1',
                             callback: function() {
-                                this.sandbox.emit('sulu.list-toolbar.delete');
+                                app.sandbox.emit('sulu.list-toolbar.delete');
                             }.bind(this)
                         },
                         {

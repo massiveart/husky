@@ -312,13 +312,13 @@ define(function() {
                 if (field.disabled !== 'true' && field.disabled !== true) {
 
                     // data
-                    for(var key in field) {
-                        if(key === 'translation') {
+                    for (var key in field) {
+                        if (key === 'translation') {
                             tmp.content = this.sandbox.translate(field.translation);
-                        } else if(key === 'id') {
+                        } else if (key === 'id') {
                             tmp.attribute = field.id;
                         } else {
-                           tmp[key] = field[key];
+                            tmp[key] = field[key];
                         }
                     }
 
@@ -1186,7 +1186,7 @@ define(function() {
             // listen to search events
             if (this.options.columnOptionsInstanceName || this.options.columnOptionsInstanceName === '') {
                 columnOptionsInstanceName = (this.options.columnOptionsInstanceName !== '') ? '.' + this.options.columnOptionsInstanceName : '';
-                this.sandbox.on('husky.column-options' + columnOptionsInstanceName+'.saved', this.filterColumns.bind(this));
+                this.sandbox.on('husky.column-options' + columnOptionsInstanceName + '.saved', this.filterColumns.bind(this));
             }
 
             // listen for save event
@@ -1264,18 +1264,19 @@ define(function() {
          */
         saveChangedData: function() {
 
-            this.sandbox.logger.log("saving data...");
-
             var url = this.data.links.self,
                 type = 'PATCH';
 
             // is validation configured
-            if(!!this.options.validation){
+            if (!!this.options.validation) {
                 // is invalid
-                if(!this.sandbox.form.validate('#'+this.elId)) {
+                if (!this.sandbox.form.validate('#' + this.elId)) {
+                    this.sandbox.logger.log("validation error...");
                     return;
                 }
             }
+
+            this.sandbox.logger.log("saving data...");
 
             if (!!this.changedData && this.changedData.length > 0) {
                 this.sandbox.util.save(url, type, this.changedData)
@@ -1372,8 +1373,8 @@ define(function() {
             this.bindDOMEvents();
 
             // initialize validation
-            if(!!this.options.validation) {
-                this.sandbox.form.create('#'+this.elId);
+            if (!!this.options.validation) {
+                this.sandbox.form.create('#' + this.elId);
             }
         },
 
