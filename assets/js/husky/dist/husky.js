@@ -24342,7 +24342,7 @@ define('__component__$navigation@husky',[],function() {
 
 
         /**
-         * raised when navigation was un / collapsed
+         * raised when navigation was un / collapsed. only raised when not forced
          * @event husky.navigation.size.changed
          */
             EVENT_SIZE_CHANGED = namespace + 'size.changed'
@@ -24749,7 +24749,9 @@ define('__component__$navigation@husky',[],function() {
             }
             if (this.collapsed) {
                 this.sandbox.emit(EVENT_UNCOLLAPSED, constants.uncollapsedWidth);
-                this.sandbox.emit(EVENT_SIZE_CHANGED, constants.uncollapsedWidth);
+                if (!forced) {
+                    this.sandbox.emit(EVENT_SIZE_CHANGED, constants.uncollapsedWidth);
+                }
                 this.collapsed = !this.collapsed;
             }
         },

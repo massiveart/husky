@@ -106,7 +106,8 @@ $columnOptionsContainerWidth: 400px;
         padding-left: 5px;
         right: 10px;
         &:after {
-            line-height: 0;
+            line-height: 50px;
+            vertical-align:center;
         }
         cursor:pointer;
     }
