@@ -477,7 +477,7 @@ require(['lib/husky'], function(Husky) {
                     removeRow: true,
                     pagination: true,
                     editable: true,
-                    validation:false,
+                    validation:true,
                     columns: [
                         {
                             content: 'Content 1',
