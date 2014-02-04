@@ -1,0 +1,25 @@
+//
+// Avatar
+// --------------------------------------------------
+
+
+$avatarWidth: 30px;
+
+.avatar {
+    line-height: 40px;
+    &.round {
+        & > img {
+            border-radius: $avatarWidth;
+        }
+    }
+
+    & > img {
+        float: left;
+        margin-right: 15px;
+        border: solid 2px $grayLighter;
+    }
+}
+
+.avatar-logout {
+    font-size: 12px;
+}

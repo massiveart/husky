@@ -1,0 +1,27 @@
+//
+// Loading Styling
+// --------------------------------------------------
+
+.loading {
+    @extend %abstract-loader;
+
+    .loading-content {
+        display: none;
+    }
+}
+
+.loading-black {
+    @extend %abstract-loader-black;
+
+    .loading-content {
+        display: none;
+    }
+}
+
+.loading-gray {
+    @extend %abstract-loader-gray;
+
+    .loading-content {
+        display: none;
+    }
+}

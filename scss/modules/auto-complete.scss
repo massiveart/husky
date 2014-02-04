@@ -1,0 +1,92 @@
+.husky-auto-complete-success {
+    @extend %abstract-success;
+}
+
+.husky-auto-complete-error {
+    @extend %abstract-error;
+}
+
+.auto-complete-container {
+    position: relative;
+
+    label {
+        cursor: default;
+    }
+}
+
+.husky-auto-complete {
+    input[type="text"] {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      margin: 4px 0;
+    }
+}
+
+.husky-auto-complete-wrapper {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    background: $white;
+    padding: 4px 8px;
+    border-radius: 4px 4px 0 0;
+    font-size: $smallFontSize;
+    margin-top: 10px;
+    height: 30px;
+}
+
+.twitter-typeahead {
+    width: 100%;
+}
+
+.tt-suggestions {
+    width: 100%;
+    top: 37px;
+    border-top: 1px solid $grayLightest;
+    background: $white;
+}
+
+.tt-hint {
+    display: none;
+}
+
+.tt-suggestion {
+    height: 25px;
+    padding: 0 6px;
+    border-width: 0 2px 0 2px;
+    border-style: solid;
+    border-color: #fff;
+
+    .border {
+        border-bottom: 1px solid $grayLightest;
+        height: 25px;
+        clear: both;
+        .icon {
+            display: block;
+            float: left;
+            margin: 0 10px 0 10px;
+            width: 12px;
+            height: 25px;
+            text-align: center;
+            line-height: 25px;
+        }
+        .text {
+            float: left;
+            line-height: 25px;
+        }
+    }
+    &:last-child .border {
+        border-bottom: none;
+    }
+}
+
+.tt-suggestion:hover,
+.tt-is-under-cursor {
+    background: $grayLightest;
+}
+
+.suggestion {
+    color: $black;
+}

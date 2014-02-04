@@ -1,0 +1,146 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title></title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width">
+		<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+		<!--<link rel="stylesheet" href="../../.tmp/husky.css">-->
+        <link rel="stylesheet" href="../../dist/husky.min.css">
+	</head>
+
+
+	<style>
+		.container {
+			width: 800px;
+			margin-left: 300px;
+			margin-top: 100px;
+		}
+	</style>
+
+	<body>
+
+		<div class="container">
+
+			<div class="grid-row two-cols" id="phones">
+
+				<div class="grid-col-6 phone-item" data-id="" id="dd1">
+					<label class="bold drop-down-trigger"><span id="type-name1">[Phone Type]</span> <span
+							class="dropdown-toggle" style="display: inline-block;"></span></label>
+					<input class="form-element phoneValue" type="text" value="">
+
+				</div>
+
+				<div class="grid-col-6 phone-item" data-id="" id="dd2">
+					<label class="bold drop-down-trigger"><span id="type-name2">[Phone Type]</span> <span
+							class="dropdown-toggle"
+							style="display: inline-block;"></span></label>
+					<input class="form-element phoneValue" type="text" value="">
+				</div>
+
+			</div>
+
+		</div>
+
+		<script src="../js/sinon.js"></script>
+		<script src="../js/jquery.js"></script>
+
+        <script src="../js/require.js"></script>
+
+
+		<script>
+            require.config({
+                baseUrl: '../../'
+            });
+
+            require(['lib/husky'], function(Husky) {
+                'use strict';
+
+                var app = Husky({ debug: { enable: true }}),
+                        _ = app.sandbox.util._;
+
+                app.start().then(function() {
+                    app.logger.log('Aura started...');
+
+                    var fakeServer = sinon.fakeServer.create();
+
+                    fakeServer.respondWith('GET', '/contacts', [200, { 'Content-Type': 'application/json' },
+                        '{"total": 3, "items": [ { "id": "1", "name": "Private" }, { "id": "2", "name": "Mobile" }, { "id": "3", "name":"Work" }] }'
+                    ]);
+
+
+                    app.sandbox.start([{
+                        name: 'dropdown@husky',
+                        options: {
+                            el: '#dd1',
+                            trigger: '.drop-down-trigger',
+                            setParentDropDown: true,
+                            instanceName: 'dialog1',
+                            alignment: 'left',
+                            data: [
+                                {
+                                    'id': 1,
+                                    'name': 'Private'
+                                },
+                                {
+                                    'id': 2,
+                                    'name': 'Mobile'
+                                },
+                                {
+                                    'id': 3,
+                                    'name': 'Work'
+                                }
+                            ]
+                        }
+                    }]);
+
+                    app.sandbox.on('husky.dropdown.dialog1.item.click', function(item) {
+                        console.log("drop-down 2: click item: " + item);
+                        $('#type-name1').text(item.name);
+                        $('#type-name1').data('id', item.id);
+                    });
+
+
+                    app.sandbox.start([{
+                        name: 'dropdown@husky',
+                        options: {
+                            el: '#dd2',
+                            url: '/contacts',
+                            trigger: '.drop-down-trigger',
+                            setParentDropDown: true,
+                            excludeItems: [
+                                {id: 1},
+                                {id: 2}
+                            ],
+                            instanceName: 'dialog2'
+                        }
+                    }]);
+
+                    app.sandbox.on('husky.dropdown.dialog2.item.click', function(item) {
+                        console.log("drop-down 1: click item: " + item);
+                        $('#type-name2').text(item.name);
+                        $('#type-name2').data('id', item.id);
+                    });
+
+                    app.sandbox.on('husky.dropdown.dialog2.data.load', function() {
+                        setTimeout(function() {
+                            fakeServer.respond();
+                        }, 1000);
+                    });
+
+                });
+            });
+
+
+		</script>
+	</body>
+</html>

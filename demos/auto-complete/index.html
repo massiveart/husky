@@ -1,0 +1,134 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Autocomplete Demo</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+	<link rel="stylesheet" href="../../dist/husky.min.css">
+	<style>
+		.container {
+			width: 800px;
+			margin: 30px auto;
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+	<div class="grid">
+		<div class="grid-row">
+			<div class="grid-col-6">
+				<div class="auto-complete-container">
+                    <label>
+                        Autocomplete
+                        <div class="husky-auto-complete-wrapper">
+                            <div id="autocomplete1"></div>
+                        </div>
+                    </label>
+				</div>
+			</div>
+            <div class="grid-col-6">
+                <div class="auto-complete-container">
+                    <label>
+                        Autocomplete2
+                        <div class="husky-auto-complete-wrapper">
+                            <div id="autocomplete2"></div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+		</div>
+        <div class="grid-row m-top-30">
+            <div class="grid-col-6">
+                Search for 'A'
+            </div>
+            <div class="grid-col-6">
+                Search for 'B'
+            </div>
+        </div>
+	</div>
+</div>
+
+
+<script src="../js/sinon.js"></script>
+<script src="../js/jquery.js"></script>
+<script src="../js/require.js"></script>
+<script type="text/javascript">
+	require.config({
+		baseUrl: '../../'
+	});
+	require(['lib/husky'], function(Husky) {
+		'use strict';
+
+		var fakeServer = sinon.fakeServer.create();
+		fakeServer.respondWith('GET', '/countries', [200, { 'Content-Type': 'application/json' },
+			'{"total": 4, "_embedded": [{"id": 1, "name": "Deutschland"}, {"id": 2, "name": "Frankreich"}, {"id": 3, "name": "USA"}, {"id": 4, "name": "Kroatien"}]}'
+		]);
+		fakeServer.respondWith('GET', '/countries?query=I', [200, { 'Content-Type': 'application/json' },
+			'{"total": 2, "_embedded": [{"id": 5, "name": "Indien"}, {"id": 6, "name": "Irgendwo"}, {"id": 7, "name": "Irgendwo2"}]}'
+		]);
+
+		var initFakeServer = function(app) {
+			app.logger.log('FakeServer started...');
+			setTimeout(function() {
+				fakeServer.respond();
+			},50)
+			app.sandbox.on('husky.auto-complete.I1.remote-data-load', function() {
+				setTimeout(function() {
+					fakeServer.respond();
+				}, 100);
+			});
+            app.sandbox.on('husky.auto-complete.I2.remote-data-load', function() {
+                setTimeout(function() {
+                    fakeServer.respond();
+                }, 100);
+            });
+		};
+
+		var app = Husky({
+					debug: {
+						enable: true
+					}
+				}),
+				_ = app.sandbox.util._;
+
+
+		app.start([{
+                    name: 'auto-complete@husky',
+                    options: {
+                        el: '#autocomplete1',
+                        instanceName: 'I1',
+                        prefetchUrl: '/countries',
+                        remoteUrl: '/countries',
+                        suggestionImg: 'tag',
+                        localData: [{id: 89, name: 'Albanien'}, {id: 77, name: 'Altach'}, {id: 899, name: 'Andelsbuch'}]
+                    }
+                },
+                {
+                    name: 'auto-complete@husky',
+                    options: {
+                        el: '#autocomplete2',
+                        instanceName: 'I2',
+                        prefetchUrl: '/countries',
+                        remoteUrl: '/countries',
+                        suggestionImg: 'tag',
+                        localData: [{id: 81, name: 'Brüssel'}, {id: 71, name: 'Bern'}, {id: 891, name: 'Berlin'}]
+                    }
+                }]).then(function() {
+			app.logger.log('Aura started...');
+			initFakeServer(app);
+		});
+
+	});
+</script>
+</body>
+</html>

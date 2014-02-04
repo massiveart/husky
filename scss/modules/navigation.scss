@@ -1,0 +1,312 @@
+@import "../mixins.scss";
+@import "compass/css3/text-shadow";
+
+@mixin toggle-item {
+    border-bottom: 1px solid $gray;
+    height: inherit;
+    padding-bottom: 15px;
+    margin-bottom: 10px;
+}
+
+$verticalMargin: 20px;
+$verticalItemPadding: 35px;
+
+.section-headline {
+    font-size: 12px;
+    padding: 2px 0 3px;
+    margin: 10px $verticalMargin 0;
+    color: $grayDark;
+    font-weight: bold;
+    cursor: default;
+    //@include text-shadow($gray 1px 1px);
+
+    .section-toggle {
+        display: none;
+        float: right;
+        a {
+            color: $grayDark;
+        }
+    }
+
+    &:hover {
+        .section-toggle {
+            display: block;
+        }
+    }
+}
+
+.navigation-container {
+    float: left;
+    width: 250px;
+    height: 100%;
+    background-color: #3e3e3e;
+    overflow-y: auto;
+    position: fixed;
+    top: 0px;
+}
+
+.navigation {
+
+    background-color: #3e3e3e;
+}
+
+.navigation-content {
+    overflow: hidden;
+    padding: 40px 0px 20px;
+    color: $grayLight;
+    font-size: 16px;
+
+    a {
+        display: inline-block;
+        text-decoration: none;
+        color: $grayLight;
+        outline: none;
+    }
+
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+}
+
+.navigation-header {
+    height: 40px;
+    overflow: hidden;
+    margin: 0 $verticalMargin 30px;
+}
+
+.navigation-header-title {
+    display: inline-block;
+    font-size: 18px;
+    color: $white;
+    margin: 0;
+    line-height: 35px;
+}
+
+.navigation-header-image {
+    display: inline-block;
+    margin-right: 10px;
+    float: left;
+
+    img {
+        border-radius: 32px;
+    }
+}
+
+.navigation-search {
+    position: relative;
+    margin: 5px $verticalMargin 20px;
+}
+
+li.is-active {
+    > .navigation-items-toggle a,
+    > .navigation-subitems-toggle a {
+        color: $white;
+    }
+
+    > div > a.navigation-settings-icon {
+        display: block;
+        color: $grayLight;
+    }
+}
+
+.navigation-items {
+    padding: 0px $verticalMargin;
+    overflow: hidden;
+    //margin: 6px 0;
+    height: 50px;
+
+    &:hover:not(.is-active) {
+        background-color: rgba(black, 0.05);
+    }
+
+    > div {
+        position: relative;
+        padding-left: 5px;
+
+        > a {
+            padding: 12px 0;
+        }
+    }
+
+    &.is-active {
+        background-color: #282828;
+    }
+
+    &.is-expanded {
+        height: inherit;
+        padding-bottom: 20px;
+
+        .navigation-items-toggle {
+            @include toggle-item;
+            height: 50px;
+        }
+
+        > ul {
+            display: block;
+        }
+
+    }
+
+    &.is-selected {
+        a {
+            color: white;
+        }
+    }
+
+    /* sub-items */
+    ul {
+        display: none;
+        font-size: 14px;
+        padding-left: 55px;
+
+    }
+
+    /* sub-sub-items */
+    ul ul {
+        font-size: 12px;
+        padding-left: 20px;
+
+    }
+
+    li {
+        padding: 5px 0 0px 10px;
+        margin: 0 0 0 -10px;
+        border-radius: 4px;
+        cursor: pointer;
+        min-height: 30px;
+
+        &:hover:not(.navigation-subitems) a::before {
+            font-family: $baseIconFont;
+            font-size: 11px;
+            content: "\e174";
+            display: inline-block;
+            margin-left: -15px;
+            width: 15px;
+            overflow: visible;
+            position: relative;
+            top: -1px;
+            line-height: 0;
+        }
+
+        &.is-selected {
+
+            a {
+                color: white;
+
+                &::before {
+                    font-family: $baseIconFont;
+                    font-size: 11px;
+                    content: "\e174";
+                    display: inline-block;
+                    margin-left: -15px;
+                    width: 15px;
+                    overflow: visible;
+                    position: relative;
+                    top: -1px;
+                    line-height: 0;
+                }
+            }
+        }
+
+        a {
+            display: inline-block;
+            height: 30px; /* prohibits height changes on select */
+        }
+    }
+}
+
+.navigation-subitems {
+    &.is-expanded {
+        > ul {
+            display: block;
+        }
+        .navigation-subitems-toggle {
+            @include toggle-item;
+            //height: 38px;
+            padding-bottom: 0;
+        }
+
+        li {
+            &:hover::before {
+                //font-size: 8px;
+                //height:25px;
+            }
+        }
+    }
+
+    &:hover:not(.is-active):not(.is-expanded) {
+        //background-color: rgba(black,0.05);
+    }
+}
+
+.navigation-item {
+    width: 100%;
+    display: inline-block;
+    padding: 0 5px;
+    position: relative;
+    top: 2px;
+}
+
+.navigation-item-title {
+    position: relative;
+    top: 2px;
+    padding-left: $verticalItemPadding;
+}
+
+.navigation-item-icon {
+    position: absolute;
+    //top: -3px;
+    padding-left: 3px;
+    font-size: 18px;
+}
+
+.navigation-items-toggle {
+    position: relative;
+}
+
+li a.navigation-settings-icon {
+    width: auto;
+    position: absolute;
+    right: 20px;
+    top: 4px;
+    font-size: 14px;
+    display: none;
+}
+
+.navigation-toggle-icon {
+    width: auto;
+    position: absolute;
+    right: 0;
+    top: 5px;
+    font-size: 10px;
+}
+
+.navigation footer {
+    border-top: 1px solid #5B5B5B;
+    padding-top: 20px;
+    margin: 80px $verticalMargin 0 $verticalMargin + $verticalItemPadding;
+    font-size: 12px;
+
+    .version {
+        font-size: 10px;
+    }
+
+}
+
+.navigation-subitems-toggle {
+    padding: 2px 0 2px;
+    position: relative;
+    height: 30px;
+
+    .navigation-toggle-icon {
+        top: 5px;
+    }
+
+    .navigation-item {
+        padding: 0px;
+    }
+
+}
+

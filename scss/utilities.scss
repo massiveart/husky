@@ -1,0 +1,212 @@
+//
+// Utility Classes
+// --------------------------------------------------
+
+// Helper classes
+// -------------------------
+.pull-right {
+    float: right !important;
+}
+
+.pull-left {
+    float: left !important;
+}
+
+.hidden {
+    display: none;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.inline-block {
+    display: inline-block !important;
+}
+
+.is-disabled {
+    cursor: default !important;
+}
+
+.is-loading:not(.navigation-column-item) {
+  @extend %abstract-loader-black;
+
+    background-repeat: no-repeat;
+    background-position: center center;
+
+}
+
+.align-left {
+    text-align: left;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.align-center {
+    text-align: center;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+// Editable fields
+// -------------------------
+
+.editable {
+    padding: 4px 7px 4px 7px;
+    margin: 0 0 0 -4px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    outline:0;
+    display: block;
+    height: 30px;
+    overflow: hidden;
+    width:100%;
+    white-space: nowrap;
+}
+
+.editable:focus,
+.editable:active {
+    background: $white;
+    border: 1px solid $white;
+    outline:0;
+}
+
+.editable:hover {
+    border: 1px solid $white;
+    outline:0;
+}
+
+// Margin & paddings shorthands
+// -------------------------
+
+// margins / paddings 5px
+.m-top-5 {
+    margin-top: 5px !important;
+}
+.p-top-5 {
+    padding-top: 5px !important;
+}
+
+.m-bottom-5 {
+    margin-bottom: 5px !important;
+}
+.p-bottom-5 {
+    padding-bottom: 5px !important;
+}
+
+.m-right-5 {
+    margin-right: 5px !important;
+}
+.p-right-5 {
+    padding-right: 5px !important;
+}
+
+.m-left-5 {
+    margin-left: 5px !important;
+}
+.p-left-5 {
+    padding-left: 5px !important;
+}
+
+// margins 10px
+.m-top-10 {
+    margin-top: 10px !important;
+}
+
+.m-bottom-10 {
+    margin-bottom: 10px !important;
+}
+
+.m-right-10 {
+    margin-right: 10px !important;
+}
+
+.m-left-10 {
+    margin-left: 10px !important;
+}
+
+// paddings 10px
+.p-top-10 {
+  padding-top: 10px !important;
+}
+
+// margins 15px
+.m-top-15 {
+    margin-top: 15px !important;
+}
+
+.m-bottom-15 {
+    margin-bottom: 15px !important;
+}
+
+.m-right-15 {
+    margin-right: 15px !important;
+}
+
+.m-left-15 {
+    margin-left: 15px !important;
+}
+
+// margins 20px
+.m-top-20 {
+    margin-top: 20px !important;
+}
+
+.m-bottom-20 {
+    margin-bottom: 20px !important;
+}
+
+.m-right-20 {
+    margin-right: 20px !important;
+}
+
+.m-left-20 {
+    margin-left: 20px !important;
+}
+
+
+// margins 25px
+.m-top-25 {
+  margin-top: 25px !important;
+}
+
+.m-bottom-25 {
+  margin-bottom: 25px !important;
+}
+
+.m-right-25 {
+  margin-right: 25px !important;
+}
+
+.m-left-25 {
+  margin-left: 25px !important;
+}
+
+// margins 30px
+.m-top-30 {
+    margin-top: 30px !important;
+}
+
+.m-bottom-30 {
+    margin-bottom: 30px !important;
+}
+
+.m-right-30 {
+    margin-right: 30px !important;
+}
+
+.m-left-30 {
+    margin-left: 30px !important;
+}
+
+// Height shorthands
+// -------------------------
+
+// heights 25px
+.m-height-25 {
+    height: 25px !important;
+}
