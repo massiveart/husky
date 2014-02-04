@@ -73,7 +73,7 @@ define(function() {
             columnOptionsInstanceName: null, // at which search it should be listened to can be null|string|empty_string
             paginationTemplate: '<%=translate("pagination.page")%> <%=i%> <%=translate("pagination.of")%> <%=pages%>',
             fieldsData: null,
-            validation: false,
+            validation: false, // TODO does not work for added rows
             validationDebug: false,
             startTabIndex: 1
         },
@@ -850,14 +850,13 @@ define(function() {
             // add new row to validation context and add contraints to element
             $editableFields = this.sandbox.dom.find('.editable', $row);
 
-//            this.sandbox.util.foreach($editableFields, function($el,i){
-////                this.sandbox.form.addField('#'+this.elId,$el);
-//                validation = this.options.columns[i].validation;
-//                for(var key in validation){
-//                    this.sandbox.form.addConstraint('#'+this.elId,$el, key, {key: validation[key]});
-//                }
-//            }.bind(this));
-
+            this.sandbox.util.foreach($editableFields, function($el,i){
+                this.sandbox.form.addField('#'+this.elId,$el);
+                validation = this.options.columns[i].validation;
+                for(var key in validation){
+                    this.sandbox.form.addConstraint('#'+this.elId,$el, key, {key: validation[key]});
+                }
+            }.bind(this));
         },
 
         /**
