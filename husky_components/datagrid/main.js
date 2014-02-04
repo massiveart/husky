@@ -716,7 +716,7 @@ define(function() {
 
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
-                if (!!validation) {
+                if (!!this.options.validation && !!validation) {
                     for (k in validation) {
                         validationAttr += ['data-validation-', k, '="', validation[k], '" '].join('');
                     }
@@ -847,16 +847,18 @@ define(function() {
             $row = this.prepareTableRow(row);
             $table.append($row);
 
-            // add new row to validation context and add contraints to element
-            $editableFields = this.sandbox.dom.find('.editable', $row);
+            if(!!this.options.validation) {
+                // add new row to validation context and add contraints to element
+                $editableFields = this.sandbox.dom.find('.editable', $row);
 
-            this.sandbox.util.foreach($editableFields, function($el,i){
-                this.sandbox.form.addField('#'+this.elId,$el);
-                validation = this.options.columns[i].validation;
-                for(var key in validation){
-                    this.sandbox.form.addConstraint('#'+this.elId,$el, key, {key: validation[key]});
-                }
-            }.bind(this));
+                this.sandbox.util.foreach($editableFields, function($el,i){
+                    this.sandbox.form.addField('#'+this.elId,$el);
+                    validation = this.options.columns[i].validation;
+                    for(var key in validation){
+                        this.sandbox.form.addConstraint('#'+this.elId,$el, key, {key: validation[key]});
+                    }
+                }.bind(this));
+            }
         },
 
         /**
