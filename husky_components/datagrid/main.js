@@ -1336,7 +1336,6 @@ define(function() {
                     .then(function(data, textStatus) {
                         this.sandbox.emit(DATA_SAVED, data, textStatus);
                         this.changedData = [];
-                        this.initRender(data, null);
                     }.bind(this))
                     .fail(function(textStatus, error) {
                         this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
