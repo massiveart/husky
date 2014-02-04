@@ -1479,7 +1479,7 @@ define(function() {
                 name = (!!data.name) ? ' name="' + data.name + '"' : '';
 
                 return [
-                    '<input', id, name, ' type="checkbox" class="custom-checkbox"/>',
+                    '<input', id, name, ' type="checkbox" class="custom-checkbox" data-form="false"/>',
                     '<span class="custom-checkbox-icon"></span>'
                 ].join('');
             },
