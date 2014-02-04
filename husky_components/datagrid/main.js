@@ -376,31 +376,40 @@ define(function() {
 
                 success: function(response) {
 
-                    // TODO adjust when new api is finished and no backwards compatibility needed
-                    if (!!response.items) {
-                        this.data = response;
-                    } else {
-                        this.data = {};
-                        this.data.links = response._links;
-                        this.data.embedded = response._embedded;
-                        this.data.total = response.total;
-                        this.data.page = response.page;
-                        this.data.pages = response.pages;
-                        this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
-                        this.data.pageDisplay = this.options.paginationOptions.showPages;
-                    }
+                    this.initRender(response, params);
 
-                    this.prepare()
-                        .appendPagination()
-                        .render();
-
-                    this.setHeaderClasses();
-
-                    if (typeof params.success === 'function') {
-                        params.success(response);
-                    }
                 }.bind(this)
             });
+        },
+
+
+        /**
+         * Initializes the rendering of the datagrid
+         */
+        initRender: function(response, params){
+            // TODO adjust when new api is finished and no backwards compatibility needed
+            if (!!response.items) {
+                this.data = response;
+            } else {
+                this.data = {};
+                this.data.links = response._links;
+                this.data.embedded = response._embedded;
+                this.data.total = response.total;
+                this.data.page = response.page;
+                this.data.pages = response.pages;
+                this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
+                this.data.pageDisplay = this.options.paginationOptions.showPages;
+            }
+
+            this.prepare()
+                .appendPagination()
+                .render();
+
+            this.setHeaderClasses();
+
+            if (!!params && typeof params.success === 'function') {
+                params.success(response);
+            }
         },
 
         /**
@@ -839,7 +848,7 @@ define(function() {
             $table.append($row);
 
             // add new row to validation context and add contraints to element
-//            $editableFields = this.sandbox.dom.find('.editable', $row);
+            $editableFields = this.sandbox.dom.find('.editable', $row);
 
 //            this.sandbox.util.foreach($editableFields, function($el,i){
 ////                this.sandbox.form.addField('#'+this.elId,$el);
@@ -1328,6 +1337,7 @@ define(function() {
                     .then(function(data, textStatus) {
                         this.sandbox.emit(DATA_SAVED, data, textStatus);
                         this.changedData = [];
+                        this.initRender(data, null);
                     }.bind(this))
                     .fail(function(textStatus, error) {
                         this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
