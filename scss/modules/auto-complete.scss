@@ -3,15 +3,25 @@
 }
 
 .husky-auto-complete-error {
-	@extend %abstract-error;
+    @extend %abstract-error;
 }
 
 .auto-complete-container {
-  position: relative;
+    position: relative;
 
-  label {
-    cursor: default;
-  }
+    label {
+        cursor: default;
+    }
+}
+
+.husky-auto-complete {
+    input[type="text"] {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      margin: 4px 0;
+    }
 }
 
 .wrapper {
@@ -20,61 +30,58 @@
     padding: 4px 8px;
     border-radius: 4px 4px 0 0;
     font-size: $smallFontSize;
-
-    input[type="text"] {
-        width: 100%;
-        border: 0;
-        outline: 0;
-        background: transparent;
-    }
 }
 
 .twitter-typeahead {
-	width: 100%;
+    width: 100%;
 }
 
 .tt-suggestions {
-  	width: 400px;
-	top: 37px;
-  	border-top: 1px solid $grayLightest;
-  	background: $white;
+    width: 400px;
+    top: 37px;
+    border-top: 1px solid $grayLightest;
+    background: $white;
 }
 
 .tt-hint {
-	display: none;
+    display: none;
 }
 
 .tt-suggestion {
-	height: 25px;
-  	padding: 0 15px;
+    height: 25px;
+    padding: 0 6px;
     border-width: 0 2px 0 2px;
     border-style: solid;
     border-color: #fff;
 
-  	.border {
-		border-bottom: 1px solid $grayLightest;
-	  	height: 25px;
-	  	clear: both;
-	  	.img {
-			float: left;
-		  	margin: 5px 10px 0 5px;
+    .border {
+        border-bottom: 1px solid $grayLightest;
+        height: 25px;
+        clear: both;
+        .icon {
+            display: block;
+            float: left;
+            margin: 0 10px 0 10px;
             width: 12px;
-		}
-	  	.text {
-		  	float: left;
-		  	line-height: 25px;
-		}
-	}
-  	&:last-child .border {
-	 	border-bottom: none;
-	}
+            height: 25px;
+            text-align: center;
+            line-height: 25px;
+        }
+        .text {
+            float: left;
+            line-height: 25px;
+        }
+    }
+    &:last-child .border {
+        border-bottom: none;
+    }
 }
 
 .tt-suggestion:hover,
 .tt-is-under-cursor {
-	background: $grayLightest;
+    background: $grayLightest;
 }
 
 .suggestion {
-	color: $black;
+    color: $black;
 }
