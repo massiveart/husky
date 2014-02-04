@@ -28,7 +28,7 @@ define([], function() {
 
     var defaults = {
             wrapper: {
-                height: 80
+                height: 70
             },
             column: {
                 width: 250
