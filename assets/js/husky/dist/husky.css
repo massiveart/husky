@@ -3342,10 +3342,11 @@ hr.divider {
 .column-options-container {
   display: none;
   width: 400px;
-  position: relative;
+  position: fixed;
   background-color: white;
   border: 0px solid #cccccc;
   margin: auto;
+  overflow: auto;
   z-index: 1000;
   min-width: 160px;
   list-style: none;
@@ -3356,25 +3357,25 @@ hr.divider {
   -moz-box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 0px 0px;
   box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 0px 0px;
 }
-/* line 27, ../scss/modules/column-options.scss */
+/* line 28, ../scss/modules/column-options.scss */
 .column-options-container.right-aligned {
   left: auto;
   right: 0;
 }
 
-/* line 33, ../scss/modules/column-options.scss */
+/* line 34, ../scss/modules/column-options.scss */
 .column-options-header {
   padding: 15px 20px 15px;
   height: 50px;
   border-bottom: 1px solid #dddddd;
   position: relative;
 }
-/* line 39, ../scss/modules/column-options.scss */
+/* line 40, ../scss/modules/column-options.scss */
 .column-options-header .title {
   color: #999999;
   font-size: 23px;
 }
-/* line 44, ../scss/modules/column-options.scss */
+/* line 45, ../scss/modules/column-options.scss */
 .column-options-header .close-button {
   font-size: 20px;
   float: right;
@@ -3382,24 +3383,24 @@ hr.divider {
   color: black;
 }
 
-/* line 53, ../scss/modules/column-options.scss */
+/* line 54, ../scss/modules/column-options.scss */
 .column-options-footer {
   padding: 10px 0;
   border-top: 1px solid #cccccc;
   text-align: center;
 }
-/* line 58, ../scss/modules/column-options.scss */
+/* line 59, ../scss/modules/column-options.scss */
 .column-options-footer .save-button {
   display: inline-block;
 }
 
-/* line 63, ../scss/modules/column-options.scss */
+/* line 64, ../scss/modules/column-options.scss */
 .column-options-list {
   list-style: none;
   padding-left: 0;
   margin: 10px 0;
 }
-/* line 68, ../scss/modules/column-options.scss */
+/* line 69, ../scss/modules/column-options.scss */
 .column-options-list li {
   display: list-item;
   float: none;
@@ -3410,20 +3411,20 @@ hr.divider {
   padding-right: 20px;
 }
 
-/* line 82, ../scss/modules/column-options.scss */
+/* line 83, ../scss/modules/column-options.scss */
 .column-options-list-item.is-selected, .column-options-list-item.hover-style {
   background-color: #cccccc;
 }
-/* line 86, ../scss/modules/column-options.scss */
+/* line 87, ../scss/modules/column-options.scss */
 .column-options-list-item.disabled {
   cursor: default;
   color: #999999;
 }
-/* line 89, ../scss/modules/column-options.scss */
+/* line 90, ../scss/modules/column-options.scss */
 .column-options-list-item.disabled.hover-style {
   background-color: #e6e6e6;
 }
-/* line 94, ../scss/modules/column-options.scss */
+/* line 95, ../scss/modules/column-options.scss */
 .column-options-list-item .move {
   line-height: 0;
   vertical-align: middle;
@@ -3432,7 +3433,7 @@ hr.divider {
   font-size: 22px;
   cursor: move;
 }
-/* line 103, ../scss/modules/column-options.scss */
+/* line 104, ../scss/modules/column-options.scss */
 .column-options-list-item .visibility-toggle {
   position: absolute;
   padding-right: 10px;
@@ -3440,13 +3441,13 @@ hr.divider {
   right: 10px;
   cursor: pointer;
 }
-/* line 108, ../scss/modules/column-options.scss */
+/* line 109, ../scss/modules/column-options.scss */
 .column-options-list-item .visibility-toggle:after {
   line-height: 50px;
   vertical-align: center;
 }
 
-/* line 116, ../scss/modules/column-options.scss */
+/* line 117, ../scss/modules/column-options.scss */
 .sortable-placeholder {
   border: 1px dashed rgba(0, 0, 0, 0.3);
   width: 95%;

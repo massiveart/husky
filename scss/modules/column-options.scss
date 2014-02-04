@@ -14,10 +14,11 @@ $columnOptionsContainerWidth: 400px;
 .column-options-container {
     display:none;
     width: $columnOptionsContainerWidth;
-    position: relative;
+    position: fixed;
     background-color: white;
     border: 0px solid $grayLighter;
     margin: auto;
+    overflow: auto;
     z-index: 1000;
     min-width: 160px;
     list-style: none;
