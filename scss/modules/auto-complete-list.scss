@@ -56,11 +56,21 @@
     border-radius: 4px;
     background-color: #fff;
 
-    input[type="text"] {
-      margin: 7px 10px 7px 0;
-      width: 100px;
-      border: 0;
-      outline: 0;
+    .husky-auto-complete {
+      background: none;
+      border-radius: 0;
+      position: static;
+      margin: 0;
+
+      input[type="text"] {
+        margin: 7px 10px 7px 0;
+        padding: 0;
+        width: 100px;
+        border: 0;
+        outline: 0;
+        border-radius: 0;
+        height: auto;
+      }
     }
 }
 
