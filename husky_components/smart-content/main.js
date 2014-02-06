@@ -236,6 +236,7 @@ define([], function() {
 
             this.setVariables();
             this.render();
+            this.renderStartContent();
             this.bindEvents();
             this.setURI();
             this.loadContent();
@@ -356,13 +357,20 @@ define([], function() {
         },
 
         /**
-         * Renders the content decides whether the footer is rendered or not
+         * initializes the content container
          */
-        renderContent: function() {
+        initContentContainer: function() {
             //if not already exists render content-container
             if(this.$content === null) {
                 this.$content = this.sandbox.dom.find(constants.contentSelector, this.$el);
             }
+        },
+
+        /**
+         * Renders the content decides whether the footer is rendered or not
+         */
+        renderContent: function() {
+            this.initContentContainer();
 
             if (this.items.length !== 0) {
                 var ul, i = -1, length = this.items.length;
@@ -382,10 +390,22 @@ define([], function() {
             } else {
                 //render no-content-template and detach the footer
                 this.sandbox.dom.html(this.$content, _.template(templates.noContent)({
-                                                    no_content: 'No content selected'
+                                                    no_content: 'No content found'
                 }));
                 this.detachFooter();
             }
+        },
+
+        /**
+         * Renders the content at the beginning
+         * (with no items and before any request)
+         */
+        renderStartContent: function() {
+            this.initContentContainer();
+
+            this.sandbox.dom.html(this.$content, _.template(templates.noContent)({
+                no_content: 'No content selected'
+            }));
         },
 
         /**
