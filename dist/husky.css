@@ -5808,7 +5808,7 @@ a.btn-black, a.btn-highlight {
 
 /* line 5, ../scss/modules/smart-content.scss */
 .smart-content-container {
-  width: 820px;
+  width: 100%;
   background: white;
   border-radius: 0 0 4px 4px;
 }
