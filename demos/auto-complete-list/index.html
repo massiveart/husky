@@ -22,10 +22,10 @@
     </head>
     <body>
         <div class="container">
+            <div class="list-wrapper"></div>
             <div class="grid">
                 <div class="grid-row">
                     <div class="grid-col-6">
-                        <div class="list-wrapper"></div>
                     </div>
                     <div class="grid-col-6">
                         <div class="list-wrapper2"></div>
@@ -55,6 +55,7 @@
                         label: 'Tags',
                         suggestionsUrl: '',
                         itemsUrl: '',
+                        autoCompleteIcon: 'tag',
                         items: ['Tag1', 'Tag2', 'Tag3', 'Tag4'],
                         suggestions: ["Sugg1", "Sugg2", "Sugg3", "Sugg4"],
                         suggestionsHeadline: 'Recent Tags',
@@ -69,12 +70,16 @@
                             suggestionsUrl: '',
                             itemsUrl: '',
                             items: ['Link1', 'Link2', 'Link3', 'Link4'],
+                            autoCompleteIcon: 'tag',
                             suggestions: ["SuggA", "SuggB", "SuggC", "SuggD"],
                             suggestionsHeadline: 'Popular Links',
                             localData: [{id: null, name: 'Link A'}, {id: null, name: 'Link B'}, {id: null, name: 'Link C'}, {id: null, name: 'Link D'}]
                         }
                     }]).then(function() {
                         app.logger.log('Aura started...');
+                        setTimeout(function() {
+                            app.sandbox.emit('husky.auto-complete-list.I1.set-tags', ['Set1', 'Set2', 'Set3']);
+                        }, 3000);
                     });
             });
         </script>

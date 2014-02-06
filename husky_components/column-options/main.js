@@ -11,11 +11,12 @@
 
 
 /**
- * @class Toolbar
+ * @class Column-Options
  * @constructor
  *
  * @param {Object} [options] Configuration object
  * @param {String} [options.url] url to fetch data from
+ * @param {String} [options.instanceName] name of the instance - will affect events name
  * @param {Object} [options.data] if no url is provided
  * @param {String} [options.trigger] the dom item which opens the component
  * @param {Object} [options.header] Configuration object for the header
@@ -25,6 +26,7 @@
  * @param {Boolean} [options.footer.disabled] defines if footer should be shown
  * @param {Boolean} [options.hidden] defines if component should be hidden when component is initialized
  * @param {Boolean} [options.destroyOnClose] will remove the container from dom, when closed
+ * @param {Boolean} [options.backdropClick] will enable/disable a click on backdrop handling
  */
 define(function() {
 
@@ -34,6 +36,7 @@ define(function() {
             url: null,
             data: [],
             trigger: null,
+            instanceName: null,
             header: {
                 disabled: false,
                 title: 'Column Options'
@@ -42,6 +45,7 @@ define(function() {
                 disabled: false
             },
             hidden: false,
+            backdropClick: false,
             destroyOnClose: true
         },
 
@@ -50,7 +54,7 @@ define(function() {
                 '<li class="column-options-list-item" data-id="<%= id %>" draggable="true">',
                 '   <span class="move">&#8942;</span>',
                 '   <span class="text"><%= title %></span>',
-                '   <span class="icon-half-eye-open visibility-toggle"></span>',
+                '   <span class="<%= toggleIcon %> visibility-toggle"></span>',
                 '</li>'].join(''),
             header: [
                 '<div class="column-options-header">',
@@ -60,47 +64,68 @@ define(function() {
             ].join('')
         },
 
+        iconClasses = {
+            visible: 'icon-half-eye-open',
+            hidden: 'icon-half-eye-close'
+        },
 
-        namespace = 'husky.column-options',
 
         /**
          * triggered when component is completely initialized
-         * @event husky.column-options.initialized
+         * @event husky.column-options[.INSTANCE_NAME].initialized
          */
-            INITIALIZED = namespace + '.initialized',
+            INITIALIZED = function() {
+            return getEventName.call(this, 'initialized');
+
+        },
 
         /**
          * triggered when item was enabled
-         * @event husky.column-options.item.enabled
+         * @event husky.column-options[.INSTANCE_NAME].item.enabled
          * @param {Object} item that was enabled
          */
-            ENABLED = namespace + '.item.enabled',
+            ENABLED = function() {
+            return getEventName.call(this, 'item.enabled');
+
+        },
 
         /**
          * triggered when item was disabled
-         * @event husky.column-options.item.disabled
+         * @event husky.column-options[.INSTANCE_NAME].item.disabled
          * @param {Object} item that was disabled
          */
-            DISABLED = namespace + '.item.disabled',
+            DISABLED = function() {
+            return getEventName.call(this, 'item.disabled');
+
+        },
 
         /**
          * triggered when save was clicked
-         * @event husky.column-options.saved
+         * @event husky.column-options[.INSTANCE_NAME].saved
          * @param {Array} Contains all visible items
          */
-            SAVED = namespace + '.saved',
+            SAVED = function() {
+            return getEventName.call(this, 'saved');
+
+        },
 
         /**
          * used for receiving all visible columns
-         * @event husky.column-options.get-selected
+         * @event husky.column-options[.INSTANCE_NAME].get-selected
          */
-            GET_SELECTED = namespace + '.get-selected',
+            GET_SELECTED = function() {
+            return getEventName.call(this, 'get-selected');
+
+        },
 
         /**
          * used for receiving all columns
-         * @event husky.column-options.get-all
+         * @event husky.column-options[.INSTANCE_NAME].get-all
          */
-            GET_ALL = namespace + '.get-all',
+            GET_ALL = function() {
+            return getEventName.call(this, 'get-all');
+
+        },
 
 
         /**
@@ -108,8 +133,8 @@ define(function() {
          */
             bindDOMEvents = function() {
 
-            this.sandbox.dom.on(this.options.trigger, 'click', toggleDropdown.bind(this));
-            this.sandbox.dom.on(this.$el, 'click', stopPropagation.bind(this), '.column-options-container'); // prevent from unwanted events
+            this.sandbox.dom.on(this.options.trigger, 'click.column-options', toggleDropdown.bind(this));
+            this.sandbox.dom.on(this.$el, 'click', customStopPropagation.bind(this), '.column-options-container'); // prevent from unwanted events
             this.sandbox.dom.on(this.$el, 'mouseover', onMouseOver.bind(this), 'li');
             this.sandbox.dom.on(this.$el, 'mouseout', onMouseOut.bind(this), 'li');
             this.sandbox.dom.on(this.$el, 'click', toggleVisibility.bind(this), '.visibility-toggle');
@@ -117,12 +142,21 @@ define(function() {
             this.sandbox.dom.on(this.$el, 'click', hideDropdown.bind(this, true), '.close-button');
         },
 
+        unbindDOMEvents = function() {
+            this.sandbox.dom.off(this.options.trigger, 'click.column-options');
+        },
+
+
         /**
          * custom events
          */
             bindCustomEvents = function() {
-            this.sandbox.on(GET_SELECTED, getSelectedItems.bind(this));
-            this.sandbox.on(GET_ALL, getAllItems.bind(this));
+            this.sandbox.on(GET_SELECTED.call(this), getSelectedItems.bind(this));
+            this.sandbox.on(GET_ALL.call(this), getAllItems.bind(this));
+        },
+
+        getEventName = function(postFix) {
+            return 'husky.column-options.' + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         },
 
         /**
@@ -189,8 +223,7 @@ define(function() {
          * opens dropdown submenu
          * @param event
          */
-            stopPropagation = function(event) {
-
+            customStopPropagation = function(event) {
             event.preventDefault();
             event.stopPropagation();
         },
@@ -200,10 +233,12 @@ define(function() {
          * opens dropdown submenu
          * @param event
          */
-            toggleDropdown = function(event) {
 
-            event.preventDefault();
-            event.stopPropagation();
+            toggleDropdown = function(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
 
             var $container = this.sandbox.dom.find('.column-options-container', this.$el),
                 isVisible = this.sandbox.dom.is($container, ':visible');
@@ -212,7 +247,9 @@ define(function() {
                 closeDropdown.call(this, $container, true);
             } else {
                 this.sandbox.dom.show($container);
-                this.sandbox.dom.one('body', 'click', closeDropdown.bind(this, $container, true));
+                if (this.options.backdropClick) {
+                    this.sandbox.dom.on(this.sandbox.dom.window, 'click.columnoptions.' + this.options.instanceName, closeDropdown.bind(this, $container, true));
+                }
             }
         },
 
@@ -230,8 +267,12 @@ define(function() {
          * @param rerender - rerender list after close
          */
             closeDropdown = function($container, rerender) {
+            if (this.options.backdropClick) {
+                this.sandbox.dom.off(this.sandbox.dom.window, 'click.columnoptions.' + this.options.instanceName, closeDropdown.bind(this, $container, true));
+            }
             this.sandbox.dom.hide($container);
             if (this.options.destroyOnClose) {
+                unbindDOMEvents.call(this);
                 this.sandbox.dom.remove(this.$el);
             } else if (rerender) {
                 // reset unsaved changes
@@ -259,7 +300,7 @@ define(function() {
             this.options.data = this.data;
 
             getAllItems.call(this, function(items) {
-                this.sandbox.emit(SAVED, items);
+                this.sandbox.emit(SAVED.call(this), items);
                 hideDropdown.call(this);
 
                 this.sandbox.dom.off('body', 'click');
@@ -283,11 +324,14 @@ define(function() {
                 this.items[item.id] = item;
 
                 // append to list
-                $listItem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.listItem, {id: item.id, title: this.sandbox.translate(item.translation)}));
+                $listItem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.listItem, {
+                    id: item.id,
+                    toggleIcon: (item.default === true || item.default === 'true') ? '' : iconClasses.visible,
+                    title: this.sandbox.translate(item.translation)}));
                 this.sandbox.dom.append(this.$list, $listItem);
 
                 // set to disabled
-                if (typeof item.disabled !== 'undefined' && item.disabled !== "false" && item.disabled !== false ) {
+                if (typeof item.disabled !== 'undefined' && item.disabled !== "false" && item.disabled !== false) {
                     toggleVisibility.call(this, {currentTarget: this.sandbox.dom.find('.visibility-toggle', $listItem), doNotEmitEvents: true, preventDefault: function() {
                     }});
                 }
@@ -305,23 +349,31 @@ define(function() {
                 isDisabled = this.sandbox.dom.hasClass($listItem, 'disabled'),
                 id = this.sandbox.dom.data($listItem, 'id'),
                 item = this.items[id],
-                classEyeOpen = 'icon-half-eye-open',
-                classEyeClose = 'icon-half-eye-close';
-
-            this.sandbox.dom.toggleClass($listItem, 'disabled');
+                visible = iconClasses.visible,
+                hidden = iconClasses.hidden;
 
             if (isDisabled) {
-                this.sandbox.dom.removeClass(event.currentTarget, classEyeClose);
-                this.sandbox.dom.prependClass(event.currentTarget, classEyeOpen);
+                // enable
+                this.numVisible++;
+                this.sandbox.dom.removeClass(event.currentTarget, hidden);
+                this.sandbox.dom.prependClass(event.currentTarget, visible);
             } else {
-                this.sandbox.dom.prependClass(event.currentTarget, classEyeClose);
-                this.sandbox.dom.removeClass(event.currentTarget, classEyeOpen);
+                // disable
+                // one column must stay visible
+                if (this.numVisible === 1) {
+                    return;
+                }
+
+                this.numVisible--;
+                this.sandbox.dom.prependClass(event.currentTarget, hidden);
+                this.sandbox.dom.removeClass(event.currentTarget, visible);
             }
 
+            this.sandbox.dom.toggleClass($listItem, 'disabled');
             item.disabled = !isDisabled;
 
             if (!event.doNotEmitEvents) {
-                this.sandbox.emit(isDisabled ? ENABLED : DISABLED, item);
+                this.sandbox.emit(isDisabled ? ENABLED.call(this) : DISABLED.call(this), item);
             }
         };
 
@@ -362,6 +414,8 @@ define(function() {
          */
         render: function(data) {
 
+            this.numVisible = data.length;
+
             this.options.data = data;
             // temporary data save
             this.data = this.sandbox.util.extend(true, [], this.options.data);
@@ -394,11 +448,11 @@ define(function() {
 
             // show on startup
             if (!this.options.hidden) {
-                this.sandbox.dom.show($container);
+                toggleDropdown.call(this);
             }
 
             // initialization finished
-            this.sandbox.emit(INITIALIZED);
+            this.sandbox.emit(INITIALIZED.call(this));
         },
 
         /**

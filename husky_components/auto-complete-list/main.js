@@ -29,6 +29,7 @@
  * @param {String} [options.prefetchUrl] url to prefetch data for the autocomplete component
  * @param {String} [options.remoteUrl] url to fetch data  for the autocomplete component from on input
  * @param {Object} [options.autocompleteOptions] options to pass to the autocomplete component
+ * @param {String} [options.autocompleteParameter] name of parameter which contains the user's input (for auto-complete)
  * @param {Integer} [options.maxListItems] maximum amount of list items accepted (0 = no limit)
  * @param {Boolean} [options.CapitalizeFirstLetter] if true the first letter of each item gets capitalized
  * @param {String} [options.listItemClass] CSS-class for list items
@@ -40,6 +41,8 @@
  * @param {String} [options.arrowDownClass] CSS-class for arrow down icon
  * @param {String} [options.arrowUpClass] CSS-class for arrow up icon
  * @param {Integer} [options.slideDuration] ms - duration for sliding suggestinos up/down
+ * @param {String} [options.elementTagDataName] attribute name to store list of tags on element
+ * @param {String} [options.autoCompleteIcon] Icon Class-suffix for autocomplete-suggestion-icon
  */
 define([], function() {
 
@@ -52,7 +55,7 @@ define([], function() {
                 instanceName: 'undefined',
                 items: [],
                 itemsUrl: '',
-                itemsKey: 'items',
+                itemsKey: '_embedded',
                 suggestions: [],
                 suggestionsHeadline: '',
                 suggestionsUrl: '',
@@ -64,6 +67,7 @@ define([], function() {
                 prefetchUrl: '',
                 remoteUrl: '',
                 autocompleteOptions: {},
+                getParameter: 'query',
                 maxListItems: 0,
                 CapitalizeFirstLetter: false,
                 listItemClass: 'auto-complete-list-selection',
@@ -74,7 +78,9 @@ define([], function() {
                 togglerSelector: '.toggler',
                 arrowDownClass: 'arrow-down',
                 arrowUpClass: 'arrow-up',
-                slideDuration: 500
+                slideDuration: 500,
+                elementTagDataName: 'tags',
+                autoCompleteIcon: ''
             },
 
             templates = {
@@ -84,7 +90,7 @@ define([], function() {
                     '        <%= label %>',
                     '            <div class="auto-complete-list">',
                     '                <div class="husky-autocomplete"></div>',
-                    '                <div class="toggler"></div>',
+                    '                <div class="toggler"><span></span></div>',
                     '            </div>',
                     '        </label>',
                     '    </div>'
@@ -278,7 +284,8 @@ define([], function() {
                                 localData: this.options.localData,
                                 prefetchUrl: this.options.prefetchUrl,
                                 remoteUrl: this.options.remoteUrl,
-                                getParameter: this.options.getParameter
+                                getParameter: this.options.getParameter,
+                                suggestionImg: this.options.autoCompleteIcon
                             },
                             this.options.autocompleteOptions
                         )
@@ -304,6 +311,14 @@ define([], function() {
                                     return true;
                                 }.bind(this)
                             });
+                this.setElementDataTags();
+                this.setDropdownWidth();
+            },
+
+            setDropdownWidth: function() {
+                this.sandbox.dom.css(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), {
+                    width: this.sandbox.dom.width(this.$el)+'px'
+                });
             },
 
             /**
@@ -330,6 +345,14 @@ define([], function() {
                     }
                 }.bind(this));
 
+                this.sandbox.on(createEventName.call(this, 'set-tags'), function(tags) {
+                    this.pushTags(tags);
+                }.bind(this));
+
+                this.sandbox.on(ITEM_ADDED.call(this), function(newTag) {
+                    this.setElementDataTags(newTag);
+                }.bind(this));
+
                 //if an autocomplete-suggestion gets clicked on, it gets added to the list
                 this.sandbox.on('husky.auto-complete.'+ this.options.instanceName +'.select', function(d) {
                     this.pushTag(d.name);
@@ -338,12 +361,14 @@ define([], function() {
                 this.sandbox.dom.on(this.$input, 'keydown', function(event) {
                     if(event.keyCode === 8 && this.sandbox.dom.val(this.$input).trim() === '') {
                         this.itemDeleteHandler();
+                        this.setElementDataTags();
                     }
                 }.bind(this));
 
                 this.sandbox.dom.on(this.$el, 'click', function(event) {
                     if(this.sandbox.dom.hasClass(event.target, 'tm-tag-remove') === true) {
                         this.itemDeleteHandler();
+                        this.setElementDataTags();
                     }
                 }.bind(this));
 
@@ -354,6 +379,18 @@ define([], function() {
                         this.toggleSuggestions();
                     }.bind(this));
                 }
+            },
+
+            /**
+             * Binds the tags to the element
+             * @param newTag {String} newly added tag
+             */
+            setElementDataTags: function(newTag) {
+                var tags = this.sandbox.util.extend([], this.getTags());
+                if (tags.indexOf(newTag) === -1 && typeof newTag !== 'undefined') {
+                    tags = tags.concat([newTag]);
+                }
+                this.sandbox.dom.data(this.$el, this.options.elementTagDataName, tags);
             },
 
             /**
@@ -603,6 +640,16 @@ define([], function() {
                     this.tagApi.tagsManager('pushTag', value);
                 } else {
                     return false;
+                }
+            },
+
+            /**
+             * Pushes an array of items to the list
+             * @param value {Array} array with items to push to the list
+             */
+            pushTags: function(tags) {
+                for (var i = -1, length = tags.length; ++i < length;) {
+                    this.pushTag(tags[i]);
                 }
             },
 

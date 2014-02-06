@@ -10,6 +10,13 @@
     font-family: $baseIconFont;
 }
 
+.icon-tag {
+  &::after {
+    content: "\E066";
+    display: inline-block;
+  }
+}
+
 .icon-remove {
     &::after {
         content: "\E208";
@@ -128,6 +135,14 @@
         content: "\e045";
         display: inline-block;
     }
+}
+
+.icon-floppy-save {
+  cursor: pointer;
+  &::after {
+    content: "\e447";
+    display: inline-block;
+  }
 }
 
 .icon-building {
@@ -436,5 +451,35 @@
   &::after {
     content: "\e208";
     display: inline-block;
+  }
+}
+
+.icon-publish {
+    &::after {
+        content: "";
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 1px solid $white;
+        background: $green;
+        position: relative;
+        top: 2px;
+        left: 0px;
+    }
+}
+
+.icon-unpublish {
+  &::after {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid $white;
+    background: $red;
+    position: relative;
+    top: 2px;
+    left: 0px;
   }
 }

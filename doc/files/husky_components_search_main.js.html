@@ -145,7 +145,7 @@ define([], function() {
         },
         defaults = {
             instanceName: null,
-            placeholderText: &#x27;Search...&#x27;,
+            placeholderText: &#x27;public.search&#x27;,
             appearance: &#x27;gray&#x27;
         },
 
@@ -192,7 +192,7 @@ define([], function() {
         render: function() {
             this.sandbox.dom.addClass(this.$el, &#x27;search-container&#x27;);
             this.sandbox.dom.addClass(this.$el, this.options.appearance);
-            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {placeholderText: this.options.placeholderText}));
+            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {placeholderText: this.sandbox.translate(this.options.placeholderText)}));
 
         },
 
@@ -226,7 +226,8 @@ define([], function() {
             }
         },
 
-        submitSearch: function() {
+        submitSearch: function(event) {
+            event.preventDefault();
 
             // get search value
 
@@ -242,6 +243,7 @@ define([], function() {
         },
 
         removeSearch: function(event) {
+            event.preventDefault();
             var $input;
             $input = this.sandbox.dom.next(event.currentTarget, &#x27;input&#x27;);
 

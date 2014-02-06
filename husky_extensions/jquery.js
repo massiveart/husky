@@ -47,7 +47,10 @@
             };
 
             app.core.dom.html = function(selector, content) {
-                return $(selector).html(content);
+                if (typeof content !== 'undefined') {
+                    return $(selector).html(content);
+                }
+                return $(selector).html();
             };
 
             app.core.dom.parseHTML = function(data) {
@@ -114,8 +117,16 @@
                 return $(selector).parent();
             };
 
-            app.core.dom.width = function(selector) {
-                return $(selector).width();
+            app.core.dom.width = function(selector, value) {
+                if (!!value) {
+                    return $(selector).width(value);
+                } else {
+                    return $(selector).width();
+                }
+            };
+
+            app.core.dom.outerWidth = function(selector) {
+                return $(selector).outerWidth();
             };
 
             app.core.dom.height = function(selector, value) {
@@ -123,6 +134,14 @@
                     return $(selector).height();
                 }
                 return $(selector).height(value);
+            };
+
+            app.core.dom.height = function(selector, value) {
+                if (!!value) {
+                    return $(selector).height(value);
+                } else {
+                    return $(selector).height();
+                }
             };
 
             app.core.dom.offset = function(selector, attributes) {
@@ -142,9 +161,17 @@
                 return $(context).detach(selector);
             };
 
-            app.core.dom.attr = function(selector, attributes) {
-                attributes = attributes || {};
-                return $(selector).attr(attributes);
+            app.core.dom.attr = function(selector, attributeName, value) {
+                if (!value && value !== '') {
+                    attributeName = attributeName || {};
+                    return $(selector).attr(attributeName);
+                } else {
+                    return $(selector).attr(attributeName, value);
+                }
+            };
+
+            app.core.dom.removeAttr = function(selector, attributeName) {
+                return $(selector).removeAttr(attributeName);
             };
 
             app.core.dom.is = function(selector, type) {

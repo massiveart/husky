@@ -91,9 +91,9 @@ define([], function() {
 
             if (items.length > 0) {
 
-                if(typeof(items[0]) === 'string') {
+                if (typeof(items[0]) === 'string') {
                     this.sandbox.util.each(items, function(index, value) {
-                        if(this.options.preSelectedElements.indexOf(value) >= 0) {
+                        if (this.options.preSelectedElements.indexOf(value) >= 0) {
                             this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, 'checked'));
                             this.selectedElements.push(value);
                             this.selectedElementsValues.push(value);
@@ -101,9 +101,9 @@ define([], function() {
                             this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, ''));
                         }
                     }.bind(this));
-                } else if(typeof(items[0]) === 'object') {
+                } else if (typeof(items[0]) === 'object') {
                     this.sandbox.util.each(items, function(index, value) {
-                        if(this.options.preSelectedElements.indexOf(value.id) >= 0) {
+                        if (this.options.preSelectedElements.indexOf(value.id) >= 0) {
                             this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, 'checked'));
                             this.selectedElements.push((value.id).toString());
                             this.selectedElementsValues.push(value[this.options.valueName]);
@@ -150,7 +150,7 @@ define([], function() {
                 length = elements.length,
                 key, index, $checkbox;
 
-            for(;++i < length;) {
+            for (; ++i < length;) {
                 key = this.sandbox.dom.attr(elements[i], 'data-id');
                 $checkbox = this.sandbox.dom.find('input[type=checkbox]', elements[i])[0];
                 index = this.selectedElements.indexOf(key);
@@ -199,7 +199,7 @@ define([], function() {
 
             this.changeLabel();
 
-            if(this.options.singleSelect === true) {
+            if (this.options.singleSelect === true) {
                 this.hideDropDown();
             }
 
@@ -226,7 +226,7 @@ define([], function() {
         },
 
         // toggle dropDown visible
-        toggleDropDown: function () {
+        toggleDropDown: function() {
             this.sandbox.logger.log('toggle dropdown ' + this.options.instanceName);
 
             if (this.dropdownVisible === true) {
@@ -296,8 +296,8 @@ define([], function() {
                     return [
                         '<li data-id="', value, '">',
                         '    <div class="grid-row">',
-                        '        <div class="check'+ hiddenClass +'">',
-                        '            <input type="checkbox" class="form-element custom-checkbox"',checked,'/>',
+                        '        <div class="check' + hiddenClass + '">',
+                        '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
                         '            <span class="custom-checkbox-icon"></span>',
                         '        </div>',
                         '        <div class="item-value">', value, '</div>',
@@ -310,8 +310,8 @@ define([], function() {
                     return [
                         '<li data-id="', value.id, '">',
                         '    <div class="grid-row">',
-                        '        <div class="check'+ hiddenClass +'">',
-                        '            <input type="checkbox" class="form-element custom-checkbox"',checked,'/>',
+                        '        <div class="check' + hiddenClass + '">',
+                        '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
                         '            <span class="custom-checkbox-icon"></span>',
                         '        </div>',
                         '        <div class="item-value">', value[property], '</div>',

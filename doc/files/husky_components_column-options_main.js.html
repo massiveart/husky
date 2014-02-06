@@ -403,7 +403,7 @@ define(function() {
                 this.sandbox.dom.append(this.$list, $listItem);
 
                 // set to disabled
-                if (item.disabled) {
+                if (typeof item.disabled !== &#x27;undefined&#x27; &amp;&amp; item.disabled !== &quot;false&quot; &amp;&amp; item.disabled !== false ) {
                     toggleVisibility.call(this, {currentTarget: this.sandbox.dom.find(&#x27;.visibility-toggle&#x27;, $listItem), doNotEmitEvents: true, preventDefault: function() {
                     }});
                 }
