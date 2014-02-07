@@ -16,7 +16,11 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="stylesheet" href="../../dist/husky.min.css">
     <style type="text/css">
-        #smart-content {
+        h1 {
+            padding: 20px 0 0 50px;
+        }
+        #smart-content,
+        #smart-content2 {
             padding: 50px 0 0 50px;
         }
         .fixed-width {
@@ -25,11 +29,17 @@
     </style>
 </head>
 <body>
+<h1>Smart Content Husky Demo</h1>
 <div class="container">
     <div class="grid">
         <div class="grid-row">
             <div class="grid-col-6 fixed-width">
                 <div id="smart-content"></div>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="grid-col-6 fixed-width m-top-20">
+                <div id="smart-content2"></div>
             </div>
         </div>
     </div>
@@ -47,11 +57,18 @@
         'use strict';
 
         var fakeServer = sinon.fakeServer.create();
-        fakeServer.respondWith('GET', '/smartcontent?dataSource=&incSubFolders=false&category=&tags=&sortBy=&sortMethod=asc&presentAs=', [200, { 'Content-Type': 'application/json' },
+        fakeServer.respondWith('GET', '/smartcontent?dataSource=0&incSubFolders=false&category=0&tags=&sortBy=0&sortMethod=asc&presentAs=0&limitResult=0', [200, { 'Content-Type': 'application/json' },
             '{"_embedded": [{"id": 1, "name": "Produkt A"}, {"id": 2, "name": "Produkt B"}, {"id": 3, "name": "Produkt C"}, {"id": 4, "name": "Produkt D"}, {"id": 5, "name": "Produkt E"}, {"id": 6, "name": "Produkt F"}, {"id": 7, "name": "Produkt G"}, {"id": 8, "name": "Produkt H"}, {"id": 9, "name": "Produkt I"}, {"id": 10, "name": "Produkt J"}]}'
         ]);
-        fakeServer.respondWith('GET', '/smartcontent?dataSource=1&incSubFolders=false&category=&tags=&sortBy=&sortMethod=asc&presentAs=', [200, { 'Content-Type': 'application/json' },
+        fakeServer.respondWith('GET', '/smartcontent?dataSource=1&incSubFolders=false&category=&tags=&sortBy=&sortMethod=asc&presentAs=&limitResult=', [200, { 'Content-Type': 'application/json' },
             '{"_embedded": [{"id": 1, "name": "Produkt X"}, {"id": 2, "name": "Produkt Y"}, {"id": 3, "name": "Produkt Z"}, {"id": 4, "name": "Produkt Q"}]}'
+        ]);
+
+        fakeServer.respondWith('GET', '/smartcontent2?dataSource=0&incSubFolders=false&category=0&tags=&sortBy=0&sortMethod=asc&presentAs=0&limitResult=0', [200, { 'Content-Type': 'application/json' },
+            '{"_embedded": [{"id": 1, "name": "Page A"}, {"id": 2, "name": "Page B"}, {"id": 3, "name": "Page C"}, {"id": 4, "name": "Page D"}, {"id": 5, "name": "Page E"}, {"id": 6, "name": "Page F"}, {"id": 7, "name": "Page G"}, {"id": 8, "name": "Page H"}, {"id": 9, "name": "Page I"}, {"id": 10, "name": "Page J"}]}'
+        ]);
+        fakeServer.respondWith('GET', '/smartcontent2?dataSource=4&incSubFolders=false&category=&tags=&sortBy=&sortMethod=asc&presentAs=&limitResult=', [200, { 'Content-Type': 'application/json' },
+            '{"_embedded": [{"id": 1, "name": "Page X"}, {"id": 2, "name": "Page Y"}, {"id": 3, "name": "Page Z"}, {"id": 4, "name": "Page Q"}]}'
         ]);
 
         var app = Husky({ debug: { enable: true }}),
@@ -62,6 +79,7 @@
             options: {
                 el: '#smart-content',
                 url: '/smartcontent',
+                instanceName: 'smartcontent1',
                 dataSources: [{id: 1, name: 'home/'},
                               {id: 2, name: 'home/products/'},
                               {id: 3, name: 'home/products/technical'}],
@@ -73,14 +91,45 @@
                          {id: 3, name: 'Price'}],
                 presentAs: [{id: 1, name: '2-columns with pictures'},
                             {id: 2, name: '1-column with pictures'},
-                            {id: 3, name: 'only pictures'}]
+                            {id: 3, name: 'only pictures'}],
+                translations: {
+                    configureSmartContent: 'Overlay for Smart-content 1'
+                }
             }
-        }]).then(function() {
+            },
+            {
+                name: 'smart-content@husky',
+                options: {
+                    el: '#smart-content2',
+                    url: '/smartcontent2',
+                    instanceName: 'smartcontent2',
+                    dataSources: [{id: 4, name: 'folder/'},
+                        {id: 5, name: 'folder/products/'},
+                        {id: 6, name: 'folder/products/technical'}],
+                    categories: [{id: 4, name: 'No products'},
+                        {id: 5, name: 'Some products'},
+                        {id: 6, name: 'feature products'}],
+                    sortBy: [{id: 4, name: 'First name'},
+                        {id: 5, name: 'Last name'},
+                        {id: 6, name: 'Middle name'}],
+                    presentAs: [{id: 4, name: '20-columns'},
+                        {id: 5, name: '21-column with pictures'},
+                        {id: 6, name: '23-columns'}],
+                    translations: {
+                        configureSmartContent: 'Overlay for Smart-content 2'
+                    }
+                }
+            }]).then(function() {
             app.logger.log('Aura started...');
-            app.sandbox.on('husky.smart-content.data-request', function() {
+            app.sandbox.on('husky.smart-content.smartcontent1.data-request', function() {
                setTimeout(function() {
                    fakeServer.respond();
                }, 100);
+            });
+            app.sandbox.on('husky.smart-content.smartcontent2.data-request', function() {
+                setTimeout(function() {
+                    fakeServer.respond();
+                }, 100);
             });
         });
     });

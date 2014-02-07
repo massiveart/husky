@@ -113,7 +113,6 @@
 
 .smart-overlay-content {
     height: 100%;
-    padding: 0 0 0 20px;
     font-size: $smallFontSize;
 
     .desc {
@@ -139,6 +138,9 @@
     }
     .left {
         margin-right: 20px;
+    }
+    .full {
+        padding-right: 0;
     }
     .check {
         margin-top: 25px;

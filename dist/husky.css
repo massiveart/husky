@@ -858,7 +858,7 @@ h5 {
 /* line 53, ../scss/overlay.scss */
 .overlay-content {
   padding-left: 0;
-  margin: 10px 0;
+  margin: 10px 20px;
 }
 
 /* line 4, ../scss/dropdown-menu.scss */
@@ -5935,71 +5935,74 @@ a.btn-black, a.btn-highlight {
 /* line 114, ../scss/modules/smart-content.scss */
 .smart-overlay-content {
   height: 100%;
-  padding: 0 0 0 20px;
   font-size: 12px;
 }
-/* line 119, ../scss/modules/smart-content.scss */
+/* line 118, ../scss/modules/smart-content.scss */
 .smart-overlay-content .desc {
   font-size: 14px;
   color: #999999;
   padding-bottom: 5px;
   display: block;
 }
-/* line 125, ../scss/modules/smart-content.scss */
+/* line 124, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item, .smart-overlay-content .item-half {
   margin-bottom: 25px;
   min-height: 55px;
 }
-/* line 129, ../scss/modules/smart-content.scss */
+/* line 128, ../scss/modules/smart-content.scss */
 .smart-overlay-content label {
   color: black;
   font-size: 12px;
 }
-/* line 133, ../scss/modules/smart-content.scss */
+/* line 132, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item-half {
   float: left;
   width: 170px;
 }
-/* line 137, ../scss/modules/smart-content.scss */
+/* line 136, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item {
   padding-right: 20px;
 }
-/* line 140, ../scss/modules/smart-content.scss */
+/* line 139, ../scss/modules/smart-content.scss */
 .smart-overlay-content .left {
   margin-right: 20px;
 }
-/* line 143, ../scss/modules/smart-content.scss */
+/* line 142, ../scss/modules/smart-content.scss */
+.smart-overlay-content .full {
+  padding-right: 0;
+}
+/* line 145, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check {
   margin-top: 25px;
 }
-/* line 145, ../scss/modules/smart-content.scss */
+/* line 147, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check .description {
   padding-left: 10px;
 }
-/* line 148, ../scss/modules/smart-content.scss */
+/* line 150, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check .custom-checkbox-icon {
   margin-bottom: 2px;
 }
-/* line 152, ../scss/modules/smart-content.scss */
+/* line 154, ../scss/modules/smart-content.scss */
 .smart-overlay-content .sortMethod {
   margin-top: 25px;
 }
-/* line 155, ../scss/modules/smart-content.scss */
+/* line 157, ../scss/modules/smart-content.scss */
 .smart-overlay-content input.limit-to {
   height: 30px;
   width: 100%;
   padding-left: 10px;
 }
-/* line 160, ../scss/modules/smart-content.scss */
+/* line 162, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list {
   border: 1px solid #cccccc;
   border-radius: 4px 4px 0 0;
 }
-/* line 163, ../scss/modules/smart-content.scss */
+/* line 165, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list input {
   margin: 7px 0 0 0;
 }
-/* line 166, ../scss/modules/smart-content.scss */
+/* line 168, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list .tt-suggestions {
   width: 360px;
 }
