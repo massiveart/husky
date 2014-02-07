@@ -810,9 +810,9 @@ h5 {
   padding: 5px 0;
   margin-top: -7px;
   margin-left: 0px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 0px 0px;
-  -moz-box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 0px 0px;
-  box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 0px 0px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
+  box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
 }
 /* line 23, ../scss/dropdown-menu.scss */
 .custom-dropdown-menu.right-aligned, .husky-top-toolbar .right-aligned.top-toolbar-dropdown-menu {
@@ -3477,9 +3477,9 @@ hr.divider {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 0px 0px;
-  -moz-box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 0px 0px;
-  box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 0px 0px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
+  box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
 }
 /* line 28, ../scss/modules/column-options.scss */
 .column-options-container.right-aligned {
@@ -3786,15 +3786,16 @@ label.large {
 /* line 58, ../scss/modules/form.scss */
 label .form-element {
   margin-top: 5px;
+  border: 1px solid #cccccc;
 }
-/* line 62, ../scss/modules/form.scss */
+/* line 63, ../scss/modules/form.scss */
 label.inline {
   font-size: 1em;
   font-weight: normal;
   display: inline;
 }
 
-/* line 71, ../scss/modules/form.scss */
+/* line 72, ../scss/modules/form.scss */
 .custom-checkbox {
   width: 14px;
   height: 14px;
@@ -3802,13 +3803,13 @@ label.inline {
   opacity: 0;
   cursor: pointer;
 }
-/* line 86, ../scss/modules/form.scss */
+/* line 87, ../scss/modules/form.scss */
 .custom-checkbox:checked + .custom-checkbox-icon::after, .custom-checkbox.is-checked + .custom-checkbox-icon::after {
   content: "\e207";
   position: relative;
   top: -3px;
 }
-/* line 94, ../scss/modules/form.scss */
+/* line 95, ../scss/modules/form.scss */
 .custom-checkbox + .custom-checkbox-icon {
   display: inline-block;
   width: 14px;
@@ -3822,27 +3823,27 @@ label.inline {
   vertical-align: middle;
 }
 
-/* line 113, ../scss/modules/form.scss */
+/* line 114, ../scss/modules/form.scss */
 textarea {
   resize: both;
 }
 
-/* line 117, ../scss/modules/form.scss */
+/* line 118, ../scss/modules/form.scss */
 textarea.vertical {
   resize: vertical;
 }
 
-/* line 121, ../scss/modules/form.scss */
+/* line 122, ../scss/modules/form.scss */
 textarea.horizontal {
   resize: horizontal;
 }
 
-/* line 125, ../scss/modules/form.scss */
+/* line 126, ../scss/modules/form.scss */
 textarea.noResize {
   resize: none;
 }
 
-/* line 129, ../scss/modules/form.scss */
+/* line 130, ../scss/modules/form.scss */
 textarea.form-element {
   width: 100%;
   height: 40px;
@@ -3852,7 +3853,7 @@ textarea.form-element {
   font-family: inherit;
 }
 
-/* line 141, ../scss/modules/form.scss */
+/* line 142, ../scss/modules/form.scss */
 .custom-radio {
   width: 18px;
   height: 18px;
@@ -3860,7 +3861,7 @@ textarea.form-element {
   opacity: 0;
   cursor: pointer;
 }
-/* line 153, ../scss/modules/form.scss */
+/* line 154, ../scss/modules/form.scss */
 .custom-radio:checked + .custom-radio-icon::after, .custom-radio.is-checked + .custom-radio-icon::after {
   content: "";
   display: block;
@@ -3869,7 +3870,7 @@ textarea.form-element {
   border-radius: 18px;
   background-color: #999;
 }
-/* line 164, ../scss/modules/form.scss */
+/* line 165, ../scss/modules/form.scss */
 .custom-radio + .custom-radio-icon {
   display: inline-block;
   width: 18px;
@@ -4573,9 +4574,9 @@ li a.navigation-settings-icon {
   box-sizing: border-box;
   border-radius: 4px;
   background-color: #cccccc;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 2px 0 0;
-  -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 2px 0 0;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 2px 0 0;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 0 2px 0 0;
+  -moz-box-shadow: rgba(0, 0, 0, 0.08) 0 2px 0 0;
+  box-shadow: rgba(0, 0, 0, 0.08) 0 2px 0 0;
 }
 /* line 6, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-nav:after {
@@ -4757,9 +4758,9 @@ li a.navigation-settings-icon {
   padding: 5px 0;
   margin-top: -7px;
   margin-left: 0px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 0px 0px;
-  -moz-box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 0px 0px;
-  box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 0px 0px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
+  box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
 }
 /* line 208, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-dropdown-menu.right-aligned {
@@ -5381,9 +5382,9 @@ a.btn-black, a.btn-highlight {
   padding: 5px 0;
   margin-top: -7px;
   margin-left: 0px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 0px 0px;
-  -moz-box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 0px 0px;
-  box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 0px 0px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
+  box-shadow: rgba(0, 0, 0, 0.08) 2px 2px 0px 0px;
 }
 /* line 234, ../scss/modules/toolbar.scss */
 .toolbar-container ul.toolbar-dropdown-menu.right-aligned {
@@ -6178,10 +6179,6 @@ a.btn-black, a.btn-highlight {
   display: block;
 }
 
-/* line 2, ../scss/modules/datagrid.scss */
-.husky-datagrid table {
-  table-layout: fixed;
-}
 /* line 5, ../scss/modules/datagrid.scss */
 .husky-datagrid table td {
   overflow: hidden;
@@ -6204,4 +6201,23 @@ a.btn-black, a.btn-highlight {
 /* line 23, ../scss/modules/datagrid.scss */
 .husky-datagrid thead th.is-selected {
   font-weight: bold;
+}
+/* line 33, ../scss/modules/datagrid.scss */
+.husky-datagrid.overflow table {
+  position: relative;
+}
+/* line 37, ../scss/modules/datagrid.scss */
+.husky-datagrid.overflow .table-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+/* line 43, ../scss/modules/datagrid.scss */
+.husky-datagrid.overflow .select-all {
+  position: absolute;
+  left: 0;
+}
+/* line 50, ../scss/modules/datagrid.scss */
+.husky-datagrid.overflow .table-container {
+  overflow: auto;
 }

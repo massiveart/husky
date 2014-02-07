@@ -1,9 +1,9 @@
 .husky-datagrid {
     table {
-        table-layout: fixed;
+        //        table-layout: fixed;
 
         td {
-            overflow:hidden;
+            overflow: hidden;
         }
     }
 
@@ -13,7 +13,7 @@
             padding-top: 10px;
         }
         th {
-            padding-top:0;
+            padding-top: 0;
             font-weight: normal;
 
             &.is-sortable {
@@ -25,4 +25,34 @@
             }
         }
     }
+
+    &.oversized {
+        .table-cell {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+            white-space: nowrap;
+        }
+    }
+
+    // overflow
+    &.overflow {
+
+        table {
+            position: relative;
+        }
+
+
+        .select-all {
+            position: absolute;
+            left: 0;
+        }
+
+
+
+        .table-container {
+            overflow: auto;
+        }
+    }
+
 }

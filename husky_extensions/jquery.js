@@ -320,7 +320,7 @@
             };
 
             app.core.dom.scrollLeft = function(selector, value) {
-                if (!!value) {
+                if (typeof value !== 'undefined') {
                     $(selector).scrollLeft(value);
                 } else {
                     return $(selector).scrollLeft();
