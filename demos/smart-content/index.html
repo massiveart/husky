@@ -1,0 +1,90 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Smart Content Demo</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../dist/husky.min.css">
+    <style type="text/css">
+        #smart-content {
+            padding: 50px 0 0 50px;
+        }
+        .fixed-width {
+            width: 820px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="grid">
+        <div class="grid-row">
+            <div class="grid-col-6 fixed-width">
+                <div id="smart-content"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/sinon.js"></script>
+<script src="../js/jquery.js"></script>
+<script src="../js/require.js"></script>
+<script type="text/javascript">
+    require.config({
+        baseUrl: '../../'
+    });
+
+    require(['lib/husky'], function(Husky) {
+        'use strict';
+
+        var fakeServer = sinon.fakeServer.create();
+        fakeServer.respondWith('GET', '/smartcontent?dataSource=&incSubFolders=false&category=&tags=&sortBy=&sortMethod=asc&presentAs=', [200, { 'Content-Type': 'application/json' },
+            '{"_embedded": [{"id": 1, "name": "Produkt A"}, {"id": 2, "name": "Produkt B"}, {"id": 3, "name": "Produkt C"}, {"id": 4, "name": "Produkt D"}, {"id": 5, "name": "Produkt E"}, {"id": 6, "name": "Produkt F"}, {"id": 7, "name": "Produkt G"}, {"id": 8, "name": "Produkt H"}, {"id": 9, "name": "Produkt I"}, {"id": 10, "name": "Produkt J"}]}'
+        ]);
+        fakeServer.respondWith('GET', '/smartcontent?dataSource=1&incSubFolders=false&category=&tags=&sortBy=&sortMethod=asc&presentAs=', [200, { 'Content-Type': 'application/json' },
+            '{"_embedded": [{"id": 1, "name": "Produkt X"}, {"id": 2, "name": "Produkt Y"}, {"id": 3, "name": "Produkt Z"}, {"id": 4, "name": "Produkt Q"}]}'
+        ]);
+
+        var app = Husky({ debug: { enable: true }}),
+                _ = app.sandbox.util._;
+
+        app.start([{
+            name: 'smart-content@husky',
+            options: {
+                el: '#smart-content',
+                url: '/smartcontent',
+                dataSources: [{id: 1, name: 'home/'},
+                              {id: 2, name: 'home/products/'},
+                              {id: 3, name: 'home/products/technical'}],
+                categories: [{id: 1, name: 'New products'},
+                             {id: 2, name: 'Old products'},
+                             {id: 3, name: 'technical products'}],
+                sortBy: [{id: 1, name: 'Description'},
+                         {id: 2, name: 'Name'},
+                         {id: 3, name: 'Price'}],
+                presentAs: [{id: 1, name: '2-columns with pictures'},
+                            {id: 2, name: '1-column with pictures'},
+                            {id: 3, name: 'only pictures'}]
+            }
+        }]).then(function() {
+            app.logger.log('Aura started...');
+            app.sandbox.on('husky.smart-content.data-request', function() {
+               setTimeout(function() {
+                   fakeServer.respond();
+               }, 100);
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

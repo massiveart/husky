@@ -1,0 +1,56 @@
+.overlay-container {
+  width: $overlayContainerWidth;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  margin-left: -($overlayContainerWidth / 2);
+  background-color: $white;
+  border: 0px solid $grayLighter;
+  z-index: 1000;
+  @include standard-box-shadow;
+
+  &.right-aligned {
+    left: auto;
+    right: 0;
+  }
+}
+
+.overlay-header {
+  padding: 15px 40px 15px 20px;
+  min-height: 50px;
+  border-bottom: 1px solid $grayLighterer;
+  position: relative;
+
+  .title {
+    color: $grayLight;
+    font-size: 23px;
+    padding-right: 10px;
+    vertical-align: text-top;
+  }
+
+  .close-button {
+    position: absolute;
+    top: 17px;
+    right: 20px;
+    font-size: 20px;
+    float:right;
+    text-decoration: none;
+    color: black;
+  }
+
+}
+
+.overlay-footer {
+  padding: 10px 0;
+  border-top: 1px solid $grayLighter;
+  text-align: center;
+
+  .save-button {
+    display: inline-block;
+  }
+}
+
+.overlay-content {
+  padding-left: 0;
+  margin: 10px 0;
+}
