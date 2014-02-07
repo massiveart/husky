@@ -59,6 +59,13 @@
                     <div class="grid-col-11" id="ddms6"></div>
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <div class="grid-col-11" id="ddms7"></div>
+                </td>
+                <td>
+                </td>
+            </tr>
             </tbody>
         </table>
 
@@ -168,6 +175,23 @@
                             defaultLabel: 'No unselect..',
                             value: 'name',
                             noDeselect: true,
+                            data: [
+                                {id: 0, name: 'Deutsch'},
+                                {id: 1, name: 'English'},
+                                {id: 2, name: 'Spanish'},
+                                {id: 3, name: 'Italienisch'}
+                            ]
+                        }
+                    },
+                    {
+                        name: 'dropdown-multiple-select@husky',
+                        options: {
+                            el: '#ddms7',
+                            instanceName: 'ddms8',
+                            defaultLabel: 'I am disabled',
+                            value: 'name',
+                            noDeselect: true,
+                            disabled: true,
                             data: [
                                 {id: 0, name: 'Deutsch'},
                                 {id: 1, name: 'English'},
