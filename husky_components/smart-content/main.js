@@ -151,7 +151,7 @@ define([], function() {
             '</li>'
         ].join(''),
         overlaySkeleton: [
-            '<div class="overlay-container">',
+            '<div class="overlay-container smart-content-overlay">',
                 '<div class="overlay-header">',
                     '<span class="title"><%= title %></span>',
                     '<a class="icon-remove2 close-button" href="#"></a>',
@@ -286,6 +286,8 @@ define([], function() {
             };
             this.overlay = {
                 opened: false,
+                collapsed: false,
+                normalHeight: null,
                 $el: null,
                 $close: null,
                 $ok: null,
@@ -550,7 +552,12 @@ define([], function() {
                     this.startOverlayComponents();
                     this.bindOverlayEvents();
                 }
-                this.sandbox.dom.append(this.sandbox.dom.$('body'), this.overlay.$el);
+                this.sandbox.dom.append(this.$el, this.overlay.$el);
+
+                //ensures that the overlay box fits the window form the beginning
+                this.overlay.normalHeight = (this.overlay.normalHeight === null) ? this.sandbox.dom.height(this.overlay.$el) : this.overlay.normalHeight;
+                this.overlayResizeHandler();
+
                 this.overlay.opened = true;
                 this.setOverlayTop();
             }
@@ -693,10 +700,49 @@ define([], function() {
                 this.closeOverlay();
             }.bind(this));
 
+            this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
+                this.overlayResizeHandler();
+            }.bind(this));
+
             this.sandbox.on(INPUT_RETRIEVED.call(this), function() {
                 this.setURI();
                 this.loadContent();
             }.bind(this));
+        },
+
+        /**
+         * Handles the shrinking and enlarging of the overlay
+         * if the window gets smaller
+         */
+        overlayResizeHandler: function() {
+            this.setOverlayTop();
+
+            //window is getting smaller - make overlay smaller
+            if (this.sandbox.dom.height(this.sandbox.dom.$window) < this.sandbox.dom.outerHeight(this.overlay.$el)) {
+
+                this.sandbox.dom.height(this.overlay.$content,
+                    (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content))
+                );
+                this.sandbox.dom.css(this.overlay.$content, {'overflow': 'scroll'});
+                this.overlay.collapsed = true;
+
+              //window is getting bigger - make the overlay bigger
+            } else if (this.sandbox.dom.height(this.sandbox.dom.$window) > this.sandbox.dom.outerHeight(this.overlay.$el) &&
+                this.overlay.collapsed === true) {
+
+                //if overlay reached its beginning height - stop
+                if (this.sandbox.dom.height(this.overlay.$el) >= this.overlay.normalHeight) {
+                    this.sandbox.dom.height(this.overlay.$content, 'auto');
+                    this.sandbox.dom.css(this.overlay.$content, {'overflow': 'visible'});
+                    this.overlay.collapsed = false;
+
+                // else enlarge further
+                } else {
+                    this.sandbox.dom.height(this.overlay.$content,
+                        (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content))
+                    );
+                }
+            }
         },
 
         /**

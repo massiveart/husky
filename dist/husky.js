@@ -32268,16 +32268,16 @@ define('__component__$top-toolbar@husky',[], function () {
  * @params {Integer} [options.visibleItems] maximum of items visible at the start and in the view-less state
  * @params {Array} [options.dataSources] array of sources with id and name property
  * @params {Boolean} [options.includeSubFolders] if true sub folders are included right from the beginning
- * @params {Array} [options.preSelectedDataSource] array with id of the preselected source
+ * @params {Integer} [options.preSelectedDataSource] array with id of the preselected source
  * @params {Array} [options.categories] array of categories with id and name property
- * @params {Array} [options.preSelectedCategory] array with id of the preselected category
+ * @params {Integer} [options.preSelectedCategory] array with id of the preselected category
  * @params {Array} [options.tags] array of tags which are inserted at the beginning
  * @params {String} [options.tagsAutoCompleteUrl] url to which the tags input is sent and can be autocompleted
  * @params {Array} [options.sortBy] array of sort-possibilities with id and name property
- * @params {Array} [options.preSelectedSortBy] array with id of the preselected sort-possibility
+ * @params {Integer} [options.preSelectedSortBy] array with id of the preselected sort-possibility
  * @params {String} [options.preSelectedSortMethod] Sort-method to begin with (asc or desc)
  * @params {Array} [options.presentAs] array of presentation-possibilities with id and name property
- * @params {Array} [options.preSelectedPresentAs] array with id presentation-possibility to begin with
+ * @params {Integer} [options.preSelectedPresentAs] array with id presentation-possibility to begin with
  * @params {Integer} [options.limitResult] maximum number of items returned on the request
  * @params {String} [options.instanceName] name of the component instance
  * @params {String} [options.url] url for requesting the items
@@ -32290,6 +32290,30 @@ define('__component__$top-toolbar@husky',[], function () {
  * @params {String} [options.presentAsParameter] parameter for the presentation-possibility id
  * @params {String} [options.limitResultParameter] parameter for the limit-result-value
  * @params {String} [options.resultKey] key for the data in the returning JSON-result
+ *
+ * @params {Object} [options.translations] object that gets merged with the default translation-keys
+ * @params {String} [options.translations.noContentFound] translation key
+ * @params {String} [options.translations.noContentSelected] translation key
+ * @params {String} [options.translations.visible] translation key
+ * @params {String} [options.translations.of] translation key
+ * @params {String} [options.translations.configureSmartContent] translation key
+ * @params {String} [options.translations.dataSource] translation key
+ * @params {String} [options.translations.includeSubFolders] translation key
+ * @params {String} [options.translations.filterByCategory] translation key
+ * @params {String} [options.translations.filterByTags] translation key
+ * @params {String} [options.translations.sortBy] translation key
+ * @params {String} [options.translations.noSorting] translation key
+ * @params {String} [options.translations.ascending] translation key
+ * @params {String} [options.translations.descending] translation key
+ * @params {String} [options.translations.presentAs] translation key
+ * @params {String} [options.translations.limitResultTo] translation key
+ * @params {String} [options.translations.noCategory] translation key
+ * @params {String} [options.translations.choosePresentAs] translation key
+ * @params {String} [options.translations.chooseDataSource] translation key
+ * @params {String} [options.translations.from] translation key
+ * @params {String} [options.translations.subFoldersInclusive] translation key
+ * @params {String} [options.translations.viewAll] translation key
+ * @params {String} [options.translations.viewLess] translation key
  */
 define('__component__$smart-content@husky',[], function() {
 
@@ -32299,16 +32323,16 @@ define('__component__$smart-content@husky',[], function() {
         visibleItems: 3,
         dataSources: [],
         includeSubFolders: false,
-        preSelectedDataSource: [],
+        preSelectedDataSource: 0,
         categories: [],
-        preSelectedCategory: [],
+        preSelectedCategory: 0,
         tags: [],
         tagsAutoCompleteUrl: '',
         sortBy: [],
-        preSelectedSortBy: [],
+        preSelectedSortBy: 0,
         preSelectedSortMethod: 'asc',
         presentAs: [],
-        preSelectedPresentAs: [],
+        preSelectedPresentAs: 0,
         limitResult: 0, //0 = no-limit
         instanceName: '',
         url: '',
@@ -32320,7 +32344,8 @@ define('__component__$smart-content@husky',[], function() {
         sortMethodParameter: 'sortMethod',
         presentAsParameter: 'presentAs',
         limitResultParameter: 'limitResult',
-        resultKey: '_embedded'
+        resultKey: '_embedded',
+        translations: {}
     },
 
     sortMethods = {
@@ -32487,6 +32512,7 @@ define('__component__$smart-content@husky',[], function() {
 
             this.setVariables();
             this.render();
+            this.renderStartContent();
             this.bindEvents();
             this.setURI();
             this.loadContent();
@@ -32526,6 +32552,31 @@ define('__component__$smart-content@husky',[], function() {
                 presentAs: this.options.preSelectedPresentAs,
                 limitResult: this.options.limitResult
             };
+            this.translations = {
+                noContentFound: 'smart-content.nocontent-found',
+                noContentSelected: 'smart-content.nocontent-selected',
+                visible: 'smart-content.visible',
+                of: 'smart-content.of',
+                configureSmartContent: 'smart-content.configure-smart-content',
+                dataSource: 'smart-content.data-source',
+                includeSubFolders: 'smart-content.include-sub-folders',
+                filterByCategory: 'smart-content.filter-by-category',
+                filterByTags: 'smart-content.filter-by-tags',
+                sortBy: 'smart-content.sort-by',
+                noSorting: 'smart-content.no-sorting',
+                ascending: 'smart-content.ascending',
+                descending: 'smart-content.descending',
+                presentAs: 'smart-content.present-as',
+                limitResultTo: 'smart-content.limit-result-to',
+                noCategory: 'smart-content.no-category',
+                choosePresentAs: 'smart-content.choose-present-as',
+                chooseDataSource: 'smart-content.choose-data-source',
+                from: 'smart-content.from',
+                subFoldersInclusive: 'smart-content.sub-folders-inclusive',
+                viewAll: 'smart-content.view-all',
+                viewLess: 'smart-content.view-less'
+            }
+            this.translations = this.sandbox.util.extend(true, {}, this.translations, this.options.translations);
         },
 
         /**
@@ -32562,9 +32613,9 @@ define('__component__$smart-content@husky',[], function() {
         prependSource: function() {
             var desc;
             if (!!this.overlay.data.dataSource.length) {
-                desc = 'From';
+                desc = this.sandbox.translate(this.translations.from);
                 if (this.overlay.data.includeSubFolders !== false) {
-                    desc += ' (incl. Subfolders):';
+                    desc += ' ('+ this.sandbox.translate(this.translations.subFoldersInclusive) +'):';
                 } else {
                     desc += ':';
                 }
@@ -32607,13 +32658,20 @@ define('__component__$smart-content@husky',[], function() {
         },
 
         /**
-         * Renders the content decides whether the footer is rendered or not
+         * initializes the content container
          */
-        renderContent: function() {
+        initContentContainer: function() {
             //if not already exists render content-container
             if(this.$content === null) {
                 this.$content = this.sandbox.dom.find(constants.contentSelector, this.$el);
             }
+        },
+
+        /**
+         * Renders the content decides whether the footer is rendered or not
+         */
+        renderContent: function() {
+            this.initContentContainer();
 
             if (this.items.length !== 0) {
                 var ul, i = -1, length = this.items.length;
@@ -32633,10 +32691,22 @@ define('__component__$smart-content@husky',[], function() {
             } else {
                 //render no-content-template and detach the footer
                 this.sandbox.dom.html(this.$content, _.template(templates.noContent)({
-                                                    no_content: 'No content selected'
+                                                    no_content: this.sandbox.translate(this.translations.noContentSelected)
                 }));
                 this.detachFooter();
             }
+        },
+
+        /**
+         * Renders the content at the beginning
+         * (with no items and before any request)
+         */
+        renderStartContent: function() {
+            this.initContentContainer();
+
+            this.sandbox.dom.html(this.$content, _.template(templates.noContent)({
+                no_content: this.sandbox.translate(this.translations.noContentSelected)
+            }));
         },
 
         /**
@@ -32650,8 +32720,8 @@ define('__component__$smart-content@husky',[], function() {
 
             this.sandbox.dom.html(this.$footer, [
                                                     '<span>',
-                                                        '<strong>'+ this.itemsVisible +' </strong>of ',
-                                                        '<strong>'+ this.items.length +' </strong>visible',
+                                                        '<strong>'+ this.itemsVisible +' </strong>', this.sandbox.translate(this.translations.of) ,' ',
+                                                        '<strong>'+ this.items.length +' </strong>',this.sandbox.translate(this.translations.visible),
                                                     '</span>'
                                                 ].join(''));
 
@@ -32665,9 +32735,9 @@ define('__component__$smart-content@husky',[], function() {
          */
         appendViewToggler: function() {
             if (this.itemsVisible < this.items.length) {
-                this.sandbox.dom.append(this.$footer, '<span class="'+ constants.viewTogglerClass +'">(view all)</span>');
+                this.sandbox.dom.append(this.$footer, '<span class="'+ constants.viewTogglerClass +'">('+ this.sandbox.translate(this.translations.viewAll) +')</span>');
             } else {
-                this.sandbox.dom.append(this.$footer, '<span class="'+ constants.viewTogglerClass +'">(view less)</span>');
+                this.sandbox.dom.append(this.$footer, '<span class="'+ constants.viewTogglerClass +'">('+ this.sandbox.translate(this.translations.viewLess) +')</span>');
             }
         },
 
@@ -32751,7 +32821,7 @@ define('__component__$smart-content@husky',[], function() {
         loadOverlay: function() {
             this.overlay.$el = this.sandbox.dom.createElement(
                 _.template(templates.overlaySkeleton)({
-                    title: 'Configure smart content'
+                    title: this.sandbox.translate(this.translations.configureSmartContent)
             }));
             this.overlay.$close = this.sandbox.dom.find(constants.overlayCloseSelector, this.overlay.$el);
             this.overlay.$ok = this.sandbox.dom.find(constants.overlayOkSelector, this.overlay.$el);
@@ -32764,14 +32834,14 @@ define('__component__$smart-content@husky',[], function() {
         loadOverlayContent: function() {
             this.sandbox.dom.html(this.overlay.$content,
                 _.template(templates.overlayContent)({
-                    data_source: 'Data source',
-                    include_sub: 'Include Sub folders',
-                    filter_by_cat: 'Filter by category',
+                    data_source: this.sandbox.translate(this.translations.dataSource),
+                    include_sub: this.sandbox.translate(this.translations.includeSubFolders),
+                    filter_by_cat: this.sandbox.translate(this.translations.filterByCategory),
                     include_sub_checked: (this.options.includeSubFolders) ? ' checked' : '',
-                    filter_by_tags: 'Filter by Tags',
-                    sort_by: 'Sort by',
-                    present_as: 'Present as',
-                    limit_result_to: 'Limit result to',
+                    filter_by_tags: this.sandbox.translate(this.translations.filterByTags),
+                    sort_by: this.sandbox.translate(this.translations.sortBy),
+                    present_as: this.sandbox.translate(this.translations.presentAs),
+                    limit_result_to: this.sandbox.translate(this.translations.limitResultTo),
                     limit_result: (this.options.limitResult > 0) ? this.options.limitResult : ''
             }));
 
@@ -32787,7 +32857,7 @@ define('__component__$smart-content@husky',[], function() {
                     options: {
                         el: '#' + constants.dataSourceDDId,
                         instanceName: constants.dataSourceDDId,
-                        defaultLabel: 'Choose folder ...',
+                        defaultLabel: this.sandbox.translate(this.translations.chooseDataSource),
                         value: 'name',
                         data: this.options.dataSources,
                         preSelectedElements: [this.options.preSelectedDataSource],
@@ -32800,7 +32870,7 @@ define('__component__$smart-content@husky',[], function() {
                     options: {
                         el: '#' + constants.categoryDDId,
                         instanceName: constants.categoryDDId,
-                        defaultLabel: 'All categories',
+                        defaultLabel: this.sandbox.translate(this.translations.noCategory),
                         value: 'name',
                         data: this.options.categories,
                         preSelectedElements: [this.options.preSelectedCategory],
@@ -32836,7 +32906,8 @@ define('__component__$smart-content@husky',[], function() {
                         instanceName: constants.sortMethodDDId,
                         defaultLabel: 'Select sort method',
                         value: 'name',
-                        data: [sortMethods.asc, sortMethods.desc],
+                        data: [{id: sortMethods.asc, name: this.sandbox.translate(this.translations.ascending)},
+                               {id: sortMethods.desc, name: this.sandbox.translate(this.translations.descending)}],
                         preSelectedElements: [sortMethods[this.options.preSelectedSortMethod]],
                         singleSelect: true,
                         noDeselect: true
@@ -32847,7 +32918,7 @@ define('__component__$smart-content@husky',[], function() {
                     options: {
                         el: '#' + constants.presentAsDDId,
                         instanceName: constants.presentAsDDId,
-                        defaultLabel: 'Choose..',
+                        defaultLabel: this.sandbox.translate(this.translations.choosePresentAs),
                         value: 'name',
                         data: this.options.presentAs,
                         preSelectedElements: [this.options.preSelectedPresentAs],

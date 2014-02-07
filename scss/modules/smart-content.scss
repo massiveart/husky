@@ -51,9 +51,12 @@
         height: 210px;
 
         .icon-file {
+            display: block;
             position: absolute;
-            top: 70px;
+            top: 0px;
             left: 50%;
+            padding-top: 15px;
+            line-height: 125px;
             margin-left: -65px;
             font-size: 125px;
             color: $grayLightest;
@@ -99,8 +102,18 @@
     }
 }
 
+.smart-content-overlay {
+    .overlay-header {
+        margin-bottom: 15px;
+    }
+    .overlay-footer {
+        margin-top: 5px;
+    }
+}
+
 .smart-overlay-content {
-    padding: 15px 0 5px 20px;
+    height: 100%;
+    padding: 0 0 0 20px;
     font-size: $smallFontSize;
 
     .desc {
@@ -147,12 +160,8 @@
     .tag-list {
         border: 1px solid $grayLighter;
         border-radius: 4px 4px 0 0;
-        .auto-complete-list {
-            padding-bottom: 2px;
-            padding-top: 2px;
-        }
         input {
-            margin: 4px 0 0 0;
+            margin: 7px 0 0 0;
         }
         .tt-suggestions {
             width: 360px;

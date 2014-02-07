@@ -136,12 +136,8 @@
                 return $(selector).height(value);
             };
 
-            app.core.dom.height = function(selector, value) {
-                if (!!value) {
-                    return $(selector).height(value);
-                } else {
-                    return $(selector).height();
-                }
+            app.core.dom.outerHeight = function(selector) {
+                    return $(selector).outerHeight();
             };
 
             app.core.dom.offset = function(selector, attributes) {

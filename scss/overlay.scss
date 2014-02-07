@@ -16,17 +16,21 @@
 }
 
 .overlay-header {
-  padding: 15px 20px 15px;
-  height: 50px;
+  padding: 15px 40px 15px 20px;
+  min-height: 50px;
   border-bottom: 1px solid $grayLighterer;
   position: relative;
 
   .title {
     color: $grayLight;
     font-size: 23px;
+    padding-right: 10px;
   }
 
   .close-button {
+    position: absolute;
+    top: 17px;
+    right: 20px;
     font-size: 20px;
     float:right;
     text-decoration: none;
