@@ -1371,22 +1371,20 @@ define(function() {
         /**
          * Hides input fields and displays new content
          */
-        resetInputFields: function(){
+        resetInputFields: function() {
 
-            var $inputFields = this.sandbox.dom.find('input[type=text]', this.$el),
+            var $inputFields = this.sandbox.dom.find('input[type=text]:not(.hidden)', this.$el),
                 content, $span;
 
-            this.sandbox.util.each($inputFields, function(index, $field){
+            this.sandbox.util.each($inputFields, function(index, $field) {
 
-                if(!this.sandbox.dom.hasClass($field, 'hidden')){
-                    content = this.sandbox.dom.$($field).val();
-                    $span = this.sandbox.dom.prev($field, '.editable');
-                    $span.val(content);
+                content = this.sandbox.dom.$($field).val();
+                $span = this.sandbox.dom.prev($field, '.editable');
+                $span.text(content);
 
-                    this.sandbox.dom.addClass($field, 'hidden');
-                    this.sandbox.dom.show($span);
+                this.sandbox.dom.addClass($field, 'hidden');
+                this.sandbox.dom.show($span);
 
-                }
             }.bind(this));
 
         },
