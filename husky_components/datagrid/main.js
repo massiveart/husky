@@ -37,7 +37,6 @@
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.paginationTemplate] template for pagination
  * @param {Boolean} [options.validation] enables validation for datagrid
- * @param {Number} [options.startTabIndex] start for tab index
  * @param {Boolean} [options.addRowTop] adds row to the top of the table when add row is triggered
  */
 define(function() {
@@ -77,8 +76,7 @@ define(function() {
             fieldsData: null,
             validation: false, // TODO does not work for added rows
             validationDebug: false,
-            addRowTop: false,
-            startTabIndex: 1
+            addRowTop: false
         },
 
         namespace = 'husky.datagrid.',
@@ -239,8 +237,6 @@ define(function() {
     return {
 
         view: true,
-
-        tabIndex: 0,
 
         initialize: function() {
             this.sandbox.logger.log('initialized datagrid');
@@ -612,8 +608,6 @@ define(function() {
             tblRows = [];
             this.allItemIds = [];
 
-            this.tabIndex = this.options.startTabIndex;
-
             // TODO adjust when new api is fully implemented and no backwards compatibility needed
             if (!!this.data.items) {
                 this.data.items.forEach(function(row) {
@@ -631,9 +625,10 @@ define(function() {
         /**
          * Returns a table row including values and data attributes
          * @param row
+         * @param triggeredByAddRow
          * @returns string table row
          */
-        prepareTableRow: function(row) {
+        prepareTableRow: function(row, triggeredByAddRow) {
 
             if (!!(this.options.template && this.options.template.row)) {
 
@@ -674,12 +669,12 @@ define(function() {
                 if (this.rowStructure.length) {
                     this.rowStructure.forEach(function(key) {
                         key.editable = key.editable || false;
-                        this.createRowCell(key.attribute, row[key.attribute], key.editable, key.validation);
+                        this.createRowCell(key.attribute, row[key.attribute], key.editable, key.validation, triggeredByAddRow);
                     }.bind(this));
                 } else {
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                            this.createRowCell(key, row[key], false, null);
+                            this.createRowCell(key, row[key], false, null, triggeredByAddRow);
                         }
                     }
                 }
@@ -697,8 +692,9 @@ define(function() {
          * @param key attribute name
          * @param value attribute value
          * @param editable flag whether field is editable or not
+         * @param triggeredByAddRow triggered trough add row
          */
-        createRowCell: function(key, value, editable, validation) {
+        createRowCell: function(key, value, editable, validation, triggeredByAddRow) {
             var tblCellClasses,
                 tblCellContent,
                 tblCellClass,
@@ -726,9 +722,12 @@ define(function() {
                 }
 
                 if (!!editable) {
-                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable">'+tblCellContent+'</span><input type="text" class="form-element editable-content hidden" tabindex="' + this.tabIndex + '" value="'+tblCellContent+'"  ' + validationAttr + '/></td>');
+                    if(!!triggeredByAddRow) {
+                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">'+tblCellContent+'</span><input type="text" class="form-element editable-content" value="'+tblCellContent+'"  ' + validationAttr + '/></td>');
+                    } else {
+                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable">'+tblCellContent+'</span><input type="text" class="form-element editable-content hidden" value="'+tblCellContent+'"  ' + validationAttr + '/></td>');
+                    }
 
-                    this.tabIndex++;
                 } else {
                     this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' >' + tblCellContent + '</td>');
                 }
@@ -847,7 +846,7 @@ define(function() {
             var $table, $row, $editableFields, validation;
             // check for other element types when implemented
             $table = this.$element.find('table');
-            $row = this.prepareTableRow(row);
+            $row = this.prepareTableRow(row, true);
 
             // prepend or append row
             if(!!this.options.addRowTop) {
