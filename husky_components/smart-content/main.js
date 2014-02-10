@@ -39,6 +39,9 @@
  * @params {String} [options.presentAsParameter] parameter for the presentation-possibility id
  * @params {String} [options.limitResultParameter] parameter for the limit-result-value
  * @params {String} [options.resultKey] key for the data in the returning JSON-result
+ * @params {Boolean} [options.subFoldersDisabled] if true sub-folders overlay-item will be disabled
+ * @params {Boolean} [options.tagsDisabled] if true tags overlay-item will be disabled
+ * @params {Boolean} [options.limitResultDisabled] if true limit-result overlay-item will be disabled
  *
  * @params {Object} [options.translations] object that gets merged with the default translation-keys
  * @params {String} [options.translations.noContentFound] translation key
