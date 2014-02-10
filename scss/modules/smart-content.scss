@@ -150,6 +150,9 @@
         .custom-checkbox-icon {
             margin-bottom: 2px;
         }
+        &.disabled {
+            display: none;
+        }
     }
     .sortMethod {
         margin-top: 25px;
@@ -158,6 +161,9 @@
         height: 30px;
         width: 100%;
         padding-left: 10px;
+    }
+    .tags.disabled {
+        display: none;
     }
     .tag-list {
         border: 1px solid $grayLighter;

@@ -72,10 +72,12 @@ define([], function() {
         visibleItems: 3,
         dataSources: [],
         includeSubFolders: false,
+        subFoldersDisabled: false,
         preSelectedDataSource: 0,
         categories: [],
         preSelectedCategory: 0,
         tags: [],
+        tagsDisabled: false,
         tagsAutoCompleteUrl: '',
         sortBy: [],
         preSelectedSortBy: 0,
@@ -93,6 +95,7 @@ define([], function() {
         sortMethodParameter: 'sortMethod',
         presentAsParameter: 'presentAs',
         limitResultParameter: 'limitResult',
+        limitResultDisabled: false,
         resultKey: '_embedded',
         translations: {}
     },
@@ -157,7 +160,7 @@ define([], function() {
                         '</div>'].join(''),
 
             subFolders: ['<div class="item-half">',
-                            '<div class="check">',
+                            '<div class="check<%= disabled %>">',
                                 '<label>',
                                     '<input type="checkbox" class="includeSubCheck form-element custom-checkbox"<%= include_sub_checked %>/>',
                                     '<span class="custom-checkbox-icon"></span>',
@@ -171,7 +174,7 @@ define([], function() {
                             '<div class="' + constants.categoryDDClass + '"></div>',
                         '</div>'].join(''),
 
-            tagList: ['<div class="item full">',
+            tagList: ['<div class="item full tags<%= disabled %>">',
                         '<span class="desc"><%= filter_by_tags %></span>',
                         '<div class="' + constants.tagListClass + '"></div>',
                     '</div>'].join(''),
@@ -192,7 +195,7 @@ define([], function() {
 
             limitResult: ['<div class="item-half">',
                             '<span class="desc"><%= limit_result_to %></span>',
-                            '<input type="text" value="<%= limit_result %>" class="limit-to"/>',
+                            '<input type="text" value="<%= limit_result %>" class="limit-to"<%= disabled %>/>',
                         '</div>'].join('')
         }
     },
@@ -289,6 +292,16 @@ define([], function() {
                 presentAs: this.options.preSelectedPresentAs,
                 limitResult: this.options.limitResult
             };
+            this.overlayDisabled = {
+                dataSource: (this.options.dataSources.length === 0),
+                categories: (this.options.categories.length === 0),
+                sortBy: (this.options.sortBy.length === 0),
+                presentAs: (this.options.presentAs.length === 0),
+                subFolders: (this.options.subFoldersDisabled),
+                tags: this.options.tagsDisabled,
+                limitResult: this.options.limitResultDisabled
+            };
+            console.log(this.overlayDisabled);
             this.translations = {
                 noContentFound: 'smart-content.nocontent-found',
                 noContentSelected: 'smart-content.nocontent-selected',
@@ -560,14 +573,16 @@ define([], function() {
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.subFolders)({
                 include_sub: this.sandbox.translate(this.translations.includeSubFolders),
-                include_sub_checked: (this.options.includeSubFolders) ? ' checked' : ''
+                include_sub_checked: (this.options.includeSubFolders) ? ' checked' : '',
+                disabled: (this.overlayDisabled.subFolders) ? ' disabled' : ''
             }));
             this.$overlayContent.append('<div class="clear"></div>');
             this.$overlayContent.append(_.template(templates.overlayContent.categories)({
                 filter_by_cat: this.sandbox.translate(this.translations.filterByCategory)
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.tagList)({
-                filter_by_tags: this.sandbox.translate(this.translations.filterByTags)
+                filter_by_tags: this.sandbox.translate(this.translations.filterByTags),
+                disabled: (this.overlayDisabled.tags) ? ' disabled' : ''
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.sortBy)({
                 sort_by: this.sandbox.translate(this.translations.sortBy)
@@ -582,7 +597,8 @@ define([], function() {
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.limitResult)({
                 limit_result_to: this.sandbox.translate(this.translations.limitResultTo),
-                limit_result: (this.options.limitResult > 0) ? this.options.limitResult : ''
+                limit_result: (this.options.limitResult > 0) ? this.options.limitResult : '',
+                disabled: (this.overlayDisabled.limitResult) ? ' disabled': ''
             }));
             this.$overlayContent.append('<div class="clear"></div>');
         },
@@ -602,7 +618,8 @@ define([], function() {
                         data: this.options.dataSources,
                         preSelectedElements: [this.options.preSelectedDataSource],
                         singleSelect: true,
-                        noDeselect: true
+                        noDeselect: true,
+                        disabled: this.overlayDisabled.dataSource
                     }
                 },
                 {
@@ -614,7 +631,8 @@ define([], function() {
                         value: 'name',
                         data: this.options.categories,
                         preSelectedElements: [this.options.preSelectedCategory],
-                        singleSelect: true
+                        singleSelect: true,
+                        disabled: this.overlayDisabled.categories
                     }
                 },
                 {
@@ -636,7 +654,8 @@ define([], function() {
                         value: 'name',
                         data: this.options.sortBy,
                         preSelectedElements: [this.options.preSelectedSortBy],
-                        singleSelect: true
+                        singleSelect: true,
+                        disabled: this.overlayDisabled.sortBy
                     }
                 },
                 {
@@ -650,7 +669,8 @@ define([], function() {
                                {id: sortMethods.desc, name: this.sandbox.translate(this.translations.descending)}],
                         preSelectedElements: [sortMethods[this.options.preSelectedSortMethod]],
                         singleSelect: true,
-                        noDeselect: true
+                        noDeselect: true,
+                        disabled: this.overlayDisabled.sortBy
                     }
                 },
                 {
@@ -663,7 +683,8 @@ define([], function() {
                         data: this.options.presentAs,
                         preSelectedElements: [this.options.preSelectedPresentAs],
                         singleSelect: true,
-                        noDeselect: true
+                        noDeselect: true,
+                        disabled: this.overlayDisabled.presentAs
                     }
                 }
             ]);
