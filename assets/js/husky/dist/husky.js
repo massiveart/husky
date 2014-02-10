@@ -32314,6 +32314,9 @@ define('__component__$top-toolbar@husky',[], function () {
  * @params {String} [options.presentAsParameter] parameter for the presentation-possibility id
  * @params {String} [options.limitResultParameter] parameter for the limit-result-value
  * @params {String} [options.resultKey] key for the data in the returning JSON-result
+ * @params {Boolean} [options.subFoldersDisabled] if true sub-folders overlay-item will be disabled
+ * @params {Boolean} [options.tagsDisabled] if true tags overlay-item will be disabled
+ * @params {Boolean} [options.limitResultDisabled] if true limit-result overlay-item will be disabled
  *
  * @params {Object} [options.translations] object that gets merged with the default translation-keys
  * @params {String} [options.translations.noContentFound] translation key
@@ -32347,10 +32350,12 @@ define('__component__$smart-content@husky',[], function() {
         visibleItems: 3,
         dataSources: [],
         includeSubFolders: false,
+        subFoldersDisabled: false,
         preSelectedDataSource: 0,
         categories: [],
         preSelectedCategory: 0,
         tags: [],
+        tagsDisabled: false,
         tagsAutoCompleteUrl: '',
         sortBy: [],
         preSelectedSortBy: 0,
@@ -32368,6 +32373,7 @@ define('__component__$smart-content@husky',[], function() {
         sortMethodParameter: 'sortMethod',
         presentAsParameter: 'presentAs',
         limitResultParameter: 'limitResult',
+        limitResultDisabled: false,
         resultKey: '_embedded',
         translations: {}
     },
@@ -32432,7 +32438,7 @@ define('__component__$smart-content@husky',[], function() {
                         '</div>'].join(''),
 
             subFolders: ['<div class="item-half">',
-                            '<div class="check">',
+                            '<div class="check<%= disabled %>">',
                                 '<label>',
                                     '<input type="checkbox" class="includeSubCheck form-element custom-checkbox"<%= include_sub_checked %>/>',
                                     '<span class="custom-checkbox-icon"></span>',
@@ -32446,7 +32452,7 @@ define('__component__$smart-content@husky',[], function() {
                             '<div class="' + constants.categoryDDClass + '"></div>',
                         '</div>'].join(''),
 
-            tagList: ['<div class="item full">',
+            tagList: ['<div class="item full tags<%= disabled %>">',
                         '<span class="desc"><%= filter_by_tags %></span>',
                         '<div class="' + constants.tagListClass + '"></div>',
                     '</div>'].join(''),
@@ -32467,7 +32473,7 @@ define('__component__$smart-content@husky',[], function() {
 
             limitResult: ['<div class="item-half">',
                             '<span class="desc"><%= limit_result_to %></span>',
-                            '<input type="text" value="<%= limit_result %>" class="limit-to"/>',
+                            '<input type="text" value="<%= limit_result %>" class="limit-to"<%= disabled %>/>',
                         '</div>'].join('')
         }
     },
@@ -32564,6 +32570,16 @@ define('__component__$smart-content@husky',[], function() {
                 presentAs: this.options.preSelectedPresentAs,
                 limitResult: this.options.limitResult
             };
+            this.overlayDisabled = {
+                dataSource: (this.options.dataSources.length === 0),
+                categories: (this.options.categories.length === 0),
+                sortBy: (this.options.sortBy.length === 0),
+                presentAs: (this.options.presentAs.length === 0),
+                subFolders: (this.options.subFoldersDisabled),
+                tags: this.options.tagsDisabled,
+                limitResult: this.options.limitResultDisabled
+            };
+            console.log(this.overlayDisabled);
             this.translations = {
                 noContentFound: 'smart-content.nocontent-found',
                 noContentSelected: 'smart-content.nocontent-selected',
@@ -32835,14 +32851,16 @@ define('__component__$smart-content@husky',[], function() {
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.subFolders)({
                 include_sub: this.sandbox.translate(this.translations.includeSubFolders),
-                include_sub_checked: (this.options.includeSubFolders) ? ' checked' : ''
+                include_sub_checked: (this.options.includeSubFolders) ? ' checked' : '',
+                disabled: (this.overlayDisabled.subFolders) ? ' disabled' : ''
             }));
             this.$overlayContent.append('<div class="clear"></div>');
             this.$overlayContent.append(_.template(templates.overlayContent.categories)({
                 filter_by_cat: this.sandbox.translate(this.translations.filterByCategory)
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.tagList)({
-                filter_by_tags: this.sandbox.translate(this.translations.filterByTags)
+                filter_by_tags: this.sandbox.translate(this.translations.filterByTags),
+                disabled: (this.overlayDisabled.tags) ? ' disabled' : ''
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.sortBy)({
                 sort_by: this.sandbox.translate(this.translations.sortBy)
@@ -32857,7 +32875,8 @@ define('__component__$smart-content@husky',[], function() {
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.limitResult)({
                 limit_result_to: this.sandbox.translate(this.translations.limitResultTo),
-                limit_result: (this.options.limitResult > 0) ? this.options.limitResult : ''
+                limit_result: (this.options.limitResult > 0) ? this.options.limitResult : '',
+                disabled: (this.overlayDisabled.limitResult) ? ' disabled': ''
             }));
             this.$overlayContent.append('<div class="clear"></div>');
         },
@@ -32877,7 +32896,8 @@ define('__component__$smart-content@husky',[], function() {
                         data: this.options.dataSources,
                         preSelectedElements: [this.options.preSelectedDataSource],
                         singleSelect: true,
-                        noDeselect: true
+                        noDeselect: true,
+                        disabled: this.overlayDisabled.dataSource
                     }
                 },
                 {
@@ -32889,7 +32909,8 @@ define('__component__$smart-content@husky',[], function() {
                         value: 'name',
                         data: this.options.categories,
                         preSelectedElements: [this.options.preSelectedCategory],
-                        singleSelect: true
+                        singleSelect: true,
+                        disabled: this.overlayDisabled.categories
                     }
                 },
                 {
@@ -32911,7 +32932,8 @@ define('__component__$smart-content@husky',[], function() {
                         value: 'name',
                         data: this.options.sortBy,
                         preSelectedElements: [this.options.preSelectedSortBy],
-                        singleSelect: true
+                        singleSelect: true,
+                        disabled: this.overlayDisabled.sortBy
                     }
                 },
                 {
@@ -32925,7 +32947,8 @@ define('__component__$smart-content@husky',[], function() {
                                {id: sortMethods.desc, name: this.sandbox.translate(this.translations.descending)}],
                         preSelectedElements: [sortMethods[this.options.preSelectedSortMethod]],
                         singleSelect: true,
-                        noDeselect: true
+                        noDeselect: true,
+                        disabled: this.overlayDisabled.sortBy
                     }
                 },
                 {
@@ -32938,7 +32961,8 @@ define('__component__$smart-content@husky',[], function() {
                         data: this.options.presentAs,
                         preSelectedElements: [this.options.preSelectedPresentAs],
                         singleSelect: true,
-                        noDeselect: true
+                        noDeselect: true,
+                        disabled: this.overlayDisabled.presentAs
                     }
                 }
             ]);
@@ -33074,6 +33098,7 @@ define('__component__$smart-content@husky',[], function() {
  * @params {Function} [options.okCallback] callback which gets executed after the overlay gets submited
  * @params {String|Object} [options.data] HTML or DOM-object which acts as the overlay-content
  * @params {String} [options.instanceName] instance name of the component
+ * @params {Boolean} [options.draggable] if true overlay is draggable
  */
 define('__component__$overlay@husky',[], function() {
 
@@ -33088,19 +33113,22 @@ define('__component__$overlay@husky',[], function() {
         closeCallback: null,
         okCallback: null,
         data: '',
-        instanceName: 'undefined'
+        instanceName: 'undefined',
+        draggable: true
     },
 
     constants = {
         closeSelector: '.close-button',
         okSelector: '.ok-button',
-        contentSelector: '.overlay-content'
+        contentSelector: '.overlay-content',
+        headerSelector: '.overlay-header',
+        draggableClass: 'draggable'
     },
 
     /** templates for component */
     templates = {
         overlaySkeleton: [
-            '<div class="overlay-container smart-content-overlay">',
+            '<div class="husky-overlay-container smart-content-overlay">',
                 '<div class="overlay-header">',
                 '<span class="title"><%= title %></span>',
                 '<a class="icon-<%= closeIcon %> close-button" href="#"></a>',
@@ -33183,8 +33211,11 @@ define('__component__$overlay@husky',[], function() {
                 normalHeight: null,
                 $el: null,
                 $close: null,
-                $ok: null
+                $ok: null,
+                $header: null,
+                $content: null
             };
+            this.dragged = false;
         },
 
         /**
@@ -33210,7 +33241,6 @@ define('__component__$overlay@husky',[], function() {
 
                 this.insertOverlay();
                 this.overlay.opened = true;
-
             }
         },
 
@@ -33220,6 +33250,10 @@ define('__component__$overlay@husky',[], function() {
         closeOverlay: function() {
             this.sandbox.dom.detach(this.overlay.$el);
             this.overlay.opened = false;
+            this.dragged = false;
+            this.collapsed = false;
+
+            this.sandbox.dom.css(this.overlay.$content, {'height': 'auto'});
 
             this.sandbox.emit(CLOSED.call(this));
         },
@@ -33231,10 +33265,10 @@ define('__component__$overlay@husky',[], function() {
             this.sandbox.dom.append(this.sandbox.dom.$(this.options.container), this.overlay.$el);
 
             //ensures that the overlay box fits the window form the beginning
-            this.overlay.normalHeight = (this.overlay.normalHeight === null) ? this.sandbox.dom.height(this.overlay.$el) : this.overlay.normalHeight;
+            this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
             this.resizeHandler();
 
-            this.setTop();
+            this.setCoordinates();
 
             this.sandbox.emit(OPENED.call(this));
         },
@@ -33252,6 +33286,11 @@ define('__component__$overlay@husky',[], function() {
             this.overlay.$close = this.sandbox.dom.find(constants.closeSelector, this.overlay.$el);
             this.overlay.$ok = this.sandbox.dom.find(constants.okSelector, this.overlay.$el);
             this.overlay.$content = this.sandbox.dom.find(constants.contentSelector, this.overlay.$el);
+            this.overlay.$header = this.sandbox.dom.find(constants.headerSelector, this.overlay.$el);
+
+            if (this.options.draggable === true) {
+                this.sandbox.dom.addClass(this.overlay.$el, constants.draggableClass);
+            }
         },
 
         setContent: function() {
@@ -33262,6 +33301,12 @@ define('__component__$overlay@husky',[], function() {
          * Binds overlay events
          */
         bindOverlayEvents: function() {
+            //set current overlay in front of all other overlays
+            this.sandbox.dom.on(this.overlay.$el, 'mousedown', function() {
+                this.sandbox.dom.css(this.sandbox.dom.$('.husky-overlay-container'), {'z-index': 'auto'});
+                this.sandbox.dom.css(this.overlay.$el, {'z-index': 10000});
+            }.bind(this));
+
             this.sandbox.dom.on(this.overlay.$close, 'click', function(event) {
                 this.sandbox.dom.preventDefault(event);
                 this.closeOverlay();
@@ -33275,8 +33320,38 @@ define('__component__$overlay@husky',[], function() {
             }.bind(this));
 
             this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
-                this.resizeHandler();
+                if (this.dragged === false && this.overlay.opened === true) {
+                    this.resizeHandler();
+                }
             }.bind(this));
+
+            if (this.options.draggable === true) {
+                this.sandbox.dom.on(this.overlay.$header, 'mousedown', function(e) {
+                    var origin = {
+                        y: e.clientY - (this.sandbox.dom.offset(this.overlay.$header).top - this.sandbox.dom.getScrollTop(this.sandbox.dom.$window)),
+                        x: e.clientX - (this.sandbox.dom.offset(this.overlay.$header).left - this.sandbox.dom.scrollLeft(this.sandbox.dom.$window))
+                    };
+
+                   //bind the mousemove event if mouse is down on header
+                   this.sandbox.dom.on(this.overlay.$header, 'mousemove', function(event) {
+                        this.draggableHandler(event, origin);
+                   }.bind(this));
+                }.bind(this));
+
+                this.sandbox.dom.on(this.overlay.$header, 'mouseup', function() {
+                    this.sandbox.dom.off(this.overlay.$header, 'mousemove');
+                }.bind(this));
+            }
+        },
+
+        /**
+         * Handles the mousemove event for making the overlay draggable
+         * @param event {object} the event-object of the mousemove event
+         * @param origin {object} object with x and y properties which hold the starting position of the cursor
+         */
+        draggableHandler: function(event, origin) {
+            this.updateCoordinates((event.clientY - origin.y), (event.clientX - origin.x));
+            this.dragged = true;
         },
 
         /**
@@ -33284,11 +33359,10 @@ define('__component__$overlay@husky',[], function() {
          * if the window gets smaller
          */
         resizeHandler: function() {
-            this.setTop();
+            this.setCoordinates();
 
             //window is getting smaller - make overlay smaller
             if (this.sandbox.dom.height(this.sandbox.dom.$window) < this.sandbox.dom.outerHeight(this.overlay.$el)) {
-
                 this.sandbox.dom.height(this.overlay.$content,
                     (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content))
                 );
@@ -33315,10 +33389,21 @@ define('__component__$overlay@husky',[], function() {
         },
 
         /**
-         * Positions the overlay vertically in the middle of the screen
+         * Positions the overlay in the middle of the screen
          */
-        setTop: function() {
-            this.sandbox.dom.css(this.overlay.$el, {'top': (this.sandbox.dom.$window.height() - this.overlay.$el.outerHeight())/2 + 'px'});
+        setCoordinates: function() {
+            this.updateCoordinates((this.sandbox.dom.$window.height() - this.overlay.$el.outerHeight())/2,
+                                   (this.sandbox.dom.$window.width() - this.overlay.$el.outerWidth())/2);
+        },
+
+        /**
+         * Updates the coordinates of the overlay
+         * @param top {Integer} new top of overlay
+         * @param left {Integer} new left of overlay
+         */
+        updateCoordinates: function(top, left) {
+            this.sandbox.dom.css(this.overlay.$el, {'top': top + 'px'});
+            this.sandbox.dom.css(this.overlay.$el, {'left': left + 'px'});
         },
 
         /**
@@ -34093,7 +34178,11 @@ define('husky_extensions/collection',[],function() {
             };
 
             app.core.dom.scrollTop = function(itemSelector) {
-                $(window).scrollTop($(itemSelector).offsset().top);
+                $(window).scrollTop($(itemSelector).offset().top);
+            };
+
+            app.core.dom.getScrollTop = function(selector) {
+                return $(selector).scrollTop();
             };
 
             app.core.dom.scrollLeft = function(selector, value) {
