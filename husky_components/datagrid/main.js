@@ -535,6 +535,9 @@ define(function() {
 
             this.rowStructure = [];
 
+            // value used for correct tabindex when row added at top of table
+            this.tabIndexParam = 1;
+
             headData.forEach(function(column) {
 
                 tblColumnWidth = '';
@@ -565,7 +568,13 @@ define(function() {
                         editable: column.editable,
                         validation: column.validation
                     });
+
+                    if(!!column.editable) {
+                        this.tabIndexParam++;
+                    }
                 }
+
+
 
                 // add html to table header cell if sortable
                 if (!!isSortable) {
@@ -667,6 +676,11 @@ define(function() {
 
                 // when row structure contains more elements than the id then use the structure to set values
                 if (this.rowStructure.length) {
+
+                    if(!!triggeredByAddRow) {
+                        this.bottomTabIndex -= (this.tabIndexParam+1);
+                    }
+
                     this.rowStructure.forEach(function(key) {
                         key.editable = key.editable || false;
                         this.createRowCell(key.attribute, row[key.attribute], key.editable, key.validation, triggeredByAddRow);
@@ -726,9 +740,8 @@ define(function() {
 
                         // differentiate for tab index
                         if (!!this.options.addRowTop) {
-                            // TODO adjust tabindex for intput fields which are added at the top
                             this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.bottomTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
-                            this.bottomTabIndex--;
+                            this.bottomTabIndex++;
                         } else {
                             this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.topTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
                             this.startTabIndex++;
