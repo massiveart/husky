@@ -176,7 +176,7 @@
 
             app.core.dom.data = function(selector, key, value) {
                 if (!!value) {
-                    $(selector).data(key, value);
+                    return $(selector).data(key, value);
                 } else {
                     return $(selector).data(key);
                 }
@@ -188,7 +188,7 @@
 
             app.core.dom.val = function(selector, value) {
                 if (!!value || value === '') {
-                    $(selector).val(value);
+                    return $(selector).val(value);
                 } else {
                     return $(selector).val();
                 }
@@ -260,7 +260,7 @@
 
             app.core.dom.text = function(selector, value) {
                 if (!!value) {
-                    $(selector).text(value);
+                    return $(selector).text(value);
                 } else {
                     return $(selector).text();
                 }
@@ -312,12 +312,12 @@
             };
 
             app.core.dom.scrollTop = function(itemSelector) {
-                $(window).scrollTop($(itemSelector).offsset().top);
+                $(window).scrollTop($(itemSelector).offset().top);
             };
 
             app.core.dom.scrollLeft = function(selector, value) {
                 if(!!value) {
-                    $(selector).scrollLeft(value);
+                    return $(selector).scrollLeft(value);
                 } else {
                     return $(selector).scrollLeft();
                 }
