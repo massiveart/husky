@@ -67,19 +67,33 @@ define([], function() {
 
             var $originalElement = this.sandbox.dom.$(this.options.el),
                 button = this.sandbox.dom.createElement(this.template.basicStructure.call(this, this.options.defaultLabel));
-                this.sandbox.dom.append($originalElement, button);
+            this.sandbox.dom.append($originalElement, button);
+
+            this.$list = this.sandbox.dom.$('#' + this.listId);
+            this.$dropdownContainer = this.sandbox.dom.$('#' + this.dropdownContainerId);
+            this.prepareData();
+
+            // bind dom elements
+            this.bindDOMEvents();
+            this.bindCustomEvents();
 
             if (this.options.disabled === true) {
-                this.sandbox.dom.addClass(button, this.options.disabledClass);
-            } else {
-                this.$list = this.sandbox.dom.$('#' + this.listId);
-                this.$dropdownContainer = this.sandbox.dom.$('#' + this.dropdownContainerId);
-                this.prepareData();
-
-                // bind dom elements
-                this.bindDOMEvents();
-                this.bindCustomEvents();
+                this.disable();
             }
+        },
+
+        //sets the button in enabled state
+        enable: function() {
+            this.sandbox.dom.removeClass(this.sandbox.dom.children(this.$el, '.husky-dropdown-multiple-select'), this.options.disabledClass);
+            this.bindDOMEvents();
+        },
+
+
+        //sets the button i
+        disable: function() {
+            this.sandbox.dom.addClass(this.sandbox.dom.children(this.$el, '.husky-dropdown-multiple-select'), this.options.disabledClass);
+            this.hideDropDown();
+            this.sandbox.dom.off(this.$el);
         },
 
         // prepares data for dropDown, if options.data not set load with ajax
@@ -145,6 +159,8 @@ define([], function() {
             this.sandbox.on(this.getEventName('toggle'), this.toggleDropDown.bind(this));
             this.sandbox.on(this.getEventName('show'), this.showDropDown.bind(this));
             this.sandbox.on(this.getEventName('hide'), this.hideDropDown.bind(this));
+            this.sandbox.on(this.getEventName('disable'), this.disable.bind(this));
+            this.sandbox.on(this.getEventName('enable'), this.enable.bind(this));
 
             this.sandbox.on(this.getEventName('getChecked'), this.getChecked.bind(this));
         },
