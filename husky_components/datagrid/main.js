@@ -723,7 +723,7 @@ define(function() {
                 }
 
                 if (!!editable) {
-                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true" ' + validationAttr + ' tabindex="' + this.tabIndex + '">' + tblCellContent + '</span></td>');
+                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable">'+tblCellContent+'</span><input type="text" class="form-element hidden" tabindex="' + this.tabIndex + '" value="'+tblCellContent+'"  ' + validationAttr + '/></td>');
 
                     this.tabIndex++;
                 } else {
@@ -1112,8 +1112,11 @@ define(function() {
             }
 
             if (!!this.options.editable) {
-                this.$element.on('focusin', '.editable', this.focusOnEditable.bind(this));
-                this.$element.on('focusout', '.editable', this.focusOutEditable.bind(this));
+
+                this.$element.on('click', '.editable', this.editCellValues.bind(this));
+
+                this.$element.on('focusin', '.form-element', this.focusOnEditable.bind(this));
+                this.$element.on('focusout', '.form-element', this.focusOutEditable.bind(this));
             }
 
 
@@ -1140,6 +1143,16 @@ define(function() {
             // stop propagation
             //         event.stopPropagation();
             // }.bind(this));
+        },
+
+        editCellValues: function(event){
+            var $target = event.currentTarget,
+                $input = this.sandbox.dom.next($target, 'input');
+
+            this.sandbox.dom.hide($target);
+            this.sandbox.dom.show($input);
+            $input.focus();
+
         },
 
         /**

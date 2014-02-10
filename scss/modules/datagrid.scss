@@ -4,6 +4,11 @@
 
         td {
             overflow:hidden;
+
+            input{
+                margin: 0 0 0 -2px;
+                border-color: $white;
+            }
         }
     }
 }
