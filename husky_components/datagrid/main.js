@@ -726,7 +726,7 @@ define(function() {
                 }
 
                 if (!!editable) {
-                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable">'+tblCellContent+'</span><input type="text" class="form-element hidden" tabindex="' + this.tabIndex + '" value="'+tblCellContent+'"  ' + validationAttr + '/></td>');
+                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable">'+tblCellContent+'</span><input type="text" class="form-element editable-content hidden" tabindex="' + this.tabIndex + '" value="'+tblCellContent+'"  ' + validationAttr + '/></td>');
 
                     this.tabIndex++;
                 } else {
@@ -849,6 +849,7 @@ define(function() {
             $table = this.$element.find('table');
             $row = this.prepareTableRow(row);
 
+            // prepend or append row
             if(!!this.options.addRowTop) {
                 this.sandbox.dom.prepend($table, $row);
             } else {
@@ -1158,7 +1159,7 @@ define(function() {
                 $input = this.sandbox.dom.next($target, 'input');
 
             this.sandbox.dom.hide($target);
-            this.sandbox.dom.show($input);
+            this.sandbox.dom.removeClass($input, 'hidden');
             $input[0].select();
 
         },
@@ -1359,11 +1360,35 @@ define(function() {
                     .then(function(data, textStatus) {
                         this.sandbox.emit(DATA_SAVED, data, textStatus);
                         this.changedData = [];
+                        this.resetInputFields();
                     }.bind(this))
                     .fail(function(textStatus, error) {
                         this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
                     }.bind(this));
             }
+        },
+
+        /**
+         * Hides input fields and displays new content
+         */
+        resetInputFields: function(){
+
+            var $inputFields = this.sandbox.dom.find('input[type=text]', this.$el),
+                content, $span;
+
+            this.sandbox.util.each($inputFields, function(index, $field){
+
+                if(!this.sandbox.dom.hasClass($field, 'hidden')){
+                    content = this.sandbox.dom.$($field).val();
+                    $span = this.sandbox.dom.prev($field, '.editable');
+                    $span.val(content);
+
+                    this.sandbox.dom.addClass($field, 'hidden');
+                    this.sandbox.dom.show($span);
+
+                }
+            }.bind(this));
+
         },
 
         /**
