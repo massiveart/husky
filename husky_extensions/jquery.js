@@ -312,7 +312,11 @@
             };
 
             app.core.dom.scrollTop = function(itemSelector) {
-                $(window).scrollTop($(itemSelector).offsset().top);
+                $(window).scrollTop($(itemSelector).offset().top);
+            };
+
+            app.core.dom.getScrollTop = function(selector) {
+                return $(selector).scrollTop();
             };
 
             app.core.dom.scrollLeft = function(selector, value) {
