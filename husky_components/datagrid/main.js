@@ -1151,7 +1151,7 @@ define(function() {
 
             this.sandbox.dom.hide($target);
             this.sandbox.dom.show($input);
-            $input.focus();
+            $input[0].select();
 
         },
 
