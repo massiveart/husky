@@ -247,42 +247,6 @@ require(['lib/husky'], function(Husky) {
             '}'
     ]);
 
-    // patch
-    fakeServer.respondWith('PATCH', '/admin/api/contacts?flat=true&pageSize=4', [200, { 'Content-Type': 'application/json' },
-        '{' +
-            '"_links":' +
-            '{' +
-            '"self":"/admin/api/contacts?flat=true&pageSize=4",' +
-
-            '"first":"/admin/api/contacts?flat=true&page=1&pageSize=4",' +
-            '"last": "/admin/api/contacts?flat=true&page=3&pageSize=4",' +
-            '"next":"/admin/api/contacts?flat=true&page=2&pageSize=4",' +
-            '"all": "/admin/api/contacts?flat=true",'+
-            '"filter":"/admin/api/contacts?flat=true&fields={fieldsList}",' +
-
-            '"pagination": "/admin/api/contacts?flat=true&page={page}&pageSize=4",' +
-
-            '"find": "/admin/api/contacts?flat=true&pageSize=4&search={searchString}{&searchFields}",' +
-
-            '"sortable": {' +
-            '"content1" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",' +
-            '"content2" : "/admin/api/contacts?flat=true&page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"' +
-            '}' +
-            '},' +
-            '"_embedded":' +
-            '[' +
-            '{ "id": "1", "content1": "B Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "2", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
-            '],' +
-            '"total":12,' +
-            '"pages": 3,' +
-            '"page": 1,' +
-            '"pageSize": 4' +
-            '}'
-    ]);
-
     // search reset
     fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&pageSize=4&search=', [200, { 'Content-Type': 'application/json' },
         '{' +

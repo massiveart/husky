@@ -1345,7 +1345,6 @@ define(function() {
             }
         },
 
-
         /**
          * Provides data of the list to the caller
          */
