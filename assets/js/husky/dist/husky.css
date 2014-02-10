@@ -821,8 +821,8 @@ h5 {
 
 /* line 18, ../scss/overlay.scss */
 .overlay-header {
-  padding: 15px 20px 15px;
-  height: 50px;
+  padding: 15px 40px 15px 20px;
+  min-height: 50px;
   border-bottom: 1px solid #dddddd;
   position: relative;
 }
@@ -830,30 +830,35 @@ h5 {
 .overlay-header .title {
   color: #999999;
   font-size: 23px;
+  padding-right: 10px;
+  vertical-align: text-top;
 }
-/* line 29, ../scss/overlay.scss */
+/* line 31, ../scss/overlay.scss */
 .overlay-header .close-button {
+  position: absolute;
+  top: 17px;
+  right: 20px;
   font-size: 20px;
   float: right;
   text-decoration: none;
   color: black;
 }
 
-/* line 38, ../scss/overlay.scss */
+/* line 43, ../scss/overlay.scss */
 .overlay-footer {
   padding: 10px 0;
   border-top: 1px solid #cccccc;
   text-align: center;
 }
-/* line 43, ../scss/overlay.scss */
+/* line 48, ../scss/overlay.scss */
 .overlay-footer .save-button {
   display: inline-block;
 }
 
-/* line 48, ../scss/overlay.scss */
+/* line 53, ../scss/overlay.scss */
 .overlay-content {
   padding-left: 0;
-  margin: 10px 0;
+  margin: 10px 20px;
 }
 
 /* line 4, ../scss/dropdown-menu.scss */
@@ -3804,19 +3809,20 @@ hr.divider {
   padding: 0 5px;
   font-size: 14px;
   border-radius: 3px;
+  border: 1px solid #cccccc;
 }
-/* line 14, ../scss/modules/form.scss */
+/* line 15, ../scss/modules/form.scss */
 .form-element:focus {
   outline: 0;
   border-color: #efefef;
 }
-/* line 19, ../scss/modules/form.scss */
+/* line 20, ../scss/modules/form.scss */
 .form-element.input-large {
   height: 40px;
   padding: 0 10px;
   font-size: 18px;
 }
-/* line 25, ../scss/modules/form.scss */
+/* line 26, ../scss/modules/form.scss */
 .form-element[readonly] {
   background: none;
   border: 0;
@@ -3824,42 +3830,42 @@ hr.divider {
   color: #999999;
 }
 
-/* line 34, ../scss/modules/form.scss */
+/* line 35, ../scss/modules/form.scss */
 input[type="text"].input-round {
   border-radius: 30px;
 }
 
-/* line 39, ../scss/modules/form.scss */
+/* line 40, ../scss/modules/form.scss */
 .input-description {
   margin-top: -5px;
   font-size: 10px;
   color: #999999;
 }
 
-/* line 47, ../scss/modules/form.scss */
+/* line 48, ../scss/modules/form.scss */
 label {
   display: block;
   font-size: 14px;
   color: #999999;
   cursor: pointer;
 }
-/* line 53, ../scss/modules/form.scss */
+/* line 54, ../scss/modules/form.scss */
 label.large {
   font-size: 16px;
   font-weight: bold;
 }
-/* line 58, ../scss/modules/form.scss */
+/* line 59, ../scss/modules/form.scss */
 label .form-element {
   margin-top: 5px;
 }
-/* line 62, ../scss/modules/form.scss */
+/* line 63, ../scss/modules/form.scss */
 label.inline {
   font-size: 1em;
   font-weight: normal;
   display: inline;
 }
 
-/* line 71, ../scss/modules/form.scss */
+/* line 72, ../scss/modules/form.scss */
 .custom-checkbox {
   width: 14px;
   height: 14px;
@@ -3867,13 +3873,13 @@ label.inline {
   opacity: 0;
   cursor: pointer;
 }
-/* line 86, ../scss/modules/form.scss */
+/* line 87, ../scss/modules/form.scss */
 .custom-checkbox:checked + .custom-checkbox-icon::after, .custom-checkbox.is-checked + .custom-checkbox-icon::after {
   content: "\e207";
   position: relative;
   top: -3px;
 }
-/* line 94, ../scss/modules/form.scss */
+/* line 95, ../scss/modules/form.scss */
 .custom-checkbox + .custom-checkbox-icon {
   display: inline-block;
   width: 14px;
@@ -3887,27 +3893,27 @@ label.inline {
   vertical-align: middle;
 }
 
-/* line 113, ../scss/modules/form.scss */
+/* line 114, ../scss/modules/form.scss */
 textarea {
   resize: both;
 }
 
-/* line 117, ../scss/modules/form.scss */
+/* line 118, ../scss/modules/form.scss */
 textarea.vertical {
   resize: vertical;
 }
 
-/* line 121, ../scss/modules/form.scss */
+/* line 122, ../scss/modules/form.scss */
 textarea.horizontal {
   resize: horizontal;
 }
 
-/* line 125, ../scss/modules/form.scss */
+/* line 126, ../scss/modules/form.scss */
 textarea.noResize {
   resize: none;
 }
 
-/* line 129, ../scss/modules/form.scss */
+/* line 130, ../scss/modules/form.scss */
 textarea.form-element {
   width: 100%;
   height: 40px;
@@ -3917,7 +3923,7 @@ textarea.form-element {
   font-family: inherit;
 }
 
-/* line 141, ../scss/modules/form.scss */
+/* line 142, ../scss/modules/form.scss */
 .custom-radio {
   width: 18px;
   height: 18px;
@@ -3925,7 +3931,7 @@ textarea.form-element {
   opacity: 0;
   cursor: pointer;
 }
-/* line 153, ../scss/modules/form.scss */
+/* line 154, ../scss/modules/form.scss */
 .custom-radio:checked + .custom-radio-icon::after, .custom-radio.is-checked + .custom-radio-icon::after {
   content: "";
   display: block;
@@ -3934,7 +3940,7 @@ textarea.form-element {
   border-radius: 18px;
   background-color: #999;
 }
-/* line 164, ../scss/modules/form.scss */
+/* line 165, ../scss/modules/form.scss */
 .custom-radio + .custom-radio-icon {
   display: inline-block;
   width: 18px;
@@ -4400,9 +4406,9 @@ li a.navigation-settings-icon {
   box-sizing: border-box;
   border-radius: 4px;
   background-color: #cccccc;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 2px 0 0;
-  -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 2px 0 0;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 2px 0 0;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 0 2px 0 0;
+  -moz-box-shadow: rgba(0, 0, 0, 0.08) 0 2px 0 0;
+  box-shadow: rgba(0, 0, 0, 0.08) 0 2px 0 0;
 }
 /* line 6, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-nav:after {
@@ -4747,27 +4753,29 @@ a.btn {
 
 /* line 18, ../scss/modules/btns.scss */
 .btn-large {
+  padding: 0 25px;
   font-size: 18px;
+  line-height: 30px;
 }
 
-/* line 22, ../scss/modules/btns.scss */
+/* line 24, ../scss/modules/btns.scss */
 .btn-black {
   background-color: #000;
   color: #FFF;
 }
 
-/* line 27, ../scss/modules/btns.scss */
+/* line 29, ../scss/modules/btns.scss */
 .btn-highlight {
   background-color: #249fbe;
   color: #FFF;
 }
 
-/* line 32, ../scss/modules/btns.scss */
+/* line 34, ../scss/modules/btns.scss */
 a.btn-black, a.btn-highlight {
   color: #FFF;
 }
 
-/* line 38, ../scss/modules/btns.scss */
+/* line 40, ../scss/modules/btns.scss */
 .btn-gray {
   background-color: #cccccc;
   color: #000;
@@ -5756,7 +5764,22 @@ a.btn-black, a.btn-highlight {
   top: 5px;
   right: 10px;
 }
-/* line 21, ../scss/modules/dropdown-multiple-select.scss */
+/* line 22, ../scss/modules/dropdown-multiple-select.scss */
+.husky-dropdown-multiple-select.disabled .dropdown-label {
+  background: #dddddd;
+  color: #666666;
+  cursor: default;
+}
+/* line 27, ../scss/modules/dropdown-multiple-select.scss */
+.husky-dropdown-multiple-select.disabled .dropdown-toggle {
+  cursor: default;
+}
+/* line 30, ../scss/modules/dropdown-multiple-select.scss */
+.husky-dropdown-multiple-select.disabled .dropdown-toggle:after {
+  border-top-color: #666666;
+  cursor: default;
+}
+/* line 36, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list {
   width: 100%;
   /*display: inline-block;*/
@@ -5768,40 +5791,40 @@ a.btn-black, a.btn-highlight {
   box-shadow: 3px 3px 0 0 #cccccc;
   z-index: 95;
 }
-/* line 32, ../scss/modules/dropdown-multiple-select.scss */
+/* line 47, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list .check {
   float: left;
   width: 20px;
   margin-right: 10px;
   padding-top: 3px;
 }
-/* line 38, ../scss/modules/dropdown-multiple-select.scss */
+/* line 53, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list .item-value {
   float: left;
   line-height: 30px;
 }
-/* line 43, ../scss/modules/dropdown-multiple-select.scss */
+/* line 58, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul {
   list-style: none;
   margin: 0;
   padding: 10px 0;
 }
-/* line 48, ../scss/modules/dropdown-multiple-select.scss */
+/* line 63, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul input {
   margin: 0;
 }
-/* line 52, ../scss/modules/dropdown-multiple-select.scss */
+/* line 67, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul > li {
   padding: 0px 10px 0px 20px;
   clear: both;
   height: 30px;
 }
-/* line 58, ../scss/modules/dropdown-multiple-select.scss */
+/* line 73, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul > li:hover, .husky-dropdown-multiple-select .column-navigation-wrapper .column-navigation .column .dropdown-list > ul > li.selected, .column-navigation-wrapper .column-navigation .column .husky-dropdown-multiple-select .dropdown-list > ul > li.selected, .husky-dropdown-multiple-select .dropdown-list > ul > li.hover {
   background-color: #249fbe;
   cursor: pointer;
 }
-/* line 62, ../scss/modules/dropdown-multiple-select.scss */
+/* line 77, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul > li:hover .item-value, .husky-dropdown-multiple-select .column-navigation-wrapper .column-navigation .column .dropdown-list > ul > li.selected .item-value, .column-navigation-wrapper .column-navigation .column .husky-dropdown-multiple-select .dropdown-list > ul > li.selected .item-value {
   color: white;
 }
@@ -5860,131 +5883,142 @@ a.btn-black, a.btn-highlight {
 }
 /* line 53, ../scss/modules/smart-content.scss */
 .smart-content .no-content .icon-file {
+  display: block;
   position: absolute;
-  top: 70px;
+  top: 0px;
   left: 50%;
+  padding-top: 15px;
+  line-height: 125px;
   margin-left: -65px;
   font-size: 125px;
   color: #efefef;
 }
-/* line 61, ../scss/modules/smart-content.scss */
+/* line 64, ../scss/modules/smart-content.scss */
 .smart-content .no-content .text {
   padding-top: 160px;
   font-weight: bold;
   color: #e4e4e4;
   font-size: 24px;
 }
-/* line 68, ../scss/modules/smart-content.scss */
+/* line 71, ../scss/modules/smart-content.scss */
 .smart-content .items-list {
   list-style-type: none;
   margin: 0;
   padding: 0 20px;
 }
-/* line 72, ../scss/modules/smart-content.scss */
+/* line 75, ../scss/modules/smart-content.scss */
 .smart-content .items-list li {
   font-size: 14px;
   line-height: 50px;
   border-bottom: 1px solid #cccccc;
 }
-/* line 77, ../scss/modules/smart-content.scss */
+/* line 80, ../scss/modules/smart-content.scss */
 .smart-content .items-list li .num {
   color: #999999;
   padding-right: 10px;
 }
-/* line 81, ../scss/modules/smart-content.scss */
+/* line 84, ../scss/modules/smart-content.scss */
 .smart-content .items-list li:last-child {
   border-width: 2px;
 }
 
-/* line 88, ../scss/modules/smart-content.scss */
+/* line 91, ../scss/modules/smart-content.scss */
 .smart-footer {
   padding: 15px 20px 30px 20px;
   line-height: 14px;
   color: #999999;
   font-size: 12px;
 }
-/* line 93, ../scss/modules/smart-content.scss */
+/* line 96, ../scss/modules/smart-content.scss */
 .smart-footer span {
   padding-right: 5px;
 }
-/* line 96, ../scss/modules/smart-content.scss */
+/* line 99, ../scss/modules/smart-content.scss */
 .smart-footer .view-toggler {
   color: black;
   cursor: pointer;
 }
 
-/* line 102, ../scss/modules/smart-content.scss */
+/* line 106, ../scss/modules/smart-content.scss */
+.smart-content-overlay .overlay-header {
+  margin-bottom: 15px;
+}
+/* line 109, ../scss/modules/smart-content.scss */
+.smart-content-overlay .overlay-footer {
+  margin-top: 5px;
+}
+
+/* line 114, ../scss/modules/smart-content.scss */
 .smart-overlay-content {
-  padding: 15px 0 5px 20px;
+  height: 100%;
   font-size: 12px;
 }
-/* line 106, ../scss/modules/smart-content.scss */
+/* line 118, ../scss/modules/smart-content.scss */
 .smart-overlay-content .desc {
   font-size: 14px;
   color: #999999;
   padding-bottom: 5px;
   display: block;
 }
-/* line 112, ../scss/modules/smart-content.scss */
+/* line 124, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item, .smart-overlay-content .item-half {
   margin-bottom: 25px;
   min-height: 55px;
 }
-/* line 116, ../scss/modules/smart-content.scss */
+/* line 128, ../scss/modules/smart-content.scss */
 .smart-overlay-content label {
   color: black;
   font-size: 12px;
 }
-/* line 120, ../scss/modules/smart-content.scss */
+/* line 132, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item-half {
   float: left;
   width: 170px;
 }
-/* line 124, ../scss/modules/smart-content.scss */
+/* line 136, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item {
   padding-right: 20px;
 }
-/* line 127, ../scss/modules/smart-content.scss */
+/* line 139, ../scss/modules/smart-content.scss */
 .smart-overlay-content .left {
   margin-right: 20px;
 }
-/* line 130, ../scss/modules/smart-content.scss */
+/* line 142, ../scss/modules/smart-content.scss */
+.smart-overlay-content .full {
+  padding-right: 0;
+}
+/* line 145, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check {
   margin-top: 25px;
 }
-/* line 132, ../scss/modules/smart-content.scss */
+/* line 147, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check .description {
   padding-left: 10px;
 }
-/* line 135, ../scss/modules/smart-content.scss */
+/* line 150, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check .custom-checkbox-icon {
   margin-bottom: 2px;
 }
-/* line 139, ../scss/modules/smart-content.scss */
+/* line 154, ../scss/modules/smart-content.scss */
 .smart-overlay-content .sortMethod {
   margin-top: 25px;
 }
-/* line 142, ../scss/modules/smart-content.scss */
+/* line 157, ../scss/modules/smart-content.scss */
 .smart-overlay-content input.limit-to {
   height: 30px;
   width: 100%;
   padding-left: 10px;
 }
-/* line 147, ../scss/modules/smart-content.scss */
+/* line 162, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list {
   border: 1px solid #cccccc;
   border-radius: 4px 4px 0 0;
 }
-/* line 150, ../scss/modules/smart-content.scss */
-.smart-overlay-content .tag-list .auto-complete-list {
-  padding-bottom: 2px;
-  padding-top: 2px;
-}
-/* line 154, ../scss/modules/smart-content.scss */
+/* line 165, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list input {
-  margin: 4px 0 0 0;
+  margin: 7px 0 0 0;
 }
-/* line 157, ../scss/modules/smart-content.scss */
+/* line 168, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list .tt-suggestions {
   width: 360px;
 }
