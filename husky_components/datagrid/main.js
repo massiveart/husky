@@ -385,7 +385,7 @@ define(function() {
         /**
          * Initializes the rendering of the datagrid
          */
-        initRender: function(response, params){
+        initRender: function(response, params) {
             // TODO adjust when new api is finished and no backwards compatibility needed
             if (!!response.items) {
                 this.data = response;
@@ -638,7 +638,7 @@ define(function() {
 
                 var radioPrefix, key;
                 this.tblColumns = [];
-                this.tblRowAttributes = ' data-dom-id="'+this.options.instance+'-'+this.domId+'"';
+                this.tblRowAttributes = ' data-dom-id="' + this.options.instance + '-' + this.domId + '"';
                 this.domId++;
 
                 // special treatment for id
@@ -861,21 +861,21 @@ define(function() {
             $row = this.prepareTableRow(row, true);
 
             // prepend or append row
-            if(!!this.options.addRowTop) {
+            if (!!this.options.addRowTop) {
                 this.sandbox.dom.prepend($table, $row);
             } else {
                 this.sandbox.dom.append($table, $row);
             }
 
-            if(!!this.options.validation) {
+            if (!!this.options.validation) {
                 // add new row to validation context and add contraints to element
                 $editableFields = this.sandbox.dom.find('.editable', $row);
 
-                this.sandbox.util.foreach($editableFields, function($el,i){
-                    this.sandbox.form.addField('#'+this.elId,$el);
+                this.sandbox.util.foreach($editableFields, function($el, i) {
+                    this.sandbox.form.addField('#' + this.elId, $el);
                     validation = this.options.columns[i].validation;
-                    for(var key in validation){
-                        this.sandbox.form.addConstraint('#'+this.elId,$el, key, {key: validation[key]});
+                    for (var key in validation) {
+                        this.sandbox.form.addConstraint('#' + this.elId, $el, key, {key: validation[key]});
                     }
                 }.bind(this));
             }
@@ -926,9 +926,9 @@ define(function() {
             domId = this.sandbox.dom.data($tblRow, 'dom-id');
 
             // remove row elements from validation
-            $editableElements = this.sandbox.dom.find('.editable',$tblRow);
-            this.sandbox.util.each($editableElements, function(index, $element){
-                this.sandbox.form.removeField('#'+this.elId, $element);
+            $editableElements = this.sandbox.dom.find('.editable', $tblRow);
+            this.sandbox.util.each($editableElements, function(index, $element) {
+                this.sandbox.form.removeField('#' + this.elId, $element);
             }.bind(this));
 
             idx = this.selectedItemIds.indexOf(id);
@@ -1160,7 +1160,7 @@ define(function() {
             // }.bind(this));
         },
 
-        editCellValues: function(event){
+        editCellValues: function(event) {
             var $target = event.currentTarget,
                 $input = this.sandbox.dom.next($target, 'input');
 
@@ -1339,16 +1339,16 @@ define(function() {
          * Sets the validation success class for a dom element
          * @param $domElement
          */
-        showValidationSuccess: function($domElement){
-            this.sandbox.dom.addClass($domElement,'husky-validate-success');
+        showValidationSuccess: function($domElement) {
+            this.sandbox.dom.addClass($domElement, 'husky-validate-success');
         },
 
         /**
          * Sets the validation error class for a dom element
          * @param $domElement
          */
-        showValidationError: function($domElement){
-            this.sandbox.dom.addClass($domElement,'husky-validate-error');
+        showValidationError: function($domElement) {
+            this.sandbox.dom.addClass($domElement, 'husky-validate-error');
         },
 
 
