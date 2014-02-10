@@ -30263,7 +30263,9 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
         checkedAllLabel: 'All Languages', // Label if all checked
         preSelectedElements: [],          // Elements selected by default
         singleSelect: false,              // Allows only one element to be selected
-        noDeselect: false                  // Disables the possibility to deselect items
+        noDeselect: false,                // Disables the possibility to deselect items
+        disabled: false,                  //if true button is disabled
+        disabledClass: 'disabled'         //class to add to the button
     };
 
 
@@ -30287,15 +30289,32 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
 
         render: function() {
 
-            var $originalElement = this.sandbox.dom.$(this.options.el);
-            this.sandbox.dom.append($originalElement, this.template.basicStructure.call(this, this.options.defaultLabel));
-            this.$list = this.sandbox.dom.$('#' + this.listId);
-            this.$dropdownContainer = this.sandbox.dom.$('#' + this.dropdownContainerId);
-            this.prepareData();
+            var $originalElement = this.sandbox.dom.$(this.options.el),
+                button = this.sandbox.dom.createElement(this.template.basicStructure.call(this, this.options.defaultLabel));
+                this.sandbox.dom.append($originalElement, button);
 
-            // bind dom elements
-            this.bindDOMEvents();
-            this.bindCustomEvents();
+            if (this.options.disabled === true) {
+                this.sandbox.dom.addClass(button, this.options.disabledClass);
+            } else {
+                this.$list = this.sandbox.dom.$('#' + this.listId);
+                this.$dropdownContainer = this.sandbox.dom.$('#' + this.dropdownContainerId);
+                this.prepareData();
+
+                // bind dom elements
+                this.bindDOMEvents();
+                this.bindCustomEvents();
+            }
+        },
+
+        //sets the button in enabled state
+        enable: function() {
+
+        },
+
+
+        //sets the button i
+        disable: function() {
+
         },
 
         // prepares data for dropDown, if options.data not set load with ajax

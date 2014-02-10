@@ -59,6 +59,14 @@
                     <div class="grid-col-11" id="ddms6"></div>
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <div class="grid-col-11" id="ddms7"></div>
+                </td>
+                <td>
+                    <button id="toggleState">toggle state of button 7</button>
+                </td>
+            </tr>
             </tbody>
         </table>
 
@@ -89,7 +97,8 @@
         'use strict';
 
         var app = Husky({ debug: { enable: true }}),
-                _ = app.sandbox.util._;
+                _ = app.sandbox.util._,
+                state7 = 0;
 
         app.start([
                     {
@@ -175,6 +184,23 @@
                                 {id: 3, name: 'Italienisch'}
                             ]
                         }
+                    },
+                    {
+                        name: 'dropdown-multiple-select@husky',
+                        options: {
+                            el: '#ddms7',
+                            instanceName: 'ddms7',
+                            defaultLabel: 'I am disabled',
+                            value: 'name',
+                            noDeselect: true,
+                            disabled: true,
+                            data: [
+                                {id: 0, name: 'Deutsch'},
+                                {id: 1, name: 'English'},
+                                {id: 2, name: 'Spanish'},
+                                {id: 3, name: 'Italienisch'}
+                            ]
+                        }
                     }
                 ]).then(function() {
 
@@ -216,6 +242,15 @@
                 console.log("drop-down multiple select ddms2: selected item: " + item);
             });
 
+            $('#toggleState').on('click', function() {
+                if (state7 === 0) {
+                    app.sandbox.emit('husky.dropdown.multiple.select.ddms7.enable');
+                    state7 = 1;
+                } else {
+                    app.sandbox.emit('husky.dropdown.multiple.select.ddms7.disable');
+                    state7 = 0;
+                }
+            });
         });
 
     });
