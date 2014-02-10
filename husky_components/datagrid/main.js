@@ -677,7 +677,7 @@ define(function() {
                 // when row structure contains more elements than the id then use the structure to set values
                 if (this.rowStructure.length) {
 
-                    if(!!triggeredByAddRow) {
+                    if(!!triggeredByAddRow && !!this.options.addRowTop) {
                         this.bottomTabIndex -= (this.tabIndexParam+1);
                     }
 
@@ -744,12 +744,12 @@ define(function() {
                             this.bottomTabIndex++;
                         } else {
                             this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.topTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
-                            this.startTabIndex++;
+                            this.topTabIndex++;
                         }
 
                     } else {
                         this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable">' + tblCellContent + '</span><input type="text" class="form-element editable-content hidden" value="' + tblCellContent + '" tabindex="' + this.topTabIndex + '" ' + validationAttr + '/></td>');
-                        this.startTabIndex++;
+                        this.topTabIndex++;
 
                     }
 
