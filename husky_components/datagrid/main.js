@@ -37,6 +37,8 @@
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.paginationTemplate] template for pagination
  * @param {Boolean} [options.validation] enables validation for datagrid
+ * @param {Number} [options.startTabIndex] start for tab index
+ * @param {Boolean} [options.addRowTop] adds row to the top of the table when add row is triggered
  */
 define(function() {
 
@@ -75,6 +77,7 @@ define(function() {
             fieldsData: null,
             validation: false, // TODO does not work for added rows
             validationDebug: false,
+            addRowTop: false,
             startTabIndex: 1
         },
 
@@ -845,7 +848,12 @@ define(function() {
             // check for other element types when implemented
             $table = this.$element.find('table');
             $row = this.prepareTableRow(row);
-            $table.append($row);
+
+            if(!!this.options.addRowTop) {
+                this.sandbox.dom.prepend($table, $row);
+            } else {
+                this.sandbox.dom.append($table, $row);
+            }
 
             if(!!this.options.validation) {
                 // add new row to validation context and add contraints to element

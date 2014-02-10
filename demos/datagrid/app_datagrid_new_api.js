@@ -442,6 +442,7 @@ require(['lib/husky'], function(Husky) {
                     pagination: true,
                     editable: true,
                     validation:false,
+                    addRowTop: true,
                     columns: [
                         {
                             content: 'Content 1',
