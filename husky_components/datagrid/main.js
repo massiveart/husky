@@ -1123,8 +1123,8 @@ define(function() {
 
                 this.$element.on('click', '.editable', this.editCellValues.bind(this));
 
-                this.$element.on('focusin', '.form-element', this.focusOnEditable.bind(this));
-                this.$element.on('focusout', '.form-element', this.focusOutEditable.bind(this));
+                this.$element.on('focusin', '.form-element', this.focusOnInput.bind(this));
+                this.$element.on('focusout', '.form-element', this.focusOutInput.bind(this));
             }
 
 
@@ -1270,13 +1270,13 @@ define(function() {
          * Is used by isDataChanged to decide wether the value
          * changed or not
          */
-        focusOnEditable: function(event) {
+        focusOnInput: function(event) {
             var $td = this.sandbox.dom.parent(event.currentTarget),
                 $tr = this.sandbox.dom.parent($td),
                 field = this.sandbox.dom.data($td, 'field'),
                 id = this.sandbox.dom.data($tr, 'id'),
                 domId = this.sandbox.dom.data($tr, 'dom-id'),
-                value = event.currentTarget.innerText;
+                value = this.sandbox.dom.find('input', $td).val();
 
             this.lastFocusedEditableElement = {
                 domId: domId,
@@ -1289,13 +1289,13 @@ define(function() {
         /**
          * Triggered when editable field looses focus
          */
-        focusOutEditable: function(event) {
+        focusOutInput: function(event) {
             var $td = this.sandbox.dom.parent(event.currentTarget),
                 $tr = this.sandbox.dom.parent($td),
                 field = this.sandbox.dom.data($td, 'field'),
                 id = this.sandbox.dom.data($tr, 'id'),
                 domId = this.sandbox.dom.data($tr, 'dom-id'),
-                value = event.currentTarget.innerText,
+                value = this.sandbox.dom.find('input', $td).val(),
                 el, key = null;
 
             // last focused object should be same as the one previously left

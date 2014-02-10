@@ -26725,8 +26725,8 @@ define('__component__$datagrid@husky',[],function() {
             }
 
             if (!!this.options.editable) {
-                this.$element.on('focusin', '.editable', this.focusOnEditable.bind(this));
-                this.$element.on('focusout', '.editable', this.focusOutEditable.bind(this));
+                this.$element.on('focusin', '.editable', this.focusOnInput.bind(this));
+                this.$element.on('focusout', '.editable', this.focusOutInput.bind(this));
             }
 
 
@@ -26862,7 +26862,7 @@ define('__component__$datagrid@husky',[],function() {
          * Is used by isDataChanged to decide wether the value
          * changed or not
          */
-        focusOnEditable: function(event) {
+        focusOnInput: function(event) {
             var $td = this.sandbox.dom.parent(event.currentTarget),
                 $tr = this.sandbox.dom.parent($td),
                 field = this.sandbox.dom.data($td, 'field'),
@@ -26881,7 +26881,7 @@ define('__component__$datagrid@husky',[],function() {
         /**
          * Triggered when editable field looses focus
          */
-        focusOutEditable: function(event) {
+        focusOutInput: function(event) {
             var $td = this.sandbox.dom.parent(event.currentTarget),
                 $tr = this.sandbox.dom.parent($td),
                 field = this.sandbox.dom.data($td, 'field'),
