@@ -277,6 +277,11 @@ define([], function() {
         draggableHandler: function(event, origin) {
             this.updateCoordinates((event.clientY - origin.y), (event.clientX - origin.x));
             this.dragged = true;
+
+            if (this.overlay.collapsed === true) {
+                this.sandbox.dom.css(this.overlay.$content, {'height': 'auto'});
+                this.overlay.collapsed = false;
+            }
         },
 
         /**
