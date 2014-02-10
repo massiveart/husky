@@ -101,23 +101,31 @@
                     },
                     {
                         'id': '3',
-                        'icon': 'retweet',
+                        'icon': 'publish',
                         'group': 'right',
-                        'title': 'unpublished',
+                        'title': 'Publish',
                         'class': 'highlight-gray',
                         'type': 'select',
                         'items': [
                             {
                                 'title': 'Publish',
+                                'icon': 'publish',
                                 'callback': function() {
-                                    console.log("refresh was clicked");
+                                    console.log("publish it");
                                 }
                             },
                             {
-                                'icon': 'bin',
-                                'title': 'Private',
+                                'icon': 'unpublish',
+                                'title': 'Unpublish',
                                 'callback': function() {
-                                    console.log("no refresh was clicked");
+                                    console.log("unpublish it");
+                                }
+                            },
+                            {
+                                'icon': 'test',
+                                'title': 'Test',
+                                'callback': function() {
+                                    console.log("set Test-state");
                                 }
                             }
                         ]
