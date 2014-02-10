@@ -78,7 +78,7 @@
             };
 
             app.core.dom.css = function(selector, style, value) {
-                if (!!value) {
+                if (typeof value !== 'undefined') {
                     return $(selector).css(style, value);
                 } else {
                     return $(selector).css(style);
@@ -290,6 +290,10 @@
                 return $(selector).show();
             };
 
+            app.core.dom.map = function(selector, callback) {
+                return $(selector).map(callback);
+            };
+
             app.core.dom.toggle = function(selector) {
                 return $(selector).toggle();
             };
@@ -326,7 +330,6 @@
                     return $(selector).scrollLeft();
                 }
             };
-
 
             app.core.dom.scrollAnimate = function(position, selector) {
                 if (!!selector) {

@@ -445,10 +445,10 @@ require(['lib/husky'], function(Husky) {
             '},' +
             '"_embedded":' +
             '[' +
-            '{ "id": "1", "content1": "B Hallo 1.1 3", "content2": "C Hallo 1.2", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "2", "content1": "A Hallo 1.1 3", "content2": "einsehrsehrsehrseeeehrlangeeeeeeeeeeeeeeeerrrrtitel", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "3", "content1": "C Hallo 1.1 3", "content2": "D Hallo 1.2", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "4", "content1": "D Hallo 1.1 3", "content2": "A Hallo 1.2", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
+            '{ "id": "1", "content1": "B Hallo adf asd 1.1 3", "content2": "C Hallo 1.2as df asdfd fasd", "content4": "C Hallo 1.2 asdfsadf  asdfdas f", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "2", "content1": "A Hallo as s 1.1 3", "content2": "einsehrsehrsehrseeeehrlangeeeeeeeeeeeeeeeerrrrtitel", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "3", "content1": "C Hallo  asdfd1.1 3", "content2": "D Hallo 1.2 asdf", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "4", "content1": "D Hallo sdf 1.1 3", "content2": "A asdf asdf sdf sHallo 1.2", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
             '],' +
             '"total":12,' +
             '"pages": 3,' +
@@ -478,6 +478,7 @@ require(['lib/husky'], function(Husky) {
                     pagination: true,
                     editable: true,
                     validation:true,
+                    contentContainer: '#content',
                     columns: [
                         {
                             content: 'Content 1',

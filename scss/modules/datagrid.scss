@@ -24,35 +24,33 @@
                 font-weight: bold;
             }
         }
+
+        .table-container {
+            width: 100%;
+        }
     }
 
     &.oversized {
-        .table-cell {
+        td {
             overflow: hidden;
             text-overflow: ellipsis;
-            display: block;
-            white-space: nowrap;
         }
     }
-
-    // overflow
-    &.overflow {
-
-        table {
-            position: relative;
-        }
-
-
-        .select-all {
-            position: absolute;
-            left: 0;
-        }
-
 
 
         .table-container {
             overflow: auto;
+
+            &.overflow:after {
+                color: $grayLighter;
+                font-size: 22px;
+                font-family: $baseIconFont;
+                content: '\e212';
+                position: absolute;
+                right: -35px;
+                top: 40%;
+            }
         }
-    }
+//    }
 
 }

@@ -476,3 +476,10 @@
     left: 0px;
   }
 }
+
+.icon-right-arrow {
+    &::after {
+        content: "\e212";
+        display: inline-block;
+    }
+}

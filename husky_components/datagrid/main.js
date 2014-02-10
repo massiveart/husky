@@ -38,6 +38,7 @@
  * @param {String} [options.paginationTemplate] template for pagination
  * @param {Boolean} [options.validation] enables validation for datagrid
  * @param {String} [options.columnMinWidth] sets the minimal width of table columns
+ * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
  */
 define(function() {
 
@@ -60,6 +61,7 @@ define(function() {
                 pageSize: null,
                 showPages: null
             },
+            contentContainer: null,
             removeRow: true,
             selectItem: {
                 type: null,      // checkbox, radiobutton
@@ -81,7 +83,7 @@ define(function() {
         },
 
         constants = {
-            marginRight: 50
+            marginRight: 0
         },
 
         namespace = 'husky.datagrid.',
@@ -246,7 +248,8 @@ define(function() {
          */
             getTextWidth = function(text, classArray, isSortable) {
 
-            var sortIconWidth = 0,
+            var elWidth, el,
+                sortIconWidth = 0,
                 paddings = 16;
             // handle css classes
             if (!classArray) {
@@ -258,8 +261,7 @@ define(function() {
             }
             classArray.push('is-selected');
 
-            var elWidth,
-                el = this.sandbox.dom.createElement('<table style="width:auto"><thead><tr><th class="' + classArray.join(',') + '">' + text + '</th></tr></thead></table>');
+            el = this.sandbox.dom.createElement('<table style="width:auto"><thead><tr><th class="' + classArray.join(',') + '">' + text + '</th></tr></thead></table>');
             this.sandbox.dom.append('body', el);
             this.sandbox.dom.css(el, {
                 'position': 'absolute',
@@ -297,6 +299,10 @@ define(function() {
             this.selectedItemIds = [];
             this.changedData = {};
             this.rowStructure = [];
+
+            if (!!this.options.contentContainer) {
+                this.originalMaxWidth = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
+            }
 
             this.domId = 0;
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
@@ -362,6 +368,7 @@ define(function() {
                 fieldsCount = 0,
                 tmp;
 
+            this.rowRefreshed = true;
             this.sandbox.util.foreach(fields, function(field) {
 
                 tmp = {};
@@ -456,6 +463,8 @@ define(function() {
             if (!!params && typeof params.success === 'function') {
                 params.success(response);
             }
+
+            this.windowResizeListener();
         },
 
         /**
@@ -550,7 +559,7 @@ define(function() {
          */
 
         prepareTableHead: function() {
-            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute, isSortable,
+            var tblColumns, tblCellClass, headData, widthValues, checkboxValues, dataAttribute, isSortable,
                 tblColumnStyle, minWidth;
 
             tblColumns = [];
@@ -654,7 +663,7 @@ define(function() {
             if (!regex[2]) {
                 regex[2] = this.options.defaultMeasureUnit;
             }
-            return {number: regex[1], unit: regex[2]};
+            return {number: parseInt(regex[1]), unit: regex[2]};
         },
 
         /**
@@ -784,11 +793,11 @@ define(function() {
                 tblCellStyle = 'style="max-width:' + this.options.columns[index].minWidth + '"';
 
                 if (!!editable) {
-                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable table-cell" ' + tblCellStyle + ' contenteditable="true" ' + validationAttr + ' tabindex="' + this.tabIndex + '">' + tblCellContent + '</span></td>');
+                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + ' ><span class="editable"  contenteditable="true" ' + validationAttr + ' tabindex="' + this.tabIndex + '">' + tblCellContent + '</span></td>');
 
                     this.tabIndex++;
                 } else {
-                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span  class="table-cell" ' + tblCellStyle + '>' + tblCellContent + '</span></td>');
+                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '>' + tblCellContent + '</td>');
                 }
             } else {
                 this.tblRowAttributes += ' data-' + key + '="' + value + '"';
@@ -1498,52 +1507,76 @@ define(function() {
 
         windowResizeListener: function() {
 
-            var tableWidth = this.sandbox.dom.width(this.$table),
+            var firstRow, finalWidth,
+                content = !!this.options.contentContainer ? this.options.contentContainer : this.$el,
+                tableWidth = this.sandbox.dom.width(this.$table),
                 tableOffset = this.sandbox.dom.offset(this.$table),
-                tableContainerWidth,
-                contentWidth = this.sandbox.dom.width(this.$el),
-                windowWidth = this.sandbox.dom.width(this.sandbox.dom.window);
+                contentWidth = this.sandbox.dom.width(content),
+                windowWidth = this.sandbox.dom.width(this.sandbox.dom.window),
+                overlaps = false,
+                originalMaxWidth = contentWidth,
+                marginRight = constants.marginRight;
 
             tableOffset.right = tableOffset.left + tableWidth;
 
+            if (!!this.options.contentContainer) {
+                originalMaxWidth = this.originalMaxWidth;
+                marginRight = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'margin-right')).number;
+            }
 
-            constants.marginRight = 0;
+            // if table is greater than max content width
+            if (tableWidth > originalMaxWidth && contentWidth < windowWidth - tableOffset.left) {
+                this.sandbox.dom.addClass(this.$element, 'oversized');
+                overlaps = true;
+                // reset table width
+                tableWidth = this.sandbox.dom.width(this.$table);
+                tableOffset.right = tableOffset.left + tableWidth;
+            }
 
-            // TODO: if table > content size
-//            if (windowWidth > contentWidth + tableOffset.left && tableWidth > contentWidth) {
-//                this.sandbox.dom.addClass(this.$element, 'oversized');
-////                this.sandbox.dom.width($tableWidth, '100%');
-////                tableWidth = this.sandbox.dom.width($tableWidth);
-//                this.sandbox.dom.width(this.$element, tableWidth);
-//            } else {
-//                this.sandbox.dom.width(this.$element, contentWidth);
-//                this.sandbox.dom.width(this.$tableContainer, contentWidth);
-//            }
+            // set correct max-widths for every table column
+            firstRow = this.$find('tbody tr:first-child td');
+            this.sandbox.util.foreach(firstRow, function(item, index) {
+                var itemWidth = this.sandbox.dom.width(item);
+                this.sandbox.dom.map('tbody tr td:nth-child(' + index + ')', function(i, spanItem) {
+                    this.sandbox.dom.css(spanItem, {'max-width': itemWidth + 'px'});
+                }.bind(this));
+            }.bind(this));
 
+            // tablecontainer should have width of table in normal cases
+            finalWidth = tableWidth;
 
-            // tablecontainer should have width of table
-//            this.sandbox.dom.width(this.$tableContainer, tableWidth);
-
-            // if table > window-size
-            if (tableOffset.right + constants.marginRight > windowWidth) {
-                // if
-                if (windowWidth - tableOffset.left >= this.sandbox.dom.width(this.$el)) {
-                    tableContainerWidth = windowWidth - tableOffset.left - constants.marginRight;
-                    this.sandbox.dom.width(this.$tableContainer, tableContainerWidth);
-                }
-                if (!this.sandbox.dom.hasClass(this.$element, 'overflow')) {
-                    this.sandbox.dom.addClass(this.$element, 'overflow');
-                }
+            // if table > window-size set width to available space
+            if (tableOffset.right + marginRight > windowWidth) {
+                finalWidth = windowWidth - tableOffset.left;
             } else {
-                if (this.sandbox.dom.hasClass(this.$element, 'overflow')) {
-                    this.sandbox.dom.scrollLeft(this.$element, 0);
-                    this.sandbox.dom.removeClass(this.$element, 'overflow');
-                }
+                // set scroll position back
+                this.sandbox.dom.scrollLeft(this.$element, 0);
+            }
+
+            // width is never smaller than the width of content
+            if (finalWidth < contentWidth) {
+                finalWidth = contentWidth;
             }
 
 
+            if (!!this.options.contentContainer) {
+                this.sandbox.dom.css(this.options.contentContainer, 'max-width', finalWidth);
+                finalWidth = this.sandbox.dom.width(this.options.contentContainer);
+                if (!overlaps) {
+                    this.sandbox.dom.css(this.options.contentContainer, 'max-width', '');
+                }
+            }
+
             // husky-datagrid should always have width of tablecontainer (to keep pagination on most right border)
-//            this.sandbox.dom.width(this.$element, this.sandbox.dom.width(this.$tableContainer));
+            this.sandbox.dom.width(this.$element, finalWidth);
+
+
+            // check scrollwidth and add class if necessary
+            if (this.$tableContainer.eq(0).scrollWidth) {
+                this.sandbox.dom.addClass(this.$tableContainer, 'overflow');
+            } else {
+                this.sandbox.dom.removeClass(this.$tableContainer, 'overflow');
+            }
         },
 
         /**
