@@ -26852,7 +26852,7 @@ define('__component__$datagrid@husky',[],function() {
 
             // listen for save event
             if (!!this.options.editable) {
-                this.sandbox.on(DATA_SAVE, this.saveChangedData.bind(this));
+                this.sandbox.on(DATA_SAVE, this.saveAllChangedData.bind(this));
             }
 
         },
@@ -26925,7 +26925,7 @@ define('__component__$datagrid@husky',[],function() {
          * Saves the changes for an editable list
          * Triggered with the husky.datagrid.data.save event
          */
-        saveChangedData: function() {
+        saveAllChangedData: function() {
 
             var url = this.data.links.self,
                 type = 'PATCH',

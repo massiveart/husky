@@ -38,6 +38,7 @@
  * @param {String} [options.paginationTemplate] template for pagination
  * @param {Boolean} [options.validation] enables validation for datagrid
  * @param {Boolean} [options.addRowTop] adds row to the top of the table when add row is triggered
+ * @param {Boolean} [options.startTabIndex] start index for tabindex
  */
 define(function() {
 
@@ -76,7 +77,8 @@ define(function() {
             fieldsData: null,
             validation: false, // TODO does not work for added rows
             validationDebug: false,
-            addRowTop: false
+            addRowTop: false,
+            startTabIndex: 50000
         },
 
         namespace = 'husky.datagrid.',
@@ -248,19 +250,17 @@ define(function() {
             this.data = null;
             this.allItemIds = [];
             this.selectedItemIds = [];
-            this.changedData = {};
             this.rowStructure = [];
-
             this.domId = 0;
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
+            this.bottomTabIndex = this.options.startTabIndex || 49999;
+            this.topTabIndex = this.options.startTabIndex || 50000;
 
             this.sort = {
                 ascClass: 'icon-arrow-up',
                 descClass: 'icon-arrow-down',
                 additionalClasses: ' m-left-5 small-font'
             };
-
-            this.changedData = [];
 
             // append datagrid to html element
             this.$originalElement = this.sandbox.dom.$(this.options.el);
@@ -722,10 +722,22 @@ define(function() {
                 }
 
                 if (!!editable) {
-                    if(!!triggeredByAddRow) {
-                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">'+tblCellContent+'</span><input type="text" class="form-element editable-content" value="'+tblCellContent+'"  ' + validationAttr + '/></td>');
+                    if (!!triggeredByAddRow) {
+
+                        // differentiate for tab index
+                        if (!!this.options.addRowTop) {
+                            // TODO adjust tabindex for intput fields which are added at the top
+                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.bottomTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
+                            this.bottomTabIndex--;
+                        } else {
+                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.topTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
+                            this.startTabIndex++;
+                        }
+
                     } else {
-                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable">'+tblCellContent+'</span><input type="text" class="form-element editable-content hidden" value="'+tblCellContent+'"  ' + validationAttr + '/></td>');
+                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable">' + tblCellContent + '</span><input type="text" class="form-element editable-content hidden" value="' + tblCellContent + '" tabindex="' + this.topTabIndex + '" ' + validationAttr + '/></td>');
+                        this.startTabIndex++;
+
                     }
 
                 } else {
@@ -918,11 +930,6 @@ define(function() {
             this.sandbox.util.each($editableElements, function(index, $element){
                 this.sandbox.form.removeField('#'+this.elId, $element);
             }.bind(this));
-
-            // remove deleted row from changedData
-            if(!!this.changedData && !!this.changedData[domId]){
-                delete this.changedData[domId];
-            }
 
             idx = this.selectedItemIds.indexOf(id);
 
@@ -1258,11 +1265,6 @@ define(function() {
                 this.sandbox.on('husky.column-options' + columnOptionsInstanceName + '.saved', this.filterColumns.bind(this));
             }
 
-            // listen for save event
-            if (!!this.options.editable) {
-                this.sandbox.on(DATA_SAVE, this.saveChangedData.bind(this));
-            }
-
         },
 
         /**
@@ -1295,8 +1297,11 @@ define(function() {
                 field = this.sandbox.dom.data($td, 'field'),
                 id = this.sandbox.dom.data($tr, 'id'),
                 domId = this.sandbox.dom.data($tr, 'dom-id'),
-                value = this.sandbox.dom.find('input', $td).val(),
-                el, key = null;
+                $input = this.sandbox.dom.find('input', $td),
+                value = $input.val(),
+                el,
+                url = this.data.links.self,
+                type = 'PUT';
 
             // last focused object should be same as the one previously left
             if (this.lastFocusedEditableElement.domId === domId) {
@@ -1304,24 +1309,25 @@ define(function() {
 
                     this.sandbox.emit(DATA_CHANGED);
 
-                    // element already changed in the past and therefor in the changed data array
-                    for(key in this.changedData){
-                        if (key === domId) {
-                            el = this.changedData[key];
-                        }
-                    }
+                    el = {};
+                    el.id = id;
+                    el[field] = value;
 
-                    // add to the changedata list
-                    if (!el) {
-                        el = {};
-                        el.id = id;
-                        el[field] = value;
+                    // Todo show loading icon
 
-                        this.changedData[domId] = el;
+                    this.sandbox.util.save(url, type, el)
+                        .then(function(data, textStatus) {
+                            this.sandbox.emit(DATA_SAVED, data, textStatus);
+                            // todo hide loading icon
+                            this.showValidationSuccess($input);
+                            this.resetInputFields();
+                        }.bind(this))
+                        .fail(function(textStatus, error) {
+                            this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
+                            // todo hide loading icon
+                            this.showValidationError($input);
+                        }.bind(this));
 
-                    } else {
-                        el[field] = value;
-                    }
                 }
             } else {
                 this.sandbox.logger.log("Something went wrong!");
@@ -1330,42 +1336,21 @@ define(function() {
         },
 
         /**
-         * Saves the changes for an editable list
-         * Triggered with the husky.datagrid.data.save event
+         * Sets the validation success class for a dom element
+         * @param $domElement
          */
-        saveChangedData: function() {
-
-            var url = this.data.links.self,
-                type = 'PATCH',
-                data = [], key = null;
-
-            // is validation configured
-            if (!!this.options.validation) {
-                // is invalid
-                if (!this.sandbox.form.validate('#' + this.elId)) {
-                    this.sandbox.logger.log("validation error...");
-                    return;
-                }
-            }
-
-            this.sandbox.logger.log("saving data...");
-
-            for(key in this.changedData){
-                data.push(this.changedData[key]);
-            }
-
-            if (!!data && data.length > 0) {
-                this.sandbox.util.save(url, type, data)
-                    .then(function(data, textStatus) {
-                        this.sandbox.emit(DATA_SAVED, data, textStatus);
-                        this.changedData = [];
-                        this.resetInputFields();
-                    }.bind(this))
-                    .fail(function(textStatus, error) {
-                        this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
-                    }.bind(this));
-            }
+        showValidationSuccess: function($domElement){
+            this.sandbox.dom.addClass($domElement,'husky-validate-success');
         },
+
+        /**
+         * Sets the validation error class for a dom element
+         * @param $domElement
+         */
+        showValidationError: function($domElement){
+            this.sandbox.dom.addClass($domElement,'husky-validate-error');
+        },
+
 
         /**
          * Hides input fields and displays new content
@@ -1385,7 +1370,6 @@ define(function() {
                 this.sandbox.dom.show($span);
 
             }.bind(this));
-
         },
 
         /**
