@@ -303,6 +303,7 @@ define(function() {
             this.data = null;
             this.allItemIds = [];
             this.selectedItemIds = [];
+            this.selectedDomIds = [];
             this.changedData = {};
             this.rowStructure = [];
 
@@ -374,7 +375,6 @@ define(function() {
                 fieldsCount = 0,
                 tmp;
 
-            this.rowRefreshed = true;
             this.sandbox.util.foreach(fields, function(field) {
 
                 tmp = {};
@@ -579,8 +579,10 @@ define(function() {
                     checkboxValues = this.getNumberAndUnit(this.options.selectItem.width);
                 }
 
+                minWidth = checkboxValues.number + checkboxValues.unit;
+
                 tblColumns.push(
-                    '<th class="select-all" ', 'style="width:' + checkboxValues.number + checkboxValues.unit + '"', ' >');
+                    '<th class="select-all" ', 'style="width:' + minWidth +';max-width:' + minWidth +';min-width:' + minWidth +';"', ' >');
 
                 if (this.options.selectItem.type === 'checkbox') {
                     tblColumns.push(this.templates.checkbox({ id: 'select-all' }));
@@ -713,7 +715,7 @@ define(function() {
 
                 var radioPrefix, key;
                 this.tblColumns = [];
-                this.tblRowAttributes = ' data-dom-id="' + this.options.instance + '-' + this.domId + '"';
+                this.tblRowAttributes = ' data-dom-id="dom-' + this.options.instance + '-' + this.domId + '"';
                 this.domId++;
 
                 // special treatment for id
@@ -816,6 +818,7 @@ define(function() {
         resetItemSelection: function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
+            this.selectedDomIds = [];
         },
 
         /**
@@ -826,15 +829,20 @@ define(function() {
 
             // Todo review handling of events for new rows in datagrid (itemId empty?)
 
-            var $element, itemId, oldSelectionId;
+            var $element, itemId, oldSelectionId, parentTr;
 
             $element = this.sandbox.dom.$(event.currentTarget);
 
             if (!$element.is('input')) {
-                $element = $element.parent().find('input');
+                $element = this.sandbox.dom.find('input',this.sandbox.dom.parent($element));
             }
 
-            itemId = $element.parents('tr').data('id');
+            parentTr = this.sandbox.dom.parents($element,'tr');
+            itemId = this.sandbox.dom.data(parentTr, 'id');
+
+//            if (!itemId) {
+//                itemId = this.sandbox.dom.data(parentTr, 'dom-id');
+//            }
 
             if ($element.attr('type') === 'checkbox') {
 
@@ -899,6 +907,7 @@ define(function() {
                     .prop('checked', false);
 
                 this.selectedItemIds = [];
+                this.selectedDomIds = [];
                 this.sandbox.emit(ALL_DESELECT, null);
 
             } else {
@@ -1489,6 +1498,11 @@ define(function() {
 
             this.options.columns = parsed.columns;
 
+            this.sandbox.dom.width(this.$element, '100%');
+            if (!!this.options.contentContainer) {
+                this.sandbox.dom.css(this.options.contentContainer, 'max-width', '');
+            }
+
             this.load({
                 url: url,
                 success: function() {
@@ -1512,6 +1526,7 @@ define(function() {
                 this.sandbox.form.create('#' + this.elId);
             }
         },
+
 
 
         /**
