@@ -882,11 +882,12 @@ define(function() {
                 $editableFields = this.sandbox.dom.find('input[type=text]', $row);
 
                 this.sandbox.util.foreach($editableFields, function($el, i) {
-                    this.sandbox.form.addField('#' + this.elId, $el);
-//                    validation = this.options.columns[i].validation;
-//                    for (var key in validation) {
-//                        this.sandbox.form.addConstraint('#' + this.elId, $el, key, {key: validation[key]});
-//                    }
+//                    this.sandbox.form.addField('#' + this.elId, $el);
+                    // TODO fix validation for new rows
+                    validation = this.options.columns[i].validation;
+                    for (var key in validation) {
+                        this.sandbox.form.addConstraint('#' + this.elId, $el, key, {key: validation[key]});
+                    }
                 }.bind(this));
             }
         },
@@ -1139,6 +1140,12 @@ define(function() {
             if (!!this.options.editable) {
                 this.sandbox.dom.on(this.$el, 'click', this.editCellValues.bind(this), '.editable');
                 this.sandbox.dom.on(this.$el, 'focusin', this.focusOnRow.bind(this), 'tr');
+
+                this.sandbox.dom.on(this.$el, 'click', function(event){
+                    event.stopPropagation();
+                }, 'tr');
+
+                this.sandbox.dom.on(window,'click', this.prepareSave.bind(this));
             }
 
 
@@ -1286,11 +1293,10 @@ define(function() {
             var $tr = event.currentTarget,
                 domId = this.sandbox.dom.data($tr, 'dom-id');
 
-            this.sandbox.dom.stopPropagation(event);
+//            this.sandbox.dom.stopPropagation(event);
             this.sandbox.logger.log("focus on row", domId);
 
             // TODO
-//            this.sandbox.dom.one(window,'click', this.prepareSave.bind(this));
 
             if(!!this.lastFocusedRow && this.lastFocusedRow.domId !== domId) { // new focus
                 this.prepareSave();
