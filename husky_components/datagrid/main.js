@@ -208,6 +208,12 @@ define(function() {
             UPDATE = namespace + 'update',
 
         /**
+         * used to update the table width and its containers due to responsiveness
+         * @event husky.datagrid.update.table
+         */
+            UPDATE_TABLE = namespace + 'update.table',
+
+        /**
          * used to add a row
          * @event husky.datagrid.row.add
          * @param {String} id of the row to be removed
@@ -663,7 +669,7 @@ define(function() {
             if (!regex[2]) {
                 regex[2] = this.options.defaultMeasureUnit;
             }
-            return {number: parseInt(regex[1]), unit: regex[2]};
+            return {number: parseInt(regex[1],10), unit: regex[2]};
         },
 
         /**
@@ -1286,6 +1292,9 @@ define(function() {
             // trigger selectedItems
             this.sandbox.on(ITEMS_GET_SELECTED, this.getSelectedItemsIds.bind(this));
 
+            // checks tablel width
+            this.sandbox.on(UPDATE_TABLE, this.windowResizeListener.bind(this));
+
 
             this.sandbox.on(DATA_GET, this.provideData.bind(this));
 
@@ -1505,6 +1514,9 @@ define(function() {
         },
 
 
+        /**
+         * this function is responsible for responsiveness of datagrid and is called everytime after resizing window and after initialization
+         */
         windowResizeListener: function() {
 
             var firstRow, finalWidth,
@@ -1519,28 +1531,22 @@ define(function() {
 
             tableOffset.right = tableOffset.left + tableWidth;
 
+
             if (!!this.options.contentContainer) {
+                // get original max-width and right margin
                 originalMaxWidth = this.originalMaxWidth;
                 marginRight = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'margin-right')).number;
             }
 
             // if table is greater than max content width
             if (tableWidth > originalMaxWidth && contentWidth < windowWidth - tableOffset.left) {
+                // adding this class, forces table cells to shorten long words
                 this.sandbox.dom.addClass(this.$element, 'oversized');
                 overlaps = true;
-                // reset table width
+                // reset table width and offset
                 tableWidth = this.sandbox.dom.width(this.$table);
                 tableOffset.right = tableOffset.left + tableWidth;
             }
-
-            // set correct max-widths for every table column
-            firstRow = this.$find('tbody tr:first-child td');
-            this.sandbox.util.foreach(firstRow, function(item, index) {
-                var itemWidth = this.sandbox.dom.width(item);
-                this.sandbox.dom.map('tbody tr td:nth-child(' + index + ')', function(i, spanItem) {
-                    this.sandbox.dom.css(spanItem, {'max-width': itemWidth + 'px'});
-                }.bind(this));
-            }.bind(this));
 
             // tablecontainer should have width of table in normal cases
             finalWidth = tableWidth;
@@ -1553,26 +1559,27 @@ define(function() {
                 this.sandbox.dom.scrollLeft(this.$element, 0);
             }
 
-            // width is never smaller than the width of content
+            // width is not allowed to be smaller than the width of content
             if (finalWidth < contentWidth) {
                 finalWidth = contentWidth;
             }
 
-
+            // if contentContainer is set, adapt maximum size
             if (!!this.options.contentContainer) {
                 this.sandbox.dom.css(this.options.contentContainer, 'max-width', finalWidth);
                 finalWidth = this.sandbox.dom.width(this.options.contentContainer);
                 if (!overlaps) {
+                    // if table does not overlap border, set content to original width
                     this.sandbox.dom.css(this.options.contentContainer, 'max-width', '');
                 }
             }
 
-            // husky-datagrid should always have width of tablecontainer (to keep pagination on most right border)
+            // now set width
             this.sandbox.dom.width(this.$element, finalWidth);
 
 
-            // check scrollwidth and add class if necessary
-            if (this.$tableContainer.eq(0).scrollWidth) {
+            // check scrollwidth and add class
+            if (this.$tableContainer.get(0).scrollWidth > finalWidth) {
                 this.sandbox.dom.addClass(this.$tableContainer, 'overflow');
             } else {
                 this.sandbox.dom.removeClass(this.$tableContainer, 'overflow');

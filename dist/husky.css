@@ -6186,43 +6186,47 @@ a.btn-black, a.btn-highlight {
   display: block;
 }
 
-/* line 5, ../scss/modules/datagrid.scss */
+/* line 1, ../scss/modules/datagrid.scss */
+.husky-datagrid {
+  position: relative;
+}
+/* line 7, ../scss/modules/datagrid.scss */
 .husky-datagrid table td {
   overflow: hidden;
 }
-/* line 11, ../scss/modules/datagrid.scss */
+/* line 13, ../scss/modules/datagrid.scss */
 .husky-datagrid thead tr {
   height: 30px;
   padding-top: 10px;
 }
-/* line 15, ../scss/modules/datagrid.scss */
+/* line 17, ../scss/modules/datagrid.scss */
 .husky-datagrid thead th {
   padding-top: 0;
   font-weight: normal;
 }
-/* line 19, ../scss/modules/datagrid.scss */
+/* line 21, ../scss/modules/datagrid.scss */
 .husky-datagrid thead th.is-sortable {
   color: black;
   cursor: pointer;
 }
-/* line 23, ../scss/modules/datagrid.scss */
+/* line 25, ../scss/modules/datagrid.scss */
 .husky-datagrid thead th.is-selected {
   font-weight: bold;
 }
-/* line 28, ../scss/modules/datagrid.scss */
+/* line 30, ../scss/modules/datagrid.scss */
 .husky-datagrid thead .table-container {
   width: 100%;
 }
-/* line 34, ../scss/modules/datagrid.scss */
+/* line 36, ../scss/modules/datagrid.scss */
 .husky-datagrid.oversized td {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* line 41, ../scss/modules/datagrid.scss */
+/* line 43, ../scss/modules/datagrid.scss */
 .husky-datagrid .table-container {
   overflow: auto;
 }
-/* line 44, ../scss/modules/datagrid.scss */
+/* line 46, ../scss/modules/datagrid.scss */
 .husky-datagrid .table-container.overflow:after {
   color: #cccccc;
   font-size: 22px;

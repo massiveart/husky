@@ -26490,7 +26490,7 @@ define('__component__$datagrid@husky',[],function() {
             if (!regex[2]) {
                 regex[2] = this.options.defaultMeasureUnit;
             }
-            return {number: regex[1], unit: regex[2]};
+            return {number: parseInt(regex[1]), unit: regex[2]};
         },
 
         /**
@@ -26620,11 +26620,11 @@ define('__component__$datagrid@husky',[],function() {
                 tblCellStyle = 'style="max-width:' + this.options.columns[index].minWidth + '"';
 
                 if (!!editable) {
-                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' '+ tblCellStyle+' ><span class="editable"  contenteditable="true" ' + validationAttr + ' tabindex="' + this.tabIndex + '">' + tblCellContent + '</span></td>');
+                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + ' ><span class="editable"  contenteditable="true" ' + validationAttr + ' tabindex="' + this.tabIndex + '">' + tblCellContent + '</span></td>');
 
                     this.tabIndex++;
                 } else {
-                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' '+ tblCellStyle+'>' + tblCellContent + '</td>');
+                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '>' + tblCellContent + '</td>');
                 }
             } else {
                 this.tblRowAttributes += ' data-' + key + '="' + value + '"';
@@ -27332,71 +27332,77 @@ define('__component__$datagrid@husky',[],function() {
         },
 
 
+        /**
+         * this function is responsible for responsiveness of datagrid and is called everytime after resizing window and after initialization
+         */
         windowResizeListener: function() {
 
-            var content = !!this.options.contentContainer ? this.options.contentContainer : this.$el,
+            var firstRow, finalWidth,
+                content = !!this.options.contentContainer ? this.options.contentContainer : this.$el,
                 tableWidth = this.sandbox.dom.width(this.$table),
                 tableOffset = this.sandbox.dom.offset(this.$table),
                 contentWidth = this.sandbox.dom.width(content),
                 windowWidth = this.sandbox.dom.width(this.sandbox.dom.window),
                 overlaps = false,
-                firstRow, finalWidth,
-                originalMaxWidth = !!this.options.contentContainer ? this.originalMaxWidth : contentWidth;
+                originalMaxWidth = contentWidth,
+                marginRight = constants.marginRight;
 
             tableOffset.right = tableOffset.left + tableWidth;
 
+
+            if (!!this.options.contentContainer) {
+                // get original max-width and right margin
+                originalMaxWidth = this.originalMaxWidth;
+                marginRight = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'margin-right')).number;
+            }
+
             // if table is greater than max content width
-            if (tableWidth >  originalMaxWidth && contentWidth < windowWidth - tableOffset.left) {
+            if (tableWidth > originalMaxWidth && contentWidth < windowWidth - tableOffset.left) {
+                // adding this class, forces table cells to shorten long words
                 this.sandbox.dom.addClass(this.$element, 'oversized');
                 overlaps = true;
-                // reset table width
+                // reset table width and offset
                 tableWidth = this.sandbox.dom.width(this.$table);
                 tableOffset.right = tableOffset.left + tableWidth;
             }
-
-            // set correct max-widths for every table column
-            firstRow = this.$find('tbody tr:first-child td');
-            this.sandbox.util.foreach(firstRow, function(item, index) {
-                var itemWidth = this.sandbox.dom.width(item);
-                this.sandbox.dom.map('tbody tr td:nth-child(' + index + ')', function(i, spanItem) {
-                    this.sandbox.dom.css(spanItem, {'max-width': itemWidth + 'px'});
-                }.bind(this));
-            }.bind(this));
 
             // tablecontainer should have width of table in normal cases
             finalWidth = tableWidth;
 
             // if table > window-size set width to available space
-            if (tableOffset.right + constants.marginRight > windowWidth) {
-                finalWidth = windowWidth - tableOffset.left - constants.marginRight;
-                if (!this.sandbox.dom.hasClass(this.$element, 'overflow')) {
-                    this.sandbox.dom.addClass(this.$element, 'overflow');
-                }
+            if (tableOffset.right + marginRight > windowWidth) {
+                finalWidth = windowWidth - tableOffset.left;
             } else {
-                if (this.sandbox.dom.hasClass(this.$element, 'overflow')) {
-                    this.sandbox.dom.scrollLeft(this.$element, 0);
-                    this.sandbox.dom.removeClass(this.$element, 'overflow');
-                }
+                // set scroll position back
+                this.sandbox.dom.scrollLeft(this.$element, 0);
             }
 
-            // width is never smaller than the width of content
+            // width is not allowed to be smaller than the width of content
             if (finalWidth < contentWidth) {
-                finalWidth = contentWidth - constants.marginRight;
+                finalWidth = contentWidth;
             }
 
-
+            // if contentContainer is set, adapt maximum size
             if (!!this.options.contentContainer) {
                 this.sandbox.dom.css(this.options.contentContainer, 'max-width', finalWidth);
                 finalWidth = this.sandbox.dom.width(this.options.contentContainer);
                 if (!overlaps) {
-                    this.sandbox.dom.css(this.options.contentContainer,'max-width', '');
+                    // if table does not overlap border, set content to original width
+                    this.sandbox.dom.css(this.options.contentContainer, 'max-width', '');
                 }
             }
 
-            // husky-datagrid should always have width of tablecontainer (to keep pagination on most right border)
+            // now set width
             this.sandbox.dom.width(this.$element, finalWidth);
 
-            },
+
+            // check scrollwidth and add class
+            if (this.$tableContainer.get(0).scrollWidth > finalWidth) {
+                this.sandbox.dom.addClass(this.$tableContainer, 'overflow');
+            } else {
+                this.sandbox.dom.removeClass(this.$tableContainer, 'overflow');
+            }
+        },
 
         /**
          * Adds loading icon and keeps width and height
@@ -33374,7 +33380,6 @@ define("html5sortable", function(){});
                     return $(selector).scrollLeft();
                 }
             };
-
 
             app.core.dom.scrollAnimate = function(position, selector) {
                 if (!!selector) {
