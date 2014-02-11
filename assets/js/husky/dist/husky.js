@@ -28824,6 +28824,30 @@ define('__component__$edit-toolbar@husky',[],function() {
             return createEventName.call(this, 'item.loading');
         },
 
+        /**
+         * event to change a buttons selected dropdown-item
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]change.item
+         * @param {string} button The id of the button
+         * @param {string} item the index of the dropdown-item
+         * @param {boolean} executeCallback if true callback of dropdown item gets executed
+         */
+        ITEM_CHANGE = function() {
+            return createEventName.call(this, 'item.change');
+        },
+
+        /**
+         * event to change a buttons selected dropdown-item
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]change.item
+         * @param {string} button The id of the button
+         * @param {array} items The items to set
+         * @param {integer} itemIndex The index of the item to set selected - optional
+         */
+         ITEMS_SET = function() {
+            return createEventName.call(this, 'items.set');
+        },
+
         /** events bound to dom */
         bindDOMEvents = function() {
             this.sandbox.dom.on(this.options.el, 'click', toggleItem.bind(this), '.dropdown-toggle');
@@ -28835,11 +28859,32 @@ define('__component__$edit-toolbar@husky',[],function() {
             this.sandbox.on(ITEM_DISABLE.call(this), function(id, highlight) {
                 toggleEnabled.call(this, false, id, highlight);
             }.bind(this));
+
             this.sandbox.on(ITEM_ENABLE.call(this), function(id, highlight) {
                 toggleEnabled.call(this, true, id, highlight);
             }.bind(this));
+
             this.sandbox.on(ITEM_LOADING.call(this), function(id) {
                 itemLoading.call(this, id);
+            }.bind(this));
+
+            this.sandbox.on(ITEM_CHANGE.call(this), function(button, index, executeCallback) {
+                changeMainListItem.call(this, this.items[button].$el, this.items[button].items[index]);
+                if (executeCallback === true || !!this.items[button].items[index].callback) {
+                    if (typeof this.items[button].items[index].callback === 'function') {
+                        this.items[button].items[index].callback();
+                    }
+                }
+            }.bind(this));
+
+            this.sandbox.on(ITEMS_SET.call(this), function(button, items, itemIndex) {
+                this.sandbox.dom.remove(this.sandbox.dom.find('.edit-toolbar-dropdown-menu', this.items[button].$el));
+                this.sandbox.dom.addClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
+                this.items[button].items = items;
+                createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
+                if (typeof itemIndex !== 'undefined') {
+                    this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemIndex);
+                }
             }.bind(this));
         },
 
@@ -29003,7 +29048,6 @@ define('__component__$edit-toolbar@husky',[],function() {
          * @param item
          */
         changeMainListItem = function(listElement, item) {
-
             // TODO: do not change size of element on change title
             // first get title
             var listItems = this.sandbox.dom.find('span', listElement);
@@ -29146,6 +29190,9 @@ define('__component__$edit-toolbar@husky',[],function() {
 
             bindDOMEvents.call(this);
             bindCustomEvents.call(this);
+
+            // initialization finished
+            this.sandbox.emit(INITIALIZED.call(this));
         },
 
         /**
@@ -29213,13 +29260,12 @@ define('__component__$edit-toolbar@husky',[],function() {
                     createDropdownMenu.call(this, $listItem, item);
                 }
 
+                this.items[item.id].$el = $listItem;
+
                 // create button
-                this.sandbox.dom.append(addTo, $listItem);
+                this.sandbox.dom.append(addTo, this.items[item.id].$el);
 
             }.bind(this));
-
-            // initialization finished
-            this.sandbox.emit(INITIALIZED.call(this));
         }
     };
 
