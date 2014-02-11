@@ -86,6 +86,7 @@
                         'disabledIcon': 'user-add',
                         'title': '',
                         'group': 'right',
+                        'position': 1,
                         'items': [
                             {
                                 'title': 'Refresh',
@@ -107,22 +108,26 @@
                         'group': 'right',
                         'title': 'Publish',
                         'class': 'highlight-gray',
+                        'position': 2,
                         'type': 'select'
                     },
                     {
                         'icon': 'file-import',
                         'title': 'Import',
+                        'position': 1,
                         'callback': function() {
                             console.log("import was clicked");
                         }
                     },
                     {
                         'icon': 'file-import',
-                        'title': 'Work'
+                        'title': 'Work',
+                        'position': 2
                     },
                     {
                         'icon': 'file-export',
-                        'title': 'Export'
+                        'title': 'Export',
+                        'position': 4
                     }
                 ],
 

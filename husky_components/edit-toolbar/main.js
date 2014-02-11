@@ -35,6 +35,7 @@
  *      - iconSize (optional: large/medium/small)
  *      - class (optional: highlight/highlight-gray)
  *      - group (optional: left/right)
+ *      - position (optional) integer to sort the items - default 9000
  *      - type (optional: none/select) - if select, the selected item is displayed in mainitem
  *      - callback (optional) - callback function
  *      - items (optional - if dropdown):
@@ -426,6 +427,24 @@ define(function() {
         },
 
         /**
+         * Sorts all items with their position-property
+         * @param {array} data The list of items to sort
+         * @return {array} returns the sorted array
+         */
+        sortData = function(data) {
+            for (var i = -1, length = data.length; ++i < length;) {
+                if (typeof data[i].position !== 'number') {
+                    data[i].position = 9000;
+                }
+            }
+            data = data.sort(function(a, b){
+                return a.position - b.position
+            });
+
+            return data;
+        },
+
+        /**
          * function checks if id is set and unique among all items
          * otherwise a new id is generated for the element
          * @param item
@@ -511,6 +530,7 @@ define(function() {
             // save item groups in array
             this.itemGroup = [];
 
+            data = sortData.call(this, data);
 
             // create all elements
             this.sandbox.util.foreach(data, function(item) {
