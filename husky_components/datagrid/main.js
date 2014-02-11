@@ -1367,8 +1367,10 @@ define(function() {
 
             data.id = lastFocusedRowCurrentData.id;
 
+
+            // TODO there seems to be a bug when an invalid field is ignored by the user and he visits more than one other row
             // validate locally
-            if (!!this.options.validate && !this.sandbox.form.validate('#' + this.elId)) {
+            if (!!this.options.validation && !this.sandbox.form.validate('#' + this.elId)) {
                 isValid = false;
             }
 
@@ -1429,6 +1431,7 @@ define(function() {
         save: function(data, method, url ,$tr) {
 
 
+            this.sandbox.logger.log("data to save", data);
             this.showLoadingIconForRow($tr);
 
             this.sandbox.util.save(url, method, data)
