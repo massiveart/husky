@@ -2,10 +2,9 @@
     position: relative;
 
     table {
-        //        table-layout: fixed;
-
         td {
             overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
 
@@ -32,27 +31,18 @@
         }
     }
 
-    &.oversized {
-        td {
-            overflow: hidden;
-            text-overflow: ellipsis;
+    .table-container {
+        overflow: auto;
+
+        &.overflow:after {
+            color: $grayLighter;
+            font-size: 22px;
+            font-family: $baseIconFont;
+            content: '\e212';
+            position: absolute;
+            right: -35px;
+            top: 40%;
         }
     }
-
-
-        .table-container {
-            overflow: auto;
-
-            &.overflow:after {
-                color: $grayLighter;
-                font-size: 22px;
-                font-family: $baseIconFont;
-                content: '\e212';
-                position: absolute;
-                right: -35px;
-                top: 40%;
-            }
-        }
-//    }
 
 }
