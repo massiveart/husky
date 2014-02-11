@@ -485,7 +485,6 @@ require(['lib/husky'], function(Husky) {
                             attribute: "content1",
                             editable: true,
                             validation: {
-                                unique: true,
                                 required: true
                             }
                         },

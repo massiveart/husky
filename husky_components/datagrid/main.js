@@ -1281,70 +1281,157 @@ define(function() {
         },
 
         /**
-         * Remembers value of previously focused editable field
-         * Is used by isDataChanged to decide wether the value
-         * changed or not
+         * Put focus on table row and remember values
          */
-        focusOnInput: function(event) {
-            var $td = this.sandbox.dom.parent(event.currentTarget),
-                $tr = this.sandbox.dom.parent($td),
-                field = this.sandbox.dom.data($td, 'field'),
-                id = this.sandbox.dom.data($tr, 'id'),
-                domId = this.sandbox.dom.data($tr, 'dom-id'),
-                value = this.sandbox.dom.find('input', $td).val();
-
-            this.lastFocusedEditableElement = {
-                domId: domId,
-                id: id,
-                field: field,
-                value: value
-            };
+        focusOnRow: function(event) {
+            this.lastFocusedRow = this.getInputValuesOfRow(this.sandbox.dom.parent(event.currentTarget, 'tr'));
         },
 
         /**
-         * Triggered when editable field looses focus
+         * Returns an object with the current values of the inputfields, id and domId
+         * @param $tr table row
+         * @returns {{domId: *, id: *, fields: Array}}
          */
-        focusOutInput: function(event) {
-            var $td = this.sandbox.dom.parent(event.currentTarget),
-                $tr = this.sandbox.dom.parent($td),
-                field = this.sandbox.dom.data($td, 'field'),
-                id = this.sandbox.dom.data($tr, 'id'),
+        getInputValuesOfRow: function($tr) {
+
+            var id = this.sandbox.dom.data($tr, 'id'),
                 domId = this.sandbox.dom.data($tr, 'dom-id'),
-                $input = this.sandbox.dom.find('input', $td),
-                value = $input.val(),
-                el,
-                url = this.data.links.self,
-                type = 'PUT';
+                $inputs = this.sandbox.dom.find('input[type=text]:not(.hidden)', $tr),
+                fields = [], field, $td;
+
+            this.sandbox.dom.each($inputs, function(index, $input){
+                $td = this.sandbox.dom.parent($input, 'td');
+                field = this.sandbox.dom.data($td, 'field');
+
+                fields[field] = $input.val();
+
+            }.bind(this));
+
+            return {
+                domId: domId,
+                id: id,
+                fields: fields
+            };
+
+        },
+
+
+        /**
+         * Triggered when row looses focus
+         * Checks wether values have changed or not and saves if needed
+         */
+        focusOutRow: function(event) {
+
+            // TODO only if focus of row lost - otherwise do nothing
+            // did domId change?
+
+            var $tr= this.sandbox.dom.parent(event.currentTarget, 'tr'),
+                currentRowData = this.getInputValuesOfRow($tr),
+                data,
+                key,
+                url,
+                isValid = true,
+                valuesChanged = false;
 
             // last focused object should be same as the one previously left
-            if (this.lastFocusedEditableElement.domId === domId) {
-                if (this.lastFocusedEditableElement.value !== value) {
+            if (this.lastFocusedRow.domId === currentRowData.domId) {
 
-                    this.sandbox.emit(DATA_CHANGED);
+                data = {};
+                data.id = currentRowData.id;
 
-                    el = {};
-                    el.id = id;
-                    el[field] = value;
-
-                    // Todo show loading icon
-
-                    this.sandbox.util.save(url, type, el)
-                        .then(function(data, textStatus) {
-                            this.sandbox.emit(DATA_SAVED, data, textStatus);
-                            // todo hide loading icon
-                            this.showValidationSuccess($input);
-                            this.resetInputFields();
-                        }.bind(this))
-                        .fail(function(textStatus, error) {
-                            this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
-                            // todo hide loading icon
-                            this.showValidationError($input);
-                        }.bind(this));
-
+                // validate locally
+                if(!!this.options.validate && !this.sandbox.form.validate('#' + this.elId)){
+                    isValid = false;
                 }
+
+                if(!!isValid) {
+
+                    // check which values changed and remember these
+                    for(key in currentRowData.fields) {
+                        if(this.lastFocusedRow.fields.hasOwnProperty(key) && this.lastFocusedRow.fields[key] !== currentRowData.fields[key]){
+                            data[key] = currentRowData.fields[key];
+                            valuesChanged = true;
+                        }
+                    }
+
+                    if(!!valuesChanged){
+
+                        url = this.getUrlWithoutParams();
+
+                        if(!!data.id) { // save via put
+                            this.save(data, 'PUT', url, $tr);
+                        } else { // save via post
+                            this.save(data, 'POST', url, $tr);
+                        }
+
+                    } else {
+                        // nothing changed - reset immediately
+                        this.sandbox.logger.log("No data changed!");
+                        this.resetRowInputFields($tr);
+                    }
+
+                } else {
+                    this.sandbox.logger.log("There seems to be some invalid data!");
+                }
+
             } else {
-                this.sandbox.logger.log("Something went wrong!");
+                this.sandbox.logger.error("Something went wrong!");
             }
+
+        },
+
+
+        /**
+         * Returns url without params
+         */
+        getUrlWithoutParams: function(){
+            var url = this.data.links.self;
+
+            if (url.indexOf('?') !== -1) {
+                return url.substring(0,url.indexOf('?'));
+            }
+
+            return url;
+        },
+
+        /**
+         * Saves changes
+         * @param data
+         * @param method
+         * @param url
+         */
+        save: function(data, method, url ,$tr) {
+
+
+            this.showLoadingIconForRow($tr);
+
+            this.sandbox.util.save(url, method, data)
+                .then(function(data, textStatus) {
+                    this.sandbox.emit(DATA_SAVED, data, textStatus);
+                    // todo hide loading icon
+//                    this.showValidationSuccess($input);
+                    this.hideLoadingIconForRow($tr);
+                    this.resetRowInputFields($tr);
+                }.bind(this))
+                .fail(function(textStatus, error) {
+                    this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
+                    this.showValidationError($tr);
+                }.bind(this));
+        },
+
+        /**
+         * Shows loading icon for a tr
+         * @param $tr
+         */
+        showLoadingIconForRow: function($tr){
+
+        },
+
+        /**
+         * Hides loading icon for a tr
+         * @param $tr
+         */
+        hideLoadingIconForRow: function($tr){
 
         },
 
@@ -1364,12 +1451,13 @@ define(function() {
             this.sandbox.dom.addClass($domElement, 'husky-validate-error');
         },
 
-
         /**
-         * Hides input fields and displays new content
+         *  Hides input fields and displays new content for table row
+         * @param $tr
          */
-        resetInputFields: function() {
+        resetRowInputFields: function($tr) {
 
+            // TODO review
             var $inputFields = this.sandbox.dom.find('input[type=text]:not(.hidden)', this.$el),
                 content, $span;
 
