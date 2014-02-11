@@ -113,8 +113,8 @@
                 $el.attr('class', classes);
             };
 
-            app.core.dom.parent = function(selector) {
-                return $(selector).parent();
+            app.core.dom.parent = function(selector, filter) {
+                return $(selector).parent(filter);
             };
 
             app.core.dom.width = function(selector, value) {

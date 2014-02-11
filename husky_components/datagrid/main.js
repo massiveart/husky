@@ -1104,17 +1104,17 @@ define(function() {
                 this.$element.on('click', 'tbody > tr input[type="radio"]', this.selectItem.bind(this));
             }
 
-            this.$element.on('click', 'tbody > tr', function(event) {
-                if (!this.sandbox.dom.$(event.target).is('input') && !this.sandbox.dom.$(event.target).is('span.icon-remove')) {
-                    var id = this.sandbox.dom.$(event.currentTarget).data('id');
-
-                    if (!!id) {
-                        this.sandbox.emit(ITEM_CLICK, id);
-                    } else {
-                        this.sandbox.emit(ITEM_CLICK, event);
-                    }
-                }
-            }.bind(this));
+//            this.$element.on('click', 'tbody > tr', function(event) {
+//                if (!this.sandbox.dom.$(event.target).is('input') && !this.sandbox.dom.$(event.target).is('span.icon-remove')) {
+//                    var id = this.sandbox.dom.$(event.currentTarget).data('id');
+//
+//                    if (!!id) {
+//                        this.sandbox.emit(ITEM_CLICK, id);
+//                    } else {
+//                        this.sandbox.emit(ITEM_CLICK, event);
+//                    }
+//                }
+//            }.bind(this));
 
             if (this.options.pagination) {
 
@@ -1170,6 +1170,10 @@ define(function() {
             // }.bind(this));
         },
 
+        /**
+         * Shows input and hides span
+         * @param event
+         */
         editCellValues: function(event) {
             var $target = event.currentTarget,
                 $input = this.sandbox.dom.next($target, 'input');
@@ -1282,10 +1286,16 @@ define(function() {
          */
         focusOnRow: function(event) {
 
-            var $tr = this.sandbox.dom.parent(event.currentTarget, 'tr'),
+            this.switchedToDifferentRow = false;
+
+            var $input = this.sandbox.dom.$(event.currentTarget),
+                $tr = this.sandbox.dom.closest($input, 'tr'),
                 domId = this.sandbox.dom.data($tr, 'dom-id');
 
+            this.sandbox.logger.log("focus on row", domId);
+
             if(!!this.lastFocusedRow && this.lastFocusedRow.domId !== domId) { // new focus
+                this.switchedToDifferentRow = true;
                 this.lastFocusedRow = this.getInputValuesOfRow($tr);
             } else if(!this.lastFocusedRow) { // first focus
                 this.lastFocusedRow = this.getInputValuesOfRow($tr);
@@ -1301,17 +1311,16 @@ define(function() {
 
             var id = this.sandbox.dom.data($tr, 'id'),
                 domId = this.sandbox.dom.data($tr, 'dom-id'),
-                $inputs = this.sandbox.dom.find('input[type=text]:not(.hidden)', $tr),
+                $inputs = this.sandbox.dom.find('input[type=text]', $tr),
                 fields = [], field, $td;
 
             this.sandbox.dom.each($inputs, function(index, $input){
                 $td = this.sandbox.dom.parent($input, 'td');
                 field = this.sandbox.dom.data($td, 'field');
 
-                fields[field] = $input.val();
+                fields[field] = $input.value;
 
             }.bind(this));
-
             return {
                 domId: domId,
                 id: id,
@@ -1327,9 +1336,28 @@ define(function() {
          */
         focusOutRow: function(event) {
 
-            var $tr= this.sandbox.dom.parent(event.currentTarget, 'tr'),
-                lastFocusedRowCurrentData,
-                $prevTr,
+            this.sandbox.logger.log("focus lost ...");
+
+            // timeout to prevent sending data when just switching fields of same row
+            setTimeout(function(){
+                if(!!this.switchedToDifferentRow){
+                    this.sandbox.logger.log("switch to different row! prepare saving ...");
+                    this.prepareSave(event);
+                }
+            }.bind(this), 1000);
+
+        },
+
+
+        /**
+         * Perparse to save new/changed data includes validation
+         * @param event
+         */
+        prepareSave: function(event) {
+
+            var $input =this.sandbox.dom.$(event.currentTarget),
+                $tr = this.sandbox.dom.closest($input, 'tr'),
+                lastFocusedRowCurrentData = this.getInputValuesOfRow($tr),
                 currentDomId = this.sandbox.dom.data($tr, 'dom-id'),
                 data,
                 key,
@@ -1337,12 +1365,11 @@ define(function() {
                 isValid = true,
                 valuesChanged = false;
 
-            // last focused object should be another as the one previously left
-            // try to save when row changed
-            if (this.lastFocusedRow.domId !== currentDomId) {
+            this.sandbox.logger.log("focus off row",currentDomId);
 
-                $prevTr = this.sandbox.dom.find('tr[data-dom-id='+this.lastFocusedRow.domId+']', this.$el);
-                lastFocusedRowCurrentData = this.getInputValuesOfRow($prevTr);
+//            last focused object should be another as the one previously left
+//            try to save when row changed
+            if (this.lastFocusedRow.domId === currentDomId) {
 
                 data = {};
                 data.id = lastFocusedRowCurrentData.id;
