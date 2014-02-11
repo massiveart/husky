@@ -39,6 +39,7 @@
  * @param {Boolean} [options.validation] enables validation for datagrid
  * @param {Boolean} [options.addRowTop] adds row to the top of the table when add row is triggered
  * @param {Boolean} [options.startTabIndex] start index for tabindex
+ * @param {Boolean} [options.progressRow] has to be enabled when datagrid is editable to show progress of save action
  */
 define(function() {
 
@@ -78,6 +79,7 @@ define(function() {
             validation: false, // TODO does not work for added rows
             validationDebug: false,
             addRowTop: false,
+            progressRow: true,
             startTabIndex: 50000
         },
 
@@ -227,14 +229,7 @@ define(function() {
          * triggers husky.datagrid.data.provide
          * @event husky.datagrid.data.get
          */
-            DATA_GET = namespace + 'data.get',
-
-        /**
-         * used to trigger the save operation of changed data
-         * @event husky.datagrid.data.save
-         */
-            DATA_SAVE = namespace + 'data.save';
-
+            DATA_GET = namespace + 'data.get';
 
     return {
 
@@ -589,7 +584,7 @@ define(function() {
             }.bind(this));
 
             // remove-row entry
-            if (this.options.removeRow) {
+            if (this.options.removeRow || this.options.progressRow) {
                 tblColumns.push('<th width="30px"/>');
             }
 
@@ -695,6 +690,8 @@ define(function() {
 
                 if (!!this.options.removeRow) {
                     this.tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
+                } else if (!!this.options.progressRow) {
+                    this.tblColumns.push('<td class="progress-row">', this.templates.progressRow(), '</td>');
                 }
 
                 return '<tr' + this.tblRowAttributes + '>' + this.tblColumns.join('') + '</tr>';
@@ -1143,8 +1140,8 @@ define(function() {
 
                 this.$element.on('click', '.editable', this.editCellValues.bind(this));
 
-                this.$element.on('focusin', '.form-element', this.focusOnInput.bind(this));
-                this.$element.on('focusout', '.form-element', this.focusOutInput.bind(this));
+                this.$element.on('focusin', 'tr', this.focusOnRow.bind(this));
+                this.$element.on('focusout', 'tr', this.focusOutRow.bind(this));
             }
 
 
@@ -1284,7 +1281,15 @@ define(function() {
          * Put focus on table row and remember values
          */
         focusOnRow: function(event) {
-            this.lastFocusedRow = this.getInputValuesOfRow(this.sandbox.dom.parent(event.currentTarget, 'tr'));
+
+            var $tr = this.sandbox.dom.parent(event.currentTarget, 'tr'),
+                domId = this.sandbox.dom.data($tr, 'dom-id');
+
+            if(!!this.lastFocusedRow && this.lastFocusedRow.domId !== domId) { // new focus
+                this.lastFocusedRow = this.getInputValuesOfRow($tr);
+            } else if(!this.lastFocusedRow) { // first focus
+                this.lastFocusedRow = this.getInputValuesOfRow($tr);
+            }
         },
 
         /**
@@ -1322,22 +1327,25 @@ define(function() {
          */
         focusOutRow: function(event) {
 
-            // TODO only if focus of row lost - otherwise do nothing
-            // did domId change?
-
             var $tr= this.sandbox.dom.parent(event.currentTarget, 'tr'),
-                currentRowData = this.getInputValuesOfRow($tr),
+                lastFocusedRowCurrentData,
+                $prevTr,
+                currentDomId = this.sandbox.dom.data($tr, 'dom-id'),
                 data,
                 key,
                 url,
                 isValid = true,
                 valuesChanged = false;
 
-            // last focused object should be same as the one previously left
-            if (this.lastFocusedRow.domId === currentRowData.domId) {
+            // last focused object should be another as the one previously left
+            // try to save when row changed
+            if (this.lastFocusedRow.domId !== currentDomId) {
+
+                $prevTr = this.sandbox.dom.find('tr[data-dom-id='+this.lastFocusedRow.domId+']', this.$el);
+                lastFocusedRowCurrentData = this.getInputValuesOfRow($prevTr);
 
                 data = {};
-                data.id = currentRowData.id;
+                data.id = lastFocusedRowCurrentData.id;
 
                 // validate locally
                 if(!!this.options.validate && !this.sandbox.form.validate('#' + this.elId)){
@@ -1347,19 +1355,21 @@ define(function() {
                 if(!!isValid) {
 
                     // check which values changed and remember these
-                    for(key in currentRowData.fields) {
-                        if(this.lastFocusedRow.fields.hasOwnProperty(key) && this.lastFocusedRow.fields[key] !== currentRowData.fields[key]){
-                            data[key] = currentRowData.fields[key];
+                    for(key in lastFocusedRowCurrentData.fields) {
+                        if(this.lastFocusedRow.fields.hasOwnProperty(key) && this.lastFocusedRow.fields[key] !== lastFocusedRowCurrentData.fields[key]){
+                            data[key] = lastFocusedRowCurrentData.fields[key];
                             valuesChanged = true;
                         }
                     }
 
                     if(!!valuesChanged){
 
+                        this.sandbox.emit(DATA_CHANGED);
+
                         url = this.getUrlWithoutParams();
 
                         if(!!data.id) { // save via put
-                            this.save(data, 'PUT', url, $tr);
+                            this.save(data, 'PUT', url+'/'+data.id, $tr);
                         } else { // save via post
                             this.save(data, 'POST', url, $tr);
                         }
@@ -1375,7 +1385,7 @@ define(function() {
                 }
 
             } else {
-                this.sandbox.logger.error("Something went wrong!");
+                this.sandbox.logger.log("Same row nothing to do!");
             }
 
         },
@@ -1408,7 +1418,8 @@ define(function() {
             this.sandbox.util.save(url, method, data)
                 .then(function(data, textStatus) {
                     this.sandbox.emit(DATA_SAVED, data, textStatus);
-                    // todo hide loading icon
+                    // todo how to show success on which field?
+                    // show success for 3 sec then change to normal
 //                    this.showValidationSuccess($input);
                     this.hideLoadingIconForRow($tr);
                     this.resetRowInputFields($tr);
@@ -1424,7 +1435,10 @@ define(function() {
          * @param $tr
          */
         showLoadingIconForRow: function($tr){
-
+            if(!!this.options.progressRow) {
+                var domId = this.sandbox.dom.data($tr, 'dom-id');
+                this.sandbox.dom.addClass('tr[data-dom-id='+domId+'] td', 'is-loading');
+            }
         },
 
         /**
@@ -1432,16 +1446,19 @@ define(function() {
          * @param $tr
          */
         hideLoadingIconForRow: function($tr){
-
+            if(!!this.options.progressRow) {
+                var domId = this.sandbox.dom.data($tr, 'dom-id');
+                this.sandbox.dom.removeClass('tr[data-dom-id='+domId+'] td', 'is-loading');
+            }
         },
 
-        /**
-         * Sets the validation success class for a dom element
-         * @param $domElement
-         */
-        showValidationSuccess: function($domElement) {
-            this.sandbox.dom.addClass($domElement, 'husky-validate-success');
-        },
+//        /**
+//         * Sets the validation success class for a dom element
+//         * @param $domElement
+//         */
+//        showValidationSuccess: function($domElement) {
+//            this.sandbox.dom.addClass($domElement, 'husky-validate-success');
+//        },
 
         /**
          * Sets the validation error class for a dom element
@@ -1457,8 +1474,7 @@ define(function() {
          */
         resetRowInputFields: function($tr) {
 
-            // TODO review
-            var $inputFields = this.sandbox.dom.find('input[type=text]:not(.hidden)', this.$el),
+            var $inputFields = this.sandbox.dom.find('input[type=text]:not(.hidden)', $tr),
                 content, $span;
 
             this.sandbox.util.each($inputFields, function(index, $field) {
@@ -1605,6 +1621,12 @@ define(function() {
             removeRow: function() {
                 return [
                     '<span class="icon-remove"></span>'
+                ].join('');
+            },
+
+            progressRow: function() {
+                return [
+                    '<span class=""></span>'
                 ].join('');
             },
 

@@ -340,7 +340,9 @@
                 $(selector).slideDown(duration,complete);
             };
 
-
+            app.core.dom.last = function(selector){
+              return $(selector).last();
+            };
 
             app.core.util.ajax = $.ajax;
         }

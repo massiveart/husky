@@ -473,7 +473,8 @@ require(['lib/husky'], function(Husky) {
                         showPages: 3
                     },
                     className: "myClass",
-                    removeRow: true,
+                    removeRow: false,
+                    progressRow: true,
                     pagination: true,
                     editable: true,
                     validation:true,
