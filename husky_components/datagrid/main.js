@@ -248,8 +248,11 @@ define(function() {
             this.rowStructure = [];
             this.domId = 0;
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
+
             this.bottomTabIndex = this.options.startTabIndex || 49999;
             this.topTabIndex = this.options.startTabIndex || 50000;
+
+            this.errorInRow = [];
 
             this.sort = {
                 ascClass: 'icon-arrow-up',
@@ -737,15 +740,15 @@ define(function() {
 
                         // differentiate for tab index
                         if (!!this.options.addRowTop) {
-                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.bottomTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
+                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content husky-validate" tabindex="' + this.bottomTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
                             this.bottomTabIndex++;
                         } else {
-                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.topTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
+                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content husky-validate" tabindex="' + this.topTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
                             this.topTabIndex++;
                         }
 
                     } else {
-                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable">' + tblCellContent + '</span><input type="text" class="form-element editable-content hidden" value="' + tblCellContent + '" tabindex="' + this.topTabIndex + '" ' + validationAttr + '/></td>');
+                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable">' + tblCellContent + '</span><input type="text" class="form-element editable-content hidden husky-validate" value="' + tblCellContent + '" tabindex="' + this.topTabIndex + '" ' + validationAttr + '/></td>');
                         this.topTabIndex++;
 
                     }
@@ -877,19 +880,20 @@ define(function() {
                 this.sandbox.dom.append($table, $row);
             }
 
-            if (!!this.options.validation) {
-                // add new row to validation context and add contraints to element
-                $editableFields = this.sandbox.dom.find('input[type=text]', $row);
-
-                this.sandbox.util.foreach($editableFields, function($el, i) {
-//                    this.sandbox.form.addField('#' + this.elId, $el);
-                    // TODO fix validation for new rows
-                    validation = this.options.columns[i].validation;
-                    for (var key in validation) {
-                        this.sandbox.form.addConstraint('#' + this.elId, $el, key, {key: validation[key]});
-                    }
-                }.bind(this));
-            }
+            // TODO fix validation for new rows
+//            if (!!this.options.validation) {
+//                // add new row to validation context and add contraints to element
+//                $editableFields = this.sandbox.dom.find('input[type=text]', $row);
+//
+//                this.sandbox.util.foreach($editableFields, function($el, i) {
+////                    this.sandbox.form.addField('#' + this.elId, $el);
+//
+////                    validation = this.options.columns[i].validation;
+////                    for (var key in validation) {
+////                        this.sandbox.form.addConstraint('#' + this.elId, $el, key, {key: validation[key]});
+////                    }
+//                }.bind(this));
+//            }
         },
 
         /**
@@ -1293,10 +1297,7 @@ define(function() {
             var $tr = event.currentTarget,
                 domId = this.sandbox.dom.data($tr, 'dom-id');
 
-//            this.sandbox.dom.stopPropagation(event);
             this.sandbox.logger.log("focus on row", domId);
-
-            // TODO
 
             if(!!this.lastFocusedRow && this.lastFocusedRow.domId !== domId) { // new focus
                 this.prepareSave();
@@ -1396,11 +1397,17 @@ define(function() {
                         this.sandbox.emit(DATA_CHANGED);
                         url = this.getUrlWithoutParams();
 
-                        if (!!data.id) { // save via put
-                            this.save(data, 'PUT', url + '/' + data.id, $tr);
-                        } else { // save via post
-                            this.save(data, 'POST', url, $tr);
+                        // save via put
+                        if (!!data.id) {
+                            this.save(data, 'PUT', url + '/' + data.id, $tr, this.lastFocusedRow.domId);
+
+                        // save via post
+                        } else {
+                            this.save(data, 'POST', url, $tr, this.lastFocusedRow.domId);
                         }
+
+                    } else if (this.errorInRow.indexOf(this.lastFocusedRow.domId) !== -1) {
+                        this.sandbox.logger.log("Error in table row!");
 
                     } else {
                         // nothing changed - reset immediately
@@ -1435,7 +1442,7 @@ define(function() {
          * @param method
          * @param url
          */
-        save: function(data, method, url ,$tr) {
+        save: function(data, method, url ,$tr, domId) {
 
             var message;
 
@@ -1444,6 +1451,12 @@ define(function() {
 
             this.sandbox.util.save(url, method, data)
                 .then(function(data, textStatus) {
+
+                    // remove row from error list
+                    if(this.errorInRow.indexOf(domId) !== -1) {
+                        this.errorInRow.splice(this.errorInRow.indexOf(domId),1);
+                    }
+
                     this.sandbox.emit(DATA_SAVED, data, textStatus);
                     this.hideLoadingIconForRow($tr);
                     this.resetRowInputFields($tr);
@@ -1452,13 +1465,18 @@ define(function() {
                     this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
                     this.hideLoadingIconForRow($tr);
 
+                    // remember row with error
+                    if(this.errorInRow.indexOf(domId) === -1) {
+                        this.errorInRow.push(domId);
+                    }
+
                     message = JSON.parse(jqXHR.responseText);
 
                     // error in connection with database constraints
                     if(!!message.field) {
                         this.showValidationError($tr, message.field);
                     } else {
-                        this.sandbox.logger.error("An error occured during save of changed data!")
+                        this.sandbox.logger.error("An error occured during save of changed data!");
                     }
                 }.bind(this));
         },
