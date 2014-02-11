@@ -29,10 +29,12 @@
 
 <div class="grid">
     <div class="grid-col-2">&nbsp;</div>
-    <div class="btn pointer grid-col-3 align-center" id="disable">Disable "Add user" and "Edit" button</div>
-    <div class="grid-col-2">&nbsp;</div>
-    <div class="btn pointer grid-col-3 align-center" id="enable">Enable "Add user" and "Edit" button</div>
-    <div class="grid-col-2">&nbsp;</div>
+    <div class="btn pointer grid-col-2 align-center" id="disable">Disable "Add user" and "Edit" button</div>
+    <div class="grid-col-1">&nbsp;</div>
+    <div class="btn pointer grid-col-2 align-center" id="enable">Enable "Add user" and "Edit" button</div>
+    <div class="grid-col-1">&nbsp;</div>
+    <div class="btn pointer grid-col-2 align-center" id="changeItem">Change current item of state</div>
+    <div class="grid-col-1">&nbsp;</div>
 </div>
 
 <div class="grid">
@@ -100,35 +102,12 @@
                         ]
                     },
                     {
-                        'id': '3',
+                        'id': 'state',
                         'icon': 'publish',
                         'group': 'right',
                         'title': 'Publish',
                         'class': 'highlight-gray',
-                        'type': 'select',
-                        'items': [
-                            {
-                                'title': 'Publish',
-                                'icon': 'publish',
-                                'callback': function() {
-                                    console.log("publish it");
-                                }
-                            },
-                            {
-                                'icon': 'unpublish',
-                                'title': 'Unpublish',
-                                'callback': function() {
-                                    console.log("unpublish it");
-                                }
-                            },
-                            {
-                                'icon': 'test',
-                                'title': 'Test',
-                                'callback': function() {
-                                    console.log("set Test-state");
-                                }
-                            }
-                        ]
+                        'type': 'select'
                     },
                     {
                         'icon': 'file-import',
@@ -145,7 +124,34 @@
                         'icon': 'file-export',
                         'title': 'Export'
                     }
-                ];
+                ],
+
+            stateItems = [
+                {
+                    'id': 'publish',
+                    'title': 'Publish',
+                    'icon': 'publish',
+                    'callback': function() {
+                        console.log("publish it");
+                    }
+                },
+                {
+                    'id': 'unpublish',
+                    'icon': 'unpublish',
+                    'title': 'Unpublish',
+                    'callback': function() {
+                        console.log("unpublish it");
+                    }
+                },
+                {
+                    'id': 'test',
+                    'icon': 'test',
+                    'title': 'Test',
+                    'callback': function() {
+                        console.log("set Test-state");
+                    }
+                }
+            ];
 
 
         app.start().then(function() {
@@ -155,6 +161,10 @@
             fakeServer.respondWith('GET', '/toolbar', [200, { 'Content-Type': 'application/json' },
                 JSON.stringify(testData)
             ]);
+
+            app.sandbox.on('husky.edit-toolbar.contact.initialized', function() {
+                app.sandbox.emit('husky.edit-toolbar.contact.items.set', 'state', stateItems);
+            });
 
             app.sandbox.start([
                 {
@@ -166,7 +176,6 @@
                     }
                 }
             ]);
-
 
             app.sandbox.on('husky.util.load.data', function() {
                 setTimeout(function() {
@@ -184,6 +193,9 @@
                 app.sandbox.emit('husky.edit-toolbar.contact.item.enable', 'edit');
             });
 
+            $('#changeItem').on('click', function() {
+                app.sandbox.emit('husky.edit-toolbar.contact.item.change', 'state', 1);
+            });
         });
     });
 </script>
