@@ -49,13 +49,13 @@ define(function() {
                 app.sandbox.util.ajax({
                     url: url,
 
-                    success: function(data) {
-                        app.logger.log('data loaded', data);
-                        deferred.resolve(data);
+                    success: function(data, textStatus) {
+                        app.logger.log('data loaded', data, textStatus);
+                        deferred.resolve(data, textStatus);
                     }.bind(this),
 
-                    error: function(error) {
-                        deferred.reject(error);
+                    error: function(jqXHR, textStatus, error) {
+                        deferred.reject(textStatus, error);
                     }
                 });
 
@@ -79,13 +79,13 @@ define(function() {
                     type: type,
                     data: JSON.stringify(data),
 
-                    success: function(data) {
-                        app.logger.log('data saved', data);
-                        deferred.resolve(data);
+                    success: function(data, textStatus) {
+                        app.logger.log('data saved', data, textStatus);
+                        deferred.resolve(data, textStatus);
                     }.bind(this),
 
-                    error: function(error) {
-                        deferred.reject(error);
+                    error: function(jqXHR, textStatus, error) {
+                        deferred.reject(textStatus, error);
                     }
                 });
 

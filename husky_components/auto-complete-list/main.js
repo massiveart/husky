@@ -29,6 +29,7 @@
  * @param {String} [options.prefetchUrl] url to prefetch data for the autocomplete component
  * @param {String} [options.remoteUrl] url to fetch data  for the autocomplete component from on input
  * @param {Object} [options.autocompleteOptions] options to pass to the autocomplete component
+ * @param {String} [options.autocompleteParameter] name of parameter which contains the user's input (for auto-complete)
  * @param {Integer} [options.maxListItems] maximum amount of list items accepted (0 = no limit)
  * @param {Boolean} [options.CapitalizeFirstLetter] if true the first letter of each item gets capitalized
  * @param {String} [options.listItemClass] CSS-class for list items
@@ -41,6 +42,7 @@
  * @param {String} [options.arrowUpClass] CSS-class for arrow up icon
  * @param {Integer} [options.slideDuration] ms - duration for sliding suggestinos up/down
  * @param {String} [options.elementTagDataName] attribute name to store list of tags on element
+ * @param {String} [options.autoCompleteIcon] Icon Class-suffix for autocomplete-suggestion-icon
  */
 define([], function() {
 
@@ -65,6 +67,7 @@ define([], function() {
                 prefetchUrl: '',
                 remoteUrl: '',
                 autocompleteOptions: {},
+                getParameter: 'query',
                 maxListItems: 0,
                 CapitalizeFirstLetter: false,
                 listItemClass: 'auto-complete-list-selection',
@@ -76,7 +79,8 @@ define([], function() {
                 arrowDownClass: 'arrow-down',
                 arrowUpClass: 'arrow-up',
                 slideDuration: 500,
-                elementTagDataName: 'tags'
+                elementTagDataName: 'tags',
+                autoCompleteIcon: ''
             },
 
             templates = {
@@ -86,7 +90,7 @@ define([], function() {
                     '        <%= label %>',
                     '            <div class="auto-complete-list">',
                     '                <div class="husky-autocomplete"></div>',
-                    '                <div class="toggler"></div>',
+                    '                <div class="toggler"><span></span></div>',
                     '            </div>',
                     '        </label>',
                     '    </div>'
@@ -280,7 +284,8 @@ define([], function() {
                                 localData: this.options.localData,
                                 prefetchUrl: this.options.prefetchUrl,
                                 remoteUrl: this.options.remoteUrl,
-                                getParameter: this.options.getParameter
+                                getParameter: this.options.getParameter,
+                                suggestionImg: this.options.autoCompleteIcon
                             },
                             this.options.autocompleteOptions
                         )
