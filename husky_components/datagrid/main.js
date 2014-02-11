@@ -879,14 +879,14 @@ define(function() {
 
             if (!!this.options.validation) {
                 // add new row to validation context and add contraints to element
-                $editableFields = this.sandbox.dom.find('.editable', $row);
+                $editableFields = this.sandbox.dom.find('input[type=text]', $row);
 
                 this.sandbox.util.foreach($editableFields, function($el, i) {
                     this.sandbox.form.addField('#' + this.elId, $el);
-                    validation = this.options.columns[i].validation;
-                    for (var key in validation) {
-                        this.sandbox.form.addConstraint('#' + this.elId, $el, key, {key: validation[key]});
-                    }
+//                    validation = this.options.columns[i].validation;
+//                    for (var key in validation) {
+//                        this.sandbox.form.addConstraint('#' + this.elId, $el, key, {key: validation[key]});
+//                    }
                 }.bind(this));
             }
         },
@@ -1133,14 +1133,12 @@ define(function() {
             }
 
             if (this.options.sortable) {
-                this.sandbox.dom.on('thead th[data-attribute]', 'click',  this.changeSorting.bind(this), this.$el);
+                this.sandbox.dom.on(this.$el, 'click', this.changeSorting.bind(this), 'thead th[data-attribute]');
             }
 
             if (!!this.options.editable) {
-
-                this.sandbox.dom.on('.editable', 'click', this.editCellValues.bind(this), this.$el);
-                this.sandbox.dom.on('tr', 'focusin', this.focusOnRow.bind(this), this.$el);
-
+                this.sandbox.dom.on(this.$el, 'click', this.editCellValues.bind(this), '.editable');
+                this.sandbox.dom.on(this.$el, 'focusin', this.focusOnRow.bind(this), 'tr');
             }
 
 
