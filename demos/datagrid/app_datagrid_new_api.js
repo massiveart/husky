@@ -321,11 +321,14 @@ require(['lib/husky'], function(Husky) {
     // put
     fakeServer.respondWith('PUT', '/admin/api/contacts/1', [200, { 'Content-Type': 'application/json' },'{ "id": "1", "content1": "B Hallo 1.1 2", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }']);
     fakeServer.respondWith('PUT', '/admin/api/contacts/2', [200, { 'Content-Type': 'application/json' },'{ "id": "2", "content1": "A Hallo 1.1 2", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }']);
-    fakeServer.respondWith('PUT', '/admin/api/contacts/3', [200, { 'Content-Type': 'application/json' },'{ "id": "3", "content1": "C Hallo 1.1 2", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }']);
-    fakeServer.respondWith('PUT', '/admin/api/contacts/4', [200, { 'Content-Type': 'application/json' },'{ "id": "4", "content1": "D Hallo 1.1 2", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }']);
+    fakeServer.respondWith('PUT', '/admin/api/contacts/3', [400, { 'Content-Type': 'application/json' },'{ "code": "3", "message": "Same name message ...", "field": "content1"}']);
+    fakeServer.respondWith('PUT', '/admin/api/contacts/4', [400, { 'Content-Type': 'application/json' },'{ "code": "3", "message": "Same name message ...", "field": "content1"}']);
 
     // post
-    fakeServer.respondWith('POST', '/admin/api/contacts', [200, { 'Content-Type': 'application/json' },'']);
+    fakeServer.respondWith('POST', '/admin/api/contacts', [200, { 'Content-Type': 'application/json' },'{ "id": "5", "content1": "B Hallo 1.1 2", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }']);
+
+    // post invalid
+//    fakeServer.respondWith('POST', '/admin/api/contacts', [400, { 'Content-Type': 'application/json' },'{ "code": "3", "message": "Same name message ...", "field": "content1"}']);
 
     // second page
     fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&page=2&pageSize=4', [200, { 'Content-Type': 'application/json' },

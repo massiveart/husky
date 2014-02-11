@@ -85,7 +85,7 @@ define(function() {
                     }.bind(this),
 
                     error: function(jqXHR, textStatus, error) {
-                        deferred.reject(textStatus, error);
+                        deferred.reject(jqXHR, textStatus, error);
                     }
                 });
 

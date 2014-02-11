@@ -1133,16 +1133,13 @@ define(function() {
             }
 
             if (this.options.sortable) {
-                this.$element.on('click', 'thead th[data-attribute]', this.changeSorting.bind(this));
+                this.sandbox.dom.on('thead th[data-attribute]', 'click',  this.changeSorting.bind(this), this.$el);
             }
 
             if (!!this.options.editable) {
 
-                this.$element.on('click', '.editable', this.editCellValues.bind(this));
-
-                this.$element.on('focusin', 'tr', this.focusOnRow.bind(this));
-//                this.$element.on('focusout', 'tr', this.focusOutRow.bind(this));
-
+                this.sandbox.dom.on('.editable', 'click', this.editCellValues.bind(this), this.$el);
+                this.sandbox.dom.on('tr', 'focusin', this.focusOnRow.bind(this), this.$el);
 
             }
 
@@ -1291,7 +1288,11 @@ define(function() {
             var $tr = event.currentTarget,
                 domId = this.sandbox.dom.data($tr, 'dom-id');
 
+            this.sandbox.dom.stopPropagation(event);
             this.sandbox.logger.log("focus on row", domId);
+
+            // TODO
+//            this.sandbox.dom.one(window,'click', this.prepareSave.bind(this));
 
             if(!!this.lastFocusedRow && this.lastFocusedRow.domId !== domId) { // new focus
                 this.prepareSave();
@@ -1354,58 +1355,60 @@ define(function() {
          */
         prepareSave: function() {
 
-            var $tr = this.sandbox.dom.find('tr[data-dom-id=' + this.lastFocusedRow.domId + ']', this.$el),
-                lastFocusedRowCurrentData = this.getInputValuesOfRow($tr),
+            if (!!this.lastFocusedRow) {
 
-                data = {},
-                key,
-                url,
-                isValid = true,
-                valuesChanged = false;
+                var $tr = this.sandbox.dom.find('tr[data-dom-id=' + this.lastFocusedRow.domId + ']', this.$el),
+                    lastFocusedRowCurrentData = this.getInputValuesOfRow($tr),
 
-            this.sandbox.logger.log("try to save data now ....");
+                    data = {},
+                    key,
+                    url,
+                    isValid = true,
+                    valuesChanged = false;
 
-            data.id = lastFocusedRowCurrentData.id;
+                this.sandbox.logger.log("try to save data now ....");
 
+                data.id = lastFocusedRowCurrentData.id;
 
-            // TODO there seems to be a bug when an invalid field is ignored by the user and he visits more than one other row
-            // validate locally
-            if (!!this.options.validation && !this.sandbox.form.validate('#' + this.elId)) {
-                isValid = false;
-            }
-
-            if (!!isValid) {
-
-                // check which values changed and remember these
-                for (key in lastFocusedRowCurrentData.fields) {
-                    if (this.lastFocusedRow.fields.hasOwnProperty(key) && this.lastFocusedRow.fields[key] !== lastFocusedRowCurrentData.fields[key]) {
-                        data[key] = lastFocusedRowCurrentData.fields[key];
-                        valuesChanged = true;
-                    }
+                // TODO there seems to be a bug when an invalid field is ignored by the user and he visits more than one other row
+                // validate locally
+                if (!!this.options.validation && !this.sandbox.form.validate('#' + this.elId)) {
+                    isValid = false;
                 }
 
-                // trigger save action when data changed
-                if (!!valuesChanged) {
+                if (!!isValid) {
 
-                    this.sandbox.emit(DATA_CHANGED);
-                    url = this.getUrlWithoutParams();
+                    // check which values changed and remember these
+                    for (key in lastFocusedRowCurrentData.fields) {
+                        if (this.lastFocusedRow.fields.hasOwnProperty(key) && this.lastFocusedRow.fields[key] !== lastFocusedRowCurrentData.fields[key]) {
+                            data[key] = lastFocusedRowCurrentData.fields[key];
+                            valuesChanged = true;
+                        }
+                    }
 
-                    if (!!data.id) { // save via put
-                        this.save(data, 'PUT', url + '/' + data.id, $tr);
-                    } else { // save via post
-                        this.save(data, 'POST', url, $tr);
+                    // trigger save action when data changed
+                    if (!!valuesChanged) {
+
+                        this.sandbox.emit(DATA_CHANGED);
+                        url = this.getUrlWithoutParams();
+
+                        if (!!data.id) { // save via put
+                            this.save(data, 'PUT', url + '/' + data.id, $tr);
+                        } else { // save via post
+                            this.save(data, 'POST', url, $tr);
+                        }
+
+                    } else {
+                        // nothing changed - reset immediately
+                        this.sandbox.logger.log("No data changed!");
+                        this.resetRowInputFields($tr);
                     }
 
                 } else {
-                    // nothing changed - reset immediately
-                    this.sandbox.logger.log("No data changed!");
-                    this.resetRowInputFields($tr);
+                    this.sandbox.logger.log("There seems to be some invalid data!");
                 }
 
-            } else {
-                this.sandbox.logger.log("There seems to be some invalid data!");
             }
-
         },
 
 
@@ -1430,6 +1433,7 @@ define(function() {
          */
         save: function(data, method, url ,$tr) {
 
+            var message;
 
             this.sandbox.logger.log("data to save", data);
             this.showLoadingIconForRow($tr);
@@ -1437,15 +1441,21 @@ define(function() {
             this.sandbox.util.save(url, method, data)
                 .then(function(data, textStatus) {
                     this.sandbox.emit(DATA_SAVED, data, textStatus);
-                    // todo how to show success on which field?
-                    // show success for 3 sec then change to normal
-//                    this.showValidationSuccess($input);
                     this.hideLoadingIconForRow($tr);
                     this.resetRowInputFields($tr);
                 }.bind(this))
-                .fail(function(textStatus, error) {
+                .fail(function(jqXHR, textStatus, error) {
                     this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
-                    this.showValidationError($tr);
+                    this.hideLoadingIconForRow($tr);
+
+                    message = JSON.parse(jqXHR.responseText);
+
+                    // error in connection with database constraints
+                    if(!!message.field) {
+                        this.showValidationError($tr, message.field);
+                    } else {
+                        this.sandbox.logger.error("An error occured during save of changed data!")
+                    }
                 }.bind(this));
         },
 
@@ -1456,7 +1466,7 @@ define(function() {
         showLoadingIconForRow: function($tr){
             if(!!this.options.progressRow) {
                 var domId = this.sandbox.dom.data($tr, 'dom-id');
-                this.sandbox.dom.addClass('tr[data-dom-id='+domId+'] td', 'is-loading');
+                this.sandbox.dom.addClass('tr[data-dom-id='+domId+'] td:last', 'is-loading');
             }
         },
 
@@ -1482,9 +1492,17 @@ define(function() {
         /**
          * Sets the validation error class for a dom element
          * @param $domElement
+         * @param field name of field which caused the error
          */
-        showValidationError: function($domElement) {
-            this.sandbox.dom.addClass($domElement, 'husky-validate-error');
+        showValidationError: function($domElement, field) {
+
+            var $td = this.sandbox.dom.find('td[data-field='+field+']', $domElement)[0];
+
+            if(this.sandbox.dom.hasClass($td, 'husky-validate-success')) {
+                this.sandbox.dom.removeClass($td, 'husky-validate-success');
+            }
+
+            this.sandbox.dom.addClass($td, 'husky-validate-error');
         },
 
         /**
