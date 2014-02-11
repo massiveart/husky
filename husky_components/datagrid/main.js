@@ -1141,7 +1141,9 @@ define(function() {
                 this.$element.on('click', '.editable', this.editCellValues.bind(this));
 
                 this.$element.on('focusin', 'tr', this.focusOnRow.bind(this));
-                this.$element.on('focusout', 'tr', this.focusOutRow.bind(this));
+//                this.$element.on('focusout', 'tr', this.focusOutRow.bind(this));
+
+
             }
 
 
@@ -1286,16 +1288,13 @@ define(function() {
          */
         focusOnRow: function(event) {
 
-            this.switchedToDifferentRow = false;
-
-            var $input = this.sandbox.dom.$(event.currentTarget),
-                $tr = this.sandbox.dom.closest($input, 'tr'),
+            var $tr = event.currentTarget,
                 domId = this.sandbox.dom.data($tr, 'dom-id');
 
             this.sandbox.logger.log("focus on row", domId);
 
             if(!!this.lastFocusedRow && this.lastFocusedRow.domId !== domId) { // new focus
-                this.switchedToDifferentRow = true;
+                this.prepareSave();
                 this.lastFocusedRow = this.getInputValuesOfRow($tr);
             } else if(!this.lastFocusedRow) { // first focus
                 this.lastFocusedRow = this.getInputValuesOfRow($tr);
@@ -1332,87 +1331,77 @@ define(function() {
 
         /**
          * Triggered when row looses focus
-         * Checks wether values have changed or not and saves if needed
+         * Waits a certain amount of time and waits for focusin
          */
-        focusOutRow: function(event) {
-
-            this.sandbox.logger.log("focus lost ...");
-
-            // timeout to prevent sending data when just switching fields of same row
-            setTimeout(function(){
-                if(!!this.switchedToDifferentRow){
-                    this.sandbox.logger.log("switch to different row! prepare saving ...");
-                    this.prepareSave(event);
-                }
-            }.bind(this), 1000);
-
-        },
+//        focusOutRow: function(event) {
+//
+//            this.sandbox.logger.log("focus lost ...");
+//
+//            // timeout to prevent sending data when just switching fields of same row
+//            setTimeout(function(){
+//                if(!!this.switchedToDifferentRow){
+//                    this.sandbox.logger.log("switch to different row! prepare saving ...");
+//                    this.prepareSave(event);
+//                }
+//            }.bind(this), 750); // TODO shorter timespan does not work with first changed row
+//
+//        },
 
 
         /**
          * Perparse to save new/changed data includes validation
          * @param event
          */
-        prepareSave: function(event) {
+        prepareSave: function() {
 
-            var $input =this.sandbox.dom.$(event.currentTarget),
-                $tr = this.sandbox.dom.closest($input, 'tr'),
+            var $tr = this.sandbox.dom.find('tr[data-dom-id=' + this.lastFocusedRow.domId + ']', this.$el),
                 lastFocusedRowCurrentData = this.getInputValuesOfRow($tr),
-                currentDomId = this.sandbox.dom.data($tr, 'dom-id'),
-                data,
+
+                data = {},
                 key,
                 url,
                 isValid = true,
                 valuesChanged = false;
 
-            this.sandbox.logger.log("focus off row",currentDomId);
+            this.sandbox.logger.log("try to save data now ....");
 
-//            last focused object should be another as the one previously left
-//            try to save when row changed
-            if (this.lastFocusedRow.domId === currentDomId) {
+            data.id = lastFocusedRowCurrentData.id;
 
-                data = {};
-                data.id = lastFocusedRowCurrentData.id;
+            // validate locally
+            if (!!this.options.validate && !this.sandbox.form.validate('#' + this.elId)) {
+                isValid = false;
+            }
 
-                // validate locally
-                if(!!this.options.validate && !this.sandbox.form.validate('#' + this.elId)){
-                    isValid = false;
+            if (!!isValid) {
+
+                // check which values changed and remember these
+                for (key in lastFocusedRowCurrentData.fields) {
+                    if (this.lastFocusedRow.fields.hasOwnProperty(key) && this.lastFocusedRow.fields[key] !== lastFocusedRowCurrentData.fields[key]) {
+                        data[key] = lastFocusedRowCurrentData.fields[key];
+                        valuesChanged = true;
+                    }
                 }
 
-                if(!!isValid) {
+                // trigger save action when data changed
+                if (!!valuesChanged) {
 
-                    // check which values changed and remember these
-                    for(key in lastFocusedRowCurrentData.fields) {
-                        if(this.lastFocusedRow.fields.hasOwnProperty(key) && this.lastFocusedRow.fields[key] !== lastFocusedRowCurrentData.fields[key]){
-                            data[key] = lastFocusedRowCurrentData.fields[key];
-                            valuesChanged = true;
-                        }
-                    }
+                    this.sandbox.emit(DATA_CHANGED);
+                    url = this.getUrlWithoutParams();
 
-                    if(!!valuesChanged){
-
-                        this.sandbox.emit(DATA_CHANGED);
-
-                        url = this.getUrlWithoutParams();
-
-                        if(!!data.id) { // save via put
-                            this.save(data, 'PUT', url+'/'+data.id, $tr);
-                        } else { // save via post
-                            this.save(data, 'POST', url, $tr);
-                        }
-
-                    } else {
-                        // nothing changed - reset immediately
-                        this.sandbox.logger.log("No data changed!");
-                        this.resetRowInputFields($tr);
+                    if (!!data.id) { // save via put
+                        this.save(data, 'PUT', url + '/' + data.id, $tr);
+                    } else { // save via post
+                        this.save(data, 'POST', url, $tr);
                     }
 
                 } else {
-                    this.sandbox.logger.log("There seems to be some invalid data!");
+                    // nothing changed - reset immediately
+                    this.sandbox.logger.log("No data changed!");
+                    this.resetRowInputFields($tr);
                 }
 
             } else {
-                this.sandbox.logger.log("Same row nothing to do!");
+                this.sandbox.logger.log("There seems to be some invalid data!");
             }
 
         },
