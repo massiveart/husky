@@ -6,4 +6,14 @@
             overflow:hidden;
         }
     }
+
+    thead {
+        tr {
+            height: 30px;
+            padding-top: 10px;
+        }
+        th {
+            padding-top:0;
+        }
+    }
 }
