@@ -126,7 +126,17 @@
                     {
                         'icon': 'file-export',
                         'title': 'Export',
-                        'position': 4
+                        'position': 4,
+                        'itemsOption': {
+                            'url': 'items.json',
+                            'titleAttribute': 'title',
+                            'idAttribute': 'id',
+                            'translate': true,
+                            'languageNamespace': 'edit-toolbar.',
+                            'callback': function(item) {
+                                console.log(item, 'This is a test callback');
+                            }
+                        }
                     }
                 ],
 
@@ -166,6 +176,9 @@
                 JSON.stringify(testData)
             ]);
 
+            fakeServer.respondWith('GET', 'items.json', [200, { 'Content-Type': 'application/json' },
+                '{"_embedded": [{"id": "23","title": "export1","icon": "floppy-save"},{"id": "24","icon": "cancel","title": "export2"},{"id": "25","icon": "test","title": "export3"}]}']);
+
             app.sandbox.on('husky.edit-toolbar.contact.initialized', function() {
                 app.sandbox.emit('husky.edit-toolbar.contact.items.set', 'state', stateItems, 1);
             });
@@ -198,7 +211,11 @@
             });
 
             $('#changeItem').on('click', function() {
-                app.sandbox.emit('husky.edit-toolbar.contact.item.change', 'state', 1);
+                app.sandbox.emit('husky.edit-toolbar.contact.item.change', 'state', 2);
+                app.sandbox.emit('husky.edit-toolbar.contact.button.set', 4, {
+                    title: 'New title',
+                    icon: 'floppy-save'
+                })
             });
         });
     });
