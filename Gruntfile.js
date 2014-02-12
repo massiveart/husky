@@ -74,6 +74,16 @@ module.exports = function (grunt) {
                 autoWatch: true
             }
         },
+        svgmin: {
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: 'assets/svg/.tmp',
+                    src: ['*.svg'],
+                    dest: 'assets/svg/.tmp'
+                }]
+            }
+        },
         grunticon: {
             svg: {
                 files: [
@@ -85,12 +95,20 @@ module.exports = function (grunt) {
                     }
                 ],
                 options: {
+                    svgo: true,
+                    pngfolder: "png",
+
+                    // CSS filenames
+                    datasvgcss: "../../icons.data.svg.css",
+//                    datapngcss: "icons.data.png.css",
+//                    urlpngcss: "",
+                    // definition of colors
                     colors: {
                         black: '#000',
                         white: '#FFF',
                         gray: '#999'
                     },
-                    template: 'assets/svg/svg-template.hbs'
+                    template: 'assets/svg/templates/svg-template.hbs'
                 }
             }
         },
@@ -215,9 +233,7 @@ module.exports = function (grunt) {
                         dot: false,
                         cwd: './assets/svg/',
                         dest: 'assets/svg/.tmp/',
-                        src: [
-                            '{,*.svg/}*'
-                        ],
+                        src: ['*.svg'],
                         rename: function(dest,src) {
                             var colors;
                             src = src.substr(0,src.length-4);
@@ -385,6 +401,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('icon', [
         'copy:icon',
+        'svgmin',
         'grunticon:svg',
         'clean:icon'
     ]);

@@ -1,49 +1,50 @@
 {
-    "name": "husky",
-    "version": "0.1.0",
-    "description": "awesome sh*t",
-    "keywords": [
-        "frontend-framework"
-    ],
-    "author": {
-        "name": "Husky Community",
-        "email": "github@massiveart.com",
-        "company": "MASSIVE ART WebServices GmbH",
-        "homepage": "https://github.com/massiveart/husky/contributors"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/massiveart/husky.git"
-    },
-    "devDependencies": {
-        "grunt": "~0.4.2",
-        "grunt-contrib-jshint": "~0.6.0",
-        "grunt-contrib-uglify": "~0.2.2",
-        "grunt-contrib-watch": "~0.4.4",
-        "grunt-contrib-compass": "~0.2.0",
-        "grunt-contrib-requirejs": "0.4.0",
-        "grunt-karma": "~0.4.5",
-        "grunt-grunticon": "~1.0.0",
-        "grunt-contrib-clean": "~0.4.0",
-        "grunt-contrib-concat": "~0.1.3",
-        "grunt-contrib-copy": "~0.4.0",
-        "grunt-contrib-cssmin": "~0.5.0",
-        "grunt-bower-task": "~0.3.1",
-        "grunt-contrib-yuidoc": "~0.5.0",
-        "matchdep": "~0.1.1",
-        "sinon": "~1.7.3",
-        "grunt-contrib-connect": "~0.3.0"
-    },
-    "scripts": {
-        "test": "grunt travis --verbose"
-    },
-    "engines": {
-        "node": ">=0.8.0"
-    },
-    "licenses": [
-        {
-            "type": "Todo",
-            "url": "Todo"
-        }
-    ]
+  "name": "husky",
+  "version": "0.1.0",
+  "description": "awesome sh*t",
+  "keywords": [
+    "frontend-framework"
+  ],
+  "author": {
+    "name": "Husky Community",
+    "email": "github@massiveart.com",
+    "company": "MASSIVE ART WebServices GmbH",
+    "homepage": "https://github.com/massiveart/husky/contributors"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/massiveart/husky.git"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-watch": "~0.4.4",
+    "grunt-contrib-compass": "~0.2.0",
+    "grunt-contrib-requirejs": "0.4.0",
+    "grunt-karma": "~0.4.5",
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt-contrib-concat": "~0.1.3",
+    "grunt-contrib-copy": "~0.4.0",
+    "grunt-contrib-cssmin": "~0.5.0",
+    "grunt-bower-task": "~0.3.1",
+    "grunt-contrib-yuidoc": "~0.5.0",
+    "matchdep": "~0.1.1",
+    "sinon": "~1.7.3",
+    "grunt-contrib-connect": "~0.3.0",
+    "grunt-grunticon": "~1.0.0",
+    "grunt-svgmin": "~0.3.1"
+  },
+  "scripts": {
+    "test": "grunt travis --verbose"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "licenses": [
+    {
+      "type": "Todo",
+      "url": "Todo"
+    }
+  ]
 }
