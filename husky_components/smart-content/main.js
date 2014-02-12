@@ -15,9 +15,8 @@
  *
  * @params {Object} [options] Configuration object
  * @params {Integer} [options.visibleItems] maximum of items visible at the start and in the view-less state
- * @params {Array} [options.dataSources] array of sources with id and name property
+ * @params {String} [options.dataSource] default value for the data-source
  * @params {Boolean} [options.includeSubFolders] if true sub folders are included right from the beginning
- * @params {Integer} [options.preSelectedDataSource] array with id of the preselected source
  * @params {Array} [options.categories] array of categories with id and name property
  * @params {Integer} [options.preSelectedCategory] array with id of the preselected category
  * @params {Array} [options.tags] array of tags which are inserted at the beginning
@@ -39,6 +38,9 @@
  * @params {String} [options.presentAsParameter] parameter for the presentation-possibility id
  * @params {String} [options.limitResultParameter] parameter for the limit-result-value
  * @params {String} [options.resultKey] key for the data in the returning JSON-result
+ * @params {Boolean} [options.subFoldersDisabled] if true sub-folders overlay-item will be disabled
+ * @params {Boolean} [options.tagsDisabled] if true tags overlay-item will be disabled
+ * @params {Boolean} [options.limitResultDisabled] if true limit-result overlay-item will be disabled
  *
  * @params {Object} [options.translations] object that gets merged with the default translation-keys
  * @params {String} [options.translations.noContentFound] translation key
@@ -122,6 +124,7 @@ define([], function() {
             sortMethodDDClass: 'sort-method-dropdown',
             presentAsDDClass: 'present-as-dropdown',
             limitToSelector: '.limit-to',
+            dataSourceSelector: '.data-source',
             contentListClass: 'items-list'
         },
 
@@ -149,6 +152,7 @@ define([], function() {
                 '<li data-id="<%= data_id %>">',
                 '<span class="num"><%= num %></span>',
                 '<span class="value"><%= value %></span>',
+
                 '</li>'
             ].join(''),
             overlayContent: {
@@ -157,7 +161,7 @@ define([], function() {
 
                 dataSource: ['<div class="item-half left">',
                     '<span class="desc"><%= data_source %></span>',
-                    '<div class="' + constants.dataSourceDDClass + '"></div>',
+                    '<input type="text" value="<%= data_source_val %>" class="data-source"/>',
                     '</div>'].join(''),
 
                 subFolders: ['<div class="item-half">',
@@ -285,9 +289,8 @@ define([], function() {
             };
 
             this.$overlayContent = null;
-
             this.overlayData = {
-                dataSource: this.options.preSelectedDataSource,
+                dataSource: this.options.dataSource,
                 includeSubFolders: this.options.includeSubFolders,
                 category: this.options.preSelectedCategory,
                 tags: this.options.tags,
@@ -298,7 +301,6 @@ define([], function() {
             };
 
             this.overlayDisabled = {
-                dataSource: (this.options.dataSources.length === 0),
                 categories: (this.options.categories.length === 0),
                 sortBy: (this.options.sortBy.length === 0),
                 presentAs: (this.options.presentAs.length === 0),
@@ -325,7 +327,6 @@ define([], function() {
                 limitResultTo: 'smart-content.limit-result-to',
                 noCategory: 'smart-content.no-category',
                 choosePresentAs: 'smart-content.choose-present-as',
-                chooseDataSource: 'smart-content.choose-data-source',
                 from: 'smart-content.from',
                 subFoldersInclusive: 'smart-content.sub-folders-inclusive',
                 viewAll: 'smart-content.view-all',
@@ -368,7 +369,7 @@ define([], function() {
          */
         prependSource: function() {
             var desc;
-            if (!!this.overlayData.dataSource.length) {
+            if (typeof(this.overlayData.dataSource) !== 'undefined') {
                 desc = this.sandbox.translate(this.translations.from);
                 if (this.overlayData.includeSubFolders !== false) {
                     desc += ' (' + this.sandbox.translate(this.translations.subFoldersInclusive) + '):';
@@ -377,24 +378,9 @@ define([], function() {
                 }
                 this.sandbox.dom.prepend(this.$header, _.template(templates.source)({
                     desc: desc,
-                    val: this.getSourceNameById(this.overlayData.dataSource)
+                    val: this.overlayData.dataSource
                 }));
             }
-        },
-
-        /**
-         * Returns the name of a source based on its id
-         * @param id {Integer} id of a source
-         * @returns {String} name of the matching source
-         */
-        getSourceNameById: function(id) {
-            id = parseInt(id);
-            for (var i = -1, length = this.options.dataSources.length; ++i < length;) {
-                if (this.options.dataSources[i].id === id) {
-                    return this.options.dataSources[i].name;
-                }
-            }
-            return '';
         },
 
         /**
@@ -588,7 +574,8 @@ define([], function() {
             this.$overlayContent = this.sandbox.dom.createElement(_.template(templates.overlayContent.main)());
 
             this.$overlayContent.append(_.template(templates.overlayContent.dataSource)({
-                data_source: this.sandbox.translate(this.translations.dataSource)
+                data_source: this.sandbox.translate(this.translations.dataSource),
+                data_source_val: this.options.dataSource
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.subFolders)({
                 include_sub: this.sandbox.translate(this.translations.includeSubFolders),
@@ -627,20 +614,6 @@ define([], function() {
          */
         startOverlayComponents: function() {
             this.sandbox.start([
-                {
-                    name: 'dropdown-multiple-select@husky',
-                    options: {
-                        el: this.sandbox.dom.find('.' + constants.dataSourceDDClass, this.$overlayContent),
-                        instanceName: this.options.instanceName + constants.dataSourceDDClass,
-                        defaultLabel: this.sandbox.translate(this.translations.chooseDataSource),
-                        value: 'name',
-                        data: this.options.dataSources,
-                        preSelectedElements: [this.options.preSelectedDataSource],
-                        singleSelect: true,
-                        noDeselect: true,
-                        disabled: this.overlayDisabled.dataSource
-                    }
-                },
                 {
                     name: 'dropdown-multiple-select@husky',
                     options: {
@@ -761,8 +734,8 @@ define([], function() {
          * event is emited on which the associeted component responses
          */
         getOverlayData: function() {
-            var dataSourceDef, categoryDef, tagsDef, sortByDef, sortMethodDef, presentAsDef;
-            dataSourceDef = categoryDef = tagsDef = sortByDef = sortMethodDef = presentAsDef = this.sandbox.data.deferred();
+            var categoryDef, tagsDef, sortByDef, sortMethodDef, presentAsDef;
+            categoryDef = tagsDef = sortByDef = sortMethodDef = presentAsDef = this.sandbox.data.deferred();
 
             //include sub folders
             this.overlayData.includeSubFolders = this.sandbox.dom.prop(
@@ -775,11 +748,7 @@ define([], function() {
             );
 
             //data-source
-            this.sandbox.emit('husky.dropdown.multiple.select.' + this.options.instanceName + constants.dataSourceDDClass + '.getChecked',
-                function(dataSource) {
-                    this.overlayData.dataSource = dataSource;
-                    dataSourceDef.resolve();
-                }.bind(this));
+            this.overlayData.dataSource = this.sandbox.dom.val(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent));
 
             //category
             this.sandbox.emit('husky.dropdown.multiple.select.' + this.options.instanceName + constants.categoryDDClass + '.getChecked',
@@ -816,18 +785,9 @@ define([], function() {
                     presentAsDef.resolve();
                 }.bind(this));
 
-            this.sandbox.dom.when(
-                    dataSourceDef.promise(),
-                    categoryDef.promise(),
-                    tagsDef.promise(),
-                    sortByDef.promise(),
-                    sortMethodDef.promise(),
-                    presentAsDef.promise()
-                ).then(
-                    function() {
-                        this.sandbox.emit(INPUT_RETRIEVED.call(this));
-                    }.bind(this)
-                );
+            this.sandbox.dom.when(categoryDef.promise(), tagsDef.promise(), sortByDef.promise(), sortMethodDef.promise(), presentAsDef.promise()).then(function() {
+                this.sandbox.emit(INPUT_RETRIEVED.call(this));
+            }.bind(this));
         },
 
         /**
