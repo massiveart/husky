@@ -78,7 +78,7 @@
             };
 
             app.core.dom.css = function(selector, style, value) {
-                if (!!value) {
+                if (typeof value !== 'undefined') {
                     return $(selector).css(style, value);
                 } else {
                     return $(selector).css(style);
@@ -118,7 +118,7 @@
             };
 
             app.core.dom.width = function(selector, value) {
-                if (!!value) {
+                if (typeof value !== 'undefined') {
                     return $(selector).width(value);
                 } else {
                     return $(selector).width();
@@ -137,7 +137,7 @@
             };
 
             app.core.dom.outerHeight = function(selector) {
-                    return $(selector).outerHeight();
+                return $(selector).outerHeight();
             };
 
             app.core.dom.offset = function(selector, attributes) {
@@ -294,6 +294,10 @@
                 return $(selector).show();
             };
 
+            app.core.dom.map = function(selector, callback) {
+                return $(selector).map(callback);
+            };
+
             app.core.dom.toggle = function(selector) {
                 return $(selector).toggle();
             };
@@ -316,7 +320,7 @@
             };
 
             app.core.dom.scrollTop = function(selector, position) {
-                if(typeof position !== 'undefined') {
+                if (typeof position !== 'undefined') {
                     return $(selector).scrollTop(position);
                 } else {
                     return $(selector).scrollTop();
@@ -324,13 +328,12 @@
             };
 
             app.core.dom.scrollLeft = function(selector, value) {
-                if(typeof value !== 'undefined') {
+                if (typeof value !== 'undefined') {
                     return $(selector).scrollLeft(value);
                 } else {
                     return $(selector).scrollLeft();
                 }
             };
-
 
             app.core.dom.scrollAnimate = function(position, selector) {
                 if (!!selector) {

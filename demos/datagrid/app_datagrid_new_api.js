@@ -425,7 +425,7 @@ require(['lib/husky'], function(Husky) {
     ]);
 
     // columns change
-    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&fields=content1,content2', [200, { 'Content-Type': 'application/json' },
+    fakeServer.respondWith('GET', '/admin/api/contacts?flat=true&fields=content1,content2,content3,content4', [200, { 'Content-Type': 'application/json' },
         '{' +
             '"_links":' +
             '{' +
@@ -445,10 +445,10 @@ require(['lib/husky'], function(Husky) {
             '},' +
             '"_embedded":' +
             '[' +
-            '{ "id": "1", "content1": "B Hallo 1.1 3", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "2", "content1": "A Hallo 1.1 3", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "3", "content1": "C Hallo 1.1 3", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "4", "content1": "D Hallo 1.1 3", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
+            '{ "id": "1", "content1": "B Hallo adf asd 1.1 3", "content2": "C Hallo 1.2as df asdfd fasd", "content4": "C Hallo 1.2 asdfsadf  asdfdas f", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "2", "content1": "A Hallo as s 1.1 3", "content2": "einsehrsehrsehrseeeehrlangeeeeeeeeeeeeeeeerrrrtitel", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "3", "content1": "C Hallo  asdfd1.1 3", "content2": "D Hallo 1.2 asdf", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '{ "id": "4", "content1": "D Hallo sdf 1.1 3", "content2": "A asdf asdf sdf sHallo 1.2", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
             '],' +
             '"total":12,' +
             '"pages": 3,' +
@@ -478,6 +478,7 @@ require(['lib/husky'], function(Husky) {
                     pagination: true,
                     editable: true,
                     validation:true,
+                    contentContainer: '#content',
                     columns: [
                         {
                             content: 'Content 1',
@@ -657,7 +658,7 @@ require(['lib/husky'], function(Husky) {
                     [
                         {
                             id: 'content1',
-                            translation: 'content1',
+                            translation: 'Content 1',
                             disabled: false,
                             editable: true,
                             validation: {
@@ -665,8 +666,9 @@ require(['lib/husky'], function(Husky) {
                                 required: true
                             }
                         },
-                        {"id":"content2","translation":"content2","disabled":false},
-                        {"id":"content3","translation":"content3","disabled":true}
+                        {"id":"content2","translation":"Content 2","disabled":false},
+                        {"id":"content3","translation":"Content 3","disabled":false,"width":"100px"},
+                        {"id":"content4","translation":"Content 4","disabled":false,"width":"500px"}
                     ]
                 );
             });

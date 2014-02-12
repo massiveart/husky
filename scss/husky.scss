@@ -13,12 +13,12 @@
     "animations.scss",
     "utilities.scss",
     "typo.scss",
-    "overlay.scss",
     "dropdown-menu.scss";
 
 
 // Husky Modules
 @import
+    "modules/overlay",
     "modules/glyphicons.scss",
     "modules/icons.scss",
     "modules/core.scss",
