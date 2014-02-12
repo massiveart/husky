@@ -24375,7 +24375,7 @@ define('husky',[
 // TODO: events as specified
 // TODO: move functions into private space
 // TODO: cleanup css-classes
-// TODO: responsive collapsed navigation
+// TODO: complete yui-doc
 
 define('__component__$navigation@husky',[],function() {
 
@@ -24384,21 +24384,22 @@ define('__component__$navigation@husky',[],function() {
     var templates = {
             /** component skeleton */
             skeleton: [
-                '<nav class="navigation">',
+                '<nav class="navigation<% if (collapsed === "true") {%> collapsed<% } %>">',
                 '   <div class="navigation-content">',
                 '       <header class="navigation-header">',
                 '           <div class="navigation-header-image">',
-                '               <% if (icon) { %>',
-                '               <img alt="#" src="<%= icon %>"/>',
+                '               <% if (data.icon) { %>',
+                '               <img alt="#" src="<%= data.icon %>"/>',
                 '               <% } %>',
                 '           </div>',
-                '           <div class="navigation-header-title"><% if (title) { %> <%= translate(title) %><% } %></div>',
+                '           <div class="navigation-header-title"><% if (data.title) { %> <%= translate(data.title) %><% } %></div>',
                 '       </header>',
                 '       <div id="navigation-search" class="navigation-search"></div>',
                 '       <div id="navigation-item-container" class="navigation-item-container"></div>',
                 '       <footer>',
                 '       </footer>',
                 '   </div>',
+                '   <div class="icon-remove2 navigation-close-icon">',
                 '</nav>'].join(''),
             /** main navigation items (with icons)*/
             mainItem: [
@@ -24436,11 +24437,56 @@ define('__component__$navigation@husky',[],function() {
         },
         defaults = {
             footerTemplate: '',
+            collapsed: false,
             labels: {
                 hide: 'navigation.hide',
                 show: 'navigation.show'
-            }
-        };
+            },
+            resizeWidth: 800,
+            forceCollapse: false
+        },
+        constants = {
+            uncollapsedWidth: 250,
+            collapsedWidth: 50
+        },
+
+        namespace = 'husky.navigation.',
+
+        /**
+         * raised when navigation was collapsed
+         * @event husky.navigation.collapsed
+         * @param {Number} width The width of the collapsed navigation
+         */
+            EVENT_COLLAPSED = namespace + 'collapsed',
+
+        /**
+         * raised when navigation was un-collapsed
+         * @event husky.navigation.uncollapsed
+         * @param {Number} width The width of the un-collapsed navigation
+         */
+            EVENT_UNCOLLAPSED = namespace + 'uncollapsed',
+
+
+        /**
+         * forces navigation to uncollapse
+         * @event husky.navigation.collapse
+         */
+            EVENT_COLLAPSE = namespace + 'collapse',
+
+        /**
+         * forces navigation to uncollapse
+         * @event husky.navigation.uncollapse
+         * @param {Bool} force If true, the navigation will act as overflow and collapse again after interaction
+         */
+            EVENT_UNCOLLAPSE = namespace + 'uncollapse',
+
+
+        /**
+         * raised when navigation was un / collapsed. only raised when not forced
+         * @event husky.navigation.size.changed
+         */
+            EVENT_SIZE_CHANGED = namespace + 'size.changed'
+        ;
 
 
     return {
@@ -24484,11 +24530,12 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.dom.addClass(this.$el, 'navigation-container');
 
             // render skeleton
-            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {
-                title: this.options.data.title,
-                icon: this.options.data.icon,
-                translate: this.sandbox.translate
-            }));
+            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton,
+                this.sandbox.util.extend(true, {}, this.options, {translate: this.sandbox.translate}))
+            );
+
+            this.$navigation = this.$find('.navigation', this.$el);
+            this.$navigationContent = this.$find('.navigation-content', this.$navigation);
 
             // start search component
             this.sandbox.start([
@@ -24511,6 +24558,9 @@ define('__component__$navigation@husky',[],function() {
 
             // preselect item based on url
             this.preselectItem();
+
+            // collapse if necessary
+            this.resizeListener();
 
             // emit initialized event
             this.sandbox.emit('husky.navigation.initialized');
@@ -24555,7 +24605,7 @@ define('__component__$navigation@husky',[],function() {
          */
         renderSubNavigationItems: function(data, $parentList) {
             var elem,
-                list = this.sandbox.dom.createElement('<ul style="display:none" />');
+                list = this.sandbox.dom.createElement('<ul class="navigation-items-list" />');
 
             this.sandbox.util.foreach(data.items, function(item) {
                 this.items[item.id] = item;
@@ -24585,6 +24635,19 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.dom.on(this.$el, 'click', this.toggleSections.bind(this), '.section-toggle');
             this.sandbox.dom.on(this.$el, 'click', this.settingsClicked.bind(this), '.js-navigation-settings');
             this.sandbox.dom.on(this.$el, 'click', this.selectSubItem.bind(this), '.js-navigation-sub-item, .js-navigation-item');
+
+            // collapse events
+            this.sandbox.dom.on(this.sandbox.dom.window, 'resize', this.resizeListener.bind(this));
+            this.sandbox.dom.on(this.$el, 'click', this.showCollapsedSearch.bind(this), '.navigation.a #navigation-search a.search-icon');
+            this.sandbox.dom.on(this.$el, 'click', this.collapse.bind(this), '.navigation.collapseIcon .navigation-close-icon');
+
+
+            // tooltip events
+            this.sandbox.dom.on(this.$el, 'mouseenter', function(event) {
+                this.showToolTip.call(this, this.sandbox.dom.attr(this.sandbox.dom.find('input', '.navigation-search'), 'placeholder'), event);
+            }.bind(this), '.navigation.collapsed .navigation-search');
+            this.sandbox.dom.on(this.$el, 'mouseenter', this.showToolTip.bind(this, ''), '.navigation.collapsed .navigation-items');
+            this.sandbox.dom.on(this.$el, 'mouseleave', this.hideToolTip.bind(this), '.navigation.collapsed .navigation-items, .navigation.collapsed .navigation-search');
         },
 
         /**
@@ -24597,6 +24660,43 @@ define('__component__$navigation@husky',[],function() {
                 this.renderFooter(template);
             }.bind(this));
 
+            this.sandbox.on(EVENT_COLLAPSE, this.collapse.bind(this));
+            this.sandbox.on(EVENT_UNCOLLAPSE, this.unCollapse.bind(this));
+
+        },
+
+        resizeListener: function() {
+            var windowWidth = this.sandbox.dom.width(this.sandbox.dom.window);
+
+            if (windowWidth <= this.options.resizeWidth) {
+                this.collapse();
+            } else if (this.sandbox.dom.hasClass(this.$navigation, 'collapsed')) {
+                this.unCollapse();
+            }
+        },
+
+        showToolTip: function(title, event) {
+            var offset,
+                target = event.currentTarget;
+
+            if (!title) {
+                title = this.sandbox.dom.html(this.sandbox.dom.find('.navigation-item-title', event.currentTarget));
+            }
+            if (!this.$tooltip) {
+                this.$tooltip = this.sandbox.dom.createElement('<div class="navigation-tooltip">' + title + '</div>');
+                this.sandbox.dom.append('body', this.$tooltip);
+            }
+            offset = this.sandbox.dom.offset(target);
+            this.sandbox.dom.css(this.$tooltip, {
+                top: offset.top + (this.sandbox.dom.height(target) - 30) / 2
+            });
+        },
+
+        hideToolTip: function() {
+            if (!!this.$tooltip) {
+                this.sandbox.dom.remove(this.$tooltip);
+                this.$tooltip = null;
+            }
         },
 
 
@@ -24619,16 +24719,14 @@ define('__component__$navigation@husky',[],function() {
             if (matchLength > 0) {
                 match = matchItem.domObject;
 
-                // TODO: use trigger instead of faking event
-                if (this.sandbox.dom.hasClass(match,'js-navigation-sub-item')) {
+                if (this.sandbox.dom.hasClass(match, 'js-navigation-sub-item')) {
                     parent = this.sandbox.dom.closest(match, '.navigation-items');
-                    this.toggleItems({currentTarget: parent, preventDefault: function(){}});
-//                    this.sandbox.dom.trigger(parent, 'click','.section-toggle');
+                    this.toggleItems(null, parent);
                 }
-                this.selectSubItem({currentTarget: match, preventDefault:function(){}});
+                this.selectSubItem(null, match);
+                this.checkBottomHit(null, match);
             }
         },
-
 
 
         /**
@@ -24654,20 +24752,30 @@ define('__component__$navigation@husky',[],function() {
          * Raises navigation.toggle
          * @param event
          */
-        toggleItems: function(event) {
+        toggleItems: function(event, customTarget) {
 
-            event.preventDefault();
+            if (event) {
+                event.preventDefault();
+            } else {
+                event = {
+                    currentTarget: customTarget
+                };
+            }
 
             var $items = this.sandbox.dom.closest(event.currentTarget, '.js-navigation-items'),
-                item, xBottom, windowHeight, itemHeight, itemTop,
-                $toggle,
-
                 $childList = this.sandbox.dom.find('ul:first', $items),
-                isExpanded = this.sandbox.dom.hasClass($items, 'is-expanded');
+                item, $toggle,
+                isExpanded = this.sandbox.dom.hasClass($items, 'is-expanded'),
+                navWasCollapsed;
 
+            // only check collapse if event was fired
+            if (!customTarget) {
+                navWasCollapsed = this.showIfCollapsed();
+            }
 
-            if (isExpanded) {
-                this.sandbox.dom.slideUp($childList, 200, function() {
+            if (isExpanded && !navWasCollapsed) {
+
+//                this.sandbox.dom.slideUp($childList, 200, function() {
 
                     this.sandbox.dom.removeClass($items, 'is-expanded');
 
@@ -24675,31 +24783,16 @@ define('__component__$navigation@husky',[],function() {
                     $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
                     this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
                     this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
-
-                }.bind(this));
+//                }.bind(this));
             } else {
+                this.sandbox.dom.show($childList);
                 this.sandbox.dom.addClass($items, 'is-expanded');
                 // change toggle item
                 $toggle = this.sandbox.dom.find('.icon-chevron-right', event.currentTarget);
                 this.sandbox.dom.removeClass($toggle, 'icon-chevron-right');
                 this.sandbox.dom.prependClass($toggle, 'icon-chevron-down');
 
-                this.sandbox.dom.slideDown($childList, 200, function() {
-
-
-                    // check if collapsed element overlaps browser border
-                    itemTop = this.sandbox.dom.offset($items).top;
-                    itemHeight = this.sandbox.dom.height($items);
-                    xBottom = itemTop + itemHeight;
-                    windowHeight = this.sandbox.dom.height(this.sandbox.dom.window);
-                    if (xBottom > windowHeight) {
-                        if (itemHeight < windowHeight) {
-                            this.sandbox.dom.scrollAnimate((xBottom - windowHeight + 40), '.navigation-container');
-                        } else {
-                            this.sandbox.dom.scrollAnimate(itemTop, '.navigation-container');
-                        }
-                    }
-                }.bind(this));
+                this.sandbox.dom.one($items, 'transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd', this.checkBottomHit.bind(this));
             }
 
             // emit event
@@ -24707,6 +24800,30 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.emit('husky.navigation.item.toggle', !isExpanded, item);
         },
 
+        checkBottomHit: function(event, customTarget) {
+
+            var xBottom, windowHeight, itemHeight, itemTop, scrollTop,
+                $items;
+
+            if (event) {
+                $items = event.currentTarget;
+            } else {
+                $items = customTarget;
+            }
+            // check if collapsed element overlaps browser border
+            itemTop = this.sandbox.dom.offset($items).top;
+            itemHeight = this.sandbox.dom.height($items);
+            xBottom = itemTop + itemHeight;
+            windowHeight = this.sandbox.dom.height(this.sandbox.dom.window);
+            scrollTop = this.sandbox.dom.scrollTop(this.$navigationContent);
+            if (xBottom > windowHeight) {
+                if (itemHeight < windowHeight) {
+                    this.sandbox.dom.scrollAnimate(scrollTop + (xBottom - windowHeight + 40), this.$navigationContent);
+                } else {
+                    this.sandbox.dom.scrollAnimate(itemTop, this.$navigationContent);
+                }
+            }
+        },
 
         /**
          * toggles sections
@@ -24738,19 +24855,82 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.emit('husky.navigation.section.toggle');
         },
 
+        // returns if nav was collapsed
+        showIfCollapsed: function() {
+
+            if (this.sandbox.dom.hasClass(this.$navigation, 'collapsed')) {
+                this.unCollapse(true);
+                return true;
+            }
+            return false;
+        },
+
+        collapse: function() {
+            this.sandbox.dom.addClass(this.$navigation, 'collapsed');
+            this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
+            if (!this.collapsed) {
+                this.sandbox.emit(EVENT_COLLAPSED, constants.collapsedWidth);
+                this.sandbox.emit(EVENT_SIZE_CHANGED, constants.collapsedWidth);
+                this.collapsed = !this.collapsed;
+            }
+        },
+
+        unCollapse: function(forced) {
+            this.sandbox.dom.removeClass(this.$navigation, 'collapsed');
+            this.hideToolTip();
+            if (forced) {
+                this.collapseBack = true;
+                this.sandbox.dom.addClass(this.$navigation, 'collapseIcon');
+            } else {
+                this.collapseBack = false;
+            }
+            if (this.collapsed) {
+                this.sandbox.emit(EVENT_UNCOLLAPSED, constants.uncollapsedWidth);
+                if (!forced) {
+                    this.sandbox.emit(EVENT_SIZE_CHANGED, constants.uncollapsedWidth);
+                }
+                this.collapsed = !this.collapsed;
+            }
+        },
+
+        // called when search icon was clicked
+        showCollapsedSearch: function(event) {
+
+            // remove collapse
+            this.unCollapse(true);
+
+            // focus search
+            var input = this.sandbox.dom.find('input', this.sandbox.dom.parent(event.currentTarget)),
+                instanceName;
+            this.sandbox.dom.trigger(input, 'focus');
+
+            // close when search is sent
+            instanceName = this.options.searchInstanceName ? this.options.searchInstanceName + '.' : '';
+            this.sandbox.once('husky.' + instanceName + 'search', this.resizeListener.bind(this));
+        },
+
+
         /**
          * Selects menu element without submenu
          * Raises navigation.select
          * @param event
+         * @param [customTarget] if event is undefined, the target must be passed customly
          */
-        selectSubItem: function(event) {
+        selectSubItem: function(event, customTarget) {
 
-            event.preventDefault();
+            if (!!event) {
+                event.preventDefault();
+            } else {
+                event = {
+                    currentTarget: customTarget
+                };
+            }
 
             var $subItem = this.sandbox.dom.createElement(event.currentTarget),
                 $items = this.sandbox.dom.parents(event.currentTarget, '.js-navigation-items'),
                 $parent = this.sandbox.dom.parent(event.currentTarget),
                 item;
+
 
             if (this.sandbox.dom.hasClass($subItem, 'js-navigation-item')) {
                 $subItem = this.sandbox.dom.createElement(this.sandbox.dom.closest(event.currentTarget, 'li'));
@@ -24771,6 +24951,13 @@ define('__component__$navigation@husky',[],function() {
             // emit event
             item = this.items[this.sandbox.dom.data($subItem, 'id')];
             this.sandbox.emit('husky.navigation.item.select', item);
+
+
+            if (!customTarget) {
+                setTimeout(this.resizeListener.bind(this), 700);
+
+            }
+
         }
 
     };
@@ -25367,16 +25554,33 @@ define('__component__$column-options@husky',[],function() {
             bindDOMEvents = function() {
 
             this.sandbox.dom.on(this.options.trigger, 'click.column-options', toggleDropdown.bind(this));
-            this.sandbox.dom.on(this.$el, 'click', customStopPropagation.bind(this), '.column-options-container'); // prevent from unwanted events
+            this.sandbox.dom.on(this.$el, 'click', customStopPropagation.bind(this), this.$container); // prevent from unwanted events
             this.sandbox.dom.on(this.$el, 'mouseover', onMouseOver.bind(this), 'li');
             this.sandbox.dom.on(this.$el, 'mouseout', onMouseOut.bind(this), 'li');
             this.sandbox.dom.on(this.$el, 'click', toggleVisibility.bind(this), '.visibility-toggle');
             this.sandbox.dom.on(this.$el, 'click', submit.bind(this), '.save-button');
             this.sandbox.dom.on(this.$el, 'click', hideDropdown.bind(this, true), '.close-button');
+
+            this.sandbox.dom.on(this.sandbox.dom.window, 'resize', windowResizeListener.bind(this));
         },
 
         unbindDOMEvents = function() {
             this.sandbox.dom.off(this.options.trigger, 'click.column-options');
+        },
+
+    /* adapts window size to window size */
+        windowResizeListener = function() {
+            // position window to the center
+            var elementHeight = this.sandbox.dom.height(this.$container),
+                windowHeight = this.sandbox.dom.height(this.sandbox.dom.window);
+
+            if (elementHeight > windowHeight) {
+                this.sandbox.dom.css(this.$el, {'top': 0});
+            } else {
+                this.sandbox.dom.css(this.$el, {'top': (windowHeight - elementHeight) / 2});
+            }
+            this.sandbox.dom.css(this.$container, {'max-height': windowHeight});
+
         },
 
 
@@ -25473,15 +25677,14 @@ define('__component__$column-options@husky',[],function() {
                 event.stopPropagation();
             }
 
-            var $container = this.sandbox.dom.find('.column-options-container', this.$el),
-                isVisible = this.sandbox.dom.is($container, ':visible');
+                var isVisible = this.sandbox.dom.is(this.$container, ':visible');
 
             if (isVisible) {
-                closeDropdown.call(this, $container, true);
+                closeDropdown.call(this, this.$container, true);
             } else {
-                this.sandbox.dom.show($container);
+                this.sandbox.dom.show(this.$container);
                 if (this.options.backdropClick) {
-                    this.sandbox.dom.on(this.sandbox.dom.window, 'click.columnoptions.' + this.options.instanceName, closeDropdown.bind(this, $container, true));
+                    this.sandbox.dom.on(this.sandbox.dom.window, 'click.columnoptions.' + this.options.instanceName, closeDropdown.bind(this, this.$container, true));
                 }
             }
         },
@@ -25490,8 +25693,7 @@ define('__component__$column-options@husky',[],function() {
          * simply hides container
          */
             hideDropdown = function(reset) {
-            var $container = this.sandbox.dom.find('.column-options-container', this.$el);
-            closeDropdown.call(this, $container, reset);
+            closeDropdown.call(this, this.$container, reset);
         },
 
         /**
@@ -25639,6 +25841,11 @@ define('__component__$column-options@husky',[],function() {
             bindDOMEvents.call(this);
 
             bindCustomEvents.call(this);
+
+
+            // TODO: position on startup
+
+
         },
 
         /**
@@ -25656,24 +25863,24 @@ define('__component__$column-options@husky',[],function() {
             this.sandbox.dom.addClass(this.$el, 'column-options-parent');
 
             // init container
-            var $container = this.sandbox.dom.createElement('<div class="column-options-container" />');
-            this.sandbox.dom.append(this.$el, $container);
+            this.$container = this.sandbox.dom.createElement('<div class="column-options-container" />');
+            this.sandbox.dom.append(this.$el, this.$container);
 
             // render header
             if (!this.options.header.disabled) {
-                this.sandbox.dom.append($container, this.sandbox.template.parse(templates.header, {title: this.options.header.title}));
+                this.sandbox.dom.append(this.$container, this.sandbox.template.parse(templates.header, {title: this.options.header.title}));
             }
 
             // init list
             this.$list = this.sandbox.dom.createElement('<ul class="column-options-list" />');
-            this.sandbox.dom.append($container, this.$list);
+            this.sandbox.dom.append(this.$container, this.$list);
 
             // render list items
             renderItems.call(this);
 
             // render footer
             if (!this.options.footer.disabled) {
-                this.sandbox.dom.append($container, '<div class="column-options-footer"><a href="#" class="icon-half-ok save-button btn btn-highlight"></a></div>');
+                this.sandbox.dom.append(this.$container, '<div class="column-options-footer"><a href="#" class="icon-half-ok save-button btn btn-highlight"></a></div>');
             }
 
             // make list sortables
@@ -25683,6 +25890,9 @@ define('__component__$column-options@husky',[],function() {
             if (!this.options.hidden) {
                 toggleDropdown.call(this);
             }
+
+            // correct vertical alignment
+            windowResizeListener.call(this);
 
             // initialization finished
             this.sandbox.emit(INITIALIZED.call(this));
@@ -34142,12 +34352,12 @@ define('husky_extensions/collection',[],function() {
                 return $(selector).show();
             };
 
-            app.core.dom.toggle= function(selector) {
+            app.core.dom.toggle = function(selector) {
                 return $(selector).toggle();
             };
 
             app.core.dom.keypress = function(selector, callback) {
-              $(selector).keypress(callback);
+                $(selector).keypress(callback);
             };
 
             app.core.dom.insertAt = function(index, selector, $container, $item) {
@@ -34159,12 +34369,20 @@ define('husky_extensions/collection',[],function() {
                 }
             };
 
-            app.core.dom.scrollTop = function(itemSelector) {
+            app.core.dom.scrollToTop = function(itemSelector) {
                 $(window).scrollTop($(itemSelector).offset().top);
             };
 
+            app.core.dom.scrollTop = function(selector, position) {
+                if(typeof position !== 'undefined') {
+                    return $(selector).scrollTop(position);
+                } else {
+                    return $(selector).scrollTop();
+                }
+            };
+
             app.core.dom.scrollLeft = function(selector, value) {
-                if(!!value) {
+                if(typeof value !== 'undefined') {
                     return $(selector).scrollLeft(value);
                 } else {
                     return $(selector).scrollLeft();
@@ -34185,17 +34403,16 @@ define('husky_extensions/collection',[],function() {
             };
 
             app.core.dom.slideUp = function(selector, duration, complete) {
-                $(selector).slideUp(duration,complete);
+                $(selector).slideUp(duration, complete);
             };
 
             app.core.dom.slideDown = function(selector, duration, complete) {
-                $(selector).slideDown(duration,complete);
+                $(selector).slideDown(duration, complete);
             };
 
             app.core.dom.when = function(deffereds) {
                 return $.when(deffereds);
             };
-
 
             app.core.util.ajax = $.ajax;
         }
