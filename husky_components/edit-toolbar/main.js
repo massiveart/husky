@@ -180,7 +180,7 @@ define(function() {
                 createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
                 setButtonWidth.call(this, this.items[button].$el, this.items[button]);
                 if (typeof itemIndex !== 'undefined') {
-                    //this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemIndex);
+                    this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemIndex);
                 }
             }.bind(this));
         },
