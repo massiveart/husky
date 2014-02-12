@@ -302,7 +302,7 @@ define(function() {
 
             // collapse events
             this.sandbox.dom.on(this.sandbox.dom.window, 'resize', this.resizeListener.bind(this));
-            this.sandbox.dom.on(this.$el, 'click', this.showCollapsedSearch.bind(this), '.navigation.a #navigation-search a.search-icon');
+            this.sandbox.dom.on(this.$el, 'click', this.showCollapsedSearch.bind(this), '.navigation #navigation-search a.search-icon');
             this.sandbox.dom.on(this.$el, 'click', this.collapse.bind(this), '.navigation.collapseIcon .navigation-close-icon');
 
 
