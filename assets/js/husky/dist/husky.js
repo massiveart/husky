@@ -28883,6 +28883,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                 this.sandbox.dom.addClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
                 this.items[button].items = items;
                 createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
+                setButtonWidth.call(this, this.items[button].$el, this.items[button]);
                 if (typeof itemIndex !== 'undefined') {
                     this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemIndex);
                 }
@@ -29132,6 +29133,24 @@ define('__component__$edit-toolbar@husky',[],function() {
         },
 
         /**
+         * set width for button with dropdown-items
+         * @param listItem
+         * @param parent
+         */
+        setButtonWidth = function(listItem, parent) {
+            var maxwidth = 0;
+            if (parent.type === 'select') {
+                for(var i = -1, length = parent.items.length; ++i < length;) {
+                    changeMainListItem.call(this, listItem, parent.items[i]);
+                    if (this.sandbox.dom.width(listItem) > maxwidth) {
+                        maxwidth = this.sandbox.dom.width(listItem);
+                    }
+                }
+                this.sandbox.dom.css(listItem, {'min-width': maxwidth + 'px'});
+            }
+        },
+
+        /**
          * Sorts all items with their position-property
          * @param {array} data The list of items to sort
          * @return {array} returns the sorted array
@@ -29280,10 +29299,15 @@ define('__component__$edit-toolbar@husky',[],function() {
                     createDropdownMenu.call(this, $listItem, item);
                 }
 
-                this.items[item.id].$el = $listItem;
-
                 // create button
-                this.sandbox.dom.append(addTo, this.items[item.id].$el);
+                this.sandbox.dom.append(addTo, $listItem);
+
+                //set width for buttons with dropdowns
+                if (!!item.items) {
+                    setButtonWidth.call(this, $listItem, item);
+                }
+
+                this.items[item.id].$el = $listItem;
 
             }.bind(this));
         }

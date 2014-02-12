@@ -180,7 +180,7 @@ define(function() {
                 createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
                 setButtonWidth.call(this, this.items[button].$el, this.items[button]);
                 if (typeof itemIndex !== 'undefined') {
-                    this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemIndex);
+                    //this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemIndex);
                 }
             }.bind(this));
         },
@@ -345,7 +345,6 @@ define(function() {
          * @param item
          */
         changeMainListItem = function(listElement, item) {
-            // TODO: do not change size of element on change title
             // first get title
             var listItems = this.sandbox.dom.find('span', listElement);
             if (!!item.icon) {
@@ -442,6 +441,8 @@ define(function() {
                     }
                 }
                 this.sandbox.dom.css(listItem, {'min-width': maxwidth + 'px'});
+                //set button back to default
+                changeMainListItem.call(this, listItem, parent);
             }
         },
 
