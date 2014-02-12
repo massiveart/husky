@@ -101,9 +101,10 @@ define(function() {
             resizeWidth: 800,
             forceCollapse: false
         },
-        constants = {
-            uncollapsedWidth: 250,
-            collapsedWidth: 50
+        CONSTANTS = {
+            UNCOLLAPSED_WIDTH: 250,
+            COLLAPSED_WIDTH: 50,
+            TRANSITIONEND_EVENT: 'transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd'
         },
 
         namespace = 'husky.navigation.',
@@ -138,7 +139,14 @@ define(function() {
 
 
         /**
-         * raised when navigation was un / collapsed. only raised when not forced
+         * raised when navigation collapse / uncollapse of navigation is triggered. called before transition starts
+         * only raised when not forced
+         * @event husky.navigation.size.change
+         */
+            EVENT_SIZE_CHANGE = namespace + 'size.change',
+
+        /**
+         * raised when navigation was un / collapsed. called when transition is finished. only raised when not forced
          * @event husky.navigation.size.changed
          */
             EVENT_SIZE_CHANGED = namespace + 'size.changed'
@@ -304,6 +312,13 @@ define(function() {
             }.bind(this), '.navigation.collapsed .navigation-search');
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showToolTip.bind(this, ''), '.navigation.collapsed .navigation-items');
             this.sandbox.dom.on(this.$el, 'mouseleave', this.hideToolTip.bind(this), '.navigation.collapsed .navigation-items, .navigation.collapsed .navigation-search');
+
+            this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function(event) {
+                this.sandbox.emit(EVENT_SIZE_CHANGED, this.sandbox.dom.width(this.$navigation));
+            }.bind(this));
+            this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function(event) {
+                event.stopPropagation();
+            }.bind(this),'.navigation *');
         },
 
         /**
@@ -448,7 +463,7 @@ define(function() {
                 this.sandbox.dom.removeClass($toggle, 'icon-chevron-right');
                 this.sandbox.dom.prependClass($toggle, 'icon-chevron-down');
 
-                this.sandbox.dom.one($items, 'transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd', this.checkBottomHit.bind(this));
+                this.sandbox.dom.one($items, CONSTANTS.TRANSITIONEND_EVENT, this.checkBottomHit.bind(this));
             }
 
             // emit event
@@ -525,8 +540,8 @@ define(function() {
             this.sandbox.dom.addClass(this.$navigation, 'collapsed');
             this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
             if (!this.collapsed) {
-                this.sandbox.emit(EVENT_COLLAPSED, constants.collapsedWidth);
-                this.sandbox.emit(EVENT_SIZE_CHANGED, constants.collapsedWidth);
+                this.sandbox.emit(EVENT_COLLAPSED, CONSTANTS.COLLAPSED_WIDTH);
+                this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.COLLAPSED_WIDTH);
                 this.collapsed = !this.collapsed;
             }
         },
@@ -541,9 +556,9 @@ define(function() {
                 this.collapseBack = false;
             }
             if (this.collapsed) {
-                this.sandbox.emit(EVENT_UNCOLLAPSED, constants.uncollapsedWidth);
+                this.sandbox.emit(EVENT_UNCOLLAPSED, CONSTANTS.UNCOLLAPSED_WIDTH);
                 if (!forced) {
-                    this.sandbox.emit(EVENT_SIZE_CHANGED, constants.uncollapsedWidth);
+                    this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.UNCOLLAPSED_WIDTH);
                 }
                 this.collapsed = !this.collapsed;
             }

@@ -9,7 +9,7 @@
 }
 
 @mixin standard-box-shadow($borderSize:3px){
-  @include box-shadow(rgba(0,0,0,0.15) $borderSize $borderSize 0px 0px);
+  @include box-shadow(rgba(0,0,0,0.08) $borderSize $borderSize 0px 0px);
 }
 
 @mixin user-select($value:none){
