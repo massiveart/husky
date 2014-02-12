@@ -4467,9 +4467,10 @@ li a.navigation-settings-icon {
 .navigation.collapsed footer {
   opacity: 0;
   height: 0;
+  margin: 0;
 }
 
-/* line 446, ../scss/modules/navigation.scss */
+/* line 447, ../scss/modules/navigation.scss */
 .navigation-tooltip {
   position: absolute;
   height: 30px;
@@ -4481,7 +4482,7 @@ li a.navigation-settings-icon {
   color: white;
   background-color: #3e3e3e;
 }
-/* line 457, ../scss/modules/navigation.scss */
+/* line 458, ../scss/modules/navigation.scss */
 .navigation-tooltip::before {
   content: ' ';
   position: absolute;
@@ -4494,7 +4495,7 @@ li a.navigation-settings-icon {
   border-right: 10px solid #3e3e3e;
 }
 
-/* line 471, ../scss/modules/navigation.scss */
+/* line 472, ../scss/modules/navigation.scss */
 .navigation {
   -webkit-transition: width 0.5s;
   -moz-transition: width 0.5s;
@@ -4502,7 +4503,7 @@ li a.navigation-settings-icon {
   transition: width 0.5s;
 }
 
-/* line 475, ../scss/modules/navigation.scss */
+/* line 476, ../scss/modules/navigation.scss */
 .navigation-items {
   -webkit-transition: all 0.5s;
   -moz-transition: all 0.5s;
@@ -4510,7 +4511,7 @@ li a.navigation-settings-icon {
   transition: all 0.5s;
 }
 
-/* line 478, ../scss/modules/navigation.scss */
+/* line 479, ../scss/modules/navigation.scss */
 .navigation-items * {
   -webkit-transition: all 0.5s;
   -moz-transition: all 0.5s;
@@ -4518,14 +4519,14 @@ li a.navigation-settings-icon {
   transition: all 0.5s;
 }
 
-/* line 482, ../scss/modules/navigation.scss */
+/* line 483, ../scss/modules/navigation.scss */
 .navigation-header {
   -webkit-transition: margin 0.5s;
   -moz-transition: margin 0.5s;
   -o-transition: margin 0.5s;
   transition: margin 0.5s;
 }
-/* line 485, ../scss/modules/navigation.scss */
+/* line 486, ../scss/modules/navigation.scss */
 .navigation-header .navigation-header-title {
   -webkit-transition: opacity 0.5s;
   -moz-transition: opacity 0.5s;
@@ -4533,14 +4534,14 @@ li a.navigation-settings-icon {
   transition: opacity 0.5s;
 }
 
-/* line 490, ../scss/modules/navigation.scss */
+/* line 491, ../scss/modules/navigation.scss */
 .navigation-search {
   -webkit-transition: margin 0.5s;
   -moz-transition: margin 0.5s;
   -o-transition: margin 0.5s;
   transition: margin 0.5s;
 }
-/* line 492, ../scss/modules/navigation.scss */
+/* line 493, ../scss/modules/navigation.scss */
 .navigation-search input {
   -webkit-transition: width 0.5s;
   -moz-transition: width 0.5s;
@@ -4548,7 +4549,7 @@ li a.navigation-settings-icon {
   transition: width 0.5s;
 }
 
-/* line 498, ../scss/modules/navigation.scss */
+/* line 499, ../scss/modules/navigation.scss */
 .section-headline,
 .section-headline * {
   -webkit-transition: all 0.5s;
@@ -4557,7 +4558,7 @@ li a.navigation-settings-icon {
   transition: all 0.5s;
 }
 
-/* line 502, ../scss/modules/navigation.scss */
+/* line 503, ../scss/modules/navigation.scss */
 .navigation-item-title {
   -webkit-transition: opacity 0.5s;
   -moz-transition: opacity 0.5s;
@@ -4565,7 +4566,7 @@ li a.navigation-settings-icon {
   transition: opacity 0.5s;
 }
 
-/* line 506, ../scss/modules/navigation.scss */
+/* line 507, ../scss/modules/navigation.scss */
 .search-icon {
   -webkit-transition: color 0.5s;
   -moz-transition: color 0.5s;
@@ -4573,7 +4574,7 @@ li a.navigation-settings-icon {
   transition: color 0.5s;
 }
 
-/* line 511, ../scss/modules/navigation.scss */
+/* line 512, ../scss/modules/navigation.scss */
 .navigation:not(.collapsed) * {
   opacity: 1;
 }

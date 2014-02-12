@@ -40,15 +40,15 @@ define(function() {
     var templates = {
             /** component skeleton */
             skeleton: [
-                '<nav class="navigation<%= collapsed %>">',
+                '<nav class="navigation<% if (collapsed === "true") {%> collapsed<% } %>">',
                 '   <div class="navigation-content">',
                 '       <header class="navigation-header">',
                 '           <div class="navigation-header-image">',
-                '               <% if (icon) { %>',
-                '               <img alt="#" src="<%= icon %>"/>',
+                '               <% if (data.icon) { %>',
+                '               <img alt="#" src="<%= data.icon %>"/>',
                 '               <% } %>',
                 '           </div>',
-                '           <div class="navigation-header-title"><% if (title) { %> <%= translate(title) %><% } %></div>',
+                '           <div class="navigation-header-title"><% if (data.title) { %> <%= translate(data.title) %><% } %></div>',
                 '       </header>',
                 '       <div id="navigation-search" class="navigation-search"></div>',
                 '       <div id="navigation-item-container" class="navigation-item-container"></div>',
@@ -133,6 +133,7 @@ define(function() {
         /**
          * forces navigation to uncollapse
          * @event husky.navigation.uncollapse
+         * @param {Bool} force If true, the navigation will act as overflow and collapse again after interaction
          */
             EVENT_UNCOLLAPSE = namespace + 'uncollapse',
 
@@ -193,12 +194,9 @@ define(function() {
             this.sandbox.dom.addClass(this.$el, 'navigation-container');
 
             // render skeleton
-            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {
-                title: this.options.data.title,
-                icon: this.options.data.icon,
-                collapsed: this.options.collapsed ? ' collapsed' : '',
-                translate: this.sandbox.translate
-            }));
+            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton,
+                this.sandbox.util.extend(true, {}, this.options, {translate: this.sandbox.translate}))
+            );
 
             this.$navigation = this.$find('.navigation', this.$el);
             this.$navigationContent = this.$find('.navigation-content', this.$navigation);
@@ -304,7 +302,7 @@ define(function() {
 
             // collapse events
             this.sandbox.dom.on(this.sandbox.dom.window, 'resize', this.resizeListener.bind(this));
-            this.sandbox.dom.on(this.$el, 'click', this.showCollapsedSearch.bind(this), '.navigation.collapsed #navigation-search a.search-icon');
+            this.sandbox.dom.on(this.$el, 'click', this.showCollapsedSearch.bind(this), '.navigation.a #navigation-search a.search-icon');
             this.sandbox.dom.on(this.$el, 'click', this.collapse.bind(this), '.navigation.collapseIcon .navigation-close-icon');
 
 
