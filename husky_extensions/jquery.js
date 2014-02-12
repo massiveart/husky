@@ -294,12 +294,12 @@
                 return $(selector).show();
             };
 
-            app.core.dom.toggle= function(selector) {
+            app.core.dom.toggle = function(selector) {
                 return $(selector).toggle();
             };
 
             app.core.dom.keypress = function(selector, callback) {
-              $(selector).keypress(callback);
+                $(selector).keypress(callback);
             };
 
             app.core.dom.insertAt = function(index, selector, $container, $item) {
@@ -311,12 +311,20 @@
                 }
             };
 
-            app.core.dom.scrollTop = function(itemSelector) {
+            app.core.dom.scrollToTop = function(itemSelector) {
                 $(window).scrollTop($(itemSelector).offset().top);
             };
 
+            app.core.dom.scrollTop = function(selector, position) {
+                if(typeof position !== 'undefined') {
+                    return $(selector).scrollTop(position);
+                } else {
+                    return $(selector).scrollTop();
+                }
+            };
+
             app.core.dom.scrollLeft = function(selector, value) {
-                if(!!value) {
+                if(typeof value !== 'undefined') {
                     return $(selector).scrollLeft(value);
                 } else {
                     return $(selector).scrollLeft();
@@ -337,17 +345,16 @@
             };
 
             app.core.dom.slideUp = function(selector, duration, complete) {
-                $(selector).slideUp(duration,complete);
+                $(selector).slideUp(duration, complete);
             };
 
             app.core.dom.slideDown = function(selector, duration, complete) {
-                $(selector).slideDown(duration,complete);
+                $(selector).slideDown(duration, complete);
             };
 
             app.core.dom.when = function(deffereds) {
                 return $.when(deffereds);
             };
-
 
             app.core.util.ajax = $.ajax;
         }

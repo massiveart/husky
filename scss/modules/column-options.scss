@@ -14,10 +14,11 @@ $columnOptionsContainerWidth: 400px;
 .column-options-container {
     display:none;
     width: $columnOptionsContainerWidth;
-    position: relative;
+    position: fixed;
     background-color: white;
     border: 0px solid $grayLighter;
     margin: auto;
+    overflow: auto;
     z-index: 1000;
     min-width: 160px;
     list-style: none;
@@ -106,7 +107,8 @@ $columnOptionsContainerWidth: 400px;
         padding-left: 5px;
         right: 10px;
         &:after {
-            line-height: 0;
+            line-height: 50px;
+            vertical-align:center;
         }
         cursor:pointer;
     }
