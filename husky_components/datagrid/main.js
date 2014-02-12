@@ -268,13 +268,13 @@ define(function() {
             classArray.push('is-selected');
 
             el = this.sandbox.dom.createElement('<table style="width:auto"><thead><tr><th class="' + classArray.join(',') + '">' + text + '</th></tr></thead></table>');
-            this.sandbox.dom.append('body', el);
             this.sandbox.dom.css(el, {
                 'position': 'absolute',
                 'visibility': 'hidden',
                 'height': 'auto',
                 'width': 'auto'
             });
+            this.sandbox.dom.append('body', el);
 
             // text width + paddings and sorting icon
             elWidth = this.sandbox.dom.width(el) + paddings + sortIconWidth;
@@ -282,9 +282,7 @@ define(function() {
             this.sandbox.dom.remove(el);
 
             return elWidth;
-
-        }
-        ;
+        };
 
 
     return {
@@ -582,7 +580,7 @@ define(function() {
                 minWidth = checkboxValues.number + checkboxValues.unit;
 
                 tblColumns.push(
-                    '<th class="select-all" ', 'style="width:' + minWidth +';max-width:' + minWidth +';min-width:' + minWidth +';"', ' >');
+                    '<th class="select-all" ', 'style="width:' + minWidth + ';max-width:' + minWidth + ';min-width:' + minWidth + ';"', ' >');
 
                 if (this.options.selectItem.type === 'checkbox') {
                     tblColumns.push(this.templates.checkbox({ id: 'select-all' }));
@@ -671,7 +669,7 @@ define(function() {
             if (!regex[2]) {
                 regex[2] = this.options.defaultMeasureUnit;
             }
-            return {number: parseInt(regex[1],10), unit: regex[2]};
+            return {number: parseInt(regex[1], 10), unit: regex[2]};
         },
 
         /**
@@ -834,15 +832,11 @@ define(function() {
             $element = this.sandbox.dom.$(event.currentTarget);
 
             if (!$element.is('input')) {
-                $element = this.sandbox.dom.find('input',this.sandbox.dom.parent($element));
+                $element = this.sandbox.dom.find('input', this.sandbox.dom.parent($element));
             }
 
-            parentTr = this.sandbox.dom.parents($element,'tr');
+            parentTr = this.sandbox.dom.parents($element, 'tr');
             itemId = this.sandbox.dom.data(parentTr, 'id');
-
-//            if (!itemId) {
-//                itemId = this.sandbox.dom.data(parentTr, 'dom-id');
-//            }
 
             if ($element.attr('type') === 'checkbox') {
 
@@ -1306,7 +1300,6 @@ define(function() {
             // checks tablel width
             this.sandbox.on(UPDATE_TABLE, this.windowResizeListener.bind(this));
 
-
             this.sandbox.on(DATA_GET, this.provideData.bind(this));
 
             // pagination dropdown item clicked
@@ -1331,7 +1324,6 @@ define(function() {
             if (!!this.options.editable) {
                 this.sandbox.on(DATA_SAVE, this.saveChangedData.bind(this));
             }
-
         },
 
         /**
@@ -1529,8 +1521,6 @@ define(function() {
             }
         },
 
-
-
         /**
          * this function is responsible for responsiveness of datagrid and is called everytime after resizing window and after initialization
          */
@@ -1594,7 +1584,6 @@ define(function() {
             // now set width
             this.sandbox.dom.width(this.$element, finalWidth);
 
-
             // check scrollwidth and add class
             if (this.$tableContainer.get(0).scrollWidth > finalWidth) {
                 this.sandbox.dom.addClass(this.$tableContainer, 'overflow');
@@ -1639,7 +1628,6 @@ define(function() {
         templates: {
 
             showAll: function(total, elementsLabel, showAllLabel, id) {
-
                 return ['<div class="show-all grid-col-4 m-top-10">', total, ' ', elementsLabel, ' (<a id="' + id + '" href="">', showAllLabel, '</a>)</div>'].join('');
             },
 

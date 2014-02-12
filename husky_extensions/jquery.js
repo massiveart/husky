@@ -137,7 +137,7 @@
             };
 
             app.core.dom.outerHeight = function(selector) {
-                    return $(selector).outerHeight();
+                return $(selector).outerHeight();
             };
 
             app.core.dom.offset = function(selector, attributes) {
@@ -320,7 +320,7 @@
             };
 
             app.core.dom.scrollTop = function(selector, position) {
-                if(typeof position !== 'undefined') {
+                if (typeof position !== 'undefined') {
                     return $(selector).scrollTop(position);
                 } else {
                     return $(selector).scrollTop();
