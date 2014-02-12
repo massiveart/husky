@@ -146,7 +146,7 @@ define(function() {
         },
 
         /**
-         * event to change a buttons selected dropdown-item
+         * event to set new dropdown-items for a button
          *
          * @event husky.edit-toolbar.[INSTANCE_NAME.]change.item
          * @param {string} button The id of the button

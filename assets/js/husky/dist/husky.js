@@ -28970,6 +28970,7 @@ define('__component__$toolbar@husky',[],function() {
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.data] if no url is provided
  * @param {String} [options.instanceName] enables custom events (in case of multiple tabs on one page)
+ * @param {String} [options.itemsRequestKey] key with resutlt-array for requested dropdown items
  * @param {String} [options.appearance]
  */
 define('__component__$edit-toolbar@husky',[],function() {
@@ -28980,7 +28981,8 @@ define('__component__$edit-toolbar@husky',[],function() {
             url: null,
             data: [],
             instanceName: '',
-            appearance: null // TODO: implement small version
+            appearance: null, // TODO: implement small version
+            itemsRequestKey: '_embedded'
         },
 
         /** templates container */
@@ -29040,11 +29042,22 @@ define('__component__$edit-toolbar@husky',[],function() {
          *
          * @event husky.edit-toolbar.[INSTANCE_NAME.]change.item
          * @param {string} button The id of the button
-         * @param {string} item the index of the dropdown-item
+         * @param {string} item the id or the index of the dropdown-item
          * @param {boolean} executeCallback if true callback of dropdown item gets executed
          */
         ITEM_CHANGE = function() {
             return createEventName.call(this, 'item.change');
+        },
+
+        /**
+         * event to change a buttons default title and default icon
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]change.item
+         * @param {string} button The id of the button
+         * @param {object} object with a icon and title
+         */
+         BUTTON_SET = function() {
+            return createEventName.call(this, 'button.set');
         },
 
         /**
@@ -29053,7 +29066,7 @@ define('__component__$edit-toolbar@husky',[],function() {
          * @event husky.edit-toolbar.[INSTANCE_NAME.]change.item
          * @param {string} button The id of the button
          * @param {array} items The items to set
-         * @param {integer} itemIndex The index of the item to set selected - optional
+         * @param {integer} itemId The id or the index of the item to set selected - optional
          */
          ITEMS_SET = function() {
             return createEventName.call(this, 'items.set');
@@ -29079,7 +29092,8 @@ define('__component__$edit-toolbar@husky',[],function() {
                 itemLoading.call(this, id);
             }.bind(this));
 
-            this.sandbox.on(ITEM_CHANGE.call(this), function(button, index, executeCallback) {
+            this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
+                var index = getItemIndexById.call(this, id, this.items[button]);
                 changeMainListItem.call(this, this.items[button].$el, this.items[button].items[index]);
                 if (executeCallback === true || !!this.items[button].items[index].callback) {
                     if (typeof this.items[button].items[index].callback === 'function') {
@@ -29088,14 +29102,18 @@ define('__component__$edit-toolbar@husky',[],function() {
                 }
             }.bind(this));
 
-            this.sandbox.on(ITEMS_SET.call(this), function(button, items, itemIndex) {
+            this.sandbox.on(BUTTON_SET.call(this), function(button, newData) {
+                changeMainListItem.call(this, this.items[button].$el, newData);
+            }.bind(this));
+
+            this.sandbox.on(ITEMS_SET.call(this), function(button, items, itemId) {
                 this.sandbox.dom.remove(this.sandbox.dom.find('.edit-toolbar-dropdown-menu', this.items[button].$el));
                 this.sandbox.dom.addClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
                 this.items[button].items = items;
                 createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
                 setButtonWidth.call(this, this.items[button].$el, this.items[button]);
-                if (typeof itemIndex !== 'undefined') {
-                    this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemIndex);
+                if (typeof itemId !== 'undefined') {
+                    this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemId);
                 }
             }.bind(this));
         },
@@ -29201,6 +29219,21 @@ define('__component__$edit-toolbar@husky',[],function() {
         },
 
         /**
+         * Determines the index of a dropdown-item by its id
+         * @param id {integer} id of the dropdown-item
+         * @param button {object} parent object of the item
+         * @return {integer} the index of the item
+         */
+        getItemIndexById = function(id, button) {
+            for (var i = -1, length = button.items.length; ++i < length;) {
+                if (button.items[i].id === id) {
+                    return i;
+                }
+            }
+            return id;
+        },
+
+        /**
          * hides dropdowns of this instance
          */
         hideDropdowns = function() {
@@ -29243,6 +29276,13 @@ define('__component__$edit-toolbar@husky',[],function() {
                 parentItem = this.items[item.parentId];
                 if (!!parentItem.type && parentItem.type === "select") {
                     changeMainListItem.call(this, $parent, item);
+                }
+
+                //check if itemsOption is set and pass clicked item to the callback
+                if (!!parentItem.itemsOption) {
+                    if (typeof parentItem.itemsOption.callback === 'function') {
+                        parentItem.itemsOption.callback(item._original);
+                    }
                 }
             }
 
@@ -29359,6 +29399,54 @@ define('__component__$edit-toolbar@husky',[],function() {
                 //set button back to default
                 changeMainListItem.call(this, listItem, parent);
             }
+        },
+
+        /**
+         * Handles requested items
+         * @param requestedItems
+         * @param $button
+         * @param button
+         */
+        handleRequestedItems = function(requestedItems, buttonId) {
+            var id, title, icon, callback, i, length;
+            this.items[buttonId].items = [];
+
+            //for loop sets the the items[button].items - array together
+            for (i = -1, length = requestedItems.length; ++i < length;) {
+
+                if (!!this.items[buttonId].itemsOption.idAttribute) {
+                    id = requestedItems[i][this.items[buttonId].itemsOption.idAttribute];
+                } else if (!!requestedItems[i].id) {
+                    id = requestedItems[i].id;
+                }
+
+                if (!!this.items[buttonId].itemsOption.titleAttribute) {
+                    title = requestedItems[i][this.items[buttonId].itemsOption.titleAttribute];
+                } else if (!!requestedItems[i].title) {
+                    title = requestedItems[i].title;
+                }
+                if (!!this.items[buttonId].itemsOption.translate === true) {
+                    title = this.sandbox.translate(this.items[buttonId].itemsOption.languageNamespace + title);
+                }
+
+                if (!!requestedItems[i].icon) {
+                    icon = requestedItems[i].icon;
+                }
+                if (!!requestedItems[i].callback) {
+                    callback = requestedItems[i].callback;
+                }
+
+                this.items[buttonId].items[i] = {
+                    id: id,
+                    title: title,
+                    icon: icon,
+                    callback: callback,
+                    _original: requestedItems[i]
+                };
+            }
+
+            //now generate the dropdown
+            this.sandbox.emit(ITEMS_SET.call(this), buttonId, this.items[buttonId].items);
         },
 
         /**
@@ -29503,11 +29591,21 @@ define('__component__$edit-toolbar@husky',[],function() {
                 title = item.title ? item.title : '';
                 this.sandbox.dom.append($listLink, '<span class="title">' + title + '</span>');
 
-
-                // now create subitems
-                if (!!item.items) {
-                    this.sandbox.dom.addClass($listLink, 'dropdown-toggle');
-                    createDropdownMenu.call(this, $listItem, item);
+                if (!!item.itemsOption) {
+                    this.sandbox.util.load(item.itemsOption.url)
+                        .then(function(result) {
+                            this.sandbox.dom.addClass($listLink, 'dropdown-toggle');
+                            handleRequestedItems.call(this, result[this.options.itemsRequestKey], item.id);
+                        }.bind(this))
+                        .fail(function(result) {
+                            this.sandbox.logger.log('dorpdown-items could not be loaded', result);
+                        }.bind(this));
+                } else {
+                    // now create subitems
+                    if (!!item.items) {
+                        this.sandbox.dom.addClass($listLink, 'dropdown-toggle');
+                        createDropdownMenu.call(this, $listItem, item);
+                    }
                 }
 
                 // create button
@@ -29517,7 +29615,6 @@ define('__component__$edit-toolbar@husky',[],function() {
                 if (!!item.items) {
                     setButtonWidth.call(this, $listItem, item);
                 }
-
                 this.items[item.id].$el = $listItem;
 
             }.bind(this));
