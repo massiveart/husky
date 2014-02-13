@@ -10,26 +10,22 @@
 .husky-auto-complete-error label, .husky-validate-error label,
 .husky-auto-complete-error .control-label,
 .husky-validate-error .control-label {
-  color: #b94a48;
+  color: #AD0710;
 }
 /* line 7, ../scss/abstract/abstract-validation.scss */
 .husky-auto-complete-error .husky-validate:not(label), .husky-validate-error .husky-validate:not(label) {
-  border-color: #953b39;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
+  border-color: #AD0710;
+  border-width: 2px;
 }
 
-/* line 30, ../scss/abstract/abstract-validation.scss */
-.husky-auto-complete-success label, .husky-validate-success label,
-.husky-auto-complete-success .control-label,
-.husky-validate-success .control-label {
-  color: #468847;
-}
-/* line 34, ../scss/abstract/abstract-validation.scss */
+/* line 28, ../scss/abstract/abstract-validation.scss */
 .husky-auto-complete-success .husky-validate:not(label):not(span):not(p), .husky-validate-success .husky-validate:not(label):not(span):not(p) {
-  border-color: #356635;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #7aba7b;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #7aba7b;
+  border-color: #1FCA23;
+  border-width: 2px;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%0A%3C%21--%20Generated%20by%20IcoMoon.io%20--%3E%0A%3C%21DOCTYPE%20svg%20PUBLIC%20%22-//W3C//DTD%20SVG%201.1//EN%22%20%22http%3A//www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd%22%3E%0A%3Csvg%20version%3D%221.1%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%3E%0A%3Cg%3E%0A%3C/g%3E%0A%09%3Cpath%20d%3D%22M13.5%202l-7.5%207.5-3.5-3.5-2.5%202.5%206%206%2010-10z%22%20fill%3D%22%231fca23%22%20/%3E%0A%3C/svg%3E%0A");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 30px;
 }
 
 /*! normalize.css v2.1.2 | MIT License | git.io/normalize */
@@ -3840,7 +3836,7 @@ hr.divider {
   width: 100%;
   height: 30px;
   margin: 10px 0;
-  border: 1px solid white;
+  border: 1px solid #cccccc;
   padding: 0 5px;
   font-size: 14px;
   border-radius: 3px;
@@ -3865,19 +3861,24 @@ hr.divider {
   color: #999999;
 }
 
-/* line 35, ../scss/modules/form.scss */
-.cke_inner {
-  border: 1px solid white;
-  -moz-border-radius-bottomleft: 3px;
-  -moz-border-radius-bottomright: 3px;
+/* line 36, ../scss/modules/form.scss */
+#cke_ckeditor.cke_chrome {
+  box-shadow: none;
+  border: 0;
+}
+/* line 41, ../scss/modules/form.scss */
+#cke_ckeditor .cke_inner {
+  border: 1px solid #cccccc;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
 }
 
-/* line 43, ../scss/modules/form.scss */
+/* line 49, ../scss/modules/form.scss */
 input[type="text"].input-round {
   border-radius: 30px;
 }
 
-/* line 50, ../scss/modules/form.scss */
+/* line 55, ../scss/modules/form.scss */
 input
 .input-description {
   margin-top: -5px;
@@ -3885,31 +3886,31 @@ input
   color: #999999;
 }
 
-/* line 58, ../scss/modules/form.scss */
+/* line 63, ../scss/modules/form.scss */
 label {
   display: block;
   font-size: 14px;
   color: #999999;
   cursor: pointer;
 }
-/* line 64, ../scss/modules/form.scss */
+/* line 69, ../scss/modules/form.scss */
 label.large {
   font-size: 16px;
   font-weight: bold;
 }
-/* line 69, ../scss/modules/form.scss */
+/* line 74, ../scss/modules/form.scss */
 label .form-element {
   margin-top: 5px;
   border: 1px solid #cccccc;
 }
-/* line 74, ../scss/modules/form.scss */
+/* line 79, ../scss/modules/form.scss */
 label.inline {
   font-size: 1em;
   font-weight: normal;
   display: inline;
 }
 
-/* line 83, ../scss/modules/form.scss */
+/* line 88, ../scss/modules/form.scss */
 .custom-checkbox {
   width: 14px;
   height: 14px;
@@ -3917,13 +3918,13 @@ label.inline {
   opacity: 0;
   cursor: pointer;
 }
-/* line 98, ../scss/modules/form.scss */
+/* line 102, ../scss/modules/form.scss */
 .custom-checkbox:checked + .custom-checkbox-icon::after, .custom-checkbox.is-checked + .custom-checkbox-icon::after {
   content: "\e207";
   position: relative;
   top: -3px;
 }
-/* line 106, ../scss/modules/form.scss */
+/* line 110, ../scss/modules/form.scss */
 .custom-checkbox + .custom-checkbox-icon {
   display: inline-block;
   width: 14px;
@@ -3937,27 +3938,27 @@ label.inline {
   vertical-align: middle;
 }
 
-/* line 125, ../scss/modules/form.scss */
+/* line 129, ../scss/modules/form.scss */
 textarea {
   resize: both;
 }
 
-/* line 129, ../scss/modules/form.scss */
+/* line 133, ../scss/modules/form.scss */
 textarea.vertical {
   resize: vertical;
 }
 
-/* line 133, ../scss/modules/form.scss */
+/* line 137, ../scss/modules/form.scss */
 textarea.horizontal {
   resize: horizontal;
 }
 
-/* line 137, ../scss/modules/form.scss */
+/* line 141, ../scss/modules/form.scss */
 textarea.noResize {
   resize: none;
 }
 
-/* line 141, ../scss/modules/form.scss */
+/* line 145, ../scss/modules/form.scss */
 textarea.form-element {
   width: 100%;
   height: 40px;
@@ -3967,7 +3968,7 @@ textarea.form-element {
   font-family: inherit;
 }
 
-/* line 153, ../scss/modules/form.scss */
+/* line 156, ../scss/modules/form.scss */
 .custom-radio {
   width: 18px;
   height: 18px;
@@ -3975,7 +3976,7 @@ textarea.form-element {
   opacity: 0;
   cursor: pointer;
 }
-/* line 165, ../scss/modules/form.scss */
+/* line 168, ../scss/modules/form.scss */
 .custom-radio:checked + .custom-radio-icon::after, .custom-radio.is-checked + .custom-radio-icon::after {
   content: "";
   display: block;
@@ -3984,7 +3985,7 @@ textarea.form-element {
   border-radius: 18px;
   background-color: #999;
 }
-/* line 176, ../scss/modules/form.scss */
+/* line 179, ../scss/modules/form.scss */
 .custom-radio + .custom-radio-icon {
   display: inline-block;
   width: 18px;
@@ -3992,7 +3993,7 @@ textarea.form-element {
   margin-left: -18px;
   padding: 2px;
   border-radius: 18px;
-  border: 1px solid white;
+  border: 1px solid #cccccc;
   background-color: #fff;
   text-align: center;
   line-height: 1;
@@ -4654,17 +4655,23 @@ li a.navigation-settings-icon {
 }
 
 /* line 45, ../scss/modules/dropdown.scss */
+.dropdown-align-right {
+  right: 0;
+  left: inherit;
+}
+
+/* line 50, ../scss/modules/dropdown.scss */
 .dropdown-footer {
   border-top: 1px solid #ccc;
   padding: 10px 10px;
 }
 
-/* line 50, ../scss/modules/dropdown.scss */
+/* line 55, ../scss/modules/dropdown.scss */
 .dropdown-toggle {
   display: block;
   cursor: pointer;
 }
-/* line 53, ../scss/modules/dropdown.scss */
+/* line 58, ../scss/modules/dropdown.scss */
 .dropdown-toggle::after {
   content: "";
   display: inline-block;
@@ -5805,11 +5812,7 @@ a.btn-black, a.btn-highlight {
   }
 }
 
-/* line 1, ../scss/modules/column-navigation.scss */
-.column-navigation-wrapper {
-  overflow: hidden;
-}
-/* line 4, ../scss/modules/column-navigation.scss */
+/* line 3, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation {
   background-color: white;
   border: 1px solid #cccccc;
@@ -5817,7 +5820,7 @@ a.btn-black, a.btn-highlight {
   overflow-y: hidden;
   white-space: nowrap;
 }
-/* line 11, ../scss/modules/column-navigation.scss */
+/* line 10, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column {
   border-right: 1px solid #cccccc;
   overflow-y: auto;
@@ -5826,45 +5829,45 @@ a.btn-black, a.btn-highlight {
   font-size: 0;
   height: 100%;
 }
-/* line 19, ../scss/modules/column-navigation.scss */
+/* line 18, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
   font-size: 14px;
 }
-/* line 25, ../scss/modules/column-navigation.scss */
+/* line 24, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul li {
   padding: 15px 11px 15px 15px;
   height: 50px;
 }
-/* line 30, ../scss/modules/column-navigation.scss */
+/* line 29, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul li:hover, .column-navigation-wrapper .column-navigation .column ul li.selected {
   background-color: #f1f1f1;
 }
-/* line 36, ../scss/modules/column-navigation.scss */
+/* line 35, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul li.selected .item-text {
   font-weight: bold;
 }
-/* line 41, ../scss/modules/column-navigation.scss */
+/* line 40, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul .inactive {
   color: #999999;
 }
-/* line 45, ../scss/modules/column-navigation.scss */
+/* line 44, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul .not-published {
   color: #fda502;
   margin-top: 2px;
   font-size: 40px;
 }
-/* line 53, ../scss/modules/column-navigation.scss */
+/* line 52, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .item-text {
   padding-top: 2px;
 }
-/* line 57, ../scss/modules/column-navigation.scss */
+/* line 56, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .item-text.ghost {
   color: #999999;
 }
-/* line 61, ../scss/modules/column-navigation.scss */
+/* line 60, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .ghost {
   background: #009fc0;
   padding: 0 2px;
@@ -5872,7 +5875,7 @@ a.btn-black, a.btn-highlight {
   color: white;
   border-radius: 3px;
 }
-/* line 69, ../scss/modules/column-navigation.scss */
+/* line 68, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .edit {
   margin-right: 5px;
   background-color: #009fc0;
@@ -5881,14 +5884,14 @@ a.btn-black, a.btn-highlight {
   color: white;
   border-radius: 3px;
 }
-/* line 78, ../scss/modules/column-navigation.scss */
+/* line 77, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .arrow {
   display: inline-block;
   width: 11px;
   font-size: 10px;
   vertical-align: middle;
 }
-/* line 87, ../scss/modules/column-navigation.scss */
+/* line 86, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .add {
   background-color: #009fc0;
   padding: 5px 0;
@@ -5897,7 +5900,7 @@ a.btn-black, a.btn-highlight {
   -webkit-border-bottom-left-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
 }
-/* line 97, ../scss/modules/column-navigation.scss */
+/* line 96, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .settings {
   background-color: #cccccc;
   padding: 5px 0;
@@ -6181,11 +6184,15 @@ a.btn-black, a.btn-highlight {
   left: 0px;
 }
 /* line 49, ../scss/modules/smart-content.scss */
+.smart-content .loader {
+  padding: 50px 0;
+}
+/* line 52, ../scss/modules/smart-content.scss */
 .smart-content .no-content {
   text-align: center;
   height: 210px;
 }
-/* line 53, ../scss/modules/smart-content.scss */
+/* line 56, ../scss/modules/smart-content.scss */
 .smart-content .no-content .icon-file {
   display: block;
   position: absolute;
@@ -6197,141 +6204,139 @@ a.btn-black, a.btn-highlight {
   font-size: 125px;
   color: #efefef;
 }
-/* line 64, ../scss/modules/smart-content.scss */
+/* line 67, ../scss/modules/smart-content.scss */
 .smart-content .no-content .text {
   padding-top: 160px;
   font-weight: bold;
   color: #e4e4e4;
   font-size: 24px;
 }
-/* line 71, ../scss/modules/smart-content.scss */
+/* line 74, ../scss/modules/smart-content.scss */
 .smart-content .items-list {
   list-style-type: none;
   margin: 0;
   padding: 0 20px;
 }
-/* line 75, ../scss/modules/smart-content.scss */
+/* line 78, ../scss/modules/smart-content.scss */
 .smart-content .items-list li {
   font-size: 14px;
   line-height: 50px;
   border-bottom: 1px solid #cccccc;
 }
-/* line 80, ../scss/modules/smart-content.scss */
+/* line 83, ../scss/modules/smart-content.scss */
 .smart-content .items-list li .num {
   color: #999999;
   padding-right: 10px;
 }
-/* line 84, ../scss/modules/smart-content.scss */
+/* line 87, ../scss/modules/smart-content.scss */
 .smart-content .items-list li:last-child {
   border-width: 2px;
 }
 
-/* line 91, ../scss/modules/smart-content.scss */
+/* line 94, ../scss/modules/smart-content.scss */
 .smart-footer {
   padding: 15px 20px 30px 20px;
   line-height: 14px;
   color: #999999;
   font-size: 12px;
 }
-/* line 96, ../scss/modules/smart-content.scss */
+/* line 99, ../scss/modules/smart-content.scss */
 .smart-footer span {
   padding-right: 5px;
 }
-/* line 99, ../scss/modules/smart-content.scss */
+/* line 102, ../scss/modules/smart-content.scss */
 .smart-footer .view-toggler {
   color: black;
   cursor: pointer;
 }
 
-/* line 106, ../scss/modules/smart-content.scss */
+/* line 109, ../scss/modules/smart-content.scss */
 .smart-content-overlay .overlay-header {
   margin-bottom: 15px;
 }
-/* line 109, ../scss/modules/smart-content.scss */
+/* line 112, ../scss/modules/smart-content.scss */
 .smart-content-overlay .overlay-footer {
   margin-top: 5px;
 }
 
-/* line 114, ../scss/modules/smart-content.scss */
+/* line 117, ../scss/modules/smart-content.scss */
 .smart-overlay-content {
   height: 100%;
   font-size: 12px;
 }
-/* line 118, ../scss/modules/smart-content.scss */
+/* line 121, ../scss/modules/smart-content.scss */
 .smart-overlay-content .desc {
   font-size: 14px;
   color: #999999;
   padding-bottom: 5px;
   display: block;
 }
-/* line 124, ../scss/modules/smart-content.scss */
+/* line 127, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item, .smart-overlay-content .item-half {
   margin-bottom: 25px;
   min-height: 55px;
 }
-/* line 128, ../scss/modules/smart-content.scss */
+/* line 131, ../scss/modules/smart-content.scss */
 .smart-overlay-content label {
   color: black;
   font-size: 12px;
 }
-/* line 132, ../scss/modules/smart-content.scss */
+/* line 135, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item-half {
   float: left;
   width: 170px;
 }
-/* line 136, ../scss/modules/smart-content.scss */
+/* line 139, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item {
   padding-right: 20px;
 }
-/* line 139, ../scss/modules/smart-content.scss */
+/* line 142, ../scss/modules/smart-content.scss */
 .smart-overlay-content .left {
   margin-right: 20px;
 }
-/* line 142, ../scss/modules/smart-content.scss */
+/* line 145, ../scss/modules/smart-content.scss */
 .smart-overlay-content .full {
   padding-right: 0;
 }
-/* line 145, ../scss/modules/smart-content.scss */
+/* line 148, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check {
   margin-top: 25px;
 }
-/* line 147, ../scss/modules/smart-content.scss */
+/* line 150, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check .description {
   padding-left: 10px;
 }
-/* line 150, ../scss/modules/smart-content.scss */
+/* line 153, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check .custom-checkbox-icon {
   margin-bottom: 2px;
 }
-/* line 153, ../scss/modules/smart-content.scss */
+/* line 156, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check.disabled {
   display: none;
 }
-/* line 157, ../scss/modules/smart-content.scss */
+/* line 160, ../scss/modules/smart-content.scss */
 .smart-overlay-content .sortMethod {
   margin-top: 25px;
 }
-/* line 161, ../scss/modules/smart-content.scss */
+/* line 164, ../scss/modules/smart-content.scss */
 .smart-overlay-content input.limit-to,
 .smart-overlay-content input.data-source {
-  height: 30px;
-  width: 100%;
   padding-left: 10px;
+  border-radius: 0;
 }
-/* line 166, ../scss/modules/smart-content.scss */
+/* line 168, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tags.disabled {
   display: none;
 }
-/* line 169, ../scss/modules/smart-content.scss */
+/* line 171, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list {
-  border: 1px solid #cccccc;
   border-radius: 4px 4px 0 0;
 }
-/* line 172, ../scss/modules/smart-content.scss */
+/* line 173, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list input {
   margin: 7px 0 0 0;
 }
-/* line 175, ../scss/modules/smart-content.scss */
+/* line 176, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list .tt-suggestions {
   width: 360px;
 }
