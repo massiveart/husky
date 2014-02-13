@@ -10,11 +10,17 @@
     font-family: $baseIconFont;
 }
 
+[class^="icon-"] {
+    width: $iconWidth;
+    height: $iconHeight;
+    background-size: cover;
+}
+
 .icon-tag {
-  &::after {
-    content: "\E066";
-    display: inline-block;
-  }
+    &::after {
+        content: "\E066";
+        display: inline-block;
+    }
 }
 
 .icon-remove {
@@ -67,10 +73,10 @@
 }
 
 .icon-circle-plus {
-  &::after {
-    content: "\e191";
-    display: inline-block;
-  }
+    &::after {
+        content: "\e191";
+        display: inline-block;
+    }
 }
 
 .icon-edit {
@@ -115,13 +121,6 @@
     }
 }
 
-.icon-contact-book {
-    &::after {
-        content: "\e089";
-        display: inline-block;
-    }
-}
-
 .icon-parents {
     &::after {
         content: "\e025";
@@ -138,11 +137,11 @@
 }
 
 .icon-floppy-save {
-  cursor: pointer;
-  &::after {
-    content: "\e447";
-    display: inline-block;
-  }
+    cursor: pointer;
+    &::after {
+        content: "\e447";
+        display: inline-block;
+    }
 }
 
 .icon-building {
@@ -202,35 +201,35 @@
 }
 
 .icon-chevron-right {
-  &::after {
-    font-family: $baseIconHalflingsFont;
-    content: "\e080";
-    display: inline-block;
-  }
+    &::after {
+        font-family: $baseIconHalflingsFont;
+        content: "\e080";
+        display: inline-block;
+    }
 }
 
 .icon-chevron-left {
-  &::after {
-    font-family: $baseIconHalflingsFont;
-    content: "\e079";
-    display: inline-block;
-  }
+    &::after {
+        font-family: $baseIconHalflingsFont;
+        content: "\e079";
+        display: inline-block;
+    }
 }
 
 .icon-chevron-down {
-  &::after {
-    font-family: $baseIconHalflingsFont;
-    content: "\e114";
-    display: inline-block;
-  }
+    &::after {
+        font-family: $baseIconHalflingsFont;
+        content: "\e114";
+        display: inline-block;
+    }
 }
 
 .icon-chevron-up {
-  &::after {
-    font-family: $baseIconHalflingsFont;
-    content: "\e113";
-    display: inline-block;
-  }
+    &::after {
+        font-family: $baseIconHalflingsFont;
+        content: "\e113";
+        display: inline-block;
+    }
 }
 
 .icon-archive {
@@ -344,114 +343,114 @@
 }
 
 .icon-user-add {
-  &::after {
-    content: "\e007";
-    display: inline-block;
-  }
+    &::after {
+        content: "\e007";
+        display: inline-block;
+    }
 }
 
 .icon-bin {
-  &::after {
-    content: "\e017";
-    display: inline-block;
-  }
+    &::after {
+        content: "\e017";
+        display: inline-block;
+    }
 }
 
 .icon-retweet {
-  &::after {
-    content: "\e081";
-    display: inline-block;
-  }
+    &::after {
+        content: "\e081";
+        display: inline-block;
+    }
 }
 
 .icon-file {
-  &::after {
-    content: "\E037";
-    display: inline-block;
-  }
+    &::after {
+        content: "\E037";
+        display: inline-block;
+    }
 }
 
 .icon-file-import {
-  &::after {
-    content: "\e359";
-    display: inline-block;
-  }
+    &::after {
+        content: "\e359";
+        display: inline-block;
+    }
 }
 
 .icon-file-export {
-  &::after {
-    content: "\e360";
-    display: inline-block;
-  }
+    &::after {
+        content: "\e360";
+        display: inline-block;
+    }
 }
 
 .icon-show-thumbnails {
-  &::after {
-    content: "\e157";
-    display: inline-block;
-  }
+    &::after {
+        content: "\e157";
+        display: inline-block;
+    }
 }
 
 .icon-eye-open {
-  &::after {
-    content: "\e052";
-    display: inline-block;
-  }
+    &::after {
+        content: "\e052";
+        display: inline-block;
+    }
 }
 
 .icon-half-eye-open {
-  &::after {
-    font-family: $baseIconHalflingsFont;
-    content: "\e105";
-    display: inline-block;
-  }
+    &::after {
+        font-family: $baseIconHalflingsFont;
+        content: "\e105";
+        display: inline-block;
+    }
 }
 
 .icon-half-eye-close {
-  &::after {
-    font-family: $baseIconHalflingsFont;
-    content: "\e106";
-    display: inline-block;
-  }
+    &::after {
+        font-family: $baseIconHalflingsFont;
+        content: "\e106";
+        display: inline-block;
+    }
 }
 
 .icon-floppy-save {
-  &::after {
-    font-family: $baseIconHalflingsFont;
-    content: "\e175";
-    display: inline-block;
-  }
+    &::after {
+        font-family: $baseIconHalflingsFont;
+        content: "\e175";
+        display: inline-block;
+    }
 }
 
 .icon-floppy-saved {
-  &::after {
-    font-family: $baseIconHalflingsFont;
-    content: "\e173";
-    display: inline-block;
-  }
+    &::after {
+        font-family: $baseIconHalflingsFont;
+        content: "\e173";
+        display: inline-block;
+    }
 }
 
 .icon-half-ok {
-  &::after {
-    font-family: $baseIconHalflingsFont;
-    content: "\e013";
-    display: inline-block;
-  }
+    &::after {
+        font-family: $baseIconHalflingsFont;
+        content: "\e013";
+        display: inline-block;
+    }
 }
 
 .icon-half-remove {
-  &::after {
-    font-family: $baseIconHalflingsFont;
-    content: "\e014";
-    display: inline-block;
-  }
+    &::after {
+        font-family: $baseIconHalflingsFont;
+        content: "\e014";
+        display: inline-block;
+    }
 }
 
 .icon-remove2 {
-  &::after {
-    content: "\e208";
-    display: inline-block;
-  }
+    &::after {
+        content: "\e208";
+        display: inline-block;
+    }
 }
 
 .icon-publish {
@@ -463,7 +462,7 @@
         border-radius: 50%;
         border: 1px solid $white;
         background: $green;
-        font-size: medium!important;
+        font-size: medium !important;
         position: relative;
         top: -2px;
         left: 0px;
@@ -471,35 +470,35 @@
 }
 
 .icon-unpublish {
-   &::after {
-     content: "";
-     display: inline-block;
-     width: 14px;
-     height: 14px;
-     border-radius: 50%;
-     border: 1px solid $white;
-     background: $red;
-     font-size: medium!important;
-     position: relative;
-     top: -2px;
-     left: 0px;
-   }
- }
+    &::after {
+        content: "";
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 1px solid $white;
+        background: $red;
+        font-size: medium !important;
+        position: relative;
+        top: -2px;
+        left: 0px;
+    }
+}
 
 .icon-test {
-  &::after {
-    content: "";
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    border: 1px solid $white;
-    background: $yellow;
-    font-size: medium!important;
-    position: relative;
-    top: -2px;
-    left: 0px;
-  }
+    &::after {
+        content: "";
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 1px solid $white;
+        background: $yellow;
+        font-size: medium !important;
+        position: relative;
+        top: -2px;
+        left: 0px;
+    }
 }
 
 .icon-right-arrow {

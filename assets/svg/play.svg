@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="10px" height="10px" viewBox="0 0 10 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <title>arrow-off</title>
+    <description>Created with Sketch (http://www.bohemiancoding.com/sketch)</description>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="arrow-off" sketch:type="MSArtboardGroup" fill="#999999">
+            <path d="M0.725705329,9.9388222 C0.612852665,10.0564132 0.5,9.9976177 0.5,9.8212312 L0.5,0.178768804 C0.5,0.00238229703 0.612852665,-0.0564132054 0.725705329,0.0611777994 L9.4153605,4.82361349 C9.52821317,4.9412045 9.52821317,5.0587955 9.4153605,5.17638651 L0.725705329,9.9388222 Z" id="Shape" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>
