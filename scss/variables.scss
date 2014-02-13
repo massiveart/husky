@@ -14,12 +14,14 @@ $gray: #666;
 $grayLight: #999;
 $grayLighter: #ccc;
 $grayLighterer: #ddd;
+$grayLightMedium: #e4e4e4;
 $grayLightest: #efefef;
 $grayDarkLighter: #3e3e3e;
 $grayDark: #1e1e1e;
 $white:#fff;
-$green: #62c400;
+$green: #1FCA23;
 $red: #AD0710;
+$yellow: #FEBC2F;
 
 
 // Base colors
@@ -72,7 +74,7 @@ $baseIconHalflingsFont: "Glyphicons Halflings Regular";
 // Form Elements
 // -------------------------
 $inputBorderColor: $white;
-$inputBorderFocusColor: $grayLightest;
+$inputBorderFocusColor: $grayLighter;
 $labelColor: $grayLighter;
 
 $inputHeight: 30px;
@@ -80,6 +82,8 @@ $inputHeight: 30px;
 
 // Navigation
 // -------------------------
-$navigationColumnColorActive: #E0E0E0;
-$navigationMainColumnColor: #333333;
-$navigationMainColumnColorActive: #fff;
+$navigationBackgroundColor: #3e3e3e;
+
+// Overlay
+// -------------------------
+$overlayContainerWidth: 400px;
