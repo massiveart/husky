@@ -9,7 +9,7 @@
     border: 1px solid $inputBorderColor;
     padding: 0 5px;
     font-size: 14px;
-    border-radius: 3px;
+    border-radius: $inputBorderRadius;
     border: 1px solid $grayLighter;
 
     &:focus {
@@ -31,11 +31,21 @@
     }
 }
 
+// ckeditor
+#cke_ckeditor .cke_inner {
+    border: 1px solid $inputBorderColor;
+    border-bottom-left-radius: $inputBorderRadius;
+    border-bottom-right-radius: $inputBorderRadius;
+}
+
+
 input[type="text"] {
     &.input-round {
       border-radius: 30px;
     }
 }
+
+input
 
 .input-description {
   margin-top: -5px;
