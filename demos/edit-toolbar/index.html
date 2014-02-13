@@ -121,6 +121,7 @@
                     {
                         'icon': 'file-import',
                         'title': 'Work',
+                        'hidden': true,
                         'position': 2
                     },
                     {
@@ -207,11 +208,15 @@
             $('#disable').on('click', function() {
                 app.sandbox.emit('husky.edit-toolbar.contact.item.disable', '1');
                 app.sandbox.emit('husky.edit-toolbar.contact.item.disable', 'edit');
+
+                app.sandbox.emit('husky.edit-toolbar.contact.item.hide', '5');
             });
 
             $('#enable').on('click', function() {
                 app.sandbox.emit('husky.edit-toolbar.contact.item.enable', '1');
                 app.sandbox.emit('husky.edit-toolbar.contact.item.enable', 'edit');
+
+                app.sandbox.emit('husky.edit-toolbar.contact.item.show', '5');
             });
 
             $('#changeItem').on('click', function() {

@@ -95,6 +95,10 @@ $editToolbarHeight: 40px;
         }
     }
 
+    &.hidden {
+        display: none;
+    }
+
     &.highlight {
         min-width: 100px;
         background-color: $highlightColor;

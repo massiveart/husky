@@ -4744,61 +4744,65 @@ li a.navigation-settings-icon {
   color: #999999;
 }
 /* line 98, ../scss/modules/edit-toolbar.scss */
+.edit-toolbar-item.hidden {
+  display: none;
+}
+/* line 102, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item.highlight {
   min-width: 100px;
   background-color: #249fbe;
 }
-/* line 103, ../scss/modules/edit-toolbar.scss */
+/* line 107, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item.highlight.disabled:hover, .edit-toolbar-item.highlight.disabled {
   background-color: #a7a7a7;
   cursor: default;
 }
-/* line 106, ../scss/modules/edit-toolbar.scss */
+/* line 110, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item.highlight.disabled:hover a, .edit-toolbar-item.highlight.disabled a {
   cursor: default;
   color: #1e1e1e;
 }
-/* line 112, ../scss/modules/edit-toolbar.scss */
+/* line 116, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item.highlight:hover {
   background-color: #26aacb;
 }
-/* line 115, ../scss/modules/edit-toolbar.scss */
+/* line 119, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item.highlight:active {
   background-color: #28b1d3;
 }
-/* line 119, ../scss/modules/edit-toolbar.scss */
+/* line 123, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item.highlight a {
   color: white;
 }
-/* line 124, ../scss/modules/edit-toolbar.scss */
+/* line 128, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item.highlight-gray {
   background-color: #a7a7a7;
 }
-/* line 127, ../scss/modules/edit-toolbar.scss */
+/* line 131, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item.highlight-gray:hover {
   background-color: #afafaf;
 }
-/* line 130, ../scss/modules/edit-toolbar.scss */
+/* line 134, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item.highlight-gray:active {
   background-color: #b4b4b4;
 }
-/* line 136, ../scss/modules/edit-toolbar.scss */
+/* line 140, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item.is-expanded {
   background-color: #bbbbbb;
 }
-/* line 140, ../scss/modules/edit-toolbar.scss */
+/* line 144, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item.is-expanded ul.edit-toolbar-dropdown-menu {
   display: block;
 }
-/* line 145, ../scss/modules/edit-toolbar.scss */
+/* line 149, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item:hover {
   background-color: #bbbbbb;
 }
-/* line 148, ../scss/modules/edit-toolbar.scss */
+/* line 152, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item:active {
   background-color: #b3b3b3;
 }
-/* line 153, ../scss/modules/edit-toolbar.scss */
+/* line 157, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item a {
   text-align: center;
   color: black;
@@ -4808,31 +4812,31 @@ li a.navigation-settings-icon {
   height: 100%;
   outline: none;
 }
-/* line 162, ../scss/modules/edit-toolbar.scss */
+/* line 166, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item a .icon, .edit-toolbar-item a.icon {
   font-size: 18px;
   padding-right: 0px;
   vertical-align: middle;
 }
-/* line 167, ../scss/modules/edit-toolbar.scss */
+/* line 171, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item a .icon.large, .edit-toolbar-item a.icon.large {
   font-size: 20px;
 }
-/* line 170, ../scss/modules/edit-toolbar.scss */
+/* line 174, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item a .icon.small, .edit-toolbar-item a.icon.small {
   font-size: 12px;
 }
-/* line 175, ../scss/modules/edit-toolbar.scss */
+/* line 179, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item a .title {
   font-size: 14px;
 }
-/* line 179, ../scss/modules/edit-toolbar.scss */
+/* line 183, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-item a .icon + .title:not(:empty) {
   padding-left: 10px;
 }
 
 /**  dropdown **/
-/* line 188, ../scss/modules/edit-toolbar.scss */
+/* line 192, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-dropdown-menu {
   background-color: white;
   border: 1px solid #cccccc;
@@ -4851,12 +4855,12 @@ li a.navigation-settings-icon {
   -moz-box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 0px 0px;
   box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 0px 0px;
 }
-/* line 207, ../scss/modules/edit-toolbar.scss */
+/* line 211, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-dropdown-menu.right-aligned {
   left: auto;
   right: 0;
 }
-/* line 212, ../scss/modules/edit-toolbar.scss */
+/* line 216, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-dropdown-menu li {
   display: list-item;
   float: none;
@@ -4864,36 +4868,36 @@ li a.navigation-settings-icon {
   line-height: 30px;
   white-space: nowrap;
 }
-/* line 220, ../scss/modules/edit-toolbar.scss */
+/* line 224, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-dropdown-menu li.is-selected, .edit-toolbar-dropdown-menu li:hover, .edit-toolbar-dropdown-menu .column-navigation-wrapper .column-navigation .column ul li.selected, .column-navigation-wrapper .column-navigation .column ul .edit-toolbar-dropdown-menu li.selected {
   background-color: #249fbe;
 }
-/* line 222, ../scss/modules/edit-toolbar.scss */
+/* line 226, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-dropdown-menu li.is-selected a, .edit-toolbar-dropdown-menu li:hover a, .edit-toolbar-dropdown-menu .column-navigation-wrapper .column-navigation .column ul li.selected a, .column-navigation-wrapper .column-navigation .column ul .edit-toolbar-dropdown-menu li.selected a {
   color: white;
 }
-/* line 228, ../scss/modules/edit-toolbar.scss */
+/* line 232, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-dropdown-menu li.disabled:hover, .edit-toolbar-dropdown-menu .column-navigation-wrapper .column-navigation .column ul li.disabled.selected, .column-navigation-wrapper .column-navigation .column ul .edit-toolbar-dropdown-menu li.disabled.selected, .edit-toolbar-dropdown-menu li.disabled {
   cursor: default;
   background-color: inherit;
 }
-/* line 231, ../scss/modules/edit-toolbar.scss */
+/* line 235, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-dropdown-menu li.disabled:hover a, .edit-toolbar-dropdown-menu .column-navigation-wrapper .column-navigation .column ul li.disabled.selected a, .column-navigation-wrapper .column-navigation .column ul .edit-toolbar-dropdown-menu li.disabled.selected a, .edit-toolbar-dropdown-menu li.disabled a {
   cursor: default;
   color: #999999;
 }
-/* line 237, ../scss/modules/edit-toolbar.scss */
+/* line 241, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-dropdown-menu li:active {
   background-color: #28b1d3;
 }
-/* line 241, ../scss/modules/edit-toolbar.scss */
+/* line 245, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-dropdown-menu li.divider {
   height: 1px;
   margin: 5px 0;
   overflow: hidden;
   background-color: #dddddd;
 }
-/* line 248, ../scss/modules/edit-toolbar.scss */
+/* line 252, ../scss/modules/edit-toolbar.scss */
 .edit-toolbar-dropdown-menu li a {
   clear: both;
   text-align: left;
