@@ -46,6 +46,9 @@
     top: 0px;
     left: 0px;
 
+    .loader {
+        padding: 50px 0;
+    }
     .no-content {
         text-align: center;
         height: 210px;
@@ -157,16 +160,15 @@
     .sortMethod {
         margin-top: 25px;
     }
-    input.limit-to {
-        height: 30px;
-        width: 100%;
+    input.limit-to,
+    input.data-source {
         padding-left: 10px;
+        border-radius: 0;
     }
     .tags.disabled {
         display: none;
     }
     .tag-list {
-        border: 1px solid $grayLighter;
         border-radius: 4px 4px 0 0;
         input {
             margin: 7px 0 0 0;

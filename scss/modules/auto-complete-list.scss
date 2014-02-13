@@ -41,11 +41,12 @@
         cursor: default;
     }
 
-	.auto-complete-list {
-	    font-size: $smallFontSize;
+    .auto-complete-list {
+        font-size: $smallFontSize;
         min-height: 30px;
         border-radius: 4px 4px 0 0;
-	}
+        margin: 0;
+    }
     .tt-suggestions {
         width: 100%;
     }
@@ -56,34 +57,44 @@
     border-radius: 4px;
     background-color: #fff;
 
-    input[type="text"] {
-      margin: 7px 10px 7px 0;
-      width: 100px;
-      border: 0;
-      outline: 0;
+    .husky-auto-complete {
+        background: none;
+        border-radius: 0;
+        position: static;
+        margin: 0;
+
+        input[type="text"] {
+            margin: 7px 10px 7px 0;
+            padding: 0;
+            width: 100px;
+            border: 0;
+            outline: 0;
+            border-radius: 0;
+            height: auto;
+        }
     }
 }
 
 .auto-complete-list-selection {
-      display: inline-block;
-      margin: 4px 5px 4px 0;
-      padding: 0 4px 2px 4px;
-      border-radius: 2px;
-      background-color: #ccc;
-      color: #000;
-      font-size: 12px;
-      line-height: normal;
+    display: inline-block;
+    margin: 4px 5px 4px 0;
+    padding: 0 4px 2px 4px;
+    border-radius: 2px;
+    background-color: #ccc;
+    color: #000;
+    font-size: 12px;
+    line-height: normal;
 
-      .tm-tag-remove{
-          @extend .icon-remove;
-          font-family: $baseIconFont;
-          position: relative;
-          top: 2px;
-          padding-left: 2px;
-          cursor: pointer;
-          text-decoration: none;
-          color: $black;
-      }
+    .tm-tag-remove {
+        @extend .icon-remove;
+        font-family: $baseIconFont;
+        position: relative;
+        top: 2px;
+        padding-left: 2px;
+        cursor: pointer;
+        text-decoration: none;
+        color: $black;
+    }
 }
 
 .auto-complete-list-suggestions {

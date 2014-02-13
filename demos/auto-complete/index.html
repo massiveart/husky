@@ -28,21 +28,17 @@
 		<div class="grid-row">
 			<div class="grid-col-6">
 				<div class="auto-complete-container">
-					<label>
-						Autocomplete
-						<div class="wrapper">
-						    <div id="autocomplete1"></div>
-						</div>
-					</label>
+                    <label>
+                        Autocomplete
+                        <div id="autocomplete1"></div>
+                    </label>
 				</div>
 			</div>
             <div class="grid-col-6">
                 <div class="auto-complete-container">
                     <label>
                         Autocomplete2
-                        <div class="wrapper">
-                            <div id="autocomplete2"></div>
-                        </div>
+                        <div id="autocomplete2"></div>
                     </label>
                 </div>
             </div>
@@ -55,9 +51,26 @@
                 Search for 'B'
             </div>
         </div>
+        <div class="grid-row m-top-30">
+            <div class="grid-col-6">
+                <div class="auto-complete-container">
+                    <label>
+                        Autocomplete3 (no new Values)
+                        <div id="autocomplete3"></div>
+                    </label>
+                </div>
+            </div>
+            <div class="grid-col-6">
+                <div class="auto-complete-container">
+                    <label>
+                        Autocomplete4 (Albanien and Frankreich are excluded)
+                        <div id="autocomplete4"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
 	</div>
 </div>
-
 
 
 <script src="../js/sinon.js"></script>
@@ -93,6 +106,17 @@
                     fakeServer.respond();
                 }, 100);
             });
+            app.sandbox.on('husky.auto-complete.I3.request-match', function() {
+                fakeServer.respondWith('GET', '/countries?query=Zype', [200, { 'Content-Type': 'application/json' },
+                    '{"total": 1, "_embedded": [{"id": 18, "name": "Zypern"}]}'
+                ]);
+                fakeServer.respondWith('GET', '/countries?query=doesnotexist', [200, { 'Content-Type': 'application/json' },
+                    '{"total": 1, "_embedded": []}'
+                ]);
+                setTimeout(function() {
+                    fakeServer.respond();
+                }, 100);
+            });
 		};
 
 		var app = Husky({
@@ -124,7 +148,31 @@
                         suggestionImg: 'tag',
                         localData: [{id: 81, name: 'Brüssel'}, {id: 71, name: 'Bern'}, {id: 891, name: 'Berlin'}]
                     }
-                }]).then(function() {
+                },
+                {
+                    name: 'auto-complete@husky',
+                    options: {
+                        el: '#autocomplete3',
+                        instanceName: 'I3',
+                        prefetchUrl: '/countries',
+                        remoteUrl: '/countries',
+                        suggestionImg: 'tag',
+                        noNewValues: true,
+                        localData: [{id: 89, name: 'Albanien'}, {id: 77, name: 'Altach'}, {id: 899, name: 'Andelsbuch'}]
+                    }
+                },
+                {
+                    name: 'auto-complete@husky',
+                    options: {
+                        el: '#autocomplete4',
+                        instanceName: 'I4',
+                        prefetchUrl: '/countries',
+                        remoteUrl: '/countries',
+                        suggestionImg: 'tag',
+                        excludes: [{id: 89, name: null}, {id: null, name: 'Frankreich'}],
+                        localData: [{id: 89, name: 'Albanien'}, {id: 77, name: 'Altach'}, {id: 899, name: 'Andelsbuch'}]
+                    }
+                    }]).then(function() {
 			app.logger.log('Aura started...');
 			initFakeServer(app);
 		});
