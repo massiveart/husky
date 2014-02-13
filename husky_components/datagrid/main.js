@@ -310,7 +310,6 @@ define(function() {
             }
 
             this.domId = 0;
-            this.elId = this.sandbox.dom.attr(this.$el, 'id');
 
             this.sort = {
                 ascClass: 'icon-arrow-up',
@@ -790,7 +789,7 @@ define(function() {
 
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
-                if (!!validation) {
+                if (!!this.options.validation && !!validation) {
                     for (k in validation) {
                         validationAttr += ['data-validation-', k, '="', validation[k], '" '].join('');
                     }
@@ -926,16 +925,18 @@ define(function() {
             $row = this.prepareTableRow(row);
             $table.append($row);
 
-            // add new row to validation context and add contraints to element
-            $editableFields = this.sandbox.dom.find('.editable', $row);
+            if (!!this.options.validation) {
+                // add new row to validation context and add contraints to element
+                $editableFields = this.sandbox.dom.find('.editable', $row);
 
-            this.sandbox.util.foreach($editableFields, function($el, i) {
-                this.sandbox.form.addField('#' + this.elId, $el);
-                validation = this.options.columns[i].validation;
-                for (var key in validation) {
-                    this.sandbox.form.addConstraint('#' + this.elId, $el, key, {key: validation[key]});
-                }
-            }.bind(this));
+                this.sandbox.util.foreach($editableFields, function($el, i) {
+                    this.sandbox.form.addField(this.$el, $el);
+                    validation = this.options.columns[i].validation;
+                    for (var key in validation) {
+                        this.sandbox.form.addConstraint(this.$el, $el, key, {key: validation[key]});
+                    }
+                }.bind(this));
+            }
         },
 
         /**
@@ -982,11 +983,14 @@ define(function() {
 
             domId = this.sandbox.dom.data($tblRow, 'dom-id');
 
+
             // remove row elements from validation
-            $editableElements = this.sandbox.dom.find('.editable', $tblRow);
-            this.sandbox.util.each($editableElements, function(index, $element) {
-                this.sandbox.form.removeField('#' + this.elId, $element);
-            }.bind(this));
+            if (!!this.options.validation) {
+                $editableElements = this.sandbox.dom.find('.editable', $tblRow);
+                this.sandbox.util.each($editableElements, function(index, $element) {
+                    this.sandbox.form.removeField(this.$el, $element);
+                }.bind(this));
+            }
 
             // remove deleted row from changedData
             if (!!this.changedData && !!this.changedData[domId]) {
@@ -1403,7 +1407,7 @@ define(function() {
             // is validation configured
             if (!!this.options.validation) {
                 // is invalid
-                if (!this.sandbox.form.validate('#' + this.elId)) {
+                if (!this.sandbox.form.validate(this.$el)) {
                     this.sandbox.logger.log("validation error...");
                     return;
                 }
@@ -1517,7 +1521,7 @@ define(function() {
 
             // initialize validation
             if (!!this.options.validation) {
-                this.sandbox.form.create('#' + this.elId);
+                this.sandbox.form.create(this.$el);
             }
         },
 

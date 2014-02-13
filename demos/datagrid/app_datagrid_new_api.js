@@ -477,7 +477,7 @@ require(['lib/husky'], function(Husky) {
                     removeRow: true,
                     pagination: true,
                     editable: true,
-                    validation:true,
+                    validation:false,
                     contentContainer: '#content',
                     columns: [
                         {
@@ -555,7 +555,7 @@ require(['lib/husky'], function(Husky) {
             }, 500);
 
             $('#add-row').on('click', function() {
-                app.sandbox.emit('husky.datagrid.row.add', { "id": "", "content1": "Tschau", "content2": "Hallo 2", "content3": "Hallo 3" });
+                app.sandbox.emit('husky.datagrid.row.add', { id: "", content1: "", content2: "asdf", content3: "Hallo 3" });
             });
 
             app.sandbox.on('husky.datagrid.page.change', function() {
