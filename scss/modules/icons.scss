@@ -463,13 +463,30 @@
         border-radius: 50%;
         border: 1px solid $white;
         background: $green;
+        font-size: medium!important;
         position: relative;
-        top: 2px;
+        top: -2px;
         left: 0px;
     }
 }
 
 .icon-unpublish {
+   &::after {
+     content: "";
+     display: inline-block;
+     width: 14px;
+     height: 14px;
+     border-radius: 50%;
+     border: 1px solid $white;
+     background: $red;
+     font-size: medium!important;
+     position: relative;
+     top: -2px;
+     left: 0px;
+   }
+ }
+
+.icon-test {
   &::after {
     content: "";
     display: inline-block;
@@ -477,9 +494,17 @@
     height: 14px;
     border-radius: 50%;
     border: 1px solid $white;
-    background: $red;
+    background: $yellow;
+    font-size: medium!important;
     position: relative;
-    top: 2px;
+    top: -2px;
     left: 0px;
   }
+}
+
+.icon-right-arrow {
+    &::after {
+        content: "\e212";
+        display: inline-block;
+    }
 }

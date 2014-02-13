@@ -23,6 +23,7 @@
  * @params {Function} [options.okCallback] callback which gets executed after the overlay gets submited
  * @params {String|Object} [options.data] HTML or DOM-object which acts as the overlay-content
  * @params {String} [options.instanceName] instance name of the component
+ * @params {Boolean} [options.draggable] if true overlay is draggable
  */
 define([], function() {
 
@@ -37,19 +38,22 @@ define([], function() {
         closeCallback: null,
         okCallback: null,
         data: '',
-        instanceName: 'undefined'
+        instanceName: 'undefined',
+        draggable: true
     },
 
     constants = {
         closeSelector: '.close-button',
         okSelector: '.ok-button',
-        contentSelector: '.overlay-content'
+        contentSelector: '.overlay-content',
+        headerSelector: '.overlay-header',
+        draggableClass: 'draggable'
     },
 
     /** templates for component */
     templates = {
         overlaySkeleton: [
-            '<div class="overlay-container smart-content-overlay">',
+            '<div class="husky-overlay-container smart-content-overlay">',
                 '<div class="overlay-header">',
                 '<span class="title"><%= title %></span>',
                 '<a class="icon-<%= closeIcon %> close-button" href="#"></a>',
@@ -132,8 +136,11 @@ define([], function() {
                 normalHeight: null,
                 $el: null,
                 $close: null,
-                $ok: null
+                $ok: null,
+                $header: null,
+                $content: null
             };
+            this.dragged = false;
         },
 
         /**
@@ -159,7 +166,6 @@ define([], function() {
 
                 this.insertOverlay();
                 this.overlay.opened = true;
-
             }
         },
 
@@ -169,6 +175,10 @@ define([], function() {
         closeOverlay: function() {
             this.sandbox.dom.detach(this.overlay.$el);
             this.overlay.opened = false;
+            this.dragged = false;
+            this.collapsed = false;
+
+            this.sandbox.dom.css(this.overlay.$content, {'height': 'auto'});
 
             this.sandbox.emit(CLOSED.call(this));
         },
@@ -180,10 +190,10 @@ define([], function() {
             this.sandbox.dom.append(this.sandbox.dom.$(this.options.container), this.overlay.$el);
 
             //ensures that the overlay box fits the window form the beginning
-            this.overlay.normalHeight = (this.overlay.normalHeight === null) ? this.sandbox.dom.height(this.overlay.$el) : this.overlay.normalHeight;
+            this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
             this.resizeHandler();
 
-            this.setTop();
+            this.setCoordinates();
 
             this.sandbox.emit(OPENED.call(this));
         },
@@ -201,6 +211,11 @@ define([], function() {
             this.overlay.$close = this.sandbox.dom.find(constants.closeSelector, this.overlay.$el);
             this.overlay.$ok = this.sandbox.dom.find(constants.okSelector, this.overlay.$el);
             this.overlay.$content = this.sandbox.dom.find(constants.contentSelector, this.overlay.$el);
+            this.overlay.$header = this.sandbox.dom.find(constants.headerSelector, this.overlay.$el);
+
+            if (this.options.draggable === true) {
+                this.sandbox.dom.addClass(this.overlay.$el, constants.draggableClass);
+            }
         },
 
         setContent: function() {
@@ -211,6 +226,12 @@ define([], function() {
          * Binds overlay events
          */
         bindOverlayEvents: function() {
+            //set current overlay in front of all other overlays
+            this.sandbox.dom.on(this.overlay.$el, 'mousedown', function() {
+                this.sandbox.dom.css(this.sandbox.dom.$('.husky-overlay-container'), {'z-index': 'auto'});
+                this.sandbox.dom.css(this.overlay.$el, {'z-index': 10000});
+            }.bind(this));
+
             this.sandbox.dom.on(this.overlay.$close, 'click', function(event) {
                 this.sandbox.dom.preventDefault(event);
                 this.closeOverlay();
@@ -224,8 +245,38 @@ define([], function() {
             }.bind(this));
 
             this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
-                this.resizeHandler();
+                if (this.dragged === false && this.overlay.opened === true) {
+                    this.resizeHandler();
+                }
             }.bind(this));
+
+            if (this.options.draggable === true) {
+                this.sandbox.dom.on(this.overlay.$header, 'mousedown', function(e) {
+                    var origin = {
+                        y: e.clientY - (this.sandbox.dom.offset(this.overlay.$header).top - this.sandbox.dom.scrollTop(this.sandbox.dom.$window)),
+                        x: e.clientX - (this.sandbox.dom.offset(this.overlay.$header).left - this.sandbox.dom.scrollLeft(this.sandbox.dom.$window))
+                    };
+
+                   //bind the mousemove event if mouse is down on header
+                   this.sandbox.dom.on(this.overlay.$header, 'mousemove', function(event) {
+                        this.draggableHandler(event, origin);
+                   }.bind(this));
+                }.bind(this));
+
+                this.sandbox.dom.on(this.overlay.$header, 'mouseup', function() {
+                    this.sandbox.dom.off(this.overlay.$header, 'mousemove');
+                }.bind(this));
+            }
+        },
+
+        /**
+         * Handles the mousemove event for making the overlay draggable
+         * @param event {object} the event-object of the mousemove event
+         * @param origin {object} object with x and y properties which hold the starting position of the cursor
+         */
+        draggableHandler: function(event, origin) {
+            this.updateCoordinates((event.clientY - origin.y), (event.clientX - origin.x));
+            this.dragged = true;
         },
 
         /**
@@ -233,11 +284,10 @@ define([], function() {
          * if the window gets smaller
          */
         resizeHandler: function() {
-            this.setTop();
+            this.setCoordinates();
 
             //window is getting smaller - make overlay smaller
             if (this.sandbox.dom.height(this.sandbox.dom.$window) < this.sandbox.dom.outerHeight(this.overlay.$el)) {
-
                 this.sandbox.dom.height(this.overlay.$content,
                     (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content))
                 );
@@ -264,10 +314,21 @@ define([], function() {
         },
 
         /**
-         * Positions the overlay vertically in the middle of the screen
+         * Positions the overlay in the middle of the screen
          */
-        setTop: function() {
-            this.sandbox.dom.css(this.overlay.$el, {'top': (this.sandbox.dom.$window.height() - this.overlay.$el.outerHeight())/2 + 'px'});
+        setCoordinates: function() {
+            this.updateCoordinates((this.sandbox.dom.$window.height() - this.overlay.$el.outerHeight())/2,
+                                   (this.sandbox.dom.$window.width() - this.overlay.$el.outerWidth())/2);
+        },
+
+        /**
+         * Updates the coordinates of the overlay
+         * @param top {Integer} new top of overlay
+         * @param left {Integer} new left of overlay
+         */
+        updateCoordinates: function(top, left) {
+            this.sandbox.dom.css(this.overlay.$el, {'top': top + 'px'});
+            this.sandbox.dom.css(this.overlay.$el, {'left': left + 'px'});
         },
 
         /**

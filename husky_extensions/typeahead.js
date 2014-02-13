@@ -21,8 +21,11 @@
 
 				init: function(selector, configs) {
 					return app.core.dom.$(selector).typeahead(configs);
-				}
+				},
 
+                setValue: function(selector, value) {
+                    return app.core.dom.$(selector).typeahead('setQuery', value);
+                }
 			};
 		}
 	});

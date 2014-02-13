@@ -1,9 +1,8 @@
-.overlay-container {
+.husky-overlay-container {
   width: $overlayContainerWidth;
   position: fixed;
   top: 0;
   left: 50%;
-  margin-left: -($overlayContainerWidth / 2);
   background-color: $white;
   border: 0px solid $grayLighter;
   z-index: 1000;
@@ -13,6 +12,11 @@
     left: auto;
     right: 0;
   }
+}
+
+.draggable .overlay-header {
+  cursor: move;
+  @include user-select(none);
 }
 
 .overlay-header {
