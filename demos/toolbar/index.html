@@ -19,11 +19,14 @@
         </style>
     </head>
     <body>
+    <button id="change-state-button"> change button state of trash in default</button>
         <h1>list toolbars</h1>
 
         <h3>default (large)</h3>
 
         <div id="toolbar1"></div>
+
+
         <h3>medium</h3>
 
         <div id="toolbar2"></div>
@@ -65,7 +68,7 @@
                                 'group': '1',
                                 'disabled': true,
                                 'callback': function() {
-
+                                    console.log("Delete was clicked!");
                                 }
                             },
                             {
@@ -75,7 +78,9 @@
                                 'group': '1',
                                 'items': [
                                     {
-                                        'title': 'move'
+                                        'id': 7,
+                                        'title': 'move',
+                                        disabled: false
                                     },
                                     {
                                         'title': 'duplicate'
@@ -144,7 +149,7 @@
                             name: 'toolbar@husky',
                             options: {
                                 el: '#toolbar2',
-                                instanceName: 'contact2',
+                                instanceName: 'contactasdfasdf',
                                 hasSearch: false,
                                 appearance: 'medium',
 
@@ -172,6 +177,26 @@
                         setTimeout(function() {
                             fakeServer.respond();
                         }, 100);
+                    });
+
+
+
+
+                    app.sandbox.dom.on('#change-state-button','click', function() {
+                        if (this.buttonEnabled) {
+                            app.sandbox.emit('husky.toolbar.contact.item.disable', 2);
+                        } else {
+                            app.sandbox.emit('husky.toolbar.contact.item.enable', 2);
+                        }
+                        this.buttonEnabled = !this.buttonEnabled;
+                    }.bind(this));
+
+
+                    this.buttonEnabled = true;
+                    app.sandbox.on('husky.toolbar.contact.initialized',function(){
+                        app.sandbox.emit('husky.toolbar.contact.item.enable', 2);
+                        app.sandbox.emit('husky.toolbar.contact.item.disable', 3);
+                        app.sandbox.emit('husky.toolbar.contact.item.disable', 7);
                     });
 
 

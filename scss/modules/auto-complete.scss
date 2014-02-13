@@ -1,78 +1,100 @@
-.husky-auto-complete-success {
-    @extend %abstract-success;
-}
-
-.husky-auto-complete-error {
-	@extend %abstract-error;
-}
-
 .auto-complete-container {
-  position: relative;
+    position: relative;
 
-  label {
-    cursor: default;
-  }
+    label {
+        cursor: default;
+    }
 }
 
-.wrapper {
-    width: 400px;
-    background: $white;
-    padding: 4px 8px;
-    border-radius: 4px 4px 0 0;
+.husky-auto-complete {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    margin-top: 10px;
     font-size: $smallFontSize;
+    background: $white;
+    border-radius: 4px 4px 0 0;
 
     input[type="text"] {
-        width: 100%;
-        border: 0;
-        outline: 0;
-        background: transparent;
+//      width: 100%;
+//      border: 1px solid $grayLighter;
+//      outline: 0;
+//      background: $white;
+//      padding: 4px 8px;
+      border-radius: 4px 4px 0 0;
+      margin: 0;
     }
 }
 
 .twitter-typeahead {
-	width: 100%;
+    width: 100%;
 }
 
 .tt-suggestions {
-  	width: 400px;
-	top: 37px;
-  	border-top: 1px solid $grayLightest;
-  	background: $white;
+    width: 100%;
+    top: 37px;
+    background: $white;
+}
+
+.tt-dropdown-menu {
+    width: 100%;
+    border: 1px solid $grayLighter;
+    margin-top: -1px;
 }
 
 .tt-hint {
-	display: none;
+    display: none;
 }
 
 .tt-suggestion {
-	height: 25px;
-  	padding: 0 15px;
+    height: 25px;
+    width: 100%;
+    padding: 0 6px;
+    border-width: 0 0px 0 0px;
+    border-style: solid;
+    border-color: #fff;
 
-  	.border {
-		border-bottom: 1px solid $grayLightest;
-	  	height: 25px;
-	  	clear: both;
-	  	.img {
-			float: left;
-		  	margin: 5px 10px 0 5px;
+    .border {
+//        border-bottom: 1px solid $grayLighter;
+        height: 25px;
+        clear: both;
+        .icon {
+            display: block;
+            float: left;
+            margin: 0 10px 0 10px;
             width: 12px;
-		}
-	  	.text {
-		  	float: left;
-		  	line-height: 25px;
-		}
-	}
-  	&:last-child .border {
-	 	border-bottom: none;
-	}
+            height: 25px;
+            text-align: center;
+            line-height: 25px;
+        }
+        .text {
+            float: left;
+            line-height: 25px;
+        }
+    }
+    &:last-child .border {
+        border-bottom: none;
+    }
 }
 
 .tt-suggestion:hover,
 .tt-is-under-cursor {
-	background: $grayLighter;
-  	border-color: transparent;
+    background: $highlightColor;
+    .border {
+        border: 0;
+        color: white;
+    }
+
 }
 
 .suggestion {
-	color: $black;
+    color: $black;
+}
+
+.husky-auto-complete-success {
+  @extend %abstract-success;
+}
+
+.husky-auto-complete-error {
+  @extend %abstract-error;
 }

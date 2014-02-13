@@ -96,6 +96,7 @@ require(['lib/husky'], function (Husky) {
     app = new Husky({ debug: { enable: true }});
     _ = app.sandbox.util._;
 
+
     app.start([
             {
                 name: 'datagrid@husky', options: {
@@ -121,9 +122,53 @@ require(['lib/husky'], function (Husky) {
                 ],
                 sortable: true,
                 excludeFields: ['id'],
+                searchInstanceName: 'test',
                 el: '#datagrid'
             }
+            },
+        {
+        name: 'toolbar@husky',
+        options: {
+        el: '#toolbar',
+            instanceName: 'test',
+            hasSearch: true,
+            data: [
+            {
+                id: 'add',
+                icon: 'user-add',
+                class: 'highlight',
+                title: 'add',
+                callback: function() {
+                    this.sandbox.emit('sulu.list-toolbar.add');
+                }.bind(this)
+            },
+            {
+                id: 'delete',
+                icon: 'bin',
+                title: 'delete',
+                group: '1',
+                callback: function() {
+                    this.sandbox.emit('sulu.list-toolbar.delete');
+                }.bind(this)
+            },
+            {
+                id: 'settings',
+                icon: 'cogwheel',
+                group: '1',
+                items: [
+                    {
+                        title: 'import',
+                        disabled: true
+                    },
+                    {
+                        title: 'export',
+                        disabled: true
+                    }
+                ]
             }
+        ]
+        }
+    }
         ]).then(function () {
             app.logger.log('Aura started...');
 

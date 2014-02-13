@@ -47,11 +47,15 @@
             
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
+                <li><a href="../classes/DataGrid.html">DataGrid</a></li>
+            
                 <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
             
                 <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+            
+                <li><a href="../classes/Search.html">Search</a></li>
             
                 <li><a href="../classes/Toolbar.html">Toolbar</a></li>
             
@@ -62,6 +66,8 @@
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
             
                 <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
+            
+                <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
             
@@ -148,6 +154,9 @@ define([
                 label: &#x27;&#x27;, //label (headline),
                 inputSelector: &#x27;.husky-autocomplete&#x27;, //Selector for input wrapper div
                 autocomplete: true, //enable/disable autocomplete
+                localData: [], //local data passed to the autocomplete component
+                prefetchUrl: &#x27;&#x27;, //url to prefetch data for the autocomplete component
+                remoteUrl: &#x27;&#x27;, //url to fetch data on input for the autocomplete component
                 autocompleteOptions: {}, //options to pass to the autocomplete component
                 maxListItems: 0, //maximum amount of list items accepted (0 = no limit)
                 CapitalizeFirstLetter: false, //if true the first letter of each item gets capitalized
@@ -170,13 +179,10 @@ define([
         return {
 
             initialize: function() {
-                this.sandbox.logger.log(&#x27;initialize&#x27;, this);
-
                 this.setVars();
 
                 // extend default options
                 this.options = this.sandbox.util.extend({}, defaults, this.options);
-                this.sandbox.logger.log(this.options);
 
                 this.renderMain();
                 this.initInputCont();
@@ -242,6 +248,9 @@ define([
                         {el: this.$inputCont},
                         {emptyOnBlur: true},
                         {instanceName: this.options.instanceName},
+                        {localData: this.options.localData},
+                        {prefetchUrl: this.options.prefetchUrl},
+                        {remoteUrl: this.options.remoteUrl},
                         this.options.autocompleteOptions
                     )
                 }]);
@@ -385,7 +394,6 @@ define([
                     };
                     this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowUpClass);
                 }
-                this.sandbox.logger.log(this.toggler.$el);
             },
 
             changeToggler: function() {

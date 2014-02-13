@@ -38,8 +38,6 @@ define(function() {
                     for (var i = -1, length = array.length; ++i < length;) {
                         callbackValue(array[i], i);
                     }
-                } else {
-                    app.sandbox.logger.log('error at util.foreach: no array given');
                 }
             };
 
@@ -51,17 +49,47 @@ define(function() {
                 app.sandbox.util.ajax({
                     url: url,
 
-                    success: function(data) {
-                        app.logger.log('data loaded', data);
-                        deferred.resolve(data);
+                    success: function(data, textStatus) {
+                        app.logger.log('data loaded', data, textStatus);
+                        deferred.resolve(data, textStatus);
                     }.bind(this),
 
-                    error: function(error) {
-                        deferred.reject(error);
+                    error: function(jqXHR, textStatus, error) {
+                        deferred.reject(textStatus, error);
                     }
                 });
 
                 app.sandbox.emit('husky.util.load.data');
+
+                return deferred.promise();
+            };
+
+            app.core.util.save = function(url, type, data) {
+                var deferred = new app.sandbox.data.deferred();
+
+                app.logger.log('save', url);
+
+                app.sandbox.util.ajax({
+
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    url: url,
+                    type: type,
+                    data: JSON.stringify(data),
+
+                    success: function(data, textStatus) {
+                        app.logger.log('data saved', data, textStatus);
+                        deferred.resolve(data, textStatus);
+                    }.bind(this),
+
+                    error: function(jqXHR, textStatus, error) {
+                        deferred.reject(textStatus, error);
+                    }
+                });
+
+                app.sandbox.emit('husky.util.save.data');
 
                 return deferred.promise();
             };

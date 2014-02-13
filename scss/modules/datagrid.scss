@@ -1,0 +1,48 @@
+.husky-datagrid {
+    position: relative;
+
+    table {
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    thead {
+        tr {
+            height: 30px;
+            padding-top: 10px;
+        }
+        th {
+            padding-top: 0;
+            font-weight: normal;
+
+            &.is-sortable {
+                color: black;
+                cursor: pointer;
+            }
+            &.is-selected {
+                font-weight: bold;
+            }
+        }
+
+        .table-container {
+            width: 100%;
+        }
+    }
+
+    .table-container {
+        overflow: auto;
+
+        &.overflow:after {
+            color: $grayLighter;
+            font-size: 22px;
+            font-family: $baseIconFont;
+            content: '\e212';
+            position: absolute;
+            right: -35px;
+            top: 40%;
+        }
+    }
+
+}

@@ -47,11 +47,15 @@
             
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
+                <li><a href="../classes/DataGrid.html">DataGrid</a></li>
+            
                 <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
             
                 <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+            
+                <li><a href="../classes/Search.html">Search</a></li>
             
                 <li><a href="../classes/Toolbar.html">Toolbar</a></li>
             
@@ -62,6 +66,8 @@
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
             
                 <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
+            
+                <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
             
@@ -172,6 +178,36 @@ define(function() {
                 });
 
                 app.sandbox.emit(&#x27;husky.util.load.data&#x27;);
+
+                return deferred.promise();
+            };
+
+            app.core.util.save = function(url, type, data) {
+                var deferred = new app.sandbox.data.deferred();
+
+                app.logger.log(&#x27;save&#x27;, url);
+
+                app.sandbox.util.ajax({
+
+                    headers: {
+                        &#x27;Content-Type&#x27;: &#x27;application/json&#x27;
+                    },
+
+                    url: url,
+                    type: type,
+                    data: JSON.stringify(data),
+
+                    success: function(data) {
+                        app.logger.log(&#x27;data saved&#x27;, data);
+                        deferred.resolve(data);
+                    }.bind(this),
+
+                    error: function(error) {
+                        deferred.reject(error);
+                    }
+                });
+
+                app.sandbox.emit(&#x27;husky.util.save.data&#x27;);
 
                 return deferred.promise();
             };

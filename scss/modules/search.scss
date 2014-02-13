@@ -4,6 +4,8 @@
 
 .search-container {
 
+    position: relative;
+
     a {
         color: #3e3e3e;
     }
@@ -28,13 +30,20 @@
         position: absolute;
         padding-left: 8px;
         font-size: 16px;
-        line-height: 30px;
+        line-height: $inputHeight;
         vertical-align: middle;
-        text-decoration: none;
-        outline: none;
 
         @extend .icon-class;
         @extend .icon-search;
+    }
+
+    .remove-icon {
+        display: none;
+        position: absolute;
+        right: 10px;
+        line-height: $inputHeight;
+        vertical-align: middle;
+        margin: auto;
     }
 
     /** look and feel **/

@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 .btn {
-    padding: 5px 35px;
+    padding: 5px 25px;
     border: 0;
     border-radius: $btnBorderRadius;
     background-color: #FFF;
@@ -16,7 +16,9 @@ a.btn {
 }
 
 .btn-large {
+    padding: 0 25px;
     font-size: 18px;
+    line-height: 30px;
 }
 
 .btn-black {
@@ -24,10 +26,16 @@ a.btn {
     color: #FFF;
 }
 
-a.btn-black {
+.btn-highlight {
+    background-color: $highlightColor;
     color: #FFF;
-    text-decoration: none;
 }
+
+a.btn-black, a.btn-highlight {
+    color: #FFF;
+}
+
+
 
 .btn-gray {
   background-color: $grayLighter;

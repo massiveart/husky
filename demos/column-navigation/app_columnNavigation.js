@@ -600,6 +600,7 @@ require(['lib/husky'], function (Husky) {
                 options: {
                     el: '#column-navigation',
                     url: '/nodes?depth=1',
+                    height: 20,
                     data: [
                         {
                             id: 1,
