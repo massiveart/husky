@@ -278,12 +278,12 @@ define([], function() {
          * @returns {Boolean}
          */
         isExcluded: function(context) {
-            for (var i = -1, length = this.excludes.length; ++i < length;) {
-                if (context.id === this.excludes[i].id ||
-                    context[this.options.valueKey] === this.excludes[i][this.options.valueKey]) {
+            this.sandbox.util.foreach(this.excludes, function(excluded) {
+                if (context.id === excluded.id ||
+                    context[this.options.valueKey] === excluded[this.options.valueKey]) {
                     return true;
                 }
-            }
+            }.bind(this));
             return false;
         },
 
@@ -334,7 +334,7 @@ define([], function() {
                 } else {
                     //request to check if a match exists
                     if (this.getValueFieldValue() !== '') {
-                        this.doMatchesExist();
+                        this.checkMatches();
                     }
                 }
             } else {
@@ -350,7 +350,7 @@ define([], function() {
          * Tries to request matches via the remoteUrl
          * and emits an event if matches do exist
          */
-        doMatchesExist: function() {
+        checkMatches: function() {
             var delimiter = (this.options.remoteUrl.indexOf('?') === -1) ? '?' : '&';
             this.sandbox.emit(REQUEST_MATCH.call(this));
             this.sandbox.util.ajax({
@@ -446,12 +446,11 @@ define([], function() {
             this.total = data[this.options.totalKey];
             this.data = [];
 
-            for (var i = -1, length = data[this.options.resultKey].length; ++i < length;) {
-                if (this.isExcluded(data[this.options.resultKey][i]) === false) {
-                    this.data.push(data[this.options.resultKey][i]);
+            this.sandbox.util.foreach(data[this.options.resultKey], function(key) {
+                if (this.isExcluded(key) === false) {
+                    this.data.push(key);
                 }
-            }
-
+            }.bind(this));
             return this.data;
         }
     };
