@@ -12,11 +12,13 @@
     "normalize.scss",
     "animations.scss",
     "utilities.scss",
-    "typo.scss";
+    "typo.scss",
+    "dropdown-menu.scss";
 
 
 // Husky Modules
 @import
+    "modules/overlay",
     "modules/glyphicons.scss",
     "modules/icons.scss",
     "modules/core.scss",
@@ -43,4 +45,6 @@
     "modules/column-navigation.scss",
     "modules/auto-complete-list.scss",
     "modules/dropdown-multiple-select.scss",
+    "modules/smart-content.scss",
+    "modules/top-toolbar.scss",
     "modules/datagrid";

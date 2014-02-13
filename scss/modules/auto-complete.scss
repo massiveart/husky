@@ -16,14 +16,13 @@
     border-radius: 4px 4px 0 0;
 
     input[type="text"] {
-      width: 100%;
-      border: 0;
-      outline: 0;
-      background: $white;
-      padding: 4px 8px;
+//      width: 100%;
+//      border: 1px solid $grayLighter;
+//      outline: 0;
+//      background: $white;
+//      padding: 4px 8px;
       border-radius: 4px 4px 0 0;
-      font-size: $smallFontSize;
-      height: 30px;
+      margin: 0;
     }
 }
 
@@ -34,8 +33,13 @@
 .tt-suggestions {
     width: 100%;
     top: 37px;
-    border-top: 1px solid $grayLightest;
     background: $white;
+}
+
+.tt-dropdown-menu {
+    width: 100%;
+    border: 1px solid $grayLighter;
+    margin-top: -1px;
 }
 
 .tt-hint {
@@ -44,13 +48,14 @@
 
 .tt-suggestion {
     height: 25px;
+    width: 100%;
     padding: 0 6px;
-    border-width: 0 2px 0 2px;
+    border-width: 0 0px 0 0px;
     border-style: solid;
     border-color: #fff;
 
     .border {
-        border-bottom: 1px solid $grayLightest;
+//        border-bottom: 1px solid $grayLighter;
         height: 25px;
         clear: both;
         .icon {
@@ -74,7 +79,12 @@
 
 .tt-suggestion:hover,
 .tt-is-under-cursor {
-    background: $grayLightest;
+    background: $highlightColor;
+    .border {
+        border: 0;
+        color: white;
+    }
+
 }
 
 .suggestion {

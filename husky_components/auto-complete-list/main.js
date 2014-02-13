@@ -67,7 +67,7 @@ define([], function() {
                 prefetchUrl: '',
                 remoteUrl: '',
                 autocompleteOptions: {},
-                autocompleteParameter: 'query',
+                getParameter: 'query',
                 maxListItems: 0,
                 CapitalizeFirstLetter: false,
                 listItemClass: 'auto-complete-list-selection',
@@ -88,13 +88,13 @@ define([], function() {
                     '<div class="auto-complete-list-container">',
                     '    <label>',
                     '        <%= label %>',
-                    '            <div class="auto-complete-list">',
+                    '            <div class="auto-complete-list form-element">',
                     '                <div class="husky-autocomplete-wrapper"></div>',
                     '                <div class="toggler"><span></span></div>',
                     '            </div>',
                     '        </label>',
                     '    </div>'
-                    ].join(''),
+                ].join(''),
                 suggestion: [
                     '<div class="auto-complete-list-suggestions">',
                     '    <h5><%= headline %></h5>',
@@ -105,7 +105,7 @@ define([], function() {
             },
 
             /** Position values for toggling suggestions */
-            togglerPosUp = 'up',
+                togglerPosUp = 'up',
             togglerPosDown = 'down',
 
             eventNamespace = 'husky.auto-complete-list.',
@@ -114,7 +114,7 @@ define([], function() {
              * raised after initialization
              * @event husky.auto-complete-list.initialized
              */
-            INITIALIZED = function() {
+                INITIALIZED = function() {
                 return createEventName.call(this, 'initialized');
             },
 
@@ -122,7 +122,7 @@ define([], function() {
              * raised after AJAX request for loading items is sent
              * @event husky.auto-complete-list.items-request
              */
-            ITEM_REQUEST = function() {
+                ITEM_REQUEST = function() {
                 return createEventName.call(this, 'item-request');
             },
 
@@ -130,7 +130,7 @@ define([], function() {
              * raised after AJAX request for loading suggestions is sent
              * @event husky.auto-complete-list.sug-request
              */
-            SUGGESTION_REQUEST = function() {
+                SUGGESTION_REQUEST = function() {
                 return createEventName.call(this, 'sug-request');
             },
 
@@ -139,7 +139,7 @@ define([], function() {
              * @event husky.auto-complete-list.sug-added
              * @param {object} suggestion - the suggestion element with id, name, DOM-object
              */
-            SUGGESTION_ADDED = function() {
+                SUGGESTION_ADDED = function() {
                 return createEventName.call(this, 'sug-added');
             },
 
@@ -147,7 +147,7 @@ define([], function() {
              * raised after an item is deleted
              * @event husky.auto-complete-list.item-deleted
              */
-            ITEM_DELETED = function() {
+                ITEM_DELETED = function() {
                 return createEventName.call(this, 'item-deleted');
             },
 
@@ -156,7 +156,7 @@ define([], function() {
              * @event husky.auto-complete-list.item-added
              * @param {string} item value
              */
-            ITEM_ADDED = function() {
+                ITEM_ADDED = function() {
                 return createEventName.call(this, 'item-added');
             },
 
@@ -164,7 +164,7 @@ define([], function() {
              * raised when the suggestion container is closed
              * @event husky.auto-complete-list.sug-closed
              */
-            SUGGESTIONS_CLOSED = function() {
+                SUGGESTIONS_CLOSED = function() {
                 return createEventName.call(this, 'sug-closed');
             },
 
@@ -172,12 +172,12 @@ define([], function() {
              * raised when the suggestion container is opened
              * @event husky.auto-complete-list.sug-opened
              */
-            SUGGESTIONS_OPENED = function() {
+                SUGGESTIONS_OPENED = function() {
                 return createEventName.call(this, 'sug-opened');
             },
 
             /** returns normalized event names */
-            createEventName = function(postFix) {
+                createEventName = function(postFix) {
                 return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
             };
 
@@ -284,7 +284,7 @@ define([], function() {
                                 localData: this.options.localData,
                                 prefetchUrl: this.options.prefetchUrl,
                                 remoteUrl: this.options.remoteUrl,
-                                getParameter: this.options.autocompleteParameter,
+                                getParameter: this.options.getParameter,
                                 suggestionImg: this.options.autoCompleteIcon
                             },
                             this.options.autocompleteOptions
@@ -298,27 +298,20 @@ define([], function() {
              */
             startTagmanager: function() {
                 this.tagApi = this.sandbox.autocompleteList.init(this.$input, {
-                                tagClass: this.options.listItemClass,
-                                prefilled: this.options.items,
-                                tagCloseIcon: '',
-                                maxTags: this.options.maxListItems,
-                                AjaxPush: this.options.AjaxPush,
-                                AjaxPushAllTags: this.options.AjaxPushAllItems,
-                                AjaxPushParameters: this.options.AjaxPushParameters,
-                                CapitalizeFirstLetter: this.options.CapitalizeFirstLetter,
-                                validator: function(string) {
-                                    this.sandbox.emit(ITEM_ADDED.call(this), string);
-                                    return true;
-                                }.bind(this)
-                            });
-                this.setElementDataTags();
-                this.setDropdownWidth();
-            },
-
-            setDropdownWidth: function() {
-                this.sandbox.dom.css(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), {
-                    width: this.sandbox.dom.width(this.$el)+'px'
+                    tagClass: this.options.listItemClass,
+                    prefilled: this.options.items,
+                    tagCloseIcon: '',
+                    maxTags: this.options.maxListItems,
+                    AjaxPush: this.options.AjaxPush,
+                    AjaxPushAllTags: this.options.AjaxPushAllItems,
+                    AjaxPushParameters: this.options.AjaxPushParameters,
+                    CapitalizeFirstLetter: this.options.CapitalizeFirstLetter,
+                    validator: function(string) {
+                        this.sandbox.emit(ITEM_ADDED.call(this), string);
+                        return true;
+                    }.bind(this)
                 });
+                this.setElementDataTags();
             },
 
             /**
@@ -338,7 +331,7 @@ define([], function() {
              */
             bindEvents: function() {
                 this.sandbox.on(createEventName.call(this, 'getTags'), function(callback) {
-                    if(typeof callback === 'function') {
+                    if (typeof callback === 'function') {
                         callback(this.getTags());
                     } else {
                         this.sandbox.logger.log('Error: Callback is not a function');
@@ -354,19 +347,19 @@ define([], function() {
                 }.bind(this));
 
                 //if an autocomplete-suggestion gets clicked on, it gets added to the list
-                this.sandbox.on('husky.auto-complete.'+ this.options.instanceName +'.select', function(d) {
+                this.sandbox.on('husky.auto-complete.' + this.options.instanceName + '.select', function(d) {
                     this.pushTag(d.name);
                 }.bind(this));
 
                 this.sandbox.dom.on(this.$input, 'keydown', function(event) {
-                    if(event.keyCode === 8 && this.sandbox.dom.val(this.$input).trim() === '') {
+                    if (event.keyCode === 8 && this.sandbox.dom.val(this.$input).trim() === '') {
                         this.itemDeleteHandler();
                         this.setElementDataTags();
                     }
                 }.bind(this));
 
                 this.sandbox.dom.on(this.$el, 'click', function(event) {
-                    if(this.sandbox.dom.hasClass(event.target, 'tm-tag-remove') === true) {
+                    if (this.sandbox.dom.hasClass(event.target, 'tm-tag-remove') === true) {
                         this.itemDeleteHandler();
                         this.setElementDataTags();
                     }

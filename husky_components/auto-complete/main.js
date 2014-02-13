@@ -29,11 +29,10 @@
  * @param {Boolean} [options.stickToInput] If true suggestions are always under the input field
  * @param {Boolean} [options.hint] if false typeahead hint-field will be removed
  * @param {Boolean} [options.emptyOnBlur] If true input field value gets deleted on blur
- * @param {Boolean} [options.dropdownAsBigAsWrapper] If true dropdown width gets set to the outerWidth of the wrapper
  * @param {Array} [options.excludes] Array of suggestions to exclude from the suggestion dropdown
  */
 
-define([], function () {
+define([], function() {
 
     'use strict';
 
@@ -41,80 +40,79 @@ define([], function () {
      * Default values for options
      */
     var defaults = {
-        prefetchUrl: '',
-        localData: [],
-        remoteUrl: '',
-        getParameter: 'query',
-        valueKey: 'name',
-        totalKey: 'total',
-        resultKey: '_embedded',
-        value: null,
-        instanceName: 'undefined',
-        noNewValues: false,
-        suggestionClass: 'suggestion',
-        suggestionImg: '',
-        stickToInput: false,
-        hint: false,
-        emptyOnBlur: false,
-        dropdownAsBigAsWrapper: true,
-        excludes: []
-    },
+            prefetchUrl: '',
+            localData: [],
+            remoteUrl: '',
+            getParameter: 'query',
+            valueKey: 'name',
+            totalKey: 'total',
+            resultKey: '_embedded',
+            value: null,
+            instanceName: 'undefined',
+            noNewValues: false,
+            suggestionClass: 'suggestion',
+            suggestionImg: '',
+            stickToInput: false,
+            hint: false,
+            emptyOnBlur: false,
+            excludes: []
+        },
 
-    eventNamespace = 'husky.auto-complete.',
+        eventNamespace = 'husky.auto-complete.',
 
-    /**
-     * raised after initialization
-     * @event husky.auto-complete.initialized
-     */
-    INITIALIZED = function() {
-        return createEventName.call(this, 'initialized');
-    },
+        /**
+         * raised after initialization
+         * @event husky.auto-complete.initialized
+         */
+            INITIALIZED = function() {
+            return createEventName.call(this, 'initialized');
+        },
 
-    /**
-     * raised after prefetched data is retrieved
-     * @event husky.auto-complete.prefetch-data
-     */
-     PREFETCH_LOAD = function() {
-        return createEventName.call(this, 'prefetch-data');
-     },
+        /**
+         * raised after prefetched data is retrieved
+         * @event husky.auto-complete.prefetch-data
+         */
+            PREFETCH_LOAD = function() {
+            return createEventName.call(this, 'prefetch-data');
+        },
 
-    /**
-     * raised before remoted data is loaded
-     * @event husky.auto-complete.remote-data-load
-     */
-    REMOTE_LOAD = function() {
-        return createEventName.call(this, 'remote-data-load');
-    },
+        /**
+         * raised before remoted data is loaded
+         * @event husky.auto-complete.remote-data-load
+         */
+            REMOTE_LOAD = function() {
+            return createEventName.call(this, 'remote-data-load');
+        },
 
-    /**
-     * raised after remoted data is retrieved
-     * @event husky.auto-complete.remote-data
-     */
-    REMOTE_RETRIEVE = function() {
-        return createEventName.call(this, 'remote-data');
-    },
+        /**
+         * raised after remoted data is retrieved
+         * @event husky.auto-complete.remote-data
+         */
+            REMOTE_RETRIEVE = function() {
+            return createEventName.call(this, 'remote-data');
+        },
 
-    /**
-     * raised before the component tries to request a match after blur
-     * @event husky.auto-complete.request-match
-     */
-    REQUEST_MATCH = function() {
-        return createEventName.call(this, 'request-match');
-    },
+        /**
+         * raised before the component tries to request a match after blur
+         * @event husky.auto-complete.request-match
+         */
+            REQUEST_MATCH = function() {
+            return createEventName.call(this, 'request-match');
+        },
 
-    /**
-     * raised after autocomplete suggestion is selected
-     * @event husky.auto-complete.select
-     * @param {object} selected datum with id and name
-     */
-     SELECT = function() {
-        return createEventName.call(this, 'select');
-     },
+        /**
+         * raised after autocomplete suggestion is selected
+         * @event husky.auto-complete.select
+         * @param {object} selected datum with id and name
+         */
+            SELECT = function() {
+            return createEventName.call(this, 'select');
+        },
 
-    /** returns normalized event names */
-    createEventName = function(postFix) {
-        return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
-    };
+        /** returns normalized event names */
+            createEventName = function(postFix) {
+            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+        };
 
     return {
 
@@ -122,7 +120,7 @@ define([], function () {
          * Returns the id of the options.value object
          * @returns {Integer}
          */
-        getValueID: function () {
+        getValueID: function() {
             if (!!this.options.value) {
                 return this.options.value.id;
             } else {
@@ -134,7 +132,7 @@ define([], function () {
          * Returns the value of the options.value object
          * @returns {String}
          */
-        getValueName: function () {
+        getValueName: function() {
             if (!!this.options.value) {
                 return this.options.value[this.options.valueKey];
             } else {
@@ -142,7 +140,7 @@ define([], function () {
             }
         },
 
-        initialize: function () {
+        initialize: function() {
             this.sandbox.logger.log('initialize', this);
             this.sandbox.logger.log(arguments);
 
@@ -170,15 +168,15 @@ define([], function () {
         /**
          * Initializes the template for a suggestion element
          */
-        setTemplate: function () {
+        setTemplate: function() {
             var iconHTML = '';
             if (this.options.suggestionImg !== '') {
-                iconHTML = '<span class="icon-'+ this.options.suggestionImg +' icon"></span>';
+                iconHTML = '<span class="icon-' + this.options.suggestionImg + ' icon"></span>';
             }
             this._template = this.sandbox.util.template('' +
                 '<div class="' + this.options.suggestionClass + '" data-id="<%= id %>">' +
                 '   <div class="border">' +
-                        iconHTML +
+                iconHTML +
                 '		<div class="text"><%= name %></div>' +
                 '	</div>' +
                 '</div>');
@@ -188,7 +186,7 @@ define([], function () {
          * @param context {object} context for template - id, name
          * @returns {String} html of suggestion element
          */
-        buildTemplate: function (context) {
+        buildTemplate: function(context) {
             if (this._template !== null) {
                 return this._template(context);
             }
@@ -197,7 +195,7 @@ define([], function () {
         /**
          * Initializes and appends the input, starts the typeahead-auto-complete plugin
          */
-        render: function () {
+        render: function() {
             this.sandbox.dom.addClass(this.$el, 'husky-auto-complete');
             this.initValueField();
             this.appendValueField();
@@ -210,17 +208,17 @@ define([], function () {
          */
         initValueField: function() {
             this.$valueField = this.sandbox.dom.createElement('<input id="' + this.options.instanceName + '" ' +
-                                                                     'class="husky-validate" ' +
-                                                                     'type="text" ' +
-                                                                     'autofill="false" ' +
-                                                                     'data-id="' + this.getValueID() + '" ' +
-                                                                     'value="' + this.getValueName() + '"/>');
+                'class="husky-validate form-element" ' +
+                'type="text" ' +
+                'autofill="false" ' +
+                'data-id="' + this.getValueID() + '" ' +
+                'value="' + this.getValueName() + '"/>');
         },
 
         /**
          * Appends the input box to the component container
          */
-        appendValueField: function () {
+        appendValueField: function() {
             if (!!this.$valueField.length) {
                 this.sandbox.dom.append(this.$el, this.$valueField);
             }
@@ -229,13 +227,13 @@ define([], function () {
         /**
          * Starts the typeahead auto-complete plugin
          */
-        bindTypeahead: function () {
+        bindTypeahead: function() {
             var delimiter = (this.options.remoteUrl.indexOf('?') === -1) ? '?' : '&';
             this.sandbox.autocomplete.init(this.$valueField, {
                 name: this.options.instanceName,
                 local: this.handleData(this.localData),
                 valueKey: this.options.valueKey,
-                template: function (context) {
+                template: function(context) {
                     //saves the fact that the current input has matches
                     this.matches.push(context);
                     this.matched = true;
@@ -244,7 +242,7 @@ define([], function () {
                 prefetch: {
                     url: this.options.prefetchUrl,
                     ttl: 1,
-                    filter: function (data) {
+                    filter: function(data) {
                         this.sandbox.emit(PREFETCH_LOAD.call(this));
                         this.handleData(data);
                         return this.data;
@@ -252,10 +250,10 @@ define([], function () {
                 },
                 remote: {
                     url: this.options.remoteUrl + delimiter + this.options.getParameter + '=%QUERY',
-                    beforeSend: function () {
+                    beforeSend: function() {
                         this.sandbox.emit(REMOTE_LOAD.call(this));
                     }.bind(this),
-                    filter: function (data) {
+                    filter: function(data) {
                         this.sandbox.emit(REMOTE_RETRIEVE.call(this));
                         this.handleData(data);
                         return this.data;
@@ -272,12 +270,6 @@ define([], function () {
             if (this.options.hint === false) {
                 this.sandbox.dom.remove(this.sandbox.dom.find('.tt-hint', this.$el));
             }
-
-            //sets the dropdown width equal to the width of the wrapper
-            if (this.options.dropdownAsBigAsWrapper) {
-                this.sandbox.dom.width(this.$el.find('.tt-dropdown-menu'),
-                                       this.sandbox.dom.outerWidth(this.$el));
-            }
         },
 
         /**
@@ -287,7 +279,7 @@ define([], function () {
          */
         isExcluded: function(context) {
             for (var i = -1, length = this.excludes.length; ++i < length;) {
-                if (context.id === this.excludes[i]. id ||
+                if (context.id === this.excludes[i].id ||
                     context[this.options.valueKey] === this.excludes[i][this.options.valueKey]) {
                     return true;
                 }
@@ -298,14 +290,14 @@ define([], function () {
         /**
          * sets several events
          */
-        setEvents: function () {
-            this.sandbox.dom.on(this.$valueField, 'typeahead:selected', function (event, datum) {
+        setEvents: function() {
+            this.sandbox.dom.on(this.$valueField, 'typeahead:selected', function(event, datum) {
                 this.sandbox.emit(SELECT.call(this), datum);
                 this.setValueFieldId(datum.id);
             }.bind(this));
 
             //remove state and matches on new input
-            this.sandbox.dom.on(this.$valueField, 'keydown', function () {
+            this.sandbox.dom.on(this.$valueField, 'keydown', function() {
                 this.matched = false;
                 this.matches = [];
             }.bind(this));
@@ -315,7 +307,7 @@ define([], function () {
                 this.executeBlurHandler = false;
             }.bind(this));
 
-            this.sandbox.dom.on(this.$valueField, 'blur', function () {
+            this.sandbox.dom.on(this.$valueField, 'blur', function() {
                 //don't do anything if the dropdown is clicked on
                 if (this.executeBlurHandler === true) {
                     if (this.options.emptyOnBlur === false) {
@@ -332,7 +324,7 @@ define([], function () {
         /**
          * Gets called when the input box triggers the blur event
          */
-        handleBlur: function () {
+        handleBlur: function() {
             if (this.options.noNewValues === true) {
                 //check input matches an auto-complete suggestion
                 if (this.isMatched() === true && this.getClosestMatch() !== null) {
@@ -384,7 +376,7 @@ define([], function () {
          * Returns the closest match for an input
          * @returns {object} closest match with id and name
          */
-        getClosestMatch: function () {
+        getClosestMatch: function() {
             if (!!this.matches.length && this.getValueFieldValue() !== '') {
                 return this.matches[0];
             }
@@ -395,7 +387,7 @@ define([], function () {
          * Returns the trimed value of the input field
          * @returns {String}
          */
-        getValueFieldValue: function () {
+        getValueFieldValue: function() {
             return this.sandbox.dom.val(this.$valueField);
         },
 
@@ -403,14 +395,14 @@ define([], function () {
          * Sets the input box value
          * @param value {String} new input value
          */
-        setValueFieldValue: function (value) {
+        setValueFieldValue: function(value) {
             this.sandbox.autocomplete.setValue(this.$valueField, value);
         },
 
         /**
          * Deletes the input box value
          */
-        clearValueFieldValue: function () {
+        clearValueFieldValue: function() {
             this.sandbox.autocomplete.setValue(this.$valueField, '');
         },
 
@@ -418,7 +410,7 @@ define([], function () {
          * Sets the data-id attribute on the input box
          * @param id {Integer} new data-id attribute value
          */
-        setValueFieldId: function (id) {
+        setValueFieldId: function(id) {
             this.sandbox.dom.attr(this.$valueField, {'data-id': id});
         },
 
@@ -426,7 +418,7 @@ define([], function () {
          * returns the matched property (true if auto-complete suggestion exist)
          * @returns {boolean}
          */
-        isMatched: function () {
+        isMatched: function() {
             return this.matched;
         },
 
@@ -435,7 +427,7 @@ define([], function () {
          * case-insensitive
          * @returns {boolean}
          */
-        isMatchedExactly: function () {
+        isMatchedExactly: function() {
             if (this.isMatched() === true) {
                 if (this.getClosestMatch() !== null) {
                     if (this.getValueFieldValue().toLowerCase() === this.getClosestMatch().name.toLowerCase()) {
@@ -450,7 +442,7 @@ define([], function () {
          * Assigns loaded data to properties
          * @param data {object} with total and data array
          */
-        handleData: function (data) {
+        handleData: function(data) {
             this.total = data[this.options.totalKey];
             this.data = [];
 
