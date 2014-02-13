@@ -9,5 +9,13 @@
 }
 
 @mixin standard-box-shadow($borderSize:3px){
-  @include box-shadow(rgba(0,0,0,0.15) $borderSize $borderSize 0px 0px);
+  @include box-shadow(rgba(0,0,0,0.08) $borderSize $borderSize 0px 0px);
+}
+
+@mixin user-select($value:none){
+  user-select: $value;
+  -moz-user-select: $value;
+  -webkit-user-select: $value;
+  -ms-user-select: $value;
+  -o-user-select: $value;
 }

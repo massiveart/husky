@@ -10,6 +10,7 @@
     padding: 0 5px;
     font-size: 14px;
     border-radius: 3px;
+    border: 1px solid $grayLighter;
 
     &:focus {
         outline: 0;
@@ -57,6 +58,7 @@ label {
 
     .form-element {
         margin-top: 5px;
+        border: 1px solid  $grayLighter;
     }
 
     &.inline {
