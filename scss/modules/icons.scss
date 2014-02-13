@@ -10,6 +10,12 @@
     font-family: $baseIconFont;
 }
 
+[class^="icon-"] {
+    width: $iconWidth;
+    height: $iconHeight;
+    background-size:cover;
+}
+
 .icon-remove {
     &::after {
         content: "\E208";
@@ -104,13 +110,6 @@
 .icon-caution {
     &::after {
         content: "\e197";
-        display: inline-block;
-    }
-}
-
-.icon-contact-book {
-    &::after {
-        content: "\e089";
         display: inline-block;
     }
 }
