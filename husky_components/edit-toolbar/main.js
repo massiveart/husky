@@ -193,7 +193,7 @@ define(function() {
 
             this.sandbox.on(ITEMS_SET.call(this), function(button, items, itemId) {
                 if (items.length > 0) {
-                    this.sandbox.dom.remove(this.sandbox.dom.find('.edit-toolbar-dropdown-menu', this.items[button].$el));
+                    deleteDropdown.call(this, this.items[button]);
                     this.sandbox.dom.addClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
                     this.items[button].items = items;
                     createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
@@ -202,7 +202,7 @@ define(function() {
                         this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemId);
                     }
                 } else {
-                    this.sandbox.dom.remove(this.sandbox.dom.find('.edit-toolbar-dropdown-menu', this.items[button].$el));
+                    deleteDropdown.call(this, this.items[button]);
                     this.sandbox.dom.removeClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
                 }
             }.bind(this));
@@ -572,6 +572,24 @@ define(function() {
             // set enabled defaults
             if (!item.disabled) {
                 item.disabled = false;
+            }
+        },
+
+        /**
+         * Removes the dropdown of a button
+         * @param button
+         */
+        deleteDropdown = function(button) {
+            if (!!button.items) {
+                // remove the related stuff
+                this.sandbox.dom.remove(this.sandbox.dom.find('.edit-toolbar-dropdown-menu', button.$el));
+                this.sandbox.dom.removeClass(this.sandbox.dom.children(button.$el, 'a'), 'dropdown-toggle');
+
+                // delete JS related stuff
+                for (var i = -1, length = button.items.length; ++i < length;) {
+                    delete this.items[button.items[i].id];
+                }
+                button.items = [];
             }
         },
 
