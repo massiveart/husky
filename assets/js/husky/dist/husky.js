@@ -29040,7 +29040,7 @@ define('__component__$edit-toolbar@husky',[],function() {
         /**
          * event to change a buttons selected dropdown-item
          *
-         * @event husky.edit-toolbar.[INSTANCE_NAME.]change.item
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]item.change
          * @param {string} button The id of the button
          * @param {string} item the id or the index of the dropdown-item
          * @param {boolean} executeCallback if true callback of dropdown item gets executed
@@ -29052,7 +29052,7 @@ define('__component__$edit-toolbar@husky',[],function() {
         /**
          * event to change a buttons default title and default icon
          *
-         * @event husky.edit-toolbar.[INSTANCE_NAME.]change.item
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]button.set
          * @param {string} button The id of the button
          * @param {object} object with a icon and title
          */
@@ -29061,9 +29061,9 @@ define('__component__$edit-toolbar@husky',[],function() {
         },
 
         /**
-         * event to change a buttons selected dropdown-item
+         * event to set new dropdown-items for a button
          *
-         * @event husky.edit-toolbar.[INSTANCE_NAME.]change.item
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]items.set
          * @param {string} button The id of the button
          * @param {array} items The items to set
          * @param {integer} itemId The id or the index of the item to set selected - optional
@@ -29107,13 +29107,18 @@ define('__component__$edit-toolbar@husky',[],function() {
             }.bind(this));
 
             this.sandbox.on(ITEMS_SET.call(this), function(button, items, itemId) {
-                this.sandbox.dom.remove(this.sandbox.dom.find('.edit-toolbar-dropdown-menu', this.items[button].$el));
-                this.sandbox.dom.addClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
-                this.items[button].items = items;
-                createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
-                setButtonWidth.call(this, this.items[button].$el, this.items[button]);
-                if (typeof itemId !== 'undefined') {
-                    this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemId);
+                if (items.length > 0) {
+                    this.sandbox.dom.remove(this.sandbox.dom.find('.edit-toolbar-dropdown-menu', this.items[button].$el));
+                    this.sandbox.dom.addClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
+                    this.items[button].items = items;
+                    createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
+                    setButtonWidth.call(this, this.items[button].$el, this.items[button]);
+                    if (!!itemId) {
+                        this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemId);
+                    }
+                } else {
+                    this.sandbox.dom.remove(this.sandbox.dom.find('.edit-toolbar-dropdown-menu', this.items[button].$el));
+                    this.sandbox.dom.removeClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
                 }
             }.bind(this));
         },
@@ -29594,7 +29599,6 @@ define('__component__$edit-toolbar@husky',[],function() {
                 if (!!item.itemsOption) {
                     this.sandbox.util.load(item.itemsOption.url)
                         .then(function(result) {
-                            this.sandbox.dom.addClass($listLink, 'dropdown-toggle');
                             handleRequestedItems.call(this, result[this.options.itemsRequestKey], item.id);
                         }.bind(this))
                         .fail(function(result) {
