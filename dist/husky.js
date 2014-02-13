@@ -29361,7 +29361,9 @@ define('__component__$column-navigation@husky',[], function() {
 
 
         dropDownItemClicked: function(event){
-            this.sandbox.emit(SETTINGS, this.selected[this.selected.length-1], event);
+            if (typeof this.selected[this.selected.length - 1] !== 'undefined') {
+                this.sandbox.emit(SETTINGS, this.selected[this.selected.length - 1], event);
+            }
         },
 
         /**
