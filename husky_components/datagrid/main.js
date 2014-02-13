@@ -983,11 +983,14 @@ define(function() {
 
             domId = this.sandbox.dom.data($tblRow, 'dom-id');
 
+
             // remove row elements from validation
-            $editableElements = this.sandbox.dom.find('.editable', $tblRow);
-            this.sandbox.util.each($editableElements, function(index, $element) {
-                this.sandbox.form.removeField(this.$el, $element);
-            }.bind(this));
+            if (!!this.options.validation) {
+                $editableElements = this.sandbox.dom.find('.editable', $tblRow);
+                this.sandbox.util.each($editableElements, function(index, $element) {
+                    this.sandbox.form.removeField(this.$el, $element);
+                }.bind(this));
+            }
 
             // remove deleted row from changedData
             if (!!this.changedData && !!this.changedData[domId]) {
