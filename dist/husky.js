@@ -29814,21 +29814,20 @@ define('__component__$edit-toolbar@husky',[],function() {
  * @param {String} [options.prefetchUrl] url to prefetch data
  * @param {Array} [options.localData] array of local data
  * @param {String} [options.remoteUrl] url to fetch data on input
- * @param {String} [options.GETparameter] name for GET-parameter in remote query
+ * @param {String} [options.getParameter] name for GET-parameter in remote query
  * @param {String} [options.valueKey] Name of value-property in suggestion
  * @param {String} [options.totalKey] Key for total-property in JSON-result
  * @param {String} [options.resultKey] Key for suggestions-array in JSON result
  * @param {object} [options.value] with name (value of the input box), id (data-id of the input box)
- * @param {String} [options.valueName] Key for the value property in options.value
  * @param {String} [options.instanceName] name of the component instance
  * @param {Boolean} [options.noNewValues] if true input value must have been suggested by auto-complete
- * @param {String} [options.successClass] success-class if nowNewValues is false
- * @param {String} [options.failClass] fail-class if noNewValues is false
  * @param {String} [options.suggestionClass] CSS-class for auto-complete suggestions
  * @param {String} [options.suggestionImg] Icon Class - Image gets rendered before every suggestion
  * @param {Boolean} [options.stickToInput] If true suggestions are always under the input field
  * @param {Boolean} [options.hint] if false typeahead hint-field will be removed
  * @param {Boolean} [options.emptyOnBlur] If true input field value gets deleted on blur
+ * @param {Boolean} [options.dropdownAsBigAsWrapper] If true dropdown width gets set to the outerWidth of the wrapper
+ * @param {Array} [options.excludes] Array of suggestions to exclude from the suggestion dropdown
  */
 
 define('__component__$auto-complete@husky',[], function () {
@@ -29847,16 +29846,15 @@ define('__component__$auto-complete@husky',[], function () {
         totalKey: 'total',
         resultKey: '_embedded',
         value: null,
-        valueName: 'value',
         instanceName: 'undefined',
         noNewValues: false,
-        successClass: 'husky-auto-complete-success',
-        failClass: 'husky-auto-complete-error',
         suggestionClass: 'suggestion',
         suggestionImg: '',
         stickToInput: false,
         hint: false,
-        emptyOnBlur: false
+        emptyOnBlur: false,
+        dropdownAsBigAsWrapper: true,
+        excludes: []
     },
 
     eventNamespace = 'husky.auto-complete.',
@@ -29894,6 +29892,14 @@ define('__component__$auto-complete@husky',[], function () {
     },
 
     /**
+     * raised before the component tries to request a match after blur
+     * @event husky.auto-complete.request-match
+     */
+    REQUEST_MATCH = function() {
+        return createEventName.call(this, 'request-match');
+    },
+
+    /**
      * raised after autocomplete suggestion is selected
      * @event husky.auto-complete.select
      * @param {object} selected datum with id and name
@@ -29927,7 +29933,7 @@ define('__component__$auto-complete@husky',[], function () {
          */
         getValueName: function () {
             if (!!this.options.value) {
-                return this.options.value[this.options.valueName];
+                return this.options.value[this.options.valueKey];
             } else {
                 return '';
             }
@@ -29937,14 +29943,19 @@ define('__component__$auto-complete@husky',[], function () {
             this.sandbox.logger.log('initialize', this);
             this.sandbox.logger.log(arguments);
 
+            // extend default options
+            this.options = this.sandbox.util.extend({}, defaults, this.options);
+
             this._template = null;
             this.data = null;
             this.total = 0;
             this.matched = true;
             this.matches = [];
-
-            // extend default options
-            this.options = this.sandbox.util.extend({}, defaults, this.options);
+            this.executeBlurHandler = true;
+            this.excludes = this.options.excludes;
+            this.localData = {};
+            this.localData[this.options.resultKey] = this.options.localData;
+            this.localData[this.options.totalKey] = this.options.localData.length;
 
             this.setTemplate();
 
@@ -30019,13 +30030,12 @@ define('__component__$auto-complete@husky',[], function () {
             var delimiter = (this.options.remoteUrl.indexOf('?') === -1) ? '?' : '&';
             this.sandbox.autocomplete.init(this.$valueField, {
                 name: this.options.instanceName,
-                local: this.options.localData,
+                local: this.handleData(this.localData),
                 valueKey: this.options.valueKey,
                 template: function (context) {
                     //saves the fact that the current input has matches
                     this.matches.push(context);
                     this.matched = true;
-
                     return this.buildTemplate(context);
                 }.bind(this),
                 prefetch: {
@@ -30052,13 +30062,34 @@ define('__component__$auto-complete@husky',[], function () {
 
             //looses the dropdown from the input box
             if (this.options.stickToInput === false) {
-                this.sandbox.dom.css('.twitter-typeahead', 'position', 'static');
+                this.sandbox.dom.css(this.sandbox.dom.find('.twitter-typeahead', this.$el), 'position', 'static');
             }
 
             //removes the typeahead hint box
             if (this.options.hint === false) {
-                this.sandbox.dom.remove('.tt-hint');
+                this.sandbox.dom.remove(this.sandbox.dom.find('.tt-hint', this.$el));
             }
+
+            //sets the dropdown width equal to the width of the wrapper
+            if (this.options.dropdownAsBigAsWrapper) {
+                this.sandbox.dom.width(this.$el.find('.tt-dropdown-menu'),
+                                       this.sandbox.dom.outerWidth(this.$el));
+            }
+        },
+
+        /**
+         * Returns true if id or name of context is contained within the excluded array
+         * @param context {object} context with id and name
+         * @returns {Boolean}
+         */
+        isExcluded: function(context) {
+            for (var i = -1, length = this.excludes.length; ++i < length;) {
+                if (context.id === this.excludes[i]. id ||
+                    context[this.options.valueKey] === this.excludes[i][this.options.valueKey]) {
+                    return true;
+                }
+            }
+            return false;
         },
 
         /**
@@ -30074,14 +30105,23 @@ define('__component__$auto-complete@husky',[], function () {
             this.sandbox.dom.on(this.$valueField, 'keydown', function () {
                 this.matched = false;
                 this.matches = [];
-                this.setNoState();
+            }.bind(this));
+
+            //ensures that the blur callback does not get called
+            this.sandbox.dom.on(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), 'mousedown', function() {
+                this.executeBlurHandler = false;
             }.bind(this));
 
             this.sandbox.dom.on(this.$valueField, 'blur', function () {
-                if (this.options.emptyOnBlur === false) {
-                    this.handleBlur();
+                //don't do anything if the dropdown is clicked on
+                if (this.executeBlurHandler === true) {
+                    if (this.options.emptyOnBlur === false) {
+                        this.handleBlur();
+                    } else {
+                        this.clearValueFieldValue();
+                    }
                 } else {
-                    this.clearValueFieldValue();
+                    this.executeBlurHandler = true;
                 }
             }.bind(this));
         },
@@ -30093,11 +30133,14 @@ define('__component__$auto-complete@husky',[], function () {
             if (this.options.noNewValues === true) {
                 //check input matches an auto-complete suggestion
                 if (this.isMatched() === true && this.getClosestMatch() !== null) {
+                    //set value o field to the closes match
                     this.setValueFieldValue(this.getClosestMatch().name);
                     this.setValueFieldId(this.getClosestMatch().id);
-                    this.setSuccessState();
                 } else {
-                    this.setFailState();
+                    //request to check if a match exists
+                    if (this.getValueFieldValue() !== '') {
+                        this.doMatchesExist();
+                    }
                 }
             } else {
                 //check if new input or already contained in auto-complete suggestions
@@ -30106,6 +30149,32 @@ define('__component__$auto-complete@husky',[], function () {
                     this.setValueFieldId(this.getClosestMatch().id);
                 }
             }
+        },
+
+        /**
+         * Tries to request matches via the remoteUrl
+         * and emits an event if matches do exist
+         */
+        doMatchesExist: function() {
+            var delimiter = (this.options.remoteUrl.indexOf('?') === -1) ? '?' : '&';
+            this.sandbox.emit(REQUEST_MATCH.call(this));
+            this.sandbox.util.ajax({
+                url: this.options.remoteUrl + delimiter + this.options.getParameter + '=' + this.getValueFieldValue(),
+
+                success: function(data) {
+                    this.matches = this.handleData(data);
+                    if (this.matches.length > 0) {
+                        this.setValueFieldValue(this.getClosestMatch().name);
+                        this.setValueFieldId(this.getClosestMatch().id);
+                    } else {
+                        this.clearValueFieldValue();
+                    }
+                }.bind(this),
+
+                error: function(error) {
+                    this.sandbox.logger.log('Error requesting auto-complete-matches', error);
+                }.bind(this)
+            });
         },
 
         /**
@@ -30124,7 +30193,7 @@ define('__component__$auto-complete@husky',[], function () {
          * @returns {String}
          */
         getValueFieldValue: function () {
-            return this.sandbox.dom.val(this.$valueField).trim();
+            return this.sandbox.dom.val(this.$valueField);
         },
 
         /**
@@ -30132,14 +30201,14 @@ define('__component__$auto-complete@husky',[], function () {
          * @param value {String} new input value
          */
         setValueFieldValue: function (value) {
-            this.sandbox.dom.val(this.$valueField, value);
+            this.sandbox.autocomplete.setValue(this.$valueField, value);
         },
 
         /**
          * Deletes the input box value
          */
         clearValueFieldValue: function () {
-            this.sandbox.dom.clearVal(this.$valueField);
+            this.sandbox.autocomplete.setValue(this.$valueField, '');
         },
 
         /**
@@ -30179,33 +30248,16 @@ define('__component__$auto-complete@husky',[], function () {
          * @param data {object} with total and data array
          */
         handleData: function (data) {
-            this.data = data[this.options.resultKey];
             this.total = data[this.options.totalKey];
-            this.sandbox.logger.log(this.total);
-        },
+            this.data = [];
 
-        /**
-         * Sets success CSS-class on component container
-         * if no new values are alowed
-         */
-        setSuccessState: function () {
-            this.sandbox.dom.addClass(this.$el, this.options.successClass);
-        },
+            for (var i = -1, length = data[this.options.resultKey].length; ++i < length;) {
+                if (this.isExcluded(data[this.options.resultKey][i]) === false) {
+                    this.data.push(data[this.options.resultKey][i]);
+                }
+            }
 
-        /**
-         * Sets fail CSS-class on component container
-         * if no new values are alowed
-         */
-        setFailState: function () {
-            this.sandbox.dom.addClass(this.$el, this.options.failClass);
-        },
-
-        /**
-         * Removes success and fail CSS-class
-         */
-        setNoState: function () {
-            this.sandbox.dom.removeClass(this.$el, this.options.successClass);
-            this.sandbox.dom.removeClass(this.$el, this.options.failClass);
+            return this.data;
         }
     };
 });
@@ -30273,7 +30325,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                 suggestionsUrl: '',
                 suggestionsKey: 'suggestions',
                 label: '',
-                inputSelector: '.husky-autocomplete',
+                inputSelector: '.husky-autocomplete-wrapper',
                 autocomplete: true,
                 localData: [],
                 prefetchUrl: '',
@@ -30301,7 +30353,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                     '    <label>',
                     '        <%= label %>',
                     '            <div class="auto-complete-list">',
-                    '                <div class="husky-autocomplete"></div>',
+                    '                <div class="husky-autocomplete-wrapper"></div>',
                     '                <div class="toggler"><span></span></div>',
                     '            </div>',
                     '        </label>',
@@ -34999,8 +35051,11 @@ define('husky_extensions/template',['underscore', 'jquery'], function(_, $) {
 
 				init: function(selector, configs) {
 					return app.core.dom.$(selector).typeahead(configs);
-				}
+				},
 
+                setValue: function(selector, value) {
+                    return app.core.dom.$(selector).typeahead('setQuery', value);
+                }
 			};
 		}
 	});
