@@ -29280,13 +29280,18 @@ define('__component__$edit-toolbar@husky',[],function() {
             }.bind(this));
 
             this.sandbox.on(ITEMS_SET.call(this), function(button, items, itemId) {
-                this.sandbox.dom.remove(this.sandbox.dom.find('.edit-toolbar-dropdown-menu', this.items[button].$el));
-                this.sandbox.dom.addClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
-                this.items[button].items = items;
-                createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
-                setButtonWidth.call(this, this.items[button].$el, this.items[button]);
-                if (typeof itemId !== 'undefined') {
-                    this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemId);
+                if (items.length > 0) {
+                    deleteDropdown.call(this, this.items[button]);
+                    this.sandbox.dom.addClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
+                    this.items[button].items = items;
+                    createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
+                    setButtonWidth.call(this, this.items[button].$el, this.items[button]);
+                    if (!!itemId) {
+                        this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemId);
+                    }
+                } else {
+                    deleteDropdown.call(this, this.items[button]);
+                    this.sandbox.dom.removeClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
                 }
             }.bind(this));
         },
@@ -29655,6 +29660,24 @@ define('__component__$edit-toolbar@husky',[],function() {
             // set enabled defaults
             if (!item.disabled) {
                 item.disabled = false;
+            }
+        },
+
+        /**
+         * Removes the dropdown of a button
+         * @param button
+         */
+        deleteDropdown = function(button) {
+            if (!!button.items) {
+                // remove the related stuff
+                this.sandbox.dom.remove(this.sandbox.dom.find('.edit-toolbar-dropdown-menu', button.$el));
+                this.sandbox.dom.removeClass(this.sandbox.dom.children(button.$el, 'a'), 'dropdown-toggle');
+
+                // delete JS related stuff
+                for (var i = -1, length = button.items.length; ++i < length;) {
+                    delete this.items[button.items[i].id];
+                }
+                button.items = [];
             }
         },
 

@@ -181,6 +181,10 @@
 
             app.sandbox.on('husky.edit-toolbar.contact.initialized', function() {
                 app.sandbox.emit('husky.edit-toolbar.contact.items.set', 'state', stateItems, 1);
+                setTimeout(function() {
+                    app.sandbox.emit('husky.edit-toolbar.contact.items.set', 'state', [], 1);
+                    app.sandbox.emit('husky.edit-toolbar.contact.items.set', 'state', stateItems, 1);
+                }, 500);
             });
 
             app.sandbox.start([
