@@ -3849,7 +3849,7 @@ hr.divider {
 /* line 15, ../scss/modules/form.scss */
 .form-element:focus {
   outline: 0;
-  border-color: #efefef;
+  border-color: #cccccc;
 }
 /* line 20, ../scss/modules/form.scss */
 .form-element.input-large {
@@ -5127,42 +5127,35 @@ a.btn-black, a.btn-highlight {
 }
 /* line 18, ../scss/modules/auto-complete.scss */
 .husky-auto-complete input[type="text"] {
-  width: 100%;
-  border: 1px solid #cccccc;
-  outline: 0;
-  background: white;
-  padding: 4px 8px;
   border-radius: 4px 4px 0 0;
-  font-size: 12px;
-  height: 30px;
+  margin: 0;
 }
 
-/* line 30, ../scss/modules/auto-complete.scss */
+/* line 29, ../scss/modules/auto-complete.scss */
 .twitter-typeahead {
   width: 100%;
 }
 
-/* line 34, ../scss/modules/auto-complete.scss */
+/* line 33, ../scss/modules/auto-complete.scss */
 .tt-suggestions {
   width: 100%;
   top: 37px;
-  border-top: 1px solid #efefef;
   background: white;
 }
 
-/* line 41, ../scss/modules/auto-complete.scss */
+/* line 39, ../scss/modules/auto-complete.scss */
 .tt-dropdown-menu {
   width: 100%;
   border: 1px solid #cccccc;
-  border-top: 0;
+  margin-top: -1px;
 }
 
-/* line 47, ../scss/modules/auto-complete.scss */
+/* line 45, ../scss/modules/auto-complete.scss */
 .tt-hint {
   display: none;
 }
 
-/* line 51, ../scss/modules/auto-complete.scss */
+/* line 49, ../scss/modules/auto-complete.scss */
 .tt-suggestion {
   height: 25px;
   width: 100%;
@@ -5171,12 +5164,12 @@ a.btn-black, a.btn-highlight {
   border-style: solid;
   border-color: #fff;
 }
-/* line 59, ../scss/modules/auto-complete.scss */
+/* line 57, ../scss/modules/auto-complete.scss */
 .tt-suggestion .border {
   height: 25px;
   clear: both;
 }
-/* line 63, ../scss/modules/auto-complete.scss */
+/* line 61, ../scss/modules/auto-complete.scss */
 .tt-suggestion .border .icon {
   display: block;
   float: left;
@@ -5186,29 +5179,29 @@ a.btn-black, a.btn-highlight {
   text-align: center;
   line-height: 25px;
 }
-/* line 72, ../scss/modules/auto-complete.scss */
+/* line 70, ../scss/modules/auto-complete.scss */
 .tt-suggestion .border .text {
   float: left;
   line-height: 25px;
 }
-/* line 77, ../scss/modules/auto-complete.scss */
+/* line 75, ../scss/modules/auto-complete.scss */
 .tt-suggestion:last-child .border {
   border-bottom: none;
 }
 
-/* line 83, ../scss/modules/auto-complete.scss */
+/* line 81, ../scss/modules/auto-complete.scss */
 .tt-suggestion:hover,
 .tt-is-under-cursor {
   background: #249fbe;
 }
-/* line 85, ../scss/modules/auto-complete.scss */
+/* line 83, ../scss/modules/auto-complete.scss */
 .tt-suggestion:hover .border,
 .tt-is-under-cursor .border {
   border: 0;
   color: white;
 }
 
-/* line 92, ../scss/modules/auto-complete.scss */
+/* line 90, ../scss/modules/auto-complete.scss */
 .suggestion {
   color: black;
 }
@@ -5955,26 +5948,27 @@ a.btn-black, a.btn-highlight {
   font-size: 12px;
   min-height: 30px;
   border-radius: 4px 4px 0 0;
+  margin: 0;
 }
-/* line 49, ../scss/modules/auto-complete-list.scss */
+/* line 50, ../scss/modules/auto-complete-list.scss */
 .auto-complete-list-container .tt-suggestions {
   width: 100%;
 }
 
-/* line 54, ../scss/modules/auto-complete-list.scss */
+/* line 55, ../scss/modules/auto-complete-list.scss */
 .auto-complete-list {
   padding: 1px 8px;
   border-radius: 4px;
   background-color: #fff;
 }
-/* line 59, ../scss/modules/auto-complete-list.scss */
+/* line 60, ../scss/modules/auto-complete-list.scss */
 .auto-complete-list .husky-auto-complete {
   background: none;
   border-radius: 0;
   position: static;
   margin: 0;
 }
-/* line 65, ../scss/modules/auto-complete-list.scss */
+/* line 66, ../scss/modules/auto-complete-list.scss */
 .auto-complete-list .husky-auto-complete input[type="text"] {
   margin: 7px 10px 7px 0;
   padding: 0;
@@ -5985,7 +5979,7 @@ a.btn-black, a.btn-highlight {
   height: auto;
 }
 
-/* line 77, ../scss/modules/auto-complete-list.scss */
+/* line 78, ../scss/modules/auto-complete-list.scss */
 .auto-complete-list-selection {
   display: inline-block;
   margin: 4px 5px 4px 0;
@@ -5996,7 +5990,7 @@ a.btn-black, a.btn-highlight {
   font-size: 12px;
   line-height: normal;
 }
-/* line 87, ../scss/modules/auto-complete-list.scss */
+/* line 88, ../scss/modules/auto-complete-list.scss */
 .auto-complete-list-selection .tm-tag-remove {
   font-family: "Glyphicons";
   position: relative;
@@ -6007,14 +6001,14 @@ a.btn-black, a.btn-highlight {
   color: black;
 }
 
-/* line 99, ../scss/modules/auto-complete-list.scss */
+/* line 100, ../scss/modules/auto-complete-list.scss */
 .auto-complete-list-suggestions {
   bottom: 0;
   left: 0;
   width: 100%;
   background-color: #ddd;
 }
-/* line 105, ../scss/modules/auto-complete-list.scss */
+/* line 106, ../scss/modules/auto-complete-list.scss */
 .auto-complete-list-suggestions h5 {
   margin: 0;
   padding: 5px 8px;
@@ -6022,12 +6016,12 @@ a.btn-black, a.btn-highlight {
   color: #999999;
   font-size: 12px;
 }
-/* line 113, ../scss/modules/auto-complete-list.scss */
+/* line 114, ../scss/modules/auto-complete-list.scss */
 .auto-complete-list-suggestions ul {
   padding: 8px 8px 15px;
   margin: 0;
 }
-/* line 118, ../scss/modules/auto-complete-list.scss */
+/* line 119, ../scss/modules/auto-complete-list.scss */
 .auto-complete-list-suggestions li {
   display: inline-block;
   margin-right: 5px;
@@ -6038,7 +6032,7 @@ a.btn-black, a.btn-highlight {
   font-size: 12px;
   cursor: pointer;
 }
-/* line 129, ../scss/modules/auto-complete-list.scss */
+/* line 130, ../scss/modules/auto-complete-list.scss */
 .auto-complete-list-suggestions .deactivated {
   cursor: auto;
   color: #999999;
