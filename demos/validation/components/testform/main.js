@@ -19,7 +19,7 @@ define([], function() {
     };
 
     return {
-        templates: ['/demos/validation/template'],
+        templates: ['demos/validation/template'],
 
         initialize: function() {
             this.sandbox.logger.log('initialize', this);
@@ -32,7 +32,7 @@ define([], function() {
         },
 
         render: function() {
-            this.html(this.renderTemplate('/demos/validation/template'));
+            this.html(this.renderTemplate('demos/validation/template'));
             this.sandbox.form.create('#form');
 
             this.bindDomEvents();
