@@ -46,6 +46,9 @@
     top: 0px;
     left: 0px;
 
+    .loader {
+        padding: 50px 0;
+    }
     .no-content {
         text-align: center;
         height: 210px;
@@ -159,9 +162,8 @@
     }
     input.limit-to,
     input.data-source {
-        height: 30px;
-        width: 100%;
         padding-left: 10px;
+        border-radius: 0;
     }
     .tags.disabled {
         display: none;

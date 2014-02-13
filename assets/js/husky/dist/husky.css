@@ -6016,26 +6016,32 @@ a.btn-black, a.btn-highlight {
 .smart-overlay-content .sortMethod {
   margin-top: 25px;
 }
-/* line 160, ../scss/modules/smart-content.scss */
-.smart-overlay-content input.limit-to {
+/* line 161, ../scss/modules/smart-content.scss */
+.smart-overlay-content input.limit-to,
+.smart-overlay-content input.data-source {
   height: 30px;
   width: 100%;
   padding-left: 10px;
 }
 /* line 165, ../scss/modules/smart-content.scss */
+.smart-overlay-content input.limit-to:focus,
+.smart-overlay-content input.data-source:focus {
+  outline: 0 none transparent;
+}
+/* line 169, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tags.disabled {
   display: none;
 }
-/* line 168, ../scss/modules/smart-content.scss */
+/* line 172, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list {
   border: 1px solid #cccccc;
   border-radius: 4px 4px 0 0;
 }
-/* line 171, ../scss/modules/smart-content.scss */
+/* line 175, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list input {
   margin: 7px 0 0 0;
 }
-/* line 174, ../scss/modules/smart-content.scss */
+/* line 178, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list .tt-suggestions {
   width: 360px;
 }

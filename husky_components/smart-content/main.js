@@ -65,6 +65,7 @@
  * @params {String} [options.translations.subFoldersInclusive] translation key
  * @params {String} [options.translations.viewAll] translation key
  * @params {String} [options.translations.viewLess] translation key
+ * @params {Boolean} [options.translations.externalConfigs] if true component waits for external config object
  */
 define([], function() {
 
@@ -90,7 +91,7 @@ define([], function() {
         url: '',
         dataSourceParameter: 'dataSource',
         includeSubFolders: false,
-        includeSubFoldersParameter: 'incSubFolders',
+        includeSubFoldersParameter: 'includeSubFolders',
         categoryParameter: 'category',
         tagsParameter: 'tags',
         sortByParameter: 'sortBy',
@@ -99,7 +100,8 @@ define([], function() {
         limitResultParameter: 'limitResult',
         limitResultDisabled: false,
         resultKey: '_embedded',
-        translations: {}
+        translations: {},
+        externalConfigs: false
     },
 
     sortMethods = {
@@ -123,7 +125,8 @@ define([], function() {
         presentAsDDClass: 'present-as-dropdown',
         limitToSelector: '.limit-to',
         dataSourceSelector: '.data-source',
-        contentListClass: 'items-list'
+        contentListClass: 'items-list',
+        loaderClass: 'loader'
     },
 
     /** templates for component */
@@ -158,7 +161,7 @@ define([], function() {
 
             dataSource: ['<div class="item-half left">',
                             '<span class="desc"><%= data_source %></span>',
-                            '<input type="text" value="<%= data_source_val %>" class="data-source"/>',
+                            '<input type="text" value="<%= data_source_val %>" class="data-source form-element"/>',
                         '</div>'].join(''),
 
             subFolders: ['<div class="item-half">',
@@ -197,7 +200,7 @@ define([], function() {
 
             limitResult: ['<div class="item-half">',
                             '<span class="desc"><%= limit_result_to %></span>',
-                            '<input type="text" value="<%= limit_result %>" class="limit-to"<%= disabled %>/>',
+                            '<input type="text" value="<%= limit_result %>" class="limit-to form-element"<%= disabled %>/>',
                         '</div>'].join('')
         }
     },
@@ -240,6 +243,15 @@ define([], function() {
         return createEventName.call(this, 'data-retrieved');
      },
 
+    /**
+     * takes an config-object an merges it with this.options
+     * @event husky.smart-content.external-configs
+     * @param {object} configs The config-object to merge with this.options
+     */
+     EXTERNAL_CONFIGS = function() {
+            return createEventName.call(this, 'external-configs');
+     },
+
     /** returns normalized event names */
     createEventName = function(postFix) {
         return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
@@ -256,12 +268,31 @@ define([], function() {
             //merge options with defaults
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
+            //if externalConfigs is true wait for configs to to get in otherwise start the component right ahead
+            if (this.options.externalConfigs === true) {
+                this.sandbox.on(EXTERNAL_CONFIGS.call(this), function(configs) {
+
+                    //merge the passed components with the current ones
+                    this.options = this.sandbox.util.extend(true, {}, this.options, configs);
+
+                    this.createComponent();
+                }.bind(this));
+            } else {
+                this.createComponent();
+            }
+        },
+
+        /**
+         * Creates the component
+         */
+        createComponent: function() {
             this.setVariables();
             this.render();
             this.renderStartContent();
             this.startOverlay();
             this.bindEvents();
             this.setURI();
+            this.startLoader();
             this.loadContent();
 
             this.sandbox.emit(INITIALIZED.call(this));
@@ -302,7 +333,7 @@ define([], function() {
                 tags: this.options.tagsDisabled,
                 limitResult: this.options.limitResultDisabled
             };
-            console.log(this.overlayDisabled);
+
             this.translations = {
                 noContentFound: 'smart-content.nocontent-found',
                 noContentSelected: 'smart-content.nocontent-selected',
@@ -515,6 +546,25 @@ define([], function() {
         },
 
         /**
+         * Starts the loader component
+         */
+        startLoader: function() {
+            this.detachFooter();
+
+            var loaderContainer = this.sandbox.dom.createElement('<div class="'+ constants.loaderClass +'"/>');
+            this.sandbox.dom.html(this.$content, loaderContainer);
+
+            this.sandbox.start([{
+                name: 'loader@husky',
+                options: {
+                    el: loaderContainer,
+                    size: '100px',
+                    color: '#e4e4e4'
+                }
+            }]);
+        },
+
+        /**
          * Changes the itemsVisible property and calls the render content method
          * (more or less items are visible)
          */
@@ -539,6 +589,7 @@ define([], function() {
                     title: this.sandbox.translate(this.translations.configureSmartContent),
                     instanceName: 'smart-content.' + this.options.instanceName,
                     okCallback: function() {
+                        this.startLoader();
                         this.getOverlayData();
                     }.bind(this)
                 }
