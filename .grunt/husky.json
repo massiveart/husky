@@ -45,7 +45,7 @@
             "__component__$top-toolbar@husky": "husky_components/top-toolbar/main",
             "__component__$smart-content@husky": "husky_components/smart-content/main",
             "__component__$overlay@husky": "husky_components/overlay/main",
-            "__component__$overlay@husky": "husky_components/label/main"
+            "__component__$label@husky": "husky_components/label/main"
         },
         "shim": {
             "backbone": {
