@@ -235,7 +235,7 @@ define([], function() {
 
         changeLabel: function() {
 
-            if (this.selectedElements.length === this.options.data.length) {
+            if (this.selectedElements.length === this.options.data.length && this.options.singleSelect !== true) {
                 this.sandbox.dom.text('#' + this.labelId, this.options.checkedAllLabel);
             } else if (this.selectedElements.length === 0) {
                 this.sandbox.dom.text('#' + this.labelId, this.options.defaultLabel);
