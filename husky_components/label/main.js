@@ -14,6 +14,17 @@
  * @constructor
  *
  * @param {Object} [options] Configuration object
+ * @param {String} [options.instanceName] name of the instance
+ * @param {String} [options.type] type of the lable (WARNING, ERROR or SUCCESS)
+ * @param {String|Object} [options.html] html-string or DOM-object to insert into the label
+ * @param {String} [options.title] Title of the label (if html is null)
+ * @param {String} [options.description] Description of the lable (if html is null)
+ * @param {Boolean} [options.hasClose] if true close button gets appended to the label
+ * @param {Boolean} [options.fadeOut] if true label fades out automatically
+ * @param {Number} [options.fadeOutDelay] time in ms after which the fade-out starts
+ * @param {Number} [options.fadeDuration] duration of the fade-out in ms
+ * @param {Function} [options.closeCallback] callback to execute if the close-button is clicked
+ * @param {String} [options.insertMethod] insert method to use for inserting the label (append or prepend)
  */
 define(function() {
 
