@@ -20,6 +20,14 @@
 <body>
 <div class="container">
     <h1>Husky Label Demo</h1>
+    <div class="grid">
+        <div class="grid-row">
+            <div class="grid-col-6">
+                <div id="errorLabel"></div>
+            </div>
+        </div>
+        <div class="grid-row">&nbsp;</div>
+    </div>
 </div>
 
 <script src="../js/sinon.js"></script>
@@ -38,7 +46,14 @@
         var app = Husky({ debug: { enable: true }}),
                 _ = app.sandbox.util._;
 
-        app.start().then(function() {
+        app.start([{
+                    name: 'label@husky',
+                    options: {
+                        el: '#errorLabel',
+                        type: 'ERROR',
+                        description: 'This is a neat error-label'
+                    }
+                }]).then(function() {
             app.logger.log('Aura started...');
         });
 
