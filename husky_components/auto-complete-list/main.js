@@ -88,7 +88,7 @@ define([], function() {
                     '<div class="auto-complete-list-container">',
                     '    <label>',
                     '        <%= label %>',
-                    '            <div class="auto-complete-list form-element">',
+                    '            <div class="auto-complete-list">',
                     '                <div class="husky-auto-complete"></div>',
                     '                <div class="toggler"><span></span></div>',
                     '            </div>',
