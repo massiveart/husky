@@ -27,6 +27,12 @@
             </div>
         </div>
         <div class="grid-row">&nbsp;</div>
+        <div class="grid-row">
+            <div class="grid-col-6">
+                <div id="successLabel"></div>
+                <div id="warningLabel"></div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -51,9 +57,29 @@
                     options: {
                         el: '#errorLabel',
                         type: 'ERROR',
-                        description: 'This is a neat error-label'
+                        description: 'This is a neat error-label',
+                        closeCallback: function() {
+                            console.log('You closed a husky-error-label');
+                        }
                     }
-                }]).then(function() {
+                   },
+                    {
+                        name: 'label@husky',
+                        options: {
+                            el: '#successLabel',
+                            type: 'SUCCESS',
+                            description: 'This is a neat success-label'
+                        }
+                    },
+                    {
+                        name: 'label@husky',
+                        options: {
+                            el: '#warningLabel',
+                            type: 'WARNING',
+                            description: 'This is a neat warning-label'
+                        }
+                    }
+                   ]).then(function() {
             app.logger.log('Aura started...');
         });
 

@@ -26,17 +26,11 @@ define(function() {
         title: null,
         description: null,
         hasClose: true,
-        fadeOutStartAfter: 0,
+        fadeOut: true,
+        fadeOutDelay: 0,
         fadeDuration: 500,
         closeCallback: null,
-        clickCallback: null,
         insertMethod: 'append'
-    },
-
-    types = {
-        ERROR: 'error',
-        WARNING: 'warning',
-        SUCCESS: 'success'
     },
 
     insertMethods = {
@@ -53,16 +47,17 @@ define(function() {
     typesDefaults = {
         ERROR: {
             title: 'Error',
-            labelClass: 'husky-label-error'
+            labelClass: 'husky-label-error',
+            fadeOut: false
         },
         WARNING: {
-            fadeDurationStartAfter: 5000,
+            fadeOutDelay: 5000,
             title: 'Warning',
             labelClass: 'husky-label-warning'
         },
         SUCCESS: {
             hasClose: false,
-            fadeDurationStartAfter: 2000,
+            fadeOutDelay: 2000,
             title: 'Success',
             labelClass: 'husky-label-success'
         }
@@ -100,8 +95,46 @@ define(function() {
             },
 
             this.render();
+            this.bindEvents();
+            this.startEffects();
 
             this.sandbox.emit(INITIALIZED.call(this));
+        },
+
+        /**
+         * Binds the events for the component
+         */
+        bindEvents: function() {
+            this.sandbox.dom.on(this.label.$close, 'click', function() {
+                this.fadeOut();
+                if (typeof this.options.closeCallback === 'function') {
+                    this.options.closeCallback();
+                }
+            }.bind(this));
+        },
+
+        /**
+         * Starts the fade-out effect
+         */
+        startEffects: function() {
+            if (this.options.fadeOut === true) {
+                _.delay(function() {
+                    this.fadeOut();
+                }.bind(this), this.options.fadeOutDelay);
+            }
+        },
+
+        /**
+         * Fades the label out
+         */
+        fadeOut: function() {
+            this.sandbox.dom.fadeOut(this.label.$el, this.options.fadeDuration, function() {
+                this.sandbox.dom.css(this.label.$el, {
+                    'visibility': 'hidden',
+                    'display': 'block'
+                });
+                this.sandbox.dom.slideUp(this.label.$el, 300, this.close.bind(this));
+            }.bind(this));
         },
 
         /**
@@ -164,6 +197,13 @@ define(function() {
             } else {
                 this.sandbox.logger.log('No insert method found for', this.options.insertMethod);
             }
+        },
+
+        /**
+         * Handles closing the component
+         */
+        close: function() {
+            this.sandbox.dom.remove(this.$el);
         }
     };
 
