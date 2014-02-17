@@ -96,6 +96,14 @@ define([], function() {
         return createEventName.call(this, 'closed');
      },
 
+    /**
+     * removes the component
+     * @event husky.overlay.<instance-name>.remove
+     */
+     REMOVE = function() {
+        return createEventName.call(this, 'remove');
+     },
+
     /** returns normalized event names */
     createEventName = function(postFix) {
         return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
@@ -113,16 +121,23 @@ define([], function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
             this.setVariables();
-            this.bindTriggerEvent();
+            this.bindEvents();
         },
 
         /**
-         * Binds the event for the overlay trigger
+         * Binds general events
          */
-        bindTriggerEvent: function() {
+        bindEvents: function() {
             this.sandbox.dom.on(this.$el, this.options.trigger, function(event) {
                 this.sandbox.dom.preventDefault(event);
                 this.triggerHandler();
+            }.bind(this));
+
+            this.sandbox.on(REMOVE.call(this), function() {
+                this.sandbox.dom.off(this.$el);
+                this.sandbox.dom.off(this.overlay.$el);
+                this.sandbox.dom.remove(this.overlay.$el);
+                this.sandbox.dom.remove(this.$el);
             }.bind(this));
         },
 
