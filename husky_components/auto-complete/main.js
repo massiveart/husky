@@ -208,7 +208,7 @@ define([], function() {
          */
         initValueField: function() {
             this.$valueField = this.sandbox.dom.createElement('<input id="' + this.options.instanceName + '" ' +
-                'class="husky-validate form-element" ' +
+                'class="husky-validate" ' +
                 'type="text" ' +
                 'autofill="false" ' +
                 'data-id="' + this.getValueID() + '" ' +
@@ -278,12 +278,12 @@ define([], function() {
          * @returns {Boolean}
          */
         isExcluded: function(context) {
-            this.sandbox.util.foreach(this.excludes, function(excluded) {
-                if (context.id === excluded.id ||
-                    context[this.options.valueKey] === excluded[this.options.valueKey]) {
+            for (var i = -1, length = this.excludes.length; ++i < length;) {
+                if (context.id === this.excludes[i].id ||
+                    context[this.options.valueKey] === this.excludes[i][this.options.valueKey]) {
                     return true;
                 }
-            }.bind(this));
+            }
             return false;
         },
 
