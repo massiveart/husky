@@ -211,6 +211,7 @@ define([], function() {
                 'class="husky-validate" ' +
                 'type="text" ' +
                 'autofill="false" ' +
+                'autocomplete="off"' +
                 'data-id="' + this.getValueID() + '" ' +
                 'value="' + this.getValueName() + '"/>');
         },
