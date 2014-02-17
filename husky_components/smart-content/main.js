@@ -21,6 +21,7 @@
  * @params {Integer} [options.preSelectedCategory] array with id of the preselected category
  * @params {Array} [options.tags] array of tags which are inserted at the beginning
  * @params {String} [options.tagsAutoCompleteUrl] url to which the tags input is sent and can be autocompleted
+ * @params {String} [options.tagsGetParameter] parameter name for auto-completing tags
  * @params {Array} [options.sortBy] array of sort-possibilities with id and name property
  * @params {Integer} [options.preSelectedSortBy] array with id of the preselected sort-possibility
  * @params {String} [options.preSelectedSortMethod] Sort-method to begin with (asc or desc)
@@ -76,16 +77,17 @@ define([], function() {
         dataSource: '',
         subFoldersDisabled: false,
         categories: [],
-        preSelectedCategory: 0,
+        preSelectedCategory: null,
         tags: [],
         tagsDisabled: false,
         tagsAutoCompleteUrl: '',
+        tagsGetParameter: 'search',
         sortBy: [],
-        preSelectedSortBy: 0,
+        preSelectedSortBy: null,
         preSelectedSortMethod: 'asc',
         presentAs: [],
-        preSelectedPresentAs: 0,
-        limitResult: 0, //0 = no-limit
+        preSelectedPresentAs: null,
+        limitResult: null,
         instanceName: 'undefined',
         url: '',
         dataSourceParameter: 'dataSource',
@@ -303,7 +305,6 @@ define([], function() {
             this.startOverlay();
             this.bindEvents();
             this.setURI();
-            this.startLoader();
             this.loadContent();
 
             this.setElementData(this.overlayData);
@@ -577,7 +578,6 @@ define([], function() {
 
                 //reload the items
                 this.setURI();
-                this.startLoader();
                 this.loadContent();
             }.bind(this));
         },
@@ -642,7 +642,6 @@ define([], function() {
                     title: this.sandbox.translate(this.translations.configureSmartContent),
                     instanceName: 'smart-content.' + this.options.instanceName,
                     okCallback: function() {
-                        this.startLoader();
                         this.getOverlayData();
                     }.bind(this)
                 }
@@ -717,7 +716,8 @@ define([], function() {
                         instanceName: this.options.instanceName + constants.tagListClass,
                         items: this.options.tags,
                         remoteUrl: this.options.tagsAutoCompleteUrl,
-                        autocomplete: (this.options.tagsAutoCompleteUrl !== '')
+                        autocomplete: (this.options.tagsAutoCompleteUrl !== ''),
+                        getParameter: this.options.tagsGetParameter
                     }
                 },
                 {
@@ -796,7 +796,7 @@ define([], function() {
             //only request if URI has changed
             if (this.URI.hasChanged === true) {
                 this.sandbox.emit(DATA_REQUEST.call(this));
-
+                this.startLoader();
                 this.sandbox.util.ajax({
                     url: this.URI.str,
 
