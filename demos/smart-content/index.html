@@ -26,10 +26,14 @@
         .fixed-width {
             width: 820px;
         }
+        #setConfigs {
+            margin: 10px 0 0 50px;
+        }
     </style>
 </head>
 <body>
 <h1>Smart Content Husky Demo</h1>
+<button id="setConfigs">Set new configs to smart-content-1</button>
 <div class="container">
     <div class="grid">
         <div class="grid-row">
@@ -129,6 +133,15 @@
                 setTimeout(function() {
                     fakeServer.respond();
                 }, 100);
+            });
+
+            $('#setConfigs').on('click', function() {
+               app.sandbox.emit('husky.smart-content.smartcontent1.set-configs', {
+                   dataSource: '/newdatasource',
+                   subFoldersDisabled: true,
+                   categories: [{id: 44, name: 'New Category 1'}, {id: 48, name: 'New Category 2'}],
+                   preSelectedCategory: 48
+               });
             });
         });
     });
