@@ -566,7 +566,6 @@ define([], function() {
             this.sandbox.on(SET_CONFIGS.call(this), function(configs) {
                 //merge this.options with passed configs
                 this.options = this.sandbox.util.extend(false, {}, this.options, configs);
-                console.log(this.options, 'here');
 
                 //remove current overlay component and create new triggerer
                 this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.remove');
@@ -697,7 +696,6 @@ define([], function() {
          * Starts all husky-components used by the overlay
          */
         startOverlayComponents: function() {
-            console.log(this.options.categories, 'here');
             this.sandbox.start([
                 {
                     name: 'dropdown-multiple-select@husky',
@@ -797,7 +795,6 @@ define([], function() {
         loadContent: function() {
             //only request if URI has changed
             if (this.URI.hasChanged === true) {
-                console.log(this.URI.str);
                 this.sandbox.emit(DATA_REQUEST.call(this));
 
                 this.sandbox.util.ajax({
