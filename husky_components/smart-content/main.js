@@ -81,7 +81,7 @@ define([], function() {
         tags: [],
         tagsDisabled: false,
         tagsAutoCompleteUrl: '',
-        tagsGetParameter: 'query',
+        tagsGetParameter: 'search',
         sortBy: [],
         preSelectedSortBy: null,
         preSelectedSortMethod: 'asc',
@@ -782,7 +782,6 @@ define([], function() {
                     '&', this.options.presentAsParameter, '=', this.overlayData.presentAs,
                     '&', this.options.limitResultParameter, '=', this.overlayData.limitResult].join('');
             if (newURI !== this.URI.str) {
-                console.log(this.URI.str, newURI);
                 this.URI.str = newURI;
                 this.URI.hasChanged = true;
             } else {
