@@ -35535,10 +35535,18 @@ define('husky_extensions/collection',[],function() {
                 $(selector).slideDown(duration, complete);
             };
 
+<<<<<<< HEAD
             app.core.dom.last = function(selector) {
                 return $(selector).last();
             };
 
+=======
+
+            app.core.dom.last = function(selector) {
+                return $(selector).last();
+            };
+
+>>>>>>> c85abc76fb2e2130046698e130f2df3b2da91f1a
             app.core.dom.fadeIn = function(selector, duration, complete) {
                 $(selector).fadeIn(duration, complete);
             };
