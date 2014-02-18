@@ -175,16 +175,6 @@ define([], function() {
                     }
                 }
             ]);
-
-            this.sandbox.on('husky.dropdown.' + this.options.instanceName + '.settings.dropdown.item.click', function(item) {
-                if (!!this.selected[this.lastHoveredColumn]) {
-                    if (!!item.callback) {
-                        item.callback(item, this.selected[this.lastHoveredColumn]);
-                    } else {
-                        this.sandbox.emit(SETTINGS, item, this.selected[this.lastHoveredColumn]);
-                    }
-                }
-            }.bind(this));
         },
 
         /**
@@ -361,6 +351,18 @@ define([], function() {
 
         bindCustomEvents: function() {
             this.sandbox.on(BREADCRUMB, this.getBreadCrumb.bind(this));
+
+            this.sandbox.on('husky.dropdown.' + this.options.instanceName + '.settings.dropdown.item.click', this.dropdownItemClicked.bind(this));
+        },
+
+        dropdownItemClicked: function(item) {
+            if (!!this.selected[this.lastHoveredColumn]) {
+                if (!!item.callback) {
+                    item.callback(item, this.selected[this.lastHoveredColumn]);
+                } else {
+                    this.sandbox.emit(SETTINGS, item, this.selected[this.lastHoveredColumn]);
+                }
+            }
         },
 
         /**
