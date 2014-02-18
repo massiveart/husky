@@ -26,10 +26,14 @@
         .fixed-width {
             width: 820px;
         }
+        #setConfigs {
+            margin: 10px 0 0 50px;
+        }
     </style>
 </head>
 <body>
 <h1>Smart Content Husky Demo</h1>
+<button id="setConfigs">Set new configs to smart-content-1</button>
 <div class="container">
     <div class="grid">
         <div class="grid-row">
@@ -57,14 +61,14 @@
         'use strict';
 
         var fakeServer = sinon.fakeServer.create();
-        fakeServer.respondWith('GET', '/smartcontent?dataSource=&includeSubFolders=false&category=0&tags=&sortBy=0&sortMethod=asc&presentAs=0&limitResult=0', [200, { 'Content-Type': 'application/json' },
+        fakeServer.respondWith('GET', '/smartcontent?dataSource=&includeSubFolders=false&category=&tags=&sortBy=&sortMethod=asc&presentAs=&limitResult=', [200, { 'Content-Type': 'application/json' },
             '{"_embedded": [{"id": 1, "name": "Produkt A"}, {"id": 2, "name": "Produkt B"}, {"id": 3, "name": "Produkt C"}, {"id": 4, "name": "Produkt D"}, {"id": 5, "name": "Produkt E"}, {"id": 6, "name": "Produkt F"}, {"id": 7, "name": "Produkt G"}, {"id": 8, "name": "Produkt H"}, {"id": 9, "name": "Produkt I"}, {"id": 10, "name": "Produkt J"}]}'
         ]);
         fakeServer.respondWith('GET', '/smartcontent?dataSource=/home&includeSubFolders=false&category=&tags=&sortBy=&sortMethod=asc&presentAs=&limitResult=', [200, { 'Content-Type': 'application/json' },
             '{"_embedded": [{"id": 1, "name": "Produkt X"}, {"id": 2, "name": "Produkt Y"}, {"id": 3, "name": "Produkt Z"}, {"id": 4, "name": "Produkt Q"}]}'
         ]);
 
-        fakeServer.respondWith('GET', '/smartcontent2?dataSource=&includeSubFolders=false&category=0&tags=&sortBy=0&sortMethod=asc&presentAs=0&limitResult=0', [200, { 'Content-Type': 'application/json' },
+        fakeServer.respondWith('GET', '/smartcontent2?dataSource=&includeSubFolders=false&category=&tags=&sortBy=&sortMethod=asc&presentAs=&limitResult=', [200, { 'Content-Type': 'application/json' },
             '{"_embedded": [{"id": 1, "name": "Page A"}, {"id": 2, "name": "Page B"}, {"id": 3, "name": "Page C"}, {"id": 4, "name": "Page D"}, {"id": 5, "name": "Page E"}, {"id": 6, "name": "Page F"}, {"id": 7, "name": "Page G"}, {"id": 8, "name": "Page H"}, {"id": 9, "name": "Page I"}, {"id": 10, "name": "Page J"}]}'
         ]);
         fakeServer.respondWith('GET', '/smartcontent2?dataSource=/products&includeSubFolders=false&category=&tags=&sortBy=&sortMethod=asc&presentAs=&limitResult=', [200, { 'Content-Type': 'application/json' },
@@ -129,6 +133,15 @@
                 setTimeout(function() {
                     fakeServer.respond();
                 }, 100);
+            });
+
+            $('#setConfigs').on('click', function() {
+               app.sandbox.emit('husky.smart-content.smartcontent1.set-configs', {
+                   dataSource: '/newdatasource',
+                   subFoldersDisabled: true,
+                   categories: [{id: 44, name: 'New Category 1'}, {id: 48, name: 'New Category 2'}],
+                   preSelectedCategory: 48
+               });
             });
         });
     });

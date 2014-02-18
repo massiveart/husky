@@ -21,6 +21,7 @@
  * @params {Integer} [options.preSelectedCategory] array with id of the preselected category
  * @params {Array} [options.tags] array of tags which are inserted at the beginning
  * @params {String} [options.tagsAutoCompleteUrl] url to which the tags input is sent and can be autocompleted
+ * @params {String} [options.tagsGetParameter] parameter name for auto-completing tags
  * @params {Array} [options.sortBy] array of sort-possibilities with id and name property
  * @params {Integer} [options.preSelectedSortBy] array with id of the preselected sort-possibility
  * @params {String} [options.preSelectedSortMethod] Sort-method to begin with (asc or desc)
@@ -75,18 +76,18 @@ define([], function() {
         visibleItems: 3,
         dataSource: '',
         subFoldersDisabled: false,
-        preSelectedDataSource: 0,
         categories: [],
-        preSelectedCategory: 0,
+        preSelectedCategory: null,
         tags: [],
         tagsDisabled: false,
         tagsAutoCompleteUrl: '',
+        tagsGetParameter: 'search',
         sortBy: [],
-        preSelectedSortBy: 0,
+        preSelectedSortBy: null,
         preSelectedSortMethod: 'asc',
         presentAs: [],
-        preSelectedPresentAs: 0,
-        limitResult: 0, //0 = no-limit
+        preSelectedPresentAs: null,
+        limitResult: null,
         instanceName: 'undefined',
         url: '',
         dataSourceParameter: 'dataSource',
@@ -245,12 +246,23 @@ define([], function() {
      },
 
     /**
-     * takes an config-object an merges it with this.options
+     * takes an config-object an merges it with this.options, before the initialization of the component
+     * (options.externalConfigs has to be true)
      * @event husky.smart-content.external-configs
      * @param {object} configs The config-object to merge with this.options
      */
      EXTERNAL_CONFIGS = function() {
             return createEventName.call(this, 'external-configs');
+     },
+
+    /**
+     * takes an config-object and merges it with this.options. Moreover destroys overlay, so
+     * it uses the new configs
+     * @event husky.smart-content.set-configs
+     * @param {object} configs The config-object to merge with this.options
+     */
+     SET_CONFIGS = function() {
+         return createEventName.call(this, 'set-configs');
      },
 
     /** returns normalized event names */
@@ -293,7 +305,6 @@ define([], function() {
             this.startOverlay();
             this.bindEvents();
             this.setURI();
-            this.startLoader();
             this.loadContent();
 
             this.setElementData(this.overlayData);
@@ -317,26 +328,7 @@ define([], function() {
                 hasChanged: false
             };
 
-            this.$overlayContent = null;
-            this.overlayData = {
-                dataSource: this.options.dataSource,
-                includeSubFolders: this.options.includeSubFolders,
-                category: this.options.preSelectedCategory,
-                tags: this.options.tags,
-                sortBy: this.options.preSelectedSortBy,
-                sortMethod: this.options.preSelectedSortMethod,
-                presentAs: this.options.preSelectedPresentAs,
-                limitResult: this.options.limitResult
-            };
-
-            this.overlayDisabled = {
-                categories: (this.options.categories.length === 0),
-                sortBy: (this.options.sortBy.length === 0),
-                presentAs: (this.options.presentAs.length === 0),
-                subFolders: (this.options.subFoldersDisabled),
-                tags: this.options.tagsDisabled,
-                limitResult: this.options.limitResultDisabled
-            };
+            this.initOverlayData();
 
             this.translations = {
                 noContentFound: 'smart-content.nocontent-found',
@@ -363,6 +355,32 @@ define([], function() {
             };
 
             this.translations = this.sandbox.util.extend(true, {}, this.translations, this.options.translations);
+        },
+
+        /**
+         * Sets the starting values of properties related to the overlay
+         */
+        initOverlayData: function() {
+            this.$overlayContent = null;
+            this.overlayData = {
+                dataSource: this.options.dataSource,
+                includeSubFolders: this.options.includeSubFolders,
+                category: this.options.preSelectedCategory,
+                tags: this.options.tags,
+                sortBy: this.options.preSelectedSortBy,
+                sortMethod: this.options.preSelectedSortMethod,
+                presentAs: this.options.preSelectedPresentAs,
+                limitResult: this.options.limitResult
+            };
+
+            this.overlayDisabled = {
+                categories: (this.options.categories.length === 0),
+                sortBy: (this.options.sortBy.length === 0),
+                presentAs: (this.options.presentAs.length === 0),
+                subFolders: (this.options.subFoldersDisabled),
+                tags: this.options.tagsDisabled,
+                limitResult: this.options.limitResultDisabled
+            };
         },
 
         /**
@@ -540,11 +558,27 @@ define([], function() {
             this.sandbox.on(INPUT_RETRIEVED.call(this), function() {
                 this.setURI();
                 this.loadContent();
-                this.setElementData(this.overlayData);
             }.bind(this));
 
             this.sandbox.on('husky.overlay.smart-content.' + this.options.instanceName + '.initialized', function() {
                 this.startOverlayComponents();
+            }.bind(this));
+
+            this.sandbox.on(SET_CONFIGS.call(this), function(configs) {
+                //merge this.options with passed configs
+                this.options = this.sandbox.util.extend(false, {}, this.options, configs);
+
+                //remove current overlay component and create new triggerer
+                this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.remove');
+                this.renderButton();
+
+                //re-initialize the overlay
+                this.initOverlayData();
+                this.startOverlay();
+
+                //reload the items
+                this.setURI();
+                this.loadContent();
             }.bind(this));
         },
 
@@ -593,6 +627,9 @@ define([], function() {
             this.renderContent();
         },
 
+        /**
+         * Starts the overlay component
+         */
         startOverlay: function() {
             this.initOverlayContent();
 
@@ -605,13 +642,11 @@ define([], function() {
                     title: this.sandbox.translate(this.translations.configureSmartContent),
                     instanceName: 'smart-content.' + this.options.instanceName,
                     okCallback: function() {
-                        this.startLoader();
                         this.getOverlayData();
                     }.bind(this)
                 }
             }]);
         },
-
 
         /**
          * Loads the overlay content based on a template
@@ -681,7 +716,8 @@ define([], function() {
                         instanceName: this.options.instanceName + constants.tagListClass,
                         items: this.options.tags,
                         remoteUrl: this.options.tagsAutoCompleteUrl,
-                        autocomplete: (this.options.tagsAutoCompleteUrl !== '')
+                        autocomplete: (this.options.tagsAutoCompleteUrl !== ''),
+                        getParameter: this.options.tagsGetParameter
                     }
                 },
                 {
@@ -760,7 +796,7 @@ define([], function() {
             //only request if URI has changed
             if (this.URI.hasChanged === true) {
                 this.sandbox.emit(DATA_REQUEST.call(this));
-
+                this.startLoader();
                 this.sandbox.util.ajax({
                     url: this.URI.str,
 
@@ -833,6 +869,7 @@ define([], function() {
                 }.bind(this));
 
             this.sandbox.dom.when(categoryDef.promise(), tagsDef.promise(), sortByDef.promise(), sortMethodDef.promise(), presentAsDef.promise()).then(function() {
+                this.setElementData(this.overlayData);
                 this.sandbox.emit(INPUT_RETRIEVED.call(this));
             }.bind(this));
         },
