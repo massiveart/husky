@@ -30081,6 +30081,7 @@ define('__component__$auto-complete@husky',[], function() {
                 'class="husky-validate" ' +
                 'type="text" ' +
                 'autofill="false" ' +
+                'autocomplete="off"' +
                 'data-id="' + this.getValueID() + '" ' +
                 'value="' + this.getValueName() + '"/>');
         },
@@ -30408,7 +30409,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                 arrowUpClass: 'arrow-up',
                 slideDuration: 500,
                 elementTagDataName: 'tags',
-                autoCompleteIcon: ''
+                autoCompleteIcon: 'tag'
             },
 
             templates = {
@@ -30585,7 +30586,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * Input DOM-object gets assigned to an object property
              */
             initInput: function() {
-                this.$input = this.sandbox.dom.createElement('<input type="text"/>');
+                this.$input = this.sandbox.dom.createElement('<input type="text" autocomplete="off"/>');
             },
 
             /**
@@ -31505,6 +31506,12 @@ define('__component__$password-fields@husky',[], function() {
  * @params {String} [options.selected] id of selected element - needed to restore state
  * @params {Array}  [options.data] array of data displayed in the settings dropdown
  * @params {String} [options.instanceName] name of current instance
+ * @params {String} [options.hasSubName] name of hasSub-key
+ * @params {String} [options.idName] name of id-key
+ * @params {String} [options.linkedName] name of linked-key
+ * @params {String} [options.publishedName] name of published-key
+ * @params {String} [options.typeName] name of type-key
+ * @params {String} [options.titleName] name of title-key
  *
  */
 define('__component__$column-navigation@husky',[], function() {
@@ -31521,7 +31528,13 @@ define('__component__$column-navigation@husky',[], function() {
             url: null,
             selected: null,
             data: null,
-            instanceName: 'undefined'
+            instanceName: 'undefined',
+            hasSubName: 'hasSub',
+            idName: 'id',
+            linkedName: 'linked',
+            publishedName: 'publishedState',
+            titleName: 'title',
+            typeName: 'type'
         },
 
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
@@ -31600,18 +31613,18 @@ define('__component__$column-navigation@husky',[], function() {
         render: function() {
             var $add, $settings, $wrapper, height;
 
-            $wrapper = this.sandbox.dom.$(this.template.wrapper());
+            $wrapper = this.sandbox.dom.$(this.template.wrapper.call(this));
             this.sandbox.dom.append(this.$element, $wrapper);
 
             // navigation container
             height = this.sandbox.dom.height(window) * this.options.wrapper.height/100;
-            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer(height));
+            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer.call(this, height));
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
             this.addId = this.options.instanceName+"-column-navigation-add";
             this.settingsId = this.options.instanceName+"-column-navigation-settings";
-            this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer(this.options.column.width));
+            this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer.call(this, this.options.column.width));
             $add = this.sandbox.dom.$(this.template.options.add(this.addId));
             $settings = this.sandbox.dom.$(this.template.options.settings(this.settingsId));
             this.sandbox.dom.append(this.$optionsContainer, $add);
@@ -31709,7 +31722,7 @@ define('__component__$column-navigation@husky',[], function() {
 
             if (columnNumber === 0) {  // case 1: no elements in container
                 this.columns[0] = [];
-                this.columns[0][data.id] = data;
+                this.columns[0][data[this.options.idName]] = data;
                 newColumn = 1;
             } else { // case 2: columns in container replace level after clicked column and clear following levels
                 newColumn = columnNumber + 1;
@@ -31721,18 +31734,18 @@ define('__component__$column-navigation@husky',[], function() {
             this.sandbox.util.each(data._embedded, function(index, value) {
 
                 this.storeDataItem(newColumn, value);
-                var $element = this.sandbox.dom.$(this.template.item(this.options.column.width, value));
+                var $element = this.sandbox.dom.$(this.template.item.call(this, this.options.column.width, value));
                 this.sandbox.dom.append($list, $element);
 
                 // remember which item has subitems to display a whole tree when column navigation should be restored
-                if (!!value.hasSub && value._embedded.length > 0) {
+                if (!!value[this.options.hasSubName] && value._embedded.length > 0) {
                     nodeWithSubNodes = value;
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
                 }
 
                 // needed to select node in last level of nodes
-                if (!!this.options.selected && this.options.selected === value.id) {
+                if (!!this.options.selected && this.options.selected === value[this.options.idName]) {
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
                     lastSelected = value;
@@ -31748,7 +31761,7 @@ define('__component__$column-navigation@husky',[], function() {
 
             if (!!nodeWithSubNodes) { // parse next column if data exists
                 this.parseData(nodeWithSubNodes, newColumn);
-            } else if (!!lastSelected && !lastSelected.hasSub) { // append add column if no children
+            } else if (!!lastSelected && !lastSelected[this.options.hasSubName]) { // append add column if no children
                 this.insertAddColumn(lastSelected, newColumn);
             }
 
@@ -31778,7 +31791,7 @@ define('__component__$column-navigation@husky',[], function() {
                 this.sandbox.dom.attr(this.$addColumn, 'id', 'column-' + newColumn);
                 this.$addColumn = null;
             } else { // create new column
-                $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.column.width));
+                $column = this.sandbox.dom.$(this.template.column.call(this, newColumn, this.options.column.width));
             }
 
             return $column;
@@ -31805,7 +31818,7 @@ define('__component__$column-navigation@husky',[], function() {
             if (!this.columns[columnNumber]) {
                 this.columns[columnNumber] = [];
             }
-            this.columns[columnNumber][item.id] = item;
+            this.columns[columnNumber][item[this.options.idName]] = item;
 
         },
 
@@ -31928,7 +31941,7 @@ define('__component__$column-navigation@husky',[], function() {
                     this.selected[column] = selectedItem;
                     this.sandbox.emit(SELECTED, selectedItem);
 
-                    if (!!selectedItem.hasSub) {
+                    if (!!selectedItem[this.options.hasSubName]) {
                         this.load(selectedItem._links.children, column);
                     }
 
@@ -31948,9 +31961,9 @@ define('__component__$column-navigation@husky',[], function() {
 
         insertAddColumn: function(selectedItem, column) {
 
-            if (!this.$addColumn && !selectedItem.hasSub) {
+            if (!this.$addColumn && !selectedItem[this.options.hasSubName]) {
                 // append empty column to add subpages
-                this.$addColumn = this.sandbox.dom.createElement(this.template.column(column + 1, this.options.column.width));
+                this.$addColumn = this.sandbox.dom.createElement(this.template.column.call(this, column + 1, this.options.column.width));
                 this.sandbox.dom.append(this.$columnContainer, this.$addColumn);
             }
         },
@@ -32019,47 +32032,46 @@ define('__component__$column-navigation@husky',[], function() {
 
             item: function(width, data) {
 
-                var item = ['<li data-id="', data.id, '" class="pointer"'];
+                var item = ['<li data-id="', data[this.options.idName], '" class="pointer"'];
 
                 // icons left
                 item.push('<span class="pull-left">');
-
                 // link
-                if (!!data.linked) {
-                    if (data.linked === 'internal') {
+                if (!!data[this.options.linkedName]) {
+                    if (data[this.options.linkedName] === 'internal') {
                         item.push('<span class="icon-internal-link pull-left m-right-5"></span>');
-                    } else if (data.linked === 'external') {
+                    } else if (data[this.options.linkedName] === 'external') {
                         item.push('<span class="icon-external-link pull-left m-right-5"></span>');
                     }
                 }
 
                 // type (ghost, shadow)
-                if (!!data.type) {
-                    if (data.type.name === 'ghost') {
-                        item.push('<span class="ghost pull-left m-right-5">', data.type.value, '</span>');
-                    } else if (data.type.name === 'shadow') {
+                if (!!data[this.options.typeName]) {
+                    if (data[this.options.typeName].name === 'ghost') {
+                        item.push('<span class="ghost pull-left m-right-5">', data[this.options.typeName].value, '</span>');
+                    } else if (data[this.options.typeName].name === 'shadow') {
                         item.push('<span class="icon-shadow-node pull-left m-right-5"></span>');
                     }
                 }
 
                 // published
-                if (!data.published) {
+                if (!data[this.options.publishedName]) {
                     item.push('<span class="not-published pull-left m-right-5">&bull;</span>');
                 }
 
                 item.push('</span>');
 
                 // text center
-                if (!!data.type && data.type.name === 'ghost') {
-                    item.push('<span class="item-text inactive pull-left">', data.title, '</span>');
+                if (!!data[this.options.typeName] && data[this.options.typeName].name === 'ghost') {
+                    item.push('<span class="item-text inactive pull-left">', data[this.options.titleName], '</span>');
                 } else {
-                    item.push('<span class="item-text pull-left">', data.title, '</span>');
+                    item.push('<span class="item-text pull-left">', data[this.options.titleName], '</span>');
                 }
 
                 // icons right (subpage, edit)
                 item.push('<span class="pull-right">');
                 item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
-                !!data.hasSub ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
+                !!data[this.options.hasSubName] ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
 
                 return item.join('');
@@ -33010,6 +33022,7 @@ define('__component__$top-toolbar@husky',[], function () {
  * @params {Integer} [options.preSelectedCategory] array with id of the preselected category
  * @params {Array} [options.tags] array of tags which are inserted at the beginning
  * @params {String} [options.tagsAutoCompleteUrl] url to which the tags input is sent and can be autocompleted
+ * @params {String} [options.tagsGetParameter] parameter name for auto-completing tags
  * @params {Array} [options.sortBy] array of sort-possibilities with id and name property
  * @params {Integer} [options.preSelectedSortBy] array with id of the preselected sort-possibility
  * @params {String} [options.preSelectedSortMethod] Sort-method to begin with (asc or desc)
@@ -33064,18 +33077,18 @@ define('__component__$smart-content@husky',[], function() {
         visibleItems: 3,
         dataSource: '',
         subFoldersDisabled: false,
-        preSelectedDataSource: 0,
         categories: [],
-        preSelectedCategory: 0,
+        preSelectedCategory: null,
         tags: [],
         tagsDisabled: false,
         tagsAutoCompleteUrl: '',
+        tagsGetParameter: 'search',
         sortBy: [],
-        preSelectedSortBy: 0,
+        preSelectedSortBy: null,
         preSelectedSortMethod: 'asc',
         presentAs: [],
-        preSelectedPresentAs: 0,
-        limitResult: 0, //0 = no-limit
+        preSelectedPresentAs: null,
+        limitResult: null,
         instanceName: 'undefined',
         url: '',
         dataSourceParameter: 'dataSource',
@@ -33234,12 +33247,23 @@ define('__component__$smart-content@husky',[], function() {
      },
 
     /**
-     * takes an config-object an merges it with this.options
+     * takes an config-object an merges it with this.options, before the initialization of the component
+     * (options.externalConfigs has to be true)
      * @event husky.smart-content.external-configs
      * @param {object} configs The config-object to merge with this.options
      */
      EXTERNAL_CONFIGS = function() {
             return createEventName.call(this, 'external-configs');
+     },
+
+    /**
+     * takes an config-object and merges it with this.options. Moreover destroys overlay, so
+     * it uses the new configs
+     * @event husky.smart-content.set-configs
+     * @param {object} configs The config-object to merge with this.options
+     */
+     SET_CONFIGS = function() {
+         return createEventName.call(this, 'set-configs');
      },
 
     /** returns normalized event names */
@@ -33282,7 +33306,6 @@ define('__component__$smart-content@husky',[], function() {
             this.startOverlay();
             this.bindEvents();
             this.setURI();
-            this.startLoader();
             this.loadContent();
 
             this.setElementData(this.overlayData);
@@ -33306,26 +33329,7 @@ define('__component__$smart-content@husky',[], function() {
                 hasChanged: false
             };
 
-            this.$overlayContent = null;
-            this.overlayData = {
-                dataSource: this.options.dataSource,
-                includeSubFolders: this.options.includeSubFolders,
-                category: this.options.preSelectedCategory,
-                tags: this.options.tags,
-                sortBy: this.options.preSelectedSortBy,
-                sortMethod: this.options.preSelectedSortMethod,
-                presentAs: this.options.preSelectedPresentAs,
-                limitResult: this.options.limitResult
-            };
-
-            this.overlayDisabled = {
-                categories: (this.options.categories.length === 0),
-                sortBy: (this.options.sortBy.length === 0),
-                presentAs: (this.options.presentAs.length === 0),
-                subFolders: (this.options.subFoldersDisabled),
-                tags: this.options.tagsDisabled,
-                limitResult: this.options.limitResultDisabled
-            };
+            this.initOverlayData();
 
             this.translations = {
                 noContentFound: 'smart-content.nocontent-found',
@@ -33352,6 +33356,32 @@ define('__component__$smart-content@husky',[], function() {
             };
 
             this.translations = this.sandbox.util.extend(true, {}, this.translations, this.options.translations);
+        },
+
+        /**
+         * Sets the starting values of properties related to the overlay
+         */
+        initOverlayData: function() {
+            this.$overlayContent = null;
+            this.overlayData = {
+                dataSource: this.options.dataSource,
+                includeSubFolders: this.options.includeSubFolders,
+                category: this.options.preSelectedCategory,
+                tags: this.options.tags,
+                sortBy: this.options.preSelectedSortBy,
+                sortMethod: this.options.preSelectedSortMethod,
+                presentAs: this.options.preSelectedPresentAs,
+                limitResult: this.options.limitResult
+            };
+
+            this.overlayDisabled = {
+                categories: (this.options.categories.length === 0),
+                sortBy: (this.options.sortBy.length === 0),
+                presentAs: (this.options.presentAs.length === 0),
+                subFolders: (this.options.subFoldersDisabled),
+                tags: this.options.tagsDisabled,
+                limitResult: this.options.limitResultDisabled
+            };
         },
 
         /**
@@ -33529,11 +33559,27 @@ define('__component__$smart-content@husky',[], function() {
             this.sandbox.on(INPUT_RETRIEVED.call(this), function() {
                 this.setURI();
                 this.loadContent();
-                this.setElementData(this.overlayData);
             }.bind(this));
 
             this.sandbox.on('husky.overlay.smart-content.' + this.options.instanceName + '.initialized', function() {
                 this.startOverlayComponents();
+            }.bind(this));
+
+            this.sandbox.on(SET_CONFIGS.call(this), function(configs) {
+                //merge this.options with passed configs
+                this.options = this.sandbox.util.extend(false, {}, this.options, configs);
+
+                //remove current overlay component and create new triggerer
+                this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.remove');
+                this.renderButton();
+
+                //re-initialize the overlay
+                this.initOverlayData();
+                this.startOverlay();
+
+                //reload the items
+                this.setURI();
+                this.loadContent();
             }.bind(this));
         },
 
@@ -33582,6 +33628,9 @@ define('__component__$smart-content@husky',[], function() {
             this.renderContent();
         },
 
+        /**
+         * Starts the overlay component
+         */
         startOverlay: function() {
             this.initOverlayContent();
 
@@ -33594,13 +33643,11 @@ define('__component__$smart-content@husky',[], function() {
                     title: this.sandbox.translate(this.translations.configureSmartContent),
                     instanceName: 'smart-content.' + this.options.instanceName,
                     okCallback: function() {
-                        this.startLoader();
                         this.getOverlayData();
                     }.bind(this)
                 }
             }]);
         },
-
 
         /**
          * Loads the overlay content based on a template
@@ -33670,7 +33717,8 @@ define('__component__$smart-content@husky',[], function() {
                         instanceName: this.options.instanceName + constants.tagListClass,
                         items: this.options.tags,
                         remoteUrl: this.options.tagsAutoCompleteUrl,
-                        autocomplete: (this.options.tagsAutoCompleteUrl !== '')
+                        autocomplete: (this.options.tagsAutoCompleteUrl !== ''),
+                        getParameter: this.options.tagsGetParameter
                     }
                 },
                 {
@@ -33749,7 +33797,7 @@ define('__component__$smart-content@husky',[], function() {
             //only request if URI has changed
             if (this.URI.hasChanged === true) {
                 this.sandbox.emit(DATA_REQUEST.call(this));
-
+                this.startLoader();
                 this.sandbox.util.ajax({
                     url: this.URI.str,
 
@@ -33822,6 +33870,7 @@ define('__component__$smart-content@husky',[], function() {
                 }.bind(this));
 
             this.sandbox.dom.when(categoryDef.promise(), tagsDef.promise(), sortByDef.promise(), sortMethodDef.promise(), presentAsDef.promise()).then(function() {
+                this.setElementData(this.overlayData);
                 this.sandbox.emit(INPUT_RETRIEVED.call(this));
             }.bind(this));
         },
@@ -33935,6 +33984,14 @@ define('__component__$overlay@husky',[], function() {
         return createEventName.call(this, 'closed');
      },
 
+    /**
+     * removes the component
+     * @event husky.overlay.<instance-name>.remove
+     */
+     REMOVE = function() {
+        return createEventName.call(this, 'remove');
+     },
+
     /** returns normalized event names */
     createEventName = function(postFix) {
         return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
@@ -33952,16 +34009,23 @@ define('__component__$overlay@husky',[], function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
             this.setVariables();
-            this.bindTriggerEvent();
+            this.bindEvents();
         },
 
         /**
-         * Binds the event for the overlay trigger
+         * Binds general events
          */
-        bindTriggerEvent: function() {
+        bindEvents: function() {
             this.sandbox.dom.on(this.$el, this.options.trigger, function(event) {
                 this.sandbox.dom.preventDefault(event);
                 this.triggerHandler();
+            }.bind(this));
+
+            this.sandbox.on(REMOVE.call(this), function() {
+                this.sandbox.dom.off(this.$el);
+                this.sandbox.dom.off(this.overlay.$el);
+                this.sandbox.dom.remove(this.overlay.$el);
+                this.sandbox.dom.remove(this.$el);
             }.bind(this));
         },
 
