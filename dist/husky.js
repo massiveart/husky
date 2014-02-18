@@ -29568,8 +29568,8 @@ define('__component__$edit-toolbar@husky',[],function() {
 
             this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
                 this.items[button].initialized.then(function() {
-                    changeMainListItem.call(this, this.items[button].$el, this.items[button].items[index]);
                     var index = getItemIndexById.call(this, id, this.items[button]);
+                    changeMainListItem.call(this, this.items[button].$el, this.items[button].items[index]);
                     if (executeCallback === true || !!this.items[button].items[index].callback) {
                         if (typeof this.items[button].items[index].callback === 'function') {
                             this.items[button].items[index].callback();
