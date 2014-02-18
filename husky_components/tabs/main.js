@@ -93,7 +93,24 @@ define(function() {
             bindCustomEvents.call(this);
         },
 
+        generateIds: function(data) {
+            if (!data.id) {
+                data.id = this.getRandId();
+            }
+            this.sandbox.util.foreach(data.items, function(item) {
+                if (!item.id) {
+                    item.id = this.getRandId();
+                }
+            }.bind(this));
+            return data;
+        },
+
+        getRandId: function() {
+            return Math.floor((Math.random()*1677721500000000)).toString(16);
+        },
+
         render: function(data) {
+            data = this.generateIds(data);
 
             var $element = this.sandbox.dom.createElement('<div class="tabs-container"></div>'),
                 $list = this.sandbox.dom.createElement('<ul/>'),
