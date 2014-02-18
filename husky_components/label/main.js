@@ -55,6 +55,9 @@ define(function() {
         closeIconClass: 'icon-circle-remove'
     },
 
+    /**
+     * default values for types
+     */
     typesDefaults = {
         ERROR: {
             title: 'Error',
@@ -71,6 +74,27 @@ define(function() {
             fadeOutDelay: 2000,
             title: 'Success',
             labelClass: 'husky-label-success'
+        }
+    },
+
+    /**
+     * generates template template
+     */
+    template = {
+        basic: function(options) {
+            return [
+                '<div class="' + constants.textClass + '">',
+                '<strong>' + options.title + '</strong>',
+                '<span>' + options.description + '</span>',
+                '</div>'
+            ].join('');
+        },
+        closeButton: function() {
+            return [
+                '<div class="' + constants.closeClass + '">',
+                '<span class="' + constants.closeIconClass + '"></span>',
+                '</div>'
+            ].join('');
         }
     },
 
@@ -103,7 +127,7 @@ define(function() {
                 $el: null,
                 $content: null,
                 $close: null
-            },
+            };
 
             this.render();
             this.bindEvents();
@@ -173,10 +197,7 @@ define(function() {
             if (this.options.html !== null) {
                 this.label.$content = this.sandbox.dom.createElement(this.options.html);
             } else {
-                this.label.$content = this.sandbox.dom.createElement('<div class="'+ constants.textClass +'">' +
-                                                                        '<strong>'+ this.options.title +'</strong>' +
-                                                                        '<span>'+ this.options.description +'</span>' +
-                                                                     '</div>');
+                this.label.$content = this.sandbox.dom.createElement(template.basic(this.options));
             }
 
             //append content to main element
@@ -188,9 +209,7 @@ define(function() {
          */
         renderClose: function() {
             if (this.options.hasClose === true) {
-                this.label.$close = this.sandbox.dom.createElement('<div class="'+ constants.closeClass +'">' +
-                                                                        '<span class="'+ constants.closeIconClass +'"></span>' +
-                                                                   '</div>');
+                this.label.$close = this.sandbox.dom.createElement(template.closeButton());
 
                 //append close to main element
                 this.sandbox.dom.append(this.label.$el, this.label.$close);
