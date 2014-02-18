@@ -717,7 +717,7 @@ define(function() {
                 // check id for uniqueness
                 checkItemId.call(this, item);
 
-                var dfd = this.sandbox.data.Deferred();
+                var dfd = this.sandbox.data.deferred();
 
                 // save to items array
                 this.items[item.id] = item;
