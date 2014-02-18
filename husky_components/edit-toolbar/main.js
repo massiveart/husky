@@ -207,13 +207,15 @@ define(function() {
             }.bind(this));
 
             this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
-                var index = getItemIndexById.call(this, id, this.items[button]);
-                changeMainListItem.call(this, this.items[button].$el, this.items[button].items[index]);
-                if (executeCallback === true || !!this.items[button].items[index].callback) {
-                    if (typeof this.items[button].items[index].callback === 'function') {
-                        this.items[button].items[index].callback();
+                this.items[button].initialized.then(function() {
+                    changeMainListItem.call(this, this.items[button].$el, this.items[button].items[index]);
+                    var index = getItemIndexById.call(this, id, this.items[button]);
+                    if (executeCallback === true || !!this.items[button].items[index].callback) {
+                        if (typeof this.items[button].items[index].callback === 'function') {
+                            this.items[button].items[index].callback();
+                        }
                     }
-                }
+                }.bind(this));
             }.bind(this));
 
             this.sandbox.on(BUTTON_SET.call(this), function(button, newData) {
@@ -279,7 +281,7 @@ define(function() {
 
         /**
          * Hides a button
-         * @param button
+         * @param $button
          */
         hideItem = function($button) {
             console.log($button);
@@ -288,7 +290,7 @@ define(function() {
 
         /**
          * Shows a button
-         * @param button
+         * @param $button
          */
          showItem = function($button) {
             this.sandbox.dom.removeClass($button, 'hidden');
@@ -715,8 +717,11 @@ define(function() {
                 // check id for uniqueness
                 checkItemId.call(this, item);
 
+                var dfd = this.sandbox.data.deferred();
+
                 // save to items array
                 this.items[item.id] = item;
+                this.items[item.id].initialized = dfd.promise();
 
                 // create class array
                 classArray = ['edit-toolbar-item'];
@@ -754,6 +759,7 @@ define(function() {
                     this.sandbox.util.load(item.itemsOption.url)
                         .then(function(result) {
                             handleRequestedItems.call(this, result[this.options.itemsRequestKey], item.id);
+                            dfd.resolve();
                         }.bind(this))
                         .fail(function(result) {
                             this.sandbox.logger.log('dorpdown-items could not be loaded', result);
@@ -764,6 +770,7 @@ define(function() {
                         this.sandbox.dom.addClass($listLink, 'dropdown-toggle');
                         createDropdownMenu.call(this, $listItem, item);
                     }
+                    dfd.resolve();
                 }
 
                 // create button

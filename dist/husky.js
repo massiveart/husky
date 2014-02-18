@@ -16666,8 +16666,12 @@ define('form/element',['form/util'], function(Util) {
                             this.requireCounter++;
                             require(['type/' + typeName], function(Type) {
                                 type = new Type(this.$el, options);
-                                Util.debug('Element Type', typeName, options);
-                                that.resolveInitialization.call(this);
+
+                                type.initialized.then(function() {
+                                    Util.debug('Element Type', typeName, options);
+                                    that.resolveInitialization.call(this);
+                                }.bind(this));
+
                             }.bind(this));
                         }.bind(this),
                         options = Util.buildOptions(this.options, 'type'),
@@ -17476,8 +17480,14 @@ define('type/default',[
                     this.$el = $el;
                     this.options = $.extend({}, defaults, options);
 
+                    var dfd = $.Deferred();
+                    this.requireCounter = 0;
+                    this.initialized = dfd.promise();
+
                     if (!!this.initializeSub) {
-                        this.initializeSub();
+                        this.initializeSub(dfd);
+                    } else {
+                        dfd.resolve();
                     }
                 }
             },
@@ -17641,8 +17651,9 @@ define('type/decimal',[
             },
 
             typeInterface = {
-                initializeSub: function() {
+                initializeSub: function(dfd) {
                     // TODO internationalization
+                    dfd.resolve();
                 },
 
                 validate: function() {
@@ -28921,7 +28932,24 @@ define('__component__$tabs@husky',[],function() {
             bindCustomEvents.call(this);
         },
 
+        generateIds: function(data) {
+            if (!data.id) {
+                data.id = this.getRandId();
+            }
+            this.sandbox.util.foreach(data.items, function(item) {
+                if (!item.id) {
+                    item.id = this.getRandId();
+                }
+            }.bind(this));
+            return data;
+        },
+
+        getRandId: function() {
+            return Math.floor((Math.random()*1677721500000000)).toString(16);
+        },
+
         render: function(data) {
+            data = this.generateIds(data);
 
             var $element = this.sandbox.dom.createElement('<div class="tabs-container"></div>'),
                 $list = this.sandbox.dom.createElement('<ul/>'),
@@ -29539,13 +29567,15 @@ define('__component__$edit-toolbar@husky',[],function() {
             }.bind(this));
 
             this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
-                var index = getItemIndexById.call(this, id, this.items[button]);
-                changeMainListItem.call(this, this.items[button].$el, this.items[button].items[index]);
-                if (executeCallback === true || !!this.items[button].items[index].callback) {
-                    if (typeof this.items[button].items[index].callback === 'function') {
-                        this.items[button].items[index].callback();
+                this.items[button].initialized.then(function() {
+                    changeMainListItem.call(this, this.items[button].$el, this.items[button].items[index]);
+                    var index = getItemIndexById.call(this, id, this.items[button]);
+                    if (executeCallback === true || !!this.items[button].items[index].callback) {
+                        if (typeof this.items[button].items[index].callback === 'function') {
+                            this.items[button].items[index].callback();
+                        }
                     }
-                }
+                }.bind(this));
             }.bind(this));
 
             this.sandbox.on(BUTTON_SET.call(this), function(button, newData) {
@@ -29611,7 +29641,7 @@ define('__component__$edit-toolbar@husky',[],function() {
 
         /**
          * Hides a button
-         * @param button
+         * @param $button
          */
         hideItem = function($button) {
             console.log($button);
@@ -29620,7 +29650,7 @@ define('__component__$edit-toolbar@husky',[],function() {
 
         /**
          * Shows a button
-         * @param button
+         * @param $button
          */
          showItem = function($button) {
             this.sandbox.dom.removeClass($button, 'hidden');
@@ -30047,8 +30077,11 @@ define('__component__$edit-toolbar@husky',[],function() {
                 // check id for uniqueness
                 checkItemId.call(this, item);
 
+                var dfd = this.sandbox.data.deferred();
+
                 // save to items array
                 this.items[item.id] = item;
+                this.items[item.id].initialized = dfd.promise();
 
                 // create class array
                 classArray = ['edit-toolbar-item'];
@@ -30086,6 +30119,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                     this.sandbox.util.load(item.itemsOption.url)
                         .then(function(result) {
                             handleRequestedItems.call(this, result[this.options.itemsRequestKey], item.id);
+                            dfd.resolve();
                         }.bind(this))
                         .fail(function(result) {
                             this.sandbox.logger.log('dorpdown-items could not be loaded', result);
@@ -30096,6 +30130,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                         this.sandbox.dom.addClass($listLink, 'dropdown-toggle');
                         createDropdownMenu.call(this, $listItem, item);
                     }
+                    dfd.resolve();
                 }
 
                 // create button
@@ -31472,7 +31507,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
 
         changeLabel: function() {
 
-            if (this.selectedElements.length === this.options.data.length) {
+            if (this.selectedElements.length === this.options.data.length && this.options.singleSelect !== true) {
                 this.sandbox.dom.text('#' + this.labelId, this.options.checkedAllLabel);
             } else if (this.selectedElements.length === 0) {
                 this.sandbox.dom.text('#' + this.labelId, this.options.defaultLabel);
@@ -32081,13 +32116,16 @@ define('__component__$column-navigation@husky',[], function() {
         bindCustomEvents: function() {
             this.sandbox.on(BREADCRUMB, this.getBreadCrumb.bind(this));
 
-            this.sandbox.on('husky.dropdown.'+this.options.instanceName+'.settings.dropdown.item.click', this.dropDownItemClicked.bind(this));
+            this.sandbox.on('husky.dropdown.' + this.options.instanceName + '.settings.dropdown.item.click', this.dropdownItemClicked.bind(this));
         },
 
-
-        dropDownItemClicked: function(event){
-            if (typeof this.selected[this.selected.length - 1] !== 'undefined') {
-                this.sandbox.emit(SETTINGS, this.selected[this.selected.length - 1], event);
+        dropdownItemClicked: function(item) {
+            if (!!this.selected[this.lastHoveredColumn]) {
+                if (!!item.callback) {
+                    item.callback(item, this.selected[this.lastHoveredColumn]);
+                } else {
+                    this.sandbox.emit(SETTINGS, item, this.selected[this.lastHoveredColumn]);
+                }
             }
         },
 
