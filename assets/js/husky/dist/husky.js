@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -29555,13 +29556,15 @@ define('__component__$edit-toolbar@husky',[],function() {
             }.bind(this));
 
             this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
-                var index = getItemIndexById.call(this, id, this.items[button]);
-                changeMainListItem.call(this, this.items[button].$el, this.items[button].items[index]);
-                if (executeCallback === true || !!this.items[button].items[index].callback) {
-                    if (typeof this.items[button].items[index].callback === 'function') {
-                        this.items[button].items[index].callback();
+                this.items[button].initialized.then(function() {
+                    changeMainListItem.call(this, this.items[button].$el, this.items[button].items[index]);
+                    var index = getItemIndexById.call(this, id, this.items[button]);
+                    if (executeCallback === true || !!this.items[button].items[index].callback) {
+                        if (typeof this.items[button].items[index].callback === 'function') {
+                            this.items[button].items[index].callback();
+                        }
                     }
-                }
+                }.bind(this));
             }.bind(this));
 
             this.sandbox.on(BUTTON_SET.call(this), function(button, newData) {
@@ -29627,7 +29630,7 @@ define('__component__$edit-toolbar@husky',[],function() {
 
         /**
          * Hides a button
-         * @param button
+         * @param $button
          */
         hideItem = function($button) {
             console.log($button);
@@ -29636,7 +29639,7 @@ define('__component__$edit-toolbar@husky',[],function() {
 
         /**
          * Shows a button
-         * @param button
+         * @param $button
          */
          showItem = function($button) {
             this.sandbox.dom.removeClass($button, 'hidden');
@@ -30063,8 +30066,11 @@ define('__component__$edit-toolbar@husky',[],function() {
                 // check id for uniqueness
                 checkItemId.call(this, item);
 
+                var dfd = this.sandbox.data.Deferred();
+
                 // save to items array
                 this.items[item.id] = item;
+                this.items[item.id].initialized = dfd.promise();
 
                 // create class array
                 classArray = ['edit-toolbar-item'];
@@ -30102,6 +30108,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                     this.sandbox.util.load(item.itemsOption.url)
                         .then(function(result) {
                             handleRequestedItems.call(this, result[this.options.itemsRequestKey], item.id);
+                            dfd.resolve();
                         }.bind(this))
                         .fail(function(result) {
                             this.sandbox.logger.log('dorpdown-items could not be loaded', result);
@@ -30112,6 +30119,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                         this.sandbox.dom.addClass($listLink, 'dropdown-toggle');
                         createDropdownMenu.call(this, $listItem, item);
                     }
+                    dfd.resolve();
                 }
 
                 // create button
@@ -35926,4 +35934,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-
