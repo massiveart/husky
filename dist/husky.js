@@ -26562,11 +26562,10 @@ define('__component__$datagrid@husky',[],function() {
                         validation: column.validation
                     });
 
-                    if(!!column.editable) {
+                    if (!!column.editable) {
                         this.tabIndexParam++;
                     }
                 }
-
 
 
                 // add html to table header cell if sortable
@@ -26674,13 +26673,13 @@ define('__component__$datagrid@husky',[],function() {
                 // when row structure contains more elements than the id then use the structure to set values
                 if (this.rowStructure.length) {
 
-                    if(!!triggeredByAddRow && !!this.options.addRowTop) {
-                        this.bottomTabIndex -= (this.tabIndexParam+1);
+                    if (!!triggeredByAddRow && !!this.options.addRowTop) {
+                        this.bottomTabIndex -= (this.tabIndexParam + 1);
                     }
 
-                    this.rowStructure.forEach(function(key,index) {
+                    this.rowStructure.forEach(function(key, index) {
                         key.editable = key.editable || false;
-                        this.createRowCell(key.attribute, row[key.attribute], key.editable, key.validation, triggeredByAddRow,index);
+                        this.createRowCell(key.attribute, row[key.attribute], key.editable, key.validation, triggeredByAddRow, index);
                     }.bind(this));
 
                 } else {
@@ -26709,7 +26708,7 @@ define('__component__$datagrid@husky',[],function() {
          * @param triggeredByAddRow triggered trough add row
          * @param index
          */
-        createRowCell: function(key, value, editable, validation, triggeredByAddRow,index) {
+        createRowCell: function(key, value, editable, validation, triggeredByAddRow, index) {
 
             var tblCellClasses,
                 tblCellContent,
@@ -27165,11 +27164,11 @@ define('__component__$datagrid@husky',[],function() {
                 // does not work with focus - causes endless loop in some cases
                 this.sandbox.dom.on(this.$el, 'click', this.focusOnRow.bind(this), 'tr');
 
-                this.sandbox.dom.on(this.$el, 'click', function(event){
+                this.sandbox.dom.on(this.$el, 'click', function(event) {
                     event.stopPropagation();
                 }, 'tr');
 
-                this.sandbox.dom.on(window,'click', this.prepareSave.bind(this));
+                this.sandbox.dom.on(window, 'click', this.prepareSave.bind(this));
             }
 
             this.sandbox.dom.on(this.sandbox.dom.window, 'resize', this.windowResizeListener.bind(this));
@@ -27324,10 +27323,10 @@ define('__component__$datagrid@husky',[],function() {
 
             this.sandbox.logger.log("focus on row", domId);
 
-            if(!!this.lastFocusedRow && this.lastFocusedRow.domId !== domId) { // new focus
+            if (!!this.lastFocusedRow && this.lastFocusedRow.domId !== domId) { // new focus
                 this.prepareSave();
                 this.lastFocusedRow = this.getInputValuesOfRow($tr);
-            } else if(!this.lastFocusedRow) { // first focus
+            } else if (!this.lastFocusedRow) { // first focus
                 this.lastFocusedRow = this.getInputValuesOfRow($tr);
             }
         },
@@ -27344,7 +27343,7 @@ define('__component__$datagrid@husky',[],function() {
                 $inputs = this.sandbox.dom.find('input[type=text]', $tr),
                 fields = [], field, $td;
 
-            this.sandbox.dom.each($inputs, function(index, $input){
+            this.sandbox.dom.each($inputs, function(index, $input) {
                 $td = this.sandbox.dom.parent($input, 'td');
                 field = this.sandbox.dom.data($td, 'field');
 
@@ -27407,7 +27406,7 @@ define('__component__$datagrid@husky',[],function() {
                         if (!!data.id) {
                             this.save(data, 'PUT', url + '/' + data.id, $tr, this.lastFocusedRow.domId);
 
-                        // save via post
+                            // save via post
                         } else {
                             this.save(data, 'POST', url, $tr, this.lastFocusedRow.domId);
                         }
@@ -27432,11 +27431,11 @@ define('__component__$datagrid@husky',[],function() {
         /**
          * Returns url without params
          */
-        getUrlWithoutParams: function(){
+        getUrlWithoutParams: function() {
             var url = this.data.links.self;
 
             if (url.indexOf('?') !== -1) {
-                return url.substring(0,url.indexOf('?'));
+                return url.substring(0, url.indexOf('?'));
             }
 
             return url;
@@ -27448,7 +27447,7 @@ define('__component__$datagrid@husky',[],function() {
          * @param method
          * @param url
          */
-        save: function(data, method, url ,$tr, domId) {
+        save: function(data, method, url, $tr, domId) {
 
             var message;
 
@@ -27459,13 +27458,18 @@ define('__component__$datagrid@husky',[],function() {
                 .then(function(data, textStatus) {
 
                     // remove row from error list
-                    if(this.errorInRow.indexOf(domId) !== -1) {
-                        this.errorInRow.splice(this.errorInRow.indexOf(domId),1);
+                    if (this.errorInRow.indexOf(domId) !== -1) {
+                        this.errorInRow.splice(this.errorInRow.indexOf(domId), 1);
                     }
 
                     this.sandbox.emit(DATA_SAVED, data, textStatus);
                     this.hideLoadingIconForRow($tr);
                     this.resetRowInputFields($tr);
+
+                    // set new returned data
+//                    if (method === 'POST') {
+                        this.setDataForRow($tr[0], data);
+//                    }
 
                 }.bind(this))
                 .fail(function(jqXHR, textStatus, error) {
@@ -27473,14 +27477,14 @@ define('__component__$datagrid@husky',[],function() {
                     this.hideLoadingIconForRow($tr);
 
                     // remember row with error
-                    if(this.errorInRow.indexOf(domId) === -1) {
+                    if (this.errorInRow.indexOf(domId) === -1) {
                         this.errorInRow.push(domId);
                     }
 
                     message = JSON.parse(jqXHR.responseText);
 
                     // error in context with database constraints
-                    if(!!message.field) {
+                    if (!!message.field) {
                         this.showValidationError($tr, message.field);
                     } else {
                         this.sandbox.logger.error("An error occured during save of changed data!");
@@ -27489,14 +27493,45 @@ define('__component__$datagrid@husky',[],function() {
                 }.bind(this));
         },
 
+
+        /**
+         * Sets the data for a row
+         * @param $tr dom row
+         * @param data
+         */
+        setDataForRow: function($tr, data) {
+
+            var editables, field, $input;
+
+            // set id
+            this.sandbox.dom.data($tr, 'id', data.id);
+
+            this.sandbox.util.each(this.sandbox.dom.find('td', $tr), function(index, $el) {
+
+                editables = this.sandbox.dom.find('.editable', $el);
+                field = this.sandbox.dom.data($el, 'field');
+                $input = this.sandbox.dom.find('input[type=text]', $el);
+
+                if (!!field) {
+                    if (!!editables && editables.length === 1) { // set values in spans
+                        this.sandbox.dom.html(editables[0], data[field]);
+                        this.sandbox.dom.val($input, data[field]);
+                    } else { // set values in td
+                        this.sandbox.dom.html($el, data[field]);
+                    }
+                }
+
+            }.bind(this));
+        },
+
         /**
          * Shows loading icon for a tr
          * @param $tr
          */
-        showLoadingIconForRow: function($tr){
-            if(!!this.options.progressRow) {
+        showLoadingIconForRow: function($tr) {
+            if (!!this.options.progressRow) {
                 var domId = this.sandbox.dom.data($tr, 'dom-id');
-                this.sandbox.dom.addClass('tr[data-dom-id='+domId+'] td:last', 'is-loading');
+                this.sandbox.dom.addClass('tr[data-dom-id=' + domId + '] td:last', 'is-loading');
             }
         },
 
@@ -27504,10 +27539,10 @@ define('__component__$datagrid@husky',[],function() {
          * Hides loading icon for a tr
          * @param $tr
          */
-        hideLoadingIconForRow: function($tr){
-            if(!!this.options.progressRow) {
+        hideLoadingIconForRow: function($tr) {
+            if (!!this.options.progressRow) {
                 var domId = this.sandbox.dom.data($tr, 'dom-id');
-                this.sandbox.dom.removeClass('tr[data-dom-id='+domId+'] td', 'is-loading');
+                this.sandbox.dom.removeClass('tr[data-dom-id=' + domId + '] td', 'is-loading');
             }
         },
 
@@ -27518,10 +27553,10 @@ define('__component__$datagrid@husky',[],function() {
          */
         showValidationError: function($domElement, field) {
 
-            var $td = this.sandbox.dom.find('td[data-field='+field+']', $domElement)[0],
-                $input = this.sandbox.dom.find('input',$td)[0];
+            var $td = this.sandbox.dom.find('td[data-field=' + field + ']', $domElement)[0],
+                $input = this.sandbox.dom.find('input', $td)[0];
 
-            if(this.sandbox.dom.hasClass($td, 'husky-validate-success')) {
+            if (this.sandbox.dom.hasClass($td, 'husky-validate-success')) {
                 this.sandbox.dom.removeClass($td, 'husky-validate-success');
             }
 
@@ -27529,8 +27564,8 @@ define('__component__$datagrid@husky',[],function() {
 
             // add class for serverside validation error
             // TODO remove this when correct validation type is implmented
-            if(!this.sandbox.dom.hasClass($input,'server-validation-error')){
-                this.sandbox.dom.addClass($input,'server-validation-error');
+            if (!this.sandbox.dom.hasClass($input, 'server-validation-error')) {
+                this.sandbox.dom.addClass($input, 'server-validation-error');
             }
         },
 
@@ -27547,8 +27582,8 @@ define('__component__$datagrid@husky',[],function() {
 
                 // remove css class for server side validation error
                 // TODO: remove this when validation type is implemented
-                if(this.sandbox.dom.hasClass($field,'server-validation-error')){
-                    this.sandbox.dom.removeClass($field,'server-validation-error');
+                if (this.sandbox.dom.hasClass($field, 'server-validation-error')) {
+                    this.sandbox.dom.removeClass($field, 'server-validation-error');
                 }
 
                 content = this.sandbox.dom.$($field).val();
