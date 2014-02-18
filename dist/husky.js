@@ -27450,7 +27450,6 @@ define('__component__$datagrid@husky',[],function() {
 
             var message;
 
-
             this.sandbox.logger.log("data to save", data);
             this.showLoadingIconForRow($tr);
 
@@ -27465,6 +27464,10 @@ define('__component__$datagrid@husky',[],function() {
                     this.sandbox.emit(DATA_SAVED, data, textStatus);
                     this.hideLoadingIconForRow($tr);
                     this.resetRowInputFields($tr);
+
+                    // reset last focused row to prevent multiple submits
+                    this.lastFocusedRow = undefined;
+
                 }.bind(this))
                 .fail(function(jqXHR, textStatus, error) {
                     this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
