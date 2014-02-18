@@ -364,6 +364,10 @@
                 return $.when(deffereds);
             };
 
+            app.core.dom.unbind = function(selector, eventType){
+                $(selector).unbind(eventType);
+            };
+
             app.core.util.ajax = $.ajax;
         }
     });

@@ -1191,7 +1191,10 @@ define(function() {
 
         bindDOMEvents: function() {
 
-            // TODO multiple events when no clean reload
+            // remove all events - prevents multiple events
+            this.sandbox.dom.unbind(this.sandbox.dom.find('*', this.$el));
+            this.sandbox.dom.unbind(this.$el);
+            this.sandbox.dom.unbind(window, 'click');
 
             if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                 this.$element.on('click', 'tbody > tr span.custom-checkbox-icon', this.selectItem.bind(this));
@@ -1242,7 +1245,6 @@ define(function() {
                 this.sandbox.dom.on(this.$el, 'click', function(event){
                     event.stopPropagation();
                 }, 'tr');
-
 
                 this.sandbox.dom.on(window,'click', this.prepareSave.bind(this));
             }
