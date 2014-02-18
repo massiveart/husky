@@ -755,9 +755,9 @@ define(function() {
                         this.bottomTabIndex -= (this.tabIndexParam+1);
                     }
 
-                    this.rowStructure.forEach(function(key) {
+                    this.rowStructure.forEach(function(key,index) {
                         key.editable = key.editable || false;
-                        this.createRowCell(key.attribute, row[key.attribute], key.editable, key.validation, triggeredByAddRow);
+                        this.createRowCell(key.attribute, row[key.attribute], key.editable, key.validation, triggeredByAddRow,index);
                     }.bind(this));
 
                 } else {
@@ -784,8 +784,9 @@ define(function() {
          * @param value attribute value
          * @param editable flag whether field is editable or not
          * @param triggeredByAddRow triggered trough add row
+         * @param index
          */
-        createRowCell: function(key, value, editable, validation, triggeredByAddRow) {
+        createRowCell: function(key, value, editable, validation, triggeredByAddRow,index) {
 
             var tblCellClasses,
                 tblCellContent,
@@ -814,8 +815,7 @@ define(function() {
                     }
                 }
 
-                // TODO merging error?
-//                tblCellStyle = 'style="max-width:' + this.options.columns[index].minWidth + '"';
+                tblCellStyle = 'style="max-width:' + this.options.columns[index].minWidth + '"';
 
                 if (!!editable) {
 
@@ -1191,6 +1191,8 @@ define(function() {
 
         bindDOMEvents: function() {
 
+            // TODO multiple events when no clean reload
+
             if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                 this.$element.on('click', 'tbody > tr span.custom-checkbox-icon', this.selectItem.bind(this));
                 this.$element.on('change', 'tbody > tr input[type="checkbox"]', this.selectItem.bind(this));
@@ -1199,17 +1201,17 @@ define(function() {
                 this.$element.on('click', 'tbody > tr input[type="radio"]', this.selectItem.bind(this));
             }
 
-//            this.$element.on('click', 'tbody > tr', function(event) {
-//                if (!this.sandbox.dom.$(event.target).is('input') && !this.sandbox.dom.$(event.target).is('span.icon-remove')) {
-//                    var id = this.sandbox.dom.$(event.currentTarget).data('id');
-//
-//                    if (!!id) {
-//                        this.sandbox.emit(ITEM_CLICK, id);
-//                    } else {
-//                        this.sandbox.emit(ITEM_CLICK, event);
-//                    }
-//                }
-//            }.bind(this));
+            this.$element.on('click', 'tbody > tr', function(event) {
+                if (!this.sandbox.dom.$(event.target).is('input') && !this.sandbox.dom.$(event.target).is('span.icon-remove')) {
+                    var id = this.sandbox.dom.$(event.currentTarget).data('id');
+
+                    if (!!id) {
+                        this.sandbox.emit(ITEM_CLICK, id);
+                    } else {
+                        this.sandbox.emit(ITEM_CLICK, event);
+                    }
+                }
+            }.bind(this));
 
             if (this.options.pagination) {
 
@@ -1240,6 +1242,7 @@ define(function() {
                 this.sandbox.dom.on(this.$el, 'click', function(event){
                     event.stopPropagation();
                 }, 'tr');
+
 
                 this.sandbox.dom.on(window,'click', this.prepareSave.bind(this));
             }
@@ -1431,26 +1434,6 @@ define(function() {
 
         },
 
-
-        /**
-         * Triggered when row looses focus
-         * Waits a certain amount of time and waits for focusin
-         */
-//        focusOutRow: function(event) {
-//
-//            this.sandbox.logger.log("focus lost ...");
-//
-//            // timeout to prevent sending data when just switching fields of same row
-//            setTimeout(function(){
-//                if(!!this.switchedToDifferentRow){
-//                    this.sandbox.logger.log("switch to different row! prepare saving ...");
-//                    this.prepareSave(event);
-//                }
-//            }.bind(this), 750); // TODO shorter timespan does not work with first changed row
-//
-//        },
-
-
         /**
          * Perparse to save new/changed data includes validation
          * @param event
@@ -1544,7 +1527,6 @@ define(function() {
 
             var message;
 
-
             this.sandbox.logger.log("data to save", data);
             this.showLoadingIconForRow($tr);
 
@@ -1559,6 +1541,10 @@ define(function() {
                     this.sandbox.emit(DATA_SAVED, data, textStatus);
                     this.hideLoadingIconForRow($tr);
                     this.resetRowInputFields($tr);
+
+                    // reset last focused row to prevent multiple submits
+                    this.lastFocusedRow = undefined;
+
                 }.bind(this))
                 .fail(function(jqXHR, textStatus, error) {
                     this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
