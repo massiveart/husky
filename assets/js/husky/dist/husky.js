@@ -30081,6 +30081,7 @@ define('__component__$auto-complete@husky',[], function() {
                 'class="husky-validate" ' +
                 'type="text" ' +
                 'autofill="false" ' +
+                'autocomplete="off"' +
                 'data-id="' + this.getValueID() + '" ' +
                 'value="' + this.getValueName() + '"/>');
         },
@@ -30585,7 +30586,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * Input DOM-object gets assigned to an object property
              */
             initInput: function() {
-                this.$input = this.sandbox.dom.createElement('<input type="text"/>');
+                this.$input = this.sandbox.dom.createElement('<input type="text" autocomplete="off"/>');
             },
 
             /**
