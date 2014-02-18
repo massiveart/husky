@@ -454,7 +454,7 @@ require(['lib/husky'], function(Husky) {
                     progressRow: true,
                     pagination: true,
                     editable: true,
-                    validation:false,
+                    validation:true,
                     addRowTop: true,
                     columns: [
                         {

@@ -740,15 +740,15 @@ define(function() {
 
                         // differentiate for tab index
                         if (!!this.options.addRowTop) {
-                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content husky-validate" tabindex="' + this.bottomTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
+                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.bottomTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
                             this.bottomTabIndex++;
                         } else {
-                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content husky-validate" tabindex="' + this.topTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
+                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.topTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
                             this.topTabIndex++;
                         }
 
                     } else {
-                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable">' + tblCellContent + '</span><input type="text" class="form-element editable-content hidden husky-validate" value="' + tblCellContent + '" tabindex="' + this.topTabIndex + '" ' + validationAttr + '/></td>');
+                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable">' + tblCellContent + '</span><input type="text" class="form-element editable-content hidden" value="' + tblCellContent + '" tabindex="' + this.topTabIndex + '" ' + validationAttr + '/></td>');
                         this.topTabIndex++;
 
                     }
@@ -881,19 +881,19 @@ define(function() {
             }
 
             // TODO fix validation for new rows
-//            if (!!this.options.validation) {
-//                // add new row to validation context and add contraints to element
-//                $editableFields = this.sandbox.dom.find('input[type=text]', $row);
-//
+            if (!!this.options.validation) {
+                // add new row to validation context and add contraints to element
+                $editableFields = this.sandbox.dom.find('input[type=text]', $row);
+
 //                this.sandbox.util.foreach($editableFields, function($el, i) {
-////                    this.sandbox.form.addField('#' + this.elId, $el);
-//
-////                    validation = this.options.columns[i].validation;
-////                    for (var key in validation) {
-////                        this.sandbox.form.addConstraint('#' + this.elId, $el, key, {key: validation[key]});
-////                    }
+//                    this.sandbox.form.addField('#' + this.elId, $el);
+
+//                    validation = this.options.columns[i].validation;
+//                    for (var key in validation) {
+//                        this.sandbox.form.addConstraint('#' + this.elId, $el, key, {key: validation[key]});
+//                    }
 //                }.bind(this));
-//            }
+            }
         },
 
         /**
@@ -1143,7 +1143,9 @@ define(function() {
 
             if (!!this.options.editable) {
                 this.sandbox.dom.on(this.$el, 'click', this.editCellValues.bind(this), '.editable');
-                this.sandbox.dom.on(this.$el, 'focusin', this.focusOnRow.bind(this), 'tr');
+
+                // does not work with focus - causes endless loop in some cases
+                this.sandbox.dom.on(this.$el, 'click', this.focusOnRow.bind(this), 'tr');
 
                 this.sandbox.dom.on(this.$el, 'click', function(event){
                     event.stopPropagation();

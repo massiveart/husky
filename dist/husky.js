@@ -25652,6 +25652,9 @@ define('__component__$column-options@husky',[],function() {
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.paginationTemplate] template for pagination
  * @param {Boolean} [options.validation] enables validation for datagrid
+ * @param {Boolean} [options.addRowTop] adds row to the top of the table when add row is triggered
+ * @param {Boolean} [options.startTabIndex] start index for tabindex
+ * @param {Boolean} [options.progressRow] has to be enabled when datagrid is editable to show progress of save action
  */
 define('__component__$datagrid@husky',[],function() {
 
@@ -25690,7 +25693,9 @@ define('__component__$datagrid@husky',[],function() {
             fieldsData: null,
             validation: false, // TODO does not work for added rows
             validationDebug: false,
-            startTabIndex: 1
+            addRowTop: false,
+            progressRow: true,
+            startTabIndex: 50000
         },
 
         namespace = 'husky.datagrid.',
@@ -25839,20 +25844,11 @@ define('__component__$datagrid@husky',[],function() {
          * triggers husky.datagrid.data.provide
          * @event husky.datagrid.data.get
          */
-            DATA_GET = namespace + 'data.get',
-
-        /**
-         * used to trigger the save operation of changed data
-         * @event husky.datagrid.data.save
-         */
-            DATA_SAVE = namespace + 'data.save';
-
+            DATA_GET = namespace + 'data.get';
 
     return {
 
         view: true,
-
-        tabIndex: 0,
 
         initialize: function() {
             this.sandbox.logger.log('initialized datagrid');
@@ -25864,19 +25860,20 @@ define('__component__$datagrid@husky',[],function() {
             this.data = null;
             this.allItemIds = [];
             this.selectedItemIds = [];
-            this.changedData = {};
             this.rowStructure = [];
-
             this.domId = 0;
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
+
+            this.bottomTabIndex = this.options.startTabIndex || 49999;
+            this.topTabIndex = this.options.startTabIndex || 50000;
+
+            this.errorInRow = [];
 
             this.sort = {
                 ascClass: 'icon-arrow-up',
                 descClass: 'icon-arrow-down',
                 additionalClasses: ' m-left-5 small-font'
             };
-
-            this.changedData = [];
 
             // append datagrid to html element
             this.$originalElement = this.sandbox.dom.$(this.options.el);
@@ -26001,7 +25998,7 @@ define('__component__$datagrid@husky',[],function() {
         /**
          * Initializes the rendering of the datagrid
          */
-        initRender: function(response, params){
+        initRender: function(response, params) {
             // TODO adjust when new api is finished and no backwards compatibility needed
             if (!!response.items) {
                 this.data = response;
@@ -26151,6 +26148,9 @@ define('__component__$datagrid@husky',[],function() {
 
             this.rowStructure = [];
 
+            // value used for correct tabindex when row added at top of table
+            this.tabIndexParam = 1;
+
             headData.forEach(function(column) {
 
                 tblColumnWidth = '';
@@ -26181,7 +26181,13 @@ define('__component__$datagrid@husky',[],function() {
                         editable: column.editable,
                         validation: column.validation
                     });
+
+                    if(!!column.editable) {
+                        this.tabIndexParam++;
+                    }
                 }
+
+
 
                 // add html to table header cell if sortable
                 if (!!isSortable) {
@@ -26196,7 +26202,7 @@ define('__component__$datagrid@husky',[],function() {
             }.bind(this));
 
             // remove-row entry
-            if (this.options.removeRow) {
+            if (this.options.removeRow || this.options.progressRow) {
                 tblColumns.push('<th width="30px"/>');
             }
 
@@ -26224,8 +26230,6 @@ define('__component__$datagrid@husky',[],function() {
             tblRows = [];
             this.allItemIds = [];
 
-            this.tabIndex = this.options.startTabIndex;
-
             // TODO adjust when new api is fully implemented and no backwards compatibility needed
             if (!!this.data.items) {
                 this.data.items.forEach(function(row) {
@@ -26243,9 +26247,10 @@ define('__component__$datagrid@husky',[],function() {
         /**
          * Returns a table row including values and data attributes
          * @param row
+         * @param triggeredByAddRow
          * @returns string table row
          */
-        prepareTableRow: function(row) {
+        prepareTableRow: function(row, triggeredByAddRow) {
 
             if (!!(this.options.template && this.options.template.row)) {
 
@@ -26255,7 +26260,7 @@ define('__component__$datagrid@husky',[],function() {
 
                 var radioPrefix, key;
                 this.tblColumns = [];
-                this.tblRowAttributes = ' data-dom-id="'+this.options.instance+'-'+this.domId+'"';
+                this.tblRowAttributes = ' data-dom-id="' + this.options.instance + '-' + this.domId + '"';
                 this.domId++;
 
                 // special treatment for id
@@ -26284,20 +26289,27 @@ define('__component__$datagrid@husky',[],function() {
 
                 // when row structure contains more elements than the id then use the structure to set values
                 if (this.rowStructure.length) {
+
+                    if(!!triggeredByAddRow && !!this.options.addRowTop) {
+                        this.bottomTabIndex -= (this.tabIndexParam+1);
+                    }
+
                     this.rowStructure.forEach(function(key) {
                         key.editable = key.editable || false;
-                        this.createRowCell(key.attribute, row[key.attribute], key.editable, key.validation);
+                        this.createRowCell(key.attribute, row[key.attribute], key.editable, key.validation, triggeredByAddRow);
                     }.bind(this));
                 } else {
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                            this.createRowCell(key, row[key], false, null);
+                            this.createRowCell(key, row[key], false, null, triggeredByAddRow);
                         }
                     }
                 }
 
                 if (!!this.options.removeRow) {
                     this.tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
+                } else if (!!this.options.progressRow) {
+                    this.tblColumns.push('<td class="progress-row">', this.templates.progressRow(), '</td>');
                 }
 
                 return '<tr' + this.tblRowAttributes + '>' + this.tblColumns.join('') + '</tr>';
@@ -26309,8 +26321,9 @@ define('__component__$datagrid@husky',[],function() {
          * @param key attribute name
          * @param value attribute value
          * @param editable flag whether field is editable or not
+         * @param triggeredByAddRow triggered trough add row
          */
-        createRowCell: function(key, value, editable, validation) {
+        createRowCell: function(key, value, editable, validation, triggeredByAddRow) {
             var tblCellClasses,
                 tblCellContent,
                 tblCellClass,
@@ -26331,16 +26344,30 @@ define('__component__$datagrid@husky',[],function() {
 
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
-                if (!!validation) {
+                if (!!this.options.validation && !!validation) {
                     for (k in validation) {
                         validationAttr += ['data-validation-', k, '="', validation[k], '" '].join('');
                     }
                 }
 
                 if (!!editable) {
-                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" contenteditable="true" ' + validationAttr + ' tabindex="' + this.tabIndex + '">' + tblCellContent + '</span></td>');
+                    if (!!triggeredByAddRow) {
 
-                    this.tabIndex++;
+                        // differentiate for tab index
+                        if (!!this.options.addRowTop) {
+                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.bottomTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
+                            this.bottomTabIndex++;
+                        } else {
+                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.topTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
+                            this.topTabIndex++;
+                        }
+
+                    } else {
+                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="editable">' + tblCellContent + '</span><input type="text" class="form-element editable-content hidden" value="' + tblCellContent + '" tabindex="' + this.topTabIndex + '" ' + validationAttr + '/></td>');
+                        this.topTabIndex++;
+
+                    }
+
                 } else {
                     this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' >' + tblCellContent + '</td>');
                 }
@@ -26459,19 +26486,29 @@ define('__component__$datagrid@husky',[],function() {
             var $table, $row, $editableFields, validation;
             // check for other element types when implemented
             $table = this.$element.find('table');
-            $row = this.prepareTableRow(row);
-            $table.append($row);
+            $row = this.prepareTableRow(row, true);
 
-            // add new row to validation context and add contraints to element
-            $editableFields = this.sandbox.dom.find('.editable', $row);
+            // prepend or append row
+            if (!!this.options.addRowTop) {
+                this.sandbox.dom.prepend($table, $row);
+            } else {
+                this.sandbox.dom.append($table, $row);
+            }
 
-            this.sandbox.util.foreach($editableFields, function($el,i){
-                this.sandbox.form.addField('#'+this.elId,$el);
-                validation = this.options.columns[i].validation;
-                for(var key in validation){
-                    this.sandbox.form.addConstraint('#'+this.elId,$el, key, {key: validation[key]});
-                }
-            }.bind(this));
+            // TODO fix validation for new rows
+            if (!!this.options.validation) {
+                // add new row to validation context and add contraints to element
+                $editableFields = this.sandbox.dom.find('input[type=text]', $row);
+
+                this.sandbox.util.foreach($editableFields, function($el, i) {
+                    this.sandbox.form.addField('#' + this.elId, $el);
+
+//                    validation = this.options.columns[i].validation;
+//                    for (var key in validation) {
+//                        this.sandbox.form.addConstraint('#' + this.elId, $el, key, {key: validation[key]});
+//                    }
+                }.bind(this));
+            }
         },
 
         /**
@@ -26519,15 +26556,10 @@ define('__component__$datagrid@husky',[],function() {
             domId = this.sandbox.dom.data($tblRow, 'dom-id');
 
             // remove row elements from validation
-            $editableElements = this.sandbox.dom.find('.editable',$tblRow);
-            this.sandbox.util.each($editableElements, function(index, $element){
-                this.sandbox.form.removeField('#'+this.elId, $element);
+            $editableElements = this.sandbox.dom.find('.editable', $tblRow);
+            this.sandbox.util.each($editableElements, function(index, $element) {
+                this.sandbox.form.removeField('#' + this.elId, $element);
             }.bind(this));
-
-            // remove deleted row from changedData
-            if(!!this.changedData && !!this.changedData[domId]){
-                delete this.changedData[domId];
-            }
 
             idx = this.selectedItemIds.indexOf(id);
 
@@ -26692,17 +26724,17 @@ define('__component__$datagrid@husky',[],function() {
                 this.$element.on('click', 'tbody > tr input[type="radio"]', this.selectItem.bind(this));
             }
 
-            this.$element.on('click', 'tbody > tr', function(event) {
-                if (!this.sandbox.dom.$(event.target).is('input') && !this.sandbox.dom.$(event.target).is('span.icon-remove')) {
-                    var id = this.sandbox.dom.$(event.currentTarget).data('id');
-
-                    if (!!id) {
-                        this.sandbox.emit(ITEM_CLICK, id);
-                    } else {
-                        this.sandbox.emit(ITEM_CLICK, event);
-                    }
-                }
-            }.bind(this));
+//            this.$element.on('click', 'tbody > tr', function(event) {
+//                if (!this.sandbox.dom.$(event.target).is('input') && !this.sandbox.dom.$(event.target).is('span.icon-remove')) {
+//                    var id = this.sandbox.dom.$(event.currentTarget).data('id');
+//
+//                    if (!!id) {
+//                        this.sandbox.emit(ITEM_CLICK, id);
+//                    } else {
+//                        this.sandbox.emit(ITEM_CLICK, event);
+//                    }
+//                }
+//            }.bind(this));
 
             if (this.options.pagination) {
 
@@ -26721,12 +26753,20 @@ define('__component__$datagrid@husky',[],function() {
             }
 
             if (this.options.sortable) {
-                this.$element.on('click', 'thead th[data-attribute]', this.changeSorting.bind(this));
+                this.sandbox.dom.on(this.$el, 'click', this.changeSorting.bind(this), 'thead th[data-attribute]');
             }
 
             if (!!this.options.editable) {
-                this.$element.on('focusin', '.editable', this.focusOnInput.bind(this));
-                this.$element.on('focusout', '.editable', this.focusOutInput.bind(this));
+                this.sandbox.dom.on(this.$el, 'click', this.editCellValues.bind(this), '.editable');
+
+                // does not work with focus - causes endless loop in some cases
+                this.sandbox.dom.on(this.$el, 'click', this.focusOnRow.bind(this), 'tr');
+
+                this.sandbox.dom.on(this.$el, 'click', function(event){
+                    event.stopPropagation();
+                }, 'tr');
+
+                this.sandbox.dom.on(window,'click', this.prepareSave.bind(this));
             }
 
 
@@ -26753,6 +26793,20 @@ define('__component__$datagrid@husky',[],function() {
             // stop propagation
             //         event.stopPropagation();
             // }.bind(this));
+        },
+
+        /**
+         * Shows input and hides span
+         * @param event
+         */
+        editCellValues: function(event) {
+            var $target = event.currentTarget,
+                $input = this.sandbox.dom.next($target, 'input');
+
+            this.sandbox.dom.hide($target);
+            this.sandbox.dom.removeClass($input, 'hidden');
+            $input[0].select();
+
         },
 
         /**
@@ -26850,114 +26904,266 @@ define('__component__$datagrid@husky',[],function() {
                 this.sandbox.on('husky.column-options' + columnOptionsInstanceName + '.saved', this.filterColumns.bind(this));
             }
 
-            // listen for save event
-            if (!!this.options.editable) {
-                this.sandbox.on(DATA_SAVE, this.saveAllChangedData.bind(this));
-            }
-
         },
 
         /**
-         * Remembers value of previously focused editable field
-         * Is used by isDataChanged to decide wether the value
-         * changed or not
+         * Put focus on table row and remember values
          */
-        focusOnInput: function(event) {
-            var $td = this.sandbox.dom.parent(event.currentTarget),
-                $tr = this.sandbox.dom.parent($td),
-                field = this.sandbox.dom.data($td, 'field'),
-                id = this.sandbox.dom.data($tr, 'id'),
-                domId = this.sandbox.dom.data($tr, 'dom-id'),
-                value = event.currentTarget.innerText;
+        focusOnRow: function(event) {
 
-            this.lastFocusedEditableElement = {
+            var $tr = event.currentTarget,
+                domId = this.sandbox.dom.data($tr, 'dom-id');
+
+            this.sandbox.logger.log("focus on row", domId);
+
+            if(!!this.lastFocusedRow && this.lastFocusedRow.domId !== domId) { // new focus
+                this.prepareSave();
+                this.lastFocusedRow = this.getInputValuesOfRow($tr);
+            } else if(!this.lastFocusedRow) { // first focus
+                this.lastFocusedRow = this.getInputValuesOfRow($tr);
+            }
+        },
+
+        /**
+         * Returns an object with the current values of the inputfields, id and domId
+         * @param $tr table row
+         * @returns {{domId: *, id: *, fields: Array}}
+         */
+        getInputValuesOfRow: function($tr) {
+
+            var id = this.sandbox.dom.data($tr, 'id'),
+                domId = this.sandbox.dom.data($tr, 'dom-id'),
+                $inputs = this.sandbox.dom.find('input[type=text]', $tr),
+                fields = [], field, $td;
+
+            this.sandbox.dom.each($inputs, function(index, $input){
+                $td = this.sandbox.dom.parent($input, 'td');
+                field = this.sandbox.dom.data($td, 'field');
+
+                fields[field] = $input.value;
+
+            }.bind(this));
+            return {
                 domId: domId,
                 id: id,
-                field: field,
-                value: value
+                fields: fields
             };
+
         },
 
+
         /**
-         * Triggered when editable field looses focus
+         * Triggered when row looses focus
+         * Waits a certain amount of time and waits for focusin
          */
-        focusOutInput: function(event) {
-            var $td = this.sandbox.dom.parent(event.currentTarget),
-                $tr = this.sandbox.dom.parent($td),
-                field = this.sandbox.dom.data($td, 'field'),
-                id = this.sandbox.dom.data($tr, 'id'),
-                domId = this.sandbox.dom.data($tr, 'dom-id'),
-                value = event.currentTarget.innerText,
-                el, key = null;
+//        focusOutRow: function(event) {
+//
+//            this.sandbox.logger.log("focus lost ...");
+//
+//            // timeout to prevent sending data when just switching fields of same row
+//            setTimeout(function(){
+//                if(!!this.switchedToDifferentRow){
+//                    this.sandbox.logger.log("switch to different row! prepare saving ...");
+//                    this.prepareSave(event);
+//                }
+//            }.bind(this), 750); // TODO shorter timespan does not work with first changed row
+//
+//        },
 
-            // last focused object should be same as the one previously left
-            if (this.lastFocusedEditableElement.domId === domId) {
-                if (this.lastFocusedEditableElement.value !== value) {
 
-                    this.sandbox.emit(DATA_CHANGED);
+        /**
+         * Perparse to save new/changed data includes validation
+         * @param event
+         */
+        prepareSave: function() {
 
-                    // element already changed in the past and therefor in the changed data array
-                    for(key in this.changedData){
-                        if (key === domId) {
-                            el = this.changedData[key];
+            if (!!this.lastFocusedRow) {
+
+                var $tr = this.sandbox.dom.find('tr[data-dom-id=' + this.lastFocusedRow.domId + ']', this.$el),
+                    lastFocusedRowCurrentData = this.getInputValuesOfRow($tr),
+
+                    data = {},
+                    key,
+                    url,
+                    isValid = true,
+                    valuesChanged = false;
+
+                this.sandbox.logger.log("try to save data now ....");
+
+                data.id = lastFocusedRowCurrentData.id;
+
+                // TODO there seems to be a bug when an invalid field is ignored by the user and he visits more than one other row
+                // validate locally
+                if (!!this.options.validation && !this.sandbox.form.validate('#' + this.elId)) {
+                    isValid = false;
+                }
+
+                if (!!isValid) {
+
+                    // check which values changed and remember these
+                    for (key in lastFocusedRowCurrentData.fields) {
+                        if (this.lastFocusedRow.fields.hasOwnProperty(key) && this.lastFocusedRow.fields[key] !== lastFocusedRowCurrentData.fields[key]) {
+                            data[key] = lastFocusedRowCurrentData.fields[key];
+                            valuesChanged = true;
                         }
                     }
 
-                    // add to the changedata list
-                    if (!el) {
-                        el = {};
-                        el.id = id;
-                        el[field] = value;
+                    // trigger save action when data changed
+                    if (!!valuesChanged) {
 
-                        this.changedData[domId] = el;
+                        this.sandbox.emit(DATA_CHANGED);
+                        url = this.getUrlWithoutParams();
+
+                        // save via put
+                        if (!!data.id) {
+                            this.save(data, 'PUT', url + '/' + data.id, $tr, this.lastFocusedRow.domId);
+
+                        // save via post
+                        } else {
+                            this.save(data, 'POST', url, $tr, this.lastFocusedRow.domId);
+                        }
+
+                    } else if (this.errorInRow.indexOf(this.lastFocusedRow.domId) !== -1) {
+                        this.sandbox.logger.log("Error in table row!");
 
                     } else {
-                        el[field] = value;
+                        // nothing changed - reset immediately
+                        this.sandbox.logger.log("No data changed!");
+                        this.resetRowInputFields($tr);
                     }
+
+                } else {
+                    this.sandbox.logger.log("There seems to be some invalid data!");
                 }
-            } else {
-                this.sandbox.logger.log("Something went wrong!");
+
+            }
+        },
+
+
+        /**
+         * Returns url without params
+         */
+        getUrlWithoutParams: function(){
+            var url = this.data.links.self;
+
+            if (url.indexOf('?') !== -1) {
+                return url.substring(0,url.indexOf('?'));
             }
 
+            return url;
         },
 
         /**
-         * Saves the changes for an editable list
-         * Triggered with the husky.datagrid.data.save event
+         * Saves changes
+         * @param data
+         * @param method
+         * @param url
          */
-        saveAllChangedData: function() {
+        save: function(data, method, url ,$tr, domId) {
 
-            var url = this.data.links.self,
-                type = 'PATCH',
-                data = [], key = null;
+            var message;
 
-            // is validation configured
-            if (!!this.options.validation) {
-                // is invalid
-                if (!this.sandbox.form.validate('#' + this.elId)) {
-                    this.sandbox.logger.log("validation error...");
-                    return;
-                }
-            }
+            this.sandbox.logger.log("data to save", data);
+            this.showLoadingIconForRow($tr);
 
-            this.sandbox.logger.log("saving data...");
+            this.sandbox.util.save(url, method, data)
+                .then(function(data, textStatus) {
 
-            for(key in this.changedData){
-                data.push(this.changedData[key]);
-            }
+                    // remove row from error list
+                    if(this.errorInRow.indexOf(domId) !== -1) {
+                        this.errorInRow.splice(this.errorInRow.indexOf(domId),1);
+                    }
 
-            if (!!data && data.length > 0) {
-                this.sandbox.util.save(url, type, data)
-                    .then(function(data, textStatus) {
-                        this.sandbox.emit(DATA_SAVED, data, textStatus);
-                        this.changedData = [];
-                    }.bind(this))
-                    .fail(function(textStatus, error) {
-                        this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
-                    }.bind(this));
+                    this.sandbox.emit(DATA_SAVED, data, textStatus);
+                    this.hideLoadingIconForRow($tr);
+                    this.resetRowInputFields($tr);
+                }.bind(this))
+                .fail(function(jqXHR, textStatus, error) {
+                    this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
+                    this.hideLoadingIconForRow($tr);
+
+                    // remember row with error
+                    if(this.errorInRow.indexOf(domId) === -1) {
+                        this.errorInRow.push(domId);
+                    }
+
+                    message = JSON.parse(jqXHR.responseText);
+
+                    // error in connection with database constraints
+                    if(!!message.field) {
+                        this.showValidationError($tr, message.field);
+                    } else {
+                        this.sandbox.logger.error("An error occured during save of changed data!");
+                    }
+                }.bind(this));
+        },
+
+        /**
+         * Shows loading icon for a tr
+         * @param $tr
+         */
+        showLoadingIconForRow: function($tr){
+            if(!!this.options.progressRow) {
+                var domId = this.sandbox.dom.data($tr, 'dom-id');
+                this.sandbox.dom.addClass('tr[data-dom-id='+domId+'] td:last', 'is-loading');
             }
         },
 
+        /**
+         * Hides loading icon for a tr
+         * @param $tr
+         */
+        hideLoadingIconForRow: function($tr){
+            if(!!this.options.progressRow) {
+                var domId = this.sandbox.dom.data($tr, 'dom-id');
+                this.sandbox.dom.removeClass('tr[data-dom-id='+domId+'] td', 'is-loading');
+            }
+        },
+
+//        /**
+//         * Sets the validation success class for a dom element
+//         * @param $domElement
+//         */
+//        showValidationSuccess: function($domElement) {
+//            this.sandbox.dom.addClass($domElement, 'husky-validate-success');
+//        },
+
+        /**
+         * Sets the validation error class for a dom element
+         * @param $domElement
+         * @param field name of field which caused the error
+         */
+        showValidationError: function($domElement, field) {
+
+            var $td = this.sandbox.dom.find('td[data-field='+field+']', $domElement)[0];
+
+            if(this.sandbox.dom.hasClass($td, 'husky-validate-success')) {
+                this.sandbox.dom.removeClass($td, 'husky-validate-success');
+            }
+
+            this.sandbox.dom.addClass($td, 'husky-validate-error');
+        },
+
+        /**
+         *  Hides input fields and displays new content for table row
+         * @param $tr
+         */
+        resetRowInputFields: function($tr) {
+
+            var $inputFields = this.sandbox.dom.find('input[type=text]:not(.hidden)', $tr),
+                content, $span;
+
+            this.sandbox.util.each($inputFields, function(index, $field) {
+
+                content = this.sandbox.dom.$($field).val();
+                $span = this.sandbox.dom.prev($field, '.editable');
+                $span.text(content);
+
+                this.sandbox.dom.addClass($field, 'hidden');
+                this.sandbox.dom.show($span);
+
+            }.bind(this));
+        },
 
         /**
          * Provides data of the list to the caller
@@ -27091,6 +27297,12 @@ define('__component__$datagrid@husky',[],function() {
             removeRow: function() {
                 return [
                     '<span class="icon-remove"></span>'
+                ].join('');
+            },
+
+            progressRow: function() {
+                return [
+                    '<span class=""></span>'
                 ].join('');
             },
 
@@ -32807,8 +33019,8 @@ define("html5sortable", function(){});
                 $el.attr('class', classes);
             };
 
-            app.core.dom.parent = function(selector) {
-                return $(selector).parent();
+            app.core.dom.parent = function(selector, filter) {
+                return $(selector).parent(filter);
             };
 
             app.core.dom.width = function(selector, value) {
@@ -33034,7 +33246,9 @@ define("html5sortable", function(){});
                 $(selector).slideDown(duration,complete);
             };
 
-
+            app.core.dom.last = function(selector){
+              return $(selector).last();
+            };
 
             app.core.util.ajax = $.ajax;
         }
@@ -33364,7 +33578,7 @@ define('husky_extensions/util',[],function() {
                     }.bind(this),
 
                     error: function(jqXHR, textStatus, error) {
-                        deferred.reject(textStatus, error);
+                        deferred.reject(jqXHR, textStatus, error);
                     }
                 });
 
