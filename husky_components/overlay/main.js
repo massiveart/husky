@@ -30,76 +30,76 @@ define([], function() {
     'use strict';
 
     var defaults = {
-        trigger: 'click',
-        container: 'body',
-        title: '',
-        closeIcon: 'remove2',
-        okIcon: 'half-ok save-button btn btn-highlight btn-large',
-        closeCallback: null,
-        okCallback: null,
-        data: '',
-        instanceName: 'undefined',
-        draggable: true
-    },
+            trigger: 'click',
+            container: 'body',
+            title: '',
+            closeIcon: 'remove2',
+            okIcon: 'half-ok save-button btn btn-highlight btn-large',
+            closeCallback: null,
+            okCallback: null,
+            data: '',
+            instanceName: 'undefined',
+            draggable: true
+        },
 
-    constants = {
-        closeSelector: '.close-button',
-        okSelector: '.ok-button',
-        contentSelector: '.overlay-content',
-        headerSelector: '.overlay-header',
-        draggableClass: 'draggable'
-    },
+        constants = {
+            closeSelector: '.close-button',
+            okSelector: '.ok-button',
+            contentSelector: '.overlay-content',
+            headerSelector: '.overlay-header',
+            draggableClass: 'draggable'
+        },
 
-    /** templates for component */
-    templates = {
-        overlaySkeleton: [
-            '<div class="husky-overlay-container smart-content-overlay">',
+        /** templates for component */
+            templates = {
+            overlaySkeleton: [
+                '<div class="husky-overlay-container smart-content-overlay">',
                 '<div class="overlay-header">',
                 '<span class="title"><%= title %></span>',
                 '<a class="icon-<%= closeIcon %> close-button" href="#"></a>',
                 '</div>',
                 '<div class="overlay-content"></div>',
                 '<div class="overlay-footer">',
-                    '<a class="icon-<%= okIcon %> ok-button" href="#"></a>',
+                '<a class="icon-<%= okIcon %> ok-button" href="#"></a>',
                 '</div>',
-            '</div>'
-        ].join('')
-    },
+                '</div>'
+            ].join('')
+        },
 
-    /**
-     * namespace for events
-     * @type {string}
-     */
-     eventNamespace = 'husky.overlay.',
+        /**
+         * namespace for events
+         * @type {string}
+         */
+            eventNamespace = 'husky.overlay.',
 
-    /**
-     * raised after initialization process
-     * @event husky.overlay.<instance-name>.initialize
-     */
-    INITIALIZED = function() {
-        return createEventName.call(this, 'initialized');
-    },
+        /**
+         * raised after initialization process
+         * @event husky.overlay.<instance-name>.initialize
+         */
+            INITIALIZED = function() {
+            return createEventName.call(this, 'initialized');
+        },
 
-    /**
-     * raised after overlay is opened
-     * @event husky.overlay.<instance-name>.opened
-     */
-     OPENED = function() {
-        return createEventName.call(this, 'opened');
-     },
+        /**
+         * raised after overlay is opened
+         * @event husky.overlay.<instance-name>.opened
+         */
+            OPENED = function() {
+            return createEventName.call(this, 'opened');
+        },
 
-    /**
-     * raised after overlay is closed
-     * @event husky.overlay.<instance-name>.opened
-     */
-     CLOSED = function() {
-        return createEventName.call(this, 'closed');
-     },
+        /**
+         * raised after overlay is closed
+         * @event husky.overlay.<instance-name>.opened
+         */
+            CLOSED = function() {
+            return createEventName.call(this, 'closed');
+        },
 
-    /** returns normalized event names */
-    createEventName = function(postFix) {
-        return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
-    };
+        /** returns normalized event names */
+            createEventName = function(postFix) {
+            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+        };
 
     return {
 
@@ -257,10 +257,10 @@ define([], function() {
                         x: e.clientX - (this.sandbox.dom.offset(this.overlay.$header).left - this.sandbox.dom.scrollLeft(this.sandbox.dom.$window))
                     };
 
-                   //bind the mousemove event if mouse is down on header
-                   this.sandbox.dom.on(this.overlay.$header, 'mousemove', function(event) {
+                    //bind the mousemove event if mouse is down on header
+                    this.sandbox.dom.on(this.overlay.$header, 'mousemove', function(event) {
                         this.draggableHandler(event, origin);
-                   }.bind(this));
+                    }.bind(this));
                 }.bind(this));
 
                 this.sandbox.dom.on(this.overlay.$header, 'mouseup', function() {
@@ -322,8 +322,8 @@ define([], function() {
          * Positions the overlay in the middle of the screen
          */
         setCoordinates: function() {
-            this.updateCoordinates((this.sandbox.dom.$window.height() - this.overlay.$el.outerHeight())/2,
-                                   (this.sandbox.dom.$window.width() - this.overlay.$el.outerWidth())/2);
+            this.updateCoordinates((this.sandbox.dom.$window.height() - this.overlay.$el.outerHeight()) / 2,
+                (this.sandbox.dom.$window.width() - this.overlay.$el.outerWidth()) / 2);
         },
 
         /**
