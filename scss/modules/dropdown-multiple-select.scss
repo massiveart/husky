@@ -18,6 +18,21 @@
         }
     }
 
+    &.disabled {
+        .dropdown-label {
+            background: $grayLighterer;
+            color: $gray;
+            cursor: default;
+        }
+        .dropdown-toggle {
+            cursor: default;
+        }
+        .dropdown-toggle:after {
+            border-top-color: $gray;
+            cursor: default;
+        }
+    }
+
     .dropdown-list {
         width: 100%;
         /*display: inline-block;*/

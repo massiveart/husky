@@ -78,7 +78,7 @@
             };
 
             app.core.dom.css = function(selector, style, value) {
-                if (!!value) {
+                if (typeof value !== 'undefined') {
                     return $(selector).css(style, value);
                 } else {
                     return $(selector).css(style);
@@ -118,7 +118,7 @@
             };
 
             app.core.dom.width = function(selector, value) {
-                if (!!value) {
+                if (typeof value !== 'undefined') {
                     return $(selector).width(value);
                 } else {
                     return $(selector).width();
@@ -129,16 +129,15 @@
                 return $(selector).outerWidth();
             };
 
-            app.core.dom.height = function(selector) {
-                return $(selector).height();
-            };
-
             app.core.dom.height = function(selector, value) {
-                if (!!value) {
-                    return $(selector).height(value);
-                } else {
+                if (!value) {
                     return $(selector).height();
                 }
+                return $(selector).height(value);
+            };
+
+            app.core.dom.outerHeight = function(selector) {
+                return $(selector).outerHeight();
             };
 
             app.core.dom.offset = function(selector, attributes) {
@@ -154,6 +153,10 @@
                 return $(context).remove(selector);
             };
 
+            app.core.dom.detach = function(context, selector) {
+                return $(context).detach(selector);
+            };
+
             app.core.dom.attr = function(selector, attributeName, value) {
                 if (!value && value !== '') {
                     attributeName = attributeName || {};
@@ -162,9 +165,10 @@
                     return $(selector).attr(attributeName, value);
                 }
             };
+
             app.core.dom.removeAttr = function(selector, attributeName) {
                 return $(selector).removeAttr(attributeName);
-            }
+            };
 
             app.core.dom.is = function(selector, type) {
                 return $(selector).is(type);
@@ -172,7 +176,7 @@
 
             app.core.dom.data = function(selector, key, value) {
                 if (!!value) {
-                    $(selector).data(key, value);
+                    return $(selector).data(key, value);
                 } else {
                     return $(selector).data(key);
                 }
@@ -184,7 +188,7 @@
 
             app.core.dom.val = function(selector, value) {
                 if (!!value || value === '') {
-                    $(selector).val(value);
+                    return $(selector).val(value);
                 } else {
                     return $(selector).val();
                 }
@@ -256,7 +260,7 @@
 
             app.core.dom.text = function(selector, value) {
                 if (!!value) {
-                    $(selector).text(value);
+                    return $(selector).text(value);
                 } else {
                     return $(selector).text();
                 }
@@ -290,12 +294,16 @@
                 return $(selector).show();
             };
 
-            app.core.dom.toggle= function(selector) {
+            app.core.dom.map = function(selector, callback) {
+                return $(selector).map(callback);
+            };
+
+            app.core.dom.toggle = function(selector) {
                 return $(selector).toggle();
             };
 
             app.core.dom.keypress = function(selector, callback) {
-              $(selector).keypress(callback);
+                $(selector).keypress(callback);
             };
 
             app.core.dom.insertAt = function(index, selector, $container, $item) {
@@ -307,18 +315,25 @@
                 }
             };
 
-            app.core.dom.scrollTop = function(itemSelector) {
-                $(window).scrollTop($(itemSelector).offsset().top);
+            app.core.dom.scrollToTop = function(itemSelector) {
+                $(window).scrollTop($(itemSelector).offset().top);
+            };
+
+            app.core.dom.scrollTop = function(selector, position) {
+                if (typeof position !== 'undefined') {
+                    return $(selector).scrollTop(position);
+                } else {
+                    return $(selector).scrollTop();
+                }
             };
 
             app.core.dom.scrollLeft = function(selector, value) {
-                if(!!value) {
-                    $(selector).scrollLeft(value);
+                if (typeof value !== 'undefined') {
+                    return $(selector).scrollLeft(value);
                 } else {
                     return $(selector).scrollLeft();
                 }
             };
-
 
             app.core.dom.scrollAnimate = function(position, selector) {
                 if (!!selector) {
@@ -333,15 +348,20 @@
             };
 
             app.core.dom.slideUp = function(selector, duration, complete) {
-                $(selector).slideUp(duration,complete);
+                $(selector).slideUp(duration, complete);
             };
 
             app.core.dom.slideDown = function(selector, duration, complete) {
-                $(selector).slideDown(duration,complete);
+                $(selector).slideDown(duration, complete);
             };
+
 
             app.core.dom.last = function(selector){
               return $(selector).last();
+            };
+
+            app.core.dom.when = function(deffereds) {
+                return $.when(deffereds);
             };
 
             app.core.util.ajax = $.ajax;

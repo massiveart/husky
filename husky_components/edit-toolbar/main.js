@@ -35,8 +35,10 @@
  *      - iconSize (optional: large/medium/small)
  *      - class (optional: highlight/highlight-gray)
  *      - group (optional: left/right)
+ *      - position (optional) integer to sort the items - default 9000
  *      - type (optional: none/select) - if select, the selected item is displayed in mainitem
  *      - callback (optional) - callback function
+ *      - hidden (optional) - if true button gets hidden form the beginning on
  *      - items (optional - if dropdown):
  *          - title
  *          - icon (optional) false will remove icon
@@ -54,6 +56,7 @@
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.data] if no url is provided
  * @param {String} [options.instanceName] enables custom events (in case of multiple tabs on one page)
+ * @param {String} [options.itemsRequestKey] key with resutlt-array for requested dropdown items
  * @param {String} [options.appearance]
  */
 define(function() {
@@ -64,7 +67,8 @@ define(function() {
             url: null,
             data: [],
             instanceName: '',
-            appearance: null // TODO: implement small version
+            appearance: null, // TODO: implement small version
+            itemsRequestKey: '_embedded'
         },
 
         /** templates container */
@@ -119,6 +123,61 @@ define(function() {
             return createEventName.call(this, 'item.loading');
         },
 
+        /**
+         * event to change a buttons selected dropdown-item
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]item.change
+         * @param {string} button The id of the button
+         * @param {string} item the id or the index of the dropdown-item
+         * @param {boolean} executeCallback if true callback of dropdown item gets executed
+         */
+        ITEM_CHANGE = function() {
+            return createEventName.call(this, 'item.change');
+        },
+
+        /**
+         * event to hide a button
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]item.hide
+         * @param {string} button The id of the button
+         */
+         ITEM_HIDE = function() {
+            return createEventName.call(this, 'item.hide');
+         },
+
+        /**
+         * event to show a button
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]item.show
+         * @param {string} button The id of the button
+         */
+         ITEM_SHOW = function() {
+            return createEventName.call(this, 'item.show');
+         },
+
+        /**
+         * event to change a buttons default title and default icon
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]button.set
+         * @param {string} button The id of the button
+         * @param {object} object with a icon and title
+         */
+         BUTTON_SET = function() {
+            return createEventName.call(this, 'button.set');
+        },
+
+        /**
+         * event to set new dropdown-items for a button
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]items.set
+         * @param {string} button The id of the button
+         * @param {array} items The items to set
+         * @param {integer} itemId The id or the index of the item to set selected - optional
+         */
+         ITEMS_SET = function() {
+            return createEventName.call(this, 'items.set');
+        },
+
         /** events bound to dom */
         bindDOMEvents = function() {
             this.sandbox.dom.on(this.options.el, 'click', toggleItem.bind(this), '.dropdown-toggle');
@@ -130,11 +189,51 @@ define(function() {
             this.sandbox.on(ITEM_DISABLE.call(this), function(id, highlight) {
                 toggleEnabled.call(this, false, id, highlight);
             }.bind(this));
+
             this.sandbox.on(ITEM_ENABLE.call(this), function(id, highlight) {
                 toggleEnabled.call(this, true, id, highlight);
             }.bind(this));
+
             this.sandbox.on(ITEM_LOADING.call(this), function(id) {
                 itemLoading.call(this, id);
+            }.bind(this));
+
+            this.sandbox.on(ITEM_HIDE.call(this), function(id) {
+                hideItem.call(this, this.items[id].$el);
+            }.bind(this));
+
+            this.sandbox.on(ITEM_SHOW.call(this), function(id) {
+                showItem.call(this, this.items[id].$el);
+            }.bind(this));
+
+            this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
+                var index = getItemIndexById.call(this, id, this.items[button]);
+                changeMainListItem.call(this, this.items[button].$el, this.items[button].items[index]);
+                if (executeCallback === true || !!this.items[button].items[index].callback) {
+                    if (typeof this.items[button].items[index].callback === 'function') {
+                        this.items[button].items[index].callback();
+                    }
+                }
+            }.bind(this));
+
+            this.sandbox.on(BUTTON_SET.call(this), function(button, newData) {
+                changeMainListItem.call(this, this.items[button].$el, newData);
+            }.bind(this));
+
+            this.sandbox.on(ITEMS_SET.call(this), function(button, items, itemId) {
+                if (items.length > 0) {
+                    deleteDropdown.call(this, this.items[button]);
+                    this.sandbox.dom.addClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
+                    this.items[button].items = items;
+                    createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
+                    setButtonWidth.call(this, this.items[button].$el, this.items[button]);
+                    if (!!itemId) {
+                        this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemId);
+                    }
+                } else {
+                    deleteDropdown.call(this, this.items[button]);
+                    this.sandbox.dom.removeClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
+                }
             }.bind(this));
         },
 
@@ -177,6 +276,23 @@ define(function() {
                 this.sandbox.dom.prependClass($iconItem, disabledIconClass);
             }
         },
+
+        /**
+         * Hides a button
+         * @param button
+         */
+        hideItem = function($button) {
+            console.log($button);
+            this.sandbox.dom.addClass($button, 'hidden');
+        },
+
+        /**
+         * Shows a button
+         * @param button
+         */
+         showItem = function($button) {
+            this.sandbox.dom.removeClass($button, 'hidden');
+         },
 
         /** shows loader at some icon */
         itemLoading = function(id) {
@@ -239,6 +355,21 @@ define(function() {
         },
 
         /**
+         * Determines the index of a dropdown-item by its id
+         * @param id {integer} id of the dropdown-item
+         * @param button {object} parent object of the item
+         * @return {integer} the index of the item
+         */
+        getItemIndexById = function(id, button) {
+            for (var i = -1, length = button.items.length; ++i < length;) {
+                if (button.items[i].id === id) {
+                    return i;
+                }
+            }
+            return id;
+        },
+
+        /**
          * hides dropdowns of this instance
          */
         hideDropdowns = function() {
@@ -282,6 +413,13 @@ define(function() {
                 if (!!parentItem.type && parentItem.type === "select") {
                     changeMainListItem.call(this, $parent, item);
                 }
+
+                //check if itemsOption is set and pass clicked item to the callback
+                if (!!parentItem.itemsOption) {
+                    if (typeof parentItem.itemsOption.callback === 'function') {
+                        parentItem.itemsOption.callback(item._original);
+                    }
+                }
             }
 
             // if callback is set call it, else trigger event
@@ -298,8 +436,6 @@ define(function() {
          * @param item
          */
         changeMainListItem = function(listElement, item) {
-
-            // TODO: do not change size of element on change title
             // first get title
             var listItems = this.sandbox.dom.find('span', listElement);
             if (!!item.icon) {
@@ -382,6 +518,92 @@ define(function() {
         },
 
         /**
+         * set width for button with dropdown-items
+         * @param listItem
+         * @param parent
+         */
+        setButtonWidth = function(listItem, parent) {
+            var maxwidth = 0;
+            if (parent.type === 'select') {
+                for(var i = -1, length = parent.items.length; ++i < length;) {
+                    changeMainListItem.call(this, listItem, parent.items[i]);
+                    if (this.sandbox.dom.width(listItem) > maxwidth) {
+                        maxwidth = this.sandbox.dom.width(listItem);
+                    }
+                }
+                this.sandbox.dom.css(listItem, {'min-width': maxwidth + 'px'});
+                //set button back to default
+                changeMainListItem.call(this, listItem, parent);
+            }
+        },
+
+        /**
+         * Handles requested items
+         * @param requestedItems
+         * @param $button
+         * @param button
+         */
+        handleRequestedItems = function(requestedItems, buttonId) {
+            var id, title, icon, callback, i, length;
+            this.items[buttonId].items = [];
+
+            //for loop sets the the items[button].items - array together
+            for (i = -1, length = requestedItems.length; ++i < length;) {
+
+                if (!!this.items[buttonId].itemsOption.idAttribute) {
+                    id = requestedItems[i][this.items[buttonId].itemsOption.idAttribute];
+                } else if (!!requestedItems[i].id) {
+                    id = requestedItems[i].id;
+                }
+
+                if (!!this.items[buttonId].itemsOption.titleAttribute) {
+                    title = requestedItems[i][this.items[buttonId].itemsOption.titleAttribute];
+                } else if (!!requestedItems[i].title) {
+                    title = requestedItems[i].title;
+                }
+                if (!!this.items[buttonId].itemsOption.translate === true) {
+                    title = this.sandbox.translate(this.items[buttonId].itemsOption.languageNamespace + title);
+                }
+
+                if (!!requestedItems[i].icon) {
+                    icon = requestedItems[i].icon;
+                }
+                if (!!requestedItems[i].callback) {
+                    callback = requestedItems[i].callback;
+                }
+
+                this.items[buttonId].items[i] = {
+                    id: id,
+                    title: title,
+                    icon: icon,
+                    callback: callback,
+                    _original: requestedItems[i]
+                };
+            }
+
+            //now generate the dropdown
+            this.sandbox.emit(ITEMS_SET.call(this), buttonId, this.items[buttonId].items);
+        },
+
+        /**
+         * Sorts all items with their position-property
+         * @param {array} data The list of items to sort
+         * @return {array} returns the sorted array
+         */
+        sortData = function(data) {
+            for (var i = -1, length = data.length; ++i < length;) {
+                if (typeof data[i].position !== 'number') {
+                    data[i].position = 9000;
+                }
+            }
+            data = data.sort(function(a, b){
+                return a.position - b.position
+            });
+
+            return data;
+        },
+
+        /**
          * function checks if id is set and unique among all items
          * otherwise a new id is generated for the element
          * @param item
@@ -396,6 +618,24 @@ define(function() {
             // set enabled defaults
             if (!item.disabled) {
                 item.disabled = false;
+            }
+        },
+
+        /**
+         * Removes the dropdown of a button
+         * @param button
+         */
+        deleteDropdown = function(button) {
+            if (!!button.items) {
+                // remove the related stuff
+                this.sandbox.dom.remove(this.sandbox.dom.find('.edit-toolbar-dropdown-menu', button.$el));
+                this.sandbox.dom.removeClass(this.sandbox.dom.children(button.$el, 'a'), 'dropdown-toggle');
+
+                // delete JS related stuff
+                for (var i = -1, length = button.items.length; ++i < length;) {
+                    delete this.items[button.items[i].id];
+                }
+                button.items = [];
             }
         },
 
@@ -441,6 +681,9 @@ define(function() {
 
             bindDOMEvents.call(this);
             bindCustomEvents.call(this);
+
+            // initialization finished
+            this.sandbox.emit(INITIALIZED.call(this));
         },
 
         /**
@@ -464,6 +707,7 @@ define(function() {
             // save item groups in array
             this.itemGroup = [];
 
+            data = sortData.call(this, data);
 
             // create all elements
             this.sandbox.util.foreach(data, function(item) {
@@ -501,20 +745,37 @@ define(function() {
                 title = item.title ? item.title : '';
                 this.sandbox.dom.append($listLink, '<span class="title">' + title + '</span>');
 
+                //hide the item if hidden true
+                if (item.hidden === true) {
+                    hideItem.call(this, $listItem);
+                }
 
-                // now create subitems
-                if (!!item.items) {
-                    this.sandbox.dom.addClass($listLink, 'dropdown-toggle');
-                    createDropdownMenu.call(this, $listItem, item);
+                if (!!item.itemsOption) {
+                    this.sandbox.util.load(item.itemsOption.url)
+                        .then(function(result) {
+                            handleRequestedItems.call(this, result[this.options.itemsRequestKey], item.id);
+                        }.bind(this))
+                        .fail(function(result) {
+                            this.sandbox.logger.log('dorpdown-items could not be loaded', result);
+                        }.bind(this));
+                } else {
+                    // now create subitems
+                    if (!!item.items) {
+                        this.sandbox.dom.addClass($listLink, 'dropdown-toggle');
+                        createDropdownMenu.call(this, $listItem, item);
+                    }
                 }
 
                 // create button
                 this.sandbox.dom.append(addTo, $listItem);
 
-            }.bind(this));
+                //set width for buttons with dropdowns
+                if (!!item.items) {
+                    setButtonWidth.call(this, $listItem, item);
+                }
+                this.items[item.id].$el = $listItem;
 
-            // initialization finished
-            this.sandbox.emit(INITIALIZED.call(this));
+            }.bind(this));
         }
     };
 

@@ -1,14 +1,60 @@
 .husky-datagrid {
-    table {
-        table-layout: fixed;
+    position: relative;
 
+    table {
         td {
-            overflow:hidden;
 
             input{
                 margin: 0 0 0 -2px;
                 border-color: $white;
             }
+
+            // Remove when validation type for serverside validation is implemented
+            .server-validation-error {
+                border-color: #AD0710 !important;
+                border-width: 2px !important;
+            }
+
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
+
+    thead {
+        tr {
+            height: 30px;
+            padding-top: 10px;
+        }
+        th {
+            padding-top: 0;
+            font-weight: normal;
+
+            &.is-sortable {
+                color: black;
+                cursor: pointer;
+            }
+            &.is-selected {
+                font-weight: bold;
+            }
+        }
+
+        .table-container {
+            width: 100%;
+        }
+    }
+
+    .table-container {
+        overflow: auto;
+
+        &.overflow:after {
+            color: $grayLighter;
+            font-size: 22px;
+            font-family: $baseIconFont;
+            content: '\e212';
+            position: absolute;
+            right: -35px;
+            top: 40%;
+        }
+    }
+
 }

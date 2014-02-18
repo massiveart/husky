@@ -95,6 +95,10 @@ $editToolbarHeight: 40px;
         }
     }
 
+    &.hidden {
+        display: none;
+    }
+
     &.highlight {
         min-width: 100px;
         background-color: $highlightColor;
@@ -162,7 +166,6 @@ $editToolbarHeight: 40px;
         .icon, &.icon {
             font-size: 18px;
             padding-right: 0px;
-            line-height: 1;
             vertical-align: middle;
 
             &.large {
