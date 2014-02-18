@@ -3,6 +3,18 @@
 
     table {
         td {
+
+            input{
+                margin: 0 0 0 -2px;
+                border-color: $white;
+            }
+
+            // Remove when validation type for serverside validation is implemented
+            .server-validation-error {
+                border-color: #AD0710 !important;
+                border-width: 2px !important;
+            }
+
             overflow: hidden;
             text-overflow: ellipsis;
         }
