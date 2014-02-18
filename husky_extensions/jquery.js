@@ -355,16 +355,23 @@
                 $(selector).slideDown(duration, complete);
             };
 
+            app.core.dom.last = function(selector) {
+                return $(selector).last();
+            };
 
-            app.core.dom.last = function(selector){
-              return $(selector).last();
+            app.core.dom.fadeIn = function(selector, duration, complete) {
+                $(selector).fadeIn(duration, complete);
+            };
+
+            app.core.dom.fadeOut = function(selector, duration, complete) {
+                $(selector).fadeOut(duration, complete);
             };
 
             app.core.dom.when = function(deffereds) {
                 return $.when(deffereds);
             };
 
-            app.core.dom.unbind = function(selector, eventType){
+            app.core.dom.unbind = function(selector, eventType) {
                 $(selector).unbind(eventType);
             };
 
