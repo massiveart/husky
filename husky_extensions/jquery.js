@@ -355,6 +355,14 @@
                 $(selector).slideDown(duration, complete);
             };
 
+            app.core.dom.fadeIn = function(selector, duration, complete) {
+                $(selector).fadeIn(duration, complete);
+            };
+
+            app.core.dom.fadeOut = function(selector, duration, complete) {
+                $(selector).fadeOut(duration, complete);
+            };
+
             app.core.dom.when = function(deffereds) {
                 return $.when(deffereds);
             };
