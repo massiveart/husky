@@ -113,8 +113,8 @@
                 $el.attr('class', classes);
             };
 
-            app.core.dom.parent = function(selector) {
-                return $(selector).parent();
+            app.core.dom.parent = function(selector, filter) {
+                return $(selector).parent(filter);
             };
 
             app.core.dom.width = function(selector, value) {
@@ -355,8 +355,24 @@
                 $(selector).slideDown(duration, complete);
             };
 
+            app.core.dom.last = function(selector) {
+                return $(selector).last();
+            };
+
+            app.core.dom.fadeIn = function(selector, duration, complete) {
+                $(selector).fadeIn(duration, complete);
+            };
+
+            app.core.dom.fadeOut = function(selector, duration, complete) {
+                $(selector).fadeOut(duration, complete);
+            };
+
             app.core.dom.when = function(deffereds) {
                 return $.when(deffereds);
+            };
+
+            app.core.dom.unbind = function(selector, eventType) {
+                $(selector).unbind(eventType);
             };
 
             app.core.util.ajax = $.ajax;

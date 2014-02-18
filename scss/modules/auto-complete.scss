@@ -16,13 +16,18 @@
     border-radius: 4px 4px 0 0;
 
     input[type="text"] {
-//      width: 100%;
-//      border: 1px solid $grayLighter;
-//      outline: 0;
-//      background: $white;
-//      padding: 4px 8px;
-      border-radius: 4px 4px 0 0;
-      margin: 0;
+        width: 100%;
+        border: 1px solid $grayLighter;
+        outline: 0;
+        background: $white;
+        padding: 4px 8px;
+        border-radius: 4px 4px 0 0;
+        margin: 0;
+        height: 30px;
+
+        &:focus {
+            outline: 0 none;
+        }
     }
 }
 
@@ -55,7 +60,7 @@
     border-color: #fff;
 
     .border {
-//        border-bottom: 1px solid $grayLighter;
+        //        border-bottom: 1px solid $grayLighter;
         height: 25px;
         clear: both;
         .icon {
@@ -92,9 +97,9 @@
 }
 
 .husky-auto-complete-success {
-  @extend %abstract-success;
+    @extend %abstract-success;
 }
 
 .husky-auto-complete-error {
-  @extend %abstract-error;
+    @extend %abstract-error;
 }
