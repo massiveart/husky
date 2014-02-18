@@ -605,7 +605,10 @@ require(['lib/husky'], function (Husky) {
                         {
                             id: 1,
                             name: 'Delete',
-                            action: 'delete'
+                            action: 'delete',
+                            callback: function(dropdownItem, node) {
+                                app.logger.log(dropdownItem, node);
+                            }
                         },
                         {
                             id: 2,
