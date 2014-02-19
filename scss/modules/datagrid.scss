@@ -43,6 +43,13 @@
         }
     }
 
+    tbody {
+        tr:last-child {
+            border-width: 2px;
+            border-color: $grayLight;
+        }
+    }
+
     .table-container {
         overflow: auto;
 
