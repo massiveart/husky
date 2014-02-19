@@ -568,11 +568,8 @@ define([], function() {
                 //merge this.options with passed configs
                 this.options = this.sandbox.util.extend(false, {}, this.options, configs);
 
-                //remove current overlay component and create new triggerer
+                //reload the overlay
                 this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.remove');
-                this.renderButton();
-
-                //re-initialize the overlay
                 this.initOverlayData();
                 this.startOverlay();
 
@@ -636,7 +633,7 @@ define([], function() {
             this.sandbox.start([{
                 name: 'overlay@husky',
                 options: {
-                    el: this.$button,
+                    triggerEl: this.$button,
                     container: this.$el,
                     data: this.$overlayContent,
                     title: this.sandbox.translate(this.translations.configureSmartContent),
