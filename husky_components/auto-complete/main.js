@@ -64,7 +64,7 @@ define([], function() {
          * raised after initialization
          * @event husky.auto-complete.initialized
          */
-         INITIALIZED = function() {
+            INITIALIZED = function() {
             return createEventName.call(this, 'initialized');
         },
 
@@ -72,7 +72,7 @@ define([], function() {
          * raised after prefetched data is retrieved
          * @event husky.auto-complete.prefetch-data
          */
-         PREFETCH_LOAD = function() {
+            PREFETCH_LOAD = function() {
             return createEventName.call(this, 'prefetch-data');
         },
 
@@ -80,7 +80,7 @@ define([], function() {
          * raised before remoted data is loaded
          * @event husky.auto-complete.remote-data-load
          */
-         REMOTE_LOAD = function() {
+            REMOTE_LOAD = function() {
             return createEventName.call(this, 'remote-data-load');
         },
 
@@ -88,7 +88,7 @@ define([], function() {
          * raised after remoted data is retrieved
          * @event husky.auto-complete.remote-data
          */
-         REMOTE_RETRIEVE = function() {
+            REMOTE_RETRIEVE = function() {
             return createEventName.call(this, 'remote-data');
         },
 
@@ -96,7 +96,7 @@ define([], function() {
          * raised before the component tries to request a match after blur
          * @event husky.auto-complete.request-match
          */
-         REQUEST_MATCH = function() {
+            REQUEST_MATCH = function() {
             return createEventName.call(this, 'request-match');
         },
 
@@ -105,7 +105,7 @@ define([], function() {
          * @event husky.auto-complete.select
          * @param {object} selected datum with id and name
          */
-         SELECT = function() {
+            SELECT = function() {
             return createEventName.call(this, 'select');
         },
 
@@ -114,9 +114,9 @@ define([], function() {
          * @event husky.auto-complete.set-excludes
          * @param {array} array of objects to exclude from suggestions
          */
-         SET_EXCLUDES = function() {
+            SET_EXCLUDES = function() {
             return createEventName.call(this, 'set-excludes');
-         },
+        },
 
         /** returns normalized event names */
             createEventName = function(postFix) {
@@ -298,7 +298,7 @@ define([], function() {
                 if (context.id !== null && context.id === this.excludes[i].id) {
                     return true;
                 } else if (context[this.options.valueKey] !== null &&
-                           context[this.options.valueKey] === this.excludes[i][this.options.valueKey]) {
+                    context[this.options.valueKey] === this.excludes[i][this.options.valueKey]) {
                     return true;
                 }
             }
@@ -311,7 +311,6 @@ define([], function() {
         setCustomEvents: function() {
             this.sandbox.on(SET_EXCLUDES.call(this), function(excludes) {
                 this.excludes = this.parseExcludes(excludes);
-                console.log(this.excludes);
             }.bind(this));
         },
 
