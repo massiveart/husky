@@ -5,59 +5,8 @@ $columnOptionsContainerWidth: 400px;
 
 
 .column-options-parent {
-    position: absolute;
-    left: 50%;
-    top: 20%;
-    margin-left: -($columnOptionsContainerWidth / 2);
-}
-
-.column-options-container {
-    display:none;
-    width: $columnOptionsContainerWidth;
-    position: fixed;
-    background-color: white;
-    border: 0px solid $grayLighter;
-    margin: auto;
-    overflow: auto;
-    z-index: 1000;
-    min-width: 160px;
-    list-style: none;
-    @include user-select(none);
-    @include standard-box-shadow;
-
-    &.right-aligned {
-        left: auto;
-        right: 0;
-    }
-}
-
-.column-options-header {
-    padding: 15px 20px 15px;
-    height: 50px;
-    border-bottom: 1px solid $grayLighterer;
-    position: relative;
-
-    .title {
-        color: $grayLight;
-        font-size: 23px;
-    }
-
-    .close-button {
-        font-size: 20px;
-        float:right;
-        text-decoration: none;
-        color: black;
-    }
-
-}
-
-.column-options-footer {
-    padding: 10px 0;
-    border-top: 1px solid $grayLighter;
-    text-align: center;
-
-    .save-button {
-        display: inline-block;
+    .overlay-content {
+        margin: 0;
     }
 }
 
@@ -74,6 +23,9 @@ $columnOptionsContainerWidth: 400px;
         line-height: $columnOptionsListItemHeight;
         white-space: nowrap;
         padding-right: 20px;
+        position: relative;
+        top: 0px;
+        left: 0px;
     }
 }
 
@@ -103,6 +55,7 @@ $columnOptionsContainerWidth: 400px;
 
     .visibility-toggle {
         position: absolute;
+        top: 0px;
         padding-right: 10px;
         padding-left: 5px;
         right: 10px;
