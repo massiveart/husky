@@ -217,7 +217,6 @@ define('form/element',['form/util'], function(Util) {
                 validationTrigger: 'focusout',                     // default validate trigger
                 validationAddClasses: true,                        // add error and success classes
                 validationAddClassesParent: true,                  // add classes to parent element
-                validationSuccessClass: 'husky-validate-success',  // success class
                 validationErrorClass: 'husky-validate-error',      // error class
                 validationClass: 'husky-validate',                 // default class
                 validation: true                                   // validation on/off
@@ -228,7 +227,6 @@ define('form/element',['form/util'], function(Util) {
                 'validationAddClasses',
                 'validationAddClassesParent',
                 'validationClass',
-                'validationSuccessClass',
                 'validationErrorClass',
                 'validationSubmitEvent'
             ],
@@ -344,8 +342,12 @@ define('form/element',['form/util'], function(Util) {
                             this.requireCounter++;
                             require(['type/' + typeName], function(Type) {
                                 type = new Type(this.$el, options);
-                                Util.debug('Element Type', typeName, options);
-                                that.resolveInitialization.call(this);
+
+                                type.initialized.then(function() {
+                                    Util.debug('Element Type', typeName, options);
+                                    that.resolveInitialization.call(this);
+                                }.bind(this));
+
                             }.bind(this));
                         }.bind(this),
                         options = Util.buildOptions(this.options, 'type'),
@@ -402,7 +404,6 @@ define('form/element',['form/util'], function(Util) {
                     if (!!this.options.validationAddClassesParent) {
                         $element = $element.parent();
                     }
-                    $element.removeClass(this.options.validationSuccessClass);
                     $element.removeClass(this.options.validationErrorClass);
                 },
 
@@ -415,9 +416,7 @@ define('form/element',['form/util'], function(Util) {
                         if (!!this.options.validationAddClassesParent) {
                             $element = $element.parent();
                         }
-                        if (!!state) {
-                            $element.addClass(this.options.validationSuccessClass);
-                        } else {
+                        if (!state) {
                             $element.addClass(this.options.validationErrorClass);
                         }
                     }
@@ -1157,8 +1156,14 @@ define('type/default',[
                     this.$el = $el;
                     this.options = $.extend({}, defaults, options);
 
+                    var dfd = $.Deferred();
+                    this.requireCounter = 0;
+                    this.initialized = dfd.promise();
+
                     if (!!this.initializeSub) {
-                        this.initializeSub();
+                        this.initializeSub(dfd);
+                    } else {
+                        dfd.resolve();
                     }
                 }
             },
@@ -1322,8 +1327,9 @@ define('type/decimal',[
             },
 
             typeInterface = {
-                initializeSub: function() {
+                initializeSub: function(dfd) {
                     // TODO internationalization
+                    dfd.resolve();
                 },
 
                 validate: function() {

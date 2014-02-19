@@ -29,10 +29,12 @@
 
 <div class="grid">
     <div class="grid-col-2">&nbsp;</div>
-    <div class="btn pointer grid-col-3 align-center" id="disable">Disable "Add user" and "Edit" button</div>
-    <div class="grid-col-2">&nbsp;</div>
-    <div class="btn pointer grid-col-3 align-center" id="enable">Enable "Add user" and "Edit" button</div>
-    <div class="grid-col-2">&nbsp;</div>
+    <div class="btn pointer grid-col-2 align-center" id="disable">Disable "Add user" and "Edit" button</div>
+    <div class="grid-col-1">&nbsp;</div>
+    <div class="btn pointer grid-col-2 align-center" id="enable">Enable "Add user" and "Edit" button</div>
+    <div class="grid-col-1">&nbsp;</div>
+    <div class="btn pointer grid-col-2 align-center" id="changeItem">Change current item of state</div>
+    <div class="grid-col-1">&nbsp;</div>
 </div>
 
 <div class="grid">
@@ -100,44 +102,71 @@
                         ]
                     },
                     {
-                        'id': '3',
-                        'icon': 'retweet',
+                        'id': 'state',
+                        'icon': 'publish',
                         'group': 'right',
-                        'title': 'unpublished',
+                        'title': 'Publish',
                         'class': 'highlight-gray',
-                        'type': 'select',
-                        'items': [
-                            {
-                                'title': 'Publish',
-                                'callback': function() {
-                                    console.log("refresh was clicked");
-                                }
-                            },
-                            {
-                                'icon': 'bin',
-                                'title': 'Private',
-                                'callback': function() {
-                                    console.log("no refresh was clicked");
-                                }
-                            }
-                        ]
+                        'position': 2,
+                        'type': 'select'
                     },
                     {
                         'icon': 'file-import',
                         'title': 'Import',
+                        'position': 1,
                         'callback': function() {
                             console.log("import was clicked");
                         }
                     },
                     {
                         'icon': 'file-import',
-                        'title': 'Work'
+                        'title': 'Work',
+                        'hidden': true,
+                        'position': 2
                     },
                     {
                         'icon': 'file-export',
-                        'title': 'Export'
+                        'title': 'Export',
+                        'position': 4,
+                        'itemsOption': {
+                            'url': 'items.json',
+                            'titleAttribute': 'title',
+                            'idAttribute': 'id',
+                            'translate': true,
+                            'languageNamespace': 'edit-toolbar.',
+                            'callback': function(item) {
+                                console.log(item, 'This is a test callback');
+                            }
+                        }
                     }
-                ];
+                ],
+
+            stateItems = [
+                {
+                    'id': 'publish',
+                    'title': 'Publish',
+                    'icon': 'publish',
+                    'callback': function() {
+                        console.log("publish it");
+                    }
+                },
+                {
+                    'id': 'unpublish',
+                    'icon': 'unpublish',
+                    'title': 'Unpublish',
+                    'callback': function() {
+                        console.log("unpublish it");
+                    }
+                },
+                {
+                    'id': 'test',
+                    'icon': 'test',
+                    'title': 'Test',
+                    'callback': function() {
+                        console.log("set Test-state");
+                    }
+                }
+            ];
 
 
         app.start().then(function() {
@@ -147,6 +176,17 @@
             fakeServer.respondWith('GET', '/toolbar', [200, { 'Content-Type': 'application/json' },
                 JSON.stringify(testData)
             ]);
+
+            fakeServer.respondWith('GET', 'items.json', [200, { 'Content-Type': 'application/json' },
+                '{"_embedded": [{"id": "23","title": "export1","icon": "floppy-save"},{"id": "24","icon": "cancel","title": "export2"},{"id": "25","icon": "test","title": "export3"}]}']);
+
+            app.sandbox.on('husky.edit-toolbar.contact.initialized', function() {
+                app.sandbox.emit('husky.edit-toolbar.contact.items.set', 'state', stateItems, 1);
+                setTimeout(function() {
+                    app.sandbox.emit('husky.edit-toolbar.contact.items.set', 'state', [], 1);
+                    app.sandbox.emit('husky.edit-toolbar.contact.items.set', 'state', stateItems, 1);
+                }, 500);
+            });
 
             app.sandbox.start([
                 {
@@ -159,7 +199,6 @@
                 }
             ]);
 
-
             app.sandbox.on('husky.util.load.data', function() {
                 setTimeout(function() {
                     fakeServer.respond();
@@ -169,13 +208,24 @@
             $('#disable').on('click', function() {
                 app.sandbox.emit('husky.edit-toolbar.contact.item.disable', '1');
                 app.sandbox.emit('husky.edit-toolbar.contact.item.disable', 'edit');
+
+                app.sandbox.emit('husky.edit-toolbar.contact.item.hide', '5');
             });
 
             $('#enable').on('click', function() {
                 app.sandbox.emit('husky.edit-toolbar.contact.item.enable', '1');
                 app.sandbox.emit('husky.edit-toolbar.contact.item.enable', 'edit');
+
+                app.sandbox.emit('husky.edit-toolbar.contact.item.show', '5');
             });
 
+            $('#changeItem').on('click', function() {
+                app.sandbox.emit('husky.edit-toolbar.contact.item.change', 'state', 2);
+                app.sandbox.emit('husky.edit-toolbar.contact.button.set', 4, {
+                    title: 'New title',
+                    icon: 'floppy-save'
+                })
+            });
         });
     });
 </script>

@@ -120,6 +120,9 @@
         .dropdown-toggle:after {
             margin-left: 3px;
         }
+        .icon::after {
+            top: 2px;
+        }
     }
     .highlight {
         background: $highlightColor;

@@ -62,44 +62,52 @@ define([], function() {
                 '<div class="overlay-footer">',
                 '<a class="icon-<%= okIcon %> ok-button" href="#"></a>',
                 '</div>',
-                '</div>'
-            ].join('')
-        },
+            '</div>'
+        ].join('')
+    },
 
-        /**
-         * namespace for events
-         * @type {string}
-         */
-            eventNamespace = 'husky.overlay.',
+    /**
+     * namespace for events
+     * @type {string}
+     */
+     eventNamespace = 'husky.overlay.',
 
-        /**
-         * raised after initialization process
-         * @event husky.overlay.<instance-name>.initialize
-         */
-            INITIALIZED = function() {
-            return createEventName.call(this, 'initialized');
-        },
+    /**
+     * raised after initialization process
+     * @event husky.overlay.<instance-name>.initialize
+     */
+    INITIALIZED = function() {
+        return createEventName.call(this, 'initialized');
+    },
 
-        /**
-         * raised after overlay is opened
-         * @event husky.overlay.<instance-name>.opened
-         */
-            OPENED = function() {
-            return createEventName.call(this, 'opened');
-        },
+    /**
+     * raised after overlay is opened
+     * @event husky.overlay.<instance-name>.opened
+     */
+     OPENED = function() {
+        return createEventName.call(this, 'opened');
+     },
 
-        /**
-         * raised after overlay is closed
-         * @event husky.overlay.<instance-name>.opened
-         */
-            CLOSED = function() {
-            return createEventName.call(this, 'closed');
-        },
+    /**
+     * raised after overlay is closed
+     * @event husky.overlay.<instance-name>.opened
+     */
+     CLOSED = function() {
+        return createEventName.call(this, 'closed');
+     },
 
-        /** returns normalized event names */
-            createEventName = function(postFix) {
-            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
-        };
+    /**
+     * removes the component
+     * @event husky.overlay.<instance-name>.remove
+     */
+     REMOVE = function() {
+        return createEventName.call(this, 'remove');
+     },
+
+    /** returns normalized event names */
+    createEventName = function(postFix) {
+        return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+    };
 
     return {
 
@@ -113,16 +121,23 @@ define([], function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
             this.setVariables();
-            this.bindTriggerEvent();
+            this.bindEvents();
         },
 
         /**
-         * Binds the event for the overlay trigger
+         * Binds general events
          */
-        bindTriggerEvent: function() {
+        bindEvents: function() {
             this.sandbox.dom.on(this.$el, this.options.trigger, function(event) {
                 this.sandbox.dom.preventDefault(event);
                 this.triggerHandler();
+            }.bind(this));
+
+            this.sandbox.on(REMOVE.call(this), function() {
+                this.sandbox.dom.off(this.$el);
+                this.sandbox.dom.off(this.overlay.$el);
+                this.sandbox.dom.remove(this.overlay.$el);
+                this.sandbox.dom.remove(this.$el);
             }.bind(this));
         },
 
@@ -253,7 +268,7 @@ define([], function() {
             if (this.options.draggable === true) {
                 this.sandbox.dom.on(this.overlay.$header, 'mousedown', function(e) {
                     var origin = {
-                        y: e.clientY - (this.sandbox.dom.offset(this.overlay.$header).top - this.sandbox.dom.getScrollTop(this.sandbox.dom.$window)),
+                        y: e.clientY - (this.sandbox.dom.offset(this.overlay.$header).top - this.sandbox.dom.scrollTop(this.sandbox.dom.$window)),
                         x: e.clientX - (this.sandbox.dom.offset(this.overlay.$header).left - this.sandbox.dom.scrollLeft(this.sandbox.dom.$window))
                     };
 

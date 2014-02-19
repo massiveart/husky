@@ -20,6 +20,14 @@
  * @params {Number} [options.scrollBarWidth] with of scrollbar
  * @params {String} [options.url] url to load data
  * @params {String} [options.selected] id of selected element - needed to restore state
+ * @params {Array}  [options.data] array of data displayed in the settings dropdown
+ * @params {String} [options.instanceName] name of current instance
+ * @params {String} [options.hasSubName] name of hasSub-key
+ * @params {String} [options.idName] name of id-key
+ * @params {String} [options.linkedName] name of linked-key
+ * @params {String} [options.publishedName] name of published-key
+ * @params {String} [options.typeName] name of type-key
+ * @params {String} [options.titleName] name of title-key
  *
  */
 define([], function() {
@@ -34,7 +42,15 @@ define([], function() {
                 width: 250
             },
             url: null,
-            selected: null
+            selected: null,
+            data: null,
+            instanceName: 'undefined',
+            hasSubName: 'hasSub',
+            idName: 'id',
+            linkedName: 'linked',
+            publishedName: 'publishedState',
+            titleName: 'title',
+            typeName: 'type'
         },
 
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
@@ -59,6 +75,14 @@ define([], function() {
             SELECTED = eventNamespace + 'selected',
 
         /**
+         * @event husky.column-navigation.settings
+         * @description an navigation element has been selected and a item from selected dropdown clicked
+         * @param {Object} selected column navigation object
+         * @param {Object} clicked dropdown item
+         */
+            SETTINGS = eventNamespace + 'settings',
+
+        /**
          * @event husky.column-navigation.add
          * @description the add button has been clicked
          * @param {Object} parent object from active column level
@@ -71,13 +95,6 @@ define([], function() {
          * @param {Object} clicked object
          */
             EDIT = eventNamespace + 'edit',
-
-        /**
-         * @event husky.column-navigation.settings
-         * @description the settings button has been clicked
-         * @param {Object} parent object from active column level
-         */
-            SETTINGS = eventNamespace + 'settings',
 
         /**
          * @event husky.column-navigation.get-breadcrumb
@@ -112,23 +129,52 @@ define([], function() {
         render: function() {
             var $add, $settings, $wrapper, height;
 
-            $wrapper = this.sandbox.dom.$(this.template.wrapper());
+            $wrapper = this.sandbox.dom.$(this.template.wrapper.call(this));
             this.sandbox.dom.append(this.$element, $wrapper);
 
             // navigation container
             height = this.sandbox.dom.height(window) * this.options.wrapper.height/100;
-            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer(height));
+            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer.call(this, height));
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
-            this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer(this.options.column.width));
-            $add = this.sandbox.dom.$(this.template.options.add());
-            $settings = this.sandbox.dom.$(this.template.options.settings());
+            this.addId = this.options.instanceName+"-column-navigation-add";
+            this.settingsId = this.options.instanceName+"-column-navigation-settings";
+            this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer.call(this, this.options.column.width));
+            $add = this.sandbox.dom.$(this.template.options.add(this.addId));
+            $settings = this.sandbox.dom.$(this.template.options.settings(this.settingsId));
             this.sandbox.dom.append(this.$optionsContainer, $add);
             this.sandbox.dom.append(this.$optionsContainer, $settings);
 
             this.sandbox.dom.append($wrapper, this.$optionsContainer);
 
+            //init dropdown for settings in options container
+            if(!!this.options.data) {
+                this.initSettingsDropdown(this.sandbox.dom.attr($settings, 'id'));
+            }
+
+        },
+
+        /**
+         * Instantiats the dropdown component
+         * @param containerId dom id for element to start dropdown
+         */
+        initSettingsDropdown: function(containerId) {
+
+            // TODO show dropdown only if item is selected and enable/disable certain elements of the dropdown depending on the selected element
+
+            this.sandbox.start([
+                {
+                    name: 'dropdown@husky',
+                    options: {
+                        el: '#' + containerId,
+                        setParentDropDown: true,
+                        instanceName: this.options.instanceName+'.settings.dropdown',
+                        alignment: 'left',
+                        data: this.options.data
+                    }
+                }
+            ]);
         },
 
         /**
@@ -192,7 +238,7 @@ define([], function() {
 
             if (columnNumber === 0) {  // case 1: no elements in container
                 this.columns[0] = [];
-                this.columns[0][data.id] = data;
+                this.columns[0][data[this.options.idName]] = data;
                 newColumn = 1;
             } else { // case 2: columns in container replace level after clicked column and clear following levels
                 newColumn = columnNumber + 1;
@@ -204,18 +250,18 @@ define([], function() {
             this.sandbox.util.each(data._embedded, function(index, value) {
 
                 this.storeDataItem(newColumn, value);
-                var $element = this.sandbox.dom.$(this.template.item(this.options.column.width, value));
+                var $element = this.sandbox.dom.$(this.template.item.call(this, this.options.column.width, value));
                 this.sandbox.dom.append($list, $element);
 
                 // remember which item has subitems to display a whole tree when column navigation should be restored
-                if (!!value.hasSub && value._embedded.length > 0) {
+                if (!!value[this.options.hasSubName] && value._embedded.length > 0) {
                     nodeWithSubNodes = value;
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
                 }
 
                 // needed to select node in last level of nodes
-                if (!!this.options.selected && this.options.selected === value.id) {
+                if (!!this.options.selected && this.options.selected === value[this.options.idName]) {
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
                     lastSelected = value;
@@ -231,7 +277,7 @@ define([], function() {
 
             if (!!nodeWithSubNodes) { // parse next column if data exists
                 this.parseData(nodeWithSubNodes, newColumn);
-            } else if (!!lastSelected && !lastSelected.hasSub) { // append add column if no children
+            } else if (!!lastSelected && !lastSelected[this.options.hasSubName]) { // append add column if no children
                 this.insertAddColumn(lastSelected, newColumn);
             }
 
@@ -261,7 +307,7 @@ define([], function() {
                 this.sandbox.dom.attr(this.$addColumn, 'id', 'column-' + newColumn);
                 this.$addColumn = null;
             } else { // create new column
-                $column = this.sandbox.dom.$(this.template.column(newColumn, this.options.column.width));
+                $column = this.sandbox.dom.$(this.template.column.call(this, newColumn, this.options.column.width));
             }
 
             return $column;
@@ -288,7 +334,7 @@ define([], function() {
             if (!this.columns[columnNumber]) {
                 this.columns[columnNumber] = [];
             }
-            this.columns[columnNumber][item.id] = item;
+            this.columns[columnNumber][item[this.options.idName]] = item;
 
         },
 
@@ -299,13 +345,24 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'mouseleave', this.itemMouseLeave.bind(this), 'li');
 
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
-            this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#column-navigation-add');
-            this.sandbox.dom.on(this.$el, 'click', this.toggleSettings.bind(this), '#column-navigation-settings');
+            this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#'+this.addId);
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
         },
 
         bindCustomEvents: function() {
             this.sandbox.on(BREADCRUMB, this.getBreadCrumb.bind(this));
+
+            this.sandbox.on('husky.dropdown.' + this.options.instanceName + '.settings.dropdown.item.click', this.dropdownItemClicked.bind(this));
+        },
+
+        dropdownItemClicked: function(item) {
+            if (!!this.selected[this.lastHoveredColumn]) {
+                if (!!item.callback) {
+                    item.callback(item, this.selected[this.lastHoveredColumn]);
+                } else {
+                    this.sandbox.emit(SETTINGS, item, this.selected[this.lastHoveredColumn]);
+                }
+            }
         },
 
         /**
@@ -403,7 +460,7 @@ define([], function() {
                     this.selected[column] = selectedItem;
                     this.sandbox.emit(SELECTED, selectedItem);
 
-                    if (!!selectedItem.hasSub) {
+                    if (!!selectedItem[this.options.hasSubName]) {
                         this.load(selectedItem._links.children, column);
                     }
 
@@ -423,9 +480,9 @@ define([], function() {
 
         insertAddColumn: function(selectedItem, column) {
 
-            if (!this.$addColumn && !selectedItem.hasSub) {
+            if (!this.$addColumn && !selectedItem[this.options.hasSubName]) {
                 // append empty column to add subpages
-                this.$addColumn = this.sandbox.dom.createElement(this.template.column(column + 1, this.options.column.width));
+                this.$addColumn = this.sandbox.dom.createElement(this.template.column.call(this, column + 1, this.options.column.width));
                 this.sandbox.dom.append(this.$columnContainer, this.$addColumn);
             }
         },
@@ -476,14 +533,6 @@ define([], function() {
         },
 
         /**
-         * Shows or hides the settings dropdown
-         */
-        toggleSettings: function() {
-            var parent = this.selected[this.lastHoveredColumn - 1] || null;
-            this.sandbox.emit(SETTINGS, parent);
-        },
-
-        /**
          * Templates for various parts
          */
         template: {
@@ -502,47 +551,46 @@ define([], function() {
 
             item: function(width, data) {
 
-                var item = ['<li data-id="', data.id, '" class="pointer"'];
+                var item = ['<li data-id="', data[this.options.idName], '" class="pointer"'];
 
                 // icons left
                 item.push('<span class="pull-left">');
-
                 // link
-                if (!!data.linked) {
-                    if (data.linked === 'internal') {
+                if (!!data[this.options.linkedName]) {
+                    if (data[this.options.linkedName] === 'internal') {
                         item.push('<span class="icon-internal-link pull-left m-right-5"></span>');
-                    } else if (data.linked === 'external') {
+                    } else if (data[this.options.linkedName] === 'external') {
                         item.push('<span class="icon-external-link pull-left m-right-5"></span>');
                     }
                 }
 
                 // type (ghost, shadow)
-                if (!!data.type) {
-                    if (data.type.name === 'ghost') {
-                        item.push('<span class="ghost pull-left m-right-5">', data.type.value, '</span>');
-                    } else if (data.type.name === 'shadow') {
+                if (!!data[this.options.typeName]) {
+                    if (data[this.options.typeName].name === 'ghost') {
+                        item.push('<span class="ghost pull-left m-right-5">', data[this.options.typeName].value, '</span>');
+                    } else if (data[this.options.typeName].name === 'shadow') {
                         item.push('<span class="icon-shadow-node pull-left m-right-5"></span>');
                     }
                 }
 
                 // published
-                if (!data.published) {
+                if (!data[this.options.publishedName]) {
                     item.push('<span class="not-published pull-left m-right-5">&bull;</span>');
                 }
 
                 item.push('</span>');
 
                 // text center
-                if (!!data.type && data.type.name === 'ghost') {
-                    item.push('<span class="item-text inactive pull-left">', data.title, '</span>');
+                if (!!data[this.options.typeName] && data[this.options.typeName].name === 'ghost') {
+                    item.push('<span class="item-text inactive pull-left">', data[this.options.titleName], '</span>');
                 } else {
-                    item.push('<span class="item-text pull-left">', data.title, '</span>');
+                    item.push('<span class="item-text pull-left">', data[this.options.titleName], '</span>');
                 }
 
                 // icons right (subpage, edit)
                 item.push('<span class="pull-right">');
                 item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
-                !!data.hasSub ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
+                !!data[this.options.hasSubName] ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
 
                 return item.join('');
@@ -553,18 +601,19 @@ define([], function() {
             },
 
             options: {
-                add: function() {
-                    return ['<div id="column-navigation-add" class="align-center grid-col-6 add pointer">',
+                add: function(id) {
+                    return ['<div id="',id,'" class="align-center grid-col-6 add pointer">',
                         '<span class="icon-add"></span>',
                         '</div>'].join('');
                 },
 
-                settings: function() {
-                    return ['<div id="column-navigation-settings" class="align-center grid-col-6 settings pointer">',
-                        '<span class="icon-cogwheel"></span>',
+                settings: function(id) {
+                    return ['<div id="',id,'" class="align-center grid-col-6 settings pointer drop-down-trigger">',
+                        '<span class="icon-cogwheel inline-block"></span><span class="dropdown-toggle inline-block"></span>',
                         '</div>'].join('');
                 }
             }
         }
     };
 });
+
