@@ -133,8 +133,9 @@ define([], function() {
             this.sandbox.dom.append(this.$element, $wrapper);
 
             // navigation container
-            height = this.sandbox.dom.height(window) * this.options.wrapper.height/100;
-            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer.call(this, height));
+
+            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer.call(this));
+            this.setContainerHeight();
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
@@ -153,6 +154,15 @@ define([], function() {
                 this.initSettingsDropdown(this.sandbox.dom.attr($settings, 'id'));
             }
 
+        },
+
+        /**
+         * Sets the height of the container
+         */
+        setContainerHeight: function() {
+            this.sandbox.dom.height(
+                this.$columnContainer, this.sandbox.dom.height(window) * this.options.wrapper.height/100
+            );
         },
 
         /**
@@ -347,6 +357,8 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
             this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#'+this.addId);
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
+
+            this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.setContainerHeight.bind(this));
         },
 
         bindCustomEvents: function() {
@@ -541,8 +553,8 @@ define([], function() {
                 return '<div class="column-navigation-wrapper"></div>';
             },
             
-            columnContainer: function(height) {
-                return ['<div class="column-navigation" style="height:'+height+'px"></div>'].join('');
+            columnContainer: function() {
+                return ['<div class="column-navigation"></div>'].join('');
             },
 
             column: function(columnNumber, width) {
