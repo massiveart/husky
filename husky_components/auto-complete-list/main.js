@@ -343,7 +343,12 @@ define([], function() {
                 }.bind(this));
 
                 this.sandbox.on(ITEM_ADDED.call(this), function(newTag) {
-                    this.setElementDataTags(newTag);
+                    var tags = this.setElementDataTags(newTag);
+                    this.sandbox.emit('husky.auto-complete.' + this.options.instanceName + '.set-excludes', tags);
+                }.bind(this));
+
+                this.sandbox.on(ITEM_DELETED.call(this), function() {
+                    this.sandbox.emit('husky.auto-complete.' + this.options.instanceName + '.set-excludes', this.getTags());
                 }.bind(this));
 
                 //if an autocomplete-suggestion gets clicked on, it gets added to the list
@@ -384,6 +389,7 @@ define([], function() {
                     tags = tags.concat([newTag]);
                 }
                 this.sandbox.dom.data(this.$el, this.options.elementTagDataName, tags);
+                return tags;
             },
 
             /**

@@ -64,7 +64,7 @@ define([], function() {
          * raised after initialization
          * @event husky.auto-complete.initialized
          */
-            INITIALIZED = function() {
+         INITIALIZED = function() {
             return createEventName.call(this, 'initialized');
         },
 
@@ -72,7 +72,7 @@ define([], function() {
          * raised after prefetched data is retrieved
          * @event husky.auto-complete.prefetch-data
          */
-            PREFETCH_LOAD = function() {
+         PREFETCH_LOAD = function() {
             return createEventName.call(this, 'prefetch-data');
         },
 
@@ -80,7 +80,7 @@ define([], function() {
          * raised before remoted data is loaded
          * @event husky.auto-complete.remote-data-load
          */
-            REMOTE_LOAD = function() {
+         REMOTE_LOAD = function() {
             return createEventName.call(this, 'remote-data-load');
         },
 
@@ -88,7 +88,7 @@ define([], function() {
          * raised after remoted data is retrieved
          * @event husky.auto-complete.remote-data
          */
-            REMOTE_RETRIEVE = function() {
+         REMOTE_RETRIEVE = function() {
             return createEventName.call(this, 'remote-data');
         },
 
@@ -96,7 +96,7 @@ define([], function() {
          * raised before the component tries to request a match after blur
          * @event husky.auto-complete.request-match
          */
-            REQUEST_MATCH = function() {
+         REQUEST_MATCH = function() {
             return createEventName.call(this, 'request-match');
         },
 
@@ -105,9 +105,18 @@ define([], function() {
          * @event husky.auto-complete.select
          * @param {object} selected datum with id and name
          */
-            SELECT = function() {
+         SELECT = function() {
             return createEventName.call(this, 'select');
         },
+
+        /**
+         * raised after autocomplete suggestion is selected
+         * @event husky.auto-complete.set-excludes
+         * @param {array} array of objects to exclude from suggestions
+         */
+         SET_EXCLUDES = function() {
+            return createEventName.call(this, 'set-excludes');
+         },
 
         /** returns normalized event names */
             createEventName = function(postFix) {
@@ -153,7 +162,7 @@ define([], function() {
             this.matched = true;
             this.matches = [];
             this.executeBlurHandler = true;
-            this.excludes = this.options.excludes;
+            this.excludes = this.parseExcludes(this.options.excludes);
             this.localData = {};
             this.localData[this.options.resultKey] = this.options.localData;
             this.localData[this.options.totalKey] = this.options.localData.length;
@@ -161,7 +170,8 @@ define([], function() {
             this.setTemplate();
 
             this.render();
-            this.setEvents();
+            this.bindDomEvents();
+            this.setCustomEvents();
             this.sandbox.emit(INITIALIZED.call(this), this.$valueField);
         },
 
@@ -187,8 +197,13 @@ define([], function() {
          * @returns {String} html of suggestion element
          */
         buildTemplate: function(context) {
+            var domObj;
             if (this._template !== null) {
-                return this._template(context);
+                domObj = this.sandbox.dom.createElement(this._template(context));
+                if (this.isExcluded(context)) {
+                    this.sandbox.dom.addClass(domObj, 'disabled');
+                }
+                return this.sandbox.dom.html(this.sandbox.dom.append(this.sandbox.dom.$('<div/>'), domObj));
             }
         },
 
@@ -280,8 +295,10 @@ define([], function() {
          */
         isExcluded: function(context) {
             for (var i = -1, length = this.excludes.length; ++i < length;) {
-                if (context.id === this.excludes[i].id ||
-                    context[this.options.valueKey] === this.excludes[i][this.options.valueKey]) {
+                if (context.id !== null && context.id === this.excludes[i].id) {
+                    return true;
+                } else if (context[this.options.valueKey] !== null &&
+                           context[this.options.valueKey] === this.excludes[i][this.options.valueKey]) {
                     return true;
                 }
             }
@@ -289,12 +306,46 @@ define([], function() {
         },
 
         /**
+         * Binds custom events
+         */
+        setCustomEvents: function() {
+            this.sandbox.on(SET_EXCLUDES.call(this), function(excludes) {
+                this.excludes = this.parseExcludes(excludes);
+                console.log(this.excludes);
+            }.bind(this));
+        },
+
+        /**
+         * Brings an array of suggestions to exclude into the right format
+         * @param excludes
+         */
+        parseExcludes: function(excludes) {
+            var arrayReturn = [];
+            this.sandbox.util.foreach(excludes, function(exclude) {
+                if (typeof exclude !== 'object') {
+                    arrayReturn.push({
+                        id: null,
+                        name: exclude
+                    });
+                } else {
+                    arrayReturn.push(exclude);
+                }
+            }.bind(this));
+            return arrayReturn;
+        },
+
+        /**
          * sets several events
          */
-        setEvents: function() {
+        bindDomEvents: function() {
             this.sandbox.dom.on(this.$valueField, 'typeahead:selected', function(event, datum) {
-                this.sandbox.emit(SELECT.call(this), datum);
-                this.setValueFieldId(datum.id);
+                if (this.isExcluded(datum)) {
+                    this.sandbox.dom.stopPropagation(event);
+                    this.clearValueFieldValue();
+                } else {
+                    this.sandbox.emit(SELECT.call(this), datum);
+                    this.setValueFieldId(datum.id);
+                }
             }.bind(this));
 
             //remove state and matches on new input
@@ -307,6 +358,10 @@ define([], function() {
             this.sandbox.dom.on(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), 'mousedown', function() {
                 this.executeBlurHandler = false;
             }.bind(this));
+
+            this.sandbox.dom.on(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), 'click', function() {
+                return false;
+            }.bind(this), '.disabled');
 
             this.sandbox.dom.on(this.$valueField, 'blur', function() {
                 //don't do anything if the dropdown is clicked on
