@@ -69,6 +69,11 @@
                 </div>
             </div>
         </div>
+        <div class="grid-row m-top-30">
+            <div class="grid-col-6">
+                <button id="dynamicExlude">Exclude Altach for 1.</button>
+            </div>
+        </div>
 	</div>
 </div>
 
@@ -176,6 +181,10 @@
 			app.logger.log('Aura started...');
 			initFakeServer(app);
 		});
+
+        $('#dynamicExlude').on('click', function() {
+           app.sandbox.emit('husky.auto-complete.I1.set-excludes', ['Altach']);
+        });
 
 	});
 </script>

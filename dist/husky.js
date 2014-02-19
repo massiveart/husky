@@ -30259,6 +30259,15 @@ define('__component__$auto-complete@husky',[], function() {
             return createEventName.call(this, 'select');
         },
 
+        /**
+         * raised after autocomplete suggestion is selected
+         * @event husky.auto-complete.set-excludes
+         * @param {array} array of objects to exclude from suggestions
+         */
+            SET_EXCLUDES = function() {
+            return createEventName.call(this, 'set-excludes');
+        },
+
         /** returns normalized event names */
             createEventName = function(postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
@@ -30303,7 +30312,7 @@ define('__component__$auto-complete@husky',[], function() {
             this.matched = true;
             this.matches = [];
             this.executeBlurHandler = true;
-            this.excludes = this.options.excludes;
+            this.excludes = this.parseExcludes(this.options.excludes);
             this.localData = {};
             this.localData[this.options.resultKey] = this.options.localData;
             this.localData[this.options.totalKey] = this.options.localData.length;
@@ -30311,7 +30320,8 @@ define('__component__$auto-complete@husky',[], function() {
             this.setTemplate();
 
             this.render();
-            this.setEvents();
+            this.bindDomEvents();
+            this.setCustomEvents();
             this.sandbox.emit(INITIALIZED.call(this), this.$valueField);
         },
 
@@ -30337,8 +30347,13 @@ define('__component__$auto-complete@husky',[], function() {
          * @returns {String} html of suggestion element
          */
         buildTemplate: function(context) {
+            var domObj;
             if (this._template !== null) {
-                return this._template(context);
+                domObj = this.sandbox.dom.createElement(this._template(context));
+                if (this.isExcluded(context)) {
+                    this.sandbox.dom.addClass(domObj, 'disabled');
+                }
+                return this.sandbox.dom.html(this.sandbox.dom.append(this.sandbox.dom.$('<div/>'), domObj));
             }
         },
 
@@ -30430,7 +30445,9 @@ define('__component__$auto-complete@husky',[], function() {
          */
         isExcluded: function(context) {
             for (var i = -1, length = this.excludes.length; ++i < length;) {
-                if (context.id === this.excludes[i].id ||
+                if (context.id !== null && context.id === this.excludes[i].id) {
+                    return true;
+                } else if (context[this.options.valueKey] !== null &&
                     context[this.options.valueKey] === this.excludes[i][this.options.valueKey]) {
                     return true;
                 }
@@ -30439,12 +30456,45 @@ define('__component__$auto-complete@husky',[], function() {
         },
 
         /**
+         * Binds custom events
+         */
+        setCustomEvents: function() {
+            this.sandbox.on(SET_EXCLUDES.call(this), function(excludes) {
+                this.excludes = this.parseExcludes(excludes);
+            }.bind(this));
+        },
+
+        /**
+         * Brings an array of suggestions to exclude into the right format
+         * @param excludes
+         */
+        parseExcludes: function(excludes) {
+            var arrayReturn = [];
+            this.sandbox.util.foreach(excludes, function(exclude) {
+                if (typeof exclude !== 'object') {
+                    arrayReturn.push({
+                        id: null,
+                        name: exclude
+                    });
+                } else {
+                    arrayReturn.push(exclude);
+                }
+            }.bind(this));
+            return arrayReturn;
+        },
+
+        /**
          * sets several events
          */
-        setEvents: function() {
+        bindDomEvents: function() {
             this.sandbox.dom.on(this.$valueField, 'typeahead:selected', function(event, datum) {
-                this.sandbox.emit(SELECT.call(this), datum);
-                this.setValueFieldId(datum.id);
+                if (this.isExcluded(datum)) {
+                    this.sandbox.dom.stopPropagation(event);
+                    this.clearValueFieldValue();
+                } else {
+                    this.sandbox.emit(SELECT.call(this), datum);
+                    this.setValueFieldId(datum.id);
+                }
             }.bind(this));
 
             //remove state and matches on new input
@@ -30457,6 +30507,10 @@ define('__component__$auto-complete@husky',[], function() {
             this.sandbox.dom.on(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), 'mousedown', function() {
                 this.executeBlurHandler = false;
             }.bind(this));
+
+            this.sandbox.dom.on(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), 'click', function() {
+                return false;
+            }.bind(this), '.disabled');
 
             this.sandbox.dom.on(this.$valueField, 'blur', function() {
                 //don't do anything if the dropdown is clicked on
@@ -30952,7 +31006,12 @@ define('__component__$auto-complete-list@husky',[], function() {
                 }.bind(this));
 
                 this.sandbox.on(ITEM_ADDED.call(this), function(newTag) {
-                    this.setElementDataTags(newTag);
+                    var tags = this.setElementDataTags(newTag);
+                    this.sandbox.emit('husky.auto-complete.' + this.options.instanceName + '.set-excludes', tags);
+                }.bind(this));
+
+                this.sandbox.on(ITEM_DELETED.call(this), function() {
+                    this.sandbox.emit('husky.auto-complete.' + this.options.instanceName + '.set-excludes', this.getTags());
                 }.bind(this));
 
                 //if an autocomplete-suggestion gets clicked on, it gets added to the list
@@ -30993,6 +31052,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                     tags = tags.concat([newTag]);
                 }
                 this.sandbox.dom.data(this.$el, this.options.elementTagDataName, tags);
+                return tags;
             },
 
             /**
@@ -34201,37 +34261,37 @@ define('__component__$overlay@husky',[], function() {
     
 
     var defaults = {
-        trigger: 'click',
-        container: 'body',
-        title: '',
-        closeIcon: 'remove2',
-        okIcon: 'half-ok save-button btn btn-highlight btn-large',
-        closeCallback: null,
-        okCallback: null,
-        data: '',
-        instanceName: 'undefined',
-        draggable: true
-    },
+            trigger: 'click',
+            container: 'body',
+            title: '',
+            closeIcon: 'remove2',
+            okIcon: 'half-ok save-button btn btn-highlight btn-large',
+            closeCallback: null,
+            okCallback: null,
+            data: '',
+            instanceName: 'undefined',
+            draggable: true
+        },
 
-    constants = {
-        closeSelector: '.close-button',
-        okSelector: '.ok-button',
-        contentSelector: '.overlay-content',
-        headerSelector: '.overlay-header',
-        draggableClass: 'draggable'
-    },
+        constants = {
+            closeSelector: '.close-button',
+            okSelector: '.ok-button',
+            contentSelector: '.overlay-content',
+            headerSelector: '.overlay-header',
+            draggableClass: 'draggable'
+        },
 
-    /** templates for component */
-    templates = {
-        overlaySkeleton: [
-            '<div class="husky-overlay-container smart-content-overlay">',
+        /** templates for component */
+            templates = {
+            overlaySkeleton: [
+                '<div class="husky-overlay-container smart-content-overlay">',
                 '<div class="overlay-header">',
                 '<span class="title"><%= title %></span>',
                 '<a class="icon-<%= closeIcon %> close-button" href="#"></a>',
                 '</div>',
                 '<div class="overlay-content"></div>',
                 '<div class="overlay-footer">',
-                    '<a class="icon-<%= okIcon %> ok-button" href="#"></a>',
+                '<a class="icon-<%= okIcon %> ok-button" href="#"></a>',
                 '</div>',
             '</div>'
         ].join('')
@@ -34443,10 +34503,10 @@ define('__component__$overlay@husky',[], function() {
                         x: e.clientX - (this.sandbox.dom.offset(this.overlay.$header).left - this.sandbox.dom.scrollLeft(this.sandbox.dom.$window))
                     };
 
-                   //bind the mousemove event if mouse is down on header
-                   this.sandbox.dom.on(this.overlay.$header, 'mousemove', function(event) {
+                    //bind the mousemove event if mouse is down on header
+                    this.sandbox.dom.on(this.overlay.$header, 'mousemove', function(event) {
                         this.draggableHandler(event, origin);
-                   }.bind(this));
+                    }.bind(this));
                 }.bind(this));
 
                 this.sandbox.dom.on(this.overlay.$header, 'mouseup', function() {
@@ -34463,6 +34523,11 @@ define('__component__$overlay@husky',[], function() {
         draggableHandler: function(event, origin) {
             this.updateCoordinates((event.clientY - origin.y), (event.clientX - origin.x));
             this.dragged = true;
+
+            if (this.overlay.collapsed === true) {
+                this.sandbox.dom.css(this.overlay.$content, {'height': 'auto'});
+                this.overlay.collapsed = false;
+            }
         },
 
         /**
@@ -34503,8 +34568,8 @@ define('__component__$overlay@husky',[], function() {
          * Positions the overlay in the middle of the screen
          */
         setCoordinates: function() {
-            this.updateCoordinates((this.sandbox.dom.$window.height() - this.overlay.$el.outerHeight())/2,
-                                   (this.sandbox.dom.$window.width() - this.overlay.$el.outerWidth())/2);
+            this.updateCoordinates((this.sandbox.dom.$window.height() - this.overlay.$el.outerHeight()) / 2,
+                (this.sandbox.dom.$window.width() - this.overlay.$el.outerWidth()) / 2);
         },
 
         /**
