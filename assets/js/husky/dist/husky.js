@@ -29644,7 +29644,6 @@ define('__component__$edit-toolbar@husky',[],function() {
          * @param $button
          */
         hideItem = function($button) {
-            console.log($button);
             this.sandbox.dom.addClass($button, 'hidden');
         },
 
@@ -29885,14 +29884,16 @@ define('__component__$edit-toolbar@husky',[],function() {
          * @param parent
          */
         setButtonWidth = function(listItem, parent) {
-            var maxwidth = 0;
+            var maxwidth = 0, i, length;
             if (parent.type === 'select') {
-                for(var i = -1, length = parent.items.length; ++i < length;) {
+                for(i = -1, length = parent.items.length; ++i < length;) {
                     changeMainListItem.call(this, listItem, parent.items[i]);
                     if (this.sandbox.dom.width(listItem) > maxwidth) {
                         maxwidth = this.sandbox.dom.width(listItem);
                     }
                 }
+                this.sandbox.util.foreach();
+
                 this.sandbox.dom.css(listItem, {'min-width': maxwidth + 'px'});
                 //set button back to default
                 changeMainListItem.call(this, listItem, parent);
@@ -29923,7 +29924,8 @@ define('__component__$edit-toolbar@husky',[],function() {
                 } else if (!!requestedItems[i].title) {
                     title = requestedItems[i].title;
                 }
-                if (!!this.items[buttonId].itemsOption.translate === true) {
+
+                if (!!this.items[buttonId].itemsOption.translate) {
                     title = this.sandbox.translate(this.items[buttonId].itemsOption.languageNamespace + title);
                 }
 
@@ -29959,7 +29961,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                 }
             }
             data = data.sort(function(a, b){
-                return a.position - b.position
+                return a.position - b.position;
             });
 
             return data;
@@ -32723,6 +32725,11 @@ define('__component__$ckeditor@husky',[], function() {
 
             this.editor.on('change', function() {
                 this.sandbox.emit(CHANGED, this.editor.getData(), this.$el);
+            }.bind(this));
+
+            this.editor.on('instanceReady', function() {
+                // bind class to editor
+                this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
             }.bind(this));
         }
 
