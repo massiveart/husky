@@ -5327,14 +5327,15 @@ a.btn-black, a.btn-highlight {
   padding: 0;
   margin: 0;
   border-bottom: 2px solid #cccccc;
+  white-space: nowrap;
 }
-/* line 14, ../scss/modules/tabs.scss */
+/* line 15, ../scss/modules/tabs.scss */
 .tabs-container ul li {
   display: inline;
   list-style-type: none;
   height: 20px;
 }
-/* line 19, ../scss/modules/tabs.scss */
+/* line 20, ../scss/modules/tabs.scss */
 .tabs-container ul li a {
   color: black;
   font-weight: bold;
@@ -5342,15 +5343,15 @@ a.btn-black, a.btn-highlight {
   font-size: 16px;
   line-height: 20px;
 }
-/* line 26, ../scss/modules/tabs.scss */
+/* line 27, ../scss/modules/tabs.scss */
 .tabs-container ul li a:hover {
   color: #666666;
 }
-/* line 32, ../scss/modules/tabs.scss */
+/* line 33, ../scss/modules/tabs.scss */
 .tabs-container ul li.is-selected a {
   color: #249fbe;
 }
-/* line 37, ../scss/modules/tabs.scss */
+/* line 38, ../scss/modules/tabs.scss */
 .tabs-container ul li:not(:last-child) {
   padding-right: 30px;
 }
