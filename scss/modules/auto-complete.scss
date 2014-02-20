@@ -54,46 +54,44 @@
 .tt-suggestion {
     height: 25px;
     width: 100%;
-    padding: 0 6px;
-    border-width: 0 0px 0 0px;
-    border-style: solid;
-    border-color: #fff;
-
-    .border {
-        //        border-bottom: 1px solid $grayLighter;
-        height: 25px;
-        clear: both;
-        .icon {
-            display: block;
-            float: left;
-            margin: 0 10px 0 10px;
-            width: 12px;
-            height: 25px;
-            text-align: center;
-            line-height: 25px;
-        }
-        .text {
-            float: left;
-            line-height: 25px;
-        }
-    }
-    &:last-child .border {
-        border-bottom: none;
-    }
 }
 
-.tt-suggestion:hover,
-.tt-is-under-cursor {
+.suggestion:hover,
+.tt-is-under-cursor .suggestion {
     background: $highlightColor;
-    .border {
-        border: 0;
-        color: white;
-    }
+    color: $white;
 
+    &.disabled {
+      background: $grayLightest;
+    }
 }
 
 .suggestion {
     color: $black;
+    padding: 0 6px;
+
+    .border {
+      height: 25px;
+      clear: both;
+      .icon {
+        display: block;
+        float: left;
+        margin: 0 10px 0 10px;
+        width: 12px;
+        height: 25px;
+        text-align: center;
+        line-height: 25px;
+      }
+      .text {
+        float: left;
+        line-height: 25px;
+      }
+    }
+
+    &.disabled {
+       color: $grayLight;
+       cursor: default;
+    }
 }
 
 .husky-auto-complete-success {
