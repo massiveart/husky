@@ -31852,6 +31852,7 @@ define('__component__$password-fields@husky',[], function() {
  * @params {String} [options.publishedName] name of published-key
  * @params {String} [options.typeName] name of type-key
  * @params {String} [options.titleName] name of title-key
+ * @params {String} [options.visibleRatio] minimum ratio of how much of a column must be visible to display the navigation
  *
  */
 define('__component__$column-navigation@husky',[], function() {
@@ -31874,7 +31875,8 @@ define('__component__$column-navigation@husky',[], function() {
             linkedName: 'linked',
             publishedName: 'publishedState',
             titleName: 'title',
-            typeName: 'type'
+            typeName: 'type',
+            minVisibleRatio: 1/2
         },
 
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
@@ -31957,8 +31959,9 @@ define('__component__$column-navigation@husky',[], function() {
             this.sandbox.dom.append(this.$element, $wrapper);
 
             // navigation container
-            height = this.sandbox.dom.height(window) * this.options.wrapper.height/100;
-            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer.call(this, height));
+
+            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer.call(this));
+            this.setContainerHeight();
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
@@ -31970,6 +31973,7 @@ define('__component__$column-navigation@husky',[], function() {
             this.sandbox.dom.append(this.$optionsContainer, $add);
             this.sandbox.dom.append(this.$optionsContainer, $settings);
 
+            this.hideOptions();
             this.sandbox.dom.append($wrapper, this.$optionsContainer);
 
             //init dropdown for settings in options container
@@ -31977,6 +31981,15 @@ define('__component__$column-navigation@husky',[], function() {
                 this.initSettingsDropdown(this.sandbox.dom.attr($settings, 'id'));
             }
 
+        },
+
+        /**
+         * Sets the height of the container
+         */
+        setContainerHeight: function() {
+            this.sandbox.dom.height(
+                this.$columnContainer, (this.sandbox.dom.height(window) - this.sandbox.dom.offset(this.$columnContainer).top) * this.options.wrapper.height/100
+            );
         },
 
         /**
@@ -32171,6 +32184,8 @@ define('__component__$column-navigation@husky',[], function() {
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
             this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#'+this.addId);
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
+
+            this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.setContainerHeight.bind(this));
         },
 
         bindCustomEvents: function() {
@@ -32224,19 +32239,44 @@ define('__component__$column-navigation@husky',[], function() {
          * @param {Object} event
          */
         showOptions: function(event) {
+            var $currentTarget = this.sandbox.dom.$(event.currentTarget);
 
-            this.sandbox.dom.one(this.$columnContainer, 'scroll', this.hideOptions.bind(this));
+            this.displayOptions($currentTarget);
 
-            this.lastHoveredColumn = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget), 'column');
+            this.sandbox.dom.off(this.$columnContainer, 'scroll.column-navigation.' + this.options.instanceName);
+            this.sandbox.dom.on(this.$columnContainer, 'scroll.column-navigation.' + this.options.instanceName, this.displayOptions.bind(this, $currentTarget));
+        },
 
-            var scrollPositionX = this.sandbox.dom.scrollLeft(this.sandbox.dom.parent(event.currentTarget)),
-                marginLeft = ((this.lastHoveredColumn - 1) * this.options.column.width);
+        /**
+         * Displays the options-navigation under a given column
+         * @param $activeColumn {object} column for which the options will be inserted
+         */
+        displayOptions: function($activeColumn) {
+            var visibleRatio;
 
-            if (scrollPositionX > 0) { // correct difference through scrolling
-                marginLeft -= scrollPositionX;
+            // calculate the ratio of how much of the hovered column is visible
+            if (this.sandbox.dom.position($activeColumn).left + this.sandbox.dom.width($activeColumn) > this.sandbox.dom.width(this.$columnContainer)) {
+                visibleRatio = (this.sandbox.dom.width(this.$columnContainer) - this.sandbox.dom.position($activeColumn).left ) / this.sandbox.dom.width($activeColumn);
+            } else {
+                visibleRatio = (this.sandbox.dom.width($activeColumn) + this.sandbox.dom.position($activeColumn).left) / this.sandbox.dom.width($activeColumn);
             }
 
-            this.sandbox.dom.show(this.$optionsContainer);
+            // display the option only if the column is visible enough
+            if (visibleRatio >= this.options.minVisibleRatio) {
+                this.lastHoveredColumn = this.sandbox.dom.data($activeColumn, 'column');
+                this.sandbox.dom.css(this.$optionsContainer, {'visibility': 'visible'});
+                this.updateOptionsMargin($activeColumn);
+            } else {
+                this.hideOptions();
+            }
+        },
+
+        /**
+         * Updates the position of the options
+         * @param $activeColumn {object} dom-object of active column
+         */
+        updateOptionsMargin: function($activeColumn) {
+            var marginLeft = this.sandbox.dom.position($activeColumn).left;
             this.sandbox.dom.css(this.$optionsContainer, 'margin-left', marginLeft + 'px');
         },
 
@@ -32244,7 +32284,7 @@ define('__component__$column-navigation@husky',[], function() {
          * Hides options
          */
         hideOptions: function() {
-            this.sandbox.dom.hide(this.$optionsContainer);
+            this.sandbox.dom.css(this.$optionsContainer, {'visibility': 'hidden'});
         },
 
         /**
@@ -32365,8 +32405,8 @@ define('__component__$column-navigation@husky',[], function() {
                 return '<div class="column-navigation-wrapper"></div>';
             },
             
-            columnContainer: function(height) {
-                return ['<div class="column-navigation" style="height:'+height+'px"></div>'].join('');
+            columnContainer: function() {
+                return ['<div class="column-navigation"></div>'].join('');
             },
 
             column: function(columnNumber, width) {
@@ -32421,7 +32461,7 @@ define('__component__$column-navigation@husky',[], function() {
             },
 
             optionsContainer: function(width) {
-                return ['<div class="options grid-row hidden" style="width:', width + 1, 'px"></div>'].join('');
+                return ['<div class="options grid-row" style="width:', width + 1, 'px"></div>'].join('');
             },
 
             options: {
@@ -35430,6 +35470,10 @@ define('husky_extensions/collection',[],function() {
                     return $(selector).offset();
                 }
 
+            };
+
+            app.core.dom.position = function(selector) {
+                return $(selector).position();
             };
 
             app.core.dom.remove = function(context, selector) {

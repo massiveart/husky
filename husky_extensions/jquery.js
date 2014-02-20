@@ -149,6 +149,10 @@
 
             };
 
+            app.core.dom.position = function(selector) {
+                return $(selector).position();
+            };
+
             app.core.dom.remove = function(context, selector) {
                 return $(context).remove(selector);
             };
