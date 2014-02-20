@@ -73,7 +73,7 @@ define([], function() {
     'use strict';
 
     var defaults = {
-        visibleItems: 3,
+        visibleItems: 5,
         dataSource: '',
         subFoldersDisabled: false,
         categories: [],
@@ -134,7 +134,7 @@ define([], function() {
     /** templates for component */
     templates = {
         skeleton: [
-            '<div class="smart-content-container">',
+            '<div class="smart-content-container form-element">',
                 '<div class="smart-header"></div>',
                 '<div class="smart-content"></div>',
                 '</div>'
@@ -502,6 +502,8 @@ define([], function() {
          * Renders the footer and calls a method to bind the events for itself
          */
         renderFooter: function() {
+            this.itemsVisible = (this.items.length < this.itemsVisible) ? this.items.length : this.itemsVisible;
+
             if (this.$footer === null) {
                 this.$footer = this.sandbox.dom.createElement('<div/>');
                 this.sandbox.dom.addClass(this.$footer, constants.footerClass);
@@ -523,12 +525,13 @@ define([], function() {
          * Appends the view-toggler to the footer
          */
         appendViewToggler: function() {
+            console.log(this.options.visibleItems, this.items.length);
             if (this.itemsVisible < this.items.length) {
                 this.sandbox.dom.append(
                     this.$footer,
                     '<span class="' + constants.viewTogglerClass + '">(' + this.sandbox.translate(this.translations.viewAll) + ')</span>'
                 );
-            } else {
+            } else if (this.items.length > this.options.visibleItems) {
                 this.sandbox.dom.append(
                     this.$footer,
                     '<span class="' + constants.viewTogglerClass + '">(' + this.sandbox.translate(this.translations.viewLess) + ')</span>'
