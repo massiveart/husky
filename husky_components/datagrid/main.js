@@ -19,7 +19,6 @@
  * @param {Object} [options.paginationOptions] Configuration Object for the pagination
  * @param {Number} [options.paginationOptions.pageSize] Number of items per page
  * @param {Boolean} [options.paginationOptions.showPages] show pages as visual numbers
- * @param {Number} [options.pageSize] lines per page
  * @param {Number} [options.showPages] amount of pages that will be shown
  * @param {Boolean} [options.removeRow] displays in the last column an icon to remove a row
  * @param {Object} [options.selectItem] Configuration object of select item (column)
@@ -1128,9 +1127,17 @@ define(function() {
             var data = [], i, name;
 
             for (i = 0; i <= this.options.paginationOptions.steps.length; i++) {
-                name = this.renderStepsRow(this.options.paginationOptions.steps[i]);
-                data.push({id: i, name: name});
+                if(this.options.paginationOptions.steps[i] <  this.data.total) {
+                    name = this.renderStepsRow(this.options.paginationOptions.steps[i]);
+                    data.push({id: i, name: name});
+                } else {
+                    break;
+                }
             }
+
+            // add showall element
+            name = this.sandbox.translate('pagination.showAll');
+            data.push({id: i, name: name});
 
             this.sandbox.start([
                 {
