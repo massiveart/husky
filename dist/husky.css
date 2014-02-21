@@ -5149,6 +5149,7 @@ a.btn-black, a.btn-highlight {
 }
 /* line 18, ../scss/modules/auto-complete.scss */
 .husky-auto-complete input[type="text"] {
+  font-size: 14px;
   width: 100%;
   border: 1px solid #cccccc;
   outline: 0;
@@ -5158,64 +5159,64 @@ a.btn-black, a.btn-highlight {
   margin: 0;
   height: 30px;
 }
-/* line 28, ../scss/modules/auto-complete.scss */
+/* line 29, ../scss/modules/auto-complete.scss */
 .husky-auto-complete input[type="text"]:focus {
   outline: 0 none;
 }
 
-/* line 34, ../scss/modules/auto-complete.scss */
+/* line 35, ../scss/modules/auto-complete.scss */
 .twitter-typeahead {
   width: 100%;
 }
 
-/* line 38, ../scss/modules/auto-complete.scss */
+/* line 39, ../scss/modules/auto-complete.scss */
 .tt-suggestions {
   width: 100%;
   top: 37px;
   background: white;
 }
 
-/* line 44, ../scss/modules/auto-complete.scss */
+/* line 45, ../scss/modules/auto-complete.scss */
 .tt-dropdown-menu {
   width: 100%;
   border: 1px solid #cccccc;
   margin-top: -1px;
 }
 
-/* line 50, ../scss/modules/auto-complete.scss */
+/* line 51, ../scss/modules/auto-complete.scss */
 .tt-hint {
   display: none;
 }
 
-/* line 54, ../scss/modules/auto-complete.scss */
+/* line 55, ../scss/modules/auto-complete.scss */
 .tt-suggestion {
   height: 25px;
   width: 100%;
 }
 
-/* line 60, ../scss/modules/auto-complete.scss */
+/* line 61, ../scss/modules/auto-complete.scss */
 .suggestion:hover,
 .tt-is-under-cursor .suggestion {
   background: #249fbe;
   color: white;
 }
-/* line 64, ../scss/modules/auto-complete.scss */
+/* line 65, ../scss/modules/auto-complete.scss */
 .suggestion:hover.disabled,
 .tt-is-under-cursor .suggestion.disabled {
   background: #efefef;
 }
 
-/* line 69, ../scss/modules/auto-complete.scss */
+/* line 70, ../scss/modules/auto-complete.scss */
 .suggestion {
   color: black;
   padding: 0 6px;
 }
-/* line 73, ../scss/modules/auto-complete.scss */
+/* line 74, ../scss/modules/auto-complete.scss */
 .suggestion .border {
   height: 25px;
   clear: both;
 }
-/* line 76, ../scss/modules/auto-complete.scss */
+/* line 77, ../scss/modules/auto-complete.scss */
 .suggestion .border .icon {
   display: block;
   float: left;
@@ -5225,12 +5226,12 @@ a.btn-black, a.btn-highlight {
   text-align: center;
   line-height: 25px;
 }
-/* line 85, ../scss/modules/auto-complete.scss */
+/* line 86, ../scss/modules/auto-complete.scss */
 .suggestion .border .text {
   float: left;
   line-height: 25px;
 }
-/* line 91, ../scss/modules/auto-complete.scss */
+/* line 92, ../scss/modules/auto-complete.scss */
 .suggestion.disabled {
   color: #999999;
   cursor: default;
