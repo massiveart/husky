@@ -25466,8 +25466,6 @@ define('__component__$button@husky',[], function() {
  * @param {Object} [options.footer] Configuration object for the header
  * @param {Boolean} [options.footer.disabled] defines if footer should be shown
  * @param {Boolean} [options.hidden] defines if component should be hidden when component is initialized
- * @param {Boolean} [options.destroyOnClose] will remove the container from dom, when closed
- * @param {Boolean} [options.backdropClick] will enable/disable a click on backdrop handling
  */
 define('__component__$column-options@husky',[],function() {
 
@@ -25485,9 +25483,7 @@ define('__component__$column-options@husky',[],function() {
             footer: {
                 disabled: false
             },
-            hidden: false,
-            backdropClick: false,
-            destroyOnClose: true
+            hidden: false
         },
 
         templates = {
@@ -25574,34 +25570,10 @@ define('__component__$column-options@husky',[],function() {
          */
             bindDOMEvents = function() {
 
-            this.sandbox.dom.on(this.options.trigger, 'click.column-options', toggleDropdown.bind(this));
             this.sandbox.dom.on(this.$el, 'click', customStopPropagation.bind(this), this.$container); // prevent from unwanted events
             this.sandbox.dom.on(this.$el, 'mouseover', onMouseOver.bind(this), 'li');
             this.sandbox.dom.on(this.$el, 'mouseout', onMouseOut.bind(this), 'li');
             this.sandbox.dom.on(this.$el, 'click', toggleVisibility.bind(this), '.visibility-toggle');
-            this.sandbox.dom.on(this.$el, 'click', submit.bind(this), '.save-button');
-            this.sandbox.dom.on(this.$el, 'click', hideDropdown.bind(this, true), '.close-button');
-
-            this.sandbox.dom.on(this.sandbox.dom.window, 'resize', windowResizeListener.bind(this));
-        },
-
-        unbindDOMEvents = function() {
-            this.sandbox.dom.off(this.options.trigger, 'click.column-options');
-        },
-
-    /* adapts window size to window size */
-        windowResizeListener = function() {
-            // position window to the center
-            var elementHeight = this.sandbox.dom.height(this.$container),
-                windowHeight = this.sandbox.dom.height(this.sandbox.dom.window);
-
-            if (elementHeight > windowHeight) {
-                this.sandbox.dom.css(this.$el, {'top': 0});
-            } else {
-                this.sandbox.dom.css(this.$el, {'top': (windowHeight - elementHeight) / 2});
-            }
-            this.sandbox.dom.css(this.$container, {'max-height': windowHeight});
-
         },
 
 
@@ -25687,60 +25659,10 @@ define('__component__$column-options@husky',[],function() {
         },
 
         /**
-         * gets called when toggle item is clicked
-         * opens dropdown submenu
-         * @param event
-         */
-
-            toggleDropdown = function(event) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-
-                var isVisible = this.sandbox.dom.is(this.$container, ':visible');
-
-            if (isVisible) {
-                closeDropdown.call(this, this.$container, true);
-            } else {
-                this.sandbox.dom.show(this.$container);
-                if (this.options.backdropClick) {
-                    this.sandbox.dom.on(this.sandbox.dom.window, 'click.columnoptions.' + this.options.instanceName, closeDropdown.bind(this, this.$container, true));
-                }
-            }
-        },
-
-        /**
-         * simply hides container
-         */
-            hideDropdown = function(reset) {
-            closeDropdown.call(this, this.$container, reset);
-        },
-
-        /**
-         * close dropdown
-         * @param $container container to hide
-         * @param rerender - rerender list after close
-         */
-            closeDropdown = function($container, rerender) {
-            if (this.options.backdropClick) {
-                this.sandbox.dom.off(this.sandbox.dom.window, 'click.columnoptions.' + this.options.instanceName, closeDropdown.bind(this, $container, true));
-            }
-            this.sandbox.dom.hide($container);
-            if (this.options.destroyOnClose) {
-                unbindDOMEvents.call(this);
-                this.sandbox.dom.remove(this.$el);
-            } else if (rerender) {
-                // reset unsaved changes
-                this.rerender();
-            }
-        },
-
-        /**
          * called when save was clicked
          */
             submit = function() {
-            var $items = this.sandbox.dom.find('.column-options-list-item', this.$el),
+            var $items = this.sandbox.dom.find('.column-options-list-item', this.$list),
                 items = [],
                 id;
 
@@ -25757,12 +25679,15 @@ define('__component__$column-options@husky',[],function() {
 
             getAllItems.call(this, function(items) {
                 this.sandbox.emit(SAVED.call(this), items);
-                hideDropdown.call(this);
-
-                this.sandbox.dom.off('body', 'click');
-
             }.bind(this));
 
+        },
+
+        /**
+         * close dropdown - callback
+         */
+            close = function() {
+                this.sandbox.dom.remove(this.$el);
         },
 
         /**
@@ -25792,6 +25717,32 @@ define('__component__$column-options@husky',[],function() {
                     }});
                 }
             }.bind(this));
+        },
+
+        startOverlay = function() {
+            if (this.overlayLoaded === false) {
+                this.sandbox.start([{
+                    name: 'overlay@husky',
+                    options: {
+                        triggerEl: this.options.trigger,
+                        container: this.$el,
+                        data: this.$list,
+                        okCallback: function() {
+                            submit.call(this);
+                            close.call(this);
+                        }.bind(this),
+                        closeCallback: function() {
+                            close.call(this);
+                        }.bind(this),
+                        instanceName: 'column-options-' + this.options.instanceName,
+                        title: this.options.header.title,
+                        openOnStart: !this.options.hidden,
+                        removeOnClose: true
+                    }
+                }]);
+
+                this.overlayLoaded = true;
+            }
         },
 
         /**
@@ -25841,7 +25792,7 @@ define('__component__$column-options@husky',[],function() {
         initialize: function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
-            this.$el = this.sandbox.dom.$(this.options.el);
+            this.overlayLoaded = false;
 
             // define handle object to trigger
             this.options.trigger = this.options.trigger || this.$el;
@@ -25862,11 +25813,6 @@ define('__component__$column-options@husky',[],function() {
             bindDOMEvents.call(this);
 
             bindCustomEvents.call(this);
-
-
-            // TODO: position on startup
-
-
         },
 
         /**
@@ -25883,37 +25829,15 @@ define('__component__$column-options@husky',[],function() {
 
             this.sandbox.dom.addClass(this.$el, 'column-options-parent');
 
-            // init container
-            this.$container = this.sandbox.dom.createElement('<div class="column-options-container" />');
-            this.sandbox.dom.append(this.$el, this.$container);
-
-            // render header
-            if (!this.options.header.disabled) {
-                this.sandbox.dom.append(this.$container, this.sandbox.template.parse(templates.header, {title: this.options.header.title}));
-            }
-
             // init list
             this.$list = this.sandbox.dom.createElement('<ul class="column-options-list" />');
-            this.sandbox.dom.append(this.$container, this.$list);
 
             // render list items
             renderItems.call(this);
 
-            // render footer
-            if (!this.options.footer.disabled) {
-                this.sandbox.dom.append(this.$container, '<div class="column-options-footer"><a href="#" class="icon-half-ok save-button btn btn-highlight"></a></div>');
-            }
-
             // make list sortables
-            this.sandbox.dom.sortable('.column-options-list', {handle: '.move'});
-
-            // show on startup
-            if (!this.options.hidden) {
-                toggleDropdown.call(this);
-            }
-
-            // correct vertical alignment
-            windowResizeListener.call(this);
+            this.sandbox.dom.sortable(this.$list, {handle: '.move'});
+            startOverlay.call(this);
 
             // initialization finished
             this.sandbox.emit(INITIALIZED.call(this));
@@ -25927,7 +25851,7 @@ define('__component__$column-options@husky',[],function() {
             this.sandbox.dom.html(this.$list, '');
             renderItems.call(this);
             // make list sortable
-            this.sandbox.dom.sortable('.column-options-list', {handle: '.move'});
+            this.sandbox.dom.sortable(this.$list, {handle: '.move'});
         }
     };
 });
@@ -33912,11 +33836,8 @@ define('__component__$smart-content@husky',[], function() {
                 //merge this.options with passed configs
                 this.options = this.sandbox.util.extend(false, {}, this.options, configs);
 
-                //remove current overlay component and create new triggerer
+                //reload the overlay
                 this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.remove');
-                this.renderButton();
-
-                //re-initialize the overlay
                 this.initOverlayData();
                 this.startOverlay();
 
@@ -33980,7 +33901,7 @@ define('__component__$smart-content@husky',[], function() {
             this.sandbox.start([{
                 name: 'overlay@husky',
                 options: {
-                    el: this.$button,
+                    triggerEl: this.$button,
                     container: this.$el,
                     data: this.$overlayContent,
                     title: this.sandbox.translate(this.translations.configureSmartContent),
@@ -34246,6 +34167,7 @@ define('__component__$smart-content@husky',[], function() {
  *
  * @params {Object} [options] Configuration object
  * @params {String} [options.trigger] List of events on which the overlay should be opened
+ * @params {String} [options.triggerEl] Element that triggers the overlay
  * @params {String} [options.container] slector or DOM object in which the overlay gets inserted
  * @params {String} [options.title] the title of the overlay
  * @params {String} [options.closeIcon] icon class for the close button
@@ -34255,6 +34177,8 @@ define('__component__$smart-content@husky',[], function() {
  * @params {String|Object} [options.data] HTML or DOM-object which acts as the overlay-content
  * @params {String} [options.instanceName] instance name of the component
  * @params {Boolean} [options.draggable] if true overlay is draggable
+ * @params {Boolean} [options.openOnStart] if true overlay is opened after initialization
+ * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
  */
 define('__component__$overlay@husky',[], function() {
 
@@ -34262,6 +34186,7 @@ define('__component__$overlay@husky',[], function() {
 
     var defaults = {
             trigger: 'click',
+            triggerEl: null,
             container: 'body',
             title: '',
             closeIcon: 'remove2',
@@ -34270,7 +34195,9 @@ define('__component__$overlay@husky',[], function() {
             okCallback: null,
             data: '',
             instanceName: 'undefined',
-            draggable: true
+            draggable: true,
+            openOnStart: false,
+            removeOnClose: false,
         },
 
         constants = {
@@ -34353,35 +34280,49 @@ define('__component__$overlay@husky',[], function() {
 
             this.setVariables();
             this.bindEvents();
+
+            if (this.options.openOnStart) {
+                this.openOverlay();
+            }
         },
 
         /**
          * Binds general events
          */
         bindEvents: function() {
-            this.sandbox.dom.on(this.$el, this.options.trigger, function(event) {
+            this.sandbox.dom.on(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName, function(event) {
                 this.sandbox.dom.preventDefault(event);
                 this.triggerHandler();
             }.bind(this));
 
             this.sandbox.on(REMOVE.call(this), function() {
-                this.sandbox.dom.off(this.$el);
-                this.sandbox.dom.off(this.overlay.$el);
-                this.sandbox.dom.remove(this.overlay.$el);
-                this.sandbox.dom.remove(this.$el);
+                this.removeComponent();
             }.bind(this));
+        },
+
+        /**
+         * Removes the component
+         */
+        removeComponent: function() {
+            this.sandbox.dom.off(this.overlay.$el);
+            this.sandbox.dom.remove(this.overlay.$el);
+            this.sandbox.dom.off(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName);
+            this.sandbox.dom.off(this.$el);
+            this.sandbox.dom.remove(this.$el);
         },
 
         /**
          * Sets the default properties
          */
         setVariables: function() {
+            this.$trigger = this.sandbox.dom.$(this.options.triggerEl);
+
             this.overlay = {
                 opened: false,
                 collapsed: false,
                 normalHeight: null,
-                $el: null,
                 $close: null,
+                $el: null,
                 $ok: null,
                 $header: null,
                 $content: null
@@ -34427,6 +34368,10 @@ define('__component__$overlay@husky',[], function() {
             this.sandbox.dom.css(this.overlay.$content, {'height': 'auto'});
 
             this.sandbox.emit(CLOSED.call(this));
+
+            if (this.options.removeOnClose === true) {
+                this.removeComponent();
+            }
         },
 
         /**
@@ -34504,13 +34449,13 @@ define('__component__$overlay@husky',[], function() {
                     };
 
                     //bind the mousemove event if mouse is down on header
-                    this.sandbox.dom.on(this.overlay.$header, 'mousemove', function(event) {
+                    this.sandbox.dom.on(this.sandbox.dom.$document, 'mousemove.overlay' + this.options.instanceName, function(event) {
                         this.draggableHandler(event, origin);
                     }.bind(this));
                 }.bind(this));
 
-                this.sandbox.dom.on(this.overlay.$header, 'mouseup', function() {
-                    this.sandbox.dom.off(this.overlay.$header, 'mousemove');
+                this.sandbox.dom.on(this.sandbox.dom.$document, 'mouseup', function() {
+                    this.sandbox.dom.off(this.sandbox.dom.$document, 'mousemove.overlay' + this.options.instanceName);
                 }.bind(this));
             }
         },
