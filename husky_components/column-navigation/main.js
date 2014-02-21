@@ -28,7 +28,7 @@
  * @params {String} [options.publishedName] name of published-key
  * @params {String} [options.typeName] name of type-key
  * @params {String} [options.titleName] name of title-key
- * @params {String} [options.visibleRatio] minimum ratio of how much of a column must be visible to display the navigation
+ * @params {Number} [options.visibleRatio] minimum ratio of how much of a column must be visible to display the navigation
  *
  */
 define([], function() {
@@ -115,6 +115,7 @@ define([], function() {
             this.$selectedElement = null;
             this.$addColumn = null;
             this.filledColumns = 0;
+            this.columnLoadStarted = false;
 
             this.columns = [];
             this.selected = [];
@@ -129,7 +130,7 @@ define([], function() {
          * Renders basic structure (wrapper) of column navigation
          */
         render: function() {
-            var $add, $settings, $wrapper, height;
+            var $add, $settings, $wrapper;
 
             $wrapper = this.sandbox.dom.$(this.template.wrapper.call(this));
             this.sandbox.dom.append(this.$element, $wrapper);
@@ -196,16 +197,18 @@ define([], function() {
          * @param {Number} columnNumber
          */
         load: function(url, columnNumber) {
-
             if (!!url) {
 
+                this.columnLoadStarted = true;
                 this.sandbox.util.load(url)
                     .then(function(response) {
+                        this.columnLoadStarted = false;
                         this.parseData(response, columnNumber);
                         this.scrollIfNeeded(this.filledColumns + 1);
                         this.sandbox.emit(LOADED);
                     }.bind(this))
                     .fail(function(error) {
+                        this.columnLoadStarted = false;
                         this.sandbox.logger.error("An error occured while fetching data from: ", error);
                     }.bind(this));
 
@@ -258,6 +261,8 @@ define([], function() {
             }
 
             $column = this.getDOMColumn(newColumn);
+            this.sandbox.dom.append(this.$columnContainer, $column);
+
             $list = this.sandbox.dom.find('ul', $column);
 
             this.sandbox.util.each(data._embedded, function(index, value) {
@@ -265,6 +270,8 @@ define([], function() {
                 this.storeDataItem(newColumn, value);
                 var $element = this.sandbox.dom.$(this.template.item.call(this, this.options.column.width, value));
                 this.sandbox.dom.append($list, $element);
+
+                this.setItemsTextWidth($element);
 
                 // remember which item has subitems to display a whole tree when column navigation should be restored
                 if (!!value[this.options.hasSubName] && value._embedded.length > 0) {
@@ -284,7 +291,6 @@ define([], function() {
 
             this.removeLoadingIconForSelected();
 
-            this.sandbox.dom.append(this.$columnContainer, $column);
             this.filledColumns++;
 
 
@@ -294,6 +300,21 @@ define([], function() {
                 this.insertAddColumn(lastSelected, newColumn);
             }
 
+        },
+
+        /**
+         * Sets the width of the text-container of an item
+         * @param {Object} $item the dom-object of an item
+         */
+        setItemsTextWidth: function($item) {
+            var width, $itemText;
+
+            $itemText = this.sandbox.dom.find('.item-text', $item);
+            width = this.options.column.width - this.sandbox.dom.position($itemText).left;
+            width = width - parseInt(this.sandbox.dom.css($item, 'padding-right').replace('px', '')) -1;
+            width = width - this.sandbox.dom.outerWidth(this.sandbox.dom.find('.icons-right', $item));
+
+            this.sandbox.dom.width($itemText, width);
         },
 
         /**
@@ -387,6 +408,7 @@ define([], function() {
         itemMouseEnter: function(event) {
             var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
             this.sandbox.dom.toggle($edit);
+            this.setItemsTextWidth(event.currentTarget);
         },
 
         /**
@@ -396,6 +418,7 @@ define([], function() {
         itemMouseLeave: function(event) {
             var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
             this.sandbox.dom.toggle($edit);
+            this.setItemsTextWidth(event.currentTarget);
         },
 
         /**
@@ -468,52 +491,55 @@ define([], function() {
          * @param {Object} event
          */
         itemSelected: function(event) {
+            //only do something if no column is loading
+            if (this.columnLoadStarted === false) {
+                this.$selectedElement = this.sandbox.dom.$(event.currentTarget);
+                var id = this.sandbox.dom.data(this.$selectedElement, 'id'),
+                    column = this.sandbox.dom.data(this.sandbox.dom.parent(this.sandbox.dom.parent(this.$selectedElement)), 'column'),
+                    selectedItem = this.columns[column][id],
+                    length = this.selected.length - 1,
+                    i, $arrowElement;
 
-            this.$selectedElement = this.sandbox.dom.$(event.currentTarget);
-            var id = this.sandbox.dom.data(this.$selectedElement, 'id'),
-                column = this.sandbox.dom.data(this.sandbox.dom.parent(this.sandbox.dom.parent(this.$selectedElement)), 'column'),
-                selectedItem = this.columns[column][id],
-                length = this.selected.length - 1,
-                i, $arrowElement;
 
-            if (this.sandbox.dom.hasClass(this.$selectedElement, 'selected')) { // is element already selected
+                if (this.sandbox.dom.hasClass(this.$selectedElement, 'selected')) { // is element already selected
 
-                this.sandbox.emit(SELECTED, selectedItem);
-
-            } else { // element not selected
-
-                this.removeCurrentSelected(column);
-
-                this.sandbox.dom.addClass(this.$selectedElement, 'selected');
-                $arrowElement = this.sandbox.dom.find('.arrow', this.$selectedElement);
-                this.sandbox.dom.removeClass($arrowElement, 'inactive icon-chevron-right');
-                this.sandbox.dom.addClass($arrowElement, 'is-loading');
-
-                if (!!selectedItem) {
-
-                    // remove old elements from breadcrumb
-                    for (i = length; i >= column; i--) {
-                        delete this.selected[i];
-                    }
-
-                    // add element to breadcrumb
-                    this.selected[column] = selectedItem;
                     this.sandbox.emit(SELECTED, selectedItem);
 
-                    if (!!selectedItem[this.options.hasSubName]) {
-                        this.load(selectedItem._links.children, column);
+                } else { // element not selected
+
+                    this.removeCurrentSelected(column);
+
+                    this.sandbox.dom.addClass(this.$selectedElement, 'selected');
+                    $arrowElement = this.sandbox.dom.find('.arrow', this.$selectedElement);
+                    this.sandbox.dom.removeClass($arrowElement, 'inactive icon-chevron-right');
+                    this.sandbox.dom.addClass($arrowElement, 'is-loading');
+
+                    if (!!selectedItem) {
+
+                        // remove old elements from breadcrumb
+                        for (i = length; i >= column; i--) {
+                            delete this.selected[i];
+                        }
+
+                        // add element to breadcrumb
+                        this.selected[column] = selectedItem;
+                        this.sandbox.emit(SELECTED, selectedItem);
+
+                        if (!!selectedItem[this.options.hasSubName]) {
+                            this.load(selectedItem._links.children, column);
+                        }
+
+                        this.removeColumns(column + 1);
                     }
-
-                    this.removeColumns(column + 1);
                 }
-            }
 
-            // insert add column when clicked element
-            this.insertAddColumn(selectedItem, column);
+                // insert add column when clicked element
+                this.insertAddColumn(selectedItem, column);
 
-            // scroll for add column
-            if (!selectedItem.hasSub) {
-                this.scrollIfNeeded(column);
+                // scroll for add column
+                if (!selectedItem.hasSub) {
+                    this.scrollIfNeeded(column);
+                }
             }
 
         },
@@ -624,11 +650,11 @@ define([], function() {
                 if (!!data[this.options.typeName] && data[this.options.typeName].name === 'ghost') {
                     item.push('<span class="item-text inactive pull-left">', data[this.options.titleName], '</span>');
                 } else {
-                    item.push('<span class="item-text pull-left">', data[this.options.titleName], '</span>');
+                    item.push('<span title="'+ data[this.options.titleName] +'" class="item-text pull-left">', data[this.options.titleName], '</span>');
                 }
 
                 // icons right (subpage, edit)
-                item.push('<span class="pull-right">');
+                item.push('<span class="icons-right">');
                 item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
                 !!data[this.options.hasSubName] ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');

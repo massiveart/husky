@@ -118,6 +118,9 @@
     height: 100%;
     font-size: $smallFontSize;
 
+    .form-element {
+        margin: 0;
+    }
     .desc {
         font-size: $baseFontSize;
         color: $grayLight;
@@ -146,7 +149,7 @@
         padding-right: 0;
     }
     .check {
-        margin-top: 25px;
+        margin-top: 30px;
         .description {
             padding-left: 10px;
         }
