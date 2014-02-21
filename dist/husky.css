@@ -4578,47 +4578,48 @@ li a.navigation-settings-icon {
   position: absolute;
   top: 20px;
   left: 0;
-  margin-top: 10px;
+  margin-top: -5px;
+  margin-left: 5px;
   background-color: white;
-  box-shadow: 3px 3px 0 0 #cccccc;
+  border: 1px solid #cccccc;
   z-index: 95;
 }
-/* line 27, ../scss/modules/dropdown.scss */
+/* line 28, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul {
   list-style: none;
   margin: 0;
   padding: 10px 0;
 }
-/* line 32, ../scss/modules/dropdown.scss */
+/* line 33, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul > li {
   padding: 5px 20px;
   text-align: left;
 }
-/* line 36, ../scss/modules/dropdown.scss */
+/* line 37, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul > li:hover, .column-navigation-wrapper .column-navigation .column .dropdown-menu > ul > li.selected, .dropdown-menu > ul > li.hover {
   background-color: #249fbe;
   cursor: pointer;
   color: white;
 }
 
-/* line 45, ../scss/modules/dropdown.scss */
+/* line 46, ../scss/modules/dropdown.scss */
 .dropdown-align-right {
   right: 0;
   left: inherit;
 }
 
-/* line 50, ../scss/modules/dropdown.scss */
+/* line 51, ../scss/modules/dropdown.scss */
 .dropdown-footer {
   border-top: 1px solid #ccc;
   padding: 10px 10px;
 }
 
-/* line 55, ../scss/modules/dropdown.scss */
+/* line 56, ../scss/modules/dropdown.scss */
 .dropdown-toggle {
   display: block;
   cursor: pointer;
 }
-/* line 58, ../scss/modules/dropdown.scss */
+/* line 59, ../scss/modules/dropdown.scss */
 .dropdown-toggle::after {
   content: "";
   display: inline-block;
@@ -6064,7 +6065,7 @@ a.btn-black, a.btn-highlight {
   left: 0;
   margin-top: 5px;
   background-color: #FFF;
-  box-shadow: 3px 3px 0 0 #cccccc;
+  border: 1px solid #cccccc;
   z-index: 95;
 }
 /* line 47, ../scss/modules/dropdown-multiple-select.scss */
@@ -6573,6 +6574,10 @@ a.btn-black, a.btn-highlight {
   position: absolute;
   right: -35px;
   top: 40%;
+}
+/* line 67, ../scss/modules/datagrid.scss */
+.husky-datagrid .dropdown-menu {
+  margin-top: 10px;
 }
 
 /* line 3, ../scss/modules/label.scss */
