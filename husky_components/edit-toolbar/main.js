@@ -532,7 +532,6 @@ define(function() {
                         maxwidth = this.sandbox.dom.width(listItem);
                     }
                 }
-                this.sandbox.util.foreach();
 
                 this.sandbox.dom.css(listItem, {'min-width': maxwidth + 'px'});
                 //set button back to default
