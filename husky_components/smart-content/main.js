@@ -148,11 +148,11 @@ define([], function() {
             noContent: [
                 '<div class="no-content">',
                 '<span class="icon-file"></span>',
-                '<div class="text"><%= no_content %></div>',
+                '<div class="text"><%= noContentStr %></div>',
                 '</div>'
             ].join(''),
             contentItem: [
-                '<li data-id="<%= data_id %>">',
+                '<li data-id="<%= dataId %>">',
                 '<span class="num"><%= num %></span>',
                 '<span class="value"><%= value %></span>',
             '</li>'
@@ -162,32 +162,32 @@ define([], function() {
                    '</div>'].join(''),
 
             dataSource: ['<div class="item-half left">',
-                            '<span class="desc"><%= data_source %></span>',
-                            '<input type="text" value="<%= data_source_val %>" class="data-source form-element"/>',
+                            '<span class="desc"><%= dataSourceStr %></span>',
+                            '<input type="text" value="<%= dataSourceValStr %>" class="data-source form-element"/>',
                         '</div>'].join(''),
 
             subFolders: ['<div class="item-half">',
                             '<div class="check<%= disabled %>">',
                                 '<label>',
-                                    '<input type="checkbox" class="includeSubCheck form-element custom-checkbox"<%= include_sub_checked %>/>',
+                                    '<input type="checkbox" class="includeSubCheck form-element custom-checkbox"<%= includeSubCheckedStr %>/>',
                                     '<span class="custom-checkbox-icon"></span>',
-                                    '<span class="description"><%= include_sub %></span>',
+                                    '<span class="description"><%= includeSubStr %></span>',
                                 '</label>',
                             '</div>',
                         '</div>'].join(''),
 
             categories: ['<div class="item full">',
-                            '<span class="desc"><%= filter_by_cat %></span>',
+                            '<span class="desc"><%= filterByCatStr %></span>',
                             '<div class="' + constants.categoryDDClass + '"></div>',
                         '</div>'].join(''),
 
             tagList: ['<div class="item full tags<%= disabled %>">',
-                        '<span class="desc"><%= filter_by_tags %></span>',
+                        '<span class="desc"><%= filterByTagsStr %></span>',
                         '<div class="' + constants.tagListClass + '"></div>',
                     '</div>'].join(''),
 
             sortBy: ['<div class="item-half left">',
-                '<span class="desc"><%= sort_by %></span>',
+                '<span class="desc"><%= sortByStr %></span>',
                 '<div class="' + constants.sortByDDClass + '"></div>',
                 '</div>'].join(''),
 
@@ -196,13 +196,13 @@ define([], function() {
                 '</div>'].join(''),
 
             presentAs: ['<div class="item-half left">',
-                '<span class="desc"><%= present_as %></span>',
+                '<span class="desc"><%= presentAsStr %></span>',
                 '<div class="' + constants.presentAsDDClass + '"></div>',
                 '</div>'].join(''),
 
             limitResult: ['<div class="item-half">',
-                '<span class="desc"><%= limit_result_to %></span>',
-                    '<input type="text" value="<%= limit_result %>" class="limit-to form-element"<%= disabled %>/>',
+                '<span class="desc"><%= limitResultToStr %></span>',
+                    '<input type="text" value="<%= limitResult %>" class="limit-to form-element"<%= disabled %>/>',
                 '</div>'].join('')
             }
         },
@@ -469,7 +469,7 @@ define([], function() {
                 //loop stops of no more items are left or if number of rendered items matches itemsVisible
                 for (; ++i < length && i < this.itemsVisible;) {
                     this.sandbox.dom.append(ul, _.template(templates.contentItem)({
-                        data_id: this.items[i].id,
+                        dataId: this.items[i].id,
                         value: this.items[i].name,
                         num: (i + 1)
                     }));
@@ -480,7 +480,7 @@ define([], function() {
             } else {
                 //render no-content-template and detach the footer
                 this.sandbox.dom.html(this.$content, _.template(templates.noContent)({
-                    no_content: this.sandbox.translate(this.translations.noContentSelected)
+                    noContentStr: this.sandbox.translate(this.translations.noContentSelected)
                 }));
                 this.detachFooter();
             }
@@ -494,7 +494,7 @@ define([], function() {
             this.initContentContainer();
 
             this.sandbox.dom.html(this.$content, _.template(templates.noContent)({
-                no_content: this.sandbox.translate(this.translations.noContentSelected)
+                noContentStr: this.sandbox.translate(this.translations.noContentSelected)
             }));
         },
 
@@ -525,7 +525,6 @@ define([], function() {
          * Appends the view-toggler to the footer
          */
         appendViewToggler: function() {
-            console.log(this.options.visibleItems, this.items.length);
             if (this.itemsVisible < this.items.length) {
                 this.sandbox.dom.append(
                     this.$footer,
@@ -656,36 +655,36 @@ define([], function() {
             this.$overlayContent = this.sandbox.dom.createElement(_.template(templates.overlayContent.main)());
 
             this.$overlayContent.append(_.template(templates.overlayContent.dataSource)({
-                data_source: this.sandbox.translate(this.translations.dataSource),
-                data_source_val: this.options.dataSource
+                dataSourceStr: this.sandbox.translate(this.translations.dataSource),
+                dataSourceValStr: this.options.dataSource
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.subFolders)({
-                include_sub: this.sandbox.translate(this.translations.includeSubFolders),
-                include_sub_checked: (this.options.includeSubFolders) ? ' checked' : '',
+                includeSubStr: this.sandbox.translate(this.translations.includeSubFolders),
+                includeSubCheckedStr: (this.options.includeSubFolders) ? ' checked' : '',
                 disabled: (this.overlayDisabled.subFolders) ? ' disabled' : ''
             }));
             this.$overlayContent.append('<div class="clear"></div>');
             this.$overlayContent.append(_.template(templates.overlayContent.categories)({
-                filter_by_cat: this.sandbox.translate(this.translations.filterByCategory)
+                filterByCatStr: this.sandbox.translate(this.translations.filterByCategory)
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.tagList)({
-                filter_by_tags: this.sandbox.translate(this.translations.filterByTags),
+                filterByTagsStr: this.sandbox.translate(this.translations.filterByTags),
                 disabled: (this.overlayDisabled.tags) ? ' disabled' : ''
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.sortBy)({
-                sort_by: this.sandbox.translate(this.translations.sortBy)
+                sortByStr: this.sandbox.translate(this.translations.sortBy)
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.sortMethod)({
-                filter_by_tags: this.sandbox.translate(this.translations.filterByTags)
+                filterByTagsStr: this.sandbox.translate(this.translations.filterByTags)
             }));
             this.$overlayContent.append('<div class="clear"></div>');
 
             this.$overlayContent.append(_.template(templates.overlayContent.presentAs)({
-                present_as: this.sandbox.translate(this.translations.presentAs)
+                presentAsStr: this.sandbox.translate(this.translations.presentAs)
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.limitResult)({
-                limit_result_to: this.sandbox.translate(this.translations.limitResultTo),
-                limit_result: (this.options.limitResult > 0) ? this.options.limitResult : '',
+                limitResultToStr: this.sandbox.translate(this.translations.limitResultTo),
+                limitResult: (this.options.limitResult > 0) ? this.options.limitResult : '',
                 disabled: (this.overlayDisabled.limitResult) ? ' disabled' : ''
             }));
             this.$overlayContent.append('<div class="clear"></div>');
