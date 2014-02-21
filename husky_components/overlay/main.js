@@ -15,6 +15,7 @@
  *
  * @params {Object} [options] Configuration object
  * @params {String} [options.trigger] List of events on which the overlay should be opened
+ * @params {String} [options.triggerEl] Element that triggers the overlay
  * @params {String} [options.container] slector or DOM object in which the overlay gets inserted
  * @params {String} [options.title] the title of the overlay
  * @params {String} [options.closeIcon] icon class for the close button
@@ -24,6 +25,8 @@
  * @params {String|Object} [options.data] HTML or DOM-object which acts as the overlay-content
  * @params {String} [options.instanceName] instance name of the component
  * @params {Boolean} [options.draggable] if true overlay is draggable
+ * @params {Boolean} [options.openOnStart] if true overlay is opened after initialization
+ * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
  */
 define([], function() {
 
@@ -31,6 +34,7 @@ define([], function() {
 
     var defaults = {
             trigger: 'click',
+            triggerEl: null,
             container: 'body',
             title: '',
             closeIcon: 'remove2',
@@ -39,7 +43,9 @@ define([], function() {
             okCallback: null,
             data: '',
             instanceName: 'undefined',
-            draggable: true
+            draggable: true,
+            openOnStart: false,
+            removeOnClose: false,
         },
 
         constants = {
@@ -122,35 +128,49 @@ define([], function() {
 
             this.setVariables();
             this.bindEvents();
+
+            if (this.options.openOnStart) {
+                this.openOverlay();
+            }
         },
 
         /**
          * Binds general events
          */
         bindEvents: function() {
-            this.sandbox.dom.on(this.$el, this.options.trigger, function(event) {
+            this.sandbox.dom.on(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName, function(event) {
                 this.sandbox.dom.preventDefault(event);
                 this.triggerHandler();
             }.bind(this));
 
             this.sandbox.on(REMOVE.call(this), function() {
-                this.sandbox.dom.off(this.$el);
-                this.sandbox.dom.off(this.overlay.$el);
-                this.sandbox.dom.remove(this.overlay.$el);
-                this.sandbox.dom.remove(this.$el);
+                this.removeComponent();
             }.bind(this));
+        },
+
+        /**
+         * Removes the component
+         */
+        removeComponent: function() {
+            this.sandbox.dom.off(this.overlay.$el);
+            this.sandbox.dom.remove(this.overlay.$el);
+            this.sandbox.dom.off(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName);
+            this.sandbox.dom.off(this.$el);
+            this.sandbox.dom.remove(this.$el);
         },
 
         /**
          * Sets the default properties
          */
         setVariables: function() {
+            this.$trigger = this.sandbox.dom.$(this.options.triggerEl);
+
             this.overlay = {
                 opened: false,
                 collapsed: false,
                 normalHeight: null,
-                $el: null,
                 $close: null,
+                $el: null,
                 $ok: null,
                 $header: null,
                 $content: null
@@ -196,6 +216,10 @@ define([], function() {
             this.sandbox.dom.css(this.overlay.$content, {'height': 'auto'});
 
             this.sandbox.emit(CLOSED.call(this));
+
+            if (this.options.removeOnClose === true) {
+                this.removeComponent();
+            }
         },
 
         /**
@@ -273,13 +297,13 @@ define([], function() {
                     };
 
                     //bind the mousemove event if mouse is down on header
-                    this.sandbox.dom.on(this.overlay.$header, 'mousemove', function(event) {
+                    this.sandbox.dom.on(this.sandbox.dom.$document, 'mousemove.overlay' + this.options.instanceName, function(event) {
                         this.draggableHandler(event, origin);
                     }.bind(this));
                 }.bind(this));
 
-                this.sandbox.dom.on(this.overlay.$header, 'mouseup', function() {
-                    this.sandbox.dom.off(this.overlay.$header, 'mousemove');
+                this.sandbox.dom.on(this.sandbox.dom.$document, 'mouseup', function() {
+                    this.sandbox.dom.off(this.sandbox.dom.$document, 'mousemove.overlay' + this.options.instanceName);
                 }.bind(this));
             }
         },
