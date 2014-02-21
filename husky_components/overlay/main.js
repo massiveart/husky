@@ -273,13 +273,13 @@ define([], function() {
                     };
 
                     //bind the mousemove event if mouse is down on header
-                    this.sandbox.dom.on(this.overlay.$header, 'mousemove', function(event) {
+                    this.sandbox.dom.on(this.sandbox.dom.$document, 'mousemove.overlay' + this.options.instanceName, function(event) {
                         this.draggableHandler(event, origin);
                     }.bind(this));
                 }.bind(this));
 
-                this.sandbox.dom.on(this.overlay.$header, 'mouseup', function() {
-                    this.sandbox.dom.off(this.overlay.$header, 'mousemove');
+                this.sandbox.dom.on(this.sandbox.dom.$document, 'mouseup', function() {
+                    this.sandbox.dom.off(this.sandbox.dom.$document, 'mousemove.overlay' + this.options.instanceName);
                 }.bind(this));
             }
         },
