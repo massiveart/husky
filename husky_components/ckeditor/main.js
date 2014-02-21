@@ -68,6 +68,11 @@ define([], function() {
             this.editor.on('change', function() {
                 this.sandbox.emit(CHANGED, this.editor.getData(), this.$el);
             }.bind(this));
+
+            this.editor.on('instanceReady', function() {
+                // bind class to editor
+                this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
+            }.bind(this));
         }
 
     };

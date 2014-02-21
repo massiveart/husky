@@ -87,10 +87,6 @@ define(function() {
             columnMinWidth: '70px'
         },
 
-        constants = {
-            marginRight: 0
-        },
-
         namespace = 'husky.datagrid.',
 
     /* TRIGGERS EVENTS */
@@ -303,8 +299,16 @@ define(function() {
 
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
 
+
+
             if (!!this.options.contentContainer) {
                 this.originalMaxWidth = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
+                this.contentMarginRight = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'margin-right')).number;
+                this.contentPaddings = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-right')).number;
+                this.contentPaddings += this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-left')).number;
+            } else {
+                this.contentMarginRight = 0;
+                this.contentPaddings = 0;
             }
 
             this.domId = 0;
@@ -1776,8 +1780,7 @@ define(function() {
                 contentWidth = this.sandbox.dom.width(content),
                 windowWidth = this.sandbox.dom.width(this.sandbox.dom.window),
                 overlaps = false,
-                originalMaxWidth = contentWidth,
-                marginRight = constants.marginRight;
+                originalMaxWidth = contentWidth;
 
             tableOffset.right = tableOffset.left + tableWidth;
 
@@ -1785,7 +1788,6 @@ define(function() {
             if (!!this.options.contentContainer) {
                 // get original max-width and right margin
                 originalMaxWidth = this.originalMaxWidth;
-                marginRight = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'margin-right')).number;
             }
 
             // if table is greater than max content width
@@ -1802,7 +1804,7 @@ define(function() {
             finalWidth = tableWidth;
 
             // if table > window-size set width to available space
-            if (tableOffset.right + marginRight > windowWidth) {
+            if (tableOffset.right + this.contentMarginRight > windowWidth) {
                 finalWidth = windowWidth - tableOffset.left;
             } else {
                 // set scroll position back
@@ -1816,7 +1818,7 @@ define(function() {
 
             // if contentContainer is set, adapt maximum size
             if (!!this.options.contentContainer) {
-                this.sandbox.dom.css(this.options.contentContainer, 'max-width', finalWidth);
+                this.sandbox.dom.css(this.options.contentContainer, 'max-width', finalWidth + this.contentPaddings);
                 finalWidth = this.sandbox.dom.width(this.options.contentContainer);
                 if (!overlaps) {
                     // if table does not overlap border, set content to original width
