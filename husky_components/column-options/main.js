@@ -246,7 +246,7 @@ define(function() {
          * close dropdown - callback
          */
             close = function() {
-                this.sandbox.dom.remove(this.$el);
+            this.sandbox.dom.remove(this.$el);
         },
 
         /**
@@ -280,25 +280,27 @@ define(function() {
 
         startOverlay = function() {
             if (this.overlayLoaded === false) {
-                this.sandbox.start([{
-                    name: 'overlay@husky',
-                    options: {
-                        triggerEl: this.options.trigger,
-                        container: this.$el,
-                        data: this.$list,
-                        okCallback: function() {
-                            submit.call(this);
-                            close.call(this);
-                        }.bind(this),
-                        closeCallback: function() {
-                            close.call(this);
-                        }.bind(this),
-                        instanceName: 'column-options-' + this.options.instanceName,
-                        title: this.options.header.title,
-                        openOnStart: !this.options.hidden,
-                        removeOnClose: true
+                this.sandbox.start([
+                    {
+                        name: 'overlay@husky',
+                        options: {
+                            triggerEl: this.options.trigger,
+                            container: this.$el,
+                            data: this.$list,
+                            okCallback: function() {
+                                submit.call(this);
+                                close.call(this);
+                            }.bind(this),
+                            closeCallback: function() {
+                                close.call(this);
+                            }.bind(this),
+                            instanceName: 'column-options-' + this.options.instanceName,
+                            title: this.options.header.title,
+                            openOnStart: !this.options.hidden,
+                            removeOnClose: true
+                        }
                     }
-                }]);
+                ]);
 
                 this.overlayLoaded = true;
             }
@@ -335,7 +337,7 @@ define(function() {
                 this.sandbox.dom.removeClass(event.currentTarget, visible);
             }
 
-            this.sandbox.dom.addClass($listItem, 'disabled');
+            this.sandbox.dom.toggleClass($listItem, 'disabled');
             item.disabled = !isDisabled;
 
             if (!event.doNotEmitEvents) {
