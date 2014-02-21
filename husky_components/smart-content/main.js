@@ -73,68 +73,68 @@ define([], function() {
     'use strict';
 
     var defaults = {
-        visibleItems: 5,
-        dataSource: '',
-        subFoldersDisabled: false,
-        categories: [],
-        preSelectedCategory: null,
-        tags: [],
-        tagsDisabled: false,
-        tagsAutoCompleteUrl: '',
-        tagsGetParameter: 'search',
-        sortBy: [],
-        preSelectedSortBy: null,
-        preSelectedSortMethod: 'asc',
-        presentAs: [],
-        preSelectedPresentAs: null,
-        limitResult: null,
-        instanceName: 'undefined',
-        url: '',
-        dataSourceParameter: 'dataSource',
-        includeSubFolders: false,
-        includeSubFoldersParameter: 'includeSubFolders',
-        categoryParameter: 'category',
-        tagsParameter: 'tags',
-        sortByParameter: 'sortBy',
-        sortMethodParameter: 'sortMethod',
-        presentAsParameter: 'presentAs',
-        limitResultParameter: 'limitResult',
-        limitResultDisabled: false,
-        resultKey: '_embedded',
-        translations: {},
-        elementDataName: 'smart-content',
-        externalConfigs: false
-    },
+            visibleItems: 5,
+            dataSource: '',
+            subFoldersDisabled: false,
+            categories: [],
+            preSelectedCategory: null,
+            tags: [],
+            tagsDisabled: false,
+            tagsAutoCompleteUrl: '',
+            tagsGetParameter: 'search',
+            sortBy: [],
+            preSelectedSortBy: null,
+            preSelectedSortMethod: 'asc',
+            presentAs: [],
+            preSelectedPresentAs: null,
+            limitResult: null,
+            instanceName: 'undefined',
+            url: '',
+            dataSourceParameter: 'dataSource',
+            includeSubFolders: false,
+            includeSubFoldersParameter: 'includeSubFolders',
+            categoryParameter: 'category',
+            tagsParameter: 'tags',
+            sortByParameter: 'sortBy',
+            sortMethodParameter: 'sortMethod',
+            presentAsParameter: 'presentAs',
+            limitResultParameter: 'limitResult',
+            limitResultDisabled: false,
+            resultKey: '_embedded',
+            translations: {},
+            elementDataName: 'smart-content',
+            externalConfigs: false
+        },
 
-    sortMethods = {
-        asc: 'Ascending',
-        desc: 'Descanding'
-    },
+        sortMethods = {
+            asc: 'Ascending',
+            desc: 'Descanding'
+        },
 
-    constants = {
-        containerSelector: '.smart-content-container',
-        headerSelector: '.smart-header',
-        contentSelector: '.smart-content',
-        sourceSelector: '.source',
-        footerClass: 'smart-footer',
-        viewTogglerClass: 'view-toggler',
-        buttonClass: 'icon-adjust-alt',
-        includeSubSelector: '.includeSubCheck',
-        categoryDDClass: 'category-dropdown',
-        tagListClass: 'tag-list',
-        sortByDDClass: 'sort-by-dropdown',
-        sortMethodDDClass: 'sort-method-dropdown',
-        presentAsDDClass: 'present-as-dropdown',
-        limitToSelector: '.limit-to',
-        dataSourceSelector: '.data-source',
-        contentListClass: 'items-list',
-        loaderClass: 'loader'
-    },
+        constants = {
+            containerSelector: '.smart-content-container',
+            headerSelector: '.smart-header',
+            contentSelector: '.smart-content',
+            sourceSelector: '.source',
+            footerClass: 'smart-footer',
+            viewTogglerClass: 'view-toggler',
+            buttonClass: 'icon-adjust-alt',
+            includeSubSelector: '.includeSubCheck',
+            categoryDDClass: 'category-dropdown',
+            tagListClass: 'tag-list',
+            sortByDDClass: 'sort-by-dropdown',
+            sortMethodDDClass: 'sort-method-dropdown',
+            presentAsDDClass: 'present-as-dropdown',
+            limitToSelector: '.limit-to',
+            dataSourceSelector: '.data-source',
+            contentListClass: 'items-list',
+            loaderClass: 'loader'
+        },
 
-    /** templates for component */
-    templates = {
-        skeleton: [
-            '<div class="smart-content-container form-element">',
+        /** templates for component */
+            templates = {
+            skeleton: [
+                '<div class="smart-content-container form-element">',
                 '<div class="smart-header"></div>',
                 '<div class="smart-content"></div>',
                 '</div>'
@@ -155,120 +155,120 @@ define([], function() {
                 '<li data-id="<%= dataId %>">',
                 '<span class="num"><%= num %></span>',
                 '<span class="value"><%= value %></span>',
-            '</li>'
-        ].join(''),
-        overlayContent: {
-            main: ['<div class="smart-overlay-content">',
-                   '</div>'].join(''),
-
-            dataSource: ['<div class="item-half left">',
-                            '<span class="desc"><%= dataSourceStr %></span>',
-                            '<input type="text" value="<%= dataSourceValStr %>" class="data-source form-element"/>',
-                        '</div>'].join(''),
-
-            subFolders: ['<div class="item-half">',
-                            '<div class="check<%= disabled %>">',
-                                '<label>',
-                                    '<input type="checkbox" class="includeSubCheck form-element custom-checkbox"<%= includeSubCheckedStr %>/>',
-                                    '<span class="custom-checkbox-icon"></span>',
-                                    '<span class="description"><%= includeSubStr %></span>',
-                                '</label>',
-                            '</div>',
-                        '</div>'].join(''),
-
-            categories: ['<div class="item full">',
-                            '<span class="desc"><%= filterByCatStr %></span>',
-                            '<div class="' + constants.categoryDDClass + '"></div>',
-                        '</div>'].join(''),
-
-            tagList: ['<div class="item full tags<%= disabled %>">',
-                        '<span class="desc"><%= filterByTagsStr %></span>',
-                        '<div class="' + constants.tagListClass + '"></div>',
+                '</li>'
+            ].join(''),
+            overlayContent: {
+                main: ['<div class="smart-overlay-content">',
                     '</div>'].join(''),
 
-            sortBy: ['<div class="item-half left">',
-                '<span class="desc"><%= sortByStr %></span>',
-                '<div class="' + constants.sortByDDClass + '"></div>',
-                '</div>'].join(''),
+                dataSource: ['<div class="item-half left">',
+                    '<span class="desc"><%= dataSourceStr %></span>',
+                    '<input type="text" value="<%= dataSourceValStr %>" class="data-source form-element"/>',
+                    '</div>'].join(''),
 
-            sortMethod: ['<div class="item-half">',
-                '<div class="' + constants.sortMethodDDClass + ' sortMethod"></div>',
-                '</div>'].join(''),
+                subFolders: ['<div class="item-half">',
+                    '<div class="check<%= disabled %>">',
+                    '<label>',
+                    '<input type="checkbox" class="includeSubCheck form-element custom-checkbox"<%= includeSubCheckedStr %>/>',
+                    '<span class="custom-checkbox-icon"></span>',
+                    '<span class="description"><%= includeSubStr %></span>',
+                    '</label>',
+                    '</div>',
+                    '</div>'].join(''),
 
-            presentAs: ['<div class="item-half left">',
-                '<span class="desc"><%= presentAsStr %></span>',
-                '<div class="' + constants.presentAsDDClass + '"></div>',
-                '</div>'].join(''),
+                categories: ['<div class="item full">',
+                    '<span class="desc"><%= filterByCatStr %></span>',
+                    '<div class="' + constants.categoryDDClass + '"></div>',
+                    '</div>'].join(''),
 
-            limitResult: ['<div class="item-half">',
-                '<span class="desc"><%= limitResultToStr %></span>',
+                tagList: ['<div class="item full tags<%= disabled %>">',
+                    '<span class="desc"><%= filterByTagsStr %></span>',
+                    '<div class="' + constants.tagListClass + '"></div>',
+                    '</div>'].join(''),
+
+                sortBy: ['<div class="item-half left">',
+                    '<span class="desc"><%= sortByStr %></span>',
+                    '<div class="' + constants.sortByDDClass + '"></div>',
+                    '</div>'].join(''),
+
+                sortMethod: ['<div class="item-half">',
+                    '<div class="' + constants.sortMethodDDClass + ' sortMethod"></div>',
+                    '</div>'].join(''),
+
+                presentAs: ['<div class="item-half left">',
+                    '<span class="desc"><%= presentAsStr %></span>',
+                    '<div class="' + constants.presentAsDDClass + '"></div>',
+                    '</div>'].join(''),
+
+                limitResult: ['<div class="item-half">',
+                    '<span class="desc"><%= limitResultToStr %></span>',
                     '<input type="text" value="<%= limitResult %>" class="limit-to form-element"<%= disabled %>/>',
-                '</div>'].join('')
+                    '</div>'].join('')
             }
         },
 
-    /**
-     * namespace for events
-     * @type {string}
-     */
-     eventNamespace = 'husky.smart-content.',
+        /**
+         * namespace for events
+         * @type {string}
+         */
+            eventNamespace = 'husky.smart-content.',
 
-    /**
-     * raised after initialization process
-     * @event husky.smart-content.initialize
-     */
-    INITIALIZED = function() {
-        return createEventName.call(this, 'initialize');
-    },
+        /**
+         * raised after initialization process
+         * @event husky.smart-content.initialize
+         */
+            INITIALIZED = function() {
+            return createEventName.call(this, 'initialize');
+        },
 
-    /**
-     * raised when all overlay components returned their value
-     * @event husky.smart-content.input-retrieved
-     */
-     INPUT_RETRIEVED = function() {
-        return createEventName.call(this, 'input-retrieved');
-     },
+        /**
+         * raised when all overlay components returned their value
+         * @event husky.smart-content.input-retrieved
+         */
+            INPUT_RETRIEVED = function() {
+            return createEventName.call(this, 'input-retrieved');
+        },
 
-    /**
-     * raised before data is requested with AJAX
-     * @event husky.smart-content.data-request
-     */
-     DATA_REQUEST = function() {
-         return createEventName.call(this, 'data-request');
-     },
+        /**
+         * raised before data is requested with AJAX
+         * @event husky.smart-content.data-request
+         */
+            DATA_REQUEST = function() {
+            return createEventName.call(this, 'data-request');
+        },
 
-    /**
-     * raised when data has returned from the ajax request
-     * @event husky.smart-content.data-retrieved
-     */
-     DATA_RETRIEVED = function() {
-        return createEventName.call(this, 'data-retrieved');
-     },
+        /**
+         * raised when data has returned from the ajax request
+         * @event husky.smart-content.data-retrieved
+         */
+            DATA_RETRIEVED = function() {
+            return createEventName.call(this, 'data-retrieved');
+        },
 
-    /**
-     * takes an config-object an merges it with this.options, before the initialization of the component
-     * (options.externalConfigs has to be true)
-     * @event husky.smart-content.external-configs
-     * @param {object} configs The config-object to merge with this.options
-     */
-     EXTERNAL_CONFIGS = function() {
+        /**
+         * takes an config-object an merges it with this.options, before the initialization of the component
+         * (options.externalConfigs has to be true)
+         * @event husky.smart-content.external-configs
+         * @param {object} configs The config-object to merge with this.options
+         */
+            EXTERNAL_CONFIGS = function() {
             return createEventName.call(this, 'external-configs');
-     },
+        },
 
-    /**
-     * takes an config-object and merges it with this.options. Moreover destroys overlay, so
-     * it uses the new configs
-     * @event husky.smart-content.set-configs
-     * @param {object} configs The config-object to merge with this.options
-     */
-     SET_CONFIGS = function() {
-         return createEventName.call(this, 'set-configs');
-     },
+        /**
+         * takes an config-object and merges it with this.options. Moreover destroys overlay, so
+         * it uses the new configs
+         * @event husky.smart-content.set-configs
+         * @param {object} configs The config-object to merge with this.options
+         */
+            SET_CONFIGS = function() {
+            return createEventName.call(this, 'set-configs');
+        },
 
-    /** returns normalized event names */
-    createEventName = function(postFix) {
-        return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
-    };
+        /** returns normalized event names */
+            createEventName = function(postFix) {
+            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+        };
 
     return {
 
@@ -600,17 +600,19 @@ define([], function() {
         startLoader: function() {
             this.detachFooter();
 
-            var loaderContainer = this.sandbox.dom.createElement('<div class="'+ constants.loaderClass +'"/>');
+            var loaderContainer = this.sandbox.dom.createElement('<div class="' + constants.loaderClass + '"/>');
             this.sandbox.dom.html(this.$content, loaderContainer);
 
-            this.sandbox.start([{
-                name: 'loader@husky',
-                options: {
-                    el: loaderContainer,
-                    size: '100px',
-                    color: '#e4e4e4'
+            this.sandbox.start([
+                {
+                    name: 'loader@husky',
+                    options: {
+                        el: loaderContainer,
+                        size: '100px',
+                        color: '#e4e4e4'
+                    }
                 }
-            }]);
+            ]);
         },
 
         /**
@@ -632,19 +634,21 @@ define([], function() {
         startOverlay: function() {
             this.initOverlayContent();
 
-            this.sandbox.start([{
-                name: 'overlay@husky',
-                options: {
-                    triggerEl: this.$button,
-                    container: this.$el,
-                    data: this.$overlayContent,
-                    title: this.sandbox.translate(this.translations.configureSmartContent),
-                    instanceName: 'smart-content.' + this.options.instanceName,
-                    okCallback: function() {
-                        this.getOverlayData();
-                    }.bind(this)
+            this.sandbox.start([
+                {
+                    name: 'overlay@husky',
+                    options: {
+                        triggerEl: this.$button,
+                        container: this.$el,
+                        data: this.$overlayContent,
+                        title: this.sandbox.translate(this.translations.configureSmartContent),
+                        instanceName: 'smart-content.' + this.options.instanceName,
+                        okCallback: function() {
+                            this.getOverlayData();
+                        }.bind(this)
+                    }
                 }
-            }]);
+            ]);
         },
 
         /**

@@ -1,4 +1,8 @@
 .column-navigation-wrapper {
+     overflow: hidden;
+     position: relative;
+     top: 0px;
+     left: 0px;
 
     .column-navigation {
         background-color: $white;
@@ -6,6 +10,8 @@
         overflow-x: auto;
         overflow-y: hidden;
         white-space: nowrap;
+        min-height: 200px;
+        max-height: 750px;
 
         .column {
             border-right: 1px solid $grayLighter;
@@ -24,6 +30,9 @@
                 li {
                     padding: 15px 11px 15px 15px;
                     height: 50px;
+                    position: relative;
+                    top: 0px;
+                    left: 0px;
                 }
 
                 li:hover {
@@ -51,6 +60,10 @@
 
         .item-text {
             padding-top: 2px;
+            display: block;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            word-wrap: break-word;
         }
 
         .item-text.ghost {
@@ -64,7 +77,11 @@
             color: $white;
             border-radius: 3px;
         }
-
+        .icons-right {
+            position: absolute;
+            right: 5px;
+            top: 15px;
+        }
         .edit {
             margin-right: 5px;
             background-color: $accentColor;
