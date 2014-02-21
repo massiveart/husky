@@ -25687,7 +25687,7 @@ define('__component__$column-options@husky',[],function() {
          * close dropdown - callback
          */
             close = function() {
-                this.sandbox.dom.remove(this.$el);
+            this.sandbox.dom.remove(this.$el);
         },
 
         /**
@@ -25721,25 +25721,27 @@ define('__component__$column-options@husky',[],function() {
 
         startOverlay = function() {
             if (this.overlayLoaded === false) {
-                this.sandbox.start([{
-                    name: 'overlay@husky',
-                    options: {
-                        triggerEl: this.options.trigger,
-                        container: this.$el,
-                        data: this.$list,
-                        okCallback: function() {
-                            submit.call(this);
-                            close.call(this);
-                        }.bind(this),
-                        closeCallback: function() {
-                            close.call(this);
-                        }.bind(this),
-                        instanceName: 'column-options-' + this.options.instanceName,
-                        title: this.options.header.title,
-                        openOnStart: !this.options.hidden,
-                        removeOnClose: true
+                this.sandbox.start([
+                    {
+                        name: 'overlay@husky',
+                        options: {
+                            triggerEl: this.options.trigger,
+                            container: this.$el,
+                            data: this.$list,
+                            okCallback: function() {
+                                submit.call(this);
+                                close.call(this);
+                            }.bind(this),
+                            closeCallback: function() {
+                                close.call(this);
+                            }.bind(this),
+                            instanceName: 'column-options-' + this.options.instanceName,
+                            title: this.options.header.title,
+                            openOnStart: !this.options.hidden,
+                            removeOnClose: true
+                        }
                     }
-                }]);
+                ]);
 
                 this.overlayLoaded = true;
             }
@@ -25776,7 +25778,7 @@ define('__component__$column-options@husky',[],function() {
                 this.sandbox.dom.removeClass(event.currentTarget, visible);
             }
 
-            this.sandbox.dom.addClass($listItem, 'disabled');
+            this.sandbox.dom.toggleClass($listItem, 'disabled');
             item.disabled = !isDisabled;
 
             if (!event.doNotEmitEvents) {
@@ -25943,10 +25945,6 @@ define('__component__$datagrid@husky',[],function() {
             progressRow: true,
             startTabIndex: 99999,
             columnMinWidth: '70px'
-        },
-
-        constants = {
-            marginRight: 0
         },
 
         namespace = 'husky.datagrid.',
@@ -26161,8 +26159,16 @@ define('__component__$datagrid@husky',[],function() {
 
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
 
+
+
             if (!!this.options.contentContainer) {
                 this.originalMaxWidth = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
+                this.contentMarginRight = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'margin-right')).number;
+                this.contentPaddings = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-right')).number;
+                this.contentPaddings += this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-left')).number;
+            } else {
+                this.contentMarginRight = 0;
+                this.contentPaddings = 0;
             }
 
             this.domId = 0;
@@ -27634,8 +27640,7 @@ define('__component__$datagrid@husky',[],function() {
                 contentWidth = this.sandbox.dom.width(content),
                 windowWidth = this.sandbox.dom.width(this.sandbox.dom.window),
                 overlaps = false,
-                originalMaxWidth = contentWidth,
-                marginRight = constants.marginRight;
+                originalMaxWidth = contentWidth;
 
             tableOffset.right = tableOffset.left + tableWidth;
 
@@ -27643,7 +27648,6 @@ define('__component__$datagrid@husky',[],function() {
             if (!!this.options.contentContainer) {
                 // get original max-width and right margin
                 originalMaxWidth = this.originalMaxWidth;
-                marginRight = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'margin-right')).number;
             }
 
             // if table is greater than max content width
@@ -27660,7 +27664,7 @@ define('__component__$datagrid@husky',[],function() {
             finalWidth = tableWidth;
 
             // if table > window-size set width to available space
-            if (tableOffset.right + marginRight > windowWidth) {
+            if (tableOffset.right + this.contentMarginRight > windowWidth) {
                 finalWidth = windowWidth - tableOffset.left;
             } else {
                 // set scroll position back
@@ -27674,7 +27678,7 @@ define('__component__$datagrid@husky',[],function() {
 
             // if contentContainer is set, adapt maximum size
             if (!!this.options.contentContainer) {
-                this.sandbox.dom.css(this.options.contentContainer, 'max-width', finalWidth);
+                this.sandbox.dom.css(this.options.contentContainer, 'max-width', finalWidth + this.contentPaddings);
                 finalWidth = this.sandbox.dom.width(this.options.contentContainer);
                 if (!overlaps) {
                     // if table does not overlap border, set content to original width
@@ -29568,7 +29572,6 @@ define('__component__$edit-toolbar@husky',[],function() {
          * @param $button
          */
         hideItem = function($button) {
-            console.log($button);
             this.sandbox.dom.addClass($button, 'hidden');
         },
 
@@ -29809,14 +29812,15 @@ define('__component__$edit-toolbar@husky',[],function() {
          * @param parent
          */
         setButtonWidth = function(listItem, parent) {
-            var maxwidth = 0;
+            var maxwidth = 0, i, length;
             if (parent.type === 'select') {
-                for(var i = -1, length = parent.items.length; ++i < length;) {
+                for(i = -1, length = parent.items.length; ++i < length;) {
                     changeMainListItem.call(this, listItem, parent.items[i]);
                     if (this.sandbox.dom.width(listItem) > maxwidth) {
                         maxwidth = this.sandbox.dom.width(listItem);
                     }
                 }
+
                 this.sandbox.dom.css(listItem, {'min-width': maxwidth + 'px'});
                 //set button back to default
                 changeMainListItem.call(this, listItem, parent);
@@ -29847,7 +29851,8 @@ define('__component__$edit-toolbar@husky',[],function() {
                 } else if (!!requestedItems[i].title) {
                     title = requestedItems[i].title;
                 }
-                if (!!this.items[buttonId].itemsOption.translate === true) {
+
+                if (!!this.items[buttonId].itemsOption.translate) {
                     title = this.sandbox.translate(this.items[buttonId].itemsOption.languageNamespace + title);
                 }
 
@@ -29883,7 +29888,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                 }
             }
             data = data.sort(function(a, b){
-                return a.position - b.position
+                return a.position - b.position;
             });
 
             return data;
@@ -32648,6 +32653,11 @@ define('__component__$ckeditor@husky',[], function() {
             this.editor.on('change', function() {
                 this.sandbox.emit(CHANGED, this.editor.getData(), this.$el);
             }.bind(this));
+
+            this.editor.on('instanceReady', function() {
+                // bind class to editor
+                this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
+            }.bind(this));
         }
 
     };
@@ -33341,7 +33351,7 @@ define('__component__$smart-content@husky',[], function() {
     
 
     var defaults = {
-        visibleItems: 3,
+        visibleItems: 5,
         dataSource: '',
         subFoldersDisabled: false,
         categories: [],
@@ -33402,7 +33412,7 @@ define('__component__$smart-content@husky',[], function() {
     /** templates for component */
     templates = {
         skeleton: [
-            '<div class="smart-content-container">',
+            '<div class="smart-content-container form-element">',
                 '<div class="smart-header"></div>',
                 '<div class="smart-content"></div>',
                 '</div>'
@@ -33770,6 +33780,8 @@ define('__component__$smart-content@husky',[], function() {
          * Renders the footer and calls a method to bind the events for itself
          */
         renderFooter: function() {
+            this.itemsVisible = (this.items.length < this.itemsVisible) ? this.items.length : this.itemsVisible;
+
             if (this.$footer === null) {
                 this.$footer = this.sandbox.dom.createElement('<div/>');
                 this.sandbox.dom.addClass(this.$footer, constants.footerClass);
@@ -33791,12 +33803,13 @@ define('__component__$smart-content@husky',[], function() {
          * Appends the view-toggler to the footer
          */
         appendViewToggler: function() {
+            console.log(this.options.visibleItems, this.items.length);
             if (this.itemsVisible < this.items.length) {
                 this.sandbox.dom.append(
                     this.$footer,
                     '<span class="' + constants.viewTogglerClass + '">(' + this.sandbox.translate(this.translations.viewAll) + ')</span>'
                 );
-            } else {
+            } else if (this.items.length > this.options.visibleItems) {
                 this.sandbox.dom.append(
                     this.$footer,
                     '<span class="' + constants.viewTogglerClass + '">(' + this.sandbox.translate(this.translations.viewLess) + ')</span>'
