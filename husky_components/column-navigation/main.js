@@ -648,7 +648,7 @@ define([], function() {
 
                 // text center
                 if (!!data[this.options.typeName] && data[this.options.typeName].name === 'ghost') {
-                    item.push('<span class="item-text inactive pull-left">', data[this.options.titleName], '</span>');
+                    item.push('<span title="'+ data[this.options.titleName] +'" class="item-text inactive pull-left">', data[this.options.titleName], '</span>');
                 } else {
                     item.push('<span title="'+ data[this.options.titleName] +'" class="item-text pull-left">', data[this.options.titleName], '</span>');
                 }

@@ -25947,10 +25947,6 @@ define('__component__$datagrid@husky',[],function() {
             columnMinWidth: '70px'
         },
 
-        constants = {
-            marginRight: 0
-        },
-
         namespace = 'husky.datagrid.',
 
     /* TRIGGERS EVENTS */
@@ -26163,8 +26159,16 @@ define('__component__$datagrid@husky',[],function() {
 
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
 
+
+
             if (!!this.options.contentContainer) {
                 this.originalMaxWidth = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
+                this.contentMarginRight = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'margin-right')).number;
+                this.contentPaddings = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-right')).number;
+                this.contentPaddings += this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-left')).number;
+            } else {
+                this.contentMarginRight = 0;
+                this.contentPaddings = 0;
             }
 
             this.domId = 0;
@@ -27636,8 +27640,7 @@ define('__component__$datagrid@husky',[],function() {
                 contentWidth = this.sandbox.dom.width(content),
                 windowWidth = this.sandbox.dom.width(this.sandbox.dom.window),
                 overlaps = false,
-                originalMaxWidth = contentWidth,
-                marginRight = constants.marginRight;
+                originalMaxWidth = contentWidth;
 
             tableOffset.right = tableOffset.left + tableWidth;
 
@@ -27645,7 +27648,6 @@ define('__component__$datagrid@husky',[],function() {
             if (!!this.options.contentContainer) {
                 // get original max-width and right margin
                 originalMaxWidth = this.originalMaxWidth;
-                marginRight = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'margin-right')).number;
             }
 
             // if table is greater than max content width
@@ -27662,7 +27664,7 @@ define('__component__$datagrid@husky',[],function() {
             finalWidth = tableWidth;
 
             // if table > window-size set width to available space
-            if (tableOffset.right + marginRight > windowWidth) {
+            if (tableOffset.right + this.contentMarginRight > windowWidth) {
                 finalWidth = windowWidth - tableOffset.left;
             } else {
                 // set scroll position back
@@ -27676,7 +27678,7 @@ define('__component__$datagrid@husky',[],function() {
 
             // if contentContainer is set, adapt maximum size
             if (!!this.options.contentContainer) {
-                this.sandbox.dom.css(this.options.contentContainer, 'max-width', finalWidth);
+                this.sandbox.dom.css(this.options.contentContainer, 'max-width', finalWidth + this.contentPaddings);
                 finalWidth = this.sandbox.dom.width(this.options.contentContainer);
                 if (!overlaps) {
                     // if table does not overlap border, set content to original width
@@ -29570,7 +29572,6 @@ define('__component__$edit-toolbar@husky',[],function() {
          * @param $button
          */
         hideItem = function($button) {
-            console.log($button);
             this.sandbox.dom.addClass($button, 'hidden');
         },
 
@@ -29811,14 +29812,15 @@ define('__component__$edit-toolbar@husky',[],function() {
          * @param parent
          */
         setButtonWidth = function(listItem, parent) {
-            var maxwidth = 0;
+            var maxwidth = 0, i, length;
             if (parent.type === 'select') {
-                for(var i = -1, length = parent.items.length; ++i < length;) {
+                for(i = -1, length = parent.items.length; ++i < length;) {
                     changeMainListItem.call(this, listItem, parent.items[i]);
                     if (this.sandbox.dom.width(listItem) > maxwidth) {
                         maxwidth = this.sandbox.dom.width(listItem);
                     }
                 }
+
                 this.sandbox.dom.css(listItem, {'min-width': maxwidth + 'px'});
                 //set button back to default
                 changeMainListItem.call(this, listItem, parent);
@@ -29849,7 +29851,8 @@ define('__component__$edit-toolbar@husky',[],function() {
                 } else if (!!requestedItems[i].title) {
                     title = requestedItems[i].title;
                 }
-                if (!!this.items[buttonId].itemsOption.translate === true) {
+
+                if (!!this.items[buttonId].itemsOption.translate) {
                     title = this.sandbox.translate(this.items[buttonId].itemsOption.languageNamespace + title);
                 }
 
@@ -29885,7 +29888,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                 }
             }
             data = data.sort(function(a, b){
-                return a.position - b.position
+                return a.position - b.position;
             });
 
             return data;
@@ -32398,7 +32401,7 @@ define('__component__$column-navigation@husky',[], function() {
 
                 // text center
                 if (!!data[this.options.typeName] && data[this.options.typeName].name === 'ghost') {
-                    item.push('<span class="item-text inactive pull-left">', data[this.options.titleName], '</span>');
+                    item.push('<span title="'+ data[this.options.titleName] +'" class="item-text inactive pull-left">', data[this.options.titleName], '</span>');
                 } else {
                     item.push('<span title="'+ data[this.options.titleName] +'" class="item-text pull-left">', data[this.options.titleName], '</span>');
                 }
@@ -32715,6 +32718,11 @@ define('__component__$ckeditor@husky',[], function() {
 
             this.editor.on('change', function() {
                 this.sandbox.emit(CHANGED, this.editor.getData(), this.$el);
+            }.bind(this));
+
+            this.editor.on('instanceReady', function() {
+                // bind class to editor
+                this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
             }.bind(this));
         }
 
