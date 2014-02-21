@@ -28,6 +28,7 @@
  * @params {String} [options.publishedName] name of published-key
  * @params {String} [options.typeName] name of type-key
  * @params {String} [options.titleName] name of title-key
+ * @params {Number} [options.visibleRatio] minimum ratio of how much of a column must be visible to display the navigation
  *
  */
 define([], function() {
@@ -50,7 +51,8 @@ define([], function() {
             linkedName: 'linked',
             publishedName: 'publishedState',
             titleName: 'title',
-            typeName: 'type'
+            typeName: 'type',
+            minVisibleRatio: 1/2
         },
 
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
@@ -113,6 +115,7 @@ define([], function() {
             this.$selectedElement = null;
             this.$addColumn = null;
             this.filledColumns = 0;
+            this.columnLoadStarted = false;
 
             this.columns = [];
             this.selected = [];
@@ -127,14 +130,15 @@ define([], function() {
          * Renders basic structure (wrapper) of column navigation
          */
         render: function() {
-            var $add, $settings, $wrapper, height;
+            var $add, $settings, $wrapper;
 
             $wrapper = this.sandbox.dom.$(this.template.wrapper.call(this));
             this.sandbox.dom.append(this.$element, $wrapper);
 
             // navigation container
-            height = this.sandbox.dom.height(window) * this.options.wrapper.height/100;
-            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer.call(this, height));
+
+            this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer.call(this));
+            this.setContainerHeight();
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
@@ -146,6 +150,7 @@ define([], function() {
             this.sandbox.dom.append(this.$optionsContainer, $add);
             this.sandbox.dom.append(this.$optionsContainer, $settings);
 
+            this.hideOptions();
             this.sandbox.dom.append($wrapper, this.$optionsContainer);
 
             //init dropdown for settings in options container
@@ -153,6 +158,15 @@ define([], function() {
                 this.initSettingsDropdown(this.sandbox.dom.attr($settings, 'id'));
             }
 
+        },
+
+        /**
+         * Sets the height of the container
+         */
+        setContainerHeight: function() {
+            this.sandbox.dom.height(
+                this.$columnContainer, (this.sandbox.dom.height(window) - this.sandbox.dom.offset(this.$columnContainer).top) * this.options.wrapper.height/100
+            );
         },
 
         /**
@@ -183,16 +197,18 @@ define([], function() {
          * @param {Number} columnNumber
          */
         load: function(url, columnNumber) {
-
             if (!!url) {
 
+                this.columnLoadStarted = true;
                 this.sandbox.util.load(url)
                     .then(function(response) {
+                        this.columnLoadStarted = false;
                         this.parseData(response, columnNumber);
                         this.scrollIfNeeded(this.filledColumns + 1);
                         this.sandbox.emit(LOADED);
                     }.bind(this))
                     .fail(function(error) {
+                        this.columnLoadStarted = false;
                         this.sandbox.logger.error("An error occured while fetching data from: ", error);
                     }.bind(this));
 
@@ -245,6 +261,8 @@ define([], function() {
             }
 
             $column = this.getDOMColumn(newColumn);
+            this.sandbox.dom.append(this.$columnContainer, $column);
+
             $list = this.sandbox.dom.find('ul', $column);
 
             this.sandbox.util.each(data._embedded, function(index, value) {
@@ -252,6 +270,8 @@ define([], function() {
                 this.storeDataItem(newColumn, value);
                 var $element = this.sandbox.dom.$(this.template.item.call(this, this.options.column.width, value));
                 this.sandbox.dom.append($list, $element);
+
+                this.setItemsTextWidth($element);
 
                 // remember which item has subitems to display a whole tree when column navigation should be restored
                 if (!!value[this.options.hasSubName] && value._embedded.length > 0) {
@@ -271,7 +291,6 @@ define([], function() {
 
             this.removeLoadingIconForSelected();
 
-            this.sandbox.dom.append(this.$columnContainer, $column);
             this.filledColumns++;
 
 
@@ -281,6 +300,21 @@ define([], function() {
                 this.insertAddColumn(lastSelected, newColumn);
             }
 
+        },
+
+        /**
+         * Sets the width of the text-container of an item
+         * @param {Object} $item the dom-object of an item
+         */
+        setItemsTextWidth: function($item) {
+            var width, $itemText;
+
+            $itemText = this.sandbox.dom.find('.item-text', $item);
+            width = this.options.column.width - this.sandbox.dom.position($itemText).left;
+            width = width - parseInt(this.sandbox.dom.css($item, 'padding-right').replace('px', '')) -1;
+            width = width - this.sandbox.dom.outerWidth(this.sandbox.dom.find('.icons-right', $item));
+
+            this.sandbox.dom.width($itemText, width);
         },
 
         /**
@@ -347,6 +381,8 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
             this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#'+this.addId);
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
+
+            this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.setContainerHeight.bind(this));
         },
 
         bindCustomEvents: function() {
@@ -372,6 +408,7 @@ define([], function() {
         itemMouseEnter: function(event) {
             var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
             this.sandbox.dom.toggle($edit);
+            this.setItemsTextWidth(event.currentTarget);
         },
 
         /**
@@ -381,6 +418,7 @@ define([], function() {
         itemMouseLeave: function(event) {
             var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
             this.sandbox.dom.toggle($edit);
+            this.setItemsTextWidth(event.currentTarget);
         },
 
         /**
@@ -400,19 +438,44 @@ define([], function() {
          * @param {Object} event
          */
         showOptions: function(event) {
+            var $currentTarget = this.sandbox.dom.$(event.currentTarget);
 
-            this.sandbox.dom.one(this.$columnContainer, 'scroll', this.hideOptions.bind(this));
+            this.displayOptions($currentTarget);
 
-            this.lastHoveredColumn = this.sandbox.dom.data(this.sandbox.dom.$(event.currentTarget), 'column');
+            this.sandbox.dom.off(this.$columnContainer, 'scroll.column-navigation.' + this.options.instanceName);
+            this.sandbox.dom.on(this.$columnContainer, 'scroll.column-navigation.' + this.options.instanceName, this.displayOptions.bind(this, $currentTarget));
+        },
 
-            var scrollPositionX = this.sandbox.dom.scrollLeft(this.sandbox.dom.parent(event.currentTarget)),
-                marginLeft = ((this.lastHoveredColumn - 1) * this.options.column.width);
+        /**
+         * Displays the options-navigation under a given column
+         * @param $activeColumn {object} column for which the options will be inserted
+         */
+        displayOptions: function($activeColumn) {
+            var visibleRatio;
 
-            if (scrollPositionX > 0) { // correct difference through scrolling
-                marginLeft -= scrollPositionX;
+            // calculate the ratio of how much of the hovered column is visible
+            if (this.sandbox.dom.position($activeColumn).left + this.sandbox.dom.width($activeColumn) > this.sandbox.dom.width(this.$columnContainer)) {
+                visibleRatio = (this.sandbox.dom.width(this.$columnContainer) - this.sandbox.dom.position($activeColumn).left ) / this.sandbox.dom.width($activeColumn);
+            } else {
+                visibleRatio = (this.sandbox.dom.width($activeColumn) + this.sandbox.dom.position($activeColumn).left) / this.sandbox.dom.width($activeColumn);
             }
 
-            this.sandbox.dom.show(this.$optionsContainer);
+            // display the option only if the column is visible enough
+            if (visibleRatio >= this.options.minVisibleRatio) {
+                this.lastHoveredColumn = this.sandbox.dom.data($activeColumn, 'column');
+                this.sandbox.dom.css(this.$optionsContainer, {'visibility': 'visible'});
+                this.updateOptionsMargin($activeColumn);
+            } else {
+                this.hideOptions();
+            }
+        },
+
+        /**
+         * Updates the position of the options
+         * @param $activeColumn {object} dom-object of active column
+         */
+        updateOptionsMargin: function($activeColumn) {
+            var marginLeft = this.sandbox.dom.position($activeColumn).left;
             this.sandbox.dom.css(this.$optionsContainer, 'margin-left', marginLeft + 'px');
         },
 
@@ -420,7 +483,7 @@ define([], function() {
          * Hides options
          */
         hideOptions: function() {
-            this.sandbox.dom.hide(this.$optionsContainer);
+            this.sandbox.dom.css(this.$optionsContainer, {'visibility': 'hidden'});
         },
 
         /**
@@ -428,52 +491,55 @@ define([], function() {
          * @param {Object} event
          */
         itemSelected: function(event) {
+            //only do something if no column is loading
+            if (this.columnLoadStarted === false) {
+                this.$selectedElement = this.sandbox.dom.$(event.currentTarget);
+                var id = this.sandbox.dom.data(this.$selectedElement, 'id'),
+                    column = this.sandbox.dom.data(this.sandbox.dom.parent(this.sandbox.dom.parent(this.$selectedElement)), 'column'),
+                    selectedItem = this.columns[column][id],
+                    length = this.selected.length - 1,
+                    i, $arrowElement;
 
-            this.$selectedElement = this.sandbox.dom.$(event.currentTarget);
-            var id = this.sandbox.dom.data(this.$selectedElement, 'id'),
-                column = this.sandbox.dom.data(this.sandbox.dom.parent(this.sandbox.dom.parent(this.$selectedElement)), 'column'),
-                selectedItem = this.columns[column][id],
-                length = this.selected.length - 1,
-                i, $arrowElement;
 
-            if (this.sandbox.dom.hasClass(this.$selectedElement, 'selected')) { // is element already selected
+                if (this.sandbox.dom.hasClass(this.$selectedElement, 'selected')) { // is element already selected
 
-                this.sandbox.emit(SELECTED, selectedItem);
-
-            } else { // element not selected
-
-                this.removeCurrentSelected(column);
-
-                this.sandbox.dom.addClass(this.$selectedElement, 'selected');
-                $arrowElement = this.sandbox.dom.find('.arrow', this.$selectedElement);
-                this.sandbox.dom.removeClass($arrowElement, 'inactive icon-chevron-right');
-                this.sandbox.dom.addClass($arrowElement, 'is-loading');
-
-                if (!!selectedItem) {
-
-                    // remove old elements from breadcrumb
-                    for (i = length; i >= column; i--) {
-                        delete this.selected[i];
-                    }
-
-                    // add element to breadcrumb
-                    this.selected[column] = selectedItem;
                     this.sandbox.emit(SELECTED, selectedItem);
 
-                    if (!!selectedItem[this.options.hasSubName]) {
-                        this.load(selectedItem._links.children, column);
+                } else { // element not selected
+
+                    this.removeCurrentSelected(column);
+
+                    this.sandbox.dom.addClass(this.$selectedElement, 'selected');
+                    $arrowElement = this.sandbox.dom.find('.arrow', this.$selectedElement);
+                    this.sandbox.dom.removeClass($arrowElement, 'inactive icon-chevron-right');
+                    this.sandbox.dom.addClass($arrowElement, 'is-loading');
+
+                    if (!!selectedItem) {
+
+                        // remove old elements from breadcrumb
+                        for (i = length; i >= column; i--) {
+                            delete this.selected[i];
+                        }
+
+                        // add element to breadcrumb
+                        this.selected[column] = selectedItem;
+                        this.sandbox.emit(SELECTED, selectedItem);
+
+                        if (!!selectedItem[this.options.hasSubName]) {
+                            this.load(selectedItem._links.children, column);
+                        }
+
+                        this.removeColumns(column + 1);
                     }
-
-                    this.removeColumns(column + 1);
                 }
-            }
 
-            // insert add column when clicked element
-            this.insertAddColumn(selectedItem, column);
+                // insert add column when clicked element
+                this.insertAddColumn(selectedItem, column);
 
-            // scroll for add column
-            if (!selectedItem.hasSub) {
-                this.scrollIfNeeded(column);
+                // scroll for add column
+                if (!selectedItem.hasSub) {
+                    this.scrollIfNeeded(column);
+                }
             }
 
         },
@@ -541,8 +607,8 @@ define([], function() {
                 return '<div class="column-navigation-wrapper"></div>';
             },
             
-            columnContainer: function(height) {
-                return ['<div class="column-navigation" style="height:'+height+'px"></div>'].join('');
+            columnContainer: function() {
+                return ['<div class="column-navigation"></div>'].join('');
             },
 
             column: function(columnNumber, width) {
@@ -582,13 +648,13 @@ define([], function() {
 
                 // text center
                 if (!!data[this.options.typeName] && data[this.options.typeName].name === 'ghost') {
-                    item.push('<span class="item-text inactive pull-left">', data[this.options.titleName], '</span>');
+                    item.push('<span title="'+ data[this.options.titleName] +'" class="item-text inactive pull-left">', data[this.options.titleName], '</span>');
                 } else {
-                    item.push('<span class="item-text pull-left">', data[this.options.titleName], '</span>');
+                    item.push('<span title="'+ data[this.options.titleName] +'" class="item-text pull-left">', data[this.options.titleName], '</span>');
                 }
 
                 // icons right (subpage, edit)
-                item.push('<span class="pull-right">');
+                item.push('<span class="icons-right">');
                 item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
                 !!data[this.options.hasSubName] ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
@@ -597,7 +663,7 @@ define([], function() {
             },
 
             optionsContainer: function(width) {
-                return ['<div class="options grid-row hidden" style="width:', width + 1, 'px"></div>'].join('');
+                return ['<div class="options grid-row" style="width:', width + 1, 'px"></div>'].join('');
             },
 
             options: {

@@ -73,68 +73,68 @@ define([], function() {
     'use strict';
 
     var defaults = {
-        visibleItems: 3,
-        dataSource: '',
-        subFoldersDisabled: false,
-        categories: [],
-        preSelectedCategory: null,
-        tags: [],
-        tagsDisabled: false,
-        tagsAutoCompleteUrl: '',
-        tagsGetParameter: 'search',
-        sortBy: [],
-        preSelectedSortBy: null,
-        preSelectedSortMethod: 'asc',
-        presentAs: [],
-        preSelectedPresentAs: null,
-        limitResult: null,
-        instanceName: 'undefined',
-        url: '',
-        dataSourceParameter: 'dataSource',
-        includeSubFolders: false,
-        includeSubFoldersParameter: 'includeSubFolders',
-        categoryParameter: 'category',
-        tagsParameter: 'tags',
-        sortByParameter: 'sortBy',
-        sortMethodParameter: 'sortMethod',
-        presentAsParameter: 'presentAs',
-        limitResultParameter: 'limitResult',
-        limitResultDisabled: false,
-        resultKey: '_embedded',
-        translations: {},
-        elementDataName: 'smart-content',
-        externalConfigs: false
-    },
+            visibleItems: 5,
+            dataSource: '',
+            subFoldersDisabled: false,
+            categories: [],
+            preSelectedCategory: null,
+            tags: [],
+            tagsDisabled: false,
+            tagsAutoCompleteUrl: '',
+            tagsGetParameter: 'search',
+            sortBy: [],
+            preSelectedSortBy: null,
+            preSelectedSortMethod: 'asc',
+            presentAs: [],
+            preSelectedPresentAs: null,
+            limitResult: null,
+            instanceName: 'undefined',
+            url: '',
+            dataSourceParameter: 'dataSource',
+            includeSubFolders: false,
+            includeSubFoldersParameter: 'includeSubFolders',
+            categoryParameter: 'category',
+            tagsParameter: 'tags',
+            sortByParameter: 'sortBy',
+            sortMethodParameter: 'sortMethod',
+            presentAsParameter: 'presentAs',
+            limitResultParameter: 'limitResult',
+            limitResultDisabled: false,
+            resultKey: '_embedded',
+            translations: {},
+            elementDataName: 'smart-content',
+            externalConfigs: false
+        },
 
-    sortMethods = {
-        asc: 'Ascending',
-        desc: 'Descanding'
-    },
+        sortMethods = {
+            asc: 'Ascending',
+            desc: 'Descanding'
+        },
 
-    constants = {
-        containerSelector: '.smart-content-container',
-        headerSelector: '.smart-header',
-        contentSelector: '.smart-content',
-        sourceSelector: '.source',
-        footerClass: 'smart-footer',
-        viewTogglerClass: 'view-toggler',
-        buttonClass: 'icon-adjust-alt',
-        includeSubSelector: '.includeSubCheck',
-        categoryDDClass: 'category-dropdown',
-        tagListClass: 'tag-list',
-        sortByDDClass: 'sort-by-dropdown',
-        sortMethodDDClass: 'sort-method-dropdown',
-        presentAsDDClass: 'present-as-dropdown',
-        limitToSelector: '.limit-to',
-        dataSourceSelector: '.data-source',
-        contentListClass: 'items-list',
-        loaderClass: 'loader'
-    },
+        constants = {
+            containerSelector: '.smart-content-container',
+            headerSelector: '.smart-header',
+            contentSelector: '.smart-content',
+            sourceSelector: '.source',
+            footerClass: 'smart-footer',
+            viewTogglerClass: 'view-toggler',
+            buttonClass: 'icon-adjust-alt',
+            includeSubSelector: '.includeSubCheck',
+            categoryDDClass: 'category-dropdown',
+            tagListClass: 'tag-list',
+            sortByDDClass: 'sort-by-dropdown',
+            sortMethodDDClass: 'sort-method-dropdown',
+            presentAsDDClass: 'present-as-dropdown',
+            limitToSelector: '.limit-to',
+            dataSourceSelector: '.data-source',
+            contentListClass: 'items-list',
+            loaderClass: 'loader'
+        },
 
-    /** templates for component */
-    templates = {
-        skeleton: [
-            '<div class="smart-content-container">',
+        /** templates for component */
+            templates = {
+            skeleton: [
+                '<div class="smart-content-container form-element">',
                 '<div class="smart-header"></div>',
                 '<div class="smart-content"></div>',
                 '</div>'
@@ -148,127 +148,127 @@ define([], function() {
             noContent: [
                 '<div class="no-content">',
                 '<span class="icon-file"></span>',
-                '<div class="text"><%= no_content %></div>',
+                '<div class="text"><%= noContentStr %></div>',
                 '</div>'
             ].join(''),
             contentItem: [
-                '<li data-id="<%= data_id %>">',
+                '<li data-id="<%= dataId %>">',
                 '<span class="num"><%= num %></span>',
                 '<span class="value"><%= value %></span>',
-            '</li>'
-        ].join(''),
-        overlayContent: {
-            main: ['<div class="smart-overlay-content">',
-                   '</div>'].join(''),
-
-            dataSource: ['<div class="item-half left">',
-                            '<span class="desc"><%= data_source %></span>',
-                            '<input type="text" value="<%= data_source_val %>" class="data-source form-element"/>',
-                        '</div>'].join(''),
-
-            subFolders: ['<div class="item-half">',
-                            '<div class="check<%= disabled %>">',
-                                '<label>',
-                                    '<input type="checkbox" class="includeSubCheck form-element custom-checkbox"<%= include_sub_checked %>/>',
-                                    '<span class="custom-checkbox-icon"></span>',
-                                    '<span class="description"><%= include_sub %></span>',
-                                '</label>',
-                            '</div>',
-                        '</div>'].join(''),
-
-            categories: ['<div class="item full">',
-                            '<span class="desc"><%= filter_by_cat %></span>',
-                            '<div class="' + constants.categoryDDClass + '"></div>',
-                        '</div>'].join(''),
-
-            tagList: ['<div class="item full tags<%= disabled %>">',
-                        '<span class="desc"><%= filter_by_tags %></span>',
-                        '<div class="' + constants.tagListClass + '"></div>',
+                '</li>'
+            ].join(''),
+            overlayContent: {
+                main: ['<div class="smart-overlay-content">',
                     '</div>'].join(''),
 
-            sortBy: ['<div class="item-half left">',
-                '<span class="desc"><%= sort_by %></span>',
-                '<div class="' + constants.sortByDDClass + '"></div>',
-                '</div>'].join(''),
+                dataSource: ['<div class="item-half left">',
+                    '<span class="desc"><%= dataSourceStr %></span>',
+                    '<input type="text" value="<%= dataSourceValStr %>" class="data-source form-element"/>',
+                    '</div>'].join(''),
 
-            sortMethod: ['<div class="item-half">',
-                '<div class="' + constants.sortMethodDDClass + ' sortMethod"></div>',
-                '</div>'].join(''),
+                subFolders: ['<div class="item-half">',
+                    '<div class="check<%= disabled %>">',
+                    '<label>',
+                    '<input type="checkbox" class="includeSubCheck form-element custom-checkbox"<%= includeSubCheckedStr %>/>',
+                    '<span class="custom-checkbox-icon"></span>',
+                    '<span class="description"><%= includeSubStr %></span>',
+                    '</label>',
+                    '</div>',
+                    '</div>'].join(''),
 
-            presentAs: ['<div class="item-half left">',
-                '<span class="desc"><%= present_as %></span>',
-                '<div class="' + constants.presentAsDDClass + '"></div>',
-                '</div>'].join(''),
+                categories: ['<div class="item full">',
+                    '<span class="desc"><%= filterByCatStr %></span>',
+                    '<div class="' + constants.categoryDDClass + '"></div>',
+                    '</div>'].join(''),
 
-            limitResult: ['<div class="item-half">',
-                '<span class="desc"><%= limit_result_to %></span>',
-                    '<input type="text" value="<%= limit_result %>" class="limit-to form-element"<%= disabled %>/>',
-                '</div>'].join('')
+                tagList: ['<div class="item full tags<%= disabled %>">',
+                    '<span class="desc"><%= filterByTagsStr %></span>',
+                    '<div class="' + constants.tagListClass + '"></div>',
+                    '</div>'].join(''),
+
+                sortBy: ['<div class="item-half left">',
+                    '<span class="desc"><%= sortByStr %></span>',
+                    '<div class="' + constants.sortByDDClass + '"></div>',
+                    '</div>'].join(''),
+
+                sortMethod: ['<div class="item-half">',
+                    '<div class="' + constants.sortMethodDDClass + ' sortMethod"></div>',
+                    '</div>'].join(''),
+
+                presentAs: ['<div class="item-half left">',
+                    '<span class="desc"><%= presentAsStr %></span>',
+                    '<div class="' + constants.presentAsDDClass + '"></div>',
+                    '</div>'].join(''),
+
+                limitResult: ['<div class="item-half">',
+                    '<span class="desc"><%= limitResultToStr %></span>',
+                    '<input type="text" value="<%= limitResult %>" class="limit-to form-element"<%= disabled %>/>',
+                    '</div>'].join('')
             }
         },
 
-    /**
-     * namespace for events
-     * @type {string}
-     */
-     eventNamespace = 'husky.smart-content.',
+        /**
+         * namespace for events
+         * @type {string}
+         */
+            eventNamespace = 'husky.smart-content.',
 
-    /**
-     * raised after initialization process
-     * @event husky.smart-content.initialize
-     */
-    INITIALIZED = function() {
-        return createEventName.call(this, 'initialize');
-    },
+        /**
+         * raised after initialization process
+         * @event husky.smart-content.initialize
+         */
+            INITIALIZED = function() {
+            return createEventName.call(this, 'initialize');
+        },
 
-    /**
-     * raised when all overlay components returned their value
-     * @event husky.smart-content.input-retrieved
-     */
-     INPUT_RETRIEVED = function() {
-        return createEventName.call(this, 'input-retrieved');
-     },
+        /**
+         * raised when all overlay components returned their value
+         * @event husky.smart-content.input-retrieved
+         */
+            INPUT_RETRIEVED = function() {
+            return createEventName.call(this, 'input-retrieved');
+        },
 
-    /**
-     * raised before data is requested with AJAX
-     * @event husky.smart-content.data-request
-     */
-     DATA_REQUEST = function() {
-         return createEventName.call(this, 'data-request');
-     },
+        /**
+         * raised before data is requested with AJAX
+         * @event husky.smart-content.data-request
+         */
+            DATA_REQUEST = function() {
+            return createEventName.call(this, 'data-request');
+        },
 
-    /**
-     * raised when data has returned from the ajax request
-     * @event husky.smart-content.data-retrieved
-     */
-     DATA_RETRIEVED = function() {
-        return createEventName.call(this, 'data-retrieved');
-     },
+        /**
+         * raised when data has returned from the ajax request
+         * @event husky.smart-content.data-retrieved
+         */
+            DATA_RETRIEVED = function() {
+            return createEventName.call(this, 'data-retrieved');
+        },
 
-    /**
-     * takes an config-object an merges it with this.options, before the initialization of the component
-     * (options.externalConfigs has to be true)
-     * @event husky.smart-content.external-configs
-     * @param {object} configs The config-object to merge with this.options
-     */
-     EXTERNAL_CONFIGS = function() {
+        /**
+         * takes an config-object an merges it with this.options, before the initialization of the component
+         * (options.externalConfigs has to be true)
+         * @event husky.smart-content.external-configs
+         * @param {object} configs The config-object to merge with this.options
+         */
+            EXTERNAL_CONFIGS = function() {
             return createEventName.call(this, 'external-configs');
-     },
+        },
 
-    /**
-     * takes an config-object and merges it with this.options. Moreover destroys overlay, so
-     * it uses the new configs
-     * @event husky.smart-content.set-configs
-     * @param {object} configs The config-object to merge with this.options
-     */
-     SET_CONFIGS = function() {
-         return createEventName.call(this, 'set-configs');
-     },
+        /**
+         * takes an config-object and merges it with this.options. Moreover destroys overlay, so
+         * it uses the new configs
+         * @event husky.smart-content.set-configs
+         * @param {object} configs The config-object to merge with this.options
+         */
+            SET_CONFIGS = function() {
+            return createEventName.call(this, 'set-configs');
+        },
 
-    /** returns normalized event names */
-    createEventName = function(postFix) {
-        return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
-    };
+        /** returns normalized event names */
+            createEventName = function(postFix) {
+            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+        };
 
     return {
 
@@ -469,7 +469,7 @@ define([], function() {
                 //loop stops of no more items are left or if number of rendered items matches itemsVisible
                 for (; ++i < length && i < this.itemsVisible;) {
                     this.sandbox.dom.append(ul, _.template(templates.contentItem)({
-                        data_id: this.items[i].id,
+                        dataId: this.items[i].id,
                         value: this.items[i].name,
                         num: (i + 1)
                     }));
@@ -480,7 +480,7 @@ define([], function() {
             } else {
                 //render no-content-template and detach the footer
                 this.sandbox.dom.html(this.$content, _.template(templates.noContent)({
-                    no_content: this.sandbox.translate(this.translations.noContentSelected)
+                    noContentStr: this.sandbox.translate(this.translations.noContentSelected)
                 }));
                 this.detachFooter();
             }
@@ -494,7 +494,7 @@ define([], function() {
             this.initContentContainer();
 
             this.sandbox.dom.html(this.$content, _.template(templates.noContent)({
-                no_content: this.sandbox.translate(this.translations.noContentSelected)
+                noContentStr: this.sandbox.translate(this.translations.noContentSelected)
             }));
         },
 
@@ -502,6 +502,8 @@ define([], function() {
          * Renders the footer and calls a method to bind the events for itself
          */
         renderFooter: function() {
+            this.itemsVisible = (this.items.length < this.itemsVisible) ? this.items.length : this.itemsVisible;
+
             if (this.$footer === null) {
                 this.$footer = this.sandbox.dom.createElement('<div/>');
                 this.sandbox.dom.addClass(this.$footer, constants.footerClass);
@@ -528,7 +530,7 @@ define([], function() {
                     this.$footer,
                     '<span class="' + constants.viewTogglerClass + '">(' + this.sandbox.translate(this.translations.viewAll) + ')</span>'
                 );
-            } else {
+            } else if (this.items.length > this.options.visibleItems) {
                 this.sandbox.dom.append(
                     this.$footer,
                     '<span class="' + constants.viewTogglerClass + '">(' + this.sandbox.translate(this.translations.viewLess) + ')</span>'
@@ -598,17 +600,19 @@ define([], function() {
         startLoader: function() {
             this.detachFooter();
 
-            var loaderContainer = this.sandbox.dom.createElement('<div class="'+ constants.loaderClass +'"/>');
+            var loaderContainer = this.sandbox.dom.createElement('<div class="' + constants.loaderClass + '"/>');
             this.sandbox.dom.html(this.$content, loaderContainer);
 
-            this.sandbox.start([{
-                name: 'loader@husky',
-                options: {
-                    el: loaderContainer,
-                    size: '100px',
-                    color: '#e4e4e4'
+            this.sandbox.start([
+                {
+                    name: 'loader@husky',
+                    options: {
+                        el: loaderContainer,
+                        size: '100px',
+                        color: '#e4e4e4'
+                    }
                 }
-            }]);
+            ]);
         },
 
         /**
@@ -630,19 +634,21 @@ define([], function() {
         startOverlay: function() {
             this.initOverlayContent();
 
-            this.sandbox.start([{
-                name: 'overlay@husky',
-                options: {
-                    triggerEl: this.$button,
-                    container: this.$el,
-                    data: this.$overlayContent,
-                    title: this.sandbox.translate(this.translations.configureSmartContent),
-                    instanceName: 'smart-content.' + this.options.instanceName,
-                    okCallback: function() {
-                        this.getOverlayData();
-                    }.bind(this)
+            this.sandbox.start([
+                {
+                    name: 'overlay@husky',
+                    options: {
+                        triggerEl: this.$button,
+                        container: this.$el,
+                        data: this.$overlayContent,
+                        title: this.sandbox.translate(this.translations.configureSmartContent),
+                        instanceName: 'smart-content.' + this.options.instanceName,
+                        okCallback: function() {
+                            this.getOverlayData();
+                        }.bind(this)
+                    }
                 }
-            }]);
+            ]);
         },
 
         /**
@@ -653,36 +659,36 @@ define([], function() {
             this.$overlayContent = this.sandbox.dom.createElement(_.template(templates.overlayContent.main)());
 
             this.$overlayContent.append(_.template(templates.overlayContent.dataSource)({
-                data_source: this.sandbox.translate(this.translations.dataSource),
-                data_source_val: this.options.dataSource
+                dataSourceStr: this.sandbox.translate(this.translations.dataSource),
+                dataSourceValStr: this.options.dataSource
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.subFolders)({
-                include_sub: this.sandbox.translate(this.translations.includeSubFolders),
-                include_sub_checked: (this.options.includeSubFolders) ? ' checked' : '',
+                includeSubStr: this.sandbox.translate(this.translations.includeSubFolders),
+                includeSubCheckedStr: (this.options.includeSubFolders) ? ' checked' : '',
                 disabled: (this.overlayDisabled.subFolders) ? ' disabled' : ''
             }));
             this.$overlayContent.append('<div class="clear"></div>');
             this.$overlayContent.append(_.template(templates.overlayContent.categories)({
-                filter_by_cat: this.sandbox.translate(this.translations.filterByCategory)
+                filterByCatStr: this.sandbox.translate(this.translations.filterByCategory)
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.tagList)({
-                filter_by_tags: this.sandbox.translate(this.translations.filterByTags),
+                filterByTagsStr: this.sandbox.translate(this.translations.filterByTags),
                 disabled: (this.overlayDisabled.tags) ? ' disabled' : ''
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.sortBy)({
-                sort_by: this.sandbox.translate(this.translations.sortBy)
+                sortByStr: this.sandbox.translate(this.translations.sortBy)
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.sortMethod)({
-                filter_by_tags: this.sandbox.translate(this.translations.filterByTags)
+                filterByTagsStr: this.sandbox.translate(this.translations.filterByTags)
             }));
             this.$overlayContent.append('<div class="clear"></div>');
 
             this.$overlayContent.append(_.template(templates.overlayContent.presentAs)({
-                present_as: this.sandbox.translate(this.translations.presentAs)
+                presentAsStr: this.sandbox.translate(this.translations.presentAs)
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.limitResult)({
-                limit_result_to: this.sandbox.translate(this.translations.limitResultTo),
-                limit_result: (this.options.limitResult > 0) ? this.options.limitResult : '',
+                limitResultToStr: this.sandbox.translate(this.translations.limitResultTo),
+                limitResult: (this.options.limitResult > 0) ? this.options.limitResult : '',
                 disabled: (this.overlayDisabled.limitResult) ? ' disabled' : ''
             }));
             this.$overlayContent.append('<div class="clear"></div>');
