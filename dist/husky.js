@@ -31911,6 +31911,8 @@ define('__component__$column-navigation@husky',[], function() {
                 this.initSettingsDropdown(this.sandbox.dom.attr($settings, 'id'));
             }
 
+            //start navigation with the right height
+            this.setContainerHeight();
         },
 
         /**
