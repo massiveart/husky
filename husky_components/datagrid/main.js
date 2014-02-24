@@ -292,14 +292,9 @@ define(function() {
             this.data = null;
             this.allItemIds = [];
             this.selectedItemIds = [];
-
-            this.selectedDomIds = [];
-            this.changedData = {};
             this.rowStructure = [];
 
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
-
-
 
             if (!!this.options.contentContainer) {
                 this.originalMaxWidth = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
@@ -853,7 +848,6 @@ define(function() {
         resetItemSelection: function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
-            this.selectedDomIds = [];
         },
 
         /**
@@ -938,7 +932,6 @@ define(function() {
                     .prop('checked', false);
 
                 this.selectedItemIds = [];
-                this.selectedDomIds = [];
                 this.sandbox.emit(ALL_DESELECT, null);
 
             } else {
@@ -957,10 +950,10 @@ define(function() {
          * @param row
          */
         addRow: function(row) {
-            var $table, $row, $editableFields;
+            var $table, $row, $editableFields, $firstInputField;
             // check for other element types when implemented
             $table = this.$element.find('table');
-            $row = this.prepareTableRow(row, true);
+            $row = this.sandbox.dom.$(this.prepareTableRow(row, true));
 
             // prepend or append row
             if (!!this.options.addRowTop) {
@@ -968,6 +961,9 @@ define(function() {
             } else {
                 this.sandbox.dom.append($table, $row);
             }
+
+            $firstInputField = this.sandbox.dom.find('input[type=text]', $row)[0];
+            this.sandbox.dom.focus($firstInputField);
 
             // TODO fix validation for new rows
             if (!!this.options.validation) {
@@ -1288,10 +1284,45 @@ define(function() {
             var $target = event.currentTarget,
                 $input = this.sandbox.dom.next($target, 'input');
 
+            this.lockWidthsOfColumns(this.sandbox.dom.find('table th', this.$el));
+
             this.sandbox.dom.hide($target);
             this.sandbox.dom.removeClass($input, 'hidden');
             $input[0].select();
+        },
 
+        /**
+         * Makes the widths of columns fixed when the table is in edit mode
+         * prevents changes in column width
+         * @param $th array of th elements
+         */
+        lockWidthsOfColumns: function($th) {
+
+            var width, minwidth;
+            this.columnWidths = [];
+
+            this.sandbox.dom.each($th, function(index, $el) {
+                minwidth = this.sandbox.dom.css($el, 'min-width');
+                this.columnWidths.push(minwidth);
+
+                width = this.sandbox.dom.outerWidth($el);
+                this.sandbox.dom.css($el, 'min-width', width);
+                this.sandbox.dom.css($el, 'max-width', width);
+            }.bind(this));
+        },
+
+        /**
+         * Resets the min-width of columns and
+         * @param $th array of th elements
+         */
+        unlockWidthsOfColumns: function($th) {
+            this.sandbox.dom.each($th, function(index, $el) {
+                // skip columns without data-attribute because the have min/max and normal widths by default
+                if (!!this.sandbox.dom.data($el, 'attribute')) {
+                    this.sandbox.dom.css($el, 'min-width', this.columnWidths[index]);
+                    this.sandbox.dom.css($el, 'max-width', '');
+                }
+            }.bind(this));
         },
 
         /**
@@ -1499,6 +1530,7 @@ define(function() {
                         // nothing changed - reset immediately
                         this.sandbox.logger.log("No data changed!");
                         this.resetRowInputFields($tr);
+                        this.unlockWidthsOfColumns(this.sandbox.dom.find('table th', this.$el));
                     }
 
                 } else {
@@ -1546,9 +1578,13 @@ define(function() {
                     this.sandbox.emit(DATA_SAVED, data, textStatus);
                     this.hideLoadingIconForRow($tr);
                     this.resetRowInputFields($tr);
+                    this.unlockWidthsOfColumns(this.sandbox.dom.find('table th', this.$el));
 
                     // set new returned data
                     this.setDataForRow($tr[0], data);
+
+                    // reset lastFocusedRow
+                    this.lastFocusedRow = null;
 
                 }.bind(this))
                 .fail(function(jqXHR, textStatus, error) {
