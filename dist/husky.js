@@ -27174,13 +27174,15 @@ define('__component__$datagrid@husky',[],function() {
          * @param $th array of th elements
          */
         unlockWidthsOfColumns: function($th) {
-            this.sandbox.dom.each($th, function(index, $el) {
-                // skip columns without data-attribute because the have min/max and normal widths by default
-                if (!!this.sandbox.dom.data($el, 'attribute')) {
-                    this.sandbox.dom.css($el, 'min-width', this.columnWidths[index]);
-                    this.sandbox.dom.css($el, 'max-width', '');
-                }
-            }.bind(this));
+            if (!!this.columnWidths) {
+                this.sandbox.dom.each($th, function(index, $el) {
+                    // skip columns without data-attribute because the have min/max and normal widths by default
+                    if (!!this.sandbox.dom.data($el, 'attribute')) {
+                        this.sandbox.dom.css($el, 'min-width', this.columnWidths[index]);
+                        this.sandbox.dom.css($el, 'max-width', '');
+                    }
+                }.bind(this));
+            }
         },
 
         /**
