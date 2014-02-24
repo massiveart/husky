@@ -957,10 +957,10 @@ define(function() {
          * @param row
          */
         addRow: function(row) {
-            var $table, $row, $editableFields;
+            var $table, $row, $editableFields, $firstInputField;
             // check for other element types when implemented
             $table = this.$element.find('table');
-            $row = this.prepareTableRow(row, true);
+            $row = this.sandbox.dom.$(this.prepareTableRow(row, true));
 
             // prepend or append row
             if (!!this.options.addRowTop) {
@@ -968,6 +968,9 @@ define(function() {
             } else {
                 this.sandbox.dom.append($table, $row);
             }
+
+            $firstInputField = this.sandbox.dom.find('input[type=text]', $row)[0];
+            this.sandbox.dom.focus($firstInputField);
 
             // TODO fix validation for new rows
             if (!!this.options.validation) {
