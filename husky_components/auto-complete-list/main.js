@@ -43,6 +43,8 @@
  * @param {Integer} [options.slideDuration] ms - duration for sliding suggestinos up/down
  * @param {String} [options.elementTagDataName] attribute name to store list of tags on element
  * @param {String} [options.autoCompleteIcon] Icon Class-suffix for autocomplete-suggestion-icon
+ * @param {Array} [options.delimiters] Array of key-codes which trigger a tag input
+ * @param {Boolean} [options.noNewTags] If true only auto-completed tags are accepted
  */
 define([], function() {
 
@@ -80,7 +82,9 @@ define([], function() {
                 arrowUpClass: 'arrow-up',
                 slideDuration: 500,
                 elementTagDataName: 'tags',
-                autoCompleteIcon: 'tag'
+                autoCompleteIcon: 'tag',
+                delimiters: [9, 188, 13],
+                noNewTags: false
             },
 
             templates = {
@@ -306,10 +310,7 @@ define([], function() {
                     AjaxPushAllTags: this.options.AjaxPushAllItems,
                     AjaxPushParameters: this.options.AjaxPushParameters,
                     CapitalizeFirstLetter: this.options.CapitalizeFirstLetter,
-                    validator: function(string) {
-                        this.sandbox.emit(ITEM_ADDED.call(this), string);
-                        return true;
-                    }.bind(this)
+                    delimiters: []
                 });
                 this.setElementDataTags();
             },
@@ -342,9 +343,10 @@ define([], function() {
                     this.pushTags(tags);
                 }.bind(this));
 
-                this.sandbox.on(ITEM_ADDED.call(this), function(newTag) {
-                    var tags = this.setElementDataTags(newTag);
-                    this.sandbox.emit('husky.auto-complete.' + this.options.instanceName + '.set-excludes', tags);
+                this.sandbox.on(ITEM_ADDED.call(this), function() {
+                    this.setElementDataTags();
+                    console.log(this.getTags());
+                    this.sandbox.emit('husky.auto-complete.' + this.options.instanceName + '.set-excludes', this.getTags());
                 }.bind(this));
 
                 this.sandbox.on(ITEM_DELETED.call(this), function() {
@@ -361,6 +363,11 @@ define([], function() {
                         this.itemDeleteHandler();
                         this.setElementDataTags();
                     }
+
+                    if (this.options.delimiters.indexOf(event.keyCode) !== -1) {
+                        this.pushTagHandler(event, this.sandbox.dom.val(this.$input).trim());
+                    }
+
                 }.bind(this));
 
                 this.sandbox.dom.on(this.$el, 'click', function(event) {
@@ -380,16 +387,33 @@ define([], function() {
             },
 
             /**
+             * Gets executed if the user presses a defined delimiter
+             * @param {Object} the keydown event
+             * @param {String} tag The new Tag to push
+             */
+            pushTagHandler: function(event, tag) {
+                if (event.keyCode !== 9) {
+                    this.sandbox.dom.preventDefault(event);
+                }
+
+                if (this.options.noNewTags !== true) {
+                    this.pushTag(tag);
+                } else {
+                    this.sandbox.emit('husky.auto-complete.' + this.options.instanceName + '.is-matched', function(isMatched) {
+                        if(isMatched === true) {
+                            this.pushTag(tag);
+                        }
+                    }.bind(this));
+                }
+            },
+
+            /**
              * Binds the tags to the element
              * @param newTag {String} newly added tag
              */
-            setElementDataTags: function(newTag) {
-                var tags = this.sandbox.util.extend([], this.getTags());
-                if (tags.indexOf(newTag) === -1 && typeof newTag !== 'undefined') {
-                    tags = tags.concat([newTag]);
-                }
+            setElementDataTags: function() {
+                var tags = this.getTags();
                 this.sandbox.dom.data(this.$el, this.options.elementTagDataName, tags);
-                return tags;
             },
 
             /**
@@ -637,6 +661,7 @@ define([], function() {
             pushTag: function(value) {
                 if (this.tagApi !== null) {
                     this.tagApi.tagsManager('pushTag', value);
+                    this.sandbox.emit(ITEM_ADDED.call(this), value);
                 } else {
                     return false;
                 }

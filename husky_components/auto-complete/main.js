@@ -118,6 +118,15 @@ define([], function() {
             return createEventName.call(this, 'set-excludes');
         },
 
+        /**
+         * listens on and passes boolean to callback if input is matched exactly
+         * @event husky.auto-complete.is-matched
+         * @param {Function} Callback which gets the booloan passed
+         */
+            IS_MATCHED = function() {
+            return createEventName.call(this, 'is-matched');
+        },
+
         /** returns normalized event names */
             createEventName = function(postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
@@ -172,6 +181,7 @@ define([], function() {
             this.render();
             this.bindDomEvents();
             this.setCustomEvents();
+
             this.sandbox.emit(INITIALIZED.call(this), this.$valueField);
         },
 
@@ -312,6 +322,14 @@ define([], function() {
             this.sandbox.on(SET_EXCLUDES.call(this), function(excludes) {
                 this.excludes = this.parseExcludes(excludes);
             }.bind(this));
+
+            this.sandbox.on(IS_MATCHED.call(this), function(callback) {
+                if (this.isMatchedExactly() === true && this.getClosestMatch() !== null) {
+                    callback(true);
+                } else {
+                    this.checkMatches(this.getValueFieldValue(), callback, true);
+                }
+            }.bind(this));
         },
 
         /**
@@ -320,16 +338,19 @@ define([], function() {
          */
         parseExcludes: function(excludes) {
             var arrayReturn = [];
-            this.sandbox.util.foreach(excludes, function(exclude) {
-                if (typeof exclude !== 'object') {
-                    arrayReturn.push({
-                        id: null,
-                        name: exclude
-                    });
-                } else {
-                    arrayReturn.push(exclude);
-                }
-            }.bind(this));
+
+            if(!!excludes.length) {
+                this.sandbox.util.foreach(excludes, function(exclude) {
+                    if (typeof exclude !== 'object') {
+                        arrayReturn.push({
+                            id: null,
+                            name: exclude
+                        });
+                    } else {
+                        arrayReturn.push(exclude);
+                    }
+                }.bind(this));
+            }
             return arrayReturn;
         },
 
@@ -348,9 +369,11 @@ define([], function() {
             }.bind(this));
 
             //remove state and matches on new input
-            this.sandbox.dom.on(this.$valueField, 'keydown', function() {
-                this.matched = false;
-                this.matches = [];
+            this.sandbox.dom.on(this.$valueField, 'keypress', function(event) {
+                if (event.keyCode !== 13) {
+                    this.matched = false;
+                    this.matches = [];
+                }
             }.bind(this));
 
             //ensures that the blur callback does not get called
@@ -389,7 +412,14 @@ define([], function() {
                 } else {
                     //request to check if a match exists
                     if (this.getValueFieldValue() !== '') {
-                        this.checkMatches();
+                        this.checkMatches(this.getValueFieldValue(), function(isMatched) {
+                            if (isMatched === true) {
+                                this.setValueFieldValue(this.getClosestMatch().name);
+                                this.setValueFieldId(this.getClosestMatch().id);
+                            } else {
+                                this.clearValueFieldValue();
+                            }
+                        }.bind(this), false);
                     }
                 }
             } else {
@@ -404,25 +434,38 @@ define([], function() {
         /**
          * Tries to request matches via the remoteUrl
          * and emits an event if matches do exist
+         * @param {String} string The string to check if matches exist
+         * @param {Function} callback to pass a boolean to
+         * @param {Boolean} exactly If true string must be have an identical match
          */
-        checkMatches: function() {
+        checkMatches: function(string, callback, exactly) {
             var delimiter = (this.options.remoteUrl.indexOf('?') === -1) ? '?' : '&';
             this.sandbox.emit(REQUEST_MATCH.call(this));
+            console.log(this.options.remoteUrl + delimiter + this.options.getParameter + '=' + string);
             this.sandbox.util.ajax({
-                url: this.options.remoteUrl + delimiter + this.options.getParameter + '=' + this.getValueFieldValue(),
+                url: this.options.remoteUrl + delimiter + this.options.getParameter + '=' + string,
 
                 success: function(data) {
                     this.matches = this.handleData(data);
-                    if (this.matches.length > 0) {
-                        this.setValueFieldValue(this.getClosestMatch().name);
-                        this.setValueFieldId(this.getClosestMatch().id);
+
+                    if (exactly !== true) {
+                        if (this.matches.length > 0) {
+                            callback(true);
+                        } else {
+                            callback(false);
+                        }
                     } else {
-                        this.clearValueFieldValue();
+                        if (this.isMatchedExactly() === true) {
+                            callback(true);
+                        } else {
+                            callback(false);
+                        }
                     }
                 }.bind(this),
 
                 error: function(error) {
                     this.sandbox.logger.log('Error requesting auto-complete-matches', error);
+                    callback(false);
                 }.bind(this)
             });
         },
@@ -483,11 +526,9 @@ define([], function() {
          * @returns {boolean}
          */
         isMatchedExactly: function() {
-            if (this.isMatched() === true) {
-                if (this.getClosestMatch() !== null) {
-                    if (this.getValueFieldValue().toLowerCase() === this.getClosestMatch().name.toLowerCase()) {
-                        return true;
-                    }
+            if (this.getClosestMatch() !== null) {
+                if (this.getValueFieldValue().toLowerCase() === this.getClosestMatch().name.toLowerCase()) {
+                    return true;
                 }
             }
             return false;
@@ -498,15 +539,19 @@ define([], function() {
          * @param data {object} with total and data array
          */
         handleData: function(data) {
-            this.total = data[this.options.totalKey];
-            this.data = [];
+            if (typeof data === 'object') {
+                console.log(typeof data, 'data');
+                this.total = data[this.options.totalKey];
+                this.data = [];
 
-            this.sandbox.util.foreach(data[this.options.resultKey], function(key) {
-                if (this.isExcluded(key) === false) {
-                    this.data.push(key);
-                }
-            }.bind(this));
-            return this.data;
+                this.sandbox.util.foreach(data[this.options.resultKey], function(key) {
+                    if (this.isExcluded(key) === false) {
+                        this.data.push(key);
+                    }
+                }.bind(this));
+                return this.data;
+            }
+            return false;
         }
     };
 });
