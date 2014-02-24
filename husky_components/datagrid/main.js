@@ -292,14 +292,9 @@ define(function() {
             this.data = null;
             this.allItemIds = [];
             this.selectedItemIds = [];
-
-            this.selectedDomIds = [];
-            this.changedData = {};
             this.rowStructure = [];
 
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
-
-
 
             if (!!this.options.contentContainer) {
                 this.originalMaxWidth = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
@@ -853,7 +848,6 @@ define(function() {
         resetItemSelection: function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
-            this.selectedDomIds = [];
         },
 
         /**
@@ -938,7 +932,6 @@ define(function() {
                     .prop('checked', false);
 
                 this.selectedItemIds = [];
-                this.selectedDomIds = [];
                 this.sandbox.emit(ALL_DESELECT, null);
 
             } else {
