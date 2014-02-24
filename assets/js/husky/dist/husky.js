@@ -33807,10 +33807,11 @@ define('__component__$smart-content@husky',[], function() {
             this.initContentContainer();
 
             if (this.items.length !== 0) {
+
                 var ul, i = -1, length = this.items.length;
                 ul = this.sandbox.dom.createElement('<ul class="' + constants.contentListClass + '"/>');
 
-                //loop stops of no more items are left or if number of rendered items matches itemsVisible
+                //loop stops if no more items are left or if number of rendered items matches itemsVisible
                 for (; ++i < length && i < this.itemsVisible;) {
                     this.sandbox.dom.append(ul, _.template(templates.contentItem)({
                         dataId: this.items[i].id,
@@ -33846,7 +33847,6 @@ define('__component__$smart-content@husky',[], function() {
          * Renders the footer and calls a method to bind the events for itself
          */
         renderFooter: function() {
-            this.itemsVisible = (this.items.length < this.itemsVisible) ? this.items.length : this.itemsVisible;
 
             if (this.$footer === null) {
                 this.$footer = this.sandbox.dom.createElement('<div/>');
@@ -33988,6 +33988,7 @@ define('__component__$smart-content@husky',[], function() {
                         title: this.sandbox.translate(this.translations.configureSmartContent),
                         instanceName: 'smart-content.' + this.options.instanceName,
                         okCallback: function() {
+                            this.itemsVisible = this.options.visibleItems;
                             this.getOverlayData();
                         }.bind(this)
                     }
