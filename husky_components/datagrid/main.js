@@ -1546,6 +1546,9 @@ define(function() {
                     // set new returned data
                     this.setDataForRow($tr[0], data);
 
+                    // reset lastFocusedRow
+                    this.lastFocusedRow = null;
+
                 }.bind(this))
                 .fail(function(jqXHR, textStatus, error) {
                     this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
