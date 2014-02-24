@@ -87,7 +87,8 @@
                 categories: [{id: 1, name: 'New products'},
                              {id: 2, name: 'Old products'},
                              {id: 3, name: 'technical products'}],
-                sortBy: [{id: 1, name: 'Description'},
+                sortBy: [{id: null, name: 'No sorting'},
+                         {id: 1, name: 'Description'},
                          {id: 2, name: 'Name'},
                          {id: 3, name: 'Price'}],
                 presentAs: [{id: 1, name: '2-columns with pictures'},
@@ -107,9 +108,10 @@
                     subFoldersDisabled: true,
                     categories: [],
                     externalConfigs: true,
-                    sortBy: [{id: 4, name: 'First name'},
-                        {id: 5, name: 'Last name'},
-                        {id: 6, name: 'Middle name'}],
+                    sortBy: [{id: null, name: 'No sorting'},
+                            {id: 4, name: 'First name'},
+                            {id: 5, name: 'Last name'},
+                            {id: 6, name: 'Middle name'}],
                     presentAs: [],
                     translations: {
                         configureSmartContent: 'Overlay for Smart-content 2'

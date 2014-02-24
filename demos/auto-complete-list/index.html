@@ -48,7 +48,12 @@
                 'use strict';
 
                 var app = Husky({ debug: { enable: true }}),
-                        _ = app.sandbox.util._;
+                        _ = app.sandbox.util._,
+
+                fakeServer = sinon.fakeServer.create();
+                fakeServer.respondWith('GET', '?query=TagX', [200, { 'Content-Type': 'application/json' },
+                    '{"total": 1, "_embedded": [{"id": 103, "name": "TagX"}]}'
+                ]);
 
                 app.start([{
                     name: 'auto-complete-list@husky',
@@ -62,6 +67,7 @@
                         items: ['Tag1', 'Tag2', 'Tag3', 'Tag4'],
                         suggestions: ["Sugg1", "Sugg2", "Sugg3", "Sugg4"],
                         suggestionsHeadline: 'Recent Tags',
+                        noNewTags: true,
                         localData: [{id: null, name: 'Tag A'}, {id: null, name: 'Tag B'}, {id: null, name: 'Tag C'}, {id: null, name: 'Tag D'}]
                     }
                 }, {
@@ -83,6 +89,12 @@
                         setTimeout(function() {
                             app.sandbox.emit('husky.auto-complete-list.I1.set-tags', ['Set1', 'Set2', 'Set3']);
                         }, 3000);
+
+                        app.sandbox.on('husky.auto-complete.I1.request-match', function() {
+                            setTimeout(function() {
+                                fakeServer.respond();
+                            }, 100)
+                        });
                     });
             });
         </script>

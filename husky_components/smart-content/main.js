@@ -721,7 +721,8 @@ define([], function() {
                         items: this.options.tags,
                         remoteUrl: this.options.tagsAutoCompleteUrl,
                         autocomplete: (this.options.tagsAutoCompleteUrl !== ''),
-                        getParameter: this.options.tagsGetParameter
+                        getParameter: this.options.tagsGetParameter,
+                        noNewTags: true
                     }
                 },
                 {
@@ -734,6 +735,7 @@ define([], function() {
                         data: this.options.sortBy,
                         preSelectedElements: [this.options.preSelectedSortBy],
                         singleSelect: true,
+                        noDeselect: true,
                         disabled: this.overlayDisabled.sortBy
                     }
                 },

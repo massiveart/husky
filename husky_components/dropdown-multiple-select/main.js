@@ -125,7 +125,7 @@ define([], function() {
                     }.bind(this));
                 } else if (typeof(items[0]) === 'object') {
                     this.sandbox.util.each(items, function(index, value) {
-                        if (this.options.preSelectedElements.indexOf(value.id) >= 0) {
+                        if (this.options.preSelectedElements.indexOf(value.id) >= 0 && value.id !== null) {
                             this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, 'checked'));
                             this.selectedElements.push((value.id).toString());
                             this.selectedElementsValues.push(value[this.options.valueName]);
