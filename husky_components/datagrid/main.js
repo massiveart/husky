@@ -1495,8 +1495,6 @@ define(function() {
 
             if (!!this.lastFocusedRow) {
 
-                this.sandbox.logger.warn("lastFocusedRow "+this.lastFocusedRow.domId);
-
                 var $tr = this.sandbox.dom.find('tr[data-dom-id=' + this.lastFocusedRow.domId + ']', this.$el),
                     lastFocusedRowCurrentData = this.getInputValuesOfRow($tr),
 
@@ -1510,8 +1508,6 @@ define(function() {
                 this.sandbox.logger.log("try to save data now ....");
 
                 data.id = lastFocusedRowCurrentData.id;
-
-                this.sandbox.logger.warn("lastFocusedRowCurrentData "+lastFocusedRowCurrentData.domId);
 
                 // validate locally
                 if (!!this.options.validation && !this.sandbox.form.validate('#' + this.elId)) {
@@ -1533,8 +1529,6 @@ define(function() {
 
                     // trigger save action when data changed
                     if (!!valuesChanged) {
-
-                        this.sandbox.logger.warn("data changed!");
 
                         this.sandbox.emit(DATA_CHANGED);
                         url = this.getUrlWithoutParams();
