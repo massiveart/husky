@@ -26813,6 +26813,8 @@ define('__component__$datagrid@husky',[],function() {
             $table = this.$element.find('table');
             $row = this.sandbox.dom.$(this.prepareTableRow(row, true));
 
+            // when unsaved new row exists - save it
+            this.prepareSave();
 
             // prepend or append row
             if (!!this.options.addRowTop) {
@@ -27360,8 +27362,6 @@ define('__component__$datagrid@husky',[],function() {
                     isValid = true,
                     valuesChanged = false,
                     isDataEmpty;
-
-                this.sandbox.logger.log("try to save data now ....");
 
                 data.id = lastFocusedRowCurrentData.id;
 

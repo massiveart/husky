@@ -1505,8 +1505,6 @@ define(function() {
                     valuesChanged = false,
                     isDataEmpty;
 
-                this.sandbox.logger.log("try to save data now ....");
-
                 data.id = lastFocusedRowCurrentData.id;
 
                 // validate locally
