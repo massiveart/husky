@@ -500,7 +500,7 @@ require(['lib/husky'], function(Husky) {
                             class: 'highlight',
                             title: 'add',
                             callback: function() {
-                                app.sandbox.emit('sulu.list-toolbar.add');
+                                app.sandbox.emit('husky.datagrid.row.add', { id: "", content1: "", content2: "", content3: "" });
                             }.bind(this)
                         },
                         {

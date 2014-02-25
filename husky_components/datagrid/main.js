@@ -1243,14 +1243,18 @@ define(function() {
             if (!!this.options.editable) {
                 this.sandbox.dom.on(this.$el, 'click', this.editCellValues.bind(this), '.editable');
 
-                // does not work with focus - causes endless loop in some cases
+                // does not work with focus - causes endless loop in some cases (husky-validation?)
                 this.sandbox.dom.on(this.$el, 'click', this.focusOnRow.bind(this), 'tr');
 
                 this.sandbox.dom.on(this.$el, 'click', function(event) {
                     event.stopPropagation();
                 }, 'tr');
 
-                this.sandbox.dom.on(window, 'click', this.prepareSave.bind(this));
+                this.sandbox.dom.on(window, 'click', function(){
+                    if(!!this.lastFocusedRow) {
+                        this.prepareSave();
+                    }
+                }.bind(this));
             }
 
             this.sandbox.dom.on(this.sandbox.dom.window, 'resize', this.windowResizeListener.bind(this));
@@ -1312,8 +1316,8 @@ define(function() {
 
                 width = this.sandbox.dom.outerWidth($el);
                 this.sandbox.dom.css($el, 'min-width', width);
-                this.sandbox.dom.css($el, 'width', width);
                 this.sandbox.dom.css($el, 'max-width', width);
+                this.sandbox.dom.css($el, 'width', width);
             }.bind(this));
         },
 
@@ -1447,8 +1451,10 @@ define(function() {
             if (!!this.lastFocusedRow && this.lastFocusedRow.domId !== domId) { // new focus
                 this.prepareSave();
                 this.lastFocusedRow = this.getInputValuesOfRow($tr);
+                this.sandbox.logger.log("focused "+this.lastFocusedRow.domId+ " now!");
             } else if (!this.lastFocusedRow) { // first focus
                 this.lastFocusedRow = this.getInputValuesOfRow($tr);
+                this.sandbox.logger.log("focused "+this.lastFocusedRow.domId+ " now!");
             }
         },
 
@@ -1534,6 +1540,9 @@ define(function() {
                             this.save(data, 'POST', url, $tr, this.lastFocusedRow.domId);
                         }
 
+                        // reset last focused row after save
+                        this.lastFocusedRow = null;
+
                     } else if (this.errorInRow.indexOf(this.lastFocusedRow.domId) !== -1) {
                         this.sandbox.logger.log("Error in table row!");
 
@@ -1611,9 +1620,6 @@ define(function() {
 
                     // set new returned data
                     this.setDataForRow($tr[0], data);
-
-                    // clear last focused row data
-                    this.lastFocusedRow = null;
 
                 }.bind(this))
                 .fail(function(jqXHR, textStatus, error) {
