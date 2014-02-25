@@ -856,6 +856,8 @@ define(function() {
          */
         selectItem: function(event) {
 
+            event.stopPropagation();
+
             // Todo review handling of events for new rows in datagrid (itemId empty?)
 
             var $element, itemId, oldSelectionId, parentTr;
@@ -916,6 +918,7 @@ define(function() {
                 }
                 this.sandbox.emit(NUMBER_SELECTIONS, this.selectedItemIds.length);
             }
+
         },
 
         /**
@@ -925,6 +928,7 @@ define(function() {
         selectAllItems: function(event) {
 
             event.stopPropagation();
+
             var $headCheckbox = this.sandbox.dom.find('th input[type="checkbox"]', this.$el)[0],
                 $checkboxes = this.sandbox.dom.find('input[type="checkbox"]',this.$el),
                 selectedElements,
@@ -1215,8 +1219,7 @@ define(function() {
             this.sandbox.dom.unbind(window, 'click');
 
             if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
-                this.$element.on('click', 'tbody > tr span.custom-checkbox-icon', this.selectItem.bind(this));
-                this.$element.on('change', 'tbody > tr input[type="checkbox"]', this.selectItem.bind(this));
+                this.$element.on('click', 'tbody > tr input[type="checkbox"]', this.selectItem.bind(this));
                 this.$element.on('click', 'th.select-all', this.selectAllItems.bind(this));
             } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
                 this.$element.on('click', 'tbody > tr input[type="radio"]', this.selectItem.bind(this));
