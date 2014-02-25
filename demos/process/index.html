@@ -15,8 +15,25 @@
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="stylesheet" href="../../dist/husky.min.css">
+    <style>
+        .container {
+            margin: 50px;
+        }
+        #process {
+            max-width: 820px;
+        }
+        .test-button {
+            margin-top: 50px;
+        }
+    </style>
 </head>
 <body>
+<div class="container">
+    <h1>Husky Process</h1>
+    <div id="process"></div>
+    <button class="test-button" id="change">Activate random process</button>
+    <button class="test-button" id="active">Get active process</button>
+</div>
 
 <script src="../js/sinon.js"></script>
 <script src="../js/jquery.js"></script>
@@ -38,9 +55,32 @@
                 }),
                 _ = app.sandbox.util._,
 
+        testProcesses = [{id: 1, name: 'Choose & upload file'},
+                         'Match header',
+                         {id: 3, name: 'Approve'},
+                         {id: 4, name: 'Finish import'}];
 
-        app.start().then(function() {
+
+        app.start([{
+            name: 'process@husky',
+            options: {
+                el: '#process',
+                instanceName: 'I1',
+                data: testProcesses,
+                activeProcess: 1
+            }
+        }]).then(function() {
             app.logger.log('Aura started...');
+        });
+
+        $('#change').on('click', function() {
+           app.sandbox.emit('husky.process.I1.set-active', Math.floor((Math.random()*4)+1));
+        });
+
+        $('#active').on('click', function() {
+            app.sandbox.emit('husky.process.I1.get-active', function(process) {
+                console.log(process);
+            });
         });
     });
 
