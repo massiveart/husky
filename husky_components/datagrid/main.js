@@ -925,22 +925,47 @@ define(function() {
         selectAllItems: function(event) {
 
             event.stopPropagation();
-            var $headCheckbox = this.sandbox.dom.find('th input[type="checkbox"]', this.$el)[0];
+            var $headCheckbox = this.sandbox.dom.find('th input[type="checkbox"]', this.$el)[0],
+                $checkboxes = this.sandbox.dom.find('input[type="checkbox"]',this.$el),
+                selectedElements,
+                tmp;
+
             if (this.sandbox.dom.prop($headCheckbox,'checked') === false) {
-
-                this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]',this.$el), 'checked', false);
-
-                this.selectedItemIds = [];
+                this.sandbox.dom.prop($checkboxes, 'checked', false);
+                this.sandbox.dom.removeClass($checkboxes,  'is-selected');
                 this.sandbox.emit(ALL_DESELECT, null);
-
             } else {
-
-                this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]',this.$el), 'checked', true);
-
-                this.selectedItemIds = this.allItemIds.slice(0);
-                this.sandbox.emit(ALL_SELECT, this.selectedItemIds);
+                this.sandbox.dom.prop($checkboxes, 'checked', true);
+                this.sandbox.dom.addClass($checkboxes,  'is-selected');
+                this.sandbox.emit(ALL_SELECT, this.getIdsOfSelectedRows());
             }
-            this.sandbox.emit(NUMBER_SELECTIONS, this.selectedItemIds.length);
+
+            tmp = this.sandbox.dom.find('input[type="checkbox"]:checked',this.$el).length-1;
+            selectedElements =  tmp > 0 ? tmp : 0;
+
+            this.sandbox.emit(NUMBER_SELECTIONS, selectedElements);
+        },
+
+
+        /**
+         * Returns an array with the ids of the selected rows
+         */
+        getIdsOfSelectedRows: function(){
+            var $checkboxes = this.sandbox.dom.find('input[type=checkbox]:checked', this.$el),
+                ids = [],
+                id,
+                $tr;
+
+            this.sandbox.util.each($checkboxes, function(index, $checkbox){
+                $tr = this.sandbox.dom.closest($checkbox, 'tr');
+                id = this.sandbox.dom.data($tr, 'id');
+                if(!!id){
+                    ids.push(id);
+                }
+
+            }.bind(this));
+
+            return ids;
         },
 
         /**
@@ -1016,21 +1041,16 @@ define(function() {
          */
         removeRow: function(event) {
 
-            var $element, $tblRow, id, idx, $editableElements, domId;
+            var $element, $tblRow, id, $editableElements;
 
             if (typeof event === 'object') {
-
                 $element = this.sandbox.dom.$(event.currentTarget);
-                $tblRow = $element.parent().parent();
-
-                id = $tblRow.data('id');
+                $tblRow = this.sandbox.dom.closest($element, 'tr')[0];
+                id = this.sandbox.dom.data($tblRow,'id');
             } else {
                 id = event;
-                $tblRow = this.$element.find('tr[data-id="' + id + '"]');
+                $tblRow = this.sandbox.dom.find('tr[data-id="' + id + '"]')[0];
             }
-
-            domId = this.sandbox.dom.data($tblRow, 'dom-id');
-
 
             // remove row elements from validation
             if (!!this.options.validation) {
@@ -1040,14 +1060,8 @@ define(function() {
                 }.bind(this));
             }
 
-            idx = this.selectedItemIds.indexOf(id);
-
-            if (idx >= 0) {
-                this.selectedItemIds.splice(idx, 1);
-            }
-
             this.sandbox.emit(ROW_REMOVED, event);
-            $tblRow.remove();
+            this.sandbox.dom.remove($tblRow);
         },
 
         // TODO: create pagination module
@@ -1243,7 +1257,7 @@ define(function() {
             if (!!this.options.editable) {
                 this.sandbox.dom.on(this.$el, 'click', this.editCellValues.bind(this), '.editable');
 
-                // does not work with focus - causes endless loop in some cases (husky-validation?)
+                // FIXME does not work with focus - causes endless loop in some cases (husky-validation?)
                 this.sandbox.dom.on(this.$el, 'click', this.focusOnRow.bind(this), 'tr');
 
                 this.sandbox.dom.on(this.$el, 'click', function(event) {
@@ -1934,20 +1948,13 @@ define(function() {
         getSelectedItemsIds: function(callback) {
 
             // get selected items
-            var $checkboxes = this.sandbox.dom.find('input[type=text]:checked', this.$el),
-                ids = [], id;
-
-            this.sandbox.util.each($checkboxes, function(index,$checkbox){
-                id = this.sandbox.dom.data(this.sandbox.dom.closest($checkbox, 'tr'), 'id');
-                if(!!id) {
-                    ids.push(id);
-                }
-            }.bind(this));
+            var $checkboxes = this.sandbox.dom.find('input[type=checkbox]:checked', this.$el),
+                ids = this.getIdsOfSelectedRows(), id;
 
             if (typeof callback === 'function') {
-                callback(this.selectedItemIds);
+                callback(ids);
             } else {
-                this.sandbox.emit(ITEMS_SELECTED, this.selectedItemIds);
+                this.sandbox.emit(ITEMS_SELECTED, ids);
             }
         },
 
