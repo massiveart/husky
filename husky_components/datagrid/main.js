@@ -19,7 +19,6 @@
  * @param {Object} [options.paginationOptions] Configuration Object for the pagination
  * @param {Number} [options.paginationOptions.pageSize] Number of items per page
  * @param {Boolean} [options.paginationOptions.showPages] show pages as visual numbers
- * @param {Number} [options.pageSize] lines per page
  * @param {Number} [options.showPages] amount of pages that will be shown
  * @param {Boolean} [options.removeRow] displays in the last column an icon to remove a row
  * @param {Object} [options.selectItem] Configuration object of select item (column)
@@ -62,7 +61,8 @@ define(function() {
             pagination: false,
             paginationOptions: {
                 pageSize: null,
-                showPages: null
+                showPages: null,
+                steps: [10, 50, 100]
             },
             contentContainer: null,
             removeRow: true,
@@ -78,6 +78,7 @@ define(function() {
             searchInstanceName: null, // at which search it should be listened to can be null|string|empty_string
             columnOptionsInstanceName: null, // at which search it should be listened to can be null|string|empty_string
             paginationTemplate: '<%=translate("pagination.page")%> <%=i%> <%=translate("pagination.of")%> <%=pages%>',
+            stepsTemplate: '<%=translate("pagination.show")%> <%=i%> <%=translate("pagination.elementsOf")%> <%=total%>',
             fieldsData: null,
             validation: false, // TODO does not work for added rows
             validationDebug: false,
@@ -288,13 +289,10 @@ define(function() {
             // extend default options and set variables
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.name = this.options.name;
-            this.dropdownInstanceName = 'datagrid-pagination-dropdown';
             this.data = null;
             this.allItemIds = [];
             this.selectedItemIds = [];
 
-            this.selectedDomIds = [];
-            this.changedData = {};
             this.rowStructure = [];
 
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
@@ -853,7 +851,6 @@ define(function() {
         resetItemSelection: function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
-            this.selectedDomIds = [];
         },
 
         /**
@@ -938,7 +935,6 @@ define(function() {
                     .prop('checked', false);
 
                 this.selectedItemIds = [];
-                this.selectedDomIds = [];
                 this.sandbox.emit(ALL_DESELECT, null);
 
             } else {
@@ -1060,6 +1056,7 @@ define(function() {
             if (this.options.pagination && !!this.data.links) {
                 this.initPaginationIds();
                 this.$element.append(this.preparePagination());
+                this.prepareStepsDropdown();
                 this.preparePaginationDropdown();
             }
             return this;
@@ -1072,8 +1069,8 @@ define(function() {
             this.pagination = {
                 prevId: this.options.instance + '-prev',
                 nextId: this.options.instance + '-next',
-                dropdownId: this.options.instance + '-pagination-dropdown',
-                showAllId: this.options.instance + '-show-all'
+                dropdownPagesId: this.options.instance + '-pagination-dropdown',
+                dropdownStepsId: this.options.instance + '-steps-dropdown'
             };
         },
 
@@ -1084,31 +1081,94 @@ define(function() {
         preparePagination: function() {
             var $pagination,
                 $paginationWrapper,
-                $showAll,
-                paginationLabel;
+                $showMore,
+                paginationLabel,
+                stepsLabel = this.sandbox.util.template(
+                    this.options.stepsTemplate,
+                    {
+                        translate: this.sandbox.translate,
+                        i: this.options.paginationOptions.pageSize,
+                        total: this.data.total
+                    }
+                );
 
             if (!!this.options.pagination && parseInt(this.data.pages, 10) > 1) {
                 $paginationWrapper = this.sandbox.dom.$('<div/>');
                 $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row small-font');
 
                 if (!!this.data.total && !!this.data.links.all) {
-                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total, this.sandbox.translate('pagination.elements'), this.sandbox.translate('pagination.showAll'), this.pagination.showAllId));
-                    $paginationWrapper.append($showAll);
+                    $showMore = this.sandbox.dom.$([
+                        '<div class="show-more-container grid-col-6">', '<div class="show-more">',
+                        '<div id="' + this.pagination.dropdownStepsId + '" class="pointer"><span class="inline-block">' + stepsLabel + '</span><span class="dropdown-toggle inline-block"></span></div>',
+                        '</div>',
+                        '</div>'
+                    ].join(''));
+
+                    $paginationWrapper.append($showMore);
                 }
 
                 $pagination = this.sandbox.dom.$('<div/>');
-                $pagination.addClass('pagination grid-col-8 pull-right');
+                $pagination.addClass('pagination grid-col-6 pull-right');
 
                 $paginationWrapper.append($pagination);
 
                 paginationLabel = this.renderPaginationRow(this.data.page, this.data.pages);
 
                 $pagination.append('<div id="' + this.pagination.nextId + '" class="icon-chevron-right pagination-prev pull-right pointer"></div>');
-                $pagination.append('<div id="' + this.pagination.dropdownId + '" class="pagination-main pull-right pointer"><span class="inline-block">' + paginationLabel + '</span><span class="dropdown-toggle inline-block"></span></div>');
+                $pagination.append('<div id="' + this.pagination.dropdownPagesId + '" class="pagination-main pull-right pointer"><span class="inline-block">' + paginationLabel + '</span><span class="dropdown-toggle inline-block"></span></div>');
                 $pagination.append('<div id="' + this.pagination.prevId + '" class="icon-chevron-left pagination-next pull-right pointer"></div>');
             }
 
             return $paginationWrapper;
+        },
+
+
+        /**
+         * Perpares and initializes the dropdown used for the steps
+         */
+        prepareStepsDropdown: function() {
+
+            var data = [], i, name;
+
+            for (i = 0; i <= this.options.paginationOptions.steps.length; i++) {
+                if(this.options.paginationOptions.steps[i] <  this.data.total) {
+                    name = this.renderStepsRow(this.options.paginationOptions.steps[i]);
+                    data.push({id: i, name: name});
+                } else {
+                    break;
+                }
+            }
+
+            // add showall element
+            name = this.sandbox.translate('pagination.showAll');
+            data.push({id: i, name: name});
+
+            this.sandbox.start([
+                {
+                    name: 'dropdown@husky',
+                    options: {
+                        el: '#' + this.pagination.dropdownStepsId,
+                        setParentDropDown: true,
+                        instanceName: this.pagination.dropdownStepsId,
+                        alignment: 'left',
+                        data: data
+                    }
+                }
+            ]);
+        },
+
+        /**
+         * Renders template for one row in the step pagination
+         * @param i number of pages to display
+         */
+        renderStepsRow: function(i) {
+            var defaults = {
+                translate: this.sandbox.translate,
+                i: i,
+                total: this.data.total
+            };
+
+            return this.sandbox.util.template(this.options.stepsTemplate, defaults);
         },
 
 
@@ -1143,9 +1203,9 @@ define(function() {
                 {
                     name: 'dropdown@husky',
                     options: {
-                        el: '#' + this.pagination.dropdownId,
+                        el: '#' + this.pagination.dropdownPagesId,
                         setParentDropDown: true,
-                        instanceName: this.dropdownInstanceName,
+                        instanceName: this.pagination.dropdownPagesId,
                         alignment: 'left',
                         data: data
                     }
@@ -1376,7 +1436,7 @@ define(function() {
             this.sandbox.on(DATA_GET, this.provideData.bind(this));
 
             // pagination dropdown item clicked
-            this.sandbox.on('husky.dropdown.' + this.dropdownInstanceName + '.item.click', this.changePage.bind(this, null));
+            this.sandbox.on('husky.dropdown.' + this.dropdownPagesInstanceName + '.item.click', this.changePage.bind(this, null));
 
             // listen to search events
             if (!!this.options.searchInstanceName) {
@@ -1871,10 +1931,6 @@ define(function() {
         },
 
         templates: {
-
-            showAll: function(total, elementsLabel, showAllLabel, id) {
-                return ['<div class="show-all grid-col-4 m-top-10">', total, ' ', elementsLabel, ' (<a id="' + id + '" href="">', showAllLabel, '</a>)</div>'].join('');
-            },
 
             removeRow: function() {
                 return [
