@@ -873,7 +873,7 @@ define(function() {
 
             if ($element.attr('type') === 'checkbox') {
 
-                if (this.selectedItemIds.indexOf(itemId) > -1) {
+                if (this.sandbox.dom.prop($element, 'checked') === false) {
                     $element
                         .removeClass('is-selected')
                         .prop('checked', false);
