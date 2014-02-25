@@ -937,7 +937,7 @@ define(function() {
             if (this.sandbox.dom.prop($headCheckbox,'checked') === false) {
                 this.sandbox.dom.prop($checkboxes, 'checked', false);
                 this.sandbox.dom.removeClass($checkboxes,  'is-selected');
-                this.sandbox.emit(ALL_DESELECT, null);
+                this.sandbox.emit(ALL_DESELECT);
             } else {
                 this.sandbox.dom.prop($checkboxes, 'checked', true);
                 this.sandbox.dom.addClass($checkboxes,  'is-selected');
