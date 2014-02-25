@@ -26843,8 +26843,6 @@ define('__component__$datagrid@husky',[],function() {
 //                }.bind(this));
 
 //            }
-
-            event.stopPropagation();
         },
 
         /**
@@ -27172,6 +27170,7 @@ define('__component__$datagrid@husky',[],function() {
 
                 width = this.sandbox.dom.outerWidth($el);
                 this.sandbox.dom.css($el, 'min-width', width);
+                this.sandbox.dom.css($el, 'width', width);
                 this.sandbox.dom.css($el, 'max-width', width);
             }.bind(this));
         },
@@ -27187,6 +27186,7 @@ define('__component__$datagrid@husky',[],function() {
                     if (!!this.sandbox.dom.data($el, 'attribute')) {
                         this.sandbox.dom.css($el, 'min-width', this.columnWidths[index]);
                         this.sandbox.dom.css($el, 'max-width', '');
+                        this.sandbox.dom.css($el, 'width', '');
                     }
                 }.bind(this));
             }
@@ -27353,7 +27353,7 @@ define('__component__$datagrid@husky',[],function() {
                     url,
                     isValid = true,
                     valuesChanged = false,
-                    isDataEmpty = true;
+                    isDataEmpty;
 
                 this.sandbox.logger.log("try to save data now ....");
 

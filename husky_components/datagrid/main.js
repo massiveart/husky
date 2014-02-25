@@ -1312,6 +1312,7 @@ define(function() {
 
                 width = this.sandbox.dom.outerWidth($el);
                 this.sandbox.dom.css($el, 'min-width', width);
+                this.sandbox.dom.css($el, 'width', width);
                 this.sandbox.dom.css($el, 'max-width', width);
             }.bind(this));
         },
@@ -1327,6 +1328,7 @@ define(function() {
                     if (!!this.sandbox.dom.data($el, 'attribute')) {
                         this.sandbox.dom.css($el, 'min-width', this.columnWidths[index]);
                         this.sandbox.dom.css($el, 'max-width', '');
+                        this.sandbox.dom.css($el, 'width', '');
                     }
                 }.bind(this));
             }
