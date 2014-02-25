@@ -985,8 +985,6 @@ define(function() {
 //                }.bind(this));
 
 //            }
-
-            event.stopPropagation();
         },
 
         /**
@@ -1495,7 +1493,7 @@ define(function() {
                     url,
                     isValid = true,
                     valuesChanged = false,
-                    isDataEmpty = true;
+                    isDataEmpty;
 
                 this.sandbox.logger.log("try to save data now ....");
 
