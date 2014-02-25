@@ -14,6 +14,8 @@
  * @constructor
  *
  * @params {Object} [options] Configuration object
+ * @params {Array} [options.data] Array of processes array items can be strings and/or objects with id and name
+ * @params {Number} [options.activeProcess] process to activate at the beginning, can be either the id or the position-index of the process
  */
 define([], function() {
 
