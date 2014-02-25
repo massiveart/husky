@@ -897,7 +897,8 @@ define(function() {
                         this.sandbox.emit(ITEM_SELECT, event);
                     }
                 }
-                this.sandbox.emit(NUMBER_SELECTIONS, this.selectedItemIds.length);
+
+                this.sandbox.emit(NUMBER_SELECTIONS, this.getIdsOfSelectedRows().length);
 
             } else if ($element.attr('type') === 'radio') {
 
