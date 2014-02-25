@@ -3786,18 +3786,18 @@ hr.divider {
   border-radius: 3px;
   border: 1px solid #cccccc;
 }
-/* line 15, ../scss/modules/form.scss */
+/* line 14, ../scss/modules/form.scss */
 .form-element:focus {
   outline: 0;
   border-color: #cccccc;
 }
-/* line 20, ../scss/modules/form.scss */
+/* line 19, ../scss/modules/form.scss */
 .form-element.input-large {
   height: 40px;
   padding: 0 10px;
   font-size: 18px;
 }
-/* line 26, ../scss/modules/form.scss */
+/* line 25, ../scss/modules/form.scss */
 .form-element[readonly] {
   background: none;
   border: 0;
@@ -3805,28 +3805,12 @@ hr.divider {
   color: #999999;
 }
 
-/* line 36, ../scss/modules/form.scss */
-.cke.cke_chrome {
-  box-shadow: none !important;
-  border: 0 !important;
-}
-/* line 41, ../scss/modules/form.scss */
-.cke .cke_inner {
-  border: 1px solid #cccccc !important;
-}
-/* line 45, ../scss/modules/form.scss */
-.cke .cke_inner,
-.cke .cke_wysiwyg_frame {
-  border-bottom-left-radius: 3px !important;
-  border-bottom-right-radius: 3px !important;
-}
-
-/* line 52, ../scss/modules/form.scss */
+/* line 35, ../scss/modules/form.scss */
 input[type="text"].input-round {
   border-radius: 30px;
 }
 
-/* line 58, ../scss/modules/form.scss */
+/* line 41, ../scss/modules/form.scss */
 input
 .input-description {
   margin-top: -5px;
@@ -3834,31 +3818,45 @@ input
   color: #999999;
 }
 
-/* line 66, ../scss/modules/form.scss */
+/* line 51, ../scss/modules/form.scss */
+.form-group {
+  margin-bottom: 20px;
+}
+/* line 54, ../scss/modules/form.scss */
+.form-group label {
+  height: 20px;
+  margin-bottom: 10px;
+}
+/* line 59, ../scss/modules/form.scss */
+.form-group > :nth-child(2) {
+  margin: 0;
+}
+
+/* line 68, ../scss/modules/form.scss */
 label {
   display: block;
   font-size: 14px;
   color: #999999;
   cursor: pointer;
 }
-/* line 72, ../scss/modules/form.scss */
+/* line 74, ../scss/modules/form.scss */
 label.large {
   font-size: 16px;
   font-weight: bold;
 }
-/* line 77, ../scss/modules/form.scss */
+/* line 79, ../scss/modules/form.scss */
 label .form-element {
   margin-top: 5px;
   border: 1px solid #cccccc;
 }
-/* line 82, ../scss/modules/form.scss */
+/* line 84, ../scss/modules/form.scss */
 label.inline {
   font-size: 1em;
   font-weight: normal;
   display: inline;
 }
 
-/* line 91, ../scss/modules/form.scss */
+/* line 93, ../scss/modules/form.scss */
 .custom-checkbox {
   width: 14px;
   height: 14px;
@@ -3866,13 +3864,13 @@ label.inline {
   opacity: 0;
   cursor: pointer;
 }
-/* line 105, ../scss/modules/form.scss */
+/* line 107, ../scss/modules/form.scss */
 .custom-checkbox:checked + .custom-checkbox-icon::after, .custom-checkbox.is-checked + .custom-checkbox-icon::after {
   content: "\e207";
   position: relative;
   top: -3px;
 }
-/* line 113, ../scss/modules/form.scss */
+/* line 115, ../scss/modules/form.scss */
 .custom-checkbox + .custom-checkbox-icon {
   display: inline-block;
   width: 14px;
@@ -3886,27 +3884,27 @@ label.inline {
   vertical-align: middle;
 }
 
-/* line 132, ../scss/modules/form.scss */
+/* line 134, ../scss/modules/form.scss */
 textarea {
   resize: both;
 }
 
-/* line 136, ../scss/modules/form.scss */
+/* line 138, ../scss/modules/form.scss */
 textarea.vertical {
   resize: vertical;
 }
 
-/* line 140, ../scss/modules/form.scss */
+/* line 142, ../scss/modules/form.scss */
 textarea.horizontal {
   resize: horizontal;
 }
 
-/* line 144, ../scss/modules/form.scss */
+/* line 146, ../scss/modules/form.scss */
 textarea.noResize {
   resize: none;
 }
 
-/* line 148, ../scss/modules/form.scss */
+/* line 150, ../scss/modules/form.scss */
 textarea.form-element {
   width: 100%;
   height: 40px;
@@ -3916,7 +3914,7 @@ textarea.form-element {
   font-family: inherit;
 }
 
-/* line 159, ../scss/modules/form.scss */
+/* line 161, ../scss/modules/form.scss */
 .custom-radio {
   width: 18px;
   height: 18px;
@@ -3924,7 +3922,7 @@ textarea.form-element {
   opacity: 0;
   cursor: pointer;
 }
-/* line 171, ../scss/modules/form.scss */
+/* line 173, ../scss/modules/form.scss */
 .custom-radio:checked + .custom-radio-icon::after, .custom-radio.is-checked + .custom-radio-icon::after {
   content: "";
   display: block;
@@ -3933,7 +3931,7 @@ textarea.form-element {
   border-radius: 18px;
   background-color: #999;
 }
-/* line 182, ../scss/modules/form.scss */
+/* line 184, ../scss/modules/form.scss */
 .custom-radio + .custom-radio-icon {
   display: inline-block;
   width: 18px;
@@ -3946,6 +3944,22 @@ textarea.form-element {
   text-align: center;
   line-height: 1;
   vertical-align: middle;
+}
+
+/* line 204, ../scss/modules/form.scss */
+.cke.cke_chrome {
+  box-shadow: none !important;
+  border: 0 !important;
+}
+/* line 209, ../scss/modules/form.scss */
+.cke .cke_inner {
+  border: 1px solid #cccccc !important;
+}
+/* line 213, ../scss/modules/form.scss */
+.cke .cke_inner,
+.cke .cke_wysiwyg_frame {
+  border-bottom-left-radius: 3px !important;
+  border-bottom-right-radius: 3px !important;
 }
 
 /* line 16, ../scss/modules/header.scss */

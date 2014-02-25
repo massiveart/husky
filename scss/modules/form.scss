@@ -48,6 +48,49 @@ input
 // Form behaviours
 // -------------------------
 
+// attention! it is always assumed, that form group consists of 2 elements.
+// the first is the label, the second is the form element itself
+
+.form-group {
+    margin-bottom: 20px;
+
+    > :first-child {
+        height: 20px;
+        margin-bottom: 10px;
+    }
+
+    > :nth-child(2) {
+        margin: 0;
+    }
+}
+
+.form-horizontal {
+
+    .form-group {
+        > :first-child {
+            text-align: right;
+            float: left;
+            width: 35%;
+            margin-top: 5px;
+            padding-right: 4%;
+            white-space: nowrap;
+        }
+
+        > :nth-child(2) {
+            width: 65%;
+        }
+
+
+        &.input-large {
+            > :first-child {
+                margin-top: 0;
+                line-height: 40px;
+                vertical-align: middle;
+            }
+        }
+
+    }
+}
 
 
 
