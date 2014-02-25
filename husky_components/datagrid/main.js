@@ -925,19 +925,17 @@ define(function() {
         selectAllItems: function(event) {
 
             event.stopPropagation();
-            if (this.sandbox.util.compare(this.selectedItemIds, this.allItemIds)) {
+            var $headCheckbox = this.sandbox.dom.find('th input[type="checkbox"]', this.$el)[0];
+            if (this.sandbox.dom.prop($headCheckbox,'checked') === false) {
 
-                this.$element
-                    .find('input[type="checkbox"]')
-                    .prop('checked', false);
+                this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]',this.$el), 'checked', false);
 
                 this.selectedItemIds = [];
                 this.sandbox.emit(ALL_DESELECT, null);
 
             } else {
-                this.$element
-                    .find('input[type="checkbox"]')
-                    .prop('checked', true);
+
+                this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]',this.$el), 'checked', true);
 
                 this.selectedItemIds = this.allItemIds.slice(0);
                 this.sandbox.emit(ALL_SELECT, this.selectedItemIds);
@@ -1934,6 +1932,18 @@ define(function() {
          * @param callback
          */
         getSelectedItemsIds: function(callback) {
+
+            // get selected items
+            var $checkboxes = this.sandbox.dom.find('input[type=text]:checked', this.$el),
+                ids = [], id;
+
+            this.sandbox.util.each($checkboxes, function(index,$checkbox){
+                id = this.sandbox.dom.data(this.sandbox.dom.closest($checkbox, 'tr'), 'id');
+                if(!!id) {
+                    ids.push(id);
+                }
+            }.bind(this));
+
             if (typeof callback === 'function') {
                 callback(this.selectedItemIds);
             } else {

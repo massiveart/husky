@@ -27792,6 +27792,18 @@ define('__component__$datagrid@husky',[],function() {
          * @param callback
          */
         getSelectedItemsIds: function(callback) {
+
+            // get selected items - maybe list changed already
+            var $checkboxes = this.sandbox.dom.find('input[type=text]:checked', this.$el),
+                ids = [], id;
+
+            this.sandbox.util.each($checkboxes, function(index,$checkbox){
+                id = this.sandbox.dom.data(this.sandbox.dom.closest($checkbox, 'tr'), 'id');
+                if(!!id) {
+                    ids.push(id);
+                }
+            }.bind(this));
+
             if (typeof callback === 'function') {
                 callback(this.selectedItemIds);
             } else {
