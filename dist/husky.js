@@ -26808,10 +26808,11 @@ define('__component__$datagrid@husky',[],function() {
          * @param row
          */
         addRow: function(row) {
-            var $table, $row, $editableFields, $firstInputField;
+            var $table, $row, $firstInputField;
             // check for other element types when implemented
             $table = this.$element.find('table');
             $row = this.sandbox.dom.$(this.prepareTableRow(row, true));
+
 
             // prepend or append row
             if (!!this.options.addRowTop) {
@@ -26823,10 +26824,14 @@ define('__component__$datagrid@husky',[],function() {
             $firstInputField = this.sandbox.dom.find('input[type=text]', $row)[0];
             this.sandbox.dom.focus($firstInputField);
 
+            if(!!this.options.editable) {
+                this.lastFocusedRow = this.getInputValuesOfRow($row);
+            }
+
             // TODO fix validation for new rows
-            if (!!this.options.validation) {
+//            if (!!this.options.validation) {
                 // add new row to validation context and add contraints to element
-                $editableFields = this.sandbox.dom.find('input[type=text]', $row);
+//                $editableFields = this.sandbox.dom.find('input[type=text]', $row);
 
 //                this.sandbox.util.foreach($editableFields, function($el, i) {
 //                    this.sandbox.form.addField('#' + this.elId, $el);
@@ -26837,7 +26842,9 @@ define('__component__$datagrid@husky',[],function() {
 //                    }
 //                }.bind(this));
 
-            }
+//            }
+
+            event.stopPropagation();
         },
 
         /**
@@ -27313,7 +27320,7 @@ define('__component__$datagrid@husky',[],function() {
             var id = this.sandbox.dom.data($tr, 'id'),
                 domId = this.sandbox.dom.data($tr, 'dom-id'),
                 $inputs = this.sandbox.dom.find('input[type=text]', $tr),
-                fields = [], field, $td;
+                fields = [], field, $td, valuesNotEmpty = true;
 
             this.sandbox.dom.each($inputs, function(index, $input) {
                 $td = this.sandbox.dom.parent($input, 'td');
@@ -27345,20 +27352,22 @@ define('__component__$datagrid@husky',[],function() {
                     key,
                     url,
                     isValid = true,
-                    valuesChanged = false;
+                    valuesChanged = false,
+                    isDataEmpty = true;
 
                 this.sandbox.logger.log("try to save data now ....");
 
                 data.id = lastFocusedRowCurrentData.id;
 
-                // TODO there seems to be a bug when an invalid field is ignored by the user and he visits more than one other row
                 // validate locally
                 if (!!this.options.validation && !this.sandbox.form.validate('#' + this.elId)) {
                     isValid = false;
                 }
 
+                isDataEmpty = this.isDataRowEmpty(lastFocusedRowCurrentData.fields);
 
-                if (!!isValid) {
+                // do nothing when data is not valid or no data exists
+                if (!!isValid && !isDataEmpty) {
 
                     // check which values changed and remember these
                     for (key in lastFocusedRowCurrentData.fields) {
@@ -27394,10 +27403,28 @@ define('__component__$datagrid@husky',[],function() {
                     }
 
                 } else {
-                    this.sandbox.logger.log("There seems to be some invalid data!");
+                    this.sandbox.logger.log("There seems to be some invalid or empty data!");
                 }
 
             }
+        },
+
+        /**
+         * Checks wether data is in row or not
+         * @param data fields object
+         */
+        isDataRowEmpty: function(data){
+
+            var isEmpty = true, field;
+
+            for (field in data) {
+                if(data[field] !== ''){
+                    isEmpty = false;
+                    break;
+                }
+            }
+
+            return isEmpty;
         },
 
 
@@ -27443,7 +27470,7 @@ define('__component__$datagrid@husky',[],function() {
                     // set new returned data
                     this.setDataForRow($tr[0], data);
 
-                    // reset lastFocusedRow
+                    // clear last focused row data
                     this.lastFocusedRow = null;
 
                 }.bind(this))
