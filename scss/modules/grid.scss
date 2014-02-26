@@ -10,6 +10,7 @@ $grid-padding-right: 8px;
 }
 
 .grid-row {
+    margin-bottom: 20px;
     &::after {
         content: "";
         display: table;

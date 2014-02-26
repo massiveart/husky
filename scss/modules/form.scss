@@ -52,7 +52,6 @@ input
 // the first is the label, the second is the form element itself
 
 .form-group {
-    margin-bottom: 20px;
 
     > :first-child {
         height: 20px;
@@ -70,10 +69,10 @@ input
         > :first-child {
             text-align: right;
             float: left;
-            width: 35%;
             margin-top: 5px;
             padding-right: 4%;
             white-space: nowrap;
+            width: 35%;
         }
 
         > :nth-child(2) {

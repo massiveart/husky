@@ -11,8 +11,9 @@
     top: 0px;
     left: 0px;
     margin-top: 10px;
+    display: table;
+    width: 100%;
     font-size: $smallFontSize;
-    background: $white;
     border-radius: 4px 4px 0 0;
 
     input[type="text"] {
@@ -34,6 +35,8 @@
 
 .twitter-typeahead {
     width: 100%;
+    background-color: white;
+    border-radius: 4px 4px 0 0;
 }
 
 .tt-suggestions {

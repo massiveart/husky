@@ -50,12 +50,11 @@ h5 {
     line-height: 15px;
 }
 
-h2 {
+h1, h2, h3, h4, h5 {
     position: relative;
-    font-size: 30px;
     z-index: 1;
     overflow: hidden;
-    &:after {
+    &.divider:after {
         position: absolute;
         top: 50%;
         margin-left: 10px;
