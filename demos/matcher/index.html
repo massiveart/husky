@@ -24,6 +24,7 @@
 <body>
 <div class="container">
     <h1>Husky Matcher Demo</h1>
+    <div id="matcher1"></div>
 </div>
 <script src="../js/sinon.js"></script>
 <script src="../js/jquery.js"></script>
@@ -43,13 +44,82 @@
                         enable: true
                     }
                 }),
-                _ = app.sandbox.util._;
+                _ = app.sandbox.util._,
+
+        testData = [
+            {
+                id: 1,
+                title: 'Product number',
+                matched: false,
+                samples: ['1234', '5678'],
+                suggestion: {
+                    table: 'products',
+                    col: 'id',
+                    name: 'Products id'
+                }
+            },
+            {
+                id: 2,
+                title: 'Product title',
+                matched: false,
+                samples: ['Soup', 'Noodles'],
+                suggestion: {
+                    table: 'products',
+                    col: 'title',
+                    name: 'Products title'
+                }
+            },
+            {
+                id: 3,
+                title: 'Product description',
+                matched: false,
+                samples: ['hot', 'tasty']
+            },
+            {
+                id: 4,
+                title: 'Product price',
+                matched: false,
+                samples: ['34.99 €', '77.88 $']
+            }
+        ];
 
 
         app.start([{
             name: 'matcher@husky',
             options: {
-                instanceName: 'I1'
+                el: '#matcher1',
+                instanceName: 'I1',
+                data: testData,
+                dbColumns: [
+                    {
+                        table: 'products',
+                        col: 'id',
+                        name: 'Products id'
+                    },
+                    {
+                        table: 'products',
+                        col: 'title',
+                        name: 'Products title'
+                    },
+                    {
+                        table: 'products',
+                        col: 'description',
+                        name: 'Products description'
+                    },
+                    {
+                        table: 'products',
+                        col: 'price',
+                        name: 'Products price'
+                    }
+                ],
+                translations: {
+                    matchedColumn: 'Matched column',
+                    unmatchedColumn: 'Unmatched column',
+                    edit: 'Edit',
+                    column: 'Column',
+                    skip: 'Skip',
+                    pleaseChoose: 'Please choose...'
+                }
             }
         }]).then(function() {
             app.logger.log('Aura started...');

@@ -1,3 +1,140 @@
 //
 // Matcher
 // --------------------------------------------------
+
+$matcherTransDuration: 0.3s;
+
+.husky-matcher {
+
+    .column {
+        width: 258px;
+        border-width: 2px;
+        border-style: solid;
+        border-radius: 4px;
+        display: inline-block;
+        margin-right: 20px;
+        @include single-transition(border-color, $matcherTransDuration);
+
+        .match-header {
+            height: 138px;
+            background: $white;
+            position: relative;
+            top: 0px;
+            left: 0px;
+
+            .inner {
+              width: 100%;
+              padding-left: 10px;
+              padding-right: 10px;
+              position: absolute;
+              left: 0px;
+              bottom: 20px;
+            }
+            .title {
+                display: block;
+                font-weight: bold;
+                line-height: 18px;
+            }
+            .matched-desc {
+                display: block;
+                color: $grayLight;
+                line-height: 18px;
+            }
+            .button {
+                float: left;
+                clear: both;
+                background: $grayLighter;
+                height: 30px;
+                line-height: 30px;
+                padding: 0 20px;
+                border-radius: 3px;
+                cursor: pointer;
+                margin-top: 10px;
+            }
+        }
+        .column-title {
+            height: 40px;
+            line-height: 40px;
+            font-weight: bold;
+            color: $white;
+            padding-left: 10px;
+            @include single-transition(background, $matcherTransDuration);
+        }
+        .samples span {
+            display: block;
+            height: 40px;
+            line-height: 40px;
+            padding-left: 10px;
+            @include single-transition(background, $matcherTransDuration);
+
+            &:first-child {
+                border-bottom: 1px solid $white;
+            }
+        }
+
+        &.unmatched {
+            border-color: $red;
+
+            .column-title {
+                background: $red;
+            }
+            .samples span {
+                background: $milkyRed;
+            }
+        }
+        &.matched {
+            border-color: $green;
+
+            .column-title {
+              background: $green;
+            }
+            .samples span {
+              background: $milkeyGreen;
+            }
+        }
+        &.edit {
+            border-color: $blue;
+
+            .column-title {
+              background: $blue;
+            }
+            .samples span {
+              background: $milkeyBlue;
+            }
+            .match-header {
+                .headline {
+                    color: $grayLight;
+                }
+                .ok-button {
+                    display: block;
+                    position: absolute;
+                    bottom: 0;
+                    left: 10px;
+                    width: 70px;
+                    height: 30px;
+                    line-height: 27px;
+                    margin-top: 10px;
+                }
+                .button {
+                    position: absolute;
+                    bottom: 0;
+                    right: 10px;
+                }
+                .column-dropdown {
+                    margin-bottom: 50px;
+                    margin-top: 5px;
+                }
+            }
+        }
+        &.skipped {
+            border-color: $gray;
+
+            .column-title {
+              background: $gray;
+            }
+            .samples span {
+              background: $grayLight;
+            }
+        }
+    }
+}
