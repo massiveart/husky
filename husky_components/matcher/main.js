@@ -36,7 +36,8 @@ define([], function() {
             editClass: 'edit',
             buttonClass: 'button',
             okButtonClass: 'ok-button',
-            dropdownClass: 'column-dropdown'
+            dropdownClass: 'column-dropdown',
+            dropdownInstanceClass: 'dropdown-instance'
         },
 
         templates = {
@@ -261,7 +262,7 @@ define([], function() {
                 this.startColumnDropdown(column);
 
             } else if (column.matched === true) {
-                this.sandbox.stop('.column-dropdown-instance');
+                this.stopColumnDropDown(column);
 
                 this.sandbox.dom.html(column.$header, _.template(templates.header)({
                     title: column.match.name,
@@ -269,7 +270,7 @@ define([], function() {
                     editStr: this.sandbox.translate(this.translations.edit)
                 }));
             } else if (column.matched === false) {
-                this.sandbox.stop('.column-dropdown-instance');
+                this.stopColumnDropDown(column);
 
                 this.sandbox.dom.html(column.$header, _.template(templates.header)({
                     title: (column.suggestion !== null) ? column.suggestion.name : '',
@@ -283,13 +284,22 @@ define([], function() {
         },
 
         /**
+         * Stops the dropdown-component for a given columnb
+         * @param column
+         */
+        stopColumnDropDown: function(column) {
+            this.sandbox.stop(this.sandbox.dom.find('.' + constants.dropdownInstanceClass, column.$header));
+        },
+
+        /**
          * Starts the Dropdown component for a given column
          * @param column
          */
         startColumnDropdown: function(column) {
-            var $container = this.sandbox.dom.find('.' + constants.dropdownClass, column.$header),
-                $element = $('<div class="column-dropdown-instance">'), // FIXME
+            var $element = this.sandbox.dom.$('<div class="'+ constants.dropdownInstanceClass +'">'),
                 selected = [];
+
+            this.sandbox.dom.html(this.sandbox.dom.find('.' + constants.dropdownClass, column.$header), $element);
 
             if (!!$element.length) {
                 if (column.matched === true) {
@@ -297,8 +307,6 @@ define([], function() {
                 } else if (column.suggestion !== null) {
                     selected = [column.suggestion.table + '.' + column.suggestion.col];
                 }
-
-                $container.html($element);
 
                 this.sandbox.start([
                     {
@@ -408,8 +416,10 @@ define([], function() {
          * Sets a button in matched-state
          * @param column
          */
-        switchToMatchedState: function(column) {
+        switchToMatchedState: function(column, event) {
             var selectedDbColumn;
+
+            this.sandbox.dom.preventDefault(event);
 
             this.getDropdownValue(column, function(selected) {
                 // if something is selected
@@ -420,6 +430,7 @@ define([], function() {
                         this.resetColumn(column);
                         column.matched = true;
                         column.match = selectedDbColumn;
+                        column.suggestion = selectedDbColumn;
                         this.sandbox.dom.addClass(column.$el, constants.matchedClass);
 
                         this.renderHeader(column);

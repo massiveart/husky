@@ -5,6 +5,10 @@
 $matcherTransDuration: 0.3s;
 
 .husky-matcher {
+    height: auto;
+    overflow-x: scroll;
+    white-space: nowrap;
+    padding-bottom: 15px;
 
     .column {
         width: 258px;
