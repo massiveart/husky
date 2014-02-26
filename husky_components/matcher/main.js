@@ -20,71 +20,71 @@ define([], function() {
     'use strict';
 
     var defaults = {
-        instanceName: 'undefined',
-        dbColumns: [],
-        data: null,
-        translations: {}
-    },
+            instanceName: 'undefined',
+            dbColumns: [],
+            data: null,
+            translations: {}
+        },
 
-    constants = {
-        componentClass: 'husky-matcher',
-        headerClass: 'match-header',
-        samplesClass: 'samples',
-        matchedClass: 'matched',
-        unmatchedClass: 'unmatched',
-        skippedClass: 'skipped',
-        editClass: 'edit',
-        buttonClass: 'button',
-        okButtonClass: 'ok-button',
-        dropdownClass: 'column-dropdown'
-    },
+        constants = {
+            componentClass: 'husky-matcher',
+            headerClass: 'match-header',
+            samplesClass: 'samples',
+            matchedClass: 'matched',
+            unmatchedClass: 'unmatched',
+            skippedClass: 'skipped',
+            editClass: 'edit',
+            buttonClass: 'button',
+            okButtonClass: 'ok-button',
+            dropdownClass: 'column-dropdown'
+        },
 
-    templates = {
-        column: [
-            '<div class="column">',
-                '<div class="match-header"></div>',
-                '<div class="column-title"><%= title %></div>',
-                '<div class="samples"></div>',
-            '</div>'
-        ].join(''),
-        header: [
-            '<div class="inner">',
-                '<span class="title"><%= title %></span>',
-                '<span class="matched-desc"><%= matchedStr %></span>',
-                '<div class="button"><%= editStr %></div>',
-            '</div>'
-        ].join(''),
-        editHeader: [
-            '<div class="inner">',
-                '<span class="headline"><%= columnStr %></span>',
-                '<div class="column-dropdown"></div>',
-                '<a class="icon-half-ok save-button btn btn-highlight btn-large ok-button" href="#"></a>',
-                '<div class="button"><%= skipStr %></div>',
-            '</div>'
-        ].join(''),
-        sample: [
-            '<span><%= sampleStr %></span>'
-        ].join('')
-    },
+        templates = {
+            column: [
+                '<div class="column">',
+                    '<div class="match-header"></div>',
+                    '<div class="column-title"><%= title %></div>',
+                    '<div class="samples"></div>',
+                '</div>'
+            ].join(''),
+            header: [
+                '<div class="inner">',
+                    '<span class="title"><%= title %></span>',
+                    '<span class="matched-desc"><%= matchedStr %></span>',
+                    '<div class="button"><%= editStr %></div>',
+                '</div>'
+            ].join(''),
+            editHeader: [
+                '<div class="inner">',
+                    '<span class="headline"><%= columnStr %></span>',
+                    '<div class="column-dropdown"></div>',
+                    '<a class="icon-half-ok save-button btn btn-highlight btn-large ok-button" href="#"></a>',
+                    '<div class="button"><%= skipStr %></div>',
+                '</div>'
+            ].join(''),
+            sample: [
+                '<span><%= sampleStr %></span>'
+            ].join('')
+        },
 
-    /**
-     * namespace for events
-     * @type {string}
-     */
-        eventNamespace = 'husky.matcher.',
+            /**
+             * namespace for events
+             * @type {string}
+             */
+            eventNamespace = 'husky.matcher.',
 
-    /**
-     * raised after initialization process
-     * @event husky.overlay.<instance-name>.initialize
-     */
-        INITIALIZED = function() {
-        return createEventName.call(this, 'initialized');
-    },
+            /**
+             * raised after initialization process
+             * @event husky.overlay.<instance-name>.initialize
+             */
+            INITIALIZED = function() {
+            return createEventName.call(this, 'initialized');
+        },
 
-    /** returns normalized event names */
-        createEventName = function(postFix) {
-        return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
-    };
+            /** returns normalized event names */
+            createEventName = function(postFix) {
+            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+        };
 
     return {
 
@@ -150,7 +150,7 @@ define([], function() {
                 if (typeof column.id !== 'undefined') {
                     id = column.id;
                 } else {
-                    id = Math.floor((Math.random()*10000)+1);
+                    id = Math.floor((Math.random() * 10000) + 1);
                 }
 
                 if (typeof column.samples !== 'undefined') {
@@ -240,7 +240,7 @@ define([], function() {
 
             this.sandbox.util.foreach(samples, function(sample) {
                 string += _.template(templates.sample)({
-                   sampleStr: sample
+                    sampleStr: sample
                 });
             }.bind(this));
 
@@ -252,6 +252,7 @@ define([], function() {
          * @param column
          */
         renderHeader: function(column) {
+
             if (column.inEdit === true) {
                 this.sandbox.dom.html(column.$header, _.template(templates.editHeader)({
                     columnStr: this.sandbox.translate(this.translations.column),
@@ -260,18 +261,23 @@ define([], function() {
                 this.startColumnDropdown(column);
 
             } else if (column.matched === true) {
+                this.sandbox.stop('.column-dropdown-instance');
+
                 this.sandbox.dom.html(column.$header, _.template(templates.header)({
                     title: column.match.name,
                     matchedStr: this.sandbox.translate(this.translations.matchedColumn),
                     editStr: this.sandbox.translate(this.translations.edit)
                 }));
             } else if (column.matched === false) {
+                this.sandbox.stop('.column-dropdown-instance');
+
                 this.sandbox.dom.html(column.$header, _.template(templates.header)({
                     title: (column.suggestion !== null) ? column.suggestion.name : '',
                     matchedStr: this.sandbox.translate(this.translations.unmatchedColumn),
                     editStr: this.sandbox.translate(this.translations.edit)
                 }));
             }
+
             this.unbindHeaderDomEvents(column);
             this.bindHeaderDomEvents(column);
         },
@@ -281,7 +287,8 @@ define([], function() {
          * @param column
          */
         startColumnDropdown: function(column) {
-            var $element = this.sandbox.dom.find('.' + constants.dropdownClass, column.$header),
+            var $container = this.sandbox.dom.find('.' + constants.dropdownClass, column.$header),
+                $element = $('<div class="column-dropdown-instance">'), // FIXME
                 selected = [];
 
             if (!!$element.length) {
@@ -291,18 +298,22 @@ define([], function() {
                     selected = [column.suggestion.table + '.' + column.suggestion.col];
                 }
 
-                this.sandbox.start([{
-                    name: 'dropdown-multiple-select@husky',
-                    options: {
-                        el: $element,
-                        instanceName: this.options.instanceName + column.id,
-                        defaultLabel: this.sandbox.translate(this.translations.pleaseChoose),
-                        singleSelect: true,
-                        noDeselect: true,
-                        data: this.dbColumns,
-                        preSelectedElements: selected
+                $container.html($element);
+
+                this.sandbox.start([
+                    {
+                        name: 'dropdown-multiple-select@husky',
+                        options: {
+                            el: $element,
+                            instanceName: this.options.instanceName + column.id,
+                            defaultLabel: this.sandbox.translate(this.translations.pleaseChoose),
+                            singleSelect: true,
+                            noDeselect: true,
+                            data: this.dbColumns,
+                            preSelectedElements: selected
+                        }
                     }
-                }]);
+                ]);
             } else {
                 this.sandbox.logger.log('ERROR: No container found to load the dropdown');
             }
@@ -327,13 +338,13 @@ define([], function() {
         bindHeaderDomEvents: function(column) {
             if (column.inEdit === false) {
                 this.sandbox.dom.on(column.$header, 'click',
-                                    this.switchToEdit.bind(this, column), '.' + constants.buttonClass);
+                    this.switchToEdit.bind(this, column), '.' + constants.buttonClass);
             } else {
                 this.sandbox.dom.on(column.$header, 'click',
-                                    this.switchToSkipState.bind(this, column), '.' + constants.buttonClass);
+                    this.switchToSkipState.bind(this, column), '.' + constants.buttonClass);
 
                 this.sandbox.dom.on(column.$header, 'click',
-                                    this.switchToMatchedState.bind(this, column), '.' + constants.okButtonClass);
+                    this.switchToMatchedState.bind(this, column), '.' + constants.okButtonClass);
             }
         },
 
@@ -402,7 +413,6 @@ define([], function() {
 
             this.getDropdownValue(column, function(selected) {
                 // if something is selected
-                console.log(selected);
                 if (selected.length === 1) {
                     selectedDbColumn = this.getDbColumnWithId(selected[0]);
 
