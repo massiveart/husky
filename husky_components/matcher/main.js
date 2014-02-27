@@ -254,7 +254,8 @@ define([], function() {
                     table: dbColumn.table,
                     col: dbColumn.col,
                     name: dbColumn.name,
-                    disabled: false
+                    disabled: false,
+                    multiAssign: (typeof dbColumn.multiAssign !== 'undefined') ? dbColumn.multiAssign : false
                 };
             }.bind(this));
         },
@@ -506,7 +507,10 @@ define([], function() {
                     selectedDbColumn = this.getDbColumnWithId(selected[0]);
                     // if db-column is not in use
                     if (!!selectedDbColumn && selectedDbColumn.disabled === false) {
-                        selectedDbColumn.disabled = true;
+
+                        if (selectedDbColumn.multiAssign !== true) {
+                            selectedDbColumn.disabled = true;
+                        }
 
                         this.resetColumn(column);
                         column.matched = true;
