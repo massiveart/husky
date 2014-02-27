@@ -1830,7 +1830,7 @@ define(function() {
             this.sandbox.dom.width(this.$element, finalWidth);
 
             // check scrollwidth and add class
-            if (this.$tableContainer.get(0).scrollWidth > finalWidth) {
+            if (this.sandbox.dom.get(this.$tableContainer, 0).scrollWidth > finalWidth) {
                 this.sandbox.dom.addClass(this.$tableContainer, 'overflow');
             } else {
                 this.sandbox.dom.removeClass(this.$tableContainer, 'overflow');

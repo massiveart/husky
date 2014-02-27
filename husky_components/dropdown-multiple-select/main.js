@@ -110,6 +110,7 @@ define([], function() {
 
         // generate dropDown with given items
         generateDropDown: function(items) {
+            var $item;
 
             if (items.length > 0) {
 
@@ -126,12 +127,18 @@ define([], function() {
                 } else if (typeof(items[0]) === 'object') {
                     this.sandbox.util.each(items, function(index, value) {
                         if (this.options.preSelectedElements.indexOf(value.id) >= 0) {
-                            this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, 'checked'));
+                            $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, value, this.options.valueName, 'checked'));
                             this.selectedElements.push((value.id).toString());
                             this.selectedElementsValues.push(value[this.options.valueName]);
                         } else {
-                            this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, ''));
+                            $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, value, this.options.valueName, ''));
                         }
+
+                        if (!!value.disabled && value.disabled === true) {
+                            this.sandbox.dom.addClass($item, 'disabled');
+                        }
+
+                        this.sandbox.dom.append(this.$list, $item);
                     }.bind(this));
                 }
                 this.changeLabel();
@@ -152,7 +159,12 @@ define([], function() {
             // click on single item
             this.sandbox.dom.on('#' + this.listId, 'click', function(event) {
                 this.sandbox.dom.stopPropagation(event);
-                this.clickItem(event);
+                if (this.sandbox.dom.hasClass(event.currentTarget, 'disabled') === false) {
+                    this.clickItem(event);
+                } else {
+                    this.sandbox.dom.preventDefault(event);
+                    return false;
+                }
             }.bind(this), 'li');
 
         },
@@ -210,6 +222,8 @@ define([], function() {
                     this.selectedElements.splice(index, 1);
                     this.selectedElementsValues.splice(index, 1);
                     this.sandbox.emit(this.getEventName('deselected.item'), key);
+                } else {
+                    this.sandbox.dom.prop($checkbox, 'checked', true);
                 }
 
             } else {

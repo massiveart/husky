@@ -27690,7 +27690,7 @@ define('__component__$datagrid@husky',[],function() {
             this.sandbox.dom.width(this.$element, finalWidth);
 
             // check scrollwidth and add class
-            if (this.$tableContainer.get(0).scrollWidth > finalWidth) {
+            if (this.sandbox.dom.get(this.$tableContainer, 0).scrollWidth > finalWidth) {
                 this.sandbox.dom.addClass(this.$tableContainer, 'overflow');
             } else {
                 this.sandbox.dom.removeClass(this.$tableContainer, 'overflow');
@@ -31371,6 +31371,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
 
         // generate dropDown with given items
         generateDropDown: function(items) {
+            var $item;
 
             if (items.length > 0) {
 
@@ -31387,12 +31388,18 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
                 } else if (typeof(items[0]) === 'object') {
                     this.sandbox.util.each(items, function(index, value) {
                         if (this.options.preSelectedElements.indexOf(value.id) >= 0) {
-                            this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, 'checked'));
+                            $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, value, this.options.valueName, 'checked'));
                             this.selectedElements.push((value.id).toString());
                             this.selectedElementsValues.push(value[this.options.valueName]);
                         } else {
-                            this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, ''));
+                            $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, value, this.options.valueName, ''));
                         }
+
+                        if (!!value.disabled && value.disabled === true) {
+                            this.sandbox.dom.addClass($item, 'disabled');
+                        }
+
+                        this.sandbox.dom.append(this.$list, $item);
                     }.bind(this));
                 }
                 this.changeLabel();
@@ -31413,7 +31420,12 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
             // click on single item
             this.sandbox.dom.on('#' + this.listId, 'click', function(event) {
                 this.sandbox.dom.stopPropagation(event);
-                this.clickItem(event);
+                if (this.sandbox.dom.hasClass(event.currentTarget, 'disabled') === false) {
+                    this.clickItem(event);
+                } else {
+                    this.sandbox.dom.preventDefault(event);
+                    return false;
+                }
             }.bind(this), 'li');
 
         },
@@ -31471,6 +31483,8 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
                     this.selectedElements.splice(index, 1);
                     this.selectedElementsValues.splice(index, 1);
                     this.sandbox.emit(this.getEventName('deselected.item'), key);
+                } else {
+                    this.sandbox.dom.prop($checkbox, 'checked', true);
                 }
 
             } else {
@@ -34885,71 +34899,110 @@ define('__component__$matcher@husky',[], function() {
     
 
     var defaults = {
-        instanceName: 'undefined',
-        dbColumns: [],
-        data: null,
-        translations: {}
-    },
+            instanceName: 'undefined',
+            dbColumns: [],
+            data: null,
+            translations: {}
+        },
 
-    constants = {
-        componentClass: 'husky-matcher',
-        headerClass: 'match-header',
-        samplesClass: 'samples',
-        matchedClass: 'matched',
-        unmatchedClass: 'unmatched',
-        skippedClass: 'skipped',
-        editClass: 'edit',
-        buttonClass: 'button',
-        okButtonClass: 'ok-button',
-        dropdownClass: 'column-dropdown'
-    },
+        constants = {
+            componentClass: 'husky-matcher',
+            headerClass: 'match-header',
+            samplesClass: 'samples',
+            matchedClass: 'matched',
+            unmatchedClass: 'unmatched',
+            skippedClass: 'skipped',
+            editClass: 'edit',
+            buttonClass: 'button',
+            okButtonClass: 'ok-button',
+            dropdownClass: 'column-dropdown',
+            dropdownInstanceClass: 'dropdown-instance',
+            overflowClass: 'overflow',
+            wrapperClass: 'wrapper'
+        },
 
-    templates = {
-        column: [
-            '<div class="column">',
-                '<div class="match-header"></div>',
-                '<div class="column-title"><%= title %></div>',
-                '<div class="samples"></div>',
-            '</div>'
-        ].join(''),
-        header: [
-            '<div class="inner">',
-                '<span class="title"><%= title %></span>',
-                '<span class="matched-desc"><%= matchedStr %></span>',
-                '<div class="button"><%= editStr %></div>',
-            '</div>'
-        ].join(''),
-        editHeader: [
-            '<div class="inner">',
-                '<span class="headline"><%= columnStr %></span>',
-                '<div class="column-dropdown"></div>',
-                '<a class="icon-half-ok save-button btn btn-highlight btn-large ok-button" href="#"></a>',
-                '<div class="button"><%= skipStr %></div>',
-            '</div>'
-        ].join(''),
-        sample: [
-            '<span><%= sampleStr %></span>'
-        ].join('')
-    },
+        templates = {
+            column: [
+                '<div class="column">',
+                    '<div class="match-header"></div>',
+                    '<div class="column-title"><%= title %></div>',
+                    '<div class="samples"></div>',
+                '</div>'
+            ].join(''),
+            header: [
+                '<div class="inner">',
+                    '<span class="title"><%= title %></span>',
+                    '<span class="matched-desc"><%= matchedStr %></span>',
+                    '<div class="button"><%= editStr %></div>',
+                '</div>'
+            ].join(''),
+            editHeader: [
+                '<div class="inner">',
+                    '<span class="headline"><%= columnStr %></span>',
+                    '<div class="column-dropdown"></div>',
+                    '<a class="icon-half-ok save-button btn btn-highlight btn-large ok-button" href="#"></a>',
+                    '<div class="button"><%= skipStr %></div>',
+                '</div>'
+            ].join(''),
+            sample: [
+                '<span><%= sampleStr %></span>'
+            ].join('')
+        },
 
-    /**
-     * namespace for events
-     * @type {string}
-     */
-        eventNamespace = 'husky.matcher.',
+            /**
+             * namespace for events
+             * @type {string}
+             */
+            eventNamespace = 'husky.matcher.',
 
-    /**
-     * raised after initialization process
-     * @event husky.overlay.<instance-name>.initialize
-     */
-        INITIALIZED = function() {
-        return createEventName.call(this, 'initialized');
-    },
+            /**
+             * raised after initialization process
+             * @event husky.matcher.<instance-name>.initialize
+             */
+            INITIALIZED = function() {
+            return createEventName.call(this, 'initialized');
+        },
 
-    /** returns normalized event names */
-        createEventName = function(postFix) {
-        return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
-    };
+            /**
+             * raised after a column is matched
+             * @event husky.matcher.<instance-name>.matched
+             * @param {Object} Object with column and matched db-column
+             */
+            MATCHED = function() {
+            return createEventName.call(this, 'matched');
+        },
+
+            /**
+             * raised after a column is skipped
+             * @event husky.matcher.<instance-name>.skipped
+             * @param {Object} Object with column
+             */
+            SKIPPED = function() {
+            return createEventName.call(this, 'skipped');
+        },
+
+            /**
+             * raised after a column is edited (matched or skipped)
+             * @event husky.matcher.<instance-name>.edited
+             * @param {Number} Number of remaining unmatched columns
+             */
+            EDITED = function() {
+            return createEventName.call(this, 'edited');
+        },
+
+            /**
+             * listens on
+             * @event husky.matcher.<instance-name>.get-data
+             * @param {Function} Callback to pass the array with all columns
+             */
+            GET_DATA = function() {
+            return createEventName.call(this, 'get-data');
+        },
+
+            /** returns normalized event names */
+            createEventName = function(postFix) {
+            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+        };
 
     return {
 
@@ -34964,10 +35017,15 @@ define('__component__$matcher@husky',[], function() {
             //merge options with defaults
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
+            this.$wrapper = null;
+
             this.setProperties();
             this.parseData();
 
             this.render();
+            this.bindDomEvents();
+            this.bindCustomEvents();
+            this.overflowObserver();
 
             this.sandbox.emit(INITIALIZED.call(this));
         },
@@ -34985,11 +35043,28 @@ define('__component__$matcher@husky',[], function() {
                 edit: 'sulu.matcher.edit',
                 column: 'sulu.matcher.column',
                 skip: 'sulu.matcher.skip',
+                skipped: 'sulu.matcher.skipped',
                 pleaseChoose: 'sulu.matcher.please-choose'
             };
 
             //merge translations with translations passed with options
             this.translations = this.sandbox.util.extend(true, {}, this.translations, this.options.translations);
+        },
+
+        /**
+         * Binds DOM related events
+         */
+        bindDomEvents: function() {
+            this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.overflowObserver.bind(this));
+        },
+
+        /**
+         * Binds custom events
+         */
+        bindCustomEvents: function() {
+            this.sandbox.on(GET_DATA.call(this), function(callback) {
+                callback(this.getPublicColumnsArray());
+            }.bind(this));
         },
 
         /**
@@ -35015,7 +35090,7 @@ define('__component__$matcher@husky',[], function() {
                 if (typeof column.id !== 'undefined') {
                     id = column.id;
                 } else {
-                    id = Math.floor((Math.random()*10000)+1);
+                    id = Math.floor((Math.random() * 10000) + 1);
                 }
 
                 if (typeof column.samples !== 'undefined') {
@@ -35057,7 +35132,8 @@ define('__component__$matcher@husky',[], function() {
                     id: dbColumn.table + '.' + dbColumn.col,
                     table: dbColumn.table,
                     col: dbColumn.col,
-                    name: dbColumn.name
+                    name: dbColumn.name,
+                    disabled: false
                 };
             }.bind(this));
         },
@@ -35066,6 +35142,9 @@ define('__component__$matcher@husky',[], function() {
          * Renders the columns
          */
         render: function() {
+            this.$wrapper = this.sandbox.dom.createElement('<div class="'+ constants.wrapperClass +'"/>');
+            this.sandbox.dom.html(this.$el, this.$wrapper);
+
             this.sandbox.util.foreach(this.columns, function(column, i) {
 
                 //render skeleton
@@ -35091,7 +35170,7 @@ define('__component__$matcher@husky',[], function() {
 
                 this.renderHeader(this.columns[i]);
 
-                this.sandbox.dom.append(this.$el, this.columns[i].$el);
+                this.sandbox.dom.append(this.$wrapper, this.columns[i].$el);
             }.bind(this));
         },
 
@@ -35105,7 +35184,7 @@ define('__component__$matcher@husky',[], function() {
 
             this.sandbox.util.foreach(samples, function(sample) {
                 string += _.template(templates.sample)({
-                   sampleStr: sample
+                    sampleStr: sample
                 });
             }.bind(this));
 
@@ -35117,6 +35196,7 @@ define('__component__$matcher@husky',[], function() {
          * @param column
          */
         renderHeader: function(column) {
+
             if (column.inEdit === true) {
                 this.sandbox.dom.html(column.$header, _.template(templates.editHeader)({
                     columnStr: this.sandbox.translate(this.translations.column),
@@ -35125,20 +35205,41 @@ define('__component__$matcher@husky',[], function() {
                 this.startColumnDropdown(column);
 
             } else if (column.matched === true) {
+                this.stopColumnDropDown(column);
+
                 this.sandbox.dom.html(column.$header, _.template(templates.header)({
                     title: column.match.name,
                     matchedStr: this.sandbox.translate(this.translations.matchedColumn),
                     editStr: this.sandbox.translate(this.translations.edit)
                 }));
+            } else if (column.skipped === true) {
+                this.stopColumnDropDown(column);
+
+                this.sandbox.dom.html(column.$header, _.template(templates.header)({
+                    title: (column.suggestion !== null) ? column.suggestion.name : '',
+                    matchedStr: this.sandbox.translate(this.translations.skipped),
+                    editStr: this.sandbox.translate(this.translations.edit)
+                }));
             } else if (column.matched === false) {
+                this.stopColumnDropDown(column);
+
                 this.sandbox.dom.html(column.$header, _.template(templates.header)({
                     title: (column.suggestion !== null) ? column.suggestion.name : '',
                     matchedStr: this.sandbox.translate(this.translations.unmatchedColumn),
                     editStr: this.sandbox.translate(this.translations.edit)
                 }));
             }
+
             this.unbindHeaderDomEvents(column);
             this.bindHeaderDomEvents(column);
+        },
+
+        /**
+         * Stops the dropdown-component for a given column
+         * @param column
+         */
+        stopColumnDropDown: function(column) {
+            this.sandbox.stop(this.sandbox.dom.find('.' + constants.dropdownInstanceClass, column.$header));
         },
 
         /**
@@ -35146,8 +35247,10 @@ define('__component__$matcher@husky',[], function() {
          * @param column
          */
         startColumnDropdown: function(column) {
-            var $element = this.sandbox.dom.find('.' + constants.dropdownClass, column.$header),
+            var $element = this.sandbox.dom.$('<div class="'+ constants.dropdownInstanceClass +'">'),
                 selected = [];
+
+            this.sandbox.dom.html(this.sandbox.dom.find('.' + constants.dropdownClass, column.$header), $element);
 
             if (!!$element.length) {
                 if (column.matched === true) {
@@ -35156,18 +35259,20 @@ define('__component__$matcher@husky',[], function() {
                     selected = [column.suggestion.table + '.' + column.suggestion.col];
                 }
 
-                this.sandbox.start([{
-                    name: 'dropdown-multiple-select@husky',
-                    options: {
-                        el: $element,
-                        instanceName: this.options.instanceName + column.id,
-                        defaultLabel: this.sandbox.translate(this.translations.pleaseChoose),
-                        singleSelect: true,
-                        noDeselect: true,
-                        data: this.dbColumns,
-                        preSelectedElements: selected
+                this.sandbox.start([
+                    {
+                        name: 'dropdown-multiple-select@husky',
+                        options: {
+                            el: $element,
+                            instanceName: this.options.instanceName + column.id,
+                            defaultLabel: this.sandbox.translate(this.translations.pleaseChoose),
+                            singleSelect: true,
+                            noDeselect: true,
+                            data: this.dbColumns,
+                            preSelectedElements: selected
+                        }
                     }
-                }]);
+                ]);
             } else {
                 this.sandbox.logger.log('ERROR: No container found to load the dropdown');
             }
@@ -35192,13 +35297,13 @@ define('__component__$matcher@husky',[], function() {
         bindHeaderDomEvents: function(column) {
             if (column.inEdit === false) {
                 this.sandbox.dom.on(column.$header, 'click',
-                                    this.switchToEdit.bind(this, column), '.' + constants.buttonClass);
+                    this.switchToEdit.bind(this, column), '.' + constants.buttonClass);
             } else {
                 this.sandbox.dom.on(column.$header, 'click',
-                                    this.switchToSkipState.bind(this, column), '.' + constants.buttonClass);
+                    this.switchToSkipState.bind(this, column), '.' + constants.buttonClass);
 
                 this.sandbox.dom.on(column.$header, 'click',
-                                    this.switchToMatchedState.bind(this, column), '.' + constants.okButtonClass);
+                    this.switchToMatchedState.bind(this, column), '.' + constants.okButtonClass);
             }
         },
 
@@ -35241,6 +35346,9 @@ define('__component__$matcher@husky',[], function() {
             this.removeStateClasses(column);
             column.inEdit = true;
             this.sandbox.dom.addClass(column.$el, constants.editClass);
+            if (!!column.match) {
+                column.match.disabled = false;
+            }
 
             this.renderHeader(column);
         },
@@ -35256,31 +35364,102 @@ define('__component__$matcher@husky',[], function() {
             this.sandbox.dom.addClass(column.$el, constants.skippedClass);
 
             this.renderHeader(column);
+
+            this.sandbox.emit(SKIPPED.call(this), this.getPublicColumnObject(column));
+            this.sandbox.emit(EDITED.call(this), this.getUnmatchedNumber());
+            this.updateData();
         },
 
         /**
          * Sets a button in matched-state
          * @param column
          */
-        switchToMatchedState: function(column) {
+        switchToMatchedState: function(column, event) {
             var selectedDbColumn;
+
+            this.sandbox.dom.preventDefault(event);
 
             this.getDropdownValue(column, function(selected) {
                 // if something is selected
-                console.log(selected);
                 if (selected.length === 1) {
                     selectedDbColumn = this.getDbColumnWithId(selected[0]);
+                    // if db-column is not in use
+                    if (!!selectedDbColumn && selectedDbColumn.disabled === false) {
+                        selectedDbColumn.disabled = true;
 
-                    if (selectedDbColumn !== null) {
                         this.resetColumn(column);
                         column.matched = true;
                         column.match = selectedDbColumn;
+                        column.suggestion = selectedDbColumn;
                         this.sandbox.dom.addClass(column.$el, constants.matchedClass);
 
                         this.renderHeader(column);
+
+                        this.sandbox.emit(MATCHED.call(this), this.getPublicColumnObject(column));
+                        this.sandbox.emit(EDITED.call(this), this.getUnmatchedNumber());
+                        this.updateData();
                     }
                 }
             }.bind(this));
+        },
+
+        /**
+         * Checks if el has a vertical-scrollbar and
+         * sets an overflow-css-class
+         */
+        overflowObserver: function() {
+            if (this.sandbox.dom.get(this.$wrapper, 0).scrollWidth > this.sandbox.dom.width(this.$wrapper)) {
+                this.sandbox.dom.addClass(this.$el, constants.overflowClass);
+            } else {
+                this.sandbox.dom.removeClass(this.$el, constants.overflowClass);
+            }
+        },
+
+        /**
+         * Creates the object which is passed with events or written in the data-attr
+         * @param column {Object} Column to create the object for
+         * @returns {Object}
+         */
+        getPublicColumnObject: function(column) {
+            return {
+                column: column.origData,
+                matched: column.matched,
+                skipped: column.skipped,
+                dbColumn: column.match
+            };
+        },
+
+        /**
+         * Creates the object which is passed with events or written in the data-attr
+         * @returns {Array}
+         */
+        getPublicColumnsArray: function() {
+            var arrReturn = [];
+            this.sandbox.util.foreach(this.columns, function(column) {
+                arrReturn.push(this.getPublicColumnObject(column));
+            }.bind(this));
+            return arrReturn;
+        },
+
+        /**
+         * Returns the number of unmatched columns
+         * @returns {Number}
+         */
+        getUnmatchedNumber: function() {
+            var x = 0;
+            this.sandbox.util.foreach(this.columns, function(column) {
+               if (column.matched === false && column.skipped === false) {
+                   x++;
+               }
+            });
+            return x;
+        },
+
+        /**
+         * Rewrites the data-attr
+         */
+        updateData: function() {
+            this.sandbox.dom.data(this.$el, 'husky-matcher', this.getPublicColumnsArray());
         }
     };
 
@@ -36033,6 +36212,10 @@ define('husky_extensions/collection',[],function() {
 
             app.core.dom.map = function(selector, callback) {
                 return $(selector).map(callback);
+            };
+
+            app.core.dom.get = function(selector, index) {
+                return $(selector).get(index);
             };
 
             app.core.dom.toggle = function(selector) {

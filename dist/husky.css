@@ -6090,40 +6090,51 @@ a.btn-black, a.btn-highlight {
   border: 1px solid #cccccc;
   z-index: 95;
 }
-/* line 47, ../scss/modules/dropdown-multiple-select.scss */
+/* line 48, ../scss/modules/dropdown-multiple-select.scss */
+.husky-dropdown-multiple-select .dropdown-list .disabled,
+.husky-dropdown-multiple-select .dropdown-list .disabled:hover {
+  background: none;
+  cursor: default;
+}
+/* line 51, ../scss/modules/dropdown-multiple-select.scss */
+.husky-dropdown-multiple-select .dropdown-list .disabled .item-value,
+.husky-dropdown-multiple-select .dropdown-list .disabled:hover .item-value {
+  color: #999999;
+}
+/* line 55, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list .check {
   float: left;
   width: 20px;
   margin-right: 10px;
   padding-top: 3px;
 }
-/* line 53, ../scss/modules/dropdown-multiple-select.scss */
+/* line 61, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list .item-value {
   float: left;
   line-height: 30px;
 }
-/* line 58, ../scss/modules/dropdown-multiple-select.scss */
+/* line 66, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul {
   list-style: none;
   margin: 0;
   padding: 10px 0;
 }
-/* line 63, ../scss/modules/dropdown-multiple-select.scss */
+/* line 71, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul input {
   margin: 0;
 }
-/* line 67, ../scss/modules/dropdown-multiple-select.scss */
+/* line 75, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul > li {
   padding: 0px 10px 0px 20px;
   clear: both;
   height: 30px;
 }
-/* line 73, ../scss/modules/dropdown-multiple-select.scss */
+/* line 81, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul > li:hover, .husky-dropdown-multiple-select .column-navigation-wrapper .column-navigation .column .dropdown-list > ul > li.selected, .column-navigation-wrapper .column-navigation .column .husky-dropdown-multiple-select .dropdown-list > ul > li.selected, .husky-dropdown-multiple-select .dropdown-list > ul > li.hover {
   background-color: #249fbe;
   cursor: pointer;
 }
-/* line 77, ../scss/modules/dropdown-multiple-select.scss */
+/* line 85, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul > li:hover .item-value, .husky-dropdown-multiple-select .column-navigation-wrapper .column-navigation .column .dropdown-list > ul > li.selected .item-value, .column-navigation-wrapper .column-navigation .column .husky-dropdown-multiple-select .dropdown-list > ul > li.selected .item-value {
   color: white;
 }
@@ -6657,11 +6668,28 @@ a.btn-black, a.btn-highlight {
 /* line 7, ../scss/modules/matcher.scss */
 .husky-matcher {
   height: auto;
-  overflow-x: scroll;
+  position: relative;
+  top: 0px;
+  left: 0px;
+}
+/* line 13, ../scss/modules/matcher.scss */
+.husky-matcher .wrapper {
+  overflow-x: auto;
+  width: 100%;
   white-space: nowrap;
   padding-bottom: 15px;
 }
-/* line 13, ../scss/modules/matcher.scss */
+/* line 20, ../scss/modules/matcher.scss */
+.husky-matcher.overflow .wrapper:after {
+  color: #cccccc;
+  font-size: 22px;
+  font-family: "Glyphicons";
+  content: '\e212';
+  position: absolute;
+  right: -35px;
+  top: 110px;
+}
+/* line 30, ../scss/modules/matcher.scss */
 .husky-matcher .column {
   width: 258px;
   border-width: 2px;
@@ -6674,7 +6702,11 @@ a.btn-black, a.btn-highlight {
   -o-transition: border-color 0.3s;
   transition: border-color 0.3s;
 }
-/* line 22, ../scss/modules/matcher.scss */
+/* line 39, ../scss/modules/matcher.scss */
+.husky-matcher .column:last-child {
+  margin-right: 0;
+}
+/* line 43, ../scss/modules/matcher.scss */
 .husky-matcher .column .match-header {
   height: 138px;
   background: white;
@@ -6682,7 +6714,7 @@ a.btn-black, a.btn-highlight {
   top: 0px;
   left: 0px;
 }
-/* line 29, ../scss/modules/matcher.scss */
+/* line 50, ../scss/modules/matcher.scss */
 .husky-matcher .column .match-header .inner {
   width: 100%;
   padding-left: 10px;
@@ -6691,19 +6723,19 @@ a.btn-black, a.btn-highlight {
   left: 0px;
   bottom: 20px;
 }
-/* line 37, ../scss/modules/matcher.scss */
+/* line 58, ../scss/modules/matcher.scss */
 .husky-matcher .column .match-header .title {
   display: block;
   font-weight: bold;
   line-height: 18px;
 }
-/* line 42, ../scss/modules/matcher.scss */
+/* line 63, ../scss/modules/matcher.scss */
 .husky-matcher .column .match-header .matched-desc {
   display: block;
   color: #999999;
   line-height: 18px;
 }
-/* line 47, ../scss/modules/matcher.scss */
+/* line 68, ../scss/modules/matcher.scss */
 .husky-matcher .column .match-header .button {
   float: left;
   clear: both;
@@ -6715,7 +6747,7 @@ a.btn-black, a.btn-highlight {
   cursor: pointer;
   margin-top: 10px;
 }
-/* line 59, ../scss/modules/matcher.scss */
+/* line 80, ../scss/modules/matcher.scss */
 .husky-matcher .column .column-title {
   height: 40px;
   line-height: 40px;
@@ -6727,7 +6759,7 @@ a.btn-black, a.btn-highlight {
   -o-transition: background 0.3s;
   transition: background 0.3s;
 }
-/* line 67, ../scss/modules/matcher.scss */
+/* line 88, ../scss/modules/matcher.scss */
 .husky-matcher .column .samples span {
   display: block;
   height: 40px;
@@ -6738,51 +6770,51 @@ a.btn-black, a.btn-highlight {
   -o-transition: background 0.3s;
   transition: background 0.3s;
 }
-/* line 74, ../scss/modules/matcher.scss */
+/* line 95, ../scss/modules/matcher.scss */
 .husky-matcher .column .samples span:first-child {
   border-bottom: 1px solid white;
 }
-/* line 79, ../scss/modules/matcher.scss */
+/* line 100, ../scss/modules/matcher.scss */
 .husky-matcher .column.unmatched {
   border-color: #ad0710;
 }
-/* line 82, ../scss/modules/matcher.scss */
+/* line 103, ../scss/modules/matcher.scss */
 .husky-matcher .column.unmatched .column-title {
   background: #ad0710;
 }
-/* line 85, ../scss/modules/matcher.scss */
+/* line 106, ../scss/modules/matcher.scss */
 .husky-matcher .column.unmatched .samples span {
   background: rgba(173, 7, 16, 0.3);
 }
-/* line 89, ../scss/modules/matcher.scss */
+/* line 110, ../scss/modules/matcher.scss */
 .husky-matcher .column.matched {
   border-color: #1fca23;
 }
-/* line 92, ../scss/modules/matcher.scss */
+/* line 113, ../scss/modules/matcher.scss */
 .husky-matcher .column.matched .column-title {
   background: #1fca23;
 }
-/* line 95, ../scss/modules/matcher.scss */
+/* line 116, ../scss/modules/matcher.scss */
 .husky-matcher .column.matched .samples span {
   background: rgba(31, 202, 35, 0.3);
 }
-/* line 99, ../scss/modules/matcher.scss */
+/* line 120, ../scss/modules/matcher.scss */
 .husky-matcher .column.edit {
   border-color: #2d9fbc;
 }
-/* line 102, ../scss/modules/matcher.scss */
+/* line 123, ../scss/modules/matcher.scss */
 .husky-matcher .column.edit .column-title {
   background: #2d9fbc;
 }
-/* line 105, ../scss/modules/matcher.scss */
+/* line 126, ../scss/modules/matcher.scss */
 .husky-matcher .column.edit .samples span {
   background: rgba(45, 159, 188, 0.3);
 }
-/* line 109, ../scss/modules/matcher.scss */
+/* line 130, ../scss/modules/matcher.scss */
 .husky-matcher .column.edit .match-header .headline {
   color: #999999;
 }
-/* line 112, ../scss/modules/matcher.scss */
+/* line 133, ../scss/modules/matcher.scss */
 .husky-matcher .column.edit .match-header .ok-button {
   display: block;
   position: absolute;
@@ -6793,26 +6825,26 @@ a.btn-black, a.btn-highlight {
   line-height: 27px;
   margin-top: 10px;
 }
-/* line 122, ../scss/modules/matcher.scss */
+/* line 143, ../scss/modules/matcher.scss */
 .husky-matcher .column.edit .match-header .button {
   position: absolute;
   bottom: 0;
   right: 10px;
 }
-/* line 127, ../scss/modules/matcher.scss */
+/* line 148, ../scss/modules/matcher.scss */
 .husky-matcher .column.edit .match-header .column-dropdown {
   margin-bottom: 50px;
   margin-top: 5px;
 }
-/* line 133, ../scss/modules/matcher.scss */
+/* line 154, ../scss/modules/matcher.scss */
 .husky-matcher .column.skipped {
   border-color: #666666;
 }
-/* line 136, ../scss/modules/matcher.scss */
+/* line 157, ../scss/modules/matcher.scss */
 .husky-matcher .column.skipped .column-title {
   background: #666666;
 }
-/* line 139, ../scss/modules/matcher.scss */
+/* line 160, ../scss/modules/matcher.scss */
 .husky-matcher .column.skipped .samples span {
   background: #999999;
 }
