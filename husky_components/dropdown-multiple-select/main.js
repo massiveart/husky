@@ -297,7 +297,7 @@ define([], function() {
             basicStructure: function(defaultLabel) {
                 return [
                     '<div class="husky-dropdown-multiple-select">',
-                    '    <div class="grid-row dropdown-label pointer">',
+                    '    <div class="dropdown-label pointer">',
                     '       <div class="checkbox">',
                     '           <span id="', this.labelId, '">', defaultLabel, '</span>',
                     '       </div>',
@@ -319,7 +319,7 @@ define([], function() {
 
                     return [
                         '<li data-id="', value, '">',
-                        '    <div class="grid-row">',
+                        '    <div>',
                         '        <div class="check' + hiddenClass + '">',
                         '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
                         '            <span class="custom-checkbox-icon"></span>',
@@ -333,7 +333,7 @@ define([], function() {
 
                     return [
                         '<li data-id="', value.id, '">',
-                        '    <div class="grid-row">',
+                        '    <div>',
                         '        <div class="check' + hiddenClass + '">',
                         '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
                         '            <span class="custom-checkbox-icon"></span>',

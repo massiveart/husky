@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -31713,7 +31714,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
             basicStructure: function(defaultLabel) {
                 return [
                     '<div class="husky-dropdown-multiple-select">',
-                    '    <div class="grid-row dropdown-label pointer">',
+                    '    <div class="dropdown-label pointer">',
                     '       <div class="checkbox">',
                     '           <span id="', this.labelId, '">', defaultLabel, '</span>',
                     '       </div>',
@@ -31735,7 +31736,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
 
                     return [
                         '<li data-id="', value, '">',
-                        '    <div class="grid-row">',
+                        '    <div>',
                         '        <div class="check' + hiddenClass + '">',
                         '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
                         '            <span class="custom-checkbox-icon"></span>',
@@ -31749,7 +31750,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
 
                     return [
                         '<li data-id="', value.id, '">',
-                        '    <div class="grid-row">',
+                        '    <div>',
                         '        <div class="check' + hiddenClass + '">',
                         '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
                         '            <span class="custom-checkbox-icon"></span>',
@@ -31878,26 +31879,16 @@ define('__component__$password-fields@husky',[], function() {
             return [
                 '<div class="husky-password-fields grid">',
                 '    <div class="grid-row">',
-                '        <div class="grid-col-6">',
-                '            <div class="grid-row m-height-25">',
-                '                <div class="grid-col-6">',
-                '                    <label for="',this.options.ids.inputPassword1,'">', this.options.labels.inputPassword1, '</label>',
-                '                </div>',
-                '                <div class="grid-col-6 align-right hidden" id="', this.options.ids.generateLabel, '">',
+                '        <div class="grid-col-6 form-group">',
+                '                <label for="',this.options.ids.inputPassword1,'">', this.options.labels.inputPassword1, '</label>',
+                '                <div class="align-right hidden" id="', this.options.ids.generateLabel, '">',
                 '                    <span class="icon-keys m-right-10"></span><span class="pointer">', this.options.labels.generateLabel, '</span>',
                 '                </div>',
-                '            </div>',
-                '            <div class="grid-row">',
                 '                <input class="form-element" value="', this.options.values.inputPassword1, '" type="text" id="', this.options.ids.inputPassword1, '"', (!!this.options.validation ? 'data-validation-equal="' + this.options.instanceName + '"' : ''), '/>',
-                '            </div>',
                 '        </div>',
-                '        <div class="grid-col-6">',
-                '            <div class="grid-row m-height-25">',
+                '        <div class="grid-col-6 form-group">',
                 '                <label for="',this.options.ids.inputPassword2,'">', this.options.labels.inputPassword2, '</label>',
-                '            </div>',
-                '            <div class="grid-row">',
                 '                <input class="form-element" value="', this.options.values.inputPassword2, '" type="text" id="', this.options.ids.inputPassword2, '"', (!!this.options.validation ? 'data-validation-equal="' + this.options.instanceName + '"' : ''), '/>',
-                '            </div>',
                 '        </div>',
                 '    </div>',
                 '</div>'
@@ -36203,4 +36194,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-
