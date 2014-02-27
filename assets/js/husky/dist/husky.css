@@ -3806,15 +3806,20 @@ hr.divider {
 }
 
 @media (max-width: 580px) {
-  /* line 144, ../scss/modules/grid.scss */
+  /* line 145, ../scss/modules/grid.scss */
   [class*="grid-col-"] {
     width: 100%;
     margin-top: 15px;
-    padding: 0 !important;
+    padding-left: 0;
+    padding-right: 0;
   }
-  /* line 149, ../scss/modules/grid.scss */
+  /* line 152, ../scss/modules/grid.scss */
   [class*="grid-col-"]:first-of-type {
     margin-top: 0;
+    padding-right: 0;
+  }
+  /* line 158, ../scss/modules/grid.scss */
+  [class*="grid-col-"].floating:nth-child(n) {
     padding-right: 0;
   }
 }

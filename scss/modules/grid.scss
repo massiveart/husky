@@ -141,14 +141,23 @@ $grid-padding-right: 8px;
 }
 
 @media (max-width: 580px) {
+
     [class*="grid-col-"] {
         width: 100%;
         margin-top: 15px;
-        padding: 0 !important;
+
+        padding-left: 0;
+        padding-right: 0;
 
         &:first-of-type {
             margin-top: 0;
             padding-right: 0;
+        }
+
+        &.floating {
+            &:nth-child(n) {
+                padding-right: 0;
+            }
         }
     }
 }
