@@ -1,4 +1,3 @@
-
 /*
  * This file is part of the Husky Validation.
  *
@@ -876,7 +875,7 @@ define('form/mapper',[
                             // resolve this set data
                             resolve();
                         }
-                    } else {
+                    } else if (data !== null && !$.isEmptyObject(data)) {
                         count = Object.keys(data).length;
                         $.each(data, function(key, value) {
                             // search field with mapper property
@@ -909,6 +908,8 @@ define('form/mapper',[
                                 resolve();
                             }
                         }.bind(this));
+                    } else {
+                        dfd.resolve();
                     }
 
                     return dfd.promise();
@@ -1161,10 +1162,9 @@ define('type/default',[
                     this.initialized = dfd.promise();
 
                     if (!!this.initializeSub) {
-                        this.initializeSub(dfd);
-                    } else {
-                        dfd.resolve();
+                        this.initializeSub();
                     }
+                    dfd.resolve();
                 }
             },
 
@@ -1327,9 +1327,7 @@ define('type/decimal',[
             },
 
             typeInterface = {
-                initializeSub: function(dfd) {
-                    // TODO internationalization
-                    dfd.resolve();
+                initializeSub: function() {
                 },
 
                 validate: function() {
@@ -2099,3 +2097,4 @@ define('validator/regex',[
     };
 
 });
+

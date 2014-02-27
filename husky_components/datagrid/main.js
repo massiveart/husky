@@ -292,14 +292,9 @@ define(function() {
             this.data = null;
             this.allItemIds = [];
             this.selectedItemIds = [];
-
-            this.selectedDomIds = [];
-            this.changedData = {};
             this.rowStructure = [];
 
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
-
-
 
             if (!!this.options.contentContainer) {
                 this.originalMaxWidth = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
@@ -853,7 +848,6 @@ define(function() {
         resetItemSelection: function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
-            this.selectedDomIds = [];
         },
 
         /**
@@ -938,7 +932,6 @@ define(function() {
                     .prop('checked', false);
 
                 this.selectedItemIds = [];
-                this.selectedDomIds = [];
                 this.sandbox.emit(ALL_DESELECT, null);
 
             } else {
@@ -957,10 +950,13 @@ define(function() {
          * @param row
          */
         addRow: function(row) {
-            var $table, $row, $editableFields;
+            var $table, $row, $firstInputField;
             // check for other element types when implemented
             $table = this.$element.find('table');
-            $row = this.prepareTableRow(row, true);
+            $row = this.sandbox.dom.$(this.prepareTableRow(row, true));
+
+            // when unsaved new row exists - save it
+            this.prepareSave();
 
             // prepend or append row
             if (!!this.options.addRowTop) {
@@ -969,10 +965,17 @@ define(function() {
                 this.sandbox.dom.append($table, $row);
             }
 
+            $firstInputField = this.sandbox.dom.find('input[type=text]', $row)[0];
+            this.sandbox.dom.focus($firstInputField);
+
+            if(!!this.options.editable) {
+                this.lastFocusedRow = this.getInputValuesOfRow($row);
+            }
+
             // TODO fix validation for new rows
-            if (!!this.options.validation) {
+//            if (!!this.options.validation) {
                 // add new row to validation context and add contraints to element
-                $editableFields = this.sandbox.dom.find('input[type=text]', $row);
+//                $editableFields = this.sandbox.dom.find('input[type=text]', $row);
 
 //                this.sandbox.util.foreach($editableFields, function($el, i) {
 //                    this.sandbox.form.addField('#' + this.elId, $el);
@@ -983,7 +986,7 @@ define(function() {
 //                    }
 //                }.bind(this));
 
-            }
+//            }
         },
 
         /**
@@ -1030,7 +1033,6 @@ define(function() {
 
             domId = this.sandbox.dom.data($tblRow, 'dom-id');
 
-
             // remove row elements from validation
             if (!!this.options.validation) {
                 $editableElements = this.sandbox.dom.find('.editable', $tblRow);
@@ -1043,6 +1045,12 @@ define(function() {
 
             if (idx >= 0) {
                 this.selectedItemIds.splice(idx, 1);
+            }
+
+            idx = this.allItemIds.indexOf(id);
+
+            if (idx >= 0) {
+                this.allItemIds.splice(idx, 1);
             }
 
             this.sandbox.emit(ROW_REMOVED, event);
@@ -1242,14 +1250,18 @@ define(function() {
             if (!!this.options.editable) {
                 this.sandbox.dom.on(this.$el, 'click', this.editCellValues.bind(this), '.editable');
 
-                // does not work with focus - causes endless loop in some cases
+                // does not work with focus - causes endless loop in some cases (husky-validation?)
                 this.sandbox.dom.on(this.$el, 'click', this.focusOnRow.bind(this), 'tr');
 
                 this.sandbox.dom.on(this.$el, 'click', function(event) {
                     event.stopPropagation();
                 }, 'tr');
 
-                this.sandbox.dom.on(window, 'click', this.prepareSave.bind(this));
+                this.sandbox.dom.on(window, 'click', function(){
+                    if(!!this.lastFocusedRow) {
+                        this.prepareSave();
+                    }
+                }.bind(this));
             }
 
             this.sandbox.dom.on(this.sandbox.dom.window, 'resize', this.windowResizeListener.bind(this));
@@ -1288,10 +1300,49 @@ define(function() {
             var $target = event.currentTarget,
                 $input = this.sandbox.dom.next($target, 'input');
 
+            this.lockWidthsOfColumns(this.sandbox.dom.find('table th', this.$el));
+
             this.sandbox.dom.hide($target);
             this.sandbox.dom.removeClass($input, 'hidden');
             $input[0].select();
+        },
 
+        /**
+         * Makes the widths of columns fixed when the table is in edit mode
+         * prevents changes in column width
+         * @param $th array of th elements
+         */
+        lockWidthsOfColumns: function($th) {
+
+            var width, minwidth;
+            this.columnWidths = [];
+
+            this.sandbox.dom.each($th, function(index, $el) {
+                minwidth = this.sandbox.dom.css($el, 'min-width');
+                this.columnWidths.push(minwidth);
+
+                width = this.sandbox.dom.outerWidth($el);
+                this.sandbox.dom.css($el, 'min-width', width);
+                this.sandbox.dom.css($el, 'max-width', width);
+                this.sandbox.dom.css($el, 'width', width);
+            }.bind(this));
+        },
+
+        /**
+         * Resets the min-width of columns and
+         * @param $th array of th elements
+         */
+        unlockWidthsOfColumns: function($th) {
+            if (!!this.columnWidths) {
+                this.sandbox.dom.each($th, function(index, $el) {
+                    // skip columns without data-attribute because the have min/max and normal widths by default
+                    if (!!this.sandbox.dom.data($el, 'attribute')) {
+                        this.sandbox.dom.css($el, 'min-width', this.columnWidths[index]);
+                        this.sandbox.dom.css($el, 'max-width', '');
+                        this.sandbox.dom.css($el, 'width', '');
+                    }
+                }.bind(this));
+            }
         },
 
         /**
@@ -1407,8 +1458,10 @@ define(function() {
             if (!!this.lastFocusedRow && this.lastFocusedRow.domId !== domId) { // new focus
                 this.prepareSave();
                 this.lastFocusedRow = this.getInputValuesOfRow($tr);
+                this.sandbox.logger.log("focused "+this.lastFocusedRow.domId+ " now!");
             } else if (!this.lastFocusedRow) { // first focus
                 this.lastFocusedRow = this.getInputValuesOfRow($tr);
+                this.sandbox.logger.log("focused "+this.lastFocusedRow.domId+ " now!");
             }
         },
 
@@ -1422,7 +1475,7 @@ define(function() {
             var id = this.sandbox.dom.data($tr, 'id'),
                 domId = this.sandbox.dom.data($tr, 'dom-id'),
                 $inputs = this.sandbox.dom.find('input[type=text]', $tr),
-                fields = [], field, $td;
+                fields = [], field, $td, valuesNotEmpty = true;
 
             this.sandbox.dom.each($inputs, function(index, $input) {
                 $td = this.sandbox.dom.parent($input, 'td');
@@ -1447,6 +1500,8 @@ define(function() {
 
             if (!!this.lastFocusedRow) {
 
+                this.sandbox.logger.warn("lastFocusedRow "+this.lastFocusedRow.domId);
+
                 var $tr = this.sandbox.dom.find('tr[data-dom-id=' + this.lastFocusedRow.domId + ']', this.$el),
                     lastFocusedRowCurrentData = this.getInputValuesOfRow($tr),
 
@@ -1454,20 +1509,24 @@ define(function() {
                     key,
                     url,
                     isValid = true,
-                    valuesChanged = false;
+                    valuesChanged = false,
+                    isDataEmpty;
 
                 this.sandbox.logger.log("try to save data now ....");
 
                 data.id = lastFocusedRowCurrentData.id;
 
-                // TODO there seems to be a bug when an invalid field is ignored by the user and he visits more than one other row
+                this.sandbox.logger.warn("lastFocusedRowCurrentData "+lastFocusedRowCurrentData.domId);
+
                 // validate locally
                 if (!!this.options.validation && !this.sandbox.form.validate('#' + this.elId)) {
                     isValid = false;
                 }
 
+                isDataEmpty = this.isDataRowEmpty(lastFocusedRowCurrentData.fields);
 
-                if (!!isValid) {
+                // do nothing when data is not valid or no data exists
+                if (!!isValid && !isDataEmpty) {
 
                     // check which values changed and remember these
                     for (key in lastFocusedRowCurrentData.fields) {
@@ -1479,6 +1538,8 @@ define(function() {
 
                     // trigger save action when data changed
                     if (!!valuesChanged) {
+
+                        this.sandbox.logger.warn("data changed!");
 
                         this.sandbox.emit(DATA_CHANGED);
                         url = this.getUrlWithoutParams();
@@ -1492,6 +1553,9 @@ define(function() {
                             this.save(data, 'POST', url, $tr, this.lastFocusedRow.domId);
                         }
 
+                        // reset last focused row after save
+                        this.lastFocusedRow = null;
+
                     } else if (this.errorInRow.indexOf(this.lastFocusedRow.domId) !== -1) {
                         this.sandbox.logger.log("Error in table row!");
 
@@ -1499,13 +1563,32 @@ define(function() {
                         // nothing changed - reset immediately
                         this.sandbox.logger.log("No data changed!");
                         this.resetRowInputFields($tr);
+                        this.unlockWidthsOfColumns(this.sandbox.dom.find('table th', this.$el));
                     }
 
                 } else {
-                    this.sandbox.logger.log("There seems to be some invalid data!");
+                    this.sandbox.logger.log("There seems to be some invalid or empty data!");
                 }
 
             }
+        },
+
+        /**
+         * Checks wether data is in row or not
+         * @param data fields object
+         */
+        isDataRowEmpty: function(data){
+
+            var isEmpty = true, field;
+
+            for (field in data) {
+                if(data[field] !== ''){
+                    isEmpty = false;
+                    break;
+                }
+            }
+
+            return isEmpty;
         },
 
 
@@ -1527,6 +1610,8 @@ define(function() {
          * @param data
          * @param method
          * @param url
+         * @param $tr
+         * @param domId
          */
         save: function(data, method, url, $tr, domId) {
 
@@ -1546,6 +1631,7 @@ define(function() {
                     this.sandbox.emit(DATA_SAVED, data, textStatus);
                     this.hideLoadingIconForRow($tr);
                     this.resetRowInputFields($tr);
+                    this.unlockWidthsOfColumns(this.sandbox.dom.find('table th', this.$el));
 
                     // set new returned data
                     this.setDataForRow($tr[0], data);
@@ -1584,6 +1670,7 @@ define(function() {
 
             // set id
             this.sandbox.dom.data($tr, 'id', data.id);
+            this.sandbox.dom.attr($tr, 'data-id', data.id);
 
             this.sandbox.util.each(this.sandbox.dom.find('td', $tr), function(index, $el) {
 

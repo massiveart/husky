@@ -379,6 +379,10 @@
                 $(selector).unbind(eventType);
             };
 
+            app.core.dom.focus = function(selector){
+              $(selector).focus();
+            };
+
             app.core.util.ajax = $.ajax;
         }
     });
