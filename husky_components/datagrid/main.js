@@ -1033,7 +1033,6 @@ define(function() {
 
             domId = this.sandbox.dom.data($tblRow, 'dom-id');
 
-
             // remove row elements from validation
             if (!!this.options.validation) {
                 $editableElements = this.sandbox.dom.find('.editable', $tblRow);
@@ -1046,6 +1045,12 @@ define(function() {
 
             if (idx >= 0) {
                 this.selectedItemIds.splice(idx, 1);
+            }
+
+            idx = this.allItemIds.indexOf(id);
+
+            if (idx >= 0) {
+                this.allItemIds.splice(idx, 1);
             }
 
             this.sandbox.emit(ROW_REMOVED, event);
@@ -1605,6 +1610,8 @@ define(function() {
          * @param data
          * @param method
          * @param url
+         * @param $tr
+         * @param domId
          */
         save: function(data, method, url, $tr, domId) {
 
@@ -1663,6 +1670,7 @@ define(function() {
 
             // set id
             this.sandbox.dom.data($tr, 'id', data.id);
+            this.sandbox.dom.attr($tr, 'data-id', data.id);
 
             this.sandbox.util.each(this.sandbox.dom.find('td', $tr), function(index, $el) {
 
