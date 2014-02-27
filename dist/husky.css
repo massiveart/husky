@@ -5001,51 +5001,55 @@ table {
   border-bottom: 1px solid #cccccc;
   height: 50px;
 }
-/* line 25, ../scss/modules/tables.scss */
+/* line 26, ../scss/modules/tables.scss */
+.table thead tr {
+  height: 30px;
+}
+/* line 30, ../scss/modules/tables.scss */
 .table thead th {
   vertical-align: bottom;
   color: #999999;
   font-size: 16px;
 }
-/* line 30, ../scss/modules/tables.scss */
+/* line 35, ../scss/modules/tables.scss */
 .table thead th a {
   color: black;
   text-decoration: none;
 }
-/* line 34, ../scss/modules/tables.scss */
+/* line 39, ../scss/modules/tables.scss */
 .table thead th a .selected {
   font-weight: bold;
 }
-/* line 41, ../scss/modules/tables.scss */
+/* line 46, ../scss/modules/tables.scss */
 .table thead tr {
   border-bottom: 2px solid #999999;
 }
-/* line 47, ../scss/modules/tables.scss */
+/* line 52, ../scss/modules/tables.scss */
 .table tbody td {
   vertical-align: middle;
   font-family: Helvetica, Arial;
 }
-/* line 54, ../scss/modules/tables.scss */
+/* line 59, ../scss/modules/tables.scss */
 .table.is-selectable tr {
   cursor: pointer;
 }
-/* line 56, ../scss/modules/tables.scss */
+/* line 61, ../scss/modules/tables.scss */
 .table.is-selectable tr:hover > td {
   background-color: #fff;
 }
-/* line 61, ../scss/modules/tables.scss */
+/* line 66, ../scss/modules/tables.scss */
 .table.is-selectable thead tr {
   cursor: auto;
 }
-/* line 67, ../scss/modules/tables.scss */
+/* line 72, ../scss/modules/tables.scss */
 .table .thumb {
   text-align: center;
 }
-/* line 70, ../scss/modules/tables.scss */
+/* line 75, ../scss/modules/tables.scss */
 .table .thumb img {
   vertical-align: middle;
 }
-/* line 75, ../scss/modules/tables.scss */
+/* line 80, ../scss/modules/tables.scss */
 .table .remove-row {
   text-align: center;
 }
