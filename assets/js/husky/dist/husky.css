@@ -769,17 +769,17 @@ h3,
 h4,
 h5,
 h6 {
-  margin: 10px 0 40px 0;
   font-family: inherit;
   font-weight: normal;
   color: #999999;
 }
 
-/* line 27, ../scss/typo.scss */
+/* line 26, ../scss/typo.scss */
 h1 {
   color: #249fbe;
   font-size: 36px;
   line-height: 40px;
+  margin: 10px 0 40px 0;
 }
 
 /* line 33, ../scss/typo.scss */
@@ -5093,6 +5093,27 @@ a.btn-black, a.btn-highlight {
 .btn-gray {
   background-color: #cccccc;
   color: #000;
+}
+
+/* line 46, ../scss/modules/btns.scss */
+.addButton {
+  border-radius: 3px;
+  display: inline-block;
+  font-size: 12px;
+  color: white;
+  background-color: #249fbe;
+  padding: 0 10px;
+  height: 20px;
+  line-height: 20px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+/* line 58, ../scss/modules/btns.scss */
+.addButton:before {
+  content: '\e191';
+  font-family: "Glyphicons";
+  font-size: 10px;
+  padding-right: 5px;
 }
 
 /* line 7, ../scss/modules/pagination.scss */
