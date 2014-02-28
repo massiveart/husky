@@ -27720,6 +27720,7 @@ define('__component__$datagrid@husky',[],function() {
         windowResizeListener: function() {
 
             var finalWidth,
+                contentPaddings = 0,
                 content = !!this.options.contentContainer ? this.options.contentContainer : this.$el,
                 tableWidth = this.sandbox.dom.width(this.$table),
                 tableOffset = this.sandbox.dom.offset(this.$table),
@@ -27734,10 +27735,11 @@ define('__component__$datagrid@husky',[],function() {
             if (!!this.options.contentContainer) {
                 // get original max-width and right margin
                 originalMaxWidth = this.originalMaxWidth;
+                contentPaddings = this.contentPaddings;
             }
 
             // if table is greater than max content width
-            if (tableWidth > originalMaxWidth && contentWidth < windowWidth - tableOffset.left) {
+            if (tableWidth > originalMaxWidth - contentPaddings && contentWidth < windowWidth - tableOffset.left) {
                 // adding this class, forces table cells to shorten long words
                 this.sandbox.dom.addClass(this.$element, 'oversized');
                 overlaps = true;
@@ -27764,7 +27766,7 @@ define('__component__$datagrid@husky',[],function() {
 
             // if contentContainer is set, adapt maximum size
             if (!!this.options.contentContainer) {
-                this.sandbox.dom.css(this.options.contentContainer, 'max-width', finalWidth + this.contentPaddings);
+                this.sandbox.dom.css(this.options.contentContainer, 'max-width', finalWidth + contentPaddings);
                 finalWidth = this.sandbox.dom.width(this.options.contentContainer);
                 if (!overlaps) {
                     // if table does not overlap border, set content to original width
