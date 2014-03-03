@@ -136,7 +136,7 @@ define([], function() {
 
         /**
          * Returns the id of the options.value object
-         * @returns {Integer}
+         * @returns {Integer|null}
          */
         getValueID: function() {
             if (!!this.options.value) {
@@ -386,6 +386,7 @@ define([], function() {
             }.bind(this), '.disabled');
 
             this.sandbox.dom.on(this.$valueField, 'blur', function() {
+
                 //don't do anything if the dropdown is clicked on
                 if (this.executeBlurHandler === true) {
                     if (this.options.emptyOnBlur === false) {
@@ -395,6 +396,16 @@ define([], function() {
                     }
                 } else {
                     this.executeBlurHandler = true;
+                }
+
+            }.bind(this));
+
+            this.sandbox.dom.on(this.$valueField, 'focusout', function() {
+
+                // clear data attribute when input is empty
+                if (this.sandbox.dom.val(this.$valueField) === '') {
+                    this.sandbox.dom.data(this.$valueField, 'id', 'null');
+                    this.sandbox.logger.log("autocomplete data-id empty:", this.sandbox.dom.data(this.$valueField, 'id'));
                 }
             }.bind(this));
         },
