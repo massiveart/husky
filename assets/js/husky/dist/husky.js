@@ -26838,7 +26838,7 @@ define('__component__$datagrid@husky',[],function() {
          * @param row
          */
         addRow: function(row) {
-            var $table, $row, $firstInputField;
+            var $table, $row, $firstInputField, $checkbox;
             // check for other element types when implemented
             $table = this.$element.find('table');
             $row = this.sandbox.dom.$(this.prepareTableRow(row, true));
@@ -26878,7 +26878,7 @@ define('__component__$datagrid@husky',[],function() {
 
             // if allchecked then disable top checkbox after adding new row
             if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
-                var $checkbox = this.sandbox.dom.find('#select-all', this.$el);
+                $checkbox = this.sandbox.dom.find('#select-all', this.$el);
                 if (this.sandbox.dom.hasClass($checkbox, 'is-selected')) {
                     this.sandbox.dom.prop($checkbox, 'checked', false);
                     this.sandbox.dom.removeClass($checkbox, 'is-selected');
@@ -27481,11 +27481,7 @@ define('__component__$datagrid@husky',[],function() {
          * @param data
          * @param method
          * @param url
-<<<<<<< HEAD
          * @param $tr table row
-=======
-         * @param $tr
->>>>>>> ead8c235d6773e1b06d6a01b00dd5ff0ab966b74
          * @param domId
          */
         save: function(data, method, url, $tr, domId) {
