@@ -27481,7 +27481,11 @@ define('__component__$datagrid@husky',[],function() {
          * @param data
          * @param method
          * @param url
+<<<<<<< HEAD
          * @param $tr table row
+=======
+         * @param $tr
+>>>>>>> ead8c235d6773e1b06d6a01b00dd5ff0ab966b74
          * @param domId
          */
         save: function(data, method, url, $tr, domId) {
@@ -27541,6 +27545,7 @@ define('__component__$datagrid@husky',[],function() {
 
             // set id
             this.sandbox.dom.data($tr, 'id', data.id);
+            this.sandbox.dom.attr($tr, 'data-id', data.id);
 
             this.sandbox.util.each(this.sandbox.dom.find('td', $tr), function(index, $el) {
 
@@ -31729,7 +31734,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
             basicStructure: function(defaultLabel) {
                 return [
                     '<div class="husky-dropdown-multiple-select">',
-                    '    <div class="grid-row dropdown-label pointer">',
+                    '    <div class="dropdown-label pointer">',
                     '       <div class="checkbox">',
                     '           <span id="', this.labelId, '">', defaultLabel, '</span>',
                     '       </div>',
@@ -31751,7 +31756,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
 
                     return [
                         '<li data-id="', value, '">',
-                        '    <div class="grid-row">',
+                        '    <div>',
                         '        <div class="check' + hiddenClass + '">',
                         '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
                         '            <span class="custom-checkbox-icon"></span>',
@@ -31765,7 +31770,7 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
 
                     return [
                         '<li data-id="', value.id, '">',
-                        '    <div class="grid-row">',
+                        '    <div>',
                         '        <div class="check' + hiddenClass + '">',
                         '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
                         '            <span class="custom-checkbox-icon"></span>',
@@ -31894,26 +31899,16 @@ define('__component__$password-fields@husky',[], function() {
             return [
                 '<div class="husky-password-fields grid">',
                 '    <div class="grid-row">',
-                '        <div class="grid-col-6">',
-                '            <div class="grid-row m-height-25">',
-                '                <div class="grid-col-6">',
-                '                    <label for="',this.options.ids.inputPassword1,'">', this.options.labels.inputPassword1, '</label>',
-                '                </div>',
-                '                <div class="grid-col-6 align-right hidden" id="', this.options.ids.generateLabel, '">',
+                '        <div class="grid-col-6 form-group">',
+                '                <label for="',this.options.ids.inputPassword1,'">', this.options.labels.inputPassword1, '</label>',
+                '                <div class="align-right hidden" id="', this.options.ids.generateLabel, '">',
                 '                    <span class="icon-keys m-right-10"></span><span class="pointer">', this.options.labels.generateLabel, '</span>',
                 '                </div>',
-                '            </div>',
-                '            <div class="grid-row">',
                 '                <input class="form-element" value="', this.options.values.inputPassword1, '" type="text" id="', this.options.ids.inputPassword1, '"', (!!this.options.validation ? 'data-validation-equal="' + this.options.instanceName + '"' : ''), '/>',
-                '            </div>',
                 '        </div>',
-                '        <div class="grid-col-6">',
-                '            <div class="grid-row m-height-25">',
+                '        <div class="grid-col-6 form-group">',
                 '                <label for="',this.options.ids.inputPassword2,'">', this.options.labels.inputPassword2, '</label>',
-                '            </div>',
-                '            <div class="grid-row">',
                 '                <input class="form-element" value="', this.options.values.inputPassword2, '" type="text" id="', this.options.ids.inputPassword2, '"', (!!this.options.validation ? 'data-validation-equal="' + this.options.instanceName + '"' : ''), '/>',
-                '            </div>',
                 '        </div>',
                 '    </div>',
                 '</div>'

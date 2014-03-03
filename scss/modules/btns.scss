@@ -43,3 +43,22 @@ a.btn-black, a.btn-highlight {
 }
 
 
+.addButton {
+    border-radius: 3px;
+    display: inline-block;
+    font-size: 12px;
+    color: white;
+    background-color: $highlightColor;
+    padding: 0 10px;
+    height: 20px;
+    line-height: 20px;
+    vertical-align: middle;
+    cursor: pointer;
+
+    &:before {
+        content: '\e191';
+        font-family: $baseIconFont;
+        font-size: 10px;
+        padding-right: 5px;
+    }
+}

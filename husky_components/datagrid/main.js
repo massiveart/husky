@@ -1623,7 +1623,11 @@ define(function() {
          * @param data
          * @param method
          * @param url
+<<<<<<< HEAD
          * @param $tr table row
+=======
+         * @param $tr
+>>>>>>> ead8c235d6773e1b06d6a01b00dd5ff0ab966b74
          * @param domId
          */
         save: function(data, method, url, $tr, domId) {
@@ -1683,6 +1687,7 @@ define(function() {
 
             // set id
             this.sandbox.dom.data($tr, 'id', data.id);
+            this.sandbox.dom.attr($tr, 'data-id', data.id);
 
             this.sandbox.util.each(this.sandbox.dom.find('td', $tr), function(index, $el) {
 
