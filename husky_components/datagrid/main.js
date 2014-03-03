@@ -245,6 +245,7 @@ define(function() {
          * calculates the width of a text by creating a tablehead element and measure its width
          * @param text
          * @param classArray
+         * @param isSortable
          */
             getTextWidth = function(text, classArray, isSortable) {
 
@@ -781,6 +782,7 @@ define(function() {
          * @param key attribute name
          * @param value attribute value
          * @param editable flag whether field is editable or not
+         * @param validation information for field
          * @param triggeredByAddRow triggered trough add row
          * @param index
          */
@@ -1495,7 +1497,7 @@ define(function() {
             var id = this.sandbox.dom.data($tr, 'id'),
                 domId = this.sandbox.dom.data($tr, 'dom-id'),
                 $inputs = this.sandbox.dom.find('input[type=text]', $tr),
-                fields = [], field, $td, valuesNotEmpty = true;
+                fields = [], field, $td;
 
             this.sandbox.dom.each($inputs, function(index, $input) {
                 $td = this.sandbox.dom.parent($input, 'td');
@@ -1514,7 +1516,6 @@ define(function() {
 
         /**
          * Perparse to save new/changed data includes validation
-         * @param event
          */
         prepareSave: function() {
 
@@ -1622,6 +1623,8 @@ define(function() {
          * @param data
          * @param method
          * @param url
+         * @param $tr table row
+         * @param domId
          */
         save: function(data, method, url, $tr, domId) {
 
@@ -1961,8 +1964,7 @@ define(function() {
         getSelectedItemsIds: function(callback) {
 
             // get selected items
-            var $checkboxes = this.sandbox.dom.find('input[type=checkbox]:checked', this.$el),
-                ids = this.getIdsOfSelectedRows(), id;
+            var ids = this.getIdsOfSelectedRows();
 
             if (typeof callback === 'function') {
                 callback(ids);
