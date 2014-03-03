@@ -30511,6 +30511,10 @@ define('__component__$auto-complete@husky',[], function() {
                     this.checkMatches(this.getValueFieldValue(), callback, true);
                 }
             }.bind(this));
+
+            this.sandbox.on('husky.auto-complete.'+this.options.instanceName+'.select', function(data) {
+                this.selectedElement = data;
+            }.bind(this));
         },
 
         /**
@@ -30581,12 +30585,11 @@ define('__component__$auto-complete@husky',[], function() {
 
             }.bind(this));
 
+            // clear data attribute when input is empty
             this.sandbox.dom.on(this.$valueField, 'focusout', function() {
-
-                // clear data attribute when input is empty
                 if (this.sandbox.dom.val(this.$valueField) === '') {
                     this.sandbox.dom.data(this.$valueField, 'id', 'null');
-                    this.sandbox.logger.warn("data-id empty:", this.sandbox.dom.data(this.$valueField, 'id'));
+                    this.sandbox.logger.log("autocomplete data-id empty:", this.sandbox.dom.data(this.$valueField, 'id'));
                 }
             }.bind(this));
         },
@@ -30595,7 +30598,10 @@ define('__component__$auto-complete@husky',[], function() {
          * Gets called when the input box triggers the blur event
          */
         handleBlur: function() {
-            if (this.options.noNewValues === true) {
+
+            if(!!this.selectedElement){ // selected via dropdown
+                this.selectedElement = null;
+            } else if (this.options.noNewValues === true) {
                 //check input matches an auto-complete suggestion
                 if (this.isMatched() === true && this.getClosestMatch() !== null) {
                     //set value o field to the closes match
