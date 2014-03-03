@@ -30641,7 +30641,6 @@ define('__component__$auto-complete@husky',[], function() {
         checkMatches: function(string, callback, exactly) {
             var delimiter = (this.options.remoteUrl.indexOf('?') === -1) ? '?' : '&';
             this.sandbox.emit(REQUEST_MATCH.call(this));
-            console.log(this.options.remoteUrl + delimiter + this.options.getParameter + '=' + string);
             this.sandbox.util.ajax({
                 url: this.options.remoteUrl + delimiter + this.options.getParameter + '=' + string,
 
@@ -30740,7 +30739,6 @@ define('__component__$auto-complete@husky',[], function() {
          */
         handleData: function(data) {
             if (typeof data === 'object') {
-                console.log(typeof data, 'data');
                 this.total = data[this.options.totalKey];
                 this.data = [];
 
