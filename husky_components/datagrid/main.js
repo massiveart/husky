@@ -1015,6 +1015,15 @@ define(function() {
 //                }.bind(this));
 
 //            }
+
+            // if allchecked then disable top checkbox after adding new row
+            if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
+                var $checkbox = this.sandbox.dom.find('#select-all',this.$el);
+                if(this.sandbox.dom.hasClass($checkbox, 'is-selected')){
+                    this.sandbox.dom.prop($checkbox, 'checked', false);
+                    this.sandbox.dom.removeClass($checkbox,  'is-selected');
+                }
+            }
         },
 
         /**
@@ -1970,7 +1979,7 @@ define(function() {
 
             removeRow: function() {
                 return [
-                    '<span class="icon-remove"></span>'
+                    '<span class="icon-remove pointer"></span>'
                 ].join('');
             },
 
