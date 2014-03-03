@@ -129,6 +129,7 @@
     .group {
         display: inline-block;
         font-size: 14px;
+        position: relative;
     }
 
     button {
@@ -170,6 +171,10 @@
             color: #FFF;
             background-color: $highlightColor;
             border-color: $highlightColor;
+
+            &.dropdown-toggle:after {
+                border-top-color: #fff;
+            }
 
             &:hover {
                 @include background-and-border(lighten($highlightColor, 3%));
