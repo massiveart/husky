@@ -931,22 +931,22 @@ define(function() {
             event.stopPropagation();
 
             var $headCheckbox = this.sandbox.dom.find('th input[type="checkbox"]', this.$el)[0],
-                $checkboxes = this.sandbox.dom.find('input[type="checkbox"]',this.$el),
+                $checkboxes = this.sandbox.dom.find('input[type="checkbox"]', this.$el),
                 selectedElements,
                 tmp;
 
-            if (this.sandbox.dom.prop($headCheckbox,'checked') === false) {
+            if (this.sandbox.dom.prop($headCheckbox, 'checked') === false) {
                 this.sandbox.dom.prop($checkboxes, 'checked', false);
-                this.sandbox.dom.removeClass($checkboxes,  'is-selected');
+                this.sandbox.dom.removeClass($checkboxes, 'is-selected');
                 this.sandbox.emit(ALL_DESELECT);
             } else {
                 this.sandbox.dom.prop($checkboxes, 'checked', true);
-                this.sandbox.dom.addClass($checkboxes,  'is-selected');
+                this.sandbox.dom.addClass($checkboxes, 'is-selected');
                 this.sandbox.emit(ALL_SELECT, this.getIdsOfSelectedRows());
             }
 
-            tmp = this.sandbox.dom.find('input[type="checkbox"]:checked',this.$el).length-1;
-            selectedElements =  tmp > 0 ? tmp : 0;
+            tmp = this.sandbox.dom.find('input[type="checkbox"]:checked', this.$el).length - 1;
+            selectedElements = tmp > 0 ? tmp : 0;
 
             this.sandbox.emit(NUMBER_SELECTIONS, selectedElements);
         },
@@ -955,16 +955,16 @@ define(function() {
         /**
          * Returns an array with the ids of the selected rows
          */
-        getIdsOfSelectedRows: function(){
+        getIdsOfSelectedRows: function() {
             var $checkboxes = this.sandbox.dom.find('input[type=checkbox]:checked', this.$el),
                 ids = [],
                 id,
                 $tr;
 
-            this.sandbox.util.each($checkboxes, function(index, $checkbox){
+            this.sandbox.util.each($checkboxes, function(index, $checkbox) {
                 $tr = this.sandbox.dom.closest($checkbox, 'tr');
                 id = this.sandbox.dom.data($tr, 'id');
-                if(!!id){
+                if (!!id) {
                     ids.push(id);
                 }
 
@@ -996,13 +996,13 @@ define(function() {
             $firstInputField = this.sandbox.dom.find('input[type=text]', $row)[0];
             this.sandbox.dom.focus($firstInputField);
 
-            if(!!this.options.editable) {
+            if (!!this.options.editable) {
                 this.lastFocusedRow = this.getInputValuesOfRow($row);
             }
 
             // TODO fix validation for new rows
 //            if (!!this.options.validation) {
-                // add new row to validation context and add contraints to element
+            // add new row to validation context and add contraints to element
 //                $editableFields = this.sandbox.dom.find('input[type=text]', $row);
 
 //                this.sandbox.util.foreach($editableFields, function($el, i) {
@@ -1018,10 +1018,10 @@ define(function() {
 
             // if allchecked then disable top checkbox after adding new row
             if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
-                var $checkbox = this.sandbox.dom.find('#select-all',this.$el);
-                if(this.sandbox.dom.hasClass($checkbox, 'is-selected')){
+                var $checkbox = this.sandbox.dom.find('#select-all', this.$el);
+                if (this.sandbox.dom.hasClass($checkbox, 'is-selected')) {
                     this.sandbox.dom.prop($checkbox, 'checked', false);
-                    this.sandbox.dom.removeClass($checkbox,  'is-selected');
+                    this.sandbox.dom.removeClass($checkbox, 'is-selected');
                 }
             }
         },
@@ -1060,7 +1060,7 @@ define(function() {
             if (typeof event === 'object') {
                 $element = this.sandbox.dom.$(event.currentTarget);
                 $tblRow = this.sandbox.dom.closest($element, 'tr')[0];
-                id = this.sandbox.dom.data($tblRow,'id');
+                id = this.sandbox.dom.data($tblRow, 'id');
             } else {
                 id = event;
                 $tblRow = this.sandbox.dom.find('tr[data-id="' + id + '"]')[0];
@@ -1277,8 +1277,8 @@ define(function() {
                     event.stopPropagation();
                 }, 'tr');
 
-                this.sandbox.dom.on(window, 'click', function(){
-                    if(!!this.lastFocusedRow) {
+                this.sandbox.dom.on(window, 'click', function() {
+                    if (!!this.lastFocusedRow) {
                         this.prepareSave();
                     }
                 }.bind(this));
@@ -1478,10 +1478,10 @@ define(function() {
             if (!!this.lastFocusedRow && this.lastFocusedRow.domId !== domId) { // new focus
                 this.prepareSave();
                 this.lastFocusedRow = this.getInputValuesOfRow($tr);
-                this.sandbox.logger.log("focused "+this.lastFocusedRow.domId+ " now!");
+                this.sandbox.logger.log("focused " + this.lastFocusedRow.domId + " now!");
             } else if (!this.lastFocusedRow) { // first focus
                 this.lastFocusedRow = this.getInputValuesOfRow($tr);
-                this.sandbox.logger.log("focused "+this.lastFocusedRow.domId+ " now!");
+                this.sandbox.logger.log("focused " + this.lastFocusedRow.domId + " now!");
             }
         },
 
@@ -1589,12 +1589,12 @@ define(function() {
          * Checks wether data is in row or not
          * @param data fields object
          */
-        isDataRowEmpty: function(data){
+        isDataRowEmpty: function(data) {
 
             var isEmpty = true, field;
 
             for (field in data) {
-                if(data[field] !== ''){
+                if (data[field] !== '') {
                     isEmpty = false;
                     break;
                 }
