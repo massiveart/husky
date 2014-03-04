@@ -3875,51 +3875,53 @@ input
   margin: 0;
 }
 
-/* line 69, ../scss/modules/form.scss */
-.form-horizontal .form-group > :first-child {
-  text-align: right;
-  float: left;
-  margin-top: 5px;
-  padding-right: 4%;
-  white-space: nowrap;
-  width: 35%;
+/* line 68, ../scss/modules/form.scss */
+.form-horizontal .form-group {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+/* line 74, ../scss/modules/form.scss */
+.form-horizontal .form-group > * {
+  display: table-cell;
 }
 /* line 78, ../scss/modules/form.scss */
-.form-horizontal .form-group > :nth-child(2) {
-  width: 65%;
-}
-/* line 84, ../scss/modules/form.scss */
-.form-horizontal .form-group.input-large > :first-child {
-  margin-top: 0;
-  line-height: 40px;
+.form-horizontal .form-group > :first-child {
+  text-align: right;
   vertical-align: middle;
+  padding-right: 20px;
+  width: 120px;
+}
+/* line 86, ../scss/modules/form.scss */
+.form-horizontal .form-group > :nth-child(2) {
+  width: 100%;
 }
 
-/* line 98, ../scss/modules/form.scss */
+/* line 97, ../scss/modules/form.scss */
 label {
   display: block;
   font-size: 14px;
   color: #999999;
   cursor: pointer;
 }
-/* line 104, ../scss/modules/form.scss */
+/* line 103, ../scss/modules/form.scss */
 label.large {
   font-size: 16px;
   font-weight: bold;
 }
-/* line 109, ../scss/modules/form.scss */
+/* line 108, ../scss/modules/form.scss */
 label .form-element {
   margin-top: 5px;
   border: 1px solid #cccccc;
 }
-/* line 114, ../scss/modules/form.scss */
+/* line 113, ../scss/modules/form.scss */
 label.inline {
   font-size: 1em;
   font-weight: normal;
   display: inline;
 }
 
-/* line 123, ../scss/modules/form.scss */
+/* line 122, ../scss/modules/form.scss */
 .custom-checkbox {
   width: 14px;
   height: 14px;
@@ -3927,13 +3929,13 @@ label.inline {
   opacity: 0;
   cursor: pointer;
 }
-/* line 137, ../scss/modules/form.scss */
+/* line 136, ../scss/modules/form.scss */
 .custom-checkbox:checked + .custom-checkbox-icon::after, .custom-checkbox.is-checked + .custom-checkbox-icon::after {
   content: "\e207";
   position: relative;
   top: -3px;
 }
-/* line 145, ../scss/modules/form.scss */
+/* line 144, ../scss/modules/form.scss */
 .custom-checkbox + .custom-checkbox-icon {
   display: inline-block;
   width: 14px;
@@ -3947,27 +3949,27 @@ label.inline {
   vertical-align: middle;
 }
 
-/* line 164, ../scss/modules/form.scss */
+/* line 163, ../scss/modules/form.scss */
 textarea {
   resize: both;
 }
 
-/* line 168, ../scss/modules/form.scss */
+/* line 167, ../scss/modules/form.scss */
 textarea.vertical {
   resize: vertical;
 }
 
-/* line 172, ../scss/modules/form.scss */
+/* line 171, ../scss/modules/form.scss */
 textarea.horizontal {
   resize: horizontal;
 }
 
-/* line 176, ../scss/modules/form.scss */
+/* line 175, ../scss/modules/form.scss */
 textarea.noResize {
   resize: none;
 }
 
-/* line 180, ../scss/modules/form.scss */
+/* line 179, ../scss/modules/form.scss */
 textarea.form-element {
   width: 100%;
   height: 40px;
@@ -3977,7 +3979,7 @@ textarea.form-element {
   font-family: inherit;
 }
 
-/* line 191, ../scss/modules/form.scss */
+/* line 190, ../scss/modules/form.scss */
 .custom-radio {
   width: 18px;
   height: 18px;
@@ -3985,7 +3987,7 @@ textarea.form-element {
   opacity: 0;
   cursor: pointer;
 }
-/* line 203, ../scss/modules/form.scss */
+/* line 202, ../scss/modules/form.scss */
 .custom-radio:checked + .custom-radio-icon::after, .custom-radio.is-checked + .custom-radio-icon::after {
   content: "";
   display: block;
@@ -3994,7 +3996,7 @@ textarea.form-element {
   border-radius: 18px;
   background-color: #999;
 }
-/* line 214, ../scss/modules/form.scss */
+/* line 213, ../scss/modules/form.scss */
 .custom-radio + .custom-radio-icon {
   display: inline-block;
   width: 18px;
@@ -4009,16 +4011,16 @@ textarea.form-element {
   vertical-align: middle;
 }
 
-/* line 234, ../scss/modules/form.scss */
+/* line 233, ../scss/modules/form.scss */
 .cke.cke_chrome {
   box-shadow: none !important;
   border: 0 !important;
 }
-/* line 239, ../scss/modules/form.scss */
+/* line 238, ../scss/modules/form.scss */
 .cke .cke_inner {
   border: 1px solid #cccccc !important;
 }
-/* line 243, ../scss/modules/form.scss */
+/* line 242, ../scss/modules/form.scss */
 .cke .cke_inner,
 .cke .cke_wysiwyg_frame {
   border-bottom-left-radius: 3px !important;
