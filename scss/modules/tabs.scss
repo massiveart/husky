@@ -1,0 +1,45 @@
+//
+// Tabs
+// --------------------------------------------------
+
+.tabs-container {
+
+    ul {
+        width: 100%;
+        height: 30px;
+        padding: 0;
+        margin: 0;
+        border-bottom: 2px solid $grayLighter;
+        white-space: nowrap;
+
+        li {
+            display: inline;
+            list-style-type: none;
+            height: 20px;
+
+            a {
+                color: black;
+                font-weight: bold;
+                text-decoration: none;
+                font-size: 16px;
+                line-height:20px;
+
+                &:hover {
+                    color: $gray;
+                }
+            }
+
+            &.is-selected {
+                a {
+                    color: $highlightColor;
+                }
+            }
+
+            &:not(:last-child) {
+                padding-right: 30px;
+            }
+        }
+    }
+}
+
+

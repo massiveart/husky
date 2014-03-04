@@ -1,0 +1,163 @@
+//
+// Grid System
+// --------------------------------------------------
+
+$grid-padding-left: 8px;
+$grid-padding-right: 8px;
+
+.grid {
+    display: block;
+}
+
+.grid-row {
+    margin-bottom: 20px;
+    &::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    img {
+        max-width: 100%;
+    }
+}
+
+[class*="grid-col-"] {
+    float: left;
+    padding-left: $grid-padding-left;
+    padding-right: $grid-padding-right;
+
+    &:first-of-type {
+        padding-left: 0;
+        padding-right: $grid-padding-right;
+    }
+
+    &:last-of-type {
+        padding-right: 0;
+    }
+}
+
+.grid-col-1 {
+    width: 8.33%;
+
+    &.floating {
+        &:nth-child(12n+1) {
+            padding-left: 0;
+            padding-right: $grid-padding-right;
+        }
+
+        &:nth-child(12n) {
+            padding-right: 0;
+        }
+    }
+}
+
+.grid-col-2 {
+    width: 16.66%;
+
+    &.floating {
+        &:nth-child(6n+1) {
+            padding-left: 0;
+            padding-right: $grid-padding-right;
+        }
+
+        &:nth-child(6n) {
+            padding-right: 0;
+        }
+    }
+}
+
+.grid-col-3 {
+    width: 25%;
+
+    &.floating {
+        &:nth-child(4n+1) {
+            padding-left: 0;
+            padding-right: $grid-padding-right;
+        }
+
+        &:nth-child(4n) {
+            padding-right: 0;
+        }
+    }
+}
+
+.grid-col-4 {
+    width: 33.33%;
+
+    &.floating {
+        &:nth-child(3n+1) {
+            padding-left: 0;
+            padding-right: $grid-padding-right;
+        }
+
+        &:nth-child(3n) {
+            padding-right: 0;
+        }
+    }
+}
+
+.grid-col-5 {
+    width: 41.66%;
+}
+
+.grid-col-6 {
+    width: 50%;
+
+    &.floating {
+        &:nth-child(2n+1) {
+            padding-left: 0;
+            padding-right: $grid-padding-right;
+        }
+
+        &:nth-child(2n) {
+            padding-right: 0;
+        }
+    }
+}
+
+.grid-col-7 {
+    width: 58.33%;
+}
+
+.grid-col-8 {
+    width: 66.66%;
+}
+
+.grid-col-9 {
+    width: 75%;
+}
+
+.grid-col-10 {
+    width: 83.33%;
+}
+
+.grid-col-11 {
+    width: 91.66%;
+}
+
+.grid-col-12 {
+    width: 100%;
+}
+
+@media (max-width: 580px) {
+
+    [class*="grid-col-"] {
+        width: 100%;
+        margin-top: 15px;
+
+        padding-left: 0;
+        padding-right: 0;
+
+        &:first-of-type {
+            margin-top: 0;
+            padding-right: 0;
+        }
+
+        &.floating {
+            &:nth-child(n) {
+                padding-right: 0;
+            }
+        }
+    }
+}

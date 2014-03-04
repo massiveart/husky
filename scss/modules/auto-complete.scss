@@ -1,0 +1,107 @@
+.auto-complete-container {
+    position: relative;
+
+    label {
+        cursor: default;
+    }
+}
+
+.husky-auto-complete {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    margin-top: 10px;
+    display: table;
+    width: 100%;
+    font-size: $smallFontSize;
+    border-radius: 4px 4px 0 0;
+
+    input[type="text"] {
+        font-size: 14px;
+        width: 100%;
+        border: 1px solid $grayLighter;
+        outline: 0;
+        background: $white;
+        padding: 4px 8px;
+        border-radius: 4px 4px 0 0;
+        margin: 0;
+        height: 30px;
+
+        &:focus {
+            outline: 0 none;
+        }
+    }
+}
+
+.twitter-typeahead {
+    width: 100%;
+    background-color: white;
+    border-radius: 4px 4px 0 0;
+}
+
+.tt-suggestions {
+    width: 100%;
+    top: 37px;
+    background: $white;
+}
+
+.tt-dropdown-menu {
+    width: 100%;
+    border: 1px solid $grayLighter;
+    margin-top: -1px;
+}
+
+.tt-hint {
+    display: none;
+}
+
+.tt-suggestion {
+    height: 25px;
+    width: 100%;
+}
+
+.suggestion:hover,
+.tt-is-under-cursor .suggestion {
+    background: $highlightColor;
+    color: $white;
+
+    &.disabled {
+      background: $grayLightest;
+    }
+}
+
+.suggestion {
+    color: $black;
+    padding: 0 6px;
+
+    .border {
+      height: 25px;
+      clear: both;
+      .icon {
+        display: block;
+        float: left;
+        margin: 0 10px 0 10px;
+        width: 12px;
+        height: 25px;
+        text-align: center;
+        line-height: 25px;
+      }
+      .text {
+        float: left;
+        line-height: 25px;
+      }
+    }
+
+    &.disabled {
+       color: $grayLight;
+       cursor: default;
+    }
+}
+
+.husky-auto-complete-success {
+    @extend %abstract-success;
+}
+
+.husky-auto-complete-error {
+    @extend %abstract-error;
+}

@@ -1,0 +1,21 @@
+@import "compass/css3/box-shadow";
+
+@mixin input-placeholder {
+    &.placeholder { @content; }
+    &:-moz-placeholder { @content; }
+    &::-moz-placeholder { @content; }
+    &:-ms-input-placeholder { @content; }
+    &::-webkit-input-placeholder { @content; } 
+}
+
+@mixin standard-box-shadow($borderSize:3px){
+  @include box-shadow(rgba(0,0,0,0.08) $borderSize $borderSize 0px 0px);
+}
+
+@mixin user-select($value:none){
+  user-select: $value;
+  -moz-user-select: $value;
+  -webkit-user-select: $value;
+  -ms-user-select: $value;
+  -o-user-select: $value;
+}

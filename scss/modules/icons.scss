@@ -1,0 +1,510 @@
+//
+// Icons
+// --------------------------------------------------
+
+.icon-class {
+    font-family: $baseIconFont;
+}
+
+[class^="icon-"] {
+    font-family: $baseIconFont;
+}
+
+.icon-tag {
+  &::after {
+    content: "\E066";
+    display: inline-block;
+  }
+}
+
+.icon-remove {
+    &::after {
+        content: "\E208";
+        display: inline-block;
+    }
+}
+
+.icon-add {
+    &::after {
+        content: "\E191";
+        display: inline-block;
+    }
+}
+
+.icon-down {
+    &::after {
+        content: "\e159";
+        display: inline-block;
+    }
+}
+
+.icon-search {
+    &::after {
+        content: "\e028";
+        display: inline-block;
+    }
+}
+
+.icon-circle-remove {
+    &::after {
+        content: "\e193";
+        display: inline-block;
+    }
+}
+
+.icon-circle-arrow-down {
+    &::after {
+        content: "\e220";
+        display: inline-block;
+    }
+}
+
+.icon-circle-ok {
+    &::after {
+        content: "\e199";
+        display: inline-block;
+    }
+}
+
+.icon-circle-plus {
+  &::after {
+    content: "\e191";
+    display: inline-block;
+  }
+}
+
+.icon-edit {
+    &::after {
+        content: "\e151";
+        display: inline-block;
+    }
+}
+
+.icon-edit-pen {
+    &::after {
+        content: "\270f";
+        display: inline-block;
+    }
+}
+
+.icon-settings {
+    &::after {
+        content: "\e281";
+        display: inline-block;
+    }
+}
+
+.icon-cogwheel {
+    &::after {
+        content: "\e137";
+        display: inline-block;
+    }
+}
+
+.icon-cogwheels {
+    &::after {
+        content: "\e138";
+        display: inline-block;
+    }
+}
+
+.icon-caution {
+    &::after {
+        content: "\e197";
+        display: inline-block;
+    }
+}
+
+.icon-contact-book {
+    &::after {
+        content: "\e089";
+        display: inline-block;
+    }
+}
+
+.icon-parents {
+    &::after {
+        content: "\e025";
+        display: inline-block;
+    }
+}
+
+.icon-keys {
+    cursor: pointer;
+    &::after {
+        content: "\e045";
+        display: inline-block;
+    }
+}
+
+.icon-floppy-save {
+  cursor: pointer;
+  &::after {
+    content: "\e447";
+    display: inline-block;
+  }
+}
+
+.icon-building {
+    &::after {
+        content: "\e090";
+        display: inline-block;
+    }
+}
+
+.icon-bank {
+    &::after {
+        content: "\e264";
+        display: inline-block;
+    }
+}
+
+.icon-book {
+    &::after {
+        content: "\e072";
+        display: inline-block;
+    }
+}
+
+.icon-book-open {
+    &::after {
+        content: "\e352";
+        display: inline-block;
+    }
+}
+
+.icon-view {
+    &::after {
+        content: "\e052";
+        display: inline-block;
+    }
+}
+
+.icon-delete {
+    &::after {
+        content: "\e017";
+        display: inline-block;
+    }
+}
+
+.icon-live {
+    &::after {
+        content: "\e033";
+        display: inline-block;
+    }
+}
+
+.icon-security {
+    &::after {
+        content: "\e205";
+        display: inline-block;
+    }
+}
+
+.icon-chevron-right {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e080";
+    display: inline-block;
+  }
+}
+
+.icon-chevron-left {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e079";
+    display: inline-block;
+  }
+}
+
+.icon-chevron-down {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e114";
+    display: inline-block;
+  }
+}
+
+.icon-chevron-up {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e113";
+    display: inline-block;
+  }
+}
+
+.icon-archive {
+    &::after {
+        content: "\e150";
+        display: inline-block;
+    }
+}
+
+.icon-check {
+    &::after {
+        content: "\e153";
+        display: inline-block;
+    }
+}
+
+.icon-adjust-alt {
+    &::after {
+        content: "\e140";
+        display: inline-block;
+    }
+}
+
+.icon-list {
+    &::after {
+        content: "\e115";
+        display: inline-block;
+    }
+}
+
+.icon-items {
+    &::after {
+        content: "\e319";
+        display: inline-block;
+    }
+}
+
+.icon-star {
+    &::after {
+        content: "\e050";
+        display: inline-block;
+    }
+}
+
+.icon-globe {
+    &::after {
+        content: "\e341";
+        display: inline-block;
+    }
+}
+
+.icon-dashboard {
+    &::after {
+        content: "\e332";
+        display: inline-block;
+    }
+}
+
+.icon-arrow-down {
+    &::after {
+        content: "\e224"; // TODO change to correct icons when included in font,  remove rotate
+        display: inline-block;
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+
+        transform: rotate(90deg);
+    }
+}
+
+.icon-arrow-up {
+    &::after {
+        content: "\e225"; // TODO change to correct icons when included in font,  remove rotate
+        display: inline-block;
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+
+        transform: rotate(90deg);
+    }
+}
+
+.icon-arrow {
+    &::after {
+        content: "\e223";
+        display: inline-block;
+    }
+}
+
+.icon-internal-link {
+    &::after {
+        content: "\e051";
+        display: inline-block;
+    }
+}
+
+.icon-external-link {
+    &::after {
+        content: "\e242";
+        display: inline-block;
+    }
+}
+
+.icon-shadow-node {
+    &::after {
+        content: "\e223";
+        display: inline-block;
+    }
+}
+
+.icon-user-add {
+  &::after {
+    content: "\e007";
+    display: inline-block;
+  }
+}
+
+.icon-bin {
+  &::after {
+    content: "\e017";
+    display: inline-block;
+  }
+}
+
+.icon-retweet {
+  &::after {
+    content: "\e081";
+    display: inline-block;
+  }
+}
+
+.icon-file {
+  &::after {
+    content: "\E037";
+    display: inline-block;
+  }
+}
+
+.icon-file-import {
+  &::after {
+    content: "\e359";
+    display: inline-block;
+  }
+}
+
+.icon-file-export {
+  &::after {
+    content: "\e360";
+    display: inline-block;
+  }
+}
+
+.icon-show-thumbnails {
+  &::after {
+    content: "\e157";
+    display: inline-block;
+  }
+}
+
+.icon-eye-open {
+  &::after {
+    content: "\e052";
+    display: inline-block;
+  }
+}
+
+.icon-half-eye-open {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e105";
+    display: inline-block;
+  }
+}
+
+.icon-half-eye-close {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e106";
+    display: inline-block;
+  }
+}
+
+.icon-floppy-save {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e175";
+    display: inline-block;
+  }
+}
+
+.icon-floppy-saved {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e173";
+    display: inline-block;
+  }
+}
+
+.icon-half-ok {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e013";
+    display: inline-block;
+  }
+}
+
+.icon-half-remove {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e014";
+    display: inline-block;
+  }
+}
+
+.icon-remove2 {
+  &::after {
+    content: "\e208";
+    display: inline-block;
+  }
+}
+
+.icon-publish {
+    &::after {
+        content: "";
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 1px solid $white;
+        background: $green;
+        font-size: medium!important;
+        position: relative;
+        top: -2px;
+        left: 0px;
+    }
+}
+
+.icon-unpublish {
+   &::after {
+     content: "";
+     display: inline-block;
+     width: 14px;
+     height: 14px;
+     border-radius: 50%;
+     border: 1px solid $white;
+     background: $red;
+     font-size: medium!important;
+     position: relative;
+     top: -2px;
+     left: 0px;
+   }
+ }
+
+.icon-test {
+  &::after {
+    content: "";
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid $white;
+    background: $yellow;
+    font-size: medium!important;
+    position: relative;
+    top: -2px;
+    left: 0px;
+  }
+}
+
+.icon-right-arrow {
+    &::after {
+        content: "\e212";
+        display: inline-block;
+    }
+}

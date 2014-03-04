@@ -1,0 +1,247 @@
+//
+// Form Elements
+// --------------------------------------------------
+
+.form-element {
+    width: 100%;
+    height: 30px;
+    border: 1px solid $inputBorderColor;
+    padding: 0 5px;
+    font-size: 14px;
+    border-radius: $inputBorderRadius;
+    border: 1px solid $grayLighter;
+
+    &:focus {
+        outline: 0;
+        border-color: $inputBorderFocusColor;
+    }
+
+    &.input-large {
+        height: 40px;
+        padding: 0 10px;
+        font-size: 18px;
+    }
+
+    &[readonly] {
+        background: none;
+        border: 0;
+        font-style: italic;
+        color: $grayLight;
+    }
+}
+
+
+input[type="text"] {
+    &.input-round {
+        border-radius: 30px;
+    }
+}
+
+input
+.input-description {
+    margin-top: -5px;
+    font-size: 10px;
+    color: $grayLight;
+}
+
+
+// Form behaviours
+// -------------------------
+
+// attention! it is always assumed, that form group consists of 2 elements.
+// the first is the label, the second is the form element itself
+
+.form-group {
+
+    > :first-child {
+        height: 20px;
+        margin-bottom: 10px;
+    }
+
+    > :nth-child(2) {
+        margin: 0;
+    }
+}
+
+.form-horizontal {
+
+    .form-group {
+        > :first-child {
+            text-align: right;
+            float: left;
+            margin-top: 5px;
+            padding-right: 4%;
+            white-space: nowrap;
+            width: 35%;
+        }
+
+        > :nth-child(2) {
+            width: 65%;
+        }
+
+
+        &.input-large {
+            > :first-child {
+                margin-top: 0;
+                line-height: 40px;
+                vertical-align: middle;
+            }
+        }
+
+    }
+}
+
+
+
+// Labels
+// -------------------------
+label {
+    display: block;
+    font-size: 14px;
+    color: #999999;
+    cursor: pointer;
+
+    &.large {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .form-element {
+        margin-top: 5px;
+        border: 1px solid $grayLighter;
+    }
+
+    &.inline {
+        font-size: 1em;
+        font-weight: normal;
+        display: inline;
+    }
+}
+
+// Checkboxes
+// -------------------------
+.custom-checkbox {
+    $checkboxSize: 14px;
+    $checkboxIconFont: $baseIconFont;
+    $checkboxIcon: "\e207";
+
+    width: $checkboxSize;
+    height: $checkboxSize;
+    vertical-align: middle;
+    opacity: 0;
+    cursor: pointer;
+
+    &:checked,
+    &.is-checked {
+        & + .custom-checkbox-icon {
+            &::after {
+                content: $checkboxIcon;
+                position: relative;
+                top: -3px;
+            }
+        }
+    }
+
+    & + .custom-checkbox-icon {
+        // custom checkbox styling
+        display: inline-block;
+        width: $checkboxSize;
+        height: $checkboxSize;
+        margin-left: -$checkboxSize;
+
+        border: 1px solid $grayLighter;
+        background-color: #fff;
+        font-family: $checkboxIconFont;
+        font-size: 12px;
+        text-align: center;
+        vertical-align: middle;
+    }
+}
+
+// Textarea
+// -------------------------
+
+textarea {
+    resize: both;
+}
+
+textarea.vertical {
+    resize: vertical;
+}
+
+textarea.horizontal {
+    resize: horizontal;
+}
+
+textarea.noResize {
+    resize: none;
+}
+
+textarea.form-element {
+    width: 100%;
+    height: 40px;
+    min-height: 150px;
+    padding: 10px;
+    font-size: 18px;
+    font-family: inherit;
+}
+
+// Radio
+// -------------------------
+.custom-radio {
+    $radioSize: 18px;
+
+    width: $radioSize;
+    height: $radioSize;
+    vertical-align: middle;
+    opacity: 0;
+    cursor: pointer;
+
+    &:checked,
+    &.is-checked {
+        & + .custom-radio-icon {
+            &::after {
+                content: "";
+                display: block;
+                width: 100%;
+                height: 100%;
+                border-radius: $radioSize;
+                background-color: #999;
+            }
+        }
+    }
+
+    & + .custom-radio-icon {
+        //  custom checkbox styling
+        display: inline-block;
+        width: $radioSize;
+        height: $radioSize;
+        margin-left: -$radioSize;
+        padding: 2px;
+        border-radius: $radioSize;
+        border: 1px solid $inputBorderColor;
+        background-color: #fff;
+        text-align: center;
+        line-height: 1;
+        vertical-align: middle;
+    }
+}
+
+
+// CK Editor
+// -------------------------
+.cke {
+    &.cke_chrome {
+        box-shadow: none !important;
+        border: 0 !important;
+    }
+
+    .cke_inner {
+        border: 1px solid $inputBorderColor !important;
+    }
+    .cke_inner,
+    .cke_wysiwyg_frame {
+        border-bottom-left-radius: $inputBorderRadius !important;
+        border-bottom-right-radius: $inputBorderRadius !important;
+    }
+}

@@ -1,0 +1,64 @@
+//
+// Buttons
+// --------------------------------------------------
+
+.btn {
+    padding: 5px 25px;
+    border: 0;
+    border-radius: $btnBorderRadius;
+    background-color: #FFF;
+    color: #000;
+}
+
+a.btn {
+    color: #000;
+    text-decoration: none;
+}
+
+.btn-large {
+    padding: 0 25px;
+    font-size: 18px;
+    line-height: 30px;
+}
+
+.btn-black {
+    background-color: #000;
+    color: #FFF;
+}
+
+.btn-highlight {
+    background-color: $highlightColor;
+    color: #FFF;
+}
+
+a.btn-black, a.btn-highlight {
+    color: #FFF;
+}
+
+
+
+.btn-gray {
+  background-color: $grayLighter;
+  color: #000;
+}
+
+
+.addButton {
+    border-radius: 3px;
+    display: inline-block;
+    font-size: 12px;
+    color: white;
+    background-color: $highlightColor;
+    padding: 0 10px;
+    height: 20px;
+    line-height: 20px;
+    vertical-align: middle;
+    cursor: pointer;
+
+    &:before {
+        content: '\e191';
+        font-family: $baseIconFont;
+        font-size: 10px;
+        padding-right: 5px;
+    }
+}
