@@ -246,10 +246,17 @@ define([], function() {
         },
 
         /**
-         * takes an config-object an merges it with this.options, before the initialization of the component
+         * raised when the overlay data has been changed
+         * @event husky.smart-content.data-changed
+         */
+            DATA_CHANGED = function() {
+            return createEventName.call(this, 'data-changed');
+        },
+
+        /**
+         * takes an config-object and merges it with this.options, before the initialization of the component
          * (options.externalConfigs has to be true)
          * @event husky.smart-content.external-configs
-         * @param {object} configs The config-object to merge with this.options
          */
             EXTERNAL_CONFIGS = function() {
             return createEventName.call(this, 'external-configs');
@@ -259,7 +266,6 @@ define([], function() {
          * takes an config-object and merges it with this.options. Moreover destroys overlay, so
          * it uses the new configs
          * @event husky.smart-content.set-configs
-         * @param {object} configs The config-object to merge with this.options
          */
             SET_CONFIGS = function() {
             return createEventName.call(this, 'set-configs');
@@ -788,6 +794,10 @@ define([], function() {
                     '&', this.options.presentAsParameter, '=', this.overlayData.presentAs,
                     '&', this.options.limitResultParameter, '=', this.overlayData.limitResult].join('');
             if (newURI !== this.URI.str) {
+                //emit data changed event only if old URI is not null (not at the startup)
+                if (this.URI.str !== '') {
+                    this.sandbox.emit(DATA_CHANGED.call(this));
+                }
                 this.URI.str = newURI;
                 this.URI.hasChanged = true;
             } else {
