@@ -82,9 +82,15 @@ input
             width: 120px;
         }
 
+        label.top {
+            vertical-align: top;
+            padding-top: 5px;
+        }
+
         > :nth-child(2) {
             width: 100%;
         }
+
 
     }
 }
