@@ -121,6 +121,15 @@ define(function() {
         },
 
         /**
+         * raised when a button is hidden or unhidden
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.]buttons.width-changed
+         */
+        BUTTONS_WIDTH_CHANGED = function() {
+            return createEventName.call(this, 'buttons.width-changed');
+        },
+
+        /**
          * event to set button into loading state
          *
          * @event husky.edit-toolbar.[INSTANCE_NAME.]item.loading
@@ -207,9 +216,20 @@ define(function() {
          * event to get to sum of the width of all buttons
          *
          * @event husky.edit-toolbar.[INSTANCE_NAME.].get-buttons-width
-         */
+         * @param {Function} callback to pass the width to
+          */
         GET_BUTTONS_WIDTH = function() {
             return createEventName.call(this, 'get-buttons-width');
+        },
+
+        /**
+         * event to get to sum of the width of all buttons in collapsed state
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.].get-buttons-collapsed-width
+         * @param {Function} callback to pass the width to
+         */
+        GET_BUTTONS_COLLAPSED_WIDTH = function() {
+            return createEventName.call(this, 'get-buttons-collapsed-width');
         },
 
         /** events bound to dom */
@@ -249,7 +269,25 @@ define(function() {
             }.bind(this));
 
             this.sandbox.on(GET_BUTTONS_WIDTH.call(this), function(callback) {
+                var collapsed = this.collapsed;
+                if (collapsed === true) {
+                    expandAll.call(this);
+                }
                 callback(this.sandbox.dom.outerWidth(this.sandbox.dom.find('.edit-toolbar-left', this.$el)) + this.sandbox.dom.outerWidth(this.sandbox.dom.find('.edit-toolbar-right', this.$el)));
+                if (collapsed === true) {
+                    collapseAll.call(this);
+                }
+            }.bind(this));
+
+            this.sandbox.on(GET_BUTTONS_COLLAPSED_WIDTH.call(this), function(callback) {
+                var collapsed = this.collapsed;
+                if (collapsed === false) {
+                    collapseAll.call(this);
+                }
+                callback(this.sandbox.dom.outerWidth(this.sandbox.dom.find('.edit-toolbar-left', this.$el)) + this.sandbox.dom.outerWidth(this.sandbox.dom.find('.edit-toolbar-right', this.$el)));
+                if (collapsed === false) {
+                    expandAll.call(this);
+                }
             }.bind(this));
 
             this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
@@ -331,6 +369,7 @@ define(function() {
          */
         hideItem = function($button) {
             this.sandbox.dom.addClass($button, 'hidden');
+            this.sandbox.emit(BUTTONS_WIDTH_CHANGED.call(this));
         },
 
         /**
@@ -339,6 +378,7 @@ define(function() {
          */
          showItem = function($button) {
             this.sandbox.dom.removeClass($button, 'hidden');
+            this.sandbox.emit(BUTTONS_WIDTH_CHANGED.call(this));
          },
 
         /** shows loader at some icon */
@@ -645,6 +685,7 @@ define(function() {
                     expandButton.call(this, this.items[key], false);
                 }
             }
+            this.collapsed = true;
         },
 
         /**
@@ -658,6 +699,7 @@ define(function() {
                     expandButton.call(this, this.items[key], false);
                 }
             }
+            this.collapsed = false;
         },
 
         /**
@@ -792,6 +834,8 @@ define(function() {
             } else {
                 this.sandbox.logger.log('no data provided for tabs!');
             }
+
+            this.collapsed = false;
 
             bindDOMEvents.call(this);
             bindCustomEvents.call(this);

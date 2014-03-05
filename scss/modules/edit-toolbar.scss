@@ -51,6 +51,10 @@ $editToolbarHeight: 40px;
         border-bottom-left-radius: 4px;
         border-top-left-radius: 4px;
     }
+
+    .edit-toolbar-item {
+        border-right: 1px solid $grayLighter2;
+    }
 }
 
 .edit-toolbar-right {
@@ -64,6 +68,10 @@ $editToolbarHeight: 40px;
             left: auto;
             right: 0px;
         }
+    }
+
+    .edit-toolbar-item {
+      border-left: 1px solid $grayLighter2;
     }
 }
 
@@ -102,6 +110,7 @@ $editToolbarHeight: 40px;
     &.highlight {
         min-width: 100px;
         background-color: $highlightColor;
+        border: none;
 
         &.disabled:hover,
         &.disabled {
@@ -127,6 +136,7 @@ $editToolbarHeight: 40px;
 
     &.highlight-gray {
         background-color: #a7a7a7;
+        border: none;
 
         &:hover {
             background-color: lighten(#a7a7a7, 3%);

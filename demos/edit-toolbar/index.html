@@ -44,11 +44,16 @@
         <div id="edit-toolbar2"></div>
     </div>
 </div>
-<div class="grid">
-    <div class="grid-row"></div>
-    <div class="grid-col-6">
-        <div class="btn pointer grid-col-2 align-center" id="collapse">Collapse/Expand toolbar</div>
-    </div>
+
+<div style="clear:both"></div>
+<div class="grid" style="margin-top:40px">
+    <div class="grid-col-2">&nbsp;</div>
+    <div class="btn pointer grid-col-2 align-center" id="collapse">Collapse/Expand toolbar</div>
+    <div class="grid-col-1">&nbsp;</div>
+    <div class="btn pointer grid-col-2 align-center" id="buttonsWidth">Get Width of all buttons</div>
+    <div class="grid-col-1">&nbsp;</div>
+    <div class="btn pointer grid-col-2 align-center" id="colButtonsWidth">Get width of all buttons in collapsed state</div>
+    <div class="grid-col-1">&nbsp;</div>
 </div>
 
 <script src="../js/sinon.js"></script>
@@ -75,6 +80,7 @@
                         'disabledIcon': 'cogwheel',
                         'iconSize': 'large',
                         'class': 'highlight',
+                        'position': 1,
                         'callback': function() {
                             console.log("user-add was clicked!");
                             app.sandbox.emit('husky.edit-toolbar.contact.item.loading', '1');
@@ -92,6 +98,7 @@
                         'disabledIcon': 'user-add',
                         'title': '',
                         'group': 'right',
+                        'position': 1,
                         'items': [
                             {
                                 'title': 'Refresh',
@@ -119,7 +126,7 @@
                     {
                         'icon': 'file-import',
                         'title': 'Import',
-                        'position': 1,
+                        'position': 2,
                         'callback': function() {
                             console.log("import was clicked");
                         }
@@ -128,20 +135,19 @@
                         'icon': 'file-import',
                         'title': 'Work',
                         'hidden': true,
-                        'position': 2
+                        'position': 3
                     },
                     {
                         'icon': 'star',
                         'title': 'Something else',
                         'hideTitle': true,
-                        //'expandedWhenCollapse': true,
-                        'position': 3,
-                        'class': 'highlight-gray'
+                        'expandedWhenCollapse': true,
+                        'position': 4
                     },
                     {
                         'icon': 'file-export',
                         'title': 'Export',
-                        'position': 4,
+                        'position': 5,
                         'itemsOption': {
                             'url': 'items.json',
                             'titleAttribute': 'title',
@@ -257,15 +263,16 @@
                 }
             });
 
-            $(window).on('resize', function() {
-                   if (collapsed === false && $(window).width() < 710) {
-                       app.sandbox.emit('husky.edit-toolbar.contact.collapse');
-                       collapsed = true;
-                   } else if (collapsed === true && $(window).width() > 710) {
-                       app.sandbox.emit('husky.edit-toolbar.contact.expand');
-                       collapsed = false;
-                   }
-            })
+            $('#buttonsWidth').on('click', function() {
+                app.sandbox.emit('husky.edit-toolbar.contact.get-buttons-width', function(width) {
+                    console.log('Width of all buttons', width);
+                });
+            });
+            $('#colButtonsWidth').on('click', function() {
+                app.sandbox.emit('husky.edit-toolbar.contact.get-buttons-collapsed-width', function(width) {
+                    console.log('Collapsed width of all buttons', width);
+                });
+            });
         });
     });
 </script>
