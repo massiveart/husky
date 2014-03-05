@@ -14,6 +14,11 @@
  * @constructor
  *
  * @params {Object} [options] Configuration object
+ * @params {String} [options.instanceName] name of the instance
+ * @params {Array} [options.dbColumns] Array with objects containing DB-columns information
+ * @params {Object} [options.data] columns to match
+ * @params {Object} [options.translations] objects containing translation keys
+ * @params {Boolean} [options.multiAssignDefault] default value for the multiAssign-property of DB-columns
  */
 define([], function() {
 
@@ -23,7 +28,8 @@ define([], function() {
             instanceName: 'undefined',
             dbColumns: [],
             data: null,
-            translations: {}
+            translations: {},
+            multiAssignDefault: false
         },
 
         constants = {
@@ -255,7 +261,7 @@ define([], function() {
                     col: dbColumn.col,
                     name: dbColumn.name,
                     disabled: false,
-                    multiAssign: (typeof dbColumn.multiAssign !== 'undefined') ? dbColumn.multiAssign : false
+                    multiAssign: (typeof dbColumn.multiAssign !== 'undefined') ? dbColumn.multiAssign : this.options.multiAssignDefault
                 };
             }.bind(this));
         },
