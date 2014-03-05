@@ -39,6 +39,8 @@
  *      - type (optional: none/select) - if select, the selected item is displayed in mainitem
  *      - callback (optional) - callback function
  *      - hidden (optional) - if true button gets hidden form the beginning on
+ *      - expandedWhenCollapse (optional: true/false): if true button gets expanded if whole toolbar collapses
+ *      - hideTitle (optional: true/false) - hide title from beginning
  *      - items (optional - if dropdown):
  *          - title
  *          - icon (optional) false will remove icon
@@ -69,6 +71,11 @@ define(function() {
             instanceName: '',
             appearance: null, // TODO: implement small version
             itemsRequestKey: '_embedded'
+        },
+
+        constants = {
+            collapsedWidth: 50,
+            collapsedDropdownWidth: 70
         },
 
         /** templates container */
@@ -178,6 +185,24 @@ define(function() {
             return createEventName.call(this, 'items.set');
         },
 
+        /**
+         * event to collapse the edit-toolbar
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.].collapse
+         */
+        COLLAPSE = function() {
+            return createEventName.call(this, 'collapse');
+        },
+
+        /**
+         * event to expand the edit-toolbar
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.].expand
+         */
+        EXPAND = function() {
+            return createEventName.call(this, 'expand');
+        },
+
         /** events bound to dom */
         bindDOMEvents = function() {
             this.sandbox.dom.on(this.options.el, 'click', toggleItem.bind(this), '.dropdown-toggle');
@@ -204,6 +229,26 @@ define(function() {
 
             this.sandbox.on(ITEM_SHOW.call(this), function(id) {
                 showItem.call(this, this.items[id].$el);
+            }.bind(this));
+
+            this.sandbox.on(COLLAPSE.call(this), function() {
+                for (var key in this.items) {
+                    if (this.items[key].expandedWhenCollapse !== true) {
+                        collapseButton.call(this, this.items[key]);
+                    } else {
+                        expandButton.call(this, this.items[key], false);
+                    }
+                }
+            }.bind(this));
+
+            this.sandbox.on(EXPAND.call(this), function() {
+                for (var key in this.items) {
+                    if (this.items[key].expandedWhenCollapse === true && this.items[key].hideTitle === true) {
+                        expandButton.call(this, this.items[key], true);
+                    } else {
+                        expandButton.call(this, this.items[key], false);
+                    }
+                }
             }.bind(this));
 
             this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
@@ -589,6 +634,45 @@ define(function() {
         },
 
         /**
+         * Collapses a given button
+         * @param button {Object}
+         */
+        collapseButton = function(button) {
+            // collapsing is senseless for dropdown-items and only collapse if configured
+            if (button.expandedWhenCollapse === false && !!button.parentId === false) {
+                //hide title
+                this.sandbox.dom.hide(this.sandbox.dom.find('.title', button.$el));
+
+                //set button width
+                if(!!button.items === false) {
+                    this.sandbox.dom.css(button.$el, {'min-width': constants.collapsedWidth + 'px'});
+                } else {
+                    this.sandbox.dom.css(button.$el, {'min-width': constants.collapsedDropdownWidth + 'px'});
+                }
+            }
+        },
+
+
+        /**
+         * Expands a given button
+         * @param button {Object}
+         * @param hideTitle {Boolean} if true title get shidden
+         */
+        expandButton = function(button, hideTitle) {
+            if (!!button.parentId === false) {
+                // show title
+                if (hideTitle === true) {
+                    this.sandbox.dom.hide(this.sandbox.dom.find('.title', button.$el));
+                } else {
+                    this.sandbox.dom.show(this.sandbox.dom.find('.title', button.$el));
+                }
+
+                // remove set button width
+                this.sandbox.dom.css(button.$el, {'min-width': ''});
+            }
+        },
+
+        /**
          * Sorts all items with their position-property
          * @param {array} data The list of items to sort
          * @return {array} returns the sorted array
@@ -733,6 +817,14 @@ define(function() {
                     classArray.push('disabled');
                 }
 
+                // set item defaults
+                if (typeof item.expandedWhenCollapse === 'undefined') {
+                    item.expandedWhenCollapse = false;
+                }
+                if (typeof item.hideTitle === 'undefined') {
+                    item.hideTitle = false;
+                }
+
                 // if group is set to right, add to right list, otherwise always add to left list
                 if (!!item.group && item.group === 'right') {
                     addTo = $right;
@@ -749,7 +841,11 @@ define(function() {
 
                 // create title span
                 title = item.title ? item.title : '';
-                this.sandbox.dom.append($listLink, '<span class="title">' + title + '</span>');
+                if (item.hideTitle === true) {
+                    this.sandbox.dom.append($listLink, '<span style="display:none" class="title">' + title + '</span>');
+                } else {
+                    this.sandbox.dom.append($listLink, '<span class="title">' + title + '</span>');
+                }
 
                 //hide the item if hidden true
                 if (item.hidden === true) {

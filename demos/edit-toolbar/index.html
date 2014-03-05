@@ -44,6 +44,12 @@
         <div id="edit-toolbar2"></div>
     </div>
 </div>
+<div class="grid">
+    <div class="grid-row"></div>
+    <div class="grid-col-6">
+        <div class="btn pointer grid-col-2 align-center" id="collapse">Collapse/Expand toolbar</div>
+    </div>
+</div>
 
 <script src="../js/sinon.js"></script>
 <script src="../js/jquery.js"></script>
@@ -125,6 +131,14 @@
                         'position': 2
                     },
                     {
+                        'icon': 'star',
+                        'title': 'Something else',
+                        'hideTitle': true,
+                        //'expandedWhenCollapse': true,
+                        'position': 3,
+                        'class': 'highlight-gray'
+                    },
+                    {
                         'icon': 'file-export',
                         'title': 'Export',
                         'position': 4,
@@ -166,7 +180,9 @@
                         console.log("set Test-state");
                     }
                 }
-            ];
+            ],
+
+        collapsed = false;
 
 
         app.start().then(function() {
@@ -226,6 +242,26 @@
                     icon: 'floppy-save'
                 })
             });
+
+            $('#collapse').on('click', function() {
+                if (collapsed === false) {
+                    app.sandbox.emit('husky.edit-toolbar.contact.collapse');
+                    collapsed = true;
+                } else {
+                    app.sandbox.emit('husky.edit-toolbar.contact.expand');
+                    collapsed = false;
+                }
+            });
+
+            $(window).on('resize', function() {
+                   if (collapsed === false && $(window).width() < 710) {
+                       app.sandbox.emit('husky.edit-toolbar.contact.collapse');
+                       collapsed = true;
+                   } else if (collapsed === true && $(window).width() > 710) {
+                       app.sandbox.emit('husky.edit-toolbar.contact.expand');
+                       collapsed = false;
+                   }
+            })
         });
     });
 </script>
