@@ -203,6 +203,15 @@ define(function() {
             return createEventName.call(this, 'expand');
         },
 
+        /**
+         * event to get to sum of the width of all buttons
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME.].get-buttons-width
+         */
+        GET_BUTTONS_WIDTH = function() {
+            return createEventName.call(this, 'get-buttons-width');
+        },
+
         /** events bound to dom */
         bindDOMEvents = function() {
             this.sandbox.dom.on(this.options.el, 'click', toggleItem.bind(this), '.dropdown-toggle');
@@ -232,23 +241,15 @@ define(function() {
             }.bind(this));
 
             this.sandbox.on(COLLAPSE.call(this), function() {
-                for (var key in this.items) {
-                    if (this.items[key].expandedWhenCollapse !== true) {
-                        collapseButton.call(this, this.items[key]);
-                    } else {
-                        expandButton.call(this, this.items[key], false);
-                    }
-                }
+                collapseAll.call(this);
             }.bind(this));
 
             this.sandbox.on(EXPAND.call(this), function() {
-                for (var key in this.items) {
-                    if (this.items[key].expandedWhenCollapse === true && this.items[key].hideTitle === true) {
-                        expandButton.call(this, this.items[key], true);
-                    } else {
-                        expandButton.call(this, this.items[key], false);
-                    }
-                }
+                expandAll.call(this);
+            }.bind(this));
+
+            this.sandbox.on(GET_BUTTONS_WIDTH.call(this), function(callback) {
+                callback(this.sandbox.dom.outerWidth(this.sandbox.dom.find('.edit-toolbar-left', this.$el)) + this.sandbox.dom.outerWidth(this.sandbox.dom.find('.edit-toolbar-right', this.$el)));
             }.bind(this));
 
             this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
@@ -631,6 +632,32 @@ define(function() {
 
             //now generate the dropdown
             this.sandbox.emit(ITEMS_SET.call(this), buttonId, this.items[buttonId].items);
+        },
+
+        /**
+         * Collapses all buttons
+         */
+        collapseAll = function() {
+            for (var key in this.items) {
+                if (this.items[key].expandedWhenCollapse !== true) {
+                    collapseButton.call(this, this.items[key]);
+                } else {
+                    expandButton.call(this, this.items[key], false);
+                }
+            }
+        },
+
+        /**
+         * Expands all buttons
+         */
+        expandAll = function() {
+            for (var key in this.items) {
+                if (this.items[key].expandedWhenCollapse === true && this.items[key].hideTitle === true) {
+                    expandButton.call(this, this.items[key], true);
+                } else {
+                    expandButton.call(this, this.items[key], false);
+                }
+            }
         },
 
         /**

@@ -226,6 +226,10 @@
                 app.sandbox.emit('husky.edit-toolbar.contact.item.disable', 'edit');
 
                 app.sandbox.emit('husky.edit-toolbar.contact.item.hide', '5');
+
+                app.sandbox.emit('husky.edit-toolbar.contact.get-buttons-width', function(width) {
+                    console.log(width, $('.edit-toolbar-nav').width());
+                })
             });
 
             $('#enable').on('click', function() {
