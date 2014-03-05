@@ -27,63 +27,63 @@ define([], function() {
             activeProcess: null
         },
 
-    constants = {
-        componentClass: 'husky-process',
-        activeClass: 'active',
-        firstClass: 'first',
-        lastClass: 'last',
-        processClass: 'process',
-        processNameClass: 'name',
-        backClass: 'back',
-        frontClass: 'front'
-    },
+        constants = {
+            componentClass: 'husky-process',
+            activeClass: 'active',
+            firstClass: 'first',
+            lastClass: 'last',
+            processClass: 'process',
+            processNameClass: 'name',
+            backClass: 'back',
+            frontClass: 'front'
+        },
 
-    templates = {
-        process: [
-            '<div class="process<%= classes %>" data-id="<%= id %>">',
-                '<div class="back"></div>',
-                '<div class="name"><p><%= name %></p></div>',
-                '<div class="front"></div>',
-            '</div>'
-        ].join('')
-    },
+        templates = {
+            process: [
+                '<div class="process<%= classes %>" data-id="<%= id %>">',
+                '   <div class="back"></div>',
+                '   <div class="name"><p><%= name %></p></div>',
+                '   <div class="front"></div>',
+                '</div>'
+            ].join('')
+        },
 
-    /**
-     * namespace for events
-     * @type {string}
-     */
-        eventNamespace = 'husky.process.',
+        /**
+         * namespace for events
+         * @type {string}
+         */
+            eventNamespace = 'husky.process.',
 
-    /**
-     * raised after initialization process
-     * @event husky.process.<instance-name>.initialize
-     */
-        INITIALIZED = function() {
-        return createEventName.call(this, 'initialized');
-    },
+        /**
+         * raised after initialization process
+         * @event husky.process.<instance-name>.initialize
+         */
+            INITIALIZED = function() {
+            return createEventName.call(this, 'initialized');
+        },
 
-    /**
-     * listens on and changes the active process
-     * @event husky.process.<instance-name>.set-active
-     * @param {Number} id or position of the process
-     */
-        SET_ACTIVE = function() {
-        return createEventName.call(this, 'set-active');
-    },
+        /**
+         * listens on and changes the active process
+         * @event husky.process.<instance-name>.set-active
+         * @param {Number} id or position of the process
+         */
+            SET_ACTIVE = function() {
+            return createEventName.call(this, 'set-active');
+        },
 
-    /**
-     * listens on and passes the active process to it
-     * @event husky.process.<instance-name>.get-active
-     * @param {Function} callback to pass the active process to
-     */
-        GET_ACTIVE = function() {
-        return createEventName.call(this, 'get-active');
-    },
+        /**
+         * listens on and passes the active process to it
+         * @event husky.process.<instance-name>.get-active
+         * @param {Function} callback to pass the active process to
+         */
+            GET_ACTIVE = function() {
+            return createEventName.call(this, 'get-active');
+        },
 
-    /** returns normalized event names */
-        createEventName = function(postFix) {
-        return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
-    };
+        /** returns normalized event names */
+            createEventName = function(postFix) {
+            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+        };
 
     return {
 
@@ -91,8 +91,6 @@ define([], function() {
          * Initialize component
          */
         initialize: function() {
-            this.sandbox.logger.log('initialize', this);
-
             //merge options with defaults
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
@@ -128,7 +126,7 @@ define([], function() {
             this.sandbox.util.foreach(this.options.data, function(process, i) {
                 if (typeof process === 'string') {
                     name = process;
-                    id = Math.floor((Math.random()*10000)+1);
+                    id = Math.floor((Math.random() * 10000) + 1);
                 } else {
                     name = process.name;
                     id = process.id;
@@ -156,7 +154,7 @@ define([], function() {
                     'data-id'
                 );
                 if (typeof processId !== 'undefined') {
-                    callback(this.getProcessWithId(parseInt(processId)).origData);
+                    callback(this.getProcessWithId(parseInt(processId, 10)).origData);
                 } else {
                     callback(null);
                 }
@@ -175,7 +173,7 @@ define([], function() {
                 classes = '';
                 if (i === 0) {
                     classes = ' ' + constants.firstClass;
-                } else if (i+1 === dataLength) {
+                } else if (i + 1 === dataLength) {
                     classes = ' ' + constants.lastClass;
                 }
 
@@ -200,12 +198,12 @@ define([], function() {
          * Sets the width of the processes
          */
         setProcessWidth: function() {
-            var processWidth = Math.floor(this.sandbox.dom.width(this.$el)/this.processes.length),
+            var processWidth = Math.floor(this.sandbox.dom.width(this.$el) / this.processes.length),
                 processNameWidth = processWidth - this.sandbox.dom.width(
-                                                    this.sandbox.dom.find('.'+constants.backClass, this.$el)
-                                                ) - this.sandbox.dom.width(
-                                                        this.sandbox.dom.find('.'+constants.frontClass, this.$el)
-                                                );
+                    this.sandbox.dom.find('.' + constants.backClass, this.$el)
+                ) - this.sandbox.dom.width(
+                    this.sandbox.dom.find('.' + constants.frontClass, this.$el)
+                );
 
             //set width of the process container
             this.sandbox.dom.width(this.sandbox.dom.find('.' + constants.processClass, this.$el), processWidth);
@@ -240,9 +238,9 @@ define([], function() {
             if (process !== null) {
                 this.setAllProcessesInactive();
                 this.sandbox.dom.addClass(process.$el, constants.activeClass);
-            } else if (!!this.processes[(id-1)]) {
+            } else if (!!this.processes[(id - 1)]) {
                 this.setAllProcessesInactive();
-                this.sandbox.dom.addClass(this.processes[(id-1)].$el, constants.activeClass);
+                this.sandbox.dom.addClass(this.processes[(id - 1)].$el, constants.activeClass);
             }
         },
 
