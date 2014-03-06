@@ -5,7 +5,7 @@
     .dropdown-label {
         background: $grayLighter;
         padding: 5px 5px 5px 10px;
-        border-radius: 6px;
+        border-radius: 4px;
         clear: both;
         font-size: $smallFontSize;
         .checkbox {
@@ -44,6 +44,14 @@
         border: 1px solid $grayLighter;
         z-index: 95;
 
+        .disabled,
+        .disabled:hover {
+            background: none;
+            cursor: default;
+            .item-value {
+                color: $grayLight;
+            }
+        }
         .check {
             float: left;
             width: 20px;

@@ -302,6 +302,10 @@
                 return $(selector).map(callback);
             };
 
+            app.core.dom.get = function(selector, index) {
+                return $(selector).get(index);
+            };
+
             app.core.dom.toggle = function(selector) {
                 return $(selector).toggle();
             };

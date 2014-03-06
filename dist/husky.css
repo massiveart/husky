@@ -6247,7 +6247,7 @@ a.btn-black, a.btn-highlight {
 .husky-dropdown-multiple-select .dropdown-label {
   background: #cccccc;
   padding: 5px 5px 5px 10px;
-  border-radius: 6px;
+  border-radius: 4px;
   clear: both;
   font-size: 12px;
 }
@@ -6288,40 +6288,51 @@ a.btn-black, a.btn-highlight {
   border: 1px solid #cccccc;
   z-index: 95;
 }
-/* line 47, ../scss/modules/dropdown-multiple-select.scss */
+/* line 48, ../scss/modules/dropdown-multiple-select.scss */
+.husky-dropdown-multiple-select .dropdown-list .disabled,
+.husky-dropdown-multiple-select .dropdown-list .disabled:hover {
+  background: none;
+  cursor: default;
+}
+/* line 51, ../scss/modules/dropdown-multiple-select.scss */
+.husky-dropdown-multiple-select .dropdown-list .disabled .item-value,
+.husky-dropdown-multiple-select .dropdown-list .disabled:hover .item-value {
+  color: #999999;
+}
+/* line 55, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list .check {
   float: left;
   width: 20px;
   margin-right: 10px;
   padding-top: 3px;
 }
-/* line 53, ../scss/modules/dropdown-multiple-select.scss */
+/* line 61, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list .item-value {
   float: left;
   line-height: 30px;
 }
-/* line 58, ../scss/modules/dropdown-multiple-select.scss */
+/* line 66, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul {
   list-style: none;
   margin: 0;
   padding: 10px 0;
 }
-/* line 63, ../scss/modules/dropdown-multiple-select.scss */
+/* line 71, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul input {
   margin: 0;
 }
-/* line 67, ../scss/modules/dropdown-multiple-select.scss */
+/* line 75, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul > li {
   padding: 0px 10px 0px 20px;
   clear: both;
   height: 30px;
 }
-/* line 73, ../scss/modules/dropdown-multiple-select.scss */
+/* line 81, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul > li:hover, .husky-dropdown-multiple-select .column-navigation-wrapper .column-navigation .column .dropdown-list > ul > li.selected, .column-navigation-wrapper .column-navigation .column .husky-dropdown-multiple-select .dropdown-list > ul > li.selected, .husky-dropdown-multiple-select .dropdown-list > ul > li.hover {
   background-color: #249fbe;
   cursor: pointer;
 }
-/* line 77, ../scss/modules/dropdown-multiple-select.scss */
+/* line 85, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list > ul > li:hover .item-value, .husky-dropdown-multiple-select .column-navigation-wrapper .column-navigation .column .dropdown-list > ul > li.selected .item-value, .column-navigation-wrapper .column-navigation .column .husky-dropdown-multiple-select .dropdown-list > ul > li.selected .item-value {
   color: white;
 }
@@ -6420,114 +6431,118 @@ a.btn-black, a.btn-highlight {
   padding-right: 10px;
 }
 /* line 88, ../scss/modules/smart-content.scss */
+.smart-content .items-list li .value {
+  color: #999999;
+}
+/* line 91, ../scss/modules/smart-content.scss */
 .smart-content .items-list li:last-child {
   border-width: 2px;
 }
 
-/* line 95, ../scss/modules/smart-content.scss */
+/* line 98, ../scss/modules/smart-content.scss */
 .smart-footer {
   padding: 15px 20px 30px 20px;
   line-height: 14px;
   color: #999999;
   font-size: 12px;
 }
-/* line 100, ../scss/modules/smart-content.scss */
+/* line 103, ../scss/modules/smart-content.scss */
 .smart-footer span {
   padding-right: 5px;
 }
-/* line 103, ../scss/modules/smart-content.scss */
+/* line 106, ../scss/modules/smart-content.scss */
 .smart-footer .view-toggler {
   color: black;
   cursor: pointer;
 }
 
-/* line 110, ../scss/modules/smart-content.scss */
+/* line 113, ../scss/modules/smart-content.scss */
 .smart-content-overlay .overlay-header {
   margin-bottom: 15px;
 }
-/* line 113, ../scss/modules/smart-content.scss */
+/* line 116, ../scss/modules/smart-content.scss */
 .smart-content-overlay .overlay-footer {
   margin-top: 5px;
 }
 
-/* line 118, ../scss/modules/smart-content.scss */
+/* line 121, ../scss/modules/smart-content.scss */
 .smart-overlay-content {
   height: 100%;
   font-size: 12px;
 }
-/* line 122, ../scss/modules/smart-content.scss */
+/* line 125, ../scss/modules/smart-content.scss */
 .smart-overlay-content .form-element {
   margin: 0;
 }
-/* line 125, ../scss/modules/smart-content.scss */
+/* line 128, ../scss/modules/smart-content.scss */
 .smart-overlay-content .desc {
   font-size: 14px;
   color: #999999;
   padding-bottom: 5px;
   display: block;
 }
-/* line 131, ../scss/modules/smart-content.scss */
+/* line 134, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item, .smart-overlay-content .item-half {
   margin-bottom: 25px;
   min-height: 55px;
 }
-/* line 135, ../scss/modules/smart-content.scss */
+/* line 138, ../scss/modules/smart-content.scss */
 .smart-overlay-content label {
   color: black;
   font-size: 12px;
 }
-/* line 139, ../scss/modules/smart-content.scss */
+/* line 142, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item-half {
   float: left;
   width: 170px;
 }
-/* line 143, ../scss/modules/smart-content.scss */
+/* line 146, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item {
   padding-right: 20px;
 }
-/* line 146, ../scss/modules/smart-content.scss */
+/* line 149, ../scss/modules/smart-content.scss */
 .smart-overlay-content .left {
   margin-right: 20px;
 }
-/* line 149, ../scss/modules/smart-content.scss */
+/* line 152, ../scss/modules/smart-content.scss */
 .smart-overlay-content .full {
   padding-right: 0;
 }
-/* line 152, ../scss/modules/smart-content.scss */
+/* line 155, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check {
   margin-top: 30px;
 }
-/* line 154, ../scss/modules/smart-content.scss */
+/* line 157, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check .description {
   padding-left: 10px;
 }
-/* line 157, ../scss/modules/smart-content.scss */
+/* line 160, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check .custom-checkbox-icon {
   margin-bottom: 2px;
 }
-/* line 160, ../scss/modules/smart-content.scss */
+/* line 163, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check.disabled {
   display: none;
 }
-/* line 164, ../scss/modules/smart-content.scss */
+/* line 167, ../scss/modules/smart-content.scss */
 .smart-overlay-content .sortMethod {
   margin-top: 25px;
 }
-/* line 168, ../scss/modules/smart-content.scss */
+/* line 171, ../scss/modules/smart-content.scss */
 .smart-overlay-content input.limit-to,
 .smart-overlay-content input.data-source {
   padding-left: 10px;
   border-radius: 0;
 }
-/* line 172, ../scss/modules/smart-content.scss */
+/* line 175, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tags.disabled {
   display: none;
 }
-/* line 175, ../scss/modules/smart-content.scss */
+/* line 178, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list {
   border-radius: 4px 4px 0 0;
 }
-/* line 177, ../scss/modules/smart-content.scss */
+/* line 180, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list input {
   margin: 7px 0 0 0;
 }
@@ -6850,6 +6865,190 @@ a.btn-black, a.btn-highlight {
 /* line 39, ../scss/modules/label.scss */
 .husky-label-success {
   background: #1fca23;
+}
+
+/* line 7, ../scss/modules/matcher.scss */
+.husky-matcher {
+  height: auto;
+  position: relative;
+  top: 0px;
+  left: 0px;
+}
+/* line 13, ../scss/modules/matcher.scss */
+.husky-matcher .wrapper {
+  overflow-x: auto;
+  width: 100%;
+  white-space: nowrap;
+  padding-bottom: 15px;
+}
+/* line 20, ../scss/modules/matcher.scss */
+.husky-matcher.overflow .wrapper:after {
+  color: #cccccc;
+  font-size: 22px;
+  font-family: "Glyphicons";
+  content: '\e212';
+  position: absolute;
+  right: -35px;
+  top: 110px;
+}
+/* line 30, ../scss/modules/matcher.scss */
+.husky-matcher .column {
+  width: 258px;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 4px;
+  display: inline-block;
+  margin-right: 20px;
+  -webkit-transition: border-color 0.3s;
+  -moz-transition: border-color 0.3s;
+  -o-transition: border-color 0.3s;
+  transition: border-color 0.3s;
+}
+/* line 39, ../scss/modules/matcher.scss */
+.husky-matcher .column:last-child {
+  margin-right: 0;
+}
+/* line 43, ../scss/modules/matcher.scss */
+.husky-matcher .column .match-header {
+  height: 138px;
+  background: white;
+  position: relative;
+  top: 0px;
+  left: 0px;
+}
+/* line 50, ../scss/modules/matcher.scss */
+.husky-matcher .column .match-header .inner {
+  width: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: absolute;
+  left: 0px;
+  bottom: 20px;
+}
+/* line 58, ../scss/modules/matcher.scss */
+.husky-matcher .column .match-header .title {
+  display: block;
+  font-weight: bold;
+  line-height: 18px;
+}
+/* line 63, ../scss/modules/matcher.scss */
+.husky-matcher .column .match-header .matched-desc {
+  display: block;
+  color: #999999;
+  line-height: 18px;
+}
+/* line 68, ../scss/modules/matcher.scss */
+.husky-matcher .column .match-header .button {
+  float: left;
+  clear: both;
+  background: #cccccc;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 20px;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+/* line 80, ../scss/modules/matcher.scss */
+.husky-matcher .column .column-title {
+  height: 40px;
+  line-height: 40px;
+  font-weight: bold;
+  color: white;
+  padding-left: 10px;
+  -webkit-transition: background 0.3s;
+  -moz-transition: background 0.3s;
+  -o-transition: background 0.3s;
+  transition: background 0.3s;
+}
+/* line 88, ../scss/modules/matcher.scss */
+.husky-matcher .column .samples span {
+  display: block;
+  height: 40px;
+  line-height: 40px;
+  padding-left: 10px;
+  -webkit-transition: background 0.3s;
+  -moz-transition: background 0.3s;
+  -o-transition: background 0.3s;
+  transition: background 0.3s;
+}
+/* line 95, ../scss/modules/matcher.scss */
+.husky-matcher .column .samples span:first-child {
+  border-bottom: 1px solid white;
+}
+/* line 100, ../scss/modules/matcher.scss */
+.husky-matcher .column.unmatched {
+  border-color: #ad0710;
+}
+/* line 103, ../scss/modules/matcher.scss */
+.husky-matcher .column.unmatched .column-title {
+  background: #ad0710;
+}
+/* line 106, ../scss/modules/matcher.scss */
+.husky-matcher .column.unmatched .samples span {
+  background: rgba(173, 7, 16, 0.3);
+}
+/* line 110, ../scss/modules/matcher.scss */
+.husky-matcher .column.matched {
+  border-color: #1fca23;
+}
+/* line 113, ../scss/modules/matcher.scss */
+.husky-matcher .column.matched .column-title {
+  background: #1fca23;
+}
+/* line 116, ../scss/modules/matcher.scss */
+.husky-matcher .column.matched .samples span {
+  background: rgba(31, 202, 35, 0.3);
+}
+/* line 120, ../scss/modules/matcher.scss */
+.husky-matcher .column.edit {
+  border-color: #2d9fbc;
+}
+/* line 123, ../scss/modules/matcher.scss */
+.husky-matcher .column.edit .column-title {
+  background: #2d9fbc;
+}
+/* line 126, ../scss/modules/matcher.scss */
+.husky-matcher .column.edit .samples span {
+  background: rgba(45, 159, 188, 0.3);
+}
+/* line 130, ../scss/modules/matcher.scss */
+.husky-matcher .column.edit .match-header .headline {
+  color: #999999;
+}
+/* line 133, ../scss/modules/matcher.scss */
+.husky-matcher .column.edit .match-header .ok-button {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  width: 70px;
+  height: 30px;
+  line-height: 27px;
+  margin-top: 10px;
+}
+/* line 143, ../scss/modules/matcher.scss */
+.husky-matcher .column.edit .match-header .button {
+  position: absolute;
+  bottom: 0;
+  right: 10px;
+}
+/* line 148, ../scss/modules/matcher.scss */
+.husky-matcher .column.edit .match-header .column-dropdown {
+  margin-bottom: 50px;
+  margin-top: 5px;
+}
+/* line 154, ../scss/modules/matcher.scss */
+.husky-matcher .column.skipped {
+  border-color: #666666;
+}
+/* line 157, ../scss/modules/matcher.scss */
+.husky-matcher .column.skipped .column-title {
+  background: #666666;
+}
+/* line 160, ../scss/modules/matcher.scss */
+.husky-matcher .column.skipped .samples span {
+  background: #999999;
 }
 
 /* line 11, ../scss/modules/process.scss */
