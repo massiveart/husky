@@ -28090,6 +28090,7 @@ define('__component__$dropdown@husky',[], function() {
             url: '',     // url for lazy loading
             data: [],    // data array
             trigger: '',  // trigger for click event
+            shadow: true,  // if box-shadow should be shown
             valueName: 'name', // name of text property
             setParentDropDown: false, // set class dropdown for parent dom object
             excludeItems: [], // items to filter,
@@ -28120,18 +28121,20 @@ define('__component__$dropdown@husky',[], function() {
 
             this.sandbox.dom.append(this.options.el, this.$element);
 
-            this.init();
+            this.render();
         },
 
-        init: function() {
-            this.sandbox.logger.log('initialize', this);
+        render: function() {
+
+            var dropdownClasses = ['dropdown-menu'];
+
+            if (this.options.shadow === true) {
+                dropdownClasses.push('dropdown-shadow');
+            }
 
 
-            // ------------------------------------------------------------
-            // initialization
-            // ------------------------------------------------------------
             this.$dropDown = this.sandbox.dom.createElement('<div/>', {
-                'class': 'dropdown-menu'
+                'class': dropdownClasses.join(' ')
             });
             this.$dropDownList = this.sandbox.dom.createElement('<ul/>');
 
@@ -28198,7 +28201,9 @@ define('__component__$dropdown@husky',[], function() {
                 if (parseInt(item.id, 10) === id) {
                     this.sandbox.logger.log(this.name, 'item.click: ' + id, 'success');
 
-                    if (!!this.options.clickCallback && typeof this.options.clickCallback === 'function') {
+                    if (!!item.callback && typeof item.callback === 'function') {
+                        item.callback.call(this);
+                    } else if (!!this.options.clickCallback && typeof this.options.clickCallback === 'function') {
                         this.options.clickCallback(item, this.$el);
                     } else {
                         this.sandbox.emit(this.getEvent('item.click'), item, this.$el);
@@ -34582,8 +34587,7 @@ define('__component__$overlay@husky',[], function() {
             this.sandbox.dom.off(this.overlay.$el);
             this.sandbox.dom.remove(this.overlay.$el);
             this.sandbox.dom.off(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName);
-            this.sandbox.dom.off(this.$el);
-            this.sandbox.dom.remove(this.$el);
+            this.sandbox.stop(this.$el);
         },
 
         /**

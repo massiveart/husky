@@ -4716,6 +4716,17 @@ li a.navigation-settings-icon {
 }
 
 /* line 16, ../scss/modules/dropdown.scss */
+.dropdown-shadow {
+  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
+  box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
+}
+/* line 18, ../scss/modules/dropdown.scss */
+.dropdown-shadow.dropdown-align-right {
+  right: -3px;
+}
+
+/* line 23, ../scss/modules/dropdown.scss */
 .dropdown-menu {
   width: 250px;
   display: inline-block;
@@ -4728,42 +4739,42 @@ li a.navigation-settings-icon {
   border: 1px solid #cccccc;
   z-index: 95;
 }
-/* line 28, ../scss/modules/dropdown.scss */
+/* line 35, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul {
   list-style: none;
   margin: 0;
   padding: 10px 0;
 }
-/* line 33, ../scss/modules/dropdown.scss */
+/* line 40, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul > li {
   padding: 5px 20px;
   text-align: left;
 }
-/* line 37, ../scss/modules/dropdown.scss */
+/* line 44, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul > li:hover, .column-navigation-wrapper .column-navigation .column .dropdown-menu > ul > li.selected, .dropdown-menu > ul > li.hover {
   background-color: #249fbe;
   cursor: pointer;
   color: white;
 }
 
-/* line 46, ../scss/modules/dropdown.scss */
+/* line 53, ../scss/modules/dropdown.scss */
 .dropdown-align-right {
   right: 0;
   left: inherit;
 }
 
-/* line 51, ../scss/modules/dropdown.scss */
+/* line 58, ../scss/modules/dropdown.scss */
 .dropdown-footer {
   border-top: 1px solid #ccc;
   padding: 10px 10px;
 }
 
-/* line 56, ../scss/modules/dropdown.scss */
+/* line 63, ../scss/modules/dropdown.scss */
 .dropdown-toggle {
   display: block;
   cursor: pointer;
 }
-/* line 59, ../scss/modules/dropdown.scss */
+/* line 66, ../scss/modules/dropdown.scss */
 .dropdown-toggle::after {
   content: "";
   display: inline-block;
