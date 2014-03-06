@@ -50,6 +50,27 @@ h5 {
     line-height: 15px;
 }
 
+h6 {
+    font-size: 12px;
+    line-height: 15px;
+    margin: 0;
+}
+
+
+.compoundedHeadlines {
+    :first-child {
+        color: $highlightColor;
+        font-size: 14px;
+        margin: 0;
+        line-height: 20px;
+    }
+    :nth-child(2) {
+        margin-top: 0;
+    }
+}
+
+
+
 h1, h2, h3, h4, h5 {
     position: relative;
     z-index: 1;

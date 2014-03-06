@@ -26,6 +26,7 @@ $grid-padding-right: 8px;
     float: left;
     padding-left: $grid-padding-left;
     padding-right: $grid-padding-right;
+    min-height: 1px;
 
     &:first-of-type {
         padding-left: 0;
