@@ -51,24 +51,24 @@ define([], function() {
         templates = {
             column: [
                 '<div class="column">',
-                    '<div class="match-header"></div>',
-                    '<div class="column-title"><%= title %></div>',
-                    '<div class="samples"></div>',
+                '<div class="match-header"></div>',
+                '<div class="column-title"><%= title %></div>',
+                '<div class="samples"></div>',
                 '</div>'
             ].join(''),
             header: [
                 '<div class="inner">',
-                    '<span class="title"><%= title %></span>',
-                    '<span class="matched-desc"><%= matchedStr %></span>',
-                    '<div class="button"><%= editStr %></div>',
+                '<span class="title"><%= title %></span>',
+                '<span class="matched-desc"><%= matchedStr %></span>',
+                '<div class="button"><%= editStr %></div>',
                 '</div>'
             ].join(''),
             editHeader: [
                 '<div class="inner">',
-                    '<span class="headline"><%= columnStr %></span>',
-                    '<div class="column-dropdown"></div>',
-                    '<a class="icon-half-ok save-button btn btn-highlight btn-large ok-button" href="#"></a>',
-                    '<div class="button"><%= skipStr %></div>',
+                '<span class="headline"><%= columnStr %></span>',
+                '<div class="column-dropdown"></div>',
+                '<a class="icon-half-ok save-button btn btn-highlight btn-large ok-button" href="#"></a>',
+                '<div class="button"><%= skipStr %></div>',
                 '</div>'
             ].join(''),
             sample: [
@@ -76,57 +76,57 @@ define([], function() {
             ].join('')
         },
 
-            /**
-             * namespace for events
-             * @type {string}
-             */
+        /**
+         * namespace for events
+         * @type {string}
+         */
             eventNamespace = 'husky.matcher.',
 
-            /**
-             * raised after initialization process
-             * @event husky.matcher.<instance-name>.initialize
-             */
+        /**
+         * raised after initialization process
+         * @event husky.matcher.<instance-name>.initialize
+         */
             INITIALIZED = function() {
             return createEventName.call(this, 'initialized');
         },
 
-            /**
-             * raised after a column is matched
-             * @event husky.matcher.<instance-name>.matched
-             * @param {Object} Object with column and matched db-column
-             */
+        /**
+         * raised after a column is matched
+         * @event husky.matcher.<instance-name>.matched
+         * @param {Object} Object with column and matched db-column
+         */
             MATCHED = function() {
             return createEventName.call(this, 'matched');
         },
 
-            /**
-             * raised after a column is skipped
-             * @event husky.matcher.<instance-name>.skipped
-             * @param {Object} Object with column
-             */
+        /**
+         * raised after a column is skipped
+         * @event husky.matcher.<instance-name>.skipped
+         * @param {Object} Object with column
+         */
             SKIPPED = function() {
             return createEventName.call(this, 'skipped');
         },
 
-            /**
-             * raised after a column is edited (matched or skipped)
-             * @event husky.matcher.<instance-name>.edited
-             * @param {Number} Number of remaining unmatched columns
-             */
+        /**
+         * raised after a column is edited (matched or skipped)
+         * @event husky.matcher.<instance-name>.edited
+         * @param {Number} Number of remaining unmatched columns
+         */
             EDITED = function() {
             return createEventName.call(this, 'edited');
         },
 
-            /**
-             * listens on
-             * @event husky.matcher.<instance-name>.get-data
-             * @param {Function} Callback to pass the array with all columns
-             */
+        /**
+         * listens on
+         * @event husky.matcher.<instance-name>.get-data
+         * @param {Function} Callback to pass the array with all columns
+         */
             GET_DATA = function() {
             return createEventName.call(this, 'get-data');
         },
 
-            /** returns normalized event names */
+        /** returns normalized event names */
             createEventName = function(postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         };
@@ -222,13 +222,9 @@ define([], function() {
 
                 if (typeof column.samples !== 'undefined') {
                     samples = column.samples;
-                } else {
-                    samples = [];
-                }
-
-                if (typeof column.samples !== 'undefined') {
                     matched = column.matched;
                 } else {
+                    samples = [];
                     matched = false;
                 }
 
@@ -270,7 +266,7 @@ define([], function() {
          * Renders the columns
          */
         render: function() {
-            this.$wrapper = this.sandbox.dom.createElement('<div class="'+ constants.wrapperClass +'"/>');
+            this.$wrapper = this.sandbox.dom.createElement('<div class="' + constants.wrapperClass + '"/>');
             this.sandbox.dom.html(this.$el, this.$wrapper);
 
             this.sandbox.util.foreach(this.columns, function(column, i) {
@@ -375,7 +371,7 @@ define([], function() {
          * @param column
          */
         startColumnDropdown: function(column) {
-            var $element = this.sandbox.dom.$('<div class="'+ constants.dropdownInstanceClass +'">'),
+            var $element = this.sandbox.dom.$('<div class="' + constants.dropdownInstanceClass + '">'),
                 selected = [];
 
             this.sandbox.dom.html(this.sandbox.dom.find('.' + constants.dropdownClass, column.$header), $element);
@@ -579,9 +575,9 @@ define([], function() {
         getUnmatchedNumber: function() {
             var x = 0;
             this.sandbox.util.foreach(this.columns, function(column) {
-               if (column.matched === false && column.skipped === false) {
-                   x++;
-               }
+                if (column.matched === false && column.skipped === false) {
+                    x++;
+                }
             });
             return x;
         },
