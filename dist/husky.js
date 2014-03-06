@@ -24392,11 +24392,6 @@ define('__component__$navigation@husky',[],function() {
                 '<nav class="navigation<% if (collapsed === "true") {%> collapsed<% } %>">',
                 '   <div class="navigation-content">',
                 '       <header class="navigation-header">',
-                '           <div class="navigation-header-image">',
-                '               <% if (data.icon) { %>',
-                '               <img alt="#" src="<%= data.icon %>"/>',
-                '               <% } %>',
-                '           </div>',
                 '           <div class="navigation-header-title"><% if (data.title) { %> <%= translate(data.title) %><% } %></div>',
                 '       </header>',
                 '       <div id="navigation-search" class="navigation-search"></div>',
@@ -24406,6 +24401,14 @@ define('__component__$navigation@husky',[],function() {
                 '   </div>',
                 '   <div class="icon-remove2 navigation-close-icon">',
                 '</nav>'].join(''),
+            headerImage: [
+                '<div class="navigation-header-image">',
+                '   <img alt="#" src="<%= icon %>"/>',
+                '</div>'
+            ].join(''),
+            headerText: [
+                '<div class="navigation-header-text"><span><%= text %></span></div>'
+            ].join(''),
             /** main navigation items (with icons)*/
             mainItem: [
                 '<li class="js-navigation-items navigation-items" id="<%= item.id %>" data-id="<%= item.id %>">',
@@ -24547,6 +24550,20 @@ define('__component__$navigation@husky',[],function() {
                 this.sandbox.util.extend(true, {}, this.options, {translate: this.sandbox.translate}))
             );
 
+            if (typeof this.options.data.icon === 'string') {
+                this.sandbox.dom.prepend(this.sandbox.dom.find('header.navigation-header', this.$el),
+                    this.sandbox.template.parse(templates.headerImage, {
+                        icon: this.options.data.icon
+                    })
+                );
+            } else {
+                this.sandbox.dom.prepend(this.sandbox.dom.find('header.navigation-header', this.$el),
+                    this.sandbox.template.parse(templates.headerText, {
+                        text: this.options.data.title.substr(0, 2)
+                    })
+                );
+            }
+
             this.$navigation = this.$find('.navigation', this.$el);
             this.$navigationContent = this.$find('.navigation-content', this.$navigation);
 
@@ -24590,6 +24607,9 @@ define('__component__$navigation@husky',[],function() {
                 $sectionList = this.sandbox.dom.createElement('<ul class="section-items">');
                 this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + this.sandbox.translate(section.title).toUpperCase() + '</span><span class="section-toggle"><a href="#">' + this.sandbox.translate(this.options.labels.hide) + '</a></span></div>');
 
+                this.sandbox.dom.append($sectionDiv, $sectionList);
+                this.sandbox.dom.append('#navigation-item-container', $sectionDiv);
+
                 // iterate through section items
                 this.sandbox.util.foreach(section.items, function(item) {
                     // create item
@@ -24598,18 +24618,14 @@ define('__component__$navigation@husky',[],function() {
                         icon: item.icon ? 'icon-' + item.icon : '',
                         translate: this.sandbox.translate
                     }));
+                    this.sandbox.dom.append($sectionList, $elem);
                     //render sub-items
                     if (item.items && item.items.length > 0) {
                         this.renderSubNavigationItems(item, $elem);
                     }
-                    this.sandbox.dom.append($sectionList, $elem);
                     item.domObject = $elem;
                     this.items[item.id] = item;
                 }.bind(this));
-
-                this.sandbox.dom.append($sectionDiv, $sectionList);
-                this.sandbox.dom.append('#navigation-item-container', $sectionDiv);
-
             }.bind(this));
         },
 
@@ -24633,9 +24649,11 @@ define('__component__$navigation@husky',[],function() {
                 }
                 this.sandbox.dom.append(list, elem);
 
-                //check if element has overflow
-                /*textCont = this.sandbox.dom.find('a', elem);
-                if (this.sandbox.dom.width(textCont) < this.sandbox.dom.get())*/
+                // add tooltip
+                textCont = this.sandbox.dom.find('a', elem);
+                if (this.sandbox.dom.width(textCont) + 20 < this.sandbox.dom.get(textCont, 0).scrollWidth) {
+                    this.sandbox.dom.attr(textCont, {'title': this.sandbox.dom.html(textCont)});
+                }
 
                 item.domObject = elem;
             }.bind(this));

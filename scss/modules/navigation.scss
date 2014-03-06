@@ -250,6 +250,7 @@ li.is-active {
         position: relative;
         top: 0px;
         left: 0px;
+        height: 30px;
 
         &:hover:not(.navigation-subitems) a::before {
             @include subitem-icon-before;
