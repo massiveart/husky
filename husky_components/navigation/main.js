@@ -269,7 +269,10 @@ define(function() {
          */
         renderSubNavigationItems: function(data, $parentList) {
             var elem,
+                textCont,
                 list = this.sandbox.dom.createElement('<ul class="navigation-items-list" />');
+
+            this.sandbox.dom.append($parentList, list);
 
             this.sandbox.util.foreach(data.items, function(item) {
                 this.items[item.id] = item;
@@ -280,10 +283,13 @@ define(function() {
                     elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subItem, {item: item, translate: this.sandbox.translate}));
                 }
                 this.sandbox.dom.append(list, elem);
+
+                //check if element has overflow
+                /*textCont = this.sandbox.dom.find('a', elem);
+                if (this.sandbox.dom.width(textCont) < this.sandbox.dom.get())*/
+
                 item.domObject = elem;
             }.bind(this));
-
-            this.sandbox.dom.append($parentList, list);
         },
 
         renderFooter: function(footerTemplate) {
