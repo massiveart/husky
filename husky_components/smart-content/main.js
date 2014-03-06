@@ -509,6 +509,7 @@ define([], function() {
          * Renders the footer and calls a method to bind the events for itself
          */
         renderFooter: function() {
+            this.itemsVisible = (this.items.length < this.itemsVisible) ? this.items.length : this.itemsVisible;
 
             if (this.$footer === null) {
                 this.$footer = this.sandbox.dom.createElement('<div/>');
