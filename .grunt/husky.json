@@ -46,6 +46,7 @@
             "__component__$smart-content@husky": "husky_components/smart-content/main",
             "__component__$overlay@husky": "husky_components/overlay/main",
             "__component__$label@husky": "husky_components/label/main",
+            "__component__$matcher@husky": "husky_components/matcher/main",
             "__component__$process@husky": "husky_components/process/main"
         },
         "shim": {
@@ -102,6 +103,7 @@
             "__component__$smart-content@husky",
             "__component__$overlay@husky",
             "__component__$label@husky",
+            "__component__$matcher@husky",
             "__component__$process@husky"
         ]
     }

@@ -146,6 +146,25 @@ $transitionDuration: 0.5s;
         border-radius: 32px;
     }
 }
+.navigation-header-text {
+    display: inline-block;
+    margin-right: 10px;
+    float: left;
+    width: 30px;
+    height: 30px;
+    background: $white;
+    border-radius: 15px;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 30px;
+    font-size: 23px;
+    color: $gray;
+    overflow: hidden;
+
+    span {
+        margin-left: -1px;
+    }
+}
 
 .navigation-search {
     position: relative;
