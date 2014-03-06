@@ -179,7 +179,7 @@
             };
 
             app.core.dom.data = function(selector, key, value) {
-                if (!!value) {
+                if (!!value || value === '') {
                     return $(selector).data(key, value);
                 } else {
                     return $(selector).data(key);
@@ -381,6 +381,10 @@
 
             app.core.dom.unbind = function(selector, eventType) {
                 $(selector).unbind(eventType);
+            };
+
+            app.core.dom.focus = function(selector){
+              $(selector).focus();
             };
 
             app.core.util.ajax = $.ajax;

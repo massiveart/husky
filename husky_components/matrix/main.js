@@ -39,9 +39,21 @@ define(function() {
         },
 
         toggleIcon: function(event) {
-            var $target = event.currentTarget;
+            var $target = event.currentTarget,
+                $tr = sandbox.dom.parent($target),
+                $allTargets = sandbox.dom.find('span[class^="icon-"]', $tr),
+                $activeTargets,
+                $link = sandbox.dom.find('td:last-child span', $tr);
+
             $target = sandbox.dom.find('span[class^="icon-"]', $target);
             sandbox.dom.toggleClass($target, activeClass);
+
+            $activeTargets = sandbox.dom.find('span[class^="icon-"].' + activeClass, $tr);
+            if ($activeTargets.length < $allTargets.length) {
+                sandbox.dom.html($link, this.options.captions.all);
+            } else {
+                sandbox.dom.html($link, this.options.captions.none);
+            }
 
             // emit events for communication with the outside
             sandbox.emit('husky.matrix.changed', {
@@ -53,8 +65,17 @@ define(function() {
 
         setRowActive: function(event) {
             var $tr = sandbox.dom.parent(event.currentTarget),
-                $targets = sandbox.dom.find('span[class^="icon-"]', $tr);
-            sandbox.dom.addClass($targets, activeClass);
+                $targets = sandbox.dom.find('span[class^="icon-"]', $tr),
+                $activeTargets = sandbox.dom.find('span[class^="icon-"].' + activeClass, $tr),
+                $link = sandbox.dom.find('td:last-child span', $tr);
+
+            if ($activeTargets.length < $targets.length) {
+                sandbox.dom.addClass($targets, activeClass);
+                sandbox.dom.html($link, this.options.captions.none);
+            } else {
+                sandbox.dom.removeClass($targets, activeClass);
+                sandbox.dom.html($link, this.options.captions.all);
+            }
 
             // emit events for communication with the outside
             sandbox.emit('husky.matrix.changed', {

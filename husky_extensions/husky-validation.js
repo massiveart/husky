@@ -28,6 +28,10 @@
                     },
 
                     validate: function(selector, force) {
+                        if ($(selector).length === 0) {
+                            return false;
+                        }
+
                         if (!force) {
                             force = false;
                         }

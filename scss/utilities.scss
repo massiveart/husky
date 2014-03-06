@@ -32,6 +32,14 @@
   clear: both;
 }
 
+.pos-rel {
+    position: relative;
+}
+
+.pos-abs {
+    position: absolute;
+}
+
 .is-loading:not(.navigation-column-item) {
   @extend %abstract-loader-black;
 
@@ -86,6 +94,21 @@
 
 // Margin & paddings shorthands
 // -------------------------
+
+
+// margins / paddings 0!
+.m-top-0 {
+     margin-top: 0px !important;
+ }
+.p-top-0 {
+    padding-top: 0px !important;
+}
+.m-bottom-0 {
+     margin-bottom: 0px !important;
+ }
+.p-bottom-0 {
+    padding-bottom: 0px !important;
+}
 
 // margins / paddings 5px
 .m-top-5 {

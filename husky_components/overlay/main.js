@@ -155,8 +155,7 @@ define([], function() {
             this.sandbox.dom.off(this.overlay.$el);
             this.sandbox.dom.remove(this.overlay.$el);
             this.sandbox.dom.off(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName);
-            this.sandbox.dom.off(this.$el);
-            this.sandbox.dom.remove(this.$el);
+            this.sandbox.stop(this.$el);
         },
 
         /**
