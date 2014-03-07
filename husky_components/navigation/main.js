@@ -201,6 +201,7 @@ define(function() {
                 this.sandbox.util.extend(true, {}, this.options, {translate: this.sandbox.translate}))
             );
 
+            // render header image
             if (typeof this.options.data.icon === 'string') {
                 this.sandbox.dom.prepend(this.sandbox.dom.find('header.navigation-header', this.$el),
                     this.sandbox.template.parse(templates.headerImage, {
@@ -469,16 +470,13 @@ define(function() {
             }
 
             if (isExpanded && !navWasCollapsed) {
+                this.sandbox.dom.removeClass($items, 'is-expanded');
 
-//                this.sandbox.dom.slideUp($childList, 200, function() {
+                // change toggle item
+                $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
+                this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
+                this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
 
-                    this.sandbox.dom.removeClass($items, 'is-expanded');
-
-                    // change toggle item
-                    $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
-                    this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
-                    this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
-//                }.bind(this));
             } else {
                 this.sandbox.dom.show($childList);
                 this.sandbox.dom.addClass($items, 'is-expanded');

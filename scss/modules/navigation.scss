@@ -307,6 +307,11 @@ li.is-active {
     padding-left: $verticalItemPadding;
     height: 100%;
     line-height: 50px;
+    display: inline-block;
+    width: 195px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .navigation-item-icon {

@@ -77,7 +77,7 @@ define(function() {
             appendTBody: true,   // add TBODY to table
             searchInstanceName: null, // at which search it should be listened to can be null|string|empty_string
             columnOptionsInstanceName: null, // at which search it should be listened to can be null|string|empty_string
-            paginationTemplate: '<%=translate("pagination.page")%> <%=i%> <%=translate("pagination.of")%> <%=pages%>',
+            paginationTemplate: '<%=translate("pagination.page")%> <strong><%=i%></strong> <%=translate("pagination.of")%> <%=pages%>',
             fieldsData: null,
             validation: false, // TODO does not work for added rows
             validationDebug: false,
@@ -329,7 +329,6 @@ define(function() {
 
             // Should only be be called once
             this.bindCustomEvents();
-
         },
 
         /**
@@ -738,7 +737,7 @@ define(function() {
 
                 // add a checkbox to each row
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
-                    this.tblColumns.push('<td>', this.templates.checkbox(), '</td>');
+                    this.tblColumns.push('<td class="check">', this.templates.checkbox(), '</td>');
 
                     // add a radio to each row
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
@@ -1134,9 +1133,9 @@ define(function() {
 
                 paginationLabel = this.renderPaginationRow(this.data.page, this.data.pages);
 
-                $pagination.append('<div id="' + this.pagination.nextId + '" class="icon-chevron-right pagination-prev pull-right pointer"></div>');
+                $pagination.append('<div id="' + this.pagination.nextId + '" class="pagination-prev pull-right pointer"></div>');
                 $pagination.append('<div id="' + this.pagination.dropdownId + '" class="pagination-main pull-right pointer"><span class="inline-block">' + paginationLabel + '</span><span class="dropdown-toggle inline-block"></span></div>');
-                $pagination.append('<div id="' + this.pagination.prevId + '" class="icon-chevron-left pagination-next pull-right pointer"></div>');
+                $pagination.append('<div id="' + this.pagination.prevId + '" class="pagination-next pull-right pointer"></div>');
             }
 
             return $paginationWrapper;
@@ -1944,11 +1943,24 @@ define(function() {
          * @returns {*}
          */
         addLoader: function() {
-            return this.$element
+            this.$element
                 .outerWidth(this.$element.outerWidth())
                 .outerHeight(this.$element.outerHeight())
-                .empty()
-                .addClass('is-loading');
+                .empty();
+
+            var $container = this.sandbox.dom.createElement('<div class="datagrid-loader"/>');
+            this.sandbox.dom.append(this.$element, $container);
+
+            this.sandbox.start([{
+                name: 'loader@husky',
+                options: {
+                    el: $container,
+                    size: '100px',
+                    color: '#cccccc'
+                }
+            }]);
+
+            return this.$element;
         },
 
         /**
@@ -1956,7 +1968,10 @@ define(function() {
          * @returns {*}
          */
         removeLoader: function() {
-            return this.$element.removeClass('is-loading').outerHeight("").outerWidth("");
+            return this.$element.outerHeight("").outerWidth("");
+            this.sandbox.stop(this.sandbox.dom.find('.datagrid-loader', this.$element));
+
+            return this.$element
         },
 
         /**

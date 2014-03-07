@@ -343,6 +343,13 @@
     }
 }
 
+.icon-brush {
+  &::after {
+    content: "\e235";
+    display: inline-block;
+  }
+}
+
 .icon-user-add {
   &::after {
     content: "\e007";
