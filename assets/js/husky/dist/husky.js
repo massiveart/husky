@@ -25925,7 +25925,7 @@ define('__component__$datagrid@husky',[],function() {
             contentContainer: null,
             removeRow: true,
             selectItem: {
-                type: null,      // checkbox, radiobutton
+                type: null,      // checkbox, radio button
                 width: '50px'    // numerous value
                 //clickable: false   // defines if background is clickable TODO do not use until fixed
             },
@@ -26221,7 +26221,7 @@ define('__component__$datagrid@husky',[],function() {
         },
 
         /**
-         * parses fields data retreived from api
+         * parses fields data retrieved from api
          * @param fields
          * @returns {{columns: Array, urlFields: string}}
          */
@@ -26492,7 +26492,7 @@ define('__component__$datagrid@husky',[],function() {
 
             // remove-row entry
             if (this.options.removeRow || this.options.progressRow) {
-                tblColumns.push('<th width="30px"/>');
+                tblColumns.push('<th style="width:30px;"/>');
             }
 
             return '<tr>' + tblColumns.join('') + '</tr>';
@@ -26501,7 +26501,7 @@ define('__component__$datagrid@husky',[],function() {
         /**
          * returns number and unit
          * @param numberUnit
-         * @returns {{number: {Number}, unit: {String}}}
+         * @returns {{number: Number, unit: *}}
          */
         getNumberAndUnit: function(numberUnit) {
             numberUnit = String(numberUnit);
@@ -26525,7 +26525,7 @@ define('__component__$datagrid@husky',[],function() {
 
             if (!!this.data.embedded) {
                 this.data.embedded.forEach(function(row) {
-                    tblRows.push(this.prepareTableRow(row));
+                    tblRows.push(this.prepareTableRow(row, false));
                 }.bind(this));
             }
 
@@ -26546,7 +26546,7 @@ define('__component__$datagrid@husky',[],function() {
 
             } else {
 
-                var radioPrefix, key;
+                var radioPrefix, key, i;
                 this.tblColumns = [];
                 this.tblRowAttributes = ' data-dom-id="dom-' + this.options.instance + '-' + this.domId + '"';
                 this.domId++;
@@ -26588,9 +26588,11 @@ define('__component__$datagrid@husky',[],function() {
                     }.bind(this));
 
                 } else {
+                    i = 0;
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                            this.createRowCell(key, row[key], false, null, triggeredByAddRow);
+                            this.createRowCell(key, row[key], false, null, triggeredByAddRow, i);
+                            i++;
                         }
                     }
                 }
@@ -26629,11 +26631,11 @@ define('__component__$datagrid@husky',[],function() {
 
             if (this.options.excludeFields.indexOf(key) < 0) {
                 tblCellClasses = [];
-                tblCellContent = (!!value.thumb) ? '<img alt="' + (value.alt || '') + '" src="' + value.thumb + '"/>' : value;
+                tblCellContent = (!!value['thumb']) ? '<img alt="' + (value.alt || '') + '" src="' + value['thumb'] + '"/>' : value;
 
                 // prepare table cell classes
                 !!value.class && tblCellClasses.push(value.class);
-                !!value.thumb && tblCellClasses.push('thumb');
+                !!value['thumb'] && tblCellClasses.push('thumb');
 
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
@@ -27662,7 +27664,6 @@ define('__component__$datagrid@husky',[],function() {
          * is called when columns are changed
          */
         filterColumns: function(fieldsData) {
-
 
             var template, url,
                 parsed = this.parseFieldsData(fieldsData);
