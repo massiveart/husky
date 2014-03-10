@@ -26270,35 +26270,13 @@ define('__component__$datagrid@husky',[],function() {
          */
         load: function(params) {
 
-            /*
-             * TODO do that: this.sandbox.util.load
-*/
-            this.sandbox.util.load(this.getUrl(params),params.data)
+            this.sandbox.util.load(this.getUrl(params), params.data)
                 .then(function(response) {
                     this.initRender(response, params);
                 }.bind(this))
                 .fail(function(status, error) {
                     this.sandbox.logger.error(status, error);
                 }.bind(this));
-            /*
-
-            this.sandbox.util.ajax({
-
-                url: this.getUrl(params),
-                data: params.data,
-
-                error: function(jqXHR, textStatus, errorThrown) {
-                    this.sandbox.logger.log("An error occured while fetching data from: " + this.getUrl(params));
-                    this.sandbox.logger.log("textstatus: " + textStatus);
-                    this.sandbox.logger.log("errorthrown", errorThrown);
-                }.bind(this),
-
-                success: function(response) {
-
-                    this.initRender(response, params);
-
-                }.bind(this)
-            }); */
         },
 
 
@@ -26306,19 +26284,15 @@ define('__component__$datagrid@husky',[],function() {
          * Initializes the rendering of the datagrid
          */
         initRender: function(response, params) {
-            // TODO adjust when new api is finished and no backwards compatibility needed
-            if (!!response.items) {
-                this.data = response;
-            } else {
-                this.data = {};
-                this.data.links = response._links;
-                this.data.embedded = response._embedded;
-                this.data.total = response.total;
-                this.data.page = response.page;
-                this.data.pages = response.pages;
-                this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
-                this.data.pageDisplay = this.options.paginationOptions.showPages;
-            }
+
+            this.data = {};
+            this.data.links = response._links;
+            this.data.embedded = response._embedded;
+            this.data.total = response.total;
+            this.data.page = response.page;
+            this.data.pages = response.pages;
+            this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
+            this.data.pageDisplay = this.options.paginationOptions.showPages;
 
             this.prepare()
                 .appendPagination()
@@ -26340,8 +26314,7 @@ define('__component__$datagrid@husky',[],function() {
          */
         getUrl: function(params) {
 
-            // TODO adjust when new api is finished and no backwards compatibility needed
-            if (!!this.data && this.data.links) {
+            if (!!this.data && !!this.data.links) {
                 return params.url;
             }
 
@@ -26396,8 +26369,7 @@ define('__component__$datagrid@husky',[],function() {
                 $table.append($thead);
             }
 
-            // TODO adjust when api is fully implemented and no backwards compatibility needed
-            if (!!this.data.items || !!this.data.embedded) {
+            if (!!this.data.embedded) {
                 if (!!this.options.appendTBody) {
                     $tbody = this.sandbox.dom.$('<tbody/>');
                 }
@@ -26460,7 +26432,6 @@ define('__component__$datagrid@husky',[],function() {
 
                 isSortable = false;
 
-                // TODO adjust when new api fully implemented and no backwards compatibility needed
                 if (!!this.data.links && !!this.data.links.sortable) {
 
                     //is column sortable - check with received sort-links
@@ -26552,12 +26523,7 @@ define('__component__$datagrid@husky',[],function() {
             tblRows = [];
             this.allItemIds = [];
 
-            // TODO adjust when new api is fully implemented and no backwards compatibility needed
-            if (!!this.data.items) {
-                this.data.items.forEach(function(row) {
-                    tblRows.push(this.prepareTableRow(row));
-                }.bind(this));
-            } else if (!!this.data.embedded) {
+            if (!!this.data.embedded) {
                 this.data.embedded.forEach(function(row) {
                     tblRows.push(this.prepareTableRow(row));
                 }.bind(this));
@@ -26943,7 +26909,7 @@ define('__component__$datagrid@husky',[],function() {
 
             // when last table row was removed, uncheck thead checkbox if exists
             $checkboxes = this.sandbox.dom.find('input[type=checkbox]', this.$el);
-            if($checkboxes.length === 1) {
+            if ($checkboxes.length === 1) {
                 this.sandbox.dom.removeClass('is-selected', $checkboxes[0]);
                 this.sandbox.dom.prop($checkboxes[0], 'checked', false);
             }
@@ -26957,7 +26923,6 @@ define('__component__$datagrid@husky',[],function() {
          */
         appendPagination: function() {
 
-            // TODO adjust when api is finished
             if (this.options.pagination && !!this.data.links) {
                 this.initPaginationIds();
                 this.$element.append(this.preparePagination());
