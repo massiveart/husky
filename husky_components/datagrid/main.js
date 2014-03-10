@@ -412,7 +412,7 @@ define(function() {
          */
         load: function(params) {
 
-            this.sandbox.util.load(this.getUrl(params),params.data)
+            this.sandbox.util.load(this.getUrl(params), params.data)
                 .then(function(response) {
                     this.initRender(response, params);
                 }.bind(this))
@@ -426,19 +426,15 @@ define(function() {
          * Initializes the rendering of the datagrid
          */
         initRender: function(response, params) {
-            // TODO adjust when new api is finished and no backwards compatibility needed
-            if (!!response.items) {
-                this.data = response;
-            } else {
-                this.data = {};
-                this.data.links = response._links;
-                this.data.embedded = response._embedded;
-                this.data.total = response.total;
-                this.data.page = response.page;
-                this.data.pages = response.pages;
-                this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
-                this.data.pageDisplay = this.options.paginationOptions.showPages;
-            }
+
+            this.data = {};
+            this.data.links = response._links;
+            this.data.embedded = response._embedded;
+            this.data.total = response.total;
+            this.data.page = response.page;
+            this.data.pages = response.pages;
+            this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
+            this.data.pageDisplay = this.options.paginationOptions.showPages;
 
             this.prepare()
                 .appendPagination()
@@ -460,8 +456,7 @@ define(function() {
          */
         getUrl: function(params) {
 
-            // TODO adjust when new api is finished and no backwards compatibility needed
-            if (!!this.data && this.data.links) {
+            if (!!this.data && !!this.data.links) {
                 return params.url;
             }
 
@@ -516,8 +511,7 @@ define(function() {
                 $table.append($thead);
             }
 
-            // TODO adjust when api is fully implemented and no backwards compatibility needed
-            if (!!this.data.items || !!this.data.embedded) {
+            if (!!this.data.embedded) {
                 if (!!this.options.appendTBody) {
                     $tbody = this.sandbox.dom.$('<tbody/>');
                 }
@@ -580,7 +574,6 @@ define(function() {
 
                 isSortable = false;
 
-                // TODO adjust when new api fully implemented and no backwards compatibility needed
                 if (!!this.data.links && !!this.data.links.sortable) {
 
                     //is column sortable - check with received sort-links
@@ -672,12 +665,7 @@ define(function() {
             tblRows = [];
             this.allItemIds = [];
 
-            // TODO adjust when new api is fully implemented and no backwards compatibility needed
-            if (!!this.data.items) {
-                this.data.items.forEach(function(row) {
-                    tblRows.push(this.prepareTableRow(row));
-                }.bind(this));
-            } else if (!!this.data.embedded) {
+            if (!!this.data.embedded) {
                 this.data.embedded.forEach(function(row) {
                     tblRows.push(this.prepareTableRow(row));
                 }.bind(this));
@@ -1063,7 +1051,7 @@ define(function() {
 
             // when last table row was removed, uncheck thead checkbox if exists
             $checkboxes = this.sandbox.dom.find('input[type=checkbox]', this.$el);
-            if($checkboxes.length === 1) {
+            if ($checkboxes.length === 1) {
                 this.sandbox.dom.removeClass('is-selected', $checkboxes[0]);
                 this.sandbox.dom.prop($checkboxes[0], 'checked', false);
             }
@@ -1077,7 +1065,6 @@ define(function() {
          */
         appendPagination: function() {
 
-            // TODO adjust when api is finished
             if (this.options.pagination && !!this.data.links) {
                 this.initPaginationIds();
                 this.$element.append(this.preparePagination());
