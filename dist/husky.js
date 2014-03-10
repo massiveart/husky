@@ -32124,8 +32124,8 @@ define('__component__$password-fields@husky',[], function() {
             this.sandbox.on('husky.password.fields.' + this.options.instanceName + '.get.passwords', function(callback){
 
                 if(typeof callback === 'function'){
-                    var password1 = this.sandbox.dom.val('#'+this.options.ids.inputPassword1),
-                        password2 = this.sandbox.dom.val('#'+this.options.ids.inputPassword2);
+                    var password1 = this.sandbox.dom.val('#' + this.options.ids.inputPassword1),
+                        password2 = this.sandbox.dom.val('#' + this.options.ids.inputPassword2);
                     callback(password1, password2);
                 }
 
@@ -32135,7 +32135,7 @@ define('__component__$password-fields@husky',[], function() {
 
         bindDomEvents: function() {
 
-            this.$element.on('click', '#'+this.options.ids.generateLabel, function() {
+            this.$element.on('click', '#' + this.options.ids.generateLabel, function() {
                 this.generatePasswords();
                 this.sandbox.emit('husky.passwords.fields.' + this.options.instanceName + '.generated.passwords');
             }.bind(this));
@@ -32146,8 +32146,8 @@ define('__component__$password-fields@husky',[], function() {
 
             // TODO generate password
 
-            this.sandbox.dom.val('#'+this.options.ids.inputPassword1, generatedPassword);
-            this.sandbox.dom.val('#'+this.options.ids.inputPassword2, generatedPassword);
+            this.sandbox.dom.val('#' + this.options.ids.inputPassword1, generatedPassword);
+            this.sandbox.dom.val('#' + this.options.ids.inputPassword2, generatedPassword);
         },
 
         template: function() {
@@ -32217,6 +32217,7 @@ define('__component__$column-navigation@husky',[], function() {
             column: {
                 width: 250
             },
+            paddingLeft: 50,
             url: null,
             selected: null,
             data: null,
@@ -32291,6 +32292,7 @@ define('__component__$column-navigation@husky',[], function() {
             this.$addColumn = null;
             this.filledColumns = 0;
             this.columnLoadStarted = false;
+            this.$loader = null;
 
             this.columns = [];
             this.selected = [];
@@ -32327,6 +32329,9 @@ define('__component__$column-navigation@husky',[], function() {
 
             this.hideOptions();
             this.sandbox.dom.append($wrapper, this.$optionsContainer);
+
+            this.setContainerHeight();
+            this.setContainerMinWidth();
 
             //init dropdown for settings in options container
             if(!!this.options.data) {
@@ -32379,6 +32384,7 @@ define('__component__$column-navigation@husky',[], function() {
                     .then(function(response) {
                         this.columnLoadStarted = false;
                         this.parseData(response, columnNumber);
+                        this.alignWithColumnsWidth();
                         this.scrollIfNeeded(this.filledColumns + 1);
                         this.sandbox.emit(LOADED);
                     }.bind(this))
@@ -32523,12 +32529,36 @@ define('__component__$column-navigation@husky',[], function() {
         },
 
         /**
+         * Adds the loading icon to a contianer
+         * @param $container
+         */
+        addLoadingIcon: function($container) {
+            this.sandbox.dom.removeClass($container, 'inactive icon-chevron-right');
+
+            if (this.$loader === null) {
+                this.$loader = this.sandbox.dom.createElement('<div class="husky-column-navigation-loader"/>');
+
+                this.sandbox.start([
+                    {
+                        name: 'loader@husky',
+                        options: {
+                            el: this.$loader,
+                            size: '16px',
+                            color: '#666666'
+                        }
+                    }
+                ]);
+            }
+            this.sandbox.dom.html($container, this.$loader);
+        },
+
+        /**
          * Removes loading icon from selected element
          */
         removeLoadingIconForSelected: function() {
             if (!!this.$selectedElement) {
                 var $arrow = this.sandbox.dom.find('.arrow', this.$selectedElement);
-                this.sandbox.dom.removeClass($arrow, 'is-loading');
+                this.sandbox.dom.detach(this.$loader);
                 this.sandbox.dom.prependClass($arrow, 'icon-chevron-right');
             }
         },
@@ -32556,8 +32586,12 @@ define('__component__$column-navigation@husky',[], function() {
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
             this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#'+this.addId);
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
+            this.sandbox.dom.on(this.$el, 'dblclick', this.editNode.bind(this), 'li');
 
-            this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.setContainerHeight.bind(this));
+            this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
+                this.setContainerHeight();
+                this.setContainerMaxWidth();
+            }.bind(this));
         },
 
         bindCustomEvents: function() {
@@ -32686,8 +32720,7 @@ define('__component__$column-navigation@husky',[], function() {
 
                     this.sandbox.dom.addClass(this.$selectedElement, 'selected');
                     $arrowElement = this.sandbox.dom.find('.arrow', this.$selectedElement);
-                    this.sandbox.dom.removeClass($arrowElement, 'inactive icon-chevron-right');
-                    this.sandbox.dom.addClass($arrowElement, 'is-loading');
+                    this.addLoadingIcon($arrowElement);
 
                     if (!!selectedItem) {
 
@@ -32713,10 +32746,37 @@ define('__component__$column-navigation@husky',[], function() {
 
                 // scroll for add column
                 if (!selectedItem.hasSub) {
+                    this.alignWithColumnsWidth();
                     this.scrollIfNeeded(column);
                 }
             }
 
+        },
+
+        /**
+         * Sets the width of the container equal to the width of its columns
+         */
+        alignWithColumnsWidth: function() {
+            var $columnNavi = this.sandbox.dom.find('.column-navigation', this.$el);
+            this.setContainerMaxWidth();
+
+            this.sandbox.dom.width(this.$el, this.sandbox.dom.find('.column', $columnNavi).length * this.options.column.width);
+        },
+
+        /**
+         * Sets the max width of the container
+         */
+        setContainerMaxWidth: function() {
+            this.sandbox.dom.css(this.$el, {
+                'max-width': this.sandbox.dom.width(this.sandbox.dom.$window) - this.sandbox.dom.offset(this.$el).left - this.options.paddingLeft + 'px'
+            });
+        },
+
+        /**
+         * Sets the min-width of the container
+         */
+        setContainerMinWidth: function() {
+            this.sandbox.dom.css(this.$el, {'min-width': '100%'});
         },
 
         insertAddColumn: function(selectedItem, column) {
@@ -32765,9 +32825,15 @@ define('__component__$column-navigation@husky',[], function() {
          * @param {Object} event
          */
         editNode: function(event) {
-            var $listItem = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget)),
-                id = this.sandbox.dom.data($listItem, 'id'),
-                item = this.columns[this.lastHoveredColumn][id];
+            var $listItem, id, item;
+
+            if (this.sandbox.dom.hasClass(event.currentTarget, 'edit') === true) {
+                $listItem = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget));
+            } else {
+                $listItem = this.sandbox.dom.$(event.currentTarget);
+            }
+            id = this.sandbox.dom.data($listItem, 'id');
+            item = this.columns[this.lastHoveredColumn][id];
 
             this.sandbox.dom.stopPropagation(event);
             this.sandbox.emit(EDIT, item);
@@ -34697,6 +34763,9 @@ define('__component__$smart-content@husky',[], function() {
  * @params {Boolean} [options.draggable] if true overlay is draggable
  * @params {Boolean} [options.openOnStart] if true overlay is opened after initialization
  * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
+ * @params {Boolean} [options.backdrop] if true backdrop will be shown
+ * @params {Boolean} [options.backdropColor] Color of the backdrop
+ * @params {Boolean} [options.backdropAlpha] Alpha-value of the backdrop
  */
 define('__component__$overlay@husky',[], function() {
 
@@ -34716,6 +34785,9 @@ define('__component__$overlay@husky',[], function() {
             draggable: true,
             openOnStart: false,
             removeOnClose: false,
+            backdrop: true,
+            backdropColor: '#000000',
+            backdropAlpha: 0.3
         },
 
         constants = {
@@ -34723,7 +34795,8 @@ define('__component__$overlay@husky',[], function() {
             okSelector: '.ok-button',
             contentSelector: '.overlay-content',
             headerSelector: '.overlay-header',
-            draggableClass: 'draggable'
+            draggableClass: 'draggable',
+            backdropClass: 'husky-overlay-backdrop'
         },
 
         /** templates for component */
@@ -34739,7 +34812,10 @@ define('__component__$overlay@husky',[], function() {
                 '<a class="icon-<%= okIcon %> ok-button" href="#"></a>',
                 '</div>',
             '</div>'
-        ].join('')
+        ].join(''),
+            backdrop: [
+                '<div class="husky-overlay-backdrop"></div>'
+            ].join('')
     },
 
     /**
@@ -34824,6 +34900,8 @@ define('__component__$overlay@husky',[], function() {
         removeComponent: function() {
             this.sandbox.dom.off(this.overlay.$el);
             this.sandbox.dom.remove(this.overlay.$el);
+            this.sandbox.dom.off(this.$backdrop);
+            this.sandbox.dom.remove(thisthis.$backdrop);
             this.sandbox.dom.off(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName);
             this.sandbox.stop(this.$el);
         },
@@ -34844,6 +34922,7 @@ define('__component__$overlay@husky',[], function() {
                 $header: null,
                 $content: null
             };
+            this.$backdrop = null;
             this.dragged = false;
         },
 
@@ -34860,6 +34939,11 @@ define('__component__$overlay@husky',[], function() {
         openOverlay: function() {
             //only open if closed
             if (this.overlay.opened === false) {
+                //init backrop element
+                console.log(this.$backdrop);
+                if (this.$backdrop === null && this.options.backdrop === true) {
+                    this.initBackdrop();
+                }
                 //if overlay-element doesn't exist initialize it
                 if (this.overlay.$el === null) {
                     this.initSkeleton();
@@ -34874,10 +34958,24 @@ define('__component__$overlay@husky',[], function() {
         },
 
         /**
+         * Initializes the Backdrop
+         */
+        initBackdrop: function() {
+            this.$backdrop = this.sandbox.dom.createElement(templates.backdrop);
+            this.sandbox.dom.css(this.$backdrop, {
+               'background-color': this.options.backdropColor
+            });
+            this.sandbox.dom.fadeTo(this.$backdrop, 0, this.options.backdropAlpha);
+        },
+
+        /**
          * Removes the overlay-element from the DOM
          */
         closeOverlay: function() {
             this.sandbox.dom.detach(this.overlay.$el);
+            if (this.options.backdrop === true) {
+                this.sandbox.dom.detach(this.$backdrop);
+            }
             this.overlay.opened = false;
             this.dragged = false;
             this.collapsed = false;
@@ -34902,6 +35000,10 @@ define('__component__$overlay@husky',[], function() {
             this.resizeHandler();
 
             this.setCoordinates();
+
+            if (this.options.backdrop === true) {
+                this.sandbox.dom.append(this.sandbox.dom.$(this.options.container), this.$backdrop);
+            }
 
             this.sandbox.emit(OPENED.call(this));
         },
@@ -34957,6 +35059,13 @@ define('__component__$overlay@husky',[], function() {
                     this.resizeHandler();
                 }
             }.bind(this));
+
+            if (this.options.backdrop === true) {
+                this.sandbox.dom.on(this.$backdrop, 'click', function() {
+                    this.closeOverlay();
+                    this.executeCallback(this.options.closeCallback);
+                }.bind(this));
+            }
 
             if (this.options.draggable === true) {
                 this.sandbox.dom.on(this.overlay.$header, 'mousedown', function(e) {
@@ -36971,6 +37080,10 @@ define('husky_extensions/collection',[],function() {
 
             app.core.dom.fadeIn = function(selector, duration, complete) {
                 $(selector).fadeIn(duration, complete);
+            };
+
+            app.core.dom.fadeTo = function(selector, duration, opacity, complete) {
+                $(selector).fadeTo(duration, opacity, complete);
             };
 
             app.core.dom.fadeOut = function(selector, duration, complete) {

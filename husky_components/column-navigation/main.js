@@ -42,6 +42,7 @@ define([], function() {
             column: {
                 width: 250
             },
+            paddingLeft: 50,
             url: null,
             selected: null,
             data: null,
@@ -116,6 +117,7 @@ define([], function() {
             this.$addColumn = null;
             this.filledColumns = 0;
             this.columnLoadStarted = false;
+            this.$loader = null;
 
             this.columns = [];
             this.selected = [];
@@ -152,6 +154,9 @@ define([], function() {
 
             this.hideOptions();
             this.sandbox.dom.append($wrapper, this.$optionsContainer);
+
+            this.setContainerHeight();
+            this.setContainerMinWidth();
 
             //init dropdown for settings in options container
             if(!!this.options.data) {
@@ -204,6 +209,7 @@ define([], function() {
                     .then(function(response) {
                         this.columnLoadStarted = false;
                         this.parseData(response, columnNumber);
+                        this.alignWithColumnsWidth();
                         this.scrollIfNeeded(this.filledColumns + 1);
                         this.sandbox.emit(LOADED);
                     }.bind(this))
@@ -348,12 +354,36 @@ define([], function() {
         },
 
         /**
+         * Adds the loading icon to a contianer
+         * @param $container
+         */
+        addLoadingIcon: function($container) {
+            this.sandbox.dom.removeClass($container, 'inactive icon-chevron-right');
+
+            if (this.$loader === null) {
+                this.$loader = this.sandbox.dom.createElement('<div class="husky-column-navigation-loader"/>');
+
+                this.sandbox.start([
+                    {
+                        name: 'loader@husky',
+                        options: {
+                            el: this.$loader,
+                            size: '16px',
+                            color: '#666666'
+                        }
+                    }
+                ]);
+            }
+            this.sandbox.dom.html($container, this.$loader);
+        },
+
+        /**
          * Removes loading icon from selected element
          */
         removeLoadingIconForSelected: function() {
             if (!!this.$selectedElement) {
                 var $arrow = this.sandbox.dom.find('.arrow', this.$selectedElement);
-                this.sandbox.dom.removeClass($arrow, 'is-loading');
+                this.sandbox.dom.detach(this.$loader);
                 this.sandbox.dom.prependClass($arrow, 'icon-chevron-right');
             }
         },
@@ -381,8 +411,12 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
             this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#'+this.addId);
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
+            this.sandbox.dom.on(this.$el, 'dblclick', this.editNode.bind(this), 'li');
 
-            this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.setContainerHeight.bind(this));
+            this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
+                this.setContainerHeight();
+                this.setContainerMaxWidth();
+            }.bind(this));
         },
 
         bindCustomEvents: function() {
@@ -511,8 +545,7 @@ define([], function() {
 
                     this.sandbox.dom.addClass(this.$selectedElement, 'selected');
                     $arrowElement = this.sandbox.dom.find('.arrow', this.$selectedElement);
-                    this.sandbox.dom.removeClass($arrowElement, 'inactive icon-chevron-right');
-                    this.sandbox.dom.addClass($arrowElement, 'is-loading');
+                    this.addLoadingIcon($arrowElement);
 
                     if (!!selectedItem) {
 
@@ -538,10 +571,37 @@ define([], function() {
 
                 // scroll for add column
                 if (!selectedItem.hasSub) {
+                    this.alignWithColumnsWidth();
                     this.scrollIfNeeded(column);
                 }
             }
 
+        },
+
+        /**
+         * Sets the width of the container equal to the width of its columns
+         */
+        alignWithColumnsWidth: function() {
+            var $columnNavi = this.sandbox.dom.find('.column-navigation', this.$el);
+            this.setContainerMaxWidth();
+
+            this.sandbox.dom.width(this.$el, this.sandbox.dom.find('.column', $columnNavi).length * this.options.column.width);
+        },
+
+        /**
+         * Sets the max width of the container
+         */
+        setContainerMaxWidth: function() {
+            this.sandbox.dom.css(this.$el, {
+                'max-width': this.sandbox.dom.width(this.sandbox.dom.$window) - this.sandbox.dom.offset(this.$el).left - this.options.paddingLeft + 'px'
+            });
+        },
+
+        /**
+         * Sets the min-width of the container
+         */
+        setContainerMinWidth: function() {
+            this.sandbox.dom.css(this.$el, {'min-width': '100%'});
         },
 
         insertAddColumn: function(selectedItem, column) {
@@ -590,9 +650,15 @@ define([], function() {
          * @param {Object} event
          */
         editNode: function(event) {
-            var $listItem = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget)),
-                id = this.sandbox.dom.data($listItem, 'id'),
-                item = this.columns[this.lastHoveredColumn][id];
+            var $listItem, id, item;
+
+            if (this.sandbox.dom.hasClass(event.currentTarget, 'edit') === true) {
+                $listItem = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget));
+            } else {
+                $listItem = this.sandbox.dom.$(event.currentTarget);
+            }
+            id = this.sandbox.dom.data($listItem, 'id');
+            item = this.columns[this.lastHoveredColumn][id];
 
             this.sandbox.dom.stopPropagation(event);
             this.sandbox.emit(EDIT, item);

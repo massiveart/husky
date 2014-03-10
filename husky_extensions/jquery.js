@@ -371,6 +371,10 @@
                 $(selector).fadeIn(duration, complete);
             };
 
+            app.core.dom.fadeTo = function(selector, duration, opacity, complete) {
+                $(selector).fadeTo(duration, opacity, complete);
+            };
+
             app.core.dom.fadeOut = function(selector, duration, complete) {
                 $(selector).fadeOut(duration, complete);
             };
