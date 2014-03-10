@@ -26272,12 +26272,16 @@ define('__component__$datagrid@husky',[],function() {
 
             /*
              * TODO do that: this.sandbox.util.load
-             * this.sandbox.util.load(url)
-             *      .then(function(response) {
-             *      }.bind(this))
-             *      .fail(function(error) {
-             *      }.bind(this));
-             */
+*/
+            this.sandbox.util.load(this.getUrl(params),params.data)
+                .then(function(response) {
+                    this.initRender(response, params);
+                }.bind(this))
+                .fail(function(status, error) {
+                    this.sandbox.logger.error(status, error);
+                }.bind(this));
+            /*
+
             this.sandbox.util.ajax({
 
                 url: this.getUrl(params),
@@ -26294,7 +26298,7 @@ define('__component__$datagrid@husky',[],function() {
                     this.initRender(response, params);
 
                 }.bind(this)
-            });
+            }); */
         },
 
 
@@ -37246,13 +37250,14 @@ define('husky_extensions/util',[],function() {
                 }
             };
 
-            app.core.util.load = function(url) {
+            app.core.util.load = function(url, data) {
                 var deferred = new app.sandbox.data.deferred();
 
                 app.logger.log('load', url);
 
                 app.sandbox.util.ajax({
                     url: url,
+                    data: data || null,
 
                     success: function(data, textStatus) {
                         app.logger.log('data loaded', data, textStatus);

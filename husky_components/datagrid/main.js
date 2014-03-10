@@ -412,31 +412,13 @@ define(function() {
          */
         load: function(params) {
 
-            /*
-             * TODO do that: this.sandbox.util.load
-             * this.sandbox.util.load(url)
-             *      .then(function(response) {
-             *      }.bind(this))
-             *      .fail(function(error) {
-             *      }.bind(this));
-             */
-            this.sandbox.util.ajax({
-
-                url: this.getUrl(params),
-                data: params.data,
-
-                error: function(jqXHR, textStatus, errorThrown) {
-                    this.sandbox.logger.log("An error occured while fetching data from: " + this.getUrl(params));
-                    this.sandbox.logger.log("textstatus: " + textStatus);
-                    this.sandbox.logger.log("errorthrown", errorThrown);
-                }.bind(this),
-
-                success: function(response) {
-
+            this.sandbox.util.load(this.getUrl(params),params.data)
+                .then(function(response) {
                     this.initRender(response, params);
-
-                }.bind(this)
-            });
+                }.bind(this))
+                .fail(function(status, error) {
+                    this.sandbox.logger.error(status, error);
+                }.bind(this));
         },
 
 
