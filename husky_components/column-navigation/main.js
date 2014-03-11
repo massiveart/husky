@@ -595,7 +595,10 @@ define([], function() {
                 item = this.columns[this.lastHoveredColumn][id];
 
             this.sandbox.dom.stopPropagation(event);
-            this.sandbox.emit(EDIT, item);
+            // only emit type not ghost
+            if (!item[this.options.typeName] || item[this.options.typeName].name !== 'ghost') {
+                this.sandbox.emit(EDIT, item);
+            }
         },
 
         /**
@@ -655,7 +658,10 @@ define([], function() {
 
                 // icons right (subpage, edit)
                 item.push('<span class="icons-right">');
-                item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
+                // hide edit if it is ghost
+                if (!data[this.options.typeName] || data[this.options.typeName].name !== 'ghost') {
+                    item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
+                }
                 !!data[this.options.hasSubName] ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
 
