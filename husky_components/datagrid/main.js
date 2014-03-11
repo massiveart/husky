@@ -773,11 +773,11 @@ define(function() {
 
             if (this.options.excludeFields.indexOf(key) < 0) {
                 tblCellClasses = [];
-                tblCellContent = (!!value['thumb']) ? '<img alt="' + (value.alt || '') + '" src="' + value['thumb'] + '"/>' : value;
+                tblCellContent = (!!value.thumb) ? '<img alt="' + (value.alt || '') + '" src="' + value.thumb + '"/>' : value;
 
                 // prepare table cell classes
                 !!value.class && tblCellClasses.push(value.class);
-                !!value['thumb'] && tblCellClasses.push('thumb');
+                !!value.thumb && tblCellClasses.push('thumb');
 
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
