@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -32087,8 +32086,8 @@ define('__component__$password-fields@husky',[], function() {
             this.sandbox.on('husky.password.fields.' + this.options.instanceName + '.get.passwords', function(callback){
 
                 if(typeof callback === 'function'){
-                    var password1 = this.sandbox.dom.val('#'+this.options.ids.inputPassword1),
-                        password2 = this.sandbox.dom.val('#'+this.options.ids.inputPassword2);
+                    var password1 = this.sandbox.dom.val('#' + this.options.ids.inputPassword1),
+                        password2 = this.sandbox.dom.val('#' + this.options.ids.inputPassword2);
                     callback(password1, password2);
                 }
 
@@ -32098,7 +32097,7 @@ define('__component__$password-fields@husky',[], function() {
 
         bindDomEvents: function() {
 
-            this.$element.on('click', '#'+this.options.ids.generateLabel, function() {
+            this.$element.on('click', '#' + this.options.ids.generateLabel, function() {
                 this.generatePasswords();
                 this.sandbox.emit('husky.passwords.fields.' + this.options.instanceName + '.generated.passwords');
             }.bind(this));
@@ -32109,8 +32108,8 @@ define('__component__$password-fields@husky',[], function() {
 
             // TODO generate password
 
-            this.sandbox.dom.val('#'+this.options.ids.inputPassword1, generatedPassword);
-            this.sandbox.dom.val('#'+this.options.ids.inputPassword2, generatedPassword);
+            this.sandbox.dom.val('#' + this.options.ids.inputPassword1, generatedPassword);
+            this.sandbox.dom.val('#' + this.options.ids.inputPassword2, generatedPassword);
         },
 
         template: function() {
@@ -32733,7 +32732,10 @@ define('__component__$column-navigation@husky',[], function() {
                 item = this.columns[this.lastHoveredColumn][id];
 
             this.sandbox.dom.stopPropagation(event);
-            this.sandbox.emit(EDIT, item);
+            // only emit type not ghost
+            if (!item[this.options.typeName] || item[this.options.typeName].name !== 'ghost') {
+                this.sandbox.emit(EDIT, item);
+            }
         },
 
         /**
@@ -32793,7 +32795,10 @@ define('__component__$column-navigation@husky',[], function() {
 
                 // icons right (subpage, edit)
                 item.push('<span class="icons-right">');
-                item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
+                // hide edit if it is ghost
+                if (!data[this.options.typeName] || data[this.options.typeName].name !== 'ghost') {
+                    item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
+                }
                 !!data[this.options.hasSubName] ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
 
@@ -37304,3 +37309,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
