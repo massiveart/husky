@@ -9,25 +9,31 @@
         vertical-align: baseline;
 
         &.general {
-            font-size: 24px;
-            width: 160px;
+            width: 140px;
+            font-weight: bold;
         }
 
         &.section {
-            width: 130px;
+            width: 180px;
+        }
+        &:not(.general):not(.section) {
+            padding-left: 3px;
         }
     }
 
     td {
         &.value {
             width: 20px;
-            padding: 4px;
+            padding: 3px;
             margin: 0;
         }
 
         &.all {
-            text-align: right;
-            padding-right: 10px;
+            text-align: left;
+            padding-left: 16px;
+        }
+        &.section {
+            color: $grayLight;
         }
     }
 
