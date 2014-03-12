@@ -121,7 +121,7 @@ define([], function() {
             this.sandbox.dom.on(this.$dropDownList, 'click', function (event) {
                 event.stopPropagation();
                 this.clickItem(this.sandbox.dom.data(event.currentTarget, 'id'));
-            }.bind(this), 'li');
+            }.bind(this), 'li:not(".divider")');
         },
 
         bindCustomEvents: function() {
@@ -204,12 +204,16 @@ define([], function() {
             this.clearDropDown();
             if (items.length > 0) {
                 items.forEach(function(item) {
-                    if (this.isVisible(item)) {
-                        var label = item[this.options.valueName];
-                        if (this.options.translateLabels) {
-                            label = this.sandbox.translate(label);
+                    if (item.divider !== true) {
+                        if (this.isVisible(item)) {
+                            var label = item[this.options.valueName];
+                            if (this.options.translateLabels) {
+                                label = this.sandbox.translate(label);
+                            }
+                            this.sandbox.dom.append(this.$dropDownList, '<li data-id="' + item.id + '">' + label + '</li>');
                         }
-                        this.sandbox.dom.append(this.$dropDownList, '<li data-id="' + item.id + '">' + label + '</li>');
+                    } else {
+                        this.sandbox.dom.append(this.$dropDownList, '<li class="divider"/>');
                     }
                 }.bind(this));
             } else {

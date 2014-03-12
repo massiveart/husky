@@ -42,6 +42,7 @@
  * @param {Boolean} [options.progressRow] has to be enabled when datagrid is editable to show progress of save action
  * @param {String} [options.columnMinWidth] sets the minimal width of table columns
  * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
+ * @param {Array} [options.showElementsSteps] Array which contains the steps for the Show-Elements-dropdown as integers
  */
 define(function() {
 
@@ -84,7 +85,8 @@ define(function() {
             addRowTop: false,
             progressRow: true,
             startTabIndex: 99999,
-            columnMinWidth: '70px'
+            columnMinWidth: '70px',
+            showElementsSteps: [10, 20, 50, 100, 500]
         },
 
         namespace = 'husky.datagrid.',
@@ -294,7 +296,6 @@ define(function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
             this.rowStructure = [];
-
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
 
             if (!!this.options.contentContainer) {
@@ -1070,6 +1071,7 @@ define(function() {
                 this.initPaginationIds();
                 this.$element.append(this.preparePagination());
                 this.preparePaginationDropdown();
+                this.prepareShowElementsDropdown();
             }
             return this;
         },
@@ -1082,7 +1084,7 @@ define(function() {
                 prevId: this.options.instance + '-prev',
                 nextId: this.options.instance + '-next',
                 dropdownId: this.options.instance + '-pagination-dropdown',
-                showAllId: this.options.instance + '-show-all'
+                showElementsId: this.options.instance + '-show-elements'
             };
         },
 
@@ -1093,20 +1095,21 @@ define(function() {
         preparePagination: function() {
             var $pagination,
                 $paginationWrapper,
-                $showAll,
+                $showElements,
                 paginationLabel;
 
+
+            $paginationWrapper = this.sandbox.dom.$('<div/>');
+            $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row small-font');
+
+            if (!!this.data.total && !!this.data.links.all) {
+                $showElements = this.sandbox.dom.$(this.templates.showElements.call(this, this.data.total, this.data.pageSize, this.pagination.showElementsId));
+                $paginationWrapper.append($showElements);
+            }
+
             if (!!this.options.pagination && parseInt(this.data.pages, 10) > 1) {
-                $paginationWrapper = this.sandbox.dom.$('<div/>');
-                $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row small-font');
-
-                if (!!this.data.total && !!this.data.links.all) {
-                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total, this.sandbox.translate('pagination.elements'), this.sandbox.translate('pagination.showAll'), this.pagination.showAllId));
-                    $paginationWrapper.append($showAll);
-                }
-
                 $pagination = this.sandbox.dom.$('<div/>');
-                $pagination.addClass('pagination grid-col-8 pull-right');
+                $pagination.addClass('pagination');
 
                 $paginationWrapper.append($pagination);
 
@@ -1152,9 +1155,50 @@ define(function() {
                 {
                     name: 'dropdown@husky',
                     options: {
-                        el: '#' + this.pagination.dropdownId,
+                        el: this.sandbox.dom.find('#' + this.pagination.dropdownId, this.$el),
                         setParentDropDown: true,
                         instanceName: this.dropdownInstanceName,
+                        alignment: 'left',
+                        data: data
+                    }
+                }
+            ]);
+        },
+
+        /**
+         * Prepares and initializes the dropdown for showing elements
+         */
+        prepareShowElementsDropdown: function() {
+            var i, length, data = [];
+
+            // add current page-size if its smaller than the smalles configured page-size
+            if (this.data.pageSize < this.options.showElementsSteps[0]) {
+                this.options.showElementsSteps.unshift(this.data.pageSize);
+            }
+
+            for(i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
+                if (this.options.showElementsSteps[i] > this.data.total) {
+                    break;
+                }
+                data.push({
+                    id: this.options.showElementsSteps[i],
+                    name: '<strong>'+ this.options.showElementsSteps[i] +'</strong> ' + this.sandbox.translate('pagination.elements-per-page')
+                });
+            }
+
+            data.push({divider: true});
+            data.push({
+               id: 0,
+               name: this.sandbox.translate('pagination.show-all-elements')
+            });
+
+            this.sandbox.start([
+                {
+                    name: 'dropdown@husky',
+                    options: {
+                        el: this.sandbox.dom.find('#' + this.pagination.showElementsId, this.$el),
+                        setParentDropDown: true,
+                        instanceName: this.dropdownInstanceName + '-show',
                         alignment: 'left',
                         data: data
                     }
@@ -1173,15 +1217,17 @@ define(function() {
 
             // when a valid uri is passed to this function - load from the uri
             if (!!uri) {
-                event.preventDefault();
+                if (!!event) {
+                    event.preventDefault();
+                }
                 url = uri;
 
                 // determine wether the page number received via the event from the dropdown is valid
             } else if (!!event.id && event.id > 0 && event.id <= this.data.pages) {
                 template = this.sandbox.uritemplate.parse(this.data.links.pagination);
-                url = this.sandbox.uritemplate.expand(template, {page: event.id});
+                url = this.sandbox.uritemplate.expand(template, {page: event.id, pageSize: this.data.pageSize});
 
-                // invalid - wether page number nor uri are valid
+                // invalid - whether page number nor uri are valid
             } else {
                 this.sandbox.logger.log("invalid page number or reached start/end!");
                 return;
@@ -1234,9 +1280,6 @@ define(function() {
 
                 // previous page
                 this.$element.on('click', '#' + this.pagination.prevId, this.changePage.bind(this, this.data.links.prev));
-
-                // show all
-                this.$element.on('click', '#' + this.pagination.showAllId, this.changePage.bind(this, this.data.links.all));
             }
 
             if (this.options.removeRow) {
@@ -1428,6 +1471,22 @@ define(function() {
 
             // pagination dropdown item clicked
             this.sandbox.on('husky.dropdown.' + this.dropdownInstanceName + '.item.click', this.changePage.bind(this, null));
+
+            // show-elements dropdown item clicked
+            this.sandbox.on('husky.dropdown.datagrid-pagination-dropdown-show.item.click', function(item) {
+                if (this.data.pageSize !== item.id) {
+                    // show all
+                    if (item.id === 0) {
+                        // only if not already all are shown
+                        if (this.data.pageSize !== this.data.total) {
+                            this.changePage(this.data.links.all);
+                        }
+                    } else {
+                        this.data.pageSize = item.id;
+                        this.changePage(null, {id: 1});
+                    }
+                }
+            }.bind(this));
 
             // listen to search events
             if (!!this.options.searchInstanceName) {
@@ -1971,8 +2030,19 @@ define(function() {
 
         templates: {
 
-            showAll: function(total, elementsLabel, showAllLabel, id) {
-                return ['<div class="show-all grid-col-4 m-top-10">', total, ' ', elementsLabel, ' (<a id="' + id + '" href="">', showAllLabel, '</a>)</div>'].join('');
+            showElements: function(total, pageSize, id) {
+                var desc = '';
+                if (total === pageSize) {
+                    desc = this.sandbox.translate('pagination.show-all-elements');
+                } else {
+                    desc = this.sandbox.translate('pagination.show') +' <strong>'+ pageSize +'</strong> '+ this.sandbox.translate('pagination.elements-of') +' '+ total;
+                }
+
+                return [
+                    '<div class="show-elements">',
+                        '<div class="dropdown-trigger" id="'+ id +'">'+ desc +'<span class="dropdown-toggle"></span></div>',
+                    '</div>'
+                ].join('');
             },
 
             removeRow: function() {

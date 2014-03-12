@@ -4,20 +4,21 @@
 
 .pagination-wrapper {
 
-    .show-all {
-        color: $grayLight;
+    &:after {
+        clear: both;
+    }
 
-        & > a,
-        & > a:hover,
-        & > a:visited {
-            text-decoration:none;
-            color: $black;
-        }
+    .show-elements {
+        float: left;
+    }
 
+    .dropdown-menu {
+        width: 200px;
     }
 
     .pagination {
         height: 30px;
+        float: right;
 
         .pagination-main {
             margin: 0;
@@ -33,7 +34,7 @@
         .pagination-prev {
             padding: 0 13px;
             border: 1px solid $grayLighter;
-            border-radius: 0 5px 5px 0;
+            border-radius: 0 4px 4px 0;
             line-height: 28px;
             height: 30px;
 
@@ -54,7 +55,7 @@
         .pagination-next {
             padding: 0 13px;
             border: 1px solid $grayLighter;
-            border-radius: 5px 0 0 5px;
+            border-radius: 4px 0 0 4px;
             line-height: 28px;
             height: 30px;
 
