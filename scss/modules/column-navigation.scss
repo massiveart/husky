@@ -108,6 +108,8 @@
     }
 
     .add {
+        display: inline-block;
+        width: 50%;
         background-color: $accentColor;
         padding: 5px 0;
         color: $white;
@@ -118,6 +120,8 @@
     }
 
     .settings {
+        display: inline-block;
+        width: 50%;
         background-color: $grayLighter;
         padding: 5px 0;
         border-bottom-right-radius: 5px;

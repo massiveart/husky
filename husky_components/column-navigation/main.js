@@ -734,13 +734,13 @@ define([], function() {
 
             options: {
                 add: function(id) {
-                    return ['<div id="',id,'" class="align-center grid-col-6 add pointer">',
+                    return ['<div id="',id,'" class="align-center add pointer">',
                         '<span class="icon-add"></span>',
                         '</div>'].join('');
                 },
 
                 settings: function(id) {
-                    return ['<div id="',id,'" class="align-center grid-col-6 settings pointer drop-down-trigger">',
+                    return ['<div id="',id,'" class="align-center settings pointer drop-down-trigger">',
                         '<span class="icon-cogwheel inline-block"></span><span class="dropdown-toggle inline-block"></span>',
                         '</div>'].join('');
                 }

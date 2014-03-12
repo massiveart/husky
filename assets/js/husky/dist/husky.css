@@ -6225,6 +6225,8 @@ a.btn-black, a.btn-highlight {
 }
 /* line 110, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .add {
+  display: inline-block;
+  width: 50%;
   background-color: #009fc0;
   padding: 5px 0;
   color: white;
@@ -6232,8 +6234,10 @@ a.btn-black, a.btn-highlight {
   -webkit-border-bottom-left-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
 }
-/* line 120, ../scss/modules/column-navigation.scss */
+/* line 122, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .settings {
+  display: inline-block;
+  width: 50%;
   background-color: #cccccc;
   padding: 5px 0;
   border-bottom-right-radius: 5px;
