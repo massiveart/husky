@@ -67,7 +67,7 @@ define(function() {
             contentContainer: null,
             removeRow: true,
             selectItem: {
-                type: null,      // checkbox, radiobutton
+                type: null,      // checkbox, radio button
                 width: '50px'    // numerous value
                 //clickable: false   // defines if background is clickable TODO do not use until fixed
             },
@@ -362,7 +362,7 @@ define(function() {
         },
 
         /**
-         * parses fields data retreived from api
+         * parses fields data retrieved from api
          * @param fields
          * @returns {{columns: Array, urlFields: string}}
          */
@@ -411,31 +411,13 @@ define(function() {
          */
         load: function(params) {
 
-            /*
-             * TODO do that: this.sandbox.util.load
-             * this.sandbox.util.load(url)
-             *      .then(function(response) {
-             *      }.bind(this))
-             *      .fail(function(error) {
-             *      }.bind(this));
-             */
-            this.sandbox.util.ajax({
-
-                url: this.getUrl(params),
-                data: params.data,
-
-                error: function(jqXHR, textStatus, errorThrown) {
-                    this.sandbox.logger.log("An error occured while fetching data from: " + this.getUrl(params));
-                    this.sandbox.logger.log("textstatus: " + textStatus);
-                    this.sandbox.logger.log("errorthrown", errorThrown);
-                }.bind(this),
-
-                success: function(response) {
-
+            this.sandbox.util.load(this.getUrl(params), params.data)
+                .then(function(response) {
                     this.initRender(response, params);
-
-                }.bind(this)
-            });
+                }.bind(this))
+                .fail(function(status, error) {
+                    this.sandbox.logger.error(status, error);
+                }.bind(this));
         },
 
 
@@ -443,19 +425,15 @@ define(function() {
          * Initializes the rendering of the datagrid
          */
         initRender: function(response, params) {
-            // TODO adjust when new api is finished and no backwards compatibility needed
-            if (!!response.items) {
-                this.data = response;
-            } else {
-                this.data = {};
-                this.data.links = response._links;
-                this.data.embedded = response._embedded;
-                this.data.total = response.total;
-                this.data.page = response.page;
-                this.data.pages = response.pages;
-                this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
-                this.data.pageDisplay = this.options.paginationOptions.showPages;
-            }
+
+            this.data = {};
+            this.data.links = response._links;
+            this.data.embedded = response._embedded;
+            this.data.total = response.total;
+            this.data.page = response.page;
+            this.data.pages = response.pages;
+            this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
+            this.data.pageDisplay = this.options.paginationOptions.showPages;
 
             this.prepare()
                 .appendPagination()
@@ -477,8 +455,7 @@ define(function() {
          */
         getUrl: function(params) {
 
-            // TODO adjust when new api is finished and no backwards compatibility needed
-            if (!!this.data && this.data.links) {
+            if (!!this.data && !!this.data.links) {
                 return params.url;
             }
 
@@ -533,8 +510,7 @@ define(function() {
                 $table.append($thead);
             }
 
-            // TODO adjust when api is fully implemented and no backwards compatibility needed
-            if (!!this.data.items || !!this.data.embedded) {
+            if (!!this.data.embedded) {
                 if (!!this.options.appendTBody) {
                     $tbody = this.sandbox.dom.$('<tbody/>');
                 }
@@ -597,7 +573,6 @@ define(function() {
 
                 isSortable = false;
 
-                // TODO adjust when new api fully implemented and no backwards compatibility needed
                 if (!!this.data.links && !!this.data.links.sortable) {
 
                     //is column sortable - check with received sort-links
@@ -658,7 +633,7 @@ define(function() {
 
             // remove-row entry
             if (this.options.removeRow || this.options.progressRow) {
-                tblColumns.push('<th width="30px"/>');
+                tblColumns.push('<th style="width:30px;"/>');
             }
 
             return '<tr>' + tblColumns.join('') + '</tr>';
@@ -667,7 +642,7 @@ define(function() {
         /**
          * returns number and unit
          * @param numberUnit
-         * @returns {{number: {Number}, unit: {String}}}
+         * @returns {{number: Number, unit: *}}
          */
         getNumberAndUnit: function(numberUnit) {
             numberUnit = String(numberUnit);
@@ -689,14 +664,9 @@ define(function() {
             tblRows = [];
             this.allItemIds = [];
 
-            // TODO adjust when new api is fully implemented and no backwards compatibility needed
-            if (!!this.data.items) {
-                this.data.items.forEach(function(row) {
-                    tblRows.push(this.prepareTableRow(row));
-                }.bind(this));
-            } else if (!!this.data.embedded) {
+            if (!!this.data.embedded) {
                 this.data.embedded.forEach(function(row) {
-                    tblRows.push(this.prepareTableRow(row));
+                    tblRows.push(this.prepareTableRow(row, false));
                 }.bind(this));
             }
 
@@ -717,7 +687,7 @@ define(function() {
 
             } else {
 
-                var radioPrefix, key;
+                var radioPrefix, key, i;
                 this.tblColumns = [];
                 this.tblRowAttributes = ' data-dom-id="dom-' + this.options.instance + '-' + this.domId + '"';
                 this.domId++;
@@ -759,9 +729,11 @@ define(function() {
                     }.bind(this));
 
                 } else {
+                    i = 0;
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                            this.createRowCell(key, row[key], false, null, triggeredByAddRow);
+                            this.createRowCell(key, row[key], false, null, triggeredByAddRow, i);
+                            i++;
                         }
                     }
                 }
@@ -1056,7 +1028,7 @@ define(function() {
          */
         removeRow: function(event) {
 
-            var $element, $tblRow, id, $editableElements;
+            var $element, $tblRow, id, $editableElements, $checkboxes;
 
             if (typeof event === 'object') {
                 $element = this.sandbox.dom.$(event.currentTarget);
@@ -1077,6 +1049,14 @@ define(function() {
 
             this.sandbox.emit(ROW_REMOVED, event);
             this.sandbox.dom.remove($tblRow);
+
+            // when last table row was removed, uncheck thead checkbox if exists
+            $checkboxes = this.sandbox.dom.find('input[type=checkbox]', this.$el);
+            if ($checkboxes.length === 1) {
+                this.sandbox.dom.removeClass('is-selected', $checkboxes[0]);
+                this.sandbox.dom.prop($checkboxes[0], 'checked', false);
+            }
+
         },
 
         // TODO: create pagination module
@@ -1086,7 +1066,6 @@ define(function() {
          */
         appendPagination: function() {
 
-            // TODO adjust when api is finished
             if (this.options.pagination && !!this.data.links) {
                 this.initPaginationIds();
                 this.$element.append(this.preparePagination());
@@ -1826,7 +1805,6 @@ define(function() {
          * is called when columns are changed
          */
         filterColumns: function(fieldsData) {
-
 
             var template, url,
                 parsed = this.parseFieldsData(fieldsData);
