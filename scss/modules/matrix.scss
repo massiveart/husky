@@ -38,9 +38,9 @@
     }
 
     span[class^="icon-"] {
-        opacity: 0.2;
 
-        border: 1px solid #000;
+        border: 1px solid $black;
+        color: $black;
         border-radius: 12px;
 
         width: 24px;
@@ -51,7 +51,9 @@
         text-align: center;
 
         &.is-active {
-            opacity: 1;
+            color: $white;
+            border-color: $green;
+            background-color: $green;
         }
     }
 }

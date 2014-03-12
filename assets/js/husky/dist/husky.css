@@ -6037,8 +6037,8 @@ a.btn-black, a.btn-highlight {
 }
 /* line 40, ../scss/modules/matrix.scss */
 .table.matrix span[class^="icon-"] {
-  opacity: 0.2;
-  border: 1px solid #000;
+  border: 1px solid black;
+  color: black;
   border-radius: 12px;
   width: 24px;
   height: 24px;
@@ -6048,7 +6048,9 @@ a.btn-black, a.btn-highlight {
 }
 /* line 53, ../scss/modules/matrix.scss */
 .table.matrix span[class^="icon-"].is-active {
-  opacity: 1;
+  color: white;
+  border-color: #1fca23;
+  background-color: #1fca23;
 }
 
 /* line 13, ../scss/modules/validation.scss */
