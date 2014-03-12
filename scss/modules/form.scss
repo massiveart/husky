@@ -125,7 +125,7 @@ label {
 // Checkboxes
 // -------------------------
 .custom-checkbox {
-    $checkboxSize: 14px;
+    $checkboxSize: 15px;
     $checkboxIconFont: $baseIconFont;
     $checkboxIcon: "\e207";
 
@@ -138,6 +138,9 @@ label {
     &:checked,
     &.is-checked {
         & + .custom-checkbox-icon {
+            border-color: $green;
+            background-color: $green;
+            color: $white;
             &::after {
                 content: $checkboxIcon;
                 position: relative;
