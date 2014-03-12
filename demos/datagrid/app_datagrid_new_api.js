@@ -48,6 +48,7 @@ require(['lib/husky'], function(Husky) {
             '{ "id": "12", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
             '],' +
             '"total":12,' +
+            '"numberOfAll": 12,' +
             '"pages": 1,' +
             '"page": 1,' +
             '"pageSize": 12' +
@@ -80,7 +81,8 @@ require(['lib/husky'], function(Husky) {
             '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
             '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
             '],' +
-            '"total":12,' +
+            '"total": 4,' +
+            '"numberOfAll": 12,' +
             '"pages": 3,' +
             '"page": 1,' +
             '"pageSize": 4' +
@@ -114,7 +116,8 @@ require(['lib/husky'], function(Husky) {
             '{ "id": "3", "content1": "B Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
             '{ "id": "4", "content1": "A Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
             '],' +
-            '"total":12,' +
+            '"total": 4,' +
+            '"numberOfAll": 12,' +
             '"pages": 3,' +
             '"page": 1,' +
             '"pageSize": 4' +
@@ -148,7 +151,8 @@ require(['lib/husky'], function(Husky) {
             '{ "id": "3", "content1": "C Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
             '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
             '],' +
-            '"total":12,' +
+            '"total": 4,' +
+            '"numberOfAll": 12,' +
             '"pages": 3,' +
             '"page": 1,' +
             '"pageSize": 4' +
@@ -182,7 +186,8 @@ require(['lib/husky'], function(Husky) {
             '{ "id": "3", "content1": "C Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
             '{ "id": "4", "content1": "D Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
             '],' +
-            '"total":12,' +
+            '"total": 4,' +
+            '"numberOfAll": 12,' +
             '"pages": 3,' +
             '"page": 1,' +
             '"pageSize": 4' +
@@ -215,7 +220,8 @@ require(['lib/husky'], function(Husky) {
             '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } },' +
             '{ "id": "4", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
             '],' +
-            '"total":12,' +
+            '"total": 2,' +
+            '"numberOfAll": 12,' +
             '"pages": 3,' +
             '"page": 1,' +
             '"pageSize": 4' +
@@ -251,7 +257,8 @@ require(['lib/husky'], function(Husky) {
             '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
             '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
             '],' +
-            '"total":12,' +
+            '"total": 4,' +
+            '"numberOfAll": 12,' +
             '"pages": 3,' +
             '"page": 1,' +
             '"pageSize": 4' +
@@ -287,7 +294,8 @@ require(['lib/husky'], function(Husky) {
             '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
             '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
             '],' +
-            '"total":12,' +
+            '"total": 4,' +
+            '"numberOfAll": 12,' +
             '"pages": 3,' +
             '"page": 1,' +
             '"pageSize": 4' +
@@ -322,7 +330,8 @@ require(['lib/husky'], function(Husky) {
             '{ "id": "3", "content1": "C Hallo 1.1 1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
             '{ "id": "4", "content1": "D Hallo 1.1 1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
             '],' +
-            '"total":12,' +
+            '"total": 4,' +
+            '"numberOfAll": 12,' +
             '"pages": 3,' +
             '"page": 1,' +
             '"pageSize": 4' +
@@ -363,7 +372,8 @@ require(['lib/husky'], function(Husky) {
             '{ "id": "9", "content1": "B Hallo 1.1 1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
             '{ "id": "10", "content1": "A Hallo 1.1 1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } } ' +
             '],' +
-            '"total":12,' +
+            '"total": 10,' +
+            '"numberOfAll": 12,' +
             '"pages": 3,' +
             '"page": 1,' +
             '"pageSize": 10' +
@@ -413,7 +423,8 @@ require(['lib/husky'], function(Husky) {
             '{ "id": "3", "content1": "C Hallo 1.1 2", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
             '{ "id": "4", "content1": "D Hallo 1.1 2", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
             '],' +
-            '"total":12,' +
+            '"total": 4,' +
+            '"numberOfAll": 12,' +
             '"pages": 3,' +
             '"pageSize": 4,' +
             '"page": 2' +
@@ -447,7 +458,8 @@ require(['lib/husky'], function(Husky) {
             '{ "id": "3", "content1": "C Hallo 1.1 3", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
             '{ "id": "4", "content1": "D Hallo 1.1 3", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
             '],'+
-            '"total":12,'+
+            '"total": 4,'+
+            '"numberOfAll": 12,' +
             '"pages": 3,' +
             '"pageSize": 4,' +
             '"page": 3' +
@@ -480,7 +492,8 @@ require(['lib/husky'], function(Husky) {
             '{ "id": "3", "content1": "C Hallo  asdfd1.1 3", "content2": "D Hallo 1.2 asdf", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
             '{ "id": "4", "content1": "D Hallo sdf 1.1 3", "content2": "A asdf asdf sdf sHallo 1.2", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
             '],' +
-            '"total":12,' +
+            '"total": 4,' +
+            '"numberOfAll": 12,' +
             '"pages": 3,' +
             '"pageSize": 4,' +
             '"page": 1' +

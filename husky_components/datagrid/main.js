@@ -253,14 +253,14 @@ define(function() {
 
             var elWidth, el,
                 sortIconWidth = 0,
-                paddings = 16;
+                paddings = 20;
             // handle css classes
             if (!classArray) {
                 classArray = [];
             }
             if (isSortable) {
                 classArray.push('is-sortable');
-                sortIconWidth = 18 + 5;
+                sortIconWidth = 20;
             }
             classArray.push('is-selected');
 
@@ -431,6 +431,7 @@ define(function() {
             this.data.links = response._links;
             this.data.embedded = response._embedded;
             this.data.total = response.total;
+            this.data.numberOfAll = response.numberOfAll;
             this.data.page = response.page;
             this.data.pages = response.pages;
             this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
@@ -1103,7 +1104,7 @@ define(function() {
             $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row small-font');
 
             if (!!this.data.total && !!this.data.links.all) {
-                $showElements = this.sandbox.dom.$(this.templates.showElements.call(this, this.data.total, this.data.pageSize, this.pagination.showElementsId));
+                $showElements = this.sandbox.dom.$(this.templates.showElements.call(this, this.pagination.showElementsId));
                 $paginationWrapper.append($showElements);
             }
 
@@ -1177,7 +1178,7 @@ define(function() {
             }
 
             for(i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
-                if (this.options.showElementsSteps[i] > this.data.total) {
+                if (this.options.showElementsSteps[i] > this.data.numberOfAll) {
                     break;
                 }
                 data.push({
@@ -1474,11 +1475,11 @@ define(function() {
 
             // show-elements dropdown item clicked
             this.sandbox.on('husky.dropdown.datagrid-pagination-dropdown-show.item.click', function(item) {
-                if (this.data.pageSize !== item.id) {
+                if (this.data.pageSize !== item.id || this.data.total === this.data.numberOfAll) {
                     // show all
                     if (item.id === 0) {
                         // only if not already all are shown
-                        if (this.data.pageSize !== this.data.total) {
+                        if (this.data.total !== this.data.numberOfAll) {
                             this.changePage(this.data.links.all);
                         }
                     } else {
@@ -2008,7 +2009,7 @@ define(function() {
             return this.$element.outerHeight("").outerWidth("");
             this.sandbox.stop(this.sandbox.dom.find('.datagrid-loader', this.$element));
 
-            return this.$element
+            return this.$element;
         },
 
         /**
@@ -2030,12 +2031,12 @@ define(function() {
 
         templates: {
 
-            showElements: function(total, pageSize, id) {
+            showElements: function(id) {
                 var desc = '';
-                if (total === pageSize) {
+                if (this.data.total === this.data.numberOfAll) {
                     desc = this.sandbox.translate('pagination.show-all-elements');
                 } else {
-                    desc = this.sandbox.translate('pagination.show') +' <strong>'+ pageSize +'</strong> '+ this.sandbox.translate('pagination.elements-of') +' '+ total;
+                    desc = this.sandbox.translate('pagination.show') +' <strong>'+ this.data.total +'</strong> '+ this.sandbox.translate('pagination.elements-of') +' '+ this.data.numberOfAll;
                 }
 
                 return [

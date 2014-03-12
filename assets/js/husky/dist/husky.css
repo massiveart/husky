@@ -4808,34 +4808,44 @@ li a.navigation-settings-icon {
 }
 /* line 40, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul > li {
-  padding: 5px 20px;
+  padding: 0 20px;
+  line-height: 30px;
   text-align: left;
 }
-/* line 44, ../scss/modules/dropdown.scss */
+/* line 45, ../scss/modules/dropdown.scss */
 .dropdown-menu > ul > li:hover, .column-navigation-wrapper .column-navigation .column .dropdown-menu > ul > li.selected, .dropdown-menu > ul > li.hover {
   background-color: #249fbe;
   cursor: pointer;
   color: white;
 }
+/* line 50, ../scss/modules/dropdown.scss */
+.dropdown-menu > ul > li.divider {
+  height: 1px;
+  margin: 5px 0 10px 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #dddddd;
+  cursor: default;
+}
 
-/* line 53, ../scss/modules/dropdown.scss */
+/* line 62, ../scss/modules/dropdown.scss */
 .dropdown-align-right {
   right: 0;
   left: inherit;
 }
 
-/* line 58, ../scss/modules/dropdown.scss */
+/* line 67, ../scss/modules/dropdown.scss */
 .dropdown-footer {
   border-top: 1px solid #ccc;
   padding: 10px 10px;
 }
 
-/* line 63, ../scss/modules/dropdown.scss */
+/* line 72, ../scss/modules/dropdown.scss */
 .dropdown-toggle {
-  display: block;
+  display: inline-block;
   cursor: pointer;
 }
-/* line 66, ../scss/modules/dropdown.scss */
+/* line 75, ../scss/modules/dropdown.scss */
 .dropdown-toggle::after {
   content: "";
   display: inline-block;
@@ -4847,6 +4857,17 @@ li a.navigation-settings-icon {
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
   border-top: 6px solid #000;
+}
+
+/* line 90, ../scss/modules/dropdown.scss */
+.dropdown-trigger {
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  padding: 0 10px;
+  cursor: pointer;
 }
 
 /** navigation container **/
@@ -5274,19 +5295,23 @@ a.btn-black, a.btn-highlight {
 }
 
 /* line 7, ../scss/modules/pagination.scss */
-.pagination-wrapper .show-all {
-  color: #999999;
+.pagination-wrapper:after {
+  clear: both;
 }
-/* line 12, ../scss/modules/pagination.scss */
-.pagination-wrapper .show-all > a, .pagination-wrapper .show-all > a:hover, .pagination-wrapper .show-all > a:visited {
-  text-decoration: none;
-  color: black;
+/* line 11, ../scss/modules/pagination.scss */
+.pagination-wrapper .show-elements {
+  float: left;
+}
+/* line 15, ../scss/modules/pagination.scss */
+.pagination-wrapper .dropdown-menu {
+  width: 200px;
 }
 /* line 19, ../scss/modules/pagination.scss */
 .pagination-wrapper .pagination {
   height: 30px;
+  float: right;
 }
-/* line 22, ../scss/modules/pagination.scss */
+/* line 23, ../scss/modules/pagination.scss */
 .pagination-wrapper .pagination .pagination-main {
   margin: 0;
   display: inline-block;
@@ -5297,15 +5322,15 @@ a.btn-black, a.btn-highlight {
   line-height: 28px;
   height: 30px;
 }
-/* line 33, ../scss/modules/pagination.scss */
+/* line 34, ../scss/modules/pagination.scss */
 .pagination-wrapper .pagination .pagination-prev {
   padding: 0 13px;
   border: 1px solid #cccccc;
-  border-radius: 0 5px 5px 0;
+  border-radius: 0 4px 4px 0;
   line-height: 28px;
   height: 30px;
 }
-/* line 40, ../scss/modules/pagination.scss */
+/* line 41, ../scss/modules/pagination.scss */
 .pagination-wrapper .pagination .pagination-prev::after {
   content: "";
   display: inline-block;
@@ -5318,15 +5343,15 @@ a.btn-black, a.btn-highlight {
   border-bottom: 7px solid transparent;
   border-left: 10px solid #000;
 }
-/* line 54, ../scss/modules/pagination.scss */
+/* line 55, ../scss/modules/pagination.scss */
 .pagination-wrapper .pagination .pagination-next {
   padding: 0 13px;
   border: 1px solid #cccccc;
-  border-radius: 5px 0 0 5px;
+  border-radius: 4px 0 0 4px;
   line-height: 28px;
   height: 30px;
 }
-/* line 61, ../scss/modules/pagination.scss */
+/* line 62, ../scss/modules/pagination.scss */
 .pagination-wrapper .pagination .pagination-next::after {
   content: "";
   display: inline-block;
@@ -6899,33 +6924,34 @@ a.btn-black, a.btn-highlight {
 .husky-datagrid thead th {
   padding-top: 0;
   font-weight: normal;
+  white-space: nowrap;
 }
-/* line 33, ../scss/modules/datagrid.scss */
+/* line 34, ../scss/modules/datagrid.scss */
 .husky-datagrid thead th.is-sortable {
   color: black;
   cursor: pointer;
 }
-/* line 37, ../scss/modules/datagrid.scss */
+/* line 38, ../scss/modules/datagrid.scss */
 .husky-datagrid thead th.is-selected {
   font-weight: bold;
 }
-/* line 42, ../scss/modules/datagrid.scss */
+/* line 43, ../scss/modules/datagrid.scss */
 .husky-datagrid thead .table-container {
   width: 100%;
 }
-/* line 48, ../scss/modules/datagrid.scss */
+/* line 49, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:last-child {
   border-width: 2px;
 }
-/* line 51, ../scss/modules/datagrid.scss */
+/* line 52, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody .check {
   padding-left: 12px;
 }
-/* line 56, ../scss/modules/datagrid.scss */
+/* line 57, ../scss/modules/datagrid.scss */
 .husky-datagrid .table-container {
   overflow: auto;
 }
-/* line 59, ../scss/modules/datagrid.scss */
+/* line 60, ../scss/modules/datagrid.scss */
 .husky-datagrid .table-container.overflow:after {
   color: #cccccc;
   font-size: 22px;
@@ -6935,18 +6961,18 @@ a.btn-black, a.btn-highlight {
   right: -35px;
   top: 40%;
 }
-/* line 70, ../scss/modules/datagrid.scss */
+/* line 71, ../scss/modules/datagrid.scss */
 .husky-datagrid .datagrid-loader {
   position: absolute;
   top: 50%;
   left: 50%;
   margin: -50px 0 0 -50px;
 }
-/* line 77, ../scss/modules/datagrid.scss */
+/* line 78, ../scss/modules/datagrid.scss */
 .husky-datagrid .dropdown-menu {
   margin-top: 5px;
 }
-/* line 80, ../scss/modules/datagrid.scss */
+/* line 81, ../scss/modules/datagrid.scss */
 .husky-datagrid .dropdown-toggle::after {
   margin-left: 12px;
 }
