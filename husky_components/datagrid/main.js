@@ -1103,7 +1103,8 @@ define(function() {
             $paginationWrapper = this.sandbox.dom.$('<div/>');
             $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row small-font');
 
-            if (!!this.data.total && !!this.data.links.all) {
+            // if first defined step is bigger than the number of all elements don't display show-elements dropdown
+            if (this.data.numberOfAll > this.options.showElementsSteps[0]) {
                 $showElements = this.sandbox.dom.$(this.templates.showElements.call(this, this.pagination.showElementsId));
                 $paginationWrapper.append($showElements);
             }
@@ -1171,11 +1172,6 @@ define(function() {
          */
         prepareShowElementsDropdown: function() {
             var i, length, data = [];
-
-            // add current page-size if its smaller than the smalles configured page-size
-            if (this.data.pageSize < this.options.showElementsSteps[0]) {
-                this.options.showElementsSteps.unshift(this.data.pageSize);
-            }
 
             for(i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
                 if (this.options.showElementsSteps[i] > this.data.numberOfAll) {

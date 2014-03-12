@@ -26984,7 +26984,8 @@ define('__component__$datagrid@husky',[],function() {
             $paginationWrapper = this.sandbox.dom.$('<div/>');
             $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row small-font');
 
-            if (!!this.data.total && !!this.data.links.all) {
+            // if first defined step is bigger than the number of all elements don't display show-elements dropdown
+            if (this.data.numberOfAll > this.options.showElementsSteps[0]) {
                 $showElements = this.sandbox.dom.$(this.templates.showElements.call(this, this.pagination.showElementsId));
                 $paginationWrapper.append($showElements);
             }
@@ -27052,11 +27053,6 @@ define('__component__$datagrid@husky',[],function() {
          */
         prepareShowElementsDropdown: function() {
             var i, length, data = [];
-
-            // add current page-size if its smaller than the smalles configured page-size
-            if (this.data.pageSize < this.options.showElementsSteps[0]) {
-                this.options.showElementsSteps.unshift(this.data.pageSize);
-            }
 
             for(i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
                 if (this.options.showElementsSteps[i] > this.data.numberOfAll) {
@@ -32962,13 +32958,13 @@ define('__component__$column-navigation@husky',[], function() {
 
             options: {
                 add: function(id) {
-                    return ['<div id="',id,'" class="align-center grid-col-6 add pointer">',
+                    return ['<div id="',id,'" class="align-center add pointer">',
                         '<span class="icon-add"></span>',
                         '</div>'].join('');
                 },
 
                 settings: function(id) {
-                    return ['<div id="',id,'" class="align-center grid-col-6 settings pointer drop-down-trigger">',
+                    return ['<div id="',id,'" class="align-center settings pointer drop-down-trigger">',
                         '<span class="icon-cogwheel inline-block"></span><span class="dropdown-toggle inline-block"></span>',
                         '</div>'].join('');
                 }
