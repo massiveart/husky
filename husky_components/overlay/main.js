@@ -165,7 +165,7 @@ define([], function() {
             this.sandbox.dom.off(this.overlay.$el);
             this.sandbox.dom.remove(this.overlay.$el);
             this.sandbox.dom.off(this.$backdrop);
-            this.sandbox.dom.remove(thisthis.$backdrop);
+            this.sandbox.dom.remove(this.$backdrop);
             this.sandbox.dom.off(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName);
             this.sandbox.stop(this.$el);
         },
@@ -204,7 +204,6 @@ define([], function() {
             //only open if closed
             if (this.overlay.opened === false) {
                 //init backrop element
-                console.log(this.$backdrop);
                 if (this.$backdrop === null && this.options.backdrop === true) {
                     this.initBackdrop();
                 }
