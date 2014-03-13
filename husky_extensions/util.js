@@ -41,13 +41,14 @@ define(function() {
                 }
             };
 
-            app.core.util.load = function(url) {
+            app.core.util.load = function(url, data) {
                 var deferred = new app.sandbox.data.deferred();
 
                 app.logger.log('load', url);
 
                 app.sandbox.util.ajax({
                     url: url,
+                    data: data || null,
 
                     success: function(data, textStatus) {
                         app.logger.log('data loaded', data, textStatus);
