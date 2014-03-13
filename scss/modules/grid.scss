@@ -205,7 +205,7 @@ $grid-margin-bottom-small: 10px;
     width: 100%;
 
     &.floating {
-        &:nth-child(n+1) {
+        &:nth-child(n+2) {
             margin-top: $grid-margin-bottom;
         }
         &:nth-child(n) {

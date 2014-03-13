@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -16321,6 +16322,7 @@ define('aura/ext/components', [],function() {
   };
 });
 
+
 /*
  * This file is part of the Husky Validation.
  *
@@ -17010,27 +17012,54 @@ define('form/mapper',[
                 initialize: function() {
                     Util.debug('INIT Mapper');
 
+                    this.collections = [];
+
                     form.initialized.then(function() {
                         var selector = '*[data-type="collection"]',
                             $elements = form.$el.find(selector);
 
                         $elements.each(that.initCollection.bind(this));
-                    });
+                    }.bind(this));
                 },
 
                 initCollection: function(key, value) {
                     var $element = $(value),
-                        element = $element.data('element');
+                        element = $element.data('element'),
+                        property = $element.data('mapper-property');
 
-                    // save first child element
-                    element.$children = $element.children().first().clone();
-                    element.$children.find('*').removeAttr('id');
+                    if ($.isArray(property) || typeof property === 'object') {
+                        var $newChild;
+                        // special case: collection array
+                        element.$children = $element.children().clone(true);
+                        element.$children.each(function(i, child) {
+                            // if template is markuped as '<script>'
+                            var $child = $(child);
+                            if ($child.is('script')) {
+                                $newChild = $($child.html());
+                                $newChild.attr('data-mapper-property-tpl', $child.data('mapper-property-tpl'));
+                                element.$children[i] = $newChild;
+                            } else {
+                                element.$children[i] = $child;
+                            }
+                        });
+                    } else {
+                        // save first child element
+                        element.$children = $element.children().first().clone();
+                        element.$children.find('*').removeAttr('id');
+                    }
+
+                    // add to collections
+                    this.collections.push({
+                        property: property,
+                        $element: $element,
+                        element: element
+                    });
 
                     // init add button
-                    form.$el.on('click', '*[data-mapper-add="' + $element.data('mapper-property') + '"]', that.addClick.bind(this));
+                    form.$el.on('click', '*[data-mapper-add="' + property + '"]', that.addClick.bind(this));
 
                     // init remove button
-                    form.$el.on('click', '*[data-mapper-remove="' + $element.data('mapper-property') + '"]', that.removeClick.bind(this));
+                    form.$el.on('click', '*[data-mapper-remove="' + property + '"]', that.removeClick.bind(this));
                 },
 
                 addClick: function(event) {
@@ -17042,7 +17071,7 @@ define('form/mapper',[
                     if (collectionElement.getType().canAdd()) {
                         that.appendChildren.call(this, $collectionElement, collectionElement.$children);
 
-                        $('#current-counter-' + $collectionElement.data('mapper-property')).text($collectionElement.children().length);
+//                        $('#current-counter-' + $collectionElement.data('mapper-property')).text($collectionElement.children().length);
                     }
                 },
 
@@ -17056,11 +17085,11 @@ define('form/mapper',[
                     if (collectionElement.getType().canRemove()) {
                         that.remove.call(this, $element);
 
-                        $('#current-counter-' + $collectionElement.data('mapper-property')).text($collectionElement.children().length);
+//                        $('#current-counter-' + $collectionElement.data('mapper-property')).text($collectionElement.children().length);
                     }
                 },
 
-                processData: function(el) {
+                processData: function(el, prop) {
                     // get attributes
                     var $el = $(el),
                         type = $el.data('type'),
@@ -17078,27 +17107,28 @@ define('form/mapper',[
                     } else {
                         result = [];
                         $.each($el.children(), function(key, value) {
-                            item = form.mapper.getData($(value));
+                            if (!prop || prop.tpl === value.dataset.mapperPropertyTpl) {
+                                item = form.mapper.getData($(value));
 
-                            var keys = Object.keys(item);
-                            if (keys.length === 1) { // for value only collection
-                                if (item[keys[0]] !== '') {
-                                    result.push(item[keys[0]]);
+                                var keys = Object.keys(item);
+                                if (keys.length === 1) { // for value only collection
+                                    if (item[keys[0]] !== '') {
+                                        result.push(item[keys[0]]);
+                                    }
+                                } else if (!filters[property] || (!!filters[property] && filters[property](item))) {
+                                    result.push(item);
                                 }
-                            } else if (!filters[property] || (!!filters[property] && filters[property](item))) {
-                                result.push(item);
                             }
                         });
                         return result;
                     }
                 },
 
-                setCollectionData: function(collection, $el) {
+                setCollectionData: function(collection, collectionElement) {
 
                     // remember first child remove the rest
-                    var $element = $($el[0]),
-                        collectionElement = $element.data('element'),
-                        $child = collectionElement.$children,
+                    var $element = collectionElement.$element,
+                        $child = collectionElement.$child ? collectionElement.$child : collectionElement.element.$children,
                         count = collection.length,
                         dfd = $.Deferred(),
                         resolve = function() {
@@ -17123,13 +17153,13 @@ define('form/mapper',[
                     });
 
                     // set current length of collection
-                    $('#current-counter-' + $element.data('mapper-property')).text(collection.length);
+//                    $('#current-counter-' + $element.data('mapper-property')).text(collection.length);
 
                     return dfd.promise();
                 },
 
                 appendChildren: function($element, $child) {
-                    var $newElement = $child.clone(),
+                    var $newElement = $child.clone(true),
                         $newFields = Util.getFields($newElement),
                         dfd = $.Deferred(),
                         counter = $newFields.length,
@@ -17201,18 +17231,33 @@ define('form/mapper',[
                     } else if (data !== null && !$.isEmptyObject(data)) {
                         count = Object.keys(data).length;
                         $.each(data, function(key, value) {
-                            // search field with mapper property
-                            var selector = '*[data-mapper-property="' + key + '"]',
-                                $element = $el.find(selector),
+                            var $element, element, colprop,
+                                // search for occurence  in collections
+                                collection = $.grep(this.collections, function(col) {
+                                    // if collection is array and "data" == key
+                                    if ($.isArray(col.property) && (colprop = $.grep(col.property, function(prop){return prop.data === key;})).length > 0) {
+                                        // get template of collection
+                                        col.$child = $($.grep(col.element.$children, function(el) {
+                                            return (el.data('mapper-property-tpl') === colprop[0].tpl);
+                                        })[0]);
+
+                                        return true;
+                                    }
+                                    return col.property === key; // TODO: return false, when collection only accepts array of objects anymore
+                                });
+
+                            // if field is a collection
+                            if ($.isArray(value) && collection.length > 0) {
+                                that.setCollectionData.call(this, value, collection[0]).then(function() {
+                                    resolve();
+                                });
+                            } else {
+                                // search field with mapper property
+                                selector = '*[data-mapper-property="' + key + '"]';
+                                $element = $el.find(selector);
                                 element = $element.data('element');
 
-                            if ($element.length > 0) {
-                                // if field is an collection
-                                if ($.isArray(value) && $element.data('type') === 'collection') {
-                                    that.setCollectionData.call(this, value, $element).then(function() {
-                                        resolve();
-                                    });
-                                } else {
+                                if ($element.length > 0) {
                                     // if element is not in form add it
                                     if (!element) {
                                         element = form.addField($element);
@@ -17226,9 +17271,9 @@ define('form/mapper',[
                                         // resolve this set data
                                         resolve();
                                     }
+                                } else {
+                                    resolve();
                                 }
-                            } else {
-                                resolve();
                             }
                         }.bind(this));
                     } else {
@@ -17255,7 +17300,13 @@ define('form/mapper',[
                         $childElement = $($elements.get(0));
                         property = $childElement.data('mapper-property');
 
-                        if (property.match(/.*\..*/)) {
+
+                        if ($.isArray(property)) {
+                            // special case: collection array
+                            $.each(property, function(i, prop) {
+                                data[prop.data] = that.processData.call(this, $childElement, prop);
+                            }.bind(this));
+                        } else if (property.match(/.*\..*/)) {
                             parts = property.split('.');
                             data[parts[0]] = {};
                             data[parts[0]][parts[1]] = that.processData.call(this, $childElement);
@@ -18420,7 +18471,6 @@ define('validator/regex',[
     };
 
 });
-
 
 define("husky-validation", function(){});
 
@@ -28289,6 +28339,7 @@ define('__component__$dropdown@husky',[], function() {
             // on click on trigger outside check
             this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.show(this.$dropDown);
+            this.sandbox.dom.addClass(this.$el,'is-active');
         },
 
         // hide dropDown
@@ -28297,6 +28348,7 @@ define('__component__$dropdown@husky',[], function() {
             // remove global click event
             this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.hide(this.$dropDown);
+            this.sandbox.dom.removeClass(this.$el,'is-active');
         },
 
         // get url for pattern
@@ -34763,9 +34815,10 @@ define('__component__$overlay@husky',[], function() {
          */
         removeComponent: function() {
             this.sandbox.dom.off(this.overlay.$el);
-            this.sandbox.dom.remove(this.overlay.$el);
             this.sandbox.dom.off(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName);
-            this.sandbox.stop(this.$el);
+            this.sandbox.stop(this.$element);
+            this.sandbox.stop(this.overlay.$content);
+            this.sandbox.dom.remove(this.overlay.$el);
         },
 
         /**
@@ -37282,4 +37335,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-

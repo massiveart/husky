@@ -251,6 +251,7 @@ define([], function() {
             // on click on trigger outside check
             this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.show(this.$dropDown);
+            this.sandbox.dom.addClass(this.$el,'is-active');
         },
 
         // hide dropDown
@@ -259,6 +260,7 @@ define([], function() {
             // remove global click event
             this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.hide(this.$dropDown);
+            this.sandbox.dom.removeClass(this.$el,'is-active');
         },
 
         // get url for pattern

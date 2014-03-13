@@ -704,8 +704,20 @@ define('form/mapper',[
                         property = $element.data('mapper-property');
 
                     if ($.isArray(property) || typeof property === 'object') {
+                        var $newChild;
                         // special case: collection array
-                        element.$children = $element.children().clone();
+                        element.$children = $element.children().clone(true);
+                        element.$children.each(function(i, child) {
+                            // if template is markuped as '<script>'
+                            var $child = $(child);
+                            if ($child.is('script')) {
+                                $newChild = $($child.html());
+                                $newChild.attr('data-mapper-property-tpl', $child.data('mapper-property-tpl'));
+                                element.$children[i] = $newChild;
+                            } else {
+                                element.$children[i] = $child;
+                            }
+                        });
                     } else {
                         // save first child element
                         element.$children = $element.children().first().clone();
@@ -823,7 +835,7 @@ define('form/mapper',[
                 },
 
                 appendChildren: function($element, $child) {
-                    var $newElement = $child.clone(),
+                    var $newElement = $child.clone(true),
                         $newFields = Util.getFields($newElement),
                         dfd = $.Deferred(),
                         counter = $newFields.length,
@@ -902,12 +914,9 @@ define('form/mapper',[
                                     if ($.isArray(col.property) && (colprop = $.grep(col.property, function(prop){return prop.data === key;})).length > 0) {
                                         // get template of collection
                                         col.$child = $($.grep(col.element.$children, function(el) {
-                                            return (el.dataset.mapperPropertyTpl === colprop[0].tpl);
+                                            return (el.data('mapper-property-tpl') === colprop[0].tpl);
                                         })[0]);
-                                        // if template is markuped via '<script>'
-                                        if (col.$child.is('script')) {
-                                            col.$child = $(col.$child.html());
-                                        }
+
                                         return true;
                                     }
                                     return col.property === key; // TODO: return false, when collection only accepts array of objects anymore
