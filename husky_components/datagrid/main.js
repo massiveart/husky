@@ -42,6 +42,7 @@
  * @param {Boolean} [options.progressRow] has to be enabled when datagrid is editable to show progress of save action
  * @param {String} [options.columnMinWidth] sets the minimal width of table columns
  * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
+ * @param {Array} [options.showElementsSteps] Array which contains the steps for the Show-Elements-dropdown as integers
  */
 define(function() {
 
@@ -77,14 +78,15 @@ define(function() {
             appendTBody: true,   // add TBODY to table
             searchInstanceName: null, // at which search it should be listened to can be null|string|empty_string
             columnOptionsInstanceName: null, // at which search it should be listened to can be null|string|empty_string
-            paginationTemplate: '<%=translate("pagination.page")%> <%=i%> <%=translate("pagination.of")%> <%=pages%>',
+            paginationTemplate: '<%=translate("pagination.page")%> <strong><%=i%></strong> <%=translate("pagination.of")%> <%=pages%>',
             fieldsData: null,
             validation: false, // TODO does not work for added rows
             validationDebug: false,
             addRowTop: false,
             progressRow: true,
             startTabIndex: 99999,
-            columnMinWidth: '70px'
+            columnMinWidth: '70px',
+            showElementsSteps: [10, 20, 50, 100, 500]
         },
 
         namespace = 'husky.datagrid.',
@@ -251,14 +253,14 @@ define(function() {
 
             var elWidth, el,
                 sortIconWidth = 0,
-                paddings = 16;
+                paddings = 20;
             // handle css classes
             if (!classArray) {
                 classArray = [];
             }
             if (isSortable) {
                 classArray.push('is-sortable');
-                sortIconWidth = 18 + 5;
+                sortIconWidth = 20;
             }
             classArray.push('is-selected');
 
@@ -294,7 +296,6 @@ define(function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
             this.rowStructure = [];
-
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
 
             if (!!this.options.contentContainer) {
@@ -329,7 +330,6 @@ define(function() {
 
             // Should only be be called once
             this.bindCustomEvents();
-
         },
 
         /**
@@ -431,6 +431,7 @@ define(function() {
             this.data.links = response._links;
             this.data.embedded = response._embedded;
             this.data.total = response.total;
+            this.data.numberOfAll = response.numberOfAll;
             this.data.page = response.page;
             this.data.pages = response.pages;
             this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
@@ -708,7 +709,7 @@ define(function() {
 
                 // add a checkbox to each row
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
-                    this.tblColumns.push('<td>', this.templates.checkbox(), '</td>');
+                    this.tblColumns.push('<td class="check">', this.templates.checkbox(), '</td>');
 
                     // add a radio to each row
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
@@ -1071,6 +1072,7 @@ define(function() {
                 this.initPaginationIds();
                 this.$element.append(this.preparePagination());
                 this.preparePaginationDropdown();
+                this.prepareShowElementsDropdown();
             }
             return this;
         },
@@ -1083,7 +1085,7 @@ define(function() {
                 prevId: this.options.instance + '-prev',
                 nextId: this.options.instance + '-next',
                 dropdownId: this.options.instance + '-pagination-dropdown',
-                showAllId: this.options.instance + '-show-all'
+                showElementsId: this.options.instance + '-show-elements'
             };
         },
 
@@ -1094,28 +1096,30 @@ define(function() {
         preparePagination: function() {
             var $pagination,
                 $paginationWrapper,
-                $showAll,
+                $showElements,
                 paginationLabel;
 
+
+            $paginationWrapper = this.sandbox.dom.$('<div/>');
+            $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row small-font');
+
+            // if first defined step is bigger than the number of all elements don't display show-elements dropdown
+            if (this.data.numberOfAll > this.options.showElementsSteps[0]) {
+                $showElements = this.sandbox.dom.$(this.templates.showElements.call(this, this.pagination.showElementsId));
+                $paginationWrapper.append($showElements);
+            }
+
             if (!!this.options.pagination && parseInt(this.data.pages, 10) > 1) {
-                $paginationWrapper = this.sandbox.dom.$('<div/>');
-                $paginationWrapper.addClass('pagination-wrapper m-top-20 grid-row small-font');
-
-                if (!!this.data.total && !!this.data.links.all) {
-                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total, this.sandbox.translate('pagination.elements'), this.sandbox.translate('pagination.showAll'), this.pagination.showAllId));
-                    $paginationWrapper.append($showAll);
-                }
-
                 $pagination = this.sandbox.dom.$('<div/>');
-                $pagination.addClass('pagination grid-col-8 pull-right');
+                $pagination.addClass('pagination');
 
                 $paginationWrapper.append($pagination);
 
                 paginationLabel = this.renderPaginationRow(this.data.page, this.data.pages);
 
-                $pagination.append('<div id="' + this.pagination.nextId + '" class="icon-chevron-right pagination-prev pull-right pointer"></div>');
+                $pagination.append('<div id="' + this.pagination.nextId + '" class="pagination-prev pull-right pointer"></div>');
                 $pagination.append('<div id="' + this.pagination.dropdownId + '" class="pagination-main pull-right pointer"><span class="inline-block">' + paginationLabel + '</span><span class="dropdown-toggle inline-block"></span></div>');
-                $pagination.append('<div id="' + this.pagination.prevId + '" class="icon-chevron-left pagination-next pull-right pointer"></div>');
+                $pagination.append('<div id="' + this.pagination.prevId + '" class="pagination-next pull-right pointer"></div>');
             }
 
             return $paginationWrapper;
@@ -1153,9 +1157,45 @@ define(function() {
                 {
                     name: 'dropdown@husky',
                     options: {
-                        el: '#' + this.pagination.dropdownId,
+                        el: this.sandbox.dom.find('#' + this.pagination.dropdownId, this.$el),
                         setParentDropDown: true,
                         instanceName: this.dropdownInstanceName,
+                        alignment: 'left',
+                        data: data
+                    }
+                }
+            ]);
+        },
+
+        /**
+         * Prepares and initializes the dropdown for showing elements
+         */
+        prepareShowElementsDropdown: function() {
+            var i, length, data = [];
+
+            for(i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
+                if (this.options.showElementsSteps[i] > this.data.numberOfAll) {
+                    break;
+                }
+                data.push({
+                    id: this.options.showElementsSteps[i],
+                    name: '<strong>'+ this.options.showElementsSteps[i] +'</strong> ' + this.sandbox.translate('pagination.elements-per-page')
+                });
+            }
+
+            data.push({divider: true});
+            data.push({
+               id: 0,
+               name: this.sandbox.translate('pagination.show-all-elements')
+            });
+
+            this.sandbox.start([
+                {
+                    name: 'dropdown@husky',
+                    options: {
+                        el: this.sandbox.dom.find('#' + this.pagination.showElementsId, this.$el),
+                        setParentDropDown: true,
+                        instanceName: this.dropdownInstanceName + '-show',
                         alignment: 'left',
                         data: data
                     }
@@ -1174,15 +1214,17 @@ define(function() {
 
             // when a valid uri is passed to this function - load from the uri
             if (!!uri) {
-                event.preventDefault();
+                if (!!event) {
+                    event.preventDefault();
+                }
                 url = uri;
 
                 // determine wether the page number received via the event from the dropdown is valid
             } else if (!!event.id && event.id > 0 && event.id <= this.data.pages) {
                 template = this.sandbox.uritemplate.parse(this.data.links.pagination);
-                url = this.sandbox.uritemplate.expand(template, {page: event.id});
+                url = this.sandbox.uritemplate.expand(template, {page: event.id, pageSize: this.data.pageSize});
 
-                // invalid - wether page number nor uri are valid
+                // invalid - whether page number nor uri are valid
             } else {
                 this.sandbox.logger.log("invalid page number or reached start/end!");
                 return;
@@ -1235,9 +1277,6 @@ define(function() {
 
                 // previous page
                 this.$element.on('click', '#' + this.pagination.prevId, this.changePage.bind(this, this.data.links.prev));
-
-                // show all
-                this.$element.on('click', '#' + this.pagination.showAllId, this.changePage.bind(this, this.data.links.all));
             }
 
             if (this.options.removeRow) {
@@ -1429,6 +1468,22 @@ define(function() {
 
             // pagination dropdown item clicked
             this.sandbox.on('husky.dropdown.' + this.dropdownInstanceName + '.item.click', this.changePage.bind(this, null));
+
+            // show-elements dropdown item clicked
+            this.sandbox.on('husky.dropdown.datagrid-pagination-dropdown-show.item.click', function(item) {
+                if (this.data.pageSize !== item.id || this.data.total === this.data.numberOfAll) {
+                    // show all
+                    if (item.id === 0) {
+                        // only if not already all are shown
+                        if (this.data.total !== this.data.numberOfAll) {
+                            this.changePage(this.data.links.all);
+                        }
+                    } else {
+                        this.data.pageSize = item.id;
+                        this.changePage(null, {id: 1});
+                    }
+                }
+            }.bind(this));
 
             // listen to search events
             if (!!this.options.searchInstanceName) {
@@ -1922,11 +1977,24 @@ define(function() {
          * @returns {*}
          */
         addLoader: function() {
-            return this.$element
+            this.$element
                 .outerWidth(this.$element.outerWidth())
                 .outerHeight(this.$element.outerHeight())
-                .empty()
-                .addClass('is-loading');
+                .empty();
+
+            var $container = this.sandbox.dom.createElement('<div class="datagrid-loader"/>');
+            this.sandbox.dom.append(this.$element, $container);
+
+            this.sandbox.start([{
+                name: 'loader@husky',
+                options: {
+                    el: $container,
+                    size: '100px',
+                    color: '#cccccc'
+                }
+            }]);
+
+            return this.$element;
         },
 
         /**
@@ -1934,7 +2002,10 @@ define(function() {
          * @returns {*}
          */
         removeLoader: function() {
-            return this.$element.removeClass('is-loading').outerHeight("").outerWidth("");
+            return this.$element.outerHeight("").outerWidth("");
+            this.sandbox.stop(this.sandbox.dom.find('.datagrid-loader', this.$element));
+
+            return this.$element;
         },
 
         /**
@@ -1956,8 +2027,19 @@ define(function() {
 
         templates: {
 
-            showAll: function(total, elementsLabel, showAllLabel, id) {
-                return ['<div class="show-all grid-col-4 m-top-10">', total, ' ', elementsLabel, ' (<a id="' + id + '" href="">', showAllLabel, '</a>)</div>'].join('');
+            showElements: function(id) {
+                var desc = '';
+                if (this.data.total === this.data.numberOfAll) {
+                    desc = this.sandbox.translate('pagination.show-all-elements');
+                } else {
+                    desc = this.sandbox.translate('pagination.show') +' <strong>'+ this.data.total +'</strong> '+ this.sandbox.translate('pagination.elements-of') +' '+ this.data.numberOfAll;
+                }
+
+                return [
+                    '<div class="show-elements">',
+                        '<div class="dropdown-trigger" id="'+ id +'">'+ desc +'<span class="dropdown-toggle"></span></div>',
+                    '</div>'
+                ].join('');
             },
 
             removeRow: function() {

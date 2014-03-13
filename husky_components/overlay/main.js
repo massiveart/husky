@@ -27,6 +27,9 @@
  * @params {Boolean} [options.draggable] if true overlay is draggable
  * @params {Boolean} [options.openOnStart] if true overlay is opened after initialization
  * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
+ * @params {Boolean} [options.backdrop] if true backdrop will be shown
+ * @params {Boolean} [options.backdropColor] Color of the backdrop
+ * @params {Boolean} [options.backdropAlpha] Alpha-value of the backdrop
  */
 define([], function() {
 
@@ -46,6 +49,9 @@ define([], function() {
             draggable: true,
             openOnStart: false,
             removeOnClose: false,
+            backdrop: true,
+            backdropColor: '#000000',
+            backdropAlpha: 0.3
         },
 
         constants = {
@@ -53,7 +59,8 @@ define([], function() {
             okSelector: '.ok-button',
             contentSelector: '.overlay-content',
             headerSelector: '.overlay-header',
-            draggableClass: 'draggable'
+            draggableClass: 'draggable',
+            backdropClass: 'husky-overlay-backdrop'
         },
 
         /** templates for component */
@@ -69,7 +76,10 @@ define([], function() {
                 '<a class="icon-<%= okIcon %> ok-button" href="#"></a>',
                 '</div>',
             '</div>'
-        ].join('')
+        ].join(''),
+            backdrop: [
+                '<div class="husky-overlay-backdrop"></div>'
+            ].join('')
     },
 
     /**
@@ -154,6 +164,8 @@ define([], function() {
         removeComponent: function() {
             this.sandbox.dom.off(this.overlay.$el);
             this.sandbox.dom.remove(this.overlay.$el);
+            this.sandbox.dom.off(this.$backdrop);
+            this.sandbox.dom.remove(this.$backdrop);
             this.sandbox.dom.off(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName);
             this.sandbox.stop(this.$el);
         },
@@ -174,6 +186,7 @@ define([], function() {
                 $header: null,
                 $content: null
             };
+            this.$backdrop = null;
             this.dragged = false;
         },
 
@@ -190,6 +203,10 @@ define([], function() {
         openOverlay: function() {
             //only open if closed
             if (this.overlay.opened === false) {
+                //init backrop element
+                if (this.$backdrop === null && this.options.backdrop === true) {
+                    this.initBackdrop();
+                }
                 //if overlay-element doesn't exist initialize it
                 if (this.overlay.$el === null) {
                     this.initSkeleton();
@@ -204,10 +221,24 @@ define([], function() {
         },
 
         /**
+         * Initializes the Backdrop
+         */
+        initBackdrop: function() {
+            this.$backdrop = this.sandbox.dom.createElement(templates.backdrop);
+            this.sandbox.dom.css(this.$backdrop, {
+               'background-color': this.options.backdropColor
+            });
+            this.sandbox.dom.fadeTo(this.$backdrop, 0, this.options.backdropAlpha);
+        },
+
+        /**
          * Removes the overlay-element from the DOM
          */
         closeOverlay: function() {
             this.sandbox.dom.detach(this.overlay.$el);
+            if (this.options.backdrop === true) {
+                this.sandbox.dom.detach(this.$backdrop);
+            }
             this.overlay.opened = false;
             this.dragged = false;
             this.collapsed = false;
@@ -232,6 +263,10 @@ define([], function() {
             this.resizeHandler();
 
             this.setCoordinates();
+
+            if (this.options.backdrop === true) {
+                this.sandbox.dom.append(this.sandbox.dom.$(this.options.container), this.$backdrop);
+            }
 
             this.sandbox.emit(OPENED.call(this));
         },
@@ -287,6 +322,13 @@ define([], function() {
                     this.resizeHandler();
                 }
             }.bind(this));
+
+            if (this.options.backdrop === true) {
+                this.sandbox.dom.on(this.$backdrop, 'click', function() {
+                    this.closeOverlay();
+                    this.executeCallback(this.options.closeCallback);
+                }.bind(this));
+            }
 
             if (this.options.draggable === true) {
                 this.sandbox.dom.on(this.overlay.$header, 'mousedown', function(e) {

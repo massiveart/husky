@@ -12,7 +12,7 @@ table {
     th,
     td {
         text-align: left;
-        padding: 8px;
+        padding: 8px 10px;
         vertical-align: top;
     }
 
@@ -31,6 +31,7 @@ table {
             vertical-align: bottom;
             color: $grayLight;
             font-size: 16px;
+            font-weight: normal;
 
             a {
                 color: $black;
@@ -44,7 +45,7 @@ table {
         }
 
         tr {
-            border-bottom: 2px solid $grayLight;
+            border-bottom: 2px solid $grayLighter;
         }
     }
 

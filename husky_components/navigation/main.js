@@ -43,11 +43,6 @@ define(function() {
                 '<nav class="navigation<% if (collapsed === "true") {%> collapsed<% } %>">',
                 '   <div class="navigation-content">',
                 '       <header class="navigation-header">',
-                '           <div class="navigation-header-image">',
-                '               <% if (data.icon) { %>',
-                '               <img alt="#" src="<%= data.icon %>"/>',
-                '               <% } %>',
-                '           </div>',
                 '           <div class="navigation-header-title"><% if (data.title) { %> <%= translate(data.title) %><% } %></div>',
                 '       </header>',
                 '       <div id="navigation-search" class="navigation-search"></div>',
@@ -57,6 +52,14 @@ define(function() {
                 '   </div>',
                 '   <div class="icon-remove2 navigation-close-icon">',
                 '</nav>'].join(''),
+            headerImage: [
+                '<div class="navigation-header-image">',
+                '   <img alt="#" src="<%= icon %>"/>',
+                '</div>'
+            ].join(''),
+            headerText: [
+                '<div class="navigation-header-text"><span><%= text %></span></div>'
+            ].join(''),
             /** main navigation items (with icons)*/
             mainItem: [
                 '<li class="js-navigation-items navigation-items" id="<%= item.id %>" data-id="<%= item.id %>">',
@@ -198,6 +201,21 @@ define(function() {
                 this.sandbox.util.extend(true, {}, this.options, {translate: this.sandbox.translate}))
             );
 
+            // render header image
+            if (typeof this.options.data.icon === 'string') {
+                this.sandbox.dom.prepend(this.sandbox.dom.find('header.navigation-header', this.$el),
+                    this.sandbox.template.parse(templates.headerImage, {
+                        icon: this.options.data.icon
+                    })
+                );
+            } else {
+                this.sandbox.dom.prepend(this.sandbox.dom.find('header.navigation-header', this.$el),
+                    this.sandbox.template.parse(templates.headerText, {
+                        text: this.options.data.title.substr(0, 2)
+                    })
+                );
+            }
+
             this.$navigation = this.$find('.navigation', this.$el);
             this.$navigationContent = this.$find('.navigation-content', this.$navigation);
 
@@ -241,6 +259,9 @@ define(function() {
                 $sectionList = this.sandbox.dom.createElement('<ul class="section-items">');
                 this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + this.sandbox.translate(section.title).toUpperCase() + '</span><span class="section-toggle"><a href="#">' + this.sandbox.translate(this.options.labels.hide) + '</a></span></div>');
 
+                this.sandbox.dom.append($sectionDiv, $sectionList);
+                this.sandbox.dom.append('#navigation-item-container', $sectionDiv);
+
                 // iterate through section items
                 this.sandbox.util.foreach(section.items, function(item) {
                     // create item
@@ -249,18 +270,14 @@ define(function() {
                         icon: item.icon ? 'icon-' + item.icon : '',
                         translate: this.sandbox.translate
                     }));
+                    this.sandbox.dom.append($sectionList, $elem);
                     //render sub-items
                     if (item.items && item.items.length > 0) {
                         this.renderSubNavigationItems(item, $elem);
                     }
-                    this.sandbox.dom.append($sectionList, $elem);
                     item.domObject = $elem;
                     this.items[item.id] = item;
                 }.bind(this));
-
-                this.sandbox.dom.append($sectionDiv, $sectionList);
-                this.sandbox.dom.append('#navigation-item-container', $sectionDiv);
-
             }.bind(this));
         },
 
@@ -269,7 +286,10 @@ define(function() {
          */
         renderSubNavigationItems: function(data, $parentList) {
             var elem,
+                textCont,
                 list = this.sandbox.dom.createElement('<ul class="navigation-items-list" />');
+
+            this.sandbox.dom.append($parentList, list);
 
             this.sandbox.util.foreach(data.items, function(item) {
                 this.items[item.id] = item;
@@ -280,10 +300,15 @@ define(function() {
                     elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subItem, {item: item, translate: this.sandbox.translate}));
                 }
                 this.sandbox.dom.append(list, elem);
+
+                // add tooltip
+                textCont = this.sandbox.dom.find('a', elem);
+                if (this.sandbox.dom.width(textCont) + 20 < this.sandbox.dom.get(textCont, 0).scrollWidth) {
+                    this.sandbox.dom.attr(textCont, {'title': this.sandbox.dom.html(textCont)});
+                }
+
                 item.domObject = elem;
             }.bind(this));
-
-            this.sandbox.dom.append($parentList, list);
         },
 
         renderFooter: function(footerTemplate) {
@@ -445,16 +470,13 @@ define(function() {
             }
 
             if (isExpanded && !navWasCollapsed) {
+                this.sandbox.dom.removeClass($items, 'is-expanded');
 
-//                this.sandbox.dom.slideUp($childList, 200, function() {
+                // change toggle item
+                $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
+                this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
+                this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
 
-                    this.sandbox.dom.removeClass($items, 'is-expanded');
-
-                    // change toggle item
-                    $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
-                    this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
-                    this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
-//                }.bind(this));
             } else {
                 this.sandbox.dom.show($childList);
                 this.sandbox.dom.addClass($items, 'is-expanded');
