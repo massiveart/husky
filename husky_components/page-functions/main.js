@@ -85,6 +85,8 @@ define([], function() {
 
                 this.sandbox.dom.append(this.options.el, this.sandbox.template.parse(template(), this.options.data));
 
+                this.$pageFunction = this.sandbox.dom.find('.page-function', this.$el);
+
                 this.bindDomEvents();
                 this.bindCustomEvents();
 
@@ -102,11 +104,28 @@ define([], function() {
 
             bindCustomEvents: function(){
                 this.sandbox.on(HIDE, function(){
-                    this.sandbox.dom.hide(this.$el);
+
+
+                    this.elWidth = this.sandbox.dom.width(this.$pageFunction);
+                    this.sandbox.dom.animate(this.$pageFunction,{
+                        width:0
+                    },{
+                        duration:400
+                    });
+
                 }.bind(this));
 
                 this.sandbox.on(SHOW, function(){
-                    this.sandbox.dom.show(this.$el);
+
+                    if(!!this.elWidth){
+                        this.sandbox.dom.animate(this.$pageFunction,{
+                            width:this.elWidth+'px'
+                        },{
+                            duration:400,
+                            queue: false
+                        });
+                    }
+
                 }.bind(this));
             }
         };
