@@ -127,6 +127,7 @@ define(function() {
         /**
          * forces navigation to collapse
          * @event husky.navigation.collapse
+         * @param {Boolean} stayCollapsed - if true the navigation stays collapsed till the custom-uncollapse event is emited
          */
             EVENT_COLLAPSE = namespace + 'collapse',
 
@@ -149,7 +150,19 @@ define(function() {
          * raised when navigation was un / collapsed. called when transition is finished. only raised when not forced
          * @event husky.navigation.size.changed
          */
-            EVENT_SIZE_CHANGED = namespace + 'size.changed'
+            EVENT_SIZE_CHANGED = namespace + 'size.changed',
+
+        /**
+         * show the navigation when it was hidden before
+         * @event husky.navigation.show
+         */
+            EVENT_SHOW = namespace + 'show',
+
+        /**
+         * hides the navigation completely
+         * @event husky.navigation.hide
+         */
+            EVENT_HIDE = namespace + 'hide'
         ;
 
 
@@ -163,6 +176,7 @@ define(function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
             this.stayCollapsed = false;
+            this.hidden = false;
 
             // binding dom events
             this.bindDOMEvents();
@@ -315,12 +329,12 @@ define(function() {
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showToolTip.bind(this, ''), '.navigation.collapsed .navigation-items');
             this.sandbox.dom.on(this.$el, 'mouseleave', this.hideToolTip.bind(this), '.navigation.collapsed .navigation-items, .navigation.collapsed .navigation-search');
 
-            this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function(event) {
+            this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function() {
                 this.sandbox.emit(EVENT_SIZE_CHANGED, this.sandbox.dom.width(this.$navigation));
             }.bind(this));
             this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function(event) {
                 event.stopPropagation();
-            }.bind(this),'.navigation *');
+            }.bind(this), '.navigation *');
         },
 
         /**
@@ -334,12 +348,16 @@ define(function() {
             }.bind(this));
 
             this.sandbox.on(EVENT_COLLAPSE, function(stayCollapsed) {
-                this.collapse(stayCollapsed);
+                this.stayCollapsed = (typeof stayCollapsed === 'boolean') ? stayCollapsed : false;
+                this.collapse();
             }.bind(this));
             this.sandbox.on(EVENT_UNCOLLAPSE, function(force) {
                 this.stayCollapsed = false;
                 this.unCollapse(force);
             }.bind(this));
+
+            this.sandbox.on(EVENT_HIDE, this.hide.bind(this));
+            this.sandbox.on(EVENT_SHOW, this.show.bind(this));
 
         },
 
@@ -453,12 +471,13 @@ define(function() {
 
             if (isExpanded && !navWasCollapsed) {
 
-                this.sandbox.dom.removeClass($items, 'is-expanded');
+            this.sandbox.dom.removeClass($items, 'is-expanded');
 
-                // change toggle item
-                $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
-                this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
-                this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
+            // change toggle item
+            $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
+            this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
+            this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
+
             } else {
                 this.sandbox.dom.show($childList);
                 this.sandbox.dom.addClass($items, 'is-expanded');
@@ -540,19 +559,20 @@ define(function() {
             return false;
         },
 
-        collapse: function(stayCollapsed) {
-            this.sandbox.dom.addClass(this.$navigation, 'collapsed');
-            this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
-            if (!this.collapsed) {
-                this.sandbox.emit(EVENT_COLLAPSED, CONSTANTS.COLLAPSED_WIDTH);
-                this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.COLLAPSED_WIDTH);
-                this.collapsed = !this.collapsed;
-                this.stayCollapsed = (typeof stayCollapsed === 'boolean') ? stayCollapsed : false;
+        collapse: function() {
+            if (this.hidden === false) {
+                this.sandbox.dom.addClass(this.$navigation, 'collapsed');
+                this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
+                if (!this.collapsed) {
+                    this.sandbox.emit(EVENT_COLLAPSED, CONSTANTS.COLLAPSED_WIDTH);
+                    this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.COLLAPSED_WIDTH);
+                    this.collapsed = !this.collapsed;
+                }
             }
         },
 
         unCollapse: function(forced) {
-            if (this.stayCollapsed === false) {
+            if (this.stayCollapsed === false && this.hidden === false) {
                 this.sandbox.dom.removeClass(this.$navigation, 'collapsed');
                 this.hideToolTip();
                 if (forced) {
@@ -636,6 +656,34 @@ define(function() {
 
             }
 
+        },
+
+        /**
+         * Shows the navigation
+         */
+        show: function() {
+            if (!!this.currentNavigationWidth) {
+                this.sandbox.dom.animate(this.$navigation, {
+                    width: this.currentNavigationWidth + 'px'
+                }, {
+                    duration: 400, queue: false, complete: function() {
+                        this.sandbox.dom.css(this.$navigation, 'width', this.currentNavigationWidth + 'px');
+                        this.sandbox.dom.removeAttr(this.$navigation, 'style');
+                    }.bind(this)
+                });
+
+                this.currentNavigationWidth = null;
+                this.hidden = false;
+            }
+        },
+
+        /**
+         * Hides the navigaiton
+         */
+        hide: function() {
+            this.currentNavigationWidth = this.sandbox.dom.width(this.$navigation);
+            this.sandbox.dom.animate(this.$navigation, {width: 0}, {duration: 400, queue: false});
+            this.hidden = true;
         }
 
     };
