@@ -17150,7 +17150,7 @@ define('form/mapper',[
 
                     // foreach collection elements: create a new dom element, call setData recursively
                     $.each(collection, function(key, value) {
-                        that.appendChildren($element, $child).then(function($newElement) {
+                        that.appendChildren($element, $child, value).then(function($newElement) {
                             form.mapper.setData(value, $newElement).then(function() {
                                 resolve();
                             });
@@ -17163,8 +17163,9 @@ define('form/mapper',[
                     return dfd.promise();
                 },
 
-                appendChildren: function($element, $child) {
-                    var template = _.template($child.tpl)(),
+                appendChildren: function($element, $child, value) {
+                    value = value || {};
+                    var template = _.template($child.tpl, value, form.options.delimiter),
                         $template = $(template),
                         $newFields = Util.getFields($template),
                         dfd = $.Deferred(),
@@ -17368,7 +17369,7 @@ require.config({
         'form/util': 'js/util',
 
         'type/default': 'js/types/default',
-        'type/static-text': 'js/types/staticText',
+        'type/readonly-select': 'js/types/readonlySelect',
         'type/string': 'js/types/string',
         'type/date': 'js/types/date',
         'type/decimal': 'js/types/decimal',
@@ -17402,6 +17403,11 @@ define('form',[
     return function(el, options) {
         var defaults = {
                 debug: false,                     // debug on/off
+                delimiter: {                      // defines which delimiter should be used for templating
+                    interpolate: /<~=(.+?)~>/g,
+                    escape: /<~-(.+?)~>/g,
+                    evaluate: /<~(.+?)~>/g
+                },
                 validation: true,                 // validation on/off
                 validationTrigger: 'focusout',    // default validate trigger
                 validationAddClassesParent: true, // add classes to parent element
@@ -17922,6 +17928,70 @@ define('type/select',[
             };
 
         return new Default($el, defaults, options, 'select', typeInterface);
+    };
+});
+
+/*
+ * This file is part of the Husky Validation.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
+define('type/readonly-select',[
+    'type/default'
+], function(Default) {
+
+    
+
+    return function($el, options) {
+        var defaults = {
+                id: null,
+                data: [],
+                idProperty: 'id',
+                outputProperty: 'name'
+            },
+
+            typeInterface = {
+                setValue: function(value) {
+                    var data = this.options.data,
+                        idProperty = this.options.idProperty,
+                        i , len;
+                    this.$el.data('id', value);
+                    if (data.length > 0) {
+                        for (i = -1, len = data.length; ++i < len;) {
+                            if (data[i].hasOwnProperty(idProperty) && data[i][idProperty] === value) {
+                                this.$el.html(data[i][this.options.outputProperty]);
+                            }
+                        }
+                    }
+                },
+
+                getValue: function() {
+                    var id = this.$el.data('id'),
+                        i, len;
+
+                    for (i = -1, len = this.options.data.length; i++ < len;) {
+                        if (this.options.data[i][this.options.idProperty] === id) {
+                            return this.options.data[i];
+                        }
+                    }
+                    return null;
+                },
+
+                needsValidation: function() {
+                    return false;
+                },
+
+                validate: function() {
+                    return true;
+                }
+            };
+
+        return new Default($el, defaults, options, 'readonly-select', typeInterface);
     };
 });
 
@@ -28338,7 +28408,7 @@ define('__component__$dropdown@husky',[], function() {
         // trigger event with clicked item
         clickItem: function(id) {
             this.sandbox.util.foreach(this.options.data, function(item) {
-                if (parseInt(item.id, 10) === id) {
+                if (!!item.id && item.id.toString() === id.toString()) {
                     this.sandbox.logger.log(this.name, 'item.click: ' + id, 'success');
 
                     if (!!item.callback && typeof item.callback === 'function') {

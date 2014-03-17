@@ -137,7 +137,7 @@ define([], function() {
         // trigger event with clicked item
         clickItem: function(id) {
             this.sandbox.util.foreach(this.options.data, function(item) {
-                if (parseInt(item.id, 10) === id) {
+                if (!!item.id && item.id.toString() === id.toString()) {
                     this.sandbox.logger.log(this.name, 'item.click: ' + id, 'success');
 
                     if (!!item.callback && typeof item.callback === 'function') {
