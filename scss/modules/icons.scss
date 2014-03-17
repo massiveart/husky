@@ -523,4 +523,11 @@
     }
 }
 
+.icon-disk-export {
+    &::after {
+        content: "\e179";
+        display: inline-block;
+    }
+}
+
 

@@ -3605,6 +3605,12 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   display: inline-block;
 }
 
+/* line 527, ../scss/modules/icons.scss */
+.icon-disk-export::after {
+  content: "\e179";
+  display: inline-block;
+}
+
 /* line 8, ../scss/modules/core.scss */
 * {
   -webkit-box-sizing: border-box;
