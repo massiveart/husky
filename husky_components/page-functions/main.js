@@ -50,7 +50,19 @@ define([], function() {
              * @event husky.page-functions.clicked
              * @description link was clicked
              */
-            CLICK = eventNamespace + 'clicked';
+            CLICK = eventNamespace + 'clicked',
+
+            /**
+             * @event husky.page-functions.show
+             * @description displays page functions
+             */
+            SHOW = eventNamespace+'show',
+
+            /**
+             * @event husky.page-functions.hide
+             * @description hides page functions
+             */
+            HIDE = eventNamespace+'hide';
 
         return {
 
@@ -74,6 +86,7 @@ define([], function() {
                 this.sandbox.dom.append(this.options.el, this.sandbox.template.parse(template(), this.options.data));
 
                 this.bindDomEvents();
+                this.bindCustomEvents();
 
                 this.sandbox.emit(RENDERED);
             },
@@ -85,8 +98,17 @@ define([], function() {
 
                     return false;
                 }.bind(this), '#' + this.options.data.id);
-            }
+            },
 
+            bindCustomEvents: function(){
+                this.sandbox.on(HIDE, function(){
+                    this.sandbox.dom.hide(this.$el);
+                }.bind(this));
+
+                this.sandbox.on(SHOW, function(){
+                    this.sandbox.dom.show(this.$el);
+                }.bind(this));
+            }
         };
     }
 );

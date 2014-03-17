@@ -57,6 +57,10 @@
 
                 <div class="tabs-content">
                     <h1>Page-Functions and Edit-Toolbar</h1>
+                    <div class="grid-row">
+                       <div class="grid-col-6" id="show">SHOW</div>
+                        <div class="grid-col-6" id="hide">HIDE</div>
+                    </div>
                 </div>
 
             </div>
@@ -175,6 +179,15 @@
                             }
                         }
                     ]);
+
+                    app.sandbox.dom.on('#hide','click',function(){
+                        app.sandbox.emit('husky.page-functions.hide');
+                    });
+
+                    app.sandbox.dom.on('#show','click',function(){
+                        app.sandbox.emit('husky.page-functions.show');
+                    });
+
                 });
             });
         </script>
