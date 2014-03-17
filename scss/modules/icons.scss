@@ -508,3 +508,19 @@
         display: inline-block;
     }
 }
+
+.icon-step-backward {
+    &::after {
+        content: "\e171";
+        display: inline-block;
+    }
+}
+
+.icon-step-forward {
+    &::after {
+        content: "\e179";
+        display: inline-block;
+    }
+}
+
+
