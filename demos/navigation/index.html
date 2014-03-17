@@ -28,6 +28,8 @@
 <div id="content">
     <a href="#" id="collapse">collapse navigation</a>
     <a href="#" id="force">force collapse navigation</a>
+    <a href="#" id="show">show navigation</a>
+    <a href="#" id="hide">hide navigation</a>
 </div>
 
 <div data-aura-component="navigation@husky" class="" data-aura-select-action="webspaces/cn_cn"
@@ -127,6 +129,14 @@
 
             app.sandbox.dom.on('#collapse', 'click', collapse.bind(this, false));
             app.sandbox.dom.on('#force', 'click', collapse.bind(this, true));
+
+            app.sandbox.dom.on('#show', 'click', function(){
+                app.sandbox.emit('husky.navigation.show');
+            }.bind(this));
+
+            app.sandbox.dom.on('#hide', 'click', function(){
+                app.sandbox.emit('husky.navigation.hide');
+            }.bind(this));
 
 
 

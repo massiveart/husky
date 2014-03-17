@@ -149,7 +149,19 @@ define(function() {
          * raised when navigation was un / collapsed. called when transition is finished. only raised when not forced
          * @event husky.navigation.size.changed
          */
-            EVENT_SIZE_CHANGED = namespace + 'size.changed'
+            EVENT_SIZE_CHANGED = namespace + 'size.changed',
+
+        /**
+         * show the navigation when it was hidden before
+         * @event husky.navigation.show
+         */
+            EVENT_SHOW = namespace + 'show',
+
+        /**
+         * hides the navigation completely
+         * @event husky.navigation.hide
+         */
+            EVENT_HIDE = namespace + 'hide'
         ;
 
 
@@ -318,7 +330,7 @@ define(function() {
             }.bind(this));
             this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function(event) {
                 event.stopPropagation();
-            }.bind(this),'.navigation *');
+            }.bind(this), '.navigation *');
         },
 
         /**
@@ -333,6 +345,9 @@ define(function() {
 
             this.sandbox.on(EVENT_COLLAPSE, this.collapse.bind(this));
             this.sandbox.on(EVENT_UNCOLLAPSE, this.unCollapse.bind(this));
+
+            this.sandbox.on(EVENT_HIDE, this.hide.bind(this));
+            this.sandbox.on(EVENT_SHOW, this.show.bind(this));
 
         },
 
@@ -448,12 +463,12 @@ define(function() {
 
 //                this.sandbox.dom.slideUp($childList, 200, function() {
 
-                    this.sandbox.dom.removeClass($items, 'is-expanded');
+                this.sandbox.dom.removeClass($items, 'is-expanded');
 
-                    // change toggle item
-                    $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
-                    this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
-                    this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
+                // change toggle item
+                $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
+                this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
+                this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
 //                }.bind(this));
             } else {
                 this.sandbox.dom.show($childList);
@@ -629,6 +644,32 @@ define(function() {
 
             }
 
+        },
+
+        /**
+         * Shows the navigation
+         */
+        show: function() {
+            if (!!this.currentNavigationWidth) {
+                this.sandbox.dom.animate(this.$navigation, {
+                    width: this.currentNavigationWidth + 'px'
+                }, {
+                    duration: 400, queue: false, complete: function() {
+                        this.sandbox.dom.css(this.$navigation, 'width', this.currentNavigationWidth + 'px');
+                        this.sandbox.dom.removeAttr(this.$navigation, 'style');
+                    }.bind(this)
+                });
+
+                this.currentNavigationWidth = null;
+            }
+        },
+
+        /**
+         * Hides the navigaiton
+         */
+        hide: function() {
+            this.currentNavigationWidth = this.sandbox.dom.width(this.$navigation);
+            this.sandbox.dom.animate(this.$navigation, {width: 0}, {duration: 400, queue: false});
         }
 
     };
