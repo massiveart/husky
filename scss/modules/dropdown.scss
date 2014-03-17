@@ -38,13 +38,22 @@
         padding: 10px 0;
 
         & > li {
-            padding: 5px 20px;
+            padding: 0 20px;
+            line-height: 30px;
             text-align: left;
             &:hover,
             &.hover {
                 background-color: $highlightColor;
                 cursor: pointer;
                 color: $white;
+            }
+            &.divider {
+              height: 1px;
+              margin: 5px 0 10px 0;
+              padding: 0;
+              overflow: hidden;
+              background-color: $grayLighterer;
+              cursor: default;
             }
         }
     }
@@ -61,7 +70,7 @@
 }
 
 .dropdown-toggle {
-    display: block;
+    display: inline-block;
     cursor: pointer;
     &::after {
         content: "";
@@ -76,4 +85,14 @@
 
         border-top: 6px solid #000;
     }
+}
+
+.dropdown-trigger {
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border: 1px solid $grayLighter;
+    border-radius: 4px;
+    padding: 0 10px;
+    cursor: pointer;
 }
