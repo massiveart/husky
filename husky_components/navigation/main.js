@@ -125,7 +125,7 @@ define(function() {
 
 
         /**
-         * forces navigation to uncollapse
+         * forces navigation to collapse
          * @event husky.navigation.collapse
          */
             EVENT_COLLAPSE = namespace + 'collapse',
@@ -161,6 +161,8 @@ define(function() {
 
             // merging options
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
+            this.stayCollapsed = false;
 
             // binding dom events
             this.bindDOMEvents();
@@ -331,8 +333,13 @@ define(function() {
                 this.renderFooter(template);
             }.bind(this));
 
-            this.sandbox.on(EVENT_COLLAPSE, this.collapse.bind(this));
-            this.sandbox.on(EVENT_UNCOLLAPSE, this.unCollapse.bind(this));
+            this.sandbox.on(EVENT_COLLAPSE, function(stayCollapsed) {
+                this.collapse(stayCollapsed);
+            }.bind(this));
+            this.sandbox.on(EVENT_UNCOLLAPSE, function(force) {
+                this.stayCollapsed = false;
+                this.unCollapse(force);
+            }.bind(this));
 
         },
 
@@ -446,15 +453,12 @@ define(function() {
 
             if (isExpanded && !navWasCollapsed) {
 
-//                this.sandbox.dom.slideUp($childList, 200, function() {
+                this.sandbox.dom.removeClass($items, 'is-expanded');
 
-                    this.sandbox.dom.removeClass($items, 'is-expanded');
-
-                    // change toggle item
-                    $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
-                    this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
-                    this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
-//                }.bind(this));
+                // change toggle item
+                $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
+                this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
+                this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
             } else {
                 this.sandbox.dom.show($childList);
                 this.sandbox.dom.addClass($items, 'is-expanded');
@@ -536,31 +540,34 @@ define(function() {
             return false;
         },
 
-        collapse: function() {
+        collapse: function(stayCollapsed) {
             this.sandbox.dom.addClass(this.$navigation, 'collapsed');
             this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
             if (!this.collapsed) {
                 this.sandbox.emit(EVENT_COLLAPSED, CONSTANTS.COLLAPSED_WIDTH);
                 this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.COLLAPSED_WIDTH);
                 this.collapsed = !this.collapsed;
+                this.stayCollapsed = (typeof stayCollapsed === 'boolean') ? stayCollapsed : false;
             }
         },
 
         unCollapse: function(forced) {
-            this.sandbox.dom.removeClass(this.$navigation, 'collapsed');
-            this.hideToolTip();
-            if (forced) {
-                this.collapseBack = true;
-                this.sandbox.dom.addClass(this.$navigation, 'collapseIcon');
-            } else {
-                this.collapseBack = false;
-            }
-            if (this.collapsed) {
-                this.sandbox.emit(EVENT_UNCOLLAPSED, CONSTANTS.UNCOLLAPSED_WIDTH);
-                if (!forced) {
-                    this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.UNCOLLAPSED_WIDTH);
+            if (this.stayCollapsed === false) {
+                this.sandbox.dom.removeClass(this.$navigation, 'collapsed');
+                this.hideToolTip();
+                if (forced) {
+                    this.collapseBack = true;
+                    this.sandbox.dom.addClass(this.$navigation, 'collapseIcon');
+                } else {
+                    this.collapseBack = false;
                 }
-                this.collapsed = !this.collapsed;
+                if (this.collapsed) {
+                    this.sandbox.emit(EVENT_UNCOLLAPSED, CONSTANTS.UNCOLLAPSED_WIDTH);
+                    if (!forced) {
+                        this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.UNCOLLAPSED_WIDTH);
+                    }
+                    this.collapsed = !this.collapsed;
+                }
             }
         },
 

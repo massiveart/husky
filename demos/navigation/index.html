@@ -125,7 +125,7 @@
                 this.collapsed = false;
             }, this);
 
-            app.sandbox.dom.on('#collapse', 'click', collapse.bind(this, false));
+            app.sandbox.dom.on('#collapse', 'click', collapse.bind(this, true));
             app.sandbox.dom.on('#force', 'click', collapse.bind(this, true));
 
 
