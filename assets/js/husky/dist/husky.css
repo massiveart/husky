@@ -3607,7 +3607,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
 
 /* line 527, ../scss/modules/icons.scss */
 .icon-disk-export::after {
-  content: "\e179";
+  content: "\e420";
   display: inline-block;
 }
 
