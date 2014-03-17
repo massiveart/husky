@@ -24713,7 +24713,7 @@ define('__component__$navigation@husky',[],function() {
         resizeListener: function() {
             var windowWidth = this.sandbox.dom.width(this.sandbox.dom.window);
 
-            if (windowWidth <= this.options.resizeWidth) {
+            if (windowWidth <= this.options.resizeWidth || this.stayCollapsed === true) {
                 this.collapse();
             } else if (this.sandbox.dom.hasClass(this.$navigation, 'collapsed')) {
                 this.unCollapse();
@@ -24921,14 +24921,11 @@ define('__component__$navigation@husky',[],function() {
         },
 
         unCollapse: function(forced) {
-            if (this.stayCollapsed === false && this.hidden === false) {
+            if ((this.stayCollapsed === false || forced === true) && this.hidden === false) {
                 this.sandbox.dom.removeClass(this.$navigation, 'collapsed');
                 this.hideToolTip();
                 if (forced) {
-                    this.collapseBack = true;
                     this.sandbox.dom.addClass(this.$navigation, 'collapseIcon');
-                } else {
-                    this.collapseBack = false;
                 }
                 if (this.collapsed) {
                     this.sandbox.emit(EVENT_UNCOLLAPSED, CONSTANTS.UNCOLLAPSED_WIDTH);
@@ -25002,7 +24999,6 @@ define('__component__$navigation@husky',[],function() {
 
             if (!customTarget) {
                 setTimeout(this.resizeListener.bind(this), 700);
-
             }
 
         },
