@@ -4,13 +4,21 @@
 
 $grid-padding-left: 8px;
 $grid-padding-right: 8px;
+$grid-margin-bottom: 20px;
+$grid-margin-bottom-small: 10px;
 
 .grid {
     display: block;
 }
 
 .grid-row {
-    margin-bottom: 20px;
+
+    margin-bottom: $grid-margin-bottom;
+
+    &.small {
+        margin-bottom: $grid-margin-bottom-small;
+    }
+
     &::after {
         content: "";
         display: table;
@@ -19,6 +27,41 @@ $grid-padding-right: 8px;
 
     img {
         max-width: 100%;
+    }
+}
+
+
+
+.grid-row.small {
+    .grid-col-1.floating  {
+        &:nth-child(n+13) {
+            margin-top: $grid-margin-bottom-small;
+        }
+    }
+    .grid-col-2.floating  {
+        &:nth-child(n+7) {
+            margin-top: $grid-margin-bottom-small;
+        }
+    }
+    .grid-col-3.floating  {
+        &:nth-child(n+5) {
+            margin-top: $grid-margin-bottom-small;
+        }
+    }
+    .grid-col-4.floating  {
+        &:nth-child(n+4) {
+            margin-top: $grid-margin-bottom-small;
+        }
+    }
+    .grid-col-6.floating  {
+        &:nth-child(n+3) {
+            margin-top: $grid-margin-bottom-small;
+        }
+    }
+    .grid-col-12.floating  {
+        &:nth-child(n+1) {
+            margin-top: $grid-margin-bottom-small;
+        }
     }
 }
 
@@ -42,6 +85,10 @@ $grid-padding-right: 8px;
     width: 8.33%;
 
     &.floating {
+        &:nth-child(n+13) {
+            margin-top: $grid-margin-bottom;
+        }
+
         &:nth-child(12n+1) {
             padding-left: 0;
             padding-right: $grid-padding-right;
@@ -57,6 +104,10 @@ $grid-padding-right: 8px;
     width: 16.66%;
 
     &.floating {
+        &:nth-child(n+7) {
+            margin-top: $grid-margin-bottom;
+        }
+
         &:nth-child(6n+1) {
             padding-left: 0;
             padding-right: $grid-padding-right;
@@ -72,6 +123,10 @@ $grid-padding-right: 8px;
     width: 25%;
 
     &.floating {
+        &:nth-child(n+5) {
+            margin-top: $grid-margin-bottom;
+        }
+
         &:nth-child(4n+1) {
             padding-left: 0;
             padding-right: $grid-padding-right;
@@ -87,6 +142,10 @@ $grid-padding-right: 8px;
     width: 33.33%;
 
     &.floating {
+        &:nth-child(n+4) {
+            margin-top: $grid-margin-bottom;
+        }
+
         &:nth-child(3n+1) {
             padding-left: 0;
             padding-right: $grid-padding-right;
@@ -105,13 +164,18 @@ $grid-padding-right: 8px;
 .grid-col-6 {
     width: 50%;
 
+
     &.floating {
-        &:nth-child(2n+1) {
+        &:nth-child(n+3) {
+            margin-top: $grid-margin-bottom;
+        }
+
+        &:nth-child(odd) {
             padding-left: 0;
             padding-right: $grid-padding-right;
         }
 
-        &:nth-child(2n) {
+        &:nth-child(even) {
             padding-right: 0;
         }
     }
@@ -139,6 +203,16 @@ $grid-padding-right: 8px;
 
 .grid-col-12 {
     width: 100%;
+
+    &.floating {
+        &:nth-child(n+2) {
+            margin-top: $grid-margin-bottom;
+        }
+        &:nth-child(n) {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
 }
 
 @media (max-width: 580px) {

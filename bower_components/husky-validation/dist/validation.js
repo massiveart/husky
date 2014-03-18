@@ -687,27 +687,59 @@ define('form/mapper',[
                 initialize: function() {
                     Util.debug('INIT Mapper');
 
+                    this.collections = [];
+
                     form.initialized.then(function() {
                         var selector = '*[data-type="collection"]',
                             $elements = form.$el.find(selector);
 
                         $elements.each(that.initCollection.bind(this));
-                    });
+                    }.bind(this));
                 },
 
                 initCollection: function(key, value) {
                     var $element = $(value),
-                        element = $element.data('element');
+                        element = $element.data('element'),
+                        property = $element.data('mapper-property'),
+                        $newChild;
 
-                    // save first child element
-                    element.$children = $element.children().first().clone();
-                    element.$children.find('*').removeAttr('id');
+                    if (!$.isArray(property)) {
+                        if (typeof property === 'object') {
+                            property = [property];
+                            $element.data('mapper-property', property);
+                        } else {
+                            throw "no valid mapper-property value";
+                        }
+                    }
+
+                    // get templates
+                    element.$children = $element.children().clone(true);
+
+                    // iterate through collection
+                    element.$children.each(function(i, child) {
+                        var $child = $(child);
+
+                        // attention: template has to be markuped as 'script'
+                        if (!$child.is('script')) {
+                            throw 'template has to be defined as <script>';
+                        }
+
+                        $newChild = {tpl: $child.html(), id: $child.attr('id')};
+                        element.$children[i] = $newChild;
+                    });
+
+                    // add to collections
+                    this.collections.push({
+                        property: property,
+                        $element: $element,
+                        element: element
+                    });
 
                     // init add button
-                    form.$el.on('click', '*[data-mapper-add="' + $element.data('mapper-property') + '"]', that.addClick.bind(this));
+                    form.$el.on('click', '*[data-mapper-add="' + property + '"]', that.addClick.bind(this));
 
                     // init remove button
-                    form.$el.on('click', '*[data-mapper-remove="' + $element.data('mapper-property') + '"]', that.removeClick.bind(this));
+                    form.$el.on('click', '*[data-mapper-remove="' + property + '"]', that.removeClick.bind(this));
                 },
 
                 addClick: function(event) {
@@ -719,7 +751,7 @@ define('form/mapper',[
                     if (collectionElement.getType().canAdd()) {
                         that.appendChildren.call(this, $collectionElement, collectionElement.$children);
 
-                        $('#current-counter-' + $collectionElement.data('mapper-property')).text($collectionElement.children().length);
+                        $('#current-counter-' + $collectionElement.attr('id')).text($collectionElement.children().length);
                     }
                 },
 
@@ -733,17 +765,25 @@ define('form/mapper',[
                     if (collectionElement.getType().canRemove()) {
                         that.remove.call(this, $element);
 
-                        $('#current-counter-' + $collectionElement.data('mapper-property')).text($collectionElement.children().length);
+                        $('#current-counter-' + $collectionElement.attr('id')).text($collectionElement.children().length);
                     }
                 },
 
-                processData: function(el) {
+                processData: function(el, collection) {
                     // get attributes
                     var $el = $(el),
                         type = $el.data('type'),
                         property = $el.data('mapper-property'),
                         element = $el.data('element'),
-                        result, item;
+                        result, item,
+                        filtersAction;
+
+
+                    if (collection && !!filters[collection.data]) {
+                        filtersAction = filters[collection.data];
+                    } else if (!!filters[property]) {
+                        filtersAction = filters[property];
+                    }
 
                     // if type == collection process children, else get value
                     if (type !== 'collection') {
@@ -755,27 +795,28 @@ define('form/mapper',[
                     } else {
                         result = [];
                         $.each($el.children(), function(key, value) {
-                            item = form.mapper.getData($(value));
+                            if (!collection || collection.tpl === value.dataset.mapperPropertyTpl) {
+                                item = form.mapper.getData($(value));
 
-                            var keys = Object.keys(item);
-                            if (keys.length === 1) { // for value only collection
-                                if (item[keys[0]] !== '') {
-                                    result.push(item[keys[0]]);
+                                var keys = Object.keys(item);
+                                if (keys.length === 1) { // for value only collection
+                                    if (item[keys[0]] !== '') {
+                                        result.push(item[keys[0]]);
+                                    }
+                                } else if (!filtersAction || filtersAction(item)) {
+                                    result.push(item);
                                 }
-                            } else if (!filters[property] || (!!filters[property] && filters[property](item))) {
-                                result.push(item);
                             }
                         });
                         return result;
                     }
                 },
 
-                setCollectionData: function(collection, $el) {
+                setCollectionData: function(collection, collectionElement) {
 
                     // remember first child remove the rest
-                    var $element = $($el[0]),
-                        collectionElement = $element.data('element'),
-                        $child = collectionElement.$children,
+                    var $element = collectionElement.$element,
+                        $child = collectionElement.$child.get(0),
                         count = collection.length,
                         dfd = $.Deferred(),
                         resolve = function() {
@@ -785,32 +826,42 @@ define('form/mapper',[
                             }
                         };
 
-                    // remove children
-                    $element.children().each(function(key, value) {
-                        that.remove.call(this, $(value));
-                    }.bind(this));
+                    // no element in collection
+                    if (count === 0) {
+                        dfd.resolve();
+                    } else {
+                        // remove children
+                        $element.children().each(function(key, value) {
+                            that.remove.call(this, $(value));
+                        }.bind(this));
 
-                    // foreach collection elements: create a new dom element, call setData recursively
-                    $.each(collection, function(key, value) {
-                        that.appendChildren($element, $child).then(function($newElement) {
-                            form.mapper.setData(value, $newElement).then(function() {
-                                resolve();
+                        // foreach collection elements: create a new dom element, call setData recursively
+                        $.each(collection, function(key, value) {
+                            that.appendChildren($element, $child, value).then(function($newElement) {
+                                form.mapper.setData(value, $newElement).then(function() {
+                                    resolve();
+                                });
                             });
                         });
-                    });
+                    }
 
                     // set current length of collection
-                    $('#current-counter-' + $element.data('mapper-property')).text(collection.length);
+                    $('#current-counter-' + $element.attr('id')).text(collection.length);
 
                     return dfd.promise();
                 },
 
-                appendChildren: function($element, $child) {
-                    var $newElement = $child.clone(),
-                        $newFields = Util.getFields($newElement),
+                appendChildren: function($element, $child, value) {
+                    value = value || {};
+                    var template = _.template($child.tpl, value, form.options.delimiter),
+                        $template = $(template),
+                        $newFields = Util.getFields($template),
                         dfd = $.Deferred(),
                         counter = $newFields.length,
                         element;
+
+                    // adding
+                    $template.attr('data-mapper-property-tpl', $child.id);
 
                     // add fields
                     $.each($newFields, function(key, field) {
@@ -818,8 +869,8 @@ define('form/mapper',[
                         element.initialized.then(function() {
                             counter--;
                             if (counter === 0) {
-                                $element.append($newElement);
-                                dfd.resolve($newElement);
+                                $element.append($template);
+                                dfd.resolve($template);
                             }
                         });
                     }.bind(this));
@@ -878,34 +929,48 @@ define('form/mapper',[
                     } else if (data !== null && !$.isEmptyObject(data)) {
                         count = Object.keys(data).length;
                         $.each(data, function(key, value) {
-                            // search field with mapper property
-                            var selector = '*[data-mapper-property="' + key + '"]',
-                                $element = $el.find(selector),
+                            var $element, element, colprop,
+                            // search for occurence  in collections
+                                collection = $.grep(this.collections, function(col) {
+                                    // if collection is array and "data" == key
+                                    if ($.isArray(col.property) && (colprop = $.grep(col.property, function(prop) {
+                                        return prop.data === key;
+                                    })).length > 0) {
+                                        // get template of collection
+                                        col.$child = $($.grep(col.element.$children, function(el) {
+                                            return (el.id === colprop[0].tpl);
+                                        })[0]);
+                                        return true;
+                                    }
+                                    return false;
+                                });
+
+                            // if field is a collection
+                            if ($.isArray(value) && collection.length > 0) {
+                                that.setCollectionData.call(this, value, collection[0]).then(function() {
+                                    resolve();
+                                });
+                            } else {
+                                // search field with mapper property
+                                selector = '*[data-mapper-property="' + key + '"]';
+                                $element = $el.find(selector);
                                 element = $element.data('element');
 
-                            if ($element.length > 0) {
-                                // if field is an collection
-                                if ($.isArray(value) && $element.data('type') === 'collection') {
-                                    that.setCollectionData.call(this, value, $element).then(function() {
-                                        resolve();
-                                    });
-                                } else {
+                                if ($element.length > 0) {
                                     // if element is not in form add it
                                     if (!element) {
                                         element = form.addField($element);
                                         element.initialized.then(function() {
                                             element.setValue(value);
-                                            // resolve this set data
                                             resolve();
                                         });
                                     } else {
                                         element.setValue(value);
-                                        // resolve this set data
                                         resolve();
                                     }
+                                } else {
+                                    resolve();
                                 }
-                            } else {
-                                resolve();
                             }
                         }.bind(this));
                     } else {
@@ -932,7 +997,11 @@ define('form/mapper',[
                         $childElement = $($elements.get(0));
                         property = $childElement.data('mapper-property');
 
-                        if (property.match(/.*\..*/)) {
+                        if ($.isArray(property)) {
+                            $.each(property, function(i, prop) {
+                                data[prop.data] = that.processData.call(this, $childElement, prop);
+                            });
+                        } else if (property.match(/.*\..*/)) {
                             parts = property.split('.');
                             data[parts[0]] = {};
                             data[parts[0]][parts[1]] = that.processData.call(this, $childElement);
@@ -986,6 +1055,7 @@ require.config({
         'form/util': 'js/util',
 
         'type/default': 'js/types/default',
+        'type/readonly-select': 'js/types/readonlySelect',
         'type/string': 'js/types/string',
         'type/date': 'js/types/date',
         'type/decimal': 'js/types/decimal',
@@ -1019,6 +1089,11 @@ define('form',[
     return function(el, options) {
         var defaults = {
                 debug: false,                     // debug on/off
+                delimiter: {                      // defines which delimiter should be used for templating
+                    interpolate: /<~=(.+?)~>/g,
+                    escape: /<~-(.+?)~>/g,
+                    evaluate: /<~(.+?)~>/g
+                },
                 validation: true,                 // validation on/off
                 validationTrigger: 'focusout',    // default validate trigger
                 validationAddClassesParent: true, // add classes to parent element
@@ -1539,6 +1614,87 @@ define('type/select',[
             };
 
         return new Default($el, defaults, options, 'select', typeInterface);
+    };
+});
+
+/*
+ * This file is part of the Husky Validation.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
+define('type/readonly-select',[
+    'type/default'
+], function(Default) {
+
+    
+
+    return function($el, options) {
+        var defaults = {
+                id: null,
+                data: [],
+                idProperty: 'id',
+                outputProperty: 'name'
+            },
+
+            typeInterface = {
+                setValue: function(value) {
+                    var data = this.options.data,
+                        idProperty = this.options.idProperty,
+                        i , len;
+
+                    // check if value is an object
+                    if (typeof value === 'object') {
+                        if (value.hasOwnProperty(idProperty)) {
+                            value = value[idProperty];
+                        } else {
+                            throw "value has no property named " + idProperty;
+                        }
+                    // if value is null continue
+                    } else if (value === null) {
+                        return;
+                    }
+
+                    // set data id to value
+                    this.$el.data('id', value);
+
+                    // find value in data
+                    if (data.length > 0) {
+                        for (i = -1, len = data.length; ++i < len;) {
+                            if (data[i].hasOwnProperty(idProperty) && data[i][idProperty] === value) {
+                                this.$el.html(data[i][this.options.outputProperty]);
+                                break;
+                            }
+                        }
+                    }
+                },
+
+                getValue: function() {
+                    var id = this.$el.data('id'),
+                        i, len;
+
+                    for (i = -1, len = this.options.data.length; i++ < len;) {
+                        if (this.options.data[i][this.options.idProperty] === id) {
+                            return this.options.data[i];
+                        }
+                    }
+                    return null;
+                },
+
+                needsValidation: function() {
+                    return false;
+                },
+
+                validate: function() {
+                    return true;
+                }
+            };
+
+        return new Default($el, defaults, options, 'readonly-select', typeInterface);
     };
 });
 

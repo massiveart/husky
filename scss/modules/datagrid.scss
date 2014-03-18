@@ -24,10 +24,12 @@
         tr {
             height: 30px;
             padding-top: 10px;
+            border-color: $grayLighter;
         }
         th {
             padding-top: 0;
             font-weight: normal;
+            white-space: nowrap;
 
             &.is-sortable {
                 color: black;
@@ -46,7 +48,9 @@
     tbody {
         tr:last-child {
             border-width: 2px;
-            border-color: $grayLight;
+        }
+        .check {
+            padding-left: 12px;
         }
     }
 
@@ -64,8 +68,17 @@
         }
     }
 
-    .dropdown-menu {
-        margin-top: 10px;
+    .datagrid-loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -50px 0 0 -50px;
     }
 
+    .dropdown-menu {
+        margin-top: 5px;
+    }
+    .dropdown-toggle::after {
+        margin-left: 12px;
+    }
 }
