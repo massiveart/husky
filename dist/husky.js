@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -28356,6 +28355,7 @@ define('__component__$dropdown@husky',[], function() {
             // on click on trigger outside check
             this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.show(this.$dropDown);
+            this.sandbox.emit('husky.dropdown.' + this.options.instanceName + '.showing');
         },
 
         // hide dropDown
@@ -37376,3 +37376,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+

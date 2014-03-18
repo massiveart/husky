@@ -252,6 +252,7 @@ define([], function() {
             // on click on trigger outside check
             this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.show(this.$dropDown);
+            this.sandbox.emit('husky.dropdown.' + this.options.instanceName + '.showing');
         },
 
         // hide dropDown
