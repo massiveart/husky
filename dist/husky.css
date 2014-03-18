@@ -6020,7 +6020,7 @@ a.btn-black, a.btn-highlight {
   height: 100%;
 }
 /* line 24, ../scss/modules/column-navigation.scss */
-.column-navigation-wrapper .column-navigation .column:last-child {
+.column-navigation-wrapper .column-navigation .column:nth-child(n+4):last-child {
   border-right: none;
 }
 /* line 28, ../scss/modules/column-navigation.scss */
