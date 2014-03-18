@@ -52,6 +52,7 @@ define([], function() {
             this.sandbox.dom.append(this.options.el, this.$element);
 
             this.render();
+            this.sandbox.emit('husky.dropdown.' + this.options.instanceName + '.initialized');
         },
 
         render: function() {
@@ -74,7 +75,7 @@ define([], function() {
 
             if (this.options.setParentDropDown) {
                 // add class dropdown to parent
-                this.sandbox.dom.addClass(this.sandbox.dom.parent(this.$element),'dropdown');
+                this.sandbox.dom.addClass(this.sandbox.dom.parent(this.$element), 'dropdown');
             }
 
             // check alginment
@@ -94,22 +95,22 @@ define([], function() {
         // bind dom elements
         bindDOMEvents: function() {
 
-             // turn off all events
-             this.sandbox.dom.off(this.$element);
+            // turn off all events
+            this.sandbox.dom.off(this.$element);
 
-             // ------------------------------------------------------------
-             // DOM events
-             // ------------------------------------------------------------
+            // ------------------------------------------------------------
+            // DOM events
+            // ------------------------------------------------------------
 
-             // init drop-down
-             if (this.options.trigger !== '') {
+            // init drop-down
+            if (this.options.trigger !== '') {
                 this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this), this.options.trigger);
-             } else {
+            } else {
                 this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this));
-             }
+            }
 
             // on click on list item
-            this.sandbox.dom.on(this.$dropDownList, 'click', function (event) {
+            this.sandbox.dom.on(this.$dropDownList, 'click', function(event) {
                 event.stopPropagation();
                 this.clickItem(this.sandbox.dom.data(event.currentTarget, 'id'));
             }.bind(this), 'li:not(".divider")');
@@ -226,14 +227,13 @@ define([], function() {
         // clear childs of list
         clearDropDown: function() {
             // FIXME make it easier
-            this.sandbox.dom.remove(this.sandbox.dom.children(this.sandbox.dom.children(this.$dropDown,'ul'),'li'));
+            this.sandbox.dom.remove(this.sandbox.dom.children(this.sandbox.dom.children(this.$dropDown, 'ul'), 'li'));
         },
 
         // toggle dropDown visible
         toggleDropDown: function() {
             this.sandbox.logger.log(this.name, 'toggle dropdown');
-//            this.sandbox.dom.toggle(this.$dropDown);
-            if (this.sandbox.dom.is(this.$dropDown,':visible')) {
+            if (this.sandbox.dom.is(this.$dropDown, ':visible')) {
                 this.hideDropDown();
             } else {
                 this.showDropDown();
@@ -246,7 +246,8 @@ define([], function() {
             // on click on trigger outside check
             this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.show(this.$dropDown);
-            this.sandbox.dom.addClass(this.$el,'is-active');
+            this.sandbox.emit('husky.dropdown.' + this.options.instanceName + '.showing');
+            this.sandbox.dom.addClass(this.$el, 'is-active');
         },
 
         // hide dropDown
@@ -255,7 +256,7 @@ define([], function() {
             // remove global click event
             this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.hide(this.$dropDown);
-            this.sandbox.dom.removeClass(this.$el,'is-active');
+            this.sandbox.dom.removeClass(this.$el, 'is-active');
         },
 
         // get url for pattern
