@@ -9,32 +9,38 @@
         vertical-align: baseline;
 
         &.general {
-            font-size: 24px;
-            width: 160px;
+            width: 140px;
+            font-weight: bold;
         }
 
         &.section {
-            width: 130px;
+            width: 180px;
+        }
+        &:not(.general):not(.section) {
+            padding-left: 3px;
         }
     }
 
     td {
         &.value {
             width: 20px;
-            padding: 4px;
+            padding: 3px;
             margin: 0;
         }
 
         &.all {
-            text-align: right;
-            padding-right: 10px;
+            text-align: left;
+            padding-left: 16px;
+        }
+        &.section {
+            color: $grayLight;
         }
     }
 
     span[class^="icon-"] {
-        opacity: 0.2;
 
-        border: 1px solid #000;
+        border: 1px solid $black;
+        color: $black;
         border-radius: 12px;
 
         width: 24px;
@@ -45,7 +51,9 @@
         text-align: center;
 
         &.is-active {
-            opacity: 1;
+            color: $white;
+            border-color: $green;
+            background-color: $green;
         }
     }
 }

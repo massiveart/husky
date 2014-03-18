@@ -71,7 +71,7 @@
     padding: 4px 7px 4px 7px;
     margin: 0 0 0 -4px;
     border: 1px solid transparent;
-    border-radius: 5px;
+    border-radius: 3px;
     outline:0;
     display: block;
     height: 30px;
@@ -83,13 +83,19 @@
 .editable:focus,
 .editable:active {
     background: $white;
-    border: 1px solid $white;
+    border: 1px solid $grayLighter;
     outline:0;
 }
 
 .editable:hover {
-    border: 1px solid $white;
+    border: 1px solid $grayLighter;
     outline:0;
+}
+
+// Clickable
+// -------------------------
+.clickable {
+    color: $black !important;
 }
 
 // Margin & paddings shorthands

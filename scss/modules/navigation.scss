@@ -12,15 +12,16 @@
 
 @mixin subitem-icon-before {
     font-family: $baseIconFont;
-    font-size: 11px;
+    font-size: 13px;
     content: "\e174";
     display: inline-block;
-    margin-left: -15px;
-    width: 15px;
-    overflow: visible;
-    position: relative;
-//    top: -1px;
-    line-height: 11px;
+    height: 15px;
+    text-align: right;
+    line-height: 15px;
+    position: absolute;
+    top: 7px;
+    left: 0px;
+    padding-right: 9px;
 }
 
 
@@ -123,7 +124,7 @@ $transitionDuration: 0.5s;
 }
 
 .navigation-header {
-    height: 40px;
+    height: 30px;
     overflow: hidden;
     margin: 0 $verticalMargin 20px;
 }
@@ -133,7 +134,7 @@ $transitionDuration: 0.5s;
     font-size: 18px;
     color: $white;
     margin: 0;
-    line-height: 35px;
+    line-height: 30px;
 }
 
 .navigation-header-image {
@@ -143,6 +144,26 @@ $transitionDuration: 0.5s;
 
     img {
         border-radius: 32px;
+    }
+}
+.navigation-header-text {
+    display: inline-block;
+    margin-right: 10px;
+    float: left;
+    width: 30px;
+    height: 30px;
+    background: $white;
+    border-radius: 15px;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+    line-height: 30px;
+    font-size: 14px;
+    color: $black;
+    overflow: hidden;
+
+    span {
+        margin-left: -1px;
     }
 }
 
@@ -183,11 +204,6 @@ li.is-active {
         position: relative;
         padding-left: 0px;
         width: 210px;
-
-        > a {
-            line-height: 50px;
-            vertical-align: middle;
-        }
     }
 
     &.is-active {
@@ -220,7 +236,7 @@ li.is-active {
     .navigation-items-list {
         opacity: 0;
         font-size: 14px;
-        padding-left: 55px;
+        padding-left: 34px;
     }
 
     /* sub-sub-items */
@@ -230,9 +246,12 @@ li.is-active {
     }
 
     li {
-        margin: 0 0 0 -10px;
         border-radius: 4px;
         cursor: pointer;
+        position: relative;
+        top: 0px;
+        left: 0px;
+        height: 30px;
 
         &:hover:not(.navigation-subitems) a::before {
             @include subitem-icon-before;
@@ -250,7 +269,13 @@ li.is-active {
         }
 
         a {
-            padding: 5px 0 0px 10px;
+            padding: 0px 0 0px 20px;
+            height: 100%;
+            width: 100%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            line-height: 30px;
             display: inline-block;
             min-height: 30px; /* prohibits height changes on select */
         }
@@ -266,17 +291,6 @@ li.is-active {
             @include toggle-item;
             padding-bottom: 0;
         }
-
-        li {
-            &:hover::before {
-                //font-size: 8px;
-                //height:25px;
-            }
-        }
-    }
-
-    &:hover:not(.is-active):not(.is-expanded) {
-        //background-color: rgba(black,0.05);
     }
 }
 
@@ -285,21 +299,30 @@ li.is-active {
     display: inline-block;
     padding: 0 0px;
     position: relative;
-    top: 2px;
-    min-height: 50px;
+    top: 0px;
+    left: 0px;
+    height: 100%;
 }
 
 .navigation-item-title {
-    position: relative;
-    top: 2px;
     padding-left: $verticalItemPadding;
+    height: 100%;
+    line-height: 50px;
+    display: inline-block;
+    width: 195px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .navigation-item-icon {
     position: absolute;
-    //top: -3px;
+    top: 0px;
+    left: 0px;
     padding-left: 3px;
     font-size: 18px;
+    height: 100%;
+    line-height: 50px;
 }
 
 .navigation-items-toggle {
@@ -312,7 +335,7 @@ li a.navigation-settings-icon {
     width: auto;
     position: absolute;
     right: 20px;
-    top: 4px;
+    top: 15px;
     font-size: 14px;
     display: none;
 }
@@ -321,14 +344,14 @@ li a.navigation-settings-icon {
     width: auto;
     position: absolute;
     right: 0;
-    top: 5px;
+    top: 14px;
     font-size: 10px;
 }
 
 .navigation footer {
     border-top: 1px solid #5B5B5B;
     padding-top: 20px;
-    margin: 80px $verticalMargin 0 $verticalMargin + $verticalItemPadding;
+    margin: 100px $verticalMargin 0 $verticalMargin + $verticalItemPadding;
     font-size: 12px;
 
     .version {

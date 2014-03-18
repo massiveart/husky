@@ -3,6 +3,7 @@
      position: relative;
      top: 0px;
      left: 0px;
+     min-width: 100%;
 
     .column-navigation {
         background-color: $white;
@@ -37,6 +38,7 @@
                     position: relative;
                     top: 0px;
                     left: 0px;
+                    @include user-select(none);
                 }
 
                 li:hover {
@@ -94,6 +96,11 @@
             color: $white;
             border-radius: 3px;
         }
+        .husky-column-navigation-loader {
+            position: relative;
+            top: 2px;
+            left: -2px;
+        }
 
         .arrow {
             display: inline-block;
@@ -105,6 +112,8 @@
     }
 
     .add {
+        display: inline-block;
+        width: 50%;
         background-color: $accentColor;
         padding: 5px 0;
         color: $white;
@@ -115,6 +124,8 @@
     }
 
     .settings {
+        display: inline-block;
+        width: 50%;
         background-color: $grayLighter;
         padding: 5px 0;
         border-bottom-right-radius: 5px;

@@ -54,7 +54,7 @@
                 _ = app.sandbox.util._;
 
         fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
-            '{"title":"Sulu 2.0", "icon":"..\/..\/img\/tmp\/husky.png", "id":"1", "items":[' +
+            '{"title":"Sulu 2.0", "id":"1", "items":[' +
 
                     '{"title":"Tools", "items":[' +
                     '{"title":"Dashboard", "action":"dashboard", "icon":"dashboard", "id":"2", "hasSettings":"true"},' +
@@ -91,7 +91,8 @@
                     ']},' +
                     '{"title":"Asia", "icon":"globe", "id":"22", "items":[' +
                     '{"title":"cn_cn", "action":"webspaces\/cn_cn", "id":"23"},' +
-                    '{"title":"jp_jp", "action":"webspaces\/jp_jp", "id":"24"}' +
+                    '{"title":"jp_jp", "action":"webspaces\/jp_jp", "id":"24"},' +
+                    '{"title":"This item has a way to long text", "action":"webspaces\/jps_jps", "id":"25"}' +
                     ']}' +
                     ']}' +
                     ']}'
@@ -137,9 +138,6 @@
             app.sandbox.dom.on('#hide', 'click', function(){
                 app.sandbox.emit('husky.navigation.hide');
             }.bind(this));
-
-
-
         });
     });
 
