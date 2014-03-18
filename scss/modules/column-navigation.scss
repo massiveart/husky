@@ -21,6 +21,10 @@
             font-size: 0;
             height:100%;
 
+            &:last-child {
+                border-right: none;
+            }
+
             ul {
                 list-style-type: none;
                 margin: 0;
