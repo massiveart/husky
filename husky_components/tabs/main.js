@@ -34,14 +34,25 @@ define(function() {
             instanceName: '',
             preselect: true,
             forceReload: false,
+            callback: null,
             forceSelect: true
         },
 
         selectItem = function(event) {
             event.preventDefault();
+            var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')];
+
             this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
             this.sandbox.dom.addClass(event.currentTarget, 'is-selected');
-            triggerSelectEvent.call(this, this.items[this.sandbox.dom.data(event.currentTarget, 'id')]);
+
+            // callback
+            if (item.hasOwnProperty('callback') && typeof item.callback === 'function') {
+                item.callback.call(this, item);
+            } else if (!!this.options.callback && typeof this.options.callback === 'function') {
+                item.callback.call(this, item);
+            } else {
+                triggerSelectEvent.call(this, item);
+            }
         },
 
         triggerSelectEvent = function(item) {
