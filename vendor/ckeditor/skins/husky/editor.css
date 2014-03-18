@@ -390,7 +390,8 @@ a:hover.cke_colorauto, a:hover.cke_colormore, a:focus.cke_colorauto, a:focus.cke
 }
 
 .cke_toolbar {
-    float: left
+    float: left;
+    height:30px;
 }
 
 .cke_rtl .cke_toolbar {
