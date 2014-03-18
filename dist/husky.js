@@ -24715,7 +24715,7 @@ define('__component__$navigation@husky',[],function() {
             } else {
                 this.sandbox.dom.prepend(this.sandbox.dom.find('header.navigation-header', this.$el),
                     this.sandbox.template.parse(templates.headerText, {
-                        text: this.options.data.title.substr(0, 2)
+                        text: this.options.data.title.substr(0, 1)
                     })
                 );
             }
