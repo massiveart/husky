@@ -124,7 +124,7 @@ $transitionDuration: 0.5s;
 }
 
 .navigation-header {
-    height: 40px;
+    height: 30px;
     overflow: hidden;
     margin: 0 $verticalMargin 20px;
 }
@@ -134,7 +134,7 @@ $transitionDuration: 0.5s;
     font-size: 18px;
     color: $white;
     margin: 0;
-    line-height: 35px;
+    line-height: 30px;
 }
 
 .navigation-header-image {
@@ -155,10 +155,11 @@ $transitionDuration: 0.5s;
     background: $white;
     border-radius: 15px;
     text-transform: uppercase;
+    font-weight: bold;
     text-align: center;
     line-height: 30px;
-    font-size: 23px;
-    color: $gray;
+    font-size: 14px;
+    color: $black;
     overflow: hidden;
 
     span {

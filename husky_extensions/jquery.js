@@ -391,6 +391,10 @@
               $(selector).focus();
             };
 
+            app.core.dom.animate = function(selector, properties, options){
+               $(selector).animate(properties, options);
+            };
+
             app.core.util.ajax = $.ajax;
         }
     });

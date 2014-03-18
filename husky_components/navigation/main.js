@@ -128,8 +128,9 @@ define(function() {
 
 
         /**
-         * forces navigation to uncollapse
+         * forces navigation to collapse
          * @event husky.navigation.collapse
+         * @param {Boolean} stayCollapsed - if true the navigation stays collapsed till the custom-uncollapse event is emited
          */
             EVENT_COLLAPSE = namespace + 'collapse',
 
@@ -152,7 +153,19 @@ define(function() {
          * raised when navigation was un / collapsed. called when transition is finished. only raised when not forced
          * @event husky.navigation.size.changed
          */
-            EVENT_SIZE_CHANGED = namespace + 'size.changed'
+            EVENT_SIZE_CHANGED = namespace + 'size.changed',
+
+        /**
+         * show the navigation when it was hidden before
+         * @event husky.navigation.show
+         */
+            EVENT_SHOW = namespace + 'show',
+
+        /**
+         * hides the navigation completely
+         * @event husky.navigation.hide
+         */
+            EVENT_HIDE = namespace + 'hide'
         ;
 
 
@@ -164,6 +177,9 @@ define(function() {
 
             // merging options
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
+            this.stayCollapsed = false;
+            this.hidden = false;
 
             // binding dom events
             this.bindDOMEvents();
@@ -211,7 +227,7 @@ define(function() {
             } else {
                 this.sandbox.dom.prepend(this.sandbox.dom.find('header.navigation-header', this.$el),
                     this.sandbox.template.parse(templates.headerText, {
-                        text: this.options.data.title.substr(0, 2)
+                        text: this.options.data.title.substr(0, 1)
                     })
                 );
             }
@@ -338,12 +354,12 @@ define(function() {
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showToolTip.bind(this, ''), '.navigation.collapsed .navigation-items');
             this.sandbox.dom.on(this.$el, 'mouseleave', this.hideToolTip.bind(this), '.navigation.collapsed .navigation-items, .navigation.collapsed .navigation-search');
 
-            this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function(event) {
+            this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function() {
                 this.sandbox.emit(EVENT_SIZE_CHANGED, this.sandbox.dom.width(this.$navigation));
             }.bind(this));
             this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function(event) {
                 event.stopPropagation();
-            }.bind(this),'.navigation *');
+            }.bind(this), '.navigation *');
         },
 
         /**
@@ -356,15 +372,24 @@ define(function() {
                 this.renderFooter(template);
             }.bind(this));
 
-            this.sandbox.on(EVENT_COLLAPSE, this.collapse.bind(this));
-            this.sandbox.on(EVENT_UNCOLLAPSE, this.unCollapse.bind(this));
+            this.sandbox.on(EVENT_COLLAPSE, function(stayCollapsed) {
+                this.stayCollapsed = (typeof stayCollapsed === 'boolean') ? stayCollapsed : false;
+                this.collapse();
+            }.bind(this));
+            this.sandbox.on(EVENT_UNCOLLAPSE, function(force) {
+                this.stayCollapsed = false;
+                this.unCollapse(force);
+            }.bind(this));
+
+            this.sandbox.on(EVENT_HIDE, this.hide.bind(this));
+            this.sandbox.on(EVENT_SHOW, this.show.bind(this));
 
         },
 
         resizeListener: function() {
             var windowWidth = this.sandbox.dom.width(this.sandbox.dom.window);
 
-            if (windowWidth <= this.options.resizeWidth) {
+            if (windowWidth <= this.options.resizeWidth || this.stayCollapsed === true) {
                 this.collapse();
             } else if (this.sandbox.dom.hasClass(this.$navigation, 'collapsed')) {
                 this.unCollapse();
@@ -476,7 +501,6 @@ define(function() {
                 $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
                 this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
                 this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
-
             } else {
                 this.sandbox.dom.show($childList);
                 this.sandbox.dom.addClass($items, 'is-expanded');
@@ -559,30 +583,31 @@ define(function() {
         },
 
         collapse: function() {
-            this.sandbox.dom.addClass(this.$navigation, 'collapsed');
-            this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
-            if (!this.collapsed) {
-                this.sandbox.emit(EVENT_COLLAPSED, CONSTANTS.COLLAPSED_WIDTH);
-                this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.COLLAPSED_WIDTH);
-                this.collapsed = !this.collapsed;
+            if (this.hidden === false) {
+                this.sandbox.dom.addClass(this.$navigation, 'collapsed');
+                this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
+                if (!this.collapsed) {
+                    this.sandbox.emit(EVENT_COLLAPSED, CONSTANTS.COLLAPSED_WIDTH);
+                    this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.COLLAPSED_WIDTH);
+                    this.collapsed = !this.collapsed;
+                }
             }
         },
 
         unCollapse: function(forced) {
-            this.sandbox.dom.removeClass(this.$navigation, 'collapsed');
-            this.hideToolTip();
-            if (forced) {
-                this.collapseBack = true;
-                this.sandbox.dom.addClass(this.$navigation, 'collapseIcon');
-            } else {
-                this.collapseBack = false;
-            }
-            if (this.collapsed) {
-                this.sandbox.emit(EVENT_UNCOLLAPSED, CONSTANTS.UNCOLLAPSED_WIDTH);
-                if (!forced) {
-                    this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.UNCOLLAPSED_WIDTH);
+            if ((this.stayCollapsed === false || forced === true) && this.hidden === false) {
+                this.sandbox.dom.removeClass(this.$navigation, 'collapsed');
+                this.hideToolTip();
+                if (forced) {
+                    this.sandbox.dom.addClass(this.$navigation, 'collapseIcon');
                 }
-                this.collapsed = !this.collapsed;
+                if (this.collapsed) {
+                    this.sandbox.emit(EVENT_UNCOLLAPSED, CONSTANTS.UNCOLLAPSED_WIDTH);
+                    if (!forced) {
+                        this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.UNCOLLAPSED_WIDTH);
+                    }
+                    this.collapsed = !this.collapsed;
+                }
             }
         },
 
@@ -648,9 +673,28 @@ define(function() {
 
             if (!customTarget) {
                 setTimeout(this.resizeListener.bind(this), 700);
-
             }
 
+        },
+
+        /**
+         * Shows the navigation
+         */
+        show: function() {
+            if (!!this.currentNavigationWidth) {
+                this.sandbox.dom.removeAttr(this.$navigation, 'style');
+                this.currentNavigationWidth = null;
+                this.hidden = false;
+            }
+        },
+
+        /**
+         * Hides the navigaiton
+         */
+        hide: function() {
+            this.currentNavigationWidth = this.sandbox.dom.width(this.$navigation);
+            this.sandbox.dom.width(this.$navigation, 0);
+            this.hidden = true;
         }
 
     };

@@ -49,7 +49,7 @@ define(function() {
             if (item.hasOwnProperty('callback') && typeof item.callback === 'function') {
                 item.callback.call(this, item);
             } else if (!!this.options.callback && typeof this.options.callback === 'function') {
-                item.callback.call(this, item);
+                this.options.callback.call(this, item);
             } else {
                 triggerSelectEvent.call(this, item);
             }
