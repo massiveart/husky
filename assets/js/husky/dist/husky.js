@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -24716,7 +24715,7 @@ define('__component__$navigation@husky',[],function() {
             } else {
                 this.sandbox.dom.prepend(this.sandbox.dom.find('header.navigation-header', this.$el),
                     this.sandbox.template.parse(templates.headerText, {
-                        text: this.options.data.title.substr(0, 2)
+                        text: this.options.data.title.substr(0, 1)
                     })
                 );
             }
@@ -37653,3 +37652,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
