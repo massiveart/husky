@@ -4370,7 +4370,7 @@ textarea.form-element {
 
 /* line 126, ../scss/modules/navigation.scss */
 .navigation-header {
-  height: 40px;
+  height: 30px;
   overflow: hidden;
   margin: 0 20px 20px;
 }
