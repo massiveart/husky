@@ -54,7 +54,7 @@
                 _ = app.sandbox.util._;
 
         fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
-            '{"title":"Sulu 2.0", "icon":"..\/..\/img\/tmp\/husky.png", "id":"1", "items":[' +
+            '{"title":"Sulu 2.0", "id":"1", "items":[' +
 
                     '{"title":"Tools", "items":[' +
                     '{"title":"Dashboard", "action":"dashboard", "icon":"dashboard", "id":"2", "hasSettings":"true"},' +
@@ -131,6 +131,7 @@
             app.sandbox.dom.on('#collapse', 'click', collapse.bind(this, true));
             app.sandbox.dom.on('#force', 'click', collapse.bind(this, true));
 
+<<<<<<< HEAD
             app.sandbox.dom.on('#show', 'click', function(){
                 app.sandbox.emit('husky.navigation.show');
             }.bind(this));
@@ -141,6 +142,8 @@
 
 
 
+=======
+>>>>>>> 424fb49b57fe299cb73227cbca58efa9e74d669a
         });
     });
 

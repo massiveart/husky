@@ -17098,7 +17098,15 @@ define('form/mapper',[
                         type = $el.data('type'),
                         property = $el.data('mapper-property'),
                         element = $el.data('element'),
-                        result, item;
+                        result, item,
+                        filtersAction;
+
+
+                    if (collection && !!filters[collection.data]) {
+                        filtersAction = filters[collection.data];
+                    } else if (!!filters[property]) {
+                        filtersAction = filters[property];
+                    }
 
                     // if type == collection process children, else get value
                     if (type !== 'collection') {
@@ -17118,7 +17126,7 @@ define('form/mapper',[
                                     if (item[keys[0]] !== '') {
                                         result.push(item[keys[0]]);
                                     }
-                                } else if (!filters[property] || (!!filters[property] && filters[property](item))) {
+                                } else if (!filtersAction || filtersAction(item)) {
                                     result.push(item);
                                 }
                             }
@@ -17141,19 +17149,24 @@ define('form/mapper',[
                             }
                         };
 
-                    // remove children
-                    $element.children().each(function(key, value) {
-                        that.remove.call(this, $(value));
-                    }.bind(this));
+                    // no element in collection
+                    if (count === 0) {
+                        dfd.resolve();
+                    } else {
+                        // remove children
+                        $element.children().each(function(key, value) {
+                            that.remove.call(this, $(value));
+                        }.bind(this));
 
-                    // foreach collection elements: create a new dom element, call setData recursively
-                    $.each(collection, function(key, value) {
-                        that.appendChildren($element, $child, value).then(function($newElement) {
-                            form.mapper.setData(value, $newElement).then(function() {
-                                resolve();
+                        // foreach collection elements: create a new dom element, call setData recursively
+                        $.each(collection, function(key, value) {
+                            that.appendChildren($element, $child, value).then(function($newElement) {
+                                form.mapper.setData(value, $newElement).then(function() {
+                                    resolve();
+                                });
                             });
                         });
-                    });
+                    }
 
                     // set current length of collection
                     $('#current-counter-' + $element.attr('id')).text(collection.length);
@@ -17272,12 +17285,10 @@ define('form/mapper',[
                                         element = form.addField($element);
                                         element.initialized.then(function() {
                                             element.setValue(value);
-                                            // resolve this set data
                                             resolve();
                                         });
                                     } else {
                                         element.setValue(value);
-                                        // resolve this set data
                                         resolve();
                                     }
                                 } else {
@@ -24720,7 +24731,7 @@ define('__component__$navigation@husky',[],function() {
             } else {
                 this.sandbox.dom.prepend(this.sandbox.dom.find('header.navigation-header', this.$el),
                     this.sandbox.template.parse(templates.headerText, {
-                        text: this.options.data.title.substr(0, 2)
+                        text: this.options.data.title.substr(0, 1)
                     })
                 );
             }
@@ -24990,20 +25001,10 @@ define('__component__$navigation@husky',[],function() {
             if (isExpanded && !navWasCollapsed) {
                 this.sandbox.dom.removeClass($items, 'is-expanded');
 
-<<<<<<< HEAD
-            this.sandbox.dom.removeClass($items, 'is-expanded');
-
-            // change toggle item
-            $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
-            this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
-            this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
-=======
                 // change toggle item
                 $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
                 this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
                 this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
->>>>>>> c59f30b3778e9ec9a3d4e9475fff0e94ace09595
-
             } else {
                 this.sandbox.dom.show($childList);
                 this.sandbox.dom.addClass($items, 'is-expanded');
@@ -28416,7 +28417,7 @@ define('__component__$dropdown@husky',[], function() {
 
             if (this.options.setParentDropDown) {
                 // add class dropdown to parent
-                this.sandbox.dom.addClass(this.sandbox.dom.parent(this.$element),'dropdown');
+                this.sandbox.dom.addClass(this.sandbox.dom.parent(this.$element), 'dropdown');
             }
 
             // check alginment
@@ -28436,22 +28437,22 @@ define('__component__$dropdown@husky',[], function() {
         // bind dom elements
         bindDOMEvents: function() {
 
-             // turn off all events
-             this.sandbox.dom.off(this.$element);
+            // turn off all events
+            this.sandbox.dom.off(this.$element);
 
-             // ------------------------------------------------------------
-             // DOM events
-             // ------------------------------------------------------------
+            // ------------------------------------------------------------
+            // DOM events
+            // ------------------------------------------------------------
 
-             // init drop-down
-             if (this.options.trigger !== '') {
+            // init drop-down
+            if (this.options.trigger !== '') {
                 this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this), this.options.trigger);
-             } else {
+            } else {
                 this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this));
-             }
+            }
 
             // on click on list item
-            this.sandbox.dom.on(this.$dropDownList, 'click', function (event) {
+            this.sandbox.dom.on(this.$dropDownList, 'click', function(event) {
                 event.stopPropagation();
                 this.clickItem(this.sandbox.dom.data(event.currentTarget, 'id'));
             }.bind(this), 'li:not(".divider")');
@@ -28568,14 +28569,13 @@ define('__component__$dropdown@husky',[], function() {
         // clear childs of list
         clearDropDown: function() {
             // FIXME make it easier
-            this.sandbox.dom.remove(this.sandbox.dom.children(this.sandbox.dom.children(this.$dropDown,'ul'),'li'));
+            this.sandbox.dom.remove(this.sandbox.dom.children(this.sandbox.dom.children(this.$dropDown, 'ul'), 'li'));
         },
 
         // toggle dropDown visible
         toggleDropDown: function() {
             this.sandbox.logger.log(this.name, 'toggle dropdown');
-//            this.sandbox.dom.toggle(this.$dropDown);
-            if (this.sandbox.dom.is(this.$dropDown,':visible')) {
+            if (this.sandbox.dom.is(this.$dropDown, ':visible')) {
                 this.hideDropDown();
             } else {
                 this.showDropDown();
@@ -28588,11 +28588,8 @@ define('__component__$dropdown@husky',[], function() {
             // on click on trigger outside check
             this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.show(this.$dropDown);
-<<<<<<< HEAD
             this.sandbox.emit('husky.dropdown.' + this.options.instanceName + '.showing');
-=======
-            this.sandbox.dom.addClass(this.$el,'is-active');
->>>>>>> c59f30b3778e9ec9a3d4e9475fff0e94ace09595
+            this.sandbox.dom.addClass(this.$el, 'is-active');
         },
 
         // hide dropDown
@@ -28601,7 +28598,7 @@ define('__component__$dropdown@husky',[], function() {
             // remove global click event
             this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.hide(this.$dropDown);
-            this.sandbox.dom.removeClass(this.$el,'is-active');
+            this.sandbox.dom.removeClass(this.$el, 'is-active');
         },
 
         // get url for pattern
