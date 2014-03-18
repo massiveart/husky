@@ -45,15 +45,6 @@ define([], function() {
 
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
-//            // return if this plugin has a module instance
-//            if (!!this.$element.data(moduleName)) {
-//                return this;
-//            }
-//
-//            // store the module instance into the jQuery data property
-//           this. $element.data(moduleName, new Husky.Ui.DropDown(this, options));
-
-
             this.$element = this.sandbox.dom.createElement('<div/>', {
                 'class': 'husky-drop-down'
             });
@@ -137,7 +128,7 @@ define([], function() {
         // trigger event with clicked item
         clickItem: function(id) {
             this.sandbox.util.foreach(this.options.data, function(item) {
-                if (!!item.id && item.id.toString() === id.toString()) {
+                if (typeof item.id !== 'undefined' && item.id.toString() === id.toString()) {
                     this.sandbox.logger.log(this.name, 'item.click: ' + id, 'success');
 
                     if (!!item.callback && typeof item.callback === 'function') {
