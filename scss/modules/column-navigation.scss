@@ -22,7 +22,7 @@
             font-size: 0;
             height:100%;
 
-            &:last-child {
+            &:nth-child(n+4):last-child {
                 border-right: none;
             }
 
