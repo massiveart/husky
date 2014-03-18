@@ -61,6 +61,7 @@ define([], function() {
             this.sandbox.dom.append(this.options.el, this.$element);
 
             this.render();
+            this.sandbox.emit('husky.dropdown.' + this.options.instanceName + '.initialized');
         },
 
         render: function() {

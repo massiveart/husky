@@ -104,28 +104,11 @@ define([], function() {
 
             bindCustomEvents: function(){
                 this.sandbox.on(HIDE, function(){
-
-
-                    this.elWidth = this.sandbox.dom.width(this.$pageFunction);
-                    this.sandbox.dom.animate(this.$pageFunction,{
-                        width:0
-                    },{
-                        duration:400
-                    });
-
+                    this.sandbox.dom.fadeOut(this.$el, 300);
                 }.bind(this));
 
                 this.sandbox.on(SHOW, function(){
-
-                    if(!!this.elWidth){
-                        this.sandbox.dom.animate(this.$pageFunction,{
-                            width:this.elWidth+'px'
-                        },{
-                            duration:400,
-                            queue: false
-                        });
-                    }
-
+                    this.sandbox.dom.fadeIn(this.$el, 300);
                 }.bind(this));
             }
         };

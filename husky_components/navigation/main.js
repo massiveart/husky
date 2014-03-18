@@ -659,15 +659,7 @@ define(function() {
          */
         show: function() {
             if (!!this.currentNavigationWidth) {
-                this.sandbox.dom.animate(this.$navigation, {
-                    width: this.currentNavigationWidth + 'px'
-                }, {
-                    duration: 400, queue: false, complete: function() {
-                        this.sandbox.dom.css(this.$navigation, 'width', this.currentNavigationWidth + 'px');
-                        this.sandbox.dom.removeAttr(this.$navigation, 'style');
-                    }.bind(this)
-                });
-
+                this.sandbox.dom.removeAttr(this.$navigation, 'style');
                 this.currentNavigationWidth = null;
                 this.hidden = false;
             }
@@ -678,7 +670,7 @@ define(function() {
          */
         hide: function() {
             this.currentNavigationWidth = this.sandbox.dom.width(this.$navigation);
-            this.sandbox.dom.animate(this.$navigation, {width: 0}, {duration: 400, queue: false});
+            this.sandbox.dom.width(this.$navigation, 0);
             this.hidden = true;
         }
 
