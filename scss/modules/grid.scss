@@ -59,7 +59,7 @@ $grid-margin-bottom-small: 10px;
         }
     }
     .grid-col-12.floating  {
-        &:nth-child(n+1) {
+        &:nth-child(n+2) {
             margin-top: $grid-margin-bottom-small;
         }
     }
