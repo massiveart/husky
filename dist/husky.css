@@ -3814,7 +3814,7 @@ hr.divider {
   margin-top: 10px;
 }
 /* line 62, ../scss/modules/grid.scss */
-.grid-row.small .grid-col-12.floating:nth-child(n+1) {
+.grid-row.small .grid-col-12.floating:nth-child(n+2) {
   margin-top: 10px;
 }
 
