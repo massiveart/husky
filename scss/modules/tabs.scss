@@ -42,6 +42,18 @@
             }
         }
     }
+
+    &.deactivated {
+        ul li {
+            a {
+                color: $grayLight;
+                cursor: default;
+            }
+            &.is-selected a {
+                color: $highlightColor;
+            }
+        }
+    }
 }
 
 

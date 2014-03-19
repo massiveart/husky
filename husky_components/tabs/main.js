@@ -39,9 +39,13 @@ define(function() {
 
         selectItem = function(event) {
             event.preventDefault();
-            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
-            this.sandbox.dom.addClass(event.currentTarget, 'is-selected');
-            triggerSelectEvent.call(this, this.items[this.sandbox.dom.data(event.currentTarget, 'id')]);
+            if (this.active === true) {
+                this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
+                this.sandbox.dom.addClass(event.currentTarget, 'is-selected');
+                triggerSelectEvent.call(this, this.items[this.sandbox.dom.data(event.currentTarget, 'id')]);
+            } else {
+                return false;
+            }
         },
 
         triggerSelectEvent = function(item) {
@@ -59,6 +63,14 @@ define(function() {
                 var selection = this.sandbox.dom.find('.is-selected', this.options.el);
                 callback.call(this.items[this.sandbox.dom.data(selection, 'id')]);
             }.bind(this));
+
+            this.sandbox.on(createEventString.call(this, 'activate'), function() {
+                this.activate();
+            }.bind(this));
+
+            this.sandbox.on(createEventString.call(this, 'deactivate'), function() {
+                this.deactivate();
+            }.bind(this));
         },
 
         createEventString = function(ending) {
@@ -74,6 +86,7 @@ define(function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.$el = this.sandbox.dom.$(this.options.el);
+            this.active = true;
 
             // load data and call render
             if (!!this.options.url) {
@@ -91,6 +104,16 @@ define(function() {
             bindDOMEvents.call(this);
 
             bindCustomEvents.call(this);
+        },
+
+        deactivate: function() {
+            this.active = false;
+            this.sandbox.dom.addClass(this.sandbox.dom.find('.tabs-container', this.$el), 'deactivated');
+        },
+
+        activate: function() {
+            this.active = true;
+            this.sandbox.dom.removeClass(this.sandbox.dom.find('.tabs-container', this.$el), 'deactivated');
         },
 
         generateIds: function(data) {

@@ -36,6 +36,12 @@
             <div data-aura-component="tabs@husky"
                  data-aura-url="/content/navigation"
                  data-aura-instance-name="contacts"></div>
+            <div class="grid">
+                <div class="grid-row">
+                    <div class="grid-col-6 m-top-30 pointer" id="deactivate">Deactivate</div>
+                    <div class="grid-col-6 m-top-30 pointer" id="activate">Activate</div>
+                </div>
+            </div>
         </div>
 
         <script src="../js/sinon.js"></script>
@@ -73,6 +79,13 @@
 
 
                 });
+
+                $('#deactivate').on('click', function() {
+                    app.sandbox.emit('husky.tabs.contacts.deactivate');
+                })
+                $('#activate').on('click', function() {
+                    app.sandbox.emit('husky.tabs.contacts.activate');
+                })
             });
         </script>
 
