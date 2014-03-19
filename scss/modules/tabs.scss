@@ -25,6 +25,7 @@
                 text-decoration: none;
                 font-size: 16px;
                 line-height:20px;
+                @include single-transition(color, 250ms);
 
                 &:hover {
                     color: $gray;

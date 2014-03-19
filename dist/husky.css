@@ -5696,25 +5696,29 @@ a.btn-black, a.btn-highlight {
   text-decoration: none;
   font-size: 16px;
   line-height: 20px;
+  -webkit-transition: color 250ms;
+  -moz-transition: color 250ms;
+  -o-transition: color 250ms;
+  transition: color 250ms;
 }
-/* line 29, ../scss/modules/tabs.scss */
+/* line 30, ../scss/modules/tabs.scss */
 .tabs-container ul li a:hover {
   color: #666666;
 }
-/* line 35, ../scss/modules/tabs.scss */
+/* line 36, ../scss/modules/tabs.scss */
 .tabs-container ul li.is-selected a {
   color: #249fbe;
 }
-/* line 40, ../scss/modules/tabs.scss */
+/* line 41, ../scss/modules/tabs.scss */
 .tabs-container ul li:not(:last-child) {
   padding-right: 30px;
 }
-/* line 48, ../scss/modules/tabs.scss */
+/* line 49, ../scss/modules/tabs.scss */
 .tabs-container.deactivated ul li a, .tabs-container.deactivated ul li a:hover {
   color: #999999;
   cursor: default;
 }
-/* line 52, ../scss/modules/tabs.scss */
+/* line 53, ../scss/modules/tabs.scss */
 .tabs-container.deactivated ul li.is-selected a {
   color: #249fbe;
 }
