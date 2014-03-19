@@ -45,18 +45,22 @@ define(function() {
 
         selectItem = function(event) {
             event.preventDefault();
-            var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')];
+            if (this.active === true) {
+                var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')];
 
-            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
-            this.sandbox.dom.addClass(event.currentTarget, 'is-selected');
+                this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
+                this.sandbox.dom.addClass(event.currentTarget, 'is-selected');
 
-            // callback
-            if (item.hasOwnProperty('callback') && typeof item.callback === 'function') {
-                item.callback.call(this, item);
-            } else if (!!this.options.callback && typeof this.options.callback === 'function') {
-                this.options.callback.call(this, item);
+                // callback
+                if (item.hasOwnProperty('callback') && typeof item.callback === 'function') {
+                    item.callback.call(this, item);
+                } else if (!!this.options.callback && typeof this.options.callback === 'function') {
+                    this.options.callback.call(this, item);
+                } else {
+                    triggerSelectEvent.call(this, item);
+                }
             } else {
-                triggerSelectEvent.call(this, item);
+                return false;
             }
         },
 
@@ -75,6 +79,14 @@ define(function() {
                 var selection = this.sandbox.dom.find('.is-selected', this.options.el);
                 callback.call(this.items[this.sandbox.dom.data(selection, 'id')]);
             }.bind(this));
+
+            this.sandbox.on(createEventString.call(this, 'activate'), function() {
+                this.activate();
+            }.bind(this));
+
+            this.sandbox.on(createEventString.call(this, 'deactivate'), function() {
+                this.deactivate();
+            }.bind(this));
         },
 
         createEventString = function(ending) {
@@ -90,6 +102,7 @@ define(function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.$el = this.sandbox.dom.$(this.options.el);
+            this.active = true;
 
             // load data and call render
             if (!!this.options.url) {
@@ -107,6 +120,16 @@ define(function() {
             bindDOMEvents.call(this);
 
             bindCustomEvents.call(this);
+        },
+
+        deactivate: function() {
+            this.active = false;
+            this.sandbox.dom.addClass(this.sandbox.dom.find('.tabs-container', this.$el), 'deactivated');
+        },
+
+        activate: function() {
+            this.active = true;
+            this.sandbox.dom.removeClass(this.sandbox.dom.find('.tabs-container', this.$el), 'deactivated');
         },
 
         generateIds: function(data) {
