@@ -211,6 +211,14 @@ define(function() {
             UPDATE = namespace + 'update',
 
         /**
+         * used to filter data of
+         * @event husky.datagrid.data.filter
+         * @param {String} searchField
+         * @param {String} searchString
+         */
+            DATA_SEARCH = namespace + 'data.search',
+
+        /**
          * used to update the table width and its containers due to responsiveness
          * @event husky.datagrid.update.table
          */
@@ -1466,6 +1474,9 @@ define(function() {
 
             this.sandbox.on(DATA_GET, this.provideData.bind(this));
 
+            // filter data
+            this.sandbox.on(DATA_SEARCH, this.triggerSearch.bind(this));
+
             // pagination dropdown item clicked
             this.sandbox.on('husky.dropdown.' + this.dropdownInstanceName + '.item.click', this.changePage.bind(this, null));
 
@@ -1500,6 +1511,7 @@ define(function() {
                 this.sandbox.on('husky.column-options' + columnOptionsInstanceName + '.saved', this.filterColumns.bind(this));
             }
         },
+
 
         /**
          * Put focus on table row and remember values
@@ -1837,7 +1849,7 @@ define(function() {
         /**
          * this will trigger a api search
          */
-        triggerSearch: function(searchString) {
+        triggerSearch: function(searchString, searchFields) {
 
             var template, url,
             // TODO: get searchFields

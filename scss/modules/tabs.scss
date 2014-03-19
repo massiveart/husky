@@ -45,7 +45,7 @@
 
     &.deactivated {
         ul li {
-            a {
+            a, a:hover {
                 color: $grayLight;
                 cursor: default;
             }
