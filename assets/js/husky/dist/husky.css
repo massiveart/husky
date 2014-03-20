@@ -4757,8 +4757,9 @@ li a.navigation-settings-icon {
   padding: 0 10px;
   color: white;
   background-color: #3e3e3e;
+  z-index: 1000;
 }
-/* line 481, ../scss/modules/navigation.scss */
+/* line 482, ../scss/modules/navigation.scss */
 .navigation-tooltip::before {
   content: ' ';
   position: absolute;
@@ -4771,7 +4772,7 @@ li a.navigation-settings-icon {
   border-right: 10px solid #3e3e3e;
 }
 
-/* line 495, ../scss/modules/navigation.scss */
+/* line 496, ../scss/modules/navigation.scss */
 .navigation {
   -webkit-transition: width 0.5s;
   -moz-transition: width 0.5s;
@@ -4779,7 +4780,7 @@ li a.navigation-settings-icon {
   transition: width 0.5s;
 }
 
-/* line 499, ../scss/modules/navigation.scss */
+/* line 500, ../scss/modules/navigation.scss */
 .navigation-items {
   -webkit-transition: all 0.5s;
   -moz-transition: all 0.5s;
@@ -4787,7 +4788,7 @@ li a.navigation-settings-icon {
   transition: all 0.5s;
 }
 
-/* line 502, ../scss/modules/navigation.scss */
+/* line 503, ../scss/modules/navigation.scss */
 .navigation-items * {
   -webkit-transition: all 0.5s;
   -moz-transition: all 0.5s;
@@ -4795,14 +4796,14 @@ li a.navigation-settings-icon {
   transition: all 0.5s;
 }
 
-/* line 506, ../scss/modules/navigation.scss */
+/* line 507, ../scss/modules/navigation.scss */
 .navigation-header {
   -webkit-transition: margin 0.5s;
   -moz-transition: margin 0.5s;
   -o-transition: margin 0.5s;
   transition: margin 0.5s;
 }
-/* line 509, ../scss/modules/navigation.scss */
+/* line 510, ../scss/modules/navigation.scss */
 .navigation-header .navigation-header-title {
   -webkit-transition: opacity 0.5s;
   -moz-transition: opacity 0.5s;
@@ -4810,14 +4811,14 @@ li a.navigation-settings-icon {
   transition: opacity 0.5s;
 }
 
-/* line 514, ../scss/modules/navigation.scss */
+/* line 515, ../scss/modules/navigation.scss */
 .navigation-search {
   -webkit-transition: margin 0.5s;
   -moz-transition: margin 0.5s;
   -o-transition: margin 0.5s;
   transition: margin 0.5s;
 }
-/* line 516, ../scss/modules/navigation.scss */
+/* line 517, ../scss/modules/navigation.scss */
 .navigation-search input {
   -webkit-transition: width 0.5s;
   -moz-transition: width 0.5s;
@@ -4825,7 +4826,7 @@ li a.navigation-settings-icon {
   transition: width 0.5s;
 }
 
-/* line 522, ../scss/modules/navigation.scss */
+/* line 523, ../scss/modules/navigation.scss */
 .section-headline,
 .section-headline * {
   -webkit-transition: all 0.5s;
@@ -4834,7 +4835,7 @@ li a.navigation-settings-icon {
   transition: all 0.5s;
 }
 
-/* line 526, ../scss/modules/navigation.scss */
+/* line 527, ../scss/modules/navigation.scss */
 .navigation-item-title {
   -webkit-transition: opacity 0.5s;
   -moz-transition: opacity 0.5s;
@@ -4842,7 +4843,7 @@ li a.navigation-settings-icon {
   transition: opacity 0.5s;
 }
 
-/* line 530, ../scss/modules/navigation.scss */
+/* line 531, ../scss/modules/navigation.scss */
 .search-icon {
   -webkit-transition: color 0.5s;
   -moz-transition: color 0.5s;
@@ -4850,7 +4851,7 @@ li a.navigation-settings-icon {
   transition: color 0.5s;
 }
 
-/* line 535, ../scss/modules/navigation.scss */
+/* line 536, ../scss/modules/navigation.scss */
 .navigation:not(.collapsed) * {
   opacity: 1;
 }

@@ -27249,7 +27249,7 @@ define('__component__$datagrid@husky',[],function() {
                         el: this.sandbox.dom.find('#' + this.pagination.dropdownId, this.$el),
                         setParentDropDown: true,
                         instanceName: this.dropdownInstanceName,
-                        alignment: 'left',
+                        alignment: 'right',
                         data: data
                     }
                 }
@@ -32684,6 +32684,7 @@ define('__component__$column-navigation@husky',[], function() {
                         this.parseData(response, columnNumber);
                         this.alignWithColumnsWidth();
                         this.scrollIfNeeded(this.filledColumns + 1);
+                        this.setOverflowClass();
                         this.sandbox.emit(LOADED);
                     }.bind(this))
                     .fail(function(error) {
@@ -32889,7 +32890,20 @@ define('__component__$column-navigation@husky',[], function() {
             this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
                 this.setContainerHeight();
                 this.setContainerMaxWidth();
+                this.setOverflowClass();
             }.bind(this));
+        },
+
+        /**
+         * Sets an overflow-class to the container if the navigation is scrollable
+         */
+        setOverflowClass: function() {
+            var $navigation = this.sandbox.dom.find('.column-navigation', this.$el);
+            if (this.sandbox.dom.width($navigation) < this.sandbox.dom.get($navigation, 0).scrollWidth) {
+                this.sandbox.dom.addClass($navigation, 'overflow');
+            } else {
+                this.sandbox.dom.removeClass($navigation, 'overflow');
+            }
         },
 
         bindCustomEvents: function() {
@@ -33046,6 +33060,7 @@ define('__component__$column-navigation@husky',[], function() {
                 if (!selectedItem.hasSub) {
                     this.alignWithColumnsWidth();
                     this.scrollIfNeeded(column);
+                    this.setOverflowClass();
                 }
             }
 
