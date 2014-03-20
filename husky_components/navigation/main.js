@@ -180,6 +180,7 @@ define(function() {
 
             this.stayCollapsed = false;
             this.hidden = false;
+            this.tooltipsEnabled = true;
 
             // binding dom events
             this.bindDOMEvents();
@@ -309,6 +310,7 @@ define(function() {
 
             this.sandbox.util.foreach(data.items, function(item) {
                 this.items[item.id] = item;
+                this.items[item.id].parentTitle = data.title;
                 if (item.items && item.items.length > 0) {
                     elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subToggleItem, {item: item, translate: this.sandbox.translate}));
                     this.renderSubNavigationItems(item, this.sandbox.dom.find('div', elem));
@@ -356,6 +358,7 @@ define(function() {
 
             this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function() {
                 this.sandbox.emit(EVENT_SIZE_CHANGED, this.sandbox.dom.width(this.$navigation));
+                this.tooltipsEnabled = true;
             }.bind(this));
             this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function(event) {
                 event.stopPropagation();
@@ -397,20 +400,22 @@ define(function() {
         },
 
         showToolTip: function(title, event) {
-            var offset,
-                target = event.currentTarget;
+            if (this.tooltipsEnabled === true) {
+                var offset,
+                    target = event.currentTarget;
 
-            if (!title) {
-                title = this.sandbox.dom.html(this.sandbox.dom.find('.navigation-item-title', event.currentTarget));
+                if (!title) {
+                    title = this.sandbox.dom.html(this.sandbox.dom.find('.navigation-item-title', event.currentTarget));
+                }
+                if (!this.$tooltip) {
+                    this.$tooltip = this.sandbox.dom.createElement('<div class="navigation-tooltip">' + title + '</div>');
+                    this.sandbox.dom.append('body', this.$tooltip);
+                }
+                offset = this.sandbox.dom.offset(target);
+                this.sandbox.dom.css(this.$tooltip, {
+                    top: offset.top + (this.sandbox.dom.outerHeight(target) - 30) / 2
+                });
             }
-            if (!this.$tooltip) {
-                this.$tooltip = this.sandbox.dom.createElement('<div class="navigation-tooltip">' + title + '</div>');
-                this.sandbox.dom.append('body', this.$tooltip);
-            }
-            offset = this.sandbox.dom.offset(target);
-            this.sandbox.dom.css(this.$tooltip, {
-                top: offset.top + (this.sandbox.dom.height(target) - 30) / 2
-            });
         },
 
         hideToolTip: function() {
@@ -590,6 +595,7 @@ define(function() {
                     this.sandbox.emit(EVENT_COLLAPSED, CONSTANTS.COLLAPSED_WIDTH);
                     this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.COLLAPSED_WIDTH);
                     this.collapsed = !this.collapsed;
+                    this.tooltipsEnabled = false;
                 }
             }
         },
@@ -607,6 +613,7 @@ define(function() {
                         this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.UNCOLLAPSED_WIDTH);
                     }
                     this.collapsed = !this.collapsed;
+                    this.tooltipsEnabled = false;
                 }
             }
         },
