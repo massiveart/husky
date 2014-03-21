@@ -3483,7 +3483,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
 
 /* line 368, ../scss/modules/icons.scss */
 .icon-asterisk::after {
-  content: "\e002a";
+  content: "\002a";
   display: inline-block;
 }
 
@@ -4604,7 +4604,7 @@ li.is-active > div > a.navigation-settings-icon {
   top: 0px;
   left: 0px;
   padding-left: 3px;
-  font-size: 18px;
+  font-size: 20px;
   height: 100%;
   line-height: 50px;
 }

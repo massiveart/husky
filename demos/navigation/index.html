@@ -30,6 +30,7 @@
     <a href="#" id="force">force collapse navigation</a>
     <a href="#" id="show">show navigation</a>
     <a href="#" id="hide">hide navigation</a>
+    <a href="#" id="select">activate movies</a>
 </div>
 
 <div data-aura-component="navigation@husky" class="" data-aura-select-action="webspaces/cn_cn"
@@ -70,9 +71,9 @@
                     '{"title":"Movies", "id":"9", "action":"media\/movies"}' +
                     ']},' +
 
-                    '{"title":"Messages", "icon":"settings", "id":"10"},' +
+                    '{"title":"Messages", "icon":"asterisk", "id":"10"},' +
 
-                    '{"title":"Settings", "icon":"settings", "id":"11", "items":[' +
+                    '{"title":"Settings", "icon":"cogwheels", "id":"11", "items":[' +
                     '{"title":"Roles &amp; Permissions", "action":"settings\/roles", "type":"content", "id":"12"},' +
                     '{"title":"Translate", "action":"settings\/translate", "id":"13"}' +
                     ']}' +
@@ -137,6 +138,10 @@
 
             app.sandbox.dom.on('#hide', 'click', function(){
                 app.sandbox.emit('husky.navigation.hide');
+            }.bind(this));
+
+            app.sandbox.dom.on('#select', 'click', function(){
+                app.sandbox.emit('husky.navigation.select-item', 'media\/movies\/edit::1893884\/content');
             }.bind(this));
         });
     });
