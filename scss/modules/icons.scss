@@ -208,6 +208,13 @@
     }
 }
 
+.icon-lock {
+  &::after {
+    content: "\1f512";
+    display: inline-block;
+  }
+}
+
 .icon-chevron-right {
   &::after {
     font-family: $baseIconHalflingsFont;
@@ -353,6 +360,13 @@
 .icon-brush {
   &::after {
     content: "\e235";
+    display: inline-block;
+  }
+}
+
+.icon-user {
+  &::after {
+    content: "\e004";
     display: inline-block;
   }
 }

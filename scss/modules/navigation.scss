@@ -348,18 +348,6 @@ li a.navigation-settings-icon {
     font-size: 10px;
 }
 
-.navigation footer {
-    border-top: 1px solid #5B5B5B;
-    padding-top: 20px;
-    margin: 100px $verticalMargin 0 $verticalMargin + $verticalItemPadding;
-    font-size: 12px;
-
-    .version {
-        font-size: 10px;
-    }
-
-}
-
 .navigation-subitems-toggle {
     padding: 2px 0 2px;
     position: relative;
@@ -373,6 +361,70 @@ li a.navigation-settings-icon {
         padding: 0px;
     }
 
+}
+
+.navigation footer {
+    padding: 15px 20px 15px 25px;
+    border-top: 1px solid $navigationFooterGray2;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    margin-top: 165px;
+
+    .user {
+        font-size: $smallFontSize;
+        color: $white;
+        margin-bottom: 15px;
+        height: 20px;
+
+        .pic {
+            color: $grayDarkLighter;
+            background: $white;
+            height: 20px;
+            width: 20px;
+            border: 1px solid $white;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 16px;
+            overflow: hidden;
+            float: left;
+            margin-right: 15px;
+        }
+        .name {
+            float: left;
+            line-height: 20px;
+        }
+    }
+
+    .options {
+        height: 20px;
+        margin-bottom: 20px;
+        padding-left: 35px;
+        clear: both;
+        .locale-dropdown {
+            color: $black;
+            width: 60px;
+            display: inline-block;
+            float: left;
+        }
+        .logout {
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+            display: inline-block;
+            float: right;
+        }
+    }
+    .version {
+        padding-left: 35px;
+        margin-top: 20px;
+        font-size: $reallySmallFontSize;
+        color: $navigationFooterGray;
+        a {
+            color: $white;
+            text-decoration: none;
+        }
+    }
 }
 
 /**
