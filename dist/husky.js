@@ -24597,6 +24597,18 @@ define('__component__$navigation@husky',[],function() {
                 '<li class="js-navigation-sub-item" id="<%= item.id %>" data-id="<%= item.id %>">',
                 '   <a href="#"><%= translate(item.title) %></a>',
                 '</li>'
+            ].join(''),
+            //footer template
+            footer: [
+                '<div class="user">',
+                    '<div class="icon-user pic"></div>',
+                    '<div class="name"><%= userName %></div>',
+                '</div>',
+                '<div class="options">',
+                    '<div class="locale-dropdown"></div>',
+                    '<div title="Logout" class="icon-lock logout"></div>',
+                '</div>',
+                '<div class="version"><%= system %> (<%= version %>, <a href="#"><%= versionHistory %></a>)</div>'
             ].join('')
         },
         defaults = {
@@ -24607,7 +24619,12 @@ define('__component__$navigation@husky',[],function() {
                 show: 'navigation.show'
             },
             resizeWidth: 800,
-            forceCollapse: false
+            forceCollapse: false,
+            systemName: 'Sulu 2.0',
+            footer: true,
+            translations: {
+                versionHistory: 'navigation.version-history'
+            }
         },
         CONSTANTS = {
             UNCOLLAPSED_WIDTH: 250,
@@ -24763,9 +24780,7 @@ define('__component__$navigation@husky',[],function() {
             this.renderNavigationItems(this.options.data);
 
             // render footer
-            if (!!this.options.footerTemplate && this.options.footerTemplate !== '') {
-                this.renderFooter(this.options.footerTemplate);
-            }
+            this.renderFooter();
 
             // preselect item based on url
             if (!!this.options.selectAction && this.options.selectAction.length > 0) {
@@ -24843,9 +24858,33 @@ define('__component__$navigation@husky',[],function() {
             }.bind(this));
         },
 
-        renderFooter: function(footerTemplate) {
-            var $footer = this.sandbox.dom.find('footer', this.$el);
-            this.sandbox.dom.html($footer, footerTemplate);
+        /**
+         * Renders the footer of the navigation
+         */
+        renderFooter: function() {
+            if (this.options.footer === true) {
+                var $footer = this.sandbox.dom.find('footer', this.$el);
+                this.sandbox.dom.html($footer, _.template(templates.footer)({
+                    userName: this.options.userName,
+                    system: this.options.systemName,
+                    version: this.options.systemVersion,
+                    versionHistory: this.sandbox.translate(this.options.translations.versionHistory)
+                }));
+
+                this.sandbox.start([{
+                    name: 'dropdown-multiple-select@husky',
+                    options: {
+                        el: this.sandbox.dom.find('.locale-dropdown', $footer),
+                        instanceName: 'navigation-locale',
+                        value: 'name',
+                        data: this.options.userLocales,
+                        preSelectedElements: ['en_us'],
+                        singleSelect: true,
+                        noDeselect: true,
+                        small: true
+                    }
+                }]);
+            }
         },
 
         /**
@@ -24884,10 +24923,10 @@ define('__component__$navigation@husky',[],function() {
          */
         bindCustomEvents: function() {
             // change footer template
-            this.sandbox.on('husky.navigation.footer.set', function(template) {
+            /*this.sandbox.on('husky.navigation.footer.set', function(template) {
                 this.options.footerTemplate = template;
                 this.renderFooter(template);
-            }.bind(this));
+            }.bind(this));*/
 
             this.sandbox.on(EVENT_COLLAPSE, function(stayCollapsed) {
                 this.stayCollapsed = (typeof stayCollapsed === 'boolean') ? stayCollapsed : false;
@@ -32051,7 +32090,8 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
         singleSelect: false,              // Allows only one element to be selected
         noDeselect: false,                // Disables the possibility to deselect items
         disabled: false,                  //if true button is disabled
-        disabledClass: 'disabled'         //class to add to the button
+        disabledClass: 'disabled',        //class to add to the button
+        small: false                      //if true small-class will be added
     };
 
 
@@ -32075,9 +32115,13 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
         },
 
         render: function() {
-
             var $originalElement = this.sandbox.dom.$(this.options.el),
                 button = this.sandbox.dom.createElement(this.template.basicStructure.call(this, this.options.defaultLabel));
+
+            if (this.options.small === true) {
+                this.sandbox.dom.addClass(button, 'small');
+            }
+
             this.sandbox.dom.append($originalElement, button);
 
             this.$list = this.sandbox.dom.$('#' + this.listId);

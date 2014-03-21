@@ -2,7 +2,6 @@
 @import "compass/css3/text-shadow";
 @import "compass/css3/transition";
 
-
 @mixin toggle-item {
     border-bottom: 1px solid $gray;
     height: inherit;
@@ -105,7 +104,6 @@ $transitionDuration: 0.5s;
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 40px 0px 20px;
     color: $grayLight;
     font-size: 16px;
 
@@ -121,12 +119,25 @@ $transitionDuration: 0.5s;
         padding: 0;
         list-style: none;
     }
+
+    /*for sticky navigation footer*/
+    .wrapper {
+        min-height: 100%;
+        margin-bottom: -126px;
+        overflow: hidden;
+
+        &:after {
+            content: "";
+            display: block;
+            height: 166px; //height of footer plus 20px "margin"
+        }
+    }
 }
 
 .navigation-header {
     height: 30px;
     overflow: hidden;
-    margin: 0 $verticalMargin 20px;
+    margin: 40px $verticalMargin 20px;
 }
 
 .navigation-header-title {
@@ -364,12 +375,9 @@ li a.navigation-settings-icon {
 }
 
 .navigation footer {
-    padding: 15px 20px 15px 25px;
+    padding: 15px 20px 15px 23px;
     border-top: 1px solid $navigationFooterGray2;
-    position: absolute;
-    bottom: 0px;
-    left: 0px;
-    margin-top: 165px;
+    height: 126px;
 
     .user {
         font-size: $smallFontSize;
@@ -512,11 +520,32 @@ li a.navigation-settings-icon {
     }
 
     footer {
-        opacity: 0;
-        height: 0;
-        margin:0;
+        padding-left: 16px;
+        height: auto;
+        cursor: pointer;
+        * {
+            opacity: 0;
+            height: 0;
+            margin: 0;
+        }
+        .user {
+            opacity: 1;
+            height: 20px;
+            .pic {
+                opacity: 1;
+                height: 20px;
+            }
+        }
     }
 
+    .navigation-content {
+        .wrapper {
+            margin-bottom: -51px; //height of collapsed navigation footer
+            &:after {
+                height: 91px; //height of minified navigation footer plus 40px "margin"
+            }
+        }
+    }
 }
 
 .navigation-tooltip {

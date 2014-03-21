@@ -42,11 +42,13 @@ define(function() {
             skeleton: [
                 '<nav class="navigation<% if (collapsed === "true") {%> collapsed<% } %>">',
                 '   <div class="navigation-content">',
-                '       <header class="navigation-header">',
-                '           <div class="navigation-header-title"><% if (data.title) { %> <%= translate(data.title) %><% } %></div>',
-                '       </header>',
-                '       <div id="navigation-search" class="navigation-search"></div>',
-                '       <div id="navigation-item-container" class="navigation-item-container"></div>',
+                '       <div class="wrapper">',
+                '           <header class="navigation-header">',
+                '               <div class="navigation-header-title"><% if (data.title) { %> <%= translate(data.title) %><% } %></div>',
+                '           </header>',
+                '           <div id="navigation-search" class="navigation-search"></div>',
+                '           <div id="navigation-item-container" class="navigation-item-container"></div>',
+                '       </div>',
                 '       <footer>',
                 '       </footer>',
                 '   </div>',
@@ -118,7 +120,8 @@ define(function() {
             systemName: 'Sulu 2.0',
             footer: true,
             translations: {
-                versionHistory: 'navigation.version-history'
+                versionHistory: 'navigation.version-history',
+                user: 'navigation.user'
             }
         },
         CONSTANTS = {
@@ -373,13 +376,24 @@ define(function() {
                         instanceName: 'navigation-locale',
                         value: 'name',
                         data: this.options.userLocales,
-                        preSelectedElements: ['en_us'],
+                        preSelectedElements: [this.options.userLocale],
                         singleSelect: true,
                         noDeselect: true,
                         small: true
                     }
                 }]);
             }
+        },
+
+        /**
+         * Handles the event when the collapsed Footer is clicked
+         */
+        collapsedFooterClickHandler: function() {
+            this.unCollapse(true);
+
+            // scroll to footer
+            this.sandbox.dom.one(this.sandbox.dom.$window, CONSTANTS.TRANSITIONEND_EVENT,
+                this.checkBottomHit.bind(this, null, this.sandbox.dom.find('footer', this.$el)));
         },
 
         /**
@@ -395,12 +409,16 @@ define(function() {
             this.sandbox.dom.on(this.sandbox.dom.window, 'resize', this.resizeListener.bind(this));
             this.sandbox.dom.on(this.$el, 'click', this.showCollapsedSearch.bind(this), '.navigation #navigation-search a.search-icon');
             this.sandbox.dom.on(this.$el, 'click', this.collapse.bind(this), '.navigation.collapseIcon .navigation-close-icon');
+            this.sandbox.dom.on(this.$el, 'click', this.collapsedFooterClickHandler.bind(this), '.navigation.collapsed footer');
 
 
             // tooltip events
             this.sandbox.dom.on(this.$el, 'mouseenter', function(event) {
                 this.showToolTip.call(this, this.sandbox.dom.attr(this.sandbox.dom.find('input', '.navigation-search'), 'placeholder'), event);
             }.bind(this), '.navigation.collapsed .navigation-search');
+            this.sandbox.dom.on(this.$el, 'mouseenter', function(event) {
+                this.showToolTip.call(this, this.sandbox.translate(this.options.translations.user), event);
+            }.bind(this), '.navigation.collapsed footer');
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showToolTip.bind(this, ''), '.navigation.collapsed .navigation-items');
             this.sandbox.dom.on(this.$el, 'mouseleave', this.hideToolTip.bind(this), '.navigation.collapsed .navigation-items, .navigation.collapsed .navigation-search');
 
@@ -571,7 +589,6 @@ define(function() {
         },
 
         checkBottomHit: function(event, customTarget) {
-
             var xBottom, windowHeight, itemHeight, itemTop, scrollTop,
                 $items;
 
