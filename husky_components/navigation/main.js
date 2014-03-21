@@ -103,7 +103,7 @@ define(function() {
                 '</div>',
                 '<div class="options">',
                     '<div class="locale-dropdown"></div>',
-                    '<div title="Logout" class="icon-lock logout"></div>',
+                    '<a href="<%= logoutUrl %>" title="Logout" class="icon-lock logout"></a>',
                 '</div>',
                 '<div class="version"><%= system %> (<%= version %>, <a href="#"><%= versionHistory %></a>)</div>'
             ].join('')
@@ -119,6 +119,7 @@ define(function() {
             forceCollapse: false,
             systemName: 'Sulu 2.0',
             footer: true,
+            logoutUrl: '/logout',
             translations: {
                 versionHistory: 'navigation.version-history',
                 user: 'navigation.user'
@@ -181,6 +182,18 @@ define(function() {
          * @event husky.navigation.size.changed
          */
             EVENT_SIZE_CHANGED = namespace + 'size.changed',
+
+        /**
+         * raised when the user locale is changed
+         * @event husky.navigation.user-locale.changed
+         */
+            USER_LOCALE_CHANGED = namespace + 'user-locale.changed',
+
+        /**
+         * raised when the version history is clicked
+         * @event husky.navigation.version-history.clicked
+         */
+            VERSION_HISTORY_CLICKED = namespace + 'version-history.clicked',
 
         /**
          * show the navigation when it was hidden before
@@ -366,7 +379,8 @@ define(function() {
                     userName: this.options.userName,
                     system: this.options.systemName,
                     version: this.options.systemVersion,
-                    versionHistory: this.sandbox.translate(this.options.translations.versionHistory)
+                    versionHistory: this.sandbox.translate(this.options.translations.versionHistory),
+                    logoutUrl: this.options.logoutUrl
                 }));
 
                 this.sandbox.start([{
@@ -420,7 +434,7 @@ define(function() {
                 this.showToolTip.call(this, this.sandbox.translate(this.options.translations.user), event);
             }.bind(this), '.navigation.collapsed footer');
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showToolTip.bind(this, ''), '.navigation.collapsed .navigation-items');
-            this.sandbox.dom.on(this.$el, 'mouseleave', this.hideToolTip.bind(this), '.navigation.collapsed .navigation-items, .navigation.collapsed .navigation-search');
+            this.sandbox.dom.on(this.$el, 'mouseleave', this.hideToolTip.bind(this), '.navigation.collapsed .navigation-items, .navigation.collapsed .navigation-search, .navigation.collapsed footer');
 
             this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function() {
                 this.sandbox.emit(EVENT_SIZE_CHANGED, this.sandbox.dom.width(this.$navigation));
@@ -429,17 +443,27 @@ define(function() {
             this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function(event) {
                 event.stopPropagation();
             }.bind(this), '.navigation *');
+
+            // version history clicked
+            this.sandbox.dom.on(this.$el, 'click', function() {
+                this.sandbox.emit(VERSION_HISTORY_CLICKED);
+            }.bind(this), 'footer .version a');
         },
 
         /**
          * event listener
          */
         bindCustomEvents: function() {
-            // change footer template
-            /*this.sandbox.on('husky.navigation.footer.set', function(template) {
-                this.options.footerTemplate = template;
-                this.renderFooter(template);
-            }.bind(this));*/
+            // merge options with newly passed options and rerender footer
+            this.sandbox.on('husky.navigation.footer.set', function(options) {
+                this.options = this.sandbox.util.extend(true, {}, this.options, options);
+                this.renderFooter();
+            }.bind(this));
+
+            //user locales dropdown
+            this.sandbox.on('husky.dropdown.multiple.select.navigation-locale.selected.item', function(locale) {
+                this.sandbox.emit(USER_LOCALE_CHANGED, locale);
+            }.bind(this));
 
             this.sandbox.on(EVENT_COLLAPSE, function(stayCollapsed) {
                 this.stayCollapsed = (typeof stayCollapsed === 'boolean') ? stayCollapsed : false;

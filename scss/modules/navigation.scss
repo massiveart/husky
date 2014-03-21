@@ -2,6 +2,10 @@
 @import "compass/css3/text-shadow";
 @import "compass/css3/transition";
 
+$footerOuterHeight: 126;
+$footerOuterHeightColappsed: 51;
+$footerTopMargin: 40;
+
 @mixin toggle-item {
     border-bottom: 1px solid $gray;
     height: inherit;
@@ -123,13 +127,13 @@ $transitionDuration: 0.5s;
     /*for sticky navigation footer*/
     .wrapper {
         min-height: 100%;
-        margin-bottom: -126px;
+        margin-bottom: -($footerOuterHeight * 1px);
         overflow: hidden;
 
         &:after {
             content: "";
             display: block;
-            height: 166px; //height of footer plus 20px "margin"
+            height: ($footerOuterHeight + $footerTopMargin) * 1px //height of footer plus "margin"
         }
     }
 }
@@ -377,7 +381,7 @@ li a.navigation-settings-icon {
 .navigation footer {
     padding: 15px 20px 15px 23px;
     border-top: 1px solid $navigationFooterGray2;
-    height: 126px;
+    height: $footerOuterHeight * 1px;
 
     .user {
         font-size: $smallFontSize;
@@ -390,6 +394,7 @@ li a.navigation-settings-icon {
             background: $white;
             height: 20px;
             width: 20px;
+            line-height: 22px;
             border: 1px solid $white;
             border-radius: 10px;
             text-align: center;
@@ -421,6 +426,8 @@ li a.navigation-settings-icon {
             font-size: 15px;
             display: inline-block;
             float: right;
+            display: block;
+            text-decoration: none;
         }
     }
     .version {
@@ -523,10 +530,14 @@ li a.navigation-settings-icon {
         padding-left: 16px;
         height: auto;
         cursor: pointer;
+        height: ($footerOuterHeightColappsed) * 1px;
+        overflow: hidden;
+
         * {
             opacity: 0;
             height: 0;
             margin: 0;
+            white-space: nowrap;
         }
         .user {
             opacity: 1;
@@ -540,9 +551,9 @@ li a.navigation-settings-icon {
 
     .navigation-content {
         .wrapper {
-            margin-bottom: -51px; //height of collapsed navigation footer
+            margin-bottom: -($footerOuterHeightColappsed * 1px); //height of collapsed navigation footer
             &:after {
-                height: 91px; //height of minified navigation footer plus 40px "margin"
+                height: ($footerOuterHeightColappsed + $footerTopMargin) * 1px; //height of minified navigation footer plus 40px "margin"
             }
         }
     }
@@ -573,16 +584,18 @@ li a.navigation-settings-icon {
     }
 }
 
-//.navigation,
+//effects
 .navigation {
     @include single-transition(width, $transitionDuration);
 }
 
-.navigation-items {
-    @include single-transition(all, $transitionDuration);
-}
-.navigation-items *{
-    @include single-transition(all, $transitionDuration);
+.navigation footer,
+.navigation footer > *,
+.navigation .wrapper,
+.navigation .wrapper:after,
+.navigation-items,
+.navigation-items * {
+  @include single-transition(all, $transitionDuration);
 }
 
 .navigation-header {

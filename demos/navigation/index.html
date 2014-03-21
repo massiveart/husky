@@ -30,7 +30,7 @@
     <a href="#" id="force">force collapse navigation</a>
     <a href="#" id="show">show navigation</a>
     <a href="#" id="hide">hide navigation</a>
-    <a href="#" id="select">activate movies</a>
+    <a href="#" id="select">activate movies/rerender footer</a>
 </div>
 
 <div data-aura-component="navigation@husky" class="" data-aura-select-action="webspaces/cn_cn"
@@ -147,6 +147,9 @@
 
             app.sandbox.dom.on('#select', 'click', function(){
                 app.sandbox.emit('husky.navigation.select-item', 'media\/movies\/edit::1893884\/content');
+                app.sandbox.emit('husky.navigation.footer.set', {
+                    userName: 'Marcel Moosbrugger'
+                })
             }.bind(this));
         });
     });
