@@ -364,6 +364,13 @@
   }
 }
 
+.icon-asterisk {
+  &::after {
+    content: "\e002a";
+    display: inline-block;
+  }
+}
+
 .icon-bin {
   &::after {
     content: "\e017";
