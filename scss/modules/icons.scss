@@ -231,6 +231,13 @@
   }
 }
 
+.icon-warning {
+  &::after {
+    content: "\e079";
+    display: inline-block;
+  }
+}
+
 .icon-chevron-down {
   &::after {
     font-family: $baseIconHalflingsFont;

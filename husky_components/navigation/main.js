@@ -103,7 +103,7 @@ define(function() {
                 '</div>',
                 '<div class="options">',
                     '<div class="locale-dropdown"></div>',
-                    '<a href="<%= logoutUrl %>" title="Logout" class="icon-lock logout"></a>',
+                    '<a href="<%= logoutRoute %>" title="Logout" class="icon-lock logout"></a>',
                 '</div>',
                 '<div class="version"><%= system %> (<%= version %>, <a href="#"><%= versionHistory %></a>)</div>'
             ].join('')
@@ -119,7 +119,7 @@ define(function() {
             forceCollapse: false,
             systemName: 'Sulu 2.0',
             footer: true,
-            logoutUrl: '/logout',
+            logoutRoute: '/logout',
             translations: {
                 versionHistory: 'navigation.version-history',
                 user: 'navigation.user'
@@ -380,7 +380,7 @@ define(function() {
                     system: this.options.systemName,
                     version: this.options.systemVersion,
                     versionHistory: this.sandbox.translate(this.options.translations.versionHistory),
-                    logoutUrl: this.options.logoutUrl
+                    logoutRoute: this.options.logoutRoute
                 }));
 
                 this.sandbox.start([{

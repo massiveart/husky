@@ -2,7 +2,7 @@
 @import "compass/css3/text-shadow";
 @import "compass/css3/transition";
 
-$footerOuterHeight: 126;
+$footerOuterHeight: 121;
 $footerOuterHeightColappsed: 51;
 $footerTopMargin: 40;
 
@@ -42,7 +42,6 @@ $transitionDuration: 0.5s;
     color: $grayDark;
     font-weight: bold;
     cursor: default;
-    //@include text-shadow($gray 1px 1px);
 
     .section-toggle {
         display: none;
@@ -388,6 +387,7 @@ li a.navigation-settings-icon {
         color: $white;
         margin-bottom: 15px;
         height: 20px;
+        white-space: nowrap;
 
         .pic {
             color: $grayDarkLighter;
@@ -400,41 +400,52 @@ li a.navigation-settings-icon {
             text-align: center;
             font-size: 16px;
             overflow: hidden;
-            float: left;
+            display: inline-block;
             margin-right: 15px;
         }
         .name {
-            float: left;
+            display: inline-block;
             line-height: 20px;
+            position: relative;
+            top: -5px;
+            left: 0px;
         }
     }
 
     .options {
         height: 20px;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         padding-left: 35px;
-        clear: both;
+        white-space: nowrap;
+        position: relative;
+        top: 0px;
+        left: 0px;
+
         .locale-dropdown {
             color: $black;
             width: 60px;
-            display: inline-block;
-            float: left;
+        }
+        .dropdown-list {
+            min-width: 150px;
         }
         .logout {
             color: white;
             cursor: pointer;
             font-size: 15px;
-            display: inline-block;
-            float: right;
+            display: block;
             display: block;
             text-decoration: none;
+            position: absolute;
+            top: 0px;
+            right: 0px;
         }
     }
     .version {
         padding-left: 35px;
-        margin-top: 20px;
         font-size: $reallySmallFontSize;
         color: $navigationFooterGray;
+        white-space: nowrap;
+
         a {
             color: $white;
             text-decoration: none;
@@ -517,7 +528,8 @@ li a.navigation-settings-icon {
     }
 
     .navigation-item-icon {
-        margin-left: 13px;
+        margin-left: 15px;
+        padding-left: 0px;
         line-height: 50px;
         vertical-align: middle;
     }
@@ -527,7 +539,7 @@ li a.navigation-settings-icon {
     }
 
     footer {
-        padding-left: 16px;
+        padding-left: 15px;
         height: auto;
         cursor: pointer;
         height: ($footerOuterHeightColappsed) * 1px;
@@ -535,9 +547,8 @@ li a.navigation-settings-icon {
 
         * {
             opacity: 0;
-            height: 0;
-            margin: 0;
-            white-space: nowrap;
+            height: 0px;
+            margin: 0px;
         }
         .user {
             opacity: 1;
