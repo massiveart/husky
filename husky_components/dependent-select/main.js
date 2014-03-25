@@ -16,7 +16,7 @@
  * @param {Object} [options] Configuration object
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.preselect] the item that's selected on initialization
- * @param {String} [options.instanceName] enables custom events (in case of multiple tabs on one page)
+ * @param {String} [options.instanceName] instance name of this component
  * @param {Array} [options.data] array of dropdown items elements
  * @param {String|Array} [options.defaultLabels] which text is displayed after select is initialized; can be customized for each and every select by defining an array
  * @param {Array} [options.selectOptions] array of Options to pass to the select at certain depth (first item's options will be assigned to first select)

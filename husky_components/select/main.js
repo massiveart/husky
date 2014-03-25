@@ -32,6 +32,34 @@
  * husky.select.<<instanceName>>.initialize - initialize component
  */
 
+
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/toolbar
+ */
+
+/**
+ * @class Select
+ * @constructor
+ *
+ * @param {Object} [options] Configuration object
+ * @param {String} [options.checkedAllLabel] Label to display if all items of select are checked
+ * @param {Array}  [options.data] array of data [string, object]
+ * @param {Array}  [options.defaultLabel] default label which gets displayed
+ * @param {Function} [options.deselectCallback] callbackfunction, when element is deselected
+ * @param {String|Boolean} [options.deselectField]  allows deselection in case of single select; will be set if value is a string
+ * @param {String} [options.instanceName] instance name of this component
+ * @param {Boolean} [options.multipleSelect] allows multiple elements to be selected
+ * @param {Array} [options.preSelectedElements] allows preselection of fields by defining the id attributes or strings
+ * @param {Function} [options.selectCallback] callbackfunction, when element is selected
+ * @param {String} [options.valueName] name of property which should be used
+ */
 define([], function() {
 
     'use strict';
@@ -46,7 +74,6 @@ define([], function() {
             multipleSelect: false,              // Allows multiple elements to be selected
             deselectField: false,              // field for deselection is added to dropdown if value is a string
             disabled: false,                  //if true button is disabled
-            disabledClass: 'disabled',         //class to add to the button
             selectCallback: null,
             deselectCallback: null
         },
@@ -55,7 +82,8 @@ define([], function() {
             labelClass: 'husky-select-label',
             listClass: 'husky-select-list',
             dropdownContainerClass: 'husky-select-dropdown-container',
-            deselectFieldKey: ''
+            deselectFieldKey: '',
+            disabledClass: 'disabled'
         };
 
 
@@ -98,14 +126,14 @@ define([], function() {
 
         //sets the button in enabled state
         enable: function() {
-            this.sandbox.dom.removeClass(this.sandbox.dom.children(this.$el, '.husky-select-container'), this.options.disabledClass);
+            this.sandbox.dom.removeClass(this.sandbox.dom.children(this.$el, '.husky-select-container'), constants.disabledClass);
             this.bindDOMEvents();
         },
 
 
         //sets the button i
         disable: function() {
-            this.sandbox.dom.addClass(this.sandbox.dom.children(this.$el, '.husky-select-container'), this.options.disabledClass);
+            this.sandbox.dom.addClass(this.sandbox.dom.children(this.$el, '.husky-select-container'), constants.disabledClass);
             this.hideDropDown();
             this.sandbox.dom.off(this.$el);
         },
