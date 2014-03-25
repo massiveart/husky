@@ -4038,16 +4038,15 @@ hr.divider {
 .form-element[readonly] {
   background: none;
   border: 0;
-  font-style: italic;
   color: #999999;
 }
 
-/* line 34, ../scss/modules/form.scss */
+/* line 33, ../scss/modules/form.scss */
 input[type="text"].input-round {
   border-radius: 30px;
 }
 
-/* line 40, ../scss/modules/form.scss */
+/* line 39, ../scss/modules/form.scss */
 input
 .input-description {
   margin-top: -5px;
@@ -4055,79 +4054,79 @@ input
   color: #999999;
 }
 
-/* line 46, ../scss/modules/form.scss */
+/* line 45, ../scss/modules/form.scss */
 .input-placeholder-style, input::-webkit-input-placeholder, input:-moz-placeholder, input ::-moz-placeholder, input :-ms-input-placeholder {
   color: #999999;
   font-weight: normal;
 }
 
-/* line 58, ../scss/modules/form.scss */
+/* line 57, ../scss/modules/form.scss */
 input ::-moz-placeholder {
   /* Firefox 19+ */
 }
 
-/* line 74, ../scss/modules/form.scss */
+/* line 73, ../scss/modules/form.scss */
 .form-group > :first-child {
   height: 20px;
   margin-bottom: 10px;
 }
-/* line 79, ../scss/modules/form.scss */
+/* line 78, ../scss/modules/form.scss */
 .form-group > :nth-child(2) {
   margin: 0;
 }
 
-/* line 86, ../scss/modules/form.scss */
+/* line 85, ../scss/modules/form.scss */
 .form-horizontal .form-group {
   display: table;
   table-layout: fixed;
   width: 100%;
 }
-/* line 92, ../scss/modules/form.scss */
+/* line 91, ../scss/modules/form.scss */
 .form-horizontal .form-group > * {
   display: table-cell;
 }
-/* line 96, ../scss/modules/form.scss */
+/* line 95, ../scss/modules/form.scss */
 .form-horizontal .form-group > :first-child {
   text-align: right;
   vertical-align: middle;
   padding-right: 20px;
   width: 140px;
 }
-/* line 103, ../scss/modules/form.scss */
+/* line 102, ../scss/modules/form.scss */
 .form-horizontal .form-group label.top {
   vertical-align: top;
   padding-top: 5px;
 }
-/* line 108, ../scss/modules/form.scss */
+/* line 107, ../scss/modules/form.scss */
 .form-horizontal .form-group > :nth-child(2) {
   width: 100%;
 }
 
-/* line 120, ../scss/modules/form.scss */
+/* line 119, ../scss/modules/form.scss */
 label {
   display: block;
   font-size: 14px;
   color: #999999;
   cursor: pointer;
 }
-/* line 126, ../scss/modules/form.scss */
+/* line 125, ../scss/modules/form.scss */
 label.large {
   font-size: 16px;
   font-weight: bold;
 }
-/* line 131, ../scss/modules/form.scss */
+/* line 130, ../scss/modules/form.scss */
 label .form-element {
   margin-top: 5px;
   border: 1px solid #cccccc;
 }
-/* line 136, ../scss/modules/form.scss */
+/* line 135, ../scss/modules/form.scss */
 label.inline {
   font-size: 1em;
   font-weight: normal;
   display: inline;
 }
 
-/* line 145, ../scss/modules/form.scss */
+/* line 144, ../scss/modules/form.scss */
 .custom-checkbox {
   width: 15px;
   height: 15px;
@@ -4135,19 +4134,19 @@ label.inline {
   opacity: 0;
   cursor: pointer;
 }
-/* line 158, ../scss/modules/form.scss */
+/* line 157, ../scss/modules/form.scss */
 .custom-checkbox:checked + .custom-checkbox-icon, .custom-checkbox.is-checked + .custom-checkbox-icon {
   border-color: #1fca23;
   background-color: #1fca23;
   color: white;
 }
-/* line 162, ../scss/modules/form.scss */
+/* line 161, ../scss/modules/form.scss */
 .custom-checkbox:checked + .custom-checkbox-icon::after, .custom-checkbox.is-checked + .custom-checkbox-icon::after {
   content: "\e207";
   position: relative;
   top: -3px;
 }
-/* line 170, ../scss/modules/form.scss */
+/* line 169, ../scss/modules/form.scss */
 .custom-checkbox + .custom-checkbox-icon {
   display: inline-block;
   width: 15px;
@@ -4161,27 +4160,27 @@ label.inline {
   vertical-align: middle;
 }
 
-/* line 189, ../scss/modules/form.scss */
+/* line 188, ../scss/modules/form.scss */
 textarea {
   resize: both;
 }
 
-/* line 193, ../scss/modules/form.scss */
+/* line 192, ../scss/modules/form.scss */
 textarea.vertical {
   resize: vertical;
 }
 
-/* line 197, ../scss/modules/form.scss */
+/* line 196, ../scss/modules/form.scss */
 textarea.horizontal {
   resize: horizontal;
 }
 
-/* line 201, ../scss/modules/form.scss */
+/* line 200, ../scss/modules/form.scss */
 textarea.noResize {
   resize: none;
 }
 
-/* line 205, ../scss/modules/form.scss */
+/* line 204, ../scss/modules/form.scss */
 textarea.form-element {
   width: 100%;
   height: 40px;
@@ -4191,7 +4190,7 @@ textarea.form-element {
   font-family: inherit;
 }
 
-/* line 216, ../scss/modules/form.scss */
+/* line 215, ../scss/modules/form.scss */
 .custom-radio {
   width: 18px;
   height: 18px;
@@ -4199,7 +4198,7 @@ textarea.form-element {
   opacity: 0;
   cursor: pointer;
 }
-/* line 228, ../scss/modules/form.scss */
+/* line 227, ../scss/modules/form.scss */
 .custom-radio:checked + .custom-radio-icon::after, .custom-radio.is-checked + .custom-radio-icon::after {
   content: "";
   display: block;
@@ -4208,7 +4207,7 @@ textarea.form-element {
   border-radius: 18px;
   background-color: #999;
 }
-/* line 239, ../scss/modules/form.scss */
+/* line 238, ../scss/modules/form.scss */
 .custom-radio + .custom-radio-icon {
   display: inline-block;
   width: 18px;
@@ -4223,23 +4222,23 @@ textarea.form-element {
   vertical-align: middle;
 }
 
-/* line 259, ../scss/modules/form.scss */
+/* line 258, ../scss/modules/form.scss */
 .cke.cke_chrome {
   box-shadow: none !important;
   border: 0 !important;
 }
-/* line 264, ../scss/modules/form.scss */
+/* line 263, ../scss/modules/form.scss */
 .cke .cke_inner {
   border: 1px solid #cccccc !important;
 }
-/* line 268, ../scss/modules/form.scss */
+/* line 267, ../scss/modules/form.scss */
 .cke .cke_inner,
 .cke .cke_wysiwyg_frame {
   border-bottom-left-radius: 3px !important;
   border-bottom-right-radius: 3px !important;
 }
 
-/* line 276, ../scss/modules/form.scss */
+/* line 275, ../scss/modules/form.scss */
 span.error {
   font-size: 14px;
   color: #ad0710;
@@ -6321,26 +6320,22 @@ a.btn-black, a.btn-highlight {
 .table.matrix th.section {
   width: 180px;
 }
-/* line 19, ../scss/modules/matrix.scss */
-.table.matrix th:not(.general):not(.section) {
-  padding-left: 3px;
-}
-/* line 25, ../scss/modules/matrix.scss */
+/* line 22, ../scss/modules/matrix.scss */
 .table.matrix td.value {
   width: 20px;
   padding: 3px;
   margin: 0;
 }
-/* line 31, ../scss/modules/matrix.scss */
+/* line 28, ../scss/modules/matrix.scss */
 .table.matrix td.all {
   text-align: left;
   padding-left: 16px;
 }
-/* line 35, ../scss/modules/matrix.scss */
+/* line 32, ../scss/modules/matrix.scss */
 .table.matrix td.section {
   color: #999999;
 }
-/* line 40, ../scss/modules/matrix.scss */
+/* line 37, ../scss/modules/matrix.scss */
 .table.matrix span[class^="icon-"] {
   border: 1px solid black;
   color: black;
@@ -6351,7 +6346,7 @@ a.btn-black, a.btn-highlight {
   display: inline-block;
   text-align: center;
 }
-/* line 53, ../scss/modules/matrix.scss */
+/* line 50, ../scss/modules/matrix.scss */
 .table.matrix span[class^="icon-"].is-active {
   color: white;
   border-color: #1fca23;

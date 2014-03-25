@@ -25044,7 +25044,7 @@ define('__component__$navigation@husky',[],function() {
                     parent = this.sandbox.dom.closest(match, '.navigation-items');
                     this.toggleItems(null, parent);
                 }
-                this.selectSubItem(null, match);
+                this.selectSubItem(null, match, false);
                 this.checkBottomHit(null, match);
             }
         },
@@ -25235,7 +25235,7 @@ define('__component__$navigation@husky',[],function() {
          * @param event
          * @param [customTarget] if event is undefined, the target must be passed customly
          */
-        selectSubItem: function(event, customTarget) {
+        selectSubItem: function(event, customTarget, emit) {
 
             if (!!event) {
                 event.preventDefault();
@@ -25267,9 +25267,11 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.dom.addClass($items, 'is-active');
 
 
-            // emit event
-            item = this.getItemById(this.sandbox.dom.data($subItem, 'id'));
-            this.sandbox.emit('husky.navigation.item.select', item);
+            if (emit !== false) {
+                // emit event
+                item = this.getItemById(this.sandbox.dom.data($subItem, 'id'));
+                this.sandbox.emit('husky.navigation.item.select', item);
+            }
 
 
             if (!customTarget) {
