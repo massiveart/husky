@@ -15,10 +15,11 @@
  *
  * @param {Object} [options] Configuration object
  * @param {String} [options.url] url to fetch data from
- * @param {Array} [options.data] array of dropdown items elements
- *
- * @param {String} [options.selected] the item that's selected on initialize
+ * @param {String} [options.preselect] the item that's selected on initialization
  * @param {String} [options.instanceName] enables custom events (in case of multiple tabs on one page)
+ * @param {Array} [options.data] array of dropdown items elements
+ * @param {String|Array} [options.defaultLabels] which text is displayed after select is initialized; can be customized for each and every select by defining an array
+ * @param {Array} [options.selectOptions] array of Options to pass to the select at certain depth (first item's options will be assigned to first select)
  */
 define(function() {
 
@@ -28,10 +29,13 @@ define(function() {
             url: null,
             data: [],
             instanceName: '',
-            appearance: 'side-by-side'
+            preselect: null,
+            defaultLabels: 'Please choose',
+            selectOptions: []
         },
         constants = {
-            childContainerClass: 'dependent-select-container'
+            childContainerClass: 'dependent-select-container',
+            namespace: 'husky.dependent-select.'
         },
 
 
@@ -44,43 +48,22 @@ define(function() {
 
         },
 
-        /**
-         * triggered when item got clicked
-         * @event husky.dependent-select[.INSTANCE_NAME].item.selected
-         * @param {Object} item
-         */
-            ITEM_SELECTED = function() {
-            return getEventName.call(this, 'item.selected');
-
-        },
-
-
+        // creates event strings based on
         getEventName = function(postFix) {
-            return 'husky.dependent-select.' + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+            return constants.namespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         },
 
-
-        bindDOMEvents = function() {
-//            this.sandbox.dom.on(this.$el, 'click', selectItem.bind(this), 'button:not(:disabled), li');
-//            this.sandbox.dom.on(this.$el, 'click', toggleItem.bind(this), '.dropdown-toggle');
-        },
-
-        bindCustomEvents = function() {
-//            this.sandbox.on(ITEM_ENABLE.call(this), enableItem.bind(this));
-//            this.sandbox.on(ITEM_DISABLE.call(this), disableItem.bind(this));
-        },
-
-        renderEmpty = function() {
-            var i, len, $container, $child;
-            for (i = 0, len = this.options.container.length; ++i < len;) {
-                $container = this.$find(this.options.container[i]);
-                $child = this.sandbox.dom.createElement('<div class="' + constants.childContainerClass + '" />');
-                this.sandbox.dom.append($container, $child);
+        // empties all selects beginning from a certain depth
+        renderEmpty = function(depth) {
+            var i, len, $child;
+            for (i = depth, len = this.options.container.length; ++i < len;) {
+                $child = findStopAndRestartChild.call(this, this.options.container[i]);
                 this.sandbox.start([
                     {
                         name: 'select@husky',
                         options: {
                             el: $child,
+                            disabled: true,
                             singleSelect: true,
                             instanceName: i,
                             data: []
@@ -90,6 +73,7 @@ define(function() {
             }
         },
 
+        // searches array for a certain id
         getDataById = function(data, id) {
             for (var i = -1, len = data.length; ++i < len;) {
                 if (data[i].id === id) {
@@ -98,7 +82,26 @@ define(function() {
             }
         },
 
-        renderSelect = function(data, depth) {
+        /**
+         * creates a child element in a container
+         * @param containerId
+         * @returns {domObject}
+         */
+        findStopAndRestartChild = function(containerId) {
+            var $container = this.$find(containerId),
+                $child = this.sandbox.dom.find('.' + constants.childContainerClass, $container);
+            // stop child, if running
+            if (!!$child) {
+                this.sandbox.stop($child);
+            }
+            // create new child
+            $child = this.sandbox.dom.createElement('<div class="' + constants.childContainerClass + '" />');
+            this.sandbox.dom.append($container, $child);
+            return $child;
+        },
+
+        // renders selects at a certain depth
+        renderSelect = function(data, depth, preselect) {
 
             depth = typeof depth !== 'undefined' ? depth : 0;
 
@@ -106,37 +109,52 @@ define(function() {
                 throw "no container at this depth specified";
             }
 
-            var $container = this.$find(this.options.container[depth]),
-                $child = this.sandbox.dom.find('.'+constants.childContainerClass, $container);
-            if (!!$child) {
-                this.sandbox.stop($child);
+            var selectionCallback = null,
+                deselectionCallback = null,
+                options,
+                // get child
+                $child = findStopAndRestartChild.call(this, this.options.container[depth]);
+
+            // create callback
+            if (this.options.container.length > depth && !!data[0].items) {
+                selectionCallback = function(id) {
+                    var items = getDataById.call(this, data, id).items;
+                    renderSelect.call(this, items, depth + 1);
+                }.bind(this);
+                deselectionCallback = function(id) {
+                    if (id === null) {
+                        renderEmpty.call(this, depth);
+                    }
+                }.bind(this);
             }
-            $child = this.sandbox.dom.createElement('<div class="' + constants.childContainerClass + '" />');
-            this.sandbox.dom.append($container, $child);
 
-//            // create all elements
-//            this.sandbox.util.foreach(data, function(item) {
-//
-//            }.bind(this));
 
+            // make it possible to set some data for select
+            if (!!this.options.selectOptions[depth]) {
+                options = this.options.selectOptions[depth];
+            }
+            options = this.sandbox.util.extend(true, {}, options, {
+                el: $child,
+                singleSelect: true,
+                instanceName: depth,
+                data: data,
+                selectCallback: selectionCallback,
+                deselectCallback: deselectionCallback,
+                preSelectedElements: !!preselect ? [preselect] : [],
+                defaultLabel: this.sandbox.dom.isArray(this.options.defaultLabels) ? this.options.defaultLabels[depth] : this.options.defaultLabels
+            });
+
+            // start select component
             this.sandbox.start([
                 {
                     name: 'select@husky',
-                    options: {
-                        el: $child,
-                        singleSelect: true,
-                        instanceName: depth,
-                        data: data
-                    }
+                    options: options
                 }
             ]);
+        },
 
-            if (this.options.container.length > depth && !!data[0].items) {
-                this.sandbox.on('husky.select.' + depth + '.selected.item', function(id) {
-                    var items = getDataById.call(this, data, id).items;
-                    renderSelect.call(this, items, depth + 1);
-                }, this);
-            }
+        bindCustomEvents = function() {
+
         };
 
     return {
@@ -161,21 +179,15 @@ define(function() {
             } else {
                 this.sandbox.logger.log('no data provided for dependent select!');
             }
-
-            bindDOMEvents.call(this);
-
         },
 
         render: function(data) {
-
-            // TODO: add appearance class
-
             // create items array
             this.items = [];
             this.selects = [];
 
-            renderSelect.call(this, data, 0);
-            renderEmpty.call(this);
+            renderSelect.call(this, data, 0, this.options.preselect);
+            renderEmpty.call(this, !!this.options.preselect ? this.options.preselect.length : 0);
 
             // initialization finished
             this.sandbox.emit(INITIALIZED.call(this));
@@ -185,4 +197,5 @@ define(function() {
 
     };
 
-});
+})
+;

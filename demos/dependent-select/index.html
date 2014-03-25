@@ -67,34 +67,39 @@
                         options: {
                             el: '#dependent-container',
                             instanceName: 'ddms',
-                            defaultLabel: 'Please choose ...',
+                            defaultLabels: ['Please choose a field', 'please choose a type'],
                             value: 'name',
+//                            preselect: '0',
+                            selectOptions: [
+                                {},
+                                { deselectField: ''}
+                            ],
                             data: [
                                 {
-                                    id:'0',
-                                    name:'phone',
+                                    id: '0',
+                                    name: 'phone',
                                     items: [
                                         {
-                                            id:'0',
-                                            name:'office'
+                                            id: '0',
+                                            name: 'office'
                                         },
                                         {
-                                            id:'1',
-                                            name:'handy'
+                                            id: '1',
+                                            name: 'handy'
                                         }
                                     ]
                                 },
                                 {
-                                    id:'1',
-                                    name:'emails',
+                                    id: '1',
+                                    name: 'emails',
                                     items: [
                                         {
-                                            id:'0',
-                                            name:'private@'
+                                            id: '0',
+                                            name: 'private@'
                                         },
                                         {
-                                            id:'1',
-                                            name:'@ffice'
+                                            id: '1',
+                                            name: '@ffice'
                                         }
                                     ]
                                 },

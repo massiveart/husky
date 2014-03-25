@@ -13,8 +13,12 @@
  *      instanceName: instance name of this component
  *      defaultLabel: default label which gets displayed
  *      checkedAllLabel: Label if all checked
- *      singleSelect: allows only one element to be selected
- *      noDeselect: disables the possibility to deselect items
+ *      multipleSelect: allows multiple elements to be selected
+ *      selectCallback: callbackfunction, when element is selected
+ *      deselectCallback: callback function when element is deselected
+ *      preselectedElements: allows preselection of fields by defining the id attributes or strings
+ *      deselectField: allows deselection in case of single select; will be set if value is a string
+ *
  *
  * Provided Events:
  * husky.select.<<instanceName>>.selected.item   - triggered when item selected
@@ -28,9 +32,6 @@
  * husky.select.<<instanceName>>.initialize - initialize component
  */
 
-// TODO: data attribute for selection
-// TODO: no deselect on single selection
-
 define([], function() {
 
     'use strict';
@@ -42,16 +43,19 @@ define([], function() {
             defaultLabel: 'Please choose',    // default label which gets displayed
             checkedAllLabel: 'All Languages', // Label if all checked
             preSelectedElements: [],          // Elements selected by default
-            singleSelect: false,              // Allows only one element to be selected
-            noDeselect: false,                // Disables the possibility to deselect items
+            multipleSelect: false,              // Allows multiple elements to be selected
+            deselectField: false,              // field for deselection is added to dropdown if value is a string
             disabled: false,                  //if true button is disabled
-            disabledClass: 'disabled'         //class to add to the button
+            disabledClass: 'disabled',         //class to add to the button
+            selectCallback: null,
+            deselectCallback: null
         },
 
         constants = {
             labelClass: 'husky-select-label',
             listClass: 'husky-select-list',
-            dropdownContainerClass: 'husky-select-dropdown-container'
+            dropdownContainerClass: 'husky-select-dropdown-container',
+            deselectFieldKey: ''
         };
 
 
@@ -61,6 +65,8 @@ define([], function() {
 
             this.sandbox.logger.log('initialize', this);
             this.options = this.sandbox.util.extend({}, defaults, this.options);
+
+            this.selection = [];
 
             this.selectedElements = [];
             this.selectedElementsValues = [];
@@ -114,44 +120,45 @@ define([], function() {
             // TODO load data from url
         },
 
+        addDropdownElement: function(id, value, disabled) {
+            var $item;
+            if (this.options.preSelectedElements.indexOf(id) >= 0) {
+                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, id, value, 'checked'));
+                this.selectedElements.push((id).toString());
+                this.selectedElementsValues.push(value);
+                this.triggerSelect(id);
+            } else {
+                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, id, value, ''));
+            }
+
+            if (!!disabled && disabled === true) {
+                this.sandbox.dom.addClass($item, 'disabled');
+            }
+
+            this.sandbox.dom.append(this.$list, $item);
+        },
+
         // generate dropDown with given items
         generateDropDown: function(items) {
-            var $item;
-
+            if (typeof this.options.deselectField === 'string' && this.options.deselectField !== 'false') {
+                this.addDropdownElement(constants.deselectFieldKey, this.sandbox.translate(this.options.deselectField));
+            }
             if (items.length > 0) {
-
                 if (typeof(items[0]) === 'string') {
                     this.sandbox.util.each(items, function(index, value) {
-                        if (this.options.preSelectedElements.indexOf(value) >= 0) {
-                            this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, 'checked'));
-                            this.selectedElements.push(value);
-                            this.selectedElementsValues.push(value);
-                        } else {
-                            this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, ''));
-                        }
+                        this.addDropdownElement(index, value);
                     }.bind(this));
                 } else if (typeof(items[0]) === 'object') {
                     this.sandbox.util.each(items, function(index, value) {
-                        if (this.options.preSelectedElements.indexOf(value.id) >= 0) {
-                            $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, value, this.options.valueName, 'checked'));
-                            this.selectedElements.push((value.id).toString());
-                            this.selectedElementsValues.push(value[this.options.valueName]);
-                        } else {
-                            $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, value, this.options.valueName, ''));
-                        }
-
-                        if (!!value.disabled && value.disabled === true) {
-                            this.sandbox.dom.addClass($item, 'disabled');
-                        }
-
-                        this.sandbox.dom.append(this.$list, $item);
+                        this.addDropdownElement(value.id, value[this.options.valueName], !!value.disabled && value.disabled);
                     }.bind(this));
                 }
                 this.changeLabel();
 
-            } else {
-                this.$dropDownList.append('<li>No data received</li>');
             }
+//            else {
+//                this.$dropDownList.append('<li>No data received</li>');
+//            }
         },
 
         // bind dom elements
@@ -183,6 +190,11 @@ define([], function() {
             this.sandbox.on(this.getEventName('getChecked'), this.getChecked.bind(this));
         },
 
+        updateSelectionAttribute: function() {
+            this.sandbox.dom.attr(this.$el, 'data-selection', this.selectedElements);
+            this.sandbox.dom.attr(this.$el, 'data-selection-values', this.selectedElementsValues);
+        },
+
         //unchecks all checked elements
         uncheckAll: function(clickedElementKey) {
             var elements = this.sandbox.dom.children(this.$list),
@@ -196,7 +208,7 @@ define([], function() {
                 index = this.selectedElements.indexOf(key);
 
                 if (index >= 0) {
-                    if (clickedElementKey !== key || this.options.noDeselect === false) {
+                    if (clickedElementKey !== key) {
                         this.sandbox.dom.removeClass($checkbox, 'is-selected');
                         this.sandbox.dom.prop($checkbox, 'checked', false);
                         this.selectedElements.splice(index, 1);
@@ -210,41 +222,75 @@ define([], function() {
         // trigger event with clicked item
         clickItem: function(event) {
 
-            var key = this.sandbox.dom.attr(event.currentTarget, 'data-id'),
-                value = this.sandbox.dom.text(this.sandbox.dom.find('.item-value', event.currentTarget)),
-                $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget)[0],
-                index = this.selectedElements.indexOf(key);
+            var key, value, $checkbox, index;
 
-            if (this.options.singleSelect === true) {
-                this.uncheckAll(key);
+            key = this.sandbox.dom.attr(event.currentTarget, 'data-id');
+            index = this.selectedElements.indexOf(key);
+
+            // if single select then uncheck all results
+            if (this.options.multipleSelect === false) {
+                // if new element was selected
+                if (key === constants.deselectFieldKey) {
+                    index = 0;
+                    this.uncheckAll(key);
+                } else if (index === -1) {
+                    this.uncheckAll(key);
+                } else {
+                    this.hideDropDown();
+                    return;
+                }
             }
 
+            value = this.sandbox.dom.text(this.sandbox.dom.find('.item-value', event.currentTarget));
+            $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget)[0];
+
+            // deselect
             if (index >= 0) {
-                if (this.options.noDeselect === false) {
-                    this.sandbox.dom.removeClass($checkbox, 'is-selected');
-                    this.sandbox.dom.prop($checkbox, 'checked', false);
-                    this.selectedElements.splice(index, 1);
-                    this.selectedElementsValues.splice(index, 1);
-                    this.sandbox.emit(this.getEventName('deselected.item'), key);
+                this.sandbox.dom.removeClass($checkbox, 'is-selected');
+                this.sandbox.dom.prop($checkbox, 'checked', false);
+                this.selectedElements.splice(index, 1);
+                this.selectedElementsValues.splice(index, 1);
+
+                // callback if defined
+                // callback, if defined
+                if (!!this.options.deselectCallback) {
+                    this.options.deselectCallback.call(this, key !== constants.deselectFieldKey ? key : null);
                 } else {
-                    this.sandbox.dom.prop($checkbox, 'checked', true);
+                    this.sandbox.emit(this.getEventName('deselected.item'), key);
                 }
 
-            } else {
 
+            // select element
+            } else {
                 this.sandbox.dom.addClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', true);
                 this.selectedElements.push(key);
                 this.selectedElementsValues.push(value);
-                this.sandbox.emit(this.getEventName('selected.item'), key);
+
+                this.triggerSelect(key);
+
             }
 
+            // update data attribute
+            this.updateSelectionAttribute();
+
+            // change label
             this.changeLabel();
 
-            if (this.options.singleSelect === true) {
+            // hide if single select
+            if (this.options.multipleSelect === false) {
                 this.hideDropDown();
             }
 
+        },
+
+        triggerSelect : function(key) {
+            // callback, if defined
+            if (!!this.options.selectCallback) {
+                this.options.selectCallback.call(this, key);
+            } else {
+                this.sandbox.emit(this.getEventName('selected.item'), key);
+            }
         },
 
         getEventName: function(suffix) {
@@ -253,7 +299,7 @@ define([], function() {
 
         changeLabel: function() {
 
-            if (this.selectedElements.length === this.options.data.length && this.options.singleSelect !== true) {
+            if (this.selectedElements.length === this.options.data.length && this.options.multipleSelect === true) {
                 this.sandbox.dom.text(this.$label, this.options.checkedAllLabel);
             } else if (this.selectedElements.length === 0) {
                 this.sandbox.dom.text(this.$label, this.options.defaultLabel);
@@ -327,40 +373,22 @@ define([], function() {
                     '</div>'
                 ].join('');
             },
-            menuElement: function(value, property, checked) {
+            menuElement: function(index, value, checked) {
                 var hiddenClass = '';
-                if (this.options.singleSelect === true) {
+                if (this.options.multipleSelect === false) {
                     hiddenClass = ' hidden';
                 }
-
-                if (typeof value === 'string') {
-
-                    return [
-                        '<li data-id="', value, '">',
-                        '    <div>',
-                        '        <div class="check' + hiddenClass + '">',
-                        '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
-                        '            <span class="custom-checkbox-icon"></span>',
-                        '        </div>',
-                        '        <div class="item-value">', value, '</div>',
-                        '    </div>',
-                        '</li>'
-                    ].join('');
-
-                } else {
-
-                    return [
-                        '<li data-id="', value.id, '">',
-                        '    <div>',
-                        '        <div class="check' + hiddenClass + '">',
-                        '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
-                        '            <span class="custom-checkbox-icon"></span>',
-                        '        </div>',
-                        '        <div class="item-value">', value[property], '</div>',
-                        '    </div>',
-                        '</li>'
-                    ].join('');
-                }
+                return [
+                    '<li data-id="', index, '">',
+                    '    <div>',
+                    '        <div class="check' + hiddenClass + '">',
+                    '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
+                    '            <span class="custom-checkbox-icon"></span>',
+                    '        </div>',
+                    '        <div class="item-value">', value, '</div>',
+                    '    </div>',
+                    '</li>'
+                ].join('');
 
             }
 
