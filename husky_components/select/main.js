@@ -1,141 +1,369 @@
-/*****************************************************************************
+/*
+ * This file is part of the Sulu CMS.
  *
- *  Select
- *      - url: url to fetch data from
- *      - data: array of objects
- *      - valueName: name of the attribute used for display
- *      - selected: object with an id attribute e.g. {id : 1}
- *      - defaultItem: object with an id attribute e.g. {id : 1}
- *      - property: data-mapper-property
- *      - type: data-type
- *      - typeId: id property
- *      - typeLabel: label property
+ * (c) MASSIVE ART WebServices GmbH
  *
- *  Provided Events
- *      - select.item.changed - raised when the selected element changed
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
  *
+ * Name: dropdown multiple select
+ * Options:
+ *      data: [],  array of data [string, object]
+ *      valueName: name of property which should be used
+ *      instanceName: instance name of this component
+ *      defaultLabel: default label which gets displayed
+ *      checkedAllLabel: Label if all checked
+ *      singleSelect: allows only one element to be selected
+ *      noDeselect: disables the possibility to deselect items
  *
- *****************************************************************************/
+ * Provided Events:
+ * husky.select.<<instanceName>>.selected.item   - triggered when item selected
+ * husky.select.<<instanceName>>.deselected.item   - triggered when item deselected
 
-define(function() {
+ *
+ * Use Events
+ * husky.select.<<instanceName>>.toggle     - toggles (show/hide) dropdown menu
+ * husky.select.<<instanceName>>.show       - show dropdown menu
+ * husky.select.<<instanceName>>.hide       - hide dropdown menu
+ * husky.select.<<instanceName>>.initialize - initialize component
+ */
+
+// TODO: data attribute for selection
+// TODO: no deselect on single selection
+
+define([], function() {
 
     'use strict';
 
     var defaults = {
-        url: '',
-        data: [],
-        valueName: 'name',
-        selected: null,
-        defaultItem: { id: 1 },
-        instanceName: 'undefined',
-        property: null,
-        type: 'select',
-        typeId: null,
-        typeLabel: null
-    };
+            data: [],                         // data array
+            valueName: 'name',                // name of text property
+            instanceName: 'undefined',        // instance name
+            defaultLabel: 'Please choose',    // default label which gets displayed
+            checkedAllLabel: 'All Languages', // Label if all checked
+            preSelectedElements: [],          // Elements selected by default
+            singleSelect: false,              // Allows only one element to be selected
+            noDeselect: false,                // Disables the possibility to deselect items
+            disabled: false,                  //if true button is disabled
+            disabledClass: 'disabled'         //class to add to the button
+        },
+
+        constants = {
+            labelClass: 'husky-select-label',
+            listClass: 'husky-select-list',
+            dropdownContainerClass: 'husky-select-dropdown-container'
+        };
+
 
     return {
 
-        view: true,
-
         initialize: function() {
-            this.sandbox.logger.log('initialized select');
 
-            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
-            this.configs = {};
+            this.sandbox.logger.log('initialize', this);
+            this.options = this.sandbox.util.extend({}, defaults, this.options);
 
-            this.$originalElement = this.sandbox.dom.$(this.options.el);
-            // TODO class via options
+            this.selectedElements = [];
+            this.selectedElementsValues = [];
+            this.dropdownVisible = false;
 
-            var dataAttr = [
-                    (!!this.options.property) ? 'data-mapper-property="' + this.options.property + '" data-type="' + this.options.type + '" ' : '',
-                    (!!this.options.property && !!this.options.typeId) ? 'data-type-id="' + this.options.typeId + '" ' : '',
-                    (!!this.options.property && !!this.options.typeLabel) ? 'data-type-label="' + this.options.typeLabel + '" ' : ''
-                ].join(''),
-                selectHtml = [
-                    '<select id="',this.options.instanceName,'" class="select-value form-element" ', dataAttr, '/>'
-                ].join('');
+            this.render();
+            this.sandbox.emit(this.getEventName('initialize'));
+        },
 
-            this.$select = $(selectHtml);
-            this.$element = this.sandbox.dom.$('<div class="husky-select"/>');
+        render: function() {
 
-            this.$element.append(this.$select);
-            this.$originalElement.append(this.$element);
+            var $originalElement = this.sandbox.dom.$(this.options.el),
+                button = this.sandbox.dom.createElement(this.template.basicStructure.call(this, this.options.defaultLabel));
+            this.sandbox.dom.append($originalElement, button);
 
+            this.$list = this.$find('.' + constants.listClass);
+            this.$dropdownContainer = this.$find('.' + constants.dropdownContainerClass);
+            this.$label = this.$find('.' + constants.labelClass);
             this.prepareData();
+
+            // bind dom elements
+            this.bindDOMEvents();
+            this.bindCustomEvents();
+
+            if (this.options.disabled === true) {
+                this.disable();
+            }
+        },
+
+        //sets the button in enabled state
+        enable: function() {
+            this.sandbox.dom.removeClass(this.sandbox.dom.children(this.$el, '.husky-select-container'), this.options.disabledClass);
             this.bindDOMEvents();
         },
 
-        // bind dom elements
-        bindDOMEvents: function() {
 
-            // turn off all events
-            this.$element.off();
-
-            this.$select.on('change', function() {
-                var id = this.$select.val();
-                this.sandbox.logger.log('changed: ' + id);
-                this.sandbox.emit('select.' + this.options.instanceName + '.item.changed', id);
-            }.bind(this));
-
+        //sets the button i
+        disable: function() {
+            this.sandbox.dom.addClass(this.sandbox.dom.children(this.$el, '.husky-select-container'), this.options.disabledClass);
+            this.hideDropDown();
+            this.sandbox.dom.off(this.$el);
         },
 
         // prepares data for dropDown, if options.data not set load with ajax
         prepareData: function() {
             if (this.options.data.length > 0) {
-                this.generateOptions(this.options.data);
+                this.generateDropDown(this.options.data);
             } else {
-                this.loadData();
+                this.sandbox.logger.log('error: data not set');
+            }
+            // TODO load data from url
+        },
+
+        // generate dropDown with given items
+        generateDropDown: function(items) {
+            var $item;
+
+            if (items.length > 0) {
+
+                if (typeof(items[0]) === 'string') {
+                    this.sandbox.util.each(items, function(index, value) {
+                        if (this.options.preSelectedElements.indexOf(value) >= 0) {
+                            this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, 'checked'));
+                            this.selectedElements.push(value);
+                            this.selectedElementsValues.push(value);
+                        } else {
+                            this.sandbox.dom.append(this.$list, this.template.menuElement.call(this, value, this.options.valueName, ''));
+                        }
+                    }.bind(this));
+                } else if (typeof(items[0]) === 'object') {
+                    this.sandbox.util.each(items, function(index, value) {
+                        if (this.options.preSelectedElements.indexOf(value.id) >= 0) {
+                            $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, value, this.options.valueName, 'checked'));
+                            this.selectedElements.push((value.id).toString());
+                            this.selectedElementsValues.push(value[this.options.valueName]);
+                        } else {
+                            $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, value, this.options.valueName, ''));
+                        }
+
+                        if (!!value.disabled && value.disabled === true) {
+                            this.sandbox.dom.addClass($item, 'disabled');
+                        }
+
+                        this.sandbox.dom.append(this.$list, $item);
+                    }.bind(this));
+                }
+                this.changeLabel();
+
+            } else {
+                this.$dropDownList.append('<li>No data received</li>');
             }
         },
 
-        // load data with ajax
-        loadData: function() {
-            this.sandbox.logger.log('load: ' + this.options.url);
+        // bind dom elements
+        bindDOMEvents: function() {
 
-            this.sandbox.util.ajax({
-                url: this.options.url,
-                success: function(response) {
-                    this.sandbox.logger.log('load', 'success');
+            // toggle drop-down
+            this.sandbox.dom.on(this.$el, 'click', this.toggleDropDown.bind(this), '.dropdown-label');
 
-                    if (response.total > 0 && response.items.length === response.total) {
-                        this.options.data = response.items;
-                    } else {
-                        this.options.data = [];
+            // click on single item
+            this.sandbox.dom.on(this.$list, 'click', function(event) {
+                this.sandbox.dom.stopPropagation(event);
+                if (this.sandbox.dom.hasClass(event.currentTarget, 'disabled') === false) {
+                    this.clickItem(event);
+                } else {
+                    this.sandbox.dom.preventDefault(event);
+                    return false;
+                }
+            }.bind(this), 'li');
+
+        },
+
+        bindCustomEvents: function() {
+            this.sandbox.on(this.getEventName('toggle'), this.toggleDropDown.bind(this));
+            this.sandbox.on(this.getEventName('show'), this.showDropDown.bind(this));
+            this.sandbox.on(this.getEventName('hide'), this.hideDropDown.bind(this));
+            this.sandbox.on(this.getEventName('disable'), this.disable.bind(this));
+            this.sandbox.on(this.getEventName('enable'), this.enable.bind(this));
+
+            this.sandbox.on(this.getEventName('getChecked'), this.getChecked.bind(this));
+        },
+
+        //unchecks all checked elements
+        uncheckAll: function(clickedElementKey) {
+            var elements = this.sandbox.dom.children(this.$list),
+                i = -1,
+                length = elements.length,
+                key, index, $checkbox;
+
+            for (; ++i < length;) {
+                key = this.sandbox.dom.attr(elements[i], 'data-id');
+                $checkbox = this.sandbox.dom.find('input[type=checkbox]', elements[i])[0];
+                index = this.selectedElements.indexOf(key);
+
+                if (index >= 0) {
+                    if (clickedElementKey !== key || this.options.noDeselect === false) {
+                        this.sandbox.dom.removeClass($checkbox, 'is-selected');
+                        this.sandbox.dom.prop($checkbox, 'checked', false);
+                        this.selectedElements.splice(index, 1);
+                        this.selectedElementsValues.splice(index, 1);
+                        this.sandbox.emit(this.getEventName('deselected.item'), key);
                     }
-                    this.generateOptions(this.options.data);
-                }.bind(this),
-                error: function() {
-                    this.sandbox.logger.log('load', 'error');
-
-                    this.options.data = [];
-                    this.generateOptions(this.options.data);
-                }.bind(this)
-            });
-
-            // FIXME event will be binded later
-            setTimeout(function() {
-                this.sandbox.emit('select.' + this.options.instanceName + '.loadData');
-            }.bind(this), 200);
-
-        },
-
-        generateOptions: function(items) {
-            this.clearOptions();
-            items.forEach(this.generateOption.bind(this));
-        },
-
-        generateOption: function(item) {
-            var $option = $('<option value="' + item.id + '">' + item[this.options.valueName] + '</option>');
-            if ((this.options.selected !== null && this.options.selected.id === item.id) ||
-                (this.options.selected === null && this.options.defaultItem.id === item.id)) {
-                $option.attr('selected', true);
+                }
             }
-            this.$select.append($option);
         },
 
-        clearOptions: function() {
-            this.$select.find('option').remove();
+        // trigger event with clicked item
+        clickItem: function(event) {
+
+            var key = this.sandbox.dom.attr(event.currentTarget, 'data-id'),
+                value = this.sandbox.dom.text(this.sandbox.dom.find('.item-value', event.currentTarget)),
+                $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget)[0],
+                index = this.selectedElements.indexOf(key);
+
+            if (this.options.singleSelect === true) {
+                this.uncheckAll(key);
+            }
+
+            if (index >= 0) {
+                if (this.options.noDeselect === false) {
+                    this.sandbox.dom.removeClass($checkbox, 'is-selected');
+                    this.sandbox.dom.prop($checkbox, 'checked', false);
+                    this.selectedElements.splice(index, 1);
+                    this.selectedElementsValues.splice(index, 1);
+                    this.sandbox.emit(this.getEventName('deselected.item'), key);
+                } else {
+                    this.sandbox.dom.prop($checkbox, 'checked', true);
+                }
+
+            } else {
+
+                this.sandbox.dom.addClass($checkbox, 'is-selected');
+                this.sandbox.dom.prop($checkbox, 'checked', true);
+                this.selectedElements.push(key);
+                this.selectedElementsValues.push(value);
+                this.sandbox.emit(this.getEventName('selected.item'), key);
+            }
+
+            this.changeLabel();
+
+            if (this.options.singleSelect === true) {
+                this.hideDropDown();
+            }
+
+        },
+
+        getEventName: function(suffix) {
+            return 'husky.select.' + this.options.instanceName + '.' + suffix;
+        },
+
+        changeLabel: function() {
+
+            if (this.selectedElements.length === this.options.data.length && this.options.singleSelect !== true) {
+                this.sandbox.dom.text(this.$label, this.options.checkedAllLabel);
+            } else if (this.selectedElements.length === 0) {
+                this.sandbox.dom.text(this.$label, this.options.defaultLabel);
+            } else {
+
+                var text = "";
+                this.sandbox.util.each(this.selectedElementsValues, function(index, value) {
+                    text += ' ' + value + ',';
+                });
+                this.sandbox.dom.text(this.$label, text.substring(1, text.length - 1));
+            }
+        },
+
+        // toggle dropDown visible
+        toggleDropDown: function() {
+            this.sandbox.logger.log('toggle dropdown ' + this.options.instanceName);
+
+            if (this.dropdownVisible === true) {
+                this.hideDropDown();
+            } else {
+                this.showDropDown();
+            }
+        },
+
+        // make dropDown visible
+        showDropDown: function() {
+            this.sandbox.logger.log('show dropdown ' + this.options.instanceName);
+            this.sandbox.dom.removeClass(this.$dropdownContainer, 'hidden');
+            this.sandbox.dom.on(this.sandbox.dom.window, 'click.dropdown.' + this.options.instanceName, this.hideDropDown.bind(this));
+            this.dropdownVisible = true;
+        },
+
+        // hide dropDown
+        hideDropDown: function(event) {
+            if (!!event) {
+                if (!!this.sandbox.dom.find(event.target, this.$el).length) {
+                    return false;
+                } else {
+                    this.sandbox.dom.off(this.sandbox.dom.window, 'click.dropdown.' + this.options.instanceName);
+                }
+            }
+            this.sandbox.logger.log('hide dropdown ' + this.options.instanceName);
+            this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');
+            this.dropdownVisible = false;
+        },
+
+        // return checked values
+        getChecked: function(callback) {
+            if (typeof callback === 'function') {
+                callback(this.selectedElements);
+            } else {
+                throw 'error: callback is not a function';
+            }
+        },
+
+
+        template: {
+
+            basicStructure: function(defaultLabel) {
+                return [
+                    '<div class="husky-select-container">',
+                    '    <div class="dropdown-label pointer">',
+                    '       <div class="checkbox">',
+                    '           <span class="' + constants.labelClass + '">', defaultLabel, '</span>',
+                    '       </div>',
+                    '       <span class="dropdown-toggle inline-block"></span>',
+                    '   </div>',
+                    '   <div class="grid-row dropdown-list dropdown-align-right hidden ' + constants.dropdownContainerClass + '">',
+                    '       <ul class="' + constants.listClass + '"></ul>',
+                    '   </div>',
+                    '</div>'
+                ].join('');
+            },
+            menuElement: function(value, property, checked) {
+                var hiddenClass = '';
+                if (this.options.singleSelect === true) {
+                    hiddenClass = ' hidden';
+                }
+
+                if (typeof value === 'string') {
+
+                    return [
+                        '<li data-id="', value, '">',
+                        '    <div>',
+                        '        <div class="check' + hiddenClass + '">',
+                        '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
+                        '            <span class="custom-checkbox-icon"></span>',
+                        '        </div>',
+                        '        <div class="item-value">', value, '</div>',
+                        '    </div>',
+                        '</li>'
+                    ].join('');
+
+                } else {
+
+                    return [
+                        '<li data-id="', value.id, '">',
+                        '    <div>',
+                        '        <div class="check' + hiddenClass + '">',
+                        '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
+                        '            <span class="custom-checkbox-icon"></span>',
+                        '        </div>',
+                        '        <div class="item-value">', value[property], '</div>',
+                        '    </div>',
+                        '</li>'
+                    ].join('');
+                }
+
+            }
+
         }
 
     };

@@ -10,7 +10,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Dropdown Multiple Select</title>
+    <title>Select</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -105,7 +105,7 @@
 
         app.start([
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms',
                             instanceName: 'ddms',
@@ -116,7 +116,7 @@
                         }
                     },
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms2',
                             instanceName: 'ddms2',
@@ -132,7 +132,7 @@
                         }
                     },
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms3',
                             instanceName: 'ddms3',
@@ -142,7 +142,7 @@
                         }
                     },
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms4',
                             instanceName: 'ddms4',
@@ -157,7 +157,7 @@
                         }
                     },
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms5',
                             instanceName: 'ddms5',
@@ -173,7 +173,7 @@
                         }
                     },
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms6',
                             instanceName: 'ddms6',
@@ -189,7 +189,7 @@
                         }
                     },
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms7',
                             instanceName: 'ddms7',
@@ -206,7 +206,7 @@
                         }
                     },
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms8',
                             instanceName: 'ddms8',
@@ -222,50 +222,50 @@
                     }
                 ]).then(function() {
 
-            app.sandbox.on('husky.dropdown.multiple.select.ddms.deselected.item', function(item) {
+            app.sandbox.on('husky.select.ddms.deselected.item', function(item) {
                 console.log("drop-down multiple select ddms: deselected item: " + item);
             });
 
-            app.sandbox.on('husky.dropdown.multiple.select.ddms.selected.item', function(item) {
+            app.sandbox.on('husky.select.ddms.selected.item', function(item) {
                 console.log("drop-down multiple select ddms: selected item: " + item);
             });
 
             app.sandbox.dom.on('#show', 'click', function(event) {
                 app.sandbox.dom.stopPropagation(event);
-                app.sandbox.emit('husky.dropdown.multiple.select.ddms.show');
+                app.sandbox.emit('husky.select.ddms.show');
             });
 
             app.sandbox.dom.on('#hide', 'click', function(event) {
                 app.sandbox.dom.stopPropagation(event);
-                app.sandbox.emit('husky.dropdown.multiple.select.ddms.hide');
+                app.sandbox.emit('husky.select.ddms.hide');
             });
 
             app.sandbox.dom.on('#toggle', 'click', function(event) {
                 app.sandbox.dom.stopPropagation(event);
-                app.sandbox.emit('husky.dropdown.multiple.select.ddms.toggle');
+                app.sandbox.emit('husky.select.ddms.toggle');
             });
 
             app.sandbox.dom.on('#get', 'click', function(event) {
-                app.sandbox.emit('husky.dropdown.multiple.select.ddms.getChecked', function(selected) {
+                app.sandbox.emit('husky.select.ddms.getChecked', function(selected) {
                     console.log('selected items', selected);
                 });
             });
 
 
-            app.sandbox.on('husky.dropdown.multiple.select.ddms2.deselected.item', function(item) {
+            app.sandbox.on('husky.select.ddms2.deselected.item', function(item) {
                 console.log("drop-down multiple select ddms2: deselected item: " + item);
             });
 
-            app.sandbox.on('husky.dropdown.multiple.select.ddms2.selected.item', function(item) {
+            app.sandbox.on('husky.select.ddms2.selected.item', function(item) {
                 console.log("drop-down multiple select ddms2: selected item: " + item);
             });
 
             $('#toggleState').on('click', function() {
                 if (state7 === 0) {
-                    app.sandbox.emit('husky.dropdown.multiple.select.ddms7.enable');
+                    app.sandbox.emit('husky.select.ddms7.enable');
                     state7 = 1;
                 } else {
-                    app.sandbox.emit('husky.dropdown.multiple.select.ddms7.disable');
+                    app.sandbox.emit('husky.select.ddms7.disable');
                     state7 = 0;
                 }
             });
