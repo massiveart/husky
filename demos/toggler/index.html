@@ -24,6 +24,22 @@
 <body>
 <div class="wrapper">
     <h1>Husky Toggler Demo and other inputs</h1>
+    <div class="grid">
+        <div class="grid-row">
+            <div class="grid-col-6">
+                <label for="toggler1">Turn something on</label>
+                <div id="toggler1" data-aura-component="toggler@husky"></div>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="grid-col-1">
+                <div class="btn action" id="toggle">Toggle toggler</div>
+            </div>
+            <div class="grid-col-1">
+                <div class="btn action2" id="data">Get data</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="../js/sinon.js"></script>
@@ -42,6 +58,21 @@
 
         app.start().then(function() {
             app.logger.log('Aura started...');
+        });
+
+        $('#toggle').on('click', function() {
+            var checked = $('#toggler1').data('checked');
+            console.log(checked);
+
+            if (checked === true) {
+                app.sandbox.emit('husky.toggler.toggler1.change', false);
+            } else {
+                app.sandbox.emit('husky.toggler.toggler1.change', true);
+            }
+        }.bind(this));
+
+        $('#data').on('click', function() {
+            console.log('The toggle-button is checked?', $('#toggler1').data());
         });
     });
 </script>

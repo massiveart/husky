@@ -3,5 +3,42 @@
 // --------------------------------------------------
 
 .husky-toggler {
+    $transDuration: 100ms;
+    $transFunction: ease-in;
 
+    width: 35px;
+    height: 20px;
+    background: $white;
+    border: 1px solid $grayLighter;
+    border-radius: 10px;
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    @include user-select(none);
+  @include single-transition(all, $transDuration, $transFunction);
+
+    .switch {
+        background: $white;
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        border: 1px solid $grayLighter;
+        margin: -1px 0 0 -1px;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        @include single-transition(all, $transDuration, $transFunction);
+    }
+
+    &.checked {
+        background: $green;
+        border-color: $green;
+
+        .switch {
+            border-color: $green;
+            left: 15px;
+        }
+    }
 }
