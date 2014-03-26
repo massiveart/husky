@@ -48,12 +48,12 @@ define(function() {
 
         },
 
-        // creates event strings based on
+    // creates event strings based on
         getEventName = function(postFix) {
             return constants.namespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         },
 
-        // empties all selects beginning from a certain depth
+    // empties all selects beginning from a certain depth
         renderEmpty = function(depth) {
             var i, len, $child;
             for (i = depth, len = this.options.container.length; ++i < len;) {
@@ -73,13 +73,14 @@ define(function() {
             }
         },
 
-        // searches array for a certain id
+    // searches array for a certain id
         getDataById = function(data, id) {
             for (var i = -1, len = data.length; ++i < len;) {
-                if (data[i].id === id) {
+                if (data[i].id.toString() === id.toString()) {
                     return data[i];
                 }
             }
+            return null;
         },
 
         /**
@@ -87,9 +88,13 @@ define(function() {
          * @param containerId
          * @returns {domObject}
          */
-        findStopAndRestartChild = function(containerId) {
+            findStopAndRestartChild = function(containerId) {
             var $container = this.$find(containerId),
                 $child = this.sandbox.dom.find('.' + constants.childContainerClass, $container);
+            if (!
+                $container) {
+                throw 'dependent-select: no container with id ' + containerId + ' could be found';
+            }
             // stop child, if running
             if (!!$child) {
                 this.sandbox.stop($child);
@@ -100,19 +105,19 @@ define(function() {
             return $child;
         },
 
-        // renders selects at a certain depth
+    // renders selects at a certain depth
         renderSelect = function(data, depth, preselect) {
 
             depth = typeof depth !== 'undefined' ? depth : 0;
 
-            if (!this.options.container[depth]) {
-                throw "no container at this depth specified";
+            if (!this.options.container || !this.options.container[depth]) {
+                throw 'dependent-select: no container at depth ' + depth + ' specified';
             }
 
             var selectionCallback = null,
                 deselectionCallback = null,
                 options,
-                // get child
+            // get child
                 $child = findStopAndRestartChild.call(this, this.options.container[depth]);
 
             // create callback
@@ -127,7 +132,6 @@ define(function() {
                     }
                 }.bind(this);
             }
-
 
             // make it possible to set some data for select
             if (!!this.options.selectOptions[depth]) {
@@ -154,7 +158,6 @@ define(function() {
         },
 
         bindCustomEvents = function() {
-
         };
 
     return {
@@ -183,19 +186,11 @@ define(function() {
 
         render: function(data) {
             // create items array
-            this.items = [];
-            this.selects = [];
-
             renderSelect.call(this, data, 0, this.options.preselect);
             renderEmpty.call(this, !!this.options.preselect ? this.options.preselect.length : 0);
 
             // initialization finished
             this.sandbox.emit(INITIALIZED.call(this));
         }
-
-
-
     };
-
-})
-;
+});
