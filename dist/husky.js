@@ -32000,7 +32000,7 @@ define('__component__$auto-complete-list@husky',[], function() {
  * @param {Object} [options] Configuration object
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.preselect] the item that's selected on initialization
- * @param {String} [options.instanceName] enables custom events (in case of multiple tabs on one page)
+ * @param {String} [options.instanceName] instance name of this component
  * @param {Array} [options.data] array of dropdown items elements
  * @param {String|Array} [options.defaultLabels] which text is displayed after select is initialized; can be customized for each and every select by defining an array
  * @param {Array} [options.selectOptions] array of Options to pass to the select at certain depth (first item's options will be assigned to first select)
@@ -32184,38 +32184,33 @@ define('__component__$dependent-select@husky',[],function() {
 })
 ;
 
-/*
- * This file is part of the Sulu CMS.
+/**
+ * This file is part of Husky frontend development framework.
  *
  * (c) MASSIVE ART WebServices GmbH
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  *
- * Name: dropdown multiple select
- * Options:
- *      data: [],  array of data [string, object]
- *      valueName: name of property which should be used
- *      instanceName: instance name of this component
- *      defaultLabel: default label which gets displayed
- *      checkedAllLabel: Label if all checked
- *      multipleSelect: allows multiple elements to be selected
- *      selectCallback: callbackfunction, when element is selected
- *      deselectCallback: callback function when element is deselected
- *      preselectedElements: allows preselection of fields by defining the id attributes or strings
- *      deselectField: allows deselection in case of single select; will be set if value is a string
- *
- *
- * Provided Events:
- * husky.select.<<instanceName>>.selected.item   - triggered when item selected
- * husky.select.<<instanceName>>.deselected.item   - triggered when item deselected
+ * @module husky/components/toolbar
+ */
 
+/**
+ * @class Select
+ * @constructor
  *
- * Use Events
- * husky.select.<<instanceName>>.toggle     - toggles (show/hide) dropdown menu
- * husky.select.<<instanceName>>.show       - show dropdown menu
- * husky.select.<<instanceName>>.hide       - hide dropdown menu
- * husky.select.<<instanceName>>.initialize - initialize component
+ * @param {Object} [options] Configuration object
+ * @param {String} [options.checkedAllLabel] Label to display if all items of select are checked
+ * @param {Array}  [options.data] array of data [string, object]
+ * @param {Array}  [options.defaultLabel] default label which gets displayed
+ * @param {Function} [options.deselectCallback] callbackfunction, when element is deselected
+ * @param {String|Boolean} [options.deselectField=false]  allows deselection in case of single select; will be set if value is a string
+ * @param {Boolean} [options.disabled=false]  disables the select field if set to true
+ * @param {String} [options.instanceName] instance name of this component
+ * @param {Boolean} [options.multipleSelect=false] allows multiple elements to be selected
+ * @param {Array} [options.preSelectedElements] allows preselection of fields by defining the id attributes or strings
+ * @param {Function} [options.selectCallback] callbackfunction, when element is selected
+ * @param {String} [options.valueName] name of property which should be used
  */
 
 define('__component__$select@husky',[], function() {
@@ -32229,10 +32224,9 @@ define('__component__$select@husky',[], function() {
             defaultLabel: 'Please choose',    // default label which gets displayed
             checkedAllLabel: 'All Languages', // Label if all checked
             preSelectedElements: [],          // Elements selected by default
-            multipleSelect: false,              // Allows multiple elements to be selected
-            deselectField: false,              // field for deselection is added to dropdown if value is a string
+            multipleSelect: false,            // Allows multiple elements to be selected
+            deselectField: false,             // field for deselection is added to dropdown if value is a string
             disabled: false,                  //if true button is disabled
-            disabledClass: 'disabled',         //class to add to the button
             selectCallback: null,
             deselectCallback: null
         },
@@ -32241,11 +32235,85 @@ define('__component__$select@husky',[], function() {
             labelClass: 'husky-select-label',
             listClass: 'husky-select-list',
             dropdownContainerClass: 'husky-select-dropdown-container',
-            deselectFieldKey: ''
+            deselectFieldKey: '',
+            disabledClass: 'disabled'
+        },
+
+        /**
+         * triggered when component is completely initialized
+         * @event husky.select[.INSTANCE_NAME].initialized
+         */
+            EVENT_INITIALIZED = function() {
+            return getEventName.call(this, 'initialize');
+        },
+
+        /**
+         * triggered when item has been deselected
+         * @event husky.select[.INSTANCE_NAME].deselected.item
+         * @param {String} key of deselected item
+         */
+            EVENT_DESELECTED_ITEM = function() {
+            return getEventName.call(this, 'deselected.item');
+        },
+        /**
+         * triggered when item has been selected
+         * @event husky.select[.INSTANCE_NAME].selected.item
+         * @param {String} key of selected item
+         */
+            EVENT_SELECTED_ITEM = function() {
+            return getEventName.call(this, 'selected.item');
+        },
+
+        /**
+         * used for enabling select
+         * @event husky.select[.INSTANCE_NAME].enable
+         */
+            EVENT_ENABLE = function() {
+            return getEventName.call(this, 'enable');
+        },
+        /**
+         * used for disabling select
+         * @event husky.select[.INSTANCE_NAME].disable
+         */
+            EVENT_DISABLE = function() {
+            return getEventName.call(this, 'disable');
+        },
+        /**
+         * used for toggling enabled/disabled dropdown menu
+         * @event husky.select[.INSTANCE_NAME].toggle
+         */
+            EVENT_TOGGLE = function() {
+            return getEventName.call(this, 'toggle');
+        },
+        /**
+         * used to show dropdown selection
+         * @event husky.select[.INSTANCE_NAME].show
+         */
+            EVENT_SHOW = function() {
+            return getEventName.call(this, 'show');
+        },
+        /**
+         * used for hiding dropdown selection
+         * @event husky.select[.INSTANCE_NAME].hide
+         */
+            EVENT_HIDE = function() {
+            return getEventName.call(this, 'hide');
+        },
+        /**
+         * used for receiving all checked elements
+         * @event husky.select[.INSTANCE_NAME].get-checked
+         */
+            EVENT_GET_CHECKED = function() {
+            return getEventName.call(this, 'get-checked');
+        },
+
+
+        getEventName = function(suffix) {
+            return 'husky.select.' + this.options.instanceName + '.' + suffix;
         };
 
-
     return {
+
 
         initialize: function() {
 
@@ -32259,7 +32327,7 @@ define('__component__$select@husky',[], function() {
             this.dropdownVisible = false;
 
             this.render();
-            this.sandbox.emit(this.getEventName('initialize'));
+            this.sandbox.emit(EVENT_INITIALIZED.call(this));
         },
 
         render: function() {
@@ -32284,14 +32352,14 @@ define('__component__$select@husky',[], function() {
 
         //sets the button in enabled state
         enable: function() {
-            this.sandbox.dom.removeClass(this.sandbox.dom.children(this.$el, '.husky-select-container'), this.options.disabledClass);
+            this.sandbox.dom.removeClass(this.sandbox.dom.children(this.$el, '.husky-select-container'), constants.disabledClass);
             this.bindDOMEvents();
         },
 
 
         //sets the button i
         disable: function() {
-            this.sandbox.dom.addClass(this.sandbox.dom.children(this.$el, '.husky-select-container'), this.options.disabledClass);
+            this.sandbox.dom.addClass(this.sandbox.dom.children(this.$el, '.husky-select-container'), constants.disabledClass);
             this.hideDropDown();
             this.sandbox.dom.off(this.$el);
         },
@@ -32342,9 +32410,6 @@ define('__component__$select@husky',[], function() {
                 this.changeLabel();
 
             }
-//            else {
-//                this.$dropDownList.append('<li>No data received</li>');
-//            }
         },
 
         // bind dom elements
@@ -32367,13 +32432,13 @@ define('__component__$select@husky',[], function() {
         },
 
         bindCustomEvents: function() {
-            this.sandbox.on(this.getEventName('toggle'), this.toggleDropDown.bind(this));
-            this.sandbox.on(this.getEventName('show'), this.showDropDown.bind(this));
-            this.sandbox.on(this.getEventName('hide'), this.hideDropDown.bind(this));
-            this.sandbox.on(this.getEventName('disable'), this.disable.bind(this));
-            this.sandbox.on(this.getEventName('enable'), this.enable.bind(this));
+            this.sandbox.on(EVENT_TOGGLE.call(this), this.toggleDropDown.bind(this));
+            this.sandbox.on(EVENT_SHOW.call(this), this.showDropDown.bind(this));
+            this.sandbox.on(EVENT_HIDE.call(this), this.hideDropDown.bind(this));
+            this.sandbox.on(EVENT_DISABLE.call(this), this.disable.bind(this));
+            this.sandbox.on(EVENT_ENABLE.call(this), this.enable.bind(this));
 
-            this.sandbox.on(this.getEventName('getChecked'), this.getChecked.bind(this));
+            this.sandbox.on(EVENT_GET_CHECKED.call(this), this.getChecked.bind(this));
         },
 
         updateSelectionAttribute: function() {
@@ -32399,7 +32464,7 @@ define('__component__$select@husky',[], function() {
                         this.sandbox.dom.prop($checkbox, 'checked', false);
                         this.selectedElements.splice(index, 1);
                         this.selectedElementsValues.splice(index, 1);
-                        this.sandbox.emit(this.getEventName('deselected.item'), key);
+                        this.sandbox.emit(EVENT_DESELECTED_ITEM.call(this), key);
                     }
                 }
             }
@@ -32415,12 +32480,14 @@ define('__component__$select@husky',[], function() {
 
             // if single select then uncheck all results
             if (this.options.multipleSelect === false) {
-                // if new element was selected
+                // if deselect was selected
                 if (key === constants.deselectFieldKey) {
                     index = 0;
                     this.uncheckAll(key);
+                // if new element was selected
                 } else if (index === -1) {
                     this.uncheckAll(key);
+                // same element was selected
                 } else {
                     this.hideDropDown();
                     return;
@@ -32437,16 +32504,9 @@ define('__component__$select@husky',[], function() {
                 this.selectedElements.splice(index, 1);
                 this.selectedElementsValues.splice(index, 1);
 
-                // callback if defined
-                // callback, if defined
-                if (!!this.options.deselectCallback) {
-                    this.options.deselectCallback.call(this, key !== constants.deselectFieldKey ? key : null);
-                } else {
-                    this.sandbox.emit(this.getEventName('deselected.item'), key);
-                }
+                this.triggerDeselect(key);
 
-
-            // select element
+            // select
             } else {
                 this.sandbox.dom.addClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', true);
@@ -32454,7 +32514,6 @@ define('__component__$select@husky',[], function() {
                 this.selectedElementsValues.push(value);
 
                 this.triggerSelect(key);
-
             }
 
             // update data attribute
@@ -32467,24 +32526,29 @@ define('__component__$select@husky',[], function() {
             if (this.options.multipleSelect === false) {
                 this.hideDropDown();
             }
-
         },
 
-        triggerSelect : function(key) {
+        // triggers select callback or emits event
+        triggerSelect: function(key) {
             // callback, if defined
             if (!!this.options.selectCallback) {
                 this.options.selectCallback.call(this, key);
             } else {
-                this.sandbox.emit(this.getEventName('selected.item'), key);
+                this.sandbox.emit(EVENT_SELECTED_ITEM.call(this), key);
             }
         },
 
-        getEventName: function(suffix) {
-            return 'husky.select.' + this.options.instanceName + '.' + suffix;
+        // triggers deselect callback or emits event
+        triggerDeselect: function(key) {
+            // callback if defined
+            if (!!this.options.deselectCallback) {
+                this.options.deselectCallback.call(this, key !== constants.deselectFieldKey ? key : null);
+            } else {
+                this.sandbox.emit(EVENT_DESELECTED_ITEM.call(this), key);
+            }
         },
 
         changeLabel: function() {
-
             if (this.selectedElements.length === this.options.data.length && this.options.multipleSelect === true) {
                 this.sandbox.dom.text(this.$label, this.options.checkedAllLabel);
             } else if (this.selectedElements.length === 0) {
@@ -32541,9 +32605,7 @@ define('__component__$select@husky',[], function() {
             }
         },
 
-
         template: {
-
             basicStructure: function(defaultLabel) {
                 return [
                     '<div class="husky-select-container">',
@@ -32575,13 +32637,9 @@ define('__component__$select@husky',[], function() {
                     '    </div>',
                     '</li>'
                 ].join('');
-
             }
-
         }
-
     };
-
 });
 
 /*
