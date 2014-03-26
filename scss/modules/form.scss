@@ -52,6 +52,7 @@ input
 // the first is the label, the second is the form element itself
 
 .form-group {
+    min-height: 30px;
 
     > :first-child {
         height: 20px;
@@ -60,6 +61,7 @@ input
 
     > :nth-child(2) {
         margin: 0;
+        vertical-align: middle;
     }
 }
 
@@ -132,12 +134,13 @@ label {
     width: $checkboxSize;
     height: $checkboxSize;
     position: relative;
-    top: 0;
+    top: 2px;
     left: 0px;
     display: inline-block;
-    margin: 0 5px -2px 0;
+    margin: 0 5px 0 0;
 
-    &.no-margin {
+    &.no-spacing {
+        top: 0;
         margin: 0;
     }
 
@@ -224,12 +227,13 @@ textarea.form-element {
     width: $radioSize;
     height: $radioSize;
     position: relative;
-    top: 0px;
+    top: 2px;
     left: 0px;
     display: inline-block;
-    margin: 0 5px -2px 0;
+    margin: 0 5px 0 0;
 
-    &.no-margin {
+    &.no-spacing {
+        top: 0;
         margin: 0;
     }
 

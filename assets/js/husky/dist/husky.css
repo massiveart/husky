@@ -4028,125 +4028,151 @@ input
   color: #999999;
 }
 
-/* line 56, ../scss/modules/form.scss */
+/* line 54, ../scss/modules/form.scss */
+.form-group {
+  min-height: 30px;
+}
+/* line 57, ../scss/modules/form.scss */
 .form-group > :first-child {
   height: 20px;
   margin-bottom: 10px;
 }
-/* line 61, ../scss/modules/form.scss */
+/* line 62, ../scss/modules/form.scss */
 .form-group > :nth-child(2) {
   margin: 0;
+  vertical-align: middle;
 }
 
-/* line 68, ../scss/modules/form.scss */
+/* line 70, ../scss/modules/form.scss */
 .form-horizontal .form-group {
   display: table;
   table-layout: fixed;
   width: 100%;
 }
-/* line 74, ../scss/modules/form.scss */
+/* line 76, ../scss/modules/form.scss */
 .form-horizontal .form-group > * {
   display: table-cell;
 }
-/* line 78, ../scss/modules/form.scss */
+/* line 80, ../scss/modules/form.scss */
 .form-horizontal .form-group > :first-child {
   text-align: right;
   vertical-align: middle;
   padding-right: 20px;
   width: 140px;
 }
-/* line 85, ../scss/modules/form.scss */
+/* line 87, ../scss/modules/form.scss */
 .form-horizontal .form-group label.top {
   vertical-align: top;
   padding-top: 5px;
 }
-/* line 90, ../scss/modules/form.scss */
+/* line 92, ../scss/modules/form.scss */
 .form-horizontal .form-group > :nth-child(2) {
   width: 100%;
 }
 
-/* line 102, ../scss/modules/form.scss */
+/* line 104, ../scss/modules/form.scss */
 label {
   display: block;
   font-size: 14px;
   color: #999999;
   cursor: pointer;
 }
-/* line 108, ../scss/modules/form.scss */
+/* line 110, ../scss/modules/form.scss */
 label.large {
   font-size: 16px;
   font-weight: bold;
 }
-/* line 113, ../scss/modules/form.scss */
+/* line 115, ../scss/modules/form.scss */
 label .form-element {
   margin-top: 5px;
   border: 1px solid #cccccc;
 }
-/* line 118, ../scss/modules/form.scss */
+/* line 120, ../scss/modules/form.scss */
 label.inline {
   font-size: 1em;
   font-weight: normal;
   display: inline;
 }
 
-/* line 127, ../scss/modules/form.scss */
+/* line 129, ../scss/modules/form.scss */
 .custom-checkbox {
   width: 15px;
   height: 15px;
+  position: relative;
+  top: 2px;
+  left: 0px;
+  display: inline-block;
+  margin: 0 5px 0 0;
 }
-/* line 135, ../scss/modules/form.scss */
+/* line 142, ../scss/modules/form.scss */
+.custom-checkbox.no-spacing {
+  top: 0;
+  margin: 0;
+}
+/* line 147, ../scss/modules/form.scss */
 .custom-checkbox input {
   opacity: 0;
-  cursor: pointer;
   width: 15px;
   height: 15px;
+  display: block;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
 }
-/* line 143, ../scss/modules/form.scss */
-.custom-checkbox input:checked + span, .custom-checkbox input.is-checked + span {
+/* line 161, ../scss/modules/form.scss */
+.custom-checkbox input:checked + .icon, .custom-checkbox input.is-checked + .icon {
   border-color: #1fca23;
   background-color: #1fca23;
   color: white;
 }
-/* line 147, ../scss/modules/form.scss */
-.custom-checkbox input:checked + span::after, .custom-checkbox input.is-checked + span::after {
+/* line 165, ../scss/modules/form.scss */
+.custom-checkbox input:checked + .icon::after, .custom-checkbox input.is-checked + .icon::after {
   content: "\e207";
   position: relative;
   top: -3px;
 }
-/* line 155, ../scss/modules/form.scss */
-.custom-checkbox input + span {
-  display: inline-block;
+/* line 173, ../scss/modules/form.scss */
+.custom-checkbox input + .icon {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  margin: 0;
+  padding: 0;
+  display: block;
   width: 15px;
   height: 15px;
-  margin-left: -15px;
   border: 1px solid #cccccc;
   background-color: #fff;
   font-family: "Glyphicons";
   font-size: 12px;
   text-align: center;
+  border-radius: 2px;
 }
 
-/* line 174, ../scss/modules/form.scss */
+/* line 198, ../scss/modules/form.scss */
 textarea {
   resize: both;
 }
 
-/* line 178, ../scss/modules/form.scss */
+/* line 202, ../scss/modules/form.scss */
 textarea.vertical {
   resize: vertical;
 }
 
-/* line 182, ../scss/modules/form.scss */
+/* line 206, ../scss/modules/form.scss */
 textarea.horizontal {
   resize: horizontal;
 }
 
-/* line 186, ../scss/modules/form.scss */
+/* line 210, ../scss/modules/form.scss */
 textarea.noResize {
   resize: none;
 }
 
-/* line 190, ../scss/modules/form.scss */
+/* line 214, ../scss/modules/form.scss */
 textarea.form-element {
   width: 100%;
   height: 40px;
@@ -4156,48 +4182,73 @@ textarea.form-element {
   font-family: inherit;
 }
 
-/* line 201, ../scss/modules/form.scss */
+/* line 225, ../scss/modules/form.scss */
 .custom-radio {
-  width: 18px;
-  height: 18px;
-  vertical-align: middle;
+  width: 15px;
+  height: 15px;
+  position: relative;
+  top: 2px;
+  left: 0px;
+  display: inline-block;
+  margin: 0 5px 0 0;
+}
+/* line 235, ../scss/modules/form.scss */
+.custom-radio.no-spacing {
+  top: 0;
+  margin: 0;
+}
+/* line 240, ../scss/modules/form.scss */
+.custom-radio input {
+  width: 15px;
+  height: 15px;
   opacity: 0;
   cursor: pointer;
+  display: block;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  margin: 0;
+  padding: 0;
 }
-/* line 213, ../scss/modules/form.scss */
-.custom-radio:checked + .custom-radio-icon::after, .custom-radio.is-checked + .custom-radio-icon::after {
+/* line 254, ../scss/modules/form.scss */
+.custom-radio input:checked + .icon, .custom-radio input.is-checked + .icon {
+  border-color: white;
+}
+/* line 257, ../scss/modules/form.scss */
+.custom-radio input:checked + .icon::after, .custom-radio input.is-checked + .icon::after {
   content: "";
   display: block;
   width: 100%;
   height: 100%;
-  border-radius: 18px;
-  background-color: #999;
+  border-radius: 15px;
+  background-color: #1fca23;
 }
-/* line 224, ../scss/modules/form.scss */
-.custom-radio + .custom-radio-icon {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  margin-left: -18px;
+/* line 268, ../scss/modules/form.scss */
+.custom-radio input + .icon {
+  display: block;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 15px;
+  height: 15px;
   padding: 2px;
-  border-radius: 18px;
+  border-radius: 15px;
   border: 1px solid #cccccc;
-  background-color: #fff;
+  background-color: white;
   text-align: center;
-  line-height: 1;
-  vertical-align: middle;
+  margin: 0;
 }
 
-/* line 244, ../scss/modules/form.scss */
+/* line 290, ../scss/modules/form.scss */
 .cke.cke_chrome {
   box-shadow: none !important;
   border: 0 !important;
 }
-/* line 249, ../scss/modules/form.scss */
+/* line 295, ../scss/modules/form.scss */
 .cke .cke_inner {
   border: 1px solid #cccccc !important;
 }
-/* line 253, ../scss/modules/form.scss */
+/* line 299, ../scss/modules/form.scss */
 .cke .cke_inner,
 .cke .cke_wysiwyg_frame {
   border-bottom-left-radius: 3px !important;
@@ -6120,26 +6171,22 @@ a.btn-black, a.btn-highlight {
 .table.matrix th.section {
   width: 180px;
 }
-/* line 19, ../scss/modules/matrix.scss */
-.table.matrix th:not(.general):not(.section) {
-  padding-left: 3px;
-}
-/* line 25, ../scss/modules/matrix.scss */
+/* line 22, ../scss/modules/matrix.scss */
 .table.matrix td.value {
   width: 20px;
   padding: 3px;
   margin: 0;
 }
-/* line 31, ../scss/modules/matrix.scss */
+/* line 28, ../scss/modules/matrix.scss */
 .table.matrix td.all {
   text-align: left;
   padding-left: 16px;
 }
-/* line 35, ../scss/modules/matrix.scss */
+/* line 32, ../scss/modules/matrix.scss */
 .table.matrix td.section {
   color: #999999;
 }
-/* line 40, ../scss/modules/matrix.scss */
+/* line 37, ../scss/modules/matrix.scss */
 .table.matrix span[class^="icon-"] {
   border: 1px solid black;
   color: black;
@@ -6150,7 +6197,7 @@ a.btn-black, a.btn-highlight {
   display: inline-block;
   text-align: center;
 }
-/* line 53, ../scss/modules/matrix.scss */
+/* line 50, ../scss/modules/matrix.scss */
 .table.matrix span[class^="icon-"].is-active {
   color: white;
   border-color: #1fca23;
@@ -6563,7 +6610,7 @@ a.btn-black, a.btn-highlight {
   float: left;
   width: 20px;
   margin-right: 10px;
-  padding-top: 3px;
+  padding-top: 7px;
 }
 /* line 61, ../scss/modules/dropdown-multiple-select.scss */
 .husky-dropdown-multiple-select .dropdown-list .item-value {
@@ -6773,35 +6820,31 @@ a.btn-black, a.btn-highlight {
 }
 /* line 157, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check .description {
-  padding-left: 10px;
+  padding-left: 5px;
 }
 /* line 160, ../scss/modules/smart-content.scss */
-.smart-overlay-content .check .custom-checkbox-icon {
-  margin-bottom: 2px;
-}
-/* line 163, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check.disabled {
   display: none;
 }
-/* line 167, ../scss/modules/smart-content.scss */
+/* line 164, ../scss/modules/smart-content.scss */
 .smart-overlay-content .sortMethod {
   margin-top: 25px;
 }
-/* line 171, ../scss/modules/smart-content.scss */
+/* line 168, ../scss/modules/smart-content.scss */
 .smart-overlay-content input.limit-to,
 .smart-overlay-content input.data-source {
   padding-left: 10px;
   border-radius: 0;
 }
-/* line 175, ../scss/modules/smart-content.scss */
+/* line 172, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tags.disabled {
   display: none;
 }
-/* line 178, ../scss/modules/smart-content.scss */
+/* line 175, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list {
   border-radius: 4px 4px 0 0;
 }
-/* line 180, ../scss/modules/smart-content.scss */
+/* line 177, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list input {
   margin: 7px 0 0 0;
 }
@@ -7057,15 +7100,11 @@ a.btn-black, a.btn-highlight {
 .husky-datagrid tbody tr:last-child {
   border-width: 2px;
 }
-/* line 52, ../scss/modules/datagrid.scss */
-.husky-datagrid tbody .check {
-  padding-left: 12px;
-}
-/* line 57, ../scss/modules/datagrid.scss */
+/* line 54, ../scss/modules/datagrid.scss */
 .husky-datagrid .table-container {
   overflow: auto;
 }
-/* line 60, ../scss/modules/datagrid.scss */
+/* line 57, ../scss/modules/datagrid.scss */
 .husky-datagrid .table-container.overflow:after {
   color: #cccccc;
   font-size: 22px;
@@ -7075,18 +7114,18 @@ a.btn-black, a.btn-highlight {
   right: -35px;
   top: 40%;
 }
-/* line 71, ../scss/modules/datagrid.scss */
+/* line 68, ../scss/modules/datagrid.scss */
 .husky-datagrid .datagrid-loader {
   position: absolute;
   top: 50%;
   left: 50%;
   margin: -50px 0 0 -50px;
 }
-/* line 78, ../scss/modules/datagrid.scss */
+/* line 75, ../scss/modules/datagrid.scss */
 .husky-datagrid .dropdown-menu {
   margin-top: 5px;
 }
-/* line 81, ../scss/modules/datagrid.scss */
+/* line 78, ../scss/modules/datagrid.scss */
 .husky-datagrid .dropdown-toggle::after {
   margin-left: 12px;
 }
@@ -7409,12 +7448,24 @@ a.btn-black, a.btn-highlight {
 .husky-toggler {
   width: 35px;
   height: 20px;
-  background: white;
-  border: 1px solid #cccccc;
   border-radius: 10px;
   display: inline-block;
   cursor: pointer;
+}
+/* line 18, ../scss/modules/toggler.scss */
+.husky-toggler.outline {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  height: 22px;
+  width: 37px;
+}
+/* line 25, ../scss/modules/toggler.scss */
+.husky-toggler .toggler-wrapper {
+  background: white;
+  border: 1px solid #cccccc;
+  border-radius: 10px;
   position: relative;
+  width: 35px;
+  height: 20px;
   top: 0px;
   left: 0px;
   -webkit-user-select: none;
@@ -7425,7 +7476,7 @@ a.btn-black, a.btn-highlight {
   -o-transition: all 100ms ease-in;
   transition: all 100ms ease-in;
 }
-/* line 22, ../scss/modules/toggler.scss */
+/* line 38, ../scss/modules/toggler.scss */
 .husky-toggler .switch {
   background: white;
   width: 20px;
@@ -7442,7 +7493,7 @@ a.btn-black, a.btn-highlight {
   -o-transition: all 100ms ease-in;
   transition: all 100ms ease-in;
 }
-/* line 36, ../scss/modules/toggler.scss */
+/* line 52, ../scss/modules/toggler.scss */
 .husky-toggler input {
   position: absolute;
   top: 3px;
@@ -7454,17 +7505,17 @@ a.btn-black, a.btn-highlight {
   opacity: 0;
   z-index: 0;
 }
-/* line 45, ../scss/modules/toggler.scss */
-.husky-toggler.checked {
+/* line 62, ../scss/modules/toggler.scss */
+.husky-toggler.checked .toggler-wrapper {
   background: #1fca23;
   border-color: #1fca23;
 }
-/* line 49, ../scss/modules/toggler.scss */
+/* line 67, ../scss/modules/toggler.scss */
 .husky-toggler.checked .switch {
   border-color: #1fca23;
   left: 15px;
 }
-/* line 53, ../scss/modules/toggler.scss */
+/* line 71, ../scss/modules/toggler.scss */
 .husky-toggler.checked input {
   left: 17px;
 }

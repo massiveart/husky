@@ -4028,82 +4028,88 @@ input
   color: #999999;
 }
 
-/* line 56, ../scss/modules/form.scss */
+/* line 54, ../scss/modules/form.scss */
+.form-group {
+  min-height: 30px;
+}
+/* line 57, ../scss/modules/form.scss */
 .form-group > :first-child {
   height: 20px;
   margin-bottom: 10px;
 }
-/* line 61, ../scss/modules/form.scss */
+/* line 62, ../scss/modules/form.scss */
 .form-group > :nth-child(2) {
   margin: 0;
+  vertical-align: middle;
 }
 
-/* line 68, ../scss/modules/form.scss */
+/* line 70, ../scss/modules/form.scss */
 .form-horizontal .form-group {
   display: table;
   table-layout: fixed;
   width: 100%;
 }
-/* line 74, ../scss/modules/form.scss */
+/* line 76, ../scss/modules/form.scss */
 .form-horizontal .form-group > * {
   display: table-cell;
 }
-/* line 78, ../scss/modules/form.scss */
+/* line 80, ../scss/modules/form.scss */
 .form-horizontal .form-group > :first-child {
   text-align: right;
   vertical-align: middle;
   padding-right: 20px;
   width: 140px;
 }
-/* line 85, ../scss/modules/form.scss */
+/* line 87, ../scss/modules/form.scss */
 .form-horizontal .form-group label.top {
   vertical-align: top;
   padding-top: 5px;
 }
-/* line 90, ../scss/modules/form.scss */
+/* line 92, ../scss/modules/form.scss */
 .form-horizontal .form-group > :nth-child(2) {
   width: 100%;
 }
 
-/* line 102, ../scss/modules/form.scss */
+/* line 104, ../scss/modules/form.scss */
 label {
   display: block;
   font-size: 14px;
   color: #999999;
   cursor: pointer;
 }
-/* line 108, ../scss/modules/form.scss */
+/* line 110, ../scss/modules/form.scss */
 label.large {
   font-size: 16px;
   font-weight: bold;
 }
-/* line 113, ../scss/modules/form.scss */
+/* line 115, ../scss/modules/form.scss */
 label .form-element {
   margin-top: 5px;
   border: 1px solid #cccccc;
 }
-/* line 118, ../scss/modules/form.scss */
+/* line 120, ../scss/modules/form.scss */
 label.inline {
   font-size: 1em;
   font-weight: normal;
   display: inline;
 }
 
-/* line 127, ../scss/modules/form.scss */
+/* line 129, ../scss/modules/form.scss */
 .custom-checkbox {
   width: 15px;
   height: 15px;
   position: relative;
-  top: 0;
+  top: 2px;
   left: 0px;
   display: inline-block;
-  margin: 0 5px -2px 0;
+  margin: 0 5px 0 0;
 }
-/* line 140, ../scss/modules/form.scss */
-.custom-checkbox.no-margin {
+/* line 142, ../scss/modules/form.scss */
+.custom-checkbox.no-spacing {
+  top: 0;
   margin: 0;
 }
-/* line 144, ../scss/modules/form.scss */
+/* line 147, ../scss/modules/form.scss */
 .custom-checkbox input {
   opacity: 0;
   width: 15px;
@@ -4116,19 +4122,19 @@ label.inline {
   padding: 0;
   cursor: pointer;
 }
-/* line 158, ../scss/modules/form.scss */
+/* line 161, ../scss/modules/form.scss */
 .custom-checkbox input:checked + .icon, .custom-checkbox input.is-checked + .icon {
   border-color: #1fca23;
   background-color: #1fca23;
   color: white;
 }
-/* line 162, ../scss/modules/form.scss */
+/* line 165, ../scss/modules/form.scss */
 .custom-checkbox input:checked + .icon::after, .custom-checkbox input.is-checked + .icon::after {
   content: "\e207";
   position: relative;
   top: -3px;
 }
-/* line 170, ../scss/modules/form.scss */
+/* line 173, ../scss/modules/form.scss */
 .custom-checkbox input + .icon {
   position: absolute;
   top: 0px;
@@ -4146,27 +4152,27 @@ label.inline {
   border-radius: 2px;
 }
 
-/* line 195, ../scss/modules/form.scss */
+/* line 198, ../scss/modules/form.scss */
 textarea {
   resize: both;
 }
 
-/* line 199, ../scss/modules/form.scss */
+/* line 202, ../scss/modules/form.scss */
 textarea.vertical {
   resize: vertical;
 }
 
-/* line 203, ../scss/modules/form.scss */
+/* line 206, ../scss/modules/form.scss */
 textarea.horizontal {
   resize: horizontal;
 }
 
-/* line 207, ../scss/modules/form.scss */
+/* line 210, ../scss/modules/form.scss */
 textarea.noResize {
   resize: none;
 }
 
-/* line 211, ../scss/modules/form.scss */
+/* line 214, ../scss/modules/form.scss */
 textarea.form-element {
   width: 100%;
   height: 40px;
@@ -4176,21 +4182,22 @@ textarea.form-element {
   font-family: inherit;
 }
 
-/* line 222, ../scss/modules/form.scss */
+/* line 225, ../scss/modules/form.scss */
 .custom-radio {
   width: 15px;
   height: 15px;
   position: relative;
-  top: 0px;
+  top: 2px;
   left: 0px;
   display: inline-block;
-  margin: 0 5px -2px 0;
+  margin: 0 5px 0 0;
 }
-/* line 232, ../scss/modules/form.scss */
-.custom-radio.no-margin {
+/* line 235, ../scss/modules/form.scss */
+.custom-radio.no-spacing {
+  top: 0;
   margin: 0;
 }
-/* line 236, ../scss/modules/form.scss */
+/* line 240, ../scss/modules/form.scss */
 .custom-radio input {
   width: 15px;
   height: 15px;
@@ -4203,11 +4210,11 @@ textarea.form-element {
   margin: 0;
   padding: 0;
 }
-/* line 250, ../scss/modules/form.scss */
+/* line 254, ../scss/modules/form.scss */
 .custom-radio input:checked + .icon, .custom-radio input.is-checked + .icon {
   border-color: white;
 }
-/* line 253, ../scss/modules/form.scss */
+/* line 257, ../scss/modules/form.scss */
 .custom-radio input:checked + .icon::after, .custom-radio input.is-checked + .icon::after {
   content: "";
   display: block;
@@ -4216,7 +4223,7 @@ textarea.form-element {
   border-radius: 15px;
   background-color: #1fca23;
 }
-/* line 264, ../scss/modules/form.scss */
+/* line 268, ../scss/modules/form.scss */
 .custom-radio input + .icon {
   display: block;
   position: absolute;
@@ -4232,16 +4239,16 @@ textarea.form-element {
   margin: 0;
 }
 
-/* line 286, ../scss/modules/form.scss */
+/* line 290, ../scss/modules/form.scss */
 .cke.cke_chrome {
   box-shadow: none !important;
   border: 0 !important;
 }
-/* line 291, ../scss/modules/form.scss */
+/* line 295, ../scss/modules/form.scss */
 .cke .cke_inner {
   border: 1px solid #cccccc !important;
 }
-/* line 295, ../scss/modules/form.scss */
+/* line 299, ../scss/modules/form.scss */
 .cke .cke_inner,
 .cke .cke_wysiwyg_frame {
   border-bottom-left-radius: 3px !important;
@@ -6164,26 +6171,22 @@ a.btn-black, a.btn-highlight {
 .table.matrix th.section {
   width: 180px;
 }
-/* line 19, ../scss/modules/matrix.scss */
-.table.matrix th:not(.general):not(.section) {
-  padding-left: 3px;
-}
-/* line 25, ../scss/modules/matrix.scss */
+/* line 22, ../scss/modules/matrix.scss */
 .table.matrix td.value {
   width: 20px;
   padding: 3px;
   margin: 0;
 }
-/* line 31, ../scss/modules/matrix.scss */
+/* line 28, ../scss/modules/matrix.scss */
 .table.matrix td.all {
   text-align: left;
   padding-left: 16px;
 }
-/* line 35, ../scss/modules/matrix.scss */
+/* line 32, ../scss/modules/matrix.scss */
 .table.matrix td.section {
   color: #999999;
 }
-/* line 40, ../scss/modules/matrix.scss */
+/* line 37, ../scss/modules/matrix.scss */
 .table.matrix span[class^="icon-"] {
   border: 1px solid black;
   color: black;
@@ -6194,7 +6197,7 @@ a.btn-black, a.btn-highlight {
   display: inline-block;
   text-align: center;
 }
-/* line 53, ../scss/modules/matrix.scss */
+/* line 50, ../scss/modules/matrix.scss */
 .table.matrix span[class^="icon-"].is-active {
   color: white;
   border-color: #1fca23;
