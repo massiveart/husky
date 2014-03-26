@@ -162,6 +162,12 @@ define(function() {
             EVENT_SHOW = namespace + 'show',
 
         /**
+         * triggers the update of the navigation size
+         * @event husky.navigation.show.size
+         */
+            EVENT_SIZE_UPDATE = namespace + 'size.update',
+
+        /**
          * hides the navigation completely
          * @event husky.navigation.hide
          */
@@ -383,6 +389,8 @@ define(function() {
 
             this.sandbox.on(EVENT_HIDE, this.hide.bind(this));
             this.sandbox.on(EVENT_SHOW, this.show.bind(this));
+
+            this.sandbox.on(EVENT_SIZE_UPDATE, this.resizeListener.bind(this));
 
         },
 
