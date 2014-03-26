@@ -7433,18 +7433,35 @@ a.btn-black, a.btn-highlight {
   position: absolute;
   top: 0px;
   left: 0px;
+  z-index: 10;
   -webkit-transition: all 100ms ease-in;
   -moz-transition: all 100ms ease-in;
   -o-transition: all 100ms ease-in;
   transition: all 100ms ease-in;
 }
-/* line 35, ../scss/modules/toggler.scss */
+/* line 36, ../scss/modules/toggler.scss */
+.husky-toggler input {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  -webkit-transition: all 100ms ease-in;
+  -moz-transition: all 100ms ease-in;
+  -o-transition: all 100ms ease-in;
+  transition: all 100ms ease-in;
+  opacity: 0;
+  z-index: 0;
+}
+/* line 45, ../scss/modules/toggler.scss */
 .husky-toggler.checked {
   background: #1fca23;
   border-color: #1fca23;
 }
-/* line 39, ../scss/modules/toggler.scss */
+/* line 49, ../scss/modules/toggler.scss */
 .husky-toggler.checked .switch {
   border-color: #1fca23;
   left: 15px;
+}
+/* line 53, ../scss/modules/toggler.scss */
+.husky-toggler.checked input {
+  left: 17px;
 }

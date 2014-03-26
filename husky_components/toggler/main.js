@@ -20,14 +20,15 @@ define([], function() {
     'use strict';
 
     var defaults = {
-            instanceName: 'undefined'
+            instanceName: 'undefined',
+            checked: false,
+            hiddenCheckbox: true
         },
 
         constants = {
             componentClass: 'husky-toggler',
             switchClass: 'switch',
-            checkedClass: 'checked',
-            checked: false
+            checkedClass: 'checked'
         },
 
         /**
@@ -76,14 +77,14 @@ define([], function() {
             //merge options with defaults
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
-            this.sandbox.dom.addClass(this.$el, constants.componentClass);
+            this.hasId = false;
+            this.checked = !!this.options.checked;
+            this.$checkbox = null;
+
             this.render();
             this.bindDomEvents();
             this.bindCustomEvents();
 
-            this.hasId = false;
-
-            this.checked = this.options.checked;
             this.setData();
 
             this.sandbox.emit(INITIALIZED.call(this));
@@ -93,11 +94,20 @@ define([], function() {
          * Renders the component
          */
         render: function() {
+            this.sandbox.dom.addClass(this.$el, constants.componentClass);
+
             if (this.sandbox.dom.attr(this.$el, 'id')) {
                 this.options.instanceName = this.sandbox.dom.attr(this.$el, 'id');
                 this.hasId = true;
             }
-            this.html(this.sandbox.dom.createElement('<div class="'+ constants.switchClass +'"/>'));
+
+            this.generateHiddenCheckbox();
+
+            if (this.checked === true) {
+                this.setChecked(false);
+            }
+
+            this.sandbox.dom.append(this.$el, this.sandbox.dom.createElement('<div class="'+ constants.switchClass +'"/>'));
         },
 
         /**
@@ -123,9 +133,9 @@ define([], function() {
             this.sandbox.on(CHANGE.call(this), function(checked) {
                 if (this.checked !== checked) {
                     if (checked === true) {
-                        this.setChecked();
+                        this.setChecked(true);
                     } else {
-                        this.unsetChecked();
+                        this.unsetChecked(true);
                     }
                 }
             }.bind(this));
@@ -136,37 +146,65 @@ define([], function() {
          */
         toggleButton: function() {
             if (this.checked === true) {
-                this.unsetChecked();
+                this.unsetChecked(true);
             } else {
-                this.setChecked();
+                this.setChecked(true);
             }
         },
 
         /**
          * Switches the toggler on
          */
-        setChecked: function() {
+        setChecked: function(emit) {
             this.sandbox.dom.addClass(this.$el, constants.checkedClass);
             this.checked = true;
-            this.sandbox.emit(CHANGED.call(this), true);
             this.setData();
+            this.updateCheckbox(this.checked);
+
+            if (emit !== false) {
+                this.sandbox.emit(CHANGED.call(this), true);
+            }
         },
 
         /**
          * Switches the toggler off
          */
-        unsetChecked: function() {
+        unsetChecked: function(emit) {
             this.sandbox.dom.removeClass(this.$el, constants.checkedClass);
             this.checked = false;
-            this.sandbox.emit(CHANGED.call(this), false);
             this.setData();
+            this.updateCheckbox(this.checked);
+
+            if (emit !== false) {
+                this.sandbox.emit(CHANGED.call(this), false);
+            }
+        },
+
+        /**
+         * Generates a hidden checkbox useful using toggler in forms
+         */
+        generateHiddenCheckbox: function() {
+            if (this.options.hiddenCheckbox === true) {
+                this.$checkbox = this.sandbox.dom.createElement('<input type="checkbox" name="'+ this.options.instanceName +'"/>');
+                this.sandbox.dom.append(this.$el, this.$checkbox);
+            }
+        },
+
+        /**
+         * Updates the state of the checkbox
+         * @param {boolean} checked True to set the sandbox checked, false to uncheck
+         */
+        updateCheckbox: function(checked) {
+            if (this.$checkbox !== null) {
+                this.sandbox.dom.prop(this.$checkbox, 'checked', checked);
+            }
         },
 
         /**
          * Sets the data-checked attribute for the toggler
          */
         setData: function() {
-            this.sandbox.dom.data(this.$el, 'checked', this.checked);
+            this.sandbox.dom.data(this.$el, 'checked', (!!this.checked) ? 'checked' : '');
         }
     };
 

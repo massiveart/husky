@@ -28,7 +28,8 @@
         <div class="grid-row">
             <div class="grid-col-6">
                 <label for="toggler1">Turn something on</label>
-                <div id="toggler1" data-aura-component="toggler@husky"></div>
+                <div id="toggler1" data-aura-component="toggler@husky" data-aura-checked="true"></div>
+                <div id="toggler2" data-aura-component="toggler@husky" data-aura-checked="false"></div>
             </div>
         </div>
         <div class="grid-row">
@@ -62,9 +63,7 @@
 
         $('#toggle').on('click', function() {
             var checked = $('#toggler1').data('checked');
-            console.log(checked);
-
-            if (checked === true) {
+            if (checked === 'checked') {
                 app.sandbox.emit('husky.toggler.toggler1.change', false);
             } else {
                 app.sandbox.emit('husky.toggler.toggler1.change', true);
