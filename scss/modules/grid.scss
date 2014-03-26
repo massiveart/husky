@@ -18,6 +18,9 @@ $grid-margin-bottom-small: 10px;
     &.small {
         margin-bottom: $grid-margin-bottom-small;
     }
+    &.no-spacing {
+        margin-bottom: 0;
+    }
 
     &::after {
         content: "";
