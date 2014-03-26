@@ -5,25 +5,41 @@
 .husky-toggler {
     $transDuration: 100ms;
     $transFunction: ease-in;
+    $togglerHeight: 20px;
+    $togglerWidth: 35px;
+    $togglerOutlineColor: rgba(255, 255, 255, 0.5);
 
-    width: 35px;
-    height: 20px;
-    background: $white;
-    border: 1px solid $grayLighter;
-    border-radius: 10px;
+    width: $togglerWidth;
+    height: $togglerHeight;
+    border-radius: ($togglerHeight)/2;
     display: inline-block;
     cursor: pointer;
-    position: relative;
-    top: 0px;
-    left: 0px;
-    @include user-select(none);
-  @include single-transition(all, $transDuration, $transFunction);
+
+    &.outline {
+        border: 1px solid $togglerOutlineColor;
+        height: $togglerHeight+2;
+        width: $togglerWidth+2;
+    }
+
+
+    .toggler-wrapper {
+        background: $white;
+        border: 1px solid $grayLighter;
+        border-radius: ($togglerHeight)/2;
+        position: relative;
+        width: $togglerWidth;
+        height: $togglerHeight;
+        top: 0px;
+        left: 0px;
+        @include user-select(none);
+        @include single-transition(all, $transDuration, $transFunction);
+    }
 
     .switch {
         background: $white;
-        width: 20px;
-        height: 20px;
-        border-radius: 10px;
+        width: $togglerHeight;
+        height: $togglerHeight;
+        border-radius: ($togglerHeight)/2;
         border: 1px solid $grayLighter;
         margin: -1px 0 0 -1px;
         position: absolute;
@@ -43,8 +59,10 @@
     }
 
     &.checked {
-        background: $green;
-        border-color: $green;
+        .toggler-wrapper {
+          background: $green;
+          border-color: $green;
+        }
 
         .switch {
             border-color: $green;

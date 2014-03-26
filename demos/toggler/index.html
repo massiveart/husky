@@ -19,6 +19,11 @@
         .wrapper {
             padding: 20px 0 0 50px;
         }
+        .dark {
+            padding: 10px 20px;
+            background: #249FBE;
+            float: left;
+        }
     </style>
 </head>
 <body>
@@ -29,7 +34,9 @@
             <div class="grid-col-6">
                 <label for="toggler1">Turn something on</label>
                 <div id="toggler1" data-aura-component="toggler@husky" data-aura-checked="true"></div>
-                <div id="toggler2" data-aura-component="toggler@husky" data-aura-checked="false"></div>
+                <div class="dark">
+                    <div id="toggler2" data-aura-component="toggler@husky" data-aura-checked="false" data-aura-outline="true"></div>
+                </div>
             </div>
         </div>
         <div class="grid-row">
@@ -38,6 +45,103 @@
             </div>
             <div class="grid-col-1">
                 <div class="btn action2" id="data">Get data</div>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="grid-col-6">
+                <h2 class="divider">Checkboxes</h2>
+            </div>
+        </div>
+        <div class="grid-row small">
+            <div class="grid-col-6">
+                <label for="checkbox1">
+                    <div class="custom-checkbox">
+                        <input name="nameForForm" id="checkbox1" type="checkbox" class="form-element"/>
+                        <span class="icon"></span>
+                    </div>
+                    Checkbox 1
+                </label>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="grid-col-6">
+                <label for="checkbox2">
+                    <div class="custom-checkbox">
+                        <input name="nameForForm2" id="checkbox2" type="checkbox" class="form-element"/>
+                        <span class="icon"></span>
+                    </div>
+                    Checkbox 2
+                </label>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="grid-col-6">
+                <div class="custom-checkbox no-margin">
+                    <input name="nameForForm3" id="checkbox3" type="checkbox" class="form-element"/>
+                    <span class="icon"></span>
+                </div>
+                <div class="custom-checkbox no-margin">
+                    <input name="nameForForm4" id="checkbo4" type="checkbox" class="form-element"/>
+                    <span class="icon"></span>
+                </div>
+                <div class="custom-checkbox no-margin">
+                    <input name="nameForForm5" id="checkbox5" type="checkbox" class="form-element"/>
+                    <span class="icon"></span>
+                </div>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="grid-col-6">
+                <h2 class="divider">Radio Buttons</h2>
+            </div>
+        </div>
+        <div class="grid-row small">
+            <div class="grid-col-6">
+                <label for="radio1">
+                    <div class="custom-radio">
+                        <input name="nameForFormA" id="radio1" type="radio" class="form-element"/>
+                        <span class="icon"></span>
+                    </div>
+                    Radio 1
+                </label>
+            </div>
+        </div>
+        <div class="grid-row small">
+            <div class="grid-col-6">
+                <label for="radio2">
+                    <div class="custom-radio">
+                        <input name="nameForFormA" id="radio2" type="radio" class="form-element"/>
+                        <span class="icon"></span>
+                    </div>
+                    Radio 2
+                </label>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="grid-col-6">
+                <label for="radio3">
+                    <div class="custom-radio">
+                        <input name="nameForFormA" id="radio3" type="radio" class="form-element" checked/>
+                        <span class="icon"></span>
+                    </div>
+                    Radio 3
+                </label>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="grid-col-6">
+                <div class="custom-radio no-margin">
+                    <input name="nameForFormB" id="radio4" type="radio" class="form-element" checked/>
+                    <span class="icon"></span>
+                </div>
+                <div class="custom-radio no-margin">
+                    <input name="nameForFormB" id="radio5" type="radio" class="form-element"/>
+                    <span class="icon"></span>
+                </div>
+                <div class="custom-radio no-margin">
+                    <input name="nameForFormB" id="radio6" type="radio" class="form-element"/>
+                    <span class="icon"></span>
+                </div>
             </div>
         </div>
     </div>

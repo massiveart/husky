@@ -4093,24 +4093,28 @@ label.inline {
 .custom-checkbox {
   width: 15px;
   height: 15px;
-  vertical-align: middle;
+}
+/* line 135, ../scss/modules/form.scss */
+.custom-checkbox input {
   opacity: 0;
   cursor: pointer;
+  width: 15px;
+  height: 15px;
 }
-/* line 140, ../scss/modules/form.scss */
-.custom-checkbox:checked + .custom-checkbox-icon, .custom-checkbox.is-checked + .custom-checkbox-icon {
+/* line 143, ../scss/modules/form.scss */
+.custom-checkbox input:checked + span, .custom-checkbox input.is-checked + span {
   border-color: #1fca23;
   background-color: #1fca23;
   color: white;
 }
-/* line 144, ../scss/modules/form.scss */
-.custom-checkbox:checked + .custom-checkbox-icon::after, .custom-checkbox.is-checked + .custom-checkbox-icon::after {
+/* line 147, ../scss/modules/form.scss */
+.custom-checkbox input:checked + span::after, .custom-checkbox input.is-checked + span::after {
   content: "\e207";
   position: relative;
   top: -3px;
 }
-/* line 152, ../scss/modules/form.scss */
-.custom-checkbox + .custom-checkbox-icon {
+/* line 155, ../scss/modules/form.scss */
+.custom-checkbox input + span {
   display: inline-block;
   width: 15px;
   height: 15px;
@@ -4120,30 +4124,29 @@ label.inline {
   font-family: "Glyphicons";
   font-size: 12px;
   text-align: center;
-  vertical-align: middle;
 }
 
-/* line 171, ../scss/modules/form.scss */
+/* line 174, ../scss/modules/form.scss */
 textarea {
   resize: both;
 }
 
-/* line 175, ../scss/modules/form.scss */
+/* line 178, ../scss/modules/form.scss */
 textarea.vertical {
   resize: vertical;
 }
 
-/* line 179, ../scss/modules/form.scss */
+/* line 182, ../scss/modules/form.scss */
 textarea.horizontal {
   resize: horizontal;
 }
 
-/* line 183, ../scss/modules/form.scss */
+/* line 186, ../scss/modules/form.scss */
 textarea.noResize {
   resize: none;
 }
 
-/* line 187, ../scss/modules/form.scss */
+/* line 190, ../scss/modules/form.scss */
 textarea.form-element {
   width: 100%;
   height: 40px;
@@ -4153,7 +4156,7 @@ textarea.form-element {
   font-family: inherit;
 }
 
-/* line 198, ../scss/modules/form.scss */
+/* line 201, ../scss/modules/form.scss */
 .custom-radio {
   width: 18px;
   height: 18px;
@@ -4161,7 +4164,7 @@ textarea.form-element {
   opacity: 0;
   cursor: pointer;
 }
-/* line 210, ../scss/modules/form.scss */
+/* line 213, ../scss/modules/form.scss */
 .custom-radio:checked + .custom-radio-icon::after, .custom-radio.is-checked + .custom-radio-icon::after {
   content: "";
   display: block;
@@ -4170,7 +4173,7 @@ textarea.form-element {
   border-radius: 18px;
   background-color: #999;
 }
-/* line 221, ../scss/modules/form.scss */
+/* line 224, ../scss/modules/form.scss */
 .custom-radio + .custom-radio-icon {
   display: inline-block;
   width: 18px;
@@ -4185,16 +4188,16 @@ textarea.form-element {
   vertical-align: middle;
 }
 
-/* line 241, ../scss/modules/form.scss */
+/* line 244, ../scss/modules/form.scss */
 .cke.cke_chrome {
   box-shadow: none !important;
   border: 0 !important;
 }
-/* line 246, ../scss/modules/form.scss */
+/* line 249, ../scss/modules/form.scss */
 .cke .cke_inner {
   border: 1px solid #cccccc !important;
 }
-/* line 250, ../scss/modules/form.scss */
+/* line 253, ../scss/modules/form.scss */
 .cke .cke_inner,
 .cke .cke_wysiwyg_frame {
   border-bottom-left-radius: 3px !important;
@@ -7433,12 +7436,13 @@ a.btn-black, a.btn-highlight {
   position: absolute;
   top: 0px;
   left: 0px;
+  z-index: 10;
   -webkit-transition: all 100ms ease-in;
   -moz-transition: all 100ms ease-in;
   -o-transition: all 100ms ease-in;
   transition: all 100ms ease-in;
 }
-/* line 35, ../scss/modules/toggler.scss */
+/* line 36, ../scss/modules/toggler.scss */
 .husky-toggler input {
   position: absolute;
   top: 3px;
@@ -7447,18 +7451,20 @@ a.btn-black, a.btn-highlight {
   -moz-transition: all 100ms ease-in;
   -o-transition: all 100ms ease-in;
   transition: all 100ms ease-in;
+  opacity: 0;
+  z-index: 0;
 }
-/* line 42, ../scss/modules/toggler.scss */
+/* line 45, ../scss/modules/toggler.scss */
 .husky-toggler.checked {
   background: #1fca23;
   border-color: #1fca23;
 }
-/* line 46, ../scss/modules/toggler.scss */
+/* line 49, ../scss/modules/toggler.scss */
 .husky-toggler.checked .switch {
   border-color: #1fca23;
   left: 15px;
 }
-/* line 50, ../scss/modules/toggler.scss */
+/* line 53, ../scss/modules/toggler.scss */
 .husky-toggler.checked input {
   left: 17px;
 }

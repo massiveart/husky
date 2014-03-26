@@ -14,6 +14,9 @@
  * @constructor
  *
  * @params {Object} [options] Configuration object
+ * @params {Boolean} [options.instanceName] name of the component instance, gets used for events and the checkbox name. Can also be set through the DOM-id
+ * @params {Boolean} [options.checked] beginning state of the button
+ * @params {Boolean} [options.outline] if true component gets a bright border
  */
 define([], function() {
 
@@ -22,13 +25,16 @@ define([], function() {
     var defaults = {
             instanceName: 'undefined',
             checked: false,
-            hiddenCheckbox: true
+            hiddenCheckbox: true,
+            outline: false
         },
 
         constants = {
             componentClass: 'husky-toggler',
             switchClass: 'switch',
-            checkedClass: 'checked'
+            checkedClass: 'checked',
+            wrapperClass: 'toggler-wrapper',
+            outlineClass: 'outline',
         },
 
         /**
@@ -80,6 +86,7 @@ define([], function() {
             this.hasId = false;
             this.checked = !!this.options.checked;
             this.$checkbox = null;
+            this.$wrapper = null;
 
             this.render();
             this.bindDomEvents();
@@ -101,13 +108,21 @@ define([], function() {
                 this.hasId = true;
             }
 
+            if (this.options.outline === true) {
+                this.sandbox.dom.addClass(this.$el, constants.outlineClass);
+            }
+
+            //wrapper to insert all content into
+            this.$wrapper = this.sandbox.dom.createElement('<div class="'+ constants.wrapperClass +'"/>');
+            this.sandbox.dom.html(this.$el, this.$wrapper);
+
             this.generateHiddenCheckbox();
 
             if (this.checked === true) {
                 this.setChecked(false);
             }
 
-            this.sandbox.dom.append(this.$el, this.sandbox.dom.createElement('<div class="'+ constants.switchClass +'"/>'));
+            this.sandbox.dom.append(this.$wrapper, this.sandbox.dom.createElement('<div class="'+ constants.switchClass +'"/>'));
         },
 
         /**
@@ -186,7 +201,7 @@ define([], function() {
         generateHiddenCheckbox: function() {
             if (this.options.hiddenCheckbox === true) {
                 this.$checkbox = this.sandbox.dom.createElement('<input type="checkbox" name="'+ this.options.instanceName +'"/>');
-                this.sandbox.dom.append(this.$el, this.$checkbox);
+                this.sandbox.dom.append(this.$wrapper, this.$checkbox);
             }
         },
 
