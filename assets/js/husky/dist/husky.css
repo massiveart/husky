@@ -6868,7 +6868,7 @@ a.btn-black, a.btn-highlight {
   /*display: inline-block;*/
   position: absolute;
   top: 20px;
-  left: 2px;
+  left: 0px;
   margin-top: 5px;
   background-color: #FFF;
   border: 1px solid #cccccc;

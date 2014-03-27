@@ -139,7 +139,7 @@ define(function() {
             if (!!this.options.selectOptions[depth]) {
                 options = this.options.selectOptions[depth];
             }
-            options = this.sandbox.util.extend(true, {}, options, {
+            options = this.sandbox.util.extend(true, {}, {
                 el: $child,
                 singleSelect: true,
                 instanceName: depth,
@@ -148,7 +148,7 @@ define(function() {
                 deselectCallback: deselectionCallback,
                 preSelectedElements: !!preselect ? [preselect] : [],
                 defaultLabel: this.sandbox.dom.isArray(this.options.defaultLabels) ? this.options.defaultLabels[depth] : this.options.defaultLabels
-            });
+            }, options);
 
             // start select component
             this.sandbox.start([

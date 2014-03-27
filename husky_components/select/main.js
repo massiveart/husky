@@ -422,12 +422,7 @@ define([], function() {
             // check if dropdown container overlaps bottom of browser
             if (ddHeight + ddTop > windowHeight + scrollTop) {
                 this.sandbox.dom.addClass(this.$dropdownContainer, constants.dropdownTopClass);
-            } else if (hasTopClass) {
             }
-        },
-
-        flipDropdownContent: function() {
-
         },
 
         // hide dropDown
