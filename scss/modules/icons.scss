@@ -187,6 +187,13 @@
     }
 }
 
+.icon-factory {
+    &::after {
+        content: "\e451";
+        display: inline-block;
+    }
+}
+
 .icon-live {
     &::after {
         content: "\e033";
