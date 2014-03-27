@@ -17,7 +17,8 @@
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.preselect] the item that's selected on initialization
  * @param {String} [options.instanceName] instance name of this component
- * @param {Array} [options.data] array of dropdown items elements
+ * @param {Array} [options.data] Array of dropdown items
+ * @param {Array} options.container array containers to put selects into
  * @param {String|Array} [options.defaultLabels] which text is displayed after select is initialized; can be customized for each and every select by defining an array
  * @param {Array} [options.selectOptions] array of Options to pass to the select at certain depth (first item's options will be assigned to first select)
  */
@@ -31,7 +32,8 @@ define(function() {
             instanceName: '',
             preselect: null,
             defaultLabels: 'Please choose',
-            selectOptions: []
+            selectOptions: [],
+            container: null
         },
         constants = {
             childContainerClass: 'dependent-select-container',

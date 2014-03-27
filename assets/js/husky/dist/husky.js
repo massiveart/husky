@@ -32284,6 +32284,7 @@ define('__component__$dependent-select@husky',[],function() {
  * @param {Array} [options.preSelectedElements] allows preselection of fields by defining the id attributes or strings
  * @param {Function} [options.selectCallback] callbackfunction, when element is selected
  * @param {String} [options.valueName] name of property which should be used
+ * @param {String} [options.style] "normal", "small" or "big" for different appearance
  */
 
 define('__component__$select@husky',[], function() {
@@ -32301,15 +32302,18 @@ define('__component__$select@husky',[], function() {
             deselectField: false,             // field for deselection is added to dropdown if value is a string
             disabled: false,                  //if true button is disabled
             selectCallback: null,
-            deselectCallback: null
+            deselectCallback: null,
+            style: 'normal'
         },
 
         constants = {
             labelClass: 'husky-select-label',
             listClass: 'husky-select-list',
             dropdownContainerClass: 'husky-select-dropdown-container',
-            deselectFieldKey: '',
-            disabledClass: 'disabled'
+            deselectFieldKey: 'deselectindex',
+            deselectFieldDefaultValue: '',
+            disabledClass: 'disabled',
+            dropdownTopClass: 'top'
         },
 
         /**
@@ -32393,6 +32397,11 @@ define('__component__$select@husky',[], function() {
             this.sandbox.logger.log('initialize', this);
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
+            // if deselectfield is set to true, set it to default value
+            if (!!this.options.deselectField && this.options.deselectField.toString() === 'true') {
+                this.options.deselectField = constants.deselectFieldDefaultValue;
+            }
+
             this.selection = [];
 
             this.selectedElements = [];
@@ -32408,6 +32417,12 @@ define('__component__$select@husky',[], function() {
             var $originalElement = this.sandbox.dom.$(this.options.el),
                 button = this.sandbox.dom.createElement(this.template.basicStructure.call(this, this.options.defaultLabel));
             this.sandbox.dom.append($originalElement, button);
+
+            if (this.options.style === 'small') {
+                this.sandbox.dom.addClass(button, 'small');
+            } else if (this.options.style === 'big') {
+                this.sandbox.dom.addClass(button, 'big');
+            }
 
             this.$list = this.$find('.' + constants.listClass);
             this.$dropdownContainer = this.$find('.' + constants.dropdownContainerClass);
@@ -32448,21 +32463,29 @@ define('__component__$select@husky',[], function() {
         },
 
         addDropdownElement: function(id, value, disabled) {
-            var $item;
-            if (this.options.preSelectedElements.indexOf(id) >= 0) {
-                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, id, value, 'checked'));
-                this.selectedElements.push((id).toString());
-                this.selectedElementsValues.push(value);
-                this.triggerSelect(id);
-            } else {
-                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, id, value, ''));
-            }
+            var $item,
+                idString = !!id ? id.toString() : 'null';
+            if (this.options.preSelectedElements.indexOf(id) >= 0 || this.options.preSelectedElements.indexOf(value) >= 0) {
+                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, 'checked'));
+                this.selectedElements.push(idString);
+                var $item;
+                if (this.options.preSelectedElements.indexOf(id) >= 0 ||
+                    this.options.preSelectedElements.indexOf(value) >= 0) {
 
-            if (!!disabled && disabled === true) {
-                this.sandbox.dom.addClass($item, 'disabled');
-            }
+                    $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, id, value, 'checked'));
+                    this.selectedElements.push((id).toString());
+                    this.selectedElementsValues.push(value);
+                    this.triggerSelect(id);
+                } else {
+                    $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, ''));
+                }
 
-            this.sandbox.dom.append(this.$list, $item);
+                if (!!disabled && disabled === true) {
+                    this.sandbox.dom.addClass($item, 'disabled');
+                }
+
+                this.sandbox.dom.append(this.$list, $item);
+            }
         },
 
         // generate dropDown with given items
@@ -32557,10 +32580,10 @@ define('__component__$select@husky',[], function() {
                 if (key === constants.deselectFieldKey) {
                     index = 0;
                     this.uncheckAll(key);
-                // if new element was selected
+                    // if new element was selected
                 } else if (index === -1) {
                     this.uncheckAll(key);
-                // same element was selected
+                    // same element was selected
                 } else {
                     this.hideDropDown();
                     return;
@@ -32579,7 +32602,7 @@ define('__component__$select@husky',[], function() {
 
                 this.triggerDeselect(key);
 
-            // select
+                // select
             } else {
                 this.sandbox.dom.addClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', true);
@@ -32653,6 +32676,23 @@ define('__component__$select@husky',[], function() {
             this.sandbox.dom.removeClass(this.$dropdownContainer, 'hidden');
             this.sandbox.dom.on(this.sandbox.dom.window, 'click.dropdown.' + this.options.instanceName, this.hideDropDown.bind(this));
             this.dropdownVisible = true;
+            var ddHeight = this.sandbox.dom.height(this.$dropdownContainer),
+                ddTop = this.sandbox.dom.offset(this.$dropdownContainer).top,
+                windowHeight = this.sandbox.dom.height(this.sandbox.dom.window),
+                hasTopClass = this.sandbox.dom.hasClass(this.$dropdownContainer, constants.dropdownTopClass);
+
+            // check if dropdown container overlaps bottom of browser
+            if (ddHeight + ddTop > windowHeight && !hasTopClass) {
+                this.sandbox.dom.addClass(this.$dropdownContainer, constants.dropdownTopClass);
+                this.flipDropdownContent();
+            } else if (hasTopClass) {
+                this.sandbox.dom.removeClass(this.$dropdownContainer, constants.dropdownTopClass);
+                this.flipDropdownContent();
+            }
+        },
+
+        flipDropdownContent: function() {
+
         },
 
         // hide dropDown
@@ -35234,7 +35274,7 @@ define('__component__$smart-content@husky',[], function() {
         startOverlayComponents: function() {
             this.sandbox.start([
                 {
-                    name: 'dropdown-multiple-select@husky',
+                    name: 'select@husky',
                     options: {
                         el: this.sandbox.dom.find('.' + constants.categoryDDClass, this.$overlayContent),
                         instanceName: this.options.instanceName + constants.categoryDDClass,
@@ -35242,7 +35282,6 @@ define('__component__$smart-content@husky',[], function() {
                         value: 'name',
                         data: this.options.categories,
                         preSelectedElements: [this.options.preSelectedCategory],
-                        singleSelect: true,
                         disabled: this.overlayDisabled.categories
                     }
                 },
@@ -35259,21 +35298,19 @@ define('__component__$smart-content@husky',[], function() {
                     }
                 },
                 {
-                    name: 'dropdown-multiple-select@husky',
+                    name: 'select@husky',
                     options: {
                         el: this.sandbox.dom.find('.' + constants.sortByDDClass, this.$overlayContent),
                         instanceName: this.options.instanceName + constants.sortByDDClass,
-                        defaultLabel: 'No sorting',
+//                        deselectLabel: 'No sorting',
                         value: 'name',
                         data: this.options.sortBy,
                         preSelectedElements: [this.options.preSelectedSortBy],
-                        singleSelect: true,
-                        noDeselect: true,
                         disabled: this.overlayDisabled.sortBy
                     }
                 },
                 {
-                    name: 'dropdown-multiple-select@husky',
+                    name: 'select@husky',
                     options: {
                         el: this.sandbox.dom.find('.' + constants.sortMethodDDClass, this.$overlayContent),
                         instanceName: this.options.instanceName + constants.sortMethodDDClass,
@@ -35284,13 +35321,11 @@ define('__component__$smart-content@husky',[], function() {
                             {id: sortMethods.desc, name: this.sandbox.translate(this.translations.descending)}
                         ],
                         preSelectedElements: [sortMethods[this.options.preSelectedSortMethod]],
-                        singleSelect: true,
-                        noDeselect: true,
                         disabled: this.overlayDisabled.sortBy
                     }
                 },
                 {
-                    name: 'dropdown-multiple-select@husky',
+                    name: 'select@husky',
                     options: {
                         el: this.sandbox.dom.find('.' + constants.presentAsDDClass, this.$overlayContent),
                         instanceName: this.options.instanceName + constants.presentAsDDClass,
@@ -35298,8 +35333,6 @@ define('__component__$smart-content@husky',[], function() {
                         value: 'name',
                         data: this.options.presentAs,
                         preSelectedElements: [this.options.preSelectedPresentAs],
-                        singleSelect: true,
-                        noDeselect: true,
                         disabled: this.overlayDisabled.presentAs
                     }
                 }
@@ -36488,13 +36521,11 @@ define('__component__$matcher@husky',[], function() {
 
                 this.sandbox.start([
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: $element,
                             instanceName: this.options.instanceName + column.id,
                             defaultLabel: this.sandbox.translate(this.translations.pleaseChoose),
-                            singleSelect: true,
-                            noDeselect: true,
                             data: this.dbColumns,
                             preSelectedElements: selected
                         }
