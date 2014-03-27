@@ -24602,12 +24602,12 @@ define('__component__$navigation@husky',[],function() {
             //footer template
             footer: [
                 '<div class="user">',
-                    '<div class="icon-user pic"></div>',
-                    '<div class="name"><%= userName %></div>',
+                '<div class="icon-user pic"></div>',
+                '<div class="name"><%= userName %></div>',
                 '</div>',
                 '<div class="options">',
-                    '<div class="locale-dropdown"></div>',
-                    '<a href="<%= logoutRoute %>" title="Logout" class="icon-lock logout"></a>',
+                '<div class="locale-dropdown"></div>',
+                '<a href="<%= logoutRoute %>" title="Logout" class="icon-lock logout"></a>',
                 '</div>',
                 '<div class="version"><%= system %> (<%= version %>, <a href="#"><%= versionHistory %></a>)</div>'
             ].join('')
@@ -24887,19 +24887,21 @@ define('__component__$navigation@husky',[],function() {
                     logoutRoute: this.options.logoutRoute
                 }));
 
-                this.sandbox.start([{
-                    name: 'dropdown-multiple-select@husky',
-                    options: {
-                        el: this.sandbox.dom.find('.locale-dropdown', $footer),
-                        instanceName: 'navigation-locale',
-                        value: 'name',
-                        data: this.options.userLocales,
-                        preSelectedElements: [this.options.userLocale],
-                        singleSelect: true,
-                        noDeselect: true,
-                        small: true
+                this.sandbox.start([
+                    {
+                        name: 'dropdown-multiple-select@husky',
+                        options: {
+                            el: this.sandbox.dom.find('.locale-dropdown', $footer),
+                            instanceName: 'navigation-locale',
+                            value: 'name',
+                            data: this.options.userLocales,
+                            preSelectedElements: [this.options.userLocale],
+                            singleSelect: true,
+                            noDeselect: true,
+                            small: true
+                        }
                     }
-                }]);
+                ]);
             }
         },
 
@@ -25071,6 +25073,7 @@ define('__component__$navigation@husky',[],function() {
          * Toggles menu element with submenu
          * Raises navigation.toggle
          * @param event
+         * @param customTarget
          */
         toggleItems: function(event, customTarget) {
 
@@ -25233,6 +25236,7 @@ define('__component__$navigation@husky',[],function() {
          * Raises navigation.select
          * @param event
          * @param [customTarget] if event is undefined, the target must be passed customly
+         * @param emit
          */
         selectSubItem: function(event, customTarget, emit) {
 
@@ -26909,7 +26913,7 @@ define('__component__$datagrid@husky',[],function() {
 
                 // add a checkbox to each row
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
-                    this.tblColumns.push('<td class="check">', this.templates.checkbox(), '</td>');
+                    this.tblColumns.push('<td>', this.templates.checkbox(), '</td>');
 
                     // add a radio to each row
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
@@ -28266,8 +28270,10 @@ define('__component__$datagrid@husky',[],function() {
                 name = (!!data.name) ? ' name="' + data.name + '"' : '';
 
                 return [
-                    '<input', id, name, ' type="checkbox" class="custom-checkbox" data-form="false"/>',
-                    '<span class="custom-checkbox-icon"></span>'
+                    '<div class="custom-checkbox">',
+                        '<input', id, name, ' type="checkbox" data-form="false"/>',
+                        '<span class="icon"></span>',
+                    '</div>'
                 ].join('');
             },
 
@@ -28279,8 +28285,10 @@ define('__component__$datagrid@husky',[],function() {
                 name = (!!data.name) ? ' name="' + data.name + '"' : '';
 
                 return [
-                    '<input', id, name, ' type="radio" class="custom-radio"/>',
-                    '<span class="custom-radio-icon"></span>'
+                    '<div class="custom-radio">',
+                        '<input', id, name, ' type="radio"/>',
+                        '<span class="icon"></span>',
+                    '</div>'
                 ].join('');
             }
         }
@@ -32428,8 +32436,10 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
                         '<li data-id="', value, '">',
                         '    <div>',
                         '        <div class="check' + hiddenClass + '">',
-                        '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
-                        '            <span class="custom-checkbox-icon"></span>',
+                        '            <div class="custom-checkbox no-spacing">',
+                        '               <input type="checkbox" class="form-element"', checked, '/>',
+                        '               <span class="icon"></span>',
+                        '            </div>',
                         '        </div>',
                         '        <div class="item-value">', value, '</div>',
                         '    </div>',
@@ -32442,8 +32452,10 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
                         '<li data-id="', value.id, '">',
                         '    <div>',
                         '        <div class="check' + hiddenClass + '">',
-                        '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
-                        '            <span class="custom-checkbox-icon"></span>',
+                        '            <div class="custom-checkbox no-spacing">',
+                        '               <input type="checkbox" class="form-element"', checked, '/>',
+                        '               <span class="icon"></span>',
+                        '            </div>',
                         '        </div>',
                         '        <div class="item-value">', value[property], '</div>',
                         '    </div>',
@@ -34454,8 +34466,10 @@ define('__component__$smart-content@husky',[], function() {
                 subFolders: ['<div class="item-half">',
                     '<div class="check<%= disabled %>">',
                     '<label>',
-                    '<input type="checkbox" class="includeSubCheck form-element custom-checkbox"<%= includeSubCheckedStr %>/>',
-                    '<span class="custom-checkbox-icon"></span>',
+                    '<div class="custom-checkbox">',
+                        '<input type="checkbox" class="includeSubCheck form-element"<%= includeSubCheckedStr %>/>',
+                        '<span class="icon"></span>',
+                    '</div>',
                     '<span class="description"><%= includeSubStr %></span>',
                     '</label>',
                     '</div>',
@@ -36708,6 +36722,233 @@ define('__component__$process@husky',[], function() {
                 this.sandbox.dom.find('.' + constants.activeClass, this.$el),
                 constants.activeClass
             );
+        }
+    };
+
+});
+
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/process
+ */
+
+/**
+ * @class Toggler
+ * @constructor
+ *
+ * @params {Object} [options] Configuration object
+ * @params {Boolean} [options.instanceName] name of the component instance, gets used for events and the checkbox name. Can also be set through the DOM-id
+ * @params {Boolean} [options.checked] beginning state of the button
+ * @params {Boolean} [options.outline] if true component gets a bright border
+ */
+define('__component__$toggler@husky',[], function() {
+
+    
+
+    var defaults = {
+            instanceName: 'undefined',
+            checked: false,
+            hiddenCheckbox: true,
+            outline: false
+        },
+
+        constants = {
+            componentClass: 'husky-toggler',
+            switchClass: 'switch',
+            checkedClass: 'checked',
+            wrapperClass: 'toggler-wrapper',
+            outlineClass: 'outline'
+        },
+
+        /**
+         * namespace for events
+         * @type {string}
+         */
+            eventNamespace = 'husky.toggler.',
+
+        /**
+         * raised after initialization process
+         * @event husky.toggler.<instance-name>.initialize
+         */
+            INITIALIZED = function() {
+            return createEventName.call(this, 'initialized');
+        },
+
+        /**
+         * raised after initialization process
+         * @event husky.toggler.<instance-name>.changed
+         * @param {boolean} on True if button is on
+         */
+            CHANGED = function() {
+            return createEventName.call(this, 'changed');
+        },
+
+        /**
+         * event to turn the button on or off
+         * @event husky.toggler.<instance-name>.change
+         * @param {boolean} on To turn the button on or off
+         */
+            CHANGE = function() {
+            return createEventName.call(this, 'change');
+        },
+
+        /** returns normalized event names */
+            createEventName = function(postFix) {
+            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+        };
+
+    return {
+
+        /**
+         * Initialize component
+         */
+        initialize: function() {
+            //merge options with defaults
+            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
+            this.hasId = false;
+            this.checked = !!this.options.checked;
+            this.$checkbox = null;
+            this.$wrapper = null;
+
+            this.render();
+            this.bindDomEvents();
+            this.bindCustomEvents();
+
+            this.setData();
+
+            this.sandbox.emit(INITIALIZED.call(this));
+        },
+
+        /**
+         * Renders the component
+         */
+        render: function() {
+            this.sandbox.dom.addClass(this.$el, constants.componentClass);
+
+            if (this.sandbox.dom.attr(this.$el, 'id')) {
+                this.options.instanceName = this.sandbox.dom.attr(this.$el, 'id');
+                this.hasId = true;
+            }
+
+            if (this.options.outline === true) {
+                this.sandbox.dom.addClass(this.$el, constants.outlineClass);
+            }
+
+            //wrapper to insert all content into
+            this.$wrapper = this.sandbox.dom.createElement('<div class="'+ constants.wrapperClass +'"/>');
+            this.sandbox.dom.html(this.$el, this.$wrapper);
+
+            this.generateHiddenCheckbox();
+
+            if (this.checked === true) {
+                this.setChecked(false);
+            }
+
+            this.sandbox.dom.append(this.$wrapper, this.sandbox.dom.createElement('<div class="'+ constants.switchClass +'"/>'));
+        },
+
+        /**
+         * Binds the DOM related Events
+         */
+        bindDomEvents: function() {
+            this.sandbox.dom.on(this.$el, 'click', function() {
+               this.toggleButton();
+            }.bind(this));
+
+            //if toggler has id enable clicks on labels
+            if (this.hasId === true) {
+                this.sandbox.dom.on('label[for="'+ this.options.instanceName +'"]', 'click', function() {
+                    this.toggleButton();
+                }.bind(this));
+            }
+        },
+
+        /**
+         * Binds custom events
+         */
+        bindCustomEvents: function() {
+            this.sandbox.on(CHANGE.call(this), function(checked) {
+                if (this.checked !== checked) {
+                    if (checked === true) {
+                        this.setChecked(true);
+                    } else {
+                        this.unsetChecked(true);
+                    }
+                }
+            }.bind(this));
+        },
+
+        /**
+         * Toggles the button state
+         */
+        toggleButton: function() {
+            if (this.checked === true) {
+                this.unsetChecked(true);
+            } else {
+                this.setChecked(true);
+            }
+        },
+
+        /**
+         * Switches the toggler on
+         */
+        setChecked: function(emit) {
+            this.sandbox.dom.addClass(this.$el, constants.checkedClass);
+            this.checked = true;
+            this.setData();
+            this.updateCheckbox(this.checked);
+
+            if (emit !== false) {
+                this.sandbox.emit(CHANGED.call(this), true);
+            }
+        },
+
+        /**
+         * Switches the toggler off
+         */
+        unsetChecked: function(emit) {
+            this.sandbox.dom.removeClass(this.$el, constants.checkedClass);
+            this.checked = false;
+            this.setData();
+            this.updateCheckbox(this.checked);
+
+            if (emit !== false) {
+                this.sandbox.emit(CHANGED.call(this), false);
+            }
+        },
+
+        /**
+         * Generates a hidden checkbox useful using toggler in forms
+         */
+        generateHiddenCheckbox: function() {
+            if (this.options.hiddenCheckbox === true) {
+                this.$checkbox = this.sandbox.dom.createElement('<input type="checkbox" name="'+ this.options.instanceName +'"/>');
+                this.sandbox.dom.append(this.$wrapper, this.$checkbox);
+            }
+        },
+
+        /**
+         * Updates the state of the checkbox
+         * @param {boolean} checked True to set the sandbox checked, false to uncheck
+         */
+        updateCheckbox: function(checked) {
+            if (this.$checkbox !== null) {
+                this.sandbox.dom.prop(this.$checkbox, 'checked', checked);
+            }
+        },
+
+        /**
+         * Sets the data-checked attribute for the toggler
+         */
+        setData: function() {
+            this.sandbox.dom.data(this.$el, 'checked', (!!this.checked) ? 'checked' : '');
         }
     };
 
