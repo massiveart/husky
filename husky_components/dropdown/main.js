@@ -29,6 +29,7 @@ define([], function() {
             url: '',     // url for lazy loading
             data: [],    // data array
             trigger: '',  // trigger for click event
+            triggerOutside: false, // if true, trigger is searched in whole dom, otherwise just in this.$el
             shadow: true,  // if box-shadow should be shown
             toggleClassOn: null, // container to set is-active class
             valueName: 'name', // name of text property
@@ -105,7 +106,11 @@ define([], function() {
 
             // init drop-down
             if (this.options.trigger !== '') {
-                this.sandbox.dom.on(this.options.trigger, 'click', this.triggerClick.bind(this));
+                if (this.options.triggerOutside) {
+                    this.sandbox.dom.on(this.options.trigger, 'click', this.triggerClick.bind(this));
+                } else {
+                    this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this), this.options.trigger);
+                }
             } else {
                 this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this));
             }

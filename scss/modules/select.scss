@@ -5,18 +5,19 @@
     &.big {
         .dropdown-label {
             font-size: $baseFontSize;
-            padding: 10px 10px 10px 15px;
+            padding: 5px 10px 5px 15px;
 
             .dropdown-toggle {
                 right: 15px;
-                top: 10px;
+                top: 5px;
             }
         }
     }
 
     .dropdown-label {
         background: $grayLighter;
-        padding: 5px 5px 5px 10px;
+        padding: 0px 5px 0px 10px;
+        line-height: 30px;
         border-radius: 4px;
         clear: both;
         font-size: $smallFontSize;
@@ -25,7 +26,7 @@
         }
         .dropdown-toggle {
             position: absolute;
-            top: 5px;
+            top: 0px;
             right: 10px;
         }
     }
@@ -50,7 +51,7 @@
         /*display: inline-block;*/
         position: absolute;
         top: 20px;
-        left: 0;
+        left: 0px;
         margin-top: 5px;
         background-color: #FFF;
         border: 1px solid $grayLighter;
@@ -73,7 +74,7 @@
             float: left;
             width: 20px;
             margin-right: 10px;
-            padding-top: 3px;
+            padding-top: 7px;
         }
         .item-value {
             float: left;
@@ -103,6 +104,22 @@
                     color: $white;
                 }
             }
+        }
+    }
+
+    &.small {
+        .dropdown-label {
+            font-size: $reallySmallFontSize;
+            line-height: 20px;
+        }
+        .dropdown-toggle::after {
+            top: 0;
+        }
+        .dropdown-list {
+            top: 12px;
+            min-width: 200px;
+            max-width: 100%;
+            border-radius: 3px;
         }
     }
 
