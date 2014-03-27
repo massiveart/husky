@@ -33724,11 +33724,16 @@ define('__component__$ckeditor@husky',[], function() {
          eventNamespace = 'husky.ckeditor.',
 
         /**
-         * @event husky.column-navigation.loaded
+         * @event husky.ckeditor.changed
          * @description the component has loaded everything successfully and will be rendered
          */
          CHANGED = eventNamespace + 'changed',
 
+        /**
+         * @event husky.ckeditor.focusout
+         * @description triggered when focus of editor is lost
+         */
+        FOCUSOUT = eventNamespace + 'focusout',
 
         /**
          * Removes the not needed elements from the config object for the ckeditor
@@ -33763,6 +33768,10 @@ define('__component__$ckeditor@husky',[], function() {
             this.editor.on('instanceReady', function() {
                 // bind class to editor
                 this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
+            }.bind(this));
+
+            this.editor.on('blur', function(){
+                this.sandbox.emit(FOCUSOUT, this.editor.getData(), this.$el);
             }.bind(this));
         }
 
