@@ -19,13 +19,11 @@
     &.input-large {
         height: 40px;
         padding: 0 10px;
-        font-size: 18px;
     }
 
     &[readonly] {
         background: none;
         border: 0;
-        font-style: italic;
         color: $grayLight;
     }
 }
@@ -44,6 +42,25 @@ input
     color: $grayLight;
 }
 
+.input-placeholder-style {
+    color: $grayLight;
+    font-weight: normal;
+}
+
+input {
+  &::-webkit-input-placeholder {
+    @extend .input-placeholder-style;
+  }
+  &:-moz-placeholder {
+    @extend .input-placeholder-style;
+  }
+  ::-moz-placeholder {  /* Firefox 19+ */
+    @extend .input-placeholder-style;
+  }
+  :-ms-input-placeholder {
+    @extend .input-placeholder-style;
+  }
+}
 
 // Form behaviours
 // -------------------------
@@ -251,4 +268,12 @@ textarea.form-element {
         border-bottom-left-radius: $inputBorderRadius !important;
         border-bottom-right-radius: $inputBorderRadius !important;
     }
+}
+
+// Font-definition
+// -------------------------
+span.error {
+    font-size: $baseFontSize;
+    color: $red;
+    font-weight: bold;
 }

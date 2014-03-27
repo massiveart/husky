@@ -42,7 +42,8 @@ define([], function() {
         singleSelect: false,              // Allows only one element to be selected
         noDeselect: false,                // Disables the possibility to deselect items
         disabled: false,                  //if true button is disabled
-        disabledClass: 'disabled'         //class to add to the button
+        disabledClass: 'disabled',        //class to add to the button
+        small: false                      //if true small-class will be added
     };
 
 
@@ -66,9 +67,13 @@ define([], function() {
         },
 
         render: function() {
-
             var $originalElement = this.sandbox.dom.$(this.options.el),
                 button = this.sandbox.dom.createElement(this.template.basicStructure.call(this, this.options.defaultLabel));
+
+            if (this.options.small === true) {
+                this.sandbox.dom.addClass(button, 'small');
+            }
+
             this.sandbox.dom.append($originalElement, button);
 
             this.$list = this.sandbox.dom.$('#' + this.listId);

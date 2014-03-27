@@ -82,6 +82,9 @@ $grid-margin-bottom-small: 10px;
     &:last-of-type {
         padding-right: 0;
     }
+    &.no-padding {
+        padding: 0;
+    }
 }
 
 .grid-col-1 {
