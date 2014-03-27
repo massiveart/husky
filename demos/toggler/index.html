@@ -32,11 +32,13 @@
     <div class="grid">
         <div class="grid-row">
             <div class="grid-col-6">
-                <label for="toggler1">Turn something on</label>
                 <div id="toggler1" data-aura-component="toggler@husky" data-aura-checked="true"></div>
-                <div class="dark">
-                    <div id="toggler2" data-aura-component="toggler@husky" data-aura-checked="false" data-aura-outline="true"></div>
-                </div>
+                <label class="inline clickable" for="toggler1">Turn it on</label>
+            </div>
+        </div>
+        <div class="grid-row">
+            <div class="dark">
+                <div id="toggler2" data-aura-component="toggler@husky" data-aura-checked="false" data-aura-outline="true"></div>
             </div>
         </div>
         <div class="grid-row">

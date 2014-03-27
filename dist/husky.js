@@ -36628,7 +36628,7 @@ define('__component__$toggler@husky',[], function() {
             switchClass: 'switch',
             checkedClass: 'checked',
             wrapperClass: 'toggler-wrapper',
-            outlineClass: 'outline',
+            outlineClass: 'outline'
         },
 
         /**

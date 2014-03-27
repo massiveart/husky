@@ -34,7 +34,7 @@ define([], function() {
             switchClass: 'switch',
             checkedClass: 'checked',
             wrapperClass: 'toggler-wrapper',
-            outlineClass: 'outline',
+            outlineClass: 'outline'
         },
 
         /**
