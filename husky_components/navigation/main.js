@@ -98,12 +98,12 @@ define(function() {
             //footer template
             footer: [
                 '<div class="user">',
-                    '<div class="icon-user pic"></div>',
-                    '<div class="name"><%= userName %></div>',
+                '<div class="icon-user pic"></div>',
+                '<div class="name"><%= userName %></div>',
                 '</div>',
                 '<div class="options">',
-                    '<div class="locale-dropdown"></div>',
-                    '<a href="<%= logoutRoute %>" title="Logout" class="icon-lock logout"></a>',
+                '<div class="locale-dropdown"></div>',
+                '<a href="<%= logoutRoute %>" title="Logout" class="icon-lock logout"></a>',
                 '</div>',
                 '<div class="version"><%= system %> (<%= version %>, <a href="#"><%= versionHistory %></a>)</div>'
             ].join('')
@@ -383,19 +383,21 @@ define(function() {
                     logoutRoute: this.options.logoutRoute
                 }));
 
-                this.sandbox.start([{
-                    name: 'dropdown-multiple-select@husky',
-                    options: {
-                        el: this.sandbox.dom.find('.locale-dropdown', $footer),
-                        instanceName: 'navigation-locale',
-                        value: 'name',
-                        data: this.options.userLocales,
-                        preSelectedElements: [this.options.userLocale],
-                        singleSelect: true,
-                        noDeselect: true,
-                        small: true
+                this.sandbox.start([
+                    {
+                        name: 'dropdown-multiple-select@husky',
+                        options: {
+                            el: this.sandbox.dom.find('.locale-dropdown', $footer),
+                            instanceName: 'navigation-locale',
+                            value: 'name',
+                            data: this.options.userLocales,
+                            preSelectedElements: [this.options.userLocale],
+                            singleSelect: true,
+                            noDeselect: true,
+                            small: true
+                        }
                     }
-                }]);
+                ]);
             }
         },
 
@@ -567,6 +569,7 @@ define(function() {
          * Toggles menu element with submenu
          * Raises navigation.toggle
          * @param event
+         * @param customTarget
          */
         toggleItems: function(event, customTarget) {
 
@@ -729,6 +732,7 @@ define(function() {
          * Raises navigation.select
          * @param event
          * @param [customTarget] if event is undefined, the target must be passed customly
+         * @param emit
          */
         selectSubItem: function(event, customTarget, emit) {
 
