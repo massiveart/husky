@@ -93,8 +93,7 @@ define(function() {
             findStopAndRestartChild = function(containerId) {
             var $container = this.$find(containerId),
                 $child = this.sandbox.dom.find('.' + constants.childContainerClass, $container);
-            if (!
-                $container) {
+            if (!$container) {
                 throw 'dependent-select: no container with id ' + containerId + ' could be found';
             }
             // stop child, if running
@@ -180,7 +179,7 @@ define(function() {
                         this.sandbox.logger.log('data could not be loaded:', data);
                     }.bind(this));
             } else if (!!this.options.data) {
-                this.render((this.options.data));
+                this.render(this.options.data);
             } else {
                 this.sandbox.logger.log('no data provided for dependent select!');
             }
