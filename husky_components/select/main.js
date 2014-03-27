@@ -253,6 +253,7 @@ define([], function() {
                 this.sandbox.dom.stopPropagation(event);
                 if (this.sandbox.dom.hasClass(event.currentTarget, 'disabled') === false) {
                     this.clickItem(event);
+                    return true;
                 } else {
                     this.sandbox.dom.preventDefault(event);
                     return false;
@@ -437,6 +438,7 @@ define([], function() {
             this.sandbox.logger.log('hide dropdown ' + this.options.instanceName);
             this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');
             this.dropdownVisible = false;
+            return true;
         },
 
         // return checked values
