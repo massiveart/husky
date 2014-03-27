@@ -49,8 +49,10 @@ define([], function() {
             labelClass: 'husky-select-label',
             listClass: 'husky-select-list',
             dropdownContainerClass: 'husky-select-dropdown-container',
-            deselectFieldKey: '',
-            disabledClass: 'disabled'
+            deselectFieldKey: 'deselectindex',
+            deselectFieldDefaultValue: '',
+            disabledClass: 'disabled',
+            dropdownTopClass: 'top'
         },
 
         /**
@@ -134,6 +136,11 @@ define([], function() {
             this.sandbox.logger.log('initialize', this);
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
+            // if deselectfield is set to true, set it to default value
+            if (!!this.options.deselectField && this.options.deselectField.toString() === 'true') {
+                this.options.deselectField = constants.deselectFieldDefaultValue;
+            }
+
             this.selection = [];
 
             this.selectedElements = [];
@@ -189,14 +196,15 @@ define([], function() {
         },
 
         addDropdownElement: function(id, value, disabled) {
-            var $item;
+            var $item,
+                idString = !!id ? id.toString() : 'null';
             if (this.options.preSelectedElements.indexOf(id) >= 0) {
-                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, id, value, 'checked'));
-                this.selectedElements.push((id).toString());
+                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, 'checked'));
+                this.selectedElements.push(idString);
                 this.selectedElementsValues.push(value);
                 this.triggerSelect(id);
             } else {
-                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, id, value, ''));
+                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, ''));
             }
 
             if (!!disabled && disabled === true) {
@@ -298,10 +306,10 @@ define([], function() {
                 if (key === constants.deselectFieldKey) {
                     index = 0;
                     this.uncheckAll(key);
-                // if new element was selected
+                    // if new element was selected
                 } else if (index === -1) {
                     this.uncheckAll(key);
-                // same element was selected
+                    // same element was selected
                 } else {
                     this.hideDropDown();
                     return;
@@ -320,7 +328,7 @@ define([], function() {
 
                 this.triggerDeselect(key);
 
-            // select
+                // select
             } else {
                 this.sandbox.dom.addClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', true);
@@ -394,6 +402,23 @@ define([], function() {
             this.sandbox.dom.removeClass(this.$dropdownContainer, 'hidden');
             this.sandbox.dom.on(this.sandbox.dom.window, 'click.dropdown.' + this.options.instanceName, this.hideDropDown.bind(this));
             this.dropdownVisible = true;
+            var ddHeight = this.sandbox.dom.height(this.$dropdownContainer),
+                ddTop = this.sandbox.dom.offset(this.$dropdownContainer).top,
+                windowHeight = this.sandbox.dom.height(this.sandbox.dom.window),
+                hasTopClass = this.sandbox.dom.hasClass(this.$dropdownContainer, constants.dropdownTopClass);
+
+            // check if dropdown container overlaps bottom of browser
+            if (ddHeight + ddTop > windowHeight && !hasTopClass) {
+                this.sandbox.dom.addClass(this.$dropdownContainer, constants.dropdownTopClass);
+                this.flipDropdownContent();
+            } else if (hasTopClass) {
+                this.sandbox.dom.removeClass(this.$dropdownContainer, constants.dropdownTopClass);
+                this.flipDropdownContent();
+            }
+        },
+
+        flipDropdownContent: function() {
+
         },
 
         // hide dropDown

@@ -66,6 +66,9 @@
                 <td>
                     <div class="grid-col-11" id="ddms8"></div>
                 </td>
+                <td>
+                    <div class="grid-col-11" id="ddms8"></div>
+                </td>
             </tr>
             <tr>
                 <td><button id="toggleState">toggle state of button 7</button></td>
@@ -82,6 +85,12 @@
         <div class="grid-col-3 pointer" id="hide">Hide</div>
         <div class="grid-col-3 pointer" id="toggle">Toggle</div>
         <div class="grid-col-3 pointer" id="get">getChecked</div>
+    </div>
+
+    <div style="position:absolute;bottom:0;width:200px;">
+        <td>
+            <div class="grid-col-11" id="ddms9"></div>
+        </td>
     </div>
 </div>
 
@@ -109,6 +118,7 @@
                         options: {
                             el: '#ddms',
                             instanceName: 'ddms',
+                            multipleSelect: true,
                             defaultLabel: 'Please choose ...',
                             value: 'name',
                             data: ['Deutsch', 'English', 'Spanish', 'Italienisch'],
@@ -120,6 +130,7 @@
                         options: {
                             el: '#ddms2',
                             instanceName: 'ddms2',
+                            multipleSelect: true,
                             defaultLabel: 'Please choose ...',
                             value: 'name',
                             data: [
@@ -136,6 +147,7 @@
                         options: {
                             el: '#ddms3',
                             instanceName: 'ddms3',
+                            multipleSelect: true,
                             defaultLabel: 'Please choose ...',
                             value: 'name',
                             data: ['Deutsch', 'English', 'Spanish', 'Italienisch']
@@ -146,6 +158,7 @@
                         options: {
                             el: '#ddms4',
                             instanceName: 'ddms4',
+                            multipleSelect: true,
                             defaultLabel: 'Please choose ...',
                             value: 'name',
                             data: [
@@ -163,7 +176,7 @@
                             instanceName: 'ddms5',
                             defaultLabel: 'This one is single select.. try it',
                             value: 'name',
-                            singleSelect: true,
+                            multipleSelect: false,
                             data: [
                                 {id: 0, name: 'Deutsch'},
                                 {id: 1, name: 'English'},
@@ -177,9 +190,10 @@
                         options: {
                             el: '#ddms6',
                             instanceName: 'ddms6',
-                            defaultLabel: 'No unselect..',
+                            multipleSelect: false,
+                            defaultLabel: 'with deselect..',
                             value: 'name',
-                            noDeselect: true,
+                            deselectField: '',
                             data: [
                                 {id: 0, name: 'Deutsch'},
                                 {id: 1, name: 'English'},
@@ -195,7 +209,7 @@
                             instanceName: 'ddms7',
                             defaultLabel: 'I am disabled',
                             value: 'name',
-                            noDeselect: true,
+                            multipleSelect: true,
                             disabled: true,
                             data: [
                                 {id: 0, name: 'Deutsch'},
@@ -212,6 +226,24 @@
                             instanceName: 'ddms8',
                             defaultLabel: 'I have disabled items',
                             value: 'name',
+                            preSelectedElements: [null],
+                            data: [
+                                {id: null, name: 'Deselect with null item'},
+                                {id: 0, name: 'Deutsch', disabled: true},
+                                {id: 1, name: 'English'},
+                                {id: 2, name: 'Spanish', disabled: true},
+                                {id: 3, name: 'Italienisch'}
+                            ]
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms9',
+                            instanceName: 'ddms9',
+                            defaultLabel: 'I stick to the bottom',
+                            value: 'name',
+                            preSelectedElements: [null],
                             data: [
                                 {id: 0, name: 'Deutsch', disabled: true},
                                 {id: 1, name: 'English'},
@@ -246,7 +278,7 @@
             });
 
             app.sandbox.dom.on('#get', 'click', function(event) {
-                app.sandbox.emit('husky.select.ddms.getChecked', function(selected) {
+                app.sandbox.emit('husky.select.ddms.get-checked', function(selected) {
                     console.log('selected items', selected);
                 });
             });

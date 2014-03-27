@@ -44,6 +44,11 @@
         border: 1px solid $grayLighter;
         z-index: 95;
 
+        &.top {
+            top: inherit;
+            bottom: 5px;
+        }
+
         .disabled,
         .disabled:hover {
             background: none;
