@@ -208,6 +208,13 @@
     }
 }
 
+.icon-lock {
+  &::after {
+    content: "\1f512";
+    display: inline-block;
+  }
+}
+
 .icon-chevron-right {
   &::after {
     font-family: $baseIconHalflingsFont;
@@ -219,6 +226,13 @@
 .icon-chevron-left {
   &::after {
     font-family: $baseIconHalflingsFont;
+    content: "\e079";
+    display: inline-block;
+  }
+}
+
+.icon-warning {
+  &::after {
     content: "\e079";
     display: inline-block;
   }
@@ -357,9 +371,23 @@
   }
 }
 
+.icon-user {
+  &::after {
+    content: "\e004";
+    display: inline-block;
+  }
+}
+
 .icon-user-add {
   &::after {
     content: "\e007";
+    display: inline-block;
+  }
+}
+
+.icon-asterisk {
+  &::after {
+    content: "\002a";
     display: inline-block;
   }
 }

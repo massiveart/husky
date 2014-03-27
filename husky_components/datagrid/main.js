@@ -1168,7 +1168,7 @@ define(function() {
                         el: this.sandbox.dom.find('#' + this.pagination.dropdownId, this.$el),
                         setParentDropDown: true,
                         instanceName: this.dropdownInstanceName,
-                        alignment: 'left',
+                        alignment: 'right',
                         data: data
                     }
                 }
