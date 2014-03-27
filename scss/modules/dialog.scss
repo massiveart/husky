@@ -75,14 +75,18 @@
 }
 
 .husky-dialog-header {
+    z-index: 1000;
     p, div, span, button {
-      margin: 9px 15px;
-      //border-bottom: 1px solid $grayLighter;
+       padding: 10px 15px;
     }
 }
 
 .husky-dialog-header .close {
-    margin-top: 2px;
+    z-index: 1000;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    cursor: pointer;
 }
 
 .husky-dialog-body {
