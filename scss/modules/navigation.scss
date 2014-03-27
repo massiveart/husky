@@ -2,6 +2,9 @@
 @import "compass/css3/text-shadow";
 @import "compass/css3/transition";
 
+$footerOuterHeight: 121;
+$footerOuterHeightColappsed: 51;
+$footerTopMargin: 40;
 
 @mixin toggle-item {
     border-bottom: 1px solid $gray;
@@ -39,7 +42,6 @@ $transitionDuration: 0.5s;
     color: $grayDark;
     font-weight: bold;
     cursor: default;
-    //@include text-shadow($gray 1px 1px);
 
     .section-toggle {
         display: none;
@@ -105,7 +107,6 @@ $transitionDuration: 0.5s;
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 40px 0px 20px;
     color: $grayLight;
     font-size: 16px;
 
@@ -121,12 +122,25 @@ $transitionDuration: 0.5s;
         padding: 0;
         list-style: none;
     }
+
+    /*for sticky navigation footer*/
+    .wrapper {
+        min-height: 100%;
+        margin-bottom: -($footerOuterHeight * 1px);
+        overflow: hidden;
+
+        &:after {
+            content: "";
+            display: block;
+            height: ($footerOuterHeight + $footerTopMargin) * 1px //height of footer plus "margin"
+        }
+    }
 }
 
 .navigation-header {
     height: 30px;
     overflow: hidden;
-    margin: 0 $verticalMargin 20px;
+    margin: 40px $verticalMargin 20px;
 }
 
 .navigation-header-title {
@@ -320,7 +334,7 @@ li.is-active {
     top: 0px;
     left: 0px;
     padding-left: 3px;
-    font-size: 18px;
+    font-size: 20px;
     height: 100%;
     line-height: 50px;
 }
@@ -348,18 +362,6 @@ li a.navigation-settings-icon {
     font-size: 10px;
 }
 
-.navigation footer {
-    border-top: 1px solid #5B5B5B;
-    padding-top: 20px;
-    margin: 100px $verticalMargin 0 $verticalMargin + $verticalItemPadding;
-    font-size: 12px;
-
-    .version {
-        font-size: 10px;
-    }
-
-}
-
 .navigation-subitems-toggle {
     padding: 2px 0 2px;
     position: relative;
@@ -373,6 +375,82 @@ li a.navigation-settings-icon {
         padding: 0px;
     }
 
+}
+
+.navigation footer {
+    padding: 15px 20px 15px 23px;
+    border-top: 1px solid $navigationFooterGray2;
+    height: $footerOuterHeight * 1px;
+
+    .user {
+        font-size: $smallFontSize;
+        color: $white;
+        margin-bottom: 15px;
+        height: 20px;
+        white-space: nowrap;
+
+        .pic {
+            color: $grayDarkLighter;
+            background: $white;
+            height: 20px;
+            width: 20px;
+            line-height: 22px;
+            border: 1px solid $white;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 16px;
+            overflow: hidden;
+            display: inline-block;
+            margin-right: 15px;
+        }
+        .name {
+            display: inline-block;
+            line-height: 20px;
+            position: relative;
+            top: -5px;
+            left: 0px;
+        }
+    }
+
+    .options {
+        height: 20px;
+        margin-bottom: 15px;
+        padding-left: 35px;
+        white-space: nowrap;
+        position: relative;
+        top: 0px;
+        left: 0px;
+
+        .locale-dropdown {
+            color: $black;
+            width: 60px;
+        }
+        .dropdown-list {
+            min-width: 150px;
+        }
+        .logout {
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+            display: block;
+            display: block;
+            text-decoration: none;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+        }
+    }
+    .version {
+        padding-left: 35px;
+        font-size: $reallySmallFontSize;
+        color: $navigationFooterGray;
+        white-space: nowrap;
+
+        a {
+            color: $white;
+            text-decoration: none;
+        }
+    }
 }
 
 /**
@@ -450,7 +528,8 @@ li a.navigation-settings-icon {
     }
 
     .navigation-item-icon {
-        margin-left: 13px;
+        margin-left: 15px;
+        padding-left: 0px;
         line-height: 50px;
         vertical-align: middle;
     }
@@ -460,11 +539,35 @@ li a.navigation-settings-icon {
     }
 
     footer {
-        opacity: 0;
-        height: 0;
-        margin:0;
+        padding-left: 15px;
+        height: auto;
+        cursor: pointer;
+        height: ($footerOuterHeightColappsed) * 1px;
+        overflow: hidden;
+
+        * {
+            opacity: 0;
+            height: 0px;
+            margin: 0px;
+        }
+        .user {
+            opacity: 1;
+            height: 20px;
+            .pic {
+                opacity: 1;
+                height: 20px;
+            }
+        }
     }
 
+    .navigation-content {
+        .wrapper {
+            margin-bottom: -($footerOuterHeightColappsed * 1px); //height of collapsed navigation footer
+            &:after {
+                height: ($footerOuterHeightColappsed + $footerTopMargin) * 1px; //height of minified navigation footer plus 40px "margin"
+            }
+        }
+    }
 }
 
 .navigation-tooltip {
@@ -477,6 +580,7 @@ li a.navigation-settings-icon {
     padding: 0 10px;
     color: white;
     background-color: $navigationBackgroundColor;
+    z-index: 1000;
 
     &::before {
         content: ' ';
@@ -491,16 +595,18 @@ li a.navigation-settings-icon {
     }
 }
 
-//.navigation,
+//effects
 .navigation {
     @include single-transition(width, $transitionDuration);
 }
 
-.navigation-items {
-    @include single-transition(all, $transitionDuration);
-}
-.navigation-items *{
-    @include single-transition(all, $transitionDuration);
+.navigation footer,
+.navigation footer > *,
+.navigation .wrapper,
+.navigation .wrapper:after,
+.navigation-items,
+.navigation-items * {
+  @include single-transition(all, $transitionDuration);
 }
 
 .navigation-header {

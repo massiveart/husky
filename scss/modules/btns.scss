@@ -3,13 +3,78 @@
 // --------------------------------------------------
 
 .btn {
-    padding: 5px 25px;
+    padding: 0 25px;
     border: 0;
     border-radius: $btnBorderRadius;
     background-color: #FFF;
     color: #000;
+    cursor: pointer;
+    line-height: 30px;
+    height: 30px;
+
+    &.fit {
+        display: inline-block;
+        padding-right: 30px;
+    }
+    &.action {
+        background-color: $highlightColor;
+        color: $white;
+    }
+    &.action2 {
+        background-color: $yellow;
+        color: $white;
+    }
+    &.large {
+        line-height: 40px;
+        height: 40px;
+    }
+    &.small {
+      font-size: $smallFontSize;
+      height: 20px;
+      line-height: 20px;
+      border-radius: $btnBorderRadius - 1;
+
+      [class^="icon-"] {
+          font-size: 10px;
+
+          & + .text {
+              top: -1px;
+              font-size: $smallFontSize;
+          }
+      }
+    }
+    &.grey {
+        background-color: $grayLighter;
+        color: $white;
+    }
+    &.black {
+      background-color: $black;
+      color: $white;
+    }
+    &.inactive {
+        cursor: default;
+    }
+    [class^="icon-"] {
+        font-size: 18px;
+        margin-left: -15px;
+        display: inline-block;
+        margin-bottom: -5px;
+
+        & + .text {
+          font-size: $baseFontSize;
+          display: inline-block;
+          margin-right: -20px;
+          margin-left: 5px;
+          position: relative;
+          top: -4px;
+          left: 0px;
+        }
+    }
 }
 
+/**
+** Buttons-classes on the bottom and should be replaced in the code with the classes above
+**/
 a.btn {
     color: #000;
     text-decoration: none;
@@ -23,23 +88,22 @@ a.btn {
 
 .btn-black {
     background-color: #000;
-    color: #FFF;
+    color: $white;
 }
 
 .btn-highlight {
     background-color: $highlightColor;
-    color: #FFF;
+    color: $white;
 }
 
 a.btn-black, a.btn-highlight {
-    color: #FFF;
+    color: $white;
 }
-
 
 
 .btn-gray {
   background-color: $grayLighter;
-  color: #000;
+  color: $black;
 }
 
 
