@@ -23,6 +23,12 @@
             margin-left: 300px;
             margin-top: 100px;
         }
+        td {
+            padding-bottom: 20px;
+        }
+        #ddms9 {
+            width: 94px;
+        }
     </style>
 
 </head>
@@ -65,6 +71,11 @@
                 </td>
                 <td>
                     <div class="grid-col-11" id="ddms8"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="grid-col-6" id="ddms9"></div>
                 </td>
             </tr>
             <tr>
@@ -112,7 +123,7 @@
                             defaultLabel: 'Please choose ...',
                             value: 'name',
                             data: ['Deutsch', 'English', 'Spanish', 'Italienisch'],
-                            preSelectedElements: ['Deutsch', 'English', 'Italienisch' ]
+                            preSelectedElements: ['Deutsch', 'English', 'Italienisch']
                         }
                     },
                     {
@@ -120,6 +131,7 @@
                         options: {
                             el: '#ddms2',
                             instanceName: 'ddms2',
+                            multipleSelect: true,
                             defaultLabel: 'Please choose ...',
                             value: 'name',
                             data: [
@@ -138,6 +150,7 @@
                             instanceName: 'ddms3',
                             defaultLabel: 'Please choose ...',
                             value: 'name',
+                            multipleSelect: true,
                             data: ['Deutsch', 'English', 'Spanish', 'Italienisch']
                         }
                     },
@@ -218,6 +231,16 @@
                                 {id: 2, name: 'Spanish', disabled: true},
                                 {id: 3, name: 'Italienisch'}
                             ]
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms9',
+                            instanceName: 'ddms9',
+                            data: ['EN_EN', 'EN_US', 'DE_DE', 'DE_AT'],
+                            preSelectedElements: ['EN_EN'],
+                            style: 'big'
                         }
                     }
                 ]).then(function() {

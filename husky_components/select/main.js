@@ -25,6 +25,7 @@
  * @param {Array} [options.preSelectedElements] allows preselection of fields by defining the id attributes or strings
  * @param {Function} [options.selectCallback] callbackfunction, when element is selected
  * @param {String} [options.valueName] name of property which should be used
+ * @param {String} [options.style] "normal", "small" or "big" for different appearance
  */
 
 define([], function() {
@@ -42,7 +43,8 @@ define([], function() {
             deselectField: false,             // field for deselection is added to dropdown if value is a string
             disabled: false,                  //if true button is disabled
             selectCallback: null,
-            deselectCallback: null
+            deselectCallback: null,
+            style: 'normal'
         },
 
         constants = {
@@ -150,6 +152,12 @@ define([], function() {
                 button = this.sandbox.dom.createElement(this.template.basicStructure.call(this, this.options.defaultLabel));
             this.sandbox.dom.append($originalElement, button);
 
+            if (this.options.style === 'small') {
+                this.sandbox.dom.addClass(button, 'small');
+            } else if (this.options.style === 'big') {
+                this.sandbox.dom.addClass(button, 'big');
+            }
+
             this.$list = this.$find('.' + constants.listClass);
             this.$dropdownContainer = this.$find('.' + constants.dropdownContainerClass);
             this.$label = this.$find('.' + constants.labelClass);
@@ -190,7 +198,9 @@ define([], function() {
 
         addDropdownElement: function(id, value, disabled) {
             var $item;
-            if (this.options.preSelectedElements.indexOf(id) >= 0) {
+            if (this.options.preSelectedElements.indexOf(id) >= 0 ||
+                this.options.preSelectedElements.indexOf(value) >= 0) {
+
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, id, value, 'checked'));
                 this.selectedElements.push((id).toString());
                 this.selectedElementsValues.push(value);

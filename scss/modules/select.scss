@@ -2,6 +2,18 @@
 
     position: relative;
 
+    &.big {
+        .dropdown-label {
+            font-size: $baseFontSize;
+            padding: 10px 10px 10px 15px;
+
+            .dropdown-toggle {
+                right: 15px;
+                top: 10px;
+            }
+        }
+    }
+
     .dropdown-label {
         background: $grayLighter;
         padding: 5px 5px 5px 10px;
