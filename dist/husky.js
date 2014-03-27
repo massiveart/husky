@@ -17011,6 +17011,8 @@ define('form/mapper',[
                     Util.debug('INIT Mapper');
 
                     this.collections = [];
+                    this.templates = {};
+                    this.collectionsInitiated = $.Deferred();
 
                     form.initialized.then(function() {
                         var selector = '*[data-type="collection"]',
@@ -17024,7 +17026,15 @@ define('form/mapper',[
                     var $element = $(value),
                         element = $element.data('element'),
                         property = $element.data('mapper-property'),
-                        $newChild;
+                        $newChild, collection,
+                        dfd = $.Deferred(),
+                        counter = 0,
+                        resolve = function() {
+                            counter--;
+                            if (counter === 0) {
+                                dfd.resolve();
+                            }
+                        };
 
                     if (!$.isArray(property)) {
                         if (typeof property === 'object') {
@@ -17038,9 +17048,23 @@ define('form/mapper',[
                     // get templates
                     element.$children = $element.children().clone(true);
 
+                    collection = {
+                        property: property,
+                        $element: $element,
+                        element: element
+                    };
+
+                    counter += element.$children.length;
                     // iterate through collection
                     element.$children.each(function(i, child) {
-                        var $child = $(child);
+                        var $child = $(child), propertyName, x, len,
+                            propertyCount = 0,
+                            resolveElement = function() {
+                                propertyCount--;
+                                if (propertyCount === 0) {
+                                    resolve();
+                                }
+                            };
 
                         // attention: template has to be markuped as 'script'
                         if (!$child.is('script')) {
@@ -17049,47 +17073,91 @@ define('form/mapper',[
 
                         $newChild = {tpl: $child.html(), id: $child.attr('id')};
                         element.$children[i] = $newChild;
-                    });
+
+                        for (x = -1, len = property.length; ++x < len;) {
+                            if (property[x].tpl === $newChild.id) {
+                                propertyName = property[x].data;
+                            }
+                        }
+                        if (!!propertyName) {
+                            propertyCount = collection.element.getType().getMinOccurs();
+                            this.templates[propertyName] = {tpl: $newChild, collection: collection};
+                            // init default children
+                            for (x = collection.element.getType().getMinOccurs() + 1; --x > 0;) {
+                                that.appendChildren.call(this, collection.$element, $newChild).then(function() {
+                                    // set counter
+                                    $('#current-counter-' + propertyName).text(collection.element.getType().getChildren($newChild.id).length);
+                                    resolveElement();
+                                }.bind(this));
+                            }
+                        } else {
+                            resolveElement();
+                        }
+                    }.bind(this));
 
                     // add to collections
-                    this.collections.push({
-                        property: property,
-                        $element: $element,
-                        element: element
+                    this.collections.push(collection);
+
+                    $.each(property, function(i, item) {
+                        // init add button
+                        form.$el.on('click', '*[data-mapper-add="' + item.data + '"]', that.addClick.bind(this));
+
+                        // init remove button
+                        form.$el.on('click', '*[data-mapper-remove="' + item.data + '"]', that.removeClick.bind(this));
+
+                        // emit collection init event after resolve
+                        dfd.then(function() {
+                            that.emitInitCollectionEvent(item.data);
+                        });
+                    }.bind(this));
+
+                    dfd.then(function() {
+                        Util.debug('collection resolved');
                     });
 
-                    // init add button
-                    form.$el.on('click', '*[data-mapper-add="' + property + '"]', that.addClick.bind(this));
-
-                    // init remove button
-                    form.$el.on('click', '*[data-mapper-remove="' + property + '"]', that.removeClick.bind(this));
+                    return dfd.promise();
                 },
 
                 addClick: function(event) {
                     var $addButton = $(event.currentTarget),
                         propertyName = $addButton.data('mapper-add'),
-                        $collectionElement = $('#' + propertyName),
-                        collectionElement = $collectionElement.data('element');
+                        tpl = this.templates[propertyName].tpl,
+                        collection = this.templates[propertyName].collection;
 
-                    if (collectionElement.getType().canAdd()) {
-                        that.appendChildren.call(this, $collectionElement, collectionElement.$children);
-
-                        $('#current-counter-' + $collectionElement.attr('id')).text($collectionElement.children().length);
+                    if (collection.element.getType().canAdd(tpl.id)) {
+                        that.appendChildren.call(this, collection.$element, tpl).then(function() {
+                            // set counter
+                            $('#current-counter-' + propertyName).text(collection.element.getType().getChildren(tpl.id).length);
+                            that.emitAddEvent(propertyName, null);
+                        }.bind(this));
                     }
                 },
 
                 removeClick: function(event) {
                     var $removeButton = $(event.currentTarget),
                         propertyName = $removeButton.data('mapper-remove'),
-                        $collectionElement = $('#' + propertyName),
-                        $element = $removeButton.closest('.' + propertyName + '-element'),
-                        collectionElement = $collectionElement.data('element');
+                        tpl = this.templates[propertyName].tpl,
+                        collection = this.templates[propertyName].collection,
+                        $element = $removeButton.closest('.' + propertyName + '-element');
 
-                    if (collectionElement.getType().canRemove()) {
+                    if (collection.element.getType().canRemove(tpl.id)) {
                         that.remove.call(this, $element);
-
-                        $('#current-counter-' + $collectionElement.attr('id')).text($collectionElement.children().length);
+                        // set counter
+                        $('#current-counter-' + propertyName).text(collection.element.getType().getChildren(tpl.id).length);
+                        that.emitRemoveEvent(propertyName, null);
                     }
+                },
+
+                emitInitCollectionEvent: function(propertyName) {
+                    $(form.$el).trigger('form-collection-init', [propertyName]);
+                },
+
+                emitAddEvent: function(propertyName, data) {
+                    $(form.$el).trigger('form-add', [propertyName, data]);
+                },
+
+                emitRemoveEvent: function(propertyName, data) {
+                    $(form.$el).trigger('form-remove', [propertyName, data]);
                 },
 
                 processData: function(el, collection) {
@@ -17147,7 +17215,8 @@ define('form/mapper',[
                             if (count === 0) {
                                 dfd.resolve();
                             }
-                        };
+                        },
+                        x, len;
 
                     // no element in collection
                     if (count === 0) {
@@ -17157,6 +17226,12 @@ define('form/mapper',[
                         $element.children().each(function(key, value) {
                             that.remove.call(this, $(value));
                         }.bind(this));
+
+                        if (collection.length < collectionElement.element.getType().getMinOccurs()) {
+                            for (x = collectionElement.element.getType().getMinOccurs() + 1, len = collection.length; --x > len;) {
+                                collection.push({});
+                            }
+                        }
 
                         // foreach collection elements: create a new dom element, call setData recursively
                         $.each(collection, function(key, value) {
@@ -17189,10 +17264,10 @@ define('form/mapper',[
                     // add fields
                     $.each($newFields, function(key, field) {
                         element = form.addField($(field));
+                        $element.append($template);
                         element.initialized.then(function() {
                             counter--;
                             if (counter === 0) {
-                                $element.append($template);
                                 dfd.resolve($template);
                             }
                         });
@@ -18052,14 +18127,26 @@ define('type/collection',[
                     return false;
                 },
 
-                canAdd: function() {
-                    var length = this.$el.children().length;
-                    return length < this.options.max;
+                getChildren: function(id) {
+                    return this.$el.find('*[data-mapper-property-tpl="' + id + '"]');
                 },
 
-                canRemove: function() {
-                    var length = this.$el.children().length;
-                    return length > this.options.min;
+                getMinOccurs: function() {
+                    return this.options.min;
+                },
+
+                getMaxOccurs: function() {
+                    return this.options.max;
+                },
+
+                canAdd: function(id) {
+                    var length = this.getChildren(id).length;
+                    return length < this.getMaxOccurs();
+                },
+
+                canRemove: function(id) {
+                    var length = this.getChildren(id).length;
+                    return length > this.getMinOccurs();
                 }
             };
 
@@ -24546,11 +24633,13 @@ define('__component__$navigation@husky',[],function() {
             skeleton: [
                 '<nav class="navigation<% if (collapsed === "true") {%> collapsed<% } %>">',
                 '   <div class="navigation-content">',
-                '       <header class="navigation-header">',
-                '           <div class="navigation-header-title"><% if (data.title) { %> <%= translate(data.title) %><% } %></div>',
-                '       </header>',
-                '       <div id="navigation-search" class="navigation-search"></div>',
-                '       <div id="navigation-item-container" class="navigation-item-container"></div>',
+                '       <div class="wrapper">',
+                '           <header class="navigation-header">',
+                '               <div class="navigation-header-title"><% if (data.title) { %> <%= translate(data.title) %><% } %></div>',
+                '           </header>',
+                '           <div id="navigation-search" class="navigation-search"></div>',
+                '           <div id="navigation-item-container" class="navigation-item-container"></div>',
+                '       </div>',
                 '       <footer>',
                 '       </footer>',
                 '   </div>',
@@ -24596,6 +24685,18 @@ define('__component__$navigation@husky',[],function() {
                 '<li class="js-navigation-sub-item" id="<%= item.id %>" data-id="<%= item.id %>">',
                 '   <a href="#"><%= translate(item.title) %></a>',
                 '</li>'
+            ].join(''),
+            //footer template
+            footer: [
+                '<div class="user">',
+                '<div class="icon-user pic"></div>',
+                '<div class="name"><%= userName %></div>',
+                '</div>',
+                '<div class="options">',
+                '<div class="locale-dropdown"></div>',
+                '<a href="<%= logoutRoute %>" title="Logout" class="icon-lock logout"></a>',
+                '</div>',
+                '<div class="version"><%= system %> (<%= version %>, <a href="#"><%= versionHistory %></a>)</div>'
             ].join('')
         },
         defaults = {
@@ -24606,7 +24707,14 @@ define('__component__$navigation@husky',[],function() {
                 show: 'navigation.show'
             },
             resizeWidth: 800,
-            forceCollapse: false
+            forceCollapse: false,
+            systemName: 'Sulu 2.0',
+            footer: true,
+            logoutRoute: '/logout',
+            translations: {
+                versionHistory: 'navigation.version-history',
+                user: 'navigation.user'
+            }
         },
         CONSTANTS = {
             UNCOLLAPSED_WIDTH: 250,
@@ -24615,6 +24723,13 @@ define('__component__$navigation@husky',[],function() {
         },
 
         namespace = 'husky.navigation.',
+
+        /**
+         * listens on and activates the matching navigation-item
+         * @event husky.navigation.select-item
+         * @param {string} selectAction The select-action to match the navigation-item for
+         */
+            EVENT_SELECT_ITEM = namespace + 'select-item',
 
         /**
          * raised when navigation was collapsed
@@ -24660,6 +24775,18 @@ define('__component__$navigation@husky',[],function() {
             EVENT_SIZE_CHANGED = namespace + 'size.changed',
 
         /**
+         * raised when the user locale is changed
+         * @event husky.navigation.user-locale.changed
+         */
+            USER_LOCALE_CHANGED = namespace + 'user-locale.changed',
+
+        /**
+         * raised when the version history is clicked
+         * @event husky.navigation.version-history.clicked
+         */
+            VERSION_HISTORY_CLICKED = namespace + 'version-history.clicked',
+
+        /**
          * show the navigation when it was hidden before
          * @event husky.navigation.show
          */
@@ -24684,6 +24811,7 @@ define('__component__$navigation@husky',[],function() {
 
             this.stayCollapsed = false;
             this.hidden = false;
+            this.tooltipsEnabled = true;
 
             // binding dom events
             this.bindDOMEvents();
@@ -24754,12 +24882,12 @@ define('__component__$navigation@husky',[],function() {
             this.renderNavigationItems(this.options.data);
 
             // render footer
-            if (!!this.options.footerTemplate && this.options.footerTemplate !== '') {
-                this.renderFooter(this.options.footerTemplate);
-            }
+            this.renderFooter();
 
             // preselect item based on url
-            this.preselectItem();
+            if (!!this.options.selectAction && this.options.selectAction.length > 0) {
+                this.preselectItem(this.options.selectAction);
+            }
 
             // collapse if necessary
             this.resizeListener();
@@ -24796,7 +24924,7 @@ define('__component__$navigation@husky',[],function() {
                         this.renderSubNavigationItems(item, $elem);
                     }
                     item.domObject = $elem;
-                    this.items[item.id] = item;
+                    this.items.push(item);
                 }.bind(this));
             }.bind(this));
         },
@@ -24812,7 +24940,8 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.dom.append($parentList, list);
 
             this.sandbox.util.foreach(data.items, function(item) {
-                this.items[item.id] = item;
+                item.parentTitle = data.title;
+                this.items.push(item);
                 if (item.items && item.items.length > 0) {
                     elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subToggleItem, {item: item, translate: this.sandbox.translate}));
                     this.renderSubNavigationItems(item, this.sandbox.dom.find('div', elem));
@@ -24831,9 +24960,47 @@ define('__component__$navigation@husky',[],function() {
             }.bind(this));
         },
 
-        renderFooter: function(footerTemplate) {
-            var $footer = this.sandbox.dom.find('footer', this.$el);
-            this.sandbox.dom.html($footer, footerTemplate);
+        /**
+         * Renders the footer of the navigation
+         */
+        renderFooter: function() {
+            if (this.options.footer === true) {
+                var $footer = this.sandbox.dom.find('footer', this.$el);
+                this.sandbox.dom.html($footer, _.template(templates.footer)({
+                    userName: this.options.userName,
+                    system: this.options.systemName,
+                    version: this.options.systemVersion,
+                    versionHistory: this.sandbox.translate(this.options.translations.versionHistory),
+                    logoutRoute: this.options.logoutRoute
+                }));
+
+                this.sandbox.start([
+                    {
+                        name: 'dropdown-multiple-select@husky',
+                        options: {
+                            el: this.sandbox.dom.find('.locale-dropdown', $footer),
+                            instanceName: 'navigation-locale',
+                            value: 'name',
+                            data: this.options.userLocales,
+                            preSelectedElements: [this.options.userLocale],
+                            singleSelect: true,
+                            noDeselect: true,
+                            small: true
+                        }
+                    }
+                ]);
+            }
+        },
+
+        /**
+         * Handles the event when the collapsed Footer is clicked
+         */
+        collapsedFooterClickHandler: function() {
+            this.unCollapse(true);
+
+            // scroll to footer
+            this.sandbox.dom.one(this.sandbox.dom.$window, CONSTANTS.TRANSITIONEND_EVENT,
+                this.checkBottomHit.bind(this, null, this.sandbox.dom.find('footer', this.$el)));
         },
 
         /**
@@ -24849,31 +25016,46 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.dom.on(this.sandbox.dom.window, 'resize', this.resizeListener.bind(this));
             this.sandbox.dom.on(this.$el, 'click', this.showCollapsedSearch.bind(this), '.navigation #navigation-search a.search-icon');
             this.sandbox.dom.on(this.$el, 'click', this.collapse.bind(this), '.navigation.collapseIcon .navigation-close-icon');
+            this.sandbox.dom.on(this.$el, 'click', this.collapsedFooterClickHandler.bind(this), '.navigation.collapsed footer');
 
 
             // tooltip events
             this.sandbox.dom.on(this.$el, 'mouseenter', function(event) {
                 this.showToolTip.call(this, this.sandbox.dom.attr(this.sandbox.dom.find('input', '.navigation-search'), 'placeholder'), event);
             }.bind(this), '.navigation.collapsed .navigation-search');
+            this.sandbox.dom.on(this.$el, 'mouseenter', function(event) {
+                this.showToolTip.call(this, this.sandbox.translate(this.options.translations.user), event);
+            }.bind(this), '.navigation.collapsed footer');
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showToolTip.bind(this, ''), '.navigation.collapsed .navigation-items');
-            this.sandbox.dom.on(this.$el, 'mouseleave', this.hideToolTip.bind(this), '.navigation.collapsed .navigation-items, .navigation.collapsed .navigation-search');
+            this.sandbox.dom.on(this.$el, 'mouseleave', this.hideToolTip.bind(this), '.navigation.collapsed .navigation-items, .navigation.collapsed .navigation-search, .navigation.collapsed footer');
 
             this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function() {
                 this.sandbox.emit(EVENT_SIZE_CHANGED, this.sandbox.dom.width(this.$navigation));
+                this.tooltipsEnabled = true;
             }.bind(this));
             this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function(event) {
                 event.stopPropagation();
             }.bind(this), '.navigation *');
+
+            // version history clicked
+            this.sandbox.dom.on(this.$el, 'click', function() {
+                this.sandbox.emit(VERSION_HISTORY_CLICKED);
+            }.bind(this), 'footer .version a');
         },
 
         /**
          * event listener
          */
         bindCustomEvents: function() {
-            // change footer template
-            this.sandbox.on('husky.navigation.footer.set', function(template) {
-                this.options.footerTemplate = template;
-                this.renderFooter(template);
+            // merge options with newly passed options and rerender footer
+            this.sandbox.on('husky.navigation.footer.set', function(options) {
+                this.options = this.sandbox.util.extend(true, {}, this.options, options);
+                this.renderFooter();
+            }.bind(this));
+
+            //user locales dropdown
+            this.sandbox.on('husky.dropdown.multiple.select.navigation-locale.selected.item', function(locale) {
+                this.sandbox.emit(USER_LOCALE_CHANGED, locale);
             }.bind(this));
 
             this.sandbox.on(EVENT_COLLAPSE, function(stayCollapsed) {
@@ -24887,7 +25069,7 @@ define('__component__$navigation@husky',[],function() {
 
             this.sandbox.on(EVENT_HIDE, this.hide.bind(this));
             this.sandbox.on(EVENT_SHOW, this.show.bind(this));
-
+            this.sandbox.on(EVENT_SELECT_ITEM, this.preselectItem.bind(this));
         },
 
         resizeListener: function() {
@@ -24901,20 +25083,22 @@ define('__component__$navigation@husky',[],function() {
         },
 
         showToolTip: function(title, event) {
-            var offset,
-                target = event.currentTarget;
+            if (this.tooltipsEnabled === true) {
+                var offset,
+                    target = event.currentTarget;
 
-            if (!title) {
-                title = this.sandbox.dom.html(this.sandbox.dom.find('.navigation-item-title', event.currentTarget));
+                if (!title) {
+                    title = this.sandbox.dom.html(this.sandbox.dom.find('.navigation-item-title', event.currentTarget));
+                }
+                if (!this.$tooltip) {
+                    this.$tooltip = this.sandbox.dom.createElement('<div class="navigation-tooltip">' + title + '</div>');
+                    this.sandbox.dom.append('body', this.$tooltip);
+                }
+                offset = this.sandbox.dom.offset(target);
+                this.sandbox.dom.css(this.$tooltip, {
+                    top: offset.top + (this.sandbox.dom.outerHeight(target) - 30) / 2
+                });
             }
-            if (!this.$tooltip) {
-                this.$tooltip = this.sandbox.dom.createElement('<div class="navigation-tooltip">' + title + '</div>');
-                this.sandbox.dom.append('body', this.$tooltip);
-            }
-            offset = this.sandbox.dom.offset(target);
-            this.sandbox.dom.css(this.$tooltip, {
-                top: offset.top + (this.sandbox.dom.height(target) - 30) / 2
-            });
         },
 
         hideToolTip: function() {
@@ -24925,17 +25109,17 @@ define('__component__$navigation@husky',[],function() {
         },
 
 
-        preselectItem: function() {
-            if (!this.options.selectAction || this.options.selectAction.length < 1) {
-                return;
-            }
-
+        /**
+         * Takes an action and select the matching navigation point
+         * @param selectAction {string}
+         */
+        preselectItem: function(selectAction) {
             var matchLength = 0, matchItem, parent, match;
             this.sandbox.util.foreach(this.items, function(item) {
                 if (!item || !item.action) {
                     return;
                 }
-                if (this.options.selectAction.indexOf(item.action) !== -1 && item.action.length > matchLength) {
+                if (selectAction.indexOf(item.action) !== -1 && item.action.length > matchLength) {
                     matchItem = item;
                     matchLength = item.action.length;
                 }
@@ -24948,7 +25132,7 @@ define('__component__$navigation@husky',[],function() {
                     parent = this.sandbox.dom.closest(match, '.navigation-items');
                     this.toggleItems(null, parent);
                 }
-                this.selectSubItem(null, match);
+                this.selectSubItem(null, match, false);
                 this.checkBottomHit(null, match);
             }
         },
@@ -24966,7 +25150,7 @@ define('__component__$navigation@husky',[],function() {
 
             // emit event
             var listItem = this.sandbox.dom.closest(event.currentTarget, '.js-navigation-items'),
-                item = this.items[this.sandbox.dom.data(listItem, 'id')];
+                item = this.getItemById(this.sandbox.dom.data(listItem, 'id'));
 
             this.sandbox.emit('husky.navigation.item.settings', item);
 
@@ -24976,6 +25160,7 @@ define('__component__$navigation@husky',[],function() {
          * Toggles menu element with submenu
          * Raises navigation.toggle
          * @param event
+         * @param customTarget
          */
         toggleItems: function(event, customTarget) {
 
@@ -25017,12 +25202,11 @@ define('__component__$navigation@husky',[],function() {
             }
 
             // emit event
-            item = this.items[this.sandbox.dom.data($items, 'id')];
+            item = this.getItemById(this.sandbox.dom.data($items, 'id'));
             this.sandbox.emit('husky.navigation.item.toggle', !isExpanded, item);
         },
 
         checkBottomHit: function(event, customTarget) {
-
             var xBottom, windowHeight, itemHeight, itemTop, scrollTop,
                 $items;
 
@@ -25094,6 +25278,7 @@ define('__component__$navigation@husky',[],function() {
                     this.sandbox.emit(EVENT_COLLAPSED, CONSTANTS.COLLAPSED_WIDTH);
                     this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.COLLAPSED_WIDTH);
                     this.collapsed = !this.collapsed;
+                    this.tooltipsEnabled = false;
                 }
             }
         },
@@ -25111,6 +25296,7 @@ define('__component__$navigation@husky',[],function() {
                         this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.UNCOLLAPSED_WIDTH);
                     }
                     this.collapsed = !this.collapsed;
+                    this.tooltipsEnabled = false;
                 }
             }
         },
@@ -25137,8 +25323,9 @@ define('__component__$navigation@husky',[],function() {
          * Raises navigation.select
          * @param event
          * @param [customTarget] if event is undefined, the target must be passed customly
+         * @param emit
          */
-        selectSubItem: function(event, customTarget) {
+        selectSubItem: function(event, customTarget, emit) {
 
             if (!!event) {
                 event.preventDefault();
@@ -25170,15 +25357,31 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.dom.addClass($items, 'is-active');
 
 
-            // emit event
-            item = this.items[this.sandbox.dom.data($subItem, 'id')];
-            this.sandbox.emit('husky.navigation.item.select', item);
+            if (emit !== false) {
+                // emit event
+                item = this.getItemById(this.sandbox.dom.data($subItem, 'id'));
+                this.sandbox.emit('husky.navigation.item.select', item);
+            }
 
 
             if (!customTarget) {
                 setTimeout(this.resizeListener.bind(this), 700);
             }
 
+        },
+
+        /**
+         * Takes an id and returns the matching item
+         * @param id {number|string} id of the item
+         * @returns {object|null}
+         */
+        getItemById: function(id) {
+            for (var i = -1, length = this.items.length; ++i < length;) {
+                if (id === this.items[i].id) {
+                    return this.items[i];
+                }
+            }
+            return null;
         },
 
         /**
@@ -26797,7 +27000,7 @@ define('__component__$datagrid@husky',[],function() {
 
                 // add a checkbox to each row
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
-                    this.tblColumns.push('<td class="check">', this.templates.checkbox(), '</td>');
+                    this.tblColumns.push('<td>', this.templates.checkbox(), '</td>');
 
                     // add a radio to each row
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
@@ -27248,7 +27451,7 @@ define('__component__$datagrid@husky',[],function() {
                         el: this.sandbox.dom.find('#' + this.pagination.dropdownId, this.$el),
                         setParentDropDown: true,
                         instanceName: this.dropdownInstanceName,
-                        alignment: 'left',
+                        alignment: 'right',
                         data: data
                     }
                 }
@@ -28154,8 +28357,10 @@ define('__component__$datagrid@husky',[],function() {
                 name = (!!data.name) ? ' name="' + data.name + '"' : '';
 
                 return [
-                    '<input', id, name, ' type="checkbox" class="custom-checkbox" data-form="false"/>',
-                    '<span class="custom-checkbox-icon"></span>'
+                    '<div class="custom-checkbox">',
+                        '<input', id, name, ' type="checkbox" data-form="false"/>',
+                        '<span class="icon"></span>',
+                    '</div>'
                 ].join('');
             },
 
@@ -28167,8 +28372,10 @@ define('__component__$datagrid@husky',[],function() {
                 name = (!!data.name) ? ' name="' + data.name + '"' : '';
 
                 return [
-                    '<input', id, name, ' type="radio" class="custom-radio"/>',
-                    '<span class="custom-radio-icon"></span>'
+                    '<div class="custom-radio">',
+                        '<input', id, name, ' type="radio"/>',
+                        '<span class="icon"></span>',
+                    '</div>'
                 ].join('');
             }
         }
@@ -32020,7 +32227,8 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
         singleSelect: false,              // Allows only one element to be selected
         noDeselect: false,                // Disables the possibility to deselect items
         disabled: false,                  //if true button is disabled
-        disabledClass: 'disabled'         //class to add to the button
+        disabledClass: 'disabled',        //class to add to the button
+        small: false                      //if true small-class will be added
     };
 
 
@@ -32044,9 +32252,13 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
         },
 
         render: function() {
-
             var $originalElement = this.sandbox.dom.$(this.options.el),
                 button = this.sandbox.dom.createElement(this.template.basicStructure.call(this, this.options.defaultLabel));
+
+            if (this.options.small === true) {
+                this.sandbox.dom.addClass(button, 'small');
+            }
+
             this.sandbox.dom.append($originalElement, button);
 
             this.$list = this.sandbox.dom.$('#' + this.listId);
@@ -32311,8 +32523,10 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
                         '<li data-id="', value, '">',
                         '    <div>',
                         '        <div class="check' + hiddenClass + '">',
-                        '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
-                        '            <span class="custom-checkbox-icon"></span>',
+                        '            <div class="custom-checkbox no-spacing">',
+                        '               <input type="checkbox" class="form-element"', checked, '/>',
+                        '               <span class="icon"></span>',
+                        '            </div>',
                         '        </div>',
                         '        <div class="item-value">', value, '</div>',
                         '    </div>',
@@ -32325,8 +32539,10 @@ define('__component__$dropdown-multiple-select@husky',[], function() {
                         '<li data-id="', value.id, '">',
                         '    <div>',
                         '        <div class="check' + hiddenClass + '">',
-                        '            <input type="checkbox" class="form-element custom-checkbox"', checked, '/>',
-                        '            <span class="custom-checkbox-icon"></span>',
+                        '            <div class="custom-checkbox no-spacing">',
+                        '               <input type="checkbox" class="form-element"', checked, '/>',
+                        '               <span class="icon"></span>',
+                        '            </div>',
                         '        </div>',
                         '        <div class="item-value">', value[property], '</div>',
                         '    </div>',
@@ -32683,6 +32899,7 @@ define('__component__$column-navigation@husky',[], function() {
                         this.parseData(response, columnNumber);
                         this.alignWithColumnsWidth();
                         this.scrollIfNeeded(this.filledColumns + 1);
+                        this.setOverflowClass();
                         this.sandbox.emit(LOADED);
                     }.bind(this))
                     .fail(function(error) {
@@ -32888,7 +33105,20 @@ define('__component__$column-navigation@husky',[], function() {
             this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
                 this.setContainerHeight();
                 this.setContainerMaxWidth();
+                this.setOverflowClass();
             }.bind(this));
+        },
+
+        /**
+         * Sets an overflow-class to the container if the navigation is scrollable
+         */
+        setOverflowClass: function() {
+            var $navigation = this.sandbox.dom.find('.column-navigation', this.$el);
+            if (this.sandbox.dom.width($navigation) < this.sandbox.dom.get($navigation, 0).scrollWidth) {
+                this.sandbox.dom.addClass($navigation, 'overflow');
+            } else {
+                this.sandbox.dom.removeClass($navigation, 'overflow');
+            }
         },
 
         bindCustomEvents: function() {
@@ -33045,6 +33275,7 @@ define('__component__$column-navigation@husky',[], function() {
                 if (!selectedItem.hasSub) {
                     this.alignWithColumnsWidth();
                     this.scrollIfNeeded(column);
+                    this.setOverflowClass();
                 }
             }
 
@@ -34331,8 +34562,10 @@ define('__component__$smart-content@husky',[], function() {
                 subFolders: ['<div class="item-half">',
                     '<div class="check<%= disabled %>">',
                     '<label>',
-                    '<input type="checkbox" class="includeSubCheck form-element custom-checkbox"<%= includeSubCheckedStr %>/>',
-                    '<span class="custom-checkbox-icon"></span>',
+                    '<div class="custom-checkbox">',
+                        '<input type="checkbox" class="includeSubCheck form-element"<%= includeSubCheckedStr %>/>',
+                        '<span class="icon"></span>',
+                    '</div>',
                     '<span class="description"><%= includeSubStr %></span>',
                     '</label>',
                     '</div>',
@@ -36585,6 +36818,233 @@ define('__component__$process@husky',[], function() {
                 this.sandbox.dom.find('.' + constants.activeClass, this.$el),
                 constants.activeClass
             );
+        }
+    };
+
+});
+
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/process
+ */
+
+/**
+ * @class Toggler
+ * @constructor
+ *
+ * @params {Object} [options] Configuration object
+ * @params {Boolean} [options.instanceName] name of the component instance, gets used for events and the checkbox name. Can also be set through the DOM-id
+ * @params {Boolean} [options.checked] beginning state of the button
+ * @params {Boolean} [options.outline] if true component gets a bright border
+ */
+define('__component__$toggler@husky',[], function() {
+
+    
+
+    var defaults = {
+            instanceName: 'undefined',
+            checked: false,
+            hiddenCheckbox: true,
+            outline: false
+        },
+
+        constants = {
+            componentClass: 'husky-toggler',
+            switchClass: 'switch',
+            checkedClass: 'checked',
+            wrapperClass: 'toggler-wrapper',
+            outlineClass: 'outline'
+        },
+
+        /**
+         * namespace for events
+         * @type {string}
+         */
+            eventNamespace = 'husky.toggler.',
+
+        /**
+         * raised after initialization process
+         * @event husky.toggler.<instance-name>.initialize
+         */
+            INITIALIZED = function() {
+            return createEventName.call(this, 'initialized');
+        },
+
+        /**
+         * raised after initialization process
+         * @event husky.toggler.<instance-name>.changed
+         * @param {boolean} on True if button is on
+         */
+            CHANGED = function() {
+            return createEventName.call(this, 'changed');
+        },
+
+        /**
+         * event to turn the button on or off
+         * @event husky.toggler.<instance-name>.change
+         * @param {boolean} on To turn the button on or off
+         */
+            CHANGE = function() {
+            return createEventName.call(this, 'change');
+        },
+
+        /** returns normalized event names */
+            createEventName = function(postFix) {
+            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+        };
+
+    return {
+
+        /**
+         * Initialize component
+         */
+        initialize: function() {
+            //merge options with defaults
+            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
+            this.hasId = false;
+            this.checked = !!this.options.checked;
+            this.$checkbox = null;
+            this.$wrapper = null;
+
+            this.render();
+            this.bindDomEvents();
+            this.bindCustomEvents();
+
+            this.setData();
+
+            this.sandbox.emit(INITIALIZED.call(this));
+        },
+
+        /**
+         * Renders the component
+         */
+        render: function() {
+            this.sandbox.dom.addClass(this.$el, constants.componentClass);
+
+            if (this.sandbox.dom.attr(this.$el, 'id')) {
+                this.options.instanceName = this.sandbox.dom.attr(this.$el, 'id');
+                this.hasId = true;
+            }
+
+            if (this.options.outline === true) {
+                this.sandbox.dom.addClass(this.$el, constants.outlineClass);
+            }
+
+            //wrapper to insert all content into
+            this.$wrapper = this.sandbox.dom.createElement('<div class="'+ constants.wrapperClass +'"/>');
+            this.sandbox.dom.html(this.$el, this.$wrapper);
+
+            this.generateHiddenCheckbox();
+
+            if (this.checked === true) {
+                this.setChecked(false);
+            }
+
+            this.sandbox.dom.append(this.$wrapper, this.sandbox.dom.createElement('<div class="'+ constants.switchClass +'"/>'));
+        },
+
+        /**
+         * Binds the DOM related Events
+         */
+        bindDomEvents: function() {
+            this.sandbox.dom.on(this.$el, 'click', function() {
+               this.toggleButton();
+            }.bind(this));
+
+            //if toggler has id enable clicks on labels
+            if (this.hasId === true) {
+                this.sandbox.dom.on('label[for="'+ this.options.instanceName +'"]', 'click', function() {
+                    this.toggleButton();
+                }.bind(this));
+            }
+        },
+
+        /**
+         * Binds custom events
+         */
+        bindCustomEvents: function() {
+            this.sandbox.on(CHANGE.call(this), function(checked) {
+                if (this.checked !== checked) {
+                    if (checked === true) {
+                        this.setChecked(true);
+                    } else {
+                        this.unsetChecked(true);
+                    }
+                }
+            }.bind(this));
+        },
+
+        /**
+         * Toggles the button state
+         */
+        toggleButton: function() {
+            if (this.checked === true) {
+                this.unsetChecked(true);
+            } else {
+                this.setChecked(true);
+            }
+        },
+
+        /**
+         * Switches the toggler on
+         */
+        setChecked: function(emit) {
+            this.sandbox.dom.addClass(this.$el, constants.checkedClass);
+            this.checked = true;
+            this.setData();
+            this.updateCheckbox(this.checked);
+
+            if (emit !== false) {
+                this.sandbox.emit(CHANGED.call(this), true);
+            }
+        },
+
+        /**
+         * Switches the toggler off
+         */
+        unsetChecked: function(emit) {
+            this.sandbox.dom.removeClass(this.$el, constants.checkedClass);
+            this.checked = false;
+            this.setData();
+            this.updateCheckbox(this.checked);
+
+            if (emit !== false) {
+                this.sandbox.emit(CHANGED.call(this), false);
+            }
+        },
+
+        /**
+         * Generates a hidden checkbox useful using toggler in forms
+         */
+        generateHiddenCheckbox: function() {
+            if (this.options.hiddenCheckbox === true) {
+                this.$checkbox = this.sandbox.dom.createElement('<input type="checkbox" name="'+ this.options.instanceName +'"/>');
+                this.sandbox.dom.append(this.$wrapper, this.$checkbox);
+            }
+        },
+
+        /**
+         * Updates the state of the checkbox
+         * @param {boolean} checked True to set the sandbox checked, false to uncheck
+         */
+        updateCheckbox: function(checked) {
+            if (this.$checkbox !== null) {
+                this.sandbox.dom.prop(this.$checkbox, 'checked', checked);
+            }
+        },
+
+        /**
+         * Sets the data-checked attribute for the toggler
+         */
+        setData: function() {
+            this.sandbox.dom.data(this.$el, 'checked', (!!this.checked) ? 'checked' : '');
         }
     };
 
