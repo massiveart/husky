@@ -18,6 +18,9 @@ $grid-margin-bottom-small: 10px;
     &.small {
         margin-bottom: $grid-margin-bottom-small;
     }
+    &.no-spacing {
+        margin-bottom: 0;
+    }
 
     &::after {
         content: "";
@@ -78,6 +81,9 @@ $grid-margin-bottom-small: 10px;
 
     &:last-of-type {
         padding-right: 0;
+    }
+    &.no-padding {
+        padding: 0;
     }
 }
 
