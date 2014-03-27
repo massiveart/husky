@@ -1,0 +1,45 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Content types Demo</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../dist/husky.min.css">
+    <style type="text/css">
+        body {
+            padding: 50px 0 0 50px;
+            width: 820px;
+        }
+    </style>
+</head>
+<body>
+<h1>Content types - style demo</h1>
+<div class="grid-row">
+    <div class="text-block">
+        <label>Text block</label>
+        <div class="container">
+            <div class="grid-row form-group">
+                <label for="block1" class="pointer required">Title</label>
+                <input id="block1" type="text" class="form-element preview-update trigger-save-button husky-validate" data-mapper-property="title" data-validation-required="true">
+            </div>
+            <div class="grid-row no-spacing form-group">
+                <label for="block1text" class="pointer required">Article</label>
+                <textarea id="block1text" class="form-element"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="pointer">
+        <span class="icon-add"></span> add block1 (<span>2</span> out of 10)
+    </div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+//
+// Styles for content-types which aren't an own component
+// --------------------------------------------------
+
+.text-block {
+    & > label {
+        font-size: $bigFontSize;
+        margin-bottom: 10px;
+    }
+    .container {
+        padding: 10px 20px 20px 20px;
+        background: $grayLighterer;
+
+        textarea {
+            max-width: 100%;
+            min-width: 100%;
+            width: 100%;
+        }
+    }
+}
