@@ -12,6 +12,10 @@
     line-height: 30px;
     height: 30px;
 
+    &.fit {
+        display: inline-block;
+        padding-right: 30px;
+    }
     &.action {
         background-color: $highlightColor;
         color: $white;
@@ -23,6 +27,21 @@
     &.large {
         line-height: 40px;
         height: 40px;
+    }
+    &.small {
+      font-size: $smallFontSize;
+      height: 20px;
+      line-height: 20px;
+      border-radius: $btnBorderRadius - 1;
+
+      [class^="icon-"] {
+          font-size: 10px;
+
+          & + .text {
+              top: -1px;
+              font-size: $smallFontSize;
+          }
+      }
     }
     &.grey {
         background-color: $grayLighter;
