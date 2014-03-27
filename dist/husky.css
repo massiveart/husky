@@ -3423,7 +3423,19 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   display: inline-block;
 }
 
-/* line 300, ../scss/modules/icons.scss */
+/* line 299, ../scss/modules/icons.scss */
+.icon-move, .text-block > label::before {
+  content: "\e188";
+  display: inline-block;
+  font-family: "Glyphicons";
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+/* line 311, ../scss/modules/icons.scss */
 .icon-arrow-down::after {
   content: "\e224";
   display: inline-block;
@@ -3434,7 +3446,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   transform: rotate(90deg);
 }
 
-/* line 313, ../scss/modules/icons.scss */
+/* line 324, ../scss/modules/icons.scss */
 .icon-arrow-up::after {
   content: "\e225";
   display: inline-block;
@@ -3445,133 +3457,133 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   transform: rotate(90deg);
 }
 
-/* line 326, ../scss/modules/icons.scss */
+/* line 337, ../scss/modules/icons.scss */
 .icon-arrow::after {
   content: "\e223";
   display: inline-block;
 }
 
-/* line 333, ../scss/modules/icons.scss */
+/* line 344, ../scss/modules/icons.scss */
 .icon-internal-link::after {
   content: "\e051";
   display: inline-block;
 }
 
-/* line 340, ../scss/modules/icons.scss */
+/* line 351, ../scss/modules/icons.scss */
 .icon-external-link::after {
   content: "\e242";
   display: inline-block;
 }
 
-/* line 347, ../scss/modules/icons.scss */
+/* line 358, ../scss/modules/icons.scss */
 .icon-shadow-node::after {
   content: "\e223";
   display: inline-block;
 }
 
-/* line 354, ../scss/modules/icons.scss */
+/* line 365, ../scss/modules/icons.scss */
 .icon-brush::after {
   content: "\e235";
   display: inline-block;
 }
 
-/* line 361, ../scss/modules/icons.scss */
+/* line 372, ../scss/modules/icons.scss */
 .icon-user-add::after {
   content: "\e007";
   display: inline-block;
 }
 
-/* line 368, ../scss/modules/icons.scss */
+/* line 379, ../scss/modules/icons.scss */
 .icon-bin::after {
   content: "\e017";
   display: inline-block;
 }
 
-/* line 375, ../scss/modules/icons.scss */
+/* line 386, ../scss/modules/icons.scss */
 .icon-retweet::after {
   content: "\e081";
   display: inline-block;
 }
 
-/* line 382, ../scss/modules/icons.scss */
+/* line 393, ../scss/modules/icons.scss */
 .icon-file::after {
   content: "\E037";
   display: inline-block;
 }
 
-/* line 389, ../scss/modules/icons.scss */
+/* line 400, ../scss/modules/icons.scss */
 .icon-file-import::after {
   content: "\e359";
   display: inline-block;
 }
 
-/* line 396, ../scss/modules/icons.scss */
+/* line 407, ../scss/modules/icons.scss */
 .icon-file-export::after {
   content: "\e360";
   display: inline-block;
 }
 
-/* line 403, ../scss/modules/icons.scss */
+/* line 414, ../scss/modules/icons.scss */
 .icon-show-thumbnails::after {
   content: "\e157";
   display: inline-block;
 }
 
-/* line 410, ../scss/modules/icons.scss */
+/* line 421, ../scss/modules/icons.scss */
 .icon-eye-open::after {
   content: "\e052";
   display: inline-block;
 }
 
-/* line 417, ../scss/modules/icons.scss */
+/* line 428, ../scss/modules/icons.scss */
 .icon-half-eye-open::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e105";
   display: inline-block;
 }
 
-/* line 425, ../scss/modules/icons.scss */
+/* line 436, ../scss/modules/icons.scss */
 .icon-half-eye-close::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e106";
   display: inline-block;
 }
 
-/* line 433, ../scss/modules/icons.scss */
+/* line 444, ../scss/modules/icons.scss */
 .icon-floppy-save::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e175";
   display: inline-block;
 }
 
-/* line 441, ../scss/modules/icons.scss */
+/* line 452, ../scss/modules/icons.scss */
 .icon-floppy-saved::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e173";
   display: inline-block;
 }
 
-/* line 449, ../scss/modules/icons.scss */
+/* line 460, ../scss/modules/icons.scss */
 .icon-half-ok::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e013";
   display: inline-block;
 }
 
-/* line 457, ../scss/modules/icons.scss */
+/* line 468, ../scss/modules/icons.scss */
 .icon-half-remove::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e014";
   display: inline-block;
 }
 
-/* line 465, ../scss/modules/icons.scss */
+/* line 476, ../scss/modules/icons.scss */
 .icon-remove2::after {
   content: "\e208";
   display: inline-block;
 }
 
-/* line 472, ../scss/modules/icons.scss */
+/* line 483, ../scss/modules/icons.scss */
 .icon-publish::after {
   content: "";
   display: inline-block;
@@ -3586,7 +3598,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   left: 0px;
 }
 
-/* line 488, ../scss/modules/icons.scss */
+/* line 499, ../scss/modules/icons.scss */
 .icon-unpublish::after {
   content: "";
   display: inline-block;
@@ -3601,7 +3613,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   left: 0px;
 }
 
-/* line 504, ../scss/modules/icons.scss */
+/* line 515, ../scss/modules/icons.scss */
 .icon-test::after {
   content: "";
   display: inline-block;
@@ -3616,25 +3628,25 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   left: 0px;
 }
 
-/* line 520, ../scss/modules/icons.scss */
+/* line 531, ../scss/modules/icons.scss */
 .icon-right-arrow::after {
   content: "\e212";
   display: inline-block;
 }
 
-/* line 527, ../scss/modules/icons.scss */
+/* line 538, ../scss/modules/icons.scss */
 .icon-step-backward::after {
   content: "\e171";
   display: inline-block;
 }
 
-/* line 534, ../scss/modules/icons.scss */
+/* line 545, ../scss/modules/icons.scss */
 .icon-step-forward::after {
   content: "\e179";
   display: inline-block;
 }
 
-/* line 541, ../scss/modules/icons.scss */
+/* line 552, ../scss/modules/icons.scss */
 .icon-disk-export::after {
   content: "\e420";
   display: inline-block;
@@ -7410,13 +7422,22 @@ a.btn-black, a.btn-highlight {
 .text-block > label {
   font-size: 16px;
   margin-bottom: 10px;
+  cursor: move;
 }
-/* line 10, ../scss/modules/content-types.scss */
+/* line 11, ../scss/modules/content-types.scss */
+.text-block > label::before {
+  margin-left: -15px;
+  position: relative;
+  top: 2px;
+  left: 0px;
+  cursor: move;
+}
+/* line 20, ../scss/modules/content-types.scss */
 .text-block .container {
   padding: 10px 20px 20px 20px;
   background: #dddddd;
 }
-/* line 14, ../scss/modules/content-types.scss */
+/* line 24, ../scss/modules/content-types.scss */
 .text-block .container textarea {
   max-width: 100%;
   min-width: 100%;

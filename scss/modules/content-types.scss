@@ -6,6 +6,16 @@
     & > label {
         font-size: $bigFontSize;
         margin-bottom: 10px;
+        cursor: move;
+
+        &::before {
+            @extend .icon-move;
+            margin-left: -15px;
+            position: relative;
+            top: 2px;
+            left: 0px;
+            cursor: move;
+        }
     }
     .container {
         padding: 10px 20px 20px 20px;

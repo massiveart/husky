@@ -296,6 +296,17 @@
     }
 }
 
+.icon-move {
+    content: "\e188";
+    display: inline-block;
+    font-family: $baseIconFont;
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
 .icon-arrow-down {
     &::after {
         content: "\e224"; // TODO change to correct icons when included in font,  remove rotate
