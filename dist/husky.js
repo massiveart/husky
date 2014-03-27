@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -24603,12 +24602,12 @@ define('__component__$navigation@husky',[],function() {
             //footer template
             footer: [
                 '<div class="user">',
-                    '<div class="icon-user pic"></div>',
-                    '<div class="name"><%= userName %></div>',
+                '<div class="icon-user pic"></div>',
+                '<div class="name"><%= userName %></div>',
                 '</div>',
                 '<div class="options">',
-                    '<div class="locale-dropdown"></div>',
-                    '<a href="<%= logoutRoute %>" title="Logout" class="icon-lock logout"></a>',
+                '<div class="locale-dropdown"></div>',
+                '<a href="<%= logoutRoute %>" title="Logout" class="icon-lock logout"></a>',
                 '</div>',
                 '<div class="version"><%= system %> (<%= version %>, <a href="#"><%= versionHistory %></a>)</div>'
             ].join('')
@@ -24888,19 +24887,21 @@ define('__component__$navigation@husky',[],function() {
                     logoutRoute: this.options.logoutRoute
                 }));
 
-                this.sandbox.start([{
-                    name: 'dropdown-multiple-select@husky',
-                    options: {
-                        el: this.sandbox.dom.find('.locale-dropdown', $footer),
-                        instanceName: 'navigation-locale',
-                        value: 'name',
-                        data: this.options.userLocales,
-                        preSelectedElements: [this.options.userLocale],
-                        singleSelect: true,
-                        noDeselect: true,
-                        small: true
+                this.sandbox.start([
+                    {
+                        name: 'dropdown-multiple-select@husky',
+                        options: {
+                            el: this.sandbox.dom.find('.locale-dropdown', $footer),
+                            instanceName: 'navigation-locale',
+                            value: 'name',
+                            data: this.options.userLocales,
+                            preSelectedElements: [this.options.userLocale],
+                            singleSelect: true,
+                            noDeselect: true,
+                            small: true
+                        }
                     }
-                }]);
+                ]);
             }
         },
 
@@ -25072,6 +25073,7 @@ define('__component__$navigation@husky',[],function() {
          * Toggles menu element with submenu
          * Raises navigation.toggle
          * @param event
+         * @param customTarget
          */
         toggleItems: function(event, customTarget) {
 
@@ -25234,6 +25236,7 @@ define('__component__$navigation@husky',[],function() {
          * Raises navigation.select
          * @param event
          * @param [customTarget] if event is undefined, the target must be passed customly
+         * @param emit
          */
         selectSubItem: function(event, customTarget, emit) {
 
@@ -37913,3 +37916,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+

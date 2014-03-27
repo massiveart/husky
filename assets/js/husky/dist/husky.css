@@ -5070,7 +5070,7 @@ li a.navigation-settings-icon {
 
 /* line 63, ../scss/modules/dropdown.scss */
 .dropdown-align-right {
-  right: 0;
+  right: 6px;
   left: inherit;
 }
 
