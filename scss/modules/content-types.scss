@@ -40,6 +40,10 @@
         padding: 10px 20px 20px 20px;
         background: $grayLighterer;
 
+        label {
+            margin-bottom: 10px;
+        }
+
         textarea {
             max-width: 100%;
             min-width: 100%;

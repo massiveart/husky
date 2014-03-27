@@ -7696,17 +7696,21 @@ a.btn-black, a.btn-highlight {
   background: #dddddd;
 }
 /* line 43, ../scss/modules/content-types.scss */
+.text-block .container label {
+  margin-bottom: 10px;
+}
+/* line 47, ../scss/modules/content-types.scss */
 .text-block .container textarea {
   max-width: 100%;
   min-width: 100%;
   width: 100%;
 }
-/* line 51, ../scss/modules/content-types.scss */
+/* line 55, ../scss/modules/content-types.scss */
 .text-block:hover .head .options {
   display: block;
 }
 
-/* line 58, ../scss/modules/content-types.scss */
+/* line 62, ../scss/modules/content-types.scss */
 .text-block-footer .desc {
   font-size: 12px;
   color: #999999;
