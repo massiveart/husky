@@ -3,18 +3,37 @@
 // --------------------------------------------------
 
 .text-block {
-    & > label {
-        font-size: $bigFontSize;
-        margin-bottom: 10px;
-        cursor: move;
+    margin-bottom: 20px;
 
-        &::before {
-            @extend .icon-move;
-            margin-left: -15px;
-            position: relative;
-            top: 2px;
-            left: 0px;
+    .head {
+
+        label {
+            float: left;
+            font-size: $bigFontSize;
+            margin-bottom: 10px;
             cursor: move;
+
+            &::before {
+                @extend .icon-move;
+                margin-left: -15px;
+                position: relative;
+                top: 2px;
+                left: 0px;
+                cursor: move;
+            }
+        }
+
+        .options {
+            float: right;
+            cursor: pointer;
+            margin-top: 5px;
+            display: none;
+        }
+
+        &::after {
+            content: "";
+            display: block;
+            clear: both;
         }
     }
     .container {
@@ -26,5 +45,19 @@
             min-width: 100%;
             width: 100%;
         }
+    }
+
+    &:hover {
+        .head .options {
+            display: block;
+        }
+    }
+}
+
+.text-block-footer {
+    .desc {
+        font-size: $smallFontSize;
+        color: $grayLight;
+        padding-left: 10px;
     }
 }

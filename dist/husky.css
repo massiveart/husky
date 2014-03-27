@@ -3436,7 +3436,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
 }
 
 /* line 313, ../scss/modules/icons.scss */
-.icon-move, .text-block > label::before {
+.icon-move, .text-block .head label::before {
   content: "\e188";
   display: inline-block;
   font-family: "Glyphicons";
@@ -5495,42 +5495,63 @@ table {
   height: 30px;
 }
 /* line 15, ../scss/modules/btns.scss */
+.btn.fit {
+  display: inline-block;
+  padding-right: 30px;
+}
+/* line 19, ../scss/modules/btns.scss */
 .btn.action {
   background-color: #249fbe;
   color: white;
 }
-/* line 19, ../scss/modules/btns.scss */
+/* line 23, ../scss/modules/btns.scss */
 .btn.action2 {
   background-color: #febc2f;
   color: white;
 }
-/* line 23, ../scss/modules/btns.scss */
+/* line 27, ../scss/modules/btns.scss */
 .btn.large {
   line-height: 40px;
   height: 40px;
 }
-/* line 27, ../scss/modules/btns.scss */
+/* line 31, ../scss/modules/btns.scss */
+.btn.small {
+  font-size: 12px;
+  height: 20px;
+  line-height: 20px;
+  border-radius: 3px;
+}
+/* line 37, ../scss/modules/btns.scss */
+.btn.small [class^="icon-"] {
+  font-size: 10px;
+}
+/* line 40, ../scss/modules/btns.scss */
+.btn.small [class^="icon-"] + .text {
+  top: -1px;
+  font-size: 12px;
+}
+/* line 46, ../scss/modules/btns.scss */
 .btn.grey {
   background-color: #cccccc;
   color: white;
 }
-/* line 31, ../scss/modules/btns.scss */
+/* line 50, ../scss/modules/btns.scss */
 .btn.black {
   background-color: black;
   color: white;
 }
-/* line 35, ../scss/modules/btns.scss */
+/* line 54, ../scss/modules/btns.scss */
 .btn.inactive {
   cursor: default;
 }
-/* line 38, ../scss/modules/btns.scss */
+/* line 57, ../scss/modules/btns.scss */
 .btn [class^="icon-"] {
   font-size: 18px;
   margin-left: -15px;
   display: inline-block;
   margin-bottom: -5px;
 }
-/* line 44, ../scss/modules/btns.scss */
+/* line 63, ../scss/modules/btns.scss */
 .btn [class^="icon-"] + .text {
   font-size: 14px;
   display: inline-block;
@@ -5544,43 +5565,43 @@ table {
 /**
 ** Buttons-classes on the bottom and should be replaced in the code with the classes above
 **/
-/* line 59, ../scss/modules/btns.scss */
+/* line 78, ../scss/modules/btns.scss */
 a.btn {
   color: #000;
   text-decoration: none;
 }
 
-/* line 64, ../scss/modules/btns.scss */
+/* line 83, ../scss/modules/btns.scss */
 .btn-large {
   padding: 0 25px;
   font-size: 18px;
   line-height: 30px;
 }
 
-/* line 70, ../scss/modules/btns.scss */
+/* line 89, ../scss/modules/btns.scss */
 .btn-black {
   background-color: #000;
   color: white;
 }
 
-/* line 75, ../scss/modules/btns.scss */
+/* line 94, ../scss/modules/btns.scss */
 .btn-highlight {
   background-color: #249fbe;
   color: white;
 }
 
-/* line 80, ../scss/modules/btns.scss */
+/* line 99, ../scss/modules/btns.scss */
 a.btn-black, a.btn-highlight {
   color: white;
 }
 
-/* line 85, ../scss/modules/btns.scss */
+/* line 104, ../scss/modules/btns.scss */
 .btn-gray {
   background-color: #cccccc;
   color: black;
 }
 
-/* line 91, ../scss/modules/btns.scss */
+/* line 110, ../scss/modules/btns.scss */
 .addButton {
   border-radius: 3px;
   display: inline-block;
@@ -5593,7 +5614,7 @@ a.btn-black, a.btn-highlight {
   vertical-align: middle;
   cursor: pointer;
 }
-/* line 103, ../scss/modules/btns.scss */
+/* line 122, ../scss/modules/btns.scss */
 .addButton:before {
   content: '\e191';
   font-family: "Glyphicons";
@@ -7637,28 +7658,57 @@ a.btn-black, a.btn-highlight {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjIycHgiIGhlaWdodD0iNTBweCIgdmlld0JveD0iMCAwIDIyIDUwIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOnNrZXRjaD0iaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoL25zIj4KICAgIDx0aXRsZT5VbnRpdGxlZDwvdGl0bGU+CiAgICA8ZGVzY3JpcHRpb24+Q3JlYXRlZCB3aXRoIFNrZXRjaCAoaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoKTwvZGVzY3JpcHRpb24+CiAgICA8ZGVmcz48L2RlZnM+CiAgICA8ZyBpZD0iUGFnZS0xIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBza2V0Y2g6dHlwZT0iTVNQYWdlIj4KICAgICAgICA8cGF0aCBkPSJNLTE4MS45OTc3LDAgQy0xODMuNjU3NDkyLDAgLTE4NC4xNzkxODMsMS4wNDk5MjQxIC0xODMuMTUzMDgzLDIuMzU3NjIwNyBMLTE2Ny4wOTQ2MTgsMjIuODIzMDY2NCBDLTE2Ni4wNzI5MjcsMjQuMTI1MTQ0NCAtMTY2LjA4MTA1MywyNi4yMzEyODkzIC0xNjcuMTEyMzk2LDI3LjUyNjgwNDYgTC0xODMuMTM1MzA1LDQ3LjY1Mzg4MjQgQy0xODQuMTY2ODE1LDQ4Ljk0OTYwNzQgLTE4My42NTI1OTMsNTAgLTE4MS45OTc3LDUwIEwtMC4zMDQxMzI3NDcsNTAgQzEuMzU1NjU5MTksNTAgMy41Mzc1NTc0LDQ4Ljk0NzczOTMgNC41Njg5MDA1Nyw0Ny42NTAxNzkgTDIwLjU5MTgwOTcsMjcuNDkxMzI5NiBDMjEuNjIzMzE5NywyNi4xOTM1NTkzIDIxLjYzNTY4NzksMjQuMDkzMjE4IDIwLjYwMDcwNzQsMjIuNzc2MjU2NSBMNC41NjAwMDI4MywyLjM2NTI1MjA5IEMzLjUzMzQwNjg3LDEuMDU4OTU5NDMgMS4zNTA3NTk5NiwwIC0wLjMwNDEzMjc0NywwIEwtMTgxLjk5NzcsMCBaIiBpZD0iUmVjdGFuZ2xlLTc0IiBzdHJva2U9IiMyRDlGQkMiIGZpbGw9IiMyRDlGQkMiIHNrZXRjaDp0eXBlPSJNU1NoYXBlR3JvdXAiPjwvcGF0aD4KICAgIDwvZz4KPC9zdmc+);
 }
 
-/* line 6, ../scss/modules/content-types.scss */
-.text-block > label {
+/* line 5, ../scss/modules/content-types.scss */
+.text-block {
+  margin-bottom: 20px;
+}
+/* line 10, ../scss/modules/content-types.scss */
+.text-block .head label {
+  float: left;
   font-size: 16px;
   margin-bottom: 10px;
   cursor: move;
 }
-/* line 11, ../scss/modules/content-types.scss */
-.text-block > label::before {
+/* line 16, ../scss/modules/content-types.scss */
+.text-block .head label::before {
   margin-left: -15px;
   position: relative;
   top: 2px;
   left: 0px;
   cursor: move;
 }
-/* line 20, ../scss/modules/content-types.scss */
+/* line 26, ../scss/modules/content-types.scss */
+.text-block .head .options {
+  float: right;
+  cursor: pointer;
+  margin-top: 5px;
+  display: none;
+}
+/* line 33, ../scss/modules/content-types.scss */
+.text-block .head::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+/* line 39, ../scss/modules/content-types.scss */
 .text-block .container {
   padding: 10px 20px 20px 20px;
   background: #dddddd;
 }
-/* line 24, ../scss/modules/content-types.scss */
+/* line 43, ../scss/modules/content-types.scss */
 .text-block .container textarea {
   max-width: 100%;
   min-width: 100%;
   width: 100%;
+}
+/* line 51, ../scss/modules/content-types.scss */
+.text-block:hover .head .options {
+  display: block;
+}
+
+/* line 58, ../scss/modules/content-types.scss */
+.text-block-footer .desc {
+  font-size: 12px;
+  color: #999999;
+  padding-left: 10px;
 }

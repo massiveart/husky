@@ -26,7 +26,10 @@
 <h1>Content types - style demo</h1>
 <div class="grid-row">
     <div class="text-block">
-        <label>Text block</label>
+        <div class="head">
+            <label>Text block</label>
+            <div class="icon-remove2 options"></div>
+        </div>
         <div class="container">
             <div class="grid-row form-group">
                 <label for="block1" class="pointer required">Title</label>
@@ -38,12 +41,34 @@
             </div>
         </div>
     </div>
-    <div class="btn action">
-        <div class="icon-star"></div>
-        <div class="text">Add text block</div>
+    <div class="text-block">
+        <div class="head">
+            <label>Text block</label>
+            <div class="icon-remove2 options"></div>
+        </div>
+        <div class="container">
+            <div class="grid-row form-group">
+                <label for="block2" class="pointer required">Title</label>
+                <input id="block2" type="text" class="form-element preview-update trigger-save-button husky-validate" data-mapper-property="title" data-validation-required="true">
+            </div>
+            <div class="grid-row no-spacing form-group">
+                <div class="grid-col-2">
+                    <label for="block2textMore" class="pointer required">Article</label>
+                    <textarea id="block2textMore" class="form-element"></textarea>
+                </div>
+                <div class="grid-col-10">
+                    <label for="block2text" class="pointer required">Article</label>
+                    <textarea id="block2text" class="form-element"></textarea>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="pointer">
-        <span class="icon-add"></span> add block1 (<span>2</span> out of 10)
+    <div class="text-block-footer">
+        <div class="btn action small fit">
+            <div class="icon-add"></div>
+            <div class="text">Add text block</div>
+        </div>
+        <span class="desc">(2 out of 10)</span>
     </div>
 </body>
 </html>
