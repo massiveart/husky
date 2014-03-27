@@ -8,6 +8,9 @@
 
 [class^="icon-"] {
     font-family: $baseIconFont;
+    &::after {
+        @include icon-mixin;
+    }
 }
 
 .icon-tag {

@@ -717,7 +717,7 @@ define(function() {
 
                 // add a checkbox to each row
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
-                    this.tblColumns.push('<td class="check">', this.templates.checkbox(), '</td>');
+                    this.tblColumns.push('<td>', this.templates.checkbox(), '</td>');
 
                     // add a radio to each row
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
@@ -2074,8 +2074,10 @@ define(function() {
                 name = (!!data.name) ? ' name="' + data.name + '"' : '';
 
                 return [
-                    '<input', id, name, ' type="checkbox" class="custom-checkbox" data-form="false"/>',
-                    '<span class="custom-checkbox-icon"></span>'
+                    '<div class="custom-checkbox">',
+                        '<input', id, name, ' type="checkbox" data-form="false"/>',
+                        '<span class="icon"></span>',
+                    '</div>'
                 ].join('');
             },
 
@@ -2087,8 +2089,10 @@ define(function() {
                 name = (!!data.name) ? ' name="' + data.name + '"' : '';
 
                 return [
-                    '<input', id, name, ' type="radio" class="custom-radio"/>',
-                    '<span class="custom-radio-icon"></span>'
+                    '<div class="custom-radio">',
+                        '<input', id, name, ' type="radio"/>',
+                        '<span class="icon"></span>',
+                    '</div>'
                 ].join('');
             }
         }
