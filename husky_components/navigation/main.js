@@ -461,7 +461,7 @@ define(function() {
             }.bind(this));
 
             //user locales dropdown
-            this.sandbox.on('husky.dropdown.multiple.select.navigation-locale.selected.item', function(locale) {
+            this.sandbox.on('husky.select.navigation-locale.selected.item', function(locale) {
                 this.sandbox.emit(USER_LOCALE_CHANGED, locale);
             }.bind(this));
 

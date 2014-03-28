@@ -177,6 +177,15 @@ define([], function() {
             this.sandbox.on(OKBUTTON_DEACTIVATE.call(this), this.deactivateOkButton.bind(this));
         },
 
+        activateOkButton : function() {
+
+        },
+
+        deactivateOkButton : function() {
+
+        },
+
+
         /**
          * Removes the component
          */

@@ -407,7 +407,7 @@ define([], function() {
          */
         getDropdownValue: function(column, callback) {
             this.sandbox.emit(
-                'husky.dropdown.multiple.select.' + this.options.instanceName + column.id + '.getChecked',
+                'husky.select.' + this.options.instanceName + column.id + '.getChecked',
                 callback
             );
         },
