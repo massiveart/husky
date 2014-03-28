@@ -17,7 +17,7 @@ require(['lib/husky'], function(Husky) {
 
     app.start([
             {
-                name: 'select@husky',
+                name: 'select-url@husky',
                 options: {
                     el: '#s1',
                     url: '/contacts'
