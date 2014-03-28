@@ -178,6 +178,10 @@
                 return $(selector).is(type);
             };
 
+            app.core.dom.isArray = function(selector) {
+                return $.isArray(selector);
+            };
+
             app.core.dom.data = function(selector, key, value) {
                 if (!!value || value === '') {
                     return $(selector).data(key, value);

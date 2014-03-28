@@ -1,6 +1,18 @@
-.husky-dropdown-multiple-select {
+.husky-select-container {
 
     position: relative;
+
+    &.big {
+        .dropdown-label {
+            font-size: $baseFontSize;
+            padding: 5px 10px 5px 15px;
+
+            .dropdown-toggle {
+                right: 15px;
+                top: 5px;
+            }
+        }
+    }
 
     .dropdown-label {
         background: $grayLighter;
@@ -39,11 +51,16 @@
         /*display: inline-block;*/
         position: absolute;
         top: 20px;
-        left: 2px;
+        left: 0px;
         margin-top: 5px;
         background-color: #FFF;
         border: 1px solid $grayLighter;
         z-index: 95;
+
+        &.top {
+            top: inherit;
+            bottom: 5px;
+        }
 
         .disabled,
         .disabled:hover {

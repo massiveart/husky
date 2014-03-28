@@ -1,3 +1,4 @@
+
 /*
  * This file is part of the Husky Validation.
  *
@@ -688,6 +689,7 @@ define('form/mapper',[
                     Util.debug('INIT Mapper');
 
                     this.collections = [];
+                    this.collectionsSet = {};
                     this.templates = {};
                     this.collectionsInitiated = $.Deferred();
 
@@ -725,11 +727,17 @@ define('form/mapper',[
                     // get templates
                     element.$children = $element.children().clone(true);
 
+                    // remove children
+                    $element.html('');
+
+                    // add to collections
                     collection = {
+                        id: _.uniqueId('collection_'),
                         property: property,
                         $element: $element,
                         element: element
                     };
+                    this.collections.push(collection);
 
                     counter += element.$children.length;
                     // iterate through collection
@@ -771,9 +779,6 @@ define('form/mapper',[
                             resolveElement();
                         }
                     }.bind(this));
-
-                    // add to collections
-                    this.collections.push(collection);
 
                     $.each(property, function(i, item) {
                         // init add button
@@ -881,10 +886,9 @@ define('form/mapper',[
                 },
 
                 setCollectionData: function(collection, collectionElement) {
-
                     // remember first child remove the rest
                     var $element = collectionElement.$element,
-                        $child = collectionElement.$child.get(0),
+                        $child = collectionElement.$child,
                         count = collection.length,
                         dfd = $.Deferred(),
                         resolve = function() {
@@ -899,11 +903,6 @@ define('form/mapper',[
                     if (count === 0) {
                         dfd.resolve();
                     } else {
-                        // remove children
-                        $element.children().each(function(key, value) {
-                            that.remove.call(this, $(value));
-                        }.bind(this));
-
                         if (collection.length < collectionElement.element.getType().getMinOccurs()) {
                             for (x = collectionElement.element.getType().getMinOccurs() + 1, len = collection.length; --x > len;) {
                                 collection.push({});
@@ -913,7 +912,7 @@ define('form/mapper',[
                         // foreach collection elements: create a new dom element, call setData recursively
                         $.each(collection, function(key, value) {
                             that.appendChildren($element, $child, value).then(function($newElement) {
-                                form.mapper.setData(value, $newElement).then(function() {
+                                that.setData.call(this, value, $newElement).then(function() {
                                     resolve();
                                 });
                             });
@@ -926,9 +925,9 @@ define('form/mapper',[
                     return dfd.promise();
                 },
 
-                appendChildren: function($element, $child, value) {
-                    value = value || {};
-                    var template = _.template($child.tpl, value, form.options.delimiter),
+                appendChildren: function($element, $child, tplOptions, data, insertAfter) {
+                    tplOptions = tplOptions || {};
+                    var template = _.template($child.tpl, tplOptions, form.options.delimiter),
                         $template = $(template),
                         $newFields = Util.getFields($template),
                         dfd = $.Deferred(),
@@ -941,7 +940,11 @@ define('form/mapper',[
                     // add fields
                     $.each($newFields, function(key, field) {
                         element = form.addField($(field));
-                        $element.append($template);
+                        if (insertAfter) {
+                            $element.after($template);
+                        } else {
+                            $element.append($template);
+                        }
                         element.initialized.then(function() {
                             counter--;
                             if (counter === 0) {
@@ -950,6 +953,12 @@ define('form/mapper',[
                         });
                     }.bind(this));
 
+                    // if automatically set data after initialization ( needed for adding elements afterwards)
+                    if (!!data) {
+                        dfd.then(function() {
+                            that.setData.call(this, data, $newFields);
+                        });
+                    }
                     return dfd.promise();
                 },
 
@@ -961,12 +970,8 @@ define('form/mapper',[
 
                     // remove element
                     $element.remove();
-                }
+                },
 
-            },
-
-        // define mapper interface
-            result = {
                 setData: function(data, $el) {
                     if (!$el) {
                         $el = form.$el;
@@ -1004,31 +1009,29 @@ define('form/mapper',[
                     } else if (data !== null && !$.isEmptyObject(data)) {
                         count = Object.keys(data).length;
                         $.each(data, function(key, value) {
-                            var $element, element, colprop,
-                            // search for occurence  in collections
-                                collection = $.grep(this.collections, function(col) {
-                                    // if collection is array and "data" == key
-                                    if ($.isArray(col.property) && (colprop = $.grep(col.property, function(prop) {
-                                        return prop.data === key;
-                                    })).length > 0) {
-                                        // get template of collection
-                                        col.$child = $($.grep(col.element.$children, function(el) {
-                                            return (el.id === colprop[0].tpl);
-                                        })[0]);
-                                        return true;
-                                    }
-                                    return false;
-                                });
+                            var $element, element, collection;
 
                             // if field is a collection
-                            if ($.isArray(value) && collection.length > 0) {
-                                that.setCollectionData.call(this, value, collection[0]).then(function() {
+                            if ($.isArray(value) && this.templates.hasOwnProperty(key)) {
+                                collection = this.templates[key].collection;
+                                collection.$child = this.templates[key].tpl;
+
+                                // if first element of collection, clear collection
+                                if (!this.collectionsSet.hasOwnProperty(collection.id)) {
+                                    collection.$element.children().each(function(key, value) {
+                                        that.remove.call(this, $(value));
+                                    }.bind(this));
+                                }
+                                this.collectionsSet[collection.id] = true;
+
+                                that.setCollectionData.call(this, value, collection).then(function() {
                                     resolve();
                                 });
                             } else {
                                 // search field with mapper property
                                 selector = '*[data-mapper-property="' + key + '"]';
-                                $element = $el.find(selector);
+                                $element = $el.andSelf().find(selector);
+
                                 element = $element.data('element');
 
                                 if ($element.length > 0) {
@@ -1053,6 +1056,15 @@ define('form/mapper',[
                     }
 
                     return dfd.promise();
+                },
+
+            },
+
+        // define mapper interface
+            result = {
+                setData: function(data) {
+                    this.collectionsSet = {};
+                    return that.setData.call(this, data);
                 },
 
                 getData: function($el) {
@@ -1101,8 +1113,26 @@ define('form/mapper',[
 
                 removeCollectionFilter: function(name) {
                     delete filters[name];
-                }
+                },
 
+                /**
+                 * adds an element to a existing collection
+                 * @param {String} propertyName property defined by 'data' attribute in data-mapper-property
+                 * @param {Object} [data] Possibility to set data
+                 * @param {Boolean} [append=false] Define if element should be added at the end of the collection. By default items are grouped by tpl name
+                 */
+                addToCollection: function(propertyName, data, append) {
+                    var template = this.templates[propertyName],
+                        element = template.collection.$element,
+                        insertAfterLast = false,
+                        lastElement;
+                    // check if element exists and put it after last
+                    if (!append && (lastElement = element.find('*[data-mapper-property-tpl="' + template.tpl.id + '"]').last()).length > 0) {
+                        element = lastElement;
+                        insertAfterLast = true;
+                    }
+                    that.appendChildren.call(this, element, template.tpl, data, data, insertAfterLast);
+                }
             };
 
         that.initialize.call(result);
@@ -1791,8 +1821,8 @@ define('type/collection',[
 
     return function($el, options) {
         var defaults = {
-                min: 1,
-                max: 2
+                min: 0,
+                max: null
             },
 
             subType = {
@@ -1818,7 +1848,7 @@ define('type/collection',[
 
                 canAdd: function(id) {
                     var length = this.getChildren(id).length;
-                    return length < this.getMaxOccurs();
+                    return this.getMaxOccurs() === null || length < this.getMaxOccurs();
                 },
 
                 canRemove: function(id) {
@@ -2340,4 +2370,3 @@ define('validator/regex',[
     };
 
 });
-

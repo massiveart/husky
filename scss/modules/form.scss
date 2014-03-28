@@ -120,9 +120,9 @@ input {
 // -------------------------
 label {
     display: block;
-    font-size: 14px;
-    color: #999999;
-    cursor: pointer;
+  font-size: 14px;
+  color: #999999;
+  cursor: pointer;
 
     &.large {
         font-size: 16px;
@@ -139,6 +139,12 @@ label {
         font-weight: normal;
         display: inline;
         vertical-align: middle;
+    }
+    &.spacing-right {
+        margin-right: 10px;
+    }
+    &.spacing-left {
+        margin-left: 10px;
     }
 }
 

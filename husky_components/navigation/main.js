@@ -385,15 +385,13 @@ define(function() {
 
                 this.sandbox.start([
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: this.sandbox.dom.find('.locale-dropdown', $footer),
                             instanceName: 'navigation-locale',
                             value: 'name',
                             data: this.options.userLocales,
                             preSelectedElements: [this.options.userLocale],
-                            singleSelect: true,
-                            noDeselect: true,
                             small: true
                         }
                     }
