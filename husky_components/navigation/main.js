@@ -366,10 +366,16 @@ define(function() {
          * event listener
          */
         bindCustomEvents: function() {
-            // change footer template
-            this.sandbox.on('husky.navigation.footer.set', function(template) {
-                this.options.footerTemplate = template;
-                this.renderFooter(template);
+
+            // merge options with newly passed options and rerender footer
+            this.sandbox.on('husky.navigation.footer.set', function(options) {
+                this.options = this.sandbox.util.extend(true, {}, this.options, options);
+                this.renderFooter();
+            }.bind(this));
+
+            //user locales dropdown
+            this.sandbox.on('husky.select.navigation-locale.selected.item', function(locale) {
+                this.sandbox.emit(USER_LOCALE_CHANGED, locale);
             }.bind(this));
 
             this.sandbox.on(EVENT_COLLAPSE, function(stayCollapsed) {
