@@ -71,6 +71,10 @@
                         return  app.sandbox.form.getObject(selector).mapper.getData();
                     },
 
+                    addToCollection: function(selector, propertyName, data, append) {
+                        return  app.sandbox.form.getObject(selector).mapper.addToCollection(propertyName, data, append);
+                    },
+
                     addCollectionFilter: function(selector, arrayName, callback) {
                         app.sandbox.form.getObject(selector).mapper.addCollectionFilter(arrayName, callback);
                     },

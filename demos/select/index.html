@@ -10,7 +10,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Dropdown Multiple Select</title>
+    <title>Select</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -20,8 +20,14 @@
     <style>
         .container {
             width: 800px;
-            margin-left: 300px;
-            margin-top: 100px;
+            margin-left: 50px;
+            margin-top: 50px;
+        }
+        td {
+            padding-bottom: 20px;
+        }
+        #ddms9 {
+            width: 94px;
         }
     </style>
 
@@ -30,7 +36,7 @@
 <body>
 
 <div class="container">
-
+    <h1>Husky Select Demo</h1>
     <div class="grid-row">
 
         <table>
@@ -68,6 +74,11 @@
                 </td>
             </tr>
             <tr>
+                <td>
+                    <div class="grid-col-6" id="ddms9"></div>
+                </td>
+            </tr>
+            <tr>
                 <td><button id="toggleState">toggle state of button 7</button></td>
             </tr>
             </tbody>
@@ -82,6 +93,12 @@
         <div class="grid-col-3 pointer" id="hide">Hide</div>
         <div class="grid-col-3 pointer" id="toggle">Toggle</div>
         <div class="grid-col-3 pointer" id="get">getChecked</div>
+    </div>
+
+    <div style="position:absolute;bottom:0;width:200px;">
+        <td>
+            <div class="grid-col-11" id="ddms10"></div>
+        </td>
     </div>
 </div>
 
@@ -105,21 +122,23 @@
 
         app.start([
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms',
                             instanceName: 'ddms',
+                            multipleSelect: true,
                             defaultLabel: 'Please choose ...',
                             value: 'name',
                             data: ['Deutsch', 'English', 'Spanish', 'Italienisch'],
-                            preSelectedElements: ['Deutsch', 'English', 'Italienisch' ]
+                            preSelectedElements: ['Deutsch', 'English', 'Italienisch']
                         }
                     },
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms2',
                             instanceName: 'ddms2',
+                            multipleSelect: true,
                             defaultLabel: 'Please choose ...',
                             value: 'name',
                             data: [
@@ -132,20 +151,22 @@
                         }
                     },
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms3',
                             instanceName: 'ddms3',
                             defaultLabel: 'Please choose ...',
                             value: 'name',
+                            multipleSelect: true,
                             data: ['Deutsch', 'English', 'Spanish', 'Italienisch']
                         }
                     },
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms4',
                             instanceName: 'ddms4',
+                            multipleSelect: true,
                             defaultLabel: 'Please choose ...',
                             value: 'name',
                             data: [
@@ -157,13 +178,13 @@
                         }
                     },
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms5',
                             instanceName: 'ddms5',
                             defaultLabel: 'This one is single select.. try it',
                             value: 'name',
-                            singleSelect: true,
+                            multipleSelect: false,
                             data: [
                                 {id: 0, name: 'Deutsch'},
                                 {id: 1, name: 'English'},
@@ -173,13 +194,15 @@
                         }
                     },
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms6',
                             instanceName: 'ddms6',
-                            defaultLabel: 'No unselect..',
+                            multipleSelect: false,
+                            defaultLabel: 'with deselect..',
                             value: 'name',
-                            noDeselect: true,
+                            deselectField: '',
+                            small: true,
                             data: [
                                 {id: 0, name: 'Deutsch'},
                                 {id: 1, name: 'English'},
@@ -189,13 +212,13 @@
                         }
                     },
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms7',
                             instanceName: 'ddms7',
                             defaultLabel: 'I am disabled',
                             value: 'name',
-                            noDeselect: true,
+                            multipleSelect: true,
                             disabled: true,
                             data: [
                                 {id: 0, name: 'Deutsch'},
@@ -206,12 +229,30 @@
                         }
                     },
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: '#ddms8',
                             instanceName: 'ddms8',
                             defaultLabel: 'I have disabled items',
                             value: 'name',
+                            preSelectedElements: [null],
+                            data: [
+                                {id: null, name: 'Deselect with null item'},
+                                {id: 0, name: 'Deutsch', disabled: true},
+                                {id: 1, name: 'English'},
+                                {id: 2, name: 'Spanish', disabled: true},
+                                {id: 3, name: 'Italienisch'}
+                            ]
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms10',
+                            instanceName: 'ddms10',
+                            defaultLabel: 'I stick to the bottom',
+                            value: 'name',
+                            preSelectedElements: [null],
                             data: [
                                 {id: 0, name: 'Deutsch', disabled: true},
                                 {id: 1, name: 'English'},
@@ -219,53 +260,63 @@
                                 {id: 3, name: 'Italienisch'}
                             ]
                         }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms9',
+                            instanceName: 'ddms9',
+                            data: ['EN_EN', 'EN_US', 'DE_DE', 'DE_AT'],
+                            preSelectedElements: ['EN_EN'],
+                            style: 'big'
+                        }
                     }
                 ]).then(function() {
 
-            app.sandbox.on('husky.dropdown.multiple.select.ddms.deselected.item', function(item) {
+            app.sandbox.on('husky.select.ddms.deselected.item', function(item) {
                 console.log("drop-down multiple select ddms: deselected item: " + item);
             });
 
-            app.sandbox.on('husky.dropdown.multiple.select.ddms.selected.item', function(item) {
+            app.sandbox.on('husky.select.ddms.selected.item', function(item) {
                 console.log("drop-down multiple select ddms: selected item: " + item);
             });
 
             app.sandbox.dom.on('#show', 'click', function(event) {
                 app.sandbox.dom.stopPropagation(event);
-                app.sandbox.emit('husky.dropdown.multiple.select.ddms.show');
+                app.sandbox.emit('husky.select.ddms.show');
             });
 
             app.sandbox.dom.on('#hide', 'click', function(event) {
                 app.sandbox.dom.stopPropagation(event);
-                app.sandbox.emit('husky.dropdown.multiple.select.ddms.hide');
+                app.sandbox.emit('husky.select.ddms.hide');
             });
 
             app.sandbox.dom.on('#toggle', 'click', function(event) {
                 app.sandbox.dom.stopPropagation(event);
-                app.sandbox.emit('husky.dropdown.multiple.select.ddms.toggle');
+                app.sandbox.emit('husky.select.ddms.toggle');
             });
 
             app.sandbox.dom.on('#get', 'click', function(event) {
-                app.sandbox.emit('husky.dropdown.multiple.select.ddms.getChecked', function(selected) {
+                app.sandbox.emit('husky.select.ddms.get-checked', function(selected) {
                     console.log('selected items', selected);
                 });
             });
 
 
-            app.sandbox.on('husky.dropdown.multiple.select.ddms2.deselected.item', function(item) {
+            app.sandbox.on('husky.select.ddms2.deselected.item', function(item) {
                 console.log("drop-down multiple select ddms2: deselected item: " + item);
             });
 
-            app.sandbox.on('husky.dropdown.multiple.select.ddms2.selected.item', function(item) {
+            app.sandbox.on('husky.select.ddms2.selected.item', function(item) {
                 console.log("drop-down multiple select ddms2: selected item: " + item);
             });
 
             $('#toggleState').on('click', function() {
                 if (state7 === 0) {
-                    app.sandbox.emit('husky.dropdown.multiple.select.ddms7.enable');
+                    app.sandbox.emit('husky.select.ddms7.enable');
                     state7 = 1;
                 } else {
-                    app.sandbox.emit('husky.dropdown.multiple.select.ddms7.disable');
+                    app.sandbox.emit('husky.select.ddms7.disable');
                     state7 = 0;
                 }
             });

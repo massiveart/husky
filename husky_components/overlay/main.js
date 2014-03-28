@@ -106,10 +106,26 @@ define([], function() {
 
     /**
      * raised after overlay is closed
-     * @event husky.overlay.<instance-name>.opened
+     * @event husky.overlay.<instance-name>.closed
      */
      CLOSED = function() {
         return createEventName.call(this, 'closed');
+     },
+
+    /**
+     * used to activate ok button
+     * @event husky.overlay.<instance-name>.okbutton.activate
+     */
+     OKBUTTON_ACTIVATE = function() {
+        return createEventName.call(this, 'okbutton.activate');
+     },
+
+    /**
+     * used to deactivate ok button
+     * @event husky.overlay.<instance-name>.okbutton.deactivate
+     */
+     OKBUTTON_DEACTIVATE = function() {
+        return createEventName.call(this, 'okbutton.deactivate');
      },
 
     /**
@@ -153,10 +169,22 @@ define([], function() {
                 this.triggerHandler();
             }.bind(this));
 
-            this.sandbox.on(REMOVE.call(this), function() {
-                this.removeComponent();
-            }.bind(this));
+            this.sandbox.on(REMOVE.call(this), this.removeComponent.bind(this));
+
+
+            // TODO: implement this functions
+            this.sandbox.on(OKBUTTON_ACTIVATE.call(this), this.activateOkButton.bind(this));
+            this.sandbox.on(OKBUTTON_DEACTIVATE.call(this), this.deactivateOkButton.bind(this));
         },
+
+        activateOkButton : function() {
+
+        },
+
+        deactivateOkButton : function() {
+
+        },
+
 
         /**
          * Removes the component
@@ -308,14 +336,16 @@ define([], function() {
 
             this.sandbox.dom.on(this.overlay.$close, 'click', function(event) {
                 this.sandbox.dom.preventDefault(event);
-                this.closeOverlay();
-                this.executeCallback(this.options.closeCallback);
+                if (this.executeCallback(this.options.closeCallback) !== false) {
+                    this.closeOverlay();
+                }
             }.bind(this));
 
             this.sandbox.dom.on(this.overlay.$ok, 'click', function(event) {
                 this.sandbox.dom.preventDefault(event);
-                this.executeCallback(this.options.okCallback);
-                this.closeOverlay();
+                if (this.executeCallback(this.options.okCallback) !== false) {
+                    this.closeOverlay();
+                }
             }.bind(this));
 
             this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
@@ -326,8 +356,9 @@ define([], function() {
 
             if (this.options.backdrop === true) {
                 this.sandbox.dom.on(this.$backdrop, 'click', function() {
-                    this.closeOverlay();
-                    this.executeCallback(this.options.closeCallback);
+                    if (this.executeCallback(this.options.closeCallback) !== false) {
+                        this.closeOverlay();
+                    }
                 }.bind(this));
             }
 
@@ -423,7 +454,7 @@ define([], function() {
          */
         executeCallback: function(callback) {
             if (typeof callback === 'function') {
-                callback();
+                return callback();
             }
         }
     };

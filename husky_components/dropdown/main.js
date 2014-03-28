@@ -29,7 +29,9 @@ define([], function() {
             url: '',     // url for lazy loading
             data: [],    // data array
             trigger: '',  // trigger for click event
+            triggerOutside: false, // if true, trigger is searched in whole dom, otherwise just in this.$el
             shadow: true,  // if box-shadow should be shown
+            toggleClassOn: null, // container to set is-active class
             valueName: 'name', // name of text property
             setParentDropDown: false, // set class dropdown for parent dom object
             excludeItems: [], // items to filter,
@@ -104,7 +106,11 @@ define([], function() {
 
             // init drop-down
             if (this.options.trigger !== '') {
-                this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this), this.options.trigger);
+                if (this.options.triggerOutside) {
+                    this.sandbox.dom.on(this.options.trigger, 'click', this.triggerClick.bind(this));
+                } else {
+                    this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this), this.options.trigger);
+                }
             } else {
                 this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this));
             }
@@ -247,7 +253,9 @@ define([], function() {
             this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.show(this.$dropDown);
             this.sandbox.emit('husky.dropdown.' + this.options.instanceName + '.showing');
-            this.sandbox.dom.addClass(this.$el, 'is-active');
+            if (!!this.options.toggleClassOn) {
+                this.sandbox.dom.addClass(this.options.toggleClassOn, 'is-active');
+            }
         },
 
         // hide dropDown
@@ -256,7 +264,9 @@ define([], function() {
             // remove global click event
             this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.hide(this.$dropDown);
-            this.sandbox.dom.removeClass(this.$el, 'is-active');
+            if (!!this.options.toggleClassOn) {
+                this.sandbox.dom.removeClass(this.options.toggleClassOn, 'is-active');
+            }
         },
 
         // get url for pattern
