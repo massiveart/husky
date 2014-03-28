@@ -205,7 +205,7 @@ define([], function() {
 
         addDropdownElement: function(id, value, disabled) {
             var $item,
-                idString = !!id ? id.toString() : 'null';
+                idString = (!!id || id === 0) ? id.toString() : 'null';
             if (this.options.preSelectedElements.indexOf(id) >= 0 || this.options.preSelectedElements.indexOf(value) >= 0) {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, 'checked'));
                 this.selectedElements.push(idString);
