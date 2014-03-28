@@ -335,16 +335,12 @@ define([], function() {
                 this.selectedElements.splice(index, 1);
                 this.selectedElementsValues.splice(index, 1);
 
-                this.triggerDeselect(key);
-
                 // select
             } else {
                 this.sandbox.dom.addClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', true);
                 this.selectedElements.push(key);
                 this.selectedElementsValues.push(value);
-
-                this.triggerSelect(key);
             }
 
             // update data attribute
@@ -356,6 +352,12 @@ define([], function() {
             // hide if single select
             if (this.options.multipleSelect === false) {
                 this.hideDropDown();
+            }
+
+            if (index >= 0) {
+                this.triggerDeselect(key);
+            } else {
+                this.triggerSelect(key);
             }
         },
 

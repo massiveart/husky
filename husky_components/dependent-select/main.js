@@ -47,7 +47,44 @@ define(function() {
          */
             INITIALIZED = function() {
             return getEventName.call(this, 'initialized');
+        },
 
+        /**
+         * triggered when a select item is selected
+         * @event husky.dependent-select[.INSTANCE_NAME].item.selected
+         * @param id of the select that was selected
+         * @param depth of the select that was selected
+         */
+            ITEM_SELECTED = function() {
+            return getEventName.call(this, 'item.selected');
+        },
+
+        /**
+         * triggered when a select item is deselected
+         * @event husky.dependent-select[.INSTANCE_NAME].item.deselected
+         * @param id of the select that was deselected
+         * @param depth of the select that was deselected
+         */
+            ITEM_DESELECTED = function() {
+            return getEventName.call(this, 'item.deselected');
+        },
+
+        /**
+         * triggered when a not all items are selected anymore
+         * @event husky.dependent-select[.INSTANCE_NAME].all.items.deselected
+         * @param id of the select that was changed
+         */
+            ALL_ITEMS_DESELECTED = function() {
+            return getEventName.call(this, 'all.items.deselected');
+        },
+
+        /**
+         * triggered when all selects have been set
+         * @event husky.dependent-select[.INSTANCE_NAME].all.items.selected
+         * @param id of the last item that was selected
+         */
+            ALL_ITEMS_SELECTED = function() {
+            return getEventName.call(this, 'all.items.selected');
         },
 
     // creates event strings based on
@@ -56,10 +93,10 @@ define(function() {
         },
 
     // empties all selects beginning from a certain depth
-        renderEmpty = function(depth) {
+        renderEmptySelect = function(depth) {
             var i, len, $child;
             for (i = depth, len = this.options.container.length; ++i < len;) {
-                $child = findStopAndRestartChild.call(this, this.options.container[i]);
+                $child = findStopAndCreateNewChild.call(this, this.options.container[i]);
                 this.sandbox.start([
                     {
                         name: 'select@husky',
@@ -90,7 +127,7 @@ define(function() {
          * @param containerId
          * @returns {domObject}
          */
-            findStopAndRestartChild = function(containerId) {
+            findStopAndCreateNewChild = function(containerId) {
             var $container = this.$find(containerId),
                 $child = this.sandbox.dom.find('.' + constants.childContainerClass, $container);
             if (!$container) {
@@ -106,6 +143,22 @@ define(function() {
             return $child;
         },
 
+        // checks if all selects are selected
+        checkAllSelected = function() {
+            var $lastContainer = this.$find(this.options.container[this.options.container.length-1]),
+                lastSelectElement = this.sandbox.dom.children($lastContainer)[0],
+                selection = this.sandbox.dom.data(lastSelectElement,'selection');
+
+            // if last element is selected
+            if (!!lastSelectElement && typeof selection !== 'undefined' && this.allSelected !== true) {
+                this.allSelected = true;
+                this.sandbox.emit(ALL_ITEMS_SELECTED.call(this));
+            } else if (this.allSelected) {
+                this.allSelected = false;
+                this.sandbox.emit(ALL_ITEMS_DESELECTED.call(this));
+            }
+        },
+
     // renders selects at a certain depth
         renderSelect = function(data, depth, preselect) {
 
@@ -119,20 +172,29 @@ define(function() {
                 deselectionCallback = null,
                 options,
             // get child
-                $child = findStopAndRestartChild.call(this, this.options.container[depth]);
+                $child = findStopAndCreateNewChild.call(this, this.options.container[depth]);
 
             // create callback
-            if (this.options.container.length > depth && !!data[0].items) {
-                selectionCallback = function(id) {
+
+            selectionCallback = function(id) {
+                // if there are more selects left
+                if (this.options.container.length > depth && !!data[0].items) {
                     var items = getDataById.call(this, data, id).items;
                     renderSelect.call(this, items, depth + 1);
-                }.bind(this);
-                deselectionCallback = function(id) {
+                }
+                // trigger events
+                this.sandbox.emit(ITEM_SELECTED.call(this), id, depth);
+                checkAllSelected.call(this);
+            }.bind(this);
+            deselectionCallback = function(id) {
+                if (this.options.container.length > depth && !!data[0].items) {
                     if (id === null) {
-                        renderEmpty.call(this, depth);
+                        renderEmptySelect.call(this, depth);
                     }
-                }.bind(this);
-            }
+                }
+                this.sandbox.emit(ITEM_DESELECTED.call(this), id, depth);
+                checkAllSelected.call(this);
+            }.bind(this);
 
             // make it possible to set some data for select
             if (!!this.options.selectOptions[depth]) {
@@ -188,10 +250,11 @@ define(function() {
         render: function(data) {
             // create items array
             renderSelect.call(this, data, 0, this.options.preselect);
-            renderEmpty.call(this, !!this.options.preselect ? this.options.preselect.length : 0);
+            renderEmptySelect.call(this, !!this.options.preselect ? this.options.preselect.length : 0);
 
             // initialization finished
             this.sandbox.emit(INITIALIZED.call(this));
         }
     };
-});
+})
+;

@@ -17029,7 +17029,15 @@ define('form/mapper',[
                     var $element = $(value),
                         element = $element.data('element'),
                         property = $element.data('mapper-property'),
-                        $newChild, collection;
+                        $newChild, collection,
+                        dfd = $.Deferred(),
+                        counter = 0,
+                        resolve = function() {
+                            counter--;
+                            if (counter === 0) {
+                                dfd.resolve();
+                            }
+                        };
 
                     if (!$.isArray(property)) {
                         if (typeof property === 'object') {
@@ -17055,9 +17063,17 @@ define('form/mapper',[
                     };
                     this.collections.push(collection);
 
+                    counter += element.$children.length;
                     // iterate through collection
                     element.$children.each(function(i, child) {
-                        var $child = $(child), propertyName, x, len;
+                        var $child = $(child), propertyName, x, len,
+                            propertyCount = 0,
+                            resolveElement = function() {
+                                propertyCount--;
+                                if (propertyCount === 0) {
+                                    resolve();
+                                }
+                            };
 
                         // attention: template has to be markuped as 'script'
                         if (!$child.is('script')) {
@@ -17073,14 +17089,18 @@ define('form/mapper',[
                             }
                         }
                         if (!!propertyName) {
+                            propertyCount = collection.element.getType().getMinOccurs();
                             this.templates[propertyName] = {tpl: $newChild, collection: collection};
                             // init default children
                             for (x = collection.element.getType().getMinOccurs() + 1; --x > 0;) {
                                 that.appendChildren.call(this, collection.$element, $newChild).then(function() {
                                     // set counter
                                     $('#current-counter-' + propertyName).text(collection.element.getType().getChildren($newChild.id).length);
+                                    resolveElement();
                                 }.bind(this));
                             }
+                        } else {
+                            resolveElement();
                         }
                     }.bind(this));
 
@@ -17090,7 +17110,18 @@ define('form/mapper',[
 
                         // init remove button
                         form.$el.on('click', '*[data-mapper-remove="' + item.data + '"]', that.removeClick.bind(this));
+
+                        // emit collection init event after resolve
+                        dfd.then(function() {
+                            that.emitInitCollectionEvent(item.data);
+                        });
                     }.bind(this));
+
+                    dfd.then(function() {
+                        Util.debug('collection resolved');
+                    });
+
+                    return dfd.promise();
                 },
 
                 addClick: function(event) {
@@ -17103,6 +17134,7 @@ define('form/mapper',[
                         that.appendChildren.call(this, collection.$element, tpl).then(function() {
                             // set counter
                             $('#current-counter-' + propertyName).text(collection.element.getType().getChildren(tpl.id).length);
+                            that.emitAddEvent(propertyName, null);
                         }.bind(this));
                     }
                 },
@@ -17118,7 +17150,20 @@ define('form/mapper',[
                         that.remove.call(this, $element);
                         // set counter
                         $('#current-counter-' + propertyName).text(collection.element.getType().getChildren(tpl.id).length);
+                        that.emitRemoveEvent(propertyName, null);
                     }
+                },
+
+                emitInitCollectionEvent: function(propertyName) {
+                    $(form.$el).trigger('form-collection-init', [propertyName]);
+                },
+
+                emitAddEvent: function(propertyName, data) {
+                    $(form.$el).trigger('form-add', [propertyName, data]);
+                },
+
+                emitRemoveEvent: function(propertyName, data) {
+                    $(form.$el).trigger('form-remove', [propertyName, data]);
                 },
 
                 processData: function(el, collection) {
@@ -24961,15 +25006,13 @@ define('__component__$navigation@husky',[],function() {
 
                 this.sandbox.start([
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: this.sandbox.dom.find('.locale-dropdown', $footer),
                             instanceName: 'navigation-locale',
                             value: 'name',
                             data: this.options.userLocales,
                             preSelectedElements: [this.options.userLocale],
-                            singleSelect: true,
-                            noDeselect: true,
                             small: true
                         }
                     }
@@ -32273,8 +32316,7 @@ define('__component__$dependent-select@husky',[],function() {
             findStopAndRestartChild = function(containerId) {
             var $container = this.$find(containerId),
                 $child = this.sandbox.dom.find('.' + constants.childContainerClass, $container);
-            if (!
-                $container) {
+            if (!$container) {
                 throw 'dependent-select: no container with id ' + containerId + ' could be found';
             }
             // stop child, if running
@@ -32319,7 +32361,7 @@ define('__component__$dependent-select@husky',[],function() {
             if (!!this.options.selectOptions[depth]) {
                 options = this.options.selectOptions[depth];
             }
-            options = this.sandbox.util.extend(true, {}, options, {
+            options = this.sandbox.util.extend(true, {}, {
                 el: $child,
                 singleSelect: true,
                 instanceName: depth,
@@ -32328,7 +32370,7 @@ define('__component__$dependent-select@husky',[],function() {
                 deselectCallback: deselectionCallback,
                 preSelectedElements: !!preselect ? [preselect] : [],
                 defaultLabel: this.sandbox.dom.isArray(this.options.defaultLabels) ? this.options.defaultLabels[depth] : this.options.defaultLabels
-            });
+            }, options);
 
             // start select component
             this.sandbox.start([
@@ -32360,7 +32402,7 @@ define('__component__$dependent-select@husky',[],function() {
                         this.sandbox.logger.log('data could not be loaded:', data);
                     }.bind(this));
             } else if (!!this.options.data) {
-                this.render((this.options.data));
+                this.render(this.options.data);
             } else {
                 this.sandbox.logger.log('no data provided for dependent select!');
             }
@@ -32632,6 +32674,7 @@ define('__component__$select@husky',[], function() {
                 this.sandbox.dom.stopPropagation(event);
                 if (this.sandbox.dom.hasClass(event.currentTarget, 'disabled') === false) {
                     this.clickItem(event);
+                    return true;
                 } else {
                     this.sandbox.dom.preventDefault(event);
                     return false;
@@ -32801,12 +32844,7 @@ define('__component__$select@husky',[], function() {
             // check if dropdown container overlaps bottom of browser
             if (ddHeight + ddTop > windowHeight + scrollTop) {
                 this.sandbox.dom.addClass(this.$dropdownContainer, constants.dropdownTopClass);
-            } else if (hasTopClass) {
             }
-        },
-
-        flipDropdownContent: function() {
-
         },
 
         // hide dropDown
@@ -32821,6 +32859,7 @@ define('__component__$select@husky',[], function() {
             this.sandbox.logger.log('hide dropdown ' + this.options.instanceName);
             this.sandbox.dom.addClass(this.$dropdownContainer, 'hidden');
             this.dropdownVisible = false;
+            return true;
         },
 
         // return checked values
@@ -34037,11 +34076,16 @@ define('__component__$ckeditor@husky',[], function() {
          eventNamespace = 'husky.ckeditor.',
 
         /**
-         * @event husky.column-navigation.loaded
+         * @event husky.ckeditor.changed
          * @description the component has loaded everything successfully and will be rendered
          */
          CHANGED = eventNamespace + 'changed',
 
+        /**
+         * @event husky.ckeditor.focusout
+         * @description triggered when focus of editor is lost
+         */
+        FOCUSOUT = eventNamespace + 'focusout',
 
         /**
          * Removes the not needed elements from the config object for the ckeditor
@@ -34076,6 +34120,10 @@ define('__component__$ckeditor@husky',[], function() {
             this.editor.on('instanceReady', function() {
                 // bind class to editor
                 this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
+            }.bind(this));
+
+            this.editor.on('blur', function(){
+                this.sandbox.emit(FOCUSOUT, this.editor.getData(), this.$el);
             }.bind(this));
         }
 
@@ -37740,6 +37788,10 @@ define('husky_extensions/collection',[],function() {
 
                     getData: function(selector) {
                         return  app.sandbox.form.getObject(selector).mapper.getData();
+                    },
+
+                    addToCollection: function(selector, propertyName, data, append) {
+                        return  app.sandbox.form.getObject(selector).mapper.addToCollection(propertyName, data, append);
                     },
 
                     addCollectionFilter: function(selector, arrayName, callback) {
