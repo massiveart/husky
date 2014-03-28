@@ -249,7 +249,7 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'click', this.toggleDropDown.bind(this), '.dropdown-label');
 
             // click on single item
-            this.sandbox.dom.on(this.$list, 'click', function(event) {
+            this.sandbox.dom.on(this.$el, 'click', function(event) {
                 this.sandbox.dom.stopPropagation(event);
                 if (this.sandbox.dom.hasClass(event.currentTarget, 'disabled') === false) {
                     this.clickItem(event);
@@ -258,7 +258,7 @@ define([], function() {
                     this.sandbox.dom.preventDefault(event);
                     return false;
                 }
-            }.bind(this), 'li');
+            }.bind(this), '.husky-select-dropdown-container li');
 
         },
 

@@ -32270,7 +32270,44 @@ define('__component__$dependent-select@husky',[],function() {
          */
             INITIALIZED = function() {
             return getEventName.call(this, 'initialized');
+        },
 
+        /**
+         * triggered when a select item is selected
+         * @event husky.dependent-select[.INSTANCE_NAME].item.selected
+         * @param id of the select that was selected
+         * @param depth of the select that was selected
+         */
+            ITEM_SELECTED = function() {
+            return getEventName.call(this, 'item.selected');
+        },
+
+        /**
+         * triggered when a select item is deselected
+         * @event husky.dependent-select[.INSTANCE_NAME].item.deselected
+         * @param id of the select that was deselected
+         * @param depth of the select that was deselected
+         */
+            ITEM_DESELECTED = function() {
+            return getEventName.call(this, 'item.deselected');
+        },
+
+        /**
+         * triggered when a not all items are selected anymore
+         * @event husky.dependent-select[.INSTANCE_NAME].all.items.deselected
+         * @param id of the select that was changed
+         */
+            ALL_ITEMS_DESELECTED = function() {
+            return getEventName.call(this, 'all.items.deselected');
+        },
+
+        /**
+         * triggered when all selects have been set
+         * @event husky.dependent-select[.INSTANCE_NAME].all.items.selected
+         * @param id of the last item that was selected
+         */
+            ALL_ITEMS_SELECTED = function() {
+            return getEventName.call(this, 'all.items.selected');
         },
 
     // creates event strings based on
@@ -32279,10 +32316,10 @@ define('__component__$dependent-select@husky',[],function() {
         },
 
     // empties all selects beginning from a certain depth
-        renderEmpty = function(depth) {
+        renderEmptySelect = function(depth) {
             var i, len, $child;
             for (i = depth, len = this.options.container.length; ++i < len;) {
-                $child = findStopAndRestartChild.call(this, this.options.container[i]);
+                $child = findStopAndCreateNewChild.call(this, this.options.container[i]);
                 this.sandbox.start([
                     {
                         name: 'select@husky',
@@ -32313,7 +32350,7 @@ define('__component__$dependent-select@husky',[],function() {
          * @param containerId
          * @returns {domObject}
          */
-            findStopAndRestartChild = function(containerId) {
+            findStopAndCreateNewChild = function(containerId) {
             var $container = this.$find(containerId),
                 $child = this.sandbox.dom.find('.' + constants.childContainerClass, $container);
             if (!$container) {
@@ -32329,6 +32366,22 @@ define('__component__$dependent-select@husky',[],function() {
             return $child;
         },
 
+        // checks if all selects are selected
+        checkAllSelected = function() {
+            var $lastContainer = this.$find(this.options.container[this.options.container.length-1]),
+                lastSelectElement = this.sandbox.dom.children($lastContainer)[0],
+                selection = this.sandbox.dom.data(lastSelectElement,'selection');
+
+            // if last element is selected
+            if (!!lastSelectElement && typeof selection !== 'undefined' && this.allSelected !== true) {
+                this.allSelected = true;
+                this.sandbox.emit(ALL_ITEMS_SELECTED.call(this));
+            } else if (this.allSelected) {
+                this.allSelected = false;
+                this.sandbox.emit(ALL_ITEMS_DESELECTED.call(this));
+            }
+        },
+
     // renders selects at a certain depth
         renderSelect = function(data, depth, preselect) {
 
@@ -32342,20 +32395,29 @@ define('__component__$dependent-select@husky',[],function() {
                 deselectionCallback = null,
                 options,
             // get child
-                $child = findStopAndRestartChild.call(this, this.options.container[depth]);
+                $child = findStopAndCreateNewChild.call(this, this.options.container[depth]);
 
             // create callback
-            if (this.options.container.length > depth && !!data[0].items) {
-                selectionCallback = function(id) {
+
+            selectionCallback = function(id) {
+                // if there are more selects left
+                if (this.options.container.length > depth && !!data[0].items) {
                     var items = getDataById.call(this, data, id).items;
                     renderSelect.call(this, items, depth + 1);
-                }.bind(this);
-                deselectionCallback = function(id) {
+                }
+                // trigger events
+                this.sandbox.emit(ITEM_SELECTED.call(this), id, depth);
+                checkAllSelected.call(this);
+            }.bind(this);
+            deselectionCallback = function(id) {
+                if (this.options.container.length > depth && !!data[0].items) {
                     if (id === null) {
-                        renderEmpty.call(this, depth);
+                        renderEmptySelect.call(this, depth);
                     }
-                }.bind(this);
-            }
+                }
+                this.sandbox.emit(ITEM_DESELECTED.call(this), id, depth);
+                checkAllSelected.call(this);
+            }.bind(this);
 
             // make it possible to set some data for select
             if (!!this.options.selectOptions[depth]) {
@@ -32411,13 +32473,14 @@ define('__component__$dependent-select@husky',[],function() {
         render: function(data) {
             // create items array
             renderSelect.call(this, data, 0, this.options.preselect);
-            renderEmpty.call(this, !!this.options.preselect ? this.options.preselect.length : 0);
+            renderEmptySelect.call(this, !!this.options.preselect ? this.options.preselect.length : 0);
 
             // initialization finished
             this.sandbox.emit(INITIALIZED.call(this));
         }
     };
-});
+})
+;
 
 /**
  * This file is part of Husky frontend development framework.
@@ -32670,7 +32733,7 @@ define('__component__$select@husky',[], function() {
             this.sandbox.dom.on(this.$el, 'click', this.toggleDropDown.bind(this), '.dropdown-label');
 
             // click on single item
-            this.sandbox.dom.on(this.$list, 'click', function(event) {
+            this.sandbox.dom.on(this.$el, 'click', function(event) {
                 this.sandbox.dom.stopPropagation(event);
                 if (this.sandbox.dom.hasClass(event.currentTarget, 'disabled') === false) {
                     this.clickItem(event);
@@ -32679,7 +32742,7 @@ define('__component__$select@husky',[], function() {
                     this.sandbox.dom.preventDefault(event);
                     return false;
                 }
-            }.bind(this), 'li');
+            }.bind(this), '.husky-select-dropdown-container li');
 
         },
 
@@ -32756,16 +32819,12 @@ define('__component__$select@husky',[], function() {
                 this.selectedElements.splice(index, 1);
                 this.selectedElementsValues.splice(index, 1);
 
-                this.triggerDeselect(key);
-
                 // select
             } else {
                 this.sandbox.dom.addClass($checkbox, 'is-selected');
                 this.sandbox.dom.prop($checkbox, 'checked', true);
                 this.selectedElements.push(key);
                 this.selectedElementsValues.push(value);
-
-                this.triggerSelect(key);
             }
 
             // update data attribute
@@ -32777,6 +32836,12 @@ define('__component__$select@husky',[], function() {
             // hide if single select
             if (this.options.multipleSelect === false) {
                 this.hideDropDown();
+            }
+
+            if (index >= 0) {
+                this.triggerDeselect(key);
+            } else {
+                this.triggerSelect(key);
             }
         },
 
@@ -35750,10 +35815,26 @@ define('__component__$overlay@husky',[], function() {
 
     /**
      * raised after overlay is closed
-     * @event husky.overlay.<instance-name>.opened
+     * @event husky.overlay.<instance-name>.closed
      */
      CLOSED = function() {
         return createEventName.call(this, 'closed');
+     },
+
+    /**
+     * used to activate ok button
+     * @event husky.overlay.<instance-name>.okbutton.activate
+     */
+     OKBUTTON_ACTIVATE = function() {
+        return createEventName.call(this, 'okbutton.activate');
+     },
+
+    /**
+     * used to deactivate ok button
+     * @event husky.overlay.<instance-name>.okbutton.deactivate
+     */
+     OKBUTTON_DEACTIVATE = function() {
+        return createEventName.call(this, 'okbutton.deactivate');
      },
 
     /**
@@ -35797,9 +35878,12 @@ define('__component__$overlay@husky',[], function() {
                 this.triggerHandler();
             }.bind(this));
 
-            this.sandbox.on(REMOVE.call(this), function() {
-                this.removeComponent();
-            }.bind(this));
+            this.sandbox.on(REMOVE.call(this), this.removeComponent.bind(this));
+
+
+            // TODO: implement this functions
+            this.sandbox.on(OKBUTTON_ACTIVATE.call(this), this.activateOkButton.bind(this));
+            this.sandbox.on(OKBUTTON_DEACTIVATE.call(this), this.deactivateOkButton.bind(this));
         },
 
         /**
@@ -35952,14 +36036,16 @@ define('__component__$overlay@husky',[], function() {
 
             this.sandbox.dom.on(this.overlay.$close, 'click', function(event) {
                 this.sandbox.dom.preventDefault(event);
-                this.closeOverlay();
-                this.executeCallback(this.options.closeCallback);
+                if (this.executeCallback(this.options.closeCallback) !== false) {
+                    this.closeOverlay();
+                }
             }.bind(this));
 
             this.sandbox.dom.on(this.overlay.$ok, 'click', function(event) {
                 this.sandbox.dom.preventDefault(event);
-                this.executeCallback(this.options.okCallback);
-                this.closeOverlay();
+                if (this.executeCallback(this.options.okCallback) !== false) {
+                    this.closeOverlay();
+                }
             }.bind(this));
 
             this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
@@ -35970,8 +36056,9 @@ define('__component__$overlay@husky',[], function() {
 
             if (this.options.backdrop === true) {
                 this.sandbox.dom.on(this.$backdrop, 'click', function() {
-                    this.closeOverlay();
-                    this.executeCallback(this.options.closeCallback);
+                    if (this.executeCallback(this.options.closeCallback) !== false) {
+                        this.closeOverlay();
+                    }
                 }.bind(this));
             }
 
@@ -36067,7 +36154,7 @@ define('__component__$overlay@husky',[], function() {
          */
         executeCallback: function(callback) {
             if (typeof callback === 'function') {
-                callback();
+                return callback();
             }
         }
     };
