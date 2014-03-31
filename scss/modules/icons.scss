@@ -49,10 +49,17 @@
 }
 
 .icon-circle-remove {
-    &::after {
-        content: "\e193";
-        display: inline-block;
-    }
+   &::after {
+     content: "\e193";
+     display: inline-block;
+   }
+}
+
+.icon-circle-minus {
+  &::after {
+    content: "\e192";
+    display: inline-block;
+  }
 }
 
 .icon-circle-arrow-down {

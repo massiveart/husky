@@ -21,6 +21,11 @@ $grid-margin-bottom-small: 10px;
     &.no-spacing {
         margin-bottom: 0;
     }
+    &.divider {
+        margin-bottom: ($grid-margin-bottom)/2;
+        padding-bottom: ($grid-margin-bottom)/2;
+        border-bottom: 1px solid $grayLighter;
+    }
 
     &::after {
         content: "";

@@ -32457,6 +32457,15 @@ define('__component__$select@husky',[], function() {
         },
 
         /**
+         * triggered when item has been preselected
+         * @event husky.select[.INSTANCE_NAME].preselected.item
+         * @param {String} key of selected item
+         */
+            EVENT_PRESELECTED_ITEM = function() {
+            return getEventName.call(this, 'preselected.item');
+        },
+
+        /**
          * used for enabling select
          * @event husky.select[.INSTANCE_NAME].enable
          */
@@ -32584,7 +32593,7 @@ define('__component__$select@husky',[], function() {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, 'checked'));
                 this.selectedElements.push(idString);
                 this.selectedElementsValues.push(value);
-                this.triggerSelect(idString);
+                this.triggerPreSelect(idString);
             } else {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, ''));
             }
@@ -32742,6 +32751,16 @@ define('__component__$select@husky',[], function() {
                 this.options.selectCallback.call(this, key);
             } else {
                 this.sandbox.emit(EVENT_SELECTED_ITEM.call(this), key);
+            }
+        },
+
+        // triggers select callback or emits event
+        triggerPreSelect: function(key) {
+            // callback, if defined
+            if (!!this.options.selectCallback) {
+                this.options.selectCallback.call(this, key);
+            } else {
+                this.sandbox.emit(EVENT_PRESELECTED_ITEM.call(this), key);
             }
         },
 
