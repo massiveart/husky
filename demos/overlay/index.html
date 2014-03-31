@@ -98,6 +98,7 @@
                         container: '#insertOverlayHere',
                         instanceName: 'deactivated',
                         data: testData,
+                        okInactive: true,
                         closeCallback: function() {
                             console.log('You clicked on close');
                         },
@@ -122,10 +123,6 @@
                     }
                 }]).then(function() {
                     app.logger.log('Aura started...');
-
-                    app.sandbox.on('husky.overlay.deactivated.opened', function() {
-                        app.sandbox.emit('husky.overlay.deactivated.okbutton.deactivate');
-                    });
                 });
     });
 

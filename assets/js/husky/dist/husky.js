@@ -17117,6 +17117,8 @@ define('form/mapper',[
                         });
                     }.bind(this));
 
+                    that.checkFullAndEmpty.call(this, property[0].data);
+
                     dfd.then(function() {
                         Util.debug('collection resolved');
                     });
@@ -17137,6 +17139,7 @@ define('form/mapper',[
                             that.emitAddEvent(propertyName, null);
                         }.bind(this));
                     }
+                    that.checkFullAndEmpty.call(this, propertyName);
                 },
 
                 removeClick: function(event) {
@@ -17151,6 +17154,35 @@ define('form/mapper',[
                         // set counter
                         $('#current-counter-' + propertyName).text(collection.element.getType().getChildren(tpl.id).length);
                         that.emitRemoveEvent(propertyName, null);
+                    }
+                    that.checkFullAndEmpty.call(this, propertyName);
+                },
+
+                checkFullAndEmpty: function(propertyName) {
+                    var $addButton = $("[data-mapper-add='"+ propertyName +"']"),
+                        $removeButton = $("[data-mapper-remove='"+ propertyName +"']"),
+                        tpl = this.templates[propertyName].tpl,
+                        collection = this.templates[propertyName].collection,
+                        fullClass = collection.element.$el.data('mapper-full-class') || 'full',
+                        emptyClass = collection.element.$el.data('mapper-empty-class') || 'empty';
+
+                    $addButton.removeClass(fullClass);
+                    $addButton.removeClass(emptyClass);
+                    $(collection.element.$el).removeClass(fullClass);
+                    $(collection.element.$el).removeClass(emptyClass);
+
+                    if (!!$addButton.length || !!$removeButton.length) {
+                        // if no add is possible add full style-classes
+                        if (!collection.element.getType().canAdd(tpl.id)) {
+                            $addButton.addClass(fullClass);
+                            $(collection.element.$el).addClass(fullClass);
+
+                        // else, if no remove is possible add empty style-classes
+                        } else if (!collection.element.getType().canRemove(tpl.id)) {
+                            $addButton.addClass(emptyClass);
+                            $(collection.element.$el).addClass(emptyClass);
+
+                        }
                     }
                 },
 
@@ -35597,6 +35629,7 @@ define('__component__$smart-content@husky',[], function() {
  * @params {Boolean} [options.backdrop] if true backdrop will be shown
  * @params {Boolean} [options.backdropColor] Color of the backdrop
  * @params {Boolean} [options.backdropAlpha] Alpha-value of the backdrop
+ * @params {Boolean} [options.okInactive] If true ok button is deactivated
  */
 define('__component__$overlay@husky',[], function() {
 
@@ -35618,7 +35651,8 @@ define('__component__$overlay@husky',[], function() {
             removeOnClose: false,
             backdrop: true,
             backdropColor: '#000000',
-            backdropAlpha: 0.3
+            backdropAlpha: 0.3,
+            okInactive: false
         },
 
         constants = {
@@ -35808,6 +35842,11 @@ define('__component__$overlay@husky',[], function() {
                     this.initSkeleton();
                     this.setContent();
                     this.bindOverlayEvents();
+
+                    if (this.options.okInactive === true) {
+                        this.deactivateOkButton();
+                    }
+
                     this.sandbox.emit(INITIALIZED.call(this));
                 }
 

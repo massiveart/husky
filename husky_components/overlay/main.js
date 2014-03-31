@@ -30,6 +30,7 @@
  * @params {Boolean} [options.backdrop] if true backdrop will be shown
  * @params {Boolean} [options.backdropColor] Color of the backdrop
  * @params {Boolean} [options.backdropAlpha] Alpha-value of the backdrop
+ * @params {Boolean} [options.okInactive] If true ok button is deactivated
  */
 define([], function() {
 
@@ -51,7 +52,8 @@ define([], function() {
             removeOnClose: false,
             backdrop: true,
             backdropColor: '#000000',
-            backdropAlpha: 0.3
+            backdropAlpha: 0.3,
+            okInactive: false
         },
 
         constants = {
@@ -241,6 +243,11 @@ define([], function() {
                     this.initSkeleton();
                     this.setContent();
                     this.bindOverlayEvents();
+
+                    if (this.options.okInactive === true) {
+                        this.deactivateOkButton();
+                    }
+
                     this.sandbox.emit(INITIALIZED.call(this));
                 }
 
