@@ -58,10 +58,25 @@
     }
 }
 
+.empty {
+    .text-block {
+        .head .options {
+            display: none;
+        }
+        &:hover .head .options {
+            display: none;
+        }
+    }
+}
+
 .text-block-footer {
     .desc {
         font-size: $smallFontSize;
         color: $grayLight;
         padding-left: 10px;
+    }
+    .btn.full {
+        background-color: $grayLighter;
+        cursor: default;
     }
 }

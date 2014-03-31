@@ -7796,11 +7796,25 @@ a.btn-black, a.btn-highlight {
   display: block;
 }
 
-/* line 62, ../scss/modules/content-types.scss */
+/* line 63, ../scss/modules/content-types.scss */
+.empty .text-block .head .options {
+  display: none;
+}
+/* line 66, ../scss/modules/content-types.scss */
+.empty .text-block:hover .head .options {
+  display: none;
+}
+
+/* line 73, ../scss/modules/content-types.scss */
 .text-block-footer .desc {
   font-size: 12px;
   color: #999999;
   padding-left: 10px;
+}
+/* line 78, ../scss/modules/content-types.scss */
+.text-block-footer .btn.full {
+  background-color: #cccccc;
+  cursor: default;
 }
 
 /* line 5, ../scss/modules/toggler.scss */
