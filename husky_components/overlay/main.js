@@ -30,6 +30,7 @@
  * @params {Boolean} [options.backdrop] if true backdrop will be shown
  * @params {Boolean} [options.backdropColor] Color of the backdrop
  * @params {Boolean} [options.backdropAlpha] Alpha-value of the backdrop
+ * @params {Boolean} [options.okInactive] If true ok button is deactivated
  */
 define([], function() {
 
@@ -41,7 +42,7 @@ define([], function() {
             container: 'body',
             title: '',
             closeIcon: 'remove2',
-            okIcon: 'half-ok save-button btn btn-highlight btn-large',
+            okIcon: 'half-ok save-button btn action',
             closeCallback: null,
             okCallback: null,
             data: '',
@@ -51,7 +52,8 @@ define([], function() {
             removeOnClose: false,
             backdrop: true,
             backdropColor: '#000000',
-            backdropAlpha: 0.3
+            backdropAlpha: 0.3,
+            okInactive: false
         },
 
         constants = {
@@ -75,71 +77,71 @@ define([], function() {
                 '<div class="overlay-footer">',
                 '<a class="icon-<%= okIcon %> ok-button" href="#"></a>',
                 '</div>',
-            '</div>'
-        ].join(''),
+                '</div>'
+            ].join(''),
             backdrop: [
                 '<div class="husky-overlay-backdrop"></div>'
             ].join('')
-    },
+        },
 
-    /**
-     * namespace for events
-     * @type {string}
-     */
-     eventNamespace = 'husky.overlay.',
+        /**
+         * namespace for events
+         * @type {string}
+         */
+            eventNamespace = 'husky.overlay.',
 
-    /**
-     * raised after initialization process
-     * @event husky.overlay.<instance-name>.initialize
-     */
-    INITIALIZED = function() {
-        return createEventName.call(this, 'initialized');
-    },
+        /**
+         * raised after initialization process
+         * @event husky.overlay.<instance-name>.initialize
+         */
+            INITIALIZED = function() {
+            return createEventName.call(this, 'initialized');
+        },
 
-    /**
-     * raised after overlay is opened
-     * @event husky.overlay.<instance-name>.opened
-     */
-     OPENED = function() {
-        return createEventName.call(this, 'opened');
-     },
+        /**
+         * raised after overlay is opened
+         * @event husky.overlay.<instance-name>.opened
+         */
+            OPENED = function() {
+            return createEventName.call(this, 'opened');
+        },
 
-    /**
-     * raised after overlay is closed
-     * @event husky.overlay.<instance-name>.closed
-     */
-     CLOSED = function() {
-        return createEventName.call(this, 'closed');
-     },
+        /**
+         * raised after overlay is closed
+         * @event husky.overlay.<instance-name>.closed
+         */
+            CLOSED = function() {
+            return createEventName.call(this, 'closed');
+        },
 
-    /**
-     * used to activate ok button
-     * @event husky.overlay.<instance-name>.okbutton.activate
-     */
-     OKBUTTON_ACTIVATE = function() {
-        return createEventName.call(this, 'okbutton.activate');
-     },
+        /**
+         * used to activate ok button
+         * @event husky.overlay.<instance-name>.okbutton.activate
+         */
+            OKBUTTON_ACTIVATE = function() {
+            return createEventName.call(this, 'okbutton.activate');
+        },
 
-    /**
-     * used to deactivate ok button
-     * @event husky.overlay.<instance-name>.okbutton.deactivate
-     */
-     OKBUTTON_DEACTIVATE = function() {
-        return createEventName.call(this, 'okbutton.deactivate');
-     },
+        /**
+         * used to deactivate ok button
+         * @event husky.overlay.<instance-name>.okbutton.deactivate
+         */
+            OKBUTTON_DEACTIVATE = function() {
+            return createEventName.call(this, 'okbutton.deactivate');
+        },
 
-    /**
-     * removes the component
-     * @event husky.overlay.<instance-name>.remove
-     */
-     REMOVE = function() {
-        return createEventName.call(this, 'remove');
-     },
+        /**
+         * removes the component
+         * @event husky.overlay.<instance-name>.remove
+         */
+            REMOVE = function() {
+            return createEventName.call(this, 'remove');
+        },
 
-    /** returns normalized event names */
-    createEventName = function(postFix) {
-        return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
-    };
+        /** returns normalized event names */
+            createEventName = function(postFix) {
+            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+        };
 
     return {
 
@@ -177,12 +179,12 @@ define([], function() {
             this.sandbox.on(OKBUTTON_DEACTIVATE.call(this), this.deactivateOkButton.bind(this));
         },
 
-        activateOkButton : function() {
-
+        activateOkButton: function() {
+            this.sandbox.dom.removeClass(this.overlay.$ok, 'inactive gray');
         },
 
-        deactivateOkButton : function() {
-
+        deactivateOkButton: function() {
+            this.sandbox.dom.addClass(this.overlay.$ok, 'inactive gray');
         },
 
 
@@ -241,6 +243,11 @@ define([], function() {
                     this.initSkeleton();
                     this.setContent();
                     this.bindOverlayEvents();
+
+                    if (this.options.okInactive === true) {
+                        this.deactivateOkButton();
+                    }
+
                     this.sandbox.emit(INITIALIZED.call(this));
                 }
 
@@ -255,7 +262,7 @@ define([], function() {
         initBackdrop: function() {
             this.$backdrop = this.sandbox.dom.createElement(templates.backdrop);
             this.sandbox.dom.css(this.$backdrop, {
-               'background-color': this.options.backdropColor
+                'background-color': this.options.backdropColor
             });
             this.sandbox.dom.fadeTo(this.$backdrop, 0, this.options.backdropAlpha);
         },
@@ -342,6 +349,10 @@ define([], function() {
             }.bind(this));
 
             this.sandbox.dom.on(this.overlay.$ok, 'click', function(event) {
+                // do nothing, if button is inactive
+                if (this.overlay.$ok.hasClass('inactive')) {
+                    return;
+                }
                 this.sandbox.dom.preventDefault(event);
                 if (this.executeCallback(this.options.okCallback) !== false) {
                     this.closeOverlay();

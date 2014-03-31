@@ -5602,7 +5602,7 @@ table {
   font-size: 12px;
 }
 /* line 46, ../scss/modules/btns.scss */
-.btn.grey {
+.btn.grey, .btn.gray {
   background-color: #cccccc;
   color: white;
 }
