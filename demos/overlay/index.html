@@ -40,6 +40,10 @@
         <div class="grid-col-1">&nbsp;</div>
         <div class="btn pointer grid-col-3 align-center" id="showme2">Show me an another overlay</div>
     </div>
+    <div class="grid-row m-top-20">
+        <div class="grid-col-1">&nbsp;</div>
+        <div class="btn pointer grid-col-3 align-center" id="showme3">Show me an overlay with deactivated ok</div>
+    </div>
 </div>
 <div id="insertOverlayHere"></div>
 <script src="../js/sinon.js"></script>
@@ -69,12 +73,30 @@
                    '</div>';
 
 
+
+
         app.start([{
                     name: 'overlay@husky',
                     options: {
                         triggerEl: '#showme',
                         title: 'We want your title!',
                         container: '#insertOverlayHere',
+                        data: testData,
+                        closeCallback: function() {
+                            console.log('You clicked on close');
+                        },
+                        okCallback: function() {
+                            console.log('You clicked on ok');
+                        }
+                    }
+                },
+                {
+                    name: 'overlay@husky',
+                    options: {
+                        triggerEl: '#showme3',
+                        title: 'We want your title!',
+                        container: '#insertOverlayHere',
+                        instanceName: 'deactivated',
                         data: testData,
                         closeCallback: function() {
                             console.log('You clicked on close');
@@ -100,6 +122,10 @@
                     }
                 }]).then(function() {
                     app.logger.log('Aura started...');
+
+                    app.sandbox.on('husky.overlay.deactivated.opened', function() {
+                        app.sandbox.emit('husky.overlay.deactivated.okbutton.deactivate');
+                    });
                 });
     });
 
