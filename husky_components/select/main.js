@@ -247,7 +247,7 @@ define([], function() {
                     }.bind(this));
                 }
                 this.changeLabel();
-
+                this.updateSelectionAttribute();
             }
         },
 

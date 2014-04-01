@@ -32621,7 +32621,7 @@ define('__component__$select@husky',[], function() {
                     }.bind(this));
                 }
                 this.changeLabel();
-
+                this.updateSelectionAttribute();
             }
         },
 
