@@ -147,12 +147,14 @@ define(function() {
         checkAllSelected = function() {
             var $lastContainer = this.$find(this.options.container[this.options.container.length-1]),
                 lastSelectElement = this.sandbox.dom.children($lastContainer)[0],
-                selection = this.sandbox.dom.data(lastSelectElement,'selection');
+                selection = this.sandbox.dom.attr(lastSelectElement,'data-selection');
 
             // if last element is selected
-            if (!!lastSelectElement && typeof selection !== 'undefined' && this.allSelected !== true) {
-                this.allSelected = true;
-                this.sandbox.emit(ALL_ITEMS_SELECTED.call(this));
+            if (!!lastSelectElement && typeof selection !== 'undefined') {
+                if (!this.allSelected) {
+                    this.allSelected = true;
+                    this.sandbox.emit(ALL_ITEMS_SELECTED.call(this));
+                }
             } else if (this.allSelected) {
                 this.allSelected = false;
                 this.sandbox.emit(ALL_ITEMS_DESELECTED.call(this));
