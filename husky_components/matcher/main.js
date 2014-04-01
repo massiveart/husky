@@ -385,13 +385,11 @@ define([], function() {
 
                 this.sandbox.start([
                     {
-                        name: 'dropdown-multiple-select@husky',
+                        name: 'select@husky',
                         options: {
                             el: $element,
                             instanceName: this.options.instanceName + column.id,
                             defaultLabel: this.sandbox.translate(this.translations.pleaseChoose),
-                            singleSelect: true,
-                            noDeselect: true,
                             data: this.dbColumns,
                             preSelectedElements: selected
                         }
@@ -409,7 +407,7 @@ define([], function() {
          */
         getDropdownValue: function(column, callback) {
             this.sandbox.emit(
-                'husky.dropdown.multiple.select.' + this.options.instanceName + column.id + '.getChecked',
+                'husky.select.' + this.options.instanceName + column.id + '.getChecked',
                 callback
             );
         },

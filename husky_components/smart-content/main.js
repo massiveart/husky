@@ -169,8 +169,10 @@ define([], function() {
                 subFolders: ['<div class="item-half">',
                     '<div class="check<%= disabled %>">',
                     '<label>',
-                    '<input type="checkbox" class="includeSubCheck form-element custom-checkbox"<%= includeSubCheckedStr %>/>',
-                    '<span class="custom-checkbox-icon"></span>',
+                    '<div class="custom-checkbox">',
+                        '<input type="checkbox" class="includeSubCheck form-element"<%= includeSubCheckedStr %>/>',
+                        '<span class="icon"></span>',
+                    '</div>',
                     '<span class="description"><%= includeSubStr %></span>',
                     '</label>',
                     '</div>',
@@ -708,7 +710,7 @@ define([], function() {
         startOverlayComponents: function() {
             this.sandbox.start([
                 {
-                    name: 'dropdown-multiple-select@husky',
+                    name: 'select@husky',
                     options: {
                         el: this.sandbox.dom.find('.' + constants.categoryDDClass, this.$overlayContent),
                         instanceName: this.options.instanceName + constants.categoryDDClass,
@@ -716,7 +718,6 @@ define([], function() {
                         value: 'name',
                         data: this.options.categories,
                         preSelectedElements: [this.options.preSelectedCategory],
-                        singleSelect: true,
                         disabled: this.overlayDisabled.categories
                     }
                 },
@@ -733,21 +734,19 @@ define([], function() {
                     }
                 },
                 {
-                    name: 'dropdown-multiple-select@husky',
+                    name: 'select@husky',
                     options: {
                         el: this.sandbox.dom.find('.' + constants.sortByDDClass, this.$overlayContent),
                         instanceName: this.options.instanceName + constants.sortByDDClass,
-                        defaultLabel: 'No sorting',
+//                        deselectLabel: 'No sorting',
                         value: 'name',
                         data: this.options.sortBy,
                         preSelectedElements: [this.options.preSelectedSortBy],
-                        singleSelect: true,
-                        noDeselect: true,
                         disabled: this.overlayDisabled.sortBy
                     }
                 },
                 {
-                    name: 'dropdown-multiple-select@husky',
+                    name: 'select@husky',
                     options: {
                         el: this.sandbox.dom.find('.' + constants.sortMethodDDClass, this.$overlayContent),
                         instanceName: this.options.instanceName + constants.sortMethodDDClass,
@@ -758,13 +757,11 @@ define([], function() {
                             {id: sortMethods.desc, name: this.sandbox.translate(this.translations.descending)}
                         ],
                         preSelectedElements: [sortMethods[this.options.preSelectedSortMethod]],
-                        singleSelect: true,
-                        noDeselect: true,
                         disabled: this.overlayDisabled.sortBy
                     }
                 },
                 {
-                    name: 'dropdown-multiple-select@husky',
+                    name: 'select@husky',
                     options: {
                         el: this.sandbox.dom.find('.' + constants.presentAsDDClass, this.$overlayContent),
                         instanceName: this.options.instanceName + constants.presentAsDDClass,
@@ -772,8 +769,6 @@ define([], function() {
                         value: 'name',
                         data: this.options.presentAs,
                         preSelectedElements: [this.options.preSelectedPresentAs],
-                        singleSelect: true,
-                        noDeselect: true,
                         disabled: this.overlayDisabled.presentAs
                     }
                 }
@@ -851,7 +846,7 @@ define([], function() {
             this.overlayData.dataSource = this.sandbox.dom.val(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent));
 
             //category
-            this.sandbox.emit('husky.dropdown.multiple.select.' + this.options.instanceName + constants.categoryDDClass + '.getChecked',
+            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.categoryDDClass + '.getChecked',
                 function(category) {
                     this.overlayData.category = category;
                     categoryDef.resolve();
@@ -865,21 +860,21 @@ define([], function() {
                 }.bind(this));
 
             //sort by
-            this.sandbox.emit('husky.dropdown.multiple.select.' + this.options.instanceName + constants.sortByDDClass + '.getChecked',
+            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.sortByDDClass + '.getChecked',
                 function(sortBy) {
                     this.overlayData.sortBy = sortBy;
                     sortByDef.resolve();
                 }.bind(this));
 
             //sort method
-            this.sandbox.emit('husky.dropdown.multiple.select.' + this.options.instanceName + constants.sortMethodDDClass + '.getChecked',
+            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.sortMethodDDClass + '.getChecked',
                 function(sortMethod) {
                     this.overlayData.sortMethod = (sortMethod[0] === sortMethods.asc) ? 'asc' : 'desc';
                     sortMethodDef.resolve();
                 }.bind(this));
 
             //present as
-            this.sandbox.emit('husky.dropdown.multiple.select.' + this.options.instanceName + constants.presentAsDDClass + '.getChecked',
+            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.presentAsDDClass + '.getChecked',
                 function(presentAs) {
                     this.overlayData.presentAs = presentAs;
                     presentAsDef.resolve();
