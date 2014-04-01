@@ -599,172 +599,177 @@ table {
   color: black !important;
 }
 
-/* line 106, ../scss/utilities.scss */
+/* line 101, ../scss/utilities.scss */
+.faded {
+  opacity: 0.3;
+}
+
+/* line 110, ../scss/utilities.scss */
 .m-top-0 {
   margin-top: 0px !important;
 }
 
-/* line 109, ../scss/utilities.scss */
+/* line 113, ../scss/utilities.scss */
 .p-top-0 {
   padding-top: 0px !important;
 }
 
-/* line 112, ../scss/utilities.scss */
+/* line 116, ../scss/utilities.scss */
 .m-bottom-0 {
   margin-bottom: 0px !important;
 }
 
-/* line 115, ../scss/utilities.scss */
+/* line 119, ../scss/utilities.scss */
 .p-bottom-0 {
   padding-bottom: 0px !important;
 }
 
-/* line 120, ../scss/utilities.scss */
+/* line 124, ../scss/utilities.scss */
 .m-top-5 {
   margin-top: 5px !important;
 }
 
-/* line 123, ../scss/utilities.scss */
+/* line 127, ../scss/utilities.scss */
 .p-top-5 {
   padding-top: 5px !important;
 }
 
-/* line 127, ../scss/utilities.scss */
+/* line 131, ../scss/utilities.scss */
 .m-bottom-5 {
   margin-bottom: 5px !important;
 }
 
-/* line 130, ../scss/utilities.scss */
+/* line 134, ../scss/utilities.scss */
 .p-bottom-5 {
   padding-bottom: 5px !important;
 }
 
-/* line 134, ../scss/utilities.scss */
+/* line 138, ../scss/utilities.scss */
 .m-right-5 {
   margin-right: 5px !important;
 }
 
-/* line 137, ../scss/utilities.scss */
+/* line 141, ../scss/utilities.scss */
 .p-right-5 {
   padding-right: 5px !important;
 }
 
-/* line 141, ../scss/utilities.scss */
+/* line 145, ../scss/utilities.scss */
 .m-left-5 {
   margin-left: 5px !important;
 }
 
-/* line 144, ../scss/utilities.scss */
+/* line 148, ../scss/utilities.scss */
 .p-left-5 {
   padding-left: 5px !important;
 }
 
-/* line 149, ../scss/utilities.scss */
+/* line 153, ../scss/utilities.scss */
 .m-top-10 {
   margin-top: 10px !important;
 }
 
-/* line 153, ../scss/utilities.scss */
+/* line 157, ../scss/utilities.scss */
 .m-bottom-10 {
   margin-bottom: 10px !important;
 }
 
-/* line 157, ../scss/utilities.scss */
+/* line 161, ../scss/utilities.scss */
 .m-right-10 {
   margin-right: 10px !important;
 }
 
-/* line 161, ../scss/utilities.scss */
+/* line 165, ../scss/utilities.scss */
 .m-left-10 {
   margin-left: 10px !important;
 }
 
-/* line 166, ../scss/utilities.scss */
+/* line 170, ../scss/utilities.scss */
 .p-top-10 {
   padding-top: 10px !important;
 }
 
-/* line 171, ../scss/utilities.scss */
+/* line 175, ../scss/utilities.scss */
 .m-top-15 {
   margin-top: 15px !important;
 }
 
-/* line 175, ../scss/utilities.scss */
+/* line 179, ../scss/utilities.scss */
 .m-bottom-15 {
   margin-bottom: 15px !important;
 }
 
-/* line 179, ../scss/utilities.scss */
+/* line 183, ../scss/utilities.scss */
 .m-right-15 {
   margin-right: 15px !important;
 }
 
-/* line 183, ../scss/utilities.scss */
+/* line 187, ../scss/utilities.scss */
 .m-left-15 {
   margin-left: 15px !important;
 }
 
-/* line 188, ../scss/utilities.scss */
+/* line 192, ../scss/utilities.scss */
 .m-top-20 {
   margin-top: 20px !important;
 }
 
-/* line 192, ../scss/utilities.scss */
+/* line 196, ../scss/utilities.scss */
 .m-bottom-20 {
   margin-bottom: 20px !important;
 }
 
-/* line 196, ../scss/utilities.scss */
+/* line 200, ../scss/utilities.scss */
 .m-right-20 {
   margin-right: 20px !important;
 }
 
-/* line 200, ../scss/utilities.scss */
+/* line 204, ../scss/utilities.scss */
 .m-left-20 {
   margin-left: 20px !important;
 }
 
-/* line 206, ../scss/utilities.scss */
+/* line 210, ../scss/utilities.scss */
 .m-top-25 {
   margin-top: 25px !important;
 }
 
-/* line 210, ../scss/utilities.scss */
+/* line 214, ../scss/utilities.scss */
 .m-bottom-25 {
   margin-bottom: 25px !important;
 }
 
-/* line 214, ../scss/utilities.scss */
+/* line 218, ../scss/utilities.scss */
 .m-right-25 {
   margin-right: 25px !important;
 }
 
-/* line 218, ../scss/utilities.scss */
+/* line 222, ../scss/utilities.scss */
 .m-left-25 {
   margin-left: 25px !important;
 }
 
-/* line 223, ../scss/utilities.scss */
+/* line 227, ../scss/utilities.scss */
 .m-top-30 {
   margin-top: 30px !important;
 }
 
-/* line 227, ../scss/utilities.scss */
+/* line 231, ../scss/utilities.scss */
 .m-bottom-30 {
   margin-bottom: 30px !important;
 }
 
-/* line 231, ../scss/utilities.scss */
+/* line 235, ../scss/utilities.scss */
 .m-right-30 {
   margin-right: 30px !important;
 }
 
-/* line 235, ../scss/utilities.scss */
+/* line 239, ../scss/utilities.scss */
 .m-left-30 {
   margin-left: 30px !important;
 }
 
-/* line 243, ../scss/utilities.scss */
+/* line 247, ../scss/utilities.scss */
 .m-height-25 {
   height: 25px !important;
 }
@@ -3843,211 +3848,211 @@ hr.divider {
   padding-bottom: 10px;
   border-bottom: 1px solid #cccccc;
 }
-/* line 30, ../scss/modules/grid.scss */
+/* line 29, ../scss/modules/grid.scss */
 .grid-row::after {
   content: "";
   display: table;
   clear: both;
 }
-/* line 36, ../scss/modules/grid.scss */
+/* line 35, ../scss/modules/grid.scss */
 .grid-row img {
   max-width: 100%;
 }
 
-/* line 45, ../scss/modules/grid.scss */
+/* line 44, ../scss/modules/grid.scss */
 .grid-row.small .grid-col-1.floating:nth-child(n+13) {
   margin-top: 10px;
 }
-/* line 50, ../scss/modules/grid.scss */
+/* line 49, ../scss/modules/grid.scss */
 .grid-row.small .grid-col-2.floating:nth-child(n+7) {
   margin-top: 10px;
 }
-/* line 55, ../scss/modules/grid.scss */
+/* line 54, ../scss/modules/grid.scss */
 .grid-row.small .grid-col-3.floating:nth-child(n+5) {
   margin-top: 10px;
 }
-/* line 60, ../scss/modules/grid.scss */
+/* line 59, ../scss/modules/grid.scss */
 .grid-row.small .grid-col-4.floating:nth-child(n+4) {
   margin-top: 10px;
 }
-/* line 65, ../scss/modules/grid.scss */
+/* line 64, ../scss/modules/grid.scss */
 .grid-row.small .grid-col-6.floating:nth-child(n+3) {
   margin-top: 10px;
 }
-/* line 70, ../scss/modules/grid.scss */
+/* line 69, ../scss/modules/grid.scss */
 .grid-row.small .grid-col-12.floating:nth-child(n+2) {
   margin-top: 10px;
 }
 
-/* line 76, ../scss/modules/grid.scss */
+/* line 75, ../scss/modules/grid.scss */
 [class*="grid-col-"] {
   float: left;
   padding-left: 8px;
   padding-right: 8px;
   min-height: 1px;
 }
-/* line 82, ../scss/modules/grid.scss */
+/* line 81, ../scss/modules/grid.scss */
 [class*="grid-col-"]:first-of-type {
   padding-left: 0;
   padding-right: 8px;
 }
-/* line 87, ../scss/modules/grid.scss */
+/* line 86, ../scss/modules/grid.scss */
 [class*="grid-col-"]:last-of-type {
   padding-right: 0;
 }
-/* line 90, ../scss/modules/grid.scss */
+/* line 89, ../scss/modules/grid.scss */
 [class*="grid-col-"].no-padding {
   padding: 0;
 }
 
-/* line 95, ../scss/modules/grid.scss */
+/* line 94, ../scss/modules/grid.scss */
 .grid-col-1 {
   width: 8.33%;
 }
-/* line 99, ../scss/modules/grid.scss */
+/* line 98, ../scss/modules/grid.scss */
 .grid-col-1.floating:nth-child(n+13) {
   margin-top: 20px;
 }
-/* line 103, ../scss/modules/grid.scss */
+/* line 102, ../scss/modules/grid.scss */
 .grid-col-1.floating:nth-child(12n+1) {
   padding-left: 0;
   padding-right: 8px;
 }
-/* line 108, ../scss/modules/grid.scss */
+/* line 107, ../scss/modules/grid.scss */
 .grid-col-1.floating:nth-child(12n) {
   padding-right: 0;
 }
 
-/* line 114, ../scss/modules/grid.scss */
+/* line 113, ../scss/modules/grid.scss */
 .grid-col-2 {
   width: 16.66%;
 }
-/* line 118, ../scss/modules/grid.scss */
+/* line 117, ../scss/modules/grid.scss */
 .grid-col-2.floating:nth-child(n+7) {
   margin-top: 20px;
 }
-/* line 122, ../scss/modules/grid.scss */
+/* line 121, ../scss/modules/grid.scss */
 .grid-col-2.floating:nth-child(6n+1) {
   padding-left: 0;
   padding-right: 8px;
 }
-/* line 127, ../scss/modules/grid.scss */
+/* line 126, ../scss/modules/grid.scss */
 .grid-col-2.floating:nth-child(6n) {
   padding-right: 0;
 }
 
-/* line 133, ../scss/modules/grid.scss */
+/* line 132, ../scss/modules/grid.scss */
 .grid-col-3 {
   width: 25%;
 }
-/* line 137, ../scss/modules/grid.scss */
+/* line 136, ../scss/modules/grid.scss */
 .grid-col-3.floating:nth-child(n+5) {
   margin-top: 20px;
 }
-/* line 141, ../scss/modules/grid.scss */
+/* line 140, ../scss/modules/grid.scss */
 .grid-col-3.floating:nth-child(4n+1) {
   padding-left: 0;
   padding-right: 8px;
 }
-/* line 146, ../scss/modules/grid.scss */
+/* line 145, ../scss/modules/grid.scss */
 .grid-col-3.floating:nth-child(4n) {
   padding-right: 0;
 }
 
-/* line 152, ../scss/modules/grid.scss */
+/* line 151, ../scss/modules/grid.scss */
 .grid-col-4 {
   width: 33.33%;
 }
-/* line 156, ../scss/modules/grid.scss */
+/* line 155, ../scss/modules/grid.scss */
 .grid-col-4.floating:nth-child(n+4) {
   margin-top: 20px;
 }
-/* line 160, ../scss/modules/grid.scss */
+/* line 159, ../scss/modules/grid.scss */
 .grid-col-4.floating:nth-child(3n+1) {
   padding-left: 0;
   padding-right: 8px;
 }
-/* line 165, ../scss/modules/grid.scss */
+/* line 164, ../scss/modules/grid.scss */
 .grid-col-4.floating:nth-child(3n) {
   padding-right: 0;
 }
 
-/* line 171, ../scss/modules/grid.scss */
+/* line 170, ../scss/modules/grid.scss */
 .grid-col-5 {
   width: 41.66%;
 }
 
-/* line 175, ../scss/modules/grid.scss */
+/* line 174, ../scss/modules/grid.scss */
 .grid-col-6 {
   width: 50%;
 }
-/* line 180, ../scss/modules/grid.scss */
+/* line 179, ../scss/modules/grid.scss */
 .grid-col-6.floating:nth-child(n+3) {
   margin-top: 20px;
 }
-/* line 184, ../scss/modules/grid.scss */
+/* line 183, ../scss/modules/grid.scss */
 .grid-col-6.floating:nth-child(odd) {
   padding-left: 0;
   padding-right: 8px;
 }
-/* line 189, ../scss/modules/grid.scss */
+/* line 188, ../scss/modules/grid.scss */
 .grid-col-6.floating:nth-child(even) {
   padding-right: 0;
 }
 
-/* line 195, ../scss/modules/grid.scss */
+/* line 194, ../scss/modules/grid.scss */
 .grid-col-7 {
   width: 58.33%;
 }
 
-/* line 199, ../scss/modules/grid.scss */
+/* line 198, ../scss/modules/grid.scss */
 .grid-col-8 {
   width: 66.66%;
 }
 
-/* line 203, ../scss/modules/grid.scss */
+/* line 202, ../scss/modules/grid.scss */
 .grid-col-9 {
   width: 75%;
 }
 
-/* line 207, ../scss/modules/grid.scss */
+/* line 206, ../scss/modules/grid.scss */
 .grid-col-10 {
   width: 83.33%;
 }
 
-/* line 211, ../scss/modules/grid.scss */
+/* line 210, ../scss/modules/grid.scss */
 .grid-col-11 {
   width: 91.66%;
 }
 
-/* line 215, ../scss/modules/grid.scss */
+/* line 214, ../scss/modules/grid.scss */
 .grid-col-12 {
   width: 100%;
 }
-/* line 219, ../scss/modules/grid.scss */
+/* line 218, ../scss/modules/grid.scss */
 .grid-col-12.floating:nth-child(n+2) {
   margin-top: 20px;
 }
-/* line 222, ../scss/modules/grid.scss */
+/* line 221, ../scss/modules/grid.scss */
 .grid-col-12.floating:nth-child(n) {
   padding-left: 0;
   padding-right: 0;
 }
 
 @media (max-width: 580px) {
-  /* line 231, ../scss/modules/grid.scss */
+  /* line 230, ../scss/modules/grid.scss */
   [class*="grid-col-"] {
     width: 100%;
     margin-top: 15px;
     padding-left: 0;
     padding-right: 0;
   }
-  /* line 238, ../scss/modules/grid.scss */
+  /* line 237, ../scss/modules/grid.scss */
   [class*="grid-col-"]:first-of-type {
     margin-top: 0;
     padding-right: 0;
   }
-  /* line 244, ../scss/modules/grid.scss */
+  /* line 243, ../scss/modules/grid.scss */
   [class*="grid-col-"].floating:nth-child(n) {
     padding-right: 0;
   }
