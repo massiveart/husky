@@ -92,10 +92,14 @@
     outline:0;
 }
 
-// Clickable
+// General styles
 // -------------------------
 .clickable {
     color: $black !important;
+}
+
+.faded {
+    opacity: 0.3;
 }
 
 // Margin & paddings shorthands

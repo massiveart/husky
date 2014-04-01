@@ -26,6 +26,7 @@
  * @param {Function} [options.selectCallback] callbackfunction, when element is selected
  * @param {String} [options.valueName] name of property which should be used
  * @param {String} [options.style] "normal", "small" or "big" for different appearance
+ * @param {Boolean} [options.emitValues] If true the value is emited with events instead of the id
  */
 
 define([], function() {
@@ -44,7 +45,8 @@ define([], function() {
             disabled: false,                  //if true button is disabled
             selectCallback: null,
             deselectCallback: null,
-            style: 'normal'
+            style: 'normal',
+            emitValues: false,
         },
 
         constants = {
@@ -80,6 +82,15 @@ define([], function() {
          */
             EVENT_SELECTED_ITEM = function() {
             return getEventName.call(this, 'selected.item');
+        },
+
+        /**
+         * triggered when item has been preselected
+         * @event husky.select[.INSTANCE_NAME].preselected.item
+         * @param {String} key of selected item
+         */
+            EVENT_PRESELECTED_ITEM = function() {
+            return getEventName.call(this, 'preselected.item');
         },
 
         /**
@@ -210,7 +221,11 @@ define([], function() {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, 'checked'));
                 this.selectedElements.push(idString);
                 this.selectedElementsValues.push(value);
-                this.triggerSelect(idString);
+                if (this.options.emitValues === true) {
+                    this.triggerPreSelect(idString);
+                } else {
+                    this.triggerPreSelect(value);
+                }
             } else {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, ''));
             }
@@ -238,7 +253,7 @@ define([], function() {
                     }.bind(this));
                 }
                 this.changeLabel();
-
+                this.updateSelectionAttribute();
             }
         },
 
@@ -354,6 +369,10 @@ define([], function() {
                 this.hideDropDown();
             }
 
+            if (this.options.emitValues === true) {
+                key = value;
+            }
+
             if (index >= 0) {
                 this.triggerDeselect(key);
             } else {
@@ -368,6 +387,16 @@ define([], function() {
                 this.options.selectCallback.call(this, key);
             } else {
                 this.sandbox.emit(EVENT_SELECTED_ITEM.call(this), key);
+            }
+        },
+
+        // triggers select callback or emits event
+        triggerPreSelect: function(key) {
+            // callback, if defined
+            if (!!this.options.selectCallback) {
+                this.options.selectCallback.call(this, key);
+            } else {
+                this.sandbox.emit(EVENT_PRESELECTED_ITEM.call(this), key);
             }
         },
 

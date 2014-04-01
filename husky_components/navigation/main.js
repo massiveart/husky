@@ -398,7 +398,8 @@ define(function() {
                             value: 'name',
                             data: this.options.userLocales,
                             preSelectedElements: [this.options.userLocale],
-                            small: true
+                            style: 'small',
+                            emitValues: true
                         }
                     }
                 ]);
