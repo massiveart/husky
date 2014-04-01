@@ -6973,7 +6973,12 @@ a.btn-black, a.btn-highlight {
   top: 12px;
   min-width: 200px;
   max-width: 100%;
-  border-radius: 3px;
+  border-radius: 2px;
+}
+/* line 123, ../scss/modules/select.scss */
+.husky-select-container.small .dropdown-list.top {
+  top: auto;
+  bottom: -3px;
 }
 
 /* line 5, ../scss/modules/smart-content.scss */
