@@ -392,7 +392,8 @@ define(function() {
                             value: 'name',
                             data: this.options.userLocales,
                             preSelectedElements: [this.options.userLocale],
-                            style: 'small'
+                            style: 'small',
+                            emitValues: true
                         }
                     }
                 ]);

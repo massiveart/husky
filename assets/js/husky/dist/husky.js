@@ -25045,7 +25045,8 @@ define('__component__$navigation@husky',[],function() {
                             value: 'name',
                             data: this.options.userLocales,
                             preSelectedElements: [this.options.userLocale],
-                            style: 'small'
+                            style: 'small',
+                            emitValues: true
                         }
                     }
                 ]);
@@ -32400,6 +32401,7 @@ define('__component__$dependent-select@husky',[],function() {
  * @param {Function} [options.selectCallback] callbackfunction, when element is selected
  * @param {String} [options.valueName] name of property which should be used
  * @param {String} [options.style] "normal", "small" or "big" for different appearance
+ * @param {Boolean} [options.emitValues] If true the value is emited with events instead of the id
  */
 
 define('__component__$select@husky',[], function() {
@@ -32418,7 +32420,8 @@ define('__component__$select@husky',[], function() {
             disabled: false,                  //if true button is disabled
             selectCallback: null,
             deselectCallback: null,
-            style: 'normal'
+            style: 'normal',
+            emitValues: false,
         },
 
         constants = {
@@ -32593,7 +32596,11 @@ define('__component__$select@husky',[], function() {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, 'checked'));
                 this.selectedElements.push(idString);
                 this.selectedElementsValues.push(value);
-                this.triggerPreSelect(idString);
+                if (this.options.emitValues === true) {
+                    this.triggerPreSelect(idString);
+                } else {
+                    this.triggerPreSelect(value);
+                }
             } else {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, ''));
             }
@@ -32735,6 +32742,10 @@ define('__component__$select@husky',[], function() {
             // hide if single select
             if (this.options.multipleSelect === false) {
                 this.hideDropDown();
+            }
+
+            if (this.options.emitValues === true) {
+                key = value;
             }
 
             if (index >= 0) {
