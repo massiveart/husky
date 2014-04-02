@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -17579,6 +17580,7 @@ require.config({
         'type/label': 'js/types/label',
         'type/select': 'js/types/select',
         'type/collection': 'js/types/collection',
+        'type/attributes': 'js/types/attributes',
 
         'validator/default': 'js/validators/default',
         'validator/min': 'js/validators/min',
@@ -18268,6 +18270,48 @@ define('type/collection',[
             };
 
         return new Default($el, defaults, options, 'collection', subType);
+    };
+});
+
+/*
+ * This file is part of the Husky Validation.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
+define('type/attributes',[
+    'type/default'
+], function(Default) {
+
+    
+
+    return function($el, options) {
+        var defaults = {
+            },
+
+            typeInterface = {
+                setValue: function(value) {
+                   this.$el.data('attributes', value);
+                },
+
+                getValue: function() {
+                    return this.$el.data('attributes');
+                },
+
+                needsValidation: function() {
+                    return false;
+                },
+
+                validate: function() {
+                    return true;
+                }
+            };
+
+        return new Default($el, defaults, options, 'attributes', typeInterface);
     };
 });
 
@@ -38698,4 +38742,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-
