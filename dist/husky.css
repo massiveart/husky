@@ -7847,13 +7847,17 @@ a.btn-black, a.btn-highlight {
   display: none;
 }
 
-/* line 73, ../scss/modules/content-types.scss */
+/* line 72, ../scss/modules/content-types.scss */
+.text-block-footer {
+  margin-bottom: 20px;
+}
+/* line 75, ../scss/modules/content-types.scss */
 .text-block-footer .desc {
   font-size: 12px;
   color: #999999;
   padding-left: 10px;
 }
-/* line 78, ../scss/modules/content-types.scss */
+/* line 80, ../scss/modules/content-types.scss */
 .text-block-footer .btn.full {
   background-color: #cccccc;
   cursor: default;
