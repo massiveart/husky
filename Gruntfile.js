@@ -78,6 +78,7 @@ module.exports = function(grunt) {
             dist: ['dist', 'docs/packages/husky/'],
             temp: ['dist/temp'],
             tmp: ['.tmp'],
+            hooks: ['.git/hooks/*'],
             bower_after: {
                 files: {
                     src: [
@@ -130,6 +131,18 @@ module.exports = function(grunt) {
                         src: [
                             'fonts/{,*/}*'
                         ]
+                    }
+                ]
+            },
+            hooks: {
+                files: [
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            'bin/hooks/*'
+                        ],
+                        dest: '.git/hooks/'
                     }
                 ]
             },
@@ -377,5 +390,10 @@ module.exports = function(grunt) {
         'copy:dist',
         'connect',
         'watch'
+    ]);
+
+    grunt.registerTask('install:hooks', [
+        'clean:hooks',
+        'copy:hooks'
     ]);
 };
