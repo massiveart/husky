@@ -33241,7 +33241,6 @@ define('__component__$column-navigation@husky',[], function() {
     return {
 
         initialize: function() {
-
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
             this.$element = this.sandbox.dom.$(this.options.el);
@@ -33449,11 +33448,36 @@ define('__component__$column-navigation@husky',[], function() {
             var width, $itemText;
 
             $itemText = this.sandbox.dom.find('.item-text', $item);
-            width = this.options.column.width - this.sandbox.dom.position($itemText).left;
+            width = this.options.column.width - this.sandbox.dom.outerWidth(this.sandbox.dom.find('.icons-left', $item));
             width = width - parseInt(this.sandbox.dom.css($item, 'padding-right').replace('px', '')) -1;
+            width = width - parseInt(this.sandbox.dom.css($item, 'padding-left').replace('px', ''));
             width = width - this.sandbox.dom.outerWidth(this.sandbox.dom.find('.icons-right', $item));
 
             this.sandbox.dom.width($itemText, width);
+            this.cropItemsText($itemText);
+        },
+
+        /**
+         * Crops the item text of an item depending on its width
+         * @param $itemText {Object}
+         */
+        cropItemsText: function($itemText) {
+            var title = this.sandbox.dom.attr($itemText, 'title'),
+            croppedTitle,
+            maxLength = title.length,
+            overflow;
+
+            //set the item text to the original title
+            this.sandbox.dom.html($itemText, title);
+
+            overflow = (this.sandbox.dom.get($itemText, 0).scrollWidth > this.sandbox.dom.width($itemText));
+
+            while (overflow === true) {
+                maxLength = maxLength - 1;
+                croppedTitle = this.sandbox.util.cropMiddle(title, maxLength);
+                this.sandbox.dom.html($itemText, croppedTitle);
+                overflow = (this.sandbox.dom.get($itemText, 0).scrollWidth > this.sandbox.dom.width($itemText));
+            }
         },
 
         /**
@@ -33830,10 +33854,10 @@ define('__component__$column-navigation@husky',[], function() {
 
             item: function(width, data) {
 
-                var item = ['<li data-id="', data[this.options.idName], '" class="pointer"'];
+                var item = ['<li data-id="', data[this.options.idName], '" class="pointer">'];
 
                 // icons left
-                item.push('<span class="pull-left">');
+                item.push('<span class="icons-left">');
                 // link
                 if (!!data[this.options.linkedName]) {
                     if (data[this.options.linkedName] === 'internal') {
@@ -33843,7 +33867,7 @@ define('__component__$column-navigation@husky',[], function() {
                     }
                 }
 
-                // type (ghost, shadow)
+                // type (ghost, shadow
                 if (!!data[this.options.typeName]) {
                     if (data[this.options.typeName].name === 'ghost') {
                         item.push('<span class="ghost pull-left m-right-5">', data[this.options.typeName].value, '</span>');
@@ -33856,7 +33880,6 @@ define('__component__$column-navigation@husky',[], function() {
                 if (!data[this.options.publishedName]) {
                     item.push('<span class="not-published pull-left m-right-5">&bull;</span>');
                 }
-
                 item.push('</span>');
 
                 // text center
@@ -33871,7 +33894,7 @@ define('__component__$column-navigation@husky',[], function() {
                 item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
                 !!data[this.options.hasSubName] ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
-
+                console.log(item.join(''));
                 return item.join('');
             },
 
@@ -38729,6 +38752,23 @@ define('husky_extensions/util',[],function() {
 
                 return deferred.promise();
             };
+
+            app.core.util.cropMiddle = function(text, maxLength, delimiter) {
+                var substrLength;
+
+                // return text if it doesn't need to be cropped
+                if (text.length <= maxLength) {
+                    return text;
+                }
+
+                // default delimiter
+                if (!delimiter) {
+                    delimiter = '...';
+                }
+
+                substrLength = Math.floor((maxLength - delimiter.length)/2);
+                return text.slice(0, substrLength) + delimiter + text.slice(-substrLength);
+            },
 
             app.core.util.contains = function(list, value) {
                 return _.contains(list, value);

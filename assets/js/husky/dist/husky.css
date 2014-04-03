@@ -6637,15 +6637,14 @@ a.btn-black, a.btn-highlight {
 .column-navigation-wrapper .column-navigation .item-text {
   padding-top: 2px;
   display: block;
-  text-overflow: ellipsis;
   overflow: hidden;
   word-wrap: break-word;
 }
-/* line 81, ../scss/modules/column-navigation.scss */
+/* line 80, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .item-text.ghost {
   color: #999999;
 }
-/* line 85, ../scss/modules/column-navigation.scss */
+/* line 84, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .ghost {
   background: #009fc0;
   padding: 0 2px;
@@ -6653,13 +6652,18 @@ a.btn-black, a.btn-highlight {
   color: white;
   border-radius: 3px;
 }
-/* line 92, ../scss/modules/column-navigation.scss */
+/* line 91, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .icons-right {
   position: absolute;
   right: 5px;
   top: 15px;
 }
-/* line 97, ../scss/modules/column-navigation.scss */
+/* line 96, ../scss/modules/column-navigation.scss */
+.column-navigation-wrapper .column-navigation .icons-left {
+  display: block;
+  float: left;
+}
+/* line 100, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .edit {
   margin-right: 5px;
   background-color: #009fc0;
@@ -6668,20 +6672,20 @@ a.btn-black, a.btn-highlight {
   color: white;
   border-radius: 3px;
 }
-/* line 105, ../scss/modules/column-navigation.scss */
+/* line 108, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .husky-column-navigation-loader {
   position: relative;
   top: 2px;
   left: -2px;
 }
-/* line 111, ../scss/modules/column-navigation.scss */
+/* line 114, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .arrow {
   display: inline-block;
   width: 11px;
   font-size: 10px;
   vertical-align: middle;
 }
-/* line 120, ../scss/modules/column-navigation.scss */
+/* line 123, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .add {
   display: inline-block;
   width: 50%;
@@ -6692,7 +6696,7 @@ a.btn-black, a.btn-highlight {
   -webkit-border-bottom-left-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
 }
-/* line 132, ../scss/modules/column-navigation.scss */
+/* line 135, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .settings {
   display: inline-block;
   width: 50%;
