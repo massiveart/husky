@@ -136,8 +136,12 @@
                 return $(selector).height(value);
             };
 
-            app.core.dom.outerHeight = function(selector) {
-                return $(selector).outerHeight();
+            app.core.dom.outerHeight = function(selector, includeMargin) {
+                if (typeof includeMargin === 'undefined') {
+                    return $(selector).outerHeight();
+                } else {
+                    return $(selector).outerHeight(includeMargin);
+                }
             };
 
             app.core.dom.offset = function(selector, attributes) {

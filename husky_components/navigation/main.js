@@ -227,6 +227,7 @@ define(function() {
             this.stayCollapsed = false;
             this.hidden = false;
             this.tooltipsEnabled = true;
+            this.animating = false;
 
             // binding dom events
             this.bindDOMEvents();
@@ -299,13 +300,13 @@ define(function() {
             // render footer
             this.renderFooter();
 
+            // collapse if necessary
+            this.resizeListener();
+
             // preselect item based on url
             if (!!this.options.selectAction && this.options.selectAction.length > 0) {
                 this.preselectItem(this.options.selectAction);
             }
-
-            // collapse if necessary
-            this.resizeListener();
 
             // emit initialized event
             this.sandbox.emit('husky.navigation.initialized');
@@ -601,26 +602,80 @@ define(function() {
             }
 
             if (isExpanded && !navWasCollapsed) {
-                this.sandbox.dom.removeClass($items, 'is-expanded');
-
-                // change toggle item
                 $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
-                this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
-                this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
-            } else {
-                this.sandbox.dom.show($childList);
-                this.sandbox.dom.addClass($items, 'is-expanded');
-                // change toggle item
+                this.animateSlideUp($items, $toggle);
+            } else if (this.collapsed !== true) {
                 $toggle = this.sandbox.dom.find('.icon-chevron-right', event.currentTarget);
-                this.sandbox.dom.removeClass($toggle, 'icon-chevron-right');
-                this.sandbox.dom.prependClass($toggle, 'icon-chevron-down');
-
-                this.sandbox.dom.one($items, CONSTANTS.TRANSITIONEND_EVENT, this.checkBottomHit.bind(this));
+                this.animateSlideDown($items, $toggle, $childList);
             }
 
             // emit event
             item = this.getItemById(this.sandbox.dom.data($items, 'id'));
             this.sandbox.emit('husky.navigation.item.toggle', !isExpanded, item);
+        },
+
+        /**
+         * Handles the slide-up animation
+         * @param $items
+         * @param $toggle
+         */
+        animateSlideUp: function($items, $toggle) {
+            if (this.animating === false) {
+                this.animating = true;
+                var collapsedHeight = this.sandbox.dom.outerHeight(this.sandbox.dom.find('.navigation-items-toggle', $items));
+
+                this.sandbox.dom.animate($items, {
+                    height: collapsedHeight
+                }, {
+                    duration: 200,
+                    complete: function() {
+                        this.animating = false;
+                    }.bind(this)
+                });
+
+                this.sandbox.dom.removeClass($items, 'is-expanded');
+
+                // change toggle item
+                this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
+                this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
+            }
+        },
+
+        /**
+         * Handles the slide-down animation
+         * @param $items
+         * @param $toggle
+         * @param $childList
+         */
+        animateSlideDown: function($items, $toggle, $childList) {
+            if (this.animating === false) {
+                this.animating = true;
+                var expandedHeight = this.sandbox.dom.height($items) + this.sandbox.dom.outerHeight($childList);
+
+                $($items).stop();
+                this.sandbox.dom.animate($items, {
+                    height: (expandedHeight + 30)
+                }, {
+                    duration: 200
+                });
+
+                this.sandbox.dom.animate($items, {
+                    height: expandedHeight
+                }, {
+                    duration: 130,
+                    complete: function() {
+                        this.animating = false;
+                    }.bind(this)
+                });
+
+                this.sandbox.dom.addClass($items, 'is-expanded');
+
+                // change toggle item
+                this.sandbox.dom.removeClass($toggle, 'icon-chevron-right');
+                this.sandbox.dom.prependClass($toggle, 'icon-chevron-down');
+
+                this.sandbox.dom.one($items, CONSTANTS.TRANSITIONEND_EVENT, this.checkBottomHit.bind(this));
+            }
         },
 
         checkBottomHit: function(event, customTarget) {
@@ -644,6 +699,28 @@ define(function() {
                 } else {
                     this.sandbox.dom.scrollAnimate(itemTop, this.$navigationContent);
                 }
+            }
+        },
+
+        /**
+         * Removes the inline-style for expanded items
+         */
+        removeHeightforExpanded: function() {
+            var $expandedItems = this.sandbox.dom.find('.is-expanded', this.$el), i, length;
+            for (i = -1, length = $expandedItems.length; ++i < length;) {
+                this.sandbox.dom.removeAttr($expandedItems[i], 'style');
+            }
+        },
+
+        /**
+         * Resets the inline-style height for expanded items
+         */
+        setHeightForExpanded: function() {
+            var $expandedItems = this.sandbox.dom.find('.is-expanded', this.$el),
+                height, i, length;
+            for (i = -1, length = $expandedItems.length; ++i < length;) {
+                height = this.sandbox.dom.height($expandedItems[i]) + this.sandbox.dom.outerHeight(this.sandbox.dom.find('.navigation-items-list', $expandedItems[i]));
+                this.sandbox.dom.height($expandedItems[i], height);
             }
         },
 
@@ -691,6 +768,7 @@ define(function() {
             if (this.hidden === false) {
                 this.sandbox.dom.addClass(this.$navigation, 'collapsed');
                 this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
+                this.removeHeightforExpanded();
                 if (!this.collapsed) {
                     this.sandbox.emit(EVENT_COLLAPSED, CONSTANTS.COLLAPSED_WIDTH);
                     this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.COLLAPSED_WIDTH);
@@ -704,6 +782,7 @@ define(function() {
             if ((this.stayCollapsed === false || forced === true) && this.hidden === false) {
                 this.sandbox.dom.removeClass(this.$navigation, 'collapsed');
                 this.hideToolTip();
+                this.setHeightForExpanded();
                 if (forced) {
                     this.sandbox.dom.addClass(this.$navigation, 'collapseIcon');
                 }
