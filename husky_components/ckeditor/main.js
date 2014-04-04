@@ -38,7 +38,7 @@ define([], function() {
          * @description the component has loaded everything successfully and will be rendered
          */
             CHANGED = function() {
-            return eventNamespace + 'changed';
+            return eventNamespace + (this.options.instanceName !== null ? this.options.instanceName + '.' : '') + 'changed';
         },
 
         /**
@@ -46,7 +46,7 @@ define([], function() {
          * @description triggered when focus of editor is lost
          */
             FOCUSOUT = function() {
-            return eventNamespace + 'focusout';
+            return eventNamespace + (this.options.instanceName !== null ? this.options.instanceName + '.' : '') + 'focusout';
         },
 
         /**
@@ -72,11 +72,6 @@ return {
 
     initialize: function() {
         this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
-
-
-        if (this.options.instanceName !== null) {
-            eventNamespace += this.options.instanceName + '.';
-        }
 
         var config = getConfig.call(this);
         this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
