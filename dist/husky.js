@@ -25401,7 +25401,8 @@ define('__component__$navigation@husky',[],function() {
         animateSlideDown: function($items, $toggle, $childList) {
             if (this.animating === false) {
                 this.animating = true;
-                var expandedHeight = this.sandbox.dom.height($items) + this.sandbox.dom.outerHeight($childList);
+                var expandedHeight = this.sandbox.dom.height(this.sandbox.dom.find(
+                    '.navigation-items-toggle', $items)) + this.sandbox.dom.outerHeight($childList);
 
                 $($items).stop();
                 this.sandbox.dom.animate($items, {
@@ -25470,7 +25471,10 @@ define('__component__$navigation@husky',[],function() {
             var $expandedItems = this.sandbox.dom.find('.is-expanded', this.$el),
                 height, i, length;
             for (i = -1, length = $expandedItems.length; ++i < length;) {
-                height = this.sandbox.dom.height($expandedItems[i]) + this.sandbox.dom.outerHeight(this.sandbox.dom.find('.navigation-items-list', $expandedItems[i]));
+                height = this.sandbox.dom.height(
+                    this.sandbox.dom.find('.navigation-items-toggle', $expandedItems[i])) + this.sandbox.dom.outerHeight(
+                    this.sandbox.dom.find('.navigation-items-list', $expandedItems[i]));
+
                 this.sandbox.dom.height($expandedItems[i], height);
             }
         },
