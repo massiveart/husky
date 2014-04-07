@@ -17279,7 +17279,7 @@ define('form/mapper',[
 
                     // set current length of collection
                     $('#current-counter-' + $element.attr('id')).text(collection.length);
-
+                    that.checkFullAndEmpty.call(this, collectionElement.property[0].data);
                     return dfd.promise();
                 },
 
@@ -34264,32 +34264,37 @@ define('__component__$ckeditor@husky',[], function() {
     
 
     var defaults = {
-            initializedCallback: null
+            initializedCallback: null,
+            instanceName: null
         },
 
         /**
          * namespace for events
          * @type {string}
          */
-         eventNamespace = 'husky.ckeditor.',
+            eventNamespace = 'husky.ckeditor.',
 
         /**
          * @event husky.ckeditor.changed
          * @description the component has loaded everything successfully and will be rendered
          */
-         CHANGED = eventNamespace + 'changed',
+            CHANGED = function() {
+            return eventNamespace + (this.options.instanceName !== null ? this.options.instanceName + '.' : '') + 'changed';
+        },
 
         /**
          * @event husky.ckeditor.focusout
          * @description triggered when focus of editor is lost
          */
-        FOCUSOUT = eventNamespace + 'focusout',
+            FOCUSOUT = function() {
+            return eventNamespace + (this.options.instanceName !== null ? this.options.instanceName + '.' : '') + 'focusout';
+        },
 
         /**
          * Removes the not needed elements from the config object for the ckeditor
          * @returns {Object} configuration object for ckeditor
          */
-         getConfig = function() {
+            getConfig = function() {
             var config = this.sandbox.util.extend(false, {}, this.options);
 
             delete config.initializedCallback;
@@ -34304,30 +34309,32 @@ define('__component__$ckeditor@husky',[], function() {
             return config;
         };
 
-    return {
+return {
 
-        initialize: function() {
-            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
-            var config = getConfig.call(this);
-            this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
+    initialize: function() {
+        this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
-            this.editor.on('change', function() {
-                this.sandbox.emit(CHANGED, this.editor.getData(), this.$el);
-            }.bind(this));
+        var config = getConfig.call(this);
+        this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
 
-            this.editor.on('instanceReady', function() {
-                // bind class to editor
-                this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
-            }.bind(this));
+        this.editor.on('change', function() {
+            this.sandbox.emit(CHANGED.call(this), this.editor.getData(), this.$el);
+        }.bind(this));
 
-            this.editor.on('blur', function(){
-                this.sandbox.emit(FOCUSOUT, this.editor.getData(), this.$el);
-            }.bind(this));
-        }
+        this.editor.on('instanceReady', function() {
+            // bind class to editor
+            this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
+        }.bind(this));
 
-    };
+        this.editor.on('blur', function() {
+            this.sandbox.emit(FOCUSOUT.call(this), this.editor.getData(), this.$el);
+        }.bind(this));
+    }
 
-});
+};
+
+})
+;
 
 /**
  * This file is part of Husky frontend development framework.
