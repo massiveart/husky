@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -30006,19 +30007,6 @@ define('__component__$toolbar@husky',[],function() {
  *
  *  edit-toolbar
  *
- *  Options (defaults)
- *      - url: url to fetch data from
- *      - data: if no url is provided
- *      - instanceName - enables custom events (in case of multiple tabs on one page)
- *      - appearance -
- *  Provides Events
- *      - husky.edit-toolbar.<<instanceName>>.item.disable [id] - disable item with given id
- *      - husky.edit-toolbar.<<instanceName>>.item.loading [id]- shows loading icon
- *      - husky.edit-toolbar.<<instanceName>>.item.enable [id]- enable item with given id
- *
- *  Triggers Events
- *      - husky.edit-toolbar.<<instanceName>>.item.select - triggered when item was clicked
- *
  *  data structure:
  *      - title
  *      - id (optional - will be generated otherwise)
@@ -30027,12 +30015,11 @@ define('__component__$toolbar@husky',[],function() {
  *      - disabled (optional): is item disabled or enabled
  *      - iconSize (optional: large/medium/small)
  *      - class (optional: highlight/highlight-gray)
- *      - group (optional: left/right)
+ *      - group (optional): id of the a group sepcified in the options
  *      - position (optional) integer to sort the items - default 9000
  *      - type (optional: none/select) - if select, the selected item is displayed in mainitem
  *      - callback (optional) - callback function
  *      - hidden (optional) - if true button gets hidden form the beginning on
- *      - expandedWhenCollapse (optional: true/false): if true button gets expanded if whole toolbar collapses
  *      - hideTitle (optional: true/false) - hide title from beginning
  *      - items (optional - if dropdown):
  *          - title
@@ -30053,6 +30040,12 @@ define('__component__$toolbar@husky',[],function() {
  * @param {String} [options.instanceName] enables custom events (in case of multiple tabs on one page)
  * @param {String} [options.itemsRequestKey] key with resutlt-array for requested dropdown items
  * @param {String} [options.appearance]
+ * @param {Object} [options.searchOptions] options to pass to search component
+ * @param {Object} [options.groups] array of groups with id and align to specify groups to put items in
+ * @param {Object} [options.small] if true the toolbar is displayed smaller
+ * @param {boolean} [options.hasSearch] if true a search item gets inserted in its own group at the end. A search item can also be added manually through the data
+ * @param {String} [options.searchAlign] "right" or "left" to align the search if it's added automatically via the hasSearch option
+ * @param {String} [options.skin] custom skin-class to add to the component
  */
 define('__component__$edit-toolbar@husky',[],function() {
 
@@ -30062,23 +30055,28 @@ define('__component__$edit-toolbar@husky',[],function() {
             url: null,
             data: [],
             instanceName: '',
-            appearance: null, // TODO: implement small version
-            itemsRequestKey: '_embedded'
+            itemsRequestKey: '_embedded',
+            searchOptions: null,
+            hasSearch: false,
+            searchAlign: 'right',
+            groups: [
+                {
+                    id: 1,
+                    align: 'left'
+                }
+            ],
+            skin: 'default',
+            small: false
         },
 
         constants = {
-            collapsedWidth: 50,
-            collapsedDropdownWidth: 70
+            collapsedWidth: 50
         },
 
         /** templates container */
             templates = {
             skeleton: [
-                '<div class="edit-toolbar-container">',
-                '   <nav class="edit-toolbar-nav">',
-                '       <ul class="edit-toolbar-left" />',
-                '       <ul class="edit-toolbar-right" />',
-                '   </nav>',
+                '<div class="husky-edit-toolbar">',
                 '</div>'
             ].join('')
         },
@@ -30091,6 +30089,16 @@ define('__component__$edit-toolbar@husky',[],function() {
          */
         INITIALIZED = function() {
             return createEventName.call(this, 'initialized');
+        },
+
+        /**
+         * raised when an item with no specified callback is clicked
+         *
+         * @event husky.edit-toolbar.[INSTANCE_NAME].item.select
+         * @param {Object} item Clicked item
+         */
+        ITEM_SELECT = function() {
+            return createEventName.call(this, 'item.select');
         },
 
         /**
@@ -30111,15 +30119,6 @@ define('__component__$edit-toolbar@husky',[],function() {
          */
         ITEM_DISABLE = function() {
             return createEventName.call(this, 'item.disable');
-        },
-
-        /**
-         * raised when a button is hidden or unhidden
-         *
-         * @event husky.edit-toolbar.[INSTANCE_NAME.]buttons.width-changed
-         */
-        BUTTONS_WIDTH_CHANGED = function() {
-            return createEventName.call(this, 'buttons.width-changed');
         },
 
         /**
@@ -30205,26 +30204,6 @@ define('__component__$edit-toolbar@husky',[],function() {
             return createEventName.call(this, 'expand');
         },
 
-        /**
-         * event to get to sum of the width of all buttons
-         *
-         * @event husky.edit-toolbar.[INSTANCE_NAME.].get-buttons-width
-         * @param {Function} callback to pass the width to
-          */
-        GET_BUTTONS_WIDTH = function() {
-            return createEventName.call(this, 'get-buttons-width');
-        },
-
-        /**
-         * event to get to sum of the width of all buttons in collapsed state
-         *
-         * @event husky.edit-toolbar.[INSTANCE_NAME.].get-buttons-collapsed-width
-         * @param {Function} callback to pass the width to
-         */
-        GET_BUTTONS_COLLAPSED_WIDTH = function() {
-            return createEventName.call(this, 'get-buttons-collapsed-width');
-        },
-
         /** events bound to dom */
         bindDOMEvents = function() {
             this.sandbox.dom.on(this.options.el, 'click', toggleItem.bind(this), '.dropdown-toggle');
@@ -30261,28 +30240,6 @@ define('__component__$edit-toolbar@husky',[],function() {
                 expandAll.call(this);
             }.bind(this));
 
-            this.sandbox.on(GET_BUTTONS_WIDTH.call(this), function(callback) {
-                var collapsed = this.collapsed;
-                if (collapsed === true) {
-                    expandAll.call(this);
-                }
-                callback(this.sandbox.dom.outerWidth(this.sandbox.dom.find('.edit-toolbar-left', this.$el)) + this.sandbox.dom.outerWidth(this.sandbox.dom.find('.edit-toolbar-right', this.$el)));
-                if (collapsed === true) {
-                    collapseAll.call(this);
-                }
-            }.bind(this));
-
-            this.sandbox.on(GET_BUTTONS_COLLAPSED_WIDTH.call(this), function(callback) {
-                var collapsed = this.collapsed;
-                if (collapsed === false) {
-                    collapseAll.call(this);
-                }
-                callback(this.sandbox.dom.outerWidth(this.sandbox.dom.find('.edit-toolbar-left', this.$el)) + this.sandbox.dom.outerWidth(this.sandbox.dom.find('.edit-toolbar-right', this.$el)));
-                if (collapsed === false) {
-                    expandAll.call(this);
-                }
-            }.bind(this));
-
             this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
                 this.items[button].initialized.then(function() {
                     var index = getItemIndexById.call(this, id, this.items[button]);
@@ -30316,7 +30273,12 @@ define('__component__$edit-toolbar@husky',[],function() {
             }.bind(this));
         },
 
-        /** set item enable or disable */
+        /**
+         * Sets an item enabled or disabled
+         * @param enabled {boolean} If true button gets enabled if false button gets disabled
+         * @param id {Number|String} id The id of the button
+         * @param highlight {boolean} if true a highlight effect is played
+         */
         toggleEnabled = function(enabled, id, highlight) {
             var item = this.items[id],
                 $item = this.sandbox.dom.find('[data-id="' + id + '"]', this.$el),
@@ -30345,7 +30307,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                 }.bind(this));
             }
 
-            if (!!enabled) {
+            if (!!enabled === true) {
                 this.sandbox.dom.removeClass($item, 'disabled');
                 this.sandbox.dom.removeClass($iconItem, disabledIconClass);
                 this.sandbox.dom.prependClass($iconItem, enabledIconClass);
@@ -30362,7 +30324,6 @@ define('__component__$edit-toolbar@husky',[],function() {
          */
         hideItem = function($button) {
             this.sandbox.dom.addClass($button, 'hidden');
-            this.sandbox.emit(BUTTONS_WIDTH_CHANGED.call(this));
         },
 
         /**
@@ -30371,18 +30332,26 @@ define('__component__$edit-toolbar@husky',[],function() {
          */
          showItem = function($button) {
             this.sandbox.dom.removeClass($button, 'hidden');
-            this.sandbox.emit(BUTTONS_WIDTH_CHANGED.call(this));
          },
 
-        /** shows loader at some icon */
+        /**
+         * Sets a button into loading state
+         * @param id {Number|String} id The id of the button
+         */
         itemLoading = function(id) {
             var item = this.items[id],
                 $item = this.sandbox.dom.find('[data-id="' + id + '"]', this.$el),
                 $itemLink = this.sandbox.dom.find('a', $item),
-                $loader;
+                $loader, size;
 
             if (item.loading) {
                 return;
+            }
+
+            if (this.options.small !== true) {
+                size = '20px';
+            } else {
+                size = '14px';
             }
 
             item.loading = true;
@@ -30395,7 +30364,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                 name: 'loader@husky',
                 options: {
                     el: $loader,
-                    size: '30px',
+                    size: size,
                     color: 'white'
                 }
             }]);
@@ -30506,7 +30475,7 @@ define('__component__$edit-toolbar@husky',[],function() {
             if (item.callback) {
                 item.callback();
             } else {
-                emitEvent.call(this, 'item.select', item);
+                this.sandbox.emit(ITEM_SELECT.call(this), item);
             }
         },
 
@@ -30672,11 +30641,7 @@ define('__component__$edit-toolbar@husky',[],function() {
          */
         collapseAll = function() {
             for (var key in this.items) {
-                if (this.items[key].expandedWhenCollapse !== true) {
-                    collapseButton.call(this, this.items[key]);
-                } else {
-                    expandButton.call(this, this.items[key], false);
-                }
+                collapseButton.call(this, this.items[key]);
             }
             this.collapsed = true;
         },
@@ -30686,7 +30651,7 @@ define('__component__$edit-toolbar@husky',[],function() {
          */
         expandAll = function() {
             for (var key in this.items) {
-                if (this.items[key].expandedWhenCollapse === true && this.items[key].hideTitle === true) {
+                if (this.items[key].hideTitle === true) {
                     expandButton.call(this, this.items[key], true);
                 } else {
                     expandButton.call(this, this.items[key], false);
@@ -30700,16 +30665,18 @@ define('__component__$edit-toolbar@husky',[],function() {
          * @param button {Object}
          */
         collapseButton = function(button) {
-            // collapsing is senseless for dropdown-items and only collapse if configured
-            if (button.expandedWhenCollapse === false && !!button.parentId === false) {
+            // collapsing is senseless for dropdown-items
+            if (!!button.parentId === false) {
+
+                // remove set button width
+                this.sandbox.dom.css(button.$el, {'min-width': ''});
+
                 //hide title
                 this.sandbox.dom.hide(this.sandbox.dom.find('.title', button.$el));
 
                 //set button width
                 if(!!button.items === false) {
                     this.sandbox.dom.css(button.$el, {'min-width': constants.collapsedWidth + 'px'});
-                } else {
-                    this.sandbox.dom.css(button.$el, {'min-width': constants.collapsedDropdownWidth + 'px'});
                 }
             }
         },
@@ -30729,8 +30696,7 @@ define('__component__$edit-toolbar@husky',[],function() {
                     this.sandbox.dom.show(this.sandbox.dom.find('.title', button.$el));
                 }
 
-                // remove set button width
-                this.sandbox.dom.css(button.$el, {'min-width': ''});
+                setButtonWidth.call(this, button.$el, button);
             }
         },
 
@@ -30788,14 +30754,69 @@ define('__component__$edit-toolbar@husky',[],function() {
             }
         },
 
-        /** emits event */
-        emitEvent = function(postFix, data) {
-            var eventName = createEventName.call(this, postFix);
-            if (!!data) {
-                this.sandbox.emit(eventName, data);
-            } else {
-                this.sandbox.emit(eventName);
+        /**
+         * Inserts a search into an item
+         * @param $item
+         */
+        insertSearch = function($item) {
+            var searchOptions;
+
+            this.sandbox.dom.removeClass($item);
+            this.sandbox.dom.addClass($item, 'toolbar-search');
+            this.sandbox.dom.append($item, '<div id="' + this.options.instanceName + '-toolbar-search"/>');
+
+            searchOptions = {
+                el: '#' + this.options.instanceName + '-toolbar-search',
+                instanceName: this.options.instanceName,
+                appearance: 'white small'
+            };
+            searchOptions = this.sandbox.util.extend(true, {}, searchOptions, this.options.searchOptions);
+            // start search component
+            this.sandbox.start([
+                {
+                    name: 'search@husky',
+                    options: searchOptions
+                }
+            ]);
+        },
+
+        /**
+         * Add the skin-classes to the component-element
+         * @param {Object} Dom-object to add the skin-class to
+         */
+        addSkinClass = function($element) {
+            if (this.options.skin !== 'default') {
+                this.sandbox.dom.addClass($element, this.options.skin);
             }
+        },
+
+        /**
+         * Pushes a search item to a passed data array and creates a group where the new search item gets inserted to
+         * @param data {Object} data Array of data to push the item to
+         * @returns {Object} the data array
+         */
+        pushSearch = function(data) {
+            // add own group for search item
+            var searchGroup = {
+                id: 'search',
+                align: this.options.searchAlign
+            };
+
+            // this statement ensures that the the automatically added search always floats on the right of the rest
+            if (this.options.searchAlign === 'left') {
+                this.options.groups.push(searchGroup);
+            } else {
+                this.options.groups.unshift(searchGroup);
+            }
+
+            // push search item
+            data.push({
+                id: 'search',
+                hasSearch: true,
+                group: 'search'
+            });
+
+            return data;
         },
 
         /** returns normalized event names */
@@ -30805,15 +30826,17 @@ define('__component__$edit-toolbar@husky',[],function() {
 
     return {
 
-        view: true,
-
-
         /**
          * initialize component
          */
         initialize: function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
+            this.collapsed = false;
+            this.itemGroups = {};
+            this.items = {};
+
 
             // load data and call render
             if (!!this.options.url) {
@@ -30828,8 +30851,6 @@ define('__component__$edit-toolbar@husky',[],function() {
                 this.sandbox.logger.log('no data provided for tabs!');
             }
 
-            this.collapsed = false;
-
             bindDOMEvents.call(this);
             bindCustomEvents.call(this);
 
@@ -30843,20 +30864,17 @@ define('__component__$edit-toolbar@husky',[],function() {
          */
         render: function(data) {
 
-            var classArray, addTo, $left, $right,
+            var classArray, addTo,
                 $listItem, $listLink,
                 title;
 
-            // create navbar skeleton
-            this.sandbox.dom.append(this.options.el, templates.skeleton);
+            // if has search is set in options push a search item and it's own group
+            if (this.options.hasSearch === true) {
+                data = pushSearch.call(this, data);
+            }
 
-            $left = this.sandbox.dom.find('.edit-toolbar-left', this.options.el);
-            $right = this.sandbox.dom.find('.edit-toolbar-right', this.options.el);
-
-            // create items array
-            this.items = [];
-            // save item groups in array
-            this.itemGroup = [];
+            //render container and groups
+            this.renderSkeleton();
 
             data = sortData.call(this, data);
 
@@ -30881,57 +30899,61 @@ define('__component__$edit-toolbar@husky',[],function() {
                     classArray.push('disabled');
                 }
 
-                // set item defaults
-                if (typeof item.expandedWhenCollapse === 'undefined') {
-                    item.expandedWhenCollapse = false;
-                }
                 if (typeof item.hideTitle === 'undefined') {
                     item.hideTitle = false;
                 }
 
-                // if group is set to right, add to right list, otherwise always add to left list
-                if (!!item.group && item.group === 'right') {
-                    addTo = $right;
+                // if group is set to and exists add it to that group else take the first group
+                if (!!item.group && !!this.itemGroups[item.group]) {
+                    addTo = this.itemGroups[item.group];
                 } else {
-                    addTo = $left;
+                    addTo = this.itemGroups[Object.keys(this.itemGroups)[0]];
                 }
 
                 $listItem = this.sandbox.dom.createElement('<li class="' + classArray.join(' ') + '" data-id="' + item.id + '"/>');
-                $listLink = this.sandbox.dom.createElement('<a href="#" />');
-                this.sandbox.dom.append($listItem, $listLink);
 
-                // create icon span
-                this.sandbox.dom.append($listLink, '<span class="' + createIconSupportClass.call(this, item, !item.disabled) + '" />');
+                // if has-search is true render a search bar, else render the item normally
+                if (item.hasSearch === true) {
 
-                // create title span
-                title = item.title ? item.title : '';
-                if (item.hideTitle === true) {
-                    this.sandbox.dom.append($listLink, '<span style="display:none" class="title">' + title + '</span>');
+                    insertSearch.call(this, $listItem);
                 } else {
-                    this.sandbox.dom.append($listLink, '<span class="title">' + title + '</span>');
-                }
 
-                //hide the item if hidden true
-                if (item.hidden === true) {
-                    hideItem.call(this, $listItem);
-                }
+                    $listLink = this.sandbox.dom.createElement('<a href="#" />');
+                    this.sandbox.dom.append($listItem, $listLink);
 
-                if (!!item.itemsOption) {
-                    this.sandbox.util.load(item.itemsOption.url)
-                        .then(function(result) {
-                            handleRequestedItems.call(this, result[this.options.itemsRequestKey], item.id);
-                            dfd.resolve();
-                        }.bind(this))
-                        .fail(function(result) {
-                            this.sandbox.logger.log('dorpdown-items could not be loaded', result);
-                        }.bind(this));
-                } else {
-                    // now create subitems
-                    if (!!item.items) {
-                        this.sandbox.dom.addClass($listLink, 'dropdown-toggle');
-                        createDropdownMenu.call(this, $listItem, item);
+                    // create icon span
+                    this.sandbox.dom.append($listLink, '<span class="' + createIconSupportClass.call(this, item, !item.disabled) + '" />');
+
+                    // create title span
+                    title = item.title ? item.title : '';
+                    if (item.hideTitle === true) {
+                        this.sandbox.dom.append($listLink, '<span style="display:none" class="title">' + title + '</span>');
+                    } else {
+                        this.sandbox.dom.append($listLink, '<span class="title">' + title + '</span>');
                     }
-                    dfd.resolve();
+
+                    //hide the item if hidden true
+                    if (item.hidden === true) {
+                        hideItem.call(this, $listItem);
+                    }
+
+                    if (!!item.itemsOption) {
+                        this.sandbox.util.load(item.itemsOption.url)
+                            .then(function(result) {
+                                handleRequestedItems.call(this, result[this.options.itemsRequestKey], item.id);
+                                dfd.resolve();
+                            }.bind(this))
+                            .fail(function(result) {
+                                this.sandbox.logger.log('dorpdown-items could not be loaded', result);
+                            }.bind(this));
+                    } else {
+                        // now create subitems
+                        if (!!item.items) {
+                            this.sandbox.dom.addClass($listLink, 'dropdown-toggle');
+                            createDropdownMenu.call(this, $listItem, item);
+                        }
+                        dfd.resolve();
+                    }
                 }
 
                 // create button
@@ -30944,6 +30966,39 @@ define('__component__$edit-toolbar@husky',[],function() {
                 this.items[item.id].$el = $listItem;
 
             }.bind(this));
+        },
+
+        /**
+         * Renders the main container and the groups
+         */
+        renderSkeleton: function() {
+            var i, length, $group, $skeleton;
+
+            $skeleton = this.sandbox.dom.createElement(templates.skeleton);
+
+            // add small class to skeleton
+            if (this.options.small === true) {
+                this.sandbox.dom.addClass($skeleton, 'small');
+            }
+
+            // add skin class
+            addSkinClass.call(this, $skeleton);
+
+            for (i = -1, length = this.options.groups.length; ++i < length;) {
+                $group = this.sandbox.dom.createElement('<ul class="group"/>');
+
+                if (!!this.options.groups[i].align) {
+                    this.sandbox.dom.addClass($group, this.options.groups[i].align);
+                } else {
+                    this.sandbox.dom.addClass($group, 'left');
+                }
+
+                this.sandbox.dom.append($skeleton, $group);
+                this.itemGroups[this.options.groups[i].id] = $group;
+            }
+
+            // append skeleton to component element
+            this.sandbox.dom.append(this.$el, $skeleton);
         }
     };
 
@@ -34014,123 +34069,6 @@ define('__component__$loader@husky',[],function() {
     };
 
 });
-
-/**
- * This file is part of Husky frontend development framework.
- *
- * (c) MASSIVE ART WebServices GmbH
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- *
- * @module husky/components/page-functions
- */
-
-/**
- * @class PageFunctions
- * @constructor
- *
- * @param {Object} [options] Configuration object
- * @param {String} [options.url] url to load data
- * @param {Object} [options.data] data to view
- */
-define('__component__$page-functions@husky',[], function() {
-
-        
-
-        var defaults = {
-                url: '', // url to load data
-                data: {}
-            },
-
-            template = function() {
-                return [
-                    '<div class="page-function"> ',
-                    '   <a href="#" id="<%= id %>"><span class="icon-<%= icon %>"></span></a>',
-                    '</div>'
-                ].join('');
-            },
-
-            /**
-             * Namespace of events
-             * @type {string}
-             */
-            eventNamespace = 'husky.page-functions.',
-
-            /**
-             * @event husky.page-functions.rendered
-             * @description the component has been rendered
-             */
-            RENDERED = eventNamespace + 'rendered',
-
-            /**
-             * @event husky.page-functions.clicked
-             * @description link was clicked
-             */
-            CLICK = eventNamespace + 'clicked',
-
-            /**
-             * @event husky.page-functions.show
-             * @description displays page functions
-             */
-            SHOW = eventNamespace+'show',
-
-            /**
-             * @event husky.page-functions.hide
-             * @description hides page functions
-             */
-            HIDE = eventNamespace+'hide';
-
-        return {
-
-            view: true,
-
-            initialize: function() {
-                this.sandbox.logger.log('initialize', this);
-                this.sandbox.logger.log(arguments);
-
-                // extend default options
-                this.options = this.sandbox.util.extend({}, defaults, this.options);
-
-                this.render();
-            },
-
-            render: function() {
-                if (!this.options.data.id) {
-                    this.options.data.id = this.sandbox.util.uniqueId();
-                }
-
-                this.sandbox.dom.append(this.options.el, this.sandbox.template.parse(template(), this.options.data));
-
-                this.$pageFunction = this.sandbox.dom.find('.page-function', this.$el);
-
-                this.bindDomEvents();
-                this.bindCustomEvents();
-
-                this.sandbox.emit(RENDERED);
-            },
-
-            bindDomEvents: function() {
-                this.sandbox.dom.on(this.options.el, 'click', function(e) {
-                    e.preventDefault();
-                    this.sandbox.emit(CLICK);
-
-                    return false;
-                }.bind(this), '#' + this.options.data.id);
-            },
-
-            bindCustomEvents: function(){
-                this.sandbox.on(HIDE, function(){
-                    this.sandbox.dom.fadeOut(this.$el, 300);
-                }.bind(this));
-
-                this.sandbox.on(SHOW, function(){
-                    this.sandbox.dom.fadeIn(this.$el, 300);
-                }.bind(this));
-            }
-        };
-    }
-);
 
 /**
  * This file is part of Husky frontend development framework.
@@ -38748,4 +38686,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-

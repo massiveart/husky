@@ -5274,16 +5274,16 @@ li a.navigation-settings-icon {
 }
 /* line 70, ../scss/modules/edit-toolbar.scss */
 .group .edit-toolbar-item:first-child {
-  border-radius: 3px 0 0 3px;
+  border-radius: 4px 0 0 4px;
   border-width: 1px;
 }
 /* line 74, ../scss/modules/edit-toolbar.scss */
 .group .edit-toolbar-item:last-child {
-  border-radius: 0 3px 3px 0;
+  border-radius: 0 4px 4px 0;
 }
 /* line 77, ../scss/modules/edit-toolbar.scss */
 .group .edit-toolbar-item:only-child {
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 /** styles for the toolbar-items **/
@@ -5490,9 +5490,18 @@ li a.navigation-settings-icon {
   text-align: left;
 }
 
-/* line 296, ../scss/modules/edit-toolbar.scss */
+/* line 294, ../scss/modules/edit-toolbar.scss */
+.blueish .edit-toolbar-item {
+  background-color: #9bd8e7;
+  border-color: #2d9fbc;
+}
+/* line 298, ../scss/modules/edit-toolbar.scss */
 .blueish .edit-toolbar-item.highlight {
   background-color: #febc2f;
+}
+/* line 300, ../scss/modules/edit-toolbar.scss */
+.blueish .edit-toolbar-item.highlight a {
+  color: black;
 }
 
 /* line 5, ../scss/modules/tables.scss */
@@ -7636,7 +7645,7 @@ a.btn-black, a.btn-highlight {
 }
 /* line 106, ../scss/modules/matcher.scss */
 .husky-matcher .column.unmatched .samples span {
-  background: rgba(173, 7, 16, 0.3);
+  background: #f8555e;
 }
 /* line 110, ../scss/modules/matcher.scss */
 .husky-matcher .column.matched {
@@ -7648,7 +7657,7 @@ a.btn-black, a.btn-highlight {
 }
 /* line 116, ../scss/modules/matcher.scss */
 .husky-matcher .column.matched .samples span {
-  background: rgba(31, 202, 35, 0.3);
+  background: #93ef96;
 }
 /* line 120, ../scss/modules/matcher.scss */
 .husky-matcher .column.edit {
@@ -7660,7 +7669,7 @@ a.btn-black, a.btn-highlight {
 }
 /* line 126, ../scss/modules/matcher.scss */
 .husky-matcher .column.edit .samples span {
-  background: rgba(45, 159, 188, 0.3);
+  background: #9bd8e7;
 }
 /* line 130, ../scss/modules/matcher.scss */
 .husky-matcher .column.edit .match-header .headline {
