@@ -1,96 +1,107 @@
 //
-// Tabs
+// Toolbar
 // --------------------------------------------------
 
-@mixin clear-float {
-    &:after {
-        clear: both;
-        content: ' ';
-        display: block;
-    }
-}
+$editToolbarHeight: 30px;
+$editToolbarSmallHeight: 20px;
 
-$hoverColor: #bbb;
-
-$editToolbarHeight: 40px;
-
-/** navigation container **/
-.edit-toolbar-nav {
-    display: block;
-    height: auto;
-    overflow: visible;
-    width: auto;
-    max-height: 100px;
-    box-sizing: border-box;
-
-    border-radius: 4px;
-    background-color: $grayLighter;
+/*styles related to the whole container*/
+.husky-edit-toolbar {
     @include clear-float;
 
-    @include box-shadow(rgba(0, 0, 0, 0.08) 0 2px 0 0);
+    .toolbar-search {
+        display: inline-block;
+        width: 130px;
+        float: left;
+    }
 
-    > ul {
-        margin: 0;
-        padding-left: 0;
-        list-style: none;
-        height: $editToolbarHeight;
+    &.small {
+        .group {
+            height: $editToolbarSmallHeight;
+        }
 
-        li.dropdown {
-            position: relative;
-            display: block;
-            list-style: none;
-            float: left;
+        .edit-toolbar-item {
+            line-height: $editToolbarSmallHeight;
+            min-width: 30px;
+
+            a  {
+                line-height: $editToolbarSmallHeight - 2px;
+                min-width: 30px;
+
+                .icon, &.icon {
+                    font-size: 10px;
+                }
+                .title {
+                    font-size: 9px;
+                }
+            }
+
+            .item-loader {
+                height: 14px;
+                margin-top: ($editToolbarSmallHeight - 2px)/2 - 7px;
+            }
         }
     }
 }
 
-.edit-toolbar-left {
-    float: left;
+/*group specific styles*/
+.group {
+    $itemBorderRadius: 4px;
 
-    > :first-child {
-        border-bottom-left-radius: 4px;
-        border-top-left-radius: 4px;
+    padding-left: 0;
+    margin: 0;
+    list-style: none;
+    height: $editToolbarHeight;
+
+    &.right {
+        float: right;
+        padding-left: 10px;
+    }
+    &.left {
+        float: left;
+        padding-right: 10px;
     }
 
     .edit-toolbar-item {
-        border-right: 1px solid $grayLighter3;
-    }
-}
+        border-style: solid;
+        border-color: $grayLighter2;
+        border-width: 1px 1px 1px 0;
 
-.edit-toolbar-right {
-    float: right;
-
-    > :last-child {
-        border-bottom-right-radius: 4px;
-        border-top-right-radius: 4px;
-
-        ul {
-            left: auto;
-            right: 0px;
+        &:first-child {
+            border-radius: $itemBorderRadius 0 0 $itemBorderRadius;
+            border-width: 1px;
+        }
+        &:last-child {
+            border-radius: 0 $itemBorderRadius $itemBorderRadius 0;
+        }
+        &:only-child {
+            border-radius: $itemBorderRadius;
         }
     }
-
-    .edit-toolbar-item {
-      border-left: 1px solid $grayLighter3;
-    }
 }
 
-/** navigation element **/
+/** styles for the toolbar-items **/
 .edit-toolbar-item {
-    min-width: 80px;
+    min-width: 50px;
     float: left;
     position: relative;
     display: block;
     list-style: none;
-    background-color: $grayLighter;
     height: 100%;
     line-height: $editToolbarHeight;
+    text-align: center;
 
-    text-align:center;
+    &.dropdown {
+        position: relative;
+        display: block;
+        list-style: none;
+        float: left;
+    }
 
     .item-loader {
         display: inline-block;
-        vertical-align: middle;
+        height: 20px;
+        margin-top: ($editToolbarHeight - 2px)/2 - 10px;
     }
 
     &.disabled:hover,
@@ -108,13 +119,13 @@ $editToolbarHeight: 40px;
     }
 
     &.highlight {
-        min-width: 100px;
         background-color: $highlightColor;
-        border: none;
+        border-color: transparent;
 
         &.disabled:hover,
         &.disabled {
-            background-color: #a7a7a7;
+            background-color: $grayLighter;
+            border-color: transparent;
             cursor: default;
             a {
                 cursor: default;
@@ -130,26 +141,25 @@ $editToolbarHeight: 40px;
         }
 
         a {
-            color: white;
+            color: $white;
         }
     }
 
     &.highlight-gray {
-        background-color: #a7a7a7;
-        border: none;
+        background-color: $grayLighter;
+        border-color: transparent;
 
         &:hover {
-            background-color: lighten(#a7a7a7, 3%);
+            background-color: $grayLighter;
         }
         &:active {
-            background-color: lighten(#a7a7a7, 5%);
+            background-color: $grayLighter;
         }
 
     }
 
     &.is-expanded {
-
-        background-color: $hoverColor;
+        background-color: $grayLighter;
 
         ul.edit-toolbar-dropdown-menu {
             display: block;
@@ -157,37 +167,35 @@ $editToolbarHeight: 40px;
     }
 
     &:hover {
-        background-color: $hoverColor;
+        background-color: $grayLighter;
     }
     &:active {
-        background-color: darken($hoverColor, 3%);
+        background-color: darken($grayLighter, 3%);
     }
 
     /** link styling **/
     a {
         text-align: center;
         color: black;
-        padding: 0 15px;
-        display: block;
+        padding: 0 10px 0 9px;
+        display: table;
         text-decoration: none;
         height: 100%;
+        line-height: $editToolbarHeight - 2px;
         outline: none;
+        width: 100%;
+        min-width: 50px;
 
         .icon, &.icon {
-            font-size: 18px;
+            font-size: 15px;
             padding-right: 0px;
-            vertical-align: middle;
-
-            &.large {
-                font-size: 20px;
-            }
-            &.small {
-                font-size: 12px;
-            }
+            display: inline-block;
         }
 
         .title {
-            font-size: 14px;
+            font-size: $smallFontSize;
+            display: table-cell;
+            vertical-align: middle;
         }
 
         .icon + .title:not(:empty) {
@@ -198,73 +206,100 @@ $editToolbarHeight: 40px;
 
 }
 
-/**  dropdown **/
+/**  dropdown styles **/
 .edit-toolbar-dropdown-menu {
-    background-color: white;
-    border: 1px solid $grayLighter;
+  background-color: white;
+  border: 1px solid $grayLighter;
 
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
-    float: left;
-    min-width: 160px;
-    list-style: none;
+  display: none;
+  position: absolute;
+  top: 100%;
+  z-index: 1000;
+  float: left;
+  min-width: 160px;
+  list-style: none;
+  font-size: $smallFontSize;
 
-    padding: 5px 0;
-    margin-top: -7px;
-    margin-left: 0px;
+  padding: 5px 0;
+  margin-top: -7px;
+  margin-left: 0px;
 
-    @include standard-box-shadow(2px);
+  @include standard-box-shadow(2px);
 
-    &.right-aligned {
-        left: auto;
-        right: 0;
+  &.right-aligned {
+    left: auto;
+    right: 0;
+  }
+
+  li {
+    display: list-item;
+    float: none;
+    line-height: 1;
+    height: 30px;
+    line-height: 30px;
+    white-space: nowrap;
+    cursor: pointer;
+
+    padding: 0 20px;
+
+    a {
+      color: black;
+      text-decoration: none;
+      padding: 0;
     }
 
-    li {
-        display: list-item;
-        float: none;
-        height: 30px;
-        line-height: 30px;
-        white-space: nowrap;
-
-        &.is-selected,
-        &:hover {
-            background-color: $highlightColor;
-            a {
-                color: white;
-            }
-        }
-
-        &.disabled:hover,
-        &.disabled {
-            cursor: default;
-            background-color: inherit;
-            a {
-                cursor: default;
-                color: $grayLight;
-            }
-        }
-
-        &:active {
-            background-color: lighten($highlightColor, 5%);
-        }
-
-        &.divider {
-            height: 1px;
-            margin: 5px 0;
-            overflow: hidden;
-            background-color: $grayLighterer;
-        }
-
-        a {
-            clear: both;
-            text-align: left;
-        }
-
+    &.is-selected,
+    &:hover {
+      background-color: $highlightColor;
+      a {
+        color: white;
+      }
     }
 
+    &.disabled:hover,
+    &.disabled {
+      cursor: default;
+      background-color: inherit;
+      a {
+        cursor: default;
+        color: $grayLight;
+      }
+    }
+
+    &:active {
+      background-color: lighten($highlightColor, 5%);
+    }
+
+    &.divider {
+      height: 1px;
+      margin: 5px 0;
+      overflow: hidden;
+      background-color: $grayLighterer;
+    }
+
+    a {
+      clear: both;
+      text-align: left;
+    }
+  }
 }
 
+//
+// blueish skin
+// --------------------------------------------------
+
+
+.blueish {
+
+    .edit-toolbar-item {
+        background-color: $milkeyBlue;
+        border-color: $blue;
+
+        &.highlight {
+            background-color: $yellow;
+            a {
+                color: $black;
+            }
+        }
+    }
+}

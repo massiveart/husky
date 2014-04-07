@@ -24,12 +24,12 @@ $navigationFooterGray: #878787;
 $navigationFooterGray2: #5b5b5b;
 $white:#fff;
 $green: #1FCA23;
-$milkeyGreen: rgba($green, 0.3);
+$milkeyGreen: lighten($green, 30%);
 $red: #AD0710;
-$milkyRed: rgba($red, 0.3);
+$milkyRed: lighten($red, 30%);
 $yellow: #FEBC2F;
 $blue: #2D9FBC;
-$milkeyBlue: rgba($blue, 0.3);
+$milkeyBlue: lighten($blue, 30%);
 
 
 // Base colors

@@ -31,3 +31,11 @@
     font-style: normal;
     font-weight: normal;
 }
+
+@mixin clear-float {
+  &:after {
+    clear: both;
+    content: ' ';
+    display: block;
+  }
+}

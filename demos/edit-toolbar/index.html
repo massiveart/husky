@@ -18,42 +18,51 @@
     <style>
         body {
             margin: 20px;
-            overflow: hidden;
+        }
+        .blueBackground {
+            padding: 30px 10px;
+            background: #249FBE;
         }
     </style>
 </head>
 <body>
 
 
-<h1>edit toolbars</h1>
+<h1>Husky toolbar demos</h1>
 
 <div class="grid">
-    <div class="grid-col-2">&nbsp;</div>
-    <div class="btn pointer grid-col-2 align-center" id="disable">Disable "Add user" and "Edit" button</div>
-    <div class="grid-col-1">&nbsp;</div>
-    <div class="btn pointer grid-col-2 align-center" id="enable">Enable "Add user" and "Edit" button</div>
-    <div class="grid-col-1">&nbsp;</div>
-    <div class="btn pointer grid-col-2 align-center" id="changeItem">Change current item of state</div>
-    <div class="grid-col-1">&nbsp;</div>
-</div>
-
-<div class="grid">
-    <div class="grid-col-12">
-        <h3>default (large)</h3>
-
-        <div id="edit-toolbar2"></div>
+    <div class="grid-row">
+        <div class="btn pointer grid-col-8 align-center" id="disable">Disable "Add user" and "Edit" button</div>
+    </div>
+    <div class="grid-row">
+        <div class="btn pointer grid-col-8 align-center" id="enable">Enable "Add user" and "Edit" button</div>
+    </div>
+    <div class="grid-row">
+        <div class="btn pointer grid-col-8 align-center" id="changeItem">Change current item of state</div>
+    </div>
+    <div class="grid-row">
+        <div class="btn pointer grid-col-8 align-center" id="collapse">Collapse/Expand toolbar</div>
     </div>
 </div>
 
-<div style="clear:both"></div>
-<div class="grid" style="margin-top:40px">
-    <div class="grid-col-2">&nbsp;</div>
-    <div class="btn pointer grid-col-2 align-center" id="collapse">Collapse/Expand toolbar</div>
-    <div class="grid-col-1">&nbsp;</div>
-    <div class="btn pointer grid-col-2 align-center" id="buttonsWidth">Get Width of all buttons</div>
-    <div class="grid-col-1">&nbsp;</div>
-    <div class="btn pointer grid-col-2 align-center" id="colButtonsWidth">Get width of all buttons in collapsed state</div>
-    <div class="grid-col-1">&nbsp;</div>
+<div class="grid">
+    <div class="grid-row">
+        <h3>default</h3>
+        <div id="edit-toolbar2"></div>
+    </div>
+    <div class="grid-row">
+        <div id="edit-toolbar3"></div>
+    </div>
+    <div class="grid-row">
+        <h3>default (small)</h3>
+        <div id="edit-toolbar4"></div>
+    </div>
+    <div class="grid-row">
+        <h3>blueish</h3>
+        <div class="blueBackground">
+            <div id="edit-toolbar5"></div>
+        </div>
+    </div>
 </div>
 
 <script src="../js/sinon.js"></script>
@@ -97,8 +106,8 @@
                         'iconSize': 'large',
                         'disabledIcon': 'user-add',
                         'title': '',
-                        'group': 'right',
-                        'position': 1,
+                        'group': 2,
+                        'position': 2,
                         'items': [
                             {
                                 'title': 'Refresh',
@@ -117,36 +126,45 @@
                     {
                         'id': 'state',
                         'icon': 'publish',
-                        'group': 'right',
+                        'group': 2,
                         'title': 'Publish',
-                        'class': 'highlight-gray',
                         'position': 2,
                         'type': 'select'
                     },
                     {
                         'icon': 'file-import',
                         'title': 'Import',
+                        'group': 1,
                         'position': 2,
+                        'id': 'import',
                         'callback': function() {
+                            app.sandbox.emit('husky.edit-toolbar.contact.item.disable', 'import', false);
                             console.log("import was clicked");
                         }
                     },
                     {
                         'icon': 'file-import',
                         'title': 'Work',
+                        'group': 1,
                         'hidden': true,
                         'position': 3
                     },
                     {
                         'icon': 'star',
                         'title': 'Something else',
+                        'group': 1,
                         'hideTitle': true,
-                        'expandedWhenCollapse': true,
                         'position': 4
+                    },
+                    {
+                        'icon': 'star',
+                        'group': 2,
+                        'position': 1
                     },
                     {
                         'icon': 'file-export',
                         'title': 'Export',
+                        'group': 1,
                         'position': 5,
                         'itemsOption': {
                             'url': 'items.json',
@@ -158,6 +176,11 @@
                                 console.log(item, 'This is a test callback');
                             }
                         }
+                    },
+                    {
+                        id: 'search',
+                        hasSearch: true,
+                        'group': 3
                     }
                 ],
 
@@ -216,7 +239,175 @@
                     options: {
                         el: '#edit-toolbar2',
                         instanceName: 'contact',
+                        groups: [
+                            {
+                                id: 1,
+                                align: 'left'
+                            },
+                            {
+                                id: 2,
+                                align: 'left'
+                            },
+                            {
+                                id: 3,
+                                align: 'right'
+                            }
+                        ],
                         data: testData
+                    }
+                },
+                {
+                    name: 'edit-toolbar@husky',
+                    options: {
+                        el: '#edit-toolbar3',
+                        instanceName: 'contact1',
+                        hasSearch: true,
+                        searchAlign: 'left',
+                        groups: [
+                            {
+                                id: 1,
+                                align: 'left'
+                            }
+                        ],
+                        data: [
+                            {
+                                icon: 'circle-plus',
+                                class: 'highlight',
+                                group: 1
+                            },
+                            {
+                                icon: 'bin',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'asterisk',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'file-import',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'file-export',
+                                group: 1
+                            },
+                            {
+                                icon: 'cogwheels',
+                                group: 1
+                            }
+                        ]
+                    }
+                },
+                {
+                    name: 'edit-toolbar@husky',
+                    options: {
+                        el: '#edit-toolbar4',
+                        instanceName: 'contact2',
+                        small: true,
+                        groups: [
+                            {
+                                id: 1,
+                                align: 'left'
+                            },
+                            {
+                                id: 2,
+                                align: 'left'
+                            }
+                        ],
+                        data: [
+                            {
+                                icon: 'circle-plus',
+                                class: 'highlight',
+                                group: 1,
+                                id: 'loadit',
+                                callback: function() {
+                                    app.sandbox.emit('husky.edit-toolbar.contact2.item.loading', 'loadit');
+                                }
+                            },
+                            {
+                                icon: 'bin',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'asterisk',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'file-import',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'file-export',
+                                title: 'export',
+                                group: 1
+                            },
+                            {
+                                icon: 'cogwheels',
+                                group: 1
+                            }
+                        ]
+                    }
+                },
+                {
+                    name: 'edit-toolbar@husky',
+                    options: {
+                        el: '#edit-toolbar5',
+                        instanceName: 'contact3',
+                        skin: 'blueish',
+                        groups: [
+                            {
+                                id: 1,
+                                align: 'left'
+                            },
+                            {
+                                id: 2,
+                                align: 'right'
+                            }
+                        ],
+                        data: [
+                            {
+                                icon: 'floppy-save',
+                                class: 'highlight',
+                                group: 1,
+                                id: 'loadit',
+                                callback: function() {
+                                    app.sandbox.emit('husky.edit-toolbar.contact3.item.loading', 'loadit');
+                                }
+                            },
+                            {
+                                icon: 'brush',
+                                group: 1,
+                                title: 'Overview',
+                                type: 'select',
+                                items: [{title: 'overview'}, {title: 'landing'}]
+                            },
+                            {
+                                icon: 'cogwheel',
+                                group: 1,
+                                items: [{title: 'do something'}]
+                            },
+                            {
+                                'id': 'state',
+                                'icon': 'publish',
+                                'group': 1,
+                                'title': 'Publish',
+                                'type': 'select',
+                                items: stateItems
+                            },
+                            {
+                                'id': 'locale',
+                                title: 'DE',
+                                type: 'select',
+                                group: 2,
+                                items: [{title: 'EN'}, {title: 'EN_US'}, {title: 'DE_AT'}]
+                            }
+                        ]
                     }
                 }
             ]);
@@ -230,8 +421,6 @@
             $('#disable').on('click', function() {
                 app.sandbox.emit('husky.edit-toolbar.contact.item.disable', '1');
                 app.sandbox.emit('husky.edit-toolbar.contact.item.disable', 'edit');
-
-                app.sandbox.emit('husky.edit-toolbar.contact.item.hide', '5');
 
                 app.sandbox.emit('husky.edit-toolbar.contact.get-buttons-width', function(width) {
                     console.log(width, $('.edit-toolbar-nav').width());
@@ -247,10 +436,6 @@
 
             $('#changeItem').on('click', function() {
                 app.sandbox.emit('husky.edit-toolbar.contact.item.change', 'state', 2);
-                app.sandbox.emit('husky.edit-toolbar.contact.button.set', 4, {
-                    title: 'New title',
-                    icon: 'floppy-save'
-                })
             });
 
             $('#collapse').on('click', function() {
@@ -261,17 +446,6 @@
                     app.sandbox.emit('husky.edit-toolbar.contact.expand');
                     collapsed = false;
                 }
-            });
-
-            $('#buttonsWidth').on('click', function() {
-                app.sandbox.emit('husky.edit-toolbar.contact.get-buttons-width', function(width) {
-                    console.log('Width of all buttons', width);
-                });
-            });
-            $('#colButtonsWidth').on('click', function() {
-                app.sandbox.emit('husky.edit-toolbar.contact.get-buttons-collapsed-width', function(width) {
-                    console.log('Collapsed width of all buttons', width);
-                });
             });
         });
     });

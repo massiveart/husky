@@ -12,6 +12,7 @@
 
     .search-input {
         padding-left: 40px;
+        padding-right: 10px;
         border: 0;
         margin: 0;
         background-color: $grayLight;
@@ -44,6 +45,8 @@
         line-height: $inputHeight;
         vertical-align: middle;
         margin: auto;
+        background-color: $white;
+        padding-left: 3px;
     }
 
     /** look and feel **/

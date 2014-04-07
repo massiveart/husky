@@ -521,15 +521,12 @@
     &::after {
         content: "";
         display: inline-block;
-        width: 14px;
-        height: 14px;
+        width: 9px;
+        height: 9px;
         border-radius: 50%;
-        border: 1px solid $white;
+        border: 3px solid $white;
         background: $green;
         font-size: medium!important;
-        position: relative;
-        top: -2px;
-        left: 0px;
     }
 }
 
@@ -537,15 +534,12 @@
    &::after {
      content: "";
      display: inline-block;
-     width: 14px;
-     height: 14px;
+     width: 9px;
+     height: 9px;
      border-radius: 50%;
-     border: 1px solid $white;
+     border: 3px solid $white;
      background: $red;
      font-size: medium!important;
-     position: relative;
-     top: -2px;
-     left: 0px;
    }
  }
 
@@ -553,15 +547,12 @@
   &::after {
     content: "";
     display: inline-block;
-    width: 14px;
-    height: 14px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
-    border: 1px solid $white;
+    border: 3px solid $white;
     background: $yellow;
     font-size: medium!important;
-    position: relative;
-    top: -2px;
-    left: 0px;
   }
 }
 
