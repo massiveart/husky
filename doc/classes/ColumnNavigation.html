@@ -41,21 +41,37 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="../classes/AutoComplete.html">AutoComplete</a></li>
+            
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
                 <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/Column-Options.html">Column-Options</a></li>
             
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
                 <li><a href="../classes/DataGrid.html">DataGrid</a></li>
             
-                <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
+                <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
+            
+                <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
             
-                <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+                <li><a href="../classes/Matcher.html">Matcher</a></li>
+            
+                <li><a href="../classes/Overlay.html">Overlay</a></li>
+            
+                <li><a href="../classes/Process.html">Process</a></li>
             
                 <li><a href="../classes/Search.html">Search</a></li>
+            
+                <li><a href="../classes/Select.html">Select</a></li>
+            
+                <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/Toggler.html">Toggler</a></li>
             
                 <li><a href="../classes/Toolbar.html">Toolbar</a></li>
             
@@ -63,15 +79,21 @@
 
             <ul id="api-modules" class="apis modules">
             
+                <li><a href="../modules/husky_components_auto-complete.html">husky/components/auto-complete</a></li>
+            
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
             
                 <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
-                <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
+                <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
-                <li><a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a></li>
+                <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
+            
+                <li><a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a></li>
             
                 <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
@@ -227,7 +249,7 @@
                                 
 
                                 <div class="param-description">
-                                    <p>height of container</p>
+                                    <p>height of container in percentage</p>
 
                                 </div>
 
@@ -242,7 +264,7 @@
                                 
 
                                 <div class="param-description">
-                                    <p>width of a column in within the navigation</p>
+                                    <p>width of a column in within the navigation in pixels</p>
 
                                 </div>
 
@@ -288,6 +310,141 @@
 
                                 <div class="param-description">
                                     <p>id of selected element - needed to restore state</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[data]</code>
+                                    <span class="type">Array</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>array of data displayed in the settings dropdown</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[instanceName]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of current instance</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[hasSubName]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of hasSub-key</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[idName]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of id-key</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[linkedName]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of linked-key</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[publishedName]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of published-key</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[typeName]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of type-key</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[titleName]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of title-key</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[visibleRatio]</code>
+                                    <span class="type">Number</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>minimum ratio of how much of a column must be visible to display the navigation</p>
 
                                 </div>
 
@@ -419,7 +576,7 @@
             
         
         
-        <a href="../files/husky_components_column-navigation_main.js.html#l61"><code>husky_components&#x2F;column-navigation&#x2F;main.js:61</code></a>
+        <a href="../files/husky_components_column-navigation_main.js.html#l88"><code>husky_components&#x2F;column-navigation&#x2F;main.js:88</code></a>
         
         </p>
 
@@ -487,7 +644,7 @@
             
         
         
-        <a href="../files/husky_components_column-navigation_main.js.html#l68"><code>husky_components&#x2F;column-navigation&#x2F;main.js:68</code></a>
+        <a href="../files/husky_components_column-navigation_main.js.html#l95"><code>husky_components&#x2F;column-navigation&#x2F;main.js:95</code></a>
         
         </p>
 
@@ -555,7 +712,7 @@
             
         
         
-        <a href="../files/husky_components_column-navigation_main.js.html#l82"><code>husky_components&#x2F;column-navigation&#x2F;main.js:82</code></a>
+        <a href="../files/husky_components_column-navigation_main.js.html#l102"><code>husky_components&#x2F;column-navigation&#x2F;main.js:102</code></a>
         
         </p>
 
@@ -623,7 +780,7 @@
             
         
         
-        <a href="../files/husky_components_column-navigation_main.js.html#l48"><code>husky_components&#x2F;column-navigation&#x2F;main.js:48</code></a>
+        <a href="../files/husky_components_column-navigation_main.js.html#l67"><code>husky_components&#x2F;column-navigation&#x2F;main.js:67</code></a>
         
         </p>
 
@@ -667,7 +824,7 @@
             
         
         
-        <a href="../files/husky_components_column-navigation_main.js.html#l54"><code>husky_components&#x2F;column-navigation&#x2F;main.js:54</code></a>
+        <a href="../files/husky_components_column-navigation_main.js.html#l73"><code>husky_components&#x2F;column-navigation&#x2F;main.js:73</code></a>
         
         </p>
 
@@ -735,7 +892,7 @@
             
         
         
-        <a href="../files/husky_components_column-navigation_main.js.html#l75"><code>husky_components&#x2F;column-navigation&#x2F;main.js:75</code></a>
+        <a href="../files/husky_components_column-navigation_main.js.html#l80"><code>husky_components&#x2F;column-navigation&#x2F;main.js:80</code></a>
         
         </p>
 
@@ -745,7 +902,7 @@
     </div>
 
     <div class="description">
-        <p>the settings button has been clicked</p>
+        <p>an navigation element has been selected and a item from selected dropdown clicked</p>
 
     </div>
 
@@ -757,14 +914,30 @@
             
                 <li class="param">
                     
-                        <code class="param-name">parent</code>
+                        <code class="param-name">selected</code>
                         <span class="type">Object</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>object from active column level</p>
+                        <p>column navigation object</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">clicked</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>dropdown item</p>
 
                     </div>
 

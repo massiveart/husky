@@ -553,7 +553,7 @@ require(['lib/husky'], function(Husky) {
                 }
             },
             {
-                name: 'edit-toolbar@husky',
+                name: 'toolbar@husky',
                 options: {
                     el: '#toolbar',
                     instanceName: 'test',
