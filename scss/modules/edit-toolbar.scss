@@ -56,6 +56,11 @@ $editToolbarSmallHeight: 20px;
     &.right {
         float: right;
         padding-left: 10px;
+
+        .edit-toolbar-dropdown-menu {
+            left: auto;
+            right: 0;
+        }
     }
     &.left {
         float: left;
@@ -215,7 +220,7 @@ $editToolbarSmallHeight: 20px;
   position: absolute;
   top: 100%;
   z-index: 1000;
-  float: left;
+  left: 0;
   min-width: 160px;
   list-style: none;
   font-size: $smallFontSize;
@@ -297,8 +302,37 @@ $editToolbarSmallHeight: 20px;
 
         &.highlight {
             background-color: $yellow;
-            a {
+            & > a {
                 color: $black;
+            }
+
+            &.disabled {
+                background-color: $white;
+                border-color: $blue;
+                a {
+                    color: $black;
+                    cursor: default;
+                }
+            }
+        }
+
+        &.highlight-white {
+            background-color: $white;
+            & > a {
+              text-align: right;
+            }
+            .title {
+                text-align: left;
+            }
+        }
+
+        &.disabled {
+            background-color: $milkeyBlue;
+            a {
+                color: $white;
+                &.dropdown-toggle::after {
+                    border-top-color: $white;
+                }
             }
         }
     }

@@ -14,7 +14,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="stylesheet" href="../../dist/husky.min.css">
+    <link rel="stylesheet" href="../../dist/husky.css">
     <style>
         body {
             margin: 20px;
@@ -61,6 +61,11 @@
         <h3>blueish</h3>
         <div class="blueBackground">
             <div id="edit-toolbar5"></div>
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="blueBackground">
+            <div id="edit-toolbar6"></div>
         </div>
     </div>
 </div>
@@ -150,14 +155,14 @@
                         'position': 3
                     },
                     {
-                        'icon': 'star',
+                        'icon': 'cogwheels',
                         'title': 'Something else',
                         'group': 1,
                         'hideTitle': true,
                         'position': 4
                     },
                     {
-                        'icon': 'star',
+                        'icon': 'globe',
                         'group': 2,
                         'position': 1
                     },
@@ -378,6 +383,10 @@
                                 id: 'loadit',
                                 callback: function() {
                                     app.sandbox.emit('husky.edit-toolbar.contact3.item.loading', 'loadit');
+
+                                    setTimeout(function() {
+                                        app.sandbox.emit('husky.edit-toolbar.contact3.item.disable', 'loadit', true);
+                                    }, 2000)
                                 }
                             },
                             {
@@ -385,7 +394,7 @@
                                 group: 1,
                                 title: 'Overview',
                                 type: 'select',
-                                items: [{title: 'overview'}, {title: 'landing'}]
+                                items: [{title: 'Overview'}, {title: 'Landing'}]
                             },
                             {
                                 icon: 'cogwheel',
@@ -405,11 +414,59 @@
                                 title: 'DE',
                                 type: 'select',
                                 group: 2,
+                                class: 'highlight-white',
                                 items: [{title: 'EN'}, {title: 'EN_US'}, {title: 'DE_AT'}]
                             }
                         ]
                     }
-                }
+                },
+                {
+                    name: 'edit-toolbar@husky',
+                    options: {
+                        el: '#edit-toolbar6',
+                        instanceName: 'contact6',
+                        hasSearch: true,
+                        searchAlign: 'right',
+                        skin: 'blueish',
+                        groups: [
+                            {
+                                id: 1,
+                                align: 'left'
+                            }
+                        ],
+                        data: [
+                            {
+                                icon: 'circle-plus',
+                                class: 'highlight',
+                                disabled: true,
+                                group: 1
+                            },
+                            {
+                                icon: 'bin',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'asterisk',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'file-import',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'file-export',
+                                group: 1
+                            },
+                            {
+                                icon: 'cogwheels',
+                                group: 1
+                            }
+                        ]
+                    }
+                },
             ]);
 
             app.sandbox.on('husky.util.load.data', function() {

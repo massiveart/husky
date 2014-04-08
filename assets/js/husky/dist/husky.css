@@ -5503,6 +5503,15 @@ li a.navigation-settings-icon {
 .blueish .edit-toolbar-item.highlight a {
   color: black;
 }
+/* line 305, ../scss/modules/edit-toolbar.scss */
+.blueish .edit-toolbar-item.highlight-white {
+  background-color: white;
+  text-aling: right;
+}
+/* line 308, ../scss/modules/edit-toolbar.scss */
+.blueish .edit-toolbar-item.highlight-white .title {
+  text-align: left;
+}
 
 /* line 5, ../scss/modules/tables.scss */
 table {

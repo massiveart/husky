@@ -76,7 +76,8 @@ define(function() {
         },
 
         constants = {
-            collapsedWidth: 50
+            collapsedWidth: 50,
+            dropdownToggleWidth: 5 //px
         },
 
         /** templates container */
@@ -586,8 +587,8 @@ define(function() {
                         maxwidth = this.sandbox.dom.width(listItem);
                     }
                 }
-
-                this.sandbox.dom.css(listItem, {'min-width': maxwidth + 'px'});
+                maxwidth = maxwidth + constants.dropdownToggleWidth;
+                this.sandbox.dom.css(listItem, {'min-width': Math.ceil(maxwidth) + 'px'});
                 //set button back to default
                 changeMainListItem.call(this, listItem, parent);
             }
