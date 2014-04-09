@@ -803,58 +803,64 @@ h1 {
   line-height: 40px;
   margin: 10px 0 40px 0;
 }
+/* line 32, ../scss/typo.scss */
+h1.bright {
+  color: white;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
 
-/* line 33, ../scss/typo.scss */
+/* line 39, ../scss/typo.scss */
 h2 {
   font-size: 24px;
   line-height: 30px;
   margin: 0 0 10px 0;
 }
 
-/* line 39, ../scss/typo.scss */
+/* line 45, ../scss/typo.scss */
 h3 {
   font-size: 20px;
   line-height: 25px;
 }
 
-/* line 44, ../scss/typo.scss */
+/* line 50, ../scss/typo.scss */
 h4 {
   font-size: 18px;
   line-height: 20px;
 }
 
-/* line 49, ../scss/typo.scss */
+/* line 55, ../scss/typo.scss */
 h5 {
   font-size: 14px;
   line-height: 15px;
 }
 
-/* line 54, ../scss/typo.scss */
+/* line 60, ../scss/typo.scss */
 h6 {
   font-size: 12px;
   line-height: 15px;
   margin: 0;
 }
 
-/* line 62, ../scss/typo.scss */
+/* line 68, ../scss/typo.scss */
 .compoundedHeadlines :first-child {
   color: #249fbe;
   font-size: 14px;
   margin: 0;
   line-height: 20px;
 }
-/* line 68, ../scss/typo.scss */
+/* line 74, ../scss/typo.scss */
 .compoundedHeadlines :nth-child(2) {
   margin-top: 0;
 }
 
-/* line 75, ../scss/typo.scss */
+/* line 81, ../scss/typo.scss */
 h1, h2, h3, h4, h5 {
   position: relative;
   z-index: 1;
   overflow: hidden;
 }
-/* line 79, ../scss/typo.scss */
+/* line 85, ../scss/typo.scss */
 h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divider:after {
   position: absolute;
   top: 50%;
@@ -866,12 +872,12 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   background-color: #cccccc;
 }
 
-/* line 94, ../scss/typo.scss */
+/* line 100, ../scss/typo.scss */
 .bold, .header .header-left .username {
   font-family: Helvetica, Arial, sans-serif !important;
 }
 
-/* line 103, ../scss/typo.scss */
+/* line 109, ../scss/typo.scss */
 .small-font {
   font-size: 12px;
 }
