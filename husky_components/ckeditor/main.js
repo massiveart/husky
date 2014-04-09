@@ -65,6 +65,9 @@ define([], function() {
             delete config.require;
             delete config.element;
 
+            // allow img tags to have any class (*) and any attribute [*]
+            config.extraAllowedContent = 'img(*)[*]';
+
             return config;
         };
 
@@ -75,10 +78,9 @@ return {
 
         var config = getConfig.call(this);
         this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
+        this.data = this.editor.getData();
 
-        this.editor.on('change', function() {
-            this.sandbox.emit(CHANGED.call(this), this.editor.getData(), this.$el);
-        }.bind(this));
+        this.bindChangeEvents();
 
         this.editor.on('instanceReady', function() {
             // bind class to editor
@@ -88,8 +90,31 @@ return {
         this.editor.on('blur', function() {
             this.sandbox.emit(FOCUSOUT.call(this), this.editor.getData(), this.$el);
         }.bind(this));
-    }
+    },
 
+    /**
+     * Binds Events to emit a custom changed event
+     */
+    bindChangeEvents: function() {
+        this.editor.on('change', function() {
+            this.emitChangedEvent();
+        }.bind(this));
+
+        // check if the content of the editor has changed if the mode is switched (html/wisiwig)
+        this.editor.on('mode', function() {
+            if (this.data !== this.editor.getData()) {
+                this.emitChangedEvent();
+            }
+        }.bind(this));
+    },
+
+    /**
+     * Emits the custom changed event
+     */
+    emitChangedEvent: function() {
+        this.data = this.editor.getData();
+        this.sandbox.emit(CHANGED.call(this), this.data, this.$el);
+    }
 };
 
 })
