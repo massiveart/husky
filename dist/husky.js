@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -16322,7 +16321,6 @@ define('aura/ext/components', [],function() {
   };
 });
 
-
 /*
  * This file is part of the Husky Validation.
  *
@@ -17081,7 +17079,7 @@ define('form/mapper',[
                             throw 'template has to be defined as <script>';
                         }
 
-                        $newChild = {tpl: $child.html(), id: $child.attr('id')};
+                        $newChild = {tpl: $child.html(), id: $child.attr('id'), collection: collection};
                         element.$children[i] = $newChild;
 
                         for (x = -1, len = property.length; ++x < len;) {
@@ -17090,6 +17088,7 @@ define('form/mapper',[
                             }
                         }
                         if (!!propertyName) {
+                            $newChild.propertyName = propertyName;
                             propertyCount = collection.element.getType().getMinOccurs();
                             this.templates[propertyName] = {tpl: $newChild, collection: collection};
                             // init default children
@@ -17284,8 +17283,9 @@ define('form/mapper',[
                 },
 
                 appendChildren: function($element, $child, tplOptions, data, insertAfter) {
-                    tplOptions = tplOptions || {};
-                    var template = _.template($child.tpl, tplOptions, form.options.delimiter),
+                    var index = $child.collection.element.getType().getChildren($child.id).length,
+                        options = $.extend({}, {index: index}, tplOptions || {}),
+                        template = _.template($child.tpl, options, form.options.delimiter),
                         $template = $(template),
                         $newFields = Util.getFields($template),
                         dfd = $.Deferred(),
@@ -18824,6 +18824,7 @@ define('validator/regex',[
     };
 
 });
+
 
 define("husky-validation", function(){});
 
@@ -35661,7 +35662,7 @@ define('__component__$smart-content@husky',[], function() {
             if (newURI !== this.URI.str) {
                 //emit data changed event only if old URI is not null (not at the startup)
                 if (this.URI.str !== '') {
-                    this.sandbox.emit(DATA_CHANGED.call(this));
+                    this.sandbox.emit(DATA_CHANGED.call(this), this.sandbox.dom.data(this.options.$el, 'smart-content'), this.options.$el);
                 }
                 this.URI.str = newURI;
                 this.URI.hasChanged = true;
@@ -38774,3 +38775,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
