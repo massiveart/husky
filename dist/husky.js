@@ -35635,7 +35635,7 @@ define('__component__$smart-content@husky',[], function() {
             if (newURI !== this.URI.str) {
                 //emit data changed event only if old URI is not null (not at the startup)
                 if (this.URI.str !== '') {
-                    this.sandbox.emit(DATA_CHANGED.call(this));
+                    this.sandbox.emit(DATA_CHANGED.call(this), this.sandbox.dom.data(this.options.$el, 'smart-content'), this.options.$el);
                 }
                 this.URI.str = newURI;
                 this.URI.hasChanged = true;
