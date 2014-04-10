@@ -16321,7 +16321,6 @@ define('aura/ext/components', [],function() {
   };
 });
 
-
 /*
  * This file is part of the Husky Validation.
  *
@@ -17080,7 +17079,7 @@ define('form/mapper',[
                             throw 'template has to be defined as <script>';
                         }
 
-                        $newChild = {tpl: $child.html(), id: $child.attr('id')};
+                        $newChild = {tpl: $child.html(), id: $child.attr('id'), collection: collection};
                         element.$children[i] = $newChild;
 
                         for (x = -1, len = property.length; ++x < len;) {
@@ -17089,6 +17088,7 @@ define('form/mapper',[
                             }
                         }
                         if (!!propertyName) {
+                            $newChild.propertyName = propertyName;
                             propertyCount = collection.element.getType().getMinOccurs();
                             this.templates[propertyName] = {tpl: $newChild, collection: collection};
                             // init default children
@@ -17283,8 +17283,9 @@ define('form/mapper',[
                 },
 
                 appendChildren: function($element, $child, tplOptions, data, insertAfter) {
-                    tplOptions = tplOptions || {};
-                    var template = _.template($child.tpl, tplOptions, form.options.delimiter),
+                    var index = $child.collection.element.getType().getChildren($child.id).length,
+                        options = $.extend({}, {index: index}, tplOptions || {}),
+                        template = _.template($child.tpl, options, form.options.delimiter),
                         $template = $(template),
                         $newFields = Util.getFields($template),
                         dfd = $.Deferred(),
@@ -18823,6 +18824,7 @@ define('validator/regex',[
     };
 
 });
+
 
 define("husky-validation", function(){});
 
@@ -34199,6 +34201,9 @@ define('__component__$ckeditor@husky',[], function() {
             delete config.require;
             delete config.element;
 
+            // allow img tags to have any class (*) and any attribute [*]
+            config.extraAllowedContent = 'img(*)[*]';
+
             return config;
         };
 
@@ -34209,10 +34214,9 @@ return {
 
         var config = getConfig.call(this);
         this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
+        this.data = this.editor.getData();
 
-        this.editor.on('change', function() {
-            this.sandbox.emit(CHANGED.call(this), this.editor.getData(), this.$el);
-        }.bind(this));
+        this.bindChangeEvents();
 
         this.editor.on('instanceReady', function() {
             // bind class to editor
@@ -34222,8 +34226,31 @@ return {
         this.editor.on('blur', function() {
             this.sandbox.emit(FOCUSOUT.call(this), this.editor.getData(), this.$el);
         }.bind(this));
-    }
+    },
 
+    /**
+     * Binds Events to emit a custom changed event
+     */
+    bindChangeEvents: function() {
+        this.editor.on('change', function() {
+            this.emitChangedEvent();
+        }.bind(this));
+
+        // check if the content of the editor has changed if the mode is switched (html/wisiwig)
+        this.editor.on('mode', function() {
+            if (this.data !== this.editor.getData()) {
+                this.emitChangedEvent();
+            }
+        }.bind(this));
+    },
+
+    /**
+     * Emits the custom changed event
+     */
+    emitChangedEvent: function() {
+        this.data = this.editor.getData();
+        this.sandbox.emit(CHANGED.call(this), this.data, this.$el);
+    }
 };
 
 })

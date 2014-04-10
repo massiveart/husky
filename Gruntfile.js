@@ -120,6 +120,11 @@ module.exports = function(grunt) {
                 }
             }
         },
+        exec: {
+            hookrights: {
+                command: 'chmod +x .git/hooks/pre-push'
+            }
+        },
         copy: {
             dev: {
                 files: [
@@ -394,6 +399,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('install:hooks', [
         'clean:hooks',
-        'copy:hooks'
+        'copy:hooks',
+        'exec:hookrights'
     ]);
 };
