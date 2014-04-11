@@ -26664,12 +26664,19 @@ define('__component__$datagrid@husky',[],function() {
             UPDATE = namespace + 'update',
 
         /**
-         * used to filter data of
+         * used to filter data by search
          * @event husky.datagrid.data.filter
          * @param {String} searchField
          * @param {String} searchString
          */
             DATA_SEARCH = namespace + 'data.search',
+
+        /**
+         * used to filter data by updating an url parameter
+         * @event husky.datagrid.url.update
+         * @param {Object} url parameter : key
+         */
+            URL_UPDATE = namespace + 'url.update',
 
         /**
          * used to update the table width and its containers due to responsiveness
@@ -26758,6 +26765,7 @@ define('__component__$datagrid@husky',[],function() {
             this.selectedItemIds = [];
             this.rowStructure = [];
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
+            this.currentUrl = '';
 
             if (!!this.options.contentContainer) {
                 this.originalMaxWidth = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
@@ -26872,7 +26880,7 @@ define('__component__$datagrid@husky',[],function() {
          * @param params url
          */
         load: function(params) {
-
+            this.currentUrl = params.url;
             this.sandbox.util.load(this.getUrl(params), params.data)
                 .then(function(response) {
                     this.initRender(response, params);
@@ -27930,6 +27938,9 @@ define('__component__$datagrid@husky',[],function() {
             // filter data
             this.sandbox.on(DATA_SEARCH, this.triggerSearch.bind(this));
 
+            // filter data
+            this.sandbox.on(URL_UPDATE, this.updateUrl.bind(this));
+
             // pagination dropdown item clicked
             this.sandbox.on('husky.dropdown.' + this.dropdownInstanceName + '.item.click', this.changePage.bind(this, null));
 
@@ -28304,9 +28315,7 @@ define('__component__$datagrid@husky',[],function() {
          */
         triggerSearch: function(searchString, searchFields) {
 
-            var template, url,
-            // TODO: get searchFields
-                searchFields;
+            var template, url;
 
             this.addLoader();
             template = this.sandbox.uritemplate.parse(this.data.links.find);
@@ -28319,6 +28328,58 @@ define('__component__$datagrid@husky',[],function() {
                     this.sandbox.emit(UPDATED, 'updated after search');
                 }.bind(this)
             });
+        },
+
+        /**
+         * this will trigger a api search
+         */
+        updateUrl: function(parameters) {
+
+            var url, key;
+
+            this.addLoader();
+//            template = this.sandbox.uritemplate.parse(this.data.links.self);
+//            url = this.sandbox.uritemplate.expand(template, {});
+            url = this.currentUrl;
+
+            for (key in parameters) {
+                url = this.setGetParameter(url, key, parameters[key]);
+            }
+
+            this.load({
+                url: url,
+                success: function() {
+                    this.removeLoader();
+                    this.sandbox.emit(UPDATED);
+                }.bind(this)
+            });
+        },
+
+        setGetParameter: function(url, paramName, paramValue){
+            if (url.indexOf(paramName + "=") >= 0)
+            {
+                var prefix = url.substring(0, url.indexOf(paramName)),
+                    suffix = url.substring(url.indexOf(paramName));
+                suffix = suffix.substring(suffix.indexOf('=') + 1);
+                suffix = (suffix.indexOf('&') >= 0) ? suffix.substring(suffix.indexOf('&')) : '';
+                if (!!paramValue) {
+                    url = prefix + paramName + '=' + paramValue + suffix;
+                } else {
+                    if (url.substr(url.indexOf(paramName)-1,1) === '&' ) {
+                        url = url.substring(0,prefix.length-1) + suffix;
+                    } else {
+                        url = prefix + suffix.substring(1, suffix.length);
+                    }
+                }
+            }
+            else if (!!paramValue)
+            {
+                if (url.indexOf("?") < 0)
+                    url += "?" + paramName + "=" + paramValue;
+                else
+                    url += "&" + paramName + "=" + paramValue;
+            }
+            return url;
         },
 
 
