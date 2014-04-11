@@ -66,7 +66,7 @@ define([], function() {
             delete config.element;
 
             // allow img tags to have any class (*) and any attribute [*]
-            config.extraAllowedContent = 'img(*)[*]';
+            config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title]';
 
             return config;
         };
