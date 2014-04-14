@@ -65,6 +65,9 @@ $toolbarSmallHeight: 20px;
     &.left {
         float: left;
         padding-right: 10px;
+        &.last {
+            padding-right: 0;
+        }
     }
 
     .toolbar-item {
@@ -145,8 +148,16 @@ $toolbarSmallHeight: 20px;
             background-color: lighten($highlightColor, 5%);
         }
 
-        a {
+        & > a {
             color: $white;
+
+            &.dropdown-toggle::after {
+              border-top-color: $white;
+            }
+        }
+
+        &.is-expanded {
+            background-color: $highlightColor;
         }
     }
 

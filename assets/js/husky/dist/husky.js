@@ -29693,6 +29693,7 @@ define('__component__$tabs@husky',[],function() {
  * @param {boolean} [options.hasSearch] if true a search item gets inserted in its own group at the end. A search item can also be added manually through the data
  * @param {String} [options.searchAlign] "right" or "left" to align the search if it's added automatically via the hasSearch option
  * @param {String} [options.skin] custom skin-class to add to the component
+ * @param {Boolean} [options.showTitleAsTooltip] shows the title of the button only as tooltip
  */
 define('__component__$toolbar@husky',[],function() {
 
@@ -29713,7 +29714,8 @@ define('__component__$toolbar@husky',[],function() {
                 }
             ],
             skin: 'default',
-            small: false
+            small: false,
+            showTitleAsTooltip: false
         },
 
         constants = {
@@ -30092,6 +30094,8 @@ define('__component__$toolbar@husky',[],function() {
 
             if (!item.disabled) {
                 triggerSelectEvent.call(this, item, $parent);
+            } else {
+                return false;
             }
         },
 
@@ -30192,7 +30196,8 @@ define('__component__$toolbar@husky',[],function() {
          */
         createDropdownMenu = function(listItem, parent) {
             var $list = this.sandbox.dom.createElement('<ul class="toolbar-dropdown-menu" />'),
-                classString = '';
+                $item;
+
             this.sandbox.dom.append(listItem, $list);
             this.sandbox.util.foreach(parent.items, function(item) {
 
@@ -30206,11 +30211,15 @@ define('__component__$toolbar@husky',[],function() {
                 checkItemId.call(this, item);
                 this.items[item.id] = item;
 
-                if (item.disabled) {
-                    classString = ' class="disabled"';
+                $item = this.sandbox.dom.createElement(
+                    '<li data-id="' + item.id + '"><a href="#">' + item.title + '</a></li>'
+                );
+
+                if (item.disabled === true) {
+                    this.sandbox.dom.addClass($item, 'disabled');
                 }
 
-                this.sandbox.dom.append($list, '<li data-id="' + item.id + '"' + classString + '><a href="#">' + item.title + '</a></li>');
+                this.sandbox.dom.append($list, $item);
             }.bind(this));
         },
 
@@ -30574,10 +30583,15 @@ define('__component__$toolbar@husky',[],function() {
 
                     // create title span
                     title = item.title ? item.title : '';
-                    if (item.hideTitle === true) {
+                    if (item.hideTitle === true || this.options.showTitleAsTooltip === true) {
                         this.sandbox.dom.append($listLink, '<span style="display:none" class="title">' + title + '</span>');
                     } else {
                         this.sandbox.dom.append($listLink, '<span class="title">' + title + '</span>');
+                    }
+
+                    //add tooltip to item
+                    if (this.options.showTitleAsTooltip === true) {
+                        this.sandbox.dom.attr($listItem, {'title': title});
                     }
 
                     //hide the item if hidden true
@@ -30632,6 +30646,7 @@ define('__component__$toolbar@husky',[],function() {
             // add skin class
             addSkinClass.call(this, $skeleton);
 
+            // render groups
             for (i = -1, length = this.options.groups.length; ++i < length;) {
                 $group = this.sandbox.dom.createElement('<ul class="group"/>');
 
@@ -30647,6 +30662,12 @@ define('__component__$toolbar@husky',[],function() {
 
             // append skeleton to component element
             this.sandbox.dom.append(this.$el, $skeleton);
+
+            //add last class
+            this.sandbox.dom.addClass(
+                this.sandbox.dom.last(this.sandbox.dom.find('.group.left', this.$el)),
+                'last'
+            );
         }
     };
 
@@ -35838,7 +35859,7 @@ define('__component__$matcher@husky',[], function() {
          */
         getDropdownValue: function(column, callback) {
             this.sandbox.emit(
-                'husky.select.' + this.options.instanceName + column.id + '.getChecked',
+                'husky.select.' + this.options.instanceName + column.id + '.get-checked',
                 callback
             );
         },

@@ -268,6 +268,7 @@
                         instanceName: 'contact1',
                         hasSearch: true,
                         searchAlign: 'left',
+                        showTitleAsTooltip: true,
                         groups: [
                             {
                                 id: 1,
@@ -278,11 +279,17 @@
                             {
                                 icon: 'circle-plus',
                                 class: 'highlight',
-                                group: 1
+                                title: 'add',
+                                group: 1,
+                                items: [
+                                    {title: 'action 1'},
+                                    {title: 'action 2'}
+                                ]
                             },
                             {
                                 icon: 'bin',
                                 group: 1,
+                                title: 'delete',
                                 disabled: true
                             },
                             {
@@ -301,7 +308,12 @@
                             },
                             {
                                 icon: 'cogwheels',
-                                group: 1
+                                group: 1,
+                                items: [
+                                    {title: 'action 1', disabled: true},
+                                    {title: 'action 2', disabled: true},
+                                    {title: 'action 3'}
+                                ]
                             }
                         ]
                     }
