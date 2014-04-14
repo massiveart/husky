@@ -23,27 +23,37 @@ define([], function() {
     'use strict';
 
     var defaults = {
-            initializedCallback: null
+            initializedCallback: null,
+            instanceName: null
         },
 
         /**
          * namespace for events
          * @type {string}
          */
-         eventNamespace = 'husky.ckeditor.',
+            eventNamespace = 'husky.ckeditor.',
 
         /**
-         * @event husky.column-navigation.loaded
+         * @event husky.ckeditor.changed
          * @description the component has loaded everything successfully and will be rendered
          */
-         CHANGED = eventNamespace + 'changed',
+            CHANGED = function() {
+            return eventNamespace + (this.options.instanceName !== null ? this.options.instanceName + '.' : '') + 'changed';
+        },
 
+        /**
+         * @event husky.ckeditor.focusout
+         * @description triggered when focus of editor is lost
+         */
+            FOCUSOUT = function() {
+            return eventNamespace + (this.options.instanceName !== null ? this.options.instanceName + '.' : '') + 'focusout';
+        },
 
         /**
          * Removes the not needed elements from the config object for the ckeditor
          * @returns {Object} configuration object for ckeditor
          */
-         getConfig = function() {
+            getConfig = function() {
             var config = this.sandbox.util.extend(false, {}, this.options);
 
             delete config.initializedCallback;
@@ -55,26 +65,57 @@ define([], function() {
             delete config.require;
             delete config.element;
 
+            // allow img tags to have any class (*) and any attribute [*]
+            config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title]';
+
             return config;
         };
 
-    return {
+return {
 
-        initialize: function() {
-            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
-            var config = getConfig.call(this);
-            this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
+    initialize: function() {
+        this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
-            this.editor.on('change', function() {
-                this.sandbox.emit(CHANGED, this.editor.getData(), this.$el);
-            }.bind(this));
+        var config = getConfig.call(this);
+        this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
+        this.data = this.editor.getData();
 
-            this.editor.on('instanceReady', function() {
-                // bind class to editor
-                this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
-            }.bind(this));
-        }
+        this.bindChangeEvents();
 
-    };
+        this.editor.on('instanceReady', function() {
+            // bind class to editor
+            this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
+        }.bind(this));
 
-});
+        this.editor.on('blur', function() {
+            this.sandbox.emit(FOCUSOUT.call(this), this.editor.getData(), this.$el);
+        }.bind(this));
+    },
+
+    /**
+     * Binds Events to emit a custom changed event
+     */
+    bindChangeEvents: function() {
+        this.editor.on('change', function() {
+            this.emitChangedEvent();
+        }.bind(this));
+
+        // check if the content of the editor has changed if the mode is switched (html/wisiwig)
+        this.editor.on('mode', function() {
+            if (this.data !== this.editor.getData()) {
+                this.emitChangedEvent();
+            }
+        }.bind(this));
+    },
+
+    /**
+     * Emits the custom changed event
+     */
+    emitChangedEvent: function() {
+        this.data = this.editor.getData();
+        this.sandbox.emit(CHANGED.call(this), this.data, this.$el);
+    }
+};
+
+})
+;

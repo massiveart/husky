@@ -77,8 +77,8 @@ define([], function() {
             this.sandbox.on('husky.password.fields.' + this.options.instanceName + '.get.passwords', function(callback){
 
                 if(typeof callback === 'function'){
-                    var password1 = this.sandbox.dom.val('#'+this.options.ids.inputPassword1),
-                        password2 = this.sandbox.dom.val('#'+this.options.ids.inputPassword2);
+                    var password1 = this.sandbox.dom.val('#' + this.options.ids.inputPassword1),
+                        password2 = this.sandbox.dom.val('#' + this.options.ids.inputPassword2);
                     callback(password1, password2);
                 }
 
@@ -88,7 +88,7 @@ define([], function() {
 
         bindDomEvents: function() {
 
-            this.$element.on('click', '#'+this.options.ids.generateLabel, function() {
+            this.$element.on('click', '#' + this.options.ids.generateLabel, function() {
                 this.generatePasswords();
                 this.sandbox.emit('husky.passwords.fields.' + this.options.instanceName + '.generated.passwords');
             }.bind(this));
@@ -99,8 +99,8 @@ define([], function() {
 
             // TODO generate password
 
-            this.sandbox.dom.val('#'+this.options.ids.inputPassword1, generatedPassword);
-            this.sandbox.dom.val('#'+this.options.ids.inputPassword2, generatedPassword);
+            this.sandbox.dom.val('#' + this.options.ids.inputPassword1, generatedPassword);
+            this.sandbox.dom.val('#' + this.options.ids.inputPassword2, generatedPassword);
         },
 
         template: function() {

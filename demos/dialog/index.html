@@ -16,14 +16,18 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="stylesheet" href="../../dist/husky.min.css">
     <style>
+        h1 {
+            margin: 50px 0 0 50px;
+        }
         .container {
             width: 800px;
-            margin-left: 300px;
-            margin-top: 100px;
+            padding-left: 50px;
+            margin-top: 40px;
         }
     </style>
 </head>
 <body>
+<h1>Husky Dialog Demo</h1>
 <div class="container">
     <!-- Button to trigger modal -->
     <a id="showDialog" href="#dialog" role="button" class="btn" data-toggle="dialog">Launch demo modal</a>
@@ -69,6 +73,16 @@
                                 footer: {
                                     buttonCancelText: "Cancel",
                                     buttonSubmitText: "Save"
+                                },
+                                callback: {
+                                    submit: function() {
+                                        console.log('submit');
+                                        app.sandbox.emit('husky.dialog.hide');
+                                    },
+                                    cancel: function() {
+                                        console.log('cancel');
+                                        app.sandbox.emit('husky.dialog.hide');
+                                    }
                                 }
                             }
                         }
@@ -88,11 +102,26 @@
                                 content: {
                                     title: "This is the headline!",
                                     content: '<p>This is the content</p>' +
-                                            '<p><input type="checkbox" id="mycheckbox"/><label for="mycheckbox">this is the label for the checkbox</label> </p>'
+                                            '<div class="custom-checkbox">' +
+                                                '<input type="checkbox" id="mycheckbox"/>' +
+                                                '<span class="icon"></span>' +
+                                            '</div>' +
+                                            '<label for="mycheckbox">this is the label for the checkbox</label>'
+                                },
+                                callback: {
+                                    submit: function() {
+                                        console.log('submit');
+                                        app.sandbox.emit('husky.dialog.hide');
+                                    },
+                                    cancel: function() {
+                                        console.log('cancel');
+                                        app.sandbox.emit('husky.dialog.hide');
+                                    }
                                 }
                             }
                         }
                     }
+
                 ]);
             });
 
@@ -106,7 +135,7 @@
                             template: {
                                 content: '<h3><%= title %></h3><p><%= content %></p>',
                                 footer: '<button class="btn btn-black" id="dialog-button-cancel"><%= buttonCancelText %></button><button class="btn btn-black" id="dialog-button-submit"><%= buttonSubmitText %></button>',
-                                header: '<button type="button" class="close">×</button>'
+                                header: '<div class="icon-remove2 close"></div>'
                             },
                             data: {
                                 content: {
@@ -116,6 +145,16 @@
                                 footer: {
                                     buttonCancelText: "Cancel",
                                     buttonSubmitText: "Save"
+                                },
+                                callback: {
+                                    submit: function() {
+                                        console.log('submit');
+                                        app.sandbox.emit('husky.dialog.hide');
+                                    },
+                                    cancel: function() {
+                                        console.log('cancel');
+                                        app.sandbox.emit('husky.dialog.hide');
+                                    }
                                 }
                             }
                         }

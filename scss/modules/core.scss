@@ -26,3 +26,35 @@ hr.divider{
 	border: 1px solid #fff;
 	margin: 0px 0 20px 0;
 }
+
+
+// options dropdown
+
+.options-dropdown-container {
+    position: absolute;
+    right: 0;
+    top: 5px;
+    z-index: 100;
+}
+
+.options-toggle {
+    background-color: $baseBackgroundColor;
+    padding-left: 10px;
+    font-size: 15px;
+    color: black;
+
+    &::after {
+        content: "";
+        display: inline-block;
+        position: relative;
+        top: -4px;
+        margin-left: 5px;
+        width: 0;
+        height: 0;
+        border-left: 3px solid transparent;
+        border-right: 3px solid transparent;
+
+        border-top: 5px solid #000;
+    }
+}
+

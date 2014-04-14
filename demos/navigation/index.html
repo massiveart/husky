@@ -14,7 +14,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="stylesheet" href="../../dist/husky.min.css">
+    <link rel="stylesheet" href="../../dist/husky.css">
 
     <style>
         #content {
@@ -28,11 +28,19 @@
 <div id="content">
     <a href="#" id="collapse">collapse navigation</a>
     <a href="#" id="force">force collapse navigation</a>
+    <a href="#" id="show">show navigation</a>
+    <a href="#" id="hide">hide navigation</a>
+    <a href="#" id="select">activate movies/rerender footer</a>
 </div>
 
 <div data-aura-component="navigation@husky" class="" data-aura-select-action="webspaces/cn_cn"
      data-aura-url="/navigation"
-     data-aura-footer-template="<div>Hubert Gruber</div><div><a href='#'>logout</a></div><div class='version'>husky 2.1.2</div>"></div>
+     data-aura-user-name="Donald Duck"
+     data-aura-system-version="1.111"
+     data-aura-user-locales='["en_us","en","de","de_at"]'
+     data-aura-user-locale="en_us"
+     data-aura-translations='{"versionHistory":"Version history","user":"User"}'
+     ></div>
 
 <script src="../js/sinon.js"></script>
 <script src="../js/jquery.js"></script>
@@ -52,7 +60,7 @@
                 _ = app.sandbox.util._;
 
         fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
-            '{"title":"Sulu 2.0", "icon":"..\/..\/img\/tmp\/husky.png", "id":"1", "items":[' +
+            '{"title":"Sulu 2.0", "id":"1", "items":[' +
 
                     '{"title":"Tools", "items":[' +
                     '{"title":"Dashboard", "action":"dashboard", "icon":"dashboard", "id":"2", "hasSettings":"true"},' +
@@ -68,9 +76,9 @@
                     '{"title":"Movies", "id":"9", "action":"media\/movies"}' +
                     ']},' +
 
-                    '{"title":"Messages", "icon":"settings", "id":"10"},' +
+                    '{"title":"Messages", "icon":"asterisk", "id":"10"},' +
 
-                    '{"title":"Settings", "icon":"settings", "id":"11", "items":[' +
+                    '{"title":"Settings", "icon":"cogwheels", "id":"11", "items":[' +
                     '{"title":"Roles &amp; Permissions", "action":"settings\/roles", "type":"content", "id":"12"},' +
                     '{"title":"Translate", "action":"settings\/translate", "id":"13"}' +
                     ']}' +
@@ -89,7 +97,8 @@
                     ']},' +
                     '{"title":"Asia", "icon":"globe", "id":"22", "items":[' +
                     '{"title":"cn_cn", "action":"webspaces\/cn_cn", "id":"23"},' +
-                    '{"title":"jp_jp", "action":"webspaces\/jp_jp", "id":"24"}' +
+                    '{"title":"jp_jp", "action":"webspaces\/jp_jp", "id":"24"},' +
+                    '{"title":"This item has a way to long text", "action":"webspaces\/jps_jps", "id":"25"}' +
                     ']}' +
                     ']}' +
                     ']}'
@@ -125,11 +134,23 @@
                 this.collapsed = false;
             }, this);
 
-            app.sandbox.dom.on('#collapse', 'click', collapse.bind(this, false));
+            app.sandbox.dom.on('#collapse', 'click', collapse.bind(this, true));
             app.sandbox.dom.on('#force', 'click', collapse.bind(this, true));
 
+            app.sandbox.dom.on('#show', 'click', function(){
+                app.sandbox.emit('husky.navigation.show');
+            }.bind(this));
 
+            app.sandbox.dom.on('#hide', 'click', function(){
+                app.sandbox.emit('husky.navigation.hide');
+            }.bind(this));
 
+            app.sandbox.dom.on('#select', 'click', function(){
+                app.sandbox.emit('husky.navigation.select-item', 'media\/movies\/edit::1893884\/content');
+                app.sandbox.emit('husky.navigation.footer.set', {
+                    userName: 'Marcel Moosbrugger'
+                })
+            }.bind(this));
         });
     });
 

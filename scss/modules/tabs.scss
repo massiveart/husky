@@ -3,6 +3,8 @@
 // --------------------------------------------------
 
 .tabs-container {
+    margin-top: 40px;
+    margin-bottom: 40px;
 
     ul {
         width: 100%;
@@ -23,6 +25,7 @@
                 text-decoration: none;
                 font-size: 16px;
                 line-height:20px;
+                @include single-transition(color, 250ms);
 
                 &:hover {
                     color: $gray;
@@ -37,6 +40,18 @@
 
             &:not(:last-child) {
                 padding-right: 30px;
+            }
+        }
+    }
+
+    &.deactivated {
+        ul li {
+            a, a:hover {
+                color: $grayLight;
+                cursor: default;
+            }
+            &.is-selected a {
+                color: $highlightColor;
             }
         }
     }

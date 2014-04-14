@@ -32,6 +32,14 @@
   clear: both;
 }
 
+.pos-rel {
+    position: relative;
+}
+
+.pos-abs {
+    position: absolute;
+}
+
 .is-loading:not(.navigation-column-item) {
   @extend %abstract-loader-black;
 
@@ -63,7 +71,7 @@
     padding: 4px 7px 4px 7px;
     margin: 0 0 0 -4px;
     border: 1px solid transparent;
-    border-radius: 5px;
+    border-radius: 3px;
     outline:0;
     display: block;
     height: 30px;
@@ -75,13 +83,23 @@
 .editable:focus,
 .editable:active {
     background: $white;
-    border: 1px solid $white;
+    border: 1px solid $grayLighter;
     outline:0;
 }
 
 .editable:hover {
-    border: 1px solid $white;
+    border: 1px solid $grayLighter;
     outline:0;
+}
+
+// General styles
+// -------------------------
+.clickable {
+    color: $black !important;
+}
+
+.faded {
+    opacity: 0.3;
 }
 
 // Margin & paddings shorthands

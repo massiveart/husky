@@ -3,6 +3,7 @@
      position: relative;
      top: 0px;
      left: 0px;
+     min-width: 100%;
 
     .column-navigation {
         background-color: $white;
@@ -13,6 +14,12 @@
         min-height: 200px;
         max-height: 750px;
 
+        &.overflow {
+            .column:last-child {
+                border-right: none;
+            }
+        }
+
         .column {
             border-right: 1px solid $grayLighter;
             overflow-y: auto;
@@ -20,6 +27,10 @@
             display: inline-block;
             font-size: 0;
             height:100%;
+
+            /*&:nth-child(n+4):last-child {
+                border-right: none;
+            }*/
 
             ul {
                 list-style-type: none;
@@ -33,6 +44,7 @@
                     position: relative;
                     top: 0px;
                     left: 0px;
+                    @include user-select(none);
                 }
 
                 li:hover {
@@ -90,6 +102,11 @@
             color: $white;
             border-radius: 3px;
         }
+        .husky-column-navigation-loader {
+            position: relative;
+            top: 2px;
+            left: -2px;
+        }
 
         .arrow {
             display: inline-block;
@@ -101,6 +118,8 @@
     }
 
     .add {
+        display: inline-block;
+        width: 50%;
         background-color: $accentColor;
         padding: 5px 0;
         color: $white;
@@ -111,6 +130,8 @@
     }
 
     .settings {
+        display: inline-block;
+        width: 50%;
         background-color: $grayLighter;
         padding: 5px 0;
         border-bottom-right-radius: 5px;

@@ -29,6 +29,9 @@ define([], function() {
             url: '',     // url for lazy loading
             data: [],    // data array
             trigger: '',  // trigger for click event
+            triggerOutside: false, // if true, trigger is searched in whole dom, otherwise just in this.$el
+            shadow: true,  // if box-shadow should be shown
+            toggleClassOn: null, // container to set is-active class
             valueName: 'name', // name of text property
             setParentDropDown: false, // set class dropdown for parent dom object
             excludeItems: [], // items to filter,
@@ -44,33 +47,27 @@ define([], function() {
 
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
-//            // return if this plugin has a module instance
-//            if (!!this.$element.data(moduleName)) {
-//                return this;
-//            }
-//
-//            // store the module instance into the jQuery data property
-//           this. $element.data(moduleName, new Husky.Ui.DropDown(this, options));
-
-
             this.$element = this.sandbox.dom.createElement('<div/>', {
                 'class': 'husky-drop-down'
             });
 
             this.sandbox.dom.append(this.options.el, this.$element);
 
-            this.init();
+            this.render();
+            this.sandbox.emit('husky.dropdown.' + this.options.instanceName + '.initialized');
         },
 
-        init: function() {
-            this.sandbox.logger.log('initialize', this);
+        render: function() {
+
+            var dropdownClasses = ['dropdown-menu'];
+
+            if (this.options.shadow === true) {
+                dropdownClasses.push('dropdown-shadow');
+            }
 
 
-            // ------------------------------------------------------------
-            // initialization
-            // ------------------------------------------------------------
             this.$dropDown = this.sandbox.dom.createElement('<div/>', {
-                'class': 'dropdown-menu'
+                'class': dropdownClasses.join(' ')
             });
             this.$dropDownList = this.sandbox.dom.createElement('<ul/>');
 
@@ -80,7 +77,7 @@ define([], function() {
 
             if (this.options.setParentDropDown) {
                 // add class dropdown to parent
-                this.sandbox.dom.addClass(this.sandbox.dom.parent(this.$element),'dropdown');
+                this.sandbox.dom.addClass(this.sandbox.dom.parent(this.$element), 'dropdown');
             }
 
             // check alginment
@@ -100,25 +97,29 @@ define([], function() {
         // bind dom elements
         bindDOMEvents: function() {
 
-             // turn off all events
-             this.sandbox.dom.off(this.$element);
+            // turn off all events
+            this.sandbox.dom.off(this.$element);
 
-             // ------------------------------------------------------------
-             // DOM events
-             // ------------------------------------------------------------
+            // ------------------------------------------------------------
+            // DOM events
+            // ------------------------------------------------------------
 
-             // init drop-down
-             if (this.options.trigger !== '') {
-                this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this), this.options.trigger);
-             } else {
+            // init drop-down
+            if (this.options.trigger !== '') {
+                if (this.options.triggerOutside) {
+                    this.sandbox.dom.on(this.options.trigger, 'click', this.triggerClick.bind(this));
+                } else {
+                    this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this), this.options.trigger);
+                }
+            } else {
                 this.sandbox.dom.on(this.options.el, 'click', this.triggerClick.bind(this));
-             }
+            }
 
             // on click on list item
-            this.sandbox.dom.on(this.$dropDownList, 'click', function (event) {
+            this.sandbox.dom.on(this.$dropDownList, 'click', function(event) {
                 event.stopPropagation();
                 this.clickItem(this.sandbox.dom.data(event.currentTarget, 'id'));
-            }.bind(this), 'li');
+            }.bind(this), 'li:not(".divider")');
         },
 
         bindCustomEvents: function() {
@@ -134,10 +135,12 @@ define([], function() {
         // trigger event with clicked item
         clickItem: function(id) {
             this.sandbox.util.foreach(this.options.data, function(item) {
-                if (parseInt(item.id, 10) === id) {
+                if (typeof item.id !== 'undefined' && item.id.toString() === id.toString()) {
                     this.sandbox.logger.log(this.name, 'item.click: ' + id, 'success');
 
-                    if (!!this.options.clickCallback && typeof this.options.clickCallback === 'function') {
+                    if (!!item.callback && typeof item.callback === 'function') {
+                        item.callback.call(this);
+                    } else if (!!this.options.clickCallback && typeof this.options.clickCallback === 'function') {
                         this.options.clickCallback(item, this.$el);
                     } else {
                         this.sandbox.emit(this.getEvent('item.click'), item, this.$el);
@@ -199,12 +202,16 @@ define([], function() {
             this.clearDropDown();
             if (items.length > 0) {
                 items.forEach(function(item) {
-                    if (this.isVisible(item)) {
-                        var label = item[this.options.valueName];
-                        if (this.options.translateLabels) {
-                            label = this.sandbox.translate(label);
+                    if (item.divider !== true) {
+                        if (this.isVisible(item)) {
+                            var label = item[this.options.valueName];
+                            if (this.options.translateLabels) {
+                                label = this.sandbox.translate(label);
+                            }
+                            this.sandbox.dom.append(this.$dropDownList, '<li data-id="' + item.id + '">' + label + '</li>');
                         }
-                        this.sandbox.dom.append(this.$dropDownList, '<li data-id="' + item.id + '">' + label + '</li>');
+                    } else {
+                        this.sandbox.dom.append(this.$dropDownList, '<li class="divider"/>');
                     }
                 }.bind(this));
             } else {
@@ -226,14 +233,13 @@ define([], function() {
         // clear childs of list
         clearDropDown: function() {
             // FIXME make it easier
-            this.sandbox.dom.remove(this.sandbox.dom.children(this.sandbox.dom.children(this.$dropDown,'ul'),'li'));
+            this.sandbox.dom.remove(this.sandbox.dom.children(this.sandbox.dom.children(this.$dropDown, 'ul'), 'li'));
         },
 
         // toggle dropDown visible
         toggleDropDown: function() {
             this.sandbox.logger.log(this.name, 'toggle dropdown');
-//            this.sandbox.dom.toggle(this.$dropDown);
-            if (this.sandbox.dom.is(this.$dropDown,':visible')) {
+            if (this.sandbox.dom.is(this.$dropDown, ':visible')) {
                 this.hideDropDown();
             } else {
                 this.showDropDown();
@@ -246,6 +252,10 @@ define([], function() {
             // on click on trigger outside check
             this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.show(this.$dropDown);
+            this.sandbox.emit('husky.dropdown.' + this.options.instanceName + '.showing');
+            if (!!this.options.toggleClassOn) {
+                this.sandbox.dom.addClass(this.options.toggleClassOn, 'is-active');
+            }
         },
 
         // hide dropDown
@@ -254,6 +264,9 @@ define([], function() {
             // remove global click event
             this.sandbox.dom.off(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.hide(this.$dropDown);
+            if (!!this.options.toggleClassOn) {
+                this.sandbox.dom.removeClass(this.options.toggleClassOn, 'is-active');
+            }
         },
 
         // get url for pattern

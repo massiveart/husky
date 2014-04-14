@@ -71,6 +71,18 @@
                         return  app.sandbox.form.getObject(selector).mapper.getData();
                     },
 
+                    addToCollection: function(selector, propertyName, data, append) {
+                        return  app.sandbox.form.getObject(selector).mapper.addToCollection(propertyName, data, append);
+                    },
+
+                    editInCollection: function(selector, mapperId, data) {
+                        return  app.sandbox.form.getObject(selector).mapper.editInCollection(mapperId, data);
+                    },
+
+                    removeFromCollection: function(selector, mapperId) {
+                        return  app.sandbox.form.getObject(selector).mapper.removeFromCollection(mapperId);
+                    },
+
                     addCollectionFilter: function(selector, arrayName, callback) {
                         app.sandbox.form.getObject(selector).mapper.addCollectionFilter(arrayName, callback);
                     },

@@ -1,0 +1,82 @@
+//
+// Styles for content-types which aren't an own component
+// --------------------------------------------------
+
+.text-block {
+    margin-bottom: 20px;
+
+    .head {
+
+        label {
+            float: left;
+            font-size: $bigFontSize;
+            margin-bottom: 10px;
+            cursor: move;
+
+            &::before {
+                @extend .icon-move;
+                margin-left: -15px;
+                position: relative;
+                top: 2px;
+                left: 0px;
+                cursor: move;
+            }
+        }
+
+        .options {
+            float: right;
+            cursor: pointer;
+            margin-top: 5px;
+            display: none;
+        }
+
+        &::after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+    }
+    .container {
+        padding: 10px 20px 20px 20px;
+        background: $grayLighterer;
+
+        label {
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            max-width: 100%;
+            min-width: 100%;
+            width: 100%;
+        }
+    }
+
+    &:hover {
+        .head .options {
+            display: block;
+        }
+    }
+}
+
+.empty {
+    .text-block {
+        .head .options {
+            display: none;
+        }
+        &:hover .head .options {
+            display: none;
+        }
+    }
+}
+
+.text-block-footer {
+    .desc {
+        font-size: $smallFontSize;
+        color: $grayLight;
+        padding-left: 10px;
+    }
+    .btn.full {
+        background-color: $grayLighter;
+        cursor: default;
+    }
+}

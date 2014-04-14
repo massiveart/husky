@@ -13,15 +13,23 @@ $black: #000;
 $gray: #666;
 $grayLight: #999;
 $grayLighter: #ccc;
+$grayLighter3: #BABABA;
+$grayLighter2: #CACACA;
 $grayLighterer: #ddd;
 $grayLightMedium: #e4e4e4;
 $grayLightest: #efefef;
 $grayDarkLighter: #3e3e3e;
 $grayDark: #1e1e1e;
+$navigationFooterGray: #878787;
+$navigationFooterGray2: #5b5b5b;
 $white:#fff;
 $green: #1FCA23;
+$milkeyGreen: rgba($green, 0.3);
 $red: #AD0710;
+$milkyRed: rgba($red, 0.3);
 $yellow: #FEBC2F;
+$blue: #2D9FBC;
+$milkeyBlue: rgba($blue, 0.3);
 
 
 // Base colors
@@ -49,8 +57,10 @@ $yellowHighlightColor: #FFFEB0; // light yellow
 // -------------------------
 $sansFontFamily: Helvetica, Arial, sans-serif;
 
+$bigFontSize: 16px;
 $baseFontSize: 14px;
 $smallFontSize: 12px;
+$reallySmallFontSize: 10px;
 $baseFontFamily: $sansFontFamily;
 $baseLineHeight: 20px;
 

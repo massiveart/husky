@@ -178,6 +178,10 @@
                 return $(selector).is(type);
             };
 
+            app.core.dom.isArray = function(selector) {
+                return $.isArray(selector);
+            };
+
             app.core.dom.data = function(selector, key, value) {
                 if (!!value || value === '') {
                     return $(selector).data(key, value);
@@ -302,6 +306,10 @@
                 return $(selector).map(callback);
             };
 
+            app.core.dom.get = function(selector, index) {
+                return $(selector).get(index);
+            };
+
             app.core.dom.toggle = function(selector) {
                 return $(selector).toggle();
             };
@@ -367,6 +375,10 @@
                 $(selector).fadeIn(duration, complete);
             };
 
+            app.core.dom.fadeTo = function(selector, duration, opacity, complete) {
+                $(selector).fadeTo(duration, opacity, complete);
+            };
+
             app.core.dom.fadeOut = function(selector, duration, complete) {
                 $(selector).fadeOut(duration, complete);
             };
@@ -381,6 +393,10 @@
 
             app.core.dom.focus = function(selector){
               $(selector).focus();
+            };
+
+            app.core.dom.animate = function(selector, properties, options){
+               $(selector).animate(properties, options);
             };
 
             app.core.util.ajax = $.ajax;
