@@ -6,7 +6,7 @@
     "backbone": "~1.0.0",
     "underscore": "~1.5.1",
     "aura": "latest",
-    "husky-validation": "#develop",
+    "husky-validation": "0.2.*",
     "globalize": "0.1.*",
     "massiveart-uritemplate": "0.3.*",
     "typeahead.js": "~0.9.3",
