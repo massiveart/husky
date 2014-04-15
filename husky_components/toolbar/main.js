@@ -302,7 +302,7 @@ define(function() {
             if (item.loading) {
                 item.loading = false;
                 $itemLink = this.sandbox.dom.find('a', $item);
-                this.sandbox.dom.remove(this.sandbox.dom.find('.item-loader', $item));
+                this.sandbox.stop(this.sandbox.dom.find('.item-loader', $item));
                 this.sandbox.dom.show($itemLink);
             }
 
