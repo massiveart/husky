@@ -395,12 +395,12 @@
                 $(selector).unbind(eventType);
             };
 
-            app.core.dom.focus = function(selector){
-              $(selector).focus();
+            app.core.dom.focus = function(selector) {
+                $(selector).focus();
             };
 
-            app.core.dom.animate = function(selector, properties, options){
-               $(selector).animate(properties, options);
+            app.core.dom.animate = function(selector, properties, options) {
+                $(selector).animate(properties, options);
             };
 
             app.core.util.ajax = $.ajax;

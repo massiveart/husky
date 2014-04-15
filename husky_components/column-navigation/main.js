@@ -53,7 +53,7 @@ define([], function() {
             publishedName: 'publishedState',
             titleName: 'title',
             typeName: 'type',
-            minVisibleRatio: 1/2
+            minVisibleRatio: 1 / 2
         },
 
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
@@ -143,8 +143,8 @@ define([], function() {
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
-            this.addId = this.options.instanceName+"-column-navigation-add";
-            this.settingsId = this.options.instanceName+"-column-navigation-settings";
+            this.addId = this.options.instanceName + "-column-navigation-add";
+            this.settingsId = this.options.instanceName + "-column-navigation-settings";
             this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer.call(this, this.options.column.width));
             $add = this.sandbox.dom.$(this.template.options.add(this.addId));
             $settings = this.sandbox.dom.$(this.template.options.settings(this.settingsId));
@@ -158,7 +158,7 @@ define([], function() {
             this.setContainerMinWidth();
 
             //init dropdown for settings in options container
-            if(!!this.options.data) {
+            if (!!this.options.data) {
                 this.initSettingsDropdown(this.sandbox.dom.attr($settings, 'id'));
             }
 
@@ -169,7 +169,7 @@ define([], function() {
          */
         setContainerHeight: function() {
             this.sandbox.dom.height(
-                this.$columnContainer, (this.sandbox.dom.height(window) - this.sandbox.dom.offset(this.$columnContainer).top) * this.options.wrapper.height/100
+                this.$columnContainer, (this.sandbox.dom.height(window) - this.sandbox.dom.offset(this.$columnContainer).top) * this.options.wrapper.height / 100
             );
         },
 
@@ -187,7 +187,7 @@ define([], function() {
                     options: {
                         el: '#' + containerId,
                         setParentDropDown: true,
-                        instanceName: this.options.instanceName+'.settings.dropdown',
+                        instanceName: this.options.instanceName + '.settings.dropdown',
                         alignment: 'left',
                         data: this.options.data
                     }
@@ -317,7 +317,7 @@ define([], function() {
 
             $itemText = this.sandbox.dom.find('.item-text', $item);
             width = this.options.column.width - this.sandbox.dom.outerWidth(this.sandbox.dom.find('.icons-left', $item));
-            width = width - parseInt(this.sandbox.dom.css($item, 'padding-right').replace('px', '')) -1;
+            width = width - parseInt(this.sandbox.dom.css($item, 'padding-right').replace('px', '')) - 2;
             width = width - parseInt(this.sandbox.dom.css($item, 'padding-left').replace('px', ''));
             width = width - this.sandbox.dom.outerWidth(this.sandbox.dom.find('.icons-right', $item));
 
@@ -331,9 +331,9 @@ define([], function() {
          */
         cropItemsText: function($itemText) {
             var title = this.sandbox.dom.attr($itemText, 'title'),
-            croppedTitle,
-            maxLength = title.length,
-            overflow;
+                croppedTitle,
+                maxLength = title.length,
+                overflow;
 
             //set the item text to the original title
             this.sandbox.dom.html($itemText, title);
@@ -434,7 +434,7 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'mouseleave', this.itemMouseLeave.bind(this), 'li');
 
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
-            this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#'+this.addId);
+            this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#' + this.addId);
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
             this.sandbox.dom.on(this.$el, 'dblclick', this.editNode.bind(this), 'li');
 
@@ -711,7 +711,7 @@ define([], function() {
             wrapper: function() {
                 return '<div class="column-navigation-wrapper"></div>';
             },
-            
+
             columnContainer: function() {
                 return ['<div class="column-navigation"></div>'].join('');
             },
@@ -735,7 +735,7 @@ define([], function() {
                     }
                 }
 
-                // type (ghost, shadow
+                // type (ghost, shadow)
                 if (!!data[this.options.typeName]) {
                     if (data[this.options.typeName].name === 'ghost') {
                         item.push('<span class="ghost pull-left m-right-5">', data[this.options.typeName].value, '</span>');
@@ -752,9 +752,9 @@ define([], function() {
 
                 // text center
                 if (!!data[this.options.typeName] && data[this.options.typeName].name === 'ghost') {
-                    item.push('<span title="'+ data[this.options.titleName] +'" class="item-text inactive pull-left">', data[this.options.titleName], '</span>');
+                    item.push('<span title="' + data[this.options.titleName] + '" class="item-text inactive pull-left">', data[this.options.titleName], '</span>');
                 } else {
-                    item.push('<span title="'+ data[this.options.titleName] +'" class="item-text pull-left">', data[this.options.titleName], '</span>');
+                    item.push('<span title="' + data[this.options.titleName] + '" class="item-text pull-left">', data[this.options.titleName], '</span>');
                 }
 
                 // icons right (subpage, edit)
@@ -762,7 +762,6 @@ define([], function() {
                 item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
                 !!data[this.options.hasSubName] ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
-                console.log(item.join(''));
                 return item.join('');
             },
 
@@ -772,13 +771,13 @@ define([], function() {
 
             options: {
                 add: function(id) {
-                    return ['<div id="',id,'" class="align-center add pointer">',
+                    return ['<div id="', id, '" class="align-center add pointer">',
                         '<span class="icon-add"></span>',
                         '</div>'].join('');
                 },
 
                 settings: function(id) {
-                    return ['<div id="',id,'" class="align-center settings pointer drop-down-trigger">',
+                    return ['<div id="', id, '" class="align-center settings pointer drop-down-trigger">',
                         '<span class="icon-cogwheel inline-block"></span><span class="dropdown-toggle inline-block"></span>',
                         '</div>'].join('');
                 }
