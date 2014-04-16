@@ -316,29 +316,19 @@ $toolbarSmallHeight: 20px;
             & > a {
                 color: $black;
             }
-
-            &.disabled {
-                background-color: $white;
-                border-color: $blue;
-                a {
-                    color: $black;
-                    cursor: default;
-                }
-            }
         }
 
         &.highlight-white {
             background-color: $white;
-            & > a {
-              text-align: right;
-            }
             .title {
                 text-align: left;
             }
         }
 
-        &.disabled {
+        &.disabled, &.disabled:hover {
             background-color: $milkeyBlue;
+            border-color: $blue;
+
             a {
                 color: $white;
                 &.dropdown-toggle::after {

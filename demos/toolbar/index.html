@@ -342,6 +342,10 @@
                                 id: 'loadit',
                                 callback: function() {
                                     app.sandbox.emit('husky.toolbar.contact2.item.loading', 'loadit');
+
+                                    setTimeout(function() {
+                                        app.sandbox.emit('husky.toolbar.contact2.item.disable', 'loadit');
+                                    }, 2000)
                                 }
                             },
                             {
@@ -449,8 +453,7 @@
                         data: [
                             {
                                 icon: 'circle-plus',
-                                class: 'highlight',
-                                disabled: true,
+                                class: 'highlight-white',
                                 group: 1
                             },
                             {

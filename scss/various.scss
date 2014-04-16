@@ -36,6 +36,13 @@
         cursor: pointer;
         height: 100%;
 
+        &.inactive {
+            cursor: default;
+            a {
+                cursor: default;
+            }
+        }
+
         a {
             display: inline-block;
             line-height: $breadcrumbHeight - 2px;
