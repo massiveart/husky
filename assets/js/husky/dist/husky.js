@@ -26758,7 +26758,11 @@ define('__component__$datagrid@husky',[],function() {
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
 
             if (!!this.options.contentContainer) {
-                this.originalMaxWidth = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
+                if (this.sandbox.dom.css(this.options.contentContainer, 'max-width') === 'none') {
+                    this.originalMaxWidth = null;
+                } else {
+                    this.originalMaxWidth = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
+                }
                 this.contentMarginRight = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'margin-right')).number;
                 this.contentPaddings = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-right')).number;
                 this.contentPaddings += this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-left')).number;
@@ -28382,7 +28386,7 @@ define('__component__$datagrid@husky',[],function() {
             tableOffset.right = tableOffset.left + tableWidth;
 
 
-            if (!!this.options.contentContainer) {
+            if (!!this.options.contentContainer && !!this.originalMaxWidth) {
                 // get original max-width and right margin
                 originalMaxWidth = this.originalMaxWidth;
                 contentPaddings = this.contentPaddings;
@@ -30106,7 +30110,8 @@ define('__component__$toolbar@husky',[],function() {
          */
         triggerSelectEvent = function(item, $parent) {
 
-            var parentItem;
+            var parentItem,
+                original = item._original || item;
 
             // check if has parent and type of parent
             if (item.parentId) {
@@ -30118,7 +30123,7 @@ define('__component__$toolbar@husky',[],function() {
                 //check if itemsOption is set and pass clicked item to the callback
                 if (!!parentItem.itemsOption) {
                     if (typeof parentItem.itemsOption.callback === 'function') {
-                        parentItem.itemsOption.callback(item._original);
+                        parentItem.itemsOption.callback(original);
                     }
                 }
             }
@@ -30599,7 +30604,7 @@ define('__component__$toolbar@husky',[],function() {
                         hideItem.call(this, $listItem);
                     }
 
-                    if (!!item.itemsOption) {
+                    if (!!item.itemsOption && !!item.itemsOption.url) {
                         this.sandbox.util.load(item.itemsOption.url)
                             .then(function(result) {
                                 handleRequestedItems.call(this, result[this.options.itemsRequestKey], item.id);
@@ -33378,7 +33383,7 @@ define('__component__$column-navigation@husky',[], function() {
          * @param $activeColumn {object} dom-object of active column
          */
         updateOptionsMargin: function($activeColumn) {
-            var marginLeft = this.sandbox.dom.position($activeColumn).left;
+            var marginLeft = this.sandbox.dom.position($activeColumn).left - 1;
             this.sandbox.dom.css(this.$optionsContainer, 'margin-left', marginLeft + 'px');
         },
 

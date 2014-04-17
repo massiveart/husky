@@ -465,7 +465,8 @@ define(function() {
          */
         triggerSelectEvent = function(item, $parent) {
 
-            var parentItem;
+            var parentItem,
+                original = item._original || item;
 
             // check if has parent and type of parent
             if (item.parentId) {
@@ -477,7 +478,7 @@ define(function() {
                 //check if itemsOption is set and pass clicked item to the callback
                 if (!!parentItem.itemsOption) {
                     if (typeof parentItem.itemsOption.callback === 'function') {
-                        parentItem.itemsOption.callback(item._original);
+                        parentItem.itemsOption.callback(original);
                     }
                 }
             }
@@ -958,7 +959,7 @@ define(function() {
                         hideItem.call(this, $listItem);
                     }
 
-                    if (!!item.itemsOption) {
+                    if (!!item.itemsOption && !!item.itemsOption.url) {
                         this.sandbox.util.load(item.itemsOption.url)
                             .then(function(result) {
                                 handleRequestedItems.call(this, result[this.options.itemsRequestKey], item.id);

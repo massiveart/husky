@@ -307,7 +307,11 @@ define(function() {
             this.elId = this.sandbox.dom.attr(this.$el, 'id');
 
             if (!!this.options.contentContainer) {
-                this.originalMaxWidth = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
+                if (this.sandbox.dom.css(this.options.contentContainer, 'max-width') === 'none') {
+                    this.originalMaxWidth = null;
+                } else {
+                    this.originalMaxWidth = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
+                }
                 this.contentMarginRight = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'margin-right')).number;
                 this.contentPaddings = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-right')).number;
                 this.contentPaddings += this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-left')).number;
@@ -1931,7 +1935,7 @@ define(function() {
             tableOffset.right = tableOffset.left + tableWidth;
 
 
-            if (!!this.options.contentContainer) {
+            if (!!this.options.contentContainer && !!this.originalMaxWidth) {
                 // get original max-width and right margin
                 originalMaxWidth = this.originalMaxWidth;
                 contentPaddings = this.contentPaddings;

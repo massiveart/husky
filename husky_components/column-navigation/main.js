@@ -523,7 +523,7 @@ define([], function() {
          * @param $activeColumn {object} dom-object of active column
          */
         updateOptionsMargin: function($activeColumn) {
-            var marginLeft = this.sandbox.dom.position($activeColumn).left;
+            var marginLeft = this.sandbox.dom.position($activeColumn).left - 1;
             this.sandbox.dom.css(this.$optionsContainer, 'margin-left', marginLeft + 'px');
         },
 
