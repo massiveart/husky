@@ -95,6 +95,23 @@ define(function() {
                 return deferred.promise();
             };
 
+            app.core.util.cropMiddle = function(text, maxLength, delimiter) {
+                var substrLength;
+
+                // return text if it doesn't need to be cropped
+                if (text.length <= maxLength) {
+                    return text;
+                }
+
+                // default delimiter
+                if (!delimiter) {
+                    delimiter = '...';
+                }
+
+                substrLength = Math.floor((maxLength - delimiter.length)/2);
+                return text.slice(0, substrLength) + delimiter + text.slice(-substrLength);
+            },
+
             app.core.util.contains = function(list, value) {
                 return _.contains(list, value);
             };

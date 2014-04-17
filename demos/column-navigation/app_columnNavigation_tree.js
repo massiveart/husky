@@ -21,7 +21,7 @@ require(['lib/husky'], function (Husky) {
             '},'+
             '"_embedded": ['+
                 '{'+
-                    '"title": "Page 1",'+
+                    '"title": "Page 1 has a way too long title",'+
                     '"id": "1",'+
                     '"hasSub": true,'+
                     '"publishedState":true,'+
@@ -288,7 +288,7 @@ require(['lib/husky'], function (Husky) {
                     '"_embedded": []'+
                 '}'+
             '],'+
-            '"title": "Page 1",'+
+            '"title": "Page 1hasawaytolongtitleforthisnavigation",'+
             '"id": "1",'+
             '"hasSub": true'+
             '}'
@@ -654,7 +654,7 @@ require(['lib/husky'], function (Husky) {
             '    },'+
             '    "_embedded": ['+
             '        {'+
-            '            "title": "Page 1",'+
+            '            "title": "Page 1hasawaytolongtitleforthisnavigation",'+
             '            "id": "1",'+
             '            "hasSub": true,'+
             '            "publishedState": true,'+
@@ -788,7 +788,7 @@ require(['lib/husky'], function (Husky) {
             '                    "_embedded": []'+
             '                },'+
             '                {'+
-            '                    "title": "Page 1.4",'+
+            '                    "title": "Page 1.4sTitleIsRemarkablyLong",'+
             '                    "id": "1.4",'+
             '                    "hasSub": false,'+
             '                    "publishedState": false,'+
