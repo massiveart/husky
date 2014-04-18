@@ -1,4 +1,6 @@
 .husky-datagrid {
+    $fullWidthPaddingLeft: 60px;
+
     position: relative;
     padding-top: 10px;
 
@@ -61,7 +63,7 @@
             font-family: $baseIconFont;
             content: '\e212';
             position: absolute;
-            right: -35px;
+            right: -26px;
             top: 40%;
         }
     }
@@ -78,5 +80,19 @@
     }
     .dropdown-toggle::after {
         margin-left: 12px;
+    }
+
+    /**
+      * Special styles
+    **/
+    &.fullwidth {
+        th:first-child,
+        td:first-child {
+            padding-left: $fullWidthPaddingLeft;
+        }
+
+        .pagination-wrapper {
+            padding-left: $fullWidthPaddingLeft - 10px;
+        }
     }
 }

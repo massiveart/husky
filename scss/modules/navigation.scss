@@ -238,7 +238,7 @@ li.is-active {
         > .navigation-items-list {
             display: block;
             opacity: 1;
-            @include single-transition(opacity, $fadeDuration, false, 120ms);
+            @include single-transition(opacity, $fadeDuration, false, 75ms);
         }
 
     }

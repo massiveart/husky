@@ -785,7 +785,8 @@ define(function() {
             searchOptions = {
                 el: '#' + this.options.instanceName + '-toolbar-search',
                 instanceName: this.options.instanceName,
-                appearance: 'white small'
+                appearance: 'white small',
+                slide: true
             };
             searchOptions = this.sandbox.util.extend(true, {}, searchOptions, this.options.searchOptions);
             // start search component

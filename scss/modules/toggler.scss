@@ -7,20 +7,29 @@
     $transFunction: ease-in;
     $togglerHeight: 20px;
     $togglerWidth: 35px;
-    $togglerOutlineColor: rgba(255, 255, 255, 0.5);
+    $togglerOutlineColor: $milkeyBlue2;
 
     width: $togglerWidth;
     height: $togglerHeight;
-    border-radius: ($togglerHeight)/2;
+    border-radius: ($togglerHeight + 2px)/2;
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
 
-    &.outline {
-        border: 1px solid $togglerOutlineColor;
-        height: $togglerHeight+2;
-        width: $togglerWidth+2;
-    }
+
+  &.outline {
+      margin-top: -2px;
+      .toggler-wrapper {
+        border-color: $togglerOutlineColor;
+        height: $togglerHeight + 2px;
+        border-radius: ($togglerHeight + 2px)/2;
+      }
+      .switch {
+          border-color: $togglerOutlineColor;
+          top: 1px;
+          left: 1px;
+      }
+  }
 
 
     .toggler-wrapper {
@@ -60,7 +69,17 @@
     }
 
     &.checked {
-        .toggler-wrapper {
+
+      &.outline {
+          .toggler-wrapper {
+              border-color: $togglerOutlineColor;
+              .switch {
+                  left: 14px;
+              }
+          }
+      }
+
+      .toggler-wrapper {
           background: $green;
           border-color: $green;
         }

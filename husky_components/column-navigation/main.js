@@ -202,8 +202,8 @@ define([], function() {
          */
         load: function(url, columnNumber) {
             if (!!url) {
-
                 this.columnLoadStarted = true;
+
                 this.sandbox.util.load(url)
                     .then(function(response) {
                         this.columnLoadStarted = false;
@@ -211,6 +211,7 @@ define([], function() {
                         this.alignWithColumnsWidth();
                         this.scrollIfNeeded(this.filledColumns + 1);
                         this.setOverflowClass();
+                        this.showOptionsAtLast();
                         this.sandbox.emit(LOADED);
                     }.bind(this))
                     .fail(function(error) {
@@ -503,6 +504,16 @@ define([], function() {
             } else {
                 this.sandbox.logger.log("callback is not a function");
             }
+        },
+
+        /**
+         * Shows the options at the last available column
+         */
+        showOptionsAtLast: function() {
+            var $lastColumn = this.sandbox.dom.last(this.sandbox.dom.find('.column', this.$columnContainer));
+            this.showOptions({
+               currentTarget: $lastColumn
+            });
         },
 
         /**
