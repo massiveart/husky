@@ -33183,32 +33183,6 @@ define('__component__$column-navigation@husky',[], function() {
         },
 
         /**
-         * Starts a loader within the whole navigation
-         */
-        startLoader: function() {
-            var $element = this.sandbox.dom.createElement('<div class="navigation-loader"/>');
-            this.sandbox.dom.html(this.$columnContainer, $element);
-
-            this.sandbox.start([
-                {
-                    name: 'loader@husky',
-                    options: {
-                        el: $element,
-                        size: '100px',
-                        color: '#e4e4e4'
-                    }
-                }
-            ]);
-        },
-
-        /**
-         * Stops the big loader
-         */
-        stopLoader: function() {
-            this.sandbox.stop('.navigation-loader');
-        },
-
-        /**
          * Loads data from a specific url and triggers the parsing
          * @param {String} url
          * @param {Number} columnNumber
@@ -33216,11 +33190,9 @@ define('__component__$column-navigation@husky',[], function() {
         load: function(url, columnNumber) {
             if (!!url) {
                 this.columnLoadStarted = true;
-                this.startLoader();
 
                 this.sandbox.util.load(url)
                     .then(function(response) {
-                        this.stopLoader();
                         this.columnLoadStarted = false;
                         this.parseData(response, columnNumber);
                         this.alignWithColumnsWidth();
