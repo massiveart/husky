@@ -29779,42 +29779,14 @@ define('__component__$tabs@husky',[],function() {
  * @module husky/components/toolbar
  */
 
-/*
- *
- *  toolbar
- *
- *  data structure:
- *      - title
- *      - id (optional - will be generated otherwise)
- *      - icon (optional)
- *      - disableIcon (optional): icon when item is disabled
- *      - disabled (optional): is item disabled or enabled
- *      - iconSize (optional: large/medium/small)
- *      - class (optional: highlight/highlight-gray)
- *      - group (optional): id of the a group specified in the options
- *      - position (optional) integer to sort the items - default 9000
- *      - type (optional: none/select) - if select, the selected item is displayed in main item
- *      - callback (optional) - callback function
- *      - hidden (optional) - if true button gets hidden form the beginning on
- *      - hideTitle (optional: true/false) - hide title from beginning
- *      - items (optional - if dropdown):
- *          - title
- *          - icon (optional) false will remove icon
- *          - callback
- *          - divider = true; takes item as divider element
- *
- *
- */
-
 /**
  * @class Toolbar
  * @constructor
  *
  * @param {Object} [options] Configuration object
  * @param {String} [options.url] url to fetch data from
- * @param {String} [options.data] if no url is provided
  * @param {String} [options.instanceName] enables custom events (in case of multiple tabs on one page)
- * @param {String} [options.itemsRequestKey] key with resutlt-array for requested dropdown items
+ * @param {String} [options.itemsRequestKey] key with result-array for requested dropdown items
  * @param {String} [options.appearance]
  * @param {Object} [options.searchOptions] options to pass to search component
  * @param {Object} [options.groups] array of groups with id and align to specify groups to put items in
@@ -29823,6 +29795,24 @@ define('__component__$tabs@husky',[],function() {
  * @param {String} [options.searchAlign] "right" or "left" to align the search if it's added automatically via the hasSearch option
  * @param {String} [options.skin] custom skin-class to add to the component
  * @param {Boolean} [options.showTitleAsTooltip] shows the title of the button only as tooltip
+ * @param {Array} [options.data] if no url is provided
+ * @param {String} [options.data.title]
+ * @param {String} [options.data.id]
+ * @param {Boolean} [options.data.disabled] is item disabled or enabled
+ * @param {String} [options.data.disableIcon] icon in disable state
+ * @param {String} [options.data.iconSize] large/medium/small
+ * @param {String} [options.data.class] highlight/highlight-gray
+ * @param {String} [options.data.group] id of the a group specified in the options
+ * @param {Integer} [options.data.position] integer to sort the items - default 9000
+ * @param {String} [options.data.type] if select, the selected item is displayed in main item (none/select)
+ * @param {Function} [options.data.callback] callback function
+ * @param {Boolean} [options.data.hidden] if true button gets hidden form the beginning on
+ * @param {Boolean} [options.data.hideTitle] hide title from beginning
+ * @param {Array} [options.data.items]
+ * @param {String} [options.data.items.title]
+ * @param {String} [options.data.items.icon] false will remove icon
+ * @param {Function} [options.data.items.callback]
+ * @param {Boolean} [options.data.items.divider] if true takes item as divider element
  */
 define('__component__$toolbar@husky',[],function() {
 
