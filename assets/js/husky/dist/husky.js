@@ -33137,11 +33137,13 @@ define('__component__$column-navigation@husky',[], function() {
             this.filledColumns = 0;
             this.columnLoadStarted = false;
             this.$loader = null;
+            this.$bigLoader = null;
 
             this.columns = [];
             this.selected = [];
 
             this.render();
+            this.startBigLoader();
             this.load(this.options.url, 0);
             this.bindDOMEvents();
             this.bindCustomEvents();
@@ -33182,6 +33184,34 @@ define('__component__$column-navigation@husky',[], function() {
                 this.initSettingsDropdown(this.sandbox.dom.attr($settings, 'id'));
             }
 
+        },
+
+        /**
+         * Starts the big loader, before loading content during the initialization
+         */
+        startBigLoader: function() {
+            if (this.$bigLoader === null) {
+                this.$bigLoader = this.sandbox.dom.createElement('<div class="column-navigation-loader"/>');
+
+                this.sandbox.start([
+                    {
+                        name: 'loader@husky',
+                        options: {
+                            el: this.$bigLoader,
+                            size: '100px',
+                            color: '#e4e4e4'
+                        }
+                    }
+                ]);
+            }
+            this.sandbox.dom.html(this.$columnContainer, this.$bigLoader);
+        },
+
+        /**
+         * Detatches the big loader from the column-navigation
+         */
+        removeBigLoader: function() {
+            this.sandbox.dom.detach(this.$find('.column-navigation-loader'));
         },
 
         /**
@@ -33226,6 +33256,7 @@ define('__component__$column-navigation@husky',[], function() {
 
                 this.sandbox.util.load(url)
                     .then(function(response) {
+                        this.removeBigLoader();
                         this.columnLoadStarted = false;
                         this.parseData(response, columnNumber);
                         this.alignWithColumnsWidth();

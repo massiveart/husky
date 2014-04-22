@@ -117,11 +117,13 @@ define([], function() {
             this.filledColumns = 0;
             this.columnLoadStarted = false;
             this.$loader = null;
+            this.$bigLoader = null;
 
             this.columns = [];
             this.selected = [];
 
             this.render();
+            this.startBigLoader();
             this.load(this.options.url, 0);
             this.bindDOMEvents();
             this.bindCustomEvents();
@@ -162,6 +164,36 @@ define([], function() {
                 this.initSettingsDropdown(this.sandbox.dom.attr($settings, 'id'));
             }
 
+        },
+
+        /**
+         * Starts the big loader, before loading content during the initialization
+         */
+        startBigLoader: function() {
+            if (this.$bigLoader === null) {
+                this.$bigLoader = this.sandbox.dom.createElement('<div class="column-navigation-loader"/>');
+                this.sandbox.dom.hide(this.$bigLoader);
+                this.sandbox.dom.html(this.$columnContainer, this.$bigLoader);
+
+                this.sandbox.start([
+                    {
+                        name: 'loader@husky',
+                        options: {
+                            el: this.$bigLoader,
+                            size: '100px',
+                            color: '#e4e4e4'
+                        }
+                    }
+                ]);
+            }
+            this.sandbox.dom.show(this.$bigLoader);
+        },
+
+        /**
+         * Detatches the big loader from the column-navigation
+         */
+        removeBigLoader: function() {
+            this.sandbox.dom.hide(this.$find('.column-navigation-loader'));
         },
 
         /**
@@ -206,6 +238,7 @@ define([], function() {
 
                 this.sandbox.util.load(url)
                     .then(function(response) {
+                        this.removeBigLoader();
                         this.columnLoadStarted = false;
                         this.parseData(response, columnNumber);
                         this.alignWithColumnsWidth();
@@ -388,6 +421,7 @@ define([], function() {
 
             if (this.$loader === null) {
                 this.$loader = this.sandbox.dom.createElement('<div class="husky-column-navigation-loader"/>');
+                this.sandbox.dom.hide(this.$loader);
 
                 this.sandbox.start([
                     {
@@ -400,7 +434,9 @@ define([], function() {
                     }
                 ]);
             }
+            this.sandbox.dom.detach(this.$loader);
             this.sandbox.dom.html($container, this.$loader);
+            this.sandbox.dom.show(this.$loader);
         },
 
         /**
@@ -409,7 +445,7 @@ define([], function() {
         removeLoadingIconForSelected: function() {
             if (!!this.$selectedElement) {
                 var $arrow = this.sandbox.dom.find('.arrow', this.$selectedElement);
-                this.sandbox.dom.detach(this.$loader);
+                this.sandbox.dom.hide(this.$loader);
                 this.sandbox.dom.prependClass($arrow, 'icon-chevron-right');
             }
         },
