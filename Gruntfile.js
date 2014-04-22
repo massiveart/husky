@@ -235,9 +235,16 @@ module.exports = function(grunt) {
                     // globalize
                     {
                         expand: true,
-                        cwd: '.bower_components/globalize/lib/',
+                        cwd: '.bower_components/globalize/dist/',
                         src: ['**'],
-                        dest: 'bower_components/globalize/lib/'
+                        dest: 'bower_components/globalize/dist/'
+                    },
+                    // cldr - (globalize dependency)
+                    {
+                        expand: true,
+                        cwd: '.bower_components/cldrjs/dist/',
+                        src: ['**'],
+                        dest: 'bower_components/cldrjs/dist/'
                     },
                     // husky-validation
                     {
