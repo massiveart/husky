@@ -44,7 +44,7 @@
  * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
  * @param {Array} [options.showElementsSteps] Array which contains the steps for the Show-Elements-dropdown as integers
  * @param {Boolean} [options.editPencil.show] Boolean which shows the pencil on hover and throws an event on click
- * @param {Number} [options.editPencil.column] Columnnumber on which the pencil should be shown
+ * @param {Number} [options.editPencil.column] column name in which the pencil should be shown
  */
 define(function() {
 
@@ -91,7 +91,7 @@ define(function() {
             showElementsSteps: [10, 20, 50, 100, 500],
             editPencil: {
                 show: false,
-                column: 1
+                column: null
             }
         },
 
@@ -830,7 +830,7 @@ define(function() {
                     }
 
                 } else {
-                    if(!!this.options.editPencil.show && this.options.editPencil.column === (index+1)) {
+                    if(!!this.options.editPencil.show && this.options.editPencil.column === key) {
                         this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '>' + tblCellContent + '<span class="icon-edit-pen edit"></span></td>');
                     } else {
                         this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '>' + tblCellContent + '</td>');

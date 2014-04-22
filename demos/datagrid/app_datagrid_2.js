@@ -68,7 +68,7 @@ require(['lib/husky'], function(Husky) {
                     removeRow: false,
                     editPencil: {
                         show: true,
-                        column: 1
+                        column: 'content1'
                     },
                     progressRow: true,
                     pagination: true,
