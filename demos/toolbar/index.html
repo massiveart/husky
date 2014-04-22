@@ -1,208 +1,527 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        <link rel="stylesheet" href="../../dist/husky.min.css">
-        <style>
-            body {
-                margin: 20px;
-                overflow: hidden;
-            }
-        </style>
-    </head>
-    <body>
-    <button id="change-state-button"> change button state of trash in default</button>
-        <h1>list toolbars</h1>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../dist/husky.css">
+    <style>
+        body {
+            margin: 20px;
+        }
+        .blueBackground {
+            padding: 30px 10px;
+            background: #249FBE;
+        }
+    </style>
+</head>
+<body>
 
-        <h3>default (large)</h3>
 
-        <div id="toolbar1"></div>
+<h1>Husky toolbar demos</h1>
 
+<div class="grid">
+    <div class="grid-row">
+        <div class="btn pointer grid-col-8 align-center" id="disable">Disable "Add user" and "Edit" button</div>
+    </div>
+    <div class="grid-row">
+        <div class="btn pointer grid-col-8 align-center" id="enable">Enable "Add user" and "Edit" button</div>
+    </div>
+    <div class="grid-row">
+        <div class="btn pointer grid-col-8 align-center" id="changeItem">Change current item of state</div>
+    </div>
+    <div class="grid-row">
+        <div class="btn pointer grid-col-8 align-center" id="collapse">Collapse/Expand toolbar</div>
+    </div>
+</div>
 
-        <h3>medium</h3>
-
+<div class="grid">
+    <div class="grid-row">
+        <h3>default</h3>
         <div id="toolbar2"></div>
-        <h3>small</h3>
-
+    </div>
+    <div class="grid-row">
         <div id="toolbar3"></div>
+    </div>
+    <div class="grid-row">
+        <h3>default (small)</h3>
+        <div id="toolbar4"></div>
+    </div>
+    <div class="grid-row">
+        <h3>blueish</h3>
+        <div class="blueBackground">
+            <div id="toolbar5"></div>
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="blueBackground">
+            <div id="toolbar6"></div>
+        </div>
+    </div>
+</div>
 
-        <script src="../js/sinon.js"></script>
-        <script src="../js/jquery.js"></script>
+<script src="../js/sinon.js"></script>
+<script src="../js/jquery.js"></script>
 
-        <script src="../js/require.js"></script>
+<script src="../js/require.js"></script>
 
-        <script type="text/javascript">
-            require.config({
-                baseUrl: '../../'
+<script type="text/javascript">
+    require.config({
+        baseUrl: '../../'
+    });
+
+    require(['lib/husky'], function(Husky) {
+        'use strict';
+
+        var fakeServer = sinon.fakeServer.create(),
+                app = Husky({ debug: { enable: true }}),
+                _ = app.sandbox.util._,
+
+                testData = [
+                    {
+                        'id': '1',
+                        'icon': 'user-add',
+                        'disabledIcon': 'cogwheel',
+                        'iconSize': 'large',
+                        'class': 'highlight',
+                        'position': 1,
+                        'callback': function() {
+                            console.log("user-add was clicked!");
+                            app.sandbox.emit('husky.toolbar.contact.item.loading', '1');
+
+                            setTimeout(function() {
+                                app.sandbox.emit('husky.toolbar.contact.item.disable', '1');
+                            }, 2000)
+
+                        }.bind(this)
+                    },
+                    {
+                        'id': 'edit',
+                        'icon': 'cogwheel',
+                        'iconSize': 'large',
+                        'disabledIcon': 'user-add',
+                        'title': '',
+                        'group': 2,
+                        'position': 2,
+                        'items': [
+                            {
+                                'title': 'Refresh',
+                                'callback': function() {
+                                    console.log("refresh was clicked");
+                                }
+                            },
+                            {
+                                'title': 'no refresh',
+                                'callback': function() {
+                                    console.log("no refresh was clicked");
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        'id': 'state',
+                        'icon': 'publish',
+                        'group': 2,
+                        'title': 'Publish',
+                        'position': 2,
+                        'type': 'select'
+                    },
+                    {
+                        'icon': 'file-import',
+                        'title': 'Import',
+                        'group': 1,
+                        'position': 2,
+                        'id': 'import',
+                        'callback': function() {
+                            app.sandbox.emit('husky.toolbar.contact.item.disable', 'import', false);
+                            console.log("import was clicked");
+                        }
+                    },
+                    {
+                        'icon': 'file-import',
+                        'title': 'Work',
+                        'group': 1,
+                        'hidden': true,
+                        'position': 3
+                    },
+                    {
+                        'icon': 'cogwheels',
+                        'title': 'Something else',
+                        'group': 1,
+                        'hideTitle': true,
+                        'position': 4
+                    },
+                    {
+                        'icon': 'globe',
+                        'group': 2,
+                        'position': 1
+                    },
+                    {
+                        'icon': 'file-export',
+                        'title': 'Export',
+                        'group': 1,
+                        'position': 5,
+                        'itemsOption': {
+                            'url': 'items.json',
+                            'titleAttribute': 'title',
+                            'idAttribute': 'id',
+                            'translate': true,
+                            'languageNamespace': 'toolbar.',
+                            'callback': function(item) {
+                                console.log(item, 'This is a test callback');
+                            }
+                        }
+                    },
+                    {
+                        id: 'search',
+                        hasSearch: true,
+                        'group': 3
+                    }
+                ],
+
+            stateItems = [
+                {
+                    'id': 'publish',
+                    'title': 'Publish',
+                    'icon': 'publish',
+                    'callback': function() {
+                        console.log("publish it");
+                    }
+                },
+                {
+                    'id': 'unpublish',
+                    'icon': 'unpublish',
+                    'title': 'Unpublish',
+                    'callback': function() {
+                        console.log("unpublish it");
+                    }
+                },
+                {
+                    'id': 'test',
+                    'icon': 'test',
+                    'title': 'Test',
+                    'callback': function() {
+                        console.log("set Test-state");
+                    }
+                }
+            ],
+
+        collapsed = false;
+
+
+        app.start().then(function() {
+            app.logger.log('Aura started...');
+
+
+            fakeServer.respondWith('GET', '/toolbar', [200, { 'Content-Type': 'application/json' },
+                JSON.stringify(testData)
+            ]);
+
+            fakeServer.respondWith('GET', 'items.json', [200, { 'Content-Type': 'application/json' },
+                '{"_embedded": [{"id": "23","title": "export1","icon": "floppy-save"},{"id": "24","icon": "cancel","title": "export2"},{"id": "25","icon": "test","title": "export3"}]}']);
+
+            app.sandbox.on('husky.toolbar.contact.initialized', function() {
+                app.sandbox.emit('husky.toolbar.contact.items.set', 'state', stateItems, 1);
+                setTimeout(function() {
+                    app.sandbox.emit('husky.toolbar.contact.items.set', 'state', [], 1);
+                    app.sandbox.emit('husky.toolbar.contact.items.set', 'state', stateItems, 1);
+                }, 500);
             });
 
-            require(['lib/husky'], function(Husky) {
-                'use strict';
-
-                var fakeServer = sinon.fakeServer.create(),
-                        app = Husky({ debug: { enable: true }}),
-                        _ = app.sandbox.util._,
-
-                        testData = [
+            app.sandbox.start([
+                {
+                    name: 'toolbar@husky',
+                    options: {
+                        el: '#toolbar2',
+                        instanceName: 'contact',
+                        groups: [
                             {
-                                'id': 1,
-                                'icon': 'user-add',
-                                'title': 'Add User',
-                                'class': 'highlight',
-                                'callback': function() {
-                                    console.log("highlight was clicked!");
-                                }
+                                id: 1,
+                                align: 'left'
                             },
                             {
-                                'id': 2,
-                                'icon': 'bin',
-                                'title': 'Delete User',
-                                'group': '1',
-                                'disabled': true,
-                                'callback': function() {
-                                    console.log("Delete was clicked!");
-                                }
+                                id: 2,
+                                align: 'left'
                             },
                             {
-                                'id': 3,
-                                'icon': 'retweet',
-                                'title': 'Refresh',
-                                'group': '1',
-                                'items': [
-                                    {
-                                        'id': 7,
-                                        'title': 'move',
-                                        disabled: false
-                                    },
-                                    {
-                                        'title': 'duplicate'
-                                    },
-                                    {
-                                        divider: true
-                                    },
-                                    {
-                                        'title': 'remove',
-                                        disabled: true
-                                    }
+                                id: 3,
+                                align: 'right'
+                            }
+                        ],
+                        data: testData
+                    }
+                },
+                {
+                    name: 'toolbar@husky',
+                    options: {
+                        el: '#toolbar3',
+                        instanceName: 'contact1',
+                        hasSearch: true,
+                        searchAlign: 'left',
+                        showTitleAsTooltip: true,
+                        groups: [
+                            {
+                                id: 1,
+                                align: 'left'
+                            }
+                        ],
+                        data: [
+                            {
+                                icon: 'circle-plus',
+                                class: 'highlight',
+                                title: 'add',
+                                group: 1,
+                                items: [
+                                    {title: 'action 1'},
+                                    {title: 'action 2'}
                                 ]
                             },
                             {
-                                'icon': 'file-import',
-                                'title': 'Import',
-                                'group': '2',
-                                'callback': function() {
+                                icon: 'bin',
+                                group: 1,
+                                title: 'delete',
+                                disabled: true
+                            },
+                            {
+                                icon: 'asterisk',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'file-import',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'file-export',
+                                group: 1
+                            },
+                            {
+                                icon: 'cogwheels',
+                                group: 1,
+                                items: [
+                                    {title: 'action 1', disabled: true},
+                                    {title: 'action 2', disabled: true},
+                                    {title: 'action 3'}
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    name: 'toolbar@husky',
+                    options: {
+                        el: '#toolbar4',
+                        instanceName: 'contact2',
+                        small: true,
+                        groups: [
+                            {
+                                id: 1,
+                                align: 'left'
+                            },
+                            {
+                                id: 2,
+                                align: 'left'
+                            }
+                        ],
+                        data: [
+                            {
+                                icon: 'circle-plus',
+                                class: 'highlight',
+                                group: 1,
+                                id: 'loadit',
+                                callback: function() {
+                                    app.sandbox.emit('husky.toolbar.contact2.item.loading', 'loadit');
 
+                                    setTimeout(function() {
+                                        app.sandbox.emit('husky.toolbar.contact2.item.disable', 'loadit');
+                                    }, 2000)
                                 }
                             },
                             {
-                                'icon': 'file-import',
-                                'title': 'Work',
-                                'class': 'highlight',
-                                'disabled': true
+                                icon: 'bin',
+                                group: 1,
+                                disabled: true
                             },
                             {
-                                'icon': 'file-export',
-                                'title': 'Export',
-                                'group': '2',
-                                'callback': function() {
+                                icon: 'asterisk',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'file-import',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'file-export',
+                                title: 'export',
+                                group: 1
+                            },
+                            {
+                                icon: 'cogwheels',
+                                group: 1
+                            }
+                        ]
+                    }
+                },
+                {
+                    name: 'toolbar@husky',
+                    options: {
+                        el: '#toolbar5',
+                        instanceName: 'contact3',
+                        skin: 'blueish',
+                        groups: [
+                            {
+                                id: 1,
+                                align: 'left'
+                            },
+                            {
+                                id: 2,
+                                align: 'right'
+                            }
+                        ],
+                        data: [
+                            {
+                                icon: 'floppy-save',
+                                class: 'highlight',
+                                group: 1,
+                                id: 'loadit',
+                                callback: function() {
+                                    app.sandbox.emit('husky.toolbar.contact3.item.loading', 'loadit');
 
+                                    setTimeout(function() {
+                                        app.sandbox.emit('husky.toolbar.contact3.item.disable', 'loadit', true);
+                                    }, 2000)
                                 }
+                            },
+                            {
+                                icon: 'brush',
+                                group: 1,
+                                title: 'Overview',
+                                type: 'select',
+                                items: [{title: 'Overview'}, {title: 'Landing'}]
+                            },
+                            {
+                                icon: 'cogwheel',
+                                group: 1,
+                                items: [{title: 'do something'}]
+                            },
+                            {
+                                'id': 'state',
+                                'icon': 'publish',
+                                'group': 1,
+                                'title': 'Publish',
+                                'type': 'select',
+                                items: stateItems
+                            },
+                            {
+                                'id': 'locale',
+                                title: 'DE',
+                                type: 'select',
+                                group: 2,
+                                class: 'highlight-white',
+                                items: [{title: 'EN'}, {title: 'EN_US'}, {title: 'DE_AT'}]
                             }
-                        ];
-
-
-                app.start().then(function() {
-                    app.logger.log('Aura started...');
-
-
-                    fakeServer.respondWith('GET', '/toolbar', [200, { 'Content-Type': 'application/json' },
-                        JSON.stringify(testData)
-                    ]);
-
-                    app.sandbox.start([
-                        {
-                            name: 'toolbar@husky',
-                            options: {
-                                el: '#toolbar1',
-                                instanceName: 'contact',
-                                hasSearch: true,
-                                appearance: 'large',
-                                searchOptions: {
-                                    placeholderText: 'Search...'
-                                },
-
-                                data: testData
+                        ]
+                    }
+                },
+                {
+                    name: 'toolbar@husky',
+                    options: {
+                        el: '#toolbar6',
+                        instanceName: 'contact6',
+                        hasSearch: true,
+                        searchAlign: 'right',
+                        skin: 'blueish',
+                        groups: [
+                            {
+                                id: 1,
+                                align: 'left'
                             }
-                        }
-                    ]);
-
-                    app.sandbox.start([
-                        {
-                            name: 'toolbar@husky',
-                            options: {
-                                el: '#toolbar2',
-                                instanceName: 'contactasdfasdf',
-                                hasSearch: false,
-                                appearance: 'medium',
-
-                                url: '/toolbar'
+                        ],
+                        data: [
+                            {
+                                icon: 'circle-plus',
+                                class: 'highlight-white',
+                                group: 1
+                            },
+                            {
+                                icon: 'bin',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'asterisk',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'file-import',
+                                group: 1,
+                                disabled: true
+                            },
+                            {
+                                icon: 'file-export',
+                                group: 1
+                            },
+                            {
+                                icon: 'cogwheels',
+                                group: 1
                             }
-                        }
-                    ]);
+                        ]
+                    }
+                },
+            ]);
 
-
-                    app.sandbox.start([
-                        {
-                            name: 'toolbar@husky',
-                            options: {
-                                el: '#toolbar3',
-                                instanceName: 'contact3',
-                                hasSearch: false,
-                                appearance: 'small',
-
-                                url: '/toolbar'
-                            }
-                        }
-                    ]);
-
-                    app.sandbox.on('husky.util.load.data', function() {
-                        setTimeout(function() {
-                            fakeServer.respond();
-                        }, 100);
-                    });
-
-
-
-
-                    app.sandbox.dom.on('#change-state-button','click', function() {
-                        if (this.buttonEnabled) {
-                            app.sandbox.emit('husky.toolbar.contact.item.disable', 2);
-                        } else {
-                            app.sandbox.emit('husky.toolbar.contact.item.enable', 2);
-                        }
-                        this.buttonEnabled = !this.buttonEnabled;
-                    }.bind(this));
-
-
-                    this.buttonEnabled = true;
-                    app.sandbox.on('husky.toolbar.contact.initialized',function(){
-                        app.sandbox.emit('husky.toolbar.contact.item.enable', 2);
-                        app.sandbox.emit('husky.toolbar.contact.item.disable', 3);
-                        app.sandbox.emit('husky.toolbar.contact.item.disable', 7);
-                    });
-
-
-                });
+            app.sandbox.on('husky.util.load.data', function() {
+                setTimeout(function() {
+                    fakeServer.respond();
+                }, 100);
             });
-        </script>
 
-    </body>
+            $('#disable').on('click', function() {
+                app.sandbox.emit('husky.toolbar.contact.item.disable', '1');
+                app.sandbox.emit('husky.toolbar.contact.item.disable', 'edit');
+
+                app.sandbox.emit('husky.toolbar.contact.get-buttons-width', function(width) {
+                    console.log(width, $('.toolbar-nav').width());
+                })
+            });
+
+            $('#enable').on('click', function() {
+                app.sandbox.emit('husky.toolbar.contact.item.enable', '1');
+                app.sandbox.emit('husky.toolbar.contact.item.enable', 'edit');
+
+                app.sandbox.emit('husky.toolbar.contact.item.show', '5');
+            });
+
+            $('#changeItem').on('click', function() {
+                app.sandbox.emit('husky.toolbar.contact.item.change', 'state', 2);
+            });
+
+            $('#collapse').on('click', function() {
+                if (collapsed === false) {
+                    app.sandbox.emit('husky.toolbar.contact.collapse');
+                    collapsed = true;
+                } else {
+                    app.sandbox.emit('husky.toolbar.contact.expand');
+                    collapsed = false;
+                }
+            });
+        });
+    });
+</script>
+
+</body>
 </html>

@@ -1,294 +1,339 @@
 //
-// Tabs
+// Toolbar
 // --------------------------------------------------
-@import "compass/css3/user-interface";
 
-@mixin background-and-border($color) {
-    background-color: $color;
-    border-color: $color;
-}
+$toolbarHeight: 30px;
+$toolbarSmallHeight: 20px;
 
-.toolbar-container {
-
-    white-space: nowrap;
-
-    line-height: 1;
-
-    $marginRightLarge: 20px;
-    $marginRightMedium: 10px;
-    $marginRightSmall: 5px;
-
-    // large buttons
-    .large {
-        button {
-            width: 50px;
-            height: 40px;
-            font-size: 18px;
-            margin-right: $marginRightLarge;
-        }
-    }
-
-    .btn-group.large,
-    :not(.btn-group) .group.large {
-        &:not(:last-child) {
-            margin-right: $marginRightLarge;
-        }
-    }
-
-    // medium buttons
-    .medium {
-        button {
-            width: 40px;
-            height: 30px;
-            font-size: 14px;
-            margin-right: $marginRightMedium;
-
-            &.dropdown-toggle:after {
-                top: -1px;
-            }
-        }
-    }
-    .btn-group.medium,
-    :not(.btn-group) .group.medium {
-        &:not(:last-child) {
-            margin-right: $marginRightMedium;
-        }
-    }
-
-    // small buttons
-    .small {
-        button {
-            width: 30px;
-            height: 20px;
-            font-size: 10px;
-            margin-right: $marginRightSmall;
-
-            // styling triangle
-            &.dropdown-toggle:after {
-                top: -1px;
-                margin-left: 3px;
-                border-left-width: 3px;
-                border-right-width: 3px;
-                border-top-width: 4px;
-            }
-        }
-    }
-    .btn-group.small,
-    :not(.btn-group) .group.small {
-        &:not(:last-child) {
-            margin-right: $marginRightSmall;
-        }
-    }
-
-    .btn-group {
-        position: relative;
-        display: inline-block;
-        vertical-align: middle;
-        font-size: 0;
-
-        // button of button group
-        > .group {
-            button {
-                margin-right: 0;
-            }
-
-            // inbetween element
-            &:not(:first-child):not(:last-child):not(.dropdown-toggle) button {
-                margin: 0 0 0 -1px;
-                border-radius: 0;
-            }
-
-            // last element of button group
-            &:last-child {
-                button {
-                    margin-left: -1px;
-                }
-                &:not(:first-child):not(.dropdown-toggle) button {
-                    border-top-left-radius: 0;
-                    border-bottom-left-radius: 0;
-                }
-            }
-
-            // first element of button group
-            &:first-child {
-                button {
-                    margin-left: 0;
-                }
-                &:not(:last-child):not(.dropdown-toggle) button {
-                    border-top-right-radius: 0;
-                    border-bottom-right-radius: 0;
-                }
-            }
-        }
-
-        &:not(:last-child) {
-            margin-right: $marginRightLarge;
-        }
-    }
-
-    .group {
-        display: inline-block;
-        font-size: 14px;
-        position: relative;
-    }
-
-    button {
-        cursor: pointer;
-
-        display: inline-block;
-
-        line-height: 1;
-
-        width: 50px;
-        height: 40px;
-        font-size: 18px;
-
-        text-align: center;
-        vertical-align: middle;
-        white-space: nowrap;
-        background-image: none;
-        background-color: transparent;
-        outline: none;
-
-        margin-right: 20px;
-
-        border: 1px solid $grayLighter;
-        border-radius: 3px;
-        @include user-select(none);
-
-        &:disabled {
-            color: $grayLight;
-        }
-
-        &:hover:not(:disabled) {
-            background-color: $grayLighterer;
-        }
-        &:active:not(:disabled) {
-            background-color: $grayLighter;
-        }
-
-        &.highlight {
-            color: #FFF;
-            background-color: $highlightColor;
-            border-color: $highlightColor;
-
-            &.dropdown-toggle:after {
-                border-top-color: #fff;
-            }
-
-            &:hover {
-                @include background-and-border(lighten($highlightColor, 3%));
-            }
-            &:active {
-                @include background-and-border(lighten($highlightColor, 5%));
-
-            }
-            &:disabled, &:disabled:hover, &:disabled:focus {
-                @include background-and-border($grayLight);
-            }
-        }
-
-        span {
-            vertical-align: middle;
-        }
-
-    }
+/*styles related to the whole container*/
+.husky-toolbar {
+    @include clear-float;
 
     .toolbar-search {
         display: inline-block;
-        width: 130px;
+        float: left;
     }
 
-    // dropdown
+    &.small {
+        .group {
+            height: $toolbarSmallHeight;
+        }
 
-    .is-expanded {
+        .toolbar-item {
+            line-height: $toolbarSmallHeight;
+            min-width: 30px;
+
+            a  {
+                line-height: $toolbarSmallHeight - 2px;
+                min-width: 30px;
+
+                .icon, &.icon {
+                    font-size: 10px;
+                }
+                .title {
+                    font-size: 9px;
+                }
+            }
+
+            .item-loader {
+                height: 14px;
+                margin-top: ($toolbarSmallHeight - 2px)/2 - 7px;
+            }
+        }
+    }
+}
+
+/*group specific styles*/
+.group {
+    $itemBorderRadius: 4px;
+
+    padding-left: 0;
+    margin: 0;
+    list-style: none;
+    height: $toolbarHeight;
+
+    &.right {
+        float: right;
+        padding-left: 10px;
+
+        .toolbar-dropdown-menu {
+            left: auto;
+            right: 0;
+        }
+    }
+    &.left {
+        float: left;
+        padding-right: 10px;
+        &.last {
+            padding-right: 0;
+        }
+    }
+
+    .toolbar-item {
+        border-style: solid;
+        border-color: $grayLighter2;
+        border-width: 1px 1px 1px 0;
+
+        &:first-child {
+            border-radius: $itemBorderRadius 0 0 $itemBorderRadius;
+            border-width: 1px;
+        }
+        &:last-child {
+            border-radius: 0 $itemBorderRadius $itemBorderRadius 0;
+        }
+        &:only-child {
+            border-radius: $itemBorderRadius;
+        }
+    }
+}
+
+/** styles for the toolbar-items **/
+.toolbar-item {
+    min-width: 50px;
+    float: left;
+    position: relative;
+    display: block;
+    list-style: none;
+    height: 100%;
+    line-height: $toolbarHeight;
+    text-align: center;
+
+    &.dropdown {
+        position: relative;
+        display: block;
+        list-style: none;
+        float: left;
+    }
+
+    .item-loader {
+        display: inline-block;
+        height: 20px;
+        margin-top: ($toolbarHeight - 2px)/2 - 10px;
+    }
+
+    &.disabled:hover,
+    &.disabled {
+        background-color: inherit;
+        cursor: default;
+        a {
+            cursor: default;
+            color: $grayLight;
+        }
+    }
+
+    &.hidden {
+        display: none;
+    }
+
+    &.highlight {
+        background-color: $highlightColor;
+        border-color: transparent;
+
+        &.disabled:hover,
+        &.disabled {
+            background-color: $grayLighter;
+            border-color: transparent;
+            cursor: default;
+            a {
+                cursor: default;
+                color: $grayDark;
+            }
+        }
+
+        &:hover {
+            background-color: lighten($highlightColor, 3%);
+        }
+        &:active {
+            background-color: lighten($highlightColor, 5%);
+        }
+
+        & > a {
+            color: $white;
+
+            &.dropdown-toggle::after {
+              border-top-color: $white;
+            }
+        }
+
+        &.is-expanded {
+            background-color: $highlightColor;
+        }
+    }
+
+    &.highlight-gray {
+        background-color: $grayLighter;
+        border-color: transparent;
+
+        &:hover {
+            background-color: $grayLighter;
+        }
+        &:active {
+            background-color: $grayLighter;
+        }
+
+    }
+
+    &.is-expanded {
+        background-color: $grayLighter;
+
         ul.toolbar-dropdown-menu {
             display: block;
         }
     }
 
-    .medium, .small {
-        ul.toolbar-dropdown-menu {
-            font-size: 12px;
-        }
+    &:hover {
+        background-color: $grayLighter;
+    }
+    &:active {
+        background-color: darken($grayLighter, 3%);
     }
 
-    ul.toolbar-dropdown-menu {
-        background-color: white;
-        border: 1px solid $grayLighter;
+    /** link styling **/
+    a {
+        text-align: center;
+        color: black;
+        padding: 0 10px 0 9px;
+        display: table;
+        text-decoration: none;
+        height: 100%;
+        line-height: $toolbarHeight - 2px;
+        outline: none;
+        width: 100%;
+        min-width: 50px;
 
-        display: none;
-        position: absolute;
-        top: 100%;
-        z-index: 1000;
-        float: left;
-        min-width: 160px;
-        list-style: none;
-
-        padding: 5px 0;
-        margin-top: -7px;
-        margin-left: 0px;
-
-        @include standard-box-shadow(2px);
-
-        &.right-aligned {
-            left: auto;
-            right: 0;
+        .icon, &.icon {
+            font-size: 15px;
+            padding-right: 0px;
+            display: inline-block;
         }
 
-        li {
-            display: list-item;
-            float: none;
-            line-height: 1;
-            height: 30px;
-            line-height: 30px;
-            white-space: nowrap;
-            cursor: pointer;
-
-            padding: 0 20px;
-
-            a {
-                color: black;
-                text-decoration: none;
-            }
-
-            &.is-selected,
-            &:hover {
-                background-color: $highlightColor;
-                a {
-                    color: white;
-                }
-            }
-
-            &.disabled:hover,
-            &.disabled {
-                cursor: default;
-                background-color: inherit;
-                a {
-                    cursor: default;
-                    color: $grayLight;
-                }
-            }
-
-            &:active {
-                background-color: lighten($highlightColor, 5%);
-            }
-
-            &.divider {
-                height: 1px;
-                margin: 5px 0;
-                overflow: hidden;
-                background-color: $grayLighterer;
-            }
-
-            a {
-                clear: both;
-                text-align: left;
-            }
-
+        .title {
+            font-size: $smallFontSize;
+            display: table-cell;
+            vertical-align: middle;
         }
+
+        .icon + .title:not(:empty) {
+            padding-left: 10px;
+        }
+
     }
 
 }
 
+/**  dropdown styles **/
+.toolbar-dropdown-menu {
+  background-color: white;
+  border: 1px solid $grayLighter;
 
+  display: none;
+  position: absolute;
+  top: 100%;
+  z-index: 1000;
+  left: 0;
+  min-width: 160px;
+  list-style: none;
+  font-size: $smallFontSize;
+
+  padding: 5px 0;
+  margin-top: -7px;
+  margin-left: 0px;
+
+  @include standard-box-shadow(2px);
+
+  &.right-aligned {
+    left: auto;
+    right: 0;
+  }
+
+  li {
+    display: list-item;
+    float: none;
+    line-height: 1;
+    height: 30px;
+    line-height: 30px;
+    white-space: nowrap;
+    cursor: pointer;
+
+    padding: 0 20px;
+
+    a {
+      color: black;
+      text-decoration: none;
+      padding: 0;
+    }
+
+    &.is-selected,
+    &:hover {
+      background-color: $highlightColor;
+      a {
+        color: white;
+      }
+    }
+
+    &.disabled:hover,
+    &.disabled {
+      cursor: default;
+      background-color: inherit;
+      a {
+        cursor: default;
+        color: $grayLight;
+      }
+    }
+
+    &:active {
+      background-color: lighten($highlightColor, 5%);
+    }
+
+    &.divider {
+      height: 1px;
+      margin: 5px 0;
+      overflow: hidden;
+      background-color: $grayLighterer;
+    }
+
+    a {
+      clear: both;
+      text-align: left;
+    }
+  }
+}
+
+//
+// blueish skin
+// --------------------------------------------------
+
+
+.blueish {
+
+    .toolbar-item {
+        background-color: $milkeyBlue;
+        border-color: $blue;
+
+        &.highlight {
+            background-color: $yellow;
+            & > a {
+                color: $black;
+            }
+        }
+
+        &.highlight-white {
+            background-color: $white;
+            .title {
+                text-align: left;
+            }
+        }
+
+        &.disabled, &.disabled:hover {
+            background-color: $milkeyBlue;
+            border-color: $blue;
+
+            a {
+                color: $white;
+                &.dropdown-toggle::after {
+                    border-top-color: $white;
+                }
+            }
+        }
+    }
+}

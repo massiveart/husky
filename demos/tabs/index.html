@@ -30,7 +30,7 @@
             <h3>tabs loaded by passing data</h3>
 
             <div data-aura-component="tabs@husky"
-                 data-aura-data='{"id":"529f1f5b7783e","title":"Contacts","header":null,"url":"details","items":[{"title":"Details","action":"details","id":"529f1f5b777f1"},{"title":"Permissions","action":"permissions","id":"529f1f5b7782f"}]}'
+                 data-aura-data='{"id":"529f1f5b7783e","title":"Contacts","header":null,"url":"details","items":[{"title":"Details","action":"details","id":"529f1f5b777f1"},{"title":"Permissions","action":"permissions","id":"529f1f5b7782f"},{"title":"Settings","action":"settings","id":"529f1f5b7782f"},{"title":"Utils","action":"utils","id":"529f1f5b7782f"}]}'
                     data-aura-preselect="Permissions" data-aura-preselector="title"></div>
             <h3>tabs loaded by passing url</h3>
 
@@ -65,7 +65,8 @@
                 fakeServer.respondWith('GET', '/content/navigation', [200, { 'Content-Type': 'application/json' },
                     '{"id":"529f1f5b7783e","title":"Contacts","items":[' +
                             '{"title":"Details","action":"details"},' +
-                            '{"title":"Permissions","action":"permissions"}' +
+                            '{"title":"Permissions","action":"permissions"},' +
+                            '{"title":"Settings","action":"settings"}' +
                             ']}'
                 ]);
 

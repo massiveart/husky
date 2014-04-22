@@ -41,21 +41,37 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="../classes/AutoComplete.html">AutoComplete</a></li>
+            
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
                 <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/Column-Options.html">Column-Options</a></li>
             
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
                 <li><a href="../classes/DataGrid.html">DataGrid</a></li>
             
-                <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
+                <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
+            
+                <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
             
-                <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+                <li><a href="../classes/Matcher.html">Matcher</a></li>
+            
+                <li><a href="../classes/Overlay.html">Overlay</a></li>
+            
+                <li><a href="../classes/Process.html">Process</a></li>
             
                 <li><a href="../classes/Search.html">Search</a></li>
+            
+                <li><a href="../classes/Select.html">Select</a></li>
+            
+                <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/Toggler.html">Toggler</a></li>
             
                 <li><a href="../classes/Toolbar.html">Toolbar</a></li>
             
@@ -63,15 +79,21 @@
 
             <ul id="api-modules" class="apis modules">
             
+                <li><a href="../modules/husky_components_auto-complete.html">husky/components/auto-complete</a></li>
+            
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
             
                 <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
-                <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
+                <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
-                <li><a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a></li>
+                <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
+            
+                <li><a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a></li>
             
                 <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
@@ -147,7 +169,7 @@
 // TODO: events as specified
 // TODO: move functions into private space
 // TODO: cleanup css-classes
-// TODO: responsive collapsed navigation
+// TODO: complete yui-doc
 
 define(function() {
 
@@ -156,22 +178,28 @@ define(function() {
     var templates = {
             /** component skeleton */
             skeleton: [
-                &#x27;&lt;nav class=&quot;navigation&quot;&gt;&#x27;,
+                &#x27;&lt;nav class=&quot;navigation&lt;% if (collapsed === &quot;true&quot;) {%&gt; collapsed&lt;% } %&gt;&quot;&gt;&#x27;,
                 &#x27;   &lt;div class=&quot;navigation-content&quot;&gt;&#x27;,
-                &#x27;       &lt;header class=&quot;navigation-header&quot;&gt;&#x27;,
-                &#x27;           &lt;div class=&quot;navigation-header-image&quot;&gt;&#x27;,
-                &#x27;               &lt;% if (icon) { %&gt;&#x27;,
-                &#x27;               &lt;img alt=&quot;#&quot; src=&quot;&lt;%= icon %&gt;&quot;/&gt;&#x27;,
-                &#x27;               &lt;% } %&gt;&#x27;,
-                &#x27;           &lt;/div&gt;&#x27;,
-                &#x27;           &lt;div class=&quot;navigation-header-title&quot;&gt;&lt;% if (title) { %&gt; &lt;%= translate(title) %&gt;&lt;% } %&gt;&lt;/div&gt;&#x27;,
-                &#x27;       &lt;/header&gt;&#x27;,
-                &#x27;       &lt;div id=&quot;navigation-search&quot; class=&quot;navigation-search&quot;&gt;&lt;/div&gt;&#x27;,
-                &#x27;       &lt;div id=&quot;navigation-item-container&quot; class=&quot;navigation-item-container&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;       &lt;div class=&quot;wrapper&quot;&gt;&#x27;,
+                &#x27;           &lt;header class=&quot;navigation-header&quot;&gt;&#x27;,
+                &#x27;               &lt;div class=&quot;navigation-header-title&quot;&gt;&lt;% if (data.title) { %&gt; &lt;%= translate(data.title) %&gt;&lt;% } %&gt;&lt;/div&gt;&#x27;,
+                &#x27;           &lt;/header&gt;&#x27;,
+                &#x27;           &lt;div id=&quot;navigation-search&quot; class=&quot;navigation-search&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;           &lt;div id=&quot;navigation-item-container&quot; class=&quot;navigation-item-container&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;       &lt;/div&gt;&#x27;,
                 &#x27;       &lt;footer&gt;&#x27;,
                 &#x27;       &lt;/footer&gt;&#x27;,
                 &#x27;   &lt;/div&gt;&#x27;,
+                &#x27;   &lt;div class=&quot;icon-remove2 navigation-close-icon&quot;&gt;&#x27;,
                 &#x27;&lt;/nav&gt;&#x27;].join(&#x27;&#x27;),
+            headerImage: [
+                &#x27;&lt;div class=&quot;navigation-header-image&quot;&gt;&#x27;,
+                &#x27;   &lt;img alt=&quot;#&quot; src=&quot;&lt;%= icon %&gt;&quot;/&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;
+            ].join(&#x27;&#x27;),
+            headerText: [
+                &#x27;&lt;div class=&quot;navigation-header-text&quot;&gt;&lt;span&gt;&lt;%= text %&gt;&lt;/span&gt;&lt;/div&gt;&#x27;
+            ].join(&#x27;&#x27;),
             /** main navigation items (with icons)*/
             mainItem: [
                 &#x27;&lt;li class=&quot;js-navigation-items navigation-items&quot; id=&quot;&lt;%= item.id %&gt;&quot; data-id=&quot;&lt;%= item.id %&gt;&quot;&gt;&#x27;,
@@ -204,15 +232,126 @@ define(function() {
                 &#x27;&lt;li class=&quot;js-navigation-sub-item&quot; id=&quot;&lt;%= item.id %&gt;&quot; data-id=&quot;&lt;%= item.id %&gt;&quot;&gt;&#x27;,
                 &#x27;   &lt;a href=&quot;#&quot;&gt;&lt;%= translate(item.title) %&gt;&lt;/a&gt;&#x27;,
                 &#x27;&lt;/li&gt;&#x27;
+            ].join(&#x27;&#x27;),
+            //footer template
+            footer: [
+                &#x27;&lt;div class=&quot;user&quot;&gt;&#x27;,
+                &#x27;&lt;div class=&quot;icon-user pic&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;&lt;div class=&quot;name&quot;&gt;&lt;%= userName %&gt;&lt;/div&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;,
+                &#x27;&lt;div class=&quot;options&quot;&gt;&#x27;,
+                &#x27;&lt;div class=&quot;locale-dropdown&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;&lt;a href=&quot;&lt;%= logoutRoute %&gt;&quot; title=&quot;Logout&quot; class=&quot;icon-lock logout&quot;&gt;&lt;/a&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;,
+                &#x27;&lt;div class=&quot;version&quot;&gt;&lt;%= system %&gt; (&lt;%= version %&gt;, &lt;a href=&quot;#&quot;&gt;&lt;%= versionHistory %&gt;&lt;/a&gt;)&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;)
         },
         defaults = {
             footerTemplate: &#x27;&#x27;,
+            collapsed: false,
             labels: {
                 hide: &#x27;navigation.hide&#x27;,
                 show: &#x27;navigation.show&#x27;
+            },
+            resizeWidth: 800,
+            forceCollapse: false,
+            systemName: &#x27;Sulu 2.0&#x27;,
+            footer: true,
+            logoutRoute: &#x27;/logout&#x27;,
+            translations: {
+                versionHistory: &#x27;navigation.version-history&#x27;,
+                user: &#x27;navigation.user&#x27;
             }
-        };
+        },
+        CONSTANTS = {
+            UNCOLLAPSED_WIDTH: 250, //px
+            COLLAPSED_WIDTH: 50, //px
+            ITEM_LABEL_HEIGHT: 50, //px
+            TRANSITIONEND_EVENT: &#x27;transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd&#x27;
+        },
+
+        namespace = &#x27;husky.navigation.&#x27;,
+
+        /**
+         * listens on and activates the matching navigation-item
+         * @event husky.navigation.select-item
+         * @param {string} selectAction The select-action to match the navigation-item for
+         */
+            EVENT_SELECT_ITEM = namespace + &#x27;select-item&#x27;,
+
+        /**
+         * raised when navigation was collapsed
+         * @event husky.navigation.collapsed
+         * @param {Number} width The width of the collapsed navigation
+         */
+            EVENT_COLLAPSED = namespace + &#x27;collapsed&#x27;,
+
+        /**
+         * raised when navigation was un-collapsed
+         * @event husky.navigation.uncollapsed
+         * @param {Number} width The width of the un-collapsed navigation
+         */
+            EVENT_UNCOLLAPSED = namespace + &#x27;uncollapsed&#x27;,
+
+
+        /**
+         * forces navigation to collapse
+         * @event husky.navigation.collapse
+         * @param {Boolean} stayCollapsed - if true the navigation stays collapsed till the custom-uncollapse event is emited
+         */
+            EVENT_COLLAPSE = namespace + &#x27;collapse&#x27;,
+
+        /**
+         * forces navigation to uncollapse
+         * @event husky.navigation.uncollapse
+         * @param {Bool} force If true, the navigation will act as overflow and collapse again after interaction
+         */
+            EVENT_UNCOLLAPSE = namespace + &#x27;uncollapse&#x27;,
+
+
+        /**
+         * raised when navigation collapse / uncollapse of navigation is triggered. called before transition starts
+         * only raised when not forced
+         * @event husky.navigation.size.change
+         */
+            EVENT_SIZE_CHANGE = namespace + &#x27;size.change&#x27;,
+
+        /**
+         * raised when navigation was un / collapsed. called when transition is finished. only raised when not forced
+         * @event husky.navigation.size.changed
+         */
+            EVENT_SIZE_CHANGED = namespace + &#x27;size.changed&#x27;,
+
+        /**
+         * raised when the user locale is changed
+         * @event husky.navigation.user-locale.changed
+         */
+            USER_LOCALE_CHANGED = namespace + &#x27;user-locale.changed&#x27;,
+
+        /**
+         * raised when the version history is clicked
+         * @event husky.navigation.version-history.clicked
+         */
+            VERSION_HISTORY_CLICKED = namespace + &#x27;version-history.clicked&#x27;,
+
+        /**
+         * show the navigation when it was hidden before
+         * @event husky.navigation.show
+         */
+            EVENT_SHOW = namespace + &#x27;show&#x27;,
+
+        /**
+         * triggers the update of the navigation size
+         * @event husky.navigation.show.size
+         */
+            EVENT_SIZE_UPDATE = namespace + &#x27;size.update&#x27;,
+
+        /**
+         * hides the navigation completely
+         * @event husky.navigation.hide
+         */
+            EVENT_HIDE = namespace + &#x27;hide&#x27;
+        ;
 
 
     return {
@@ -223,6 +362,11 @@ define(function() {
 
             // merging options
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
+            this.stayCollapsed = false;
+            this.hidden = false;
+            this.tooltipsEnabled = true;
+            this.animating = false;
 
             // binding dom events
             this.bindDOMEvents();
@@ -256,11 +400,27 @@ define(function() {
             this.sandbox.dom.addClass(this.$el, &#x27;navigation-container&#x27;);
 
             // render skeleton
-            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {
-                title: this.options.data.title,
-                icon: this.options.data.icon,
-                translate: this.sandbox.translate
-            }));
+            this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton,
+                this.sandbox.util.extend(true, {}, this.options, {translate: this.sandbox.translate}))
+            );
+
+            // render header image
+            if (typeof this.options.data.icon === &#x27;string&#x27;) {
+                this.sandbox.dom.prepend(this.sandbox.dom.find(&#x27;header.navigation-header&#x27;, this.$el),
+                    this.sandbox.template.parse(templates.headerImage, {
+                        icon: this.options.data.icon
+                    })
+                );
+            } else {
+                this.sandbox.dom.prepend(this.sandbox.dom.find(&#x27;header.navigation-header&#x27;, this.$el),
+                    this.sandbox.template.parse(templates.headerText, {
+                        text: this.options.data.title.substr(0, 1)
+                    })
+                );
+            }
+
+            this.$navigation = this.$find(&#x27;.navigation&#x27;, this.$el);
+            this.$navigationContent = this.$find(&#x27;.navigation-content&#x27;, this.$navigation);
 
             // start search component
             this.sandbox.start([
@@ -277,12 +437,15 @@ define(function() {
             this.renderNavigationItems(this.options.data);
 
             // render footer
-            if (!!this.options.footerTemplate &amp;&amp; this.options.footerTemplate !== &#x27;&#x27;) {
-                this.renderFooter(this.options.footerTemplate);
-            }
+            this.renderFooter();
+
+            // collapse if necessary
+            this.resizeListener();
 
             // preselect item based on url
-            this.preselectItem();
+            if (!!this.options.selectAction &amp;&amp; this.options.selectAction.length &gt; 0) {
+                this.preselectItem(this.options.selectAction);
+            }
 
             // emit initialized event
             this.sandbox.emit(&#x27;husky.navigation.initialized&#x27;);
@@ -299,6 +462,9 @@ define(function() {
                 $sectionList = this.sandbox.dom.createElement(&#x27;&lt;ul class=&quot;section-items&quot;&gt;&#x27;);
                 this.sandbox.dom.append($sectionDiv, &#x27;&lt;div class=&quot;section-headline&quot;&gt;&lt;span class=&quot;section-headline-title&quot;&gt;&#x27; + this.sandbox.translate(section.title).toUpperCase() + &#x27;&lt;/span&gt;&lt;span class=&quot;section-toggle&quot;&gt;&lt;a href=&quot;#&quot;&gt;&#x27; + this.sandbox.translate(this.options.labels.hide) + &#x27;&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;&#x27;);
 
+                this.sandbox.dom.append($sectionDiv, $sectionList);
+                this.sandbox.dom.append(&#x27;#navigation-item-container&#x27;, $sectionDiv);
+
                 // iterate through section items
                 this.sandbox.util.foreach(section.items, function(item) {
                     // create item
@@ -307,18 +473,14 @@ define(function() {
                         icon: item.icon ? &#x27;icon-&#x27; + item.icon : &#x27;&#x27;,
                         translate: this.sandbox.translate
                     }));
+                    this.sandbox.dom.append($sectionList, $elem);
                     //render sub-items
                     if (item.items &amp;&amp; item.items.length &gt; 0) {
                         this.renderSubNavigationItems(item, $elem);
                     }
-                    this.sandbox.dom.append($sectionList, $elem);
                     item.domObject = $elem;
-                    this.items[item.id] = item;
+                    this.items.push(item);
                 }.bind(this));
-
-                this.sandbox.dom.append($sectionDiv, $sectionList);
-                this.sandbox.dom.append(&#x27;#navigation-item-container&#x27;, $sectionDiv);
-
             }.bind(this));
         },
 
@@ -327,10 +489,14 @@ define(function() {
          */
         renderSubNavigationItems: function(data, $parentList) {
             var elem,
-                list = this.sandbox.dom.createElement(&#x27;&lt;ul style=&quot;display:none&quot; /&gt;&#x27;);
+                textCont,
+                list = this.sandbox.dom.createElement(&#x27;&lt;ul class=&quot;navigation-items-list&quot; /&gt;&#x27;);
+
+            this.sandbox.dom.append($parentList, list);
 
             this.sandbox.util.foreach(data.items, function(item) {
-                this.items[item.id] = item;
+                item.parentTitle = data.title;
+                this.items.push(item);
                 if (item.items &amp;&amp; item.items.length &gt; 0) {
                     elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subToggleItem, {item: item, translate: this.sandbox.translate}));
                     this.renderSubNavigationItems(item, this.sandbox.dom.find(&#x27;div&#x27;, elem));
@@ -338,15 +504,57 @@ define(function() {
                     elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.subItem, {item: item, translate: this.sandbox.translate}));
                 }
                 this.sandbox.dom.append(list, elem);
+
+                // add tooltip
+                textCont = this.sandbox.dom.find(&#x27;a&#x27;, elem);
+                if (this.sandbox.dom.width(textCont) + 20 &lt; this.sandbox.dom.get(textCont, 0).scrollWidth) {
+                    this.sandbox.dom.attr(textCont, {&#x27;title&#x27;: this.sandbox.dom.html(textCont)});
+                }
+
                 item.domObject = elem;
             }.bind(this));
-
-            this.sandbox.dom.append($parentList, list);
         },
 
-        renderFooter: function(footerTemplate) {
-            var $footer = this.sandbox.dom.find(&#x27;footer&#x27;, this.$el);
-            this.sandbox.dom.html($footer, footerTemplate);
+        /**
+         * Renders the footer of the navigation
+         */
+        renderFooter: function() {
+            if (this.options.footer === true) {
+                var $footer = this.sandbox.dom.find(&#x27;footer&#x27;, this.$el);
+                this.sandbox.dom.html($footer, _.template(templates.footer)({
+                    userName: this.options.userName,
+                    system: this.options.systemName,
+                    version: this.options.systemVersion,
+                    versionHistory: this.sandbox.translate(this.options.translations.versionHistory),
+                    logoutRoute: this.options.logoutRoute
+                }));
+
+                this.sandbox.start([
+                    {
+                        name: &#x27;select@husky&#x27;,
+                        options: {
+                            el: this.sandbox.dom.find(&#x27;.locale-dropdown&#x27;, $footer),
+                            instanceName: &#x27;navigation-locale&#x27;,
+                            value: &#x27;name&#x27;,
+                            data: this.options.userLocales,
+                            preSelectedElements: [this.options.userLocale],
+                            style: &#x27;small&#x27;,
+                            emitValues: true
+                        }
+                    }
+                ]);
+            }
+        },
+
+        /**
+         * Handles the event when the collapsed Footer is clicked
+         */
+        collapsedFooterClickHandler: function() {
+            this.unCollapse(true);
+
+            // scroll to footer
+            this.sandbox.dom.one(this.sandbox.dom.$window, CONSTANTS.TRANSITIONEND_EVENT,
+                this.checkBottomHit.bind(this, null, this.sandbox.dom.find(&#x27;footer&#x27;, this.$el)));
         },
 
         /**
@@ -357,32 +565,118 @@ define(function() {
             this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.toggleSections.bind(this), &#x27;.section-toggle&#x27;);
             this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.settingsClicked.bind(this), &#x27;.js-navigation-settings&#x27;);
             this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.selectSubItem.bind(this), &#x27;.js-navigation-sub-item, .js-navigation-item&#x27;);
+
+            // collapse events
+            this.sandbox.dom.on(this.sandbox.dom.window, &#x27;resize&#x27;, this.resizeListener.bind(this));
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.showCollapsedSearch.bind(this), &#x27;.navigation #navigation-search a.search-icon&#x27;);
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.collapse.bind(this), &#x27;.navigation.collapseIcon .navigation-close-icon&#x27;);
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.collapsedFooterClickHandler.bind(this), &#x27;.navigation.collapsed footer&#x27;);
+
+
+            // tooltip events
+            this.sandbox.dom.on(this.$el, &#x27;mouseenter&#x27;, function(event) {
+                this.showToolTip.call(this, this.sandbox.dom.attr(this.sandbox.dom.find(&#x27;input&#x27;, &#x27;.navigation-search&#x27;), &#x27;placeholder&#x27;), event);
+            }.bind(this), &#x27;.navigation.collapsed .navigation-search&#x27;);
+            this.sandbox.dom.on(this.$el, &#x27;mouseenter&#x27;, function(event) {
+                this.showToolTip.call(this, this.sandbox.translate(this.options.translations.user), event);
+            }.bind(this), &#x27;.navigation.collapsed footer&#x27;);
+            this.sandbox.dom.on(this.$el, &#x27;mouseenter&#x27;, this.showToolTip.bind(this, &#x27;&#x27;), &#x27;.navigation.collapsed .navigation-items&#x27;);
+            this.sandbox.dom.on(this.$el, &#x27;mouseleave&#x27;, this.hideToolTip.bind(this), &#x27;.navigation.collapsed .navigation-items, .navigation.collapsed .navigation-search, .navigation.collapsed footer&#x27;);
+
+            this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function() {
+                this.sandbox.emit(EVENT_SIZE_CHANGED, this.sandbox.dom.width(this.$navigation));
+                this.tooltipsEnabled = true;
+            }.bind(this));
+            this.sandbox.dom.on(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function(event) {
+                event.stopPropagation();
+            }.bind(this), &#x27;.navigation *&#x27;);
+
+            // version history clicked
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, function() {
+                this.sandbox.emit(VERSION_HISTORY_CLICKED);
+            }.bind(this), &#x27;footer .version a&#x27;);
         },
 
         /**
          * event listener
          */
         bindCustomEvents: function() {
-            // change footer template
-            this.sandbox.on(&#x27;husky.navigation.footer.set&#x27;, function(template) {
-                this.options.footerTemplate = template;
-                this.renderFooter(template);
+            // merge options with newly passed options and rerender footer
+            this.sandbox.on(&#x27;husky.navigation.footer.set&#x27;, function(options) {
+                this.options = this.sandbox.util.extend(true, {}, this.options, options);
+                this.renderFooter();
             }.bind(this));
 
+            //user locales dropdown
+            this.sandbox.on(&#x27;husky.select.navigation-locale.selected.item&#x27;, function(locale) {
+                this.sandbox.emit(USER_LOCALE_CHANGED, locale);
+            }.bind(this));
+
+            this.sandbox.on(EVENT_COLLAPSE, function(stayCollapsed) {
+                this.stayCollapsed = (typeof stayCollapsed === &#x27;boolean&#x27;) ? stayCollapsed : false;
+                this.collapse();
+            }.bind(this));
+            this.sandbox.on(EVENT_UNCOLLAPSE, function(force) {
+                this.stayCollapsed = false;
+                this.unCollapse(force);
+            }.bind(this));
+
+            this.sandbox.on(EVENT_HIDE, this.hide.bind(this));
+            this.sandbox.on(EVENT_SHOW, this.show.bind(this));
+
+            this.sandbox.on(EVENT_SIZE_UPDATE, this.resizeListener.bind(this));
+
+            this.sandbox.on(EVENT_SELECT_ITEM, this.preselectItem.bind(this));
+        },
+
+        resizeListener: function() {
+            var windowWidth = this.sandbox.dom.width(this.sandbox.dom.window);
+
+            if (windowWidth &lt;= this.options.resizeWidth || this.stayCollapsed === true) {
+                this.collapse();
+            } else if (this.sandbox.dom.hasClass(this.$navigation, &#x27;collapsed&#x27;)) {
+                this.unCollapse();
+            }
+        },
+
+        showToolTip: function(title, event) {
+            if (this.tooltipsEnabled === true) {
+                var offset,
+                    target = event.currentTarget;
+
+                if (!title) {
+                    title = this.sandbox.dom.html(this.sandbox.dom.find(&#x27;.navigation-item-title&#x27;, event.currentTarget));
+                }
+                if (!this.$tooltip) {
+                    this.$tooltip = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;navigation-tooltip&quot;&gt;&#x27; + title + &#x27;&lt;/div&gt;&#x27;);
+                    this.sandbox.dom.append(&#x27;body&#x27;, this.$tooltip);
+                }
+                offset = this.sandbox.dom.offset(target);
+                this.sandbox.dom.css(this.$tooltip, {
+                    top: offset.top + (this.sandbox.dom.outerHeight(target) - 30) / 2
+                });
+            }
+        },
+
+        hideToolTip: function() {
+            if (!!this.$tooltip) {
+                this.sandbox.dom.remove(this.$tooltip);
+                this.$tooltip = null;
+            }
         },
 
 
-        preselectItem: function() {
-            if (!this.options.selectAction || this.options.selectAction.length &lt; 1) {
-                return;
-            }
-
+        /**
+         * Takes an action and select the matching navigation point
+         * @param selectAction {string}
+         */
+        preselectItem: function(selectAction) {
             var matchLength = 0, matchItem, parent, match;
             this.sandbox.util.foreach(this.items, function(item) {
                 if (!item || !item.action) {
                     return;
                 }
-                if (this.options.selectAction.indexOf(item.action) !== -1 &amp;&amp; item.action.length &gt; matchLength) {
+                if (selectAction.indexOf(item.action) !== -1 &amp;&amp; item.action.length &gt; matchLength) {
                     matchItem = item;
                     matchLength = item.action.length;
                 }
@@ -391,16 +685,14 @@ define(function() {
             if (matchLength &gt; 0) {
                 match = matchItem.domObject;
 
-                // TODO: use trigger instead of faking event
-                if (this.sandbox.dom.hasClass(match,&#x27;js-navigation-sub-item&#x27;)) {
+                if (this.sandbox.dom.hasClass(match, &#x27;js-navigation-sub-item&#x27;)) {
                     parent = this.sandbox.dom.closest(match, &#x27;.navigation-items&#x27;);
-                    this.toggleItems({currentTarget: parent, preventDefault: function(){}});
-//                    this.sandbox.dom.trigger(parent, &#x27;click&#x27;,&#x27;.section-toggle&#x27;);
+                    this.toggleItems(null, parent);
                 }
-                this.selectSubItem({currentTarget: match, preventDefault:function(){}});
+                this.selectSubItem(null, match, false);
+                this.checkBottomHit(null, match);
             }
         },
-
 
 
         /**
@@ -415,7 +707,7 @@ define(function() {
 
             // emit event
             var listItem = this.sandbox.dom.closest(event.currentTarget, &#x27;.js-navigation-items&#x27;),
-                item = this.items[this.sandbox.dom.data(listItem, &#x27;id&#x27;)];
+                item = this.getItemById(this.sandbox.dom.data(listItem, &#x27;id&#x27;));
 
             this.sandbox.emit(&#x27;husky.navigation.item.settings&#x27;, item);
 
@@ -425,60 +717,154 @@ define(function() {
          * Toggles menu element with submenu
          * Raises navigation.toggle
          * @param event
+         * @param customTarget
          */
-        toggleItems: function(event) {
+        toggleItems: function(event, customTarget) {
 
-            event.preventDefault();
+            if (event) {
+                event.preventDefault();
+            } else {
+                event = {
+                    currentTarget: customTarget
+                };
+            }
 
             var $items = this.sandbox.dom.closest(event.currentTarget, &#x27;.js-navigation-items&#x27;),
-                item, xBottom, windowHeight, itemHeight, itemTop,
-                $toggle,
-
                 $childList = this.sandbox.dom.find(&#x27;ul:first&#x27;, $items),
-                isExpanded = this.sandbox.dom.hasClass($items, &#x27;is-expanded&#x27;);
+                item, $toggle,
+                isExpanded = this.sandbox.dom.hasClass($items, &#x27;is-expanded&#x27;),
+                navWasCollapsed;
 
+            // only check collapse if event was fired
+            if (!customTarget) {
+                navWasCollapsed = this.showIfCollapsed();
+            }
 
-            if (isExpanded) {
-                this.sandbox.dom.slideUp($childList, 200, function() {
-
-                    this.sandbox.dom.removeClass($items, &#x27;is-expanded&#x27;);
-
-                    // change toggle item
-                    $toggle = this.sandbox.dom.find(&#x27;.icon-chevron-down&#x27;, event.currentTarget);
-                    this.sandbox.dom.removeClass($toggle, &#x27;icon-chevron-down&#x27;);
-                    this.sandbox.dom.prependClass($toggle, &#x27;icon-chevron-right&#x27;);
-
-                }.bind(this));
-            } else {
-                this.sandbox.dom.addClass($items, &#x27;is-expanded&#x27;);
-                // change toggle item
+            if (isExpanded &amp;&amp; !navWasCollapsed) {
+                $toggle = this.sandbox.dom.find(&#x27;.icon-chevron-down&#x27;, event.currentTarget);
+                this.animateSlideUp($items, $toggle);
+            } else if (this.collapsed !== true) {
                 $toggle = this.sandbox.dom.find(&#x27;.icon-chevron-right&#x27;, event.currentTarget);
-                this.sandbox.dom.removeClass($toggle, &#x27;icon-chevron-right&#x27;);
-                this.sandbox.dom.prependClass($toggle, &#x27;icon-chevron-down&#x27;);
-
-                this.sandbox.dom.slideDown($childList, 200, function() {
-
-
-                    // check if collapsed element overlaps browser border
-                    itemTop = this.sandbox.dom.offset($items).top;
-                    itemHeight = this.sandbox.dom.height($items);
-                    xBottom = itemTop + itemHeight;
-                    windowHeight = this.sandbox.dom.height(this.sandbox.dom.window);
-                    if (xBottom &gt; windowHeight) {
-                        if (itemHeight &lt; windowHeight) {
-                            this.sandbox.dom.scrollAnimate((xBottom - windowHeight + 40), &#x27;.navigation-container&#x27;);
-                        } else {
-                            this.sandbox.dom.scrollAnimate(itemTop, &#x27;.navigation-container&#x27;);
-                        }
-                    }
-                }.bind(this));
+                this.animateSlideDown($items, $toggle, $childList);
             }
 
             // emit event
-            item = this.items[this.sandbox.dom.data($items, &#x27;id&#x27;)];
+            item = this.getItemById(this.sandbox.dom.data($items, &#x27;id&#x27;));
             this.sandbox.emit(&#x27;husky.navigation.item.toggle&#x27;, !isExpanded, item);
         },
 
+        /**
+         * Handles the slide-up animation
+         * @param $items
+         * @param $toggle
+         */
+        animateSlideUp: function($items, $toggle) {
+            if (this.animating === false) {
+                this.animating = true;
+
+                this.sandbox.dom.animate($items, {
+                    height: CONSTANTS.ITEM_LABEL_HEIGHT
+                }, {
+                    duration: 180,
+                    complete: function() {
+                        this.animating = false;
+                    }.bind(this)
+                });
+
+                this.sandbox.dom.removeClass($items, &#x27;is-expanded&#x27;);
+
+                // change toggle item
+                this.sandbox.dom.removeClass($toggle, &#x27;icon-chevron-down&#x27;);
+                this.sandbox.dom.prependClass($toggle, &#x27;icon-chevron-right&#x27;);
+            }
+        },
+
+        /**
+         * Handles the slide-down animation
+         * @param $items
+         * @param $toggle
+         * @param $childList
+         */
+        animateSlideDown: function($items, $toggle, $childList) {
+            if (this.animating === false) {
+                this.animating = true;
+                var expandedHeight = CONSTANTS.ITEM_LABEL_HEIGHT + this.sandbox.dom.outerHeight($childList);
+
+                $($items).stop();
+                this.sandbox.dom.animate($items, {
+                    height: (expandedHeight + 30)
+                }, {
+                    duration: 120
+                });
+
+                this.sandbox.dom.animate($items, {
+                    height: expandedHeight
+                }, {
+                    duration: 100,
+                    complete: function() {
+                        this.animating = false;
+                    }.bind(this)
+                });
+
+                this.sandbox.dom.addClass($items, &#x27;is-expanded&#x27;);
+
+                // change toggle item
+                this.sandbox.dom.removeClass($toggle, &#x27;icon-chevron-right&#x27;);
+                this.sandbox.dom.prependClass($toggle, &#x27;icon-chevron-down&#x27;);
+
+                this.sandbox.dom.one($items, CONSTANTS.TRANSITIONEND_EVENT, this.checkBottomHit.bind(this));
+            }
+        },
+
+        checkBottomHit: function(event, customTarget) {
+            var xBottom, windowHeight, itemHeight, itemTop, scrollTop,
+                $items;
+
+            if (event) {
+                $items = event.currentTarget;
+            } else {
+                $items = customTarget;
+            }
+            // check if collapsed element overlaps browser border
+            itemTop = this.sandbox.dom.offset($items).top;
+            itemHeight = this.sandbox.dom.height($items);
+            xBottom = itemTop + itemHeight;
+            windowHeight = this.sandbox.dom.height(this.sandbox.dom.window);
+            scrollTop = this.sandbox.dom.scrollTop(this.$navigationContent);
+            if (xBottom &gt; windowHeight) {
+                if (itemHeight &lt; windowHeight) {
+                    this.sandbox.dom.scrollAnimate(scrollTop + (xBottom - windowHeight + 40), this.$navigationContent);
+                } else {
+                    this.sandbox.dom.scrollAnimate(itemTop, this.$navigationContent);
+                }
+            }
+        },
+
+        /**
+         * Removes the inline-style for expanded items
+         */
+        removeHeightforExpanded: function() {
+            var $expandedItems = this.sandbox.dom.find(&#x27;.is-expanded&#x27;, this.$el), i, length;
+            for (i = -1, length = $expandedItems.length; ++i &lt; length;) {
+                this.sandbox.dom.removeAttr($expandedItems[i], &#x27;style&#x27;);
+            }
+        },
+
+        /**
+         * Resets the inline-style height for expanded items
+         */
+        setHeightForExpanded: function() {
+            var $expandedItems = this.sandbox.dom.find(&#x27;.is-expanded&#x27;, this.$el),
+                height, i, length;
+            for (i = -1, length = $expandedItems.length; ++i &lt; length;) {
+                height = CONSTANTS.ITEM_LABEL_HEIGHT + this.sandbox.dom.outerHeight(
+                    this.sandbox.dom.find(&#x27;.navigation-items-list&#x27;, $expandedItems[i]));
+
+                this.sandbox.dom.css($expandedItems[i], {
+                    &#x27;height&#x27;: height
+                });
+            }
+        },
 
         /**
          * toggles sections
@@ -510,19 +896,88 @@ define(function() {
             this.sandbox.emit(&#x27;husky.navigation.section.toggle&#x27;);
         },
 
+        // returns if nav was collapsed
+        showIfCollapsed: function() {
+
+            if (this.sandbox.dom.hasClass(this.$navigation, &#x27;collapsed&#x27;)) {
+                this.unCollapse(true);
+                return true;
+            }
+            return false;
+        },
+
+        collapse: function() {
+            if (this.hidden === false) {
+                this.sandbox.dom.addClass(this.$navigation, &#x27;collapsed&#x27;);
+                this.sandbox.dom.removeClass(this.$navigation, &#x27;collapseIcon&#x27;);
+                this.removeHeightforExpanded();
+                if (!this.collapsed) {
+                    this.sandbox.emit(EVENT_COLLAPSED, CONSTANTS.COLLAPSED_WIDTH);
+                    this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.COLLAPSED_WIDTH);
+                    this.collapsed = !this.collapsed;
+                    this.tooltipsEnabled = false;
+                }
+            }
+        },
+
+        unCollapse: function(forced) {
+            if ((this.stayCollapsed === false || forced === true) &amp;&amp; this.hidden === false) {
+                this.sandbox.dom.removeClass(this.$navigation, &#x27;collapsed&#x27;);
+                this.hideToolTip();
+                this.setHeightForExpanded();
+                if (forced) {
+                    this.sandbox.dom.addClass(this.$navigation, &#x27;collapseIcon&#x27;);
+                }
+                if (this.collapsed) {
+                    this.sandbox.emit(EVENT_UNCOLLAPSED, CONSTANTS.UNCOLLAPSED_WIDTH);
+                    if (!forced) {
+                        this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.UNCOLLAPSED_WIDTH);
+                    }
+                    this.collapsed = !this.collapsed;
+                    this.tooltipsEnabled = false;
+                }
+            }
+        },
+
+        // called when search icon was clicked
+        showCollapsedSearch: function(event) {
+
+            // remove collapse
+            this.unCollapse(true);
+
+            // focus search
+            var input = this.sandbox.dom.find(&#x27;input&#x27;, this.sandbox.dom.parent(event.currentTarget)),
+                instanceName;
+            this.sandbox.dom.trigger(input, &#x27;focus&#x27;);
+
+            // close when search is sent
+            instanceName = this.options.searchInstanceName ? this.options.searchInstanceName + &#x27;.&#x27; : &#x27;&#x27;;
+            this.sandbox.once(&#x27;husky.&#x27; + instanceName + &#x27;search&#x27;, this.resizeListener.bind(this));
+        },
+
+
         /**
          * Selects menu element without submenu
          * Raises navigation.select
          * @param event
+         * @param [customTarget] if event is undefined, the target must be passed customly
+         * @param emit
          */
-        selectSubItem: function(event) {
+        selectSubItem: function(event, customTarget, emit) {
 
-            event.preventDefault();
+            if (!!event) {
+                event.preventDefault();
+            } else {
+                event = {
+                    currentTarget: customTarget
+                };
+            }
 
             var $subItem = this.sandbox.dom.createElement(event.currentTarget),
                 $items = this.sandbox.dom.parents(event.currentTarget, &#x27;.js-navigation-items&#x27;),
                 $parent = this.sandbox.dom.parent(event.currentTarget),
                 item;
+
 
             if (this.sandbox.dom.hasClass($subItem, &#x27;js-navigation-item&#x27;)) {
                 $subItem = this.sandbox.dom.createElement(this.sandbox.dom.closest(event.currentTarget, &#x27;li&#x27;));
@@ -540,9 +995,51 @@ define(function() {
             this.sandbox.dom.addClass($items, &#x27;is-active&#x27;);
 
 
-            // emit event
-            item = this.items[this.sandbox.dom.data($subItem, &#x27;id&#x27;)];
-            this.sandbox.emit(&#x27;husky.navigation.item.select&#x27;, item);
+            if (emit !== false) {
+                // emit event
+                item = this.getItemById(this.sandbox.dom.data($subItem, &#x27;id&#x27;));
+                this.sandbox.emit(&#x27;husky.navigation.item.select&#x27;, item);
+            }
+
+
+            if (!customTarget) {
+                setTimeout(this.resizeListener.bind(this), 700);
+            }
+
+        },
+
+        /**
+         * Takes an id and returns the matching item
+         * @param id {number|string} id of the item
+         * @returns {object|null}
+         */
+        getItemById: function(id) {
+            for (var i = -1, length = this.items.length; ++i &lt; length;) {
+                if (id === this.items[i].id) {
+                    return this.items[i];
+                }
+            }
+            return null;
+        },
+
+        /**
+         * Shows the navigation
+         */
+        show: function() {
+            if (!!this.currentNavigationWidth) {
+                this.sandbox.dom.removeAttr(this.$navigation, &#x27;style&#x27;);
+                this.currentNavigationWidth = null;
+                this.hidden = false;
+            }
+        },
+
+        /**
+         * Hides the navigaiton
+         */
+        hide: function() {
+            this.currentNavigationWidth = this.sandbox.dom.width(this.$navigation);
+            this.sandbox.dom.width(this.$navigation, 0);
+            this.hidden = true;
         }
 
     };

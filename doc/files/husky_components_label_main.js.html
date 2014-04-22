@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>husky_components/label/main.js - husky</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title="husky"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.1.0</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/AutoComplete.html">AutoComplete</a></li>
+            
+                <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
+            
+                <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/Column-Options.html">Column-Options</a></li>
+            
+                <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
+            
+                <li><a href="../classes/DataGrid.html">DataGrid</a></li>
+            
+                <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
+            
+                <li><a href="../classes/Label.html">Label</a></li>
+            
+                <li><a href="../classes/Loader.html">Loader</a></li>
+            
+                <li><a href="../classes/Matcher.html">Matcher</a></li>
+            
+                <li><a href="../classes/Overlay.html">Overlay</a></li>
+            
+                <li><a href="../classes/Process.html">Process</a></li>
+            
+                <li><a href="../classes/Search.html">Search</a></li>
+            
+                <li><a href="../classes/Select.html">Select</a></li>
+            
+                <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/Toggler.html">Toggler</a></li>
+            
+                <li><a href="../classes/Toolbar.html">Toolbar</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="../modules/husky_components_auto-complete.html">husky/components/auto-complete</a></li>
+            
+                <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
+            
+                <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
+            
+                <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
+            
+                <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
+            
+                <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
+            
+                <li><a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a></li>
+            
+                <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: husky_components/label/main.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/label
+ */
+
+/**
+ * @class Label
+ * @constructor
+ *
+ * @param {Object} [options] Configuration object
+ * @param {String} [options.instanceName] name of the instance
+ * @param {String} [options.type] type of the lable (WARNING, ERROR or SUCCESS)
+ * @param {String|Object} [options.html] html-string or DOM-object to insert into the label
+ * @param {String} [options.title] Title of the label (if html is null)
+ * @param {String} [options.description] Description of the lable (if html is null)
+ * @param {Boolean} [options.hasClose] if true close button gets appended to the label
+ * @param {Boolean} [options.fadeOut] if true label fades out automatically
+ * @param {Number} [options.fadeOutDelay] time in ms after which the fade-out starts
+ * @param {Number} [options.fadeDuration] duration of the fade-out in ms
+ * @param {Function} [options.closeCallback] callback to execute if the close-button is clicked
+ * @param {String} [options.insertMethod] insert method to use for inserting the label (append or prepend)
+ */
+define(function() {
+
+    &#x27;use strict&#x27;;
+
+    var defaults = {
+        instanceName: &#x27;undefined&#x27;,
+        type: &#x27;WARNING&#x27;,
+        html: null,
+        title: null,
+        description: null,
+        hasClose: true,
+        fadeOut: true,
+        fadeOutDelay: 0,
+        fadeDuration: 500,
+        closeCallback: null,
+        insertMethod: &#x27;append&#x27;
+    },
+
+    insertMethods = {
+        APPEND: &#x27;append&#x27;,
+        PREPEND: &#x27;prepend&#x27;
+    },
+
+    constants = {
+        textClass: &#x27;text&#x27;,
+        closeClass: &#x27;close&#x27;,
+        closeIconClass: &#x27;icon-circle-remove&#x27;
+    },
+
+    /**
+     * default values for types
+     */
+    typesDefaults = {
+        ERROR: {
+            title: &#x27;Error&#x27;,
+            labelClass: &#x27;husky-label-error&#x27;,
+            fadeOut: false
+        },
+        WARNING: {
+            fadeOutDelay: 5000,
+            title: &#x27;Warning&#x27;,
+            labelClass: &#x27;husky-label-warning&#x27;
+        },
+        SUCCESS: {
+            hasClose: false,
+            fadeOutDelay: 2000,
+            title: &#x27;Success&#x27;,
+            labelClass: &#x27;husky-label-success&#x27;
+        }
+    },
+
+    /**
+     * generates template template
+     */
+    template = {
+        basic: function(options) {
+            return [
+                &#x27;&lt;div class=&quot;&#x27; + constants.textClass + &#x27;&quot;&gt;&#x27;,
+                &#x27;&lt;strong&gt;&#x27; + options.title + &#x27;&lt;/strong&gt;&#x27;,
+                &#x27;&lt;span&gt;&#x27; + options.description + &#x27;&lt;/span&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;
+            ].join(&#x27;&#x27;);
+        },
+        closeButton: function() {
+            return [
+                &#x27;&lt;div class=&quot;&#x27; + constants.closeClass + &#x27;&quot;&gt;&#x27;,
+                &#x27;&lt;span class=&quot;&#x27; + constants.closeIconClass + &#x27;&quot;&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;
+            ].join(&#x27;&#x27;);
+        }
+    },
+
+    eventNamespace = &#x27;husky.label.&#x27;,
+
+    /**
+     * raised after initialization process
+     * @event husky.label.[INSTANCE_NAME.]initialized
+     */
+    INITIALIZED = function() {
+        return createEventName.call(this, &#x27;initialized&#x27;);
+    },
+
+    /** returns normalized event names */
+    createEventName = function(postFix) {
+        return eventNamespace + (this.options.instanceName ? this.options.instanceName + &#x27;.&#x27; : &#x27;&#x27;) + postFix;
+    };
+
+    return {
+
+        /**
+         * Initialize the component
+         */
+        initialize: function() {
+
+            //merge defaults with defaults of type and options
+            this.options = this.sandbox.util.extend(true, {}, defaults, typesDefaults[this.options.type], this.options);
+
+            this.label = {
+                $el: null,
+                $content: null,
+                $close: null
+            };
+
+            this.render();
+            this.bindEvents();
+            this.startEffects();
+
+            this.sandbox.emit(INITIALIZED.call(this));
+        },
+
+        /**
+         * Binds the events for the component
+         */
+        bindEvents: function() {
+            this.sandbox.dom.on(this.label.$close, &#x27;click&#x27;, function() {
+                this.fadeOut();
+                if (typeof this.options.closeCallback === &#x27;function&#x27;) {
+                    this.options.closeCallback();
+                }
+            }.bind(this));
+        },
+
+        /**
+         * Starts the fade-out effect
+         */
+        startEffects: function() {
+            if (this.options.fadeOut === true) {
+                _.delay(function() {
+                    this.fadeOut();
+                }.bind(this), this.options.fadeOutDelay);
+            }
+        },
+
+        /**
+         * Fades the label out
+         */
+        fadeOut: function() {
+            this.sandbox.dom.fadeOut(this.label.$el, this.options.fadeDuration, function() {
+                this.sandbox.dom.css(this.label.$el, {
+                    &#x27;visibility&#x27;: &#x27;hidden&#x27;,
+                    &#x27;display&#x27;: &#x27;block&#x27;
+                });
+                this.sandbox.dom.slideUp(this.label.$el, 300, this.close.bind(this));
+            }.bind(this));
+        },
+
+        /**
+         * Renders the component
+         */
+        render: function() {
+            this.renderElement();
+            this.renderContent();
+            this.renderClose();
+
+            this.insertLabel();
+        },
+
+        /**
+         * Renders the main element
+         */
+        renderElement: function() {
+            this.label.$el = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;&#x27;+ this.options.labelClass +&#x27;&quot;/&gt;&#x27;)
+        },
+
+        /**
+         * Renders the content of the component
+         */
+        renderContent: function() {
+            if (this.options.html !== null) {
+                this.label.$content = this.sandbox.dom.createElement(this.options.html);
+            } else {
+                this.label.$content = this.sandbox.dom.createElement(template.basic(this.options));
+            }
+
+            //append content to main element
+            this.sandbox.dom.append(this.label.$el, this.label.$content);
+        },
+
+        /**
+         * Renders the close button
+         */
+        renderClose: function() {
+            if (this.options.hasClose === true) {
+                this.label.$close = this.sandbox.dom.createElement(template.closeButton());
+
+                //append close to main element
+                this.sandbox.dom.append(this.label.$el, this.label.$close);
+            }
+        },
+
+        /**
+         * Inserts the label into the DOM
+         */
+        insertLabel: function() {
+            if (this.options.insertMethod === insertMethods.APPEND) {
+                this.sandbox.dom.append(this.$el, this.label.$el);
+            } else if (this.options.insertMethod === insertMethods.PREPEND) {
+                this.sandbox.dom.prepend(this.$el, this.label.$el);
+            } else {
+                this.sandbox.logger.log(&#x27;No insert method found for&#x27;, this.options.insertMethod);
+            }
+        },
+
+        /**
+         * Handles closing the component
+         */
+        close: function() {
+            this.sandbox.dom.remove(this.$el);
+        }
+    };
+
+});
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

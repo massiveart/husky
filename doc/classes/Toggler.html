@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>EditToolbar - husky</title>
+    <title>Toggler - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -41,21 +41,37 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="../classes/AutoComplete.html">AutoComplete</a></li>
+            
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
                 <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/Column-Options.html">Column-Options</a></li>
             
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
                 <li><a href="../classes/DataGrid.html">DataGrid</a></li>
             
-                <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
+                <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
+            
+                <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
             
-                <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+                <li><a href="../classes/Matcher.html">Matcher</a></li>
+            
+                <li><a href="../classes/Overlay.html">Overlay</a></li>
+            
+                <li><a href="../classes/Process.html">Process</a></li>
             
                 <li><a href="../classes/Search.html">Search</a></li>
+            
+                <li><a href="../classes/Select.html">Select</a></li>
+            
+                <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/Toggler.html">Toggler</a></li>
             
                 <li><a href="../classes/Toolbar.html">Toolbar</a></li>
             
@@ -63,15 +79,21 @@
 
             <ul id="api-modules" class="apis modules">
             
+                <li><a href="../modules/husky_components_auto-complete.html">husky/components/auto-complete</a></li>
+            
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
             
                 <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
-                <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
+                <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
-                <li><a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a></li>
+                <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
+            
+                <li><a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a></li>
             
                 <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
@@ -110,7 +132,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>EditToolbar Class</h1>
+                        <h1>Toggler Class</h1>
 <div class="box meta">
     
 
@@ -118,13 +140,13 @@
 
     
         <div class="foundat">
-            Defined in: <a href="../files/husky_components_edit-toolbar_main.js.html#l49"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:49</code></a>
+            Defined in: <a href="../files/husky_components_toggler_main.js.html#l12"><code>husky_components&#x2F;toggler&#x2F;main.js:12</code></a>
         </div>
     
 
     
         
-            Module: <a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a>
+            Module: <a href="../modules/husky_components_process.html">husky/components/process</a>
         
     
 
@@ -140,8 +162,8 @@
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_EditToolbar" class="method item">
-    <h3 class="name"><code>EditToolbar</code></h3>
+        <div id="method_Toggler" class="method item">
+    <h3 class="name"><code>Toggler</code></h3>
 
     
         <div class="args">
@@ -182,7 +204,7 @@
             
         
         
-        <a href="../files/husky_components_edit-toolbar_main.js.html#l49"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:49</code></a>
+        <a href="../files/husky_components_toggler_main.js.html#l12"><code>husky_components&#x2F;toggler&#x2F;main.js:12</code></a>
         
         </p>
 
@@ -221,43 +243,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[url]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>url to fetch data from</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[data]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>if no url is provided</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
                                     <code class="param-name optional">[instanceName]</code>
-                                    <span class="type">String</span>
+                                    <span class="type">Boolean</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>enables custom events (in case of multiple tabs on one page)</p>
+                                    <p>name of the component instance, gets used for events and the checkbox name. Can also be set through the DOM-id</p>
 
                                 </div>
 
@@ -266,13 +258,29 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[appearance]</code>
-                                    <span class="type">String</span>
+                                    <code class="param-name optional">[checked]</code>
+                                    <span class="type">Boolean</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    
+                                    <p>beginning state of the button</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[outline]</code>
+                                    <span class="type">Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>if true component gets a bright border</p>
+
                                 </div>
 
                                 
@@ -323,28 +331,21 @@
                     <ul class="index-list events">
                         
                             <li class="index-item event">
-                                <a href="#event_husky.edit-toolbar.[INSTANCE_NAME.]initialized">husky.edit-toolbar.[INSTANCE_NAME.]initialized</a>
+                                <a href="#event_husky.toggler.&lt;instance-name&gt;.change">husky.toggler.&lt;instance-name&gt;.change</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.edit-toolbar.[INSTANCE_NAME.]item.disable">husky.edit-toolbar.[INSTANCE_NAME.]item.disable</a>
+                                <a href="#event_husky.toggler.&lt;instance-name&gt;.changed">husky.toggler.&lt;instance-name&gt;.changed</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.edit-toolbar.[INSTANCE_NAME.]item.enable">husky.edit-toolbar.[INSTANCE_NAME.]item.enable</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
-                                <a href="#event_husky.edit-toolbar.[INSTANCE_NAME.]item.loading">husky.edit-toolbar.[INSTANCE_NAME.]item.loading</a>
+                                <a href="#event_husky.toggler.&lt;instance-name&gt;.initialize">husky.toggler.&lt;instance-name&gt;.initialize</a>
 
                                 
                                 
@@ -366,8 +367,8 @@
                 <h2 class="off-left">Events</h2>
 
                 
-                    <div id="event_husky.edit-toolbar.[INSTANCE_NAME.]initialized" class="events item">
-    <h3 class="name"><code>husky.edit-toolbar.[INSTANCE_NAME.]initialized</code></h3>
+                    <div id="event_husky.toggler.&lt;instance-name&gt;.change" class="events item">
+    <h3 class="name"><code>husky.toggler.&lt;instance-name&gt;.change</code></h3>
     <span class="type"></span>
 
     
@@ -389,7 +390,7 @@
             
         
         
-        <a href="../files/husky_components_edit-toolbar_main.js.html#l83"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:83</code></a>
+        <a href="../files/husky_components_toggler_main.js.html#l63"><code>husky_components&#x2F;toggler&#x2F;main.js:63</code></a>
         
         </p>
 
@@ -399,51 +400,7 @@
     </div>
 
     <div class="description">
-        <p>triggered when edit-toolbar is initialized and ready to use</p>
-
-    </div>
-
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.edit-toolbar.[INSTANCE_NAME.]item.disable" class="events item">
-    <h3 class="name"><code>husky.edit-toolbar.[INSTANCE_NAME.]item.disable</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_edit-toolbar_main.js.html#l102"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:102</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>disable a button</p>
+        <p>event to turn the button on or off</p>
 
     </div>
 
@@ -455,14 +412,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name">id</code>
-                        <span class="type">String</span>
+                        <code class="param-name">on</code>
+                        <span class="type">Boolean</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The id of the button which should be disabled</p>
+                        <p>To turn the button on or off</p>
 
                     </div>
 
@@ -478,8 +435,8 @@
 </div>
 
                 
-                    <div id="event_husky.edit-toolbar.[INSTANCE_NAME.]item.enable" class="events item">
-    <h3 class="name"><code>husky.edit-toolbar.[INSTANCE_NAME.]item.enable</code></h3>
+                    <div id="event_husky.toggler.&lt;instance-name&gt;.changed" class="events item">
+    <h3 class="name"><code>husky.toggler.&lt;instance-name&gt;.changed</code></h3>
     <span class="type"></span>
 
     
@@ -501,7 +458,7 @@
             
         
         
-        <a href="../files/husky_components_edit-toolbar_main.js.html#l92"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:92</code></a>
+        <a href="../files/husky_components_toggler_main.js.html#l54"><code>husky_components&#x2F;toggler&#x2F;main.js:54</code></a>
         
         </p>
 
@@ -511,7 +468,7 @@
     </div>
 
     <div class="description">
-        <p>enable a button</p>
+        <p>raised after initialization process</p>
 
     </div>
 
@@ -523,14 +480,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name">id</code>
-                        <span class="type">String</span>
+                        <code class="param-name">on</code>
+                        <span class="type">Boolean</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>The id of the button which should be enabled</p>
+                        <p>True if button is on</p>
 
                     </div>
 
@@ -546,8 +503,8 @@
 </div>
 
                 
-                    <div id="event_husky.edit-toolbar.[INSTANCE_NAME.]item.loading" class="events item">
-    <h3 class="name"><code>husky.edit-toolbar.[INSTANCE_NAME.]item.loading</code></h3>
+                    <div id="event_husky.toggler.&lt;instance-name&gt;.initialize" class="events item">
+    <h3 class="name"><code>husky.toggler.&lt;instance-name&gt;.initialize</code></h3>
     <span class="type"></span>
 
     
@@ -569,7 +526,7 @@
             
         
         
-        <a href="../files/husky_components_edit-toolbar_main.js.html#l112"><code>husky_components&#x2F;edit-toolbar&#x2F;main.js:112</code></a>
+        <a href="../files/husky_components_toggler_main.js.html#l46"><code>husky_components&#x2F;toggler&#x2F;main.js:46</code></a>
         
         </p>
 
@@ -579,34 +536,10 @@
     </div>
 
     <div class="description">
-        <p>event to set button into loading state</p>
+        <p>raised after initialization process</p>
 
     </div>
 
-    
-        <div class="params">
-            <h4>Event Payload:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">id</code>
-                        <span class="type">String</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The id of the button</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
     
 
 

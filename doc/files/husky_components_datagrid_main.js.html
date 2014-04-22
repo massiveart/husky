@@ -41,21 +41,37 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="../classes/AutoComplete.html">AutoComplete</a></li>
+            
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
                 <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/Column-Options.html">Column-Options</a></li>
             
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
                 <li><a href="../classes/DataGrid.html">DataGrid</a></li>
             
-                <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
+                <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
+            
+                <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
             
-                <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+                <li><a href="../classes/Matcher.html">Matcher</a></li>
+            
+                <li><a href="../classes/Overlay.html">Overlay</a></li>
+            
+                <li><a href="../classes/Process.html">Process</a></li>
             
                 <li><a href="../classes/Search.html">Search</a></li>
+            
+                <li><a href="../classes/Select.html">Select</a></li>
+            
+                <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/Toggler.html">Toggler</a></li>
             
                 <li><a href="../classes/Toolbar.html">Toolbar</a></li>
             
@@ -63,15 +79,21 @@
 
             <ul id="api-modules" class="apis modules">
             
+                <li><a href="../modules/husky_components_auto-complete.html">husky/components/auto-complete</a></li>
+            
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
             
                 <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
-                <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
+                <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
-                <li><a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a></li>
+                <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
+            
+                <li><a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a></li>
             
                 <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
@@ -120,6 +142,11 @@
  *
  * @param {Object} [options] Configuration object
  * @param {Boolean} [options.autoRemoveHandling] raises an event before a row is removed
+ * @param {Array} [options.fieldsData] fields data will extend url and set tableHead automatically
+ * @param {Object} [options.fieldsData.{}] fields object
+ * @param {String} [options.fieldsData.{}.id] field name
+ * @param {String} [options.fieldsData.{}.translation] translation key which will be translated automatically
+ * @param {String} [options.fieldsData.{}.disabled] either &#x27;true&#x27; or &#x27;false&#x27;
  * @param {Boolean} [options.editable] will not set class is-selectable to prevent hover effect for complete rows
  * @param {String} [options.className] additional classname for the wrapping div
  * @param {Object} [options.data] if no url is provided (some functionality like search &amp; sort will not work)
@@ -144,9 +171,17 @@
  * @param {String} [options.columns.attribute] mapping information to data (if not set it will just iterate of attributes)
  * @param {Boolean} [options.appendTBody] add TBODY to table
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search event
+ * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.paginationTemplate] template for pagination
- *
+ * @param {Boolean} [options.validation] enables validation for datagrid
+ * @param {Boolean} [options.addRowTop] adds row to the top of the table when add row is triggered
+ * @param {Boolean} [options.startTabIndex] start index for tabindex
+ * @param {Boolean} [options.progressRow] has to be enabled when datagrid is editable to show progress of save action
+ * @param {String} [options.columnMinWidth] sets the minimal width of table columns
+ * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
+ * @param {Array} [options.showElementsSteps] Array which contains the steps for the Show-Elements-dropdown as integers
+ * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
  */
 define(function() {
 
@@ -163,15 +198,17 @@ define(function() {
             data: null,
             defaultMeasureUnit: &#x27;px&#x27;,
             excludeFields: [&#x27;id&#x27;],
-            instance: &#x27;undefined&#x27;,
+            instance: &#x27;datagrid&#x27;,
             pagination: false,
+            fullWidth: false,
             paginationOptions: {
                 pageSize: null,
                 showPages: null
             },
+            contentContainer: null,
             removeRow: true,
             selectItem: {
-                type: null,      // checkbox, radiobutton
+                type: null,      // checkbox, radio button
                 width: &#x27;50px&#x27;    // numerous value
                 //clickable: false   // defines if background is clickable TODO do not use until fixed
             },
@@ -180,7 +217,23 @@ define(function() {
             url: null,
             appendTBody: true,   // add TBODY to table
             searchInstanceName: null, // at which search it should be listened to can be null|string|empty_string
-            paginationTemplate: &#x27;&lt;%=translate(&quot;pagination.page&quot;)%&gt; &lt;%=i%&gt; &lt;%=translate(&quot;pagination.of&quot;)%&gt; &lt;%=pages%&gt;&#x27;
+            columnOptionsInstanceName: null, // at which search it should be listened to can be null|string|empty_string
+            paginationTemplate: &#x27;&lt;%=translate(&quot;pagination.page&quot;)%&gt; &lt;strong&gt;&lt;%=i%&gt;&lt;/strong&gt; &lt;%=translate(&quot;pagination.of&quot;)%&gt; &lt;%=pages%&gt;&#x27;,
+            fieldsData: null,
+            validation: false, // TODO does not work for added rows
+            validationDebug: false,
+            addRowTop: false,
+            progressRow: true,
+            startTabIndex: 99999,
+            columnMinWidth: &#x27;70px&#x27;,
+            showElementsSteps: [10, 20, 50, 100, 500]
+        },
+
+        constants = {
+            fullWidthClass: &#x27;fullwidth&#x27;,
+            // if datagrid is in fullwidth-mode (options.fullWidth is true)
+            // this number gets subracted from the datagrids final width in the resize listener
+            overflowIconSpacing: 30
         },
 
         namespace = &#x27;husky.datagrid.&#x27;,
@@ -256,16 +309,44 @@ define(function() {
             UPDATED = namespace + &#x27;updated&#x27;,
 
         /**
-         * raised when when husky.datagrid.data.get is triggered
+         * raised when husky.datagrid.data.get is triggered
          * @event husky.datagrid.data.provide
          */
             DATA_PROVIDE = namespace + &#x27;data.provide&#x27;,
 
         /**
-         * raised when when data is sorted
+         * raised when data is sorted
          * @event husky.datagrid.data.sort
          */
             DATA_SORT = namespace + &#x27;data.sort&#x27;,
+
+        /**
+         * raised when selection of items changes
+         * @event husky.datagrid.number.selections
+         */
+            NUMBER_SELECTIONS = namespace + &#x27;number.selections&#x27;,
+
+        /**
+         * raised when data was saved
+         * @event husky.datagrid.data.saved
+         * @param {Object} data returned
+         */
+            DATA_SAVED = namespace + &#x27;data.saved&#x27;,
+
+        /**
+         * raised when save of data failed
+         * @event husky.datagrid.data.save.failed
+         * @param {String} text status
+         * @param {String} error thrown
+         *
+         */
+            DATA_SAVE_FAILED = namespace + &#x27;data.save.failed&#x27;,
+
+        /**
+         * raised when editable list is changed
+         * @event husky.datagrid.data.save
+         */
+            DATA_CHANGED = namespace + &#x27;data.changed&#x27;,
 
 
     /* PROVIDED EVENTS */
@@ -275,6 +356,20 @@ define(function() {
          * @event husky.datagrid.update
          */
             UPDATE = namespace + &#x27;update&#x27;,
+
+        /**
+         * used to filter data of
+         * @event husky.datagrid.data.filter
+         * @param {String} searchField
+         * @param {String} searchString
+         */
+            DATA_SEARCH = namespace + &#x27;data.search&#x27;,
+
+        /**
+         * used to update the table width and its containers due to responsiveness
+         * @event husky.datagrid.update.table
+         */
+            UPDATE_TABLE = namespace + &#x27;update.table&#x27;,
 
         /**
          * used to add a row
@@ -293,7 +388,7 @@ define(function() {
         /**
          * triggers husky.datagrid.items.selected event, which returns all selected item ids
          * @event husky.datagrid.items.get-selected
-         * @param  {Callback} callback function receives array of selected items
+         * @param  {Function} callback function receives array of selected items
          */
             ITEMS_GET_SELECTED = namespace + &#x27;items.get-selected&#x27;,
 
@@ -304,10 +399,42 @@ define(function() {
             DATA_GET = namespace + &#x27;data.get&#x27;,
 
         /**
-         * used to trigger the save operation of changed data
-         * @event husky.datagrid.data.save
+         * calculates the width of a text by creating a tablehead element and measure its width
+         * @param text
+         * @param classArray
+         * @param isSortable
          */
-            DATA_SAVE = namespace + &#x27;data.save&#x27;;
+            getTextWidth = function(text, classArray, isSortable) {
+
+            var elWidth, el,
+                sortIconWidth = 0,
+                paddings = 20;
+            // handle css classes
+            if (!classArray) {
+                classArray = [];
+            }
+            if (isSortable) {
+                classArray.push(&#x27;is-sortable&#x27;);
+                sortIconWidth = 20;
+            }
+            classArray.push(&#x27;is-selected&#x27;);
+
+            el = this.sandbox.dom.createElement(&#x27;&lt;table style=&quot;width:auto&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;th class=&quot;&#x27; + classArray.join(&#x27;,&#x27;) + &#x27;&quot;&gt;&#x27; + text + &#x27;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;/table&gt;&#x27;);
+            this.sandbox.dom.css(el, {
+                &#x27;position&#x27;: &#x27;absolute&#x27;,
+                &#x27;visibility&#x27;: &#x27;hidden&#x27;,
+                &#x27;height&#x27;: &#x27;auto&#x27;,
+                &#x27;width&#x27;: &#x27;auto&#x27;
+            });
+            this.sandbox.dom.append(&#x27;body&#x27;, el);
+
+            // text width + paddings and sorting icon
+            elWidth = this.sandbox.dom.width(el) + paddings + sortIconWidth;
+
+            this.sandbox.dom.remove(el);
+
+            return elWidth;
+        };
 
     return {
 
@@ -323,22 +450,35 @@ define(function() {
             this.data = null;
             this.allItemIds = [];
             this.selectedItemIds = [];
-            this.changedData = {};
+            this.rowStructure = [];
+            this.elId = this.sandbox.dom.attr(this.$el, &#x27;id&#x27;);
 
-            this.rowStructure = [
-                {
-                    attribute: &#x27;id&#x27;,
-                    editable: false
+            if (!!this.options.contentContainer) {
+                if (this.sandbox.dom.css(this.options.contentContainer, &#x27;max-width&#x27;) === &#x27;none&#x27;) {
+                    this.originalMaxWidth = null;
+                } else {
+                    this.originalMaxWidth = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, &#x27;max-width&#x27;)).number;
                 }
-            ];
+                this.contentMarginRight = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, &#x27;margin-right&#x27;)).number;
+                this.contentPaddings = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, &#x27;padding-right&#x27;)).number;
+                this.contentPaddings += this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, &#x27;padding-left&#x27;)).number;
+            } else {
+                this.contentMarginRight = 0;
+                this.contentPaddings = 0;
+            }
+
+            this.domId = 0;
+
+            this.bottomTabIndex = this.options.startTabIndex || 49999;
+            this.topTabIndex = this.options.startTabIndex || 50000;
+
+            this.errorInRow = [];
 
             this.sort = {
                 ascClass: &#x27;icon-arrow-up&#x27;,
                 descClass: &#x27;icon-arrow-down&#x27;,
                 additionalClasses: &#x27; m-left-5 small-font&#x27;
             };
-
-            this.changedData = [];
 
             // append datagrid to html element
             this.$originalElement = this.sandbox.dom.$(this.options.el);
@@ -355,11 +495,20 @@ define(function() {
          * Gets the data either via the url or the array
          */
         getData: function() {
+            var fieldsData, url;
 
             if (!!this.options.url) {
+                url = this.options.url;
+
+                // parse fields data
+                if (this.options.fieldsData) {
+                    fieldsData = this.parseFieldsData(this.options.fieldsData);
+                    url += &#x27;&amp;fields=&#x27; + fieldsData.urlFields;
+                    this.options.columns = fieldsData.columns;
+                }
 
                 this.sandbox.logger.log(&#x27;load data from url&#x27;);
-                this.load({ url: this.options.url});
+                this.load({ url: url});
 
             } else if (!!this.options.data.items) {
 
@@ -373,57 +522,91 @@ define(function() {
         },
 
         /**
+         * parses fields data retrieved from api
+         * @param fields
+         * @returns {{columns: Array, urlFields: string}}
+         */
+        parseFieldsData: function(fields) {
+            var data = [],
+                urlfields = [],
+                fieldsCount = 0,
+                tmp;
+
+            this.sandbox.util.foreach(fields, function(field) {
+
+                tmp = {};
+
+                if (field.disabled !== &#x27;true&#x27; &amp;&amp; field.disabled !== true) {
+
+                    // data
+                    for (var key in field) {
+                        if (key === &#x27;translation&#x27;) {
+                            tmp.content = this.sandbox.translate(field.translation);
+                        } else if (key === &#x27;id&#x27;) {
+                            tmp.attribute = field.id;
+                        } else {
+                            tmp[key] = field[key];
+                        }
+                    }
+
+                    data.push(tmp);
+                    urlfields.push(field.id);
+
+                } else if (field.id === &#x27;id&#x27;) {
+                    urlfields.push(field.id);
+                }
+
+                fieldsCount++;
+
+            }.bind(this));
+            return {
+                columns: data,
+                urlFields: urlfields.join(&#x27;,&#x27;)
+            };
+        },
+
+        /**
          * Loads contents via ajax
          * @param params url
          */
         load: function(params) {
 
-            /*
-             * TODO do that: this.sandbox.util.load
-             * this.sandbox.util.load(url)
-             *      .then(function(response) {
-             *      }.bind(this))
-             *      .fail(function(error) {
-             *      }.bind(this));
-             */
-            this.sandbox.util.ajax({
+            this.sandbox.util.load(this.getUrl(params), params.data)
+                .then(function(response) {
+                    this.initRender(response, params);
+                }.bind(this))
+                .fail(function(status, error) {
+                    this.sandbox.logger.error(status, error);
+                }.bind(this));
+        },
 
-                url: this.getUrl(params),
-                data: params.data,
 
-                error: function(jqXHR, textStatus, errorThrown) {
-                    this.sandbox.logger.log(&quot;An error occured while fetching data from: &quot; + this.getUrl(params));
-                    this.sandbox.logger.log(&quot;textstatus: &quot; + textStatus);
-                    this.sandbox.logger.log(&quot;errorthrown&quot;, errorThrown);
-                }.bind(this),
+        /**
+         * Initializes the rendering of the datagrid
+         */
+        initRender: function(response, params) {
 
-                success: function(response) {
+            this.data = {};
+            this.data.links = response._links;
+            this.data.embedded = response._embedded;
+            this.data.total = response.total;
+            this.data.numberOfAll = response.numberOfAll;
+            this.data.page = response.page;
+            this.data.pages = response.pages;
+            this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
+            this.data.pageDisplay = this.options.paginationOptions.showPages;
 
-                    // TODO adjust when new api is finished and no backwards compatibility needed
-                    if (!!response.items) {
-                        this.data = response;
-                    } else {
-                        this.data = {};
-                        this.data.links = response._links;
-                        this.data.embedded = response._embedded;
-                        this.data.total = response.total;
-                        this.data.page = response.page;
-                        this.data.pages = response.pages;
-                        this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
-                        this.data.pageDisplay = this.options.paginationOptions.showPages;
-                    }
+            this.prepare()
+                .appendPagination()
+                .render();
 
-                    this.prepare()
-                        .appendPagination()
-                        .render();
+            this.setHeaderClasses();
 
-                    this.setHeaderClasses();
+            if (!!params &amp;&amp; typeof params.success === &#x27;function&#x27;) {
+                params.success(response);
+            }
 
-                    if (typeof params.success === &#x27;function&#x27;) {
-                        params.success(response);
-                    }
-                }.bind(this)
-            });
+            this.windowResizeListener();
         },
 
         /**
@@ -433,8 +616,7 @@ define(function() {
          */
         getUrl: function(params) {
 
-            // TODO adjust when new api is finished and no backwards compatibility needed
-            if (!!this.data &amp;&amp; this.data.links) {
+            if (!!this.data &amp;&amp; !!this.data.links) {
                 return params.url;
             }
 
@@ -466,7 +648,9 @@ define(function() {
                 // TODO this.$element = this.prepareList();
                 this.sandbox.logger.log(&quot;list is not yet implemented!&quot;);
             } else {
-                this.$element.append(this.prepareTable());
+                this.$tableContainer = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;table-container&quot;/&gt;&#x27;);
+                this.sandbox.dom.append(this.$element, this.$tableContainer);
+                this.sandbox.dom.append(this.$tableContainer, this.prepareTable());
             }
 
             return this;
@@ -479,21 +663,20 @@ define(function() {
         prepareTable: function() {
             var $table, $thead, $tbody, tblClasses;
 
-            $table = this.sandbox.dom.$(&#x27;&lt;table/&gt;&#x27;);
+            this.$table = $table = this.sandbox.dom.createElement(&#x27;&lt;table&#x27; + (!!this.options.validationDebug ? &#x27;data-debug=&quot;true&quot;&#x27; : &#x27;&#x27; ) + &#x27;/&gt;&#x27;);
 
             if (!!this.data.head || !!this.options.columns) {
-                $thead = this.sandbox.dom.$(&#x27;&lt;thead/&gt;&#x27;);
+                $thead = this.sandbox.dom.createElement(&#x27;&lt;thead/&gt;&#x27;);
                 $thead.append(this.prepareTableHead());
                 $table.append($thead);
             }
 
-            // TODO adjust when api is fully implemented and no backwards compatibility needed
-            if (!!this.data.items || !!this.data.embedded) {
+            if (!!this.data.embedded) {
                 if (!!this.options.appendTBody) {
                     $tbody = this.sandbox.dom.$(&#x27;&lt;tbody/&gt;&#x27;);
                 }
-                $tbody.append(this.prepareTableRows());
-                $table.append($tbody);
+                this.sandbox.dom.append($tbody, this.prepareTableRows());
+                this.sandbox.dom.append($table, $tbody);
             }
 
             // set html classes
@@ -516,7 +699,8 @@ define(function() {
          */
 
         prepareTableHead: function() {
-            var tblColumns, tblCellClass, tblColumnWidth, headData, tblCheckboxWidth, widthValues, checkboxValues, dataAttribute, isSortable;
+            var tblColumns, tblCellClass, headData, widthValues, checkboxValues, dataAttribute, isSortable,
+                tblColumnStyle, minWidth;
 
             tblColumns = [];
             headData = this.options.columns || this.data.head;
@@ -525,21 +709,14 @@ define(function() {
             if (!!this.options.selectItem &amp;&amp; this.options.selectItem.type) {
 
                 // default values
-                checkboxValues = [];
                 if (this.options.selectItem.width) {
-                    checkboxValues = this.getNumberAndUnit(this.options.selectItem.width, this.options.defaultMeasureUnit);
+                    checkboxValues = this.getNumberAndUnit(this.options.selectItem.width);
                 }
 
-                tblCheckboxWidth = [];
-                tblCheckboxWidth.push(
-                    &#x27;width =&#x27;,
-                    checkboxValues[0],
-                    checkboxValues[1]
-                );
-
+                minWidth = checkboxValues.number + checkboxValues.unit;
 
                 tblColumns.push(
-                    &#x27;&lt;th class=&quot;select-all&quot; &#x27;, tblCheckboxWidth.join(&quot;&quot;), &#x27; &gt;&#x27;);
+                    &#x27;&lt;th class=&quot;select-all&quot; &#x27;, &#x27;style=&quot;width:&#x27; + minWidth + &#x27;;max-width:&#x27; + minWidth + &#x27;;min-width:&#x27; + minWidth + &#x27;;&quot;&#x27;, &#x27; &gt;&#x27;);
 
                 if (this.options.selectItem.type === &#x27;checkbox&#x27;) {
                     tblColumns.push(this.templates.checkbox({ id: &#x27;select-all&#x27; }));
@@ -548,26 +725,15 @@ define(function() {
                 tblColumns.push(&#x27;&lt;/th&gt;&#x27;);
             }
 
-            // reset row structure
-            this.rowStructure = [
-                {
-                    attribute: &#x27;id&#x27;,
-                    editable: false
-                }
-            ];
+            this.rowStructure = [];
+
+            // value used for correct tabindex when row added at top of table
+            this.tabIndexParam = 1;
 
             headData.forEach(function(column) {
 
-                tblColumnWidth = &#x27;&#x27;;
-                // get width and measureunit
-                if (!!column.width) {
-                    widthValues = this.getNumberAndUnit(column.width, this.options.defaultMeasureUnit);
-                    tblColumnWidth = &#x27; width=&quot;&#x27; + widthValues[0] + widthValues[1] + &#x27;&quot;&#x27;;
-                }
-
                 isSortable = false;
 
-                // TODO adjust when new api fully implemented and no backwards compatibility needed
                 if (!!this.data.links &amp;&amp; !!this.data.links.sortable) {
 
                     //is column sortable - check with received sort-links
@@ -579,38 +745,74 @@ define(function() {
                     }.bind(this));
                 }
 
+                // calculate width
+                tblColumnStyle = [];
+                if (column.width) {
+                    minWidth = column.width;
+                } else if (column.minWidth) {
+                    minWidth = column.minWidth;
+                } else {
+                    minWidth = getTextWidth.call(this, column.content, [], isSortable);
+                    minWidth = (minWidth &gt; this.getNumberAndUnit(this.options.columnMinWidth).number) ? minWidth + &#x27;px&#x27; : this.options.columnMinWidth;
+
+                }
+                tblColumnStyle.push(&#x27;min-width:&#x27; + minWidth);
+                column.minWidth = minWidth;
+
+                // get width and measureunit
+                if (!!column.width) {
+                    widthValues = this.getNumberAndUnit(column.width);
+                    tblColumnStyle.push(&#x27;max-width:&#x27; + widthValues.number + widthValues.unit);
+                    tblColumnStyle.push(&#x27;width:&#x27; + widthValues.number + widthValues.unit);
+                }
+
                 // add to row structure when valid entry
                 if (column.attribute !== undefined) {
                     this.rowStructure.push({
                         attribute: column.attribute,
-                        editable: column.editable
+                        editable: column.editable,
+                        validation: column.validation
                     });
+
+                    if (!!column.editable) {
+                        this.tabIndexParam++;
+                    }
                 }
+
 
                 // add html to table header cell if sortable
                 if (!!isSortable) {
                     dataAttribute = &#x27; data-attribute=&quot;&#x27; + column.attribute + &#x27;&quot;&#x27;;
-                    tblCellClass = ((!!column.class) ? &#x27; class=&quot;&#x27; + column.class + &#x27; pointer&quot;&#x27; : &#x27; class=&quot;pointer&quot;&#x27;);
-                    tblColumns.push(&#x27;&lt;th&#x27; + tblCellClass + tblColumnWidth + dataAttribute + &#x27;&gt;&#x27; + column.content + &#x27;&lt;span&gt;&lt;/span&gt;&lt;/th&gt;&#x27;);
+                    tblCellClass = ((!!column.class) ? &#x27; class=&quot;&#x27; + column.class + &#x27; is-sortable&quot;&#x27; : &#x27; class=&quot;is-sortable&quot;&#x27;);
+                    tblColumns.push(&#x27;&lt;th&#x27; + tblCellClass + &#x27; style=&quot;&#x27; + tblColumnStyle.join(&#x27;;&#x27;) + &#x27;&quot; &#x27; + dataAttribute + &#x27;&gt;&#x27; + column.content + &#x27;&lt;span&gt;&lt;/span&gt;&lt;/th&gt;&#x27;);
                 } else {
                     tblCellClass = ((!!column.class) ? &#x27; class=&quot;&#x27; + column.class + &#x27;&quot;&#x27; : &#x27;&#x27;);
-                    tblColumns.push(&#x27;&lt;th&#x27; + tblCellClass + tblColumnWidth + &#x27;&gt;&#x27; + column.content + &#x27;&lt;/th&gt;&#x27;);
+                    tblColumns.push(&#x27;&lt;th&#x27; + tblCellClass + &#x27; style=&quot;&#x27; + tblColumnStyle.join(&#x27;;&#x27;) + &#x27;&quot; &gt;&#x27; + column.content + &#x27;&lt;/th&gt;&#x27;);
                 }
 
             }.bind(this));
 
+            // remove-row entry
+            if (this.options.removeRow || this.options.progressRow) {
+                tblColumns.push(&#x27;&lt;th style=&quot;width:30px;&quot;/&gt;&#x27;);
+            }
+
             return &#x27;&lt;tr&gt;&#x27; + tblColumns.join(&#x27;&#x27;) + &#x27;&lt;/tr&gt;&#x27;;
         },
 
-        // returns number and unit
-        getNumberAndUnit: function(numberUnit, defaultUnit) {
+        /**
+         * returns number and unit
+         * @param numberUnit
+         * @returns {{number: Number, unit: *}}
+         */
+        getNumberAndUnit: function(numberUnit) {
             numberUnit = String(numberUnit);
             var regex = numberUnit.match(/(\d+)\s*(.*)/);
             // no unit , set default
-            if ((!!defaultUnit) &amp;&amp; (!regex[2])) {
-                regex[2] = defaultUnit;
+            if (!regex[2]) {
+                regex[2] = this.options.defaultMeasureUnit;
             }
-            return [regex[1], regex[2]];
+            return {number: parseInt(regex[1], 10), unit: regex[2]};
         },
 
         /**
@@ -623,14 +825,9 @@ define(function() {
             tblRows = [];
             this.allItemIds = [];
 
-            // TODO adjust when new api is fully implemented and no backwards compatibility needed
-            if (!!this.data.items) {
-                this.data.items.forEach(function(row) {
-                    tblRows.push(this.prepareTableRow(row));
-                }.bind(this));
-            } else if (!!this.data.embedded) {
+            if (!!this.data.embedded) {
                 this.data.embedded.forEach(function(row) {
-                    tblRows.push(this.prepareTableRow(row));
+                    tblRows.push(this.prepareTableRow(row, false));
                 }.bind(this));
             }
 
@@ -640,9 +837,10 @@ define(function() {
         /**
          * Returns a table row including values and data attributes
          * @param row
+         * @param triggeredByAddRow
          * @returns string table row
          */
-        prepareTableRow: function(row) {
+        prepareTableRow: function(row, triggeredByAddRow) {
 
             if (!!(this.options.template &amp;&amp; this.options.template.row)) {
 
@@ -650,9 +848,15 @@ define(function() {
 
             } else {
 
-                var radioPrefix, key;
+                var radioPrefix, key, i;
                 this.tblColumns = [];
-                this.tblRowAttributes = &#x27;&#x27;;
+                this.tblRowAttributes = &#x27; data-dom-id=&quot;dom-&#x27; + this.options.instance + &#x27;-&#x27; + this.domId + &#x27;&quot;&#x27;;
+                this.domId++;
+
+                // special treatment for id
+                if (!!row.id) {
+                    this.tblRowAttributes += &#x27; data-id=&quot;&#x27; + row.id + &#x27;&quot;&#x27;;
+                }
 
                 if (!!this.options.className &amp;&amp; this.options.className !== &#x27;&#x27;) {
                     radioPrefix = &#x27;-&#x27; + this.options.className;
@@ -673,21 +877,32 @@ define(function() {
                     }), &#x27;&lt;/td&gt;&#x27;);
                 }
 
-                // when row-structure contains more elements than the id then use the structure to set values
-                if (this.rowStructure.length &gt; 1) {
-                    this.rowStructure.forEach(function(key) {
-                        this.setValueOfRowCell(key.attribute, row[key.attribute], key.editable);
+                // when row structure contains more elements than the id then use the structure to set values
+                if (this.rowStructure.length) {
+
+                    if (!!triggeredByAddRow &amp;&amp; !!this.options.addRowTop) {
+                        this.bottomTabIndex -= (this.tabIndexParam + 1);
+                    }
+
+                    this.rowStructure.forEach(function(key, index) {
+                        key.editable = key.editable || false;
+                        this.createRowCell(key.attribute, row[key.attribute], key.editable, key.validation, triggeredByAddRow, index);
                     }.bind(this));
+
                 } else {
+                    i = 0;
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                            this.setValueOfRowCell(key, row[key], false);
+                            this.createRowCell(key, row[key], false, null, triggeredByAddRow, i);
+                            i++;
                         }
                     }
                 }
 
                 if (!!this.options.removeRow) {
                     this.tblColumns.push(&#x27;&lt;td class=&quot;remove-row&quot;&gt;&#x27;, this.templates.removeRow(), &#x27;&lt;/td&gt;&#x27;);
+                } else if (!!this.options.progressRow) {
+                    this.tblColumns.push(&#x27;&lt;td class=&quot;progress-row&quot;&gt;&#x27;, this.templates.progressRow(), &#x27;&lt;/td&gt;&#x27;);
                 }
 
                 return &#x27;&lt;tr&#x27; + this.tblRowAttributes + &#x27;&gt;&#x27; + this.tblColumns.join(&#x27;&#x27;) + &#x27;&lt;/tr&gt;&#x27;;
@@ -698,11 +913,19 @@ define(function() {
          * Sets the value of row cell and the data-id attribute for the row
          * @param key attribute name
          * @param value attribute value
+         * @param editable flag whether field is editable or not
+         * @param validation information for field
+         * @param triggeredByAddRow triggered trough add row
+         * @param index
          */
-        setValueOfRowCell: function(key, value, editable) {
+        createRowCell: function(key, value, editable, validation, triggeredByAddRow, index) {
+
             var tblCellClasses,
                 tblCellContent,
-                tblCellClass;
+                tblCellStyle,
+                tblCellClass,
+                k,
+                validationAttr = &#x27;&#x27;;
 
             if (!value) {
                 value = &#x27;&#x27;;
@@ -718,10 +941,35 @@ define(function() {
 
                 tblCellClass = (!!tblCellClasses.length) ? &#x27;class=&quot;&#x27; + tblCellClasses.join(&#x27; &#x27;) + &#x27;&quot;&#x27; : &#x27;&#x27;;
 
+                if (!!this.options.validation &amp;&amp; !!validation) {
+                    for (k in validation) {
+                        validationAttr += [&#x27;data-validation-&#x27;, k, &#x27;=&quot;&#x27;, validation[k], &#x27;&quot; &#x27;].join(&#x27;&#x27;);
+                    }
+                }
+
+                tblCellStyle = &#x27;style=&quot;max-width:&#x27; + this.options.columns[index].minWidth + &#x27;&quot;&#x27;;
+
                 if (!!editable) {
-                    this.tblColumns.push(&#x27;&lt;td data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &gt;&lt;span class=&quot;editable&quot; contenteditable=&quot;true&quot;&gt;&#x27; + tblCellContent + &#x27;&lt;/span&gt;&lt;/td&gt;&#x27;);
+
+                    if (!!triggeredByAddRow) {
+
+                        // differentiate for tab index
+                        if (!!this.options.addRowTop) {
+                            this.tblColumns.push(&#x27;&lt;td data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &gt;&lt;span class=&quot;editable&quot; style=&quot;display: none&quot;&gt;&#x27; + tblCellContent + &#x27;&lt;/span&gt;&lt;input type=&quot;text&quot; class=&quot;form-element editable-content&quot; tabindex=&quot;&#x27; + this.bottomTabIndex + &#x27;&quot; value=&quot;&#x27; + tblCellContent + &#x27;&quot;  &#x27; + validationAttr + &#x27;/&gt;&lt;/td&gt;&#x27;);
+                            this.bottomTabIndex++;
+                        } else {
+                            this.tblColumns.push(&#x27;&lt;td data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &gt;&lt;span class=&quot;editable&quot; style=&quot;display: none&quot;&gt;&#x27; + tblCellContent + &#x27;&lt;/span&gt;&lt;input type=&quot;text&quot; class=&quot;form-element editable-content&quot; tabindex=&quot;&#x27; + this.topTabIndex + &#x27;&quot; value=&quot;&#x27; + tblCellContent + &#x27;&quot;  &#x27; + validationAttr + &#x27;/&gt;&lt;/td&gt;&#x27;);
+                            this.topTabIndex++;
+                        }
+
+                    } else {
+                        this.tblColumns.push(&#x27;&lt;td data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &gt;&lt;span class=&quot;editable&quot;&gt;&#x27; + tblCellContent + &#x27;&lt;/span&gt;&lt;input type=&quot;text&quot; class=&quot;form-element editable-content hidden&quot; value=&quot;&#x27; + tblCellContent + &#x27;&quot; tabindex=&quot;&#x27; + this.topTabIndex + &#x27;&quot; &#x27; + validationAttr + &#x27;/&gt;&lt;/td&gt;&#x27;);
+                        this.topTabIndex++;
+
+                    }
+
                 } else {
-                    this.tblColumns.push(&#x27;&lt;td  data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &gt;&#x27; + tblCellContent + &#x27;&lt;/td&gt;&#x27;);
+                    this.tblColumns.push(&#x27;&lt;td data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &#x27; + tblCellStyle + &#x27;&gt;&#x27; + tblCellContent + &#x27;&lt;/td&gt;&#x27;);
                 }
             } else {
                 this.tblRowAttributes += &#x27; data-&#x27; + key + &#x27;=&quot;&#x27; + value + &#x27;&quot;&#x27;;
@@ -742,21 +990,24 @@ define(function() {
          */
         selectItem: function(event) {
 
+            event.stopPropagation();
+
             // Todo review handling of events for new rows in datagrid (itemId empty?)
 
-            var $element, itemId, oldSelectionId;
+            var $element, itemId, oldSelectionId, parentTr;
 
             $element = this.sandbox.dom.$(event.currentTarget);
 
             if (!$element.is(&#x27;input&#x27;)) {
-                $element = $element.parent().find(&#x27;input&#x27;);
+                $element = this.sandbox.dom.find(&#x27;input&#x27;, this.sandbox.dom.parent($element));
             }
 
-            itemId = $element.parents(&#x27;tr&#x27;).data(&#x27;id&#x27;);
+            parentTr = this.sandbox.dom.parents($element, &#x27;tr&#x27;);
+            itemId = this.sandbox.dom.data(parentTr, &#x27;id&#x27;);
 
             if ($element.attr(&#x27;type&#x27;) === &#x27;checkbox&#x27;) {
 
-                if (this.selectedItemIds.indexOf(itemId) &gt; -1) {
+                if (this.sandbox.dom.prop($element, &#x27;checked&#x27;) === false) {
                     $element
                         .removeClass(&#x27;is-selected&#x27;)
                         .prop(&#x27;checked&#x27;, false);
@@ -781,6 +1032,8 @@ define(function() {
                     }
                 }
 
+                this.sandbox.emit(NUMBER_SELECTIONS, this.getIdsOfSelectedRows().length);
+
             } else if ($element.attr(&#x27;type&#x27;) === &#x27;radio&#x27;) {
 
                 oldSelectionId = this.selectedItemIds.pop();
@@ -798,8 +1051,9 @@ define(function() {
                 } else {
                     this.sandbox.emit(ITEM_SELECT, event);
                 }
-
+                this.sandbox.emit(NUMBER_SELECTIONS, this.selectedItemIds.length);
             }
+
         },
 
         /**
@@ -809,23 +1063,48 @@ define(function() {
         selectAllItems: function(event) {
 
             event.stopPropagation();
-            if (this.sandbox.util.compare(this.selectedItemIds, this.allItemIds)) {
 
-                this.$element
-                    .find(&#x27;input[type=&quot;checkbox&quot;]&#x27;)
-                    .prop(&#x27;checked&#x27;, false);
+            var $headCheckbox = this.sandbox.dom.find(&#x27;th input[type=&quot;checkbox&quot;]&#x27;, this.$el)[0],
+                $checkboxes = this.sandbox.dom.find(&#x27;input[type=&quot;checkbox&quot;]&#x27;, this.$el),
+                selectedElements,
+                tmp;
 
-                this.selectedItemIds = [];
-                this.sandbox.emit(ALL_DESELECT, null);
-
+            if (this.sandbox.dom.prop($headCheckbox, &#x27;checked&#x27;) === false) {
+                this.sandbox.dom.prop($checkboxes, &#x27;checked&#x27;, false);
+                this.sandbox.dom.removeClass($checkboxes, &#x27;is-selected&#x27;);
+                this.sandbox.emit(ALL_DESELECT);
             } else {
-                this.$element
-                    .find(&#x27;input[type=&quot;checkbox&quot;]&#x27;)
-                    .prop(&#x27;checked&#x27;, true);
-
-                this.selectedItemIds = this.allItemIds.slice(0);
-                this.sandbox.emit(ALL_SELECT, this.selectedItemIds);
+                this.sandbox.dom.prop($checkboxes, &#x27;checked&#x27;, true);
+                this.sandbox.dom.addClass($checkboxes, &#x27;is-selected&#x27;);
+                this.sandbox.emit(ALL_SELECT, this.getIdsOfSelectedRows());
             }
+
+            tmp = this.sandbox.dom.find(&#x27;input[type=&quot;checkbox&quot;]:checked&#x27;, this.$el).length - 1;
+            selectedElements = tmp &gt; 0 ? tmp : 0;
+
+            this.sandbox.emit(NUMBER_SELECTIONS, selectedElements);
+        },
+
+
+        /**
+         * Returns an array with the ids of the selected rows
+         */
+        getIdsOfSelectedRows: function() {
+            var $checkboxes = this.sandbox.dom.find(&#x27;input[type=checkbox]:checked&#x27;, this.$el),
+                ids = [],
+                id,
+                $tr;
+
+            this.sandbox.util.each($checkboxes, function(index, $checkbox) {
+                $tr = this.sandbox.dom.closest($checkbox, &#x27;tr&#x27;);
+                id = this.sandbox.dom.data($tr, &#x27;id&#x27;);
+                if (!!id) {
+                    ids.push(id);
+                }
+
+            }.bind(this));
+
+            return ids;
         },
 
         /**
@@ -833,10 +1112,52 @@ define(function() {
          * @param row
          */
         addRow: function(row) {
-            var $table;
+            var $table, $row, $firstInputField, $checkbox;
             // check for other element types when implemented
             $table = this.$element.find(&#x27;table&#x27;);
-            $table.append(this.prepareTableRow(row));
+            $row = this.sandbox.dom.$(this.prepareTableRow(row, true));
+
+            // when unsaved new row exists - save it
+            this.prepareSave();
+
+            // prepend or append row
+            if (!!this.options.addRowTop) {
+                this.sandbox.dom.prepend($table, $row);
+            } else {
+                this.sandbox.dom.append($table, $row);
+            }
+
+            $firstInputField = this.sandbox.dom.find(&#x27;input[type=text]&#x27;, $row)[0];
+            this.sandbox.dom.focus($firstInputField);
+
+            if (!!this.options.editable) {
+                this.lastFocusedRow = this.getInputValuesOfRow($row);
+            }
+
+            // TODO fix validation for new rows
+//            if (!!this.options.validation) {
+            // add new row to validation context and add contraints to element
+//                $editableFields = this.sandbox.dom.find(&#x27;input[type=text]&#x27;, $row);
+
+//                this.sandbox.util.foreach($editableFields, function($el, i) {
+//                    this.sandbox.form.addField(&#x27;#&#x27; + this.elId, $el);
+
+//                    validation = this.options.columns[i].validation;
+//                    for (var key in validation) {
+//                        this.sandbox.form.addConstraint(&#x27;#&#x27; + this.elId, $el, key, {key: validation[key]});
+//                    }
+//                }.bind(this));
+
+//            }
+
+            // if allchecked then disable top checkbox after adding new row
+            if (!!this.options.selectItem.type &amp;&amp; this.options.selectItem.type === &#x27;checkbox&#x27;) {
+                $checkbox = this.sandbox.dom.find(&#x27;#select-all&#x27;, this.$el);
+                if (this.sandbox.dom.hasClass($checkbox, &#x27;is-selected&#x27;)) {
+                    this.sandbox.dom.prop($checkbox, &#x27;checked&#x27;, false);
+                    this.sandbox.dom.removeClass($checkbox, &#x27;is-selected&#x27;);
+                }
+            }
         },
 
         /**
@@ -868,27 +1189,35 @@ define(function() {
          */
         removeRow: function(event) {
 
-            var $element, $tblRow, id, idx;
+            var $element, $tblRow, id, $editableElements, $checkboxes;
 
             if (typeof event === &#x27;object&#x27;) {
-
                 $element = this.sandbox.dom.$(event.currentTarget);
-                $tblRow = $element.parent().parent();
-
-                id = $tblRow.data(&#x27;id&#x27;);
+                $tblRow = this.sandbox.dom.closest($element, &#x27;tr&#x27;)[0];
+                id = this.sandbox.dom.data($tblRow, &#x27;id&#x27;);
             } else {
                 id = event;
-                $tblRow = this.$element.find(&#x27;tr[data-id=&quot;&#x27; + id + &#x27;&quot;]&#x27;);
+                $tblRow = this.sandbox.dom.find(&#x27;tr[data-id=&quot;&#x27; + id + &#x27;&quot;]&#x27;)[0];
             }
 
-            idx = this.selectedItemIds.indexOf(id);
-
-            if (idx &gt;= 0) {
-                this.selectedItemIds.splice(idx, 1);
+            // remove row elements from validation
+            if (!!this.options.validation) {
+                $editableElements = this.sandbox.dom.find(&#x27;.editable&#x27;, $tblRow);
+                this.sandbox.util.each($editableElements, function(index, $element) {
+                    this.sandbox.form.removeField(&#x27;#&#x27; + this.elId, $element);
+                }.bind(this));
             }
 
             this.sandbox.emit(ROW_REMOVED, event);
-            $tblRow.remove();
+            this.sandbox.dom.remove($tblRow);
+
+            // when last table row was removed, uncheck thead checkbox if exists
+            $checkboxes = this.sandbox.dom.find(&#x27;input[type=checkbox]&#x27;, this.$el);
+            if ($checkboxes.length === 1) {
+                this.sandbox.dom.removeClass(&#x27;is-selected&#x27;, $checkboxes[0]);
+                this.sandbox.dom.prop($checkboxes[0], &#x27;checked&#x27;, false);
+            }
+
         },
 
         // TODO: create pagination module
@@ -898,11 +1227,11 @@ define(function() {
          */
         appendPagination: function() {
 
-            // TODO adjust when api is finished
             if (this.options.pagination &amp;&amp; !!this.data.links) {
                 this.initPaginationIds();
                 this.$element.append(this.preparePagination());
                 this.preparePaginationDropdown();
+                this.prepareShowElementsDropdown();
             }
             return this;
         },
@@ -915,7 +1244,7 @@ define(function() {
                 prevId: this.options.instance + &#x27;-prev&#x27;,
                 nextId: this.options.instance + &#x27;-next&#x27;,
                 dropdownId: this.options.instance + &#x27;-pagination-dropdown&#x27;,
-                showAllId: this.options.instance + &#x27;-show-all&#x27;
+                showElementsId: this.options.instance + &#x27;-show-elements&#x27;
             };
         },
 
@@ -926,28 +1255,30 @@ define(function() {
         preparePagination: function() {
             var $pagination,
                 $paginationWrapper,
-                $showAll,
+                $showElements,
                 paginationLabel;
 
+
+            $paginationWrapper = this.sandbox.dom.$(&#x27;&lt;div/&gt;&#x27;);
+            $paginationWrapper.addClass(&#x27;pagination-wrapper m-top-20 grid-row small-font&#x27;);
+
+            // if first defined step is bigger than the number of all elements don&#x27;t display show-elements dropdown
+            if (this.data.numberOfAll &gt; this.options.showElementsSteps[0]) {
+                $showElements = this.sandbox.dom.$(this.templates.showElements.call(this, this.pagination.showElementsId));
+                $paginationWrapper.append($showElements);
+            }
+
             if (!!this.options.pagination &amp;&amp; parseInt(this.data.pages, 10) &gt; 1) {
-                $paginationWrapper = this.sandbox.dom.$(&#x27;&lt;div/&gt;&#x27;);
-                $paginationWrapper.addClass(&#x27;pagination-wrapper m-top-20 grid-row small-font&#x27;);
-
-                if (!!this.data.total &amp;&amp; !!this.data.links.all) {
-                    $showAll = this.sandbox.dom.$(this.templates.showAll(this.data.total, this.sandbox.translate(&#x27;pagination.elements&#x27;), this.sandbox.translate(&#x27;pagination.showAll&#x27;), this.pagination.showAllId));
-                    $paginationWrapper.append($showAll);
-                }
-
                 $pagination = this.sandbox.dom.$(&#x27;&lt;div/&gt;&#x27;);
-                $pagination.addClass(&#x27;pagination grid-col-8 pull-right&#x27;);
+                $pagination.addClass(&#x27;pagination&#x27;);
 
                 $paginationWrapper.append($pagination);
 
                 paginationLabel = this.renderPaginationRow(this.data.page, this.data.pages);
 
-                $pagination.append(&#x27;&lt;div id=&quot;&#x27; + this.pagination.nextId + &#x27;&quot; class=&quot;icon-chevron-right pagination-prev pull-right pointer&quot;&gt;&lt;/div&gt;&#x27;);
+                $pagination.append(&#x27;&lt;div id=&quot;&#x27; + this.pagination.nextId + &#x27;&quot; class=&quot;pagination-prev pull-right pointer&quot;&gt;&lt;/div&gt;&#x27;);
                 $pagination.append(&#x27;&lt;div id=&quot;&#x27; + this.pagination.dropdownId + &#x27;&quot; class=&quot;pagination-main pull-right pointer&quot;&gt;&lt;span class=&quot;inline-block&quot;&gt;&#x27; + paginationLabel + &#x27;&lt;/span&gt;&lt;span class=&quot;dropdown-toggle inline-block&quot;&gt;&lt;/span&gt;&lt;/div&gt;&#x27;);
-                $pagination.append(&#x27;&lt;div id=&quot;&#x27; + this.pagination.prevId + &#x27;&quot; class=&quot;icon-chevron-left pagination-next pull-right pointer&quot;&gt;&lt;/div&gt;&#x27;);
+                $pagination.append(&#x27;&lt;div id=&quot;&#x27; + this.pagination.prevId + &#x27;&quot; class=&quot;pagination-next pull-right pointer&quot;&gt;&lt;/div&gt;&#x27;);
             }
 
             return $paginationWrapper;
@@ -985,9 +1316,45 @@ define(function() {
                 {
                     name: &#x27;dropdown@husky&#x27;,
                     options: {
-                        el: &#x27;#&#x27; + this.pagination.dropdownId,
+                        el: this.sandbox.dom.find(&#x27;#&#x27; + this.pagination.dropdownId, this.$el),
                         setParentDropDown: true,
                         instanceName: this.dropdownInstanceName,
+                        alignment: &#x27;right&#x27;,
+                        data: data
+                    }
+                }
+            ]);
+        },
+
+        /**
+         * Prepares and initializes the dropdown for showing elements
+         */
+        prepareShowElementsDropdown: function() {
+            var i, length, data = [];
+
+            for(i = -1, length = this.options.showElementsSteps.length; ++i &lt; length;) {
+                if (this.options.showElementsSteps[i] &gt; this.data.numberOfAll) {
+                    break;
+                }
+                data.push({
+                    id: this.options.showElementsSteps[i],
+                    name: &#x27;&lt;strong&gt;&#x27;+ this.options.showElementsSteps[i] +&#x27;&lt;/strong&gt; &#x27; + this.sandbox.translate(&#x27;pagination.elements-per-page&#x27;)
+                });
+            }
+
+            data.push({divider: true});
+            data.push({
+               id: 0,
+               name: this.sandbox.translate(&#x27;pagination.show-all-elements&#x27;)
+            });
+
+            this.sandbox.start([
+                {
+                    name: &#x27;dropdown@husky&#x27;,
+                    options: {
+                        el: this.sandbox.dom.find(&#x27;#&#x27; + this.pagination.showElementsId, this.$el),
+                        setParentDropDown: true,
+                        instanceName: this.dropdownInstanceName + &#x27;-show&#x27;,
                         alignment: &#x27;left&#x27;,
                         data: data
                     }
@@ -1006,15 +1373,17 @@ define(function() {
 
             // when a valid uri is passed to this function - load from the uri
             if (!!uri) {
-                event.preventDefault();
+                if (!!event) {
+                    event.preventDefault();
+                }
                 url = uri;
 
                 // determine wether the page number received via the event from the dropdown is valid
             } else if (!!event.id &amp;&amp; event.id &gt; 0 &amp;&amp; event.id &lt;= this.data.pages) {
                 template = this.sandbox.uritemplate.parse(this.data.links.pagination);
-                url = this.sandbox.uritemplate.expand(template, {page: event.id});
+                url = this.sandbox.uritemplate.expand(template, {page: event.id, pageSize: this.data.pageSize});
 
-                // invalid - wether page number nor uri are valid
+                // invalid - whether page number nor uri are valid
             } else {
                 this.sandbox.logger.log(&quot;invalid page number or reached start/end!&quot;);
                 return;
@@ -1036,9 +1405,13 @@ define(function() {
 
         bindDOMEvents: function() {
 
+            // remove all events - prevents multiple events
+            this.sandbox.dom.unbind(this.sandbox.dom.find(&#x27;*&#x27;, this.$el));
+            this.sandbox.dom.unbind(this.$el);
+            this.sandbox.dom.unbind(window, &#x27;click&#x27;);
+
             if (!!this.options.selectItem.type &amp;&amp; this.options.selectItem.type === &#x27;checkbox&#x27;) {
-                this.$element.on(&#x27;click&#x27;, &#x27;tbody &gt; tr span.custom-checkbox-icon&#x27;, this.selectItem.bind(this));
-                this.$element.on(&#x27;change&#x27;, &#x27;tbody &gt; tr input[type=&quot;checkbox&quot;]&#x27;, this.selectItem.bind(this));
+                this.$element.on(&#x27;click&#x27;, &#x27;tbody &gt; tr input[type=&quot;checkbox&quot;]&#x27;, this.selectItem.bind(this));
                 this.$element.on(&#x27;click&#x27;, &#x27;th.select-all&#x27;, this.selectAllItems.bind(this));
             } else if (!!this.options.selectItem.type &amp;&amp; this.options.selectItem.type === &#x27;radio&#x27;) {
                 this.$element.on(&#x27;click&#x27;, &#x27;tbody &gt; tr input[type=&quot;radio&quot;]&#x27;, this.selectItem.bind(this));
@@ -1063,9 +1436,6 @@ define(function() {
 
                 // previous page
                 this.$element.on(&#x27;click&#x27;, &#x27;#&#x27; + this.pagination.prevId, this.changePage.bind(this, this.data.links.prev));
-
-                // show all
-                this.$element.on(&#x27;click&#x27;, &#x27;#&#x27; + this.pagination.showAllId, this.changePage.bind(this, this.data.links.all));
             }
 
             if (this.options.removeRow) {
@@ -1073,13 +1443,27 @@ define(function() {
             }
 
             if (this.options.sortable) {
-                this.$element.on(&#x27;click&#x27;, &#x27;thead th[data-attribute]&#x27;, this.changeSorting.bind(this));
+                this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.changeSorting.bind(this), &#x27;thead th[data-attribute]&#x27;);
             }
 
             if (!!this.options.editable) {
-                this.$element.on(&#x27;focusin&#x27;, &#x27;.editable&#x27;, this.focusOnEditable.bind(this));
-                this.$element.on(&#x27;focusout&#x27;, &#x27;.editable&#x27;, this.isDataChanged.bind(this));
+                this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.editCellValues.bind(this), &#x27;.editable&#x27;);
+
+                // FIXME does not work with focus - causes endless loop in some cases (husky-validation?)
+                this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.focusOnRow.bind(this), &#x27;tr&#x27;);
+
+                this.sandbox.dom.on(this.$el, &#x27;click&#x27;, function(event) {
+                    event.stopPropagation();
+                }, &#x27;tr&#x27;);
+
+                this.sandbox.dom.on(window, &#x27;click&#x27;, function() {
+                    if (!!this.lastFocusedRow) {
+                        this.prepareSave();
+                    }
+                }.bind(this));
             }
+
+            this.sandbox.dom.on(this.sandbox.dom.window, &#x27;resize&#x27;, this.windowResizeListener.bind(this));
 
 
             // Todo trigger event when click on clickable area
@@ -1105,6 +1489,59 @@ define(function() {
             // stop propagation
             //         event.stopPropagation();
             // }.bind(this));
+        },
+
+        /**
+         * Shows input and hides span
+         * @param event
+         */
+        editCellValues: function(event) {
+            var $target = event.currentTarget,
+                $input = this.sandbox.dom.next($target, &#x27;input&#x27;);
+
+            this.lockWidthsOfColumns(this.sandbox.dom.find(&#x27;table th&#x27;, this.$el));
+
+            this.sandbox.dom.hide($target);
+            this.sandbox.dom.removeClass($input, &#x27;hidden&#x27;);
+            $input[0].select();
+        },
+
+        /**
+         * Makes the widths of columns fixed when the table is in edit mode
+         * prevents changes in column width
+         * @param $th array of th elements
+         */
+        lockWidthsOfColumns: function($th) {
+
+            var width, minwidth;
+            this.columnWidths = [];
+
+            this.sandbox.dom.each($th, function(index, $el) {
+                minwidth = this.sandbox.dom.css($el, &#x27;min-width&#x27;);
+                this.columnWidths.push(minwidth);
+
+                width = this.sandbox.dom.outerWidth($el);
+                this.sandbox.dom.css($el, &#x27;min-width&#x27;, width);
+                this.sandbox.dom.css($el, &#x27;max-width&#x27;, width);
+                this.sandbox.dom.css($el, &#x27;width&#x27;, width);
+            }.bind(this));
+        },
+
+        /**
+         * Resets the min-width of columns and
+         * @param $th array of th elements
+         */
+        unlockWidthsOfColumns: function($th) {
+            if (!!this.columnWidths) {
+                this.sandbox.dom.each($th, function(index, $el) {
+                    // skip columns without data-attribute because the have min/max and normal widths by default
+                    if (!!this.sandbox.dom.data($el, &#x27;attribute&#x27;)) {
+                        this.sandbox.dom.css($el, &#x27;min-width&#x27;, this.columnWidths[index]);
+                        this.sandbox.dom.css($el, &#x27;max-width&#x27;, &#x27;&#x27;);
+                        this.sandbox.dom.css($el, &#x27;width&#x27;, &#x27;&#x27;);
+                    }
+                }.bind(this));
+            }
         },
 
         /**
@@ -1156,7 +1593,7 @@ define(function() {
 
             if (!!attribute) {
 
-                this.sandbox.dom.addClass($element, &#x27;bold&#x27;);
+                this.sandbox.dom.addClass($element, &#x27;is-selected&#x27;);
 
                 if (direction === &#x27;asc&#x27;) {
                     this.sandbox.dom.addClass($span, this.sort.ascClass + this.sort.additionalClasses);
@@ -1168,7 +1605,9 @@ define(function() {
         },
 
         bindCustomEvents: function() {
-            var searchInstanceName = &#x27;&#x27;;
+            var searchInstanceName = &#x27;&#x27;, columnOptionsInstanceName = &#x27;&#x27;;
+
+            this.sandbox.on(&#x27;husky.navigation.size.changed&#x27;, this.windowResizeListener.bind(this));
 
             // listen for private events
             this.sandbox.on(UPDATE, this.updateHandler.bind(this));
@@ -1181,11 +1620,32 @@ define(function() {
             // trigger selectedItems
             this.sandbox.on(ITEMS_GET_SELECTED, this.getSelectedItemsIds.bind(this));
 
+            // checks tablel width
+            this.sandbox.on(UPDATE_TABLE, this.windowResizeListener.bind(this));
 
             this.sandbox.on(DATA_GET, this.provideData.bind(this));
 
+            // filter data
+            this.sandbox.on(DATA_SEARCH, this.triggerSearch.bind(this));
+
             // pagination dropdown item clicked
             this.sandbox.on(&#x27;husky.dropdown.&#x27; + this.dropdownInstanceName + &#x27;.item.click&#x27;, this.changePage.bind(this, null));
+
+            // show-elements dropdown item clicked
+            this.sandbox.on(&#x27;husky.dropdown.datagrid-pagination-dropdown-show.item.click&#x27;, function(item) {
+                if (this.data.pageSize !== item.id || this.data.total === this.data.numberOfAll) {
+                    // show all
+                    if (item.id === 0) {
+                        // only if not already all are shown
+                        if (this.data.total !== this.data.numberOfAll) {
+                            this.changePage(this.data.links.all);
+                        }
+                    } else {
+                        this.data.pageSize = item.id;
+                        this.changePage(null, {id: 1});
+                    }
+                }
+            }.bind(this));
 
             // listen to search events
             if (!!this.options.searchInstanceName) {
@@ -1196,93 +1656,321 @@ define(function() {
                 this.sandbox.on(&#x27;husky.search&#x27; + searchInstanceName + &#x27;.reset&#x27;, this.triggerSearch.bind(this, &#x27;&#x27;));
             }
 
-            // listen for save event
-            if (!!this.options.editable) {
-                this.sandbox.on(DATA_SAVE, this.saveChangedData.bind(this));
+            // listen to search events
+            if (this.options.columnOptionsInstanceName || this.options.columnOptionsInstanceName === &#x27;&#x27;) {
+                columnOptionsInstanceName = (this.options.columnOptionsInstanceName !== &#x27;&#x27;) ? &#x27;.&#x27; + this.options.columnOptionsInstanceName : &#x27;&#x27;;
+                this.sandbox.on(&#x27;husky.column-options&#x27; + columnOptionsInstanceName + &#x27;.saved&#x27;, this.filterColumns.bind(this));
             }
+        },
 
+
+        /**
+         * Put focus on table row and remember values
+         */
+        focusOnRow: function(event) {
+
+            var $tr = event.currentTarget,
+                domId = this.sandbox.dom.data($tr, &#x27;dom-id&#x27;);
+
+            this.sandbox.logger.log(&quot;focus on row&quot;, domId);
+
+            if (!!this.lastFocusedRow &amp;&amp; this.lastFocusedRow.domId !== domId) { // new focus
+                this.prepareSave();
+                this.lastFocusedRow = this.getInputValuesOfRow($tr);
+                this.sandbox.logger.log(&quot;focused &quot; + this.lastFocusedRow.domId + &quot; now!&quot;);
+            } else if (!this.lastFocusedRow) { // first focus
+                this.lastFocusedRow = this.getInputValuesOfRow($tr);
+                this.sandbox.logger.log(&quot;focused &quot; + this.lastFocusedRow.domId + &quot; now!&quot;);
+            }
         },
 
         /**
-         * Remembers value of previously focused editable field
-         * Is used by isDataChanged to decide wether the value
-         * changed or not
+         * Returns an object with the current values of the inputfields, id and domId
+         * @param $tr table row
+         * @returns {{domId: *, id: *, fields: Array}}
          */
-        focusOnEditable: function(event) {
-            var $td = this.sandbox.dom.parent(event.currentTarget),
-                $tr = this.sandbox.dom.parent($td),
-                field = this.sandbox.dom.data($td, &#x27;field&#x27;),
-                id = this.sandbox.dom.data($tr, &#x27;id&#x27;),
-                value = event.currentTarget.innerText;
+        getInputValuesOfRow: function($tr) {
 
-            this.lastFocusedEditableElement = {
+            var id = this.sandbox.dom.data($tr, &#x27;id&#x27;),
+                domId = this.sandbox.dom.data($tr, &#x27;dom-id&#x27;),
+                $inputs = this.sandbox.dom.find(&#x27;input[type=text]&#x27;, $tr),
+                fields = [], field, $td;
+
+            this.sandbox.dom.each($inputs, function(index, $input) {
+                $td = this.sandbox.dom.parent($input, &#x27;td&#x27;);
+                field = this.sandbox.dom.data($td, &#x27;field&#x27;);
+
+                fields[field] = $input.value;
+
+            }.bind(this));
+            return {
+                domId: domId,
                 id: id,
-                field: field,
-                value: value
+                fields: fields
             };
+
         },
 
         /**
-         * Triggered when editable field looses focus
+         * Perparse to save new/changed data includes validation
          */
-        isDataChanged: function(event) {
-            var $td = this.sandbox.dom.parent(event.currentTarget),
-                $tr = this.sandbox.dom.parent($td),
-                field = this.sandbox.dom.data($td, &#x27;field&#x27;),
-                id = this.sandbox.dom.data($tr, &#x27;id&#x27;),
-                value = event.currentTarget.innerText,
-                el;
+        prepareSave: function() {
 
-            // last focused object should be same as the one previously left
-            if (this.lastFocusedEditableElement.id === id) {
-                if (this.lastFocusedEditableElement.value !== value) {
+            if (!!this.lastFocusedRow) {
 
-                    // element already changed in the past and therefor in the changed data array
-                    this.sandbox.util.each(this.changedData, function(index, value) {
-                        if (value.id === id) {
-                            el = value;
-                        }
-                    }.bind(this));
+                var $tr = this.sandbox.dom.find(&#x27;tr[data-dom-id=&#x27; + this.lastFocusedRow.domId + &#x27;]&#x27;, this.$el),
+                    lastFocusedRowCurrentData = this.getInputValuesOfRow($tr),
 
-                    // changed for the first time
-                    if (!el) {
-                        el = {};
-                        el.id = id;
-                        el[field] = value;
+                    data = {},
+                    key,
+                    url,
+                    isValid = true,
+                    valuesChanged = false,
+                    isDataEmpty;
 
-                        this.changedData.push(el);
+                data.id = lastFocusedRowCurrentData.id;
 
-                        // changed changes
-                    } else {
-                        el[field] = value;
-                    }
+                // validate locally
+                if (!!this.options.validation &amp;&amp; !this.sandbox.form.validate(&#x27;#&#x27; + this.elId)) {
+                    isValid = false;
                 }
-            } else {
-                this.sandbox.logger.log(&quot;Something went wrong!&quot;);
+
+                isDataEmpty = this.isDataRowEmpty(lastFocusedRowCurrentData.fields);
+
+                // do nothing when data is not valid or no data exists
+                if (!!isValid &amp;&amp; !isDataEmpty) {
+
+                    // check which values changed and remember these
+                    for (key in lastFocusedRowCurrentData.fields) {
+                        if (this.lastFocusedRow.fields.hasOwnProperty(key) &amp;&amp; this.lastFocusedRow.fields[key] !== lastFocusedRowCurrentData.fields[key]) {
+                            data[key] = lastFocusedRowCurrentData.fields[key];
+                            valuesChanged = true;
+                        }
+                    }
+
+                    // trigger save action when data changed
+                    if (!!valuesChanged) {
+
+                        this.sandbox.emit(DATA_CHANGED);
+                        url = this.getUrlWithoutParams();
+
+                        // save via put
+                        if (!!data.id) {
+                            this.save(data, &#x27;PUT&#x27;, url + &#x27;/&#x27; + data.id, $tr, this.lastFocusedRow.domId);
+
+                            // save via post
+                        } else {
+                            this.save(data, &#x27;POST&#x27;, url, $tr, this.lastFocusedRow.domId);
+                        }
+
+                        // reset last focused row after save
+                        this.lastFocusedRow = null;
+
+                    } else if (this.errorInRow.indexOf(this.lastFocusedRow.domId) !== -1) {
+                        this.sandbox.logger.log(&quot;Error in table row!&quot;);
+
+                    } else {
+                        // nothing changed - reset immediately
+                        this.sandbox.logger.log(&quot;No data changed!&quot;);
+                        this.resetRowInputFields($tr);
+                        this.unlockWidthsOfColumns(this.sandbox.dom.find(&#x27;table th&#x27;, this.$el));
+                    }
+
+                } else {
+                    this.sandbox.logger.log(&quot;There seems to be some invalid or empty data!&quot;);
+                }
+
+            }
+        },
+
+        /**
+         * Checks wether data is in row or not
+         * @param data fields object
+         */
+        isDataRowEmpty: function(data) {
+
+            var isEmpty = true, field;
+
+            for (field in data) {
+                if (data[field] !== &#x27;&#x27;) {
+                    isEmpty = false;
+                    break;
+                }
             }
 
+            return isEmpty;
+        },
+
+
+        /**
+         * Returns url without params
+         */
+        getUrlWithoutParams: function() {
+            var url = this.data.links.self;
+
+            if (url.indexOf(&#x27;?&#x27;) !== -1) {
+                return url.substring(0, url.indexOf(&#x27;?&#x27;));
+            }
+
+            return url;
         },
 
         /**
-         * Saves the changes for an editable list
-         * Triggered with the husky.datagrid.data.save event
+         * Saves changes
+         * @param data
+         * @param method
+         * @param url
+         * @param $tr table row
+         * @param domId
          */
-        saveChangedData: function() {
+        save: function(data, method, url, $tr, domId) {
 
-            this.sandbox.logger.log(&quot;saving data...&quot;);
+            var message;
 
-            var url = this.data.links.self,
-                type = &#x27;PATCH&#x27;;
+            this.sandbox.logger.log(&quot;data to save&quot;, data);
+            this.showLoadingIconForRow($tr);
 
-            this.sandbox.util.save(url, type, this.changedData)
-                .then(function() {
-                    this.sandbox.logger.log(&quot;saved successfully!&quot;);
-                })
-                .fail(function() {
-                    this.sandbox.logger.log(&quot;failed during save!&quot;);
+            this.sandbox.util.save(url, method, data)
+                .then(function(data, textStatus) {
+
+                    // remove row from error list
+                    if (this.errorInRow.indexOf(domId) !== -1) {
+                        this.errorInRow.splice(this.errorInRow.indexOf(domId), 1);
+                    }
+
+                    this.sandbox.emit(DATA_SAVED, data, textStatus);
+                    this.hideLoadingIconForRow($tr);
+                    this.resetRowInputFields($tr);
+                    this.unlockWidthsOfColumns(this.sandbox.dom.find(&#x27;table th&#x27;, this.$el));
+
+                    // set new returned data
+                    this.setDataForRow($tr[0], data);
+
+                }.bind(this))
+                .fail(function(jqXHR, textStatus, error) {
+                    this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
+                    this.hideLoadingIconForRow($tr);
+
+                    // remember row with error
+                    if (this.errorInRow.indexOf(domId) === -1) {
+                        this.errorInRow.push(domId);
+                    }
+
+                    message = JSON.parse(jqXHR.responseText);
+
+                    // error in context with database constraints
+                    if (!!message.field) {
+                        this.showValidationError($tr, message.field);
+                    } else {
+                        this.sandbox.logger.error(&quot;An error occured during save of changed data!&quot;);
+                    }
+
                 }.bind(this));
         },
 
+
+        /**
+         * Sets the data for a row
+         * @param $tr dom row
+         * @param data
+         */
+        setDataForRow: function($tr, data) {
+
+            var editables, field, $input;
+
+            // set id
+            this.sandbox.dom.data($tr, &#x27;id&#x27;, data.id);
+            this.sandbox.dom.attr($tr, &#x27;data-id&#x27;, data.id);
+
+            this.sandbox.util.each(this.sandbox.dom.find(&#x27;td&#x27;, $tr), function(index, $el) {
+
+                editables = this.sandbox.dom.find(&#x27;.editable&#x27;, $el);
+                field = this.sandbox.dom.data($el, &#x27;field&#x27;);
+                $input = this.sandbox.dom.find(&#x27;input[type=text]&#x27;, $el);
+
+                if (!!field) {
+                    if (!!editables &amp;&amp; editables.length === 1) { // set values in spans
+                        this.sandbox.dom.html(editables[0], data[field]);
+                        this.sandbox.dom.val($input, data[field]);
+                    } else { // set values in td
+                        this.sandbox.dom.html($el, data[field]);
+                    }
+                }
+
+            }.bind(this));
+        },
+
+        /**
+         * Shows loading icon for a tr
+         * @param $tr
+         */
+        showLoadingIconForRow: function($tr) {
+            if (!!this.options.progressRow) {
+                var domId = this.sandbox.dom.data($tr, &#x27;dom-id&#x27;);
+                this.sandbox.dom.addClass(&#x27;tr[data-dom-id=&#x27; + domId + &#x27;] td:last&#x27;, &#x27;is-loading&#x27;);
+            }
+        },
+
+        /**
+         * Hides loading icon for a tr
+         * @param $tr
+         */
+        hideLoadingIconForRow: function($tr) {
+            if (!!this.options.progressRow) {
+                var domId = this.sandbox.dom.data($tr, &#x27;dom-id&#x27;);
+                this.sandbox.dom.removeClass(&#x27;tr[data-dom-id=&#x27; + domId + &#x27;] td&#x27;, &#x27;is-loading&#x27;);
+            }
+        },
+
+        /**
+         * Sets the validation error class for a dom element
+         * @param $domElement
+         * @param field name of field which caused the error
+         */
+        showValidationError: function($domElement, field) {
+
+            var $td = this.sandbox.dom.find(&#x27;td[data-field=&#x27; + field + &#x27;]&#x27;, $domElement)[0],
+                $input = this.sandbox.dom.find(&#x27;input&#x27;, $td)[0];
+
+            if (this.sandbox.dom.hasClass($td, &#x27;husky-validate-success&#x27;)) {
+                this.sandbox.dom.removeClass($td, &#x27;husky-validate-success&#x27;);
+            }
+
+            this.sandbox.dom.addClass($td, &#x27;husky-validate-error&#x27;);
+
+            // add class for serverside validation error
+            // TODO remove this when correct validation type is implmented
+            if (!this.sandbox.dom.hasClass($input, &#x27;server-validation-error&#x27;)) {
+                this.sandbox.dom.addClass($input, &#x27;server-validation-error&#x27;);
+            }
+        },
+
+        /**
+         *  Hides input fields and displays new content for table row
+         * @param $tr
+         */
+        resetRowInputFields: function($tr) {
+
+            var $inputFields = this.sandbox.dom.find(&#x27;input[type=text]:not(.hidden)&#x27;, $tr),
+                content, $span;
+
+            this.sandbox.util.each($inputFields, function(index, $field) {
+
+                // remove css class for server side validation error
+                // TODO: remove this when validation type is implemented
+                if (this.sandbox.dom.hasClass($field, &#x27;server-validation-error&#x27;)) {
+                    this.sandbox.dom.removeClass($field, &#x27;server-validation-error&#x27;);
+                }
+
+                content = this.sandbox.dom.$($field).val();
+                $span = this.sandbox.dom.prev($field, &#x27;.editable&#x27;);
+                $span.text(content);
+
+                this.sandbox.dom.addClass($field, &#x27;hidden&#x27;);
+                this.sandbox.dom.show($span);
+
+            }.bind(this));
+        },
 
         /**
          * Provides data of the list to the caller
@@ -1312,7 +2000,7 @@ define(function() {
         /**
          * this will trigger a api search
          */
-        triggerSearch: function(searchString) {
+        triggerSearch: function(searchString, searchFields) {
 
             var template, url,
             // TODO: get searchFields
@@ -1326,7 +2014,37 @@ define(function() {
                 url: url,
                 success: function() {
                     this.removeLoader();
-                    this.sandbox.emit(UPDATE, &#x27;updated search&#x27;);
+                    this.sandbox.emit(UPDATED, &#x27;updated after search&#x27;);
+                }.bind(this)
+            });
+        },
+
+
+        /**
+         * is called when columns are changed
+         */
+        filterColumns: function(fieldsData) {
+
+            var template, url,
+                parsed = this.parseFieldsData(fieldsData);
+
+            this.addLoader();
+
+            template = this.sandbox.uritemplate.parse(this.data.links.filter);
+            url = this.sandbox.uritemplate.expand(template, {fieldsList: parsed.urlFields.split(&#x27;,&#x27;)});
+
+            this.options.columns = parsed.columns;
+
+            this.sandbox.dom.width(this.$element, &#x27;100%&#x27;);
+            if (!!this.options.contentContainer) {
+                this.sandbox.dom.css(this.options.contentContainer, &#x27;max-width&#x27;, &#x27;&#x27;);
+            }
+
+            this.load({
+                url: url,
+                success: function() {
+                    this.removeLoader();
+                    this.sandbox.emit(UPDATED, &#x27;updated after search&#x27;);
                 }.bind(this)
             });
         },
@@ -1337,8 +2055,93 @@ define(function() {
          * Binds DOM events
          */
         render: function() {
+            // add full-width class
+            if (this.options.fullWidth === true) {
+                this.sandbox.dom.addClass(this.$element, constants.fullWidthClass);
+            }
+
             this.$originalElement.html(this.$element);
             this.bindDOMEvents();
+
+            // initialize validation
+            if (!!this.options.validation) {
+                this.sandbox.form.create(this.$el);
+            }
+        },
+
+        /**
+         * this function is responsible for responsiveness of datagrid and is called everytime after resizing window and after initialization
+         */
+        windowResizeListener: function() {
+
+            var finalWidth,
+                contentPaddings = 0,
+                content = !!this.options.contentContainer ? this.options.contentContainer : this.$el,
+                tableWidth = this.sandbox.dom.width(this.$table),
+                tableOffset = this.sandbox.dom.offset(this.$table),
+                contentWidth = this.sandbox.dom.width(content),
+                windowWidth = this.sandbox.dom.width(this.sandbox.dom.window),
+                overlaps = false,
+                originalMaxWidth = contentWidth;
+
+            tableOffset.right = tableOffset.left + tableWidth;
+
+
+            if (!!this.options.contentContainer &amp;&amp; !!this.originalMaxWidth) {
+                // get original max-width and right margin
+                originalMaxWidth = this.originalMaxWidth;
+                contentPaddings = this.contentPaddings;
+            }
+
+            // if table is greater than max content width
+            if (tableWidth &gt; originalMaxWidth - contentPaddings &amp;&amp; contentWidth &lt; windowWidth - tableOffset.left) {
+                // adding this class, forces table cells to shorten long words
+                this.sandbox.dom.addClass(this.$element, &#x27;oversized&#x27;);
+                overlaps = true;
+                // reset table width and offset
+                tableWidth = this.sandbox.dom.width(this.$table);
+                tableOffset.right = tableOffset.left + tableWidth;
+            }
+
+            // tablecontainer should have width of table in normal cases
+            finalWidth = tableWidth;
+
+            // if table &gt; window-size set width to available space
+            if (tableOffset.right + this.contentMarginRight &gt; windowWidth) {
+                finalWidth = windowWidth - tableOffset.left;
+            } else {
+                // set scroll position back
+                this.sandbox.dom.scrollLeft(this.$element, 0);
+            }
+
+            // width is not allowed to be smaller than the width of content
+            if (finalWidth &lt; contentWidth) {
+                finalWidth = contentWidth;
+            }
+
+            // if contentContainer is set, adapt maximum size
+            if (!!this.options.contentContainer) {
+                this.sandbox.dom.css(this.options.contentContainer, &#x27;max-width&#x27;, finalWidth + contentPaddings);
+                finalWidth = this.sandbox.dom.width(this.options.contentContainer);
+                if (!overlaps) {
+                    // if table does not overlap border, set content to original width
+                    this.sandbox.dom.css(this.options.contentContainer, &#x27;max-width&#x27;, &#x27;&#x27;);
+                }
+            }
+
+            if (this.options.fullWidth === true) {
+                finalWidth = finalWidth - constants.overflowIconSpacing;
+            }
+
+            // now set width
+            this.sandbox.dom.width(this.$element, finalWidth);
+
+            // check scrollwidth and add class
+            if (this.sandbox.dom.get(this.$tableContainer, 0).scrollWidth &gt; finalWidth) {
+                this.sandbox.dom.addClass(this.$tableContainer, &#x27;overflow&#x27;);
+            } else {
+                this.sandbox.dom.removeClass(this.$tableContainer, &#x27;overflow&#x27;);
+            }
         },
 
         /**
@@ -1346,11 +2149,24 @@ define(function() {
          * @returns {*}
          */
         addLoader: function() {
-            return this.$element
+            this.$element
                 .outerWidth(this.$element.outerWidth())
                 .outerHeight(this.$element.outerHeight())
-                .empty()
-                .addClass(&#x27;is-loading&#x27;);
+                .empty();
+
+            var $container = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;datagrid-loader&quot;/&gt;&#x27;);
+            this.sandbox.dom.append(this.$element, $container);
+
+            this.sandbox.start([{
+                name: &#x27;loader@husky&#x27;,
+                options: {
+                    el: $container,
+                    size: &#x27;100px&#x27;,
+                    color: &#x27;#cccccc&#x27;
+                }
+            }]);
+
+            return this.$element;
         },
 
         /**
@@ -1358,7 +2174,10 @@ define(function() {
          * @returns {*}
          */
         removeLoader: function() {
-            return this.$element.removeClass(&#x27;is-loading&#x27;).outerHeight(&quot;&quot;).outerWidth(&quot;&quot;);
+            return this.$element.outerHeight(&quot;&quot;).outerWidth(&quot;&quot;);
+            this.sandbox.stop(this.sandbox.dom.find(&#x27;.datagrid-loader&#x27;, this.$element));
+
+            return this.$element;
         },
 
         /**
@@ -1367,23 +2186,43 @@ define(function() {
          * @param callback
          */
         getSelectedItemsIds: function(callback) {
+
+            // get selected items
+            var ids = this.getIdsOfSelectedRows();
+
             if (typeof callback === &#x27;function&#x27;) {
-                callback(this.selectedItemIds);
+                callback(ids);
             } else {
-                this.sandbox.emit(ITEMS_SELECTED, this.selectedItemIds);
+                this.sandbox.emit(ITEMS_SELECTED, ids);
             }
         },
 
         templates: {
 
-            showAll: function(total, elementsLabel, showAllLabel, id) {
+            showElements: function(id) {
+                var desc = &#x27;&#x27;;
+                if (this.data.total === this.data.numberOfAll) {
+                    desc = this.sandbox.translate(&#x27;pagination.show-all-elements&#x27;);
+                } else {
+                    desc = this.sandbox.translate(&#x27;pagination.show&#x27;) +&#x27; &lt;strong&gt;&#x27;+ this.data.total +&#x27;&lt;/strong&gt; &#x27;+ this.sandbox.translate(&#x27;pagination.elements-of&#x27;) +&#x27; &#x27;+ this.data.numberOfAll;
+                }
 
-                return [&#x27;&lt;div class=&quot;show-all grid-col-4 m-top-10&quot;&gt;&#x27;, total, &#x27; &#x27;, elementsLabel, &#x27; (&lt;a id=&quot;&#x27; + id + &#x27;&quot; href=&quot;&quot;&gt;&#x27;, showAllLabel, &#x27;&lt;/a&gt;)&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
+                return [
+                    &#x27;&lt;div class=&quot;show-elements&quot;&gt;&#x27;,
+                        &#x27;&lt;div class=&quot;dropdown-trigger&quot; id=&quot;&#x27;+ id +&#x27;&quot;&gt;&#x27;+ desc +&#x27;&lt;span class=&quot;dropdown-toggle&quot;&gt;&lt;/span&gt;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;
+                ].join(&#x27;&#x27;);
             },
 
             removeRow: function() {
                 return [
-                    &#x27;&lt;span class=&quot;icon-remove&quot;&gt;&lt;/span&gt;&#x27;
+                    &#x27;&lt;span class=&quot;icon-remove pointer&quot;&gt;&lt;/span&gt;&#x27;
+                ].join(&#x27;&#x27;);
+            },
+
+            progressRow: function() {
+                return [
+                    &#x27;&lt;span class=&quot;&quot;&gt;&lt;/span&gt;&#x27;
                 ].join(&#x27;&#x27;);
             },
 
@@ -1395,8 +2234,10 @@ define(function() {
                 name = (!!data.name) ? &#x27; name=&quot;&#x27; + data.name + &#x27;&quot;&#x27; : &#x27;&#x27;;
 
                 return [
-                    &#x27;&lt;input&#x27;, id, name, &#x27; type=&quot;checkbox&quot; class=&quot;custom-checkbox&quot;/&gt;&#x27;,
-                    &#x27;&lt;span class=&quot;custom-checkbox-icon&quot;&gt;&lt;/span&gt;&#x27;
+                    &#x27;&lt;div class=&quot;custom-checkbox&quot;&gt;&#x27;,
+                        &#x27;&lt;input&#x27;, id, name, &#x27; type=&quot;checkbox&quot; data-form=&quot;false&quot;/&gt;&#x27;,
+                        &#x27;&lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;
                 ].join(&#x27;&#x27;);
             },
 
@@ -1408,8 +2249,10 @@ define(function() {
                 name = (!!data.name) ? &#x27; name=&quot;&#x27; + data.name + &#x27;&quot;&#x27; : &#x27;&#x27;;
 
                 return [
-                    &#x27;&lt;input&#x27;, id, name, &#x27; type=&quot;radio&quot; class=&quot;custom-radio&quot;/&gt;&#x27;,
-                    &#x27;&lt;span class=&quot;custom-radio-icon&quot;&gt;&lt;/span&gt;&#x27;
+                    &#x27;&lt;div class=&quot;custom-radio&quot;&gt;&#x27;,
+                        &#x27;&lt;input&#x27;, id, name, &#x27; type=&quot;radio&quot;/&gt;&#x27;,
+                        &#x27;&lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;
                 ].join(&#x27;&#x27;);
             }
         }
