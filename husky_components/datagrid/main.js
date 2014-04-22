@@ -43,6 +43,8 @@
  * @param {String} [options.columnMinWidth] sets the minimal width of table columns
  * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
  * @param {Array} [options.showElementsSteps] Array which contains the steps for the Show-Elements-dropdown as integers
+ * @param {Boolean} [options.editPencil.show] Boolean which shows the pencil on hover and throws an event on click
+ * @param {Number} [options.editPencil.column] column name in which the pencil should be shown
  * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
  */
 define(function() {
@@ -88,7 +90,11 @@ define(function() {
             progressRow: true,
             startTabIndex: 99999,
             columnMinWidth: '70px',
-            showElementsSteps: [10, 20, 50, 100, 500]
+            showElementsSteps: [10, 20, 50, 100, 500],
+            editPencil: {
+                show: false,
+                column: null
+            }
         },
 
         types = {
@@ -263,6 +269,12 @@ define(function() {
          * @event husky.datagrid.data.get
          */
             DATA_GET = namespace + 'data.get',
+
+        /**
+         * triggers husky.datagrid.edit.item
+         * @event husky.datagrid.edit.item
+         */
+            EDIT_ITEM = namespace + 'edit.item',
 
         /**
          * calculates the width of a text by creating a tablehead element and measure its width
@@ -841,7 +853,11 @@ define(function() {
                     }
 
                 } else {
-                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '>' + tblCellContent + '</td>');
+                    if(!!this.options.editPencil.show && this.options.editPencil.column === key) {
+                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '>' + tblCellContent + '<span class="icon-edit-pen edit"></span></td>');
+                    } else {
+                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '>' + tblCellContent + '</td>');
+                    }
                 }
             } else {
                 this.tblRowAttributes += ' data-' + key + '="' + value + '"';
@@ -1230,20 +1246,20 @@ define(function() {
         prepareShowElementsDropdown: function() {
             var i, length, data = [];
 
-            for(i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
+            for (i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
                 if (this.options.showElementsSteps[i] > this.data.numberOfAll) {
                     break;
                 }
                 data.push({
                     id: this.options.showElementsSteps[i],
-                    name: '<strong>'+ this.options.showElementsSteps[i] +'</strong> ' + this.sandbox.translate('pagination.elements-per-page')
+                    name: '<strong>' + this.options.showElementsSteps[i] + '</strong> ' + this.sandbox.translate('pagination.elements-per-page')
                 });
             }
 
             data.push({divider: true});
             data.push({
-               id: 0,
-               name: this.sandbox.translate('pagination.show-all-elements')
+                id: 0,
+                name: this.sandbox.translate('pagination.show-all-elements')
             });
 
             this.sandbox.start([
@@ -1387,6 +1403,15 @@ define(function() {
             // stop propagation
             //         event.stopPropagation();
             // }.bind(this));
+
+            if(!!this.options.editPencil.show) {
+                this.sandbox.dom.on(this.$el, 'click', function(event){
+                    event.stopPropagation();
+                    var id = this.sandbox.dom.data(this.sandbox.dom.closest(event.currentTarget, 'tr'), 'id');
+                    this.sandbox.emit(EDIT_ITEM,id);
+
+                }.bind(this), 'span.edit');
+            }
         },
 
         /**
@@ -1900,9 +1925,9 @@ define(function() {
          */
         triggerSearch: function(searchString, searchFields) {
 
-            var template, url,
+            var template, url;
             // TODO: get searchFields
-                searchFields;
+//                searchFields;
 
             this.addLoader();
             template = this.sandbox.uritemplate.parse(this.data.links.find);
@@ -2055,14 +2080,16 @@ define(function() {
             var $container = this.sandbox.dom.createElement('<div class="datagrid-loader"/>');
             this.sandbox.dom.append(this.$element, $container);
 
-            this.sandbox.start([{
-                name: 'loader@husky',
-                options: {
-                    el: $container,
-                    size: '100px',
-                    color: '#cccccc'
+            this.sandbox.start([
+                {
+                    name: 'loader@husky',
+                    options: {
+                        el: $container,
+                        size: '100px',
+                        color: '#cccccc'
+                    }
                 }
-            }]);
+            ]);
 
             return this.$element;
         },
@@ -2072,9 +2099,8 @@ define(function() {
          * @returns {*}
          */
         removeLoader: function() {
-            return this.$element.outerHeight("").outerWidth("");
+            this.$element.outerHeight("").outerWidth("");
             this.sandbox.stop(this.sandbox.dom.find('.datagrid-loader', this.$element));
-
             return this.$element;
         },
 
@@ -2102,12 +2128,12 @@ define(function() {
                 if (this.data.total === this.data.numberOfAll) {
                     desc = this.sandbox.translate('pagination.show-all-elements');
                 } else {
-                    desc = this.sandbox.translate('pagination.show') +' <strong>'+ this.data.total +'</strong> '+ this.sandbox.translate('pagination.elements-of') +' '+ this.data.numberOfAll;
+                    desc = this.sandbox.translate('pagination.show') + ' <strong>' + this.data.total + '</strong> ' + this.sandbox.translate('pagination.elements-of') + ' ' + this.data.numberOfAll;
                 }
 
                 return [
                     '<div class="show-elements">',
-                        '<div class="dropdown-trigger" id="'+ id +'">'+ desc +'<span class="dropdown-toggle"></span></div>',
+                    '<div class="dropdown-trigger" id="' + id + '">' + desc + '<span class="dropdown-toggle"></span></div>',
                     '</div>'
                 ].join('');
             },
@@ -2133,8 +2159,8 @@ define(function() {
 
                 return [
                     '<div class="custom-checkbox">',
-                        '<input', id, name, ' type="checkbox" data-form="false"/>',
-                        '<span class="icon"></span>',
+                    '<input', id, name, ' type="checkbox" data-form="false"/>',
+                    '<span class="icon"></span>',
                     '</div>'
                 ].join('');
             },
@@ -2148,8 +2174,8 @@ define(function() {
 
                 return [
                     '<div class="custom-radio">',
-                        '<input', id, name, ' type="radio"/>',
-                        '<span class="icon"></span>',
+                    '<input', id, name, ' type="radio"/>',
+                    '<span class="icon"></span>',
                     '</div>'
                 ].join('');
             }
