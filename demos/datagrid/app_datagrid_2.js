@@ -35,7 +35,7 @@ require(['lib/husky'], function(Husky) {
             '},' +
             '"_embedded":' +
             '[' +
-            '   { "id": "1", "content1": "B Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
+            '   { "id": "1", "content1": "B Hallo 1.1 asdf", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
             '   { "id": "2", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
             '   { "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
             '   { "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
@@ -66,6 +66,10 @@ require(['lib/husky'], function(Husky) {
                     },
                     className: "myClass",
                     removeRow: false,
+                    editPencil: {
+                        show: true,
+                        column: 1
+                    },
                     progressRow: true,
                     pagination: true,
                     contentContainer: '#content',

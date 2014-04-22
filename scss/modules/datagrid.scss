@@ -78,4 +78,17 @@
     .dropdown-toggle::after {
         margin-left: 12px;
     }
+
+    .edit {
+        margin-left: 25px;
+        background-color: $highlightColor;
+        padding: 3px 10px;
+        font-size: 10px;
+        color: white;
+        border-radius: 3px;
+        display: none;
+    }
+    tr:hover .edit {
+        display:inline;
+    }
 }

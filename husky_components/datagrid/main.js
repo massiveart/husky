@@ -43,6 +43,8 @@
  * @param {String} [options.columnMinWidth] sets the minimal width of table columns
  * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
  * @param {Array} [options.showElementsSteps] Array which contains the steps for the Show-Elements-dropdown as integers
+ * @param {Boolean} [options.editPencil.show] Boolean which shows the pencil on hover and throws an event on click
+ * @param {Number} [options.editPencil.column] Columnnumber on which the pencil should be shown
  */
 define(function() {
 
@@ -87,7 +89,10 @@ define(function() {
             startTabIndex: 99999,
             columnMinWidth: '70px',
             showElementsSteps: [10, 20, 50, 100, 500],
-
+            editPencil: {
+                show: false,
+                column: 1
+            }
         },
 
         namespace = 'husky.datagrid.',
@@ -251,6 +256,12 @@ define(function() {
          * @event husky.datagrid.data.get
          */
             DATA_GET = namespace + 'data.get',
+
+        /**
+         * triggers husky.datagrid.edit.item
+         * @event husky.datagrid.edit.item
+         */
+            EDIT_ITEM = namespace + 'edit.item',
 
         /**
          * calculates the width of a text by creating a tablehead element and measure its width
@@ -819,7 +830,11 @@ define(function() {
                     }
 
                 } else {
-                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '>' + tblCellContent + '</td>');
+                    if(!!this.options.editPencil.show && this.options.editPencil.column === (index+1)) {
+                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '>' + tblCellContent + '<span class="icon-edit-pen edit"></span></td>');
+                    } else {
+                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '>' + tblCellContent + '</td>');
+                    }
                 }
             } else {
                 this.tblRowAttributes += ' data-' + key + '="' + value + '"';
@@ -1339,6 +1354,15 @@ define(function() {
             // stop propagation
             //         event.stopPropagation();
             // }.bind(this));
+
+            if(!!this.options.editPencil.show) {
+                this.sandbox.dom.on(this.$el, 'click', function(event){
+                    event.stopPropagation();
+                    var id = this.sandbox.dom.data(this.sandbox.dom.closest(event.currentTarget, 'tr'), 'id');
+                    this.sandbox.emit(EDIT_ITEM,id);
+
+                }.bind(this), 'span.edit');
+            }
         },
 
         /**

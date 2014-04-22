@@ -7496,6 +7496,20 @@ a.btn-black, a.btn-highlight {
 .husky-datagrid .dropdown-toggle::after {
   margin-left: 12px;
 }
+/* line 82, ../scss/modules/datagrid.scss */
+.husky-datagrid .edit {
+  margin-left: 25px;
+  background-color: #249fbe;
+  padding: 3px 10px;
+  font-size: 10px;
+  color: white;
+  border-radius: 3px;
+  display: none;
+}
+/* line 91, ../scss/modules/datagrid.scss */
+.husky-datagrid tr:hover .edit {
+  display: inline;
+}
 
 /* line 3, ../scss/modules/label.scss */
 .husky-label-error,
