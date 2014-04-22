@@ -26570,6 +26570,7 @@ define('__component__$column-options@husky',[],function() {
  * @param {String} [options.columns.content] column title
  * @param {String} [options.columns.width] width of column
  * @param {String} [options.columns.class] css class of th
+ * @param {String} [options.columns.type] type of the column. Used to manipulate its content (e.g. 'date')
  * @param {String} [options.columns.attribute] mapping information to data (if not set it will just iterate of attributes)
  * @param {Boolean} [options.appendTBody] add TBODY to table
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search event
