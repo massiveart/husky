@@ -86,7 +86,8 @@ define(function() {
             progressRow: true,
             startTabIndex: 99999,
             columnMinWidth: '70px',
-            showElementsSteps: [10, 20, 50, 100, 500]
+            showElementsSteps: [10, 20, 50, 100, 500],
+
         },
 
         namespace = 'husky.datagrid.',
@@ -1181,20 +1182,20 @@ define(function() {
         prepareShowElementsDropdown: function() {
             var i, length, data = [];
 
-            for(i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
+            for (i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
                 if (this.options.showElementsSteps[i] > this.data.numberOfAll) {
                     break;
                 }
                 data.push({
                     id: this.options.showElementsSteps[i],
-                    name: '<strong>'+ this.options.showElementsSteps[i] +'</strong> ' + this.sandbox.translate('pagination.elements-per-page')
+                    name: '<strong>' + this.options.showElementsSteps[i] + '</strong> ' + this.sandbox.translate('pagination.elements-per-page')
                 });
             }
 
             data.push({divider: true});
             data.push({
-               id: 0,
-               name: this.sandbox.translate('pagination.show-all-elements')
+                id: 0,
+                name: this.sandbox.translate('pagination.show-all-elements')
             });
 
             this.sandbox.start([
@@ -1851,9 +1852,9 @@ define(function() {
          */
         triggerSearch: function(searchString, searchFields) {
 
-            var template, url,
+            var template, url;
             // TODO: get searchFields
-                searchFields;
+//                searchFields;
 
             this.addLoader();
             template = this.sandbox.uritemplate.parse(this.data.links.find);
@@ -1997,14 +1998,16 @@ define(function() {
             var $container = this.sandbox.dom.createElement('<div class="datagrid-loader"/>');
             this.sandbox.dom.append(this.$element, $container);
 
-            this.sandbox.start([{
-                name: 'loader@husky',
-                options: {
-                    el: $container,
-                    size: '100px',
-                    color: '#cccccc'
+            this.sandbox.start([
+                {
+                    name: 'loader@husky',
+                    options: {
+                        el: $container,
+                        size: '100px',
+                        color: '#cccccc'
+                    }
                 }
-            }]);
+            ]);
 
             return this.$element;
         },
@@ -2014,9 +2017,8 @@ define(function() {
          * @returns {*}
          */
         removeLoader: function() {
-            return this.$element.outerHeight("").outerWidth("");
+            this.$element.outerHeight("").outerWidth("");
             this.sandbox.stop(this.sandbox.dom.find('.datagrid-loader', this.$element));
-
             return this.$element;
         },
 
@@ -2044,12 +2046,12 @@ define(function() {
                 if (this.data.total === this.data.numberOfAll) {
                     desc = this.sandbox.translate('pagination.show-all-elements');
                 } else {
-                    desc = this.sandbox.translate('pagination.show') +' <strong>'+ this.data.total +'</strong> '+ this.sandbox.translate('pagination.elements-of') +' '+ this.data.numberOfAll;
+                    desc = this.sandbox.translate('pagination.show') + ' <strong>' + this.data.total + '</strong> ' + this.sandbox.translate('pagination.elements-of') + ' ' + this.data.numberOfAll;
                 }
 
                 return [
                     '<div class="show-elements">',
-                        '<div class="dropdown-trigger" id="'+ id +'">'+ desc +'<span class="dropdown-toggle"></span></div>',
+                    '<div class="dropdown-trigger" id="' + id + '">' + desc + '<span class="dropdown-toggle"></span></div>',
                     '</div>'
                 ].join('');
             },
@@ -2075,8 +2077,8 @@ define(function() {
 
                 return [
                     '<div class="custom-checkbox">',
-                        '<input', id, name, ' type="checkbox" data-form="false"/>',
-                        '<span class="icon"></span>',
+                    '<input', id, name, ' type="checkbox" data-form="false"/>',
+                    '<span class="icon"></span>',
                     '</div>'
                 ].join('');
             },
@@ -2090,8 +2092,8 @@ define(function() {
 
                 return [
                     '<div class="custom-radio">',
-                        '<input', id, name, ' type="radio"/>',
-                        '<span class="icon"></span>',
+                    '<input', id, name, ' type="radio"/>',
+                    '<span class="icon"></span>',
                     '</div>'
                 ].join('');
             }
