@@ -7,13 +7,14 @@
     "underscore": "~1.5.1",
     "aura": "latest",
     "husky-validation": "0.2.*",
-    "globalize": "0.1.*",
+    "globalize": "1.0.*",
     "massiveart-uritemplate": "0.3.*",
     "typeahead.js": "~0.9.3",
     "tagmanager": "3.0.*",
     "requirejs": "2.1.9"
   },
   "resolutions": {
-    "jquery": "~1.10.x"
+    "jquery": "~1.10.x",
+    "globalize": "1.0.*"
   }
 }

@@ -4,12 +4,15 @@
 
     require.config({
         paths: {
-            'globalize_lib': 'bower_components/globalize/lib/globalize',
-            'cultures': 'bower_components/globalize/lib/cultures'
+            'cldr': 'bower_components/cldrjs/dist/cldr',
+            'globalize': 'bower_components/globalize/dist/globalize',
+            'globalize_date': 'bower_components/globalize/dist/globalize/date',
+            'globalize_message': 'bower_components/globalize/dist/globalize/message',
+            'globalize_number': 'bower_components/globalize/dist/globalize/number'
         }
     });
 
-    define(['globalize_lib'], function() {
+    define(['globalize','globalize_date','globalize_message','globalize_number', 'cldr', 'cldr/supplemental', 'cldr/unresolved'], function (Globalize) {
         return  {
             name: 'husky-validation',
 
@@ -22,15 +25,7 @@
                     },
 
                     culture: function(cultureName) {
-                        var setLanguage = function() {
-                            Globalize.culture(cultureName);
-                        };
-
-                        if (cultureName !== 'en') {
-                            require(['cultures/globalize.culture.' + cultureName], setLanguage.bind(this));
-                        } else {
-                            setLanguage();
-                        }
+                        Globalize.locale(cultureName);
                     }
                 };
 
@@ -52,7 +47,7 @@
                         if(typeof date === 'string'){
                             date = this.parse(date);
                         }
-                        return Globalize.format(date);
+                        return Globalize.formatDate(date, {datetime: 'short'});
                     },
 
                     /**

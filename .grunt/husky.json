@@ -13,7 +13,7 @@
             "text": "bower_components/requirejs-text/text",
             "jquery": "bower_components/jquery/jquery",
             "husky-validation": "bower_components/husky-validation/dist/validation",
-            "globalize_lib": "bower_components/globalize/lib/globalize",
+            "globalize_lib": "bower_components/globalize/dist/globalize",
             "typeahead": "bower_components/typeahead.js/typeahead",
             "tagsManager": "bower_components/tagmanager/tagmanager",
             "uri-template": "bower_components/massiveart-uritemplate/uritemplate",
