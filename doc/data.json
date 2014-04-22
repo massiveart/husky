@@ -287,7 +287,7 @@
             "namespaces": {},
             "tag": "module",
             "file": "husky_components/toolbar/main.js",
-            "line": 39,
+            "line": 12,
             "description": "This file is part of Husky frontend development framework.\n\n(c) MASSIVE ART WebServices GmbH\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE."
         },
         "husky/components/label": {
@@ -1176,6 +1176,12 @@
                             "name": "showElementsSteps",
                             "description": "Array which contains the steps for the Show-Elements-dropdown as integers",
                             "type": "Array",
+                            "optional": true
+                        },
+                        {
+                            "name": "fullWidth",
+                            "description": "If true datagrid style will be full-width mode",
+                            "type": "String",
                             "optional": true
                         }
                     ]
@@ -2130,7 +2136,7 @@
             "module": "husky/components/toolbar",
             "namespace": "",
             "file": "husky_components/toolbar/main.js",
-            "line": 39,
+            "line": 12,
             "is_constructor": 1,
             "params": [
                 {
@@ -2146,12 +2152,6 @@
                             "optional": true
                         },
                         {
-                            "name": "data",
-                            "description": "if no url is provided",
-                            "type": "String",
-                            "optional": true
-                        },
-                        {
                             "name": "instanceName",
                             "description": "enables custom events (in case of multiple tabs on one page)",
                             "type": "String",
@@ -2159,7 +2159,7 @@
                         },
                         {
                             "name": "itemsRequestKey",
-                            "description": "key with resutlt-array for requested dropdown items",
+                            "description": "key with result-array for requested dropdown items",
                             "type": "String",
                             "optional": true
                         },
@@ -2204,6 +2204,122 @@
                             "description": "custom skin-class to add to the component",
                             "type": "String",
                             "optional": true
+                        },
+                        {
+                            "name": "showTitleAsTooltip",
+                            "description": "shows the title of the button only as tooltip",
+                            "type": "Boolean",
+                            "optional": true
+                        },
+                        {
+                            "name": "data",
+                            "description": "if no url is provided",
+                            "type": "Array",
+                            "optional": true,
+                            "props": [
+                                {
+                                    "name": "title",
+                                    "description": "",
+                                    "type": "String",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "id",
+                                    "description": "",
+                                    "type": "String",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "disabled",
+                                    "description": "is item disabled or enabled",
+                                    "type": "Boolean",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "disableIcon",
+                                    "description": "icon in disable state",
+                                    "type": "String",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "iconSize",
+                                    "description": "large/medium/small",
+                                    "type": "String",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "class",
+                                    "description": "highlight/highlight-gray",
+                                    "type": "String",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "group",
+                                    "description": "id of the a group specified in the options",
+                                    "type": "String",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "position",
+                                    "description": "integer to sort the items - default 9000",
+                                    "type": "Integer",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "type",
+                                    "description": "if select, the selected item is displayed in main item (none/select)",
+                                    "type": "String",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "callback",
+                                    "description": "callback function",
+                                    "type": "Function",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "hidden",
+                                    "description": "if true button gets hidden form the beginning on",
+                                    "type": "Boolean",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "hideTitle",
+                                    "description": "hide title from beginning",
+                                    "type": "Boolean",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "items",
+                                    "description": "",
+                                    "type": "Array",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "items.title",
+                                    "description": "",
+                                    "type": "String",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "items.icon",
+                                    "description": "false will remove icon",
+                                    "type": "String",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "items.callback",
+                                    "description": "",
+                                    "type": "Function",
+                                    "optional": true
+                                },
+                                {
+                                    "name": "items.divider",
+                                    "description": "if true takes item as divider element",
+                                    "type": "Boolean",
+                                    "optional": true
+                                }
+                            ]
                         }
                     ]
                 }
@@ -3046,6 +3162,20 @@
             "module": "husky/components/column-navigation"
         },
         {
+            "file": "husky_components/ckeditor/main.js",
+            "line": 95,
+            "description": "Binds Events to emit a custom changed event",
+            "class": "CKEditor",
+            "module": "husky/components/column-navigation"
+        },
+        {
+            "file": "husky_components/ckeditor/main.js",
+            "line": 111,
+            "description": "Emits the custom changed event",
+            "class": "CKEditor",
+            "module": "husky/components/column-navigation"
+        },
+        {
             "file": "husky_components/column-navigation/main.js",
             "line": 61,
             "description": "namespace for events",
@@ -3149,21 +3279,21 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 131,
+            "line": 130,
             "description": "Renders basic structure (wrapper) of column navigation",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 168,
+            "line": 167,
             "description": "Sets the height of the container",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 177,
+            "line": 176,
             "description": "Instantiats the dropdown component",
             "params": [
                 {
@@ -3176,7 +3306,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 199,
+            "line": 198,
             "description": "Loads data from a specific url and triggers the parsing",
             "params": [
                 {
@@ -3242,7 +3372,21 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 327,
+            "line": 329,
+            "description": "Crops the item text of an item depending on its width",
+            "params": [
+                {
+                    "name": "$itemText",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "ColumnNavigation",
+            "module": "husky/components/column-navigation"
+        },
+        {
+            "file": "husky_components/column-navigation/main.js",
+            "line": 352,
             "description": "Sets/removes all needed classes to display a node as selected",
             "params": [
                 {
@@ -3255,7 +3399,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 337,
+            "line": 362,
             "description": "Returns column to put the node elements in",
             "params": [
                 {
@@ -3272,7 +3416,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 357,
+            "line": 382,
             "description": "Adds the loading icon to a contianer",
             "params": [
                 {
@@ -3285,14 +3429,14 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 381,
+            "line": 406,
             "description": "Removes loading icon from selected element",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 392,
+            "line": 417,
             "description": "Stores data in internal structure - seperated by column number",
             "params": [
                 {
@@ -3311,14 +3455,14 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 424,
+            "line": 449,
             "description": "Sets an overflow-class to the container if the navigation is scrollable",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 452,
+            "line": 477,
             "description": "Shows the edit icon",
             "params": [
                 {
@@ -3332,7 +3476,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 462,
+            "line": 487,
             "description": "Hides the edit icon",
             "params": [
                 {
@@ -3346,7 +3490,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 472,
+            "line": 497,
             "description": "Returns the breadcrumb",
             "params": [
                 {
@@ -3360,7 +3504,14 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 484,
+            "line": 509,
+            "description": "Shows the options at the last available column",
+            "class": "ColumnNavigation",
+            "module": "husky/components/column-navigation"
+        },
+        {
+            "file": "husky_components/column-navigation/main.js",
+            "line": 519,
             "description": "Shows the options below the last hovered column",
             "params": [
                 {
@@ -3374,7 +3525,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 497,
+            "line": 532,
             "description": "Displays the options-navigation under a given column",
             "params": [
                 {
@@ -3388,7 +3539,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 521,
+            "line": 556,
             "description": "Updates the position of the options",
             "params": [
                 {
@@ -3402,14 +3553,14 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 530,
+            "line": 565,
             "description": "Hides options",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 537,
+            "line": 572,
             "description": "Item was selected and data will be loaded if has sub",
             "params": [
                 {
@@ -3423,28 +3574,28 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 596,
+            "line": 631,
             "description": "Sets the width of the container equal to the width of its columns",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 606,
+            "line": 641,
             "description": "Sets the max width of the container",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 615,
+            "line": 650,
             "description": "Sets the min-width of the container",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 631,
+            "line": 666,
             "description": "Scrolls if needed",
             "params": [
                 {
@@ -3457,7 +3608,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 641,
+            "line": 676,
             "description": "Removes the selected class from old elements",
             "params": [
                 {
@@ -3471,14 +3622,14 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 655,
+            "line": 690,
             "description": "Emits an add event",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 663,
+            "line": 698,
             "description": "Emits an edit event",
             "params": [
                 {
@@ -3492,7 +3643,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 682,
+            "line": 717,
             "description": "Templates for various parts",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
@@ -3694,14 +3845,14 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 51,
+            "line": 52,
             "description": "Default values for options",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 96,
+            "line": 105,
             "description": "raised when item is deselected",
             "itemtype": "event",
             "name": "husky.datagrid.item.deselect",
@@ -3717,7 +3868,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 103,
+            "line": 112,
             "description": "raised when item is selected",
             "itemtype": "event",
             "name": "husky.datagrid.item.select",
@@ -3733,7 +3884,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 110,
+            "line": 119,
             "description": "raised when clicked on an item",
             "itemtype": "event",
             "name": "husky.datagrid.item.click",
@@ -3749,7 +3900,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 117,
+            "line": 126,
             "description": "raised when husky.datagrid.items.get-selected is triggered",
             "itemtype": "event",
             "name": "husky.datagrid.items.selected",
@@ -3765,7 +3916,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 124,
+            "line": 133,
             "description": "raised when all items get deselected via the header checkbox",
             "itemtype": "event",
             "name": "husky.datagrid.all.deselect",
@@ -3774,7 +3925,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 130,
+            "line": 139,
             "description": "raised when all items get deselected via the header checkbox",
             "itemtype": "event",
             "name": "husky.datagrid.all.select",
@@ -3790,7 +3941,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 137,
+            "line": 146,
             "description": "click - raised when clicked on the remove-row-icon",
             "itemtype": "event",
             "name": "husky.datagrid.row.remove-click",
@@ -3811,7 +3962,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 145,
+            "line": 154,
             "description": "raised when row got removed",
             "itemtype": "event",
             "name": "husky.datagrid.row.removed",
@@ -3827,7 +3978,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 152,
+            "line": 161,
             "description": "raised when the the current page changes",
             "itemtype": "event",
             "name": "husky.datagrid.page.change",
@@ -3836,7 +3987,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 158,
+            "line": 167,
             "description": "raised when the data is updated",
             "itemtype": "event",
             "name": "husky.datagrid.updated",
@@ -3845,7 +3996,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 164,
+            "line": 173,
             "description": "raised when husky.datagrid.data.get is triggered",
             "itemtype": "event",
             "name": "husky.datagrid.data.provide",
@@ -3854,7 +4005,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 170,
+            "line": 179,
             "description": "raised when data is sorted",
             "itemtype": "event",
             "name": "husky.datagrid.data.sort",
@@ -3863,7 +4014,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 176,
+            "line": 185,
             "description": "raised when selection of items changes",
             "itemtype": "event",
             "name": "husky.datagrid.number.selections",
@@ -3872,7 +4023,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 182,
+            "line": 191,
             "description": "raised when data was saved",
             "itemtype": "event",
             "name": "husky.datagrid.data.saved",
@@ -3888,7 +4039,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 189,
+            "line": 198,
             "description": "raised when save of data failed",
             "itemtype": "event",
             "name": "husky.datagrid.data.save.failed",
@@ -3909,7 +4060,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 198,
+            "line": 207,
             "description": "raised when editable list is changed",
             "itemtype": "event",
             "name": "husky.datagrid.data.save",
@@ -3918,7 +4069,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 207,
+            "line": 216,
             "description": "used to trigger an update of the data",
             "itemtype": "event",
             "name": "husky.datagrid.update",
@@ -3927,7 +4078,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 213,
+            "line": 222,
             "description": "used to filter data of",
             "itemtype": "event",
             "name": "husky.datagrid.data.filter",
@@ -3948,7 +4099,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 221,
+            "line": 230,
             "description": "used to update the table width and its containers due to responsiveness",
             "itemtype": "event",
             "name": "husky.datagrid.update.table",
@@ -3957,7 +4108,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 227,
+            "line": 236,
             "description": "used to add a row",
             "itemtype": "event",
             "name": "husky.datagrid.row.add",
@@ -3973,7 +4124,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 234,
+            "line": 243,
             "description": "used to remove a row",
             "itemtype": "event",
             "name": "husky.datagrid.row.remove",
@@ -3989,7 +4140,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 241,
+            "line": 250,
             "description": "triggers husky.datagrid.items.selected event, which returns all selected item ids",
             "itemtype": "event",
             "name": "husky.datagrid.items.get-selected",
@@ -4005,7 +4156,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 248,
+            "line": 257,
             "description": "triggers husky.datagrid.data.provide",
             "itemtype": "event",
             "name": "husky.datagrid.data.get",
@@ -4014,7 +4165,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 254,
+            "line": 263,
             "description": "calculates the width of a text by creating a tablehead element and measure its width",
             "params": [
                 {
@@ -4035,14 +4186,14 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 343,
+            "line": 356,
             "description": "Gets the data either via the url or the array",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 373,
+            "line": 386,
             "description": "parses fields data retrieved from api",
             "params": [
                 {
@@ -4059,7 +4210,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 417,
+            "line": 430,
             "description": "Loads contents via ajax",
             "params": [
                 {
@@ -4072,14 +4223,14 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 433,
+            "line": 446,
             "description": "Initializes the rendering of the datagrid",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 461,
+            "line": 474,
             "description": "Returns url with page size and page param at the end",
             "params": [
                 {
@@ -4096,7 +4247,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 489,
+            "line": 502,
             "description": "Prepares the structure of the datagrid (list, table)",
             "return": {
                 "description": "",
@@ -4107,7 +4258,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 508,
+            "line": 521,
             "description": "Perapres the structure of the datagrid when element type is table",
             "return": {
                 "description": "returns table element",
@@ -4118,7 +4269,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 545,
+            "line": 558,
             "description": "Prepares table head",
             "return": {
                 "description": "returns table head",
@@ -4129,7 +4280,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 652,
+            "line": 665,
             "description": "returns number and unit",
             "params": [
                 {
@@ -4146,7 +4297,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 667,
+            "line": 680,
             "description": "Itterates over all items and prepares the rows",
             "return": {
                 "description": "returns a string of all rows",
@@ -4157,7 +4308,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 686,
+            "line": 699,
             "description": "Returns a table row including values and data attributes",
             "params": [
                 {
@@ -4177,7 +4328,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 761,
+            "line": 774,
             "description": "Sets the value of row cell and the data-id attribute for the row",
             "params": [
                 {
@@ -4210,14 +4361,14 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 828,
+            "line": 841,
             "description": "Resets the arrays for selected items",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 836,
+            "line": 849,
             "description": "Selectes or deselects the clicked item",
             "params": [
                 {
@@ -4230,7 +4381,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 908,
+            "line": 921,
             "description": "Selects or deselect all available items of the list",
             "params": [
                 {
@@ -4243,14 +4394,14 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 938,
+            "line": 951,
             "description": "Returns an array with the ids of the selected rows",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 959,
+            "line": 972,
             "description": "Adds a row to the datagrid",
             "params": [
                 {
@@ -4263,7 +4414,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1012,
+            "line": 1025,
             "description": "Prepares for removing a row\nRaises the husky.datagrid.row.remove-click event when auto remove handling is not set to true",
             "params": [
                 {
@@ -4276,7 +4427,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1034,
+            "line": 1047,
             "description": "Removes a row from the datagrid\nRaises husky.datagrid.row.removed event",
             "params": [
                 {
@@ -4289,7 +4440,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1073,
+            "line": 1086,
             "description": "Appends pagination when option is set",
             "return": {
                 "description": "",
@@ -4300,14 +4451,14 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1088,
+            "line": 1101,
             "description": "inits the dom ids needed for the pagination",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1100,
+            "line": 1113,
             "description": "Delegates the rendering of the pagination when pagination is needed",
             "return": {
                 "description": "",
@@ -4318,7 +4469,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1137,
+            "line": 1150,
             "description": "Renders template for one row in the pagination",
             "params": [
                 {
@@ -4335,21 +4486,21 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1152,
+            "line": 1165,
             "description": "Prepares and initializes the dropdown used for the pagination",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1178,
+            "line": 1191,
             "description": "Prepares and initializes the dropdown for showing elements",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1214,
+            "line": 1227,
             "description": "Called when the current page should change\nEmits husky.datagrid.updated event on success",
             "params": [
                 {
@@ -4366,7 +4517,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1343,
+            "line": 1356,
             "description": "Shows input and hides span",
             "params": [
                 {
@@ -4379,7 +4530,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1358,
+            "line": 1371,
             "description": "Makes the widths of columns fixed when the table is in edit mode\nprevents changes in column width",
             "params": [
                 {
@@ -4392,7 +4543,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1379,
+            "line": 1392,
             "description": "Resets the min-width of columns and",
             "params": [
                 {
@@ -4405,7 +4556,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1396,
+            "line": 1409,
             "description": "Sets header classes and loads new data\nEmits husky.datagrid.updated event on success",
             "params": [
                 {
@@ -4418,21 +4569,21 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1433,
+            "line": 1446,
             "description": "Sets the header classes used for sorting purposes\nneeds this.sort to be correctly initialized",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1516,
+            "line": 1529,
             "description": "Put focus on table row and remember values",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1536,
+            "line": 1549,
             "description": "Returns an object with the current values of the inputfields, id and domId",
             "params": [
                 {
@@ -4449,14 +4600,14 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1563,
+            "line": 1576,
             "description": "Perparse to save new/changed data includes validation",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1635,
+            "line": 1648,
             "description": "Checks wether data is in row or not",
             "params": [
                 {
@@ -4469,14 +4620,14 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1654,
+            "line": 1667,
             "description": "Returns url without params",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1667,
+            "line": 1680,
             "description": "Saves changes",
             "params": [
                 {
@@ -4505,7 +4656,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1721,
+            "line": 1734,
             "description": "Sets the data for a row",
             "params": [
                 {
@@ -4522,7 +4673,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1752,
+            "line": 1765,
             "description": "Shows loading icon for a tr",
             "params": [
                 {
@@ -4535,7 +4686,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1763,
+            "line": 1776,
             "description": "Hides loading icon for a tr",
             "params": [
                 {
@@ -4548,7 +4699,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1774,
+            "line": 1787,
             "description": "Sets the validation error class for a dom element",
             "params": [
                 {
@@ -4565,7 +4716,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1797,
+            "line": 1810,
             "description": "Hides input fields and displays new content for table row",
             "params": [
                 {
@@ -4578,49 +4729,49 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1824,
+            "line": 1837,
             "description": "Provides data of the list to the caller",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1831,
+            "line": 1844,
             "description": "Updates data in datagrid\nCalled when husky.datagrid.update event emitted\nEmits husky.datagrid.updated event on success",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1849,
+            "line": 1862,
             "description": "this will trigger a api search",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1872,
+            "line": 1885,
             "description": "is called when columns are changed",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1902,
+            "line": 1915,
             "description": "Renders datagrid element in container\nBinds DOM events",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1916,
+            "line": 1934,
             "description": "this function is responsible for responsiveness of datagrid and is called everytime after resizing window and after initialization",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1987,
+            "line": 2009,
             "description": "Adds loading icon and keeps width and height",
             "return": {
                 "description": "",
@@ -4631,7 +4782,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 2012,
+            "line": 2034,
             "description": "Removes loading icon, width and height of container",
             "return": {
                 "description": "",
@@ -4642,7 +4793,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 2023,
+            "line": 2045,
             "description": "Returns selected items either via callback or else via husky.datagrid.items.selected event\nGets called on husky.datagrid.items.get-selected event",
             "params": [
                 {
@@ -5285,7 +5436,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 136,
+            "line": 137,
             "description": "listens on and activates the matching navigation-item",
             "itemtype": "event",
             "name": "husky.navigation.select-item",
@@ -5301,7 +5452,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 143,
+            "line": 144,
             "description": "raised when navigation was collapsed",
             "itemtype": "event",
             "name": "husky.navigation.collapsed",
@@ -5317,7 +5468,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 150,
+            "line": 151,
             "description": "raised when navigation was un-collapsed",
             "itemtype": "event",
             "name": "husky.navigation.uncollapsed",
@@ -5333,7 +5484,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 158,
+            "line": 159,
             "description": "forces navigation to collapse",
             "itemtype": "event",
             "name": "husky.navigation.collapse",
@@ -5349,7 +5500,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 165,
+            "line": 166,
             "description": "forces navigation to uncollapse",
             "itemtype": "event",
             "name": "husky.navigation.uncollapse",
@@ -5365,7 +5516,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 173,
+            "line": 174,
             "description": "raised when navigation collapse / uncollapse of navigation is triggered. called before transition starts\nonly raised when not forced",
             "itemtype": "event",
             "name": "husky.navigation.size.change",
@@ -5374,7 +5525,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 180,
+            "line": 181,
             "description": "raised when navigation was un / collapsed. called when transition is finished. only raised when not forced",
             "itemtype": "event",
             "name": "husky.navigation.size.changed",
@@ -5383,7 +5534,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 186,
+            "line": 187,
             "description": "raised when the user locale is changed",
             "itemtype": "event",
             "name": "husky.navigation.user-locale.changed",
@@ -5392,7 +5543,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 192,
+            "line": 193,
             "description": "raised when the version history is clicked",
             "itemtype": "event",
             "name": "husky.navigation.version-history.clicked",
@@ -5401,7 +5552,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 198,
+            "line": 199,
             "description": "show the navigation when it was hidden before",
             "itemtype": "event",
             "name": "husky.navigation.show",
@@ -5410,7 +5561,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 204,
+            "line": 205,
             "description": "triggers the update of the navigation size",
             "itemtype": "event",
             "name": "husky.navigation.show.size",
@@ -5419,7 +5570,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 210,
+            "line": 211,
             "description": "hides the navigation completely",
             "itemtype": "event",
             "name": "husky.navigation.hide",
@@ -5428,7 +5579,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 246,
+            "line": 248,
             "description": "renders the navigation\ngets called after navigation data was loaded",
             "params": [
                 {
@@ -5441,49 +5592,49 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 314,
+            "line": 316,
             "description": "renders main navigation elements",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 347,
+            "line": 349,
             "description": "renders sub-navigation elements",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 378,
+            "line": 380,
             "description": "Renders the footer of the navigation",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 409,
+            "line": 411,
             "description": "Handles the event when the collapsed Footer is clicked",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 420,
+            "line": 422,
             "description": "Interaction",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 460,
+            "line": 462,
             "description": "event listener",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 529,
+            "line": 531,
             "description": "Takes an action and select the matching navigation point",
             "params": [
                 {
@@ -5497,7 +5648,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 558,
+            "line": 560,
             "description": "gets called when settings icon is clicked",
             "emits": "husky.navigation.item.settings (name, id, parent)",
             "params": [
@@ -5511,7 +5662,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 576,
+            "line": 578,
             "description": "Toggles menu element with submenu\nRaises navigation.toggle",
             "params": [
                 {
@@ -5528,7 +5679,59 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 650,
+            "line": 618,
+            "description": "Handles the slide-up animation",
+            "params": [
+                {
+                    "name": "$items",
+                    "description": ""
+                },
+                {
+                    "name": "$toggle",
+                    "description": ""
+                }
+            ],
+            "class": "Overlay",
+            "module": "husky/components/matcher"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 644,
+            "description": "Handles the slide-down animation",
+            "params": [
+                {
+                    "name": "$items",
+                    "description": ""
+                },
+                {
+                    "name": "$toggle",
+                    "description": ""
+                },
+                {
+                    "name": "$childList",
+                    "description": ""
+                }
+            ],
+            "class": "Overlay",
+            "module": "husky/components/matcher"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 705,
+            "description": "Removes the inline-style for expanded items",
+            "class": "Overlay",
+            "module": "husky/components/matcher"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 715,
+            "description": "Resets the inline-style height for expanded items",
+            "class": "Overlay",
+            "module": "husky/components/matcher"
+        },
+        {
+            "file": "husky_components/navigation/main.js",
+            "line": 731,
             "description": "toggles sections",
             "params": [
                 {
@@ -5541,7 +5744,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 738,
+            "line": 821,
             "description": "Selects menu element without submenu\nRaises navigation.select",
             "params": [
                 {
@@ -5563,7 +5766,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 790,
+            "line": 873,
             "description": "Takes an id and returns the matching item",
             "params": [
                 {
@@ -5581,14 +5784,14 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 804,
+            "line": 887,
             "description": "Shows the navigation",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 815,
+            "line": 898,
             "description": "Hides the navigaiton",
             "class": "Overlay",
             "module": "husky/components/matcher"
@@ -5944,7 +6147,7 @@
         },
         {
             "file": "husky_components/search/main.js",
-            "line": 37,
+            "line": 43,
             "description": "triggered when user clicked on search icon or pressed enter",
             "itemtype": "event",
             "name": "husky.search[.INSTANCE_NAME]",
@@ -5960,7 +6163,7 @@
         },
         {
             "file": "husky_components/search/main.js",
-            "line": 46,
+            "line": 52,
             "description": "triggered when user clicks on reset button of search",
             "itemtype": "event",
             "name": "husky.search[.INSTANCE_NAME].reset",
@@ -5969,7 +6172,7 @@
         },
         {
             "file": "husky_components/search/main.js",
-            "line": 54,
+            "line": 60,
             "description": "triggered when user clicks on search icon or pressed enter",
             "itemtype": "event",
             "name": "husky.search[.INSTANCE_NAME].initialized",
@@ -5978,7 +6181,7 @@
         },
         {
             "file": "husky_components/search/main.js",
-            "line": 170,
+            "line": 193,
             "description": "function emits event based on options.name",
             "params": [
                 {
@@ -6387,6 +6590,19 @@
             "module": "husky/components/smart-content"
         },
         {
+            "file": "husky_components/tabs/main.js",
+            "line": 125,
+            "description": "Sets the min-width of an item to its width in selected state\n(to avoid bumping)",
+            "params": [
+                {
+                    "name": "$item",
+                    "description": ""
+                }
+            ],
+            "class": "Toggler",
+            "module": "husky/components/smart-content"
+        },
+        {
             "file": "husky_components/toggler/main.js",
             "line": 40,
             "description": "namespace for events",
@@ -6520,13 +6736,13 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 83,
+            "line": 75,
             "class": "Toolbar",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 92,
+            "line": 84,
             "description": "triggered when toolbar is initialized and ready to use",
             "itemtype": "event",
             "name": "husky.toolbar.[INSTANCE_NAME.]initialized",
@@ -6535,7 +6751,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 101,
+            "line": 93,
             "description": "raised when an item with no specified callback is clicked",
             "itemtype": "event",
             "name": "husky.toolbar.[INSTANCE_NAME].item.select",
@@ -6551,7 +6767,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 111,
+            "line": 103,
             "description": "enable a button",
             "itemtype": "event",
             "name": "husky.toolbar.[INSTANCE_NAME.]item.enable",
@@ -6567,7 +6783,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 121,
+            "line": 113,
             "description": "disable a button",
             "itemtype": "event",
             "name": "husky.toolbar.[INSTANCE_NAME.]item.disable",
@@ -6583,7 +6799,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 131,
+            "line": 123,
             "description": "event to set button into loading state",
             "itemtype": "event",
             "name": "husky.toolbar.[INSTANCE_NAME.]item.loading",
@@ -6599,7 +6815,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 141,
+            "line": 133,
             "description": "event to change a buttons selected dropdown-item",
             "itemtype": "event",
             "name": "husky.toolbar.[INSTANCE_NAME.]item.change",
@@ -6625,7 +6841,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 153,
+            "line": 145,
             "description": "event to hide a button",
             "itemtype": "event",
             "name": "husky.toolbar.[INSTANCE_NAME.]item.hide",
@@ -6641,7 +6857,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 163,
+            "line": 155,
             "description": "event to show a button",
             "itemtype": "event",
             "name": "husky.toolbar.[INSTANCE_NAME.]item.show",
@@ -6657,7 +6873,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 173,
+            "line": 165,
             "description": "event to change a buttons default title and default icon",
             "itemtype": "event",
             "name": "husky.toolbar.[INSTANCE_NAME.]button.set",
@@ -6678,7 +6894,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 184,
+            "line": 176,
             "description": "event to set new dropdown-items for a button",
             "itemtype": "event",
             "name": "husky.toolbar.[INSTANCE_NAME.]items.set",
@@ -6704,7 +6920,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 196,
+            "line": 188,
             "description": "event to collapse the toolbar",
             "itemtype": "event",
             "name": "husky.toolbar.[INSTANCE_NAME.].collapse",
@@ -6713,7 +6929,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 205,
+            "line": 197,
             "description": "event to expand the toolbar",
             "itemtype": "event",
             "name": "husky.toolbar.[INSTANCE_NAME.].expand",
@@ -6722,19 +6938,19 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 214,
+            "line": 206,
             "class": "Toolbar",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 220,
+            "line": 212,
             "class": "Toolbar",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 283,
+            "line": 275,
             "description": "Sets an item enabled or disabled",
             "params": [
                 {
@@ -6758,7 +6974,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 328,
+            "line": 320,
             "description": "Hides a button",
             "params": [
                 {
@@ -6771,7 +6987,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 336,
+            "line": 328,
             "description": "Shows a button",
             "params": [
                 {
@@ -6784,7 +7000,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 344,
+            "line": 336,
             "description": "Sets a button into loading state",
             "params": [
                 {
@@ -6798,7 +7014,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 381,
+            "line": 373,
             "description": "gets called when toggle item is clicked\nopens dropdown submenu",
             "params": [
                 {
@@ -6811,7 +7027,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 413,
+            "line": 405,
             "description": "Determines the index of a dropdown-item by its id",
             "params": [
                 {
@@ -6834,14 +7050,14 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 428,
+            "line": 420,
             "description": "hides dropdowns of this instance",
             "class": "Toolbar",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 435,
+            "line": 427,
             "description": "when an element gets selected\ngets item from items array and delegates to triggerSelectEvent function",
             "params": [
                 {
@@ -6854,7 +7070,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 457,
+            "line": 451,
             "description": "either calls items callback (if set) or triggers select event",
             "params": [
                 {
@@ -6871,7 +7087,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 489,
+            "line": 484,
             "description": "changes the list items icon and title",
             "params": [
                 {
@@ -6888,7 +7104,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 508,
+            "line": 503,
             "description": "creates the class string of an icon",
             "params": [
                 {
@@ -6909,7 +7125,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 534,
+            "line": 529,
             "description": "returns valid class for item and state",
             "params": [
                 {
@@ -6926,7 +7142,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 547,
+            "line": 542,
             "description": "created dropdown menu",
             "params": [
                 {
@@ -6968,11 +7184,7 @@
                     "description": ""
                 },
                 {
-                    "name": "$button",
-                    "description": ""
-                },
-                {
-                    "name": "button",
+                    "name": "buttonId",
                     "description": ""
                 }
             ],
@@ -6981,21 +7193,21 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 646,
+            "line": 645,
             "description": "Collapses all buttons",
             "class": "Toolbar",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 656,
+            "line": 657,
             "description": "Expands all buttons",
             "class": "Toolbar",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 670,
+            "line": 673,
             "description": "Collapses a given button",
             "params": [
                 {
@@ -7009,7 +7221,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 692,
+            "line": 695,
             "description": "Expands a given button",
             "params": [
                 {
@@ -7019,7 +7231,7 @@
                 },
                 {
                     "name": "hideTitle",
-                    "description": "if true title get shidden",
+                    "description": "if true title get hidden",
                     "type": "Boolean"
                 }
             ],
@@ -7028,7 +7240,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 710,
+            "line": 713,
             "description": "Sorts all items with their position-property",
             "params": [
                 {
@@ -7046,7 +7258,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 728,
+            "line": 731,
             "description": "function checks if id is set and unique among all items\notherwise a new id is generated for the element",
             "params": [
                 {
@@ -7059,7 +7271,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 746,
+            "line": 749,
             "description": "Removes the dropdown of a button",
             "params": [
                 {
@@ -7072,7 +7284,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 764,
+            "line": 767,
             "description": "Inserts a search into an item",
             "params": [
                 {
@@ -7085,12 +7297,12 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 790,
+            "line": 794,
             "description": "Add the skin-classes to the component-element",
             "params": [
                 {
-                    "name": "Dom-object",
-                    "description": "to add the skin-class to",
+                    "name": "$element",
+                    "description": "",
                     "type": "Object"
                 }
             ],
@@ -7099,7 +7311,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 800,
+            "line": 804,
             "description": "Pushes a search item to a passed data array and creates a group where the new search item gets inserted to",
             "params": [
                 {
@@ -7117,25 +7329,25 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 829,
+            "line": 833,
             "class": "Toolbar",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 836,
+            "line": 840,
             "description": "initialize component",
             "class": "Toolbar",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 868,
+            "line": 872,
             "description": "renders the toolbar",
             "params": [
                 {
                     "name": "data",
-                    "description": "t",
+                    "description": "",
                     "type": "Object"
                 }
             ],
@@ -7144,7 +7356,7 @@
         },
         {
             "file": "husky_components/toolbar/main.js",
-            "line": 978,
+            "line": 987,
             "description": "Renders the main container and the groups",
             "class": "Toolbar",
             "module": "husky/components/toolbar"
@@ -7277,59 +7489,59 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/column-navigation/main.js:337"
+            "line": " husky_components/column-navigation/main.js:362"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:373"
+            "line": " husky_components/datagrid/main.js:386"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:461"
+            "line": " husky_components/datagrid/main.js:474"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:489"
+            "line": " husky_components/datagrid/main.js:502"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:508"
+            "line": " husky_components/datagrid/main.js:521"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:545"
+            "line": " husky_components/datagrid/main.js:558"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:652"
+            "line": " husky_components/datagrid/main.js:665"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:667"
+            "line": " husky_components/datagrid/main.js:680"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:686"
+            "line": " husky_components/datagrid/main.js:699"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:1073"
+            "line": " husky_components/datagrid/main.js:1086"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:1100"
+            "line": " husky_components/datagrid/main.js:1113"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:1536"
+            "line": " husky_components/datagrid/main.js:1549"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:1987"
+            "line": " husky_components/datagrid/main.js:2009"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:2012"
+            "line": " husky_components/datagrid/main.js:2034"
         },
         {
             "message": "replacing incorrect tag: returns with return",
@@ -7377,11 +7589,11 @@
         },
         {
             "message": "unknown tag: emits",
-            "line": " husky_components/navigation/main.js:558"
+            "line": " husky_components/navigation/main.js:560"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/navigation/main.js:790"
+            "line": " husky_components/navigation/main.js:873"
         },
         {
             "message": "replacing incorrect tag: params with param",
@@ -7697,11 +7909,11 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/toolbar/main.js:508"
+            "line": " husky_components/toolbar/main.js:503"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/toolbar/main.js:800"
+            "line": " husky_components/toolbar/main.js:804"
         },
         {
             "message": "Missing item type\nfunction calls this.sandbox.translate for an array of keys and returns an array of translations",
@@ -7968,24 +8180,32 @@
             "line": " husky_components/ckeditor/main.js:52"
         },
         {
+            "message": "Missing item type\nBinds Events to emit a custom changed event",
+            "line": " husky_components/ckeditor/main.js:95"
+        },
+        {
+            "message": "Missing item type\nEmits the custom changed event",
+            "line": " husky_components/ckeditor/main.js:111"
+        },
+        {
             "message": "Missing item type\nnamespace for events",
             "line": " husky_components/column-navigation/main.js:61"
         },
         {
             "message": "Missing item type\nRenders basic structure (wrapper) of column navigation",
-            "line": " husky_components/column-navigation/main.js:131"
+            "line": " husky_components/column-navigation/main.js:130"
         },
         {
             "message": "Missing item type\nSets the height of the container",
-            "line": " husky_components/column-navigation/main.js:168"
+            "line": " husky_components/column-navigation/main.js:167"
         },
         {
             "message": "Missing item type\nInstantiats the dropdown component",
-            "line": " husky_components/column-navigation/main.js:177"
+            "line": " husky_components/column-navigation/main.js:176"
         },
         {
             "message": "Missing item type\nLoads data from a specific url and triggers the parsing",
-            "line": " husky_components/column-navigation/main.js:199"
+            "line": " husky_components/column-navigation/main.js:198"
         },
         {
             "message": "Missing item type\nRemoves removes data and removes dom elements",
@@ -8000,92 +8220,100 @@
             "line": " husky_components/column-navigation/main.js:312"
         },
         {
+            "message": "Missing item type\nCrops the item text of an item depending on its width",
+            "line": " husky_components/column-navigation/main.js:329"
+        },
+        {
             "message": "Missing item type\nSets/removes all needed classes to display a node as selected",
-            "line": " husky_components/column-navigation/main.js:327"
+            "line": " husky_components/column-navigation/main.js:352"
         },
         {
             "message": "Missing item type\nReturns column to put the node elements in",
-            "line": " husky_components/column-navigation/main.js:337"
+            "line": " husky_components/column-navigation/main.js:362"
         },
         {
             "message": "Missing item type\nAdds the loading icon to a contianer",
-            "line": " husky_components/column-navigation/main.js:357"
+            "line": " husky_components/column-navigation/main.js:382"
         },
         {
             "message": "Missing item type\nRemoves loading icon from selected element",
-            "line": " husky_components/column-navigation/main.js:381"
+            "line": " husky_components/column-navigation/main.js:406"
         },
         {
             "message": "Missing item type\nStores data in internal structure - seperated by column number",
-            "line": " husky_components/column-navigation/main.js:392"
+            "line": " husky_components/column-navigation/main.js:417"
         },
         {
             "message": "Missing item type\nSets an overflow-class to the container if the navigation is scrollable",
-            "line": " husky_components/column-navigation/main.js:424"
+            "line": " husky_components/column-navigation/main.js:449"
         },
         {
             "message": "Missing item type\nShows the edit icon",
-            "line": " husky_components/column-navigation/main.js:452"
+            "line": " husky_components/column-navigation/main.js:477"
         },
         {
             "message": "Missing item type\nHides the edit icon",
-            "line": " husky_components/column-navigation/main.js:462"
+            "line": " husky_components/column-navigation/main.js:487"
         },
         {
             "message": "Missing item type\nReturns the breadcrumb",
-            "line": " husky_components/column-navigation/main.js:472"
-        },
-        {
-            "message": "Missing item type\nShows the options below the last hovered column",
-            "line": " husky_components/column-navigation/main.js:484"
-        },
-        {
-            "message": "Missing item type\nDisplays the options-navigation under a given column",
             "line": " husky_components/column-navigation/main.js:497"
         },
         {
+            "message": "Missing item type\nShows the options at the last available column",
+            "line": " husky_components/column-navigation/main.js:509"
+        },
+        {
+            "message": "Missing item type\nShows the options below the last hovered column",
+            "line": " husky_components/column-navigation/main.js:519"
+        },
+        {
+            "message": "Missing item type\nDisplays the options-navigation under a given column",
+            "line": " husky_components/column-navigation/main.js:532"
+        },
+        {
             "message": "Missing item type\nUpdates the position of the options",
-            "line": " husky_components/column-navigation/main.js:521"
+            "line": " husky_components/column-navigation/main.js:556"
         },
         {
             "message": "Missing item type\nHides options",
-            "line": " husky_components/column-navigation/main.js:530"
+            "line": " husky_components/column-navigation/main.js:565"
         },
         {
             "message": "Missing item type\nItem was selected and data will be loaded if has sub",
-            "line": " husky_components/column-navigation/main.js:537"
+            "line": " husky_components/column-navigation/main.js:572"
         },
         {
             "message": "Missing item type\nSets the width of the container equal to the width of its columns",
-            "line": " husky_components/column-navigation/main.js:596"
-        },
-        {
-            "message": "Missing item type\nSets the max width of the container",
-            "line": " husky_components/column-navigation/main.js:606"
-        },
-        {
-            "message": "Missing item type\nSets the min-width of the container",
-            "line": " husky_components/column-navigation/main.js:615"
-        },
-        {
-            "message": "Missing item type\nScrolls if needed",
             "line": " husky_components/column-navigation/main.js:631"
         },
         {
-            "message": "Missing item type\nRemoves the selected class from old elements",
+            "message": "Missing item type\nSets the max width of the container",
             "line": " husky_components/column-navigation/main.js:641"
         },
         {
+            "message": "Missing item type\nSets the min-width of the container",
+            "line": " husky_components/column-navigation/main.js:650"
+        },
+        {
+            "message": "Missing item type\nScrolls if needed",
+            "line": " husky_components/column-navigation/main.js:666"
+        },
+        {
+            "message": "Missing item type\nRemoves the selected class from old elements",
+            "line": " husky_components/column-navigation/main.js:676"
+        },
+        {
             "message": "Missing item type\nEmits an add event",
-            "line": " husky_components/column-navigation/main.js:655"
+            "line": " husky_components/column-navigation/main.js:690"
         },
         {
             "message": "Missing item type\nEmits an edit event",
-            "line": " husky_components/column-navigation/main.js:663"
+            "line": " husky_components/column-navigation/main.js:698"
         },
         {
             "message": "Missing item type\nTemplates for various parts",
-            "line": " husky_components/column-navigation/main.js:682"
+            "line": " husky_components/column-navigation/main.js:717"
         },
         {
             "message": "Missing item type\nDOM events",
@@ -8137,215 +8365,215 @@
         },
         {
             "message": "Missing item type\nDefault values for options",
-            "line": " husky_components/datagrid/main.js:51"
+            "line": " husky_components/datagrid/main.js:52"
         },
         {
             "message": "Missing item type\ncalculates the width of a text by creating a tablehead element and measure its width",
-            "line": " husky_components/datagrid/main.js:254"
+            "line": " husky_components/datagrid/main.js:263"
         },
         {
             "message": "Missing item type\nGets the data either via the url or the array",
-            "line": " husky_components/datagrid/main.js:343"
+            "line": " husky_components/datagrid/main.js:356"
         },
         {
             "message": "Missing item type\nparses fields data retrieved from api",
-            "line": " husky_components/datagrid/main.js:373"
+            "line": " husky_components/datagrid/main.js:386"
         },
         {
             "message": "Missing item type\nLoads contents via ajax",
-            "line": " husky_components/datagrid/main.js:417"
+            "line": " husky_components/datagrid/main.js:430"
         },
         {
             "message": "Missing item type\nInitializes the rendering of the datagrid",
-            "line": " husky_components/datagrid/main.js:433"
+            "line": " husky_components/datagrid/main.js:446"
         },
         {
             "message": "Missing item type\nReturns url with page size and page param at the end",
-            "line": " husky_components/datagrid/main.js:461"
+            "line": " husky_components/datagrid/main.js:474"
         },
         {
             "message": "Missing item type\nPrepares the structure of the datagrid (list, table)",
-            "line": " husky_components/datagrid/main.js:489"
+            "line": " husky_components/datagrid/main.js:502"
         },
         {
             "message": "Missing item type\nPerapres the structure of the datagrid when element type is table",
-            "line": " husky_components/datagrid/main.js:508"
+            "line": " husky_components/datagrid/main.js:521"
         },
         {
             "message": "Missing item type\nPrepares table head",
-            "line": " husky_components/datagrid/main.js:545"
+            "line": " husky_components/datagrid/main.js:558"
         },
         {
             "message": "Missing item type\nreturns number and unit",
-            "line": " husky_components/datagrid/main.js:652"
+            "line": " husky_components/datagrid/main.js:665"
         },
         {
             "message": "Missing item type\nItterates over all items and prepares the rows",
-            "line": " husky_components/datagrid/main.js:667"
+            "line": " husky_components/datagrid/main.js:680"
         },
         {
             "message": "Missing item type\nReturns a table row including values and data attributes",
-            "line": " husky_components/datagrid/main.js:686"
+            "line": " husky_components/datagrid/main.js:699"
         },
         {
             "message": "Missing item type\nSets the value of row cell and the data-id attribute for the row",
-            "line": " husky_components/datagrid/main.js:761"
+            "line": " husky_components/datagrid/main.js:774"
         },
         {
             "message": "Missing item type\nResets the arrays for selected items",
-            "line": " husky_components/datagrid/main.js:828"
+            "line": " husky_components/datagrid/main.js:841"
         },
         {
             "message": "Missing item type\nSelectes or deselects the clicked item",
-            "line": " husky_components/datagrid/main.js:836"
+            "line": " husky_components/datagrid/main.js:849"
         },
         {
             "message": "Missing item type\nSelects or deselect all available items of the list",
-            "line": " husky_components/datagrid/main.js:908"
+            "line": " husky_components/datagrid/main.js:921"
         },
         {
             "message": "Missing item type\nReturns an array with the ids of the selected rows",
-            "line": " husky_components/datagrid/main.js:938"
+            "line": " husky_components/datagrid/main.js:951"
         },
         {
             "message": "Missing item type\nAdds a row to the datagrid",
-            "line": " husky_components/datagrid/main.js:959"
+            "line": " husky_components/datagrid/main.js:972"
         },
         {
             "message": "Missing item type\nPrepares for removing a row\nRaises the husky.datagrid.row.remove-click event when auto remove handling is not set to true",
-            "line": " husky_components/datagrid/main.js:1012"
+            "line": " husky_components/datagrid/main.js:1025"
         },
         {
             "message": "Missing item type\nRemoves a row from the datagrid\nRaises husky.datagrid.row.removed event",
-            "line": " husky_components/datagrid/main.js:1034"
+            "line": " husky_components/datagrid/main.js:1047"
         },
         {
             "message": "Missing item type\nAppends pagination when option is set",
-            "line": " husky_components/datagrid/main.js:1073"
+            "line": " husky_components/datagrid/main.js:1086"
         },
         {
             "message": "Missing item type\ninits the dom ids needed for the pagination",
-            "line": " husky_components/datagrid/main.js:1088"
+            "line": " husky_components/datagrid/main.js:1101"
         },
         {
             "message": "Missing item type\nDelegates the rendering of the pagination when pagination is needed",
-            "line": " husky_components/datagrid/main.js:1100"
+            "line": " husky_components/datagrid/main.js:1113"
         },
         {
             "message": "Missing item type\nRenders template for one row in the pagination",
-            "line": " husky_components/datagrid/main.js:1137"
+            "line": " husky_components/datagrid/main.js:1150"
         },
         {
             "message": "Missing item type\nPrepares and initializes the dropdown used for the pagination",
-            "line": " husky_components/datagrid/main.js:1152"
+            "line": " husky_components/datagrid/main.js:1165"
         },
         {
             "message": "Missing item type\nPrepares and initializes the dropdown for showing elements",
-            "line": " husky_components/datagrid/main.js:1178"
+            "line": " husky_components/datagrid/main.js:1191"
         },
         {
             "message": "Missing item type\nCalled when the current page should change\nEmits husky.datagrid.updated event on success",
-            "line": " husky_components/datagrid/main.js:1214"
+            "line": " husky_components/datagrid/main.js:1227"
         },
         {
             "message": "Missing item type\nShows input and hides span",
-            "line": " husky_components/datagrid/main.js:1343"
+            "line": " husky_components/datagrid/main.js:1356"
         },
         {
             "message": "Missing item type\nMakes the widths of columns fixed when the table is in edit mode\nprevents changes in column width",
-            "line": " husky_components/datagrid/main.js:1358"
+            "line": " husky_components/datagrid/main.js:1371"
         },
         {
             "message": "Missing item type\nResets the min-width of columns and",
-            "line": " husky_components/datagrid/main.js:1379"
+            "line": " husky_components/datagrid/main.js:1392"
         },
         {
             "message": "Missing item type\nSets header classes and loads new data\nEmits husky.datagrid.updated event on success",
-            "line": " husky_components/datagrid/main.js:1396"
+            "line": " husky_components/datagrid/main.js:1409"
         },
         {
             "message": "Missing item type\nSets the header classes used for sorting purposes\nneeds this.sort to be correctly initialized",
-            "line": " husky_components/datagrid/main.js:1433"
+            "line": " husky_components/datagrid/main.js:1446"
         },
         {
             "message": "Missing item type\nPut focus on table row and remember values",
-            "line": " husky_components/datagrid/main.js:1516"
+            "line": " husky_components/datagrid/main.js:1529"
         },
         {
             "message": "Missing item type\nReturns an object with the current values of the inputfields, id and domId",
-            "line": " husky_components/datagrid/main.js:1536"
+            "line": " husky_components/datagrid/main.js:1549"
         },
         {
             "message": "Missing item type\nPerparse to save new/changed data includes validation",
-            "line": " husky_components/datagrid/main.js:1563"
+            "line": " husky_components/datagrid/main.js:1576"
         },
         {
             "message": "Missing item type\nChecks wether data is in row or not",
-            "line": " husky_components/datagrid/main.js:1635"
+            "line": " husky_components/datagrid/main.js:1648"
         },
         {
             "message": "Missing item type\nReturns url without params",
-            "line": " husky_components/datagrid/main.js:1654"
-        },
-        {
-            "message": "Missing item type\nSaves changes",
             "line": " husky_components/datagrid/main.js:1667"
         },
         {
+            "message": "Missing item type\nSaves changes",
+            "line": " husky_components/datagrid/main.js:1680"
+        },
+        {
             "message": "Missing item type\nSets the data for a row",
-            "line": " husky_components/datagrid/main.js:1721"
+            "line": " husky_components/datagrid/main.js:1734"
         },
         {
             "message": "Missing item type\nShows loading icon for a tr",
-            "line": " husky_components/datagrid/main.js:1752"
+            "line": " husky_components/datagrid/main.js:1765"
         },
         {
             "message": "Missing item type\nHides loading icon for a tr",
-            "line": " husky_components/datagrid/main.js:1763"
+            "line": " husky_components/datagrid/main.js:1776"
         },
         {
             "message": "Missing item type\nSets the validation error class for a dom element",
-            "line": " husky_components/datagrid/main.js:1774"
+            "line": " husky_components/datagrid/main.js:1787"
         },
         {
             "message": "Missing item type\nHides input fields and displays new content for table row",
-            "line": " husky_components/datagrid/main.js:1797"
+            "line": " husky_components/datagrid/main.js:1810"
         },
         {
             "message": "Missing item type\nProvides data of the list to the caller",
-            "line": " husky_components/datagrid/main.js:1824"
+            "line": " husky_components/datagrid/main.js:1837"
         },
         {
             "message": "Missing item type\nUpdates data in datagrid\nCalled when husky.datagrid.update event emitted\nEmits husky.datagrid.updated event on success",
-            "line": " husky_components/datagrid/main.js:1831"
+            "line": " husky_components/datagrid/main.js:1844"
         },
         {
             "message": "Missing item type\nthis will trigger a api search",
-            "line": " husky_components/datagrid/main.js:1849"
+            "line": " husky_components/datagrid/main.js:1862"
         },
         {
             "message": "Missing item type\nis called when columns are changed",
-            "line": " husky_components/datagrid/main.js:1872"
+            "line": " husky_components/datagrid/main.js:1885"
         },
         {
             "message": "Missing item type\nRenders datagrid element in container\nBinds DOM events",
-            "line": " husky_components/datagrid/main.js:1902"
+            "line": " husky_components/datagrid/main.js:1915"
         },
         {
             "message": "Missing item type\nthis function is responsible for responsiveness of datagrid and is called everytime after resizing window and after initialization",
-            "line": " husky_components/datagrid/main.js:1916"
+            "line": " husky_components/datagrid/main.js:1934"
         },
         {
             "message": "Missing item type\nAdds loading icon and keeps width and height",
-            "line": " husky_components/datagrid/main.js:1987"
+            "line": " husky_components/datagrid/main.js:2009"
         },
         {
             "message": "Missing item type\nRemoves loading icon, width and height of container",
-            "line": " husky_components/datagrid/main.js:2012"
+            "line": " husky_components/datagrid/main.js:2034"
         },
         {
             "message": "Missing item type\nReturns selected items either via callback or else via husky.datagrid.items.selected event\nGets called on husky.datagrid.items.get-selected event",
-            "line": " husky_components/datagrid/main.js:2023"
+            "line": " husky_components/datagrid/main.js:2045"
         },
         {
             "message": "Missing item type\ncreates a child element in a container",
@@ -8537,63 +8765,79 @@
         },
         {
             "message": "Missing item type\nrenders the navigation\ngets called after navigation data was loaded",
-            "line": " husky_components/navigation/main.js:246"
+            "line": " husky_components/navigation/main.js:248"
         },
         {
             "message": "Missing item type\nrenders main navigation elements",
-            "line": " husky_components/navigation/main.js:314"
+            "line": " husky_components/navigation/main.js:316"
         },
         {
             "message": "Missing item type\nrenders sub-navigation elements",
-            "line": " husky_components/navigation/main.js:347"
+            "line": " husky_components/navigation/main.js:349"
         },
         {
             "message": "Missing item type\nRenders the footer of the navigation",
-            "line": " husky_components/navigation/main.js:378"
+            "line": " husky_components/navigation/main.js:380"
         },
         {
             "message": "Missing item type\nHandles the event when the collapsed Footer is clicked",
-            "line": " husky_components/navigation/main.js:409"
+            "line": " husky_components/navigation/main.js:411"
         },
         {
             "message": "Missing item type\nInteraction",
-            "line": " husky_components/navigation/main.js:420"
+            "line": " husky_components/navigation/main.js:422"
         },
         {
             "message": "Missing item type\nevent listener",
-            "line": " husky_components/navigation/main.js:460"
+            "line": " husky_components/navigation/main.js:462"
         },
         {
             "message": "Missing item type\nTakes an action and select the matching navigation point",
-            "line": " husky_components/navigation/main.js:529"
+            "line": " husky_components/navigation/main.js:531"
         },
         {
             "message": "Missing item type\ngets called when settings icon is clicked",
-            "line": " husky_components/navigation/main.js:558"
+            "line": " husky_components/navigation/main.js:560"
         },
         {
             "message": "Missing item type\nToggles menu element with submenu\nRaises navigation.toggle",
-            "line": " husky_components/navigation/main.js:576"
+            "line": " husky_components/navigation/main.js:578"
+        },
+        {
+            "message": "Missing item type\nHandles the slide-up animation",
+            "line": " husky_components/navigation/main.js:618"
+        },
+        {
+            "message": "Missing item type\nHandles the slide-down animation",
+            "line": " husky_components/navigation/main.js:644"
+        },
+        {
+            "message": "Missing item type\nRemoves the inline-style for expanded items",
+            "line": " husky_components/navigation/main.js:705"
+        },
+        {
+            "message": "Missing item type\nResets the inline-style height for expanded items",
+            "line": " husky_components/navigation/main.js:715"
         },
         {
             "message": "Missing item type\ntoggles sections",
-            "line": " husky_components/navigation/main.js:650"
+            "line": " husky_components/navigation/main.js:731"
         },
         {
             "message": "Missing item type\nSelects menu element without submenu\nRaises navigation.select",
-            "line": " husky_components/navigation/main.js:738"
+            "line": " husky_components/navigation/main.js:821"
         },
         {
             "message": "Missing item type\nTakes an id and returns the matching item",
-            "line": " husky_components/navigation/main.js:790"
+            "line": " husky_components/navigation/main.js:873"
         },
         {
             "message": "Missing item type\nShows the navigation",
-            "line": " husky_components/navigation/main.js:804"
+            "line": " husky_components/navigation/main.js:887"
         },
         {
             "message": "Missing item type\nHides the navigaiton",
-            "line": " husky_components/navigation/main.js:815"
+            "line": " husky_components/navigation/main.js:898"
         },
         {
             "message": "Missing item type",
@@ -8717,7 +8961,7 @@
         },
         {
             "message": "Missing item type\nfunction emits event based on options.name",
-            "line": " husky_components/search/main.js:170"
+            "line": " husky_components/search/main.js:193"
         },
         {
             "message": "Missing item type",
@@ -8844,6 +9088,10 @@
             "line": " husky_components/tabs/main.js:1"
         },
         {
+            "message": "Missing item type\nSets the min-width of an item to its width in selected state\n(to avoid bumping)",
+            "line": " husky_components/tabs/main.js:125"
+        },
+        {
             "message": "Missing item type\nnamespace for events",
             "line": " husky_components/toggler/main.js:40"
         },
@@ -8893,67 +9141,67 @@
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/toolbar/main.js:83"
+            "line": " husky_components/toolbar/main.js:75"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/toolbar/main.js:214"
+            "line": " husky_components/toolbar/main.js:206"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/toolbar/main.js:220"
+            "line": " husky_components/toolbar/main.js:212"
         },
         {
             "message": "Missing item type\nSets an item enabled or disabled",
-            "line": " husky_components/toolbar/main.js:283"
+            "line": " husky_components/toolbar/main.js:275"
         },
         {
             "message": "Missing item type\nHides a button",
-            "line": " husky_components/toolbar/main.js:328"
+            "line": " husky_components/toolbar/main.js:320"
         },
         {
             "message": "Missing item type\nShows a button",
-            "line": " husky_components/toolbar/main.js:336"
+            "line": " husky_components/toolbar/main.js:328"
         },
         {
             "message": "Missing item type\nSets a button into loading state",
-            "line": " husky_components/toolbar/main.js:344"
+            "line": " husky_components/toolbar/main.js:336"
         },
         {
             "message": "Missing item type\ngets called when toggle item is clicked\nopens dropdown submenu",
-            "line": " husky_components/toolbar/main.js:381"
+            "line": " husky_components/toolbar/main.js:373"
         },
         {
             "message": "Missing item type\nDetermines the index of a dropdown-item by its id",
-            "line": " husky_components/toolbar/main.js:413"
+            "line": " husky_components/toolbar/main.js:405"
         },
         {
             "message": "Missing item type\nhides dropdowns of this instance",
-            "line": " husky_components/toolbar/main.js:428"
+            "line": " husky_components/toolbar/main.js:420"
         },
         {
             "message": "Missing item type\nwhen an element gets selected\ngets item from items array and delegates to triggerSelectEvent function",
-            "line": " husky_components/toolbar/main.js:435"
+            "line": " husky_components/toolbar/main.js:427"
         },
         {
             "message": "Missing item type\neither calls items callback (if set) or triggers select event",
-            "line": " husky_components/toolbar/main.js:457"
+            "line": " husky_components/toolbar/main.js:451"
         },
         {
             "message": "Missing item type\nchanges the list items icon and title",
-            "line": " husky_components/toolbar/main.js:489"
+            "line": " husky_components/toolbar/main.js:484"
         },
         {
             "message": "Missing item type\ncreates the class string of an icon",
-            "line": " husky_components/toolbar/main.js:508"
+            "line": " husky_components/toolbar/main.js:503"
         },
         {
             "message": "Missing item type\nreturns valid class for item and state",
-            "line": " husky_components/toolbar/main.js:534"
+            "line": " husky_components/toolbar/main.js:529"
         },
         {
             "message": "Missing item type\ncreated dropdown menu",
-            "line": " husky_components/toolbar/main.js:547"
+            "line": " husky_components/toolbar/main.js:542"
         },
         {
             "message": "Missing item type\nset width for button with dropdown-items",
@@ -8965,59 +9213,59 @@
         },
         {
             "message": "Missing item type\nCollapses all buttons",
-            "line": " husky_components/toolbar/main.js:646"
+            "line": " husky_components/toolbar/main.js:645"
         },
         {
             "message": "Missing item type\nExpands all buttons",
-            "line": " husky_components/toolbar/main.js:656"
+            "line": " husky_components/toolbar/main.js:657"
         },
         {
             "message": "Missing item type\nCollapses a given button",
-            "line": " husky_components/toolbar/main.js:670"
+            "line": " husky_components/toolbar/main.js:673"
         },
         {
             "message": "Missing item type\nExpands a given button",
-            "line": " husky_components/toolbar/main.js:692"
+            "line": " husky_components/toolbar/main.js:695"
         },
         {
             "message": "Missing item type\nSorts all items with their position-property",
-            "line": " husky_components/toolbar/main.js:710"
+            "line": " husky_components/toolbar/main.js:713"
         },
         {
             "message": "Missing item type\nfunction checks if id is set and unique among all items\notherwise a new id is generated for the element",
-            "line": " husky_components/toolbar/main.js:728"
+            "line": " husky_components/toolbar/main.js:731"
         },
         {
             "message": "Missing item type\nRemoves the dropdown of a button",
-            "line": " husky_components/toolbar/main.js:746"
+            "line": " husky_components/toolbar/main.js:749"
         },
         {
             "message": "Missing item type\nInserts a search into an item",
-            "line": " husky_components/toolbar/main.js:764"
+            "line": " husky_components/toolbar/main.js:767"
         },
         {
             "message": "Missing item type\nAdd the skin-classes to the component-element",
-            "line": " husky_components/toolbar/main.js:790"
+            "line": " husky_components/toolbar/main.js:794"
         },
         {
             "message": "Missing item type\nPushes a search item to a passed data array and creates a group where the new search item gets inserted to",
-            "line": " husky_components/toolbar/main.js:800"
+            "line": " husky_components/toolbar/main.js:804"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/toolbar/main.js:829"
+            "line": " husky_components/toolbar/main.js:833"
         },
         {
             "message": "Missing item type\ninitialize component",
-            "line": " husky_components/toolbar/main.js:836"
+            "line": " husky_components/toolbar/main.js:840"
         },
         {
             "message": "Missing item type\nrenders the toolbar",
-            "line": " husky_components/toolbar/main.js:868"
+            "line": " husky_components/toolbar/main.js:872"
         },
         {
             "message": "Missing item type\nRenders the main container and the groups",
-            "line": " husky_components/toolbar/main.js:978"
+            "line": " husky_components/toolbar/main.js:987"
         }
     ]
 }

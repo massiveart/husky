@@ -545,7 +545,7 @@ define([], function() {
          */
         getDropdownValue: function(column, callback) {
             this.sandbox.emit(
-                &#x27;husky.select.&#x27; + this.options.instanceName + column.id + &#x27;.getChecked&#x27;,
+                &#x27;husky.select.&#x27; + this.options.instanceName + column.id + &#x27;.get-checked&#x27;,
                 callback
             );
         },

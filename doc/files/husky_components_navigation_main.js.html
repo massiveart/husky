@@ -264,8 +264,9 @@ define(function() {
             }
         },
         CONSTANTS = {
-            UNCOLLAPSED_WIDTH: 250,
-            COLLAPSED_WIDTH: 50,
+            UNCOLLAPSED_WIDTH: 250, //px
+            COLLAPSED_WIDTH: 50, //px
+            ITEM_LABEL_HEIGHT: 50, //px
             TRANSITIONEND_EVENT: &#x27;transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd&#x27;
         },
 
@@ -365,6 +366,7 @@ define(function() {
             this.stayCollapsed = false;
             this.hidden = false;
             this.tooltipsEnabled = true;
+            this.animating = false;
 
             // binding dom events
             this.bindDOMEvents();
@@ -437,13 +439,13 @@ define(function() {
             // render footer
             this.renderFooter();
 
+            // collapse if necessary
+            this.resizeListener();
+
             // preselect item based on url
             if (!!this.options.selectAction &amp;&amp; this.options.selectAction.length &gt; 0) {
                 this.preselectItem(this.options.selectAction);
             }
-
-            // collapse if necessary
-            this.resizeListener();
 
             // emit initialized event
             this.sandbox.emit(&#x27;husky.navigation.initialized&#x27;);
@@ -739,26 +741,79 @@ define(function() {
             }
 
             if (isExpanded &amp;&amp; !navWasCollapsed) {
-                this.sandbox.dom.removeClass($items, &#x27;is-expanded&#x27;);
-
-                // change toggle item
                 $toggle = this.sandbox.dom.find(&#x27;.icon-chevron-down&#x27;, event.currentTarget);
-                this.sandbox.dom.removeClass($toggle, &#x27;icon-chevron-down&#x27;);
-                this.sandbox.dom.prependClass($toggle, &#x27;icon-chevron-right&#x27;);
-            } else {
-                this.sandbox.dom.show($childList);
-                this.sandbox.dom.addClass($items, &#x27;is-expanded&#x27;);
-                // change toggle item
+                this.animateSlideUp($items, $toggle);
+            } else if (this.collapsed !== true) {
                 $toggle = this.sandbox.dom.find(&#x27;.icon-chevron-right&#x27;, event.currentTarget);
-                this.sandbox.dom.removeClass($toggle, &#x27;icon-chevron-right&#x27;);
-                this.sandbox.dom.prependClass($toggle, &#x27;icon-chevron-down&#x27;);
-
-                this.sandbox.dom.one($items, CONSTANTS.TRANSITIONEND_EVENT, this.checkBottomHit.bind(this));
+                this.animateSlideDown($items, $toggle, $childList);
             }
 
             // emit event
             item = this.getItemById(this.sandbox.dom.data($items, &#x27;id&#x27;));
             this.sandbox.emit(&#x27;husky.navigation.item.toggle&#x27;, !isExpanded, item);
+        },
+
+        /**
+         * Handles the slide-up animation
+         * @param $items
+         * @param $toggle
+         */
+        animateSlideUp: function($items, $toggle) {
+            if (this.animating === false) {
+                this.animating = true;
+
+                this.sandbox.dom.animate($items, {
+                    height: CONSTANTS.ITEM_LABEL_HEIGHT
+                }, {
+                    duration: 180,
+                    complete: function() {
+                        this.animating = false;
+                    }.bind(this)
+                });
+
+                this.sandbox.dom.removeClass($items, &#x27;is-expanded&#x27;);
+
+                // change toggle item
+                this.sandbox.dom.removeClass($toggle, &#x27;icon-chevron-down&#x27;);
+                this.sandbox.dom.prependClass($toggle, &#x27;icon-chevron-right&#x27;);
+            }
+        },
+
+        /**
+         * Handles the slide-down animation
+         * @param $items
+         * @param $toggle
+         * @param $childList
+         */
+        animateSlideDown: function($items, $toggle, $childList) {
+            if (this.animating === false) {
+                this.animating = true;
+                var expandedHeight = CONSTANTS.ITEM_LABEL_HEIGHT + this.sandbox.dom.outerHeight($childList);
+
+                $($items).stop();
+                this.sandbox.dom.animate($items, {
+                    height: (expandedHeight + 30)
+                }, {
+                    duration: 120
+                });
+
+                this.sandbox.dom.animate($items, {
+                    height: expandedHeight
+                }, {
+                    duration: 100,
+                    complete: function() {
+                        this.animating = false;
+                    }.bind(this)
+                });
+
+                this.sandbox.dom.addClass($items, &#x27;is-expanded&#x27;);
+
+                // change toggle item
+                this.sandbox.dom.removeClass($toggle, &#x27;icon-chevron-right&#x27;);
+                this.sandbox.dom.prependClass($toggle, &#x27;icon-chevron-down&#x27;);
+
+                this.sandbox.dom.one($items, CONSTANTS.TRANSITIONEND_EVENT, this.checkBottomHit.bind(this));
+            }
         },
 
         checkBottomHit: function(event, customTarget) {
@@ -782,6 +837,32 @@ define(function() {
                 } else {
                     this.sandbox.dom.scrollAnimate(itemTop, this.$navigationContent);
                 }
+            }
+        },
+
+        /**
+         * Removes the inline-style for expanded items
+         */
+        removeHeightforExpanded: function() {
+            var $expandedItems = this.sandbox.dom.find(&#x27;.is-expanded&#x27;, this.$el), i, length;
+            for (i = -1, length = $expandedItems.length; ++i &lt; length;) {
+                this.sandbox.dom.removeAttr($expandedItems[i], &#x27;style&#x27;);
+            }
+        },
+
+        /**
+         * Resets the inline-style height for expanded items
+         */
+        setHeightForExpanded: function() {
+            var $expandedItems = this.sandbox.dom.find(&#x27;.is-expanded&#x27;, this.$el),
+                height, i, length;
+            for (i = -1, length = $expandedItems.length; ++i &lt; length;) {
+                height = CONSTANTS.ITEM_LABEL_HEIGHT + this.sandbox.dom.outerHeight(
+                    this.sandbox.dom.find(&#x27;.navigation-items-list&#x27;, $expandedItems[i]));
+
+                this.sandbox.dom.css($expandedItems[i], {
+                    &#x27;height&#x27;: height
+                });
             }
         },
 
@@ -829,6 +910,7 @@ define(function() {
             if (this.hidden === false) {
                 this.sandbox.dom.addClass(this.$navigation, &#x27;collapsed&#x27;);
                 this.sandbox.dom.removeClass(this.$navigation, &#x27;collapseIcon&#x27;);
+                this.removeHeightforExpanded();
                 if (!this.collapsed) {
                     this.sandbox.emit(EVENT_COLLAPSED, CONSTANTS.COLLAPSED_WIDTH);
                     this.sandbox.emit(EVENT_SIZE_CHANGE, CONSTANTS.COLLAPSED_WIDTH);
@@ -842,6 +924,7 @@ define(function() {
             if ((this.stayCollapsed === false || forced === true) &amp;&amp; this.hidden === false) {
                 this.sandbox.dom.removeClass(this.$navigation, &#x27;collapsed&#x27;);
                 this.hideToolTip();
+                this.setHeightForExpanded();
                 if (forced) {
                     this.sandbox.dom.addClass(this.$navigation, &#x27;collapseIcon&#x27;);
                 }

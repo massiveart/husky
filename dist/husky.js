@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -29792,9 +29791,9 @@ define('__component__$tabs@husky',[],function() {
  *      - disabled (optional): is item disabled or enabled
  *      - iconSize (optional: large/medium/small)
  *      - class (optional: highlight/highlight-gray)
- *      - group (optional): id of the a group sepcified in the options
+ *      - group (optional): id of the a group specified in the options
  *      - position (optional) integer to sort the items - default 9000
- *      - type (optional: none/select) - if select, the selected item is displayed in mainitem
+ *      - type (optional: none/select) - if select, the selected item is displayed in main item
  *      - callback (optional) - callback function
  *      - hidden (optional) - if true button gets hidden form the beginning on
  *      - hideTitle (optional: true/false) - hide title from beginning
@@ -30087,7 +30086,7 @@ define('__component__$toolbar@husky',[],function() {
                 }.bind(this));
             }
 
-            if (!!enabled === true) {
+            if (!!enabled) {
                 this.sandbox.dom.removeClass($item, 'disabled');
                 this.sandbox.dom.removeClass($iconItem, disabledIconClass);
                 this.sandbox.dom.prependClass($iconItem, enabledIconClass);
@@ -30378,8 +30377,7 @@ define('__component__$toolbar@husky',[],function() {
         /**
          * Handles requested items
          * @param requestedItems
-         * @param $button
-         * @param button
+         * @param buttonId
          */
         handleRequestedItems = function(requestedItems, buttonId) {
             var id, title, icon, callback, i, length;
@@ -30429,7 +30427,9 @@ define('__component__$toolbar@husky',[],function() {
          */
         collapseAll = function() {
             for (var key in this.items) {
-                collapseButton.call(this, this.items[key]);
+                if (this.items.hasOwnProperty(key)) {
+                    collapseButton.call(this, this.items[key]);
+                }
             }
             this.collapsed = true;
         },
@@ -30439,10 +30439,12 @@ define('__component__$toolbar@husky',[],function() {
          */
         expandAll = function() {
             for (var key in this.items) {
-                if (this.items[key].hideTitle === true) {
-                    expandButton.call(this, this.items[key], true);
-                } else {
-                    expandButton.call(this, this.items[key], false);
+                if (this.items.hasOwnProperty(key)) {
+                    if (this.items[key].hideTitle === true) {
+                        expandButton.call(this, this.items[key], true);
+                    } else {
+                        expandButton.call(this, this.items[key], false);
+                    }
                 }
             }
             this.collapsed = false;
@@ -30454,7 +30456,7 @@ define('__component__$toolbar@husky',[],function() {
          */
         collapseButton = function(button) {
             // collapsing is senseless for dropdown-items
-            if (!!button.parentId === false) {
+            if (!button.parentId) {
 
                 // remove set button width
                 this.sandbox.dom.css(button.$el, {'min-width': ''});
@@ -30463,7 +30465,7 @@ define('__component__$toolbar@husky',[],function() {
                 this.sandbox.dom.hide(this.sandbox.dom.find('.title', button.$el));
 
                 //set button width
-                if(!!button.items === false) {
+                if (!button.items) {
                     this.sandbox.dom.css(button.$el, {'min-width': constants.collapsedWidth + 'px'});
                 }
             }
@@ -30473,10 +30475,10 @@ define('__component__$toolbar@husky',[],function() {
         /**
          * Expands a given button
          * @param button {Object}
-         * @param hideTitle {Boolean} if true title get shidden
+         * @param hideTitle {Boolean} if true title get hidden
          */
         expandButton = function(button, hideTitle) {
-            if (!!button.parentId === false) {
+            if (!button.parentId) {
                 // show title
                 if (hideTitle === true) {
                     this.sandbox.dom.hide(this.sandbox.dom.find('.title', button.$el));
@@ -30571,7 +30573,7 @@ define('__component__$toolbar@husky',[],function() {
 
         /**
          * Add the skin-classes to the component-element
-         * @param {Object} Dom-object to add the skin-class to
+         * @param $element {Object}
          */
         addSkinClass = function($element) {
             if (this.options.skin !== 'default') {
@@ -30649,7 +30651,7 @@ define('__component__$toolbar@husky',[],function() {
 
         /**
          * renders the toolbar
-         * @param {Object} data t
+         * @param {Object} data
          */
         render: function(data) {
 
@@ -37954,3 +37956,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+

@@ -191,7 +191,7 @@ define([], function() {
             publishedName: &#x27;publishedState&#x27;,
             titleName: &#x27;title&#x27;,
             typeName: &#x27;type&#x27;,
-            minVisibleRatio: 1/2
+            minVisibleRatio: 1 / 2
         },
 
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
@@ -247,7 +247,6 @@ define([], function() {
     return {
 
         initialize: function() {
-
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
             this.$element = this.sandbox.dom.$(this.options.el);
@@ -282,8 +281,8 @@ define([], function() {
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
-            this.addId = this.options.instanceName+&quot;-column-navigation-add&quot;;
-            this.settingsId = this.options.instanceName+&quot;-column-navigation-settings&quot;;
+            this.addId = this.options.instanceName + &quot;-column-navigation-add&quot;;
+            this.settingsId = this.options.instanceName + &quot;-column-navigation-settings&quot;;
             this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer.call(this, this.options.column.width));
             $add = this.sandbox.dom.$(this.template.options.add(this.addId));
             $settings = this.sandbox.dom.$(this.template.options.settings(this.settingsId));
@@ -297,7 +296,7 @@ define([], function() {
             this.setContainerMinWidth();
 
             //init dropdown for settings in options container
-            if(!!this.options.data) {
+            if (!!this.options.data) {
                 this.initSettingsDropdown(this.sandbox.dom.attr($settings, &#x27;id&#x27;));
             }
 
@@ -308,7 +307,7 @@ define([], function() {
          */
         setContainerHeight: function() {
             this.sandbox.dom.height(
-                this.$columnContainer, (this.sandbox.dom.height(window) - this.sandbox.dom.offset(this.$columnContainer).top) * this.options.wrapper.height/100
+                this.$columnContainer, (this.sandbox.dom.height(window) - this.sandbox.dom.offset(this.$columnContainer).top) * this.options.wrapper.height / 100
             );
         },
 
@@ -326,7 +325,7 @@ define([], function() {
                     options: {
                         el: &#x27;#&#x27; + containerId,
                         setParentDropDown: true,
-                        instanceName: this.options.instanceName+&#x27;.settings.dropdown&#x27;,
+                        instanceName: this.options.instanceName + &#x27;.settings.dropdown&#x27;,
                         alignment: &#x27;left&#x27;,
                         data: this.options.data
                     }
@@ -341,8 +340,8 @@ define([], function() {
          */
         load: function(url, columnNumber) {
             if (!!url) {
-
                 this.columnLoadStarted = true;
+
                 this.sandbox.util.load(url)
                     .then(function(response) {
                         this.columnLoadStarted = false;
@@ -350,6 +349,7 @@ define([], function() {
                         this.alignWithColumnsWidth();
                         this.scrollIfNeeded(this.filledColumns + 1);
                         this.setOverflowClass();
+                        this.showOptionsAtLast();
                         this.sandbox.emit(LOADED);
                     }.bind(this))
                     .fail(function(error) {
@@ -455,11 +455,36 @@ define([], function() {
             var width, $itemText;
 
             $itemText = this.sandbox.dom.find(&#x27;.item-text&#x27;, $item);
-            width = this.options.column.width - this.sandbox.dom.position($itemText).left;
-            width = width - parseInt(this.sandbox.dom.css($item, &#x27;padding-right&#x27;).replace(&#x27;px&#x27;, &#x27;&#x27;)) -1;
+            width = this.options.column.width - this.sandbox.dom.outerWidth(this.sandbox.dom.find(&#x27;.icons-left&#x27;, $item));
+            width = width - parseInt(this.sandbox.dom.css($item, &#x27;padding-right&#x27;).replace(&#x27;px&#x27;, &#x27;&#x27;)) - 2;
+            width = width - parseInt(this.sandbox.dom.css($item, &#x27;padding-left&#x27;).replace(&#x27;px&#x27;, &#x27;&#x27;));
             width = width - this.sandbox.dom.outerWidth(this.sandbox.dom.find(&#x27;.icons-right&#x27;, $item));
 
             this.sandbox.dom.width($itemText, width);
+            this.cropItemsText($itemText);
+        },
+
+        /**
+         * Crops the item text of an item depending on its width
+         * @param $itemText {Object}
+         */
+        cropItemsText: function($itemText) {
+            var title = this.sandbox.dom.attr($itemText, &#x27;title&#x27;),
+                croppedTitle,
+                maxLength = title.length,
+                overflow;
+
+            //set the item text to the original title
+            this.sandbox.dom.html($itemText, title);
+
+            overflow = (this.sandbox.dom.get($itemText, 0).scrollWidth &gt; this.sandbox.dom.width($itemText));
+
+            while (overflow === true) {
+                maxLength = maxLength - 1;
+                croppedTitle = this.sandbox.util.cropMiddle(title, maxLength);
+                this.sandbox.dom.html($itemText, croppedTitle);
+                overflow = (this.sandbox.dom.get($itemText, 0).scrollWidth &gt; this.sandbox.dom.width($itemText));
+            }
         },
 
         /**
@@ -548,7 +573,7 @@ define([], function() {
             this.sandbox.dom.on(this.$el, &#x27;mouseleave&#x27;, this.itemMouseLeave.bind(this), &#x27;li&#x27;);
 
             this.sandbox.dom.on(this.$el, &#x27;mouseenter&#x27;, this.showOptions.bind(this), &#x27;.column&#x27;);
-            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.addNode.bind(this), &#x27;#&#x27;+this.addId);
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.addNode.bind(this), &#x27;#&#x27; + this.addId);
             this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.editNode.bind(this), &#x27;.edit&#x27;);
             this.sandbox.dom.on(this.$el, &#x27;dblclick&#x27;, this.editNode.bind(this), &#x27;li&#x27;);
 
@@ -620,6 +645,16 @@ define([], function() {
         },
 
         /**
+         * Shows the options at the last available column
+         */
+        showOptionsAtLast: function() {
+            var $lastColumn = this.sandbox.dom.last(this.sandbox.dom.find(&#x27;.column&#x27;, this.$columnContainer));
+            this.showOptions({
+               currentTarget: $lastColumn
+            });
+        },
+
+        /**
          * Shows the options below the last hovered column
          * @param {Object} event
          */
@@ -661,7 +696,7 @@ define([], function() {
          * @param $activeColumn {object} dom-object of active column
          */
         updateOptionsMargin: function($activeColumn) {
-            var marginLeft = this.sandbox.dom.position($activeColumn).left;
+            var marginLeft = this.sandbox.dom.position($activeColumn).left - 1;
             this.sandbox.dom.css(this.$optionsContainer, &#x27;margin-left&#x27;, marginLeft + &#x27;px&#x27;);
         },
 
@@ -825,7 +860,7 @@ define([], function() {
             wrapper: function() {
                 return &#x27;&lt;div class=&quot;column-navigation-wrapper&quot;&gt;&lt;/div&gt;&#x27;;
             },
-            
+
             columnContainer: function() {
                 return [&#x27;&lt;div class=&quot;column-navigation&quot;&gt;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
             },
@@ -836,10 +871,10 @@ define([], function() {
 
             item: function(width, data) {
 
-                var item = [&#x27;&lt;li data-id=&quot;&#x27;, data[this.options.idName], &#x27;&quot; class=&quot;pointer&quot;&#x27;];
+                var item = [&#x27;&lt;li data-id=&quot;&#x27;, data[this.options.idName], &#x27;&quot; class=&quot;pointer&quot;&gt;&#x27;];
 
                 // icons left
-                item.push(&#x27;&lt;span class=&quot;pull-left&quot;&gt;&#x27;);
+                item.push(&#x27;&lt;span class=&quot;icons-left&quot;&gt;&#x27;);
                 // link
                 if (!!data[this.options.linkedName]) {
                     if (data[this.options.linkedName] === &#x27;internal&#x27;) {
@@ -862,14 +897,13 @@ define([], function() {
                 if (!data[this.options.publishedName]) {
                     item.push(&#x27;&lt;span class=&quot;not-published pull-left m-right-5&quot;&gt;&amp;bull;&lt;/span&gt;&#x27;);
                 }
-
                 item.push(&#x27;&lt;/span&gt;&#x27;);
 
                 // text center
                 if (!!data[this.options.typeName] &amp;&amp; data[this.options.typeName].name === &#x27;ghost&#x27;) {
-                    item.push(&#x27;&lt;span title=&quot;&#x27;+ data[this.options.titleName] +&#x27;&quot; class=&quot;item-text inactive pull-left&quot;&gt;&#x27;, data[this.options.titleName], &#x27;&lt;/span&gt;&#x27;);
+                    item.push(&#x27;&lt;span title=&quot;&#x27; + data[this.options.titleName] + &#x27;&quot; class=&quot;item-text inactive pull-left&quot;&gt;&#x27;, data[this.options.titleName], &#x27;&lt;/span&gt;&#x27;);
                 } else {
-                    item.push(&#x27;&lt;span title=&quot;&#x27;+ data[this.options.titleName] +&#x27;&quot; class=&quot;item-text pull-left&quot;&gt;&#x27;, data[this.options.titleName], &#x27;&lt;/span&gt;&#x27;);
+                    item.push(&#x27;&lt;span title=&quot;&#x27; + data[this.options.titleName] + &#x27;&quot; class=&quot;item-text pull-left&quot;&gt;&#x27;, data[this.options.titleName], &#x27;&lt;/span&gt;&#x27;);
                 }
 
                 // icons right (subpage, edit)
@@ -877,7 +911,6 @@ define([], function() {
                 item.push(&#x27;&lt;span class=&quot;icon-edit-pen edit hidden pull-left&quot;&gt;&lt;/span&gt;&#x27;);
                 !!data[this.options.hasSubName] ? item.push(&#x27;&lt;span class=&quot;icon-chevron-right arrow inactive pull-left&quot;&gt;&lt;/span&gt;&#x27;) : &#x27;&#x27;;
                 item.push(&#x27;&lt;/span&gt;&lt;/li&gt;&#x27;);
-
                 return item.join(&#x27;&#x27;);
             },
 
@@ -887,13 +920,13 @@ define([], function() {
 
             options: {
                 add: function(id) {
-                    return [&#x27;&lt;div id=&quot;&#x27;,id,&#x27;&quot; class=&quot;align-center add pointer&quot;&gt;&#x27;,
+                    return [&#x27;&lt;div id=&quot;&#x27;, id, &#x27;&quot; class=&quot;align-center add pointer&quot;&gt;&#x27;,
                         &#x27;&lt;span class=&quot;icon-add&quot;&gt;&lt;/span&gt;&#x27;,
                         &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
                 },
 
                 settings: function(id) {
-                    return [&#x27;&lt;div id=&quot;&#x27;,id,&#x27;&quot; class=&quot;align-center settings pointer drop-down-trigger&quot;&gt;&#x27;,
+                    return [&#x27;&lt;div id=&quot;&#x27;, id, &#x27;&quot; class=&quot;align-center settings pointer drop-down-trigger&quot;&gt;&#x27;,
                         &#x27;&lt;span class=&quot;icon-cogwheel inline-block&quot;&gt;&lt;/span&gt;&lt;span class=&quot;dropdown-toggle inline-block&quot;&gt;&lt;/span&gt;&#x27;,
                         &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
                 }
