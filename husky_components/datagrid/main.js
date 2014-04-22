@@ -92,7 +92,7 @@ define(function() {
         },
 
         types = {
-            DATE: 'date',
+            DATE: 'date'
         },
 
         constants = {

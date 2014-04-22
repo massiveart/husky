@@ -75,21 +75,21 @@
                      * @returns {Date}
                      */
                     parse: function(dateString) {
-                        var timebits = /^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2})(?::([0-9]*)(\.[0-9]*)?)?(?:([+-])([0-9]{2})([0-9]{2}))?/,
-                            m = timebits.exec(dateString),
+                        var timebitsRegex = /^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2})(?::([0-9]*)(\.[0-9]*)?)?(?:([+-])([0-9]{2})([0-9]{2}))?/,
+                            timebits = timebitsRegex.exec(dateString),
                             resultDate, utcdate, offsetMinutes;
 
-                        if (m) {
-                            utcdate = Date.UTC(parseInt(m[1]),
-                                parseInt(m[2]) - 1, // months are zero-offset (!)
-                                parseInt(m[3]),
-                                parseInt(m[4]), parseInt(m[5]), // hh:mm
-                                (m[6] && parseInt(m[6]) || 0),  // optional seconds
-                                (m[7] && parseFloat(m[7]) * 1000) || 0); // optional fraction
+                        if (timebits) {
+                            utcdate = Date.UTC(parseInt(timebits[1]),
+                                parseInt(timebits[2]) - 1, // months are zero-offset (!)
+                                parseInt(timebits[3]),
+                                parseInt(timebits[4]), parseInt(timebits[5]), // hh:mm
+                                (timebits[6] && parseInt(timebits[6]) || 0),  // optional seconds
+                                (timebits[7] && parseFloat(timebits[7]) * 1000) || 0); // optional fraction
                             // utcdate is milliseconds since the epoch
-                            if (m[9] && m[10]) {
-                                offsetMinutes = parseInt(m[9]) * 60 + parseInt(m[10]);
-                                utcdate += (m[8] === '+' ? -1 : +1) * offsetMinutes * 60000;
+                            if (timebits[9] && timebits[10]) {
+                                offsetMinutes = parseInt(timebits[9]) * 60 + parseInt(timebits[10]);
+                                utcdate += (timebits[8] === '+' ? -1 : +1) * offsetMinutes * 60000;
                             }
                             resultDate = new Date(utcdate);
                         } else {
