@@ -523,6 +523,7 @@ require(['lib/husky'], function(Husky) {
                     editable: true,
                     validation:true,
                     addRowTop: true,
+                    //fullWidth: true, // uncomment for full-width mode
                     contentContainer: '#content',
                     columns: [
                         {
@@ -564,12 +565,22 @@ require(['lib/husky'], function(Husky) {
                     el: '#toolbar',
                     instanceName: 'test',
                     hasSearch: true,
+                    groups: [
+                        {
+                            id: '1',
+                            align: 'right'
+                        },
+                        {
+                            id: '0',
+                            align: 'right'
+                        }
+                    ],
                     data: [
                         {
                             id: 'add',
                             icon: 'user-add',
                             class: 'highlight',
-                            title: 'add',
+                            group: '0',
                             callback: function() {
                                 app.sandbox.emit('husky.datagrid.row.add', { id: "", content1: "", content2: "", content3: "" });
                             }.bind(this)
@@ -577,7 +588,6 @@ require(['lib/husky'], function(Husky) {
                         {
                             id: 'delete',
                             icon: 'bin',
-                            title: 'delete',
                             group: '1',
                             callback: function() {
                                 app.sandbox.emit('sulu.list-toolbar.delete');

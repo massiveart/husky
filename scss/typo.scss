@@ -28,6 +28,12 @@ h1 {
     font-size: 36px;
     line-height: 40px;
     margin: 10px 0 40px 0;
+
+    &.bright {
+        color: $white;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
 }
 
 h2 {

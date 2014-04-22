@@ -202,8 +202,8 @@ define([], function() {
          */
         load: function(url, columnNumber) {
             if (!!url) {
-
                 this.columnLoadStarted = true;
+
                 this.sandbox.util.load(url)
                     .then(function(response) {
                         this.columnLoadStarted = false;
@@ -211,6 +211,7 @@ define([], function() {
                         this.alignWithColumnsWidth();
                         this.scrollIfNeeded(this.filledColumns + 1);
                         this.setOverflowClass();
+                        this.showOptionsAtLast();
                         this.sandbox.emit(LOADED);
                     }.bind(this))
                     .fail(function(error) {
@@ -506,6 +507,16 @@ define([], function() {
         },
 
         /**
+         * Shows the options at the last available column
+         */
+        showOptionsAtLast: function() {
+            var $lastColumn = this.sandbox.dom.last(this.sandbox.dom.find('.column', this.$columnContainer));
+            this.showOptions({
+               currentTarget: $lastColumn
+            });
+        },
+
+        /**
          * Shows the options below the last hovered column
          * @param {Object} event
          */
@@ -547,7 +558,7 @@ define([], function() {
          * @param $activeColumn {object} dom-object of active column
          */
         updateOptionsMargin: function($activeColumn) {
-            var marginLeft = this.sandbox.dom.position($activeColumn).left;
+            var marginLeft = this.sandbox.dom.position($activeColumn).left - 1;
             this.sandbox.dom.css(this.$optionsContainer, 'margin-left', marginLeft + 'px');
         },
 
