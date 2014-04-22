@@ -33192,6 +33192,8 @@ define('__component__$column-navigation@husky',[], function() {
         startBigLoader: function() {
             if (this.$bigLoader === null) {
                 this.$bigLoader = this.sandbox.dom.createElement('<div class="column-navigation-loader"/>');
+                this.sandbox.dom.hide(this.$bigLoader);
+                this.sandbox.dom.html(this.$columnContainer, this.$bigLoader);
 
                 this.sandbox.start([
                     {
@@ -33204,14 +33206,14 @@ define('__component__$column-navigation@husky',[], function() {
                     }
                 ]);
             }
-            this.sandbox.dom.html(this.$columnContainer, this.$bigLoader);
+            this.sandbox.dom.show(this.$bigLoader);
         },
 
         /**
          * Detatches the big loader from the column-navigation
          */
         removeBigLoader: function() {
-            this.sandbox.dom.detach(this.$find('.column-navigation-loader'));
+            this.sandbox.dom.hide(this.$find('.column-navigation-loader'));
         },
 
         /**
@@ -33439,6 +33441,7 @@ define('__component__$column-navigation@husky',[], function() {
 
             if (this.$loader === null) {
                 this.$loader = this.sandbox.dom.createElement('<div class="husky-column-navigation-loader"/>');
+                this.sandbox.dom.hide(this.$loader);
 
                 this.sandbox.start([
                     {
@@ -33451,7 +33454,9 @@ define('__component__$column-navigation@husky',[], function() {
                     }
                 ]);
             }
+            this.sandbox.dom.detach(this.$loader);
             this.sandbox.dom.html($container, this.$loader);
+            this.sandbox.dom.show(this.$loader);
         },
 
         /**
@@ -33460,7 +33465,7 @@ define('__component__$column-navigation@husky',[], function() {
         removeLoadingIconForSelected: function() {
             if (!!this.$selectedElement) {
                 var $arrow = this.sandbox.dom.find('.arrow', this.$selectedElement);
-                this.sandbox.dom.detach(this.$loader);
+                this.sandbox.dom.hide(this.$loader);
                 this.sandbox.dom.prependClass($arrow, 'icon-chevron-right');
             }
         },
