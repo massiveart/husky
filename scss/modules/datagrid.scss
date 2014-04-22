@@ -1,5 +1,8 @@
 .husky-datagrid {
+    $fullWidthPaddingLeft: 60px;
+
     position: relative;
+    padding-top: 10px;
 
     table {
         td {
@@ -60,7 +63,7 @@
             font-family: $baseIconFont;
             content: '\e212';
             position: absolute;
-            right: -35px;
+            right: -26px;
             top: 40%;
         }
     }
@@ -90,5 +93,19 @@
     }
     tr:hover .edit {
         display:inline;
+    }
+
+    /**
+      * Special styles
+    **/
+    &.fullwidth {
+        th:first-child,
+        td:first-child {
+            padding-left: $fullWidthPaddingLeft;
+        }
+
+        .pagination-wrapper {
+            padding-left: $fullWidthPaddingLeft - 10px;
+        }
     }
 }

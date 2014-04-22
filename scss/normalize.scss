@@ -315,8 +315,20 @@ button,
 html input[type="button"], /* 1 */
 input[type="reset"],
 input[type="submit"] {
-    -webkit-appearance: button; /* 2 */
-    cursor: pointer; /* 3 */
+    //-webkit-appearance: button; /* 2 */
+    //cursor: pointer; /* 3 */
+}
+
+/**
+ * Deactivate inner-shadow for inputs on mobile devices
+ */
+input[type="text"],
+input[type="email"],
+input[type="search"],
+input[type="password"],
+textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none; /* mobile firefox too! */
 }
 
 /**

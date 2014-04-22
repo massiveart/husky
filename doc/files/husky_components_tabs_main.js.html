@@ -41,21 +41,37 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="../classes/AutoComplete.html">AutoComplete</a></li>
+            
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
                 <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/Column-Options.html">Column-Options</a></li>
             
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
                 <li><a href="../classes/DataGrid.html">DataGrid</a></li>
             
-                <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
+                <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
+            
+                <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
             
-                <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+                <li><a href="../classes/Matcher.html">Matcher</a></li>
+            
+                <li><a href="../classes/Overlay.html">Overlay</a></li>
+            
+                <li><a href="../classes/Process.html">Process</a></li>
             
                 <li><a href="../classes/Search.html">Search</a></li>
+            
+                <li><a href="../classes/Select.html">Select</a></li>
+            
+                <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/Toggler.html">Toggler</a></li>
             
                 <li><a href="../classes/Toolbar.html">Toolbar</a></li>
             
@@ -63,15 +79,21 @@
 
             <ul id="api-modules" class="apis modules">
             
+                <li><a href="../modules/husky_components_auto-complete.html">husky/components/auto-complete</a></li>
+            
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
             
                 <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
-                <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
+                <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
-                <li><a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a></li>
+                <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
+            
+                <li><a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a></li>
             
                 <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
@@ -123,7 +145,11 @@
  *      - data: if no url is provided
  *      - selected: the item that&#x27;s selected on initialize
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
- *      - preselect - defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url)
+ *      - preselect - either true (for url) or position / title  (see preselector for more information)
+ *      - preselector:
+ *          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url) - preselector itself is not going to be taken into account in this case
+ *          - position: compares items position against whats defined in options.preselect
+ *          - title: compares items title against whats defined in options.preselect
  *      - forceReload - defines if tabs are forcing page to reload
  *      - forceSelect - forces tabs to select first item, if no selected item has been found
  *  Provides Events
@@ -149,15 +175,31 @@ define(function() {
             data: [],
             instanceName: &#x27;&#x27;,
             preselect: true,
+            preselector: &#x27;url&#x27;,
             forceReload: false,
+            callback: null,
             forceSelect: true
         },
 
         selectItem = function(event) {
             event.preventDefault();
-            this.sandbox.dom.removeClass(this.sandbox.dom.find(&#x27;.is-selected&#x27;, this.$el), &#x27;is-selected&#x27;);
-            this.sandbox.dom.addClass(event.currentTarget, &#x27;is-selected&#x27;);
-            triggerSelectEvent.call(this, this.items[this.sandbox.dom.data(event.currentTarget, &#x27;id&#x27;)]);
+            if (this.active === true) {
+                var item = this.items[this.sandbox.dom.data(event.currentTarget, &#x27;id&#x27;)];
+
+                this.sandbox.dom.removeClass(this.sandbox.dom.find(&#x27;.is-selected&#x27;, this.$el), &#x27;is-selected&#x27;);
+                this.sandbox.dom.addClass(event.currentTarget, &#x27;is-selected&#x27;);
+
+                // callback
+                if (item.hasOwnProperty(&#x27;callback&#x27;) &amp;&amp; typeof item.callback === &#x27;function&#x27;) {
+                    item.callback.call(this, item);
+                } else if (!!this.options.callback &amp;&amp; typeof this.options.callback === &#x27;function&#x27;) {
+                    this.options.callback.call(this, item);
+                } else {
+                    triggerSelectEvent.call(this, item);
+                }
+            } else {
+                return false;
+            }
         },
 
         triggerSelectEvent = function(item) {
@@ -175,6 +217,14 @@ define(function() {
                 var selection = this.sandbox.dom.find(&#x27;.is-selected&#x27;, this.options.el);
                 callback.call(this.items[this.sandbox.dom.data(selection, &#x27;id&#x27;)]);
             }.bind(this));
+
+            this.sandbox.on(createEventString.call(this, &#x27;activate&#x27;), function() {
+                this.activate();
+            }.bind(this));
+
+            this.sandbox.on(createEventString.call(this, &#x27;deactivate&#x27;), function() {
+                this.deactivate();
+            }.bind(this));
         },
 
         createEventString = function(ending) {
@@ -190,6 +240,7 @@ define(function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.$el = this.sandbox.dom.$(this.options.el);
+            this.active = true;
 
             // load data and call render
             if (!!this.options.url) {
@@ -209,28 +260,78 @@ define(function() {
             bindCustomEvents.call(this);
         },
 
+        /**
+         * Sets the min-width of an item to its width in selected state
+         * (to avoid bumping)
+         * @param $item
+         */
+        setMinWidth: function($item) {
+            this.sandbox.dom.addClass($item, &#x27;is-selected&#x27;);
+            this.sandbox.dom.css($item, {
+                &#x27;min-width&#x27;: this.sandbox.dom.outerWidth($item) + &#x27;px&#x27;
+            });
+            this.sandbox.dom.removeClass($item, &#x27;is-selected&#x27;);
+        },
+
+        deactivate: function() {
+            this.active = false;
+            this.sandbox.dom.addClass(this.sandbox.dom.find(&#x27;.tabs-container&#x27;, this.$el), &#x27;deactivated&#x27;);
+        },
+
+        activate: function() {
+            this.active = true;
+            this.sandbox.dom.removeClass(this.sandbox.dom.find(&#x27;.tabs-container&#x27;, this.$el), &#x27;deactivated&#x27;);
+        },
+
+        generateIds: function(data) {
+            if (!data.id) {
+                data.id = this.getRandId();
+            }
+            this.sandbox.util.foreach(data.items, function(item) {
+                if (!item.id) {
+                    item.id = this.getRandId();
+                }
+            }.bind(this));
+            return data;
+        },
+
+        getRandId: function() {
+            return Math.floor((Math.random()*1677721500000000)).toString(16);
+        },
+
         render: function(data) {
+            data = this.generateIds(data);
 
             var $element = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;tabs-container&quot;&gt;&lt;/div&gt;&#x27;),
                 $list = this.sandbox.dom.createElement(&#x27;&lt;ul/&gt;&#x27;),
-                selected = &#x27;&#x27;, selectedItem = null;
+                selectedItem = null,
+                $item = null;
 
             this.sandbox.dom.append(this.$el, $element);
             this.sandbox.dom.append($element, $list);
 
             this.items = [];
 
-            this.sandbox.util.foreach(data.items, function(item) {
-                // check if item got selected
-                if (this.options.preselect &amp;&amp; !!data.url &amp;&amp; data.url === item.action) {
-                    selected = &#x27; class=&quot;is-selected&quot;&#x27;;
-                    selectedItem = item;
-                } else {
-                    selected = &#x27;&#x27;;
-                }
-
+            this.sandbox.util.foreach(data.items, function(item, index) {
                 this.items[item.id] = item;
-                this.sandbox.dom.append($list, &#x27;&lt;li &#x27; + selected + &#x27; data-id=&quot;&#x27; + item.id + &#x27;&quot;&gt;&lt;a href=&quot;#&quot;&gt;&#x27; + this.sandbox.translate(item.title) + &#x27;&lt;/a&gt;&lt;/li&gt;&#x27;);
+                $item = this.sandbox.dom.createElement(
+                    &#x27;&lt;li data-id=&quot;&#x27; + item.id + &#x27;&quot;&gt;&lt;a href=&quot;#&quot;&gt;&#x27; + this.sandbox.translate(item.title) + &#x27;&lt;/a&gt;&lt;/li&gt;&#x27;
+                );
+                this.sandbox.dom.append($list, $item);
+
+                // set min-width of element
+                this.setMinWidth($item);
+
+                // check if item got selected
+                if (!!this.options.preselect) {
+                    if ((this.options.preselector === &#x27;url&#x27; &amp;&amp; !!data.url &amp;&amp; data.url === item.action) ||
+                        (this.options.preselector === &#x27;position&#x27; &amp;&amp; (index+1).toString() === this.options.preselect.toString()) ||
+                        (this.options.preselector === &#x27;title&#x27; &amp;&amp; item.title === this.options.preselect))
+                    {
+                        this.sandbox.dom.addClass($item, &#x27;is-selected&#x27;);
+                        selectedItem = item;
+                    }
+                }
             }.bind(this));
 
             // force selection of first element

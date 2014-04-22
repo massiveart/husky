@@ -30,7 +30,13 @@ define([], function() {
         defaults = {
             instanceName: null,
             placeholderText: 'public.search',
-            appearance: 'gray'
+            appearance: 'gray',
+            slide: false
+        },
+        constants = {
+            slideClass: 'slide',
+            slideCollapsedClass: 'slide-collapsed',
+            slideExpandedClass: 'slide-expanded'
         },
 
 
@@ -76,6 +82,12 @@ define([], function() {
         render: function() {
             this.sandbox.dom.addClass(this.$el, 'search-container');
             this.sandbox.dom.addClass(this.$el, this.options.appearance);
+            console.log(this.options.slide);
+            if (this.options.slide === true) {
+                this.sandbox.dom.addClass(this.$el, constants.slideClass);
+                this.collapse();
+            }
+
             this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {placeholderText: this.sandbox.translate(this.options.placeholderText)}));
 
         },
@@ -83,13 +95,24 @@ define([], function() {
         // bind dom elements
         bindDOMEvents: function() {
             this.sandbox.dom.on(this.$el, 'click', this.selectInput.bind(this), 'input');
-            this.sandbox.dom.on(this.$el, 'click', this.submitSearch.bind(this), '.search-icon');
-            this.sandbox.dom.on(this.$el, 'click', this.removeSearch.bind(this), '.remove-icon');
+            this.sandbox.dom.on(this.$el, 'mousedown', this.submitSearch.bind(this), '.search-icon');
+            this.sandbox.dom.on(this.$el, 'mousedown', this.removeSearch.bind(this), '.remove-icon');
             this.sandbox.dom.on(this.$el, 'keyup onchange', this.checkKeyPressed.bind(this), '#search-input');
+
+            if (this.options.slide === true) {
+                this.sandbox.dom.on(this.$find('input'), 'focus', this.expand.bind(this));
+                this.sandbox.dom.on(this.$find('input'), 'blur', this.collapse.bind(this));
+            }
         },
 
-        bindCustomEvents: function() {
+        collapse: function() {
+            this.sandbox.dom.removeClass(this.$el, constants.slideExpandedClass);
+            this.sandbox.dom.addClass(this.$el, constants.slideCollapsedClass);
+        },
 
+        expand: function() {
+            this.sandbox.dom.removeClass(this.$el, constants.slideCollapsedClass);
+            this.sandbox.dom.addClass(this.$el, constants.slideExpandedClass);
         },
 
         resetSearch : function() {

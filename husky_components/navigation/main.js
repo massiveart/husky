@@ -627,7 +627,7 @@ define(function() {
                 this.sandbox.dom.animate($items, {
                     height: CONSTANTS.ITEM_LABEL_HEIGHT
                 }, {
-                    duration: 200,
+                    duration: 180,
                     complete: function() {
                         this.animating = false;
                     }.bind(this)
@@ -656,13 +656,13 @@ define(function() {
                 this.sandbox.dom.animate($items, {
                     height: (expandedHeight + 30)
                 }, {
-                    duration: 200
+                    duration: 120
                 });
 
                 this.sandbox.dom.animate($items, {
                     height: expandedHeight
                 }, {
-                    duration: 130,
+                    duration: 100,
                     complete: function() {
                         this.animating = false;
                     }.bind(this)
