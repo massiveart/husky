@@ -49,10 +49,17 @@
                      * @returns {string}
                      */
                     format: function(date) {
+                        var returnDate, returnTime;
                         if(typeof date === 'string'){
                             date = this.parse(date);
                         }
-                        return Globalize.format(date);
+
+                        returnDate = Globalize.format(date, Globalize.culture().calendar.patterns.d);
+                        returnTime = Globalize.format(date, Globalize.culture().calendar.patterns.t);
+
+                        return ( (!!returnDate) ? returnDate : '' ) +
+                               ( (!!returnDate && !!returnTime) ? ' ': '' ) +
+                               ( (!!returnTime) ? returnTime : '' );
                     },
 
                     /**
