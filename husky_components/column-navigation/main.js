@@ -53,7 +53,8 @@ define([], function() {
             publishedName: 'publishedState',
             titleName: 'title',
             typeName: 'type',
-            minVisibleRatio: 1 / 2
+            minVisibleRatio: 1 / 2,
+            noPageDescription: 'sulu.public.no-page'
         },
 
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
@@ -241,6 +242,7 @@ define([], function() {
                         this.removeBigLoader();
                         this.columnLoadStarted = false;
                         this.parseData(response, columnNumber);
+                        this.handleLastEmptyColumn();
                         this.alignWithColumnsWidth();
                         this.scrollIfNeeded(this.filledColumns + 1);
                         this.setOverflowClass();
@@ -494,6 +496,20 @@ define([], function() {
             }
         },
 
+        /**
+         * Inserts some markup into the last column if column is empty
+         */
+        handleLastEmptyColumn: function() {
+            var $lastColumn = this.sandbox.dom.last(this.sandbox.dom.find('.column', this.$columnContainer));
+
+            this.sandbox.dom.remove(this.sandbox.dom.find('.no-page', this.$columnContainer));
+
+            // if last column is empty insert markup
+            if (this.sandbox.dom.find('li', $lastColumn).length === 0) {
+                this.sandbox.dom.append($lastColumn, this.template.noPage.call(this, this.sandbox.translate(this.options.noPageDescription)));
+            }
+        },
+
         bindCustomEvents: function() {
             this.sandbox.on(BREADCRUMB, this.getBreadCrumb.bind(this));
 
@@ -650,12 +666,12 @@ define([], function() {
                         this.removeColumns(column + 1);
                     }
                 }
-
                 // insert add column when clicked element
                 this.insertAddColumn(selectedItem, column);
 
                 // scroll for add column
                 if (!selectedItem.hasSub) {
+                    this.handleLastEmptyColumn();
                     this.alignWithColumnsWidth();
                     this.scrollIfNeeded(column);
                     this.setOverflowClass();
@@ -691,7 +707,6 @@ define([], function() {
         },
 
         insertAddColumn: function(selectedItem, column) {
-
             if (!this.$addColumn && !selectedItem[this.options.hasSubName]) {
                 // append empty column to add subpages
                 this.$addColumn = this.sandbox.dom.createElement(this.template.column.call(this, column + 1, this.options.column.width));
@@ -765,6 +780,13 @@ define([], function() {
 
             column: function(columnNumber, width) {
                 return ['<div data-column="', columnNumber, '" class="column" id="column-', columnNumber, '" style="width: ', width, 'px"><ul></ul></div>'].join('');
+            },
+
+            noPage: function(description) {
+                return ['<div class="no-page">',
+                            '<span class="icon-file"></span>',
+                            '<div class="text">', description ,'</div>',
+                        '</div>'].join('');
             },
 
             item: function(width, data) {
