@@ -22,7 +22,7 @@
             }
         }
 
-        .navigation-loader {
+        .column-navigation-loader {
             position: relative;
             left: 0;
             top: 50%;
@@ -36,10 +36,31 @@
             display: inline-block;
             font-size: 0;
             height:100%;
+            position: relative;
+            top: 0px;
+            left: 0px;
 
-            /*&:nth-child(n+4):last-child {
-                border-right: none;
-            }*/
+            .no-page {
+                position: absolute;
+                top: 50%;
+                left: 0px;
+                height: 200px;
+                width: 100%;
+                font-size: 24px;
+                text-align: center;
+                color: $grayLightMedium;
+                height: 160px;
+                margin-top: -80px;
+
+                .icon-file {
+                  font-size: 125px;
+                  line-height: 125px;
+                  color: $grayLightest;
+                }
+                .text {
+                    padding-top: 10px;
+                }
+            }
 
             ul {
                 list-style-type: none;
