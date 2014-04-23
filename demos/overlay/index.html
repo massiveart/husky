@@ -32,13 +32,31 @@
         <div class="grid-col-1">&nbsp;</div>
         <div class="grid-col-3"><h1>Husky Overlay</h1></div>
     </div>
-    <div class="grid-row">
+
+    <div class="grid-row m-top-30">
         <div class="grid-col-1">&nbsp;</div>
-        <div class="btn pointer grid-col-3 align-center" id="showme">Show me an awesome overlay</div>
+        <div class="grid-col-3"><h2>Default types</h2></div>
     </div>
     <div class="grid-row m-top-20">
         <div class="grid-col-1">&nbsp;</div>
-        <div class="btn pointer grid-col-3 align-center" id="showme2">Show me an another overlay</div>
+        <div class="btn pointer grid-col-3 align-center" id="normal">Normal</div>
+    </div>
+    <div class="grid-row m-top-20">
+        <div class="grid-col-1">&nbsp;</div>
+        <div class="btn pointer grid-col-3 align-center" id="warning">Warning</div>
+    </div>
+    <div class="grid-row m-top-20">
+        <div class="grid-col-1">&nbsp;</div>
+        <div class="btn pointer grid-col-3 align-center" id="error">Error</div>
+    </div>
+
+    <div class="grid-row m-top-30">
+        <div class="grid-col-1">&nbsp;</div>
+        <div class="grid-col-3"><h2>Examples</h2></div>
+    </div>
+    <div class="grid-row m-top-20">
+        <div class="grid-col-1">&nbsp;</div>
+        <div class="btn pointer grid-col-3 align-center" id="showme">An awsome overlay</div>
     </div>
     <div class="grid-row m-top-20">
         <div class="grid-col-1">&nbsp;</div>
@@ -85,7 +103,53 @@
 
 
 
-        app.start([{
+        app.start([
+                {
+                    name: 'overlay@husky',
+                    options: {
+                        triggerEl: '#normal',
+                        title: 'This is the title of the overlay',
+                        data: '<div style="min-height: 350px"></div>',
+                        closeCallback: function() {
+                            console.log('You clicked on close');
+                        },
+                        okCallback: function() {
+                            console.log('You clicked on ok');
+                        }
+                    }
+                },
+                {
+                    name: 'overlay@husky',
+                    options: {
+                        triggerEl: '#warning',
+                        title: 'Please confirm',
+                        message: 'If you delete this content it will be lost. Do you want to continue?',
+                        okDefaultText: 'Yes, delete it',
+                        type: 'warning',
+                        closeCallback: function() {
+                            console.log('You clicked on close');
+                        },
+                        okCallback: function() {
+                            console.log('You clicked on ok');
+                        }
+                    }
+                },
+                {
+                    name: 'overlay@husky',
+                    options: {
+                        triggerEl: '#error',
+                        title: 'This action is not possible',
+                        message: 'Sorry, you cannot delete this content because you don’t have the permissions.',
+                        type: 'error',
+                        closeCallback: function() {
+                            console.log('You clicked on close');
+                        },
+                        okCallback: function() {
+                            console.log('You clicked on ok');
+                        }
+                    }
+                },
+                {
                     name: 'overlay@husky',
                     options: {
                         triggerEl: '#showme',
@@ -116,23 +180,16 @@
                             console.log('You clicked on ok');
                         }
                     }
-                },
-                {
-                    name: 'overlay@husky',
-                    options: {
-                        triggerEl: '#showme2',
-                        title: 'This is another overlay',
-                        container: '#insertOverlayHere',
-                        data: 'Just an overlay passing through',
-                        closeCallback: function() {
-                            console.log('You clicked on close - another');
-                        },
-                        okCallback: function() {
-                            console.log('You clicked on ok - another');
-                        }
-                    }
                 }]).then(function() {
                     app.logger.log('Aura started...');
+                    app.sandbox.on('husky.overlay.deactivated.opened', function() {
+                        setTimeout(function() {
+                            app.sandbox.emit('husky.overlay.deactivated.okbutton.activate');
+                            setTimeout(function() {
+                                app.sandbox.emit('husky.overlay.deactivated.okbutton.deactivate');
+                            }, 2000);
+                        }, 2000);
+                    });
                 });
     });
 
