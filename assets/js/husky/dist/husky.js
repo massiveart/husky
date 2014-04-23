@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -37010,10 +37011,17 @@ define('husky_extensions/collection',[],function() {
                      * @returns {string}
                      */
                     format: function(date) {
+                        var returnDate, returnTime;
                         if(typeof date === 'string'){
                             date = this.parse(date);
                         }
-                        return Globalize.format(date);
+
+                        returnDate = Globalize.format(date, Globalize.culture().calendar.patterns.d);
+                        returnTime = Globalize.format(date, Globalize.culture().calendar.patterns.t);
+
+                        return ( (!!returnDate) ? returnDate : '' ) +
+                               ( (!!returnDate && !!returnTime) ? ' ': '' ) +
+                               ( (!!returnTime) ? returnTime : '' );
                     },
 
                     /**
@@ -38044,4 +38052,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-
