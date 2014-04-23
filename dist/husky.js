@@ -34980,18 +34980,28 @@ define('__component__$smart-content@husky',[], function() {
  * @params {String} [options.container] slector or DOM object in which the overlay gets inserted
  * @params {String} [options.title] the title of the overlay
  * @params {String} [options.closeIcon] icon class for the close button
- * @params {String} [options.okIcon] icon class for the ok button
  * @params {Function} [options.closeCallback] callback which gets executed after the overlay gets closed
  * @params {Function} [options.okCallback] callback which gets executed after the overlay gets submited
  * @params {String|Object} [options.data] HTML or DOM-object which acts as the overlay-content
+ * @params {String} [options.message] String to render as content. Used by warnings and erros
  * @params {String} [options.instanceName] instance name of the component
  * @params {Boolean} [options.draggable] if true overlay is draggable
  * @params {Boolean} [options.openOnStart] if true overlay is opened after initialization
  * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
  * @params {Boolean} [options.backdrop] if true backdrop will be shown
- * @params {Boolean} [options.backdropColor] Color of the backdrop
- * @params {Boolean} [options.backdropAlpha] Alpha-value of the backdrop
- * @params {Boolean} [options.okInactive] If true ok button is deactivated
+ * @params {Boolean} [options.backdropClose] if true overlay closes with click on backdrop
+ * @params {String} [options.backdropColor] Color of the backdrop
+ * @params {Number} [options.backdropAlpha] Alpha-value of the backdrop
+ * @params {Boolean} [options.okInactive] If true all ok-buttons start deactivated
+ * @params {String} [options.okDefaultText] The default text for ok buttons
+ * @params {String} [options.cancelDefaultText] The default text for cancel buttons
+ * @params {String} [options.type] The type of the overlay ('normal', 'error' or 'warning')
+ * @params {Array} [options.buttonsAlign] the align of the buttons in the footer ('center', 'left' or 'right')
+ * @params {Array} [options.buttons] an array of buttons to add to the footer
+ * @params {String} [options.buttons.type] type of the button ('ok', 'cancel')
+ * @params {String} [options.buttons.icon] icon of the button
+ * @params {String} [options.buttons.text] text of the button. If text and icon are not set the defaultText-options come into place
+ * @params {Boolean} [options.buttons.inactive] If true button starts inactive
  */
 define('__component__$overlay@husky',[], function() {
 
@@ -35003,7 +35013,6 @@ define('__component__$overlay@husky',[], function() {
             container: 'body',
             title: '',
             closeIcon: 'remove2',
-            okIcon: 'half-ok save-button btn action',
             closeCallback: null,
             okCallback: null,
             data: '',
@@ -35012,18 +35021,71 @@ define('__component__$overlay@husky',[], function() {
             openOnStart: false,
             removeOnClose: false,
             backdrop: true,
+            backdropClose: true,
             backdropColor: '#000000',
             backdropAlpha: 0.3,
-            okInactive: false
+            okInactive: false,
+            type: 'normal',
+            cssClass: '',
+            buttons: [],
+            buttonsAlign: 'center',
+            cancelDefaultText: 'Cancel',
+            okDefaultText: 'Ok'
         },
 
         constants = {
             closeSelector: '.close-button',
-            okSelector: '.ok-button',
+            footerSelector: '.overlay-footer',
             contentSelector: '.overlay-content',
             headerSelector: '.overlay-header',
             draggableClass: 'draggable',
-            backdropClass: 'husky-overlay-backdrop'
+            backdropClass: 'husky-overlay-backdrop',
+            overlayOkSelector: '.overlay-ok',
+            overlayCancelSelector: '.overlay-cancel'
+        },
+
+        types = {
+            normal: {
+                buttons: [
+                    {
+                        type: 'ok',
+                        icon: 'half-ok',
+                        classes: 'tick',
+                        inactive: false
+                    }
+                ]
+            },
+            warning: {
+                cssClass: 'warning',
+                backdropClose: false,
+                buttonsAlign: 'right',
+                buttons: [
+                    {
+                        type: 'ok',
+                        inactive: false
+                    },
+                    {
+                        type: 'cancel',
+                        inactive: false
+                    }
+                ]
+            },
+            error: {
+                cssClass: 'error',
+                backdropClose: false,
+                cancelDefaultText: 'Ok',
+                buttons: [
+                    {
+                        type: 'cancel',
+                        inactive: false
+                    }
+                ]
+            }
+        },
+
+        buttonTypes = {
+            OK: 'ok',
+            CANCEL: 'cancel'
         },
 
         /** templates for component */
@@ -35036,12 +35098,30 @@ define('__component__$overlay@husky',[], function() {
                 '</div>',
                 '<div class="overlay-content"></div>',
                 '<div class="overlay-footer">',
-                '<a class="icon-<%= okIcon %> ok-button" href="#"></a>',
                 '</div>',
+                '</div>'
+            ].join(''),
+            okButton: [
+                '<div class="btn action overlay-ok<%= classes %>">',
+                    '<% if (!!icon) { %>',
+                    '<span class="icon-<%= icon %>"></span>',
+                    '<% } %>',
+                    '<span class="text"><%= text %></span>',
+                '</div>'
+            ].join(''),
+            cancelButton: [
+                '<div class="btn gray-dark overlay-cancel<%= classes %>">',
+                    '<% if (!!icon) { %>',
+                    '<span class="icon-<%= icon %>"></span>',
+                    '<% } %>',
+                    '<span class="text"><%= text %></span>',
                 '</div>'
             ].join(''),
             backdrop: [
                 '<div class="husky-overlay-backdrop"></div>'
+            ].join(''),
+            message: [
+                '<div class="message"><%= message %></div>'
             ].join('')
         },
 
@@ -35076,7 +35156,7 @@ define('__component__$overlay@husky',[], function() {
         },
 
         /**
-         * used to activate ok button
+         * used to activate all ok buttons
          * @event husky.overlay.<instance-name>.okbutton.activate
          */
             OKBUTTON_ACTIVATE = function() {
@@ -35084,7 +35164,7 @@ define('__component__$overlay@husky',[], function() {
         },
 
         /**
-         * used to deactivate ok button
+         * used to deactivate all ok buttons
          * @event husky.overlay.<instance-name>.okbutton.deactivate
          */
             OKBUTTON_DEACTIVATE = function() {
@@ -35112,8 +35192,9 @@ define('__component__$overlay@husky',[], function() {
         initialize: function() {
             this.sandbox.logger.log('initialize', this);
 
-            //merge options with defaults
-            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+            var type = (!!this.options.type) ? this.options.type : defaults.type;
+            // merge defaults, type defaults and options
+            this.options = this.sandbox.util.extend(true, {}, defaults, types[type], this.options);
 
             this.setVariables();
             this.bindEvents();
@@ -35136,16 +35217,30 @@ define('__component__$overlay@husky',[], function() {
 
 
             // TODO: implement this functions
-            this.sandbox.on(OKBUTTON_ACTIVATE.call(this), this.activateOkButton.bind(this));
-            this.sandbox.on(OKBUTTON_DEACTIVATE.call(this), this.deactivateOkButton.bind(this));
+            this.sandbox.on(OKBUTTON_ACTIVATE.call(this), this.activateOkButtons.bind(this));
+            this.sandbox.on(OKBUTTON_DEACTIVATE.call(this), this.deactivateOkButtons.bind(this));
         },
 
-        activateOkButton: function() {
-            this.sandbox.dom.removeClass(this.overlay.$ok, 'inactive gray');
+        /**
+         * Activates all ok buttons
+         */
+        activateOkButtons: function() {
+            var $okButtons = this.sandbox.dom.find(constants.overlayOkSelector, this.overlay.$footer),
+                i, length;
+            for (i = -1, length = $okButtons.length; ++i < length;) {
+                this.sandbox.dom.removeClass($okButtons[i], 'inactive gray');
+            }
         },
 
-        deactivateOkButton: function() {
-            this.sandbox.dom.addClass(this.overlay.$ok, 'inactive gray');
+        /**
+         * Deactivates all ok buttons
+         */
+        deactivateOkButtons: function() {
+            var $okButtons = this.sandbox.dom.find(constants.overlayOkSelector, this.overlay.$footer),
+            i, length;
+            for (i = -1, length = $okButtons.length; ++i < length;) {
+                this.sandbox.dom.addClass($okButtons[i], 'inactive gray');
+            }
         },
 
 
@@ -35174,7 +35269,7 @@ define('__component__$overlay@husky',[], function() {
                 normalHeight: null,
                 $close: null,
                 $el: null,
-                $ok: null,
+                $footer: null,
                 $header: null,
                 $content: null
             };
@@ -35202,11 +35297,12 @@ define('__component__$overlay@husky',[], function() {
                 //if overlay-element doesn't exist initialize it
                 if (this.overlay.$el === null) {
                     this.initSkeleton();
+                    this.initButtons();
                     this.setContent();
                     this.bindOverlayEvents();
 
                     if (this.options.okInactive === true) {
-                        this.deactivateOkButton();
+                        this.deactivateOkButtons();
                     }
 
                     this.sandbox.emit(INITIALIZED.call(this));
@@ -35279,17 +35375,70 @@ define('__component__$overlay@husky',[], function() {
                     closeIcon: this.options.closeIcon
                 }));
             this.overlay.$close = this.sandbox.dom.find(constants.closeSelector, this.overlay.$el);
-            this.overlay.$ok = this.sandbox.dom.find(constants.okSelector, this.overlay.$el);
+            this.overlay.$footer = this.sandbox.dom.find(constants.footerSelector, this.overlay.$el);
             this.overlay.$content = this.sandbox.dom.find(constants.contentSelector, this.overlay.$el);
             this.overlay.$header = this.sandbox.dom.find(constants.headerSelector, this.overlay.$el);
 
             if (this.options.draggable === true) {
                 this.sandbox.dom.addClass(this.overlay.$el, constants.draggableClass);
             }
+
+            this.sandbox.dom.addClass(this.overlay.$footer, this.options.buttonsAlign);
+            this.sandbox.dom.addClass(this.overlay.$el, this.options.cssClass);
         },
 
+        /**
+         * Renders all buttons and appends them to the footer
+         */
+        initButtons: function() {
+            var i, length, $button, button, template, classes, text, inactive;
+            for (i = -1, length = this.options.buttons.length; ++i < length;) {
+                button = this.options.buttons[i];
+                if (button.type === buttonTypes.OK) {
+                    template = templates.okButton;
+                    text = this.options.okDefaultText;
+                    inactive = this.options.okInactive
+                } else if (button.type === buttonTypes.CANCEL) {
+                    template = templates.cancelButton;
+                    text = this.options.cancelDefaultText;
+                }
+
+                classes = (!!button.classes) ? ' ' + button.classes : '';
+
+                if (!!button.text) {
+                    text = button.text
+                } else if (!!button.icon) {
+                    text = '';
+                }
+
+                if (inactive !== true) {
+                    inactive = button.inactive
+                }
+
+                $button = this.sandbox.dom.createElement(this.sandbox.util.template(template)({
+                    icon: button.icon,
+                    text: text,
+                    classes: (inactive === true) ? classes + ' inactive gray' : classes
+                }));
+
+                this.sandbox.dom.append(this.overlay.$footer, $button);
+            }
+        },
+
+        /**
+         * Sets the content of the overlay. If the data option is set set it as raw html.
+         * If the message option is set render a template with the message
+         */
         setContent: function() {
-            this.sandbox.dom.html(this.overlay.$content, this.options.data);
+            if (!!this.options.data) {
+                this.sandbox.dom.html(this.overlay.$content, this.options.data);
+            } else if (!!this.options.message) {
+                this.sandbox.dom.html(this.overlay.$content, this.sandbox.util.template(templates.message)({
+                    message: this.options.message
+                }));
+            } else {
+                this.sandbox.logger.log('Error: either options.data or options.message has to be set', this);
+            }
         },
 
         /**
@@ -35302,23 +35451,17 @@ define('__component__$overlay@husky',[], function() {
                 this.sandbox.dom.css(this.overlay.$el, {'z-index': 10000});
             }.bind(this));
 
-            this.sandbox.dom.on(this.overlay.$close, 'click', function(event) {
-                this.sandbox.dom.preventDefault(event);
-                if (this.executeCallback(this.options.closeCallback) !== false) {
-                    this.closeOverlay();
-                }
-            }.bind(this));
+            // close handler for close icon
+            this.sandbox.dom.on(this.overlay.$close, 'click',
+                this.closeHandler.bind(this));
 
-            this.sandbox.dom.on(this.overlay.$ok, 'click', function(event) {
-                // do nothing, if button is inactive
-                if (this.overlay.$ok.hasClass('inactive')) {
-                    return;
-                }
-                this.sandbox.dom.preventDefault(event);
-                if (this.executeCallback(this.options.okCallback) !== false) {
-                    this.closeOverlay();
-                }
-            }.bind(this));
+            // close handler for cancel buttons
+            this.sandbox.dom.on(this.overlay.$footer, 'click',
+                this.closeHandler.bind(this), constants.overlayCancelSelector);
+
+            // binds the events for ok-buttons
+            this.sandbox.dom.on(this.overlay.$footer, 'click',
+                this.okHandler.bind(this), constants.overlayOkSelector);
 
             this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
                 if (this.dragged === false && this.overlay.opened === true) {
@@ -35326,12 +35469,8 @@ define('__component__$overlay@husky',[], function() {
                 }
             }.bind(this));
 
-            if (this.options.backdrop === true) {
-                this.sandbox.dom.on(this.$backdrop, 'click', function() {
-                    if (this.executeCallback(this.options.closeCallback) !== false) {
-                        this.closeOverlay();
-                    }
-                }.bind(this));
+            if (this.options.backdrop === true && this.options.backdropClose === true) {
+                this.sandbox.dom.on(this.$backdrop, 'click', this.closeHandler.bind(this));
             }
 
             if (this.options.draggable === true) {
@@ -35350,6 +35489,32 @@ define('__component__$overlay@husky',[], function() {
                 this.sandbox.dom.on(this.sandbox.dom.$document, 'mouseup', function() {
                     this.sandbox.dom.off(this.sandbox.dom.$document, 'mousemove.overlay' + this.options.instanceName);
                 }.bind(this));
+            }
+        },
+
+        /**
+         * Handles the click on ok-buttons
+         * @param event
+         */
+        okHandler: function(event) {
+            // do nothing, if button is inactive
+            if (this.sandbox.dom.hasClass(event.currentTarget, 'inactive')) {
+                return;
+            }
+            this.sandbox.dom.preventDefault(event);
+            if (this.executeCallback(this.options.okCallback) !== false) {
+                this.closeOverlay();
+            }
+        },
+
+        /**
+         * Handles the click on cancel-buttons and close-icon
+         * @param event
+         */
+        closeHandler: function(event) {
+            this.sandbox.dom.preventDefault(event);
+            if (this.executeCallback(this.options.closeCallback) !== false) {
+                this.closeOverlay();
             }
         },
 
