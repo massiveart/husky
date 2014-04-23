@@ -54,7 +54,7 @@ define([], function() {
             titleName: 'title',
             typeName: 'type',
             minVisibleRatio: 1 / 2,
-            noPageDescription: 'sulu.public.no-page'
+            noPageDescription: 'public.no-pages'
         },
 
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
