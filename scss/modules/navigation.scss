@@ -10,7 +10,6 @@ $footerTopMargin: 40;
     border-bottom: 1px solid $gray;
     height: inherit;
     padding-bottom: 15px;
-    margin-bottom: 10px;
 }
 
 @mixin subitem-icon-before {
@@ -31,6 +30,7 @@ $footerTopMargin: 40;
 $verticalMargin: 20px;
 $verticalItemPadding: 35px;
 $transitionDuration: 0.5s;
+$fadeDuration: 100ms;
 
 
 .section-headline {
@@ -204,30 +204,31 @@ li.is-active {
     }
 }
 
-.navigation-items {
-    padding: 0px $verticalMargin;
+.navigation-item-container .navigation-items {
+    position: relative;
+    top: 0px;
+    left: 0px;
     overflow: hidden;
-    min-height: 50px;
-    max-height: 50px;
+    height: 50px;
 
     &:hover:not(.is-active) {
-        background-color: rgba(black, 0.05);
+        background-color: $navigationHoverColor;
     }
 
     > div {
         position: relative;
         padding-left: 0px;
         width: 210px;
+        margin-left: $verticalMargin;
+        margin-right: $verticalMargin;
     }
 
     &.is-active {
-        background-color: #282828;
+        background-color: $navigationActiveColor;
     }
 
     &.is-expanded {
-        min-height: 50px;
         padding-bottom: 20px;
-        max-height: 1000px;
 
         .navigation-items-toggle {
             @include toggle-item;
@@ -236,6 +237,8 @@ li.is-active {
 
         > .navigation-items-list {
             display: block;
+            opacity: 1;
+            @include single-transition(opacity, $fadeDuration, false, 75ms);
         }
 
     }
@@ -247,10 +250,19 @@ li.is-active {
     }
 
     /* sub-items */
-    .navigation-items-list {
+.navigation-items-list {
+        position: absolute;
+        left: 0px;
+        bottom: 0px;
+        width: 100%;
         opacity: 0;
         font-size: 14px;
-        padding-left: 34px;
+        padding-left: 54px;
+        padding-right: 20px;
+        padding-bottom: 20px;
+        padding-top: 10px;
+        z-index: 100;
+        @include single-transition(opacity, $fadeDuration);
     }
 
     /* sub-sub-items */
@@ -342,7 +354,8 @@ li.is-active {
 .navigation-items-toggle {
     position: relative;
     height: 50px;
-    border-bottom:1px solid transparent;
+    border-bottom: 1px solid transparent;
+    z-index: 200;
 }
 
 li a.navigation-settings-icon {
@@ -507,7 +520,7 @@ li a.navigation-settings-icon {
 
     .navigation-items {
         div {
-            border: rgba(0,0,0,0);
+            border: rgba(0,0,0,0) !important;
             padding: 0 !important;
             margin: 0 !important;
             line-height: 0;
@@ -604,9 +617,12 @@ li a.navigation-settings-icon {
 .navigation footer > *,
 .navigation .wrapper,
 .navigation .wrapper:after,
-.navigation-items,
 .navigation-items * {
   @include single-transition(all, $transitionDuration);
+}
+
+.navigation-items {
+  @include transition(all 0, opacity $transitionDuration, background $transitionDuration);
 }
 
 .navigation-header {

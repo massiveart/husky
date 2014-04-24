@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>husky_components/page-functions/main.js - husky</title>
+    <title>husky/components/smart-content - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -41,21 +41,37 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="../classes/AutoComplete.html">AutoComplete</a></li>
+            
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
                 <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/Column-Options.html">Column-Options</a></li>
             
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
                 <li><a href="../classes/DataGrid.html">DataGrid</a></li>
             
-                <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
+                <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
+            
+                <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
             
-                <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+                <li><a href="../classes/Matcher.html">Matcher</a></li>
+            
+                <li><a href="../classes/Overlay.html">Overlay</a></li>
+            
+                <li><a href="../classes/Process.html">Process</a></li>
             
                 <li><a href="../classes/Search.html">Search</a></li>
+            
+                <li><a href="../classes/Select.html">Select</a></li>
+            
+                <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/Toggler.html">Toggler</a></li>
             
                 <li><a href="../classes/Toolbar.html">Toolbar</a></li>
             
@@ -63,15 +79,21 @@
 
             <ul id="api-modules" class="apis modules">
             
+                <li><a href="../modules/husky_components_auto-complete.html">husky/components/auto-complete</a></li>
+            
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
             
                 <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
-                <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
+                <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
-                <li><a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a></li>
+                <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
+            
+                <li><a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a></li>
             
                 <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
@@ -110,104 +132,59 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: husky_components/page-functions/main.js</h1>
+                        <h1>husky_components_smart-content Module</h1>
+<div class="box clearfix meta">
+    
 
-<div class="file">
-    <pre class="code prettyprint linenums">
-/**
- * This file is part of Husky frontend development framework.
- *
- * (c) MASSIVE ART WebServices GmbH
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- *
- * @module husky/components/page-functions
- */
+    
 
-/**
- * @class PageFunctions
- * @constructor
- *
- * @param {Object} [options] Configuration object
- * @param {String} [options.url] url to load data
- * @param {Object} [options.data] data to view
- */
-define([], function() {
+    
+        <div class="foundat">
+            Defined in: <a href="../files/husky_components_smart-content_main.js.html#l12"><code>husky_components&#x2F;smart-content&#x2F;main.js:12</code></a>
+        </div>
+    
 
-        &#x27;use strict&#x27;;
+    
+</div>
 
-        var defaults = {
-                url: &#x27;&#x27;, // url to load data
-                data: {}
-            },
 
-            template = function() {
-                return [
-                    &#x27;&lt;div class=&quot;page-function&quot;&gt; &#x27;,
-                    &#x27;   &lt;a href=&quot;#&quot; id=&quot;&lt;%= id %&gt;&quot;&gt;&lt;span class=&quot;icon-&lt;%= icon %&gt;&quot;&gt;&lt;/span&gt;&lt;/a&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;
-                ].join(&#x27;&#x27;);
-            },
 
-            /**
-             * Namespace of events
-             * @type {string}
-             */
-            eventNamespace = &#x27;husky.page-functions.&#x27;,
+<div class="box intro">
+    <p>This file is part of Husky frontend development framework.</p>
+<p>(c) MASSIVE ART WebServices GmbH</p>
+<p>This source file is subject to the MIT license that is bundled
+with this source code in the file LICENSE.</p>
 
-            /**
-             * @event husky.page-functions.rendered
-             * @description the component has been rendered
-             */
-            RENDERED = eventNamespace + &#x27;rendered&#x27;,
+</div>
 
-            /**
-             * @event husky.page-functions.clicked
-             * @description link was clicked
-             */
-            CLICK = eventNamespace + &#x27;clicked&#x27;;
 
-        return {
 
-            view: true,
+<div class="yui3-g">
+    <div class="yui3-u-1-2">
+        
+            <p>This module provides the following classes:</p>
 
-            initialize: function() {
-                this.sandbox.logger.log(&#x27;initialize&#x27;, this);
-                this.sandbox.logger.log(arguments);
+            <ul class="module-classes">
+            
+                <li class="module-class">
+                    <a href="../classes/Overlay.html">
+                        Overlay
+                    </a>
+                </li>
+            
+                <li class="module-class">
+                    <a href="../classes/SmartContent.html">
+                        SmartContent
+                    </a>
+                </li>
+            
+            </ul>
+        
+    </div>
 
-                // extend default options
-                this.options = this.sandbox.util.extend({}, defaults, this.options);
-
-                this.render();
-            },
-
-            render: function() {
-                if (!this.options.data.id) {
-                    this.options.data.id = this.sandbox.util.uniqueId();
-                }
-
-                this.sandbox.dom.append(this.options.el, this.sandbox.template.parse(template(), this.options.data));
-
-                this.bindDomEvents();
-
-                this.sandbox.emit(RENDERED);
-            },
-
-            bindDomEvents: function() {
-                this.sandbox.dom.on(this.options.el, &#x27;click&#x27;, function(e) {
-                    e.preventDefault();
-                    this.sandbox.emit(CLICK);
-
-                    return false;
-                }.bind(this), &#x27;#&#x27; + this.options.data.id);
-            }
-
-        };
-    }
-);
-
-    </pre>
+    <div class="yui3-u-1-2">
+        
+    </div>
 </div>
 
                     </div>

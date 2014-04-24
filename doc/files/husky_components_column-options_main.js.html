@@ -41,21 +41,37 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="../classes/AutoComplete.html">AutoComplete</a></li>
+            
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
                 <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/Column-Options.html">Column-Options</a></li>
             
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
                 <li><a href="../classes/DataGrid.html">DataGrid</a></li>
             
-                <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
+                <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
+            
+                <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
             
-                <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+                <li><a href="../classes/Matcher.html">Matcher</a></li>
+            
+                <li><a href="../classes/Overlay.html">Overlay</a></li>
+            
+                <li><a href="../classes/Process.html">Process</a></li>
             
                 <li><a href="../classes/Search.html">Search</a></li>
+            
+                <li><a href="../classes/Select.html">Select</a></li>
+            
+                <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/Toggler.html">Toggler</a></li>
             
                 <li><a href="../classes/Toolbar.html">Toolbar</a></li>
             
@@ -63,15 +79,21 @@
 
             <ul id="api-modules" class="apis modules">
             
+                <li><a href="../modules/husky_components_auto-complete.html">husky/components/auto-complete</a></li>
+            
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
             
                 <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
-                <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
+                <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
-                <li><a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a></li>
+                <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
+            
+                <li><a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a></li>
             
                 <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
@@ -127,11 +149,12 @@
 
 
 /**
- * @class Toolbar
+ * @class Column-Options
  * @constructor
  *
  * @param {Object} [options] Configuration object
  * @param {String} [options.url] url to fetch data from
+ * @param {String} [options.instanceName] name of the instance - will affect events name
  * @param {Object} [options.data] if no url is provided
  * @param {String} [options.trigger] the dom item which opens the component
  * @param {Object} [options.header] Configuration object for the header
@@ -140,7 +163,6 @@
  * @param {Object} [options.footer] Configuration object for the header
  * @param {Boolean} [options.footer.disabled] defines if footer should be shown
  * @param {Boolean} [options.hidden] defines if component should be hidden when component is initialized
- * @param {Boolean} [options.destroyOnClose] will remove the container from dom, when closed
  */
 define(function() {
 
@@ -150,6 +172,7 @@ define(function() {
             url: null,
             data: [],
             trigger: null,
+            instanceName: null,
             header: {
                 disabled: false,
                 title: &#x27;Column Options&#x27;
@@ -157,8 +180,7 @@ define(function() {
             footer: {
                 disabled: false
             },
-            hidden: false,
-            destroyOnClose: true
+            hidden: false
         },
 
         templates = {
@@ -166,7 +188,7 @@ define(function() {
                 &#x27;&lt;li class=&quot;column-options-list-item&quot; data-id=&quot;&lt;%= id %&gt;&quot; draggable=&quot;true&quot;&gt;&#x27;,
                 &#x27;   &lt;span class=&quot;move&quot;&gt;&amp;#8942;&lt;/span&gt;&#x27;,
                 &#x27;   &lt;span class=&quot;text&quot;&gt;&lt;%= title %&gt;&lt;/span&gt;&#x27;,
-                &#x27;   &lt;span class=&quot;icon-half-eye-open visibility-toggle&quot;&gt;&lt;/span&gt;&#x27;,
+                &#x27;   &lt;span class=&quot;&lt;%= toggleIcon %&gt; visibility-toggle&quot;&gt;&lt;/span&gt;&#x27;,
                 &#x27;&lt;/li&gt;&#x27;].join(&#x27;&#x27;),
             header: [
                 &#x27;&lt;div class=&quot;column-options-header&quot;&gt;&#x27;,
@@ -176,47 +198,68 @@ define(function() {
             ].join(&#x27;&#x27;)
         },
 
+        iconClasses = {
+            visible: &#x27;icon-half-eye-open&#x27;,
+            hidden: &#x27;icon-half-eye-close&#x27;
+        },
 
-        namespace = &#x27;husky.column-options&#x27;,
 
         /**
          * triggered when component is completely initialized
-         * @event husky.column-options.initialized
+         * @event husky.column-options[.INSTANCE_NAME].initialized
          */
-            INITIALIZED = namespace + &#x27;.initialized&#x27;,
+            INITIALIZED = function() {
+            return getEventName.call(this, &#x27;initialized&#x27;);
+
+        },
 
         /**
          * triggered when item was enabled
-         * @event husky.column-options.item.enabled
+         * @event husky.column-options[.INSTANCE_NAME].item.enabled
          * @param {Object} item that was enabled
          */
-            ENABLED = namespace + &#x27;.item.enabled&#x27;,
+            ENABLED = function() {
+            return getEventName.call(this, &#x27;item.enabled&#x27;);
+
+        },
 
         /**
          * triggered when item was disabled
-         * @event husky.column-options.item.disabled
+         * @event husky.column-options[.INSTANCE_NAME].item.disabled
          * @param {Object} item that was disabled
          */
-            DISABLED = namespace + &#x27;.item.disabled&#x27;,
+            DISABLED = function() {
+            return getEventName.call(this, &#x27;item.disabled&#x27;);
+
+        },
 
         /**
          * triggered when save was clicked
-         * @event husky.column-options.saved
+         * @event husky.column-options[.INSTANCE_NAME].saved
          * @param {Array} Contains all visible items
          */
-            SAVED = namespace + &#x27;.saved&#x27;,
+            SAVED = function() {
+            return getEventName.call(this, &#x27;saved&#x27;);
+
+        },
 
         /**
          * used for receiving all visible columns
-         * @event husky.column-options.get-selected
+         * @event husky.column-options[.INSTANCE_NAME].get-selected
          */
-            GET_SELECTED = namespace + &#x27;.get-selected&#x27;,
+            GET_SELECTED = function() {
+            return getEventName.call(this, &#x27;get-selected&#x27;);
+
+        },
 
         /**
          * used for receiving all columns
-         * @event husky.column-options.get-all
+         * @event husky.column-options[.INSTANCE_NAME].get-all
          */
-            GET_ALL = namespace + &#x27;.get-all&#x27;,
+            GET_ALL = function() {
+            return getEventName.call(this, &#x27;get-all&#x27;);
+
+        },
 
 
         /**
@@ -224,21 +267,23 @@ define(function() {
          */
             bindDOMEvents = function() {
 
-            this.sandbox.dom.on(this.options.trigger, &#x27;click&#x27;, toggleDropdown.bind(this));
-            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, stopPropagation.bind(this), &#x27;.column-options-container&#x27;); // prevent from unwanted events
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, customStopPropagation.bind(this), this.$container); // prevent from unwanted events
             this.sandbox.dom.on(this.$el, &#x27;mouseover&#x27;, onMouseOver.bind(this), &#x27;li&#x27;);
             this.sandbox.dom.on(this.$el, &#x27;mouseout&#x27;, onMouseOut.bind(this), &#x27;li&#x27;);
             this.sandbox.dom.on(this.$el, &#x27;click&#x27;, toggleVisibility.bind(this), &#x27;.visibility-toggle&#x27;);
-            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, submit.bind(this), &#x27;.save-button&#x27;);
-            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, hideDropdown.bind(this, true), &#x27;.close-button&#x27;);
         },
+
 
         /**
          * custom events
          */
             bindCustomEvents = function() {
-            this.sandbox.on(GET_SELECTED, getSelectedItems.bind(this));
-            this.sandbox.on(GET_ALL, getAllItems.bind(this));
+            this.sandbox.on(GET_SELECTED.call(this), getSelectedItems.bind(this));
+            this.sandbox.on(GET_ALL.call(this), getAllItems.bind(this));
+        },
+
+        getEventName = function(postFix) {
+            return &#x27;husky.column-options.&#x27; + (this.options.instanceName ? this.options.instanceName + &#x27;.&#x27; : &#x27;&#x27;) + postFix;
         },
 
         /**
@@ -305,61 +350,16 @@ define(function() {
          * opens dropdown submenu
          * @param event
          */
-            stopPropagation = function(event) {
-
+            customStopPropagation = function(event) {
             event.preventDefault();
             event.stopPropagation();
-        },
-
-        /**
-         * gets called when toggle item is clicked
-         * opens dropdown submenu
-         * @param event
-         */
-            toggleDropdown = function(event) {
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            var $container = this.sandbox.dom.find(&#x27;.column-options-container&#x27;, this.$el),
-                isVisible = this.sandbox.dom.is($container, &#x27;:visible&#x27;);
-
-            if (isVisible) {
-                closeDropdown.call(this, $container, true);
-            } else {
-                this.sandbox.dom.show($container);
-                this.sandbox.dom.one(&#x27;body&#x27;, &#x27;click&#x27;, closeDropdown.bind(this, $container, true));
-            }
-        },
-
-        /**
-         * simply hides container
-         */
-            hideDropdown = function(reset) {
-            var $container = this.sandbox.dom.find(&#x27;.column-options-container&#x27;, this.$el);
-            closeDropdown.call(this, $container, reset);
-        },
-
-        /**
-         * close dropdown
-         * @param $container container to hide
-         * @param rerender - rerender list after close
-         */
-            closeDropdown = function($container, rerender) {
-            this.sandbox.dom.hide($container);
-            if (this.options.destroyOnClose) {
-                this.sandbox.dom.remove(this.$el);
-            } else if (rerender) {
-                // reset unsaved changes
-                this.rerender();
-            }
         },
 
         /**
          * called when save was clicked
          */
             submit = function() {
-            var $items = this.sandbox.dom.find(&#x27;.column-options-list-item&#x27;, this.$el),
+            var $items = this.sandbox.dom.find(&#x27;.column-options-list-item&#x27;, this.$list),
                 items = [],
                 id;
 
@@ -375,13 +375,16 @@ define(function() {
             this.options.data = this.data;
 
             getAllItems.call(this, function(items) {
-                this.sandbox.emit(SAVED, items);
-                hideDropdown.call(this);
-
-                this.sandbox.dom.off(&#x27;body&#x27;, &#x27;click&#x27;);
-
+                this.sandbox.emit(SAVED.call(this), items);
             }.bind(this));
 
+        },
+
+        /**
+         * close dropdown - callback
+         */
+            close = function() {
+            this.sandbox.dom.remove(this.$el);
         },
 
         /**
@@ -399,15 +402,46 @@ define(function() {
                 this.items[item.id] = item;
 
                 // append to list
-                $listItem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.listItem, {id: item.id, title: this.sandbox.translate(item.translation)}));
+                $listItem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.listItem, {
+                    id: item.id,
+                    toggleIcon: (item.default === true || item.default === &#x27;true&#x27;) ? &#x27;&#x27; : iconClasses.visible,
+                    title: this.sandbox.translate(item.translation)}));
                 this.sandbox.dom.append(this.$list, $listItem);
 
                 // set to disabled
-                if (typeof item.disabled !== &#x27;undefined&#x27; &amp;&amp; item.disabled !== &quot;false&quot; &amp;&amp; item.disabled !== false ) {
+                if (typeof item.disabled !== &#x27;undefined&#x27; &amp;&amp; item.disabled !== &quot;false&quot; &amp;&amp; item.disabled !== false) {
                     toggleVisibility.call(this, {currentTarget: this.sandbox.dom.find(&#x27;.visibility-toggle&#x27;, $listItem), doNotEmitEvents: true, preventDefault: function() {
                     }});
                 }
             }.bind(this));
+        },
+
+        startOverlay = function() {
+            if (this.overlayLoaded === false) {
+                this.sandbox.start([
+                    {
+                        name: &#x27;overlay@husky&#x27;,
+                        options: {
+                            triggerEl: this.options.trigger,
+                            container: this.$el,
+                            data: this.$list,
+                            okCallback: function() {
+                                submit.call(this);
+                                close.call(this);
+                            }.bind(this),
+                            closeCallback: function() {
+                                close.call(this);
+                            }.bind(this),
+                            instanceName: &#x27;column-options-&#x27; + this.options.instanceName,
+                            title: this.options.header.title,
+                            openOnStart: !this.options.hidden,
+                            removeOnClose: true
+                        }
+                    }
+                ]);
+
+                this.overlayLoaded = true;
+            }
         },
 
         /**
@@ -421,23 +455,31 @@ define(function() {
                 isDisabled = this.sandbox.dom.hasClass($listItem, &#x27;disabled&#x27;),
                 id = this.sandbox.dom.data($listItem, &#x27;id&#x27;),
                 item = this.items[id],
-                classEyeOpen = &#x27;icon-half-eye-open&#x27;,
-                classEyeClose = &#x27;icon-half-eye-close&#x27;;
-
-            this.sandbox.dom.toggleClass($listItem, &#x27;disabled&#x27;);
+                visible = iconClasses.visible,
+                hidden = iconClasses.hidden;
 
             if (isDisabled) {
-                this.sandbox.dom.removeClass(event.currentTarget, classEyeClose);
-                this.sandbox.dom.prependClass(event.currentTarget, classEyeOpen);
+                // enable
+                this.numVisible++;
+                this.sandbox.dom.removeClass(event.currentTarget, hidden);
+                this.sandbox.dom.prependClass(event.currentTarget, visible);
             } else {
-                this.sandbox.dom.prependClass(event.currentTarget, classEyeClose);
-                this.sandbox.dom.removeClass(event.currentTarget, classEyeOpen);
+                // disable
+                // one column must stay visible
+                if (this.numVisible === 1) {
+                    return;
+                }
+
+                this.numVisible--;
+                this.sandbox.dom.prependClass(event.currentTarget, hidden);
+                this.sandbox.dom.removeClass(event.currentTarget, visible);
             }
 
+            this.sandbox.dom.toggleClass($listItem, &#x27;disabled&#x27;);
             item.disabled = !isDisabled;
 
             if (!event.doNotEmitEvents) {
-                this.sandbox.emit(isDisabled ? ENABLED : DISABLED, item);
+                this.sandbox.emit(isDisabled ? ENABLED.call(this) : DISABLED.call(this), item);
             }
         };
 
@@ -449,7 +491,7 @@ define(function() {
         initialize: function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
-            this.$el = this.sandbox.dom.$(this.options.el);
+            this.overlayLoaded = false;
 
             // define handle object to trigger
             this.options.trigger = this.options.trigger || this.$el;
@@ -478,43 +520,26 @@ define(function() {
          */
         render: function(data) {
 
+            this.numVisible = data.length;
+
             this.options.data = data;
             // temporary data save
             this.data = this.sandbox.util.extend(true, [], this.options.data);
 
             this.sandbox.dom.addClass(this.$el, &#x27;column-options-parent&#x27;);
 
-            // init container
-            var $container = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;column-options-container&quot; /&gt;&#x27;);
-            this.sandbox.dom.append(this.$el, $container);
-
-            // render header
-            if (!this.options.header.disabled) {
-                this.sandbox.dom.append($container, this.sandbox.template.parse(templates.header, {title: this.options.header.title}));
-            }
-
             // init list
             this.$list = this.sandbox.dom.createElement(&#x27;&lt;ul class=&quot;column-options-list&quot; /&gt;&#x27;);
-            this.sandbox.dom.append($container, this.$list);
 
             // render list items
             renderItems.call(this);
 
-            // render footer
-            if (!this.options.footer.disabled) {
-                this.sandbox.dom.append($container, &#x27;&lt;div class=&quot;column-options-footer&quot;&gt;&lt;a href=&quot;#&quot; class=&quot;icon-half-ok save-button btn btn-highlight&quot;&gt;&lt;/a&gt;&lt;/div&gt;&#x27;);
-            }
-
             // make list sortables
-            this.sandbox.dom.sortable(&#x27;.column-options-list&#x27;, {handle: &#x27;.move&#x27;});
-
-            // show on startup
-            if (!this.options.hidden) {
-                this.sandbox.dom.show($container);
-            }
+            this.sandbox.dom.sortable(this.$list, {handle: &#x27;.move&#x27;});
+            startOverlay.call(this);
 
             // initialization finished
-            this.sandbox.emit(INITIALIZED);
+            this.sandbox.emit(INITIALIZED.call(this));
         },
 
         /**
@@ -525,7 +550,7 @@ define(function() {
             this.sandbox.dom.html(this.$list, &#x27;&#x27;);
             renderItems.call(this);
             // make list sortable
-            this.sandbox.dom.sortable(&#x27;.column-options-list&#x27;, {handle: &#x27;.move&#x27;});
+            this.sandbox.dom.sortable(this.$list, {handle: &#x27;.move&#x27;});
         }
     };
 });

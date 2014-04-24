@@ -30,6 +30,7 @@
  * @param {String} [options.columns.content] column title
  * @param {String} [options.columns.width] width of column
  * @param {String} [options.columns.class] css class of th
+ * @param {String} [options.columns.type] type of the column. Used to manipulate its content (e.g. 'date')
  * @param {String} [options.columns.attribute] mapping information to data (if not set it will just iterate of attributes)
  * @param {Boolean} [options.appendTBody] add TBODY to table
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search event
@@ -43,6 +44,7 @@
  * @param {String} [options.columnMinWidth] sets the minimal width of table columns
  * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
  * @param {Array} [options.showElementsSteps] Array which contains the steps for the Show-Elements-dropdown as integers
+ * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
  */
 define(function() {
 
@@ -61,6 +63,7 @@ define(function() {
             excludeFields: ['id'],
             instance: 'datagrid',
             pagination: false,
+            fullWidth: false,
             paginationOptions: {
                 pageSize: null,
                 showPages: null
@@ -87,6 +90,17 @@ define(function() {
             startTabIndex: 99999,
             columnMinWidth: '70px',
             showElementsSteps: [10, 20, 50, 100, 500]
+        },
+
+        types = {
+            DATE: 'date'
+        },
+
+        constants = {
+            fullWidthClass: 'fullwidth',
+            // if datagrid is in fullwidth-mode (options.fullWidth is true)
+            // this number gets subracted from the datagrids final width in the resize listener
+            overflowIconSpacing: 30
         },
 
         namespace = 'husky.datagrid.',
@@ -315,7 +329,11 @@ define(function() {
             this.currentUrl = '';
 
             if (!!this.options.contentContainer) {
-                this.originalMaxWidth = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
+                if (this.sandbox.dom.css(this.options.contentContainer, 'max-width') === 'none') {
+                    this.originalMaxWidth = null;
+                } else {
+                    this.originalMaxWidth = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
+                }
                 this.contentMarginRight = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'margin-right')).number;
                 this.contentPaddings = this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-right')).number;
                 this.contentPaddings += this.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-left')).number;
@@ -628,7 +646,8 @@ define(function() {
                     this.rowStructure.push({
                         attribute: column.attribute,
                         editable: column.editable,
-                        validation: column.validation
+                        validation: column.validation,
+                        type: column.type
                     });
 
                     if (!!column.editable) {
@@ -743,14 +762,14 @@ define(function() {
 
                     this.rowStructure.forEach(function(key, index) {
                         key.editable = key.editable || false;
-                        this.createRowCell(key.attribute, row[key.attribute], key.editable, key.validation, triggeredByAddRow, index);
+                        this.createRowCell(key.attribute, row[key.attribute], key.type, key.editable, key.validation, triggeredByAddRow, index);
                     }.bind(this));
 
                 } else {
                     i = 0;
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                            this.createRowCell(key, row[key], false, null, triggeredByAddRow, i);
+                            this.createRowCell(key, row[key], null, false, null, triggeredByAddRow, i);
                             i++;
                         }
                     }
@@ -770,13 +789,13 @@ define(function() {
          * Sets the value of row cell and the data-id attribute for the row
          * @param key attribute name
          * @param value attribute value
+         * @param type {String} The type of the cell. Used to call a function to manipulate the content
          * @param editable flag whether field is editable or not
          * @param validation information for field
          * @param triggeredByAddRow triggered trough add row
          * @param index
          */
-        createRowCell: function(key, value, editable, validation, triggeredByAddRow, index) {
-
+        createRowCell: function(key, value, type, editable, validation, triggeredByAddRow, index) {
             var tblCellClasses,
                 tblCellContent,
                 tblCellStyle,
@@ -806,6 +825,11 @@ define(function() {
 
                 tblCellStyle = 'style="max-width:' + this.options.columns[index].minWidth + '"';
 
+                // call the type manipulate to manipulate the content of the cell
+                if (!!type) {
+                    tblCellContent = this.manipulateCellContent(tblCellContent, type);
+                }
+
                 if (!!editable) {
 
                     if (!!triggeredByAddRow) {
@@ -831,6 +855,32 @@ define(function() {
             } else {
                 this.tblRowAttributes += ' data-' + key + '="' + value + '"';
             }
+        },
+
+        /**
+         * Manipulates the content of a cell with a process realted to the columns type
+         * @param content {String} the content of the cell
+         * @param type {String} the columns type
+         * @returns {String} the manipualted content
+         */
+        manipulateCellContent: function(content, type) {
+            if (type === types.DATE) {
+                content = this.parseDate(content);
+            }
+            return content;
+        },
+
+        /**
+         * Brings a date into the right format
+         * @param date {String} the date to parse
+         * @returns {String}
+         */
+        parseDate: function(date) {
+            var parsedDate = this.sandbox.date.format(date);
+            if (parsedDate !== null) {
+                return parsedDate;
+            }
+            return date;
         },
 
         /**
@@ -1963,6 +2013,11 @@ define(function() {
          * Binds DOM events
          */
         render: function() {
+            // add full-width class
+            if (this.options.fullWidth === true) {
+                this.sandbox.dom.addClass(this.$element, constants.fullWidthClass);
+            }
+
             this.$originalElement.html(this.$element);
             this.bindDOMEvents();
 
@@ -1990,7 +2045,7 @@ define(function() {
             tableOffset.right = tableOffset.left + tableWidth;
 
 
-            if (!!this.options.contentContainer) {
+            if (!!this.options.contentContainer && !!this.originalMaxWidth) {
                 // get original max-width and right margin
                 originalMaxWidth = this.originalMaxWidth;
                 contentPaddings = this.contentPaddings;
@@ -2030,6 +2085,10 @@ define(function() {
                     // if table does not overlap border, set content to original width
                     this.sandbox.dom.css(this.options.contentContainer, 'max-width', '');
                 }
+            }
+
+            if (this.options.fullWidth === true) {
+                finalWidth = finalWidth - constants.overflowIconSpacing;
             }
 
             // now set width
