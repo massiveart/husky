@@ -1885,8 +1885,6 @@ define(function() {
             var url, key;
 
             this.addLoader();
-//            template = this.sandbox.uritemplate.parse(this.data.links.self);
-//            url = this.sandbox.uritemplate.expand(template, {});
             url = this.currentUrl;
 
             for (key in parameters) {
