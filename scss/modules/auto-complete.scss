@@ -43,12 +43,15 @@
     width: 100%;
     top: 37px;
     background: $white;
+    border-radius: $dropdownBorderRadius;
 }
 
 .tt-dropdown-menu {
     width: 100%;
     border: 1px solid $grayLighter;
     margin-top: -1px;
+    border-radius: $dropdownBorderRadius;
+    @extend .dropdown-shadow;
 }
 
 .tt-hint {

@@ -491,7 +491,7 @@ define([], function() {
                     '       </div>',
                     '       <span class="dropdown-toggle inline-block"></span>',
                     '   </div>',
-                    '   <div class="grid-row dropdown-list hidden ' + constants.dropdownContainerClass + '">',
+                    '   <div class="grid-row dropdown-list dropdown-shadow hidden ' + constants.dropdownContainerClass + '">',
                     '       <ul class="' + constants.listClass + '"></ul>',
                     '   </div>',
                     '</div>'

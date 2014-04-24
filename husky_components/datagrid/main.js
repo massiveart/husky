@@ -63,7 +63,7 @@ define(function() {
             excludeFields: ['id'],
             instance: 'datagrid',
             pagination: false,
-            fullWidth: false,
+            //fullWidth: false,
             paginationOptions: {
                 pageSize: null,
                 showPages: null
@@ -2028,16 +2028,19 @@ define(function() {
                 }
             }
 
-            if (this.options.fullWidth === true) {
-                finalWidth = finalWidth - constants.overflowIconSpacing;
-            }
-
             // now set width
             this.sandbox.dom.width(this.$element, finalWidth);
 
             // check scrollwidth and add class
             if (this.sandbox.dom.get(this.$tableContainer, 0).scrollWidth > finalWidth) {
                 this.sandbox.dom.addClass(this.$tableContainer, 'overflow');
+
+                // if overflown and in full width mode reduce list-width
+                if (this.options.fullWidth === true) {
+                    finalWidth = finalWidth - constants.overflowIconSpacing;
+                    this.sandbox.dom.width(this.$element, finalWidth);
+                }
+
             } else {
                 this.sandbox.dom.removeClass(this.$tableContainer, 'overflow');
             }
