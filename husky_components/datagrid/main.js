@@ -1908,7 +1908,9 @@ define(function() {
         },
 
         /**
-         * this will trigger a api search
+         * triggers an api search
+         * @param {String} searchString The String that will be searched
+         * @param {String|Array} searchFields Fields that will be included into the search
          */
         triggerSearch: function(searchString, searchFields) {
 
@@ -1928,7 +1930,8 @@ define(function() {
         },
 
         /**
-         * this will trigger a api search
+         * updates the current url by given parameter object
+         * @param {Object} parameters Object key is used as parameter name, value as parameter value
          */
         updateUrl: function(parameters) {
 
@@ -1950,6 +1953,14 @@ define(function() {
             });
         },
 
+        /**
+         * function updates an url by a given parameter name and value and returns it. The parameter is either added or updated.
+         * If value is not set, the parameter will be removed from url
+         * @param {String} url Url string to be updated
+         * @param {String} paramName Parameter which should be added / updated / removed
+         * @param {String|Null} paramValue Value of the parameter. If not set, parameter will be removed from url
+         * @returns {String} updated url
+         */
         setGetParameter: function(url, paramName, paramValue){
             if (url.indexOf(paramName + "=") >= 0)
             {
