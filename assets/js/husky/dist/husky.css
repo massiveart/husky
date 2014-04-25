@@ -1071,20 +1071,21 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
 
 /* line 50, ../scss/modules/overlay.scss */
 .overlay-header {
-  padding: 15px 40px 15px 20px;
   min-height: 50px;
   background: #efefef;
   position: relative;
   border-radius: 3px 3px 0 0;
 }
-/* line 57, ../scss/modules/overlay.scss */
+/* line 56, ../scss/modules/overlay.scss */
 .overlay-header .title {
   color: #999999;
   font-size: 23px;
   padding-right: 10px;
   vertical-align: text-top;
+  display: block;
+  padding: 15px 40px 10px 20px;
 }
-/* line 64, ../scss/modules/overlay.scss */
+/* line 65, ../scss/modules/overlay.scss */
 .overlay-header .close-button {
   position: absolute;
   top: 0px;
@@ -1095,8 +1096,19 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   line-height: 12px;
   padding: 8px;
 }
+/* line 76, ../scss/modules/overlay.scss */
+.overlay-header .tabs {
+  display: inline-block;
+}
+/* line 80, ../scss/modules/overlay.scss */
+.overlay-header .language-changer {
+  width: 80px;
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+}
 
-/* line 77, ../scss/modules/overlay.scss */
+/* line 88, ../scss/modules/overlay.scss */
 .overlay-footer {
   padding: 10px;
   border-top: 1px solid #cccccc;
@@ -1109,38 +1121,38 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   content: ' ';
   display: block;
 }
-/* line 84, ../scss/modules/overlay.scss */
+/* line 95, ../scss/modules/overlay.scss */
 .overlay-footer .btn {
   width: 100px;
   margin: 0 auto;
   padding: 0;
 }
-/* line 89, ../scss/modules/overlay.scss */
+/* line 100, ../scss/modules/overlay.scss */
 .overlay-footer .btn.tick {
   width: 70px;
   line-height: 28px;
 }
-/* line 95, ../scss/modules/overlay.scss */
+/* line 106, ../scss/modules/overlay.scss */
 .overlay-footer.center .btn {
   margin: 0 auto;
 }
-/* line 99, ../scss/modules/overlay.scss */
+/* line 110, ../scss/modules/overlay.scss */
 .overlay-footer.left .btn {
   float: left;
   margin-right: 20px;
 }
-/* line 104, ../scss/modules/overlay.scss */
+/* line 115, ../scss/modules/overlay.scss */
 .overlay-footer.right .btn {
   float: right;
   margin-left: 20px;
 }
 
-/* line 110, ../scss/modules/overlay.scss */
+/* line 121, ../scss/modules/overlay.scss */
 .overlay-content {
   padding-left: 0;
   margin: 0 20px 10px 20px;
 }
-/* line 114, ../scss/modules/overlay.scss */
+/* line 125, ../scss/modules/overlay.scss */
 .overlay-content .message {
   padding: 20px 0 30px 0;
   font-size: 24px;
@@ -1148,7 +1160,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   line-height: 30px;
 }
 
-/* line 122, ../scss/modules/overlay.scss */
+/* line 133, ../scss/modules/overlay.scss */
 .husky-overlay-backdrop {
   width: 100%;
   height: 100%;
@@ -5898,6 +5910,9 @@ a.btn-black, a.btn-highlight {
   background-color: white;
   border-bottom: 1px solid #f1f1f1;
   padding: 20px 50px 0 50px;
+  /**
+  *** Overlay Skin
+  **/
 }
 /* line 13, ../scss/modules/tabs.scss */
 .tabs-container ul {
@@ -5938,6 +5953,16 @@ a.btn-black, a.btn-highlight {
 /* line 50, ../scss/modules/tabs.scss */
 .tabs-container.deactivated ul li.is-selected a {
   color: #249fbe;
+}
+/* line 59, ../scss/modules/tabs.scss */
+.tabs-container.overlay {
+  background-color: transparent;
+  border-bottom: none;
+  padding: 10px 0 0 20px;
+}
+/* line 65, ../scss/modules/tabs.scss */
+.tabs-container.overlay ul li.is-selected {
+  background-color: white;
 }
 
 /*styles related to the whole container*/
@@ -6955,6 +6980,10 @@ a.btn-black, a.btn-highlight {
 .husky-select-container.small .dropdown-list.top {
   top: auto;
   bottom: -3px;
+}
+/* line 131, ../scss/modules/select.scss */
+.husky-select-container.white .dropdown-label {
+  background: white;
 }
 
 /* line 5, ../scss/modules/smart-content.scss */
