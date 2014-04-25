@@ -70,7 +70,7 @@ define([], function() {
             backdrop: true,
             backdropClose: true,
             backdropColor: '#000000',
-            backdropAlpha: 0.3,
+            backdropAlpha: 0.5,
             okInactive: false,
             type: 'normal',
             cssClass: '',
@@ -278,10 +278,12 @@ define([], function() {
          * Binds general events
          */
         bindEvents: function() {
-            this.sandbox.dom.on(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName, function(event) {
-                this.sandbox.dom.preventDefault(event);
-                this.triggerHandler();
-            }.bind(this));
+            if (!!this.$trigger) {
+                this.sandbox.dom.on(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName, function(event) {
+                    this.sandbox.dom.preventDefault(event);
+                    this.triggerHandler();
+                }.bind(this));
+            }
 
             this.sandbox.on(REMOVE.call(this), this.removeComponent.bind(this));
 
@@ -342,7 +344,10 @@ define([], function() {
          * Sets the default properties
          */
         setVariables: function() {
-            this.$trigger = this.sandbox.dom.$(this.options.triggerEl);
+            this.$trigger = null;
+            if (!!this.options.triggerEl) {
+                this.$trigger = this.sandbox.dom.$(this.options.triggerEl);
+            }
 
             this.overlay = {
                 opened: false,

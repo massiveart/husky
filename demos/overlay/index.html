@@ -217,6 +217,7 @@
                             }
                         }]);
                     });
+
                     $('#error').click(function() {
                         var $element = $('<div/>');
                         $('body').append($element);
@@ -225,7 +226,6 @@
                             name: 'overlay@husky',
                             options: {
                                 el: $element,
-                                triggerEl: '#error',
                                 title: 'This action is not possible',
                                 message: 'Sorry, you cannot delete this content because you don’t have the permissions.',
                                 type: 'error',
