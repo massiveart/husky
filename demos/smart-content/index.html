@@ -53,6 +53,8 @@
 <script src="../js/jquery.js"></script>
 <script src="../js/require.js"></script>
 <script type="text/javascript">
+    var App;
+
     require.config({
         baseUrl: '../../'
     });
@@ -77,6 +79,8 @@
 
         var app = Husky({ debug: { enable: true }}),
                 _ = app.sandbox.util._;
+
+        App = app;
 
         app.start([{
             name: 'smart-content@husky',

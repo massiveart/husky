@@ -6,7 +6,7 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  *
- * @module husky/components/smart-content
+ * @module husky/components/overlay
  */
 
 /**
@@ -16,7 +16,6 @@
  * @params {Object} [options] Configuration object
  * @params {String} [options.trigger] List of events on which the overlay should be opened
  * @params {String} [options.triggerEl] Element that triggers the overlay
- * @params {String} [options.container] slector or DOM object in which the overlay gets inserted
  * @params {String} [options.title] the title of the overlay
  * @params {String} [options.closeIcon] icon class for the close button
  * @params {Function} [options.closeCallback] callback which gets executed after the overlay gets closed
@@ -36,6 +35,15 @@
  * @params {String} [options.cancelDefaultText] The default text for cancel buttons
  * @params {String} [options.type] The type of the overlay ('normal', 'error' or 'warning')
  * @params {Array} [options.buttonsAlign] the align of the buttons in the footer ('center', 'left' or 'right')
+ *
+ * @params {Object} [options.languageChanger] If set language-changer will be displayed in the header
+ * @params {Array} [options.languageChanger.locales] array of locale strings for the dropdown
+ * @params {String} [options.languageChanger.preSelected] locale which is selected at the beginning
+ *
+ * @params {Array} [options.tabs] array of tabs-data to use instead of options.data and options.message
+ * @params {String} [options.tabs.title] the title of the tab
+ * @params {String|Object} [options.tabs.data] HTML or DOM-Object to display when tab is active
+ *
  * @params {Array} [options.buttons] an array of buttons to add to the footer
  * @params {String} [options.buttons.type] type of the button ('ok', 'cancel')
  * @params {String} [options.buttons.icon] icon of the button
@@ -49,12 +57,12 @@ define([], function() {
     var defaults = {
             trigger: 'click',
             triggerEl: null,
-            container: 'body',
             title: '',
             closeIcon: 'remove2',
             closeCallback: null,
             okCallback: null,
             data: '',
+            tabs: null,
             instanceName: 'undefined',
             draggable: true,
             openOnStart: false,
@@ -69,7 +77,8 @@ define([], function() {
             buttons: [],
             buttonsAlign: 'center',
             cancelDefaultText: 'Cancel',
-            okDefaultText: 'Ok'
+            okDefaultText: 'Ok',
+            languageChanger: null
         },
 
         constants = {
@@ -80,7 +89,9 @@ define([], function() {
             draggableClass: 'draggable',
             backdropClass: 'husky-overlay-backdrop',
             overlayOkSelector: '.overlay-ok',
-            overlayCancelSelector: '.overlay-cancel'
+            overlayCancelSelector: '.overlay-cancel',
+            tabsClass: 'tabs',
+            languageChangerClass: 'language-changer'
         },
 
         types = {
@@ -98,6 +109,9 @@ define([], function() {
                 cssClass: 'warning',
                 backdropClose: false,
                 buttonsAlign: 'right',
+                removeOnClose: true,
+                openOnStart: true,
+                instanceName: 'warning',
                 buttons: [
                     {
                         type: 'ok',
@@ -113,6 +127,9 @@ define([], function() {
                 cssClass: 'error',
                 backdropClose: false,
                 cancelDefaultText: 'Ok',
+                removeOnClose: true,
+                openOnStart: true,
+                instanceName: 'error',
                 buttons: [
                     {
                         type: 'cancel',
@@ -218,6 +235,16 @@ define([], function() {
             return createEventName.call(this, 'remove');
         },
 
+        /**
+         * emited after the language changer is changed
+         * @event husky.overlay.<instance-name>.language-changed
+         * @param {String} selected language
+         * @param {Object} currently active tab
+         */
+            LANGUAGE_CHANGED = function() {
+            return createEventName.call(this, 'language-changed');
+        },
+
         /** returns normalized event names */
             createEventName = function(postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
@@ -234,6 +261,10 @@ define([], function() {
             var type = (!!this.options.type) ? this.options.type : defaults.type;
             // merge defaults, type defaults and options
             this.options = this.sandbox.util.extend(true, {}, defaults, types[type], this.options);
+
+            // make component element invisible (overlay and backdrop are fixed)
+            this.sandbox.dom.width(this.$el, 0);
+            this.sandbox.dom.height(this.$el, 0);
 
             this.setVariables();
             this.bindEvents();
@@ -254,10 +285,16 @@ define([], function() {
 
             this.sandbox.on(REMOVE.call(this), this.removeComponent.bind(this));
 
-
-            // TODO: implement this functions
             this.sandbox.on(OKBUTTON_ACTIVATE.call(this), this.activateOkButtons.bind(this));
             this.sandbox.on(OKBUTTON_DEACTIVATE.call(this), this.deactivateOkButtons.bind(this));
+
+            // emit language-changed-event when language dropdown gets changed
+            this.sandbox.on('husky.select.'+ this.options.instanceName +'.selected.item', function(localeIndex) {
+                this.sandbox.emit(LANGUAGE_CHANGED.call(this),
+                    this.options.languageChanger.locales[localeIndex], //selected locale
+                    this.activeTab
+                );
+            }.bind(this));
         },
 
         /**
@@ -282,7 +319,6 @@ define([], function() {
             }
         },
 
-
         /**
          * Removes the component
          */
@@ -290,10 +326,16 @@ define([], function() {
             this.sandbox.dom.off(this.overlay.$el);
             this.sandbox.dom.off(this.$backdrop);
             this.sandbox.dom.off(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName);
-            this.sandbox.stop(this.$element);
-            this.sandbox.stop(this.overlay.$content);
             this.sandbox.dom.remove(this.$backdrop);
             this.sandbox.dom.remove(this.overlay.$el);
+
+            // todo fix bug: sometimes overlay-sandbox has own sandbox or parent-sandboxes as child which
+            // couses an endless loop. The bug can be reproduced by starting the component
+            // in a clickhandler with openOnStart-option true
+            //this.sandbox.stop();
+
+            this.sandbox.stopListening();
+            this.sandbox.dom.remove(this.$el);
         },
 
         /**
@@ -310,10 +352,14 @@ define([], function() {
                 $el: null,
                 $footer: null,
                 $header: null,
-                $content: null
+                $content: null,
+                $languageChanger: null,
+                $tabs: null, //tabs component container
+                tabs: null //contains tabs related data
             };
             this.$backdrop = null;
             this.dragged = false;
+            this.activeTab = null;
         },
 
         /**
@@ -329,6 +375,7 @@ define([], function() {
         openOverlay: function() {
             //only open if closed
             if (this.overlay.opened === false) {
+                this.overlay.opened = true;
                 //init backrop element
                 if (this.$backdrop === null && this.options.backdrop === true) {
                     this.initBackdrop();
@@ -348,7 +395,6 @@ define([], function() {
                 }
 
                 this.insertOverlay();
-                this.overlay.opened = true;
             }
         },
 
@@ -388,7 +434,7 @@ define([], function() {
          * Inserts the overlay-element into the DOM
          */
         insertOverlay: function() {
-            this.sandbox.dom.append(this.sandbox.dom.$(this.options.container), this.overlay.$el);
+            this.sandbox.dom.append(this.$el, this.overlay.$el);
 
             //ensures that the overlay box fits the window form the beginning
             this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
@@ -397,7 +443,7 @@ define([], function() {
             this.setCoordinates();
 
             if (this.options.backdrop === true) {
-                this.sandbox.dom.append(this.sandbox.dom.$(this.options.container), this.$backdrop);
+                this.sandbox.dom.append(this.$el, this.$backdrop);
             }
 
             this.sandbox.emit(OPENED.call(this));
@@ -408,7 +454,7 @@ define([], function() {
          */
         initSkeleton: function() {
             this.overlay.$el = this.sandbox.dom.createElement(
-                _.template(templates.overlaySkeleton)({
+                this.sandbox.util.template(templates.overlaySkeleton)({
                     title: this.options.title,
                     okIcon: this.options.okIcon,
                     closeIcon: this.options.closeIcon
@@ -418,12 +464,43 @@ define([], function() {
             this.overlay.$content = this.sandbox.dom.find(constants.contentSelector, this.overlay.$el);
             this.overlay.$header = this.sandbox.dom.find(constants.headerSelector, this.overlay.$el);
 
+            // render a language changer into the header if configured
+            if (this.options.languageChanger !== null) {
+                this.renderLanguageChanger();
+            }
+
+            // add draggable class if overlay is draggable
             if (this.options.draggable === true) {
                 this.sandbox.dom.addClass(this.overlay.$el, constants.draggableClass);
             }
 
+            // add classes for various styling
             this.sandbox.dom.addClass(this.overlay.$footer, this.options.buttonsAlign);
             this.sandbox.dom.addClass(this.overlay.$el, this.options.cssClass);
+        },
+
+        /**
+         * Renders a language changer and places it within the header
+         */
+        renderLanguageChanger: function() {
+            var $element = this.sandbox.dom.createElement('<div/>');
+
+            this.overlay.$languageChanger = this.sandbox.dom.createElement(
+                '<div class="'+ constants.languageChangerClass +'"/>'
+            );
+            this.sandbox.dom.append(this.overlay.$header, this.overlay.$languageChanger);
+            this.sandbox.dom.append(this.overlay.$languageChanger, $element);
+
+            this.sandbox.start([{
+                name: 'select@husky',
+                options: {
+                    el: $element,
+                    data: this.options.languageChanger.locales,
+                    preSelectedElements: [this.options.languageChanger.preSelected],
+                    skin: 'white',
+                    instanceName: this.options.instanceName
+                }
+            }]);
         },
 
         /**
@@ -436,7 +513,7 @@ define([], function() {
                 if (button.type === buttonTypes.OK) {
                     template = templates.okButton;
                     text = this.options.okDefaultText;
-                    inactive = this.options.okInactive
+                    inactive = this.options.okInactive;
                 } else if (button.type === buttonTypes.CANCEL) {
                     template = templates.cancelButton;
                     text = this.options.cancelDefaultText;
@@ -445,13 +522,13 @@ define([], function() {
                 classes = (!!button.classes) ? ' ' + button.classes : '';
 
                 if (!!button.text) {
-                    text = button.text
+                    text = button.text;
                 } else if (!!button.icon) {
                     text = '';
                 }
 
                 if (inactive !== true) {
-                    inactive = button.inactive
+                    inactive = button.inactive;
                 }
 
                 $button = this.sandbox.dom.createElement(this.sandbox.util.template(template)({
@@ -475,9 +552,52 @@ define([], function() {
                 this.sandbox.dom.html(this.overlay.$content, this.sandbox.util.template(templates.message)({
                     message: this.options.message
                 }));
+
+            } else if (this.options.tabs !== null) {
+                this.renderTabs();
             } else {
-                this.sandbox.logger.log('Error: either options.data or options.message has to be set', this);
+                this.sandbox.logger.log('Error: either options.data, options.message or options.tabs has to be set', this);
             }
+        },
+
+        /**
+         * Renders the tab-contents of of the overlay
+         * and initializes the tab component
+         */
+        renderTabs: function() {
+            this.overlay.tabs = [];
+            this.overlay.$tabs = this.sandbox.dom.createElement('<div class="'+ constants.tabsClass +'"/>');
+            this.sandbox.dom.append(this.overlay.$header, this.overlay.$tabs);
+
+            for (var i = -1, length = this.options.tabs.length; ++i < length;) {
+                this.overlay.tabs.push({
+                   title: this.options.tabs[i].title,
+                   $el: this.sandbox.dom.createElement(this.options.tabs[i].data)
+                });
+                this.sandbox.dom.hide(this.overlay.tabs[i].$el);
+                this.sandbox.dom.append(this.overlay.$content, this.overlay.tabs[i].$el);
+            }
+            // show first tab element at the beginning and start tab-bar
+            this.showTab(this.overlay.tabs[0]);
+            this.startTabsComponent();
+        },
+
+        /**
+         * Starts the tabs-component
+         */
+        startTabsComponent: function() {
+            var $element = this.sandbox.dom.createElement('<div/>');
+            this.sandbox.dom.html(this.overlay.$tabs, $element);
+
+            this.sandbox.start([{
+                name: 'tabs@husky',
+                options: {
+                    el: $element,
+                    data: {items: this.overlay.tabs},
+                    instanceName: 'overlay' + this.options.instanceName,
+                    skin: 'overlay'
+                }
+            }]);
         },
 
         /**
@@ -528,6 +648,36 @@ define([], function() {
                 this.sandbox.dom.on(this.sandbox.dom.$document, 'mouseup', function() {
                     this.sandbox.dom.off(this.sandbox.dom.$document, 'mousemove.overlay' + this.options.instanceName);
                 }.bind(this));
+            }
+
+            this.bindOverlayCustomEvents();
+        },
+
+        /**
+         * Binds custom events used by the overlay
+         */
+        bindOverlayCustomEvents: function() {
+            if (this.overlay.tabs !== null) {
+                this.sandbox.on('husky.tabs.overlay'+ this.options.instanceName +'.item.select', this.showTab.bind(this));
+            }
+        },
+
+        /**
+         * Handles the click on an overlay tab
+         * @param tab {object} tab object with $el property
+         */
+        showTab: function(tab) {
+            this.activeTab = tab;
+            this.hideAllTabsElements();
+            this.sandbox.dom.show(tab.$el);
+        },
+
+        /**
+         * Hides all tab elements
+         */
+        hideAllTabsElements: function() {
+            for (var i = -1, length = this.overlay.tabs.length; ++i < length;) {
+                this.sandbox.dom.hide(this.overlay.tabs[i].$el);
             }
         },
 

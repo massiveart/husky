@@ -48,7 +48,6 @@ $OverlayBorderRadius: 3px;
 }
 
 .overlay-header {
-  padding: 15px 40px 15px 20px;
   min-height: 50px;
   background: $grayLightest;
   position: relative;
@@ -59,6 +58,8 @@ $OverlayBorderRadius: 3px;
     font-size: 23px;
     padding-right: 10px;
     vertical-align: text-top;
+    display: block;
+    padding: 15px 40px 10px 20px;
   }
 
   .close-button {
@@ -72,6 +73,16 @@ $OverlayBorderRadius: 3px;
     padding: 8px;
   }
 
+  .tabs {
+    display: inline-block;
+  }
+
+  .language-changer {
+    width: 80px;
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+  }
 }
 
 .overlay-footer {

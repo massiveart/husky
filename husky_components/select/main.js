@@ -26,6 +26,7 @@
  * @param {Function} [options.selectCallback] callbackfunction, when element is selected
  * @param {String} [options.valueName] name of property which should be used
  * @param {String} [options.style] "normal", "small" or "big" for different appearance
+ * @param {String} [options.skin] style class to set to the elements component (e.g 'white')
  * @param {Boolean} [options.emitValues] If true the value is emited with events instead of the id
  */
 
@@ -46,7 +47,8 @@ define([], function() {
             selectCallback: null,
             deselectCallback: null,
             style: 'normal',
-            emitValues: false,
+            skin: '',
+            emitValues: false
         },
 
         constants = {
@@ -175,6 +177,9 @@ define([], function() {
             } else if (this.options.style === 'big') {
                 this.sandbox.dom.addClass(button, 'big');
             }
+
+            // add skin style
+            this.sandbox.dom.addClass(button, this.options.skin);
 
             this.$list = this.$find('.' + constants.listClass);
             this.$dropdownContainer = this.$find('.' + constants.dropdownContainerClass);

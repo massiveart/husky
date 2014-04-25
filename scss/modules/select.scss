@@ -127,4 +127,10 @@
         }
     }
 
+    &.white {
+         .dropdown-label {
+            background: $white;
+         }
+    }
+
 }
