@@ -31,8 +31,8 @@ $milkeyGreen: #B1E4B2;
 $red: #AD0710;
 $milkyRed: #DCAAAC;
 $yellow: #FEBC2F;
-$blue: #2D9FBC;
-$milkeyBlue: #93CFDF;
+$blue: #28B6CA;
+$milkeyBlue: lighten($blue, 25%);
 $milkeyBlue2: #ACDAE6;
 
 
@@ -43,14 +43,14 @@ $baseBackgroundColor: #f1f1f1;
 
 // Accent colors
 // -------------------------
-$accentColor: #009fc0;
+$accentColor: $blue;
 
 
 // Font Colors
 // -------------------------
 $baseFontColor: $black;
 
-$highlightColor: #249FBE; // blue
+$highlightColor: $blue;
 
 $infoColor: #fda502; // orange
 $errorColor: #e60000; // red
