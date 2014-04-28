@@ -70,7 +70,7 @@ define([], function() {
         /** templates for component */
             templates = {
             overlaySkeleton: [
-                '<div class="husky-overlay-container <%= skin %> smart-content-overlay">',
+                '<div class="husky-overlay-container<%= skin %> smart-content-overlay">',
                 '<div class="overlay-header">',
                 '<span class="title"><%= title %></span>',
                 '<a class="icon-<%= closeIcon %> close-button" href="#"></a>',
@@ -318,7 +318,7 @@ define([], function() {
                     title: this.options.title,
                     okIcon: this.options.okIcon,
                     closeIcon: this.options.closeIcon,
-                    skin: this.options.skin
+                    skin: !!this.options.skin ? ' ' + this.options.skin : ''
                 }));
             this.overlay.$close = this.sandbox.dom.find(constants.closeSelector, this.overlay.$el);
             this.overlay.$ok = this.sandbox.dom.find(constants.okSelector, this.overlay.$el);
