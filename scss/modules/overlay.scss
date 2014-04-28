@@ -12,6 +12,10 @@
     left: auto;
     right: 0;
   }
+
+ &.wide {
+     width: $overlayContainerWidthWide
+ }
 }
 
 .draggable .overlay-header {

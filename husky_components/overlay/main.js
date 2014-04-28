@@ -31,6 +31,7 @@
  * @params {Boolean} [options.backdropColor] Color of the backdrop
  * @params {Boolean} [options.backdropAlpha] Alpha-value of the backdrop
  * @params {Boolean} [options.okInactive] If true ok button is deactivated
+ * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '' or 'wide'
  */
 define([], function() {
 
@@ -53,7 +54,8 @@ define([], function() {
             backdrop: true,
             backdropColor: '#000000',
             backdropAlpha: 0.3,
-            okInactive: false
+            okInactive: false,
+            skin: ''
         },
 
         constants = {
@@ -68,7 +70,7 @@ define([], function() {
         /** templates for component */
             templates = {
             overlaySkeleton: [
-                '<div class="husky-overlay-container smart-content-overlay">',
+                '<div class="husky-overlay-container <%= skin %> smart-content-overlay">',
                 '<div class="overlay-header">',
                 '<span class="title"><%= title %></span>',
                 '<a class="icon-<%= closeIcon %> close-button" href="#"></a>',
@@ -315,7 +317,8 @@ define([], function() {
                 _.template(templates.overlaySkeleton)({
                     title: this.options.title,
                     okIcon: this.options.okIcon,
-                    closeIcon: this.options.closeIcon
+                    closeIcon: this.options.closeIcon,
+                    skin: this.options.skin
                 }));
             this.overlay.$close = this.sandbox.dom.find(constants.closeSelector, this.overlay.$el);
             this.overlay.$ok = this.sandbox.dom.find(constants.okSelector, this.overlay.$el);
