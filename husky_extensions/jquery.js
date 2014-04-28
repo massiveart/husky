@@ -403,8 +403,8 @@
                 $(selector).animate(properties, options);
             };
 
-            app.core.dom.empty = function(selector){
-               $(selector).empty();
+            app.core.dom.empty = function(selector) {
+                $(selector).empty();
             };
 
             app.core.util.ajax = $.ajax;
