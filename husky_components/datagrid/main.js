@@ -1406,7 +1406,6 @@ define(function() {
 
             if(!!this.options.editPencil.show) {
                 this.sandbox.dom.on(this.$el, 'click', function(event){
-                    event.stopPropagation();
                     var id = this.sandbox.dom.data(this.sandbox.dom.closest(event.currentTarget, 'tr'), 'id');
                     this.sandbox.emit(EDIT_ITEM,id);
 
