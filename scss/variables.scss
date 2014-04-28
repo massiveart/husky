@@ -24,14 +24,14 @@ $grayLightest: #efefef;
 $grayDarkLighter: #3e3e3e;
 $grayDark: #1e1e1e;
 $navigationFooterGray: #878787;
-$navigationFooterGray2: #5b5b5b;
 $white:#fff;
-$green: #1FCA23;
-$milkeyGreen: #B1E4B2;
-$red: #AD0710;
-$milkyRed: #DCAAAC;
-$yellow: #FEBC2F;
-$blue: #28B6CA;
+$green: #5DC7A3;
+$milkeyGreen: lighten($green, 25%);
+$red: #EA524E;
+$milkyRed: lighten($red, 25%);
+$yellow: #F2D212;
+$yellowWarning: #E8CE33;
+$blue: #52B6CA;
 $milkeyBlue: lighten($blue, 25%);
 $milkeyBlue2: #ACDAE6;
 
@@ -95,12 +95,16 @@ $labelColor: $grayLighter;
 
 $inputHeight: 30px;
 
+// Search bar
+// -------------------------
+$searchBarGray: #8a9699; //could become new grayLight
+
 
 // Navigation
 // -------------------------
-$navigationBackgroundColor: #3e3e3e;
-$navigationHoverColor: #3a3a3a;
-$navigationActiveColor: #282828;
+$navigationBackgroundColor: #142F33;
+$navigationHoverColor: #142F33;
+$navigationActiveColor: #0E2023;
 
 // Overlay
 // -------------------------

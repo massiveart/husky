@@ -39,7 +39,7 @@ $fadeDuration: 100ms;
     padding: 2px 0 0px;
     margin: 10px $verticalMargin 0;
     height: 20px;
-    color: $grayDark;
+    color: rgba(255,255,255, 0.2);
     font-weight: bold;
     cursor: default;
 
@@ -107,13 +107,13 @@ $fadeDuration: 100ms;
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    color: $grayLight;
+    color: rgba(255,255,255, 0.5);
     font-size: 16px;
 
     a {
         display: inline-block;
         text-decoration: none;
-        color: $grayLight;
+        color: rgba(255,255,255, 0.5);
         outline: none;
     }
 
@@ -303,6 +303,7 @@ li.is-active {
             overflow: hidden;
             line-height: 30px;
             display: inline-block;
+            color: rgba(255,255,255, 0.75);
             min-height: 30px; /* prohibits height changes on select */
         }
     }
@@ -392,8 +393,8 @@ li a.navigation-settings-icon {
 
 .navigation footer {
     padding: 15px 20px 15px 23px;
-    border-top: 1px solid $navigationFooterGray2;
     height: $footerOuterHeight * 1px;
+    background-color: $navigationActiveColor;
 
     .user {
         font-size: $smallFontSize;

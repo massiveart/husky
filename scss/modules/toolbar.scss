@@ -317,7 +317,7 @@ $toolbarSmallHeight: 20px;
         border-color: $blue;
 
         &.highlight {
-            background-color: $yellow;
+            background-color: $yellowWarning;
             & > a {
                 color: $black;
             }
