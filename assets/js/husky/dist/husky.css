@@ -883,6 +883,11 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   font-size: 12px;
 }
 
+/* line 113, ../scss/typo.scss */
+.grey-font {
+  color: #999999;
+}
+
 /* line 19, ../scss/various.scss */
 .breadcrumb {
   list-style-type: none;
@@ -4545,7 +4550,7 @@ span.error {
   float: left;
   width: 250px;
   height: 100%;
-  background-color: #142f33;
+  background-color: #21272e;
   overflow-x: visible;
   position: fixed;
   top: 0px;
@@ -4566,7 +4571,7 @@ span.error {
   width: 30px;
   left: 100%;
   top: 0;
-  background-color: #142f33;
+  background-color: #21272e;
   line-height: 30px;
   vertical-align: center;
   color: white;
@@ -4695,7 +4700,7 @@ li.is-active > div > a.navigation-settings-icon {
 }
 /* line 214, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items:hover:not(.is-active) {
-  background-color: #142f33;
+  background-color: #191d22;
 }
 /* line 218, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items > div {
@@ -4707,7 +4712,7 @@ li.is-active > div > a.navigation-settings-icon {
 }
 /* line 226, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items.is-active {
-  background-color: #0e2023;
+  background-color: #111417;
 }
 /* line 230, ../scss/modules/navigation.scss */
 .navigation-item-container .navigation-items.is-expanded {
@@ -4905,7 +4910,7 @@ li a.navigation-settings-icon {
 .navigation footer {
   padding: 15px 20px 15px 23px;
   height: 121px;
-  background-color: #0e2023;
+  background-color: #111417;
 }
 /* line 399, ../scss/modules/navigation.scss */
 .navigation footer .user {
@@ -5109,7 +5114,7 @@ li a.navigation-settings-icon {
   display: inline-block;
   padding: 0 10px;
   color: white;
-  background-color: #142f33;
+  background-color: #21272e;
   z-index: 1000;
 }
 /* line 599, ../scss/modules/navigation.scss */
@@ -5122,7 +5127,7 @@ li a.navigation-settings-icon {
   height: 0;
   border-top: 5px solid transparent;
   border-bottom: 5px solid transparent;
-  border-right: 10px solid #142f33;
+  border-right: 10px solid #21272e;
 }
 
 /* line 613, ../scss/modules/navigation.scss */
@@ -5828,7 +5833,7 @@ a.btn-black, a.btn-highlight {
 }
 /* line 68, ../scss/modules/search.scss */
 .search-container.gray .search-input {
-  background-color: #8a9699;
+  background-color: #8f9296;
 }
 /* line 4, ../scss/mixins.scss */
 .search-container.gray .search-input.placeholder {
