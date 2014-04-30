@@ -6,16 +6,62 @@ define(function() {
 
     'use strict';
 
+    /**
+     * Variable to store the datagrid context
+     */
     var datagrid,
 
         constants = {
+            viewClass: 'table-container',
             fullWidthClass: 'fullwidth',
             // if datagrid is in fullwidth-mode (options.fullWidth is true)
-            // this number gets subracted from the datagrids final width in the resize listener
-            overflowIconSpacing: 30
+            // this number gets subracted from the tabels final width in the resize listener
+            overflowIconSpacing: 30,
+            ascClass: 'icon-arrow-up',
+            descClass: 'icon-arrow-down',
+            additionalHeaderClasses: ' m-left-5 small-font'
         },
 
-        namespace = 'husky.datagrid.',
+        /**
+         * Templates used by this class
+         */
+        templates = {
+            removeRow: [
+                '<td class="remove-row">',
+                    '<span class="icon-remove pointer"></span>',
+                '</td>'
+            ].join(''),
+
+            progressRow: [
+                '<td class="progress-row">',
+                    '<span class=""></span>',
+                '</td>'
+            ].join(''),
+
+            checkbox: [
+                '<div class="custom-checkbox">',
+                    '<input id="<%= id %>" type="checkbox" data-form="false"/>',
+                    '<span class="icon"></span>',
+                '</div>'
+            ].join(''),
+
+            checkboxCell: [
+                '<td>',
+                    '<%= checkbox %>',
+                '</td>'
+            ].join(''),
+
+            radio: [
+                '<td>',
+                    '<div class="custom-radio">',
+                        '<input name="<%= name %>" type="radio"/>',
+                        '<span class="icon"></span>',
+                    '</div>',
+                '</td>'
+            ].join('')
+    },
+
+     namespace = 'husky.datagrid.',
 
     /**
      * raised when item is deselected
@@ -73,13 +119,6 @@ define(function() {
         ITEMS_GET_SELECTED = namespace + 'items.get-selected',
 
     /**
-     * raised when husky.datagrid.items.get-selected is triggered
-     * @event husky.datagrid.items.selected
-     * @param {Array} ids of all items that have been clicked
-     */
-        ITEMS_SELECTED = namespace + 'items.selected',
-
-    /**
      * raised when data was saved
      * @event husky.datagrid.data.saved
      * @param {Object} data returned
@@ -135,18 +174,6 @@ define(function() {
         ROW_REMOVE_CLICK = namespace + 'row.remove-click',
 
     /**
-     * raised when data is sorted
-     * @event husky.datagrid.data.sort
-     */
-        DATA_SORT = namespace + 'data.sort',
-
-    /**
-     * used to trigger an update of the data
-     * @event husky.datagrid.update
-     */
-        UPDATE = namespace + 'update',
-
-    /**
      * calculates the width of a text by creating a tablehead element and measure its width
      * @param text
      * @param classArray
@@ -187,9 +214,10 @@ define(function() {
     return {
 
         /**
-         * Method to render data in table view
+         * Initializes the view, gets called only once
+         * @param {Object} the context of the datagrid class
          */
-        render: function(context) {
+        initialize: function(context) {
             // context of the datagrid-component
             datagrid = context;
 
@@ -201,8 +229,13 @@ define(function() {
 
             this.setVariables();
             this.bindCustomEvents();
+        },
 
-            this.$tableContainer = this.sandbox.dom.createElement('<div class="table-container"/>');
+        /**
+         * Method to render data in table view
+         */
+        render: function() {
+            this.$tableContainer = this.sandbox.dom.createElement('<div class="'+ constants.viewClass +'"/>');
             this.sandbox.dom.append(datagrid.$element, this.$tableContainer);
             this.sandbox.dom.append(this.$tableContainer, this.prepareTable());
 
@@ -215,6 +248,8 @@ define(function() {
             }
 
             this.setHeaderClasses();
+
+            this.rendered = true;
         },
 
         /**
@@ -235,9 +270,6 @@ define(function() {
             this.sandbox.on(ROW_ADD, this.addRow.bind(this));
 
             this.sandbox.on(ROW_REMOVE, this.removeRow.bind(this));
-
-            // trigger selectedItems
-            this.sandbox.on(ITEMS_GET_SELECTED, this.getSelectedItemsIds.bind(this));
 
             // checks table width
             this.sandbox.on(UPDATE_TABLE, this.onResize.bind(this));
@@ -296,7 +328,7 @@ define(function() {
             }
 
             if (this.options.sortable) {
-                this.sandbox.dom.on(this.$tableContainer, 'click', this.changeSorting.bind(this), 'thead th[data-attribute]');
+                this.sandbox.dom.on(this.$tableContainer, 'click', this.prepareSort.bind(this), 'thead th[data-attribute]');
             }
         },
 
@@ -305,13 +337,13 @@ define(function() {
          */
         setVariables: function() {
             this.dropdownInstanceName = 'datagrid-pagination-dropdown';
-            this.allItemIds = [];
-            this.selectedItemIds = [];
             this.rowStructure = [];
             this.currentUrl = '';
+            this.allItemIds = [];
             this.$tableContainer = null;
             this.$table;
             this.$loader = null;
+            this.rendered = false;
 
             if (!!this.options.contentContainer) {
                 if (this.sandbox.dom.css(this.options.contentContainer, 'max-width') === 'none') {
@@ -337,7 +369,7 @@ define(function() {
 
         /**
          * Sets the header classes used for sorting purposes
-         * needs datagrid.sort to be correctly initialized
+         * uses datagrid.sort
          */
         setHeaderClasses: function() {
             var attribute = datagrid.sort.attribute,
@@ -350,9 +382,9 @@ define(function() {
                 this.sandbox.dom.addClass($element, 'is-selected');
 
                 if (direction === 'asc') {
-                    this.sandbox.dom.addClass($span, datagrid.sort.ascClass + datagrid.sort.additionalClasses);
+                    this.sandbox.dom.addClass($span, constants.ascClass + constants.additionalHeaderClasses);
                 } else {
-                    this.sandbox.dom.addClass($span, datagrid.sort.descClass + datagrid.sort.additionalClasses);
+                    this.sandbox.dom.addClass($span, constants.descClass + constants.additionalHeaderClasses);
                 }
             }
         },
@@ -420,7 +452,9 @@ define(function() {
                     '<th class="select-all" ', 'style="width:' + minWidth + ';max-width:' + minWidth + ';min-width:' + minWidth + ';"', ' >');
 
                 if (this.options.selectItem.type === 'checkbox') {
-                    tblColumns.push(this.templates.checkbox({ id: 'select-all' }));
+                    tblColumns.push(this.sandbox.util.template(templates.checkbox)({
+                        id: 'select-all'
+                    }));
                 }
 
                 tblColumns.push('</th>');
@@ -521,6 +555,12 @@ define(function() {
             return tblRows.join('');
         },
 
+        /**
+         * Responsible for creating a single table-row
+         * @param row {Object} the data for a row
+         * @param triggeredByAddRow
+         * @returns {*}
+         */
         prepareTableRow: function(row, triggeredByAddRow) {
 
             if (!!(this.options.template && this.options.template.row)) {
@@ -549,13 +589,15 @@ define(function() {
 
                 // add a checkbox to each row
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
-                    this.tblColumns.push('<td>', this.templates.checkbox(), '</td>');
+                    this.tblColumns.push(this.sandbox.util.template(templates.checkboxCell)({
+                        checkbox: this.sandbox.util.template(templates.checkbox)({id: ''})
+                    }));
 
                     // add a radio to each row
                 } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
-                    this.tblColumns.push('<td>', this.templates.radio({
+                    this.tblColumns.push(this.sandbox.util.template(templates.radio)({
                         name: 'husky-radio' + radioPrefix
-                    }), '</td>');
+                    }));
                 }
 
                 // when row structure contains more elements than the id then use the structure to set values
@@ -581,9 +623,9 @@ define(function() {
                 }
 
                 if (!!this.options.removeRow) {
-                    this.tblColumns.push('<td class="remove-row">', this.templates.removeRow(), '</td>');
+                    this.tblColumns.push(this.sandbox.util.template(templates.removeRow)());
                 } else if (!!this.options.progressRow) {
-                    this.tblColumns.push('<td class="progress-row">', this.templates.progressRow(), '</td>');
+                    this.tblColumns.push(this.sandbox.util.template(templates.progressRow)());
                 }
 
                 return '<tr' + this.tblRowAttributes + '>' + this.tblColumns.join('') + '</tr>';
@@ -985,44 +1027,6 @@ define(function() {
         },
 
         /**
-         * Returns selected items either via callback or else via husky.datagrid.items.selected event
-         * Gets called on husky.datagrid.items.get-selected event
-         * @param callback
-         */
-        getSelectedItemsIds: function(callback) {
-
-            // get selected items
-            var ids = this.getIdsOfSelectedRows();
-
-            if (typeof callback === 'function') {
-                callback(ids);
-            } else {
-                this.sandbox.emit(ITEMS_SELECTED, ids);
-            }
-        },
-
-        /**
-         * Returns an array with the ids of the selected rows
-         */
-        getIdsOfSelectedRows: function() {
-            var $checkboxes = this.sandbox.dom.find('input[type=checkbox]:checked', this.$el),
-                ids = [],
-                id,
-                $tr;
-
-            this.sandbox.util.each($checkboxes, function(index, $checkbox) {
-                $tr = this.sandbox.dom.closest($checkbox, 'tr');
-                id = this.sandbox.dom.data($tr, 'id');
-                if (!!id) {
-                    ids.push(id);
-                }
-
-            }.bind(this));
-
-            return ids;
-        },
-
-        /**
          * Prepares for removing a row
          * Raises the husky.datagrid.row.remove-click event when auto remove handling is not set to true
          * @param event
@@ -1189,7 +1193,7 @@ define(function() {
                         .find('input[type="checkbox"]')
                         .prop('checked', false);
 
-                    this.selectedItemIds.splice(this.selectedItemIds.indexOf(itemId), 1);
+                    datagrid.removeFromSelectedItems.call(datagrid, itemId);
                     this.sandbox.emit(ITEM_DESELECT, itemId);
                 } else {
                     $element
@@ -1197,7 +1201,7 @@ define(function() {
                         .prop('checked', true);
 
                     if (!!itemId) {
-                        this.selectedItemIds.push(itemId);
+                        datagrid.setToSelectedItems.call(datagrid, itemId);
                         this.sandbox.emit(ITEM_SELECT, itemId);
                     } else {
                         this.sandbox.emit(ITEM_SELECT, event);
@@ -1208,7 +1212,7 @@ define(function() {
 
             } else if ($element.attr('type') === 'radio') {
 
-                oldSelectionId = this.selectedItemIds.pop();
+                oldSelectionId = datagrid.popSelectedItemIds.call(datagrid);
 
                 if (!!oldSelectionId && oldSelectionId > -1) {
                     this.sandbox.dom.$('tr[data-id="' + oldSelectionId + '"]').find('input[type="radio"]').removeClass('is-selected').prop('checked', false);
@@ -1218,12 +1222,12 @@ define(function() {
                 $element.addClass('is-selected').prop('checked', true);
 
                 if (!!itemId) {
-                    this.selectedItemIds.push(itemId);
+                    datagrid.setToSelectedItems.call(datagrid, itemId);
                     this.sandbox.emit(ITEM_SELECT, itemId);
                 } else {
                     this.sandbox.emit(ITEM_SELECT, event);
                 }
-                this.sandbox.emit(NUMBER_SELECTIONS, this.selectedItemIds.length);
+                this.sandbox.emit(NUMBER_SELECTIONS, datagrid.getSelectedItems.call(datagrid).length);
             }
 
         },
@@ -1272,120 +1276,60 @@ define(function() {
             event.stopPropagation();
 
             var $headCheckbox = this.sandbox.dom.find('th input[type="checkbox"]', this.$tableContainer)[0],
-                $checkboxes = this.sandbox.dom.find('input[type="checkbox"]', this.$tableContainer),
-                selectedElements,
-                tmp;
+                $checkboxes = this.sandbox.dom.find('input[type="checkbox"]', this.$tableContainer)
 
             if (this.sandbox.dom.prop($headCheckbox, 'checked') === false) {
                 this.sandbox.dom.prop($checkboxes, 'checked', false);
                 this.sandbox.dom.removeClass($checkboxes, 'is-selected');
+                datagrid.setSelectedItems.call(datagrid, []);
                 this.sandbox.emit(ALL_DESELECT);
             } else {
                 this.sandbox.dom.prop($checkboxes, 'checked', true);
                 this.sandbox.dom.addClass($checkboxes, 'is-selected');
-                this.sandbox.emit(ALL_SELECT, this.getIdsOfSelectedRows());
+                datagrid.setSelectedItems.call(datagrid, this.getIdsOfSelectedRows());
+                this.sandbox.emit(ALL_SELECT, datagrid.getSelectedItems.call(datagrid));
             }
 
-            tmp = this.sandbox.dom.find('input[type="checkbox"]:checked', this.$tableContainer).length - 1;
-            selectedElements = tmp > 0 ? tmp : 0;
-
-            this.sandbox.emit(NUMBER_SELECTIONS, selectedElements);
+            this.sandbox.emit(NUMBER_SELECTIONS, datagrid.getSelectedItems.call(datagrid).length);
         },
 
         /**
-         * Sets header classes and loads new data
-         * Emits husky.datagrid.updated event on success
-         * @param event
+         * Returns an array with the ids of the selected rows
          */
-        changeSorting: function(event) {
+        getIdsOfSelectedRows: function() {
+            var $checkboxes = this.sandbox.dom.find('input[type=checkbox]:checked', this.$el),
+                ids = [],
+                id,
+                $tr;
 
-            var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
-                $element = event.currentTarget,
-                $span = this.sandbox.dom.children($element, 'span')[0],
-                url, template;
-
-            if (!!attribute && !!datagrid.data.links.sortable[attribute]) {
-
-                this.sandbox.emit(DATA_SORT);
-                datagrid.sort.attribute = attribute;
-
-                if (this.sandbox.dom.hasClass($span, datagrid.sort.ascClass)) {
-                    datagrid.sort.direction = "desc";
-                } else {
-                    datagrid.sort.direction = "asc";
+            this.sandbox.util.each($checkboxes, function(index, $checkbox) {
+                $tr = this.sandbox.dom.closest($checkbox, 'tr');
+                id = this.sandbox.dom.data($tr, 'id');
+                if (!!id) {
+                    ids.push(id);
                 }
 
-                //this.addLoader();
-                template = this.sandbox.uritemplate.parse(datagrid.data.links.sortable[attribute]);
-                url = this.sandbox.uritemplate.expand(template, {sortOrder: datagrid.sort.direction});
+            }.bind(this));
 
-                datagrid.load({
-                    url: url,
-                    success: function() {
-                        this.sandbox.emit(UPDATED, 'updated sort');
-                    }.bind(this)
-                });
-            }
+            return ids;
         },
 
-        templates: {
+        /**
+         * Handles the click on a sortable column title
+         *
+         * Creates the function parameters need for sorting
+         * and delegates the sorting itself to the datagrid
+         * @parame event {Object} the event object
+         */
+        prepareSort: function(event) {
+            var $element = this.sandbox.dom.$(event.currentTarget),
+                $span = this.sandbox.dom.children($element, 'span')[0],
 
-            showElements: function(id) {
-                var desc = '';
-                if (datagrid.data.total === datagrid.data.numberOfAll) {
-                    desc = this.sandbox.translate('pagination.show-all-elements');
-                } else {
-                    desc = this.sandbox.translate('pagination.show') +' <strong>'+ datagrid.data.total +'</strong> '+ this.sandbox.translate('pagination.elements-of') +' '+ datagrid.data.numberOfAll;
-                }
+                attribute = this.sandbox.dom.data($element, 'attribute'),
+                direction = this.sandbox.dom.hasClass($span, constants.ascClass) ? 'desc' : 'asc';
 
-                return [
-                    '<div class="show-elements">',
-                    '<div class="dropdown-trigger" id="'+ id +'">'+ desc +'<span class="dropdown-toggle"></span></div>',
-                    '</div>'
-                ].join('');
-            },
-
-            removeRow: function() {
-                return [
-                    '<span class="icon-remove pointer"></span>'
-                ].join('');
-            },
-
-            progressRow: function() {
-                return [
-                    '<span class=""></span>'
-                ].join('');
-            },
-
-            checkbox: function(data) {
-                var id, name;
-
-                data = data || {};
-                id = (!!data.id) ? ' id="' + data.id + '"' : '';
-                name = (!!data.name) ? ' name="' + data.name + '"' : '';
-
-                return [
-                    '<div class="custom-checkbox">',
-                    '<input', id, name, ' type="checkbox" data-form="false"/>',
-                    '<span class="icon"></span>',
-                    '</div>'
-                ].join('');
-            },
-
-            radio: function(data) {
-                var id, name;
-
-                data = data || {};
-                id = (!!data.id) ? ' id="' + data.id + '"' : '';
-                name = (!!data.name) ? ' name="' + data.name + '"' : '';
-
-                return [
-                    '<div class="custom-radio">',
-                    '<input', id, name, ' type="radio"/>',
-                    '<span class="icon"></span>',
-                    '</div>'
-                ].join('');
-            }
+                // delegate sorting to datagrid
+                datagrid.sortGrid.call(datagrid, attribute, direction);
         }
     };
 });
