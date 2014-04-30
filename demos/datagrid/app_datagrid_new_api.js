@@ -622,6 +622,10 @@ require(['lib/husky'], function(Husky) {
                 app.sandbox.emit('husky.datagrid.row.add', { id: "", content1: "", content2: "", content3: "" });
             });
 
+            $('#update-url').on('click', function() {
+                app.sandbox.emit('husky.datagrid.url.update', { search: null, content1: "fdsa" });
+            });
+
             app.sandbox.on('husky.datagrid.page.change', function() {
                 setTimeout(function() {
                     fakeServer.respond();
