@@ -7208,7 +7208,7 @@ a.btn-black, a.btn-highlight {
 }
 /* line 85, ../scss/modules/datagrid.scss */
 .husky-datagrid.loading {
-  height: 300px;
+  min-height: 150px;
 }
 /* line 94, ../scss/modules/datagrid.scss */
 .husky-datagrid.fullwidth th:first-child,

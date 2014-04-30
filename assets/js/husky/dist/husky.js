@@ -26649,11 +26649,21 @@ define('__component__$column-options@husky',[],function() {
                 table: 'decoratorTableView' // name of require-path
             },
 
-            constants = {
-                fullWidthClass: 'fullwidth',
-                // if datagrid is in fullwidth-mode (options.fullWidth is true)
-                // this number gets subracted from the datagrids final width in the resize listener
-                overflowIconSpacing: 30
+            templates = {
+                showElements: function(id) {
+                    var desc = '';
+                    if (datagrid.data.total === datagrid.data.numberOfAll) {
+                        desc = this.sandbox.translate('pagination.show-all-elements');
+                    } else {
+                        desc = this.sandbox.translate('pagination.show') +' <strong>'+ datagrid.data.total +'</strong> '+ this.sandbox.translate('pagination.elements-of') +' '+ datagrid.data.numberOfAll;
+                    }
+
+                    return [
+                        '<div class="show-elements">',
+                        '<div class="dropdown-trigger" id="'+ id +'">'+ desc +'<span class="dropdown-toggle"></span></div>',
+                        '</div>'
+                    ].join('');
+                }
             },
 
             namespace = 'husky.datagrid.',
@@ -26678,12 +26688,6 @@ define('__component__$column-options@husky',[],function() {
              */
                 DATA_PROVIDE = namespace + 'data.provide',
 
-            /**
-             * raised when data is sorted
-             * @event husky.datagrid.data.sort
-             */
-                DATA_SORT = namespace + 'data.sort',
-
 
         /* PROVIDED EVENTS */
 
@@ -26702,6 +26706,12 @@ define('__component__$column-options@husky',[],function() {
                 DATA_SEARCH = namespace + 'data.search',
 
             /**
+             * raised when data is sorted
+             * @event husky.datagrid.data.sort
+             */
+                DATA_SORT = namespace + 'data.sort',
+
+            /**
              * used to filter data by updating an url parameter
              * @event husky.datagrid.url.update
              * @param {Object} url parameter : key
@@ -26712,7 +26722,70 @@ define('__component__$column-options@husky',[],function() {
              * triggers husky.datagrid.data.provide
              * @event husky.datagrid.data.get
              */
-                DATA_GET = namespace + 'data.get';
+                DATA_GET = namespace + 'data.get',
+
+            /**
+             * triggers husky.datagrid.items.selected event, which returns all selected item ids
+             * @event husky.datagrid.items.get-selected
+             * @param  {Function} callback function receives array of selected items
+             */
+                ITEMS_GET_SELECTED = namespace + 'items.get-selected',
+
+
+        /**
+         * Private Methods
+         * --------------------------------------------------------------------
+         */
+
+        /**
+         * function updates an url by a given parameter name and value and returns it. The parameter is either added or updated.
+         * If value is not set, the parameter will be removed from url
+         * @param {String} url Url string to be updated
+         * @param {String} paramName Parameter which should be added / updated / removed
+         * @param {String|Null} paramValue Value of the parameter. If not set, parameter will be removed from url
+         * @returns {String} updated url
+         */
+        setGetParameter = function(url, paramName, paramValue) {
+            if (url.indexOf(paramName + "=") >= 0)
+            {
+                var prefix = url.substring(0, url.indexOf(paramName)),
+                    suffix = url.substring(url.indexOf(paramName));
+                suffix = suffix.substring(suffix.indexOf('=') + 1);
+                suffix = (suffix.indexOf('&') >= 0) ? suffix.substring(suffix.indexOf('&')) : '';
+                if (!!paramValue) {
+                    url = prefix + paramName + '=' + paramValue + suffix;
+                } else {
+                    if (url.substr(url.indexOf(paramName)-1,1) === '&' ) {
+                        url = url.substring(0,prefix.length-1) + suffix;
+                    } else {
+                        url = prefix + suffix.substring(1, suffix.length);
+                    }
+                }
+            }
+            else if (!!paramValue)
+            {
+                if (url.indexOf("?") < 0) {
+                    url += "?" + paramName + "=" + paramValue;
+                }
+                else {
+                    url += "&" + paramName + "=" + paramValue;
+                }
+            }
+            return url;
+        },
+
+        /**
+         * Brings a date into the right format
+         * @param date {String} the date to parse
+         * @returns {String}
+         */
+        parseDate = function(date) {
+            var parsedDate = this.sandbox.date.format(date);
+            if (parsedDate !== null) {
+                return parsedDate;
+            }
+            return date;
+        };
 
         return {
 
@@ -26720,15 +26793,23 @@ define('__component__$column-options@husky',[],function() {
                 this.sandbox.logger.log('initialized datagrid');
 
                 this.view = null;
+                this.$loader = null;
 
                 // extend default options and set variables
                 this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
                 // append datagrid to html element
                 this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
+                this.elId = this.sandbox.dom.attr(this.$el, 'id');
                 this.$el.append(this.$element);
 
-                this.getData();
+                this.sort = {
+                    attribute: null,
+                    direction: null
+                };
+                this.selectedItemIds = [];
+
+                this.initRender();
 
                 // Should only be be called once
                 this.bindCustomEvents();
@@ -26766,7 +26847,7 @@ define('__component__$column-options@husky',[],function() {
 
             /**
              * parses fields data retrieved from api
-             * @param fields
+             * @param fields {Array} array with columns-data
              * @returns {{columns: Array, urlFields: string}}
              */
             parseFieldsData: function(fields) {
@@ -26814,45 +26895,90 @@ define('__component__$column-options@husky',[],function() {
              */
             load: function(params) {
                 this.currentUrl = params.url;
+
+                this.loading();
+
+                if (this.view.rendered === true) {
+                    this.view.destroy();
+                }
                 this.sandbox.util.load(this.getUrl(params), params.data)
                     .then(function(response) {
-                        this.initRender(response, params);
+                        this.stopLoading();
+                        this.parseData(response);
+                        this.view.render();
+                        //this.appendPagination();
+                        if (!!params.success && typeof params.success === 'function') {
+                            params.success(response);
+                        }
                     }.bind(this))
                     .fail(function(status, error) {
                         this.sandbox.logger.error(status, error);
                     }.bind(this));
             },
 
-
             /**
-             * Initializes the rendering of the datagrid
+             * Displays a loading icon
              */
-            initRender: function(response, params) {
+            loading: function() {
+                this.$element
+                    .outerWidth(this.$element.outerWidth())
+                    .outerHeight(this.$element.outerHeight());
 
-                this.data = {};
-                this.data.links = response._links;
-                this.data.embedded = response._embedded;
-                this.data.total = response.total;
-                this.data.numberOfAll = response.numberOfAll;
-                this.data.page = response.page;
-                this.data.pages = response.pages;
-                this.data.pageSize = response.pageSize || this.options.paginationOptions.pageSize;
-                this.data.pageDisplay = this.options.paginationOptions.showPages;
+                this.sandbox.dom.addClass(this.$element, 'loading');
 
-                this.getViewDecorator();
-                this.bindDOMEvents();
+                if (!this.$loader) {
+                    this.$loader = this.sandbox.dom.createElement('<div class="datagrid-loader"/>');
+                    this.sandbox.dom.hide(this.$loader);
+                    this.sandbox.dom.append(this.$element, this.$loader);
 
-                /*this.prepare()
-                    .appendPagination()
-                    .render();
-
-                this.setHeaderClasses();
-
-                if (!!params && typeof params.success === 'function') {
-                    params.success(response);
+                    this.sandbox.start([{
+                        name: 'loader@husky',
+                        options: {
+                            el: this.$loader,
+                            size: '100px',
+                            color: '#cccccc'
+                        }
+                    }]);
                 }
 
-                this.windowResizeListener();*/
+                this.sandbox.dom.show(this.$loader);
+
+                return this.$tableContainer;
+            },
+
+            /**
+             * Hides the loading icon
+             */
+            stopLoading: function() {
+                this.sandbox.dom.hide(this.$loader);
+
+                this.sandbox.dom.removeClass(this.$element, 'loading');
+
+                return this.$element.outerHeight('').outerWidth('');
+            },
+
+            /**
+             * Gets the view and a load to get data and render it
+             */
+            initRender: function() {
+                this.bindDOMEvents();
+                this.getViewDecorator();
+            },
+
+            /**
+             * Takes a data object and sets it to the global data-property
+             * @param data {Object} data property
+             */
+            parseData: function(data) {
+                this.data = {};
+                this.data.links = data._links;
+                this.data.embedded = data._embedded;
+                this.data.total = data.total;
+                this.data.numberOfAll = data.numberOfAll;
+                this.data.page = data.page;
+                this.data.pages = data.pages;
+                this.data.pageSize = data.pageSize || this.options.paginationOptions.pageSize;
+                this.data.pageDisplay = this.options.paginationOptions.showPages;
             },
 
             /**
@@ -26863,7 +26989,8 @@ define('__component__$column-options@husky',[],function() {
 
                 require([viewDecorator], function(view) {
                     this.view = view;
-                    this.view.render(this);
+                    this.view.initialize(this);
+                    this.getData();
                 }.bind(this));
             },
 
@@ -26896,62 +27023,6 @@ define('__component__$column-options@husky',[],function() {
             },
 
             /**
-             * Prepares the structure of the datagrid (list, table)
-             * @returns {*}
-             */
-            /*prepare: function() {
-                this.$element.empty();
-
-                if (this.options.elementType === 'list') {
-                    // TODO this.$element = this.prepareList();
-                    this.sandbox.logger.log("list is not yet implemented!");
-                } else {
-                    this.$tableContainer = this.sandbox.dom.createElement('<div class="table-container"/>');
-                    this.sandbox.dom.append(this.$element, this.$tableContainer);
-                    this.sandbox.dom.append(this.$tableContainer, this.prepareTable());
-                }
-
-                return this;
-            },*/
-
-            /**
-             * Perapres the structure of the datagrid when element type is table
-             * @returns {table} returns table element
-             */
-            prepareTable: function() {
-                var $table, $thead, $tbody, tblClasses;
-
-                this.$table = $table = this.sandbox.dom.createElement('<table' + (!!this.options.validationDebug ? 'data-debug="true"' : '' ) + '/>');
-
-                if (!!this.data.head || !!this.options.columns) {
-                    $thead = this.sandbox.dom.createElement('<thead/>');
-                    $thead.append(this.prepareTableHead());
-                    $table.append($thead);
-                }
-
-                if (!!this.data.embedded) {
-                    if (!!this.options.appendTBody) {
-                        $tbody = this.sandbox.dom.$('<tbody/>');
-                    }
-                    this.sandbox.dom.append($tbody, this.prepareTableRows());
-                    this.sandbox.dom.append($table, $tbody);
-                }
-
-                // set html classes
-                tblClasses = [];
-                tblClasses.push((!!this.options.className && this.options.className !== 'table') ? 'table ' + this.options.className : 'table');
-
-                // when list should not have the hover effect for whole rows do not set the is-selectable class
-                if (!this.options.editable) {
-                    tblClasses.push((this.options.selectItem && this.options.selectItem.type === 'checkbox') ? 'is-selectable' : '');
-                }
-
-                $table.addClass(tblClasses.join(' '));
-
-                return $table;
-            },
-
-            /**
              * returns number and unit
              * @param numberUnit
              * @returns {{number: Number, unit: *}}
@@ -26974,22 +27045,9 @@ define('__component__$column-options@husky',[],function() {
              */
             manipulateContent: function(content, type) {
                 if (type === types.DATE) {
-                    content = this.parseDate(content);
+                    content = parseDate.call(this, content);
                 }
                 return content;
-            },
-
-            /**
-             * Brings a date into the right format
-             * @param date {String} the date to parse
-             * @returns {String}
-             */
-            parseDate: function(date) {
-                var parsedDate = this.sandbox.date.format(date);
-                if (parsedDate !== null) {
-                    return parsedDate;
-                }
-                return date;
             },
 
             /**
@@ -26998,107 +27056,6 @@ define('__component__$column-options@husky',[],function() {
             resetItemSelection: function() {
                 this.allItemIds = [];
                 this.selectedItemIds = [];
-            },
-
-            /**
-             * Selectes or deselects the clicked item
-             * @param event
-             */
-            selectItem: function(event) {
-
-                event.stopPropagation();
-
-                // Todo review handling of events for new rows in datagrid (itemId empty?)
-
-                var $element, itemId, oldSelectionId, parentTr;
-
-                $element = this.sandbox.dom.$(event.currentTarget);
-
-                if (!$element.is('input')) {
-                    $element = this.sandbox.dom.find('input', this.sandbox.dom.parent($element));
-                }
-
-                parentTr = this.sandbox.dom.parents($element, 'tr');
-                itemId = this.sandbox.dom.data(parentTr, 'id');
-
-                if ($element.attr('type') === 'checkbox') {
-
-                    if (this.sandbox.dom.prop($element, 'checked') === false) {
-                        $element
-                            .removeClass('is-selected')
-                            .prop('checked', false);
-
-                        // uncheck 'Select All'-checkbox
-                        $('th.select-all')
-                            .find('input[type="checkbox"]')
-                            .prop('checked', false);
-
-                        this.selectedItemIds.splice(this.selectedItemIds.indexOf(itemId), 1);
-                        this.sandbox.emit(ITEM_DESELECT, itemId);
-                    } else {
-                        $element
-                            .addClass('is-selected')
-                            .prop('checked', true);
-
-                        if (!!itemId) {
-                            this.selectedItemIds.push(itemId);
-                            this.sandbox.emit(ITEM_SELECT, itemId);
-                        } else {
-                            this.sandbox.emit(ITEM_SELECT, event);
-                        }
-                    }
-
-                    this.sandbox.emit(NUMBER_SELECTIONS, this.getIdsOfSelectedRows().length);
-
-                } else if ($element.attr('type') === 'radio') {
-
-                    oldSelectionId = this.selectedItemIds.pop();
-
-                    if (!!oldSelectionId && oldSelectionId > -1) {
-                        this.sandbox.dom.$('tr[data-id="' + oldSelectionId + '"]').find('input[type="radio"]').removeClass('is-selected').prop('checked', false);
-                        this.sandbox.emit(ITEM_DESELECT, oldSelectionId);
-                    }
-
-                    $element.addClass('is-selected').prop('checked', true);
-
-                    if (!!itemId) {
-                        this.selectedItemIds.push(itemId);
-                        this.sandbox.emit(ITEM_SELECT, itemId);
-                    } else {
-                        this.sandbox.emit(ITEM_SELECT, event);
-                    }
-                    this.sandbox.emit(NUMBER_SELECTIONS, this.selectedItemIds.length);
-                }
-
-            },
-
-            /**
-             * Selects or deselect all available items of the list
-             * @param event
-             */
-            selectAllItems: function(event) {
-
-                event.stopPropagation();
-
-                var $headCheckbox = this.sandbox.dom.find('th input[type="checkbox"]', this.$el)[0],
-                    $checkboxes = this.sandbox.dom.find('input[type="checkbox"]', this.$el),
-                    selectedElements,
-                    tmp;
-
-                if (this.sandbox.dom.prop($headCheckbox, 'checked') === false) {
-                    this.sandbox.dom.prop($checkboxes, 'checked', false);
-                    this.sandbox.dom.removeClass($checkboxes, 'is-selected');
-                    this.sandbox.emit(ALL_DESELECT);
-                } else {
-                    this.sandbox.dom.prop($checkboxes, 'checked', true);
-                    this.sandbox.dom.addClass($checkboxes, 'is-selected');
-                    this.sandbox.emit(ALL_SELECT, this.getIdsOfSelectedRows());
-                }
-
-                tmp = this.sandbox.dom.find('input[type="checkbox"]:checked', this.$el).length - 1;
-                selectedElements = tmp > 0 ? tmp : 0;
-
-                this.sandbox.emit(NUMBER_SELECTIONS, selectedElements);
             },
 
             // TODO: create pagination module
@@ -27145,7 +27102,7 @@ define('__component__$column-options@husky',[],function() {
 
                 // if first defined step is bigger than the number of all elements don't display show-elements dropdown
                 if (this.data.numberOfAll > this.options.showElementsSteps[0]) {
-                    $showElements = this.sandbox.dom.$(this.templates.showElements.call(this, this.pagination.showElementsId));
+                    $showElements = this.sandbox.dom.$(templates.showElements.call(this, this.pagination.showElementsId));
                     $paginationWrapper.append($showElements);
                 }
 
@@ -27271,10 +27228,8 @@ define('__component__$column-options@husky',[],function() {
                 }
 
                 this.sandbox.emit(PAGE_CHANGE, url);
-                this.addLoader();
                 this.load({url: url,
                     success: function() {
-                        this.removeLoader();
                         this.sandbox.emit(UPDATED, 'updated page');
                     }.bind(this)});
             },
@@ -27293,148 +27248,11 @@ define('__component__$column-options@husky',[],function() {
 
                     // previous page
                     this.$element.on('click', '#' + this.pagination.prevId, this.changePage.bind(this, this.data.links.prev));
-                }
-
-                if (this.options.removeRow) {
-                    this.$element.on('click', '.remove-row > span', this.prepareRemoveRow.bind(this));
-                }
-
-                if (this.options.sortable) {
-                    this.sandbox.dom.on(this.$el, 'click', this.changeSorting.bind(this), 'thead th[data-attribute]');
-                }
-
-                if (!!this.options.editable) {
-                    this.sandbox.dom.on(this.$el, 'click', this.editCellValues.bind(this), '.editable');
-
-                    // FIXME does not work with focus - causes endless loop in some cases (husky-validation?)
-                    this.sandbox.dom.on(this.$el, 'click', this.focusOnRow.bind(this), 'tr');
-
-                    this.sandbox.dom.on(this.$el, 'click', function(event) {
-                        event.stopPropagation();
-                    }, 'tr');
-
-                    this.sandbox.dom.on(window, 'click', function() {
-                        if (!!this.lastFocusedRow) {
-                            this.prepareSave();
-                        }
-                    }.bind(this));
                 }*/
 
-                this.sandbox.dom.on(this.sandbox.dom.window, 'resize', this.windowResizeListener.bind(this));
+                this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.windowResizeListener.bind(this));
             },
 
-            /**
-             * Shows input and hides span
-             * @param event
-             */
-            editCellValues: function(event) {
-                var $target = event.currentTarget,
-                    $input = this.sandbox.dom.next($target, 'input');
-
-                this.lockWidthsOfColumns(this.sandbox.dom.find('table th', this.$el));
-
-                this.sandbox.dom.hide($target);
-                this.sandbox.dom.removeClass($input, 'hidden');
-                $input[0].select();
-            },
-
-            /**
-             * Makes the widths of columns fixed when the table is in edit mode
-             * prevents changes in column width
-             * @param $th array of th elements
-             */
-            lockWidthsOfColumns: function($th) {
-
-                var width, minwidth;
-                this.columnWidths = [];
-
-                this.sandbox.dom.each($th, function(index, $el) {
-                    minwidth = this.sandbox.dom.css($el, 'min-width');
-                    this.columnWidths.push(minwidth);
-
-                    width = this.sandbox.dom.outerWidth($el);
-                    this.sandbox.dom.css($el, 'min-width', width);
-                    this.sandbox.dom.css($el, 'max-width', width);
-                    this.sandbox.dom.css($el, 'width', width);
-                }.bind(this));
-            },
-
-            /**
-             * Resets the min-width of columns and
-             * @param $th array of th elements
-             */
-            unlockWidthsOfColumns: function($th) {
-                if (!!this.columnWidths) {
-                    this.sandbox.dom.each($th, function(index, $el) {
-                        // skip columns without data-attribute because the have min/max and normal widths by default
-                        if (!!this.sandbox.dom.data($el, 'attribute')) {
-                            this.sandbox.dom.css($el, 'min-width', this.columnWidths[index]);
-                            this.sandbox.dom.css($el, 'max-width', '');
-                            this.sandbox.dom.css($el, 'width', '');
-                        }
-                    }.bind(this));
-                }
-            },
-
-            /**
-             * Sets header classes and loads new data
-             * Emits husky.datagrid.updated event on success
-             * @param event
-             */
-            changeSorting: function(event) {
-
-                var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
-                    $element = event.currentTarget,
-                    $span = this.sandbox.dom.children($element, 'span')[0],
-                    url, template;
-
-                if (!!attribute && !!this.data.links.sortable[attribute]) {
-
-                    this.sandbox.emit(DATA_SORT);
-                    this.sort.attribute = attribute;
-
-                    if (this.sandbox.dom.hasClass($span, this.sort.ascClass)) {
-                        this.sort.direction = "desc";
-                    } else {
-                        this.sort.direction = "asc";
-                    }
-
-                    this.addLoader();
-                    template = this.sandbox.uritemplate.parse(this.data.links.sortable[attribute]);
-                    url = this.sandbox.uritemplate.expand(template, {sortOrder: this.sort.direction});
-
-                    this.load({
-                        url: url,
-                        success: function() {
-                            this.removeLoader();
-                            this.sandbox.emit(UPDATED, 'updated sort');
-                        }.bind(this)
-                    });
-                }
-            },
-
-            /**
-             * Sets the header classes used for sorting purposes
-             * needs this.sort to be correctly initialized
-             */
-            setHeaderClasses: function() {
-                var attribute = this.sort.attribute,
-                    direction = this.sort.direction,
-                    $element = this.sandbox.dom.find('thead th[data-attribute=' + attribute + ']', this.$element),
-                    $span = this.sandbox.dom.children($element, 'span')[0];
-
-                if (!!attribute) {
-
-                    this.sandbox.dom.addClass($element, 'is-selected');
-
-                    if (direction === 'asc') {
-                        this.sandbox.dom.addClass($span, this.sort.ascClass + this.sort.additionalClasses);
-                    } else {
-                        this.sandbox.dom.addClass($span, this.sort.descClass + this.sort.additionalClasses);
-                    }
-
-                }
-            },
 
             bindCustomEvents: function() {
                 var searchInstanceName = '', columnOptionsInstanceName = '';
@@ -27447,10 +27265,13 @@ define('__component__$column-options@husky',[],function() {
                 this.sandbox.on(DATA_GET, this.provideData.bind(this));
 
                 // filter data
-                this.sandbox.on(DATA_SEARCH, this.triggerSearch.bind(this));
+                this.sandbox.on(DATA_SEARCH, this.searchGrid.bind(this));
 
                 // filter data
                 this.sandbox.on(URL_UPDATE, this.updateUrl.bind(this));
+
+                // trigger selectedItems
+                this.sandbox.on(ITEMS_GET_SELECTED, this.getSelectedItems.bind(this));
 
                 // pagination dropdown item clicked
                 this.sandbox.on('husky.dropdown.' + this.dropdownInstanceName + '.item.click', this.changePage.bind(this, null));
@@ -27476,35 +27297,14 @@ define('__component__$column-options@husky',[],function() {
                     if (this.options.searchInstanceName !== '') {
                         searchInstanceName = '.' + this.options.searchInstanceName;
                     }
-                    this.sandbox.on('husky.search' + searchInstanceName, this.triggerSearch.bind(this));
-                    this.sandbox.on('husky.search' + searchInstanceName + '.reset', this.triggerSearch.bind(this, ''));
+                    this.sandbox.on('husky.search' + searchInstanceName, this.searchGrid.bind(this));
+                    this.sandbox.on('husky.search' + searchInstanceName + '.reset', this.searchGrid.bind(this, ''));
                 }
 
-                // listen to search events
+                // listen to events from column options
                 if (this.options.columnOptionsInstanceName || this.options.columnOptionsInstanceName === '') {
                     columnOptionsInstanceName = (this.options.columnOptionsInstanceName !== '') ? '.' + this.options.columnOptionsInstanceName : '';
-                    this.sandbox.on('husky.column-options' + columnOptionsInstanceName + '.saved', this.filterColumns.bind(this));
-                }
-            },
-
-
-            /**
-             * Put focus on table row and remember values
-             */
-            focusOnRow: function(event) {
-
-                var $tr = event.currentTarget,
-                    domId = this.sandbox.dom.data($tr, 'dom-id');
-
-                this.sandbox.logger.log("focus on row", domId);
-
-                if (!!this.lastFocusedRow && this.lastFocusedRow.domId !== domId) { // new focus
-                    this.prepareSave();
-                    this.lastFocusedRow = this.getInputValuesOfRow($tr);
-                    this.sandbox.logger.log("focused " + this.lastFocusedRow.domId + " now!");
-                } else if (!this.lastFocusedRow) { // first focus
-                    this.lastFocusedRow = this.getInputValuesOfRow($tr);
-                    this.sandbox.logger.log("focused " + this.lastFocusedRow.domId + " now!");
+                    this.sandbox.on('husky.column-options' + columnOptionsInstanceName + '.saved', this.filterGrid.bind(this));
                 }
             },
 
@@ -27522,6 +27322,48 @@ define('__component__$column-options@husky',[],function() {
             },
 
             /**
+             * Returns the ids of all selected items
+             * @return {Array} array with all ids
+             */
+            getSelectedItems: function() {
+                return this.selectedItemIds;
+            },
+
+            /**
+             * Takes an array of ids and sets it for the selected-items array
+             * @param items
+             */
+            setSelectedItems: function(items) {
+                this.selectedItemIds = items;
+            },
+
+            /**
+             * Pops the last value of the pop selected-items array
+             */
+            popSelectedItemIds: function() {
+                return this.selectedItemIds.pop();
+            },
+
+            /**
+             * Stores an id to the selected-items array
+             * @param id {String|Number} id of the item
+             */
+            setToSelectedItems: function(id) {
+                return this.selectedItemIds.push(id);
+            },
+
+            /**
+             * Removes an id from the selected-items array
+             * @param id
+             */
+            removeFromSelectedItems: function(id) {
+                var index = this.selectedItemIds.indexOf(id);
+                if (index !== -1) {
+                    return this.selectedItemIds.splice(id, 1);
+                }
+            },
+
+            /**
              * Provides data of the list to the caller
              */
             provideData: function() {
@@ -27534,36 +27376,12 @@ define('__component__$column-options@husky',[],function() {
              * Emits husky.datagrid.updated event on success
              */
             updateHandler: function() {
-                this.resetItemSelection();
                 this.resetSortingOptions();
 
                 this.load({
                     url: this.data.links.self,
                     success: function() {
-                        this.removeLoader();
                         this.sandbox.emit(UPDATED);
-                    }.bind(this)
-                });
-            },
-
-            /**
-             * triggers an api search
-             * @param {String} searchString The String that will be searched
-             * @param {String|Array} searchFields Fields that will be included into the search
-             */
-            triggerSearch: function(searchString, searchFields) {
-
-                var template, url;
-
-                this.addLoader();
-                template = this.sandbox.uritemplate.parse(this.data.links.find);
-                url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
-
-                this.load({
-                    url: url,
-                    success: function() {
-                        this.removeLoader();
-                        this.sandbox.emit(UPDATED, 'updated after search');
                     }.bind(this)
                 });
             },
@@ -27576,105 +27394,90 @@ define('__component__$column-options@husky',[],function() {
 
                 var url, key;
 
-                this.addLoader();
                 url = this.currentUrl;
 
                 for (key in parameters) {
-                    url = this.setGetParameter(url, key, parameters[key]);
+                    url = setGetParameter.call(this, url, key, parameters[key]);
                 }
 
                 this.load({
                     url: url,
                     success: function() {
-                        this.removeLoader();
                         this.sandbox.emit(UPDATED);
                     }.bind(this)
                 });
             },
 
-            /**
-             * function updates an url by a given parameter name and value and returns it. The parameter is either added or updated.
-             * If value is not set, the parameter will be removed from url
-             * @param {String} url Url string to be updated
-             * @param {String} paramName Parameter which should be added / updated / removed
-             * @param {String|Null} paramValue Value of the parameter. If not set, parameter will be removed from url
-             * @returns {String} updated url
-             */
-            setGetParameter: function(url, paramName, paramValue) {
-                if (url.indexOf(paramName + "=") >= 0)
-                {
-                    var prefix = url.substring(0, url.indexOf(paramName)),
-                        suffix = url.substring(url.indexOf(paramName));
-                    suffix = suffix.substring(suffix.indexOf('=') + 1);
-                    suffix = (suffix.indexOf('&') >= 0) ? suffix.substring(suffix.indexOf('&')) : '';
-                    if (!!paramValue) {
-                        url = prefix + paramName + '=' + paramValue + suffix;
-                    } else {
-                        if (url.substr(url.indexOf(paramName)-1,1) === '&' ) {
-                            url = url.substring(0,prefix.length-1) + suffix;
-                        } else {
-                            url = prefix + suffix.substring(1, suffix.length);
-                        }
-                    }
-                }
-                else if (!!paramValue)
-                {
-                    if (url.indexOf("?") < 0)
-                        url += "?" + paramName + "=" + paramValue;
-                    else
-                        url += "&" + paramName + "=" + paramValue;
-                }
-                return url;
-            },
-
 
             /**
-             * is called when columns are changed
+             * Filters fields out of the data passed to the view
+             * So its possible to hide fields/columns
+             * Note that the also the arrangement of fields/columns can be changed and the view can react to it
+             * @param fieldsData {Array}
              */
-            filterColumns: function(fieldsData) {
-
+            filterGrid: function(fieldsData) {
                 var template, url,
                     parsed = this.parseFieldsData(fieldsData);
-
-                this.addLoader();
 
                 template = this.sandbox.uritemplate.parse(this.data.links.filter);
                 url = this.sandbox.uritemplate.expand(template, {fieldsList: parsed.urlFields.split(',')});
 
                 this.options.columns = parsed.columns;
 
-                this.sandbox.dom.width(this.$element, '100%');
-                if (!!this.options.contentContainer) {
-                    this.sandbox.dom.css(this.options.contentContainer, 'max-width', '');
-                }
-
                 this.load({
                     url: url,
                     success: function() {
-                        this.removeLoader();
-                        this.sandbox.emit(UPDATED, 'updated after search');
+                        this.sandbox.emit(UPDATED);
                     }.bind(this)
                 });
             },
 
+            /**
+             * Constructs the url to get sorted data and sets the request for it
+             * @param attribute {String} The attribute to sort by
+             * @param direction {String} the sort method to use 'asc' or 'desc'
+             */
+            sortGrid: function(attribute, direction) {
+                var template, url;
+
+                // if passed attribute is sortable
+                if (!!attribute && !!this.data.links.sortable[attribute]) {
+
+                    this.sort.attribute = attribute;
+                    this.sort.direction = direction;
+
+                    template = this.sandbox.uritemplate.parse(this.data.links.sortable[attribute]);
+                    url = this.sandbox.uritemplate.expand(template, {sortOrder: direction});
+
+                    this.sandbox.emit(DATA_SORT);
+
+                    this.load({
+                        url: url,
+                        success: function() {
+                            this.sandbox.emit(UPDATED);
+                        }.bind(this)
+                    });
+                }
+            },
 
             /**
-             * Renders datagrid element in container
-             * Binds DOM events
+             * triggers an api search
+             * @param {String} searchString The String that will be searched
+             * @param {String|Array} searchFields Fields that will be included into the search
              */
-            render: function() {
-                // add full-width class
-                if (this.options.fullWidth === true) {
-                    this.sandbox.dom.addClass(this.$element, constants.fullWidthClass);
-                }
+            searchGrid: function(searchString, searchFields) {
 
-                this.$el.html(this.$element);
-                this.bindDOMEvents();
+                var template, url;
 
-                // initialize validation
-                if (!!this.options.validation) {
-                    this.sandbox.form.create(this.$el);
-                }
+                template = this.sandbox.uritemplate.parse(this.data.links.find);
+                url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+
+                this.load({
+                    url: url,
+                    success: function() {
+                        this.sandbox.emit(UPDATED);
+                    }.bind(this)
+                });
             },
 
             /**
@@ -27682,42 +27485,6 @@ define('__component__$column-options@husky',[],function() {
              */
             windowResizeListener: function() {
                 this.view.onResize();
-            },
-
-            /**
-             * Adds loading icon and keeps width and height
-             * @returns {*}
-             */
-            addLoader: function() {
-                this.$element
-                    .outerWidth(this.$element.outerWidth())
-                    .outerHeight(this.$element.outerHeight())
-                    .empty();
-
-                var $container = this.sandbox.dom.createElement('<div class="datagrid-loader"/>');
-                this.sandbox.dom.append(this.$element, $container);
-
-                this.sandbox.start([{
-                    name: 'loader@husky',
-                    options: {
-                        el: $container,
-                        size: '100px',
-                        color: '#cccccc'
-                    }
-                }]);
-
-                return this.$element;
-            },
-
-            /**
-             * Removes loading icon, width and height of container
-             * @returns {*}
-             */
-            removeLoader: function() {
-                return this.$element.outerHeight("").outerWidth("");
-                this.sandbox.stop(this.sandbox.dom.find('.datagrid-loader', this.$element));
-
-                return this.$element;
             }
         };
     });
