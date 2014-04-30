@@ -2,6 +2,8 @@ require.config({
     baseUrl: '../../'
 });
 
+var App;
+
 require(['lib/husky'], function(Husky) {
     'use strict';
 
@@ -612,6 +614,7 @@ require(['lib/husky'], function(Husky) {
                 }
             }
         ]).then(function() {
+            App = app;
             app.logger.log('Aura started...');
 
             _.delay(function() {

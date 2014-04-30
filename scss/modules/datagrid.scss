@@ -82,6 +82,10 @@
         margin-left: 12px;
     }
 
+    &.loading {
+        min-height: 150px;
+    }
+
     /**
       * Special styles
     **/

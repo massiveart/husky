@@ -108,6 +108,12 @@ define(function() {
         UPDATE_TABLE = namespace + 'update.table',
 
     /**
+     * raised when the data is updated
+     * @event husky.datagrid.updated
+     */
+        UPDATED = namespace + 'updated',
+
+    /**
      * raised when all items get deselected via the header checkbox
      * @event husky.datagrid.all.deselect
      */
@@ -127,6 +133,18 @@ define(function() {
      * @param {String} id of item that was clicked for removal
      */
         ROW_REMOVE_CLICK = namespace + 'row.remove-click',
+
+    /**
+     * raised when data is sorted
+     * @event husky.datagrid.data.sort
+     */
+        DATA_SORT = namespace + 'data.sort',
+
+    /**
+     * used to trigger an update of the data
+     * @event husky.datagrid.update
+     */
+        UPDATE = namespace + 'update',
 
     /**
      * calculates the width of a text by creating a tablehead element and measure its width
@@ -190,6 +208,22 @@ define(function() {
 
             this.bindDomEvents();
             this.onResize();
+
+            // initialize validation
+            if (!!this.options.validation) {
+                this.sandbox.form.create(datagrid.$el);
+            }
+
+            this.setHeaderClasses();
+        },
+
+        /**
+         * Destroys the view
+         */
+        destroy: function() {
+            this.unbindDomEvents();
+            this.sandbox.stop('.table-container *');
+            this.sandbox.dom.remove(this.$tableContainer);
         },
 
         /**
@@ -210,25 +244,29 @@ define(function() {
         },
 
         /**
+         * Unbinds the Dom-Events of the view
+         */
+        unbindDomEvents: function() {
+            this.sandbox.dom.unbind(this.sandbox.dom.find('*', this.$tableContainer));
+            this.sandbox.dom.unbind(this.$tableContainer);
+        },
+
+        /**
          * Binds Dom related events for this table-view
          */
         bindDomEvents: function() {
-            // prevent multiple events
-            this.sandbox.dom.unbind(this.sandbox.dom.find('*', datagrid.$element));
-            this.sandbox.dom.unbind(datagrid.$element);
-
             if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
-                datagrid.$element.on('click', 'tbody > tr input[type="checkbox"]', this.selectItem.bind(this));
-                datagrid.$element.on('click', 'th.select-all', this.selectAllItems.bind(this));
+                this.$tableContainer.on('click', 'tbody > tr input[type="checkbox"]', this.selectItem.bind(this));
+                this.$tableContainer.on('click', 'th.select-all', this.selectAllItems.bind(this));
             } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
-                datagrid.$element.on('click', 'tbody > tr input[type="radio"]', this.selectItem.bind(this));
+                this.$tableContainer.on('click', 'tbody > tr input[type="radio"]', this.selectItem.bind(this));
             }
 
             if (this.options.removeRow) {
-                datagrid.$element.on('click', '.remove-row > span', this.prepareRemoveRow.bind(this));
+                this.$tableContainer.on('click', '.remove-row > span', this.prepareRemoveRow.bind(this));
             }
 
-            datagrid.$element.on('click', 'tbody > tr', function(event) {
+            this.$tableContainer.on('click', 'tbody > tr', function(event) {
                 if (!this.sandbox.dom.$(event.target).is('input') && !this.sandbox.dom.$(event.target).is('span.icon-remove')) {
                     var id = this.sandbox.dom.$(event.currentTarget).data('id');
 
@@ -239,6 +277,27 @@ define(function() {
                     }
                 }
             }.bind(this));
+
+            if (!!this.options.editable) {
+                this.sandbox.dom.on(this.$tableContainer, 'click', this.editCellValues.bind(this), '.editable');
+
+                // FIXME does not work with focus - causes endless loop in some cases (husky-validation?)
+                this.sandbox.dom.on(this.$tableContainer, 'click', this.focusOnRow.bind(this), 'tr');
+
+                this.sandbox.dom.on(this.$tableContainer, 'click', function(event) {
+                    event.stopPropagation();
+                }, 'tr');
+
+                this.sandbox.dom.on(window, 'click', function() {
+                    if (!!this.lastFocusedRow) {
+                        this.prepareSave();
+                    }
+                }.bind(this));
+            }
+
+            if (this.options.sortable) {
+                this.sandbox.dom.on(this.$tableContainer, 'click', this.changeSorting.bind(this), 'thead th[data-attribute]');
+            }
         },
 
         /**
@@ -249,10 +308,10 @@ define(function() {
             this.allItemIds = [];
             this.selectedItemIds = [];
             this.rowStructure = [];
-            this.elId = this.sandbox.dom.attr(this.$el, 'id');
             this.currentUrl = '';
             this.$tableContainer = null;
             this.$table;
+            this.$loader = null;
 
             if (!!this.options.contentContainer) {
                 if (this.sandbox.dom.css(this.options.contentContainer, 'max-width') === 'none') {
@@ -274,12 +333,28 @@ define(function() {
             this.topTabIndex = this.options.startTabIndex || 50000;
 
             this.errorInRow = [];
+        },
 
-            this.sort = {
-                ascClass: 'icon-arrow-up',
-                descClass: 'icon-arrow-down',
-                additionalClasses: ' m-left-5 small-font'
-            };
+        /**
+         * Sets the header classes used for sorting purposes
+         * needs datagrid.sort to be correctly initialized
+         */
+        setHeaderClasses: function() {
+            var attribute = datagrid.sort.attribute,
+                direction = datagrid.sort.direction,
+                $element = this.sandbox.dom.find('thead th[data-attribute=' + attribute + ']', this.$tableContainer),
+                $span = this.sandbox.dom.children($element, 'span')[0];
+
+            if (!!attribute) {
+
+                this.sandbox.dom.addClass($element, 'is-selected');
+
+                if (direction === 'asc') {
+                    this.sandbox.dom.addClass($span, datagrid.sort.ascClass + datagrid.sort.additionalClasses);
+                } else {
+                    this.sandbox.dom.addClass($span, datagrid.sort.descClass + datagrid.sort.additionalClasses);
+                }
+            }
         },
 
         /**
@@ -644,7 +719,7 @@ define(function() {
                 data.id = lastFocusedRowCurrentData.id;
 
                 // validate locally
-                if (!!this.options.validation && !this.sandbox.form.validate('#' + this.elId)) {
+                if (!!this.options.validation && !this.sandbox.form.validate('#' + datagrid.elId)) {
                     isValid = false;
                 }
 
@@ -664,7 +739,7 @@ define(function() {
                     // trigger save action when data changed
                     if (!!valuesChanged || true) {
                         this.sandbox.emit(DATA_CHANGED);
-                        url = this.getUrlWithoutParams();
+                        url = datagrid.getUrlWithoutParams();
 
                         // save via put
                         if (!!data.id) {
@@ -805,6 +880,27 @@ define(function() {
                     }
                 }.bind(this));
             }
+        },
+
+        /**
+         * Makes the widths of columns fixed when the table is in edit mode
+         * prevents changes in column width
+         * @param $th array of th elements
+         */
+        lockWidthsOfColumns: function($th) {
+
+            var width, minwidth;
+            this.columnWidths = [];
+
+            this.sandbox.dom.each($th, function(index, $el) {
+                minwidth = this.sandbox.dom.css($el, 'min-width');
+                this.columnWidths.push(minwidth);
+
+                width = this.sandbox.dom.outerWidth($el);
+                this.sandbox.dom.css($el, 'min-width', width);
+                this.sandbox.dom.css($el, 'max-width', width);
+                this.sandbox.dom.css($el, 'width', width);
+            }.bind(this));
         },
 
         /**
@@ -970,7 +1066,7 @@ define(function() {
             if (!!this.options.validation) {
                 $editableElements = this.sandbox.dom.find('.editable', $tblRow);
                 this.sandbox.util.each($editableElements, function(index, $element) {
-                    this.sandbox.form.removeField('#' + this.elId, $element);
+                    this.sandbox.form.removeField('#' + datagrid.elId, $element);
                 }.bind(this));
             }
 
@@ -1133,6 +1229,41 @@ define(function() {
         },
 
         /**
+         * Shows input and hides span
+         * @param event
+         */
+        editCellValues: function(event) {
+            var $target = event.currentTarget,
+                $input = this.sandbox.dom.next($target, 'input');
+
+            this.lockWidthsOfColumns(this.sandbox.dom.find('table th', this.$tableContainer));
+
+            this.sandbox.dom.hide($target);
+            this.sandbox.dom.removeClass($input, 'hidden');
+            $input[0].select();
+        },
+
+        /**
+         * Put focus on table row and remember values
+         */
+        focusOnRow: function(event) {
+
+            var $tr = event.currentTarget,
+                domId = this.sandbox.dom.data($tr, 'dom-id');
+
+            this.sandbox.logger.log("focus on row", domId);
+
+            if (!!this.lastFocusedRow && this.lastFocusedRow.domId !== domId) { // new focus
+                this.prepareSave();
+                this.lastFocusedRow = this.getInputValuesOfRow($tr);
+                this.sandbox.logger.log("focused " + this.lastFocusedRow.domId + " now!");
+            } else if (!this.lastFocusedRow) { // first focus
+                this.lastFocusedRow = this.getInputValuesOfRow($tr);
+                this.sandbox.logger.log("focused " + this.lastFocusedRow.domId + " now!");
+            }
+        },
+
+        /**
          * Selects or deselect all available items of the list
          * @param event
          */
@@ -1159,6 +1290,42 @@ define(function() {
             selectedElements = tmp > 0 ? tmp : 0;
 
             this.sandbox.emit(NUMBER_SELECTIONS, selectedElements);
+        },
+
+        /**
+         * Sets header classes and loads new data
+         * Emits husky.datagrid.updated event on success
+         * @param event
+         */
+        changeSorting: function(event) {
+
+            var attribute = this.sandbox.dom.data(event.currentTarget, 'attribute'),
+                $element = event.currentTarget,
+                $span = this.sandbox.dom.children($element, 'span')[0],
+                url, template;
+
+            if (!!attribute && !!datagrid.data.links.sortable[attribute]) {
+
+                this.sandbox.emit(DATA_SORT);
+                datagrid.sort.attribute = attribute;
+
+                if (this.sandbox.dom.hasClass($span, datagrid.sort.ascClass)) {
+                    datagrid.sort.direction = "desc";
+                } else {
+                    datagrid.sort.direction = "asc";
+                }
+
+                //this.addLoader();
+                template = this.sandbox.uritemplate.parse(datagrid.data.links.sortable[attribute]);
+                url = this.sandbox.uritemplate.expand(template, {sortOrder: datagrid.sort.direction});
+
+                datagrid.load({
+                    url: url,
+                    success: function() {
+                        this.sandbox.emit(UPDATED, 'updated sort');
+                    }.bind(this)
+                });
+            }
         },
 
         templates: {
