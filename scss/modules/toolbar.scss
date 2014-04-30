@@ -105,6 +105,10 @@ $toolbarSmallHeight: 20px;
         float: left;
     }
 
+    .dropdown-toggle::after {
+        top: -3px;
+    }
+
     .item-loader {
         display: inline-block;
         height: 20px;
@@ -225,6 +229,7 @@ $toolbarSmallHeight: 20px;
 .toolbar-dropdown-menu {
   background-color: white;
   border: 1px solid $grayLighter;
+  border-radius: $dropdownBorderRadiusSmall;
 
   display: none;
   position: absolute;
@@ -238,6 +243,7 @@ $toolbarSmallHeight: 20px;
   padding: 5px 0;
   margin-top: -7px;
   margin-left: 0px;
+  z-index: 2000;
 
   @include standard-box-shadow(2px);
 
@@ -311,7 +317,7 @@ $toolbarSmallHeight: 20px;
         border-color: $blue;
 
         &.highlight {
-            background-color: $yellow;
+            background-color: $yellowWarning;
             & > a {
                 color: $black;
             }

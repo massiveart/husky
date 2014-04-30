@@ -523,7 +523,7 @@ require(['lib/husky'], function(Husky) {
                     editable: true,
                     validation:true,
                     addRowTop: true,
-                    //fullWidth: true, // uncomment for full-width mode
+                    fullWidth: true, // uncomment for full-width mode
                     contentContainer: '#content',
                     columns: [
                         {

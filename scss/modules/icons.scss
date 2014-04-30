@@ -48,6 +48,13 @@
     }
 }
 
+.icon-history {
+  &::after {
+    content: "\e058";
+    display: inline-block;
+  }
+}
+
 .icon-circle-remove {
    &::after {
      content: "\e193";

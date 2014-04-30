@@ -5,6 +5,8 @@
 
 // Global values
 // --------------------------------------------------
+$dropdownBorderRadius: 3px;
+$dropdownBorderRadiusSmall: 2px;
 
 
 // Base Colors
@@ -17,19 +19,20 @@ $grayLighter3: #BABABA;
 $grayLighter2: #CACACA;
 $grayLighterer: #ddd;
 $grayLightMedium: #e4e4e4;
+$grayLightMedium2: #e9e9e9;
 $grayLightest: #efefef;
 $grayDarkLighter: #3e3e3e;
 $grayDark: #1e1e1e;
 $navigationFooterGray: #878787;
-$navigationFooterGray2: #5b5b5b;
 $white:#fff;
-$green: #1FCA23;
-$milkeyGreen: #B1E4B2;
-$red: #AD0710;
-$milkyRed: #DCAAAC;
-$yellow: #FEBC2F;
-$blue: #2D9FBC;
-$milkeyBlue: #93CFDF;
+$green: #5DC7A3;
+$milkeyGreen: lighten($green, 25%);
+$red: #EA524E;
+$milkyRed: lighten($red, 25%);
+$yellow: #F2D212;
+$yellowWarning: #E8CE33;
+$blue: #52B6CA;
+$milkeyBlue: lighten($blue, 25%);
 $milkeyBlue2: #ACDAE6;
 
 
@@ -40,14 +43,14 @@ $baseBackgroundColor: #f1f1f1;
 
 // Accent colors
 // -------------------------
-$accentColor: #009fc0;
+$accentColor: $blue;
 
 
 // Font Colors
 // -------------------------
 $baseFontColor: $black;
 
-$highlightColor: #249FBE; // blue
+$highlightColor: $blue;
 
 $infoColor: #fda502; // orange
 $errorColor: #e60000; // red
@@ -92,12 +95,16 @@ $labelColor: $grayLighter;
 
 $inputHeight: 30px;
 
+// Search bar
+// -------------------------
+$searchBarGray: rgba(255,255,255, 0.5);
+
 
 // Navigation
 // -------------------------
-$navigationBackgroundColor: #3e3e3e;
-$navigationHoverColor: #3a3a3a;
-$navigationActiveColor: #282828;
+$navigationBackgroundColor: #21272E;
+$navigationHoverColor: #191D22;
+$navigationActiveColor: #111417;
 
 // Overlay
 // -------------------------

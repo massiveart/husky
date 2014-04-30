@@ -55,7 +55,8 @@
         margin-top: 5px;
         background-color: #FFF;
         border: 1px solid $grayLighter;
-        z-index: 95;
+        z-index: 2000;
+        border-radius: $dropdownBorderRadius;
 
         &.top {
             top: inherit;
@@ -119,7 +120,8 @@
             top: 12px;
             min-width: 200px;
             max-width: 100%;
-            border-radius: 2px;
+            border-radius: $dropdownBorderRadiusSmall;
+
             &.top {
                 top: auto;
                 bottom: -3px;

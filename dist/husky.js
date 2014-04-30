@@ -25079,7 +25079,10 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.util.foreach(data.items, function(section) {
                 $sectionDiv = this.sandbox.dom.createElement('<div class="section">');
                 $sectionList = this.sandbox.dom.createElement('<ul class="section-items">');
-                this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + this.sandbox.translate(section.title).toUpperCase() + '</span><span class="section-toggle"><a href="#">' + this.sandbox.translate(this.options.labels.hide) + '</a></span></div>');
+
+                if (!!section.title) {
+                    this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + this.sandbox.translate(section.title).toUpperCase() + '</span><span class="section-toggle"><a href="#">' + this.sandbox.translate(this.options.labels.hide) + '</a></span></div>');
+                }
 
                 this.sandbox.dom.append($sectionDiv, $sectionList);
                 this.sandbox.dom.append('#navigation-item-container', $sectionDiv);
@@ -26603,7 +26606,7 @@ define('__component__$datagrid@husky',[],function() {
             excludeFields: ['id'],
             instance: 'datagrid',
             pagination: false,
-            fullWidth: false,
+            //fullWidth: false,
             paginationOptions: {
                 pageSize: null,
                 showPages: null
@@ -28638,16 +28641,19 @@ define('__component__$datagrid@husky',[],function() {
                 }
             }
 
-            if (this.options.fullWidth === true) {
-                finalWidth = finalWidth - constants.overflowIconSpacing;
-            }
-
             // now set width
             this.sandbox.dom.width(this.$element, finalWidth);
 
             // check scrollwidth and add class
             if (this.sandbox.dom.get(this.$tableContainer, 0).scrollWidth > finalWidth) {
                 this.sandbox.dom.addClass(this.$tableContainer, 'overflow');
+
+                // if overflown and in full width mode reduce list-width
+                if (this.options.fullWidth === true) {
+                    finalWidth = finalWidth - constants.overflowIconSpacing;
+                    this.sandbox.dom.width(this.$element, finalWidth);
+                }
+
             } else {
                 this.sandbox.dom.removeClass(this.$tableContainer, 'overflow');
             }
@@ -32932,7 +32938,7 @@ define('__component__$select@husky',[], function() {
                     '       </div>',
                     '       <span class="dropdown-toggle inline-block"></span>',
                     '   </div>',
-                    '   <div class="grid-row dropdown-list hidden ' + constants.dropdownContainerClass + '">',
+                    '   <div class="grid-row dropdown-list dropdown-shadow hidden ' + constants.dropdownContainerClass + '">',
                     '       <ul class="' + constants.listClass + '"></ul>',
                     '   </div>',
                     '</div>'
@@ -35159,7 +35165,7 @@ define('__component__$overlay@husky',[], function() {
         /** templates for component */
             templates = {
             overlaySkeleton: [
-                '<div class="husky-overlay-container <%= skin %> smart-content-overlay">',
+                '<div class="husky-overlay-container<%= skin %> smart-content-overlay">',
                 '<div class="overlay-header">',
                 '<span class="title"><%= title %></span>',
                 '<a class="icon-<%= closeIcon %> close-button" href="#"></a>',
@@ -35407,7 +35413,7 @@ define('__component__$overlay@husky',[], function() {
                     title: this.options.title,
                     okIcon: this.options.okIcon,
                     closeIcon: this.options.closeIcon,
-                    skin: this.options.skin
+                    skin: !!this.options.skin ? ' ' + this.options.skin : ''
                 }));
             this.overlay.$close = this.sandbox.dom.find(constants.closeSelector, this.overlay.$el);
             this.overlay.$ok = this.sandbox.dom.find(constants.okSelector, this.overlay.$el);
