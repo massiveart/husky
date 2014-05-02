@@ -5527,24 +5527,29 @@ a.btn-black, a.btn-highlight {
   padding-right: 5px;
 }
 
-/* line 7, ../scss/modules/pagination.scss */
+/* line 5, ../scss/modules/pagination.scss */
+.pagination-wrapper {
+  margin-top: 20px;
+  font-size: 12px;
+}
+/* line 9, ../scss/modules/pagination.scss */
 .pagination-wrapper:after {
   clear: both;
 }
-/* line 11, ../scss/modules/pagination.scss */
+/* line 13, ../scss/modules/pagination.scss */
 .pagination-wrapper .show-elements {
   float: left;
 }
-/* line 15, ../scss/modules/pagination.scss */
+/* line 17, ../scss/modules/pagination.scss */
 .pagination-wrapper .dropdown-menu {
   width: 200px;
 }
-/* line 19, ../scss/modules/pagination.scss */
+/* line 21, ../scss/modules/pagination.scss */
 .pagination-wrapper .pagination {
   height: 30px;
   float: right;
 }
-/* line 23, ../scss/modules/pagination.scss */
+/* line 25, ../scss/modules/pagination.scss */
 .pagination-wrapper .pagination .pagination-main {
   margin: 0;
   display: inline-block;
@@ -5555,7 +5560,7 @@ a.btn-black, a.btn-highlight {
   line-height: 28px;
   height: 30px;
 }
-/* line 34, ../scss/modules/pagination.scss */
+/* line 36, ../scss/modules/pagination.scss */
 .pagination-wrapper .pagination .pagination-prev {
   padding: 0 13px;
   border: 1px solid #cccccc;
@@ -5563,7 +5568,7 @@ a.btn-black, a.btn-highlight {
   line-height: 28px;
   height: 30px;
 }
-/* line 41, ../scss/modules/pagination.scss */
+/* line 43, ../scss/modules/pagination.scss */
 .pagination-wrapper .pagination .pagination-prev::after {
   content: "";
   display: inline-block;
@@ -5576,7 +5581,7 @@ a.btn-black, a.btn-highlight {
   border-bottom: 7px solid transparent;
   border-left: 10px solid #000;
 }
-/* line 55, ../scss/modules/pagination.scss */
+/* line 57, ../scss/modules/pagination.scss */
 .pagination-wrapper .pagination .pagination-next {
   padding: 0 13px;
   border: 1px solid #cccccc;
@@ -5584,7 +5589,7 @@ a.btn-black, a.btn-highlight {
   line-height: 28px;
   height: 30px;
 }
-/* line 62, ../scss/modules/pagination.scss */
+/* line 64, ../scss/modules/pagination.scss */
 .pagination-wrapper .pagination .pagination-next::after {
   content: "";
   display: inline-block;

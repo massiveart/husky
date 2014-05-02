@@ -3,6 +3,8 @@
 // --------------------------------------------------
 
 .pagination-wrapper {
+    margin-top: 20px;
+    font-size: $smallFontSize;
 
     &:after {
         clear: both;
