@@ -5256,7 +5256,7 @@ li a.navigation-settings-icon {
   margin-bottom: 40px;
   background-color: white;
   border: 1px solid #cccccc;
-  z-index: 2000;
+  z-index: 90;
   border-radius: 3px;
 }
 /* line 37, ../scss/modules/dropdown.scss */
