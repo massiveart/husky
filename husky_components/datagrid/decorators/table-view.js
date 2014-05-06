@@ -1,6 +1,30 @@
 /**
  * @class TableView (Datagrid Decorator)
  * @constructor
+ *
+ * @param {Object} [viewOptions] Configuration object
+ * @param {Boolean} [options.autoRemoveHandling] raises an event before a row is removed
+ * @param {Boolean} [options.editable] will not set class is-selectable to prevent hover effect for complete rows
+ * @param {String} [options.className] additional classname for the wrapping div
+ * @param {Boolean} [options.removeRow] displays in the last column an icon to remove a row
+ * @param {Object} [options.selectItem] Configuration object of select item (column)
+ * @param {String} [options.selectItem.type] Type of select [checkbox, radio]
+ * @param {String} [options.selectItem.width] Width of select column
+ * @param {Boolean} [options.validation] enables validation for datagrid
+ * @param {Boolean} [options.validationDebug] enables validation debug for datagrid
+ * @param {Boolean} [options.addRowTop] adds row to the top of the table when add row is triggered
+ * @param {Boolean} [options.startTabIndex] start index for tabindex
+ * @param {String} [options.columnMinWidth] sets the minimal width of table columns
+ * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
+ * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
+ *
+ * @param {Boolean} [rendered] property used by the datagrid-main class
+ * @param {Function} [initialize] function which gets called once at the start of the view
+ * @param {Function} [render] function to render data
+ * @param {Function} [destroy] function to destroy the view and unbind events
+ * @param {Function} [onResize] function which gets automatically executed on window resize
+ * @param {Function} [unbindCustomEvents] function to unbind the custom events of this object
+ *
  */
 define(function() {
 
@@ -10,6 +34,24 @@ define(function() {
      * Variable to store the datagrid context
      */
     var datagrid,
+
+        defaults = {
+            autoRemoveHandling: true,
+            editable: false,
+            className: 'datagridcontainer',
+            fullWidth: false,
+            contentContainer: null,
+            removeRow: true,
+            selectItem: {
+                type: null,      // checkbox, radio button
+                width: '50px'    // numerous value
+            },
+            validation: false, // TODO does not work for added rows
+            validationDebug: false,
+            addRowTop: true,
+            startTabIndex: 99999,
+            columnMinWidth: '70px'
+        },
 
         constants = {
             viewClass: 'table-container',
@@ -22,7 +64,14 @@ define(function() {
             additionalHeaderClasses: ' m-left-5 small-font',
             rowRemoverClass: 'row-remover',
             editableClass: 'editable',
-            selectAllName: 'select-all'
+            selectAllName: 'select-all',
+            isSelectedClass: 'is-selected',
+            isSelectableClass: 'is-selectable',
+            sortableClass: 'is-sortable',
+            tableClass: 'table',
+            serverValidationError: 'server-validation-error',
+            oversizedClass: 'oversized',
+            overflowClass: 'overflow'
         },
 
         /**
@@ -32,12 +81,6 @@ define(function() {
             removeRow: [
                 '<td class="remove-row">',
                     '<span class="icon-bin pointer '+ constants.rowRemoverClass +'"></span>',
-                '</td>'
-            ].join(''),
-
-            progressRow: [
-                '<td class="progress-row">',
-                    '<span class=""></span>',
                 '</td>'
             ].join(''),
 
@@ -74,61 +117,10 @@ define(function() {
         ITEM_CLICK = namespace + 'item.click',
 
     /**
-     * used to add a row
-     * @event husky.datagrid.row.add
-     * @param {String} id of the row to be removed
-     */
-        ROW_ADD = namespace + 'row.add',
-
-    /**
-     * used to remove a row
-     * @event husky.datagrid.row.remove
-     * @param {String} id of the row to be removed
-     */
-        ROW_REMOVE = namespace + 'row.remove',
-
-    /**
-     * raised when row got removed
-     * @event husky.datagrid.row.removed
-     * @param {String} id of item that was removed
-     */
-        ROW_REMOVED = namespace + 'row.removed',
-
-    /**
-     * raised when data was saved
-     * @event husky.datagrid.data.saved
-     * @param {Object} data returned
-     */
-        DATA_SAVED = namespace + 'data.saved',
-
-    /**
-     * raised when save of data failed
-     * @event husky.datagrid.data.save.failed
-     * @param {String} text status
-     * @param {String} error thrown
-     *
-     */
-        DATA_SAVE_FAILED = namespace + 'data.save.failed',
-
-    /**
-     * raised when editable table is changed
-     * @event husky.datagrid.data.save
-     */
-        DATA_CHANGED = namespace + 'data.changed',
-
-    /**
      * used to update the table width and its containers due to responsiveness
      * @event husky.datagrid.update.table
      */
         UPDATE_TABLE = namespace + 'update.table',
-
-    /**
-     * click - raised when clicked on the remove-row-icon
-     * @event husky.datagrid.row.remove-click
-     * @param {Object} event object of click
-     * @param {String} id of item that was clicked for removal
-     */
-        ROW_REMOVE_CLICK = namespace + 'row.remove-click',
 
     /**
      * calculates the width of a text by creating a tablehead element and measure its width
@@ -137,7 +129,6 @@ define(function() {
      * @param isSortable
      */
     getTextWidth = function(text, classArray, isSortable) {
-
         var elWidth, el,
             sortIconWidth = 0,
             paddings = 20;
@@ -146,10 +137,10 @@ define(function() {
             classArray = [];
         }
         if (isSortable) {
-            classArray.push('is-sortable');
+            classArray.push(constants.sortableClass);
             sortIconWidth = 20;
         }
-        classArray.push('is-selected');
+        classArray.push(constants.isSelectedClass);
 
         el = this.sandbox.dom.createElement('<table style="width:auto"><thead><tr><th class="' + classArray.join(',') + '">' + text + '</th></tr></thead></table>');
         this.sandbox.dom.css(el, {
@@ -173,16 +164,17 @@ define(function() {
         /**
          * Initializes the view, gets called only once
          * @param {Object} the context of the datagrid class
+         * @param {Object} the options used by the view
          */
-        initialize: function(context) {
+        initialize: function(context, options) {
             // context of the datagrid-component
             datagrid = context;
 
-            // make options available in this-context
-            this.options = datagrid.options;
-
             // make sandbox available in this-context
             this.sandbox = datagrid.sandbox;
+
+            // merge defaults with options
+            this.options = this.sandbox.util.extend(true, {}, defaults, options);
 
             this.setVariables();
             this.bindCustomEvents();
@@ -226,13 +218,15 @@ define(function() {
          * view (like an extension)
          */
         bindCustomEvents: function() {
-            // listen for public events
-            this.sandbox.on(ROW_ADD, this.addRow.bind(this));
-
-            this.sandbox.on(ROW_REMOVE, this.removeRow.bind(this));
-
             // checks table width
             this.sandbox.on(UPDATE_TABLE, this.onResize.bind(this));
+        },
+
+        /**
+         * Unbinds the custom-events by this view
+         */
+        unBindCustomEvents: function() {
+            this.sandbox.off(UPDATE_TABLE);
         },
 
         /**
@@ -247,7 +241,7 @@ define(function() {
          * Binds Dom related events for this table-view
          */
         bindDomEvents: function() {
-            // select events for checkboxes and randio buttons
+            // select events for checkboxes and radio buttons
             if (!!this.options.selectItem.type) {
                 this.sandbox.dom.on(
                     this.sandbox.dom.find('input[type="checkbox"], input[type="radio"]', this.$tableContainer),
@@ -265,9 +259,7 @@ define(function() {
             // events for removing row
             if (this.options.removeRow) {
                 this.sandbox.dom.on(
-                    this.sandbox.dom.find('.' + constants.rowRemoverClass, this.$tableContainer),
-                    'click',
-                    this.prepareRemoveRow.bind(this)
+                    this.$tableContainer, 'click', this.prepareRemoveRow.bind(this), '.' + constants.rowRemoverClass
                 );
             }
 
@@ -277,16 +269,29 @@ define(function() {
                 this.emitRowClickedEvent.bind(this)
             );
 
+            // add editable events if configured
             if (!!this.options.editable) {
                 this.sandbox.dom.on(
                     this.sandbox.dom.find('.' + constants.editableClass, this.$tableContainer), 'click',
                     this.editCellValues.bind(this)
                 );
                 this.sandbox.dom.on(this.$tableContainer, 'click', this.focusOnRow.bind(this), 'tr');
+
+                // save on "blur"
+                this.sandbox.dom.on(window, 'click', function() {
+                    if (!!this.lastFocusedRow) {
+                        this.prepareSave();
+                    }
+                }.bind(this));
             }
 
-            if (this.options.sortable) {
-                this.sandbox.dom.on(this.$tableContainer, 'click', this.prepareSort.bind(this), 'thead th[data-attribute]');
+            // add sortable events if configured
+            if (datagrid.options.sortable) {
+                this.sandbox.dom.on(
+                    this.sandbox.dom.find('thead th[data-attribute]', this.$tableContainer),
+                    'click',
+                    this.prepareSort.bind(this)
+                );
             }
         },
 
@@ -306,13 +311,18 @@ define(function() {
          * Sets the components starting properties
          */
         setVariables: function() {
-            this.rowStructure = [];
+            this.rendered = false;
             this.$tableContainer = null;
             this.$table;
-            this.rendered = false;
             this.$el = null;
             this.data = null;
+            this.rowId = 0;
+            this.rowStructure = [];
+            this.errorInRow = [];
+            this.bottomTabIndex = this.options.startTabIndex || 49999;
+            this.topTabIndex = this.options.startTabIndex || 50000;
 
+            // initialize variables for needed for responsivness
             if (!!this.options.contentContainer) {
                 if (this.sandbox.dom.css(this.options.contentContainer, 'max-width') === 'none') {
                     this.originalMaxWidth = null;
@@ -326,13 +336,6 @@ define(function() {
                 this.contentMarginRight = 0;
                 this.contentPaddings = 0;
             }
-
-            this.domId = 0;
-
-            this.bottomTabIndex = this.options.startTabIndex || 49999;
-            this.topTabIndex = this.options.startTabIndex || 50000;
-
-            this.errorInRow = [];
         },
 
         /**
@@ -346,8 +349,7 @@ define(function() {
                 $span = this.sandbox.dom.children($element, 'span')[0];
 
             if (!!attribute) {
-
-                this.sandbox.dom.addClass($element, 'is-selected');
+                this.sandbox.dom.addClass($element, constants.isSelectedClass);
 
                 if (direction === 'asc') {
                     this.sandbox.dom.addClass($span, constants.ascClass + constants.additionalHeaderClasses);
@@ -366,30 +368,31 @@ define(function() {
 
             this.$table = $table = this.sandbox.dom.createElement('<table' + (!!this.options.validationDebug ? 'data-debug="true"' : '' ) + '/>');
 
-            if (!!this.data.head || !!this.options.columns) {
+            if (!!this.data.head || !!datagrid.options.columns) {
                 $thead = this.sandbox.dom.createElement('<thead/>');
-                $thead.append(this.prepareTableHead());
-                $table.append($thead);
+                this.sandbox.dom.append($thead, this.prepareTableHead());
+                this.sandbox.dom.append($table, $thead);
             }
 
             if (!!this.data.embedded) {
-                if (!!this.options.appendTBody) {
-                    $tbody = this.sandbox.dom.createElement('<tbody/>');
-                }
+                $tbody = this.sandbox.dom.createElement('<tbody/>');
                 this.sandbox.dom.append($tbody, this.prepareTableRows());
                 this.sandbox.dom.append($table, $tbody);
             }
 
             // set html classes
             tblClasses = [];
-            tblClasses.push((!!this.options.className && this.options.className !== 'table') ? 'table ' + this.options.className : 'table');
+            tblClasses.push(
+                (!!this.options.className && this.options.className !== constants.tableClass) ? constants.tableClass +
+                ' ' + this.options.className : constants.tableClass
+            );
 
             // when list should not have the hover effect for whole rows do not set the is-selectable class
             if (!this.options.editable) {
-                tblClasses.push((this.options.selectItem && this.options.selectItem.type === 'checkbox') ? 'is-selectable' : '');
+                tblClasses.push((this.options.selectItem && this.options.selectItem.type === 'checkbox') ? constants.isSelectableClass : '');
             }
 
-            $table.addClass(tblClasses.join(' '));
+            this.sandbox.dom.addClass($table, tblClasses.join(' '));
 
             return $table;
         },
@@ -404,20 +407,21 @@ define(function() {
                 tblColumnStyle, minWidth;
 
             tblColumns = [];
-            headData = this.options.columns || this.data.head;
+            headData = datagrid.options.columns || this.data.head;
 
             // add a checkbox to head row
-            if (!!this.options.selectItem && this.options.selectItem.type) {
-
+            if (!!this.options.selectItem && !!this.options.selectItem.type) {
                 // default values
                 if (this.options.selectItem.width) {
                     checkboxValues = datagrid.getNumberAndUnit(this.options.selectItem.width);
                 }
-
                 minWidth = checkboxValues.number + checkboxValues.unit;
 
                 tblColumns.push(
-                    '<th class="'+ constants.selectAllName +'" ', 'style="width:' + minWidth + ';max-width:' + minWidth + ';min-width:' + minWidth + ';"', ' >');
+                    '<th class="'+ constants.selectAllName +'" ',
+                    'style="width:' + minWidth + '; max-width:' + minWidth + '; min-width:' + minWidth + ';"',
+                    ' >'
+                );
 
                 if (this.options.selectItem.type === 'checkbox') {
                     tblColumns.push(this.sandbox.util.template(templates.checkbox)({
@@ -433,12 +437,11 @@ define(function() {
             // value used for correct tabindex when row added at top of table
             this.tabIndexParam = 1;
 
-            headData.forEach(function(column) {
+            this.sandbox.util.foreach(headData, function(column) {
 
                 isSortable = false;
 
                 if (!!datagrid.data.links && !!this.data.links.sortable) {
-
                     //is column sortable - check with received sort-links
                     this.sandbox.util.each(this.data.links.sortable, function(index) {
                         if (index === column.attribute) {
@@ -487,7 +490,7 @@ define(function() {
                 // add html to table header cell if sortable
                 if (!!isSortable) {
                     dataAttribute = ' data-attribute="' + column.attribute + '"';
-                    tblCellClass = ((!!column.class) ? ' class="' + column.class + ' is-sortable"' : ' class="is-sortable"');
+                    tblCellClass = ((!!column.class) ? ' class="' + column.class + ' "' + constants.sortableClass : ' class="'+ constants.sortableClass +'"');
                     tblColumns.push('<th' + tblCellClass + ' style="' + tblColumnStyle.join(';') + '" ' + dataAttribute + '>' + column.content + '<span></span></th>');
                 } else {
                     tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
@@ -497,7 +500,7 @@ define(function() {
             }.bind(this));
 
             // remove-row entry
-            if (this.options.removeRow || this.options.progressRow) {
+            if (!!this.options.removeRow) {
                 tblColumns.push('<th style="width:30px;"/>');
             }
 
@@ -509,9 +512,7 @@ define(function() {
          * @returns {string} returns a string of all rows
          */
         prepareTableRows: function() {
-            var tblRows;
-
-            tblRows = [];
+            var tblRows = [];
 
             if (!!this.data.embedded) {
                 this.data.embedded.forEach(function(row) {
@@ -529,18 +530,15 @@ define(function() {
          * @returns {*}
          */
         prepareTableRow: function(row, triggeredByAddRow) {
-            var $tableRow;
+            var $tableRow, radioPrefix, key, i;
 
             if (!!(this.options.template && this.options.template.row)) {
-
                 $tableRow = this.sandbox.template.parse(this.options.template.row, row);
 
             } else {
-
-                var radioPrefix, key, i;
                 this.tblColumns = [];
-                this.tblRowAttributes = ' data-dom-id="dom-' + this.options.instance + '-' + this.domId + '"';
-                this.domId++;
+                this.tblRowAttributes = ' data-dom-id="dom-' + this.options.instance + '-' + this.rowId + '"';
+                this.rowId++;
 
                 if (!!this.options.className && this.options.className !== '') {
                     radioPrefix = '-' + this.options.className;
@@ -568,7 +566,7 @@ define(function() {
                         this.bottomTabIndex -= (this.tabIndexParam + 1);
                     }
 
-                    this.rowStructure.forEach(function(key, index) {
+                    this.sandbox.util.foreach(this.rowStructure, function(key, index) {
                         key.editable = key.editable || false;
                         this.createRowCell(key.attribute, row[key.attribute], key.type, key.editable, key.validation, triggeredByAddRow, index);
                     }.bind(this));
@@ -585,8 +583,6 @@ define(function() {
 
                 if (!!this.options.removeRow) {
                     this.tblColumns.push(this.sandbox.util.template(templates.removeRow)());
-                } else if (!!this.options.progressRow) {
-                    this.tblColumns.push(this.sandbox.util.template(templates.progressRow)());
                 }
 
                 $tableRow = this.sandbox.dom.createElement('<tr'+ this.tblRowAttributes +'>'+ this.tblColumns.join('') +'</tr>');
@@ -620,7 +616,7 @@ define(function() {
                 value = '';
             }
 
-            if (this.options.excludeFields.indexOf(key) < 0) {
+            if (datagrid.options.excludeFields.indexOf(key) < 0) {
                 tblCellClasses = [];
                 tblCellContent = (!!value.thumb) ? '<img alt="' + (value.alt || '') + '" src="' + value.thumb + '"/>' : value;
 
@@ -635,8 +631,7 @@ define(function() {
                         validationAttr += ['data-validation-', k, '="', validation[k], '" '].join('');
                     }
                 }
-
-                tblCellStyle = 'style="max-width:' + this.options.columns[index].minWidth + '"';
+                tblCellStyle = 'style="max-width:' + datagrid.options.columns[index].minWidth + '"';
 
                 // call the type manipulate to manipulate the content of the cell
                 if (!!type) {
@@ -644,9 +639,7 @@ define(function() {
                 }
 
                 if (!!editable) {
-
                     if (!!triggeredByAddRow) {
-
                         // differentiate for tab index
                         if (!!this.options.addRowTop) {
                             this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="'+ constants.editableClass +'" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.bottomTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
@@ -655,13 +648,11 @@ define(function() {
                             this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="'+ constants.editableClass +'" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.topTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
                             this.topTabIndex++;
                         }
-
                     } else {
                         this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="'+ constants.editableClass +'">' + tblCellContent + '</span><input type="text" class="form-element editable-content hidden" value="' + tblCellContent + '" tabindex="' + this.topTabIndex + '" ' + validationAttr + '/></td>');
                         this.topTabIndex++;
 
                     }
-
                 } else {
                     this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '>' + tblCellContent + '</td>');
                 }
@@ -674,10 +665,9 @@ define(function() {
          * Adds a row to the datagrid
          * @param row
          */
-        addRow: function(row) {
-            var $table, $row, $firstInputField, $checkbox;
+        addRecord: function(row) {
+            var $row, $firstInputField, $checkbox;
             // check for other element types when implemented
-            $table = this.$tableContainer.find('table');
             $row = this.sandbox.dom.$(this.prepareTableRow(row, true));
 
             // when unsaved new row exists - save it
@@ -685,9 +675,9 @@ define(function() {
 
             // prepend or append row
             if (!!this.options.addRowTop) {
-                this.sandbox.dom.prepend($table, $row);
+                this.sandbox.dom.prepend(this.$table, $row);
             } else {
-                this.sandbox.dom.append($table, $row);
+                this.sandbox.dom.append(this.$table, $row);
             }
 
             $firstInputField = this.sandbox.dom.find('input[type=text]', $row)[0];
@@ -700,9 +690,9 @@ define(function() {
             // if allchecked then disable top checkbox after adding new row
             if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                 $checkbox = this.sandbox.dom.find('#' + constants.selectAllName, this.$tableContainer);
-                if (this.sandbox.dom.hasClass($checkbox, 'is-selected')) {
+                if (this.sandbox.dom.hasClass($checkbox, constants.isSelectedClass)) {
                     this.sandbox.dom.prop($checkbox, 'checked', false);
-                    this.sandbox.dom.removeClass($checkbox, 'is-selected');
+                    this.sandbox.dom.removeClass($checkbox, constants.isSelectedClass);
                 }
             }
         },
@@ -711,7 +701,6 @@ define(function() {
          * Perparse to save new/changed data includes validation
          */
         prepareSave: function() {
-
             if (!!this.lastFocusedRow) {
 
                 var $tr = this.sandbox.dom.find('tr[data-dom-id=' + this.lastFocusedRow.domId + ']', this.$tableContainer),
@@ -746,17 +735,13 @@ define(function() {
 
                     // trigger save action when data changed
                     if (!!valuesChanged || true) {
-                        this.sandbox.emit(DATA_CHANGED);
                         url = datagrid.getUrlWithoutParams();
 
-                        // save via put
-                        if (!!data.id) {
-                            this.save(data, 'PUT', url + '/' + data.id, $tr, this.lastFocusedRow.domId);
-
-                            // save via post
-                        } else {
-                            this.save(data, 'POST', url, $tr, this.lastFocusedRow.domId);
-                        }
+                        // pass data to datagrid to save it
+                        datagrid.saveGrid.call(datagrid, data, url,
+                            this.saveSuccess.bind(this, this.lastFocusedRow.domId, $tr),
+                            this.saveFail.bind(this, this.lastFocusedRow.domId, $tr),
+                            this.options.addRowTop);
 
                         // reset last focused row after save
                         this.lastFocusedRow = null;
@@ -783,7 +768,6 @@ define(function() {
          * @param data fields object
          */
         isDataRowEmpty: function(data) {
-
             var isEmpty = true, field;
 
             for (field in data) {
@@ -797,53 +781,41 @@ define(function() {
         },
 
         /**
-         * Saves changes
-         * @param data
-         * @param method
-         * @param url
-         * @param $tr table row
+         * Callback for save success
+         * @param $tr
          * @param domId
+         * @param data
          */
-        save: function(data, method, url, $tr, domId) {
+        saveSuccess: function(domId, $tr, data) {
+            // remove row from error list
+            if (this.errorInRow.indexOf(domId) !== -1) {
+                this.errorInRow.splice(this.errorInRow.indexOf(domId), 1);
+            }
 
-            var message;
+            this.resetRowInputFields($tr);
+            this.unlockWidthsOfColumns(this.sandbox.dom.find('table th', this.$el));
 
-            this.sandbox.logger.log("data to save", data);
+            // set new returned data
+            this.setDataForRow($tr[0], data);
+        },
 
-            this.sandbox.util.save(url, method, data)
-                .then(function(data, textStatus) {
+        /**
+         * Callback for save fail
+         * @param domId
+         * @param $tr
+         * @param jqXHR
+         */
+        saveFail: function(domId, $tr, jqXHR) {
+            var message = JSON.parse(jqXHR.responseText);
 
-                    // remove row from error list
-                    if (this.errorInRow.indexOf(domId) !== -1) {
-                        this.errorInRow.splice(this.errorInRow.indexOf(domId), 1);
-                    }
-
-                    this.sandbox.emit(DATA_SAVED, data, textStatus);
-                    this.resetRowInputFields($tr);
-                    this.unlockWidthsOfColumns(this.sandbox.dom.find('table th', this.$el));
-
-                    // set new returned data
-                    this.setDataForRow($tr[0], data);
-
-                }.bind(this))
-                .fail(function(jqXHR, textStatus, error) {
-                    this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
-
-                    // remember row with error
-                    if (this.errorInRow.indexOf(domId) === -1) {
-                        this.errorInRow.push(domId);
-                    }
-
-                    message = JSON.parse(jqXHR.responseText);
-
-                    // error in context with database constraints
-                    if (!!message.field) {
-                        this.showValidationError($tr, message.field);
-                    } else {
-                        this.sandbox.logger.error("An error occured during save of changed data!");
-                    }
-
-                }.bind(this));
+            // remember row with error
+            if (this.errorInRow.indexOf(domId) === -1) {
+                this.errorInRow.push(domId);
+            }
+            // error in context with database constraints
+            if (!!message.field) {
+                this.showValidationError($tr, message.field);
+            }
         },
 
         /**
@@ -851,19 +823,18 @@ define(function() {
          * @param $tr
          */
         resetRowInputFields: function($tr) {
-
             var $inputFields = this.sandbox.dom.find('input[type=text]:not(.hidden)', $tr),
                 content, $span;
 
             this.sandbox.util.each($inputFields, function(index, $field) {
 
                 // remove css class for server side validation error
-                // TODO: remove this when validation type is implemented
-                if (this.sandbox.dom.hasClass($field, 'server-validation-error')) {
-                    this.sandbox.dom.removeClass($field, 'server-validation-error');
+                // TODO: remove this when server-validation validation type is implemented
+                if (this.sandbox.dom.hasClass($field, constants.serverValidationError)) {
+                    this.sandbox.dom.removeClass($field, constants.serverValidationError);
                 }
 
-                content = this.sandbox.dom.$($field).val();
+                content = this.sandbox.dom.val(this.sandbox.dom.$($field));
                 $span = this.sandbox.dom.prev($field, '.' + constants.editableClass);
                 $span.text(content);
 
@@ -879,7 +850,7 @@ define(function() {
          */
         unlockWidthsOfColumns: function($th) {
             if (!!this.columnWidths) {
-                this.sandbox.dom.each($th, function(index, $el) {
+                this.sandbox.util.each($th, function(index, $el) {
                     // skip columns without data-attribute because the have min/max and normal widths by default
                     if (!!this.sandbox.dom.data($el, 'attribute')) {
                         this.sandbox.dom.css($el, 'min-width', this.columnWidths[index]);
@@ -896,7 +867,6 @@ define(function() {
          * @param $th array of th elements
          */
         lockWidthsOfColumns: function($th) {
-
             var width, minwidth;
             this.columnWidths = [];
 
@@ -917,7 +887,6 @@ define(function() {
          * @param data
          */
         setDataForRow: function($tr, data) {
-
             var editables, field, $input;
 
             // set id
@@ -948,7 +917,6 @@ define(function() {
          * @param field name of field which caused the error
          */
         showValidationError: function($domElement, field) {
-
             var $td = this.sandbox.dom.find('td[data-field=' + field + ']', $domElement)[0],
                 $input = this.sandbox.dom.find('input', $td)[0];
 
@@ -960,8 +928,8 @@ define(function() {
 
             // add class for serverside validation error
             // TODO remove this when correct validation type is implmented
-            if (!this.sandbox.dom.hasClass($input, 'server-validation-error')) {
-                this.sandbox.dom.addClass($input, 'server-validation-error');
+            if (!this.sandbox.dom.hasClass($input, constants.serverValidationError)) {
+                this.sandbox.dom.addClass($input, constants.serverValidationError);
             }
         },
 
@@ -971,7 +939,6 @@ define(function() {
          * @returns {{domId: *, id: *, fields: Array}}
          */
         getInputValuesOfRow: function($tr) {
-
             var id = this.sandbox.dom.data($tr, 'id'),
                 domId = this.sandbox.dom.data($tr, 'dom-id'),
                 $inputs = this.sandbox.dom.find('input[type=text]', $tr),
@@ -1001,28 +968,20 @@ define(function() {
             this.sandbox.dom.stopPropagation(event);
 
             if (!!this.options.autoRemoveHandling) {
-                this.removeRow(event);
+                this.removeRecord(event);
             } else {
                 var $tblRow, id;
 
-                $tblRow = this.sandbox.dom.$(event.currentTarget).parent().parent();
-                id = $tblRow.data('id');
-
-                if (!!id) {
-                    this.sandbox.emit(ROW_REMOVE_CLICK, event, id);
-                } else {
-                    this.sandbox.emit(ROW_REMOVE_CLICK, event, $tblRow);
-                }
+                $tblRow = this.sandbox.dom.closest(event.currentTarget, 'tr')[0];
+                id = this.sandbox.dom.data($tblRow, 'id');
             }
         },
 
         /**
          * Removes a row from the datagrid
-         * Raises husky.datagrid.row.removed event
          * @param event
          */
-        removeRow: function(event) {
-
+        removeRecord: function(event) {
             var $element, $tblRow, id, $editableElements, $checkboxes;
 
             if (typeof event === 'object') {
@@ -1042,13 +1001,15 @@ define(function() {
                 }.bind(this));
             }
 
-            this.sandbox.emit(ROW_REMOVED, event);
+            if (!!id) {
+                datagrid.removeRecord.call(datagrid, id);
+            }
             this.sandbox.dom.remove($tblRow);
 
             // when last table row was removed, uncheck thead checkbox if exists
             $checkboxes = this.sandbox.dom.find('input[type=checkbox]', this.$el);
             if ($checkboxes.length === 1) {
-                this.sandbox.dom.removeClass('is-selected', $checkboxes[0]);
+                this.sandbox.dom.removeClass(constants.isSelectedClass, $checkboxes[0]);
                 this.sandbox.dom.prop($checkboxes[0], 'checked', false);
             }
 
@@ -1081,7 +1042,7 @@ define(function() {
             // if table is greater than max content width
             if (tableWidth > originalMaxWidth - contentPaddings && contentWidth < windowWidth - tableOffset.left) {
                 // adding this class, forces table cells to shorten long words
-                this.sandbox.dom.addClass(this.$el, 'oversized');
+                this.sandbox.dom.addClass(this.$el, constants.oversizedClass);
                 overlaps = true;
                 // reset table width and offset
                 tableWidth = this.sandbox.dom.width(this.$table);
@@ -1123,9 +1084,9 @@ define(function() {
 
             // check scrollwidth and add class
             if (this.sandbox.dom.get(this.$tableContainer, 0).scrollWidth > finalWidth) {
-                this.sandbox.dom.addClass(this.$tableContainer, 'overflow');
+                this.sandbox.dom.addClass(this.$tableContainer, constants.overflowClass);
             } else {
-                this.sandbox.dom.removeClass(this.$tableContainer, 'overflow');
+                this.sandbox.dom.removeClass(this.$tableContainer, constants.overflowClass);
             }
         },
 
@@ -1136,48 +1097,47 @@ define(function() {
         selectItem: function(event) {
             this.sandbox.dom.stopPropagation(event);
 
-            // Todo review handling of events for new rows in datagrid (itemId empty?)
-
-            var $element, itemId, oldSelectionId, parentTr;
-
+            var $element, itemId, parentTr;
             $element = this.sandbox.dom.$(event.currentTarget);
 
-            if (!$element.is('input')) {
+            if (!this.sandbox.dom.is($element, 'input')) {
                 $element = this.sandbox.dom.find('input', this.sandbox.dom.parent($element));
             }
 
             parentTr = this.sandbox.dom.parents($element, 'tr');
             itemId = this.sandbox.dom.data(parentTr, 'id');
 
-            if ($element.attr('type') === 'checkbox') {
-
+            if (this.sandbox.dom.attr($element, 'type') === 'checkbox') {
                 if (this.sandbox.dom.prop($element, 'checked') === false) {
-                    $element
-                        .removeClass('is-selected')
-                        .prop('checked', false);
+                    this.sandbox.dom.removeClass($element, constants.isSelectedClass);
+                    this.sandbox.dom.prop($element, 'checked', false);
 
                     // uncheck 'Select All'-checkbox
-                    this.sandbox.dom.find('#' + constants.selectAllName, this.$tableContainer)
-                        .prop('checked', false);
+                    this.sandbox.dom.prop(
+                        this.sandbox.dom.find('#' + constants.selectAllName, this.$tableContainer),
+                        'checked', false
+                    );
 
                     datagrid.setItemUnselected.call(datagrid, itemId);
                 } else {
-                    $element
-                        .addClass('is-selected')
-                        .prop('checked', true);
-
+                    this.sandbox.dom.addClass($element, constants.isSelectedClass);
+                    this.sandbox.dom.prop($element, 'checked', true);
                     if (!!itemId) {
                         datagrid.setItemSelected.call(datagrid, itemId);
                     }
                 }
 
-            } else if ($element.attr('type') === 'radio') {
+            } else if (this.sandbox.dom.attr($element, 'type') === 'radio') {
 
                 datagrid.deselectAllItems.call(datagrid);
 
-                this.sandbox.dom.find('tr input[type="radio"]', this.$tableContainer).removeClass('is-selected').prop('checked', false);
+                this.sandbox.dom.removeClass(
+                    this.sandbox.dom.find('tr input[type="radio"]', this.$tableContainer), constants.isSelectedClass);
+                this.sandbox.dom.prop(
+                    this.sandbox.dom.find('tr input[type="radio"]', this.$tableContainer), 'checked', false);
 
-                $element.addClass('is-selected').prop('checked', true);
+                this.sandbox.dom.addClass($element, constants.isSelectedClass);
+                this.sandbox.dom.prop($element, 'checked', true);
 
                 if (!!itemId) {
                     datagrid.setItemSelected.call(datagrid, itemId);
@@ -1198,7 +1158,7 @@ define(function() {
 
             this.sandbox.dom.hide($target);
             this.sandbox.dom.removeClass($input, 'hidden');
-            $input[0].select();
+            this.sandbox.dom.select($input[0]);
         },
 
         /**
@@ -1209,7 +1169,6 @@ define(function() {
                 domId = this.sandbox.dom.data($tr, 'dom-id');
 
             this.sandbox.dom.stopPropagation(event);
-
             this.sandbox.logger.log("focus on row", domId);
 
             if (!!this.lastFocusedRow && this.lastFocusedRow.domId !== domId) { // new focus
@@ -1220,13 +1179,6 @@ define(function() {
                 this.lastFocusedRow = this.getInputValuesOfRow($tr);
                 this.sandbox.logger.log("focused " + this.lastFocusedRow.domId + " now!");
             }
-
-            // save on "blur"
-            this.sandbox.dom.one(window, 'click', function() {
-                if (!!this.lastFocusedRow) {
-                    this.prepareSave();
-                }
-            }.bind(this));
         },
 
         /**
@@ -1234,18 +1186,18 @@ define(function() {
          * @param event
          */
         selectAllItems: function(event) {
-            event.stopPropagation();
+            this.sandbox.dom.stopPropagation(event);
 
             var $headCheckbox = this.sandbox.dom.find('th input[type="checkbox"]', this.$tableContainer)[0],
                 $checkboxes = this.sandbox.dom.find('input[type="checkbox"]', this.$tableContainer);
 
             if (this.sandbox.dom.prop($headCheckbox, 'checked') === false) {
                 this.sandbox.dom.prop($checkboxes, 'checked', false);
-                this.sandbox.dom.removeClass($checkboxes, 'is-selected');
+                this.sandbox.dom.removeClass($checkboxes, constants.isSelectedClass);
                 datagrid.deselectAllItems.call(datagrid);
             } else {
                 this.sandbox.dom.prop($checkboxes, 'checked', true);
-                this.sandbox.dom.addClass($checkboxes, 'is-selected');
+                this.sandbox.dom.addClass($checkboxes, constants.isSelectedClass);
                 datagrid.selectAllItems.call(datagrid);
             }
         },
@@ -1255,10 +1207,10 @@ define(function() {
          *
          * Creates the function parameters need for sorting
          * and delegates the sorting itself to the datagrid
-         * @parame event {Object} the event object
+         * @param event {Object} the event object
          */
         prepareSort: function(event) {
-            var $element = this.sandbox.dom.$(event.currentTarget),
+            var $element = event.currentTarget,
                 $span = this.sandbox.dom.children($element, 'span')[0],
 
                 attribute = this.sandbox.dom.data($element, 'attribute'),

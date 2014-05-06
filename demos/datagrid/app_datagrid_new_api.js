@@ -10,6 +10,7 @@ require(['lib/husky'], function(Husky) {
 
     var fakeServer,
         app,
+        view,
         _;
 
     fakeServer = sinon.fakeServer.create();
@@ -512,21 +513,23 @@ require(['lib/husky'], function(Husky) {
                 name: 'datagrid@husky',
                 options: {
                     url: '/admin/api/contacts?flat=true',
-                    selectItem: {
-                        type: 'checkbox'
-                    },
                     paginationOptions: {
-                        pageSize: 4,
-                        showPages: 3
+                        pageSize: 4
                     },
-                    className: "myClass",
-                    removeRow: true,
-                    progressRow: true,
-                    editable: true,
-                    validation:true,
-                    addRowTop: true,
-                    //fullWidth: true, // uncomment for full-width mode
-                    contentContainer: '#content',
+                    viewOptions: {
+                        selectItem: {
+                            type: 'checkbox'
+                        },
+                        className: "myClass",
+                        removeRow: true,
+                        progressRow: true,
+                        excludeFields: [''],
+                        editable: true,
+                        validation:true,
+                        addRowTop: true,
+                        //fullWidth: true, // uncomment for full-width mode
+                        contentContainer: '#content'
+                    },
                     columns: [
                         {
                             content: 'Content 1',
@@ -555,7 +558,6 @@ require(['lib/husky'], function(Husky) {
                         }
                     ],
                     sortable: true,
-                    excludeFields: [''],
                     searchInstanceName: 'test',
                     columnOptionsInstanceName: '',
                     el: '#datagrid'
@@ -584,7 +586,7 @@ require(['lib/husky'], function(Husky) {
                             class: 'highlight',
                             group: '0',
                             callback: function() {
-                                app.sandbox.emit('husky.datagrid.row.add', { id: "", content1: "", content2: "", content3: "" });
+                                app.sandbox.emit('husky.datagrid.record.add', { id: "", content1: "", content2: "", content3: "" });
                             }.bind(this)
                         },
                         {
@@ -622,7 +624,7 @@ require(['lib/husky'], function(Husky) {
             }, 500);
 
             $('#add-row').on('click', function() {
-                app.sandbox.emit('husky.datagrid.row.add', { id: "", content1: "", content2: "", content3: "" });
+                app.sandbox.emit('husky.datagrid.record.add', { id: "", content1: "", content2: "", content3: "" });
             });
 
             $('#update-url').on('click', function() {
@@ -724,6 +726,12 @@ require(['lib/husky'], function(Husky) {
 
             $('#save').on('click', function() {
                 app.sandbox.emit('husky.datagrid.data.save');
+            });
+
+            view = 'thumbnail';
+            $('#change-view').on('click', function() {
+               app.sandbox.emit('husky.datagrid.view.change', view);
+               view = (view === 'thumbnail') ? 'table' : 'thumbnail';
             });
 
             app.sandbox.dom.on('#change-columns','click', function () {

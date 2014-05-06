@@ -1,6 +1,14 @@
 /**
  * @class DropdownPagination (Datagrid Decorator)
  * @constructor
+ *
+ * @param {Object} [paginationOptions] Configuration object
+ * @param {Array} [options.showElementsSteps] Array which contains the steps for the Show-Elements-dropdown as integers
+ * @param {Number} [options.pageSize] Data records per page
+ *
+ * @param {Function} [initialize] function which gets called once at the start of the view
+ * @param {Function} [render] function to render data
+ * @param {Function} [destroy] function to destroy the pagination and unbind events
  */
 define(function() {
 
@@ -10,6 +18,11 @@ define(function() {
      * Variable to store the datagrid context
      */
     var datagrid,
+
+        defaults = {
+            showElementsSteps: [10, 20, 50, 100, 500],
+            pageSize: 4
+        },
 
         constants = {
             paginationClass: 'pagination-wrapper',
@@ -57,25 +70,24 @@ define(function() {
             show: 'pagination.show',
             elementsOf: 'pagination.elements-of',
             elementsPerPage: 'pagination.elements-per-page'
-        },
-
-        namespace = 'husky.datagrid.';
+        };
 
     return {
 
         /**
          * Initailizes the pagination
          * @param {Object} the context of the datagrid
+         * @param {Object} the options used by this pagination
          */
-        initialize: function(context) {
+        initialize: function(context, options) {
             // context of the datagrid-component
             datagrid = context;
 
-            // make options available in this-context
-            this.options = datagrid.options;
-
             // make sandbox available in this-context
             this.sandbox = datagrid.sandbox;
+
+            // merge defaults with pagination options
+            this.options = this.sandbox.util.extend(true, {}, defaults, options);
 
             this.setVariables();
             this.bindCustomEvents();
@@ -96,6 +108,14 @@ define(function() {
             this.prepareShowElementsDropdown();
 
             this.bindDomEvents();
+        },
+
+        /**
+         * Returns the pagination page size
+         * @returns {Number} current Page size
+         */
+        getPageSize: function() {
+            return this.options.pageSize;
         },
 
         /**
@@ -121,12 +141,12 @@ define(function() {
          */
         bindCustomEvents: function() {
             // pagination dropdown item clicked
-            this.sandbox.on('husky.dropdown.'+ this.options.instance +'-pagination-dropdown.item.click', function(item) {
+            this.sandbox.on('husky.dropdown.'+ datagrid.options.instance +'-pagination-dropdown.item.click', function(item) {
                 datagrid.changePage.call(datagrid, null, item.id);
             }.bind(this));
 
             // show-elements dropdown item clicked
-            this.sandbox.on('husky.dropdown.'+ this.options.instance +'-pagination-dropdown-show.item.click', function(item) {
+            this.sandbox.on('husky.dropdown.'+ datagrid.options.instance +'-pagination-dropdown-show.item.click', function(item) {
                 if (this.data.pageSize !== item.id || this.data.total === this.data.numberOfAll) {
                     // show all
                     if (item.id === 0) {
@@ -259,7 +279,7 @@ define(function() {
                     options: {
                         el: this.sandbox.dom.find('.' + constants.pageChangeClass, this.$paginationContainer),
                         setParentDropDown: true,
-                        instanceName: this.options.instance + '-pagination-dropdown',
+                        instanceName: datagrid.options.instance + '-pagination-dropdown',
                         alignment: 'right',
                         data: data
                     }
@@ -295,7 +315,7 @@ define(function() {
                     options: {
                         el: this.sandbox.dom.find('.' + constants.sizeChangeClass, this.$paginationContainer),
                         setParentDropDown: true,
-                        instanceName: this.options.instance + '-pagination-dropdown-show',
+                        instanceName: datagrid.options.instance + '-pagination-dropdown-show',
                         alignment: 'left',
                         data: data
                     }

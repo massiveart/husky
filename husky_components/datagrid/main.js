@@ -3,55 +3,36 @@
  * @constructor
  *
  * @param {Object} [options] Configuration object
- * @param {Boolean} [options.autoRemoveHandling] raises an event before a row is removed
  * @param {Array} [options.fieldsData] fields data will extend url and set tableHead automatically
  * @param {Object} [options.fieldsData.{}] fields object
  * @param {String} [options.fieldsData.{}.id] field name
  * @param {String} [options.fieldsData.{}.translation] translation key which will be translated automatically
  * @param {String} [options.fieldsData.{}.disabled] either 'true' or 'false'
- * @param {Boolean} [options.editable] will not set class is-selectable to prevent hover effect for complete rows
- * @param {String} [options.className] additional classname for the wrapping div
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
  * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
- * @param {String} [options.elementType=table] type of datagrid (currently only table is available)
- * @param {Array} [options.excludeFields=[id]] array of field to exclude
+ * @param {Array} [options.excludeFields=['id']] array of fields to exclude by the view
  * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
- * @param {String} [options.pagination=table] name of the view to use
+ * @param {String} [options.view='table'] name of the view to use
  * @param {Object} [options.paginationOptions] Configuration Object for the pagination
- * @param {Number} [options.paginationOptions.pageSize] Number of items per page
- * @param {Boolean} [options.paginationOptions.showPages] show pages as visual numbers
- * @param {Number} [options.pageSize] lines per page
- * @param {Number} [options.showPages] amount of pages that will be shown
- * @param {Boolean} [options.removeRow] displays in the last column an icon to remove a row
- * @param {Object} [options.selectItem] Configuration object of select item (column)
- * @param {String} [options.selectItem.type] Type of select [checkbox, radio]
- * @param {String} [options.selectItem.width] Width of select column
- * @param {Boolean} [options.sortable] Defines if list is sortable
- * @param {Array} [options.columns] configuration array of columns
+ * @param {Object} [options.viewOptions] Configuration Object for the view
+ * @param {Boolean} [options.sortable] Defines if records are sortable
+ * @param {Array} [options.columns] configuration array of columns if fieldsData isn't set
  * @param {String} [options.columns.content] column title
- * @param {String} [options.columns.width] width of column
- * @param {String} [options.columns.class] css class of th
+ * @param {String} [options.columns.width] width of column (used by the table view)
+ * @param {String} [options.columns.class] css class of the column
  * @param {String} [options.columns.type] type of the column. Used to manipulate its content (e.g. 'date')
- * @param {String} [options.columns.attribute] mapping information to data (if not set it will just iterate of attributes)
- * @param {Boolean} [options.appendTBody] add TBODY to table
- * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search event
+ * @param {String} [options.columns.attribute] mapping information to data (if not set it will just iterate through attributes)
+ * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search events
  * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
- * @param {String} [options.paginationTemplate] template for pagination
- * @param {Boolean} [options.validation] enables validation for datagrid
- * @param {Boolean} [options.addRowTop] adds row to the top of the table when add row is triggered
- * @param {Boolean} [options.startTabIndex] start index for tabindex
- * @param {Boolean} [options.progressRow] has to be enabled when datagrid is editable to show progress of save action
- * @param {String} [options.columnMinWidth] sets the minimal width of table columns
- * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
- * @param {Array} [options.showElementsSteps] Array which contains the steps for the Show-Elements-dropdown as integers
- * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
+ *
  */
 (function() {
 
     define(['husky_components/datagrid/decorators/table-view',
+            'husky_components/datagrid/decorators/thumbnail-view',
             'husky_components/datagrid/decorators/dropdown-pagination'],
-            function(decoratorTableView, decoratorDropdownPagination) {
+            function(decoratorTableView, thumbnailView, decoratorDropdownPagination) {
 
         'use strict';
 
@@ -60,41 +41,24 @@
          */
         var defaults = {
                 view: 'table',
-                pagination: 'dropdown',
-                autoRemoveHandling: true,
-                editable: false,
-                className: 'datagridcontainer',
-                elementType: 'table',
-                data: null,
-                defaultMeasureUnit: 'px',
-                excludeFields: ['id'],
-                instance: 'datagrid',
-                fullWidth: false,
-                paginationOptions: {
-                    pageSize: null,
-                    showPages: null
+                viewOptions: {
+                    table: {},
+                    thumbnail: {}
                 },
-                contentContainer: null,
-                removeRow: true,
-                selectItem: {
-                    type: null,      // checkbox, radio button
-                    width: '50px'    // numerous value
-                    //clickable: false   // defines if background is clickable TODO do not use until fixed
+                pagination: 'dropdown',
+                paginationOptions: {
+                    dropdown: {}
                 },
                 sortable: false,
+                excludeFields: ['id'],
                 columns: [],
-                url: null,
-                appendTBody: true,   // add TBODY to table
-                searchInstanceName: null, // at which search it should be listened to can be null|string|empty_string
-                columnOptionsInstanceName: null, // at which search it should be listened to can be null|string|empty_string
                 fieldsData: null,
-                validation: false, // TODO does not work for added rows
-                validationDebug: false,
-                addRowTop: false,
-                progressRow: true,
-                startTabIndex: 99999,
-                columnMinWidth: '70px',
-                showElementsSteps: [10, 20, 50, 100, 500]
+                url: null,
+                data: null,
+                instance: 'datagrid',
+                searchInstanceName: null,
+                columnOptionsInstanceName: null,
+                defaultMeasureUnit: 'px'
             },
 
             types = {
@@ -103,15 +67,12 @@
 
             decorators = {
                 views: {
-                    table: decoratorTableView
+                    table: decoratorTableView,
+                    thumbnail: thumbnailView
                 },
                 paginations: {
                     dropdown: decoratorDropdownPagination
                 }
-            },
-
-            templates = {
-
             },
 
             namespace = 'husky.datagrid.',
@@ -129,12 +90,6 @@
              * @event husky.datagrid.updated
              */
                 UPDATED = namespace + 'updated',
-
-            /**
-             * raised when husky.datagrid.data.get is triggered
-             * @event husky.datagrid.data.provide
-             */
-                DATA_PROVIDE = namespace + 'data.provide',
 
             /**
              * raised when item is deselected
@@ -169,8 +124,57 @@
              */
                 ALL_SELECT = namespace + 'all.select',
 
+            /**
+             * raised when data was saved
+             * @event husky.datagrid.data.saved
+             * @param {Object} data returned
+             */
+                DATA_SAVED = namespace + 'data.saved',
+
+            /**
+             * raised when save of data failed
+             * @event husky.datagrid.data.save.failed
+             * @param {String} text status
+             * @param {String} error thrown
+             *
+             */
+                DATA_SAVE_FAILED = namespace + 'data.save.failed',
+
+            /**
+             * raised when editable table is changed
+             * @event husky.datagrid.data.save
+             */
+                DATA_CHANGED = namespace + 'data.changed',
+
 
         /* PROVIDED EVENTS */
+
+            /**
+             * raised when husky.datagrid.data.get is triggered
+             * @event husky.datagrid.data.provide
+             */
+                DATA_PROVIDE = namespace + 'data.provide',
+
+            /**
+             * listens on and changes the view of the datagrid
+             * @event husky.datagrid.view.change
+             * @param {String} viewId The identifier of the view
+             */
+                CHANGE_VIEW = namespace + 'view.change',
+
+            /**
+             * used to add a data record
+             * @event husky.datagrid.record.add
+             * @param {Object} the data of the new record
+             */
+                RECORD_ADD = namespace + 'record.add',
+
+            /**
+             * used to remove a data-record
+             * @event husky.datagrid.row.remove
+             * @param {String} id of the row to be removed
+             */
+                RECORD_REMOVE = namespace + 'record.remove',
 
             /**
              * used to trigger an update of the data
@@ -276,12 +280,16 @@
             initialize: function() {
                 this.sandbox.logger.log('initialized datagrid');
 
-                this.gridView = null;
-                this.pagination = null;
-                this.$loader = null;
-
                 // extend default options and set variables
                 this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
+                this.gridViews = {};
+                this.viewId = this.options.view;
+
+                this.paginations = {};
+                this.paginationId = this.options.pagination;
+
+                this.$loader = null;
 
                 // append datagrid to html element
                 this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
@@ -309,7 +317,7 @@
                     url = this.options.url;
 
                     // parse fields data
-                    if (this.options.fieldsData) {
+                    if (!!this.options.fieldsData) {
                         fieldsData = this.parseFieldsData(this.options.fieldsData);
                         url += '&fields=' + fieldsData.urlFields;
                         this.options.columns = fieldsData.columns;
@@ -323,9 +331,8 @@
                     this.sandbox.logger.log('load data from array');
                     this.data = this.options.data;
 
-                    this.prepare()
-                        .appendPagination()
-                        .render();
+                    this.gridViews[this.viewId].render(this.data, this.$element);
+                    this.paginations[this.paginationId].render(this.data, this.$element);
                 }
             },
 
@@ -374,6 +381,24 @@
             },
 
             /**
+             * Renderes the data of the datagrid
+             */
+            render: function() {
+                this.gridViews[this.viewId].render(this.data, this.$element);
+                this.paginations[this.paginationId].render(this.data, this.$element);
+            },
+
+            /**
+             * Destroys the view and the pagination
+             */
+            destroy: function() {
+                if (this.gridViews[this.viewId].rendered === true) {
+                    this.gridViews[this.viewId].destroy();
+                    this.paginations[this.paginationId].destroy();
+                }
+            },
+
+            /**
              * Loads contents via ajax
              * @param params url
              */
@@ -381,18 +406,13 @@
                 this.currentUrl = params.url;
 
                 this.loading();
-
-                if (this.gridView.rendered === true) {
-                    this.gridView.destroy();
-                    this.pagination.destroy();
-                }
+                this.destroy();
 
                 this.sandbox.util.load(this.getUrl(params), params.data)
                     .then(function(response) {
                         this.stopLoading();
                         this.parseData(response);
-                        this.gridView.render(this.data, this.$element);
-                        this.pagination.render(this.data, this.$element);
+                        this.render();
                         if (!!params.success && typeof params.success === 'function') {
                             params.success(response);
                         }
@@ -428,8 +448,6 @@
                 }
 
                 this.sandbox.dom.show(this.$loader);
-
-                return this.$tableContainer;
             },
 
             /**
@@ -437,9 +455,7 @@
              */
             stopLoading: function() {
                 this.sandbox.dom.hide(this.$loader);
-
                 this.sandbox.dom.removeClass(this.$element, 'loading');
-
                 return this.$element.outerHeight('').outerWidth('');
             },
 
@@ -448,8 +464,9 @@
              */
             initRender: function() {
                 this.bindDOMEvents();
-                this.getViewDecorator();
-                this.getPaginationDecorator();
+                this.getPaginationDecorator(this.paginationId);
+                this.getViewDecorator(this.viewId);
+                this.getData();
             },
 
             /**
@@ -464,27 +481,91 @@
                 this.data.numberOfAll = data.numberOfAll;
                 this.data.page = data.page;
                 this.data.pages = data.pages;
-                this.data.pageSize = data.pageSize || this.options.paginationOptions.pageSize;
-                this.data.pageDisplay = this.options.paginationOptions.showPages;
+                this.data.pageSize = data.pageSize;
             },
 
             /**
              * Gets the view and starts the rendering of the data
+             * @param {String} the identifier of the decorator
              */
-            getViewDecorator: function() {
-                this.gridView = decorators.views[this.options.view];
-                this.gridView.initialize(this);
-                this.getData();
+            getViewDecorator: function(viewId) {
+                // todo: dynamically load a decorator from external source if local decorator doesn't exist
+                this.viewId = viewId;
+
+                // if view is not already loaded, load it
+                if (!this.gridViews[this.viewId]) {
+                    this.gridViews[this.viewId] = decorators.views[this.viewId];
+                    var isViewValid = this.isViewValid(this.gridViews[this.viewId]);
+
+                    if (isViewValid === true) {
+                        this.gridViews[this.viewId].initialize(this, this.options.viewOptions[this.viewId]);
+                    } else {
+                        this.sandbox.logger.log('Error: View does not meet the configured requirements. See the documentation');
+                    }
+                }
+            },
+
+            /**
+             * Validates a given view
+             * @param view {Object} the view to validate
+             * @returns {boolean} returns true if the view is usable
+             */
+            isViewValid: function(view) {
+                var bool = true;
+                if (typeof view.initialize === 'undefined' ||
+                    typeof view.render === 'undefined' ||
+                    typeof view.destroy === 'undefined') {
+                    bool = false;
+                }
+                return bool;
             },
 
             /**
              * Gets the Pagination and initializes it
+             * @param {String} the identifier of the pagination
              */
-            getPaginationDecorator: function() {
-                if (!!this.options.pagination) {
-                    this.pagination = decorators.paginations[this.options.pagination];
-                    this.pagination.initialize(this);
+            getPaginationDecorator: function(paginationId) {
+                // todo: dynamically load a decorator if local decorator doesn't exist
+                if (!!paginationId) {
+                    this.paginationId = paginationId;
+
+                    // load the pagination if not already loaded
+                    if (!this.paginations[this.paginationId]) {
+                        this.paginations[this.paginationId] = decorators.paginations[this.paginationId];
+                        var paginationIsValid = this.isPaginationValid(this.paginations[this.paginationId]);
+                        if (paginationIsValid === true) {
+                            this.paginations[this.paginationId].initialize(this, this.options.paginationOptions[this.paginationId]);
+                        } else {
+                            this.sandbox.logger.log('Error: Pagination does not meet the configured requirements. See the documentation');
+                        }
+                    }
                 }
+            },
+
+            /**
+             * Changes the view of the datagrid
+             * @param view {String} identifier of the new view to use
+             */
+            changeView: function(view) {
+                this.destroy();
+                this.getViewDecorator(view);
+                this.render();
+            },
+
+            /**
+             * Validates a given pagination
+             * @param pagination {Object} the pagination to validate
+             * @returns {boolean} returns true if the pagination is usable
+             */
+            isPaginationValid: function(pagination) {
+                var bool = true;
+                if (typeof pagination.initialize === 'undefined' ||
+                    typeof pagination.render === 'undefined' ||
+                    typeof pagination.getPageSize === 'undefined' ||
+                    typeof pagination.destroy === 'undefined') {
+                    bool = false;
+                }
+                return bool;
             },
 
             /**
@@ -493,20 +574,16 @@
              * @returns {string}
              */
             getUrl: function(params) {
-
                 if (!!this.data && !!this.data.links) {
                     return params.url;
                 }
 
                 var delimiter = '?', url = params.url;
-
-                if (!!this.options.pagination && !!this.options.paginationOptions.pageSize) {
-
+                if (!!this.options.pagination && !!this.paginations[this.paginationId].getPageSize()) {
                     if (params.url.indexOf('?') !== -1) {
                         delimiter = '&';
                     }
-
-                    url = params.url + delimiter + 'pageSize=' + this.options.paginationOptions.pageSize;
+                    url = params.url + delimiter + 'pageSize=' + this.paginations[this.paginationId].getPageSize();
                     if (params.page > 1) {
                         url += '&page=' + params.page;
                     }
@@ -543,24 +620,31 @@
                 return content;
             },
 
+            /**
+             * Reset the sorting properties
+             */
             resetSortingOptions: function() {
                 this.sort.attribute = null;
                 this.sort.direction = null;
             },
 
+            /**
+             * Binds Dom-related events
+             */
             bindDOMEvents: function() {
                 this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.windowResizeListener.bind(this));
             },
 
-
+            /**
+             * Bind custom-related events
+             */
             bindCustomEvents: function() {
-                var searchInstanceName = '', columnOptionsInstanceName = '';
-
                 this.sandbox.on('husky.navigation.size.changed', this.windowResizeListener.bind(this));
 
                 // listen for private events
                 this.sandbox.on(UPDATE, this.updateGrid.bind(this));
 
+                // provide the datagrid-data via event
                 this.sandbox.on(DATA_GET, this.provideData.bind(this));
 
                 // filter data
@@ -569,23 +653,42 @@
                 // filter data
                 this.sandbox.on(URL_UPDATE, this.updateUrl.bind(this));
 
+                // changes the view of the datagrid
+                this.sandbox.on(CHANGE_VIEW, this.changeView.bind(this));
+
                 // trigger selectedItems
                 this.sandbox.on(ITEMS_GET_SELECTED, function(callback) {
                     callback(this.getSelectedItemIds());
                 }.bind(this));
 
-                // listen to search events
-                if (!!this.options.searchInstanceName) {
-                    if (this.options.searchInstanceName !== '') {
-                        searchInstanceName = '.' + this.options.searchInstanceName;
-                    }
+                // add a data record
+                this.sandbox.on(RECORD_ADD, this.addRecordHandler.bind(this));
+
+                // remove a data record
+                this.sandbox.on(RECORD_REMOVE, this.removeRecordHandler.bind(this));
+
+                this.startColumnOptionsListener();
+                this.startSearchListener();
+            },
+
+            /**
+             * Listens on search events to trigger a grid search
+             */
+            startSearchListener: function() {
+                if (this.options.searchInstanceName !== null) {
+                    var searchInstanceName = '.' + this.options.searchInstanceName;
                     this.sandbox.on('husky.search' + searchInstanceName, this.searchGrid.bind(this));
                     this.sandbox.on('husky.search' + searchInstanceName + '.reset', this.searchGrid.bind(this, ''));
                 }
+            },
 
+            /**
+             * Starts a listener on column options to trigger a grid filter
+             */
+            startColumnOptionsListener: function() {
                 // listen to events from column options
-                if (this.options.columnOptionsInstanceName || this.options.columnOptionsInstanceName === '') {
-                    columnOptionsInstanceName = (this.options.columnOptionsInstanceName !== '') ? '.' + this.options.columnOptionsInstanceName : '';
+                if (this.options.columnOptionsInstanceName !== null) {
+                    var columnOptionsInstanceName = (this.options.columnOptionsInstanceName !== '') ? '.' + this.options.columnOptionsInstanceName : '';
                     this.sandbox.on('husky.column-options' + columnOptionsInstanceName + '.saved', this.filterGrid.bind(this));
                 }
             },
@@ -616,6 +719,43 @@
                 }
                 return null;
             },
+
+            /**
+             * Provides data of the list to the caller
+             */
+            provideData: function() {
+                this.sandbox.emit(DATA_PROVIDE, this.data);
+            },
+
+            /**
+             * calls the funciton of the view responsible for the responsiveness
+             */
+            windowResizeListener: function() {
+                this.gridViews[this.viewId].onResize();
+            },
+
+            /**
+             * Handles the row add event
+             */
+            addRecordHandler: function(recordData) {
+                if (!!this.gridViews[this.viewId].addRecord) {
+                    this.gridViews[this.viewId].addRecord(recordData);
+                }
+            },
+
+            /**
+             * Handles the row remove event
+             */
+            removeRecordHandler: function(recordId) {
+                if (!!this.gridViews[this.viewId].removeRecord) {
+                    this.gridViews[this.viewId].removeRecord(recordId);
+                }
+            },
+
+            /**
+             * Methods for data manipulation
+             * --------------------------------------------------------------------
+             */
 
             /**
              * Sets all data records unselected
@@ -710,18 +850,10 @@
             },
 
             /**
-             * Provides data of the list to the caller
-             */
-            provideData: function() {
-                this.sandbox.emit(DATA_PROVIDE, this.data);
-            },
-
-            /**
              * updates the current url by given parameter object
              * @param {Object} parameters Object key is used as parameter name, value as parameter value
              */
             updateUrl: function(parameters) {
-
                 var url, key;
 
                 url = this.currentUrl;
@@ -736,6 +868,56 @@
                         this.sandbox.emit(UPDATED);
                     }.bind(this)
                 });
+            },
+
+            /**
+             * Takes a record and overrides the one with the same id
+             * @param record {Object} new record to set. Needs at leas an id property
+             * @returns {boolean} true if record got successfully overridden
+             */
+            updateRecord: function(record) {
+                for (var i = -1, length = this.data.embedded.length; ++i < length;) {
+                    if (record.id === this.data.embedded[i].id) {
+                        this.data.embedded[i] = record;
+                        return true;
+                    }
+                }
+                return false;
+            },
+
+            /**
+             * Deletes a record with a given id
+             * @param recordId {Number|String} the id of the record to delete
+             * @returns {boolean} true if record got successfully deleted
+             */
+            removeRecord: function(recordId) {
+                for (var i = -1, length = this.data.embedded.length; ++i < length;) {
+                    if (recordId === this.data.embedded[i].id) {
+                        this.data.embedded.splice(i, 1);
+                        return true;
+                    }
+                }
+                return false;
+            },
+
+            /**
+             * Takes an array of records and pushes them to the global array
+             * @param records {Array} records to push
+             */
+            pushRecords: function(records) {
+                for (var i = -1, length = records.length; ++i < length;) {
+                    this.data.embedded.push(records[i]);
+                }
+            },
+
+            /**
+             * Takes an array of records and unshifts them to the global array
+             * @param records {Array} records to push
+             */
+            unshiftRecords: function(records) {
+                for (var i = -1, length = records.length; ++i < length;) {
+                    this.data.embedded.unshift(records[i]);
+                }
             },
 
             /**
@@ -822,25 +1004,27 @@
              * @param direction {String} the sort method to use 'asc' or 'desc'
              */
             sortGrid: function(attribute, direction) {
-                var template, url;
+                if (this.options.sortable === true) {
+                    var template, url;
 
-                // if passed attribute is sortable
-                if (!!attribute && !!this.data.links.sortable[attribute]) {
+                    // if passed attribute is sortable
+                    if (!!attribute && !!this.data.links.sortable[attribute]) {
 
-                    this.sort.attribute = attribute;
-                    this.sort.direction = direction;
+                        this.sort.attribute = attribute;
+                        this.sort.direction = direction;
 
-                    template = this.sandbox.uritemplate.parse(this.data.links.sortable[attribute]);
-                    url = this.sandbox.uritemplate.expand(template, {sortOrder: direction});
+                        template = this.sandbox.uritemplate.parse(this.data.links.sortable[attribute]);
+                        url = this.sandbox.uritemplate.expand(template, {sortOrder: direction});
 
-                    this.sandbox.emit(DATA_SORT);
+                        this.sandbox.emit(DATA_SORT);
 
-                    this.load({
-                        url: url,
-                        success: function() {
-                            this.sandbox.emit(UPDATED);
-                        }.bind(this)
-                    });
+                        this.load({
+                            url: url,
+                            success: function() {
+                                this.sandbox.emit(UPDATED);
+                            }.bind(this)
+                        });
+                    }
                 }
             },
 
@@ -850,7 +1034,6 @@
              * @param {String|Array} searchFields Fields that will be included into the search
              */
             searchGrid: function(searchString, searchFields) {
-
                 var template, url;
 
                 template = this.sandbox.uritemplate.parse(this.data.links.find);
@@ -865,10 +1048,50 @@
             },
 
             /**
-             * calls the funciton of the view responsible for the responsiveness
+             * Takes a data-record and sends it to a url
+             * @param data {Object} the data object to save
+             * @param url {String} Url to send the data to
+             * @param success {Function} callback to call after saving
+             * @param fail {Function} callback to call if saving has failed
+             * @param unshift {Boolean} If true newly added records will be unshifted instead of pushed
              */
-            windowResizeListener: function() {
-                this.gridView.onResize();
+            saveGrid: function(data, url, success, fail, unshift) {
+                var method = 'POST',
+                    isNewRecord = true;
+
+                if (!!data.id) {
+                    method = 'PUT';
+                    isNewRecord = false;
+                    url = url + '/' + data.id;
+                }
+
+                this.sandbox.emit(DATA_CHANGED);
+
+                this.sandbox.util.save(url, method, data)
+                    .then(function(data, textStatus) {
+                        this.sandbox.emit(DATA_SAVED, data, textStatus);
+
+                        if (typeof success === 'function') {
+                            success(data, textStatus);
+                        }
+
+                        // update the global data array
+                        if (isNewRecord === false) {
+                            this.updateRecord(data);
+                        } else if (unshift === true) {
+                            this.unshiftRecords([data]);
+                        } else {
+                            this.pushRecords([data]);
+                        }
+                    }.bind(this))
+                    .fail(function(jqXHR, textStatus, error) {
+                        this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
+
+                        if (typeof fail === 'function') {
+                            fail(jqXHR, textStatus, error);
+                        }
+
+                    }.bind(this));
             }
         };
     });
