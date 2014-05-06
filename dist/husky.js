@@ -16326,6 +16326,7 @@ define('aura/ext/components', [],function() {
   };
 });
 
+
 /*
  * This file is part of the Husky Validation.
  *
@@ -17219,7 +17220,7 @@ define('form/mapper',[
                     $(form.$el).trigger('form-remove', [propertyName, data]);
                 },
 
-                processData: function(el, collection) {
+                processData: function(el, collection, returnMapperId) {
                     // get attributes
                     var $el = $(el),
                         type = $el.data('type'),
@@ -17246,8 +17247,9 @@ define('form/mapper',[
                         result = [];
                         $.each($el.children(), function(key, value) {
                             if (!collection || collection.tpl === value.dataset.mapperPropertyTpl) {
-                                item = form.mapper.getData($(value));
-                                if (element.$el.data('mapperProperty').length > 1) {
+                                item = that.getData($(value));
+                                    // only set mapper-id if explicitly set
+                                if (!!returnMapperId) {
                                     item.mapperId = value.dataset.mapperId;
                                 }
 
@@ -17260,7 +17262,7 @@ define('form/mapper',[
                                     result.push(item);
                                 }
                             }
-                        });
+                        }.bind(this));
                         return result;
                     }
                 },
@@ -17388,6 +17390,46 @@ define('form/mapper',[
                     $element.remove();
                 },
 
+                getData: function($el, returnMapperId) {
+                    if (!$el) {
+                        $el = form.$el;
+                    }
+
+                    var data = { }, $childElement, property, parts,
+
+                    // search field with mapper property
+                        selector = '*[data-mapper-property]',
+                        $elements = $el.find(selector);
+
+                    // do it while elements exists
+                    while ($elements.length > 0) {
+                        // get first
+                        $childElement = $($elements.get(0));
+                        property = $childElement.data('mapper-property');
+
+                        if ($.isArray(property)) {
+                            $.each(property, function(i, prop) {
+                                data[prop.data] = that.processData.call(this, $childElement, prop, returnMapperId);
+                            }.bind(this));
+                        } else if (property.match(/.*\..*/)) {
+                            parts = property.split('.');
+                            data[parts[0]] = {};
+                            data[parts[0]][parts[1]] = that.processData.call(this, $childElement);
+                        } else {
+                            // process it
+                            data[property] = that.processData.call(this, $childElement);
+                        }
+
+                        // remove element itself
+                        $elements = $elements.not($childElement);
+
+                        // remove child elements
+                        $elements = $elements.not($childElement.find(selector));
+                    }
+
+                    return data;
+                },
+
                 setData: function(data, $el) {
                     if (!$el) {
                         $el = form.$el;
@@ -17476,56 +17518,26 @@ define('form/mapper',[
                     }
 
                     return dfd.promise();
-                },
+                }
 
             },
 
         // define mapper interface
             result = {
+
                 setData: function(data, $el) {
                     this.collectionsSet = {};
 
                     return that.setData.call(this, data, $el);
                 },
 
-                getData: function($el) {
-                    if (!$el) {
-                        $el = form.$el;
-                    }
-
-                    var data = { }, $childElement, property, parts,
-
-                    // search field with mapper property
-                        selector = '*[data-mapper-property]',
-                        $elements = $el.find(selector);
-
-                    // do it while elements exists
-                    while ($elements.length > 0) {
-                        // get first
-                        $childElement = $($elements.get(0));
-                        property = $childElement.data('mapper-property');
-
-                        if ($.isArray(property)) {
-                            $.each(property, function(i, prop) {
-                                data[prop.data] = that.processData.call(this, $childElement, prop);
-                            });
-                        } else if (property.match(/.*\..*/)) {
-                            parts = property.split('.');
-                            data[parts[0]] = {};
-                            data[parts[0]][parts[1]] = that.processData.call(this, $childElement);
-                        } else {
-                            // process it
-                            data[property] = that.processData.call(this, $childElement);
-                        }
-
-                        // remove element itself
-                        $elements = $elements.not($childElement);
-
-                        // remove child elements
-                        $elements = $elements.not($childElement.find(selector));
-                    }
-
-                    return data;
+                /**
+                 *
+                 *  @param {Object} $el Element to
+                 *  @param {Boolean} returnMapperId
+                 */
+                getData: function(returnMapperId) {
+                    return that.getData.call(this, undefined, returnMapperId);
                 },
 
                 addCollectionFilter: function(name, callback) {
@@ -18860,7 +18872,6 @@ define('validator/regex',[
     };
 
 });
-
 
 define("husky-validation", function(){});
 
@@ -37590,8 +37601,8 @@ define('husky_extensions/collection',[],function() {
                         return app.sandbox.form.getObject(selector).mapper.setData(data);
                     },
 
-                    getData: function(selector) {
-                        return  app.sandbox.form.getObject(selector).mapper.getData();
+                    getData: function(selector, returnMapperId) {
+                        return  app.sandbox.form.getObject(selector).mapper.getData(returnMapperId);
                     },
 
                     addToCollection: function(selector, propertyName, data, append) {
