@@ -134,13 +134,19 @@
         }
     }
 
+    &.white {
+        .dropdown-label {
+            background: $white;
+        }
+    }
+
     &.action {
         .dropdown-label {
             background: $blue;
             color: $white;
         }
         .dropdown-toggle::after {
-          border-top-color: $white;
+            border-top-color: $white;
         }
     }
 

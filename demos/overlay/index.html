@@ -7,158 +7,250 @@
 <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!-->
 <html class="no-js"> <!--<![endif]-->
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Husky Overlay Demo</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel="stylesheet" href="../../dist/husky.min.css">
-    <style>
-        .content-inner {
-            padding: 0 20px;
-        }
-        .content-inner textarea {
-            width: 100%;
-            max-width: 100%;
-            height: 300px;
-        }
-    </style>
-</head>
-<body>
-<div class="grid">
-    <div class="grid-row m-top-30">
-        <div class="grid-col-1">&nbsp;</div>
-        <div class="grid-col-3"><h1>Husky Overlay</h1></div>
-    </div>
-    <div class="grid-row">
-        <div class="grid-col-1">&nbsp;</div>
-        <div class="btn pointer grid-col-3 align-center" id="showme">Show me an awesome overlay</div>
-    </div>
-    <div class="grid-row m-top-20">
-        <div class="grid-col-1">&nbsp;</div>
-        <div class="btn pointer grid-col-3 align-center" id="showme2">Show me an another overlay</div>
-    </div>
-    <div class="grid-row m-top-20">
-        <div class="grid-col-1">&nbsp;</div>
-        <div class="btn pointer grid-col-3 align-center" id="showme3">Show me an overlay with deactivated ok</div>
-    </div>
-    <div class="grid-row m-top-20">
-        <div class="grid-col-1">&nbsp;</div>
-        <div class="btn pointer grid-col-3 align-center" id="showme4">Show me an overlay with skin wide</div>
-    </div>
-</div>
-<div id="insertOverlayHere"></div>
-<script src="../js/sinon.js"></script>
-<script src="../js/jquery.js"></script>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Husky Overlay Demo</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="stylesheet" href="../../dist/husky.min.css">
+        <style>
+            .content-inner {
+                padding: 0 20px;
+            }
 
-<script src="../js/require.js"></script>
+            .content-inner textarea {
+                width: 100%;
+                max-width: 100%;
+                height: 300px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="grid">
+            <div class="grid-row m-top-30">
+                <div class="grid-col-1">&nbsp;</div>
+                <div class="grid-col-3"><h1>Husky Overlay</h1></div>
+            </div>
 
-<script>
-    require.config({
-        baseUrl: '../../'
-    });
+            <div class="grid-row m-top-30">
+                <div class="grid-col-1">&nbsp;</div>
+                <div class="grid-col-3"><h2>Default types</h2></div>
+            </div>
+            <div class="grid-row m-top-20">
+                <div class="grid-col-1">&nbsp;</div>
+                <div class="btn pointer grid-col-3 align-center" id="normal">Normal</div>
+            </div>
+            <div class="grid-row m-top-20">
+                <div class="grid-col-1">&nbsp;</div>
+                <div class="btn pointer grid-col-3 align-center" id="warning">Warning</div>
+            </div>
+            <div class="grid-row m-top-20">
+                <div class="grid-col-1">&nbsp;</div>
+                <div class="btn pointer grid-col-3 align-center" id="error">Error</div>
+            </div>
 
-    require(['lib/husky'], function(Husky) {
-        'use strict';
+            <div class="grid-row m-top-30">
+                <div class="grid-col-1">&nbsp;</div>
+                <div class="grid-col-3"><h2>Examples</h2></div>
+            </div>
+            <div class="grid-row m-top-20">
+                <div class="grid-col-1">&nbsp;</div>
+                <div class="btn pointer grid-col-3 align-center" id="withtabs">Overlay with tabs and language selector
+                </div>
+            </div>
+            <div class="grid-row m-top-20">
+                <div class="grid-col-1">&nbsp;</div>
+                <div class="btn pointer grid-col-3 align-center" id="showme3">Show me an overlay with deactivated ok</div>
+            </div>
+            <div class="grid-row m-top-20">
+                <div class="grid-col-1">&nbsp;</div>
+                <div class="btn pointer grid-col-3 align-center" id="showme4">Show me an overlay with skin wide</div>
+            </div>
+        </div>
+        <div id="overlay1"></div>
+        <div id="overlay2"></div>
+        <div id="overlay3"></div>
+        <div id="overlay4"></div>
+        <div id="overlay5"></div>
+        <div id="insertOverlayHere"></div>
+        <script src="../js/sinon.js"></script>
+        <script src="../js/jquery.js"></script>
 
-        var app = Husky({
-                    debug: {
-                        enable: true
-                    }
-                }),
-                _ = app.sandbox.util._,
+        <script src="../js/require.js"></script>
 
-        testData = '<div class="content-inner">' +
-                        '<h3>Most awesome overlay</h3>' +
-                        '<p>here could be anything</p>' +
-                        '<div class="grid-row divider">' +
-                        '<div class="grid-col-7 pull-left">' +
-                        '<div>Some text</div>' +
-                        '</div>' +
-                        '<div class="grid-col-2 pull-right">' +
-                            '<div class="btn gray-dark fit only-icon">' +
+        <script>
+            var App;
+
+            require.config({
+                baseUrl: '../../'
+            });
+
+            require(['lib/husky'], function(Husky) {
+                'use strict';
+
+                var app = Husky({
+                            debug: {
+                                enable: true
+                            }
+                        }),
+                        _ = app.sandbox.util._,
+
+                        testData = '<div class="content-inner">' +
+                                '<h3>Most awesome overlay</h3>' +
+                                '<p>here could be anything</p>' +
+                                '<div class="grid-row divider">' +
+                                '<div class="grid-col-7 pull-left">' +
+                                '<div>Some text</div>' +
+                                '</div>' +
+                                '<div class="grid-col-2 pull-right">' +
+                                '<div class="btn gray-dark fit only-icon">' +
                                 '<div class="icon-circle-minus"></div>'
-                            '</div>' +
+                '</div>' +
                         '</div>' +
                         '</div>' +
                         '<textarea></textarea>' +
-                   '</div>';
+                '</div>';
 
+                App = app;
 
+                app.start([
+                            {
+                                name: 'overlay@husky',
+                                options: {
+                                    el: '#overlay1',
+                                    triggerEl: '#normal',
+                                    title: 'This is the title of the overlay',
+                                    data: '<div style="min-height: 350px"></div>',
+                                    closeCallback: function() {
+                                        console.log('You clicked on close');
+                                    },
+                                    okCallback: function() {
+                                        console.log('You clicked on ok');
+                                    }
+                                }
+                            },
+                            {
+                                name: 'overlay@husky',
+                                options: {
+                                    el: '#overlay2',
+                                    triggerEl: '#withtabs',
+                                    title: 'This overlay has tabs',
+                                    instanceName: 'withTabs',
+                                    tabs: [
+                                        {title: 'Info', data: '<div><h2>Info Tab</h2></div>'},
+                                        {title: 'Languages', data: '<div><h2>Languages Tab</h2></div>'},
+                                        {title: 'Versions', data: '<div><h2>Versions</h2></div>'}
+                                    ],
+                                    languageChanger: {
+                                        locales: ['EN', 'DE', 'ES'],
+                                        preSelected: 'DE'
+                                    },
+                                    closeCallback: function() {
+                                        console.log('You clicked on close');
+                                    },
+                                    okCallback: function() {
+                                        console.log('You clicked on ok');
+                                    }
+                                }
+                            },
+                            {
+                                name: 'overlay@husky',
+                                options: {
+                                    el: '#overlay3',
+                                    triggerEl: '#showme3',
+                                    title: 'We want your title!',
+                                    container: '#insertOverlayHere',
+                                    data: testData,
+                                    closeCallback: function() {
+                                        console.log('You clicked on close');
+                                    },
+                                    okCallback: function() {
+                                        console.log('You clicked on ok');
+                                    }
+                                }
+                            },
+                            {
+                                name: 'overlay@husky',
+                                options: {
+                                    el: '#overlay4',
+                                    triggerEl: '#showme4',
+                                    title: 'We want your title!',
+                                    container: '#insertOverlayHere',
+                                    instanceName: 'wide',
+                                    skin: 'wide',
+                                    data: testData,
+                                    okInactive: true,
+                                    closeCallback: function() {
+                                        console.log('You clicked on close');
+                                    },
+                                    okCallback: function() {
+                                        console.log('You clicked on ok');
+                                    }
+                                }
+                            }
+                        ]).then(function() {
+                            app.logger.log('Aura started...');
+                            app.sandbox.on('husky.overlay.deactivated.opened', function() {
+                                setTimeout(function() {
+                                    app.sandbox.emit('husky.overlay.deactivated.okbutton.activate');
+                                    setTimeout(function() {
+                                        app.sandbox.emit('husky.overlay.deactivated.okbutton.deactivate');
+                                    }, 2000);
+                                }, 2000);
+                            });
 
+                            $('#warning').click(function() {
+                                var $element = $('<div/>');
+                                $('body').append($element);
 
-        app.start([{
-                    name: 'overlay@husky',
-                    options: {
-                        triggerEl: '#showme',
-                        title: 'We want your title!',
-                        container: '#insertOverlayHere',
-                        data: testData,
-                        closeCallback: function() {
-                            console.log('You clicked on close');
-                        },
-                        okCallback: function() {
-                            console.log('You clicked on ok');
-                        }
-                    }
-                },
-                {
-                    name: 'overlay@husky',
-                    options: {
-                        triggerEl: '#showme3',
-                        title: 'We want your title!',
-                        container: '#insertOverlayHere',
-                        instanceName: 'deactivated',
-                        data: testData,
-                        okInactive: true,
-                        closeCallback: function() {
-                            console.log('You clicked on close');
-                        },
-                        okCallback: function() {
-                            console.log('You clicked on ok');
-                        }
-                    }
-                },
-                {
-                    name: 'overlay@husky',
-                    options: {
-                        triggerEl: '#showme4',
-                        title: 'We want your title!',
-                        container: '#insertOverlayHere',
-                        instanceName: 'wide',
-                        skin: 'wide',
-                        data: testData,
-                        okInactive: true,
-                        closeCallback: function() {
-                            console.log('You clicked on close');
-                        },
-                        okCallback: function() {
-                            console.log('You clicked on ok');
-                        }
-                    }
-                },
-                {
-                    name: 'overlay@husky',
-                    options: {
-                        triggerEl: '#showme2',
-                        title: 'This is another overlay',
-                        container: '#insertOverlayHere',
-                        data: 'Just an overlay passing through',
-                        closeCallback: function() {
-                            console.log('You clicked on close - another');
-                        },
-                        okCallback: function() {
-                            console.log('You clicked on ok - another');
-                        }
-                    }
-                }]).then(function() {
-                    app.logger.log('Aura started...');
-                });
-    });
+                                app.sandbox.start([
+                                    {
+                                        name: 'overlay@husky',
+                                        options: {
+                                            el: $element,
+                                            title: 'Please confirm',
+                                            message: 'If you delete this content it will be lost. Do you want to continue?',
+                                            okDefaultText: 'Yes, delete it',
+                                            type: 'warning',
+                                            closeCallback: function() {
+                                                console.log('You clicked on close');
+                                            },
+                                            okCallback: function() {
+                                                console.log('You clicked on ok');
+                                            }
+                                        }
+                                    }
+                                ]);
+                            });
 
-</script>
+                            $('#error').click(function() {
+                                var $element = $('<div/>');
+                                $('body').append($element);
 
-</body>
+                                app.sandbox.start([
+                                    {
+                                        name: 'overlay@husky',
+                                        options: {
+                                            el: $element,
+                                            title: 'This action is not possible',
+                                            message: 'Sorry, you cannot delete this content because you don’t have the permissions.',
+                                            type: 'error',
+                                            closeCallback: function() {
+                                                console.log('You clicked on close');
+                                            },
+                                            okCallback: function() {
+                                                console.log('You clicked on ok');
+                                            }
+                                        }
+                                    }
+                                ]);
+                            });
+                        });
+            });
+
+        </script>
+
+    </body>
 </html>
