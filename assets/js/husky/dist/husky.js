@@ -26805,15 +26805,14 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
             // emits an event when a table row gets clicked
             this.sandbox.dom.on(
-                this.sandbox.dom.find('tr', this.$tableContainer), 'click',
-                this.emitRowClickedEvent.bind(this)
+                this.$tableContainer, 'click',
+                this.emitRowClickedEvent.bind(this), 'tr'
             );
 
             // add editable events if configured
             if (!!this.options.editable) {
                 this.sandbox.dom.on(
-                    this.sandbox.dom.find('.' + constants.editableClass, this.$tableContainer), 'click',
-                    this.editCellValues.bind(this)
+                    this.$tableContainer, 'click', this.editCellValues.bind(this), '.' + constants.editableClass
                 );
                 this.sandbox.dom.on(this.$tableContainer, 'click', this.focusOnRow.bind(this), 'tr');
 
@@ -27954,6 +27953,14 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
         },
 
         /**
+         * Rerenders the pagination
+         */
+        rerender: function() {
+            this.destroy();
+            this.render(this.data, this.$el);
+        },
+
+        /**
          * Returns the pagination page size
          * @returns {Number} current Page size
          */
@@ -29064,6 +29071,9 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 for (var i = -1, length = this.data.embedded.length; ++i < length;) {
                     if (recordId === this.data.embedded[i].id) {
                         this.data.embedded.splice(i, 1);
+                        this.data.numberOfAll--;
+                        this.data.total--;
+                        this.paginations[this.paginationId].rerender();
                         return true;
                     }
                 }
@@ -29077,6 +29087,9 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             pushRecords: function(records) {
                 for (var i = -1, length = records.length; ++i < length;) {
                     this.data.embedded.push(records[i]);
+                    this.data.numberOfAll++;
+                    this.data.total++;
+                    this.paginations[this.paginationId].rerender();
                 }
             },
 
@@ -29087,6 +29100,9 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             unshiftRecords: function(records) {
                 for (var i = -1, length = records.length; ++i < length;) {
                     this.data.embedded.unshift(records[i]);
+                    this.data.numberOfAll++;
+                    this.data.total++;
+                    this.paginations[this.paginationId].rerender();
                 }
             },
 

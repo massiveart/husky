@@ -3,7 +3,6 @@
  * @constructor
  *
  * @param {Object} [viewOptions] Configuration object
- * @param {Boolean} [options.autoRemoveHandling] raises an event before a row is removed
  * @param {Boolean} [options.editable] will not set class is-selectable to prevent hover effect for complete rows
  * @param {String} [options.className] additional classname for the wrapping div
  * @param {Boolean} [options.removeRow] displays in the last column an icon to remove a row
@@ -36,7 +35,6 @@ define(function() {
     var datagrid,
 
         defaults = {
-            autoRemoveHandling: true,
             editable: false,
             className: 'datagridcontainer',
             fullWidth: false,
@@ -265,15 +263,14 @@ define(function() {
 
             // emits an event when a table row gets clicked
             this.sandbox.dom.on(
-                this.sandbox.dom.find('tr', this.$tableContainer), 'click',
-                this.emitRowClickedEvent.bind(this)
+                this.$tableContainer, 'click',
+                this.emitRowClickedEvent.bind(this), 'tr'
             );
 
             // add editable events if configured
             if (!!this.options.editable) {
                 this.sandbox.dom.on(
-                    this.sandbox.dom.find('.' + constants.editableClass, this.$tableContainer), 'click',
-                    this.editCellValues.bind(this)
+                    this.$tableContainer, 'click', this.editCellValues.bind(this), '.' + constants.editableClass
                 );
                 this.sandbox.dom.on(this.$tableContainer, 'click', this.focusOnRow.bind(this), 'tr');
 
@@ -589,6 +586,7 @@ define(function() {
 
                 if (!!row.id) {
                     this.sandbox.dom.data($tableRow, 'id', row.id);
+                    this.sandbox.dom.attr($tableRow, 'data-id', row.id);
                 }
             }
             return $tableRow;
@@ -966,15 +964,7 @@ define(function() {
          */
         prepareRemoveRow: function(event) {
             this.sandbox.dom.stopPropagation(event);
-
-            if (!!this.options.autoRemoveHandling) {
-                this.removeRecord(event);
-            } else {
-                var $tblRow, id;
-
-                $tblRow = this.sandbox.dom.closest(event.currentTarget, 'tr')[0];
-                id = this.sandbox.dom.data($tblRow, 'id');
-            }
+            this.removeRecord(event);
         },
 
         /**

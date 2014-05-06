@@ -40,7 +40,7 @@
          *    Default values for options
          */
         var defaults = {
-                view: 'table',
+                view: 'thumbnail',
                 viewOptions: {
                     table: {},
                     thumbnail: {}
@@ -894,6 +894,9 @@
                 for (var i = -1, length = this.data.embedded.length; ++i < length;) {
                     if (recordId === this.data.embedded[i].id) {
                         this.data.embedded.splice(i, 1);
+                        this.data.numberOfAll--;
+                        this.data.total--;
+                        this.paginations[this.paginationId].rerender();
                         return true;
                     }
                 }
@@ -907,6 +910,9 @@
             pushRecords: function(records) {
                 for (var i = -1, length = records.length; ++i < length;) {
                     this.data.embedded.push(records[i]);
+                    this.data.numberOfAll++;
+                    this.data.total++;
+                    this.paginations[this.paginationId].rerender();
                 }
             },
 
@@ -917,6 +923,9 @@
             unshiftRecords: function(records) {
                 for (var i = -1, length = records.length; ++i < length;) {
                     this.data.embedded.unshift(records[i]);
+                    this.data.numberOfAll++;
+                    this.data.total++;
+                    this.paginations[this.paginationId].rerender();
                 }
             },
 

@@ -24,7 +24,7 @@ define(function() {
         },
 
         constants = {
-
+            containerClass: 'thumbnail-container'
         };
 
     return {
@@ -60,12 +60,22 @@ define(function() {
          * Method to render data in this view
          */
         render: function(data, $container) {
-            this.$el = this.sandbox.dom.createElement('<div/>');
+            this.$el = this.sandbox.dom.createElement('<div class="'+ constants.containerClass +'"/>');
             this.sandbox.dom.append($container, this.$el);
+            this.data = data;
 
-            this.sandbox.dom.html(this.$el, JSON.stringify(data));
+            this.renderThumbnails();
 
             this.rendered = true;
+        },
+
+        /**
+         * Renders the actual thumbnails
+         */
+        renderThumbnails: function() {
+            for (var i = -1, length = this.data.embedded.length; ++i < length;) {
+                console.log(this.data.embedded[i]);
+            }
         },
 
         /**

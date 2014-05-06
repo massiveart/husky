@@ -514,21 +514,25 @@ require(['lib/husky'], function(Husky) {
                 options: {
                     url: '/admin/api/contacts?flat=true',
                     paginationOptions: {
-                        pageSize: 4
+                        dropdown: {
+                            pageSize: 4
+                        }
                     },
                     viewOptions: {
-                        selectItem: {
-                            type: 'checkbox'
-                        },
-                        className: "myClass",
-                        removeRow: true,
-                        progressRow: true,
-                        excludeFields: [''],
-                        editable: true,
-                        validation:true,
-                        addRowTop: true,
-                        //fullWidth: true, // uncomment for full-width mode
-                        contentContainer: '#content'
+                        table: {
+                            selectItem: {
+                                type: 'checkbox'
+                            },
+                            className: "myClass",
+                            removeRow: true,
+                            progressRow: true,
+                            excludeFields: [''],
+                            editable: true,
+                            validation:true,
+                            addRowTop: true,
+                            //fullWidth: true, // uncomment for full-width mode
+                            contentContainer: '#content'
+                        }
                     },
                     columns: [
                         {
