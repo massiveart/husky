@@ -452,15 +452,15 @@ define([], function() {
          * Handles the click on the drodpwn label
          */
         labelClickHandler: function() {
-          // if dropdown is not empty
-          if (!this.sandbox.dom.is(this.$find('.' + constants.listClass), ':empty')) {
-            this.toggleDropDown();
-          } else {
-              // else execute a no-items-callback if it exists
-              if (typeof this.options.noItemsCallback === 'function') {
-                  this.options.noItemsCallback();
-              }
-          }
+            // if dropdown is not empty
+            if (!this.sandbox.dom.is(this.$find('.' + constants.listClass), ':empty')) {
+                this.toggleDropDown();
+            } else {
+                // else execute a no-items-callback if it exists
+                if (typeof this.options.noItemsCallback === 'function') {
+                    this.options.noItemsCallback();
+                }
+            }
         },
 
         // toggle dropDown visible
@@ -522,7 +522,7 @@ define([], function() {
             basicStructure: function(defaultLabel, icon) {
                 var iconSpan = '', dropdownToggle = '';
                 if (!!icon) {
-                    iconSpan = '<span class="icon-'+ icon +' icon"></span>';
+                    iconSpan = '<span class="icon-' + icon + ' icon"></span>';
                 }
                 if (!!this.options.data && !!this.options.data.length) {
                     dropdownToggle = '<span class="dropdown-toggle inline-block"></span>';
@@ -531,10 +531,10 @@ define([], function() {
                     '<div class="husky-select-container">',
                     '    <div class="dropdown-label pointer">',
                     '       <div class="checkbox">',
-                                iconSpan,
+                    iconSpan,
                     '           <span class="' + constants.labelClass + '">', defaultLabel, '</span>',
                     '       </div>',
-                            dropdownToggle,
+                    dropdownToggle,
                     '   </div>',
                     '   <div class="grid-row dropdown-list dropdown-shadow hidden ' + constants.dropdownContainerClass + '">',
                     '       <ul class="' + constants.listClass + '"></ul>',

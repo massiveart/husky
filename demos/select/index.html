@@ -85,6 +85,9 @@
                 <td>
                     <div class="grid-col-6" id="actionSelect"></div>
                 </td>
+                <td>
+                    <div class="grid-col-6" id="actionSelectSingle"></div>
+                </td>
             </tr>
             <tr>
                 <td><button id="toggleState">toggle state of button 7</button></td>
@@ -289,10 +292,47 @@
                             style: 'action',
                             icon: 'circle-plus',
                             noItemsCallback: function() {alert('no items. default callback called')}, // pass no data to the component to see this option in action
-                            data: [{name: 'Action 1', callback: function(){alert('action 1')} },
-                                   {name: 'Action 2', callback: function(){alert('action 2')} },
-                                   {name: 'Action 3', callback: function(){alert('action 3')} },
-                                   {name: 'Action 4', callback: function(){alert('action 4')} }]
+                            data: [
+                                {
+                                    name: 'Action 1',
+                                    callback: function() {
+                                        alert('action 1')
+                                    }
+                                },
+                                {
+                                    name: 'Action 2',
+                                    callback: function() {
+                                        alert('action 2')
+                                    }
+                                },
+                                {
+                                    name: 'Action 3',
+                                    callback: function() {
+                                        alert('action 3')
+                                    }
+                                },
+                                {
+                                    name: 'Action 4',
+                                    callback: function() {
+                                        alert('action 4')
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#actionSelectSingle',
+                            defaultLabel: 'Action select',
+                            instanceName: 'actionSelect',
+                            fixedLabel: true,
+                            style: 'action',
+                            icon: 'circle-plus',
+                            noItemsCallback: function() {
+                                alert('no items. default callback called')
+                            }, // pass no data to the component to see this option in action
+                            data: []
                         }
                     }
                 ]).then(function() {
