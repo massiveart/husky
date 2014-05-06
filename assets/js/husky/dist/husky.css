@@ -6980,6 +6980,15 @@ a.btn-black, a.btn-highlight {
   top: auto;
   bottom: -3px;
 }
+/* line 138, ../scss/modules/select.scss */
+.husky-select-container.action .dropdown-label {
+  background: #52b6ca;
+  color: white;
+}
+/* line 142, ../scss/modules/select.scss */
+.husky-select-container.action .dropdown-toggle::after {
+  border-top-color: white;
+}
 
 /* line 5, ../scss/modules/smart-content.scss */
 .smart-content-container {
