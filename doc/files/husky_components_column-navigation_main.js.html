@@ -191,7 +191,8 @@ define([], function() {
             publishedName: &#x27;publishedState&#x27;,
             titleName: &#x27;title&#x27;,
             typeName: &#x27;type&#x27;,
-            minVisibleRatio: 1 / 2
+            minVisibleRatio: 1 / 2,
+            noPageDescription: &#x27;public.no-pages&#x27;
         },
 
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
@@ -255,11 +256,13 @@ define([], function() {
             this.filledColumns = 0;
             this.columnLoadStarted = false;
             this.$loader = null;
+            this.$bigLoader = null;
 
             this.columns = [];
             this.selected = [];
 
             this.render();
+            this.startBigLoader();
             this.load(this.options.url, 0);
             this.bindDOMEvents();
             this.bindCustomEvents();
@@ -300,6 +303,36 @@ define([], function() {
                 this.initSettingsDropdown(this.sandbox.dom.attr($settings, &#x27;id&#x27;));
             }
 
+        },
+
+        /**
+         * Starts the big loader, before loading content during the initialization
+         */
+        startBigLoader: function() {
+            if (this.$bigLoader === null) {
+                this.$bigLoader = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;column-navigation-loader&quot;/&gt;&#x27;);
+                this.sandbox.dom.hide(this.$bigLoader);
+                this.sandbox.dom.html(this.$columnContainer, this.$bigLoader);
+
+                this.sandbox.start([
+                    {
+                        name: &#x27;loader@husky&#x27;,
+                        options: {
+                            el: this.$bigLoader,
+                            size: &#x27;100px&#x27;,
+                            color: &#x27;#e4e4e4&#x27;
+                        }
+                    }
+                ]);
+            }
+            this.sandbox.dom.show(this.$bigLoader);
+        },
+
+        /**
+         * Detatches the big loader from the column-navigation
+         */
+        removeBigLoader: function() {
+            this.sandbox.dom.hide(this.$find(&#x27;.column-navigation-loader&#x27;));
         },
 
         /**
@@ -344,8 +377,10 @@ define([], function() {
 
                 this.sandbox.util.load(url)
                     .then(function(response) {
+                        this.removeBigLoader();
                         this.columnLoadStarted = false;
                         this.parseData(response, columnNumber);
+                        this.handleLastEmptyColumn();
                         this.alignWithColumnsWidth();
                         this.scrollIfNeeded(this.filledColumns + 1);
                         this.setOverflowClass();
@@ -526,6 +561,7 @@ define([], function() {
 
             if (this.$loader === null) {
                 this.$loader = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;husky-column-navigation-loader&quot;/&gt;&#x27;);
+                this.sandbox.dom.hide(this.$loader);
 
                 this.sandbox.start([
                     {
@@ -538,7 +574,9 @@ define([], function() {
                     }
                 ]);
             }
+            this.sandbox.dom.detach(this.$loader);
             this.sandbox.dom.html($container, this.$loader);
+            this.sandbox.dom.show(this.$loader);
         },
 
         /**
@@ -547,7 +585,7 @@ define([], function() {
         removeLoadingIconForSelected: function() {
             if (!!this.$selectedElement) {
                 var $arrow = this.sandbox.dom.find(&#x27;.arrow&#x27;, this.$selectedElement);
-                this.sandbox.dom.detach(this.$loader);
+                this.sandbox.dom.hide(this.$loader);
                 this.sandbox.dom.prependClass($arrow, &#x27;icon-chevron-right&#x27;);
             }
         },
@@ -593,6 +631,20 @@ define([], function() {
                 this.sandbox.dom.addClass($navigation, &#x27;overflow&#x27;);
             } else {
                 this.sandbox.dom.removeClass($navigation, &#x27;overflow&#x27;);
+            }
+        },
+
+        /**
+         * Inserts some markup into the last column if column is empty
+         */
+        handleLastEmptyColumn: function() {
+            var $lastColumn = this.sandbox.dom.last(this.sandbox.dom.find(&#x27;.column&#x27;, this.$columnContainer));
+
+            this.sandbox.dom.remove(this.sandbox.dom.find(&#x27;.no-page&#x27;, this.$columnContainer));
+
+            // if last column is empty insert markup
+            if (this.sandbox.dom.find(&#x27;li&#x27;, $lastColumn).length === 0) {
+                this.sandbox.dom.append($lastColumn, this.template.noPage.call(this, this.sandbox.translate(this.options.noPageDescription)));
             }
         },
 
@@ -752,12 +804,12 @@ define([], function() {
                         this.removeColumns(column + 1);
                     }
                 }
-
                 // insert add column when clicked element
                 this.insertAddColumn(selectedItem, column);
 
                 // scroll for add column
                 if (!selectedItem.hasSub) {
+                    this.handleLastEmptyColumn();
                     this.alignWithColumnsWidth();
                     this.scrollIfNeeded(column);
                     this.setOverflowClass();
@@ -793,7 +845,6 @@ define([], function() {
         },
 
         insertAddColumn: function(selectedItem, column) {
-
             if (!this.$addColumn &amp;&amp; !selectedItem[this.options.hasSubName]) {
                 // append empty column to add subpages
                 this.$addColumn = this.sandbox.dom.createElement(this.template.column.call(this, column + 1, this.options.column.width));
@@ -867,6 +918,13 @@ define([], function() {
 
             column: function(columnNumber, width) {
                 return [&#x27;&lt;div data-column=&quot;&#x27;, columnNumber, &#x27;&quot; class=&quot;column&quot; id=&quot;column-&#x27;, columnNumber, &#x27;&quot; style=&quot;width: &#x27;, width, &#x27;px&quot;&gt;&lt;ul&gt;&lt;/ul&gt;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
+            },
+
+            noPage: function(description) {
+                return [&#x27;&lt;div class=&quot;no-page&quot;&gt;&#x27;,
+                            &#x27;&lt;span class=&quot;icon-file&quot;&gt;&lt;/span&gt;&#x27;,
+                            &#x27;&lt;div class=&quot;text&quot;&gt;&#x27;, description ,&#x27;&lt;/div&gt;&#x27;,
+                        &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
             },
 
             item: function(width, data) {
