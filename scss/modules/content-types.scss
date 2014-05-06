@@ -23,7 +23,7 @@
             }
         }
 
-        .options {
+        .options-remove, .options-change {
             float: right;
             cursor: pointer;
             margin-top: 5px;
@@ -52,7 +52,7 @@
     }
 
     &:hover {
-        .head .options {
+        .head .options-remove, .head .options-change {
             display: block;
         }
     }
@@ -60,10 +60,10 @@
 
 .empty {
     .text-block {
-        .head .options {
+        .head .options-remove {
             display: none;
         }
-        &:hover .head .options {
+        &:hover .head .options-remove {
             display: none;
         }
     }

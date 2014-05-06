@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -16668,7 +16667,7 @@ define('form/element',['form/util'], function(Util) {
                     var addFunction = function(typeName, options) {
                             this.requireCounter++;
                             require(['type/' + typeName], function(Type) {
-                                type = new Type(this.$el, options);
+                                type = new Type(this.$el, options, form);
 
                                 type.initialized.then(function() {
                                     Util.debug('Element Type', typeName, options);
@@ -16869,7 +16868,23 @@ define('form/element',['form/util'], function(Util) {
                 },
 
                 setValue: function(value) {
-                    type.setValue(value);
+                    var dfd = $.Deferred(),
+                        result;
+
+                    this.initialized.then(function() {
+                        result = type.setValue(value);
+
+                        // if setvalue returns a deferred wait for that
+                        if (!!result) {
+                            result.then(function() {
+                                dfd.resolve();
+                            });
+                        } else {
+                            dfd.resolve();
+                        }
+                    }.bind(this));
+
+                    return dfd.promise();
                 },
 
                 getValue: function(data) {
@@ -17231,7 +17246,9 @@ define('form/mapper',[
                         $.each($el.children(), function(key, value) {
                             if (!collection || collection.tpl === value.dataset.mapperPropertyTpl) {
                                 item = form.mapper.getData($(value));
-                                item.mapperId = value.dataset.mapperId;
+                                if (element.$el.data('mapperProperty').length > 1) {
+                                    item.mapperId = value.dataset.mapperId;
+                                }
 
                                 var keys = Object.keys(item);
                                 if (keys.length === 1) { // for value only collection
@@ -17395,14 +17412,16 @@ define('form/mapper',[
                         if (!element) {
                             element = form.addField($element);
                             element.initialized.then(function() {
-                                element.setValue(data);
-                                // resolve this set data
-                                resolve();
+                                element.setValue(data).then(function() {
+                                    // resolve this set data
+                                    resolve();
+                                });
                             }.bind(this));
                         } else {
-                            element.setValue(data);
-                            // resolve this set data
-                            resolve();
+                            element.setValue(data).then(function() {
+                                // resolve this set data
+                                resolve();
+                            });
                         }
                     } else if (data !== null && !$.isEmptyObject(data)) {
                         count = Object.keys(data).length;
@@ -17437,12 +17456,14 @@ define('form/mapper',[
                                     if (!element) {
                                         element = form.addField($element);
                                         element.initialized.then(function() {
-                                            element.setValue(value);
-                                            resolve();
+                                            element.setValue(value).then(function() {
+                                                resolve();
+                                            });
                                         }.bind(this));
                                     } else {
-                                        element.setValue(value);
-                                        resolve();
+                                        element.setValue(value).then(function() {
+                                            resolve();
+                                        });
                                     }
                                 } else {
                                     resolve();
@@ -17460,9 +17481,10 @@ define('form/mapper',[
 
         // define mapper interface
             result = {
-                setData: function(data) {
+                setData: function(data, $el) {
                     this.collectionsSet = {};
-                    return that.setData.call(this, data);
+
+                    return that.setData.call(this, data, $el);
                 },
 
                 getData: function($el) {
@@ -17623,23 +17645,17 @@ define('form',[
                 validationSubmitEvent: true,      // avoid submit if not valid
                 mapper: true                      // mapper on/off
             },
-            dfd = null,
 
         // private functions
             that = {
                 initialize: function() {
-                    // init initialized
-                    dfd = $.Deferred();
-                    this.requireCounter = 0;
-                    this.initialized = dfd.promise();
-
                     this.$el = $(el);
                     this.options = $.extend(defaults, this.$el.data(), options);
 
                     // enable / disable debug
                     Util.debugEnabled = this.options.debug;
 
-                    that.initFields.call(this);
+                    this.initialized = that.initFields.call(this);
 
                     if (!!this.options.validation) {
                         this.validation = new Validation(this);
@@ -17655,20 +17671,22 @@ define('form',[
                 },
 
                 // initialize field objects
-                initFields: function() {
-                    $.each(Util.getFields(this.$el), function(key, value) {
-                        this.requireCounter++;
-                        that.addField.call(this, value, false).initialized.then(function() {
-                            that.resolveInitialization.call(this);
-                        }.bind(this));
-                    }.bind(this));
-                },
+                initFields: function($el) {
+                    var dfd = $.Deferred(),
+                        requireCounter = 0,
+                        resolve = function() {
+                            requireCounter--;
+                            if (requireCounter === 0) {
+                                dfd.resolve();
+                            }
+                        };
 
-                resolveInitialization: function() {
-                    this.requireCounter--;
-                    if (this.requireCounter === 0) {
-                        dfd.resolve();
-                    }
+                    $.each(Util.getFields($el || this.$el), function(key, value) {
+                        requireCounter++;
+                        that.addField.call(this, value, false).initialized.then(resolve.bind(this));
+                    }.bind(this));
+
+                    return dfd.promise();
                 },
 
                 bindValidationDomEvents: function() {
@@ -17711,6 +17729,10 @@ define('form',[
                     return element;
                 },
 
+                initFields: function($el) {
+                    return that.initFields.call(this, $el);
+                },
+
                 removeField: function(selector) {
                     var $element = $(selector),
                         el = $element.data('element');
@@ -17747,7 +17769,7 @@ define('type/default',[
 
     
 
-    return function($el, defaults, options, name, typeInterface) {
+    return function($el, defaults, options, name, typeInterface, form) {
 
         var that = {
                 initialize: function() {
@@ -17767,6 +17789,8 @@ define('type/default',[
 
             defaultInterface = {
                 name: name,
+
+                form: form,
 
                 needsValidation: function() {
                     return true;
@@ -38189,3 +38213,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
