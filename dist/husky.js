@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -16326,7 +16325,6 @@ define('aura/ext/components', [],function() {
   };
 });
 
-
 /*
  * This file is part of the Husky Validation.
  *
@@ -17735,6 +17733,12 @@ define('form',[
                     return that.initFields.call(this, $el);
                 },
 
+                removeFields: function($el) {
+                    Util.getFields($el).each(function(i, item) {
+                        this.removeField(item);
+                    }.bind(this));
+                },
+
                 removeField: function(selector) {
                     var $element = $(selector),
                         el = $element.data('element');
@@ -18213,7 +18217,7 @@ define('type/readonly-select',[
                     // find value in data
                     if (data.length > 0) {
                         for (i = -1, len = data.length; ++i < len;) {
-                            if (data[i].hasOwnProperty(idProperty) && data[i][idProperty] === value) {
+                            if (data[i].hasOwnProperty(idProperty) && data[i][idProperty].toString() === value.toString()) {
                                 this.$el.html(data[i][this.options.outputProperty]);
                                 break;
                             }
@@ -18226,7 +18230,7 @@ define('type/readonly-select',[
                         i, len;
 
                     for (i = -1, len = this.options.data.length; ++i < len;) {
-                        if (this.options.data[i][this.options.idProperty] === id) {
+                        if (this.options.data[i][this.options.idProperty].toString() === id.toString()) {
                             return this.options.data[i];
                         }
                     }
@@ -18855,6 +18859,7 @@ define('validator/regex',[
     };
 
 });
+
 
 define("husky-validation", function(){});
 
@@ -32924,15 +32929,15 @@ define('__component__$select@husky',[], function() {
          * Handles the click on the drodpwn label
          */
         labelClickHandler: function() {
-          // if dropdown is not empty
-          if (!this.sandbox.dom.is(this.$find('.' + constants.listClass), ':empty')) {
-            this.toggleDropDown();
-          } else {
-              // else execute a no-items-callback if it exists
-              if (typeof this.options.noItemsCallback === 'function') {
-                  this.options.noItemsCallback();
-              }
-          }
+            // if dropdown is not empty
+            if (!this.sandbox.dom.is(this.$find('.' + constants.listClass), ':empty')) {
+                this.toggleDropDown();
+            } else {
+                // else execute a no-items-callback if it exists
+                if (typeof this.options.noItemsCallback === 'function') {
+                    this.options.noItemsCallback();
+                }
+            }
         },
 
         // toggle dropDown visible
@@ -32994,7 +32999,7 @@ define('__component__$select@husky',[], function() {
             basicStructure: function(defaultLabel, icon) {
                 var iconSpan = '', dropdownToggle = '';
                 if (!!icon) {
-                    iconSpan = '<span class="icon-'+ icon +' icon"></span>';
+                    iconSpan = '<span class="icon-' + icon + ' icon"></span>';
                 }
                 if (!!this.options.data && !!this.options.data.length) {
                     dropdownToggle = '<span class="dropdown-toggle inline-block"></span>';
@@ -33003,10 +33008,10 @@ define('__component__$select@husky',[], function() {
                     '<div class="husky-select-container">',
                     '    <div class="dropdown-label pointer">',
                     '       <div class="checkbox">',
-                                iconSpan,
+                    iconSpan,
                     '           <span class="' + constants.labelClass + '">', defaultLabel, '</span>',
                     '       </div>',
-                            dropdownToggle,
+                    dropdownToggle,
                     '   </div>',
                     '   <div class="grid-row dropdown-list dropdown-shadow hidden ' + constants.dropdownContainerClass + '">',
                     '       <ul class="' + constants.listClass + '"></ul>',
@@ -34168,7 +34173,8 @@ define('__component__$ckeditor@husky',[], function() {
 
     var defaults = {
             initializedCallback: null,
-            instanceName: null
+            instanceName: null,
+            godMode: false
         },
 
         /**
@@ -34208,9 +34214,14 @@ define('__component__$ckeditor@husky',[], function() {
             delete config._ref;
             delete config.require;
             delete config.element;
+            delete config.godMode;
 
             // allow img tags to have any class (*) and any attribute [*]
             config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title]';
+            // enable all content
+            if (!!this.options.godMode) {
+                config.allowedContent = true;
+            }
 
             return config;
         };
@@ -38259,3 +38270,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
