@@ -24,6 +24,11 @@
         .checkbox {
             padding-right: 20px;
         }
+        .icon {
+            float: left;
+            font-size: 15px;
+            padding-right: 4px;
+        }
         .dropdown-toggle {
             position: absolute;
             top: 0px;
@@ -126,6 +131,16 @@
                 top: auto;
                 bottom: -3px;
             }
+        }
+    }
+
+    &.action {
+        .dropdown-label {
+            background: $blue;
+            color: $white;
+        }
+        .dropdown-toggle::after {
+          border-top-color: $white;
         }
     }
 
