@@ -56,7 +56,8 @@ define([], function() {
             deselectFieldKey: 'deselectindex',
             deselectFieldDefaultValue: '',
             disabledClass: 'disabled',
-            dropdownTopClass: 'top'
+            dropdownTopClass: 'top',
+            divider: 'divider'
         },
 
         /**
@@ -237,6 +238,11 @@ define([], function() {
             this.sandbox.dom.append(this.$list, $item);
         },
 
+        addDivider: function(){
+            var $item = this.sandbox.dom.$('<hr class="divider"/>');
+            this.sandbox.dom.append(this.$list, $item);
+        },
+
         // generate dropDown with given items
         generateDropDown: function(items) {
             if (typeof this.options.deselectField === 'string' && this.options.deselectField !== 'false') {
@@ -245,11 +251,19 @@ define([], function() {
             if (items.length > 0) {
                 if (typeof(items[0]) === 'string') {
                     this.sandbox.util.each(items, function(index, value) {
-                        this.addDropdownElement(index, value);
+                        if(value === constants.divider) {
+                            this.addDivider();
+                        } else {
+                            this.addDropdownElement(index, value);
+                        }
                     }.bind(this));
                 } else if (typeof(items[0]) === 'object') {
                     this.sandbox.util.each(items, function(index, value) {
-                        this.addDropdownElement(value.id, value[this.options.valueName], !!value.disabled && value.disabled);
+                        if(value === constants.divider) {
+                            this.addDivider();
+                        } else {
+                            this.addDropdownElement(value.id, value[this.options.valueName], !!value.disabled && value.disabled);
+                        }
                     }.bind(this));
                 }
                 this.changeLabel();
