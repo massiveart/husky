@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -32339,6 +32340,7 @@ define('__component__$dependent-select@husky',[],function() {
  * @param {Boolean} [options.fixedLabel] If true the label never gets changed
  * @param {String} [options.icon] icon to set into the label
  * @param {Function} [options.noItemsCallback] callback function which gets executed at click on label if no dropdown-items exist
+ * @param {Boolean} [options.repeatSelect] If true dropdown item can be selected n-times in succession
  */
 
 define('__component__$select@husky',[], function() {
@@ -32362,7 +32364,8 @@ define('__component__$select@husky',[], function() {
             emitValues: false,
             fixedLabel: false,
             icon: null,
-            noItemsCallback: null
+            noItemsCallback: null,
+            repeatSelect: false
         },
 
         constants = {
@@ -32663,7 +32666,7 @@ define('__component__$select@husky',[], function() {
                 } else if (index === -1) {
                     this.uncheckAll(key);
                     // same element was selected
-                } else {
+                } else if (this.options.repeatSelect !== true) {
                     this.hideDropDown();
                     return;
                 }
@@ -38430,4 +38433,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-
