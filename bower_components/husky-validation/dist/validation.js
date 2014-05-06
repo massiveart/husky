@@ -1,3 +1,4 @@
+
 /*
  * This file is part of the Husky Validation.
  *
@@ -1896,7 +1897,7 @@ define('type/readonly-select',[
                     var id = this.$el.data('id'),
                         i, len;
 
-                    for (i = -1, len = this.options.data.length; i++ < len;) {
+                    for (i = -1, len = this.options.data.length; ++i < len;) {
                         if (this.options.data[i][this.options.idProperty] === id) {
                             return this.options.data[i];
                         }
@@ -2526,4 +2527,3 @@ define('validator/regex',[
     };
 
 });
-
