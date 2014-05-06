@@ -20,11 +20,30 @@ define(function() {
     var datagrid,
 
         defaults = {
-
+            matchings: []
         },
 
         constants = {
-            containerClass: 'thumbnail-container'
+            containerClass: 'thumbnail-container',
+            itemClass: 'item',
+            smallClass: 'small',
+            titleClass: 'title',
+            extensionClass: 'extension',
+            sizeClass: 'size',
+            thumbnailSrcProperty: 'thumb',
+            thumbnailAltProperty: 'alt',
+            idProperty: 'id'
+        },
+
+        templates = {
+            itemSmall: [
+                '<div class="'+ constants.itemClass +' '+ constants.smallClass +'">',
+                '<img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
+                '<span class="'+ constants.titleClass +'"><%= title %></span>',
+                '<span class="'+ constants.extensionClass +'"><%= extension %></span>',
+                '<span class="'+ constants.sizeClass +'"><%= fileSize %></span>',
+                '</div>'
+            ].join('')
         };
 
     return {
@@ -70,12 +89,48 @@ define(function() {
         },
 
         /**
-         * Renders the actual thumbnails
+         * Parses the data and passes it to a render function
          */
         renderThumbnails: function() {
-            for (var i = -1, length = this.data.embedded.length; ++i < length;) {
-                console.log(this.data.embedded[i]);
-            }
+            var imgSrc, imgAlt, title, extension, fileSize, id;
+
+            // loop through each data record
+            this.sandbox.util.foreach(this.data.embedded, function(record) {
+                imgSrc = imgAlt = title = extension = fileSize = '';
+
+                // foreach matching configured get the corresponding datum from the record
+                this.sandbox.util.foreach(this.options.matchings, function(matching) {
+
+                    if (matching.type === datagrid.types.THUMBNAIL) {
+                        imgSrc = record[matching.attribute][constants.thumbnailSrcProperty];
+                        imgAlt = record[matching.attribute][constants.thumbnailAltProperty];
+                    } else if (matching.type === datagrid.types.TITLE) {
+                        title = record[matching.attribute];
+                    } else if (matching.type === datagrid.types.EXTENSION) {
+                        extension = record[matching.attribute];
+                    } else if (matching.type === datagrid.types.FILESIZE) {
+                        fileSize = record[matching.attribute];
+                    }
+                }.bind(this));
+
+                id = record[constants.idProperty]
+
+                // pass the found data to a render method
+                this.renderThumbnail(id, imgSrc, imgAlt, title, extension, fileSize);
+            }.bind(this));
+        },
+
+        /**
+         * Renders the actual thumbnail element
+         * @param id {String|Number} the identifier of the data record
+         * @param imgSrc {String} the thumbnail src of the data record
+         * @param imgAlt {String} the thumbnail alt tag of the data record
+         * @param title {String} the title of the data record
+         * @param extension {String} the extension of the data record
+         * @param fileSize {String} the fileSize of the data record
+         */
+        renderThumbnail: function(id, imgSrc, imgAlt, title, extension, fileSize) {
+            console.log(id, imgSrc, imgAlt, title, extension, fileSize);
         },
 
         /**

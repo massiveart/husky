@@ -16,12 +16,6 @@
  * @param {Object} [options.paginationOptions] Configuration Object for the pagination
  * @param {Object} [options.viewOptions] Configuration Object for the view
  * @param {Boolean} [options.sortable] Defines if records are sortable
- * @param {Array} [options.columns] configuration array of columns if fieldsData isn't set
- * @param {String} [options.columns.content] column title
- * @param {String} [options.columns.width] width of column (used by the table view)
- * @param {String} [options.columns.class] css class of the column
- * @param {String} [options.columns.type] type of the column. Used to manipulate its content (e.g. 'date')
- * @param {String} [options.columns.attribute] mapping information to data (if not set it will just iterate through attributes)
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search events
  * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
@@ -51,7 +45,6 @@
                 },
                 sortable: false,
                 excludeFields: ['id'],
-                columns: [],
                 fieldsData: null,
                 url: null,
                 data: null,
@@ -62,7 +55,11 @@
             },
 
             types = {
-                DATE: 'date'
+                DATE: 'date',
+                THUMBNAIL: 'thumbnail',
+                TITLE: 'title',
+                EXTENSION: 'extension',
+                FILESIZE: 'filesize',
             },
 
             decorators = {
@@ -283,6 +280,9 @@
                 // extend default options and set variables
                 this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
+                this.matchings = null;
+                this.types = types;
+
                 this.gridViews = {};
                 this.viewId = this.options.view;
 
@@ -320,7 +320,7 @@
                     if (!!this.options.fieldsData) {
                         fieldsData = this.parseFieldsData(this.options.fieldsData);
                         url += '&fields=' + fieldsData.urlFields;
-                        this.options.columns = fieldsData.columns;
+                        this.matchings = fieldsData.matchings;
                     }
 
                     this.sandbox.logger.log('load data from url');
@@ -375,7 +375,7 @@
 
                 }.bind(this));
                 return {
-                    columns: data,
+                    matchings: data,
                     urlFields: urlfields.join(',')
                 };
             },
@@ -997,7 +997,9 @@
                 template = this.sandbox.uritemplate.parse(this.data.links.filter);
                 url = this.sandbox.uritemplate.expand(template, {fieldsList: parsed.urlFields.split(',')});
 
-                this.options.columns = parsed.columns;
+                this.matchings = parsed.matchings;
+                // pass new matchings to the view
+                this.gridViews[this.viewId].options.matchings = this.matchings;
 
                 this.load({
                     url: url,

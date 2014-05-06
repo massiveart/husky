@@ -17,6 +17,13 @@
  * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
  * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
  *
+ * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
+ * @param {String} [options.matchings.content] column title
+ * @param {String} [options.matchings.width] width of column (used by the table view)
+ * @param {String} [options.matchings.class] css class of the column
+ * @param {String} [options.matchings.type] type of the column. Used to manipulate its content (e.g. 'date')
+ * @param {String} [options.matchings.attribute] mapping information to data (if not set it will just iterate through attributes)
+ *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
@@ -48,7 +55,8 @@ define(function() {
             validationDebug: false,
             addRowTop: true,
             startTabIndex: 99999,
-            columnMinWidth: '70px'
+            columnMinWidth: '70px',
+            matchings: []
         },
 
         constants = {
@@ -365,7 +373,7 @@ define(function() {
 
             this.$table = $table = this.sandbox.dom.createElement('<table' + (!!this.options.validationDebug ? 'data-debug="true"' : '' ) + '/>');
 
-            if (!!this.data.head || !!datagrid.options.columns) {
+            if (!!this.data.head || !!this.options.matchings) {
                 $thead = this.sandbox.dom.createElement('<thead/>');
                 this.sandbox.dom.append($thead, this.prepareTableHead());
                 this.sandbox.dom.append($table, $thead);
@@ -404,7 +412,7 @@ define(function() {
                 tblColumnStyle, minWidth;
 
             tblColumns = [];
-            headData = datagrid.options.columns || this.data.head;
+            headData = this.options.matchings || this.data.head;
 
             // add a checkbox to head row
             if (!!this.options.selectItem && !!this.options.selectItem.type) {
@@ -629,7 +637,7 @@ define(function() {
                         validationAttr += ['data-validation-', k, '="', validation[k], '" '].join('');
                     }
                 }
-                tblCellStyle = 'style="max-width:' + datagrid.options.columns[index].minWidth + '"';
+                tblCellStyle = 'style="max-width:' + this.options.matchings[index].minWidth + '"';
 
                 // call the type manipulate to manipulate the content of the cell
                 if (!!type) {

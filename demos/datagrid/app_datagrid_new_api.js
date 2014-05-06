@@ -531,36 +531,56 @@ require(['lib/husky'], function(Husky) {
                             validation:true,
                             addRowTop: true,
                             //fullWidth: true, // uncomment for full-width mode
-                            contentContainer: '#content'
+                            contentContainer: '#content',
+                            matchings: [
+                                {
+                                    content: 'Content 1',
+                                    width: "25%",
+                                    attribute: "content1",
+                                    editable: true,
+                                    validation: {
+                                        required: true
+                                    }
+                                },
+                                {
+                                    content: 'Content 2',
+                                    width: "25%",
+                                    attribute: "content2",
+                                    editable: false,
+                                    validation: {
+                                        required: true
+                                    }
+                                },
+                                {content: 'Content 3', width: "25%", attribute: "content3"},
+                                {
+                                    content: 'Date',
+                                    width: "25%",
+                                    attribute: 'date',
+                                    type: 'date'
+                                }
+                            ]
+                        },
+                        thumbnail: {
+                            matchings: [
+                                {
+                                    attribute: "content3",
+                                    type: 'thumbnail'
+                                },
+                                {
+                                    attribute: "content1",
+                                    type: 'title'
+                                },
+                                {
+                                    attribute: "content2",
+                                    type: 'extension'
+                                },
+                                {
+                                    attribute: 'date',
+                                    type: 'filesize'
+                                }
+                            ]
                         }
                     },
-                    columns: [
-                        {
-                            content: 'Content 1',
-                            width: "25%",
-                            attribute: "content1",
-                            editable: true,
-                            validation: {
-                                required: true
-                            }
-                        },
-                        {
-                            content: 'Content 2',
-                            width: "25%",
-                            attribute: "content2",
-                            editable: false,
-                            validation: {
-                                required: true
-                            }
-                        },
-                        {content: 'Content 3', width: "25%", attribute: "content3"},
-                        {
-                            content: 'Date',
-                            width: "25%",
-                            attribute: 'date',
-                            type: 'date'
-                        }
-                    ],
                     sortable: true,
                     searchInstanceName: 'test',
                     columnOptionsInstanceName: '',
