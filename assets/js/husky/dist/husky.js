@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -35452,7 +35451,7 @@ define('__component__$overlay@husky',[], function() {
                     return;
                 }
                 this.sandbox.dom.preventDefault(event);
-                if (this.executeCallback(this.options.okCallback) !== false) {
+                if (this.executeCallback(this.options.okCallback, this.sandbox.dom.find(constants.contentSelector, this.overlay.$el)) !== false) {
                     this.closeOverlay();
                 }
             }.bind(this));
@@ -35560,10 +35559,11 @@ define('__component__$overlay@husky',[], function() {
         /**
          * Executes a passed callback
          * @param callback {Function} callback to execute
+         * @param data {Object} dom content element
          */
-        executeCallback: function(callback) {
+        executeCallback: function(callback, data) {
             if (typeof callback === 'function') {
-                return callback();
+                return callback(data);
             }
         }
     };
@@ -38189,3 +38189,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
