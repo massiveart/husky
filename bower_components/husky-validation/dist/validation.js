@@ -1406,6 +1406,12 @@ define('form',[
                     return that.initFields.call(this, $el);
                 },
 
+                removeFields: function($el) {
+                    Util.getFields($el).each(function(i, item) {
+                        this.removeField(item);
+                    }.bind(this));
+                },
+
                 removeField: function(selector) {
                     var $element = $(selector),
                         el = $element.data('element');
@@ -1884,7 +1890,7 @@ define('type/readonly-select',[
                     // find value in data
                     if (data.length > 0) {
                         for (i = -1, len = data.length; ++i < len;) {
-                            if (data[i].hasOwnProperty(idProperty) && data[i][idProperty] === value) {
+                            if (data[i].hasOwnProperty(idProperty) && data[i][idProperty].toString() === value.toString()) {
                                 this.$el.html(data[i][this.options.outputProperty]);
                                 break;
                             }
@@ -1896,8 +1902,8 @@ define('type/readonly-select',[
                     var id = this.$el.data('id'),
                         i, len;
 
-                    for (i = -1, len = this.options.data.length; i++ < len;) {
-                        if (this.options.data[i][this.options.idProperty] === id) {
+                    for (i = -1, len = this.options.data.length; ++i < len;) {
+                        if (this.options.data[i][this.options.idProperty].toString() === id.toString()) {
                             return this.options.data[i];
                         }
                     }

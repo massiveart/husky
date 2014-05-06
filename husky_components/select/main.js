@@ -25,8 +25,13 @@
  * @param {Array} [options.preSelectedElements] allows preselection of fields by defining the id attributes or strings
  * @param {Function} [options.selectCallback] callbackfunction, when element is selected
  * @param {String} [options.valueName] name of property which should be used
- * @param {String} [options.style] "normal", "small" or "big" for different appearance
+ * @param {String} [options.style] "normal", "small", "big", "action" for different appearance
+ * @param {String} [options.skin] style class to set to the elements component (e.g 'white')
  * @param {Boolean} [options.emitValues] If true the value is emited with events instead of the id
+ * @param {Boolean} [options.fixedLabel] If true the label never gets changed
+ * @param {String} [options.icon] icon to set into the label
+ * @param {Function} [options.noItemsCallback] callback function which gets executed at click on label if no dropdown-items exist
+ * @param {Boolean} [options.repeatSelect] If true dropdown item can be selected n-times in succession
  */
 
 define([], function() {
@@ -46,6 +51,7 @@ define([], function() {
             selectCallback: null,
             deselectCallback: null,
             style: 'normal',
+            skin: '',
             emitValues: false,
             fixedLabel: false,
             icon: null,
@@ -171,14 +177,21 @@ define([], function() {
         render: function() {
 
             var $originalElement = this.sandbox.dom.$(this.options.el),
-                button = this.sandbox.dom.createElement(this.template.basicStructure.call(this, this.options.defaultLabel));
+                button = this.sandbox.dom.createElement(
+                    this.template.basicStructure.call(this, this.options.defaultLabel, this.options.icon)
+                );
             this.sandbox.dom.append($originalElement, button);
 
             if (this.options.style === 'small') {
                 this.sandbox.dom.addClass(button, 'small');
             } else if (this.options.style === 'big') {
                 this.sandbox.dom.addClass(button, 'big');
+            } else if (this.options.style === 'action') {
+                this.sandbox.dom.addClass(button, 'action');
             }
+
+            // add skin style
+            this.sandbox.dom.addClass(button, this.options.skin);
 
             this.$list = this.$find('.' + constants.listClass);
             this.$dropdownContainer = this.$find('.' + constants.dropdownContainerClass);
@@ -218,9 +231,9 @@ define([], function() {
             // TODO load data from url
         },
 
-        addDropdownElement: function(id, value, disabled) {
+        addDropdownElement: function(id, value, disabled, callback) {
             var $item,
-                idString = (!!id || id === 0) ? id.toString() : 'null';
+                idString = (!!id || id === 0) ? id.toString() : this.sandbox.util.uniqueId();
             if (this.options.preSelectedElements.indexOf(id) >= 0 || this.options.preSelectedElements.indexOf(value) >= 0) {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, 'checked'));
                 this.selectedElements.push(idString);
@@ -232,6 +245,11 @@ define([], function() {
                 }
             } else {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, ''));
+            }
+
+            // store callback if callback is set
+            if (typeof callback === 'function') {
+                this.sandbox.dom.data($item, 'selectCallback', callback);
             }
 
             if (!!disabled && disabled === true) {
@@ -253,7 +271,7 @@ define([], function() {
                     }.bind(this));
                 } else if (typeof(items[0]) === 'object') {
                     this.sandbox.util.each(items, function(index, value) {
-                        this.addDropdownElement(value.id, value[this.options.valueName], !!value.disabled && value.disabled);
+                        this.addDropdownElement(value.id, value[this.options.valueName], !!value.disabled, value.callback);
                     }.bind(this));
                 }
                 this.changeLabel();
@@ -265,7 +283,7 @@ define([], function() {
         bindDOMEvents: function() {
 
             // toggle drop-down
-            this.sandbox.dom.on(this.$el, 'click', this.toggleDropDown.bind(this), '.dropdown-label');
+            this.sandbox.dom.on(this.$el, 'click', this.labelClickHandler.bind(this), '.dropdown-label');
 
             // click on single item
             this.sandbox.dom.on(this.$el, 'click', function(event) {
@@ -323,9 +341,10 @@ define([], function() {
         // trigger event with clicked item
         clickItem: function(event) {
 
-            var key, value, $checkbox, index;
+            var key, value, $checkbox, index, callback;
 
             key = this.sandbox.dom.attr(event.currentTarget, 'data-id');
+            callback = this.sandbox.dom.data(event.currentTarget, 'selectCallback');
             index = this.selectedElements.indexOf(key);
 
             // if single select then uncheck all results
@@ -377,6 +396,11 @@ define([], function() {
                 key = value;
             }
 
+            // execute callback if configured
+            if (typeof callback === 'function') {
+                callback();
+            }
+
             if (index >= 0) {
                 this.triggerDeselect(key);
             } else {
@@ -415,17 +439,34 @@ define([], function() {
         },
 
         changeLabel: function() {
-            if (this.selectedElements.length === this.options.data.length && this.options.multipleSelect === true) {
-                this.sandbox.dom.text(this.$label, this.options.checkedAllLabel);
-            } else if (this.selectedElements.length === 0) {
-                this.sandbox.dom.text(this.$label, this.options.defaultLabel);
-            } else {
+            if (this.options.fixedLabel !== true) {
+                if (this.selectedElements.length === this.options.data.length && this.options.multipleSelect === true) {
+                    this.sandbox.dom.text(this.$label, this.options.checkedAllLabel);
+                } else if (this.selectedElements.length === 0) {
+                    this.sandbox.dom.text(this.$label, this.options.defaultLabel);
+                } else {
 
-                var text = "";
-                this.sandbox.util.each(this.selectedElementsValues, function(index, value) {
-                    text += ' ' + value + ',';
-                });
-                this.sandbox.dom.text(this.$label, text.substring(1, text.length - 1));
+                    var text = "";
+                    this.sandbox.util.each(this.selectedElementsValues, function(index, value) {
+                        text += ' ' + value + ',';
+                    });
+                    this.sandbox.dom.text(this.$label, text.substring(1, text.length - 1));
+                }
+            }
+        },
+
+        /**
+         * Handles the click on the drodpwn label
+         */
+        labelClickHandler: function() {
+            // if dropdown is not empty
+            if (!this.sandbox.dom.is(this.$find('.' + constants.listClass), ':empty')) {
+                this.toggleDropDown();
+            } else {
+                // else execute a no-items-callback if it exists
+                if (typeof this.options.noItemsCallback === 'function') {
+                    this.options.noItemsCallback();
+                }
             }
         },
 
@@ -452,8 +493,7 @@ define([], function() {
             var ddHeight = this.sandbox.dom.height(this.$dropdownContainer),
                 ddTop = this.sandbox.dom.offset(this.$dropdownContainer).top,
                 windowHeight = this.sandbox.dom.height(this.sandbox.dom.window),
-                scrollTop = this.sandbox.dom.scrollTop(this.sandbox.dom.window),
-                hasTopClass = this.sandbox.dom.hasClass(this.$dropdownContainer, constants.dropdownTopClass);
+                scrollTop = this.sandbox.dom.scrollTop(this.sandbox.dom.window);
 
             // check if dropdown container overlaps bottom of browser
             if (ddHeight + ddTop > windowHeight + scrollTop) {
@@ -486,14 +526,22 @@ define([], function() {
         },
 
         template: {
-            basicStructure: function(defaultLabel) {
+            basicStructure: function(defaultLabel, icon) {
+                var iconSpan = '', dropdownToggle = '';
+                if (!!icon) {
+                    iconSpan = '<span class="icon-' + icon + ' icon"></span>';
+                }
+                if (!!this.options.data && !!this.options.data.length) {
+                    dropdownToggle = '<span class="dropdown-toggle inline-block"></span>';
+                }
                 return [
                     '<div class="husky-select-container">',
                     '    <div class="dropdown-label pointer">',
                     '       <div class="checkbox">',
+                    iconSpan,
                     '           <span class="' + constants.labelClass + '">', defaultLabel, '</span>',
                     '       </div>',
-                    '       <span class="dropdown-toggle inline-block"></span>',
+                    dropdownToggle,
                     '   </div>',
                     '   <div class="grid-row dropdown-list dropdown-shadow hidden ' + constants.dropdownContainerClass + '">',
                     '       <ul class="' + constants.listClass + '"></ul>',

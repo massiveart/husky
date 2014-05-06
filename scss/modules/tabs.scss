@@ -52,6 +52,23 @@
             }
         }
     }
+
+    /**
+    *** Overlay Skin
+    **/
+    &.overlay {
+        background-color: transparent;
+        border-bottom: none;
+        padding: 10px 0 0 20px;
+        ul {
+            li {
+                &.is-selected {
+                  background-color: $white;
+                }
+            }
+        }
+
+    }
 }
 
 

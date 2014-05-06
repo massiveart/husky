@@ -33,7 +33,7 @@
         <script src="../js/require.js"></script>
 
         <script type="text/javascript">
-
+            var App;
 
             require.config({
                 baseUrl: '../../'
@@ -70,6 +70,7 @@
                             }
                         ];
 
+                App = app;
 
                 app.start().then(function() {
                     app.logger.log('Aura started...');
