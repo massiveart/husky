@@ -47,6 +47,10 @@ define([], function() {
             deselectCallback: null,
             style: 'normal',
             emitValues: false,
+            fixedLabel: false,
+            icon: null,
+            noItemsCallback: null,
+            repeatSelect: false
         },
 
         constants = {
@@ -334,7 +338,7 @@ define([], function() {
                 } else if (index === -1) {
                     this.uncheckAll(key);
                     // same element was selected
-                } else {
+                } else if (this.options.repeatSelect !== true) {
                     this.hideDropDown();
                     return;
                 }
