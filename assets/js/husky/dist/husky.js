@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -34123,7 +34122,8 @@ define('__component__$ckeditor@husky',[], function() {
 
     var defaults = {
             initializedCallback: null,
-            instanceName: null
+            instanceName: null,
+            godMode: false
         },
 
         /**
@@ -34163,9 +34163,14 @@ define('__component__$ckeditor@husky',[], function() {
             delete config._ref;
             delete config.require;
             delete config.element;
+            delete config.godMode;
 
             // allow img tags to have any class (*) and any attribute [*]
             config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title]';
+            // enable all content
+            if (!!this.options.godMode) {
+                config.allowedContent = true;
+            }
 
             return config;
         };
@@ -38214,3 +38219,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
