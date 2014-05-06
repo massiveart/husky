@@ -26543,7 +26543,6 @@ define('__component__$column-options@husky',[],function() {
  * @constructor
  *
  * @param {Object} [viewOptions] Configuration object
- * @param {Boolean} [options.autoRemoveHandling] raises an event before a row is removed
  * @param {Boolean} [options.editable] will not set class is-selectable to prevent hover effect for complete rows
  * @param {String} [options.className] additional classname for the wrapping div
  * @param {Boolean} [options.removeRow] displays in the last column an icon to remove a row
@@ -26557,6 +26556,13 @@ define('__component__$column-options@husky',[],function() {
  * @param {String} [options.columnMinWidth] sets the minimal width of table columns
  * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
  * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
+ *
+ * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
+ * @param {String} [options.matchings.content] column title
+ * @param {String} [options.matchings.width] width of column (used by the table view)
+ * @param {String} [options.matchings.class] css class of the column
+ * @param {String} [options.matchings.type] type of the column. Used to manipulate its content (e.g. 'date')
+ * @param {String} [options.matchings.attribute] mapping information to data (if not set it will just iterate through attributes)
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -26576,7 +26582,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
     var datagrid,
 
         defaults = {
-            autoRemoveHandling: true,
             editable: false,
             className: 'datagridcontainer',
             fullWidth: false,
@@ -26590,7 +26595,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             validationDebug: false,
             addRowTop: true,
             startTabIndex: 99999,
-            columnMinWidth: '70px'
+            columnMinWidth: '70px',
+            matchings: []
         },
 
         constants = {
@@ -26907,7 +26913,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
             this.$table = $table = this.sandbox.dom.createElement('<table' + (!!this.options.validationDebug ? 'data-debug="true"' : '' ) + '/>');
 
-            if (!!this.data.head || !!datagrid.options.columns) {
+            if (!!this.data.head || !!this.options.matchings) {
                 $thead = this.sandbox.dom.createElement('<thead/>');
                 this.sandbox.dom.append($thead, this.prepareTableHead());
                 this.sandbox.dom.append($table, $thead);
@@ -26946,7 +26952,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 tblColumnStyle, minWidth;
 
             tblColumns = [];
-            headData = datagrid.options.columns || this.data.head;
+            headData = this.options.matchings || this.data.head;
 
             // add a checkbox to head row
             if (!!this.options.selectItem && !!this.options.selectItem.type) {
@@ -27128,6 +27134,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
                 if (!!row.id) {
                     this.sandbox.dom.data($tableRow, 'id', row.id);
+                    this.sandbox.dom.attr($tableRow, 'data-id', row.id);
                 }
             }
             return $tableRow;
@@ -27170,7 +27177,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                         validationAttr += ['data-validation-', k, '="', validation[k], '" '].join('');
                     }
                 }
-                tblCellStyle = 'style="max-width:' + datagrid.options.columns[index].minWidth + '"';
+                tblCellStyle = 'style="max-width:' + this.options.matchings[index].minWidth + '"';
 
                 // call the type manipulate to manipulate the content of the cell
                 if (!!type) {
@@ -27505,15 +27512,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         prepareRemoveRow: function(event) {
             this.sandbox.dom.stopPropagation(event);
-
-            if (!!this.options.autoRemoveHandling) {
-                this.removeRecord(event);
-            } else {
-                var $tblRow, id;
-
-                $tblRow = this.sandbox.dom.closest(event.currentTarget, 'tr')[0];
-                id = this.sandbox.dom.data($tblRow, 'id');
-            }
+            this.removeRecord(event);
         },
 
         /**
@@ -27783,11 +27782,30 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
     var datagrid,
 
         defaults = {
-
+            matchings: []
         },
 
         constants = {
+            containerClass: 'thumbnail-container',
+            itemClass: 'item',
+            smallClass: 'small',
+            titleClass: 'title',
+            extensionClass: 'extension',
+            sizeClass: 'size',
+            thumbnailSrcProperty: 'thumb',
+            thumbnailAltProperty: 'alt',
+            idProperty: 'id'
+        },
 
+        templates = {
+            itemSmall: [
+                '<div class="'+ constants.itemClass +' '+ constants.smallClass +'">',
+                '<img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
+                '<span class="'+ constants.titleClass +'"><%= title %></span>',
+                '<span class="'+ constants.extensionClass +'"><%= extension %></span>',
+                '<span class="'+ constants.sizeClass +'"><%= fileSize %></span>',
+                '</div>'
+            ].join('')
         };
 
     return {
@@ -27823,12 +27841,58 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          * Method to render data in this view
          */
         render: function(data, $container) {
-            this.$el = this.sandbox.dom.createElement('<div/>');
+            this.$el = this.sandbox.dom.createElement('<div class="'+ constants.containerClass +'"/>');
             this.sandbox.dom.append($container, this.$el);
+            this.data = data;
 
-            this.sandbox.dom.html(this.$el, JSON.stringify(data));
+            this.renderThumbnails();
 
             this.rendered = true;
+        },
+
+        /**
+         * Parses the data and passes it to a render function
+         */
+        renderThumbnails: function() {
+            var imgSrc, imgAlt, title, extension, fileSize, id;
+
+            // loop through each data record
+            this.sandbox.util.foreach(this.data.embedded, function(record) {
+                imgSrc = imgAlt = title = extension = fileSize = '';
+
+                // foreach matching configured get the corresponding datum from the record
+                this.sandbox.util.foreach(this.options.matchings, function(matching) {
+
+                    if (matching.type === datagrid.types.THUMBNAIL) {
+                        imgSrc = record[matching.attribute][constants.thumbnailSrcProperty];
+                        imgAlt = record[matching.attribute][constants.thumbnailAltProperty];
+                    } else if (matching.type === datagrid.types.TITLE) {
+                        title = record[matching.attribute];
+                    } else if (matching.type === datagrid.types.EXTENSION) {
+                        extension = record[matching.attribute];
+                    } else if (matching.type === datagrid.types.FILESIZE) {
+                        fileSize = record[matching.attribute];
+                    }
+                }.bind(this));
+
+                id = record[constants.idProperty]
+
+                // pass the found data to a render method
+                this.renderThumbnail(id, imgSrc, imgAlt, title, extension, fileSize);
+            }.bind(this));
+        },
+
+        /**
+         * Renders the actual thumbnail element
+         * @param id {String|Number} the identifier of the data record
+         * @param imgSrc {String} the thumbnail src of the data record
+         * @param imgAlt {String} the thumbnail alt tag of the data record
+         * @param title {String} the title of the data record
+         * @param extension {String} the extension of the data record
+         * @param fileSize {String} the fileSize of the data record
+         */
+        renderThumbnail: function(id, imgSrc, imgAlt, title, extension, fileSize) {
+            console.log(id, imgSrc, imgAlt, title, extension, fileSize);
         },
 
         /**
@@ -28193,12 +28257,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
  * @param {Object} [options.paginationOptions] Configuration Object for the pagination
  * @param {Object} [options.viewOptions] Configuration Object for the view
  * @param {Boolean} [options.sortable] Defines if records are sortable
- * @param {Array} [options.columns] configuration array of columns if fieldsData isn't set
- * @param {String} [options.columns.content] column title
- * @param {String} [options.columns.width] width of column (used by the table view)
- * @param {String} [options.columns.class] css class of the column
- * @param {String} [options.columns.type] type of the column. Used to manipulate its content (e.g. 'date')
- * @param {String} [options.columns.attribute] mapping information to data (if not set it will just iterate through attributes)
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search events
  * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
@@ -28217,7 +28275,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
          *    Default values for options
          */
         var defaults = {
-                view: 'table',
+                view: 'thumbnail',
                 viewOptions: {
                     table: {},
                     thumbnail: {}
@@ -28228,7 +28286,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 },
                 sortable: false,
                 excludeFields: ['id'],
-                columns: [],
                 fieldsData: null,
                 url: null,
                 data: null,
@@ -28239,7 +28296,11 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             },
 
             types = {
-                DATE: 'date'
+                DATE: 'date',
+                THUMBNAIL: 'thumbnail',
+                TITLE: 'title',
+                EXTENSION: 'extension',
+                FILESIZE: 'filesize',
             },
 
             decorators = {
@@ -28460,6 +28521,9 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 // extend default options and set variables
                 this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
+                this.matchings = null;
+                this.types = types;
+
                 this.gridViews = {};
                 this.viewId = this.options.view;
 
@@ -28497,7 +28561,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                     if (!!this.options.fieldsData) {
                         fieldsData = this.parseFieldsData(this.options.fieldsData);
                         url += '&fields=' + fieldsData.urlFields;
-                        this.options.columns = fieldsData.columns;
+                        this.matchings = fieldsData.matchings;
                     }
 
                     this.sandbox.logger.log('load data from url');
@@ -28552,7 +28616,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
                 }.bind(this));
                 return {
-                    columns: data,
+                    matchings: data,
                     urlFields: urlfields.join(',')
                 };
             },
@@ -29174,7 +29238,9 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 template = this.sandbox.uritemplate.parse(this.data.links.filter);
                 url = this.sandbox.uritemplate.expand(template, {fieldsList: parsed.urlFields.split(',')});
 
-                this.options.columns = parsed.columns;
+                this.matchings = parsed.matchings;
+                // pass new matchings to the view
+                this.gridViews[this.viewId].options.matchings = this.matchings;
 
                 this.load({
                     url: url,
