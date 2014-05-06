@@ -24,7 +24,8 @@ define([], function() {
 
     var defaults = {
             initializedCallback: null,
-            instanceName: null
+            instanceName: null,
+            godMode: false
         },
 
         /**
@@ -64,9 +65,14 @@ define([], function() {
             delete config._ref;
             delete config.require;
             delete config.element;
+            delete config.godMode;
 
             // allow img tags to have any class (*) and any attribute [*]
             config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title]';
+            // enable all content
+            if (!!this.options.godMode) {
+                config.allowedContent = true;
+            }
 
             return config;
         };

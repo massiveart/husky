@@ -27,6 +27,7 @@
  * @params {Boolean} [options.openOnStart] if true overlay is opened after initialization
  * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
  * @params {Boolean} [options.backdrop] if true backdrop will be shown
+ * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '' or 'wide'
  * @params {Boolean} [options.backdropClose] if true overlay closes with click on backdrop
  * @params {String} [options.backdropColor] Color of the backdrop
  * @params {Number} [options.backdropAlpha] Alpha-value of the backdrop
@@ -70,6 +71,7 @@ define([], function() {
             backdrop: true,
             backdropClose: true,
             backdropColor: '#000000',
+            skin: '',
             backdropAlpha: 0.5,
             okInactive: false,
             type: 'normal',
@@ -147,7 +149,7 @@ define([], function() {
         /** templates for component */
             templates = {
             overlaySkeleton: [
-                '<div class="husky-overlay-container smart-content-overlay">',
+                '<div class="husky-overlay-container<%= skin %> smart-content-overlay">',
                 '<div class="overlay-header">',
                 '<span class="title"><%= title %></span>',
                 '<a class="icon-<%= closeIcon %> close-button" href="#"></a>',
@@ -462,7 +464,8 @@ define([], function() {
                 this.sandbox.util.template(templates.overlaySkeleton)({
                     title: this.options.title,
                     okIcon: this.options.okIcon,
-                    closeIcon: this.options.closeIcon
+                    closeIcon: this.options.closeIcon,
+                    skin: !!this.options.skin ? ' ' + this.options.skin : ''
                 }));
             this.overlay.$close = this.sandbox.dom.find(constants.closeSelector, this.overlay.$el);
             this.overlay.$footer = this.sandbox.dom.find(constants.footerSelector, this.overlay.$el);

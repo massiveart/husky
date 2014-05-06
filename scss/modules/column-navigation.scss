@@ -22,7 +22,7 @@
             }
         }
 
-        .navigation-loader {
+        .column-navigation-loader {
             position: relative;
             left: 0;
             top: 50%;
@@ -36,10 +36,31 @@
             display: inline-block;
             font-size: 0;
             height:100%;
+            position: relative;
+            top: 0px;
+            left: 0px;
 
-            /*&:nth-child(n+4):last-child {
-                border-right: none;
-            }*/
+            .no-page {
+                position: absolute;
+                top: 50%;
+                left: 0px;
+                height: 110px;
+                width: 100%;
+                font-size: 18px;
+                text-align: center;
+                color: $grayLightMedium2;
+                height: 160px;
+                margin-top: -55px;
+
+                .icon-file {
+                  font-size: 80px;
+                  line-height: 80px;
+                  color: $grayLightest;
+                }
+                .text {
+                    padding-top: 5px;
+                }
+            }
 
             ul {
                 list-style-type: none;

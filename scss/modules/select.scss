@@ -24,6 +24,11 @@
         .checkbox {
             padding-right: 20px;
         }
+        .icon {
+            float: left;
+            font-size: 15px;
+            padding-right: 4px;
+        }
         .dropdown-toggle {
             position: absolute;
             top: 0px;
@@ -55,7 +60,8 @@
         margin-top: 5px;
         background-color: #FFF;
         border: 1px solid $grayLighter;
-        z-index: 95;
+        z-index: 2000;
+        border-radius: $dropdownBorderRadius;
 
         &.top {
             top: inherit;
@@ -119,7 +125,8 @@
             top: 12px;
             min-width: 200px;
             max-width: 100%;
-            border-radius: 2px;
+            border-radius: $dropdownBorderRadiusSmall;
+
             &.top {
                 top: auto;
                 bottom: -3px;
@@ -128,9 +135,19 @@
     }
 
     &.white {
-         .dropdown-label {
+        .dropdown-label {
             background: $white;
-         }
+        }
+    }
+
+    &.action {
+        .dropdown-label {
+            background: $blue;
+            color: $white;
+        }
+        .dropdown-toggle::after {
+            border-top-color: $white;
+        }
     }
 
 }

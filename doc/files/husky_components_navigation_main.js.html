@@ -460,7 +460,10 @@ define(function() {
             this.sandbox.util.foreach(data.items, function(section) {
                 $sectionDiv = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;section&quot;&gt;&#x27;);
                 $sectionList = this.sandbox.dom.createElement(&#x27;&lt;ul class=&quot;section-items&quot;&gt;&#x27;);
-                this.sandbox.dom.append($sectionDiv, &#x27;&lt;div class=&quot;section-headline&quot;&gt;&lt;span class=&quot;section-headline-title&quot;&gt;&#x27; + this.sandbox.translate(section.title).toUpperCase() + &#x27;&lt;/span&gt;&lt;span class=&quot;section-toggle&quot;&gt;&lt;a href=&quot;#&quot;&gt;&#x27; + this.sandbox.translate(this.options.labels.hide) + &#x27;&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;&#x27;);
+
+                if (!!section.title) {
+                    this.sandbox.dom.append($sectionDiv, &#x27;&lt;div class=&quot;section-headline&quot;&gt;&lt;span class=&quot;section-headline-title&quot;&gt;&#x27; + this.sandbox.translate(section.title).toUpperCase() + &#x27;&lt;/span&gt;&lt;span class=&quot;section-toggle&quot;&gt;&lt;a href=&quot;#&quot;&gt;&#x27; + this.sandbox.translate(this.options.labels.hide) + &#x27;&lt;/a&gt;&lt;/span&gt;&lt;/div&gt;&#x27;);
+                }
 
                 this.sandbox.dom.append($sectionDiv, $sectionList);
                 this.sandbox.dom.append(&#x27;#navigation-item-container&#x27;, $sectionDiv);

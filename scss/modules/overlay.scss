@@ -5,129 +5,133 @@
 $OverlayBorderRadius: 3px;
 
 .husky-overlay-container {
-  width: $overlayContainerWidth;
-  position: fixed;
-  top: 0;
-  left: 50%;
-  background-color: $white;
-  border: 1px solid $grayLight;
-  z-index: 1000;
-  border-radius: $OverlayBorderRadius;
-  @include standard-box-shadow;
+    width: $overlayContainerWidth;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    background-color: $white;
+    border: 1px solid $grayLight;
+    z-index: 1000;
+    border-radius: $OverlayBorderRadius;
+    @include standard-box-shadow;
 
-  &.right-aligned {
-    left: auto;
-    right: 0;
-  }
-
-  &.draggable {
-    .overlay-header {
-      cursor: move;
-      @include user-select(none);
+    &.right-aligned {
+        left: auto;
+        right: 0;
     }
-  }
 
-  &.error {
-    .overlay-header {
-      background: $red;
-      color: $white;
-      .title {
-        color: $white;
-      }
+    &.wide {
+        width: $overlayContainerWidthWide
     }
-  }
 
-  &.warning {
-    .overlay-header {
-      background: $yellow;
-      .title {
-        color: $white;
-      }
+    &.draggable {
+        .overlay-header {
+            cursor: move;
+            @include user-select(none);
+        }
     }
-  }
+
+    &.error {
+        .overlay-header {
+            background: $red;
+            color: $white;
+            .title {
+                color: $white;
+            }
+        }
+    }
+
+    &.warning {
+        .overlay-header {
+            background: $yellow;
+            .title {
+                color: $white;
+            }
+        }
+    }
 }
 
 .overlay-header {
-  min-height: 50px;
-  background: $grayLightest;
-  position: relative;
-  border-radius: $OverlayBorderRadius $OverlayBorderRadius 0 0;
+    min-height: 50px;
+    background: $grayLightest;
+    position: relative;
+    border-radius: $OverlayBorderRadius $OverlayBorderRadius 0 0;
 
-  .title {
-    color: $grayLight;
-    font-size: 23px;
-    padding-right: 10px;
-    vertical-align: text-top;
-    display: block;
-    padding: 15px 40px 10px 20px;
-  }
+    .title {
+        color: $grayLight;
+        font-size: 23px;
+        padding-right: 10px;
+        vertical-align: text-top;
+        display: block;
+        padding: 15px 40px 10px 20px;
+    }
 
-  .close-button {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    font-size: 12px;
-    text-decoration: none;
-    color: black;
-    line-height: 12px;
-    padding: 8px;
-  }
+    .close-button {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        font-size: 12px;
+        text-decoration: none;
+        color: black;
+        line-height: 12px;
+        padding: 8px;
+    }
 
-  .tabs {
-    display: inline-block;
-  }
+    .tabs {
+        display: inline-block;
+    }
 
-  .language-changer {
-    width: 80px;
-    position: absolute;
-    bottom: 10px;
-    right: 20px;
-  }
+    .language-changer {
+        width: 80px;
+        position: absolute;
+        bottom: 10px;
+        right: 20px;
+    }
 }
 
 .overlay-footer {
-  padding: 10px;
-  border-top: 1px solid $grayLighter;
-  text-align: center;
-  border-radius: 0 0 $OverlayBorderRadius $OverlayBorderRadius;
-  @include clear-float;
+    padding: 10px;
+    border-top: 1px solid $grayLighter;
+    text-align: center;
+    border-radius: 0 0 $OverlayBorderRadius $OverlayBorderRadius;
+    @include clear-float;
 
-  .btn {
-      width: 100px;
-      margin: 0 auto;
-      padding: 0;
+    .btn {
+        width: 100px;
+        margin: 0 auto;
+        padding: 0;
 
-      &.tick {
-          width: 70px;
-          line-height: 28px;
-      }
-  }
+        &.tick {
+            width: 70px;
+            line-height: 28px;
+        }
+    }
 
-  &.center .btn {
-      margin: 0 auto;
-  }
+    &.center .btn {
+        margin: 0 auto;
+    }
 
-  &.left .btn {
-      float: left;
-      margin-right: 20px;
-  }
+    &.left .btn {
+        float: left;
+        margin-right: 20px;
+    }
 
-  &.right .btn {
-      float: right;
-      margin-left: 20px;
-  }
+    &.right .btn {
+        float: right;
+        margin-left: 20px;
+    }
 }
 
 .overlay-content {
-  padding-left: 0;
-  margin: 0 20px 10px 20px;
+    padding-left: 0;
+    margin: 0 20px 10px 20px;
 
-  .message {
-      padding: 20px 0 30px 0;
-      font-size: $alertMessageFontSize;
-      color: $black;
-      line-height: $alertMessageLineHeight;
-  }
+    .message {
+        padding: 20px 0 30px 0;
+        font-size: $alertMessageFontSize;
+        color: $black;
+        line-height: $alertMessageLineHeight;
+    }
 }
 
 .husky-overlay-backdrop {

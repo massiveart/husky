@@ -523,7 +523,7 @@ require(['lib/husky'], function(Husky) {
                     editable: true,
                     validation:true,
                     addRowTop: true,
-                    //fullWidth: true, // uncomment for full-width mode
+                    fullWidth: true, // uncomment for full-width mode
                     contentContainer: '#content',
                     columns: [
                         {
@@ -620,6 +620,10 @@ require(['lib/husky'], function(Husky) {
 
             $('#add-row').on('click', function() {
                 app.sandbox.emit('husky.datagrid.row.add', { id: "", content1: "", content2: "", content3: "" });
+            });
+
+            $('#update-url').on('click', function() {
+                app.sandbox.emit('husky.datagrid.url.update', { search: null, content1: "fdsa" });
             });
 
             app.sandbox.on('husky.datagrid.page.change', function() {
