@@ -357,7 +357,7 @@ define([], function() {
                     return;
                 }
                 this.sandbox.dom.preventDefault(event);
-                if (this.executeCallback(this.options.okCallback) !== false) {
+                if (this.executeCallback(this.options.okCallback, this.sandbox.dom.find(constants.contentSelector, this.overlay.$el)) !== false) {
                     this.closeOverlay();
                 }
             }.bind(this));
@@ -465,10 +465,11 @@ define([], function() {
         /**
          * Executes a passed callback
          * @param callback {Function} callback to execute
+         * @param data {Object} dom content element
          */
-        executeCallback: function(callback) {
+        executeCallback: function(callback, data) {
             if (typeof callback === 'function') {
-                return callback();
+                return callback(data);
             }
         }
     };
