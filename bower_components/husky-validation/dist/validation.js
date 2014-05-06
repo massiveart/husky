@@ -340,7 +340,7 @@ define('form/element',['form/util'], function(Util) {
                     var addFunction = function(typeName, options) {
                             this.requireCounter++;
                             require(['type/' + typeName], function(Type) {
-                                type = new Type(this.$el, options, form);
+                                type = new Type(this.$el, options);
 
                                 type.initialized.then(function() {
                                     Util.debug('Element Type', typeName, options);
@@ -541,23 +541,7 @@ define('form/element',['form/util'], function(Util) {
                 },
 
                 setValue: function(value) {
-                    var dfd = $.Deferred(),
-                        result;
-
-                    this.initialized.then(function() {
-                        result = type.setValue(value);
-
-                        // if setvalue returns a deferred wait for that
-                        if (!!result) {
-                            result.then(function() {
-                                dfd.resolve();
-                            });
-                        } else {
-                            dfd.resolve();
-                        }
-                    }.bind(this));
-
-                    return dfd.promise();
+                    type.setValue(value);
                 },
 
                 getValue: function(data) {
@@ -919,9 +903,7 @@ define('form/mapper',[
                         $.each($el.children(), function(key, value) {
                             if (!collection || collection.tpl === value.dataset.mapperPropertyTpl) {
                                 item = form.mapper.getData($(value));
-                                if (element.$el.data('mapperProperty').length > 1) {
-                                    item.mapperId = value.dataset.mapperId;
-                                }
+                                item.mapperId = value.dataset.mapperId;
 
                                 var keys = Object.keys(item);
                                 if (keys.length === 1) { // for value only collection
@@ -1085,16 +1067,14 @@ define('form/mapper',[
                         if (!element) {
                             element = form.addField($element);
                             element.initialized.then(function() {
-                                element.setValue(data).then(function() {
-                                    // resolve this set data
-                                    resolve();
-                                });
-                            }.bind(this));
-                        } else {
-                            element.setValue(data).then(function() {
+                                element.setValue(data);
                                 // resolve this set data
                                 resolve();
-                            });
+                            }.bind(this));
+                        } else {
+                            element.setValue(data);
+                            // resolve this set data
+                            resolve();
                         }
                     } else if (data !== null && !$.isEmptyObject(data)) {
                         count = Object.keys(data).length;
@@ -1129,14 +1109,12 @@ define('form/mapper',[
                                     if (!element) {
                                         element = form.addField($element);
                                         element.initialized.then(function() {
-                                            element.setValue(value).then(function() {
-                                                resolve();
-                                            });
+                                            element.setValue(value);
+                                            resolve();
                                         }.bind(this));
                                     } else {
-                                        element.setValue(value).then(function() {
-                                            resolve();
-                                        });
+                                        element.setValue(value);
+                                        resolve();
                                     }
                                 } else {
                                     resolve();
@@ -1154,10 +1132,9 @@ define('form/mapper',[
 
         // define mapper interface
             result = {
-                setData: function(data, $el) {
+                setData: function(data) {
                     this.collectionsSet = {};
-
-                    return that.setData.call(this, data, $el);
+                    return that.setData.call(this, data);
                 },
 
                 getData: function($el) {
@@ -1318,17 +1295,23 @@ define('form',[
                 validationSubmitEvent: true,      // avoid submit if not valid
                 mapper: true                      // mapper on/off
             },
+            dfd = null,
 
         // private functions
             that = {
                 initialize: function() {
+                    // init initialized
+                    dfd = $.Deferred();
+                    this.requireCounter = 0;
+                    this.initialized = dfd.promise();
+
                     this.$el = $(el);
                     this.options = $.extend(defaults, this.$el.data(), options);
 
                     // enable / disable debug
                     Util.debugEnabled = this.options.debug;
 
-                    this.initialized = that.initFields.call(this);
+                    that.initFields.call(this);
 
                     if (!!this.options.validation) {
                         this.validation = new Validation(this);
@@ -1344,22 +1327,20 @@ define('form',[
                 },
 
                 // initialize field objects
-                initFields: function($el) {
-                    var dfd = $.Deferred(),
-                        requireCounter = 0,
-                        resolve = function() {
-                            requireCounter--;
-                            if (requireCounter === 0) {
-                                dfd.resolve();
-                            }
-                        };
-
-                    $.each(Util.getFields($el || this.$el), function(key, value) {
-                        requireCounter++;
-                        that.addField.call(this, value, false).initialized.then(resolve.bind(this));
+                initFields: function() {
+                    $.each(Util.getFields(this.$el), function(key, value) {
+                        this.requireCounter++;
+                        that.addField.call(this, value, false).initialized.then(function() {
+                            that.resolveInitialization.call(this);
+                        }.bind(this));
                     }.bind(this));
+                },
 
-                    return dfd.promise();
+                resolveInitialization: function() {
+                    this.requireCounter--;
+                    if (this.requireCounter === 0) {
+                        dfd.resolve();
+                    }
                 },
 
                 bindValidationDomEvents: function() {
@@ -1402,10 +1383,6 @@ define('form',[
                     return element;
                 },
 
-                initFields: function($el) {
-                    return that.initFields.call(this, $el);
-                },
-
                 removeField: function(selector) {
                     var $element = $(selector),
                         el = $element.data('element');
@@ -1442,7 +1419,7 @@ define('type/default',[
 
     
 
-    return function($el, defaults, options, name, typeInterface, form) {
+    return function($el, defaults, options, name, typeInterface) {
 
         var that = {
                 initialize: function() {
@@ -1462,8 +1439,6 @@ define('type/default',[
 
             defaultInterface = {
                 name: name,
-
-                form: form,
 
                 needsValidation: function() {
                     return true;
