@@ -35047,7 +35047,7 @@ define('__component__$smart-content@husky',[], function() {
  * @params {String} [options.trigger] List of events on which the overlay should be opened
  * @params {String} [options.triggerEl] Element that triggers the overlay
  * @params {String} [options.title] the title of the overlay
- * @params {String} [options.closeIcon] icon class for the close button
+ * @params {String|Boolean} [options.closeIcon] icon class for the close button. If false no close icon will be displayed
  * @params {Function} [options.closeCallback] callback which gets executed after the overlay gets closed
  * @params {Function} [options.okCallback] callback which gets executed after the overlay gets submited
  * @params {String|Object} [options.data] HTML or DOM-object which acts as the overlay-content
@@ -35065,7 +35065,7 @@ define('__component__$smart-content@husky',[], function() {
  * @params {String} [options.okDefaultText] The default text for ok buttons
  * @params {String} [options.cancelDefaultText] The default text for cancel buttons
  * @params {String} [options.type] The type of the overlay ('normal', 'error' or 'warning')
- * @params {Array} [options.buttonsAlign] the align of the buttons in the footer ('center', 'left' or 'right')
+ * @params {Array} [options.buttonsDefaultAlign] the align of the buttons in the footer ('center', 'left' or 'right'). Can be overriden by each button individually
  *
  * @params {Object} [options.languageChanger] If set language-changer will be displayed in the header
  * @params {Array} [options.languageChanger.locales] array of locale strings for the dropdown
@@ -35107,7 +35107,7 @@ define('__component__$overlay@husky',[], function() {
             type: 'normal',
             cssClass: '',
             buttons: [],
-            buttonsAlign: 'center',
+            buttonsDefaultAlign: 'center',
             cancelDefaultText: 'Cancel',
             okDefaultText: 'Ok',
             languageChanger: null
@@ -35140,18 +35140,20 @@ define('__component__$overlay@husky',[], function() {
             warning: {
                 cssClass: 'warning',
                 backdropClose: false,
-                buttonsAlign: 'right',
                 removeOnClose: true,
                 openOnStart: true,
                 instanceName: 'warning',
+                closeIcon: false,
                 buttons: [
                     {
                         type: 'ok',
-                        inactive: false
+                        inactive: false,
+                        align: 'right'
                     },
                     {
                         type: 'cancel',
-                        inactive: false
+                        inactive: false,
+                        align: 'left'
                     }
                 ]
             },
@@ -35162,6 +35164,7 @@ define('__component__$overlay@husky',[], function() {
                 removeOnClose: true,
                 openOnStart: true,
                 instanceName: 'error',
+                closeIcon: false,
                 buttons: [
                     {
                         type: 'cancel',
@@ -35182,7 +35185,7 @@ define('__component__$overlay@husky',[], function() {
                 '<div class="husky-overlay-container<%= skin %> smart-content-overlay">',
                 '<div class="overlay-header">',
                 '<span class="title"><%= title %></span>',
-                '<a class="icon-<%= closeIcon %> close-button" href="#"></a>',
+                '<% if (!!closeIcon) { %><a class="icon-<%= closeIcon %> close-button" href="#"></a><% } %>',
                 '</div>',
                 '<div class="overlay-content"></div>',
                 '<div class="overlay-footer">',
@@ -35198,7 +35201,7 @@ define('__component__$overlay@husky',[], function() {
                 '</div>'
             ].join(''),
             cancelButton: [
-                '<div class="btn gray-dark overlay-cancel<%= classes %>">',
+                '<div class="btn gray black-text overlay-cancel<%= classes %>">',
                     '<% if (!!icon) { %>',
                     '<span class="icon-<%= icon %>"></span>',
                     '<% } %>',
@@ -35513,7 +35516,7 @@ define('__component__$overlay@husky',[], function() {
             }
 
             // add classes for various styling
-            this.sandbox.dom.addClass(this.overlay.$footer, this.options.buttonsAlign);
+            this.sandbox.dom.addClass(this.overlay.$footer, this.options.buttonsDefaultAlign);
             this.sandbox.dom.addClass(this.overlay.$el, this.options.cssClass);
         },
 
@@ -35574,6 +35577,11 @@ define('__component__$overlay@husky',[], function() {
                     text: text,
                     classes: (inactive === true) ? classes + ' inactive gray' : classes
                 }));
+
+                // add individual button align (if configured)
+                if (!!button.align) {
+                    this.sandbox.dom.addClass($button, button.align);
+                }
 
                 this.sandbox.dom.append(this.overlay.$footer, $button);
             }
@@ -35649,8 +35657,10 @@ define('__component__$overlay@husky',[], function() {
             }.bind(this));
 
             // close handler for close icon
-            this.sandbox.dom.on(this.overlay.$close, 'click',
-                this.closeHandler.bind(this));
+            if (!!this.options.closeIcon) {
+                this.sandbox.dom.on(this.overlay.$close, 'click',
+                    this.closeHandler.bind(this));
+            }
 
             // close handler for cancel buttons
             this.sandbox.dom.on(this.overlay.$footer, 'click',
