@@ -67,8 +67,6 @@ $smallFontSize: 12px;
 $reallySmallFontSize: 10px;
 $baseFontFamily: $sansFontFamily;
 $baseLineHeight: 20px;
-$alertMessageFontSize: 24px;
-$alertMessageLineHeight: 30px;
 
 $headingsFontFamily: inherit;
 $headingsFontWeight: normal;
@@ -80,18 +78,14 @@ $baseIconHalflingsFont: "Glyphicons Halflings Regular";
 
 // Componenet values
 // --------------------------------------------------
-
-
-// Buttons
-// -------------------------
- $btnBorderRadius: 4px;
+$borderRadius: 3px;
+$borderRadiusSmall: 2px;
 
 
 // Form Elements
 // -------------------------
 $inputBorderColor: $grayLighter;
 $inputBorderFocusColor: $grayLighter;
-$inputBorderRadius: 3px;
 $labelColor: $grayLighter;
 
 

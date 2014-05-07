@@ -21,13 +21,13 @@ $arrow-blue-inverse: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlb
         &.first {
             .back {
                 background: $grayLighter2;
-                border-radius: 4px 0 0 4px;
+                border-radius: $borderRadius 0 0 $borderRadius;
             }
         }
         &.last {
             .front {
               background: $grayLighter2;
-              border-radius: 0 4px 4px 0;
+              border-radius: 0 $borderRadius $borderRadius 0;
             }
         }
         &:after {
