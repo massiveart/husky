@@ -56,8 +56,7 @@ define([], function() {
             deselectFieldKey: 'deselectindex',
             deselectFieldDefaultValue: '',
             disabledClass: 'disabled',
-            dropdownTopClass: 'top',
-            divider: 'divider'
+            dropdownTopClass: 'top'
         },
 
         /**
@@ -251,15 +250,11 @@ define([], function() {
             if (items.length > 0) {
                 if (typeof(items[0]) === 'string') {
                     this.sandbox.util.each(items, function(index, value) {
-                        if(value === constants.divider) {
-                            this.addDivider();
-                        } else {
-                            this.addDropdownElement(index, value);
-                        }
+                        this.addDropdownElement(index, value);
                     }.bind(this));
                 } else if (typeof(items[0]) === 'object') {
                     this.sandbox.util.each(items, function(index, value) {
-                        if(value === constants.divider) {
+                        if(value.divider === true) {
                             this.addDivider();
                         } else {
                             this.addDropdownElement(value.id, value[this.options.valueName], !!value.disabled && value.disabled);

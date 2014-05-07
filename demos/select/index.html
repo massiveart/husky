@@ -131,7 +131,6 @@
                             instanceName: 'ddms',
                             multipleSelect: true,
                             defaultLabel: 'Please choose ...',
-                            value: 'name',
                             data: ['Deutsch', 'English', 'Spanish', 'Italienisch'],
                             preSelectedElements: ['Deutsch', 'English', 'Italienisch']
                         }
@@ -143,7 +142,7 @@
                             instanceName: 'ddms2',
                             multipleSelect: true,
                             defaultLabel: 'Please choose ...',
-                            value: 'name',
+                            valueName: 'name',
                             data: [
                                 {id: 0, name: 'Deutsch'},
                                 {id: 1, name: 'English'},
@@ -171,7 +170,7 @@
                             instanceName: 'ddms4',
                             multipleSelect: true,
                             defaultLabel: 'Please choose ...',
-                            value: 'name',
+                            valueName: 'name',
                             data: [
                                 {id: 0, name: 'Deutsch'},
                                 {id: 1, name: 'English'},
@@ -186,15 +185,17 @@
                             el: '#ddms5',
                             instanceName: 'ddms5',
                             defaultLabel: 'This one is single select.. try it',
-                            value: 'name',
+                            valueName: 'category',
                             multipleSelect: false,
                             data: [
-                                {id: 0, name: 'Deutsch'},
-                                {id: 1, name: 'English'},
-                                {id: 2, name: 'Spanish'},
-                                {id: 3, name: 'Italienisch'},
-                                'divider',
-                                {id: 'add', name: 'Add new'}
+                                {id: 0, category: 'Deutsch'},
+                                {id: 1, category: 'English'},
+                                {id: 2, category: 'Spanish'},
+                                {id: 3, category: 'Italienisch'},
+                                {divider: true},
+                                {category: 'Add new', callback: function(){
+                                    console.log("called function");
+                                } }
                             ]
                         }
                     },
@@ -205,7 +206,7 @@
                             instanceName: 'ddms6',
                             multipleSelect: false,
                             defaultLabel: 'with deselect..',
-                            value: 'name',
+                            valueName: 'name',
                             deselectField: '',
                             small: true,
                             data: [
@@ -222,7 +223,7 @@
                             el: '#ddms7',
                             instanceName: 'ddms7',
                             defaultLabel: 'I am disabled',
-                            value: 'name',
+                            valueName: 'name',
                             multipleSelect: true,
                             disabled: true,
                             data: [
@@ -239,7 +240,7 @@
                             el: '#ddms8',
                             instanceName: 'ddms8',
                             defaultLabel: 'I have disabled items',
-                            value: 'name',
+                            valueName: 'name',
                             preSelectedElements: [null],
                             data: [
                                 {id: null, name: 'Deselect with null item'},
@@ -256,7 +257,7 @@
                             el: '#ddms10',
                             instanceName: 'ddms10',
                             defaultLabel: 'I stick to the bottom',
-                            value: 'name',
+                            valueName: 'name',
                             preSelectedElements: [null],
                             data: [
                                 {id: 0, name: 'Deutsch', disabled: true},
