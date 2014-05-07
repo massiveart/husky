@@ -3806,7 +3806,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   height: 9px;
   border-radius: 50%;
   border: 3px solid white;
-  background: #5dc7a3;
+  background: #5dc774;
   font-size: medium !important;
 }
 
@@ -4374,8 +4374,8 @@ label.spacing-left {
 }
 /* line 185, ../scss/modules/form.scss */
 .custom-checkbox input:checked + .icon, .custom-checkbox input.is-checked + .icon {
-  border-color: #5dc7a3;
-  background-color: #5dc7a3;
+  border-color: #5dc774;
+  background-color: #5dc774;
   color: white;
 }
 /* line 189, ../scss/modules/form.scss */
@@ -4471,7 +4471,7 @@ textarea.form-element {
   width: 100%;
   height: 100%;
   border-radius: 15px;
-  background-color: #5dc7a3;
+  background-color: #5dc774;
 }
 /* line 292, ../scss/modules/form.scss */
 .custom-radio input + .icon {
@@ -6421,8 +6421,8 @@ a.btn-black, a.btn-highlight {
 /* line 50, ../scss/modules/matrix.scss */
 .table.matrix span[class^="icon-"].is-active {
   color: white;
-  border-color: #5dc7a3;
-  background-color: #5dc7a3;
+  border-color: #5dc774;
+  background-color: #5dc774;
 }
 
 /* line 13, ../scss/modules/validation.scss */
@@ -7312,7 +7312,7 @@ a.btn-black, a.btn-highlight {
 
 /* line 39, ../scss/modules/label.scss */
 .husky-label-success {
-  background: #5dc7a3;
+  background: #5dc774;
 }
 
 /* line 7, ../scss/modules/matcher.scss */
@@ -7438,15 +7438,15 @@ a.btn-black, a.btn-highlight {
 }
 /* line 110, ../scss/modules/matcher.scss */
 .husky-matcher .column.matched {
-  border-color: #5dc7a3;
+  border-color: #5dc774;
 }
 /* line 113, ../scss/modules/matcher.scss */
 .husky-matcher .column.matched .column-title {
-  background: #5dc7a3;
+  background: #5dc774;
 }
 /* line 116, ../scss/modules/matcher.scss */
 .husky-matcher .column.matched .samples span {
-  background: #bce8d9;
+  background: #bce8c5;
 }
 /* line 120, ../scss/modules/matcher.scss */
 .husky-matcher .column.edit {
@@ -7742,12 +7742,12 @@ a.btn-black, a.btn-highlight {
 }
 /* line 82, ../scss/modules/toggler.scss */
 .husky-toggler.checked .toggler-wrapper {
-  background: #5dc7a3;
-  border-color: #5dc7a3;
+  background: #5dc774;
+  border-color: #5dc774;
 }
 /* line 87, ../scss/modules/toggler.scss */
 .husky-toggler.checked .switch {
-  border-color: #5dc7a3;
+  border-color: #5dc774;
   left: 15px;
 }
 /* line 91, ../scss/modules/toggler.scss */
