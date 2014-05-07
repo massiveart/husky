@@ -7,7 +7,9 @@
 
     .column-navigation {
         background-color: $white;
-        border: 1px solid $grayLighter;
+        border-style: solid;
+        border-color: $grayLighter;
+        border-width: 0 1px 1px 0;
         overflow-x: auto;
         overflow-y: hidden;
         white-space: nowrap;
@@ -20,6 +22,13 @@
             }
         }
 
+        .column-navigation-loader {
+            position: relative;
+            left: 0;
+            top: 50%;
+            margin-top: -50px;
+        }
+
         .column {
             border-right: 1px solid $grayLighter;
             overflow-y: auto;
@@ -27,10 +36,31 @@
             display: inline-block;
             font-size: 0;
             height:100%;
+            position: relative;
+            top: 0px;
+            left: 0px;
 
-            /*&:nth-child(n+4):last-child {
-                border-right: none;
-            }*/
+            .no-page {
+                position: absolute;
+                top: 50%;
+                left: 0px;
+                height: 110px;
+                width: 100%;
+                font-size: 18px;
+                text-align: center;
+                color: $grayLightMedium2;
+                height: 160px;
+                margin-top: -55px;
+
+                .icon-file {
+                  font-size: 80px;
+                  line-height: 80px;
+                  color: $grayLightest;
+                }
+                .text {
+                    padding-top: 5px;
+                }
+            }
 
             ul {
                 list-style-type: none;
@@ -73,7 +103,6 @@
         .item-text {
             padding-top: 2px;
             display: block;
-            text-overflow: ellipsis;
             overflow: hidden;
             word-wrap: break-word;
         }
@@ -87,12 +116,16 @@
             padding: 0 2px;
             font-size: 10px;
             color: $white;
-            border-radius: 3px;
+            border-radius: $borderRadius;
         }
         .icons-right {
             position: absolute;
             right: 5px;
             top: 15px;
+        }
+        .icons-left {
+            display: block;
+            float: left;
         }
         .edit {
             margin-right: 5px;
@@ -100,7 +133,7 @@
             padding: 0px 10px;
             font-size: 10px;
             color: $white;
-            border-radius: 3px;
+            border-radius: $borderRadius;
         }
         .husky-column-navigation-loader {
             position: relative;

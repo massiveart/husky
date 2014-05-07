@@ -5,7 +5,7 @@
 .btn {
     padding: 0 25px;
     border: 0;
-    border-radius: $btnBorderRadius;
+    border-radius: $borderRadius;
     background-color: #FFF;
     color: #000;
     cursor: pointer;
@@ -36,7 +36,7 @@
       font-size: $smallFontSize;
       height: 20px;
       line-height: 20px;
-      border-radius: $btnBorderRadius - 1;
+      border-radius: $borderRadiusSmall;
 
       [class^="icon-"] {
           font-size: 10px;
@@ -50,6 +50,9 @@
     &.grey, &.gray {
         background-color: $grayLighter;
         color: $white;
+    }
+    &.black-text {
+        color: $black;
     }
     &.gray-dark {
         background-color: $grayLight;
@@ -76,11 +79,15 @@
           position: relative;
           top: -4px;
           left: 0px;
+          padding: 0;
         }
 
         &:only-child {
             margin-left: 0;
         }
+    }
+    .text {
+        padding: 0 8px;
     }
 }
 
@@ -120,7 +127,7 @@ a.btn-black, a.btn-highlight {
 
 
 .addButton {
-    border-radius: 3px;
+    border-radius: $borderRadius;
     display: inline-block;
     font-size: 12px;
     color: white;

@@ -340,7 +340,7 @@ define('form/element',['form/util'], function(Util) {
                     var addFunction = function(typeName, options) {
                             this.requireCounter++;
                             require(['type/' + typeName], function(Type) {
-                                type = new Type(this.$el, options);
+                                type = new Type(this.$el, options, form);
 
                                 type.initialized.then(function() {
                                     Util.debug('Element Type', typeName, options);
@@ -541,7 +541,23 @@ define('form/element',['form/util'], function(Util) {
                 },
 
                 setValue: function(value) {
-                    type.setValue(value);
+                    var dfd = $.Deferred(),
+                        result;
+
+                    this.initialized.then(function() {
+                        result = type.setValue(value);
+
+                        // if setvalue returns a deferred wait for that
+                        if (!!result) {
+                            result.then(function() {
+                                dfd.resolve();
+                            });
+                        } else {
+                            dfd.resolve();
+                        }
+                    }.bind(this));
+
+                    return dfd.promise();
                 },
 
                 getValue: function(data) {
@@ -875,7 +891,7 @@ define('form/mapper',[
                     $(form.$el).trigger('form-remove', [propertyName, data]);
                 },
 
-                processData: function(el, collection) {
+                processData: function(el, collection, returnMapperId) {
                     // get attributes
                     var $el = $(el),
                         type = $el.data('type'),
@@ -902,8 +918,11 @@ define('form/mapper',[
                         result = [];
                         $.each($el.children(), function(key, value) {
                             if (!collection || collection.tpl === value.dataset.mapperPropertyTpl) {
-                                item = form.mapper.getData($(value));
-                                item.mapperId = value.dataset.mapperId;
+                                item = that.getData($(value));
+                                    // only set mapper-id if explicitly set
+                                if (!!returnMapperId) {
+                                    item.mapperId = value.dataset.mapperId;
+                                }
 
                                 var keys = Object.keys(item);
                                 if (keys.length === 1) { // for value only collection
@@ -914,7 +933,7 @@ define('form/mapper',[
                                     result.push(item);
                                 }
                             }
-                        });
+                        }.bind(this));
                         return result;
                     }
                 },
@@ -1042,6 +1061,46 @@ define('form/mapper',[
                     $element.remove();
                 },
 
+                getData: function($el, returnMapperId) {
+                    if (!$el) {
+                        $el = form.$el;
+                    }
+
+                    var data = { }, $childElement, property, parts,
+
+                    // search field with mapper property
+                        selector = '*[data-mapper-property]',
+                        $elements = $el.find(selector);
+
+                    // do it while elements exists
+                    while ($elements.length > 0) {
+                        // get first
+                        $childElement = $($elements.get(0));
+                        property = $childElement.data('mapper-property');
+
+                        if ($.isArray(property)) {
+                            $.each(property, function(i, prop) {
+                                data[prop.data] = that.processData.call(this, $childElement, prop, returnMapperId);
+                            }.bind(this));
+                        } else if (property.match(/.*\..*/)) {
+                            parts = property.split('.');
+                            data[parts[0]] = {};
+                            data[parts[0]][parts[1]] = that.processData.call(this, $childElement);
+                        } else {
+                            // process it
+                            data[property] = that.processData.call(this, $childElement);
+                        }
+
+                        // remove element itself
+                        $elements = $elements.not($childElement);
+
+                        // remove child elements
+                        $elements = $elements.not($childElement.find(selector));
+                    }
+
+                    return data;
+                },
+
                 setData: function(data, $el) {
                     if (!$el) {
                         $el = form.$el;
@@ -1067,14 +1126,16 @@ define('form/mapper',[
                         if (!element) {
                             element = form.addField($element);
                             element.initialized.then(function() {
-                                element.setValue(data);
-                                // resolve this set data
-                                resolve();
+                                element.setValue(data).then(function() {
+                                    // resolve this set data
+                                    resolve();
+                                });
                             }.bind(this));
                         } else {
-                            element.setValue(data);
-                            // resolve this set data
-                            resolve();
+                            element.setValue(data).then(function() {
+                                // resolve this set data
+                                resolve();
+                            });
                         }
                     } else if (data !== null && !$.isEmptyObject(data)) {
                         count = Object.keys(data).length;
@@ -1109,12 +1170,14 @@ define('form/mapper',[
                                     if (!element) {
                                         element = form.addField($element);
                                         element.initialized.then(function() {
-                                            element.setValue(value);
-                                            resolve();
+                                            element.setValue(value).then(function() {
+                                                resolve();
+                                            });
                                         }.bind(this));
                                     } else {
-                                        element.setValue(value);
-                                        resolve();
+                                        element.setValue(value).then(function() {
+                                            resolve();
+                                        });
                                     }
                                 } else {
                                     resolve();
@@ -1126,55 +1189,26 @@ define('form/mapper',[
                     }
 
                     return dfd.promise();
-                },
+                }
 
             },
 
         // define mapper interface
             result = {
-                setData: function(data) {
+
+                setData: function(data, $el) {
                     this.collectionsSet = {};
-                    return that.setData.call(this, data);
+
+                    return that.setData.call(this, data, $el);
                 },
 
-                getData: function($el) {
-                    if (!$el) {
-                        $el = form.$el;
-                    }
-
-                    var data = { }, $childElement, property, parts,
-
-                    // search field with mapper property
-                        selector = '*[data-mapper-property]',
-                        $elements = $el.find(selector);
-
-                    // do it while elements exists
-                    while ($elements.length > 0) {
-                        // get first
-                        $childElement = $($elements.get(0));
-                        property = $childElement.data('mapper-property');
-
-                        if ($.isArray(property)) {
-                            $.each(property, function(i, prop) {
-                                data[prop.data] = that.processData.call(this, $childElement, prop);
-                            });
-                        } else if (property.match(/.*\..*/)) {
-                            parts = property.split('.');
-                            data[parts[0]] = {};
-                            data[parts[0]][parts[1]] = that.processData.call(this, $childElement);
-                        } else {
-                            // process it
-                            data[property] = that.processData.call(this, $childElement);
-                        }
-
-                        // remove element itself
-                        $elements = $elements.not($childElement);
-
-                        // remove child elements
-                        $elements = $elements.not($childElement.find(selector));
-                    }
-
-                    return data;
+                /**
+                 * extracts data from $element or default form element
+                 *  @param {Object} [$el=undefined] element to select data from
+                 *  @param {Boolean} [returnMapperId=false] returnMapperId
+                 */
+                getData: function($el, returnMapperId) {
+                    return that.getData.call(this, $el, returnMapperId);
                 },
 
                 addCollectionFilter: function(name, callback) {
@@ -1295,23 +1329,17 @@ define('form',[
                 validationSubmitEvent: true,      // avoid submit if not valid
                 mapper: true                      // mapper on/off
             },
-            dfd = null,
 
         // private functions
             that = {
                 initialize: function() {
-                    // init initialized
-                    dfd = $.Deferred();
-                    this.requireCounter = 0;
-                    this.initialized = dfd.promise();
-
                     this.$el = $(el);
                     this.options = $.extend(defaults, this.$el.data(), options);
 
                     // enable / disable debug
                     Util.debugEnabled = this.options.debug;
 
-                    that.initFields.call(this);
+                    this.initialized = that.initFields.call(this);
 
                     if (!!this.options.validation) {
                         this.validation = new Validation(this);
@@ -1327,20 +1355,22 @@ define('form',[
                 },
 
                 // initialize field objects
-                initFields: function() {
-                    $.each(Util.getFields(this.$el), function(key, value) {
-                        this.requireCounter++;
-                        that.addField.call(this, value, false).initialized.then(function() {
-                            that.resolveInitialization.call(this);
-                        }.bind(this));
-                    }.bind(this));
-                },
+                initFields: function($el) {
+                    var dfd = $.Deferred(),
+                        requireCounter = 0,
+                        resolve = function() {
+                            requireCounter--;
+                            if (requireCounter === 0) {
+                                dfd.resolve();
+                            }
+                        };
 
-                resolveInitialization: function() {
-                    this.requireCounter--;
-                    if (this.requireCounter === 0) {
-                        dfd.resolve();
-                    }
+                    $.each(Util.getFields($el || this.$el), function(key, value) {
+                        requireCounter++;
+                        that.addField.call(this, value, false).initialized.then(resolve.bind(this));
+                    }.bind(this));
+
+                    return dfd.promise();
                 },
 
                 bindValidationDomEvents: function() {
@@ -1383,6 +1413,16 @@ define('form',[
                     return element;
                 },
 
+                initFields: function($el) {
+                    return that.initFields.call(this, $el);
+                },
+
+                removeFields: function($el) {
+                    Util.getFields($el).each(function(i, item) {
+                        this.removeField(item);
+                    }.bind(this));
+                },
+
                 removeField: function(selector) {
                     var $element = $(selector),
                         el = $element.data('element');
@@ -1419,7 +1459,7 @@ define('type/default',[
 
     
 
-    return function($el, defaults, options, name, typeInterface) {
+    return function($el, defaults, options, name, typeInterface, form) {
 
         var that = {
                 initialize: function() {
@@ -1439,6 +1479,8 @@ define('type/default',[
 
             defaultInterface = {
                 name: name,
+
+                form: form,
 
                 needsValidation: function() {
                     return true;
@@ -1859,7 +1901,7 @@ define('type/readonly-select',[
                     // find value in data
                     if (data.length > 0) {
                         for (i = -1, len = data.length; ++i < len;) {
-                            if (data[i].hasOwnProperty(idProperty) && data[i][idProperty] === value) {
+                            if (data[i].hasOwnProperty(idProperty) && data[i][idProperty].toString() === value.toString()) {
                                 this.$el.html(data[i][this.options.outputProperty]);
                                 break;
                             }
@@ -1871,8 +1913,8 @@ define('type/readonly-select',[
                     var id = this.$el.data('id'),
                         i, len;
 
-                    for (i = -1, len = this.options.data.length; i++ < len;) {
-                        if (this.options.data[i][this.options.idProperty] === id) {
+                    for (i = -1, len = this.options.data.length; ++i < len;) {
+                        if (this.options.data[i][this.options.idProperty].toString() === id.toString()) {
                             return this.options.data[i];
                         }
                     }

@@ -82,6 +82,14 @@
                 </td>
             </tr>
             <tr>
+                <td>
+                    <div class="grid-col-6" id="actionSelect"></div>
+                </td>
+                <td>
+                    <div class="grid-col-6" id="actionSelectSingle"></div>
+                </td>
+            </tr>
+            <tr>
                 <td><button id="toggleState">toggle state of button 7</button></td>
             </tr>
             </tbody>
@@ -277,14 +285,56 @@
                     {
                         name: 'select@husky',
                         options: {
-                            el: '#ddms11',
-                            defaultLabel: 'I am small',
-                            instanceName: 'ddms11',
-                            data: [{id: 0, name: 'Deutsch'},
-                                  {id: 1, name: 'English'},
-                                  {id: 2, name: 'Spanish'},
-                                  {id: 3, name: 'Italienisch'}],
-                            style: 'small'
+                            el: '#actionSelect',
+                            defaultLabel: 'Action select',
+                            instanceName: 'actionSelect',
+                            fixedLabel: true,
+                            style: 'action',
+                            icon: 'circle-plus',
+                            repeatSelect: true,
+                            noItemsCallback: function() {alert('no items. default callback called')}, // pass no data to the component to see this option in action
+                            data: [
+                                {
+                                    name: 'Action 1',
+                                    callback: function() {
+                                        alert('action 1')
+                                    }
+                                },
+                                {
+                                    name: 'Action 2',
+                                    callback: function() {
+                                        alert('action 2')
+                                    }
+                                },
+                                {
+                                    name: 'Action 3',
+                                    callback: function() {
+                                        alert('action 3')
+                                    }
+                                },
+                                {
+                                    name: 'Action 4',
+                                    callback: function() {
+                                        alert('action 4')
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#actionSelectSingle',
+                            defaultLabel: 'Action select',
+                            instanceName: 'actionSelect',
+                            fixedLabel: true,
+                            style: 'action',
+                            icon: 'circle-plus',
+                            repeatSelect: true,
+                            noItemsCallback: function() {
+                                alert('no items. default callback called')
+                            }, // pass no data to the component to see this option in action
+                            data: []
                         }
                     }
                 ]).then(function() {

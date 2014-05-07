@@ -3,6 +3,9 @@
 // --------------------------------------------------
 
 .search-container {
+    $slideCollapsedWidth: 130px;
+    $slideExpandedWidth: 210px;
+    $slideDuration: 250ms;
 
     position: relative;
 
@@ -10,8 +13,19 @@
         color: #3e3e3e;
     }
 
+    &.slide {
+      @include single-transition(width, $slideDuration);
+    }
+    &.slide-collapsed {
+        width: $slideCollapsedWidth;
+    }
+    &.slide-expanded {
+        width: $slideExpandedWidth;
+    }
+
     .search-input {
         padding-left: 40px;
+        padding-right: 10px;
         border: 0;
         margin: 0;
         background-color: $grayLight;
@@ -44,13 +58,20 @@
         line-height: $inputHeight;
         vertical-align: middle;
         margin: auto;
+        background-color: $white;
+        padding-left: 3px;
     }
 
     /** look and feel **/
 
     &.gray {
         .search-input {
-            background-color: $grayLight;
+            background-color: $searchBarGray;
+
+            @include input-placeholder {
+              color: $white;
+            }
+
             &:focus {
                 background-color: $white;
             }

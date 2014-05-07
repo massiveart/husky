@@ -48,6 +48,13 @@
     }
 }
 
+.icon-history {
+  &::after {
+    content: "\e058";
+    display: inline-block;
+  }
+}
+
 .icon-circle-remove {
    &::after {
      content: "\e193";
@@ -148,7 +155,6 @@
 }
 
 .icon-floppy-save {
-  cursor: pointer;
   &::after {
     content: "\e447";
     display: inline-block;
@@ -521,15 +527,12 @@
     &::after {
         content: "";
         display: inline-block;
-        width: 14px;
-        height: 14px;
+        width: 9px;
+        height: 9px;
         border-radius: 50%;
-        border: 1px solid $white;
+        border: 3px solid $white;
         background: $green;
         font-size: medium!important;
-        position: relative;
-        top: -2px;
-        left: 0px;
     }
 }
 
@@ -537,15 +540,12 @@
    &::after {
      content: "";
      display: inline-block;
-     width: 14px;
-     height: 14px;
+     width: 9px;
+     height: 9px;
      border-radius: 50%;
-     border: 1px solid $white;
+     border: 3px solid $white;
      background: $red;
      font-size: medium!important;
-     position: relative;
-     top: -2px;
-     left: 0px;
    }
  }
 
@@ -553,15 +553,12 @@
   &::after {
     content: "";
     display: inline-block;
-    width: 14px;
-    height: 14px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
-    border: 1px solid $white;
+    border: 3px solid $white;
     background: $yellow;
     font-size: medium!important;
-    position: relative;
-    top: -2px;
-    left: 0px;
   }
 }
 

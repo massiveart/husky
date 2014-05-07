@@ -44,7 +44,7 @@
     .auto-complete-list {
         font-size: $smallFontSize;
         min-height: 30px;
-        border-radius: 4px 4px 0 0;
+        border-radius: $borderRadius $borderRadius 0 0;
         margin: 0;
     }
     .tt-suggestions {
@@ -54,7 +54,7 @@
 
 .auto-complete-list {
     padding: 1px 8px;
-    border-radius: 4px;
+    border-radius: $borderRadius;
     background-color: #fff;
     margin: 0;
     border: 1px solid $grayLighter;
@@ -82,7 +82,7 @@
     display: inline-block;
     margin: 4px 5px 4px 0;
     padding: 0 4px 2px 4px;
-    border-radius: 2px;
+    border-radius: $borderRadiusSmall;
     background-color: #ccc;
     color: #000;
     font-size: 12px;
@@ -123,7 +123,7 @@
         display: inline-block;
         margin-right: 5px;
         padding: 0 4px;
-        border-radius: 2px;
+        border-radius: $borderRadius;
         background-color: #fff;
         color: #000;
         font-size: 12px;

@@ -8,6 +8,7 @@
  *      - selected: the item that's selected on initialize
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
  *      - preselect - either true (for url) or position / title  (see preselector for more information)
+ *      - skin - string of class to add to the components element (e.g. 'overlay')
  *      - preselector:
  *          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url) - preselector itself is not going to be taken into account in this case
  *          - position: compares items position against whats defined in options.preselect
@@ -40,12 +41,13 @@ define(function() {
             preselector: 'url',
             forceReload: false,
             callback: null,
-            forceSelect: true
+            forceSelect: true,
+            skin: ''
         },
 
         selectItem = function(event) {
             event.preventDefault();
-            if (this.active === true) {
+            if (this.active === true && this.sandbox.dom.hasClass(event.currentTarget, 'is-selected') !== true) {
                 var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')];
 
                 this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
@@ -99,7 +101,6 @@ define(function() {
         view: true,
 
         initialize: function() {
-
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.$el = this.sandbox.dom.$(this.options.el);
             this.active = true;
@@ -120,6 +121,19 @@ define(function() {
             bindDOMEvents.call(this);
 
             bindCustomEvents.call(this);
+        },
+
+        /**
+         * Sets the min-width of an item to its width in selected state
+         * (to avoid bumping)
+         * @param $item
+         */
+        setMinWidth: function($item) {
+            this.sandbox.dom.addClass($item, 'is-selected');
+            this.sandbox.dom.css($item, {
+                'min-width': this.sandbox.dom.outerWidth($item) + 'px'
+            });
+            this.sandbox.dom.removeClass($item, 'is-selected');
         },
 
         deactivate: function() {
@@ -153,7 +167,11 @@ define(function() {
 
             var $element = this.sandbox.dom.createElement('<div class="tabs-container"></div>'),
                 $list = this.sandbox.dom.createElement('<ul/>'),
-                selected = '', selectedItem = null;
+                selectedItem = null,
+                $item = null;
+
+            //add skin class
+            this.sandbox.dom.addClass($element, this.options.skin);
 
             this.sandbox.dom.append(this.$el, $element);
             this.sandbox.dom.append($element, $list);
@@ -161,20 +179,25 @@ define(function() {
             this.items = [];
 
             this.sandbox.util.foreach(data.items, function(item, index) {
+                this.items[item.id] = item;
+                $item = this.sandbox.dom.createElement(
+                    '<li data-id="' + item.id + '"><a href="#">' + this.sandbox.translate(item.title) + '</a></li>'
+                );
+                this.sandbox.dom.append($list, $item);
+
+                // set min-width of element
+                this.setMinWidth($item);
+
                 // check if item got selected
-                selected = '';
                 if (!!this.options.preselect) {
                     if ((this.options.preselector === 'url' && !!data.url && data.url === item.action) ||
                         (this.options.preselector === 'position' && (index+1).toString() === this.options.preselect.toString()) ||
                         (this.options.preselector === 'title' && item.title === this.options.preselect))
                     {
-                        selected = ' class="is-selected"';
+                        this.sandbox.dom.addClass($item, 'is-selected');
                         selectedItem = item;
                     }
                 }
-
-                this.items[item.id] = item;
-                this.sandbox.dom.append($list, '<li ' + selected + ' data-id="' + item.id + '"><a href="#">' + this.sandbox.translate(item.title) + '</a></li>');
             }.bind(this));
 
             // force selection of first element

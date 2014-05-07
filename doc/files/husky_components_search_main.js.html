@@ -41,21 +41,37 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="../classes/AutoComplete.html">AutoComplete</a></li>
+            
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
                 <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/Column-Options.html">Column-Options</a></li>
             
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
                 <li><a href="../classes/DataGrid.html">DataGrid</a></li>
             
-                <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
+                <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
+            
+                <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
             
-                <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+                <li><a href="../classes/Matcher.html">Matcher</a></li>
+            
+                <li><a href="../classes/Overlay.html">Overlay</a></li>
+            
+                <li><a href="../classes/Process.html">Process</a></li>
             
                 <li><a href="../classes/Search.html">Search</a></li>
+            
+                <li><a href="../classes/Select.html">Select</a></li>
+            
+                <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/Toggler.html">Toggler</a></li>
             
                 <li><a href="../classes/Toolbar.html">Toolbar</a></li>
             
@@ -63,15 +79,21 @@
 
             <ul id="api-modules" class="apis modules">
             
+                <li><a href="../modules/husky_components_auto-complete.html">husky/components/auto-complete</a></li>
+            
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
             
                 <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
-                <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
+                <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
-                <li><a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a></li>
+                <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
+            
+                <li><a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a></li>
             
                 <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
@@ -146,7 +168,13 @@ define([], function() {
         defaults = {
             instanceName: null,
             placeholderText: &#x27;public.search&#x27;,
-            appearance: &#x27;gray&#x27;
+            appearance: &#x27;gray&#x27;,
+            slide: false
+        },
+        constants = {
+            slideClass: &#x27;slide&#x27;,
+            slideCollapsedClass: &#x27;slide-collapsed&#x27;,
+            slideExpandedClass: &#x27;slide-expanded&#x27;
         },
 
 
@@ -192,6 +220,12 @@ define([], function() {
         render: function() {
             this.sandbox.dom.addClass(this.$el, &#x27;search-container&#x27;);
             this.sandbox.dom.addClass(this.$el, this.options.appearance);
+            console.log(this.options.slide);
+            if (this.options.slide === true) {
+                this.sandbox.dom.addClass(this.$el, constants.slideClass);
+                this.collapse();
+            }
+
             this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton, {placeholderText: this.sandbox.translate(this.options.placeholderText)}));
 
         },
@@ -199,13 +233,29 @@ define([], function() {
         // bind dom elements
         bindDOMEvents: function() {
             this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.selectInput.bind(this), &#x27;input&#x27;);
-            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.submitSearch.bind(this), &#x27;.search-icon&#x27;);
-            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.removeSearch.bind(this), &#x27;.remove-icon&#x27;);
+            this.sandbox.dom.on(this.$el, &#x27;mousedown&#x27;, this.submitSearch.bind(this), &#x27;.search-icon&#x27;);
+            this.sandbox.dom.on(this.$el, &#x27;mousedown&#x27;, this.removeSearch.bind(this), &#x27;.remove-icon&#x27;);
             this.sandbox.dom.on(this.$el, &#x27;keyup onchange&#x27;, this.checkKeyPressed.bind(this), &#x27;#search-input&#x27;);
+
+            if (this.options.slide === true) {
+                this.sandbox.dom.on(this.$find(&#x27;input&#x27;), &#x27;focus&#x27;, this.expand.bind(this));
+                this.sandbox.dom.on(this.$find(&#x27;input&#x27;), &#x27;blur&#x27;, this.collapse.bind(this));
+            }
         },
 
-        bindCustomEvents: function() {
+        collapse: function() {
+            this.sandbox.dom.removeClass(this.$el, constants.slideExpandedClass);
+            this.sandbox.dom.addClass(this.$el, constants.slideCollapsedClass);
+        },
 
+        expand: function() {
+            this.sandbox.dom.removeClass(this.$el, constants.slideCollapsedClass);
+            this.sandbox.dom.addClass(this.$el, constants.slideExpandedClass);
+        },
+
+        resetSearch : function() {
+            this.sandbox.emit(RESET.call(this));
+            this.searchSubmitted = false;
         },
 
         checkKeyPressed: function(event) {
@@ -220,36 +270,57 @@ define([], function() {
                 this.sandbox.dom.hide($removeIcon);
             }
 
-            // enter pressed
             if (event.keyCode === 13) {
+                // enter pressed
                 this.submitSearch();
+            } else if (event.keyCode === 27) {
+                // escape pressed
+                this.removeSearch();
             }
+
+
         },
 
         submitSearch: function(event) {
-            event.preventDefault();
+            if (!!event) {
+                event.preventDefault();
+            }
 
             // get search value
 
             var searchString = this.sandbox.dom.val(this.sandbox.dom.find(&#x27;#search-input&#x27;, this.$el));
 
-            // check if searchstring is emtpy
+            // if searchstring is emtpy, emit reset
             if (searchString === &#x27;&#x27;) {
+                if (this.searchSubmitted) {
+                    this.resetSearch();
+                }
                 return;
             }
+
+            this.searchSubmitted = true;
 
             // emit event
             this.sandbox.emit(SEARCH.call(this), searchString);
         },
 
         removeSearch: function(event) {
-            event.preventDefault();
+            if (!!event) {
+                event.preventDefault();
+            } else {
+                event = {
+                    target: this.sandbox.dom.find(&#x27;.remove-icon&#x27;, this.$el),
+                    currentTarget: this.sandbox.dom.find(&#x27;.remove-icon&#x27;, this.$el)
+                };
+            }
             var $input;
             $input = this.sandbox.dom.next(event.currentTarget, &#x27;input&#x27;);
 
             this.sandbox.dom.hide(event.target);
             this.sandbox.dom.val($input, &#x27;&#x27;);
-            this.sandbox.emit(RESET.call(this), &#x27;&#x27;);
+            if (this.searchSubmitted) {
+                this.resetSearch();
+            }
         },
 
         selectInput: function(event) {

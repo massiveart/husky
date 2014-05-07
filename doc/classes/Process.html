@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>PageFunctions - husky</title>
+    <title>Process - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -41,21 +41,37 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="../classes/AutoComplete.html">AutoComplete</a></li>
+            
                 <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
             
                 <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/Column-Options.html">Column-Options</a></li>
             
                 <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
             
                 <li><a href="../classes/DataGrid.html">DataGrid</a></li>
             
-                <li><a href="../classes/EditToolbar.html">EditToolbar</a></li>
+                <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
+            
+                <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
             
-                <li><a href="../classes/PageFunctions.html">PageFunctions</a></li>
+                <li><a href="../classes/Matcher.html">Matcher</a></li>
+            
+                <li><a href="../classes/Overlay.html">Overlay</a></li>
+            
+                <li><a href="../classes/Process.html">Process</a></li>
             
                 <li><a href="../classes/Search.html">Search</a></li>
+            
+                <li><a href="../classes/Select.html">Select</a></li>
+            
+                <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/Toggler.html">Toggler</a></li>
             
                 <li><a href="../classes/Toolbar.html">Toolbar</a></li>
             
@@ -63,15 +79,21 @@
 
             <ul id="api-modules" class="apis modules">
             
+                <li><a href="../modules/husky_components_auto-complete.html">husky/components/auto-complete</a></li>
+            
                 <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
             
                 <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
-                <li><a href="../modules/husky_components_edit-toolbar.html">husky/components/edit-toolbar</a></li>
+                <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
-                <li><a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a></li>
+                <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
+            
+                <li><a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a></li>
             
                 <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
@@ -110,7 +132,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>PageFunctions Class</h1>
+                        <h1>Process Class</h1>
 <div class="box meta">
     
 
@@ -118,13 +140,13 @@
 
     
         <div class="foundat">
-            Defined in: <a href="../files/husky_components_page-functions_main.js.html#l12"><code>husky_components&#x2F;page-functions&#x2F;main.js:12</code></a>
+            Defined in: <a href="../files/husky_components_process_main.js.html#l12"><code>husky_components&#x2F;process&#x2F;main.js:12</code></a>
         </div>
     
 
     
         
-            Module: <a href="../modules/husky_components_page-functions.html">husky/components/page-functions</a>
+            Module: <a href="../modules/husky_components_process.html">husky/components/process</a>
         
     
 
@@ -140,8 +162,8 @@
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_PageFunctions" class="method item">
-    <h3 class="name"><code>PageFunctions</code></h3>
+        <div id="method_Process" class="method item">
+    <h3 class="name"><code>Process</code></h3>
 
     
         <div class="args">
@@ -182,7 +204,7 @@
             
         
         
-        <a href="../files/husky_components_page-functions_main.js.html#l12"><code>husky_components&#x2F;page-functions&#x2F;main.js:12</code></a>
+        <a href="../files/husky_components_process_main.js.html#l12"><code>husky_components&#x2F;process&#x2F;main.js:12</code></a>
         
         </p>
 
@@ -221,13 +243,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[url]</code>
-                                    <span class="type">String</span>
+                                    <code class="param-name optional">[data]</code>
+                                    <span class="type">Array</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>url to load data</p>
+                                    <p>Array of processes array items can be strings and/or objects with id and name</p>
 
                                 </div>
 
@@ -236,13 +258,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[data]</code>
-                                    <span class="type">Object</span>
+                                    <code class="param-name optional">[activeProcess]</code>
+                                    <span class="type">Number</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>data to view</p>
+                                    <p>process to activate at the beginning, can be either the id or the position-index of the process</p>
 
                                 </div>
 
@@ -294,14 +316,21 @@
                     <ul class="index-list events">
                         
                             <li class="index-item event">
-                                <a href="#event_husky.page-functions.clicked">husky.page-functions.clicked</a>
+                                <a href="#event_husky.process.&lt;instance-name&gt;.get-active">husky.process.&lt;instance-name&gt;.get-active</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.page-functions.rendered">husky.page-functions.rendered</a>
+                                <a href="#event_husky.process.&lt;instance-name&gt;.initialize">husky.process.&lt;instance-name&gt;.initialize</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.process.&lt;instance-name&gt;.set-active">husky.process.&lt;instance-name&gt;.set-active</a>
 
                                 
                                 
@@ -323,8 +352,8 @@
                 <h2 class="off-left">Events</h2>
 
                 
-                    <div id="event_husky.page-functions.clicked" class="events item">
-    <h3 class="name"><code>husky.page-functions.clicked</code></h3>
+                    <div id="event_husky.process.&lt;instance-name&gt;.get-active" class="events item">
+    <h3 class="name"><code>husky.process.&lt;instance-name&gt;.get-active</code></h3>
     <span class="type"></span>
 
     
@@ -346,7 +375,7 @@
             
         
         
-        <a href="../files/husky_components_page-functions_main.js.html#l49"><code>husky_components&#x2F;page-functions&#x2F;main.js:49</code></a>
+        <a href="../files/husky_components_process_main.js.html#l74"><code>husky_components&#x2F;process&#x2F;main.js:74</code></a>
         
         </p>
 
@@ -356,7 +385,75 @@
     </div>
 
     <div class="description">
-        <p>link was clicked</p>
+        <p>listens on and passes the active process to it</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">callback</code>
+                        <span class="type">Function</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>to pass the active process to</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.process.&lt;instance-name&gt;.initialize" class="events item">
+    <h3 class="name"><code>husky.process.&lt;instance-name&gt;.initialize</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_process_main.js.html#l57"><code>husky_components&#x2F;process&#x2F;main.js:57</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>raised after initialization process</p>
 
     </div>
 
@@ -367,8 +464,8 @@
 </div>
 
                 
-                    <div id="event_husky.page-functions.rendered" class="events item">
-    <h3 class="name"><code>husky.page-functions.rendered</code></h3>
+                    <div id="event_husky.process.&lt;instance-name&gt;.set-active" class="events item">
+    <h3 class="name"><code>husky.process.&lt;instance-name&gt;.set-active</code></h3>
     <span class="type"></span>
 
     
@@ -390,7 +487,7 @@
             
         
         
-        <a href="../files/husky_components_page-functions_main.js.html#l43"><code>husky_components&#x2F;page-functions&#x2F;main.js:43</code></a>
+        <a href="../files/husky_components_process_main.js.html#l65"><code>husky_components&#x2F;process&#x2F;main.js:65</code></a>
         
         </p>
 
@@ -400,10 +497,34 @@
     </div>
 
     <div class="description">
-        <p>the component has been rendered</p>
+        <p>listens on and changes the active process</p>
 
     </div>
 
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">id</code>
+                        <span class="type">Number</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>or position of the process</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
     
 
 

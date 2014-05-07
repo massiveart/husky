@@ -136,8 +136,12 @@
                 return $(selector).height(value);
             };
 
-            app.core.dom.outerHeight = function(selector) {
-                return $(selector).outerHeight();
+            app.core.dom.outerHeight = function(selector, includeMargin) {
+                if (typeof includeMargin === 'undefined') {
+                    return $(selector).outerHeight();
+                } else {
+                    return $(selector).outerHeight(includeMargin);
+                }
             };
 
             app.core.dom.offset = function(selector, attributes) {
@@ -391,12 +395,12 @@
                 $(selector).unbind(eventType);
             };
 
-            app.core.dom.focus = function(selector){
-              $(selector).focus();
+            app.core.dom.focus = function(selector) {
+                $(selector).focus();
             };
 
-            app.core.dom.animate = function(selector, properties, options){
-               $(selector).animate(properties, options);
+            app.core.dom.animate = function(selector, properties, options) {
+                $(selector).animate(properties, options);
             };
 
             app.core.util.ajax = $.ajax;
