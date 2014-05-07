@@ -68,7 +68,9 @@ input {
 // attention! it is always assumed, that form group consists of 2 elements.
 // the first is the label, the second is the form element itself
 
-.form-group {
+.form-group,
+.form-group-vertical,
+.form-vertical .form-group {
     min-height: 30px;
 
     > :first-child {
@@ -109,8 +111,6 @@ input {
         > :nth-child(2) {
             width: 100%;
         }
-
-
     }
 }
 
