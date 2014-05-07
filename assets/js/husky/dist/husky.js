@@ -16326,7 +16326,6 @@ define('aura/ext/components', [],function() {
   };
 });
 
-
 /*
  * This file is part of the Husky Validation.
  *
@@ -17532,11 +17531,11 @@ define('form/mapper',[
                 },
 
                 /**
-                 *
-                 *  @param {Boolean} [returnMapperId=false] returnMapperId
+                 * extracts data from $element or default form element
                  *  @param {Object} [$el=undefined] element to select data from
+                 *  @param {Boolean} [returnMapperId=false] returnMapperId
                  */
-                getData: function(returnMapperId, $el) {
+                getData: function($el, returnMapperId) {
                     return that.getData.call(this, $el, returnMapperId);
                 },
 
@@ -18872,6 +18871,7 @@ define('validator/regex',[
     };
 
 });
+
 
 define("husky-validation", function(){});
 
@@ -24843,6 +24843,7 @@ define('__component__$navigation@husky',[],function() {
                 '   <div class="navigation-content">',
                 '       <div class="wrapper">',
                 '           <header class="navigation-header">',
+                '               <div class="logo"></div>',
                 '               <div class="navigation-header-title"><% if (data.title) { %> <%= translate(data.title) %><% } %></div>',
                 '           </header>',
                 '           <div id="navigation-search" class="navigation-search"></div>',
@@ -24853,14 +24854,6 @@ define('__component__$navigation@husky',[],function() {
                 '   </div>',
                 '   <div class="icon-remove2 navigation-close-icon">',
                 '</nav>'].join(''),
-            headerImage: [
-                '<div class="navigation-header-image">',
-                '   <img alt="#" src="<%= icon %>"/>',
-                '</div>'
-            ].join(''),
-            headerText: [
-                '<div class="navigation-header-text"><span><%= text %></span></div>'
-            ].join(''),
             /** main navigation items (with icons)*/
             mainItem: [
                 '<li class="js-navigation-items navigation-items" id="<%= item.id %>" data-id="<%= item.id %>">',
@@ -25064,21 +25057,6 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton,
                 this.sandbox.util.extend(true, {}, this.options, {translate: this.sandbox.translate}))
             );
-
-            // render header image
-            if (typeof this.options.data.icon === 'string') {
-                this.sandbox.dom.prepend(this.sandbox.dom.find('header.navigation-header', this.$el),
-                    this.sandbox.template.parse(templates.headerImage, {
-                        icon: this.options.data.icon
-                    })
-                );
-            } else {
-                this.sandbox.dom.prepend(this.sandbox.dom.find('header.navigation-header', this.$el),
-                    this.sandbox.template.parse(templates.headerText, {
-                        text: this.options.data.title.substr(0, 1)
-                    })
-                );
-            }
 
             this.$navigation = this.$find('.navigation', this.$el);
             this.$navigationContent = this.$find('.navigation-content', this.$navigation);
