@@ -27786,24 +27786,39 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
         },
 
         constants = {
-            containerClass: 'thumbnail-container',
+            containerClass: 'husky-thumbnails',
             itemClass: 'item',
             smallClass: 'small',
+            largeClass: 'large',
             titleClass: 'title',
-            extensionClass: 'extension',
-            sizeClass: 'size',
+            downloadClass: 'download',
+            downloadIcon: 'download',
+            checkboxClass: 'checkbox',
+            descriptionClass: 'description',
             thumbnailSrcProperty: 'thumb',
             thumbnailAltProperty: 'alt',
-            idProperty: 'id'
+            idProperty: 'id',
+            textClass: 'text',
+            imageClass: 'image',
+            descriptionDelimiter: ', ',
+            selectedClass: 'is-selected'
         },
 
         templates = {
-            itemSmall: [
-                '<div class="'+ constants.itemClass +' '+ constants.smallClass +'">',
-                '<img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
-                '<span class="'+ constants.titleClass +'"><%= title %></span>',
-                '<span class="'+ constants.extensionClass +'"><%= extension %></span>',
-                '<span class="'+ constants.sizeClass +'"><%= fileSize %></span>',
+            item: [
+                '<div class="'+ constants.itemClass +' <%= styleClass %>">',
+                    '<div class="'+ constants.imageClass +'">',
+                        '<img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
+                    '</div>',
+                    '<div class="'+ constants.textClass +'">',
+                        '<span class="'+ constants.titleClass +'"><%= title %></span><br />',
+                        '<span class="'+ constants.descriptionClass +'"><%= description %></span>',
+                    '</div>',
+                    '<div class="'+ constants.checkboxClass +' custom-checkbox no-spacing">',
+                        '<input type="checkbox"/>',
+                        '<span class="icon"></span>',
+                    '</div>',
+                    '<div class="icon-'+ constants.downloadIcon +' '+ constants.downloadClass +'"></div>',
                 '</div>'
             ].join('')
         };
@@ -27835,6 +27850,9 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
             this.rendered = false;
             this.data = null;
             this.$el = null;
+
+            // global array to store the dom elements
+            this.$thumbnails = {};
         },
 
         /**
@@ -27854,31 +27872,33 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          * Parses the data and passes it to a render function
          */
         renderThumbnails: function() {
-            var imgSrc, imgAlt, title, extension, fileSize, id;
+            var imgSrc, imgAlt, title, description, id;
 
             // loop through each data record
             this.sandbox.util.foreach(this.data.embedded, function(record) {
-                imgSrc = imgAlt = title = extension = fileSize = '';
+                imgSrc = imgAlt = title = '';
+                description = [];
 
                 // foreach matching configured get the corresponding datum from the record
                 this.sandbox.util.foreach(this.options.matchings, function(matching) {
 
+                    // get the thumbnail and the title data (to place it on top)
+                    // with the rest generate a description string
                     if (matching.type === datagrid.types.THUMBNAIL) {
                         imgSrc = record[matching.attribute][constants.thumbnailSrcProperty];
                         imgAlt = record[matching.attribute][constants.thumbnailAltProperty];
                     } else if (matching.type === datagrid.types.TITLE) {
                         title = record[matching.attribute];
-                    } else if (matching.type === datagrid.types.EXTENSION) {
-                        extension = record[matching.attribute];
-                    } else if (matching.type === datagrid.types.FILESIZE) {
-                        fileSize = record[matching.attribute];
+                    } else {
+                        description.push(record[matching.attribute]);
                     }
                 }.bind(this));
 
                 id = record[constants.idProperty]
+                description = description.join(constants.descriptionDelimiter);
 
                 // pass the found data to a render method
-                this.renderThumbnail(id, imgSrc, imgAlt, title, extension, fileSize);
+                this.renderThumbnail(id, imgSrc, imgAlt, title, description);
             }.bind(this));
         },
 
@@ -27888,11 +27908,22 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          * @param imgSrc {String} the thumbnail src of the data record
          * @param imgAlt {String} the thumbnail alt tag of the data record
          * @param title {String} the title of the data record
-         * @param extension {String} the extension of the data record
-         * @param fileSize {String} the fileSize of the data record
+         * @param description {String} the thumbnail description to render
          */
-        renderThumbnail: function(id, imgSrc, imgAlt, title, extension, fileSize) {
-            console.log(id, imgSrc, imgAlt, title, extension, fileSize);
+        renderThumbnail: function(id, imgSrc, imgAlt, title, description) {
+            this.$thumbnails[id] = this.sandbox.dom.createElement(
+                this.sandbox.util.template(templates.item)({
+                    imgSrc: imgSrc,
+                    imgAlt: imgAlt,
+                    title: this.sandbox.util.cropMiddle(title, 26),
+                    description: this.sandbox.util.cropMiddle(description, 32),
+                    styleClass: constants.largeClass
+                })
+            );
+            this.sandbox.dom.data(this.$thumbnails[id], 'id', id);
+            this.sandbox.dom.append(this.$el, this.$thumbnails[id]);
+
+            this.bindThumbnailDomEvents(id);
         },
 
         /**
@@ -27900,6 +27931,58 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          */
         destroy: function() {
             this.sandbox.dom.remove(this.$el);
+        },
+
+        /**
+         * Binds Dom-Events for a thumbnail
+         * @param id {Number|String} the identifier of the thumbnail to bind events on
+         */
+        bindThumbnailDomEvents: function(id) {
+            this.sandbox.dom.on(this.$thumbnails[id], 'change', function() {
+                this.toggleItemSelected(id);
+            }.bind(this), '.' + constants.checkboxClass);
+
+            this.sandbox.dom.on(this.$thumbnails[id], 'click', function() {
+                this.downloadHandler(id);
+            }.bind(this), '.' + constants.downloadClass);
+        },
+
+        /**
+         * Toggles an item with a given id selected or unselected
+         * @param id {Number|String} the id of the item
+         */
+        toggleItemSelected: function(id) {
+            if (datagrid.itemIsSelected.call(datagrid, id) === true) {
+                this.unselectItem(id);
+            } else {
+                this.selectItem(id);
+            }
+        },
+
+        /**
+         * Unselects an item with a given id
+         * @param id {Number|String} the id of the item
+         */
+        selectItem: function(id) {
+            this.sandbox.dom.addClass(this.$thumbnails[id], constants.selectedClass);
+            datagrid.setItemSelected.call(datagrid, id);
+        },
+
+        /**
+         * Unselects an item with a given id
+         * @param id {Number|String} the id of the item
+         */
+        unselectItem: function(id) {
+            this.sandbox.dom.removeClass(this.$thumbnails[id], constants.selectedClass);
+            datagrid.setItemUnselected.call(datagrid, id);
+        },
+
+        /**
+         * Handles the click onto the download button of an item
+         * @param id {Number|String} the id of the item
+         */
+        downloadHandler: function(id) {
+            console.log('download');
         }
     };
 });
@@ -28298,9 +28381,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             types = {
                 DATE: 'date',
                 THUMBNAIL: 'thumbnail',
-                TITLE: 'title',
-                EXTENSION: 'extension',
-                FILESIZE: 'filesize',
+                TITLE: 'title'
             },
 
             decorators = {
@@ -29057,9 +29138,23 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             },
 
             /**
+             * Returns true if an item with a given id is selected
+             * @param id {Number|String} id of the item
+             * @returns {Boolean} returns true if item is selected
+             */
+            itemIsSelected: function(id) {
+              for (var i = -1, length = this.data.embedded.length; ++i < length;) {
+                  if (this.data.embedded[i].id === id) {
+                      return this.data.embedded[i].selected;
+                  }
+              }
+              return false;
+            },
+
+            /**
              * Sets a data record with a given id selected
              * @param id {String|Number} id of the item
-             * @return {Boolean} true of operation was succesfull
+             * @return {Boolean} true of operation was successfull
              */
             setItemSelected: function(id) {
                 var itemIndex = this.getRecordIndexById(id);
