@@ -39,6 +39,7 @@
     .container {
         padding: 10px 20px 20px 20px;
         background: $grayLighterer;
+        @include standard-box-shadow(3px, rgba(0,0,0,0.06), 1px);
 
         label {
             margin-bottom: 10px;

@@ -31,7 +31,7 @@ $matcherTransDuration: 0.3s;
         width: 258px;
         border-width: 2px;
         border-style: solid;
-        border-radius: 4px;
+        border-radius: $borderRadius;
         display: inline-block;
         margin-right: 20px;
         @include single-transition(border-color, $matcherTransDuration);
@@ -72,7 +72,7 @@ $matcherTransDuration: 0.3s;
                 height: 30px;
                 line-height: 30px;
                 padding: 0 20px;
-                border-radius: 3px;
+                border-radius: $borderRadius;
                 cursor: pointer;
                 margin-top: 10px;
             }

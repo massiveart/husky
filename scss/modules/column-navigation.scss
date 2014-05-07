@@ -116,7 +116,7 @@
             padding: 0 2px;
             font-size: 10px;
             color: $white;
-            border-radius: 3px;
+            border-radius: $borderRadius;
         }
         .icons-right {
             position: absolute;
@@ -133,7 +133,7 @@
             padding: 0px 10px;
             font-size: 10px;
             color: $white;
-            border-radius: 3px;
+            border-radius: $borderRadius;
         }
         .husky-column-navigation-loader {
             position: relative;

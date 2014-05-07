@@ -1205,11 +1205,11 @@ define('form/mapper',[
 
                 /**
                  *
-                 *  @param {Object} $el Element to
-                 *  @param {Boolean} returnMapperId
+                 *  @param {Boolean} [returnMapperId=false] returnMapperId
+                 *  @param {Object} [$el=undefined] element to select data from
                  */
-                getData: function(returnMapperId) {
-                    return that.getData.call(this, undefined, returnMapperId);
+                getData: function(returnMapperId, $el) {
+                    return that.getData.call(this, $el, returnMapperId);
                 },
 
                 addCollectionFilter: function(name, callback) {

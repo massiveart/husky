@@ -7,7 +7,7 @@ $footerOuterHeightColappsed: 51;
 $footerTopMargin: 40;
 
 @mixin toggle-item {
-    border-bottom: 1px solid $gray;
+    border-bottom: 1px solid $navigationActiveColor;
     height: inherit;
     padding-bottom: 15px;
 }
@@ -30,6 +30,7 @@ $footerTopMargin: 40;
 $verticalMargin: 20px;
 $verticalItemPadding: 35px;
 $transitionDuration: 0.5s;
+$transDurationIcons: 0.2s;
 $fadeDuration: 100ms;
 
 
@@ -98,8 +99,8 @@ $fadeDuration: 100ms;
         text-align: center;
         font-size: 18px;
         cursor: pointer;
+        border-radius: 0 $borderRadiusSmall $borderRadiusSmall 0;
         opacity: 1;
-
     }
 }
 
@@ -213,18 +214,29 @@ li.is-active {
 
     &:hover:not(.is-active) {
         background-color: $navigationHoverColor;
+
+        &.is-expanded {
+          .navigation-items-toggle {
+            border-bottom-color: $navigationBackgroundColor
+          }
+        }
     }
 
     > div {
         position: relative;
-        padding-left: 0px;
-        width: 210px;
-        margin-left: $verticalMargin;
-        margin-right: $verticalMargin;
+        width: 100%;
+        padding-left: $verticalMargin;
+        padding-right: $verticalMargin;
     }
 
     &.is-active {
         background-color: $navigationActiveColor;
+
+        &.is-expanded {
+            .navigation-items-toggle {
+                border-bottom-color: $navigationBackgroundColor
+            }
+        }
     }
 
     &.is-expanded {
@@ -272,7 +284,7 @@ li.is-active {
     }
 
     li {
-        border-radius: 4px;
+        border-radius: $borderRadius;
         cursor: pointer;
         position: relative;
         top: 0px;
@@ -362,7 +374,7 @@ li.is-active {
 li a.navigation-settings-icon {
     width: auto;
     position: absolute;
-    right: 20px;
+    right: $verticalMargin * 2;
     top: 15px;
     font-size: 14px;
     display: none;
@@ -371,7 +383,7 @@ li a.navigation-settings-icon {
 .navigation-toggle-icon {
     width: auto;
     position: absolute;
-    right: 0;
+    right: $verticalMargin;
     top: 14px;
     font-size: 10px;
 }
@@ -513,6 +525,7 @@ li a.navigation-settings-icon {
         .navigation-settings-icon,
         .navigation-toggle-icon {
             opacity: 0;
+            @include single-transition(opacity, $transDurationIcons);
         }
     }
     .navigation-item-title {
@@ -533,7 +546,7 @@ li a.navigation-settings-icon {
 
         .navigation-items-list {
             opacity: 0;
-            display:none;
+            display: none;
         }
     }
 
@@ -546,10 +559,6 @@ li a.navigation-settings-icon {
         padding-left: 0px;
         line-height: 50px;
         vertical-align: middle;
-    }
-
-    .section:not(:first-child) {
-        border-top: 1px solid $gray;
     }
 
     footer {
@@ -593,7 +602,8 @@ li a.navigation-settings-icon {
     display: inline-block;
     padding: 0 10px;
     color: white;
-    background-color: $navigationBackgroundColor;
+    background-color: $navigationActiveColor;
+    border-radius: $borderRadiusSmall;
     z-index: 1000;
 
     &::before {

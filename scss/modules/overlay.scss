@@ -2,8 +2,6 @@
 // Overlay
 // --------------------------------------------------
 
-$OverlayBorderRadius: 3px;
-
 .husky-overlay-container {
     width: $overlayContainerWidth;
     position: fixed;
@@ -12,7 +10,7 @@ $OverlayBorderRadius: 3px;
     background-color: $white;
     border: 1px solid $grayLight;
     z-index: 1000;
-    border-radius: $OverlayBorderRadius;
+    border-radius: $borderRadius;
     @include standard-box-shadow;
 
     &.right-aligned {
@@ -36,7 +34,7 @@ $OverlayBorderRadius: 3px;
             background: $red;
             color: $white;
             .title {
-                color: $white;
+                color: $black;
             }
         }
     }
@@ -45,7 +43,7 @@ $OverlayBorderRadius: 3px;
         .overlay-header {
             background: $yellow;
             .title {
-                color: $white;
+                color: $black;
             }
         }
     }
@@ -55,7 +53,7 @@ $OverlayBorderRadius: 3px;
     min-height: 50px;
     background: $grayLightest;
     position: relative;
-    border-radius: $OverlayBorderRadius $OverlayBorderRadius 0 0;
+    border-radius: $borderRadius $borderRadius 0 0;
 
     .title {
         color: $grayLight;
@@ -93,17 +91,29 @@ $OverlayBorderRadius: 3px;
     padding: 10px;
     border-top: 1px solid $grayLighter;
     text-align: center;
-    border-radius: 0 0 $OverlayBorderRadius $OverlayBorderRadius;
+    border-radius: 0 0 $borderRadius $borderRadius;
     @include clear-float;
 
     .btn {
-        width: 100px;
+        display: inline-block;
+        min-width: 70px;
         margin: 0 auto;
         padding: 0;
 
         &.tick {
             width: 70px;
             line-height: 28px;
+        }
+        // individual button align
+        &.left {
+            float: left;
+            margin-right: 20px;
+            margin-right: 0;
+        }
+        &.right {
+            float: right;
+            margin-left: 20px;
+            margin-right: 0;
         }
     }
 
@@ -127,10 +137,9 @@ $OverlayBorderRadius: 3px;
     margin: 0 20px 10px 20px;
 
     .message {
-        padding: 20px 0 30px 0;
-        font-size: $alertMessageFontSize;
-        color: $black;
-        line-height: $alertMessageLineHeight;
+        padding: 20px 0 25px 0;
+        font-size: $bigFontSize;
+        color: $grayLight;
     }
 }
 
