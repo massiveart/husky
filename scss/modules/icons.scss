@@ -69,6 +69,13 @@
     }
 }
 
+.icon-download {
+  &::after {
+    content: "\e201";
+    display: inline-block;
+  }
+}
+
 .icon-circle-ok {
     &::after {
         content: "\e199";

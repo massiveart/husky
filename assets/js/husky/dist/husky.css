@@ -7712,3 +7712,9 @@ a.btn-black, a.btn-highlight {
 .husky-toggler.checked input {
   left: 17px;
 }
+
+/* line 10, ../scss/modules/thumbnails.scss */
+.husky-thumbnails .item.small {
+  width: 260px;
+  height: 70px;
+}

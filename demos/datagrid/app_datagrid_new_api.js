@@ -37,18 +37,18 @@ require(['lib/husky'], function(Husky) {
             '},'+
             '"_embedded":' +
             '[' +
-            '{ "id": "1", "content1": "B Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "2", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" },' +
-            '{ "id": "5", "content1": "B Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "6", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "7", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "8", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "9", "content1": "B Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "10", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "11", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "12", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
+            '{ "id": "1", "content1": "B Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "2", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" },' +
+            '{ "id": "5", "content1": "B Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "6", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "7", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "8", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "9", "content1": "B Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "10", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "11", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "12", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
             '],' +
             '"total":12,' +
             '"numberOfAll": 12,' +
@@ -79,10 +79,10 @@ require(['lib/husky'], function(Husky) {
             '},' +
             '"_embedded":' +
             '[' +
-            '{ "id": "1", "content1": "A Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "2", "content1": "B Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
+            '{ "id": "1", "content1": "A Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "2", "content1": "B Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
             '],' +
             '"total": 4,' +
             '"numberOfAll": 12,' +
@@ -114,10 +114,10 @@ require(['lib/husky'], function(Husky) {
             '},' +
             '"_embedded":' +
             '[' +
-            '{ "id": "1", "content1": "D Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "2", "content1": "C Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "3", "content1": "B Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "4", "content1": "A Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
+            '{ "id": "1", "content1": "D Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "2", "content1": "C Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "3", "content1": "B Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "4", "content1": "A Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
             '],' +
             '"total": 4,' +
             '"numberOfAll": 12,' +
@@ -149,10 +149,10 @@ require(['lib/husky'], function(Husky) {
             '},' +
             '"_embedded":' +
             '[' +
-            '{ "id": "1", "content1": "B Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "2", "content1": "A Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "3", "content1": "C Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
+            '{ "id": "1", "content1": "B Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "2", "content1": "A Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "3", "content1": "C Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
             '],' +
             '"total": 4,' +
             '"numberOfAll": 12,' +
@@ -184,10 +184,10 @@ require(['lib/husky'], function(Husky) {
             '},' +
             '"_embedded":' +
             '[' +
-            '{ "id": "1", "content1": "B Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "2", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "3", "content1": "C Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
+            '{ "id": "1", "content1": "B Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "2", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "3", "content1": "C Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
             '],' +
             '"total": 4,' +
             '"numberOfAll": 12,' +
@@ -220,8 +220,8 @@ require(['lib/husky'], function(Husky) {
             '},' +
             '"_embedded":' +
             '[' +
-            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" },' +
-            '{ "id": "4", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
+            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" },' +
+            '{ "id": "4", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
             '],' +
             '"total": 2,' +
             '"numberOfAll": 12,' +
@@ -255,10 +255,10 @@ require(['lib/husky'], function(Husky) {
             '},' +
             '"_embedded":' +
             '[' +
-            '{ "id": "1", "content1": "B Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "1999-03-19T22:04:29+0100" }, ' +
-            '{ "id": "2", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-02-19T22:04:40+0100" }, ' +
-            '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2003-03-19T22:01:29+0100" }, ' +
-            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
+            '{ "id": "1", "content1": "B Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "1999-03-19T22:04:29+0100" }, ' +
+            '{ "id": "2", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-02-19T22:04:40+0100" }, ' +
+            '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2003-03-19T22:01:29+0100" }, ' +
+            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
             '],' +
             '"total": 4,' +
             '"numberOfAll": 12,' +
@@ -292,10 +292,10 @@ require(['lib/husky'], function(Husky) {
             '},' +
             '"_embedded":' +
             '[' +
-            '{ "id": "1", "content1": "B Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "2", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
+            '{ "id": "1", "content1": "B Hallo 1.1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "2", "content1": "A Hallo 1.1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "3", "content1": "C Hallo 1.1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "4", "content1": "D Hallo 1.1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
             '],' +
             '"total": 4,' +
             '"numberOfAll": 12,' +
@@ -328,10 +328,10 @@ require(['lib/husky'], function(Husky) {
             '},' +
             '"_embedded":' +
             '[' +
-            '{ "id": "1", "content1": "B Hallo 1.1 1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "2", "content1": "A Hallo 1.1 1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "3", "content1": "C Hallo 1.1 1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "4", "content1": "D Hallo 1.1 1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
+            '{ "id": "1", "content1": "B Hallo 1.1 1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "2", "content1": "A Hallo 1.1 1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "3", "content1": "C Hallo 1.1 1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "4", "content1": "D Hallo 1.1 1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }' +
             '],' +
             '"total": 4,' +
             '"numberOfAll": 12,' +
@@ -364,16 +364,16 @@ require(['lib/husky'], function(Husky) {
             '},' +
             '"_embedded":' +
             '[' +
-            '{ "id": "1", "content1": "B Hallo 1.1 1", "content2": "I Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "2", "content1": "A Hallo 1.1 1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "3", "content1": "C Hallo 1.1 1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "4", "content1": "D Hallo 1.1 1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "5", "content1": "B Hallo 1.1 1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "6", "content1": "A Hallo 1.1 1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "7", "content1": "C Hallo 1.1 1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "8", "content1": "D Hallo 1.1 1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "9", "content1": "B Hallo 1.1 1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
-            '{ "id": "10", "content1": "A Hallo 1.1 1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" } ' +
+            '{ "id": "1", "content1": "B Hallo 1.1 1", "content2": "I Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "2", "content1": "A Hallo 1.1 1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "3", "content1": "C Hallo 1.1 1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "4", "content1": "D Hallo 1.1 1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "5", "content1": "B Hallo 1.1 1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "6", "content1": "A Hallo 1.1 1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "7", "content1": "C Hallo 1.1 1", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "8", "content1": "D Hallo 1.1 1", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "9", "content1": "B Hallo 1.1 1", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" }, ' +
+            '{ "id": "10", "content1": "A Hallo 1.1 1", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" }, "date": "2014-03-19T22:04:29+0100" } ' +
             '],' +
             '"total": 10,' +
             '"numberOfAll": 12,' +
@@ -389,7 +389,7 @@ require(['lib/husky'], function(Husky) {
     fakeServer.respondWith('PUT', '/admin/api/contacts/3', [400, { 'Content-Type': 'application/json' },'{ "code": "3", "message": "Same name message ...", "field": "content1"}']);
     fakeServer.respondWith('PUT', '/admin/api/contacts/4', [400, { 'Content-Type': 'application/json' },'{ "code": "3", "message": "Same name message ...", "field": "content1"}']);
 
-    fakeServer.respondWith('PUT', '/admin/api/contacts/100', [200, { 'Content-Type': 'application/json' },'{ "id": "100", "content1": "New Element", "content2": "New Element", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }']);
+    fakeServer.respondWith('PUT', '/admin/api/contacts/100', [200, { 'Content-Type': 'application/json' },'{ "id": "100", "content1": "New Element", "content2": "New Element", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" } }']);
 
     // post
     fakeServer.respondWith('POST', '/admin/api/contacts', [200, { 'Content-Type': 'application/json' },'{ "id": "100", "content1": "New Element", "content2": "New Element", "content3": "New Element" }']);
@@ -421,10 +421,10 @@ require(['lib/husky'], function(Husky) {
             '},' +
             '"_embedded":' +
             '[' +
-            '{ "id": "1", "content1": "B Hallo 1.1 2", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "2", "content1": "A Hallo 1.1 2", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "3", "content1": "C Hallo 1.1 2", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "4", "content1": "D Hallo 1.1 2", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
+            '{ "id": "1", "content1": "B Hallo 1.1 2", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" } }, ' +
+            '{ "id": "2", "content1": "A Hallo 1.1 2", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" } }, ' +
+            '{ "id": "3", "content1": "C Hallo 1.1 2", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" } }, ' +
+            '{ "id": "4", "content1": "D Hallo 1.1 2", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" } }' +
             '],' +
             '"total": 4,' +
             '"numberOfAll": 12,' +
@@ -456,10 +456,10 @@ require(['lib/husky'], function(Husky) {
             '},' +
             '"_embedded":'+
             '['+
-            '{ "id": "1", "content1": "B Hallo 1.1 3", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "2", "content1": "A Hallo 1.1 3", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "3", "content1": "C Hallo 1.1 3", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "4", "content1": "D Hallo 1.1 3", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }'+
+            '{ "id": "1", "content1": "B Hallo 1.1 3", "content2": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" } }, ' +
+            '{ "id": "2", "content1": "A Hallo 1.1 3", "content2": "B Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" } }, ' +
+            '{ "id": "3", "content1": "C Hallo 1.1 3", "content2": "D Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" } }, ' +
+            '{ "id": "4", "content1": "D Hallo 1.1 3", "content2": "A Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" } }'+
             '],'+
             '"total": 4,'+
             '"numberOfAll": 12,' +
@@ -490,10 +490,10 @@ require(['lib/husky'], function(Husky) {
             '},' +
             '"_embedded":' +
             '[' +
-            '{ "id": "1", "content1": "B Hallo adf asd 1.1 3", "content2": "C Hallo 1.2as df asdfd fasd", "content4": "C Hallo 1.2 asdfsadf  asdfdas f", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "2", "content1": "A Hallo as s 1.1 3", "content2": "einsehrsehrsehrseeeehrlangeeeeeeeeeeeeeeeerrrrtitel", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "3", "content1": "C Hallo  asdfd1.1 3", "content2": "D Hallo 1.2 asdf", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }, ' +
-            '{ "id": "4", "content1": "D Hallo sdf 1.1 3", "content2": "A asdf asdf sdf sHallo 1.2", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/24x24", "alt": "lorempixel" } }' +
+            '{ "id": "1", "content1": "B Hallo adf asd 1.1 3", "content2": "C Hallo 1.2as df asdfd fasd", "content4": "C Hallo 1.2 asdfsadf  asdfdas f", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" } }, ' +
+            '{ "id": "2", "content1": "A Hallo as s 1.1 3", "content2": "einsehrsehrsehrseeeehrlangeeeeeeeeeeeeeeeerrrrtitel", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" } }, ' +
+            '{ "id": "3", "content1": "C Hallo  asdfd1.1 3", "content2": "D Hallo 1.2 asdf", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" } }, ' +
+            '{ "id": "4", "content1": "D Hallo sdf 1.1 3", "content2": "A asdf asdf sdf sHallo 1.2", "content4": "C Hallo 1.2", "content3": { "thumb": "http://placehold.it/170x170", "alt": "lorempixel" } }' +
             '],' +
             '"total": 4,' +
             '"numberOfAll": 12,' +
@@ -571,12 +571,11 @@ require(['lib/husky'], function(Husky) {
                                     type: 'title'
                                 },
                                 {
-                                    attribute: "content2",
-                                    type: 'extension'
+                                    attribute: "content2"
+
                                 },
                                 {
-                                    attribute: 'date',
-                                    type: 'filesize'
+                                    attribute: 'date'
                                 }
                             ]
                         }

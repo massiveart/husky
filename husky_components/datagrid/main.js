@@ -57,9 +57,7 @@
             types = {
                 DATE: 'date',
                 THUMBNAIL: 'thumbnail',
-                TITLE: 'title',
-                EXTENSION: 'extension',
-                FILESIZE: 'filesize',
+                TITLE: 'title'
             },
 
             decorators = {
@@ -816,9 +814,23 @@
             },
 
             /**
+             * Returns true if an item with a given id is selected
+             * @param id {Number|String} id of the item
+             * @returns {Boolean} returns true if item is selected
+             */
+            itemIsSelected: function(id) {
+              for (var i = -1, length = this.data.embedded.length; ++i < length;) {
+                  if (this.data.embedded[i].id === id) {
+                      return this.data.embedded[i].selected;
+                  }
+              }
+              return false;
+            },
+
+            /**
              * Sets a data record with a given id selected
              * @param id {String|Number} id of the item
-             * @return {Boolean} true of operation was succesfull
+             * @return {Boolean} true of operation was successfull
              */
             setItemSelected: function(id) {
                 var itemIndex = this.getRecordIndexById(id);
