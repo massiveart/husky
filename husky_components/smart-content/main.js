@@ -643,11 +643,15 @@ define([], function() {
         startOverlay: function() {
             this.initOverlayContent();
 
+            var $element = this.sandbox.dom.createElement('<div/>');
+            this.sandbox.dom.append(this.$el, $element);
+
             this.sandbox.start([
                 {
                     name: 'overlay@husky',
                     options: {
                         triggerEl: this.$button,
+                        el: $element,
                         container: this.$el,
                         data: this.$overlayContent,
                         title: this.sandbox.translate(this.translations.configureSmartContent),

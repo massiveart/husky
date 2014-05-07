@@ -163,8 +163,11 @@
  * @param {Array} [options.preSelectedElements] allows preselection of fields by defining the id attributes or strings
  * @param {Function} [options.selectCallback] callbackfunction, when element is selected
  * @param {String} [options.valueName] name of property which should be used
- * @param {String} [options.style] &quot;normal&quot;, &quot;small&quot; or &quot;big&quot; for different appearance
+ * @param {String} [options.style] &quot;normal&quot;, &quot;small&quot;, &quot;big&quot;, &quot;action&quot; for different appearance
  * @param {Boolean} [options.emitValues] If true the value is emited with events instead of the id
+ * @param {Boolean} [options.fixedLabel] If true the label never gets changed
+ * @param {String} [options.icon] icon to set into the label
+ * @param {Function} [options.noItemsCallback] callback function which gets executed at click on label if no dropdown-items exist
  */
 
 define([], function() {
@@ -185,6 +188,9 @@ define([], function() {
             deselectCallback: null,
             style: &#x27;normal&#x27;,
             emitValues: false,
+            fixedLabel: false,
+            icon: null,
+            noItemsCallback: null
         },
 
         constants = {
@@ -305,13 +311,17 @@ define([], function() {
         render: function() {
 
             var $originalElement = this.sandbox.dom.$(this.options.el),
-                button = this.sandbox.dom.createElement(this.template.basicStructure.call(this, this.options.defaultLabel));
+                button = this.sandbox.dom.createElement(
+                    this.template.basicStructure.call(this, this.options.defaultLabel, this.options.icon)
+                );
             this.sandbox.dom.append($originalElement, button);
 
             if (this.options.style === &#x27;small&#x27;) {
                 this.sandbox.dom.addClass(button, &#x27;small&#x27;);
             } else if (this.options.style === &#x27;big&#x27;) {
                 this.sandbox.dom.addClass(button, &#x27;big&#x27;);
+            } else if (this.options.style === &#x27;action&#x27;) {
+                this.sandbox.dom.addClass(button, &#x27;action&#x27;);
             }
 
             this.$list = this.$find(&#x27;.&#x27; + constants.listClass);
@@ -352,9 +362,9 @@ define([], function() {
             // TODO load data from url
         },
 
-        addDropdownElement: function(id, value, disabled) {
+        addDropdownElement: function(id, value, disabled, callback) {
             var $item,
-                idString = (!!id || id === 0) ? id.toString() : &#x27;null&#x27;;
+                idString = (!!id || id === 0) ? id.toString() : this.sandbox.util.uniqueId();
             if (this.options.preSelectedElements.indexOf(id) &gt;= 0 || this.options.preSelectedElements.indexOf(value) &gt;= 0) {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, &#x27;checked&#x27;));
                 this.selectedElements.push(idString);
@@ -366,6 +376,11 @@ define([], function() {
                 }
             } else {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, &#x27;&#x27;));
+            }
+
+            // store callback if callback is set
+            if (typeof callback === &#x27;function&#x27;) {
+                this.sandbox.dom.data($item, &#x27;selectCallback&#x27;, callback);
             }
 
             if (!!disabled &amp;&amp; disabled === true) {
@@ -387,7 +402,7 @@ define([], function() {
                     }.bind(this));
                 } else if (typeof(items[0]) === &#x27;object&#x27;) {
                     this.sandbox.util.each(items, function(index, value) {
-                        this.addDropdownElement(value.id, value[this.options.valueName], !!value.disabled &amp;&amp; value.disabled);
+                        this.addDropdownElement(value.id, value[this.options.valueName], !!value.disabled, value.callback);
                     }.bind(this));
                 }
                 this.changeLabel();
@@ -399,7 +414,7 @@ define([], function() {
         bindDOMEvents: function() {
 
             // toggle drop-down
-            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.toggleDropDown.bind(this), &#x27;.dropdown-label&#x27;);
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.labelClickHandler.bind(this), &#x27;.dropdown-label&#x27;);
 
             // click on single item
             this.sandbox.dom.on(this.$el, &#x27;click&#x27;, function(event) {
@@ -457,9 +472,10 @@ define([], function() {
         // trigger event with clicked item
         clickItem: function(event) {
 
-            var key, value, $checkbox, index;
+            var key, value, $checkbox, index, callback;
 
             key = this.sandbox.dom.attr(event.currentTarget, &#x27;data-id&#x27;);
+            callback = this.sandbox.dom.data(event.currentTarget, &#x27;selectCallback&#x27;);
             index = this.selectedElements.indexOf(key);
 
             // if single select then uncheck all results
@@ -511,6 +527,11 @@ define([], function() {
                 key = value;
             }
 
+            // execute callback if configured
+            if (typeof callback === &#x27;function&#x27;) {
+                callback();
+            }
+
             if (index &gt;= 0) {
                 this.triggerDeselect(key);
             } else {
@@ -549,17 +570,34 @@ define([], function() {
         },
 
         changeLabel: function() {
-            if (this.selectedElements.length === this.options.data.length &amp;&amp; this.options.multipleSelect === true) {
-                this.sandbox.dom.text(this.$label, this.options.checkedAllLabel);
-            } else if (this.selectedElements.length === 0) {
-                this.sandbox.dom.text(this.$label, this.options.defaultLabel);
-            } else {
+            if (this.options.fixedLabel !== true) {
+                if (this.selectedElements.length === this.options.data.length &amp;&amp; this.options.multipleSelect === true) {
+                    this.sandbox.dom.text(this.$label, this.options.checkedAllLabel);
+                } else if (this.selectedElements.length === 0) {
+                    this.sandbox.dom.text(this.$label, this.options.defaultLabel);
+                } else {
 
-                var text = &quot;&quot;;
-                this.sandbox.util.each(this.selectedElementsValues, function(index, value) {
-                    text += &#x27; &#x27; + value + &#x27;,&#x27;;
-                });
-                this.sandbox.dom.text(this.$label, text.substring(1, text.length - 1));
+                    var text = &quot;&quot;;
+                    this.sandbox.util.each(this.selectedElementsValues, function(index, value) {
+                        text += &#x27; &#x27; + value + &#x27;,&#x27;;
+                    });
+                    this.sandbox.dom.text(this.$label, text.substring(1, text.length - 1));
+                }
+            }
+        },
+
+        /**
+         * Handles the click on the drodpwn label
+         */
+        labelClickHandler: function() {
+            // if dropdown is not empty
+            if (!this.sandbox.dom.is(this.$find(&#x27;.&#x27; + constants.listClass), &#x27;:empty&#x27;)) {
+                this.toggleDropDown();
+            } else {
+                // else execute a no-items-callback if it exists
+                if (typeof this.options.noItemsCallback === &#x27;function&#x27;) {
+                    this.options.noItemsCallback();
+                }
             }
         },
 
@@ -586,8 +624,7 @@ define([], function() {
             var ddHeight = this.sandbox.dom.height(this.$dropdownContainer),
                 ddTop = this.sandbox.dom.offset(this.$dropdownContainer).top,
                 windowHeight = this.sandbox.dom.height(this.sandbox.dom.window),
-                scrollTop = this.sandbox.dom.scrollTop(this.sandbox.dom.window),
-                hasTopClass = this.sandbox.dom.hasClass(this.$dropdownContainer, constants.dropdownTopClass);
+                scrollTop = this.sandbox.dom.scrollTop(this.sandbox.dom.window);
 
             // check if dropdown container overlaps bottom of browser
             if (ddHeight + ddTop &gt; windowHeight + scrollTop) {
@@ -620,16 +657,24 @@ define([], function() {
         },
 
         template: {
-            basicStructure: function(defaultLabel) {
+            basicStructure: function(defaultLabel, icon) {
+                var iconSpan = &#x27;&#x27;, dropdownToggle = &#x27;&#x27;;
+                if (!!icon) {
+                    iconSpan = &#x27;&lt;span class=&quot;icon-&#x27; + icon + &#x27; icon&quot;&gt;&lt;/span&gt;&#x27;;
+                }
+                if (!!this.options.data &amp;&amp; !!this.options.data.length) {
+                    dropdownToggle = &#x27;&lt;span class=&quot;dropdown-toggle inline-block&quot;&gt;&lt;/span&gt;&#x27;;
+                }
                 return [
                     &#x27;&lt;div class=&quot;husky-select-container&quot;&gt;&#x27;,
                     &#x27;    &lt;div class=&quot;dropdown-label pointer&quot;&gt;&#x27;,
                     &#x27;       &lt;div class=&quot;checkbox&quot;&gt;&#x27;,
+                    iconSpan,
                     &#x27;           &lt;span class=&quot;&#x27; + constants.labelClass + &#x27;&quot;&gt;&#x27;, defaultLabel, &#x27;&lt;/span&gt;&#x27;,
                     &#x27;       &lt;/div&gt;&#x27;,
-                    &#x27;       &lt;span class=&quot;dropdown-toggle inline-block&quot;&gt;&lt;/span&gt;&#x27;,
+                    dropdownToggle,
                     &#x27;   &lt;/div&gt;&#x27;,
-                    &#x27;   &lt;div class=&quot;grid-row dropdown-list hidden &#x27; + constants.dropdownContainerClass + &#x27;&quot;&gt;&#x27;,
+                    &#x27;   &lt;div class=&quot;grid-row dropdown-list dropdown-shadow hidden &#x27; + constants.dropdownContainerClass + &#x27;&quot;&gt;&#x27;,
                     &#x27;       &lt;ul class=&quot;&#x27; + constants.listClass + &#x27;&quot;&gt;&lt;/ul&gt;&#x27;,
                     &#x27;   &lt;/div&gt;&#x27;,
                     &#x27;&lt;/div&gt;&#x27;

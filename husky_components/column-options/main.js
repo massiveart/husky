@@ -280,11 +280,15 @@ define(function() {
 
         startOverlay = function() {
             if (this.overlayLoaded === false) {
+                var $element = this.sandbox.dom.createElement('<div/>');
+                this.sandbox.dom.append(this.$el, $element);
+
                 this.sandbox.start([
                     {
                         name: 'overlay@husky',
                         options: {
                             triggerEl: this.options.trigger,
+                            el: $element,
                             container: this.$el,
                             data: this.$list,
                             okCallback: function() {
@@ -351,7 +355,7 @@ define(function() {
         view: true,
 
         initialize: function() {
-
+            console.log(this._ref);
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.overlayLoaded = false;
 
