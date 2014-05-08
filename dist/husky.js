@@ -37147,6 +37147,76 @@ define('__component__$toggler@husky',[], function() {
 
 });
 
+/**
+ * This file is part of Husky frontend development framework.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ * @module husky/components/dropzone
+ */
+
+/**
+ * @class Dropzone
+ * @constructor
+ *
+ * @params {Object} [options] Configuration object
+ */
+define('__component__$dropzone@husky',[], function() {
+
+    
+
+    var defaults = {
+            instanceName: 'undefined',
+        },
+
+        constants = {
+
+        },
+
+        /** templates for component */
+            templates = {
+
+        },
+
+        /**
+         * namespace for events
+         * @type {string}
+         */
+            eventNamespace = 'husky.dropzone.',
+
+        /**
+         * raised after initialization process
+         * @event husky.overlay.<instance-name>.initialize
+         */
+            INITIALIZED = function() {
+            return createEventName.call(this, 'initialized');
+        },
+
+        /** returns normalized event names */
+            createEventName = function(postFix) {
+            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+        };
+
+    return {
+
+        /**
+         * Initialize component
+         */
+        initialize: function() {
+            this.sandbox.logger.log('initialize', this);
+
+            // merge defaults, type defaults and options
+            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
+            this.sandbox.emit(INITIALIZED.call(this));
+        }
+    };
+
+});
+
 (function() {
 
     

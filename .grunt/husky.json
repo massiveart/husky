@@ -16,6 +16,7 @@
             "globalize_lib": "bower_components/globalize/lib/globalize",
             "typeahead": "bower_components/typeahead.js/typeahead",
             "tagsManager": "bower_components/tagmanager/tagmanager",
+            "dropzone": "bower_components/dropzone/dropzone",
             "uri-template": "bower_components/massiveart-uritemplate/uritemplate",
             "ckeditor" : "vendor/ckeditor/ckeditor",
             "jqueryAdapter" : "vendor/ckeditor/adapters/jquery",
@@ -44,7 +45,8 @@
             "__component__$label@husky": "husky_components/label/main",
             "__component__$matcher@husky": "husky_components/matcher/main",
             "__component__$process@husky": "husky_components/process/main",
-            "__component__$toggler@husky": "husky_components/toggler/main"
+            "__component__$toggler@husky": "husky_components/toggler/main",
+            "__component__$dropzone@husky": "husky_components/dropzone/main"
         },
         "shim": {
             "backbone": {
@@ -71,6 +73,7 @@
             "jqueryAdapter",
             "uri-template",
             "typeahead",
+            "dropzone",
             "tagsManager",
 
             "husky",
@@ -97,7 +100,8 @@
             "__component__$label@husky",
             "__component__$matcher@husky",
             "__component__$process@husky",
-            "__component__$toggler@husky"
+            "__component__$toggler@husky",
+            "__component__$dropzone@husky"
         ]
     }
 }

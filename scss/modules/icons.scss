@@ -454,6 +454,13 @@
   }
 }
 
+.icon-cloud-upload {
+  &::after {
+    content: "\e365";
+    display: inline-block;
+  }
+}
+
 .icon-show-thumbnails {
   &::after {
     content: "\e157";
@@ -508,7 +515,15 @@
   }
 }
 
-.icon-half-remove {
+.icon-repeat {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e030";
+    display: inline-block;
+  }
+}
+
+.icon- {
   &::after {
     font-family: $baseIconHalflingsFont;
     content: "\e014";
@@ -519,6 +534,13 @@
 .icon-remove2 {
   &::after {
     content: "\e208";
+    display: inline-block;
+  }
+}
+
+.icon-ok {
+  &::after {
+    content: "\e207";
     display: inline-block;
   }
 }

@@ -11,7 +11,8 @@
     "massiveart-uritemplate": "0.3.*",
     "typeahead.js": "~0.9.3",
     "tagmanager": "3.0.*",
-    "requirejs": "2.1.9"
+    "requirejs": "2.1.9",
+    "dropzone": "3.9.*"
   },
   "resolutions": {
     "jquery": "~1.10.x"
