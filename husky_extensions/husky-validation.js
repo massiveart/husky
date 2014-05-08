@@ -67,8 +67,8 @@
                         return app.sandbox.form.getObject(selector).mapper.setData(data);
                     },
 
-                    getData: function(selector) {
-                        return  app.sandbox.form.getObject(selector).mapper.getData();
+                    getData: function(selector, returnMapperId, $el) {
+                        return  app.sandbox.form.getObject(selector).mapper.getData($el, returnMapperId);
                     },
 
                     addToCollection: function(selector, propertyName, data, append) {

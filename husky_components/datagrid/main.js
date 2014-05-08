@@ -21,6 +21,7 @@
  * @param {String} [options.url] url to fetch data from
  *
  */
+
 (function() {
 
     define(['husky_components/datagrid/decorators/table-view',
@@ -729,7 +730,9 @@
              * calls the funciton of the view responsible for the responsiveness
              */
             windowResizeListener: function() {
-                this.gridViews[this.viewId].onResize();
+                if (!!this.gridViews[this.viewId].onResize) {
+                    this.gridViews[this.viewId].onResize();
+                }
             },
 
             /**

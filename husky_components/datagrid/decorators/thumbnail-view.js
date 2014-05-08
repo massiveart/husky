@@ -53,7 +53,7 @@ define(function() {
                         '<span class="'+ constants.descriptionClass +'"><%= description %></span>',
                     '</div>',
                     '<div class="'+ constants.checkboxClass +' custom-checkbox no-spacing">',
-                        '<input type="checkbox"/>',
+                        '<input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
                         '<span class="icon"></span>',
                     '</div>',
                     '<div class="icon-'+ constants.downloadIcon +' '+ constants.downloadClass +'"></div>',
@@ -136,7 +136,7 @@ define(function() {
                 description = description.join(constants.descriptionDelimiter);
 
                 // pass the found data to a render method
-                this.renderThumbnail(id, imgSrc, imgAlt, title, description);
+                this.renderThumbnail(id, imgSrc, imgAlt, title, description, record);
             }.bind(this));
         },
 
@@ -147,17 +147,23 @@ define(function() {
          * @param imgAlt {String} the thumbnail alt tag of the data record
          * @param title {String} the title of the data record
          * @param description {String} the thumbnail description to render
+         * @param record {Object} the original data record
          */
-        renderThumbnail: function(id, imgSrc, imgAlt, title, description) {
+        renderThumbnail: function(id, imgSrc, imgAlt, title, description, record) {
             this.$thumbnails[id] = this.sandbox.dom.createElement(
                 this.sandbox.util.template(templates.item)({
                     imgSrc: imgSrc,
                     imgAlt: imgAlt,
                     title: this.sandbox.util.cropMiddle(title, 26),
                     description: this.sandbox.util.cropMiddle(description, 32),
-                    styleClass: constants.largeClass
+                    // todo: option to change large and small
+                    styleClass: constants.largeClass,
+                    checked: !!record.selected
                 })
             );
+            if (!!record.selected === true) {
+                this.selectItem(id, true);
+            }
             this.sandbox.dom.data(this.$thumbnails[id], 'id', id);
             this.sandbox.dom.append(this.$el, this.$thumbnails[id]);
 
@@ -200,10 +206,13 @@ define(function() {
         /**
          * Unselects an item with a given id
          * @param id {Number|String} the id of the item
+         * @param onlyView {Boolean} if true the selection only affects this view and not the data array
          */
-        selectItem: function(id) {
+        selectItem: function(id, onlyView) {
             this.sandbox.dom.addClass(this.$thumbnails[id], constants.selectedClass);
-            datagrid.setItemSelected.call(datagrid, id);
+            if (onlyView !== true) {
+                datagrid.setItemSelected.call(datagrid, id);
+            }
         },
 
         /**
@@ -220,7 +229,7 @@ define(function() {
          * @param id {Number|String} the id of the item
          */
         downloadHandler: function(id) {
-            console.log('download');
+            console.log('download', id);
         }
     };
 });

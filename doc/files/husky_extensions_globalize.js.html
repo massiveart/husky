@@ -180,6 +180,70 @@
                     return !!translation ? translation : key;
                 };
 
+                app.sandbox.date = {
+                    /**
+                     * returns formatted date string
+                     * @param {string|Date} date
+                     * @returns {string}
+                     */
+                    format: function(date) {
+                        var returnDate, returnTime;
+                        if(typeof date === &#x27;string&#x27;){
+                            date = this.parse(date);
+                        }
+
+                        returnDate = Globalize.format(date, Globalize.culture().calendar.patterns.d);
+                        returnTime = Globalize.format(date, Globalize.culture().calendar.patterns.t);
+
+                        return ( (!!returnDate) ? returnDate : &#x27;&#x27; ) +
+                               ( (!!returnDate &amp;&amp; !!returnTime) ? &#x27; &#x27;: &#x27;&#x27; ) +
+                               ( (!!returnTime) ? returnTime : &#x27;&#x27; );
+                    },
+
+                    /**
+                     * parse ISO8601 string : string -&gt; Date
+                     * Parse an ISO-8601 date, including possible timezone,
+                     * into a Javascript Date object.
+                     * (inspired by: http://stackoverflow.com/questions/439630/how-do-you-create-a-javascript-date-object-with-a-set-timezone-without-using-a-s)
+                     *
+                     * Test strings: parseISO8601String(x).toISOString()
+                     * &quot;2013-01-31T12:34&quot;              -&gt; &quot;2013-01-31T12:34:00.000Z&quot;
+                     * &quot;2013-01-31T12:34:56&quot;           -&gt; &quot;2013-01-31T12:34:56.000Z&quot;
+                     * &quot;2013-01-31T12:34:56.78&quot;        -&gt; &quot;2013-01-31T12:34:56.780Z&quot;
+                     * &quot;2013-01-31T12:34:56.78+0100&quot;   -&gt; &quot;2013-01-31T11:34:56.780Z&quot;
+                     * &quot;2013-01-31T12:34:56.78+0530&quot;   -&gt; &quot;2013-01-31T07:04:56.780Z&quot;
+                     * &quot;2013-01-31T12:34:56.78-0330&quot;   -&gt; &quot;2013-01-31T16:04:56.780Z&quot;
+                     * &quot;2013-01-31T12:34:56-0330&quot;      -&gt; &quot;2013-01-31T16:04:56.000Z&quot;
+                     * &quot;2013-01-31T12:34:56Z&quot;          -&gt; &quot;2013-01-31T12:34:56.000Z&quot;
+                     *
+                     * @param {string} dateString
+                     * @returns {Date}
+                     */
+                    parse: function(dateString) {
+                        var timebitsRegex = /^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2})(?::([0-9]*)(\.[0-9]*)?)?(?:([+-])([0-9]{2})([0-9]{2}))?/,
+                            timebits = timebitsRegex.exec(dateString),
+                            resultDate, utcdate, offsetMinutes;
+
+                        if (timebits) {
+                            utcdate = Date.UTC(parseInt(timebits[1]),
+                                parseInt(timebits[2]) - 1, // months are zero-offset (!)
+                                parseInt(timebits[3]),
+                                parseInt(timebits[4]), parseInt(timebits[5]), // hh:mm
+                                (timebits[6] &amp;&amp; parseInt(timebits[6]) || 0),  // optional seconds
+                                (timebits[7] &amp;&amp; parseFloat(timebits[7]) * 1000) || 0); // optional fraction
+                            // utcdate is milliseconds since the epoch
+                            if (timebits[9] &amp;&amp; timebits[10]) {
+                                offsetMinutes = parseInt(timebits[9]) * 60 + parseInt(timebits[10]);
+                                utcdate += (timebits[8] === &#x27;+&#x27; ? -1 : +1) * offsetMinutes * 60000;
+                            }
+                            resultDate = new Date(utcdate);
+                        } else {
+                            resultDate = null;
+                        }
+                        return resultDate;
+                    }
+                };
+
                 /**
                  * function calls this.sandbox.translate for an array of keys and returns an array of translations
                  * @param array

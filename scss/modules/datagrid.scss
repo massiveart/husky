@@ -1,5 +1,6 @@
 .husky-datagrid {
     $fullWidthPaddingLeft: 60px;
+    $overflowIconSpacing: 30px;
 
     position: relative;
     padding-top: 10px;
@@ -97,6 +98,10 @@
 
         .pagination-wrapper {
             padding-left: $fullWidthPaddingLeft - 10px;
+            padding-right: $overflowIconSpacing;
+        }
+        .overflow + .pagination-wrapper {
+            padding-right: 0;
         }
     }
 }

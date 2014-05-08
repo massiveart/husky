@@ -45,8 +45,6 @@ $toolbarSmallHeight: 20px;
 
 /*group specific styles*/
 .group {
-    $itemBorderRadius: 4px;
-
     padding-left: 0;
     margin: 0;
     list-style: none;
@@ -75,14 +73,14 @@ $toolbarSmallHeight: 20px;
         border-width: 1px 1px 1px 0;
 
         &:first-child {
-            border-radius: $itemBorderRadius 0 0 $itemBorderRadius;
+            border-radius: $borderRadius 0 0 $borderRadius;
             border-width: 1px;
         }
         &:last-child {
-            border-radius: 0 $itemBorderRadius $itemBorderRadius 0;
+            border-radius: 0 $borderRadius $borderRadius 0;
         }
         &:only-child {
-            border-radius: $itemBorderRadius;
+            border-radius: $borderRadius;
         }
     }
 }
@@ -103,6 +101,10 @@ $toolbarSmallHeight: 20px;
         display: block;
         list-style: none;
         float: left;
+    }
+
+    .dropdown-toggle::after {
+        top: -3px;
     }
 
     .item-loader {
@@ -225,6 +227,7 @@ $toolbarSmallHeight: 20px;
 .toolbar-dropdown-menu {
   background-color: white;
   border: 1px solid $grayLighter;
+  border-radius: $borderRadiusSmall;
 
   display: none;
   position: absolute;
@@ -238,6 +241,7 @@ $toolbarSmallHeight: 20px;
   padding: 5px 0;
   margin-top: -7px;
   margin-left: 0px;
+  z-index: 2000;
 
   @include standard-box-shadow(2px);
 
@@ -311,7 +315,7 @@ $toolbarSmallHeight: 20px;
         border-color: $blue;
 
         &.highlight {
-            background-color: $yellow;
+            background-color: $yellowWarning;
             & > a {
                 color: $black;
             }

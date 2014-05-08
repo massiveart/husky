@@ -16326,6 +16326,7 @@ define('aura/ext/components', [],function() {
   };
 });
 
+
 /*
  * This file is part of the Husky Validation.
  *
@@ -16412,13 +16413,26 @@ define('form/util',[], function() {
         },
 
         /**
+         * returns true if element is checkbox
+         * @param el {String|Object} valid selector or dom-object
+         * @returns {Boolean}
+         */
+        isCheckbox: function(el) {
+            var $el = $(el);
+
+            return $el.is(':checkbox');
+        },
+
+        /**
          * Returns input values for elements
          * @param el {String|Object} valid selector or dom-object
          * @returns {String} value or empty string
          */
         getValue: function(el) {
             var $el = $(el);
-            if (this.isValueField($el)) {
+            if (this.isCheckbox($el)) {
+                return $el.prop('checked');
+            } else if (this.isValueField($el)) {
                 return $el.val();
             } else {
                 return $el.html();
@@ -16432,7 +16446,9 @@ define('form/util',[], function() {
          */
         setValue: function(el, value) {
             var $el = $(el);
-            if (this.isValueField($el)) {
+            if (this.isCheckbox($el)) {
+                $el.prop('checked', value);
+            } else if (this.isValueField($el)) {
                 $el.val(value);
             } else {
                 $el.html(value);
@@ -16668,7 +16684,7 @@ define('form/element',['form/util'], function(Util) {
                     var addFunction = function(typeName, options) {
                             this.requireCounter++;
                             require(['type/' + typeName], function(Type) {
-                                type = new Type(this.$el, options);
+                                type = new Type(this.$el, options, form);
 
                                 type.initialized.then(function() {
                                     Util.debug('Element Type', typeName, options);
@@ -16869,7 +16885,23 @@ define('form/element',['form/util'], function(Util) {
                 },
 
                 setValue: function(value) {
-                    type.setValue(value);
+                    var dfd = $.Deferred(),
+                        result;
+
+                    this.initialized.then(function() {
+                        result = type.setValue(value);
+
+                        // if setvalue returns a deferred wait for that
+                        if (!!result) {
+                            result.then(function() {
+                                dfd.resolve();
+                            });
+                        } else {
+                            dfd.resolve();
+                        }
+                    }.bind(this));
+
+                    return dfd.promise();
                 },
 
                 getValue: function(data) {
@@ -17203,7 +17235,7 @@ define('form/mapper',[
                     $(form.$el).trigger('form-remove', [propertyName, data]);
                 },
 
-                processData: function(el, collection) {
+                processData: function(el, collection, returnMapperId) {
                     // get attributes
                     var $el = $(el),
                         type = $el.data('type'),
@@ -17230,8 +17262,11 @@ define('form/mapper',[
                         result = [];
                         $.each($el.children(), function(key, value) {
                             if (!collection || collection.tpl === value.dataset.mapperPropertyTpl) {
-                                item = form.mapper.getData($(value));
-                                item.mapperId = value.dataset.mapperId;
+                                item = that.getData($(value));
+                                    // only set mapper-id if explicitly set
+                                if (!!returnMapperId) {
+                                    item.mapperId = value.dataset.mapperId;
+                                }
 
                                 var keys = Object.keys(item);
                                 if (keys.length === 1) { // for value only collection
@@ -17242,7 +17277,7 @@ define('form/mapper',[
                                     result.push(item);
                                 }
                             }
-                        });
+                        }.bind(this));
                         return result;
                     }
                 },
@@ -17370,6 +17405,46 @@ define('form/mapper',[
                     $element.remove();
                 },
 
+                getData: function($el, returnMapperId) {
+                    if (!$el) {
+                        $el = form.$el;
+                    }
+
+                    var data = { }, $childElement, property, parts,
+
+                    // search field with mapper property
+                        selector = '*[data-mapper-property]',
+                        $elements = $el.find(selector);
+
+                    // do it while elements exists
+                    while ($elements.length > 0) {
+                        // get first
+                        $childElement = $($elements.get(0));
+                        property = $childElement.data('mapper-property');
+
+                        if ($.isArray(property)) {
+                            $.each(property, function(i, prop) {
+                                data[prop.data] = that.processData.call(this, $childElement, prop, returnMapperId);
+                            }.bind(this));
+                        } else if (property.match(/.*\..*/)) {
+                            parts = property.split('.');
+                            data[parts[0]] = {};
+                            data[parts[0]][parts[1]] = that.processData.call(this, $childElement);
+                        } else {
+                            // process it
+                            data[property] = that.processData.call(this, $childElement);
+                        }
+
+                        // remove element itself
+                        $elements = $elements.not($childElement);
+
+                        // remove child elements
+                        $elements = $elements.not($childElement.find(selector));
+                    }
+
+                    return data;
+                },
+
                 setData: function(data, $el) {
                     if (!$el) {
                         $el = form.$el;
@@ -17395,14 +17470,16 @@ define('form/mapper',[
                         if (!element) {
                             element = form.addField($element);
                             element.initialized.then(function() {
-                                element.setValue(data);
-                                // resolve this set data
-                                resolve();
+                                element.setValue(data).then(function() {
+                                    // resolve this set data
+                                    resolve();
+                                });
                             }.bind(this));
                         } else {
-                            element.setValue(data);
-                            // resolve this set data
-                            resolve();
+                            element.setValue(data).then(function() {
+                                // resolve this set data
+                                resolve();
+                            });
                         }
                     } else if (data !== null && !$.isEmptyObject(data)) {
                         count = Object.keys(data).length;
@@ -17437,12 +17514,14 @@ define('form/mapper',[
                                     if (!element) {
                                         element = form.addField($element);
                                         element.initialized.then(function() {
-                                            element.setValue(value);
-                                            resolve();
+                                            element.setValue(value).then(function() {
+                                                resolve();
+                                            });
                                         }.bind(this));
                                     } else {
-                                        element.setValue(value);
-                                        resolve();
+                                        element.setValue(value).then(function() {
+                                            resolve();
+                                        });
                                     }
                                 } else {
                                     resolve();
@@ -17454,55 +17533,26 @@ define('form/mapper',[
                     }
 
                     return dfd.promise();
-                },
+                }
 
             },
 
         // define mapper interface
             result = {
-                setData: function(data) {
+
+                setData: function(data, $el) {
                     this.collectionsSet = {};
-                    return that.setData.call(this, data);
+
+                    return that.setData.call(this, data, $el);
                 },
 
-                getData: function($el) {
-                    if (!$el) {
-                        $el = form.$el;
-                    }
-
-                    var data = { }, $childElement, property, parts,
-
-                    // search field with mapper property
-                        selector = '*[data-mapper-property]',
-                        $elements = $el.find(selector);
-
-                    // do it while elements exists
-                    while ($elements.length > 0) {
-                        // get first
-                        $childElement = $($elements.get(0));
-                        property = $childElement.data('mapper-property');
-
-                        if ($.isArray(property)) {
-                            $.each(property, function(i, prop) {
-                                data[prop.data] = that.processData.call(this, $childElement, prop);
-                            });
-                        } else if (property.match(/.*\..*/)) {
-                            parts = property.split('.');
-                            data[parts[0]] = {};
-                            data[parts[0]][parts[1]] = that.processData.call(this, $childElement);
-                        } else {
-                            // process it
-                            data[property] = that.processData.call(this, $childElement);
-                        }
-
-                        // remove element itself
-                        $elements = $elements.not($childElement);
-
-                        // remove child elements
-                        $elements = $elements.not($childElement.find(selector));
-                    }
-
-                    return data;
+                /**
+                 * extracts data from $element or default form element
+                 *  @param {Object} [$el=undefined] element to select data from
+                 *  @param {Boolean} [returnMapperId=false] returnMapperId
+                 */
+                getData: function($el, returnMapperId) {
+                    return that.getData.call(this, $el, returnMapperId);
                 },
 
                 addCollectionFilter: function(name, callback) {
@@ -17623,23 +17673,17 @@ define('form',[
                 validationSubmitEvent: true,      // avoid submit if not valid
                 mapper: true                      // mapper on/off
             },
-            dfd = null,
 
         // private functions
             that = {
                 initialize: function() {
-                    // init initialized
-                    dfd = $.Deferred();
-                    this.requireCounter = 0;
-                    this.initialized = dfd.promise();
-
                     this.$el = $(el);
                     this.options = $.extend(defaults, this.$el.data(), options);
 
                     // enable / disable debug
                     Util.debugEnabled = this.options.debug;
 
-                    that.initFields.call(this);
+                    this.initialized = that.initFields.call(this);
 
                     if (!!this.options.validation) {
                         this.validation = new Validation(this);
@@ -17655,20 +17699,22 @@ define('form',[
                 },
 
                 // initialize field objects
-                initFields: function() {
-                    $.each(Util.getFields(this.$el), function(key, value) {
-                        this.requireCounter++;
-                        that.addField.call(this, value, false).initialized.then(function() {
-                            that.resolveInitialization.call(this);
-                        }.bind(this));
-                    }.bind(this));
-                },
+                initFields: function($el) {
+                    var dfd = $.Deferred(),
+                        requireCounter = 0,
+                        resolve = function() {
+                            requireCounter--;
+                            if (requireCounter === 0) {
+                                dfd.resolve();
+                            }
+                        };
 
-                resolveInitialization: function() {
-                    this.requireCounter--;
-                    if (this.requireCounter === 0) {
-                        dfd.resolve();
-                    }
+                    $.each(Util.getFields($el || this.$el), function(key, value) {
+                        requireCounter++;
+                        that.addField.call(this, value, false).initialized.then(resolve.bind(this));
+                    }.bind(this));
+
+                    return dfd.promise();
                 },
 
                 bindValidationDomEvents: function() {
@@ -17711,6 +17757,16 @@ define('form',[
                     return element;
                 },
 
+                initFields: function($el) {
+                    return that.initFields.call(this, $el);
+                },
+
+                removeFields: function($el) {
+                    Util.getFields($el).each(function(i, item) {
+                        this.removeField(item);
+                    }.bind(this));
+                },
+
                 removeField: function(selector) {
                     var $element = $(selector),
                         el = $element.data('element');
@@ -17747,7 +17803,7 @@ define('type/default',[
 
     
 
-    return function($el, defaults, options, name, typeInterface) {
+    return function($el, defaults, options, name, typeInterface, form) {
 
         var that = {
                 initialize: function() {
@@ -17767,6 +17823,8 @@ define('type/default',[
 
             defaultInterface = {
                 name: name,
+
+                form: form,
 
                 needsValidation: function() {
                     return true;
@@ -18187,7 +18245,7 @@ define('type/readonly-select',[
                     // find value in data
                     if (data.length > 0) {
                         for (i = -1, len = data.length; ++i < len;) {
-                            if (data[i].hasOwnProperty(idProperty) && data[i][idProperty] === value) {
+                            if (data[i].hasOwnProperty(idProperty) && data[i][idProperty].toString() === value.toString()) {
                                 this.$el.html(data[i][this.options.outputProperty]);
                                 break;
                             }
@@ -18199,8 +18257,8 @@ define('type/readonly-select',[
                     var id = this.$el.data('id'),
                         i, len;
 
-                    for (i = -1, len = this.options.data.length; i++ < len;) {
-                        if (this.options.data[i][this.options.idProperty] === id) {
+                    for (i = -1, len = this.options.data.length; ++i < len;) {
+                        if (this.options.data[i][this.options.idProperty].toString() === id.toString()) {
                             return this.options.data[i];
                         }
                     }
@@ -18829,7 +18887,6 @@ define('validator/regex',[
     };
 
 });
-
 
 define("husky-validation", function(){});
 
@@ -24801,6 +24858,7 @@ define('__component__$navigation@husky',[],function() {
                 '   <div class="navigation-content">',
                 '       <div class="wrapper">',
                 '           <header class="navigation-header">',
+                '               <div class="logo"></div>',
                 '               <div class="navigation-header-title"><% if (data.title) { %> <%= translate(data.title) %><% } %></div>',
                 '           </header>',
                 '           <div id="navigation-search" class="navigation-search"></div>',
@@ -24811,14 +24869,6 @@ define('__component__$navigation@husky',[],function() {
                 '   </div>',
                 '   <div class="icon-remove2 navigation-close-icon">',
                 '</nav>'].join(''),
-            headerImage: [
-                '<div class="navigation-header-image">',
-                '   <img alt="#" src="<%= icon %>"/>',
-                '</div>'
-            ].join(''),
-            headerText: [
-                '<div class="navigation-header-text"><span><%= text %></span></div>'
-            ].join(''),
             /** main navigation items (with icons)*/
             mainItem: [
                 '<li class="js-navigation-items navigation-items" id="<%= item.id %>" data-id="<%= item.id %>">',
@@ -25023,21 +25073,6 @@ define('__component__$navigation@husky',[],function() {
                 this.sandbox.util.extend(true, {}, this.options, {translate: this.sandbox.translate}))
             );
 
-            // render header image
-            if (typeof this.options.data.icon === 'string') {
-                this.sandbox.dom.prepend(this.sandbox.dom.find('header.navigation-header', this.$el),
-                    this.sandbox.template.parse(templates.headerImage, {
-                        icon: this.options.data.icon
-                    })
-                );
-            } else {
-                this.sandbox.dom.prepend(this.sandbox.dom.find('header.navigation-header', this.$el),
-                    this.sandbox.template.parse(templates.headerText, {
-                        text: this.options.data.title.substr(0, 1)
-                    })
-                );
-            }
-
             this.$navigation = this.$find('.navigation', this.$el);
             this.$navigationContent = this.$find('.navigation-content', this.$navigation);
 
@@ -25079,7 +25114,10 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.util.foreach(data.items, function(section) {
                 $sectionDiv = this.sandbox.dom.createElement('<div class="section">');
                 $sectionList = this.sandbox.dom.createElement('<ul class="section-items">');
-                this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + this.sandbox.translate(section.title).toUpperCase() + '</span><span class="section-toggle"><a href="#">' + this.sandbox.translate(this.options.labels.hide) + '</a></span></div>');
+
+                if (!!section.title) {
+                    this.sandbox.dom.append($sectionDiv, '<div class="section-headline"><span class="section-headline-title">' + this.sandbox.translate(section.title).toUpperCase() + '</span><span class="section-toggle"><a href="#">' + this.sandbox.translate(this.options.labels.hide) + '</a></span></div>');
+                }
 
                 this.sandbox.dom.append($sectionDiv, $sectionList);
                 this.sandbox.dom.append('#navigation-item-container', $sectionDiv);
@@ -26401,11 +26439,15 @@ define('__component__$column-options@husky',[],function() {
 
         startOverlay = function() {
             if (this.overlayLoaded === false) {
+                var $element = this.sandbox.dom.createElement('<div/>');
+                this.sandbox.dom.append(this.$el, $element);
+
                 this.sandbox.start([
                     {
                         name: 'overlay@husky',
                         options: {
                             triggerEl: this.options.trigger,
+                            el: $element,
                             container: this.$el,
                             data: this.$list,
                             okCallback: function() {
@@ -26472,7 +26514,7 @@ define('__component__$column-options@husky',[],function() {
         view: true,
 
         initialize: function() {
-
+            console.log(this._ref);
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.overlayLoaded = false;
 
@@ -26632,7 +26674,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
             checkbox: [
                 '<div class="custom-checkbox">',
-                    '<input id="<%= id %>" type="checkbox" data-form="false"/>',
+                    '<input id="<%= id %>" type="checkbox" data-form="false"<% if (!!checked) { %> checked<% } %>/>',
                     '<span class="icon"></span>',
                 '</div>'
             ].join(''),
@@ -26970,7 +27012,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
                 if (this.options.selectItem.type === 'checkbox') {
                     tblColumns.push(this.sandbox.util.template(templates.checkbox)({
-                        id: constants.selectAllName
+                        id: constants.selectAllName,
+                        checked: false
                     }));
                 }
 
@@ -27094,7 +27137,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 // add a checkbox to each row
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     this.tblColumns.push(this.sandbox.util.template(templates.checkboxCell)({
-                        checkbox: this.sandbox.util.template(templates.checkbox)({id: ''})
+                        checkbox: this.sandbox.util.template(templates.checkbox)({
+                            id: '',
+                            checked: !!row.selected
+                        })
                     }));
 
                     // add a radio to each row
@@ -27815,7 +27861,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
                         '<span class="'+ constants.descriptionClass +'"><%= description %></span>',
                     '</div>',
                     '<div class="'+ constants.checkboxClass +' custom-checkbox no-spacing">',
-                        '<input type="checkbox"/>',
+                        '<input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
                         '<span class="icon"></span>',
                     '</div>',
                     '<div class="icon-'+ constants.downloadIcon +' '+ constants.downloadClass +'"></div>',
@@ -27898,7 +27944,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
                 description = description.join(constants.descriptionDelimiter);
 
                 // pass the found data to a render method
-                this.renderThumbnail(id, imgSrc, imgAlt, title, description);
+                this.renderThumbnail(id, imgSrc, imgAlt, title, description, record);
             }.bind(this));
         },
 
@@ -27909,17 +27955,23 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          * @param imgAlt {String} the thumbnail alt tag of the data record
          * @param title {String} the title of the data record
          * @param description {String} the thumbnail description to render
+         * @param record {Object} the original data record
          */
-        renderThumbnail: function(id, imgSrc, imgAlt, title, description) {
+        renderThumbnail: function(id, imgSrc, imgAlt, title, description, record) {
             this.$thumbnails[id] = this.sandbox.dom.createElement(
                 this.sandbox.util.template(templates.item)({
                     imgSrc: imgSrc,
                     imgAlt: imgAlt,
                     title: this.sandbox.util.cropMiddle(title, 26),
                     description: this.sandbox.util.cropMiddle(description, 32),
-                    styleClass: constants.largeClass
+                    // todo: option to change large and small
+                    styleClass: constants.largeClass,
+                    checked: !!record.selected
                 })
             );
+            if (!!record.selected === true) {
+                this.selectItem(id, true);
+            }
             this.sandbox.dom.data(this.$thumbnails[id], 'id', id);
             this.sandbox.dom.append(this.$el, this.$thumbnails[id]);
 
@@ -27962,10 +28014,13 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
         /**
          * Unselects an item with a given id
          * @param id {Number|String} the id of the item
+         * @param onlyView {Boolean} if true the selection only affects this view and not the data array
          */
-        selectItem: function(id) {
+        selectItem: function(id, onlyView) {
             this.sandbox.dom.addClass(this.$thumbnails[id], constants.selectedClass);
-            datagrid.setItemSelected.call(datagrid, id);
+            if (onlyView !== true) {
+                datagrid.setItemSelected.call(datagrid, id);
+            }
         },
 
         /**
@@ -27982,7 +28037,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          * @param id {Number|String} the id of the item
          */
         downloadHandler: function(id) {
-            console.log('download');
+            console.log('download', id);
         }
     };
 });
@@ -28129,7 +28184,8 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
          */
         destroy: function() {
             this.unbindDomEvents();
-            this.sandbox.stop(this.sandbox.dom.find('*', this.$paginationContainer));
+            // uncommented just for testing purposes, if you see this uncomment it!!
+            //this.sandbox.stop(this.sandbox.dom.find('*', this.$paginationContainer));
             this.sandbox.dom.remove(this.$paginationContainer);
         },
 
@@ -28345,6 +28401,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
  * @param {String} [options.url] url to fetch data from
  *
  */
+
 (function() {
 
     define('__component__$datagrid@husky',['husky_components/datagrid/decorators/table-view',
@@ -29053,7 +29110,9 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * calls the funciton of the view responsible for the responsiveness
              */
             windowResizeListener: function() {
-                this.gridViews[this.viewId].onResize();
+                if (!!this.gridViews[this.viewId].onResize) {
+                    this.gridViews[this.viewId].onResize();
+                }
             },
 
             /**
@@ -29443,183 +29502,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
         };
     });
 })();
-
-/*
- * This file is part of the Sulu CMS.
- *
- * (c) MASSIVE ART Webservices GmbH
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-
-define('__component__$dialog@husky',['jquery'], function($) {
-
-    
-
-    var sandbox,
-        defaults = {
-            data: {
-                footer: {
-                    buttonCancelText: 'Cancel',
-                    buttonSubmitText: 'Ok'
-                }
-            },
-            backdrop: true,
-            backdropClick: false, // if true, click on backdrop is going to hide dialogbox
-            width: '550px',
-            template: {
-                content: '<h3><%= title %></h3><p><%= content %></p>',
-                footer: '<button class="btn btn-gray" id="dialog-button-cancel"><%= buttonCancelText %></button><button class="btn btn-black" id="dialog-button-submit"><%= buttonSubmitText %></button>',
-                header: ''
-            }
-        },
-        defaultsOk = {
-            data: {
-                footer: {
-                    buttonCancelText: "Ok"
-                }
-            },
-            backdrop: true,
-            backdropClick: false,
-            width: '550px',
-            template: {
-                content: '<h3><%= title %></h3><p><%= content %></p>',
-                footer: '<button class="btn btn-black" id="dialog-button-cancel"><%= buttonCancelText %></button>',
-                header: ''
-            }
-        };
-
-    return {
-        initialize: function() {
-            sandbox = this.sandbox;
-
-            if (!!this.options.templateType && this.options.templateType.toLowerCase() === 'okdialog') {
-                this.options = this.sandbox.util.extend(true, {}, defaultsOk, this.options);
-            } else {
-                this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
-            }
-
-            this.$element = $('<div class="husky-dialog hidden fade"/>');
-            $(this.options.el).append(this.$element);
-
-            this.init();
-        },
-
-        init: function() {
-            sandbox.logger.log('initialize', this);
-
-            this.prepare();
-
-            this.bindDOMEvents();
-            this.bindCustomEvents();
-
-            this.show();
-        },
-
-        // prepares the dialog structure
-        prepare: function() {
-            this.$header = $('<div class="husky-dialog-header align-right"/>');
-            this.$content = $('<div class="husky-dialog-body" />');
-            this.$footer = $('<div class="husky-dialog-footer" />');
-
-            this.$element.append(this.$header);
-            this.$element.append(this.$content);
-            this.$element.append(this.$footer);
-
-            var width = this.options.width,
-                marginLeft = parseInt(this.options.width, 10) / 2;
-
-            this.$element.css({
-                'width': width,
-                'margin-left': '-' + marginLeft + 'px'
-            });
-
-        },
-
-        // bind dom elements
-        bindDOMEvents: function() {
-
-            // turn off all events
-            this.$element.off();
-
-            this.$element.on('click', '.close', this.hide.bind(this));
-            this.$element.on('click', '#dialog-button-cancel', this.cancel.bind(this));
-            this.$element.on('click', '#dialog-button-submit', this.submit.bind(this));
-        },
-
-
-        // listen for private events
-        bindCustomEvents: function() {
-
-            // listen for public events
-            sandbox.on('husky.dialog.hide', this.hide.bind(this));
-        },
-
-        // Shows the dialog and compiles the different dialog template parts
-        show: function() {
-            this.data = this.options.data;
-            this.template = this.options.template;
-
-            this.$header.append(this.sandbox.template.parse(this.template.header, this.data.header));
-            this.$content.append(this.sandbox.template.parse(this.template.content, this.data.content));
-            this.$footer.append(this.sandbox.template.parse(this.template.footer, this.data.footer));
-
-            this.$element.show();
-
-            if (this.options.backdrop) {
-                var $backdrop = $('<div id="husky-dialog-backdrop" class="husky-dialog-backdrop fade in"></div>');
-                $('body').append($backdrop);
-
-                $backdrop.click(function() {
-                    if (this.options.backdropClick && this.options.backdropClick === true) {
-                        this.trigger('dialog:backdrop:click', null);
-                        this.hide();
-                    }
-                }.bind(this));
-            }
-        },
-
-        // Hides the dialog and empties the contents of the different template parts
-        hide: function() {
-
-            this.$element.hide();
-
-            if (this.options.backdrop) {
-                $('#husky-dialog-backdrop ').remove();
-            }
-
-            this.template = null;
-            this.data = null;
-            this.$header.empty();
-            this.$content.empty();
-            this.$footer.empty();
-        },
-
-        // Handles the click event of the cancel button
-        cancel: function() {
-            if (!!this.data.callback.cancel && typeof this.data.callback.cancel === 'function') {
-                this.data.callback.cancel();
-            } else {
-                /**
-                 * @deprecated use callback functions
-                 */
-                sandbox.emit('husky.dialog.cancel');
-            }
-        },
-
-        submit: function() {
-            if (!!this.data.callback.submit && typeof this.data.callback.submit === 'function') {
-                this.data.callback.submit();
-            } else {
-                /**
-                 * @deprecated use callback functions
-                 */
-                sandbox.emit('husky.dialog.submit');
-            }
-        }
-    };
-});
 
 /*
  * This file is part of the Sulu CMS.
@@ -30355,6 +30237,7 @@ define('__component__$search@husky',[], function() {
  *      - selected: the item that's selected on initialize
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
  *      - preselect - either true (for url) or position / title  (see preselector for more information)
+ *      - skin - string of class to add to the components element (e.g. 'overlay')
  *      - preselector:
  *          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url) - preselector itself is not going to be taken into account in this case
  *          - position: compares items position against whats defined in options.preselect
@@ -30387,12 +30270,13 @@ define('__component__$tabs@husky',[],function() {
             preselector: 'url',
             forceReload: false,
             callback: null,
-            forceSelect: true
+            forceSelect: true,
+            skin: ''
         },
 
         selectItem = function(event) {
             event.preventDefault();
-            if (this.active === true) {
+            if (this.active === true && this.sandbox.dom.hasClass(event.currentTarget, 'is-selected') !== true) {
                 var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')];
 
                 this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
@@ -30446,7 +30330,6 @@ define('__component__$tabs@husky',[],function() {
         view: true,
 
         initialize: function() {
-
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.$el = this.sandbox.dom.$(this.options.el);
             this.active = true;
@@ -30515,6 +30398,9 @@ define('__component__$tabs@husky',[],function() {
                 $list = this.sandbox.dom.createElement('<ul/>'),
                 selectedItem = null,
                 $item = null;
+
+            //add skin class
+            this.sandbox.dom.addClass($element, this.options.skin);
 
             this.sandbox.dom.append(this.$el, $element);
             this.sandbox.dom.append($element, $list);
@@ -33142,8 +33028,13 @@ define('__component__$dependent-select@husky',[],function() {
  * @param {Array} [options.preSelectedElements] allows preselection of fields by defining the id attributes or strings
  * @param {Function} [options.selectCallback] callbackfunction, when element is selected
  * @param {String} [options.valueName] name of property which should be used
- * @param {String} [options.style] "normal", "small" or "big" for different appearance
+ * @param {String} [options.style] "normal", "small", "big", "action" for different appearance
+ * @param {String} [options.skin] style class to set to the elements component (e.g 'white')
  * @param {Boolean} [options.emitValues] If true the value is emited with events instead of the id
+ * @param {Boolean} [options.fixedLabel] If true the label never gets changed
+ * @param {String} [options.icon] icon to set into the label
+ * @param {Function} [options.noItemsCallback] callback function which gets executed at click on label if no dropdown-items exist
+ * @param {Boolean} [options.repeatSelect] If true dropdown item can be selected n-times in succession
  */
 
 define('__component__$select@husky',[], function() {
@@ -33163,7 +33054,12 @@ define('__component__$select@husky',[], function() {
             selectCallback: null,
             deselectCallback: null,
             style: 'normal',
+            skin: '',
             emitValues: false,
+            fixedLabel: false,
+            icon: null,
+            noItemsCallback: null,
+            repeatSelect: false
         },
 
         constants = {
@@ -33284,14 +33180,21 @@ define('__component__$select@husky',[], function() {
         render: function() {
 
             var $originalElement = this.sandbox.dom.$(this.options.el),
-                button = this.sandbox.dom.createElement(this.template.basicStructure.call(this, this.options.defaultLabel));
+                button = this.sandbox.dom.createElement(
+                    this.template.basicStructure.call(this, this.options.defaultLabel, this.options.icon)
+                );
             this.sandbox.dom.append($originalElement, button);
 
             if (this.options.style === 'small') {
                 this.sandbox.dom.addClass(button, 'small');
             } else if (this.options.style === 'big') {
                 this.sandbox.dom.addClass(button, 'big');
+            } else if (this.options.style === 'action') {
+                this.sandbox.dom.addClass(button, 'action');
             }
+
+            // add skin style
+            this.sandbox.dom.addClass(button, this.options.skin);
 
             this.$list = this.$find('.' + constants.listClass);
             this.$dropdownContainer = this.$find('.' + constants.dropdownContainerClass);
@@ -33331,9 +33234,9 @@ define('__component__$select@husky',[], function() {
             // TODO load data from url
         },
 
-        addDropdownElement: function(id, value, disabled) {
+        addDropdownElement: function(id, value, disabled, callback) {
             var $item,
-                idString = (!!id || id === 0) ? id.toString() : 'null';
+                idString = (!!id || id === 0) ? id.toString() : this.sandbox.util.uniqueId();
             if (this.options.preSelectedElements.indexOf(id) >= 0 || this.options.preSelectedElements.indexOf(value) >= 0) {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, 'checked'));
                 this.selectedElements.push(idString);
@@ -33345,6 +33248,11 @@ define('__component__$select@husky',[], function() {
                 }
             } else {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, ''));
+            }
+
+            // store callback if callback is set
+            if (typeof callback === 'function') {
+                this.sandbox.dom.data($item, 'selectCallback', callback);
             }
 
             if (!!disabled && disabled === true) {
@@ -33366,7 +33274,7 @@ define('__component__$select@husky',[], function() {
                     }.bind(this));
                 } else if (typeof(items[0]) === 'object') {
                     this.sandbox.util.each(items, function(index, value) {
-                        this.addDropdownElement(value.id, value[this.options.valueName], !!value.disabled && value.disabled);
+                        this.addDropdownElement(value.id, value[this.options.valueName], !!value.disabled, value.callback);
                     }.bind(this));
                 }
                 this.changeLabel();
@@ -33378,7 +33286,7 @@ define('__component__$select@husky',[], function() {
         bindDOMEvents: function() {
 
             // toggle drop-down
-            this.sandbox.dom.on(this.$el, 'click', this.toggleDropDown.bind(this), '.dropdown-label');
+            this.sandbox.dom.on(this.$el, 'click', this.labelClickHandler.bind(this), '.dropdown-label');
 
             // click on single item
             this.sandbox.dom.on(this.$el, 'click', function(event) {
@@ -33436,9 +33344,10 @@ define('__component__$select@husky',[], function() {
         // trigger event with clicked item
         clickItem: function(event) {
 
-            var key, value, $checkbox, index;
+            var key, value, $checkbox, index, callback;
 
             key = this.sandbox.dom.attr(event.currentTarget, 'data-id');
+            callback = this.sandbox.dom.data(event.currentTarget, 'selectCallback');
             index = this.selectedElements.indexOf(key);
 
             // if single select then uncheck all results
@@ -33451,7 +33360,7 @@ define('__component__$select@husky',[], function() {
                 } else if (index === -1) {
                     this.uncheckAll(key);
                     // same element was selected
-                } else {
+                } else if (this.options.repeatSelect !== true) {
                     this.hideDropDown();
                     return;
                 }
@@ -33488,6 +33397,11 @@ define('__component__$select@husky',[], function() {
 
             if (this.options.emitValues === true) {
                 key = value;
+            }
+
+            // execute callback if configured
+            if (typeof callback === 'function') {
+                callback();
             }
 
             if (index >= 0) {
@@ -33528,17 +33442,34 @@ define('__component__$select@husky',[], function() {
         },
 
         changeLabel: function() {
-            if (this.selectedElements.length === this.options.data.length && this.options.multipleSelect === true) {
-                this.sandbox.dom.text(this.$label, this.options.checkedAllLabel);
-            } else if (this.selectedElements.length === 0) {
-                this.sandbox.dom.text(this.$label, this.options.defaultLabel);
-            } else {
+            if (this.options.fixedLabel !== true) {
+                if (this.selectedElements.length === this.options.data.length && this.options.multipleSelect === true) {
+                    this.sandbox.dom.text(this.$label, this.options.checkedAllLabel);
+                } else if (this.selectedElements.length === 0) {
+                    this.sandbox.dom.text(this.$label, this.options.defaultLabel);
+                } else {
 
-                var text = "";
-                this.sandbox.util.each(this.selectedElementsValues, function(index, value) {
-                    text += ' ' + value + ',';
-                });
-                this.sandbox.dom.text(this.$label, text.substring(1, text.length - 1));
+                    var text = "";
+                    this.sandbox.util.each(this.selectedElementsValues, function(index, value) {
+                        text += ' ' + value + ',';
+                    });
+                    this.sandbox.dom.text(this.$label, text.substring(1, text.length - 1));
+                }
+            }
+        },
+
+        /**
+         * Handles the click on the drodpwn label
+         */
+        labelClickHandler: function() {
+            // if dropdown is not empty
+            if (!this.sandbox.dom.is(this.$find('.' + constants.listClass), ':empty')) {
+                this.toggleDropDown();
+            } else {
+                // else execute a no-items-callback if it exists
+                if (typeof this.options.noItemsCallback === 'function') {
+                    this.options.noItemsCallback();
+                }
             }
         },
 
@@ -33565,8 +33496,7 @@ define('__component__$select@husky',[], function() {
             var ddHeight = this.sandbox.dom.height(this.$dropdownContainer),
                 ddTop = this.sandbox.dom.offset(this.$dropdownContainer).top,
                 windowHeight = this.sandbox.dom.height(this.sandbox.dom.window),
-                scrollTop = this.sandbox.dom.scrollTop(this.sandbox.dom.window),
-                hasTopClass = this.sandbox.dom.hasClass(this.$dropdownContainer, constants.dropdownTopClass);
+                scrollTop = this.sandbox.dom.scrollTop(this.sandbox.dom.window);
 
             // check if dropdown container overlaps bottom of browser
             if (ddHeight + ddTop > windowHeight + scrollTop) {
@@ -33599,16 +33529,24 @@ define('__component__$select@husky',[], function() {
         },
 
         template: {
-            basicStructure: function(defaultLabel) {
+            basicStructure: function(defaultLabel, icon) {
+                var iconSpan = '', dropdownToggle = '';
+                if (!!icon) {
+                    iconSpan = '<span class="icon-' + icon + ' icon"></span>';
+                }
+                if (!!this.options.data && !!this.options.data.length) {
+                    dropdownToggle = '<span class="dropdown-toggle inline-block"></span>';
+                }
                 return [
                     '<div class="husky-select-container">',
                     '    <div class="dropdown-label pointer">',
                     '       <div class="checkbox">',
+                    iconSpan,
                     '           <span class="' + constants.labelClass + '">', defaultLabel, '</span>',
                     '       </div>',
-                    '       <span class="dropdown-toggle inline-block"></span>',
+                    dropdownToggle,
                     '   </div>',
-                    '   <div class="grid-row dropdown-list hidden ' + constants.dropdownContainerClass + '">',
+                    '   <div class="grid-row dropdown-list dropdown-shadow hidden ' + constants.dropdownContainerClass + '">',
                     '       <ul class="' + constants.listClass + '"></ul>',
                     '   </div>',
                     '</div>'
@@ -34768,7 +34706,8 @@ define('__component__$ckeditor@husky',[], function() {
 
     var defaults = {
             initializedCallback: null,
-            instanceName: null
+            instanceName: null,
+            godMode: false
         },
 
         /**
@@ -34808,9 +34747,14 @@ define('__component__$ckeditor@husky',[], function() {
             delete config._ref;
             delete config.require;
             delete config.element;
+            delete config.godMode;
 
             // allow img tags to have any class (*) and any attribute [*]
             config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title]';
+            // enable all content
+            if (!!this.options.godMode) {
+                config.allowedContent = true;
+            }
 
             return config;
         };
@@ -35509,11 +35453,15 @@ define('__component__$smart-content@husky',[], function() {
         startOverlay: function() {
             this.initOverlayContent();
 
+            var $element = this.sandbox.dom.createElement('<div/>');
+            this.sandbox.dom.append(this.$el, $element);
+
             this.sandbox.start([
                 {
                     name: 'overlay@husky',
                     options: {
                         triggerEl: this.$button,
+                        el: $element,
                         container: this.$el,
                         data: this.$overlayContent,
                         title: this.sandbox.translate(this.translations.configureSmartContent),
@@ -35771,7 +35719,7 @@ define('__component__$smart-content@husky',[], function() {
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  *
- * @module husky/components/smart-content
+ * @module husky/components/overlay
  */
 
 /**
@@ -35781,22 +35729,40 @@ define('__component__$smart-content@husky',[], function() {
  * @params {Object} [options] Configuration object
  * @params {String} [options.trigger] List of events on which the overlay should be opened
  * @params {String} [options.triggerEl] Element that triggers the overlay
- * @params {String} [options.container] slector or DOM object in which the overlay gets inserted
  * @params {String} [options.title] the title of the overlay
- * @params {String} [options.closeIcon] icon class for the close button
- * @params {String} [options.okIcon] icon class for the ok button
+ * @params {String|Boolean} [options.closeIcon] icon class for the close button. If false no close icon will be displayed
  * @params {Function} [options.closeCallback] callback which gets executed after the overlay gets closed
  * @params {Function} [options.okCallback] callback which gets executed after the overlay gets submited
  * @params {String|Object} [options.data] HTML or DOM-object which acts as the overlay-content
+ * @params {String} [options.message] String to render as content. Used by warnings and erros
  * @params {String} [options.instanceName] instance name of the component
  * @params {Boolean} [options.draggable] if true overlay is draggable
  * @params {Boolean} [options.openOnStart] if true overlay is opened after initialization
  * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
  * @params {Boolean} [options.backdrop] if true backdrop will be shown
- * @params {Boolean} [options.backdropColor] Color of the backdrop
- * @params {Boolean} [options.backdropAlpha] Alpha-value of the backdrop
- * @params {Boolean} [options.okInactive] If true ok button is deactivated
  * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '' or 'wide'
+ * @params {Boolean} [options.backdropClose] if true overlay closes with click on backdrop
+ * @params {String} [options.backdropColor] Color of the backdrop
+ * @params {Number} [options.backdropAlpha] Alpha-value of the backdrop
+ * @params {Boolean} [options.okInactive] If true all ok-buttons start deactivated
+ * @params {String} [options.okDefaultText] The default text for ok buttons
+ * @params {String} [options.cancelDefaultText] The default text for cancel buttons
+ * @params {String} [options.type] The type of the overlay ('normal', 'error' or 'warning')
+ * @params {Array} [options.buttonsDefaultAlign] the align of the buttons in the footer ('center', 'left' or 'right'). Can be overriden by each button individually
+ *
+ * @params {Object} [options.languageChanger] If set language-changer will be displayed in the header
+ * @params {Array} [options.languageChanger.locales] array of locale strings for the dropdown
+ * @params {String} [options.languageChanger.preSelected] locale which is selected at the beginning
+ *
+ * @params {Array} [options.tabs] array of tabs-data to use instead of options.data and options.message
+ * @params {String} [options.tabs.title] the title of the tab
+ * @params {String|Object} [options.tabs.data] HTML or DOM-Object to display when tab is active
+ *
+ * @params {Array} [options.buttons] an array of buttons to add to the footer
+ * @params {String} [options.buttons.type] type of the button ('ok', 'cancel')
+ * @params {String} [options.buttons.icon] icon of the button
+ * @params {String} [options.buttons.text] text of the button. If text and icon are not set the defaultText-options come into place
+ * @params {Boolean} [options.buttons.inactive] If true button starts inactive
  */
 define('__component__$overlay@husky',[], function() {
 
@@ -35805,31 +35771,95 @@ define('__component__$overlay@husky',[], function() {
     var defaults = {
             trigger: 'click',
             triggerEl: null,
-            container: 'body',
             title: '',
             closeIcon: 'remove2',
-            okIcon: 'half-ok save-button btn action',
             closeCallback: null,
             okCallback: null,
             data: '',
+            tabs: null,
             instanceName: 'undefined',
             draggable: true,
             openOnStart: false,
             removeOnClose: false,
             backdrop: true,
+            backdropClose: true,
             backdropColor: '#000000',
-            backdropAlpha: 0.3,
+            skin: '',
+            backdropAlpha: 0.5,
             okInactive: false,
-            skin: ''
+            type: 'normal',
+            cssClass: '',
+            buttons: [],
+            buttonsDefaultAlign: 'center',
+            cancelDefaultText: 'Cancel',
+            okDefaultText: 'Ok',
+            languageChanger: null
         },
 
         constants = {
             closeSelector: '.close-button',
-            okSelector: '.ok-button',
+            footerSelector: '.overlay-footer',
             contentSelector: '.overlay-content',
             headerSelector: '.overlay-header',
             draggableClass: 'draggable',
-            backdropClass: 'husky-overlay-backdrop'
+            backdropClass: 'husky-overlay-backdrop',
+            overlayOkSelector: '.overlay-ok',
+            overlayCancelSelector: '.overlay-cancel',
+            tabsClass: 'tabs',
+            languageChangerClass: 'language-changer'
+        },
+
+        types = {
+            normal: {
+                buttons: [
+                    {
+                        type: 'ok',
+                        icon: 'half-ok',
+                        classes: 'tick',
+                        inactive: false
+                    }
+                ]
+            },
+            warning: {
+                cssClass: 'warning',
+                backdropClose: false,
+                removeOnClose: true,
+                openOnStart: true,
+                instanceName: 'warning',
+                closeIcon: false,
+                buttons: [
+                    {
+                        type: 'ok',
+                        inactive: false,
+                        align: 'right'
+                    },
+                    {
+                        type: 'cancel',
+                        inactive: false,
+                        align: 'left'
+                    }
+                ]
+            },
+            error: {
+                cssClass: 'error',
+                backdropClose: false,
+                cancelDefaultText: 'Ok',
+                removeOnClose: true,
+                openOnStart: true,
+                instanceName: 'error',
+                closeIcon: false,
+                buttons: [
+                    {
+                        type: 'cancel',
+                        inactive: false
+                    }
+                ]
+            }
+        },
+
+        buttonTypes = {
+            OK: 'ok',
+            CANCEL: 'cancel'
         },
 
         /** templates for component */
@@ -35838,16 +35868,34 @@ define('__component__$overlay@husky',[], function() {
                 '<div class="husky-overlay-container<%= skin %> smart-content-overlay">',
                 '<div class="overlay-header">',
                 '<span class="title"><%= title %></span>',
-                '<a class="icon-<%= closeIcon %> close-button" href="#"></a>',
+                '<% if (!!closeIcon) { %><a class="icon-<%= closeIcon %> close-button" href="#"></a><% } %>',
                 '</div>',
                 '<div class="overlay-content"></div>',
                 '<div class="overlay-footer">',
-                '<a class="icon-<%= okIcon %> ok-button" href="#"></a>',
                 '</div>',
+                '</div>'
+            ].join(''),
+            okButton: [
+                '<div class="btn action overlay-ok<%= classes %>">',
+                    '<% if (!!icon) { %>',
+                    '<span class="icon-<%= icon %>"></span>',
+                    '<% } %>',
+                    '<span class="text"><%= text %></span>',
+                '</div>'
+            ].join(''),
+            cancelButton: [
+                '<div class="btn gray black-text overlay-cancel<%= classes %>">',
+                    '<% if (!!icon) { %>',
+                    '<span class="icon-<%= icon %>"></span>',
+                    '<% } %>',
+                    '<span class="text"><%= text %></span>',
                 '</div>'
             ].join(''),
             backdrop: [
                 '<div class="husky-overlay-backdrop"></div>'
+            ].join(''),
+            message: [
+                '<div class="message"><%= message %></div>'
             ].join('')
         },
 
@@ -35882,7 +35930,7 @@ define('__component__$overlay@husky',[], function() {
         },
 
         /**
-         * used to activate ok button
+         * used to activate all ok buttons
          * @event husky.overlay.<instance-name>.okbutton.activate
          */
             OKBUTTON_ACTIVATE = function() {
@@ -35890,7 +35938,7 @@ define('__component__$overlay@husky',[], function() {
         },
 
         /**
-         * used to deactivate ok button
+         * used to deactivate all ok buttons
          * @event husky.overlay.<instance-name>.okbutton.deactivate
          */
             OKBUTTON_DEACTIVATE = function() {
@@ -35903,6 +35951,16 @@ define('__component__$overlay@husky',[], function() {
          */
             REMOVE = function() {
             return createEventName.call(this, 'remove');
+        },
+
+        /**
+         * emited after the language changer is changed
+         * @event husky.overlay.<instance-name>.language-changed
+         * @param {String} selected language
+         * @param {Object} currently active tab
+         */
+            LANGUAGE_CHANGED = function() {
+            return createEventName.call(this, 'language-changed');
         },
 
         /** returns normalized event names */
@@ -35918,8 +35976,13 @@ define('__component__$overlay@husky',[], function() {
         initialize: function() {
             this.sandbox.logger.log('initialize', this);
 
-            //merge options with defaults
-            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+            var type = (!!this.options.type) ? this.options.type : defaults.type;
+            // merge defaults, type defaults and options
+            this.options = this.sandbox.util.extend(true, {}, defaults, types[type], this.options);
+
+            // make component element invisible (overlay and backdrop are fixed)
+            this.sandbox.dom.width(this.$el, 0);
+            this.sandbox.dom.height(this.$el, 0);
 
             this.setVariables();
             this.bindEvents();
@@ -35933,27 +35996,48 @@ define('__component__$overlay@husky',[], function() {
          * Binds general events
          */
         bindEvents: function() {
-            this.sandbox.dom.on(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName, function(event) {
-                this.sandbox.dom.preventDefault(event);
-                this.triggerHandler();
-            }.bind(this));
+            if (!!this.$trigger) {
+                this.sandbox.dom.on(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName, function(event) {
+                    this.sandbox.dom.preventDefault(event);
+                    this.triggerHandler();
+                }.bind(this));
+            }
 
             this.sandbox.on(REMOVE.call(this), this.removeComponent.bind(this));
 
+            this.sandbox.on(OKBUTTON_ACTIVATE.call(this), this.activateOkButtons.bind(this));
+            this.sandbox.on(OKBUTTON_DEACTIVATE.call(this), this.deactivateOkButtons.bind(this));
 
-            // TODO: implement this functions
-            this.sandbox.on(OKBUTTON_ACTIVATE.call(this), this.activateOkButton.bind(this));
-            this.sandbox.on(OKBUTTON_DEACTIVATE.call(this), this.deactivateOkButton.bind(this));
+            // emit language-changed-event when language dropdown gets changed
+            this.sandbox.on('husky.select.'+ this.options.instanceName +'.selected.item', function(localeIndex) {
+                this.sandbox.emit(LANGUAGE_CHANGED.call(this),
+                    this.options.languageChanger.locales[localeIndex], //selected locale
+                    this.activeTab
+                );
+            }.bind(this));
         },
 
-        activateOkButton: function() {
-            this.sandbox.dom.removeClass(this.overlay.$ok, 'inactive gray');
+        /**
+         * Activates all ok buttons
+         */
+        activateOkButtons: function() {
+            var $okButtons = this.sandbox.dom.find(constants.overlayOkSelector, this.overlay.$footer),
+                i, length;
+            for (i = -1, length = $okButtons.length; ++i < length;) {
+                this.sandbox.dom.removeClass($okButtons[i], 'inactive gray');
+            }
         },
 
-        deactivateOkButton: function() {
-            this.sandbox.dom.addClass(this.overlay.$ok, 'inactive gray');
+        /**
+         * Deactivates all ok buttons
+         */
+        deactivateOkButtons: function() {
+            var $okButtons = this.sandbox.dom.find(constants.overlayOkSelector, this.overlay.$footer),
+            i, length;
+            for (i = -1, length = $okButtons.length; ++i < length;) {
+                this.sandbox.dom.addClass($okButtons[i], 'inactive gray');
+            }
         },
-
 
         /**
          * Removes the component
@@ -35962,17 +36046,26 @@ define('__component__$overlay@husky',[], function() {
             this.sandbox.dom.off(this.overlay.$el);
             this.sandbox.dom.off(this.$backdrop);
             this.sandbox.dom.off(this.$trigger, this.options.trigger + '.overlay.' + this.options.instanceName);
-            this.sandbox.stop(this.$element);
-            this.sandbox.stop(this.overlay.$content);
             this.sandbox.dom.remove(this.$backdrop);
             this.sandbox.dom.remove(this.overlay.$el);
+
+            // todo fix bug: sometimes overlay-sandbox has own sandbox or parent-sandboxes as child which
+            // couses an endless loop. The bug can be reproduced by starting the component
+            // in a clickhandler with openOnStart-option true
+            //this.sandbox.stop();
+
+            this.sandbox.stopListening();
+            this.sandbox.dom.remove(this.$el);
         },
 
         /**
          * Sets the default properties
          */
         setVariables: function() {
-            this.$trigger = this.sandbox.dom.$(this.options.triggerEl);
+            this.$trigger = null;
+            if (!!this.options.triggerEl) {
+                this.$trigger = this.sandbox.dom.$(this.options.triggerEl);
+            }
 
             this.overlay = {
                 opened: false,
@@ -35980,12 +36073,16 @@ define('__component__$overlay@husky',[], function() {
                 normalHeight: null,
                 $close: null,
                 $el: null,
-                $ok: null,
+                $footer: null,
                 $header: null,
-                $content: null
+                $content: null,
+                $languageChanger: null,
+                $tabs: null, //tabs component container
+                tabs: null //contains tabs related data
             };
             this.$backdrop = null;
             this.dragged = false;
+            this.activeTab = null;
         },
 
         /**
@@ -36001,6 +36098,7 @@ define('__component__$overlay@husky',[], function() {
         openOverlay: function() {
             //only open if closed
             if (this.overlay.opened === false) {
+                this.overlay.opened = true;
                 //init backrop element
                 if (this.$backdrop === null && this.options.backdrop === true) {
                     this.initBackdrop();
@@ -36008,18 +36106,18 @@ define('__component__$overlay@husky',[], function() {
                 //if overlay-element doesn't exist initialize it
                 if (this.overlay.$el === null) {
                     this.initSkeleton();
+                    this.initButtons();
                     this.setContent();
                     this.bindOverlayEvents();
 
                     if (this.options.okInactive === true) {
-                        this.deactivateOkButton();
+                        this.deactivateOkButtons();
                     }
 
                     this.sandbox.emit(INITIALIZED.call(this));
                 }
 
                 this.insertOverlay();
-                this.overlay.opened = true;
             }
         },
 
@@ -36059,7 +36157,7 @@ define('__component__$overlay@husky',[], function() {
          * Inserts the overlay-element into the DOM
          */
         insertOverlay: function() {
-            this.sandbox.dom.append(this.sandbox.dom.$(this.options.container), this.overlay.$el);
+            this.sandbox.dom.append(this.$el, this.overlay.$el);
 
             //ensures that the overlay box fits the window form the beginning
             this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
@@ -36068,7 +36166,7 @@ define('__component__$overlay@husky',[], function() {
             this.setCoordinates();
 
             if (this.options.backdrop === true) {
-                this.sandbox.dom.append(this.sandbox.dom.$(this.options.container), this.$backdrop);
+                this.sandbox.dom.append(this.$el, this.$backdrop);
             }
 
             this.sandbox.emit(OPENED.call(this));
@@ -36079,24 +36177,156 @@ define('__component__$overlay@husky',[], function() {
          */
         initSkeleton: function() {
             this.overlay.$el = this.sandbox.dom.createElement(
-                _.template(templates.overlaySkeleton)({
+                this.sandbox.util.template(templates.overlaySkeleton)({
                     title: this.options.title,
                     okIcon: this.options.okIcon,
                     closeIcon: this.options.closeIcon,
                     skin: !!this.options.skin ? ' ' + this.options.skin : ''
                 }));
             this.overlay.$close = this.sandbox.dom.find(constants.closeSelector, this.overlay.$el);
-            this.overlay.$ok = this.sandbox.dom.find(constants.okSelector, this.overlay.$el);
+            this.overlay.$footer = this.sandbox.dom.find(constants.footerSelector, this.overlay.$el);
             this.overlay.$content = this.sandbox.dom.find(constants.contentSelector, this.overlay.$el);
             this.overlay.$header = this.sandbox.dom.find(constants.headerSelector, this.overlay.$el);
 
+            // render a language changer into the header if configured
+            if (this.options.languageChanger !== null) {
+                this.renderLanguageChanger();
+            }
+
+            // add draggable class if overlay is draggable
             if (this.options.draggable === true) {
                 this.sandbox.dom.addClass(this.overlay.$el, constants.draggableClass);
             }
+
+            // add classes for various styling
+            this.sandbox.dom.addClass(this.overlay.$footer, this.options.buttonsDefaultAlign);
+            this.sandbox.dom.addClass(this.overlay.$el, this.options.cssClass);
         },
 
+        /**
+         * Renders a language changer and places it within the header
+         */
+        renderLanguageChanger: function() {
+            var $element = this.sandbox.dom.createElement('<div/>');
+
+            this.overlay.$languageChanger = this.sandbox.dom.createElement(
+                '<div class="'+ constants.languageChangerClass +'"/>'
+            );
+            this.sandbox.dom.append(this.overlay.$header, this.overlay.$languageChanger);
+            this.sandbox.dom.append(this.overlay.$languageChanger, $element);
+
+            this.sandbox.start([{
+                name: 'select@husky',
+                options: {
+                    el: $element,
+                    data: this.options.languageChanger.locales,
+                    preSelectedElements: [this.options.languageChanger.preSelected],
+                    skin: 'white',
+                    instanceName: this.options.instanceName
+                }
+            }]);
+        },
+
+        /**
+         * Renders all buttons and appends them to the footer
+         */
+        initButtons: function() {
+            var i, length, $button, button, template, classes, text, inactive;
+            for (i = -1, length = this.options.buttons.length; ++i < length;) {
+                button = this.options.buttons[i];
+                if (button.type === buttonTypes.OK) {
+                    template = templates.okButton;
+                    text = this.options.okDefaultText;
+                    inactive = this.options.okInactive;
+                } else if (button.type === buttonTypes.CANCEL) {
+                    template = templates.cancelButton;
+                    text = this.options.cancelDefaultText;
+                }
+
+                classes = (!!button.classes) ? ' ' + button.classes : '';
+
+                if (!!button.text) {
+                    text = button.text;
+                } else if (!!button.icon) {
+                    text = '';
+                }
+
+                if (inactive !== true) {
+                    inactive = button.inactive;
+                }
+
+                $button = this.sandbox.dom.createElement(this.sandbox.util.template(template)({
+                    icon: button.icon,
+                    text: text,
+                    classes: (inactive === true) ? classes + ' inactive gray' : classes
+                }));
+
+                // add individual button align (if configured)
+                if (!!button.align) {
+                    this.sandbox.dom.addClass($button, button.align);
+                }
+
+                this.sandbox.dom.append(this.overlay.$footer, $button);
+            }
+        },
+
+        /**
+         * Sets the content of the overlay. If the data option is set set it as raw html.
+         * If the message option is set render a template with the message
+         */
         setContent: function() {
-            this.sandbox.dom.html(this.overlay.$content, this.options.data);
+            if (!!this.options.data) {
+                this.sandbox.dom.html(this.overlay.$content, this.options.data);
+            } else if (!!this.options.message) {
+                this.sandbox.dom.html(this.overlay.$content, this.sandbox.util.template(templates.message)({
+                    message: this.options.message
+                }));
+
+            } else if (this.options.tabs !== null) {
+                this.renderTabs();
+            } else {
+                this.sandbox.logger.log('Error: either options.data, options.message or options.tabs has to be set', this);
+            }
+        },
+
+        /**
+         * Renders the tab-contents of of the overlay
+         * and initializes the tab component
+         */
+        renderTabs: function() {
+            this.overlay.tabs = [];
+            this.overlay.$tabs = this.sandbox.dom.createElement('<div class="'+ constants.tabsClass +'"/>');
+            this.sandbox.dom.append(this.overlay.$header, this.overlay.$tabs);
+
+            for (var i = -1, length = this.options.tabs.length; ++i < length;) {
+                this.overlay.tabs.push({
+                   title: this.options.tabs[i].title,
+                   $el: this.sandbox.dom.createElement(this.options.tabs[i].data)
+                });
+                this.sandbox.dom.hide(this.overlay.tabs[i].$el);
+                this.sandbox.dom.append(this.overlay.$content, this.overlay.tabs[i].$el);
+            }
+            // show first tab element at the beginning and start tab-bar
+            this.showTab(this.overlay.tabs[0]);
+            this.startTabsComponent();
+        },
+
+        /**
+         * Starts the tabs-component
+         */
+        startTabsComponent: function() {
+            var $element = this.sandbox.dom.createElement('<div/>');
+            this.sandbox.dom.html(this.overlay.$tabs, $element);
+
+            this.sandbox.start([{
+                name: 'tabs@husky',
+                options: {
+                    el: $element,
+                    data: {items: this.overlay.tabs},
+                    instanceName: 'overlay' + this.options.instanceName,
+                    skin: 'overlay'
+                }
+            }]);
         },
 
         /**
@@ -36109,23 +36339,19 @@ define('__component__$overlay@husky',[], function() {
                 this.sandbox.dom.css(this.overlay.$el, {'z-index': 10000});
             }.bind(this));
 
-            this.sandbox.dom.on(this.overlay.$close, 'click', function(event) {
-                this.sandbox.dom.preventDefault(event);
-                if (this.executeCallback(this.options.closeCallback) !== false) {
-                    this.closeOverlay();
-                }
-            }.bind(this));
+            // close handler for close icon
+            if (!!this.options.closeIcon) {
+                this.sandbox.dom.on(this.overlay.$close, 'click',
+                    this.closeHandler.bind(this));
+            }
 
-            this.sandbox.dom.on(this.overlay.$ok, 'click', function(event) {
-                // do nothing, if button is inactive
-                if (this.overlay.$ok.hasClass('inactive')) {
-                    return;
-                }
-                this.sandbox.dom.preventDefault(event);
-                if (this.executeCallback(this.options.okCallback) !== false) {
-                    this.closeOverlay();
-                }
-            }.bind(this));
+            // close handler for cancel buttons
+            this.sandbox.dom.on(this.overlay.$footer, 'click',
+                this.closeHandler.bind(this), constants.overlayCancelSelector);
+
+            // binds the events for ok-buttons
+            this.sandbox.dom.on(this.overlay.$footer, 'click',
+                this.okHandler.bind(this), constants.overlayOkSelector);
 
             this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
                 if (this.dragged === false && this.overlay.opened === true) {
@@ -36133,12 +36359,8 @@ define('__component__$overlay@husky',[], function() {
                 }
             }.bind(this));
 
-            if (this.options.backdrop === true) {
-                this.sandbox.dom.on(this.$backdrop, 'click', function() {
-                    if (this.executeCallback(this.options.closeCallback) !== false) {
-                        this.closeOverlay();
-                    }
-                }.bind(this));
+            if (this.options.backdrop === true && this.options.backdropClose === true) {
+                this.sandbox.dom.on(this.$backdrop, 'click', this.closeHandler.bind(this));
             }
 
             if (this.options.draggable === true) {
@@ -36157,6 +36379,62 @@ define('__component__$overlay@husky',[], function() {
                 this.sandbox.dom.on(this.sandbox.dom.$document, 'mouseup', function() {
                     this.sandbox.dom.off(this.sandbox.dom.$document, 'mousemove.overlay' + this.options.instanceName);
                 }.bind(this));
+            }
+
+            this.bindOverlayCustomEvents();
+        },
+
+        /**
+         * Binds custom events used by the overlay
+         */
+        bindOverlayCustomEvents: function() {
+            if (this.overlay.tabs !== null) {
+                this.sandbox.on('husky.tabs.overlay'+ this.options.instanceName +'.item.select', this.showTab.bind(this));
+            }
+        },
+
+        /**
+         * Handles the click on an overlay tab
+         * @param tab {object} tab object with $el property
+         */
+        showTab: function(tab) {
+            this.activeTab = tab;
+            this.hideAllTabsElements();
+            this.sandbox.dom.show(tab.$el);
+        },
+
+        /**
+         * Hides all tab elements
+         */
+        hideAllTabsElements: function() {
+            for (var i = -1, length = this.overlay.tabs.length; ++i < length;) {
+                this.sandbox.dom.hide(this.overlay.tabs[i].$el);
+            }
+        },
+
+        /**
+         * Handles the click on ok-buttons
+         * @param event
+         */
+        okHandler: function(event) {
+            // do nothing, if button is inactive
+            if (this.sandbox.dom.hasClass(event.currentTarget, 'inactive')) {
+                return;
+            }
+            this.sandbox.dom.preventDefault(event);
+            if (this.executeCallback(this.options.okCallback) !== false) {
+                this.closeOverlay();
+            }
+        },
+
+        /**
+         * Handles the click on cancel-buttons and close-icon
+         * @param event
+         */
+        closeHandler: function(event) {
+            this.sandbox.dom.preventDefault(event);
+            if (this.executeCallback(this.options.closeCallback) !== false) {
+                this.closeOverlay();
             }
         },
 
@@ -38016,8 +38294,8 @@ define('husky_extensions/collection',[],function() {
                         return app.sandbox.form.getObject(selector).mapper.setData(data);
                     },
 
-                    getData: function(selector) {
-                        return  app.sandbox.form.getObject(selector).mapper.getData();
+                    getData: function(selector, returnMapperId, $el) {
+                        return  app.sandbox.form.getObject(selector).mapper.getData($el, returnMapperId);
                     },
 
                     addToCollection: function(selector, propertyName, data, append) {

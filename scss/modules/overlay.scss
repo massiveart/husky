@@ -1,68 +1,146 @@
+//
+// Overlay
+// --------------------------------------------------
+
 .husky-overlay-container {
-  width: $overlayContainerWidth;
-  position: fixed;
-  top: 0;
-  left: 50%;
-  background-color: $white;
-  border: 1px solid $grayLighter;
-  z-index: 1000;
-  @include standard-box-shadow;
+    width: $overlayContainerWidth;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    background-color: $white;
+    border: 1px solid $grayLight;
+    z-index: 1000;
+    border-radius: $borderRadius;
+    @include standard-box-shadow;
 
-  &.right-aligned {
-    left: auto;
-    right: 0;
-  }
+    &.right-aligned {
+        left: auto;
+        right: 0;
+    }
 
- &.wide {
-     width: $overlayContainerWidthWide
- }
-}
+    &.wide {
+        width: $overlayContainerWidthWide
+    }
 
-.draggable .overlay-header {
-  cursor: move;
-  @include user-select(none);
+    &.draggable {
+        .overlay-header {
+            cursor: move;
+            @include user-select(none);
+        }
+    }
+
+    &.error {
+        .overlay-header {
+            background: $red;
+            color: $white;
+            .title {
+                color: $black;
+            }
+        }
+    }
+
+    &.warning {
+        .overlay-header {
+            background: $yellow;
+            .title {
+                color: $black;
+            }
+        }
+    }
 }
 
 .overlay-header {
-  padding: 15px 40px 15px 20px;
-  min-height: 50px;
-  border-bottom: 1px solid $grayLighterer;
-  position: relative;
+    min-height: 50px;
+    background: $grayLightest;
+    position: relative;
+    border-radius: $borderRadius $borderRadius 0 0;
 
-  .title {
-    color: $grayLight;
-    font-size: 23px;
-    padding-right: 10px;
-    vertical-align: text-top;
-  }
+    .title {
+        color: $grayLight;
+        font-size: 23px;
+        padding-right: 10px;
+        vertical-align: text-top;
+        display: block;
+        padding: 15px 40px 10px 20px;
+    }
 
-  .close-button {
-    position: absolute;
-    top: 17px;
-    right: 20px;
-    font-size: 20px;
-    float:right;
-    text-decoration: none;
-    color: black;
-  }
+    .close-button {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        font-size: 12px;
+        text-decoration: none;
+        color: black;
+        line-height: 12px;
+        padding: 8px;
+    }
 
+    .tabs {
+        display: inline-block;
+    }
+
+    .language-changer {
+        width: 80px;
+        position: absolute;
+        bottom: 10px;
+        right: 20px;
+    }
 }
 
 .overlay-footer {
-  padding: 10px 0;
-  border-top: 1px solid $grayLighter;
-  text-align: center;
+    padding: 10px;
+    border-top: 1px solid $grayLighter;
+    text-align: center;
+    border-radius: 0 0 $borderRadius $borderRadius;
+    @include clear-float;
 
-  .save-button {
-    display: inline-block;
-    font-size: 20px;
-    line-height: 26px;
-  }
+    .btn {
+        display: inline-block;
+        min-width: 70px;
+        margin: 0 auto;
+        padding: 0;
+
+        &.tick {
+            width: 70px;
+            line-height: 28px;
+        }
+        // individual button align
+        &.left {
+            float: left;
+            margin-right: 20px;
+            margin-right: 0;
+        }
+        &.right {
+            float: right;
+            margin-left: 20px;
+            margin-right: 0;
+        }
+    }
+
+    &.center .btn {
+        margin: 0 auto;
+    }
+
+    &.left .btn {
+        float: left;
+        margin-right: 20px;
+    }
+
+    &.right .btn {
+        float: right;
+        margin-left: 20px;
+    }
 }
 
 .overlay-content {
-  padding-left: 0;
-  margin: 10px 20px;
+    padding-left: 0;
+    margin: 0 20px 10px 20px;
+
+    .message {
+        padding: 20px 0 25px 0;
+        font-size: $bigFontSize;
+        color: $grayLight;
+    }
 }
 
 .husky-overlay-backdrop {

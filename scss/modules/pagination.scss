@@ -36,7 +36,7 @@
         .pagination-prev {
             padding: 0 13px;
             border: 1px solid $grayLighter;
-            border-radius: 0 4px 4px 0;
+            border-radius: 0 $borderRadius $borderRadius 0;
             line-height: 28px;
             height: 30px;
 
@@ -57,7 +57,7 @@
         .pagination-next {
             padding: 0 13px;
             border: 1px solid $grayLighter;
-            border-radius: 4px 0 0 4px;
+            border-radius: $borderRadius 0 0 $borderRadius;
             line-height: 28px;
             height: 30px;
 

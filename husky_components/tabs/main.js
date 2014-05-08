@@ -8,6 +8,7 @@
  *      - selected: the item that's selected on initialize
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
  *      - preselect - either true (for url) or position / title  (see preselector for more information)
+ *      - skin - string of class to add to the components element (e.g. 'overlay')
  *      - preselector:
  *          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url) - preselector itself is not going to be taken into account in this case
  *          - position: compares items position against whats defined in options.preselect
@@ -40,12 +41,13 @@ define(function() {
             preselector: 'url',
             forceReload: false,
             callback: null,
-            forceSelect: true
+            forceSelect: true,
+            skin: ''
         },
 
         selectItem = function(event) {
             event.preventDefault();
-            if (this.active === true) {
+            if (this.active === true && this.sandbox.dom.hasClass(event.currentTarget, 'is-selected') !== true) {
                 var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')];
 
                 this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
@@ -99,7 +101,6 @@ define(function() {
         view: true,
 
         initialize: function() {
-
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.$el = this.sandbox.dom.$(this.options.el);
             this.active = true;
@@ -168,6 +169,9 @@ define(function() {
                 $list = this.sandbox.dom.createElement('<ul/>'),
                 selectedItem = null,
                 $item = null;
+
+            //add skin class
+            this.sandbox.dom.addClass($element, this.options.skin);
 
             this.sandbox.dom.append(this.$el, $element);
             this.sandbox.dom.append($element, $list);

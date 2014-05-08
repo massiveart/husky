@@ -44,21 +44,21 @@
                 position: absolute;
                 top: 50%;
                 left: 0px;
-                height: 200px;
+                height: 110px;
                 width: 100%;
-                font-size: 24px;
+                font-size: 18px;
                 text-align: center;
-                color: $grayLightMedium;
+                color: $grayLightMedium2;
                 height: 160px;
-                margin-top: -80px;
+                margin-top: -55px;
 
                 .icon-file {
-                  font-size: 125px;
-                  line-height: 125px;
+                  font-size: 80px;
+                  line-height: 80px;
                   color: $grayLightest;
                 }
                 .text {
-                    padding-top: 10px;
+                    padding-top: 5px;
                 }
             }
 
@@ -116,7 +116,7 @@
             padding: 0 2px;
             font-size: 10px;
             color: $white;
-            border-radius: 3px;
+            border-radius: $borderRadius;
         }
         .icons-right {
             position: absolute;
@@ -133,7 +133,7 @@
             padding: 0px 10px;
             font-size: 10px;
             color: $white;
-            border-radius: 3px;
+            border-radius: $borderRadius;
         }
         .husky-column-navigation-loader {
             position: relative;

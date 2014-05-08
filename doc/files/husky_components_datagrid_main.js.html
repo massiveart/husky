@@ -168,6 +168,7 @@
  * @param {String} [options.columns.content] column title
  * @param {String} [options.columns.width] width of column
  * @param {String} [options.columns.class] css class of th
+ * @param {String} [options.columns.type] type of the column. Used to manipulate its content (e.g. &#x27;date&#x27;)
  * @param {String} [options.columns.attribute] mapping information to data (if not set it will just iterate of attributes)
  * @param {Boolean} [options.appendTBody] add TBODY to table
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search event
@@ -200,7 +201,7 @@ define(function() {
             excludeFields: [&#x27;id&#x27;],
             instance: &#x27;datagrid&#x27;,
             pagination: false,
-            fullWidth: false,
+            //fullWidth: false,
             paginationOptions: {
                 pageSize: null,
                 showPages: null
@@ -227,6 +228,10 @@ define(function() {
             startTabIndex: 99999,
             columnMinWidth: &#x27;70px&#x27;,
             showElementsSteps: [10, 20, 50, 100, 500]
+        },
+
+        types = {
+            DATE: &#x27;date&#x27;
         },
 
         constants = {
@@ -358,12 +363,19 @@ define(function() {
             UPDATE = namespace + &#x27;update&#x27;,
 
         /**
-         * used to filter data of
+         * used to filter data by search
          * @event husky.datagrid.data.filter
          * @param {String} searchField
          * @param {String} searchString
          */
             DATA_SEARCH = namespace + &#x27;data.search&#x27;,
+
+        /**
+         * used to filter data by updating an url parameter
+         * @event husky.datagrid.url.update
+         * @param {Object} url parameter : key
+         */
+            URL_UPDATE = namespace + &#x27;url.update&#x27;,
 
         /**
          * used to update the table width and its containers due to responsiveness
@@ -452,6 +464,7 @@ define(function() {
             this.selectedItemIds = [];
             this.rowStructure = [];
             this.elId = this.sandbox.dom.attr(this.$el, &#x27;id&#x27;);
+            this.currentUrl = &#x27;&#x27;;
 
             if (!!this.options.contentContainer) {
                 if (this.sandbox.dom.css(this.options.contentContainer, &#x27;max-width&#x27;) === &#x27;none&#x27;) {
@@ -570,7 +583,7 @@ define(function() {
          * @param params url
          */
         load: function(params) {
-
+            this.currentUrl = params.url;
             this.sandbox.util.load(this.getUrl(params), params.data)
                 .then(function(response) {
                     this.initRender(response, params);
@@ -771,7 +784,8 @@ define(function() {
                     this.rowStructure.push({
                         attribute: column.attribute,
                         editable: column.editable,
-                        validation: column.validation
+                        validation: column.validation,
+                        type: column.type
                     });
 
                     if (!!column.editable) {
@@ -886,14 +900,14 @@ define(function() {
 
                     this.rowStructure.forEach(function(key, index) {
                         key.editable = key.editable || false;
-                        this.createRowCell(key.attribute, row[key.attribute], key.editable, key.validation, triggeredByAddRow, index);
+                        this.createRowCell(key.attribute, row[key.attribute], key.type, key.editable, key.validation, triggeredByAddRow, index);
                     }.bind(this));
 
                 } else {
                     i = 0;
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                            this.createRowCell(key, row[key], false, null, triggeredByAddRow, i);
+                            this.createRowCell(key, row[key], null, false, null, triggeredByAddRow, i);
                             i++;
                         }
                     }
@@ -913,13 +927,13 @@ define(function() {
          * Sets the value of row cell and the data-id attribute for the row
          * @param key attribute name
          * @param value attribute value
+         * @param type {String} The type of the cell. Used to call a function to manipulate the content
          * @param editable flag whether field is editable or not
          * @param validation information for field
          * @param triggeredByAddRow triggered trough add row
          * @param index
          */
-        createRowCell: function(key, value, editable, validation, triggeredByAddRow, index) {
-
+        createRowCell: function(key, value, type, editable, validation, triggeredByAddRow, index) {
             var tblCellClasses,
                 tblCellContent,
                 tblCellStyle,
@@ -949,6 +963,11 @@ define(function() {
 
                 tblCellStyle = &#x27;style=&quot;max-width:&#x27; + this.options.columns[index].minWidth + &#x27;&quot;&#x27;;
 
+                // call the type manipulate to manipulate the content of the cell
+                if (!!type) {
+                    tblCellContent = this.manipulateCellContent(tblCellContent, type);
+                }
+
                 if (!!editable) {
 
                     if (!!triggeredByAddRow) {
@@ -974,6 +993,32 @@ define(function() {
             } else {
                 this.tblRowAttributes += &#x27; data-&#x27; + key + &#x27;=&quot;&#x27; + value + &#x27;&quot;&#x27;;
             }
+        },
+
+        /**
+         * Manipulates the content of a cell with a process realted to the columns type
+         * @param content {String} the content of the cell
+         * @param type {String} the columns type
+         * @returns {String} the manipualted content
+         */
+        manipulateCellContent: function(content, type) {
+            if (type === types.DATE) {
+                content = this.parseDate(content);
+            }
+            return content;
+        },
+
+        /**
+         * Brings a date into the right format
+         * @param date {String} the date to parse
+         * @returns {String}
+         */
+        parseDate: function(date) {
+            var parsedDate = this.sandbox.date.format(date);
+            if (parsedDate !== null) {
+                return parsedDate;
+            }
+            return date;
         },
 
         /**
@@ -1628,6 +1673,9 @@ define(function() {
             // filter data
             this.sandbox.on(DATA_SEARCH, this.triggerSearch.bind(this));
 
+            // filter data
+            this.sandbox.on(URL_UPDATE, this.updateUrl.bind(this));
+
             // pagination dropdown item clicked
             this.sandbox.on(&#x27;husky.dropdown.&#x27; + this.dropdownInstanceName + &#x27;.item.click&#x27;, this.changePage.bind(this, null));
 
@@ -1998,13 +2046,13 @@ define(function() {
         },
 
         /**
-         * this will trigger a api search
+         * triggers an api search
+         * @param {String} searchString The String that will be searched
+         * @param {String|Array} searchFields Fields that will be included into the search
          */
         triggerSearch: function(searchString, searchFields) {
 
-            var template, url,
-            // TODO: get searchFields
-                searchFields;
+            var template, url;
 
             this.addLoader();
             template = this.sandbox.uritemplate.parse(this.data.links.find);
@@ -2017,6 +2065,65 @@ define(function() {
                     this.sandbox.emit(UPDATED, &#x27;updated after search&#x27;);
                 }.bind(this)
             });
+        },
+
+        /**
+         * updates the current url by given parameter object
+         * @param {Object} parameters Object key is used as parameter name, value as parameter value
+         */
+        updateUrl: function(parameters) {
+
+            var url, key;
+
+            this.addLoader();
+            url = this.currentUrl;
+
+            for (key in parameters) {
+                url = this.setGetParameter(url, key, parameters[key]);
+            }
+
+            this.load({
+                url: url,
+                success: function() {
+                    this.removeLoader();
+                    this.sandbox.emit(UPDATED);
+                }.bind(this)
+            });
+        },
+
+        /**
+         * function updates an url by a given parameter name and value and returns it. The parameter is either added or updated.
+         * If value is not set, the parameter will be removed from url
+         * @param {String} url Url string to be updated
+         * @param {String} paramName Parameter which should be added / updated / removed
+         * @param {String|Null} paramValue Value of the parameter. If not set, parameter will be removed from url
+         * @returns {String} updated url
+         */
+        setGetParameter: function(url, paramName, paramValue){
+            if (url.indexOf(paramName + &quot;=&quot;) &gt;= 0)
+            {
+                var prefix = url.substring(0, url.indexOf(paramName)),
+                    suffix = url.substring(url.indexOf(paramName));
+                suffix = suffix.substring(suffix.indexOf(&#x27;=&#x27;) + 1);
+                suffix = (suffix.indexOf(&#x27;&amp;&#x27;) &gt;= 0) ? suffix.substring(suffix.indexOf(&#x27;&amp;&#x27;)) : &#x27;&#x27;;
+                if (!!paramValue) {
+                    url = prefix + paramName + &#x27;=&#x27; + paramValue + suffix;
+                } else {
+                    if (url.substr(url.indexOf(paramName)-1,1) === &#x27;&amp;&#x27; ) {
+                        url = url.substring(0,prefix.length-1) + suffix;
+                    } else {
+                        url = prefix + suffix.substring(1, suffix.length);
+                    }
+                }
+            }
+            else if (!!paramValue)
+            {
+                if (url.indexOf(&quot;?&quot;) &lt; 0)
+                    url += &quot;?&quot; + paramName + &quot;=&quot; + paramValue;
+                else
+                    url += &quot;&amp;&quot; + paramName + &quot;=&quot; + paramValue;
+            }
+            return url;
         },
 
 
@@ -2129,16 +2236,19 @@ define(function() {
                 }
             }
 
-            if (this.options.fullWidth === true) {
-                finalWidth = finalWidth - constants.overflowIconSpacing;
-            }
-
             // now set width
             this.sandbox.dom.width(this.$element, finalWidth);
 
             // check scrollwidth and add class
             if (this.sandbox.dom.get(this.$tableContainer, 0).scrollWidth &gt; finalWidth) {
                 this.sandbox.dom.addClass(this.$tableContainer, &#x27;overflow&#x27;);
+
+                // if overflown and in full width mode reduce list-width
+                if (this.options.fullWidth === true) {
+                    finalWidth = finalWidth - constants.overflowIconSpacing;
+                    this.sandbox.dom.width(this.$element, finalWidth);
+                }
+
             } else {
                 this.sandbox.dom.removeClass(this.$tableContainer, &#x27;overflow&#x27;);
             }

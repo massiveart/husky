@@ -92,7 +92,7 @@ define(function() {
 
             checkbox: [
                 '<div class="custom-checkbox">',
-                    '<input id="<%= id %>" type="checkbox" data-form="false"/>',
+                    '<input id="<%= id %>" type="checkbox" data-form="false"<% if (!!checked) { %> checked<% } %>/>',
                     '<span class="icon"></span>',
                 '</div>'
             ].join(''),
@@ -430,7 +430,8 @@ define(function() {
 
                 if (this.options.selectItem.type === 'checkbox') {
                     tblColumns.push(this.sandbox.util.template(templates.checkbox)({
-                        id: constants.selectAllName
+                        id: constants.selectAllName,
+                        checked: false
                     }));
                 }
 
@@ -554,7 +555,10 @@ define(function() {
                 // add a checkbox to each row
                 if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
                     this.tblColumns.push(this.sandbox.util.template(templates.checkboxCell)({
-                        checkbox: this.sandbox.util.template(templates.checkbox)({id: ''})
+                        checkbox: this.sandbox.util.template(templates.checkbox)({
+                            id: '',
+                            checked: !!row.selected
+                        })
                     }));
 
                     // add a radio to each row

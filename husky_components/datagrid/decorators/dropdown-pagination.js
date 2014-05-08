@@ -140,7 +140,8 @@ define(function() {
          */
         destroy: function() {
             this.unbindDomEvents();
-            this.sandbox.stop(this.sandbox.dom.find('*', this.$paginationContainer));
+            // uncommented just for testing purposes, if you see this uncomment it!!
+            //this.sandbox.stop(this.sandbox.dom.find('*', this.$paginationContainer));
             this.sandbox.dom.remove(this.$paginationContainer);
         },
 
