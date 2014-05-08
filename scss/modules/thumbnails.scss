@@ -1,0 +1,121 @@
+//
+// Thumbnails
+// --------------------------------------------------
+
+.husky-thumbnails {
+  $thumbnailSmallHeight: 70px;
+  $thumbnailSmallWidth: 260px;
+  $imgSmallWidth: 70px;
+
+  $thumbnailLargeHeight: 250px;
+  $thumbnailLargeWidth: 190px;
+  $imgLargeHeight: 170px;
+
+  @include clear-float;
+
+  .download {
+    font-size: 15px;
+    height: 15px;
+    width: 15px;
+    color: $blue;
+  }
+  .description {
+    font-size: $reallySmallFontSize;
+    color: $grayLight;
+  }
+  .text {
+    line-height: 14px;
+  }
+
+  .item {
+    float: left;
+    position: relative;
+    cursor: pointer;
+    @include clear-float;
+
+    &.small {
+      width: $thumbnailSmallWidth;
+      height: $thumbnailSmallHeight;
+      margin-bottom: 20px;
+      margin-right: 12px;
+
+      .image {
+        float: left;
+        width: $imgSmallWidth;
+        text-align: center;
+        line-height: $thumbnailSmallHeight - 20px;
+        padding: 10px;
+        img {
+            vertical-align: middle;
+        }
+      }
+      .text {
+        float: left;
+        padding-top: 20px;
+        width: $thumbnailSmallWidth - $imgSmallWidth;
+      }
+      .checkbox {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        left: auto;
+        display: none;
+      }
+      .download {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        display: none;
+      }
+    }
+
+    &.large {
+      width: $thumbnailLargeWidth - 2px;
+      height: $thumbnailLargeHeight - 2px;
+      margin-bottom: 40px;
+      margin-right: 20px;
+      border: 1px solid $grayLighter;
+      padding: 10px;
+
+      .image {
+        width: 100%;
+        height: $imgLargeHeight;
+        text-align: center;
+        line-height: $imgLargeHeight;
+        margin-bottom: 10px;
+        img {
+          vertical-align: bottom;
+        }
+      }
+      .text {
+        text-align: center;
+      }
+      .checkbox {
+        position: absolute;
+        left: 10px;
+        bottom: 10px;
+        top: auto;
+      }
+      .download {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+      }
+    }
+
+    &:hover,
+    &.is-selected {
+      background: $white;
+
+      .checkbox {
+        display: block;
+      }
+      .download {
+        display: block;
+      }
+      &.large {
+        border-color: $white;
+      }
+    }
+  }
+}
