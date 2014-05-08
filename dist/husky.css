@@ -7725,16 +7725,22 @@ a.btn-black, a.btn-highlight {
   content: ' ';
   display: block;
 }
-/* line 19, ../scss/modules/thumbnails.scss */
+/* line 16, ../scss/modules/thumbnails.scss */
+.husky-thumbnails .download {
+  font-size: 15px;
+  height: 15px;
+  width: 15px;
+}
+/* line 21, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .description {
   font-size: 10px;
   color: #999999;
 }
-/* line 23, ../scss/modules/thumbnails.scss */
+/* line 25, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .text {
   line-height: 14px;
 }
-/* line 27, ../scss/modules/thumbnails.scss */
+/* line 29, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item {
   float: left;
   position: relative;
@@ -7746,31 +7752,31 @@ a.btn-black, a.btn-highlight {
   content: ' ';
   display: block;
 }
-/* line 33, ../scss/modules/thumbnails.scss */
+/* line 35, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.small {
   width: 260px;
   height: 70px;
   margin-bottom: 20px;
   margin-right: 12px;
 }
-/* line 39, ../scss/modules/thumbnails.scss */
+/* line 41, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.small .image {
   float: left;
   width: 70px;
   text-align: center;
   line-height: 70px;
 }
-/* line 44, ../scss/modules/thumbnails.scss */
+/* line 46, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.small .image img {
   vertical-align: middle;
 }
-/* line 48, ../scss/modules/thumbnails.scss */
+/* line 50, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.small .text {
   float: left;
   padding-top: 20px;
   width: 190px;
 }
-/* line 53, ../scss/modules/thumbnails.scss */
+/* line 55, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.small .checkbox {
   position: absolute;
   top: 10px;
@@ -7778,7 +7784,7 @@ a.btn-black, a.btn-highlight {
   left: auto;
   display: none;
 }
-/* line 60, ../scss/modules/thumbnails.scss */
+/* line 62, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.small .download {
   position: absolute;
   right: 10px;
@@ -7786,7 +7792,7 @@ a.btn-black, a.btn-highlight {
   color: #2d9fbc;
   display: none;
 }
-/* line 69, ../scss/modules/thumbnails.scss */
+/* line 71, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.large {
   width: 188px;
   height: 248px;
@@ -7795,7 +7801,7 @@ a.btn-black, a.btn-highlight {
   border: 1px solid #cccccc;
   padding: 10px;
 }
-/* line 77, ../scss/modules/thumbnails.scss */
+/* line 79, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.large .image {
   width: 100%;
   height: 170px;
@@ -7803,40 +7809,40 @@ a.btn-black, a.btn-highlight {
   line-height: 170px;
   margin-bottom: 10px;
 }
-/* line 83, ../scss/modules/thumbnails.scss */
+/* line 85, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.large .image img {
   vertical-align: bottom;
 }
-/* line 87, ../scss/modules/thumbnails.scss */
+/* line 89, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.large .text {
   text-align: center;
 }
-/* line 90, ../scss/modules/thumbnails.scss */
+/* line 92, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.large .checkbox {
   position: absolute;
   left: 10px;
   bottom: 10px;
   top: auto;
 }
-/* line 96, ../scss/modules/thumbnails.scss */
+/* line 98, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.large .download {
   position: absolute;
   bottom: 10px;
   right: 10px;
 }
-/* line 104, ../scss/modules/thumbnails.scss */
+/* line 106, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item:hover, .husky-thumbnails .item.is-selected {
   background: white;
 }
-/* line 107, ../scss/modules/thumbnails.scss */
+/* line 109, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item:hover .checkbox, .husky-thumbnails .item.is-selected .checkbox {
   display: block;
 }
-/* line 110, ../scss/modules/thumbnails.scss */
+/* line 112, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item:hover .download, .husky-thumbnails .item.is-selected .download {
   display: block;
 }
-/* line 113, ../scss/modules/thumbnails.scss */
+/* line 115, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item:hover.large, .husky-thumbnails .item.is-selected.large {
   border-color: white;
 }
