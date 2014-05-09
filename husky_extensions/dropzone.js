@@ -6,16 +6,22 @@
         paths: { "dropzone": 'bower_components/dropzone/dropzone' }
     });
 
-    define(['dropzone'], {
-        name: 'dropzone',
+    define(['dropzone'], function(Dropzone) {
+        return {
+            name: 'dropzone',
 
-        initialize: function(app) {
-            app.sandbox.dropzone = {
+            initialize: function(app) {
+                // Disable confirmation
+                Dropzone.confirm = function(question, accepted) {
+                    accepted();
+                },
 
-                initialize: function(selector, configs) {
-                    return app.core.dom.$(selector).dropzone(configs);
-                }
-            };
-        }
+                app.sandbox.dropzone = {
+                    initialize: function(selector, configs) {
+                        return app.core.dom.$(selector).dropzone(configs);
+                    }
+                };
+            }
+        };
     });
 })();

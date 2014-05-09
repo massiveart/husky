@@ -85,6 +85,7 @@
         .bar {
           height: 100%;
           background: $blue;
+          width: 0%;
         }
       }
       .icon {
@@ -136,7 +137,7 @@
     @include single-transition(padding, $transitionDuration);
 
     .description {
-      margin-top: -$dropzoneHeight;
+      margin-top: -$dropzoneHeight - 20px;
     }
   }
 }
