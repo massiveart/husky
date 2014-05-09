@@ -20,7 +20,8 @@ define(function() {
     var datagrid,
 
         defaults = {
-            matchings: []
+            matchings: [],
+            large: false
         },
 
         constants = {
@@ -79,6 +80,14 @@ define(function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, options);
 
             this.setVariables();
+        },
+
+        /**
+         * Takes an object with options and extends the current ones
+         * @param options {Object} new options to merge to the current ones
+         */
+        extendOptions: function(options) {
+            this.options = this.sandbox.util.extend(true, {}, this.options, options);
         },
 
         /**
@@ -157,7 +166,7 @@ define(function() {
                     title: this.sandbox.util.cropMiddle(title, 26),
                     description: this.sandbox.util.cropMiddle(description, 32),
                     // todo: option to change large and small
-                    styleClass: constants.largeClass,
+                    styleClass: (this.options.large === true) ? constants.largeClass : constants.smallClass,
                     checked: !!record.selected
                 })
             );

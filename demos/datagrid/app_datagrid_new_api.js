@@ -751,9 +751,9 @@ require(['lib/husky'], function(Husky) {
                 app.sandbox.emit('husky.datagrid.data.save');
             });
 
-            view = 'thumbnail';
+            view = 'table';
             $('#change-view').on('click', function() {
-               app.sandbox.emit('husky.datagrid.view.change', view);
+               app.sandbox.emit('husky.datagrid.view.change', view, {large: true});
                view = (view === 'thumbnail') ? 'table' : 'thumbnail';
             });
 

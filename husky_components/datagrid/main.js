@@ -35,7 +35,7 @@
          *    Default values for options
          */
         var defaults = {
-                view: 'thumbnail',
+                view: 'table',
                 viewOptions: {
                     table: {},
                     thumbnail: {}
@@ -155,6 +155,7 @@
              * listens on and changes the view of the datagrid
              * @event husky.datagrid.view.change
              * @param {String} viewId The identifier of the view
+             * @param {Object} Options to merge with the current view options
              */
                 CHANGE_VIEW = namespace + 'view.change',
 
@@ -485,7 +486,7 @@
 
             /**
              * Gets the view and starts the rendering of the data
-             * @param {String} the identifier of the decorator
+             * @param viewId {String} the identifier of the decorator
              */
             getViewDecorator: function(viewId) {
                 // todo: dynamically load a decorator from external source if local decorator doesn't exist
@@ -497,6 +498,7 @@
                     var isViewValid = this.isViewValid(this.gridViews[this.viewId]);
 
                     if (isViewValid === true) {
+                        // merge view options with passed ones
                         this.gridViews[this.viewId].initialize(this, this.options.viewOptions[this.viewId]);
                     } else {
                         this.sandbox.logger.log('Error: View does not meet the configured requirements. See the documentation');
@@ -544,11 +546,24 @@
             /**
              * Changes the view of the datagrid
              * @param view {String} identifier of the new view to use
+             * @param options {Object} an object with options to merge with the current view options for the view
              */
-            changeView: function(view) {
+            changeView: function(view, options) {
                 this.destroy();
                 this.getViewDecorator(view);
+                this.extendViewOptions(options);
                 this.render();
+            },
+
+            /**
+             * Takes an object with options and passes them to the view,
+             * so the view can extend its current ones with them
+             * @param options {Object} mew options
+             */
+            extendViewOptions: function(options) {
+                if (!!options && !!this.gridViews[this.viewId].extendOptions) {
+                    this.gridViews[this.viewId].extendOptions(options);
+                }
             },
 
             /**
