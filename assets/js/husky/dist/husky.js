@@ -38988,6 +38988,19 @@ define('__component__$toggler@husky',[], function() {
  * @constructor
  *
  * @params {Object} [options] Configuration object
+ * @params {String} [options.titleKey] The title to display if no items are dropped (can be a translation key)
+ * @params {String} [options.descriptionKey] The description to display if no items are dropped (can be a translation key)
+ * @params {String} [options.descriptionIcon] The icon to display if no items are dropped
+ * @params {String} [options.cancelLoadingIcon] the icon which gets displayed while a file item gets uploaded
+ * @params {String} [options.method] method to use for uploading 'PUT' or 'POST'
+ * @params {String} [options.url] url to upload the files to
+ * @params {String} [options.paramName] the name of the parameter which will contain the file(s). Note that if uploadMultiple is set to true the parameter Name gets extended with '[]'
+ * @params {Object} [options.headers] additional headers to pass with each request
+ * @params {Boolean} [options.uploadMultiple] if true a request can upload multiple files
+ * @params {Function} [options.successCallback] callback which gets called if a file got successfully uploaded. First parameter is the file, the second the response
+ * @params {Function} [options.beforeSendingCallback] callback which gets called before a file gets uploaded. First parameter is the file.
+ * @params {Function} [options.removeFileCallback] callback which gets called after a file got removed. First parameter is the file.
+ * @params {Object} [options.pluginOptions] Options to pass to the dropzone-plugin to completely override all options set by husky. Use with care.
  */
 define('__component__$dropzone@husky',[], function() {
 
@@ -39000,7 +39013,14 @@ define('__component__$dropzone@husky',[], function() {
             descriptionIcon: 'cloud-upload',
             cancelLoadingIcon: 'repeat',
             method: 'POST',
-            url: '/'
+            url: '/',
+            paramName: 'file',
+            headers: {},
+            uploadMultiple: false,
+            successCallback: null,
+            beforeSendingCallback: null,
+            removeFileCallback: null,
+            pluginOptions: {}
         },
 
         constants = {
@@ -39024,7 +39044,7 @@ define('__component__$dropzone@husky',[], function() {
             uploadItem: [
                 '<div class="'+ constants.uploadItemClass +'">' +
                     '<div class="loading-content">',
-                        '<div class="icon-<%= cancelIcon %> icon"></div>',
+                        '<div class="icon-<%= cancelIcon %> icon" data-dz-remove></div>',
                         '<div class="file-size" data-dz-size></div>',
                         '<div class="progress">',
                             '<div class="bar" data-dz-uploadprogress></div>',
@@ -39071,6 +39091,15 @@ define('__component__$dropzone@husky',[], function() {
          */
             SUCCESS = function() {
             return createEventName.call(this, 'success');
+        },
+
+        /**
+         * raised after file got removed from the zone
+         * @event husky.dropzone.<instance-name>.file-remove
+         * @param {Object} the file
+         */
+            FILE_REMOVED = function() {
+            return createEventName.call(this, 'file-removed');
         },
 
         /** returns normalized event names */
@@ -39129,25 +39158,59 @@ define('__component__$dropzone@husky',[], function() {
                 options = {
                     url: this.options.url,
                     method: this.options.method,
+                    paramName: this.options.paramName,
+                    uploadMultiple: this.options.uploadMultiple,
+                    headers: this.options.headers,
                     previewTemplate: this.sandbox.util.template(templates.uploadItem)({
                         cancelIcon: this.options.cancelLoadingIcon
                     }),
                     previewsContainer: this.$find('.' + constants.uploadedItemContainerClass)[0],
                     init: function() {
-                        this.on('addedfile', function() {
+                        // gets called if file gets added (drop or via the upload window)
+                        this.on('addedfile', function(file) {
                             this.sandbox.dom.addClass(this.$el, constants.droppedClass);
+
+                            // prevent the the upload window to open on click on the preview item
+                            this.sandbox.dom.on(file.previewElement, 'click', function(event) {
+                                this.sandbox.dom.stopPropagation(event);
+                            }.bind(this));
                         }.bind(that));
 
+                        // gets called before the file is sent
                         this.on('sending', function(file) {
-                            this.sandbox.emit(UPLOADING.call(this), file);
+                            if (typeof this.options.beforeSendingCallback === 'function') {
+                                this.options.beforeSendingCallback(file);
+                            } else {
+                                this.sandbox.emit(UPLOADING.call(this), file);
+                            }
                         }.bind(that));
 
+                        // gets called if the file was uploaded successfully
                         this.on('success', function(file, response) {
-                            this.sandbox.emit(SUCCESS.call(this), file, response);
+                            if (typeof this.options.successCallback === 'function') {
+                                this.options.successCallback(file, response);
+                            } else {
+                                this.sandbox.emit(SUCCESS.call(this), file, response);
+                            }
+                        }.bind(that));
+
+                        // gets called if a file gets removed from the zone
+                        this.on('removedfile', function(file) {
+                            if (typeof this.options.removeFileCallback === 'function') {
+                                this.options.removeFileCallback(file);
+                            } else {
+                                this.sandbox.emit(FILE_REMOVED.call(this), file);
+                            }
+                        }.bind(that));
+
+                        // gets called if all files are removed from the zone
+                        this.on('reset', function() {
+                            this.sandbox.dom.removeClass(this.$el, constants.droppedClass);
                         }.bind(that));
                     }
                 };
 
+            // merge the default plugin options with with passed ones
             this.sandbox.util.extend(true, {}, options, this.options.pluginOptions);
             this.dropzone = this.sandbox.dropzone.initialize(this.$el, options);
         }
@@ -39371,17 +39434,23 @@ define('husky_extensions/collection',[],function() {
         paths: { "dropzone": 'bower_components/dropzone/dropzone' }
     });
 
-    define('husky_extensions/dropzone',['dropzone'], {
-        name: 'dropzone',
+    define('husky_extensions/dropzone',['dropzone'], function(Dropzone) {
+        return {
+            name: 'dropzone',
 
-        initialize: function(app) {
-            app.sandbox.dropzone = {
+            initialize: function(app) {
+                // Disable confirmation
+                Dropzone.confirm = function(question, accepted) {
+                    accepted();
+                },
 
-                initialize: function(selector, configs) {
-                    return app.core.dom.$(selector).dropzone(configs);
-                }
-            };
-        }
+                app.sandbox.dropzone = {
+                    initialize: function(selector, configs) {
+                        return app.core.dom.$(selector).dropzone(configs);
+                    }
+                };
+            }
+        };
     });
 })();
 

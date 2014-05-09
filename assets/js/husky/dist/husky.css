@@ -7848,8 +7848,9 @@ a.btn-black, a.btn-highlight {
 .husky-dropzone .upload-items .item .progress .bar {
   height: 100%;
   background: #52b6ca;
+  width: 0%;
 }
-/* line 90, ../scss/modules/dropzone.scss */
+/* line 91, ../scss/modules/dropzone.scss */
 .husky-dropzone .upload-items .item .icon {
   height: 25px;
   color: #999999;
@@ -7860,42 +7861,42 @@ a.btn-black, a.btn-highlight {
   -moz-animation: ROTATE-ANIMATION 1s linear 0 infinite;
   -o-animation: ROTATE-ANIMATION 1s linear 0 infinite;
 }
-/* line 100, ../scss/modules/dropzone.scss */
+/* line 101, ../scss/modules/dropzone.scss */
 .husky-dropzone .upload-items .item .image {
   padding: 10px 10px 5px 10px;
   height: 65px;
   line-height: 45px;
   text-align: center;
 }
-/* line 105, ../scss/modules/dropzone.scss */
+/* line 106, ../scss/modules/dropzone.scss */
 .husky-dropzone .upload-items .item .image img {
   vertical-align: bottom;
 }
-/* line 109, ../scss/modules/dropzone.scss */
+/* line 110, ../scss/modules/dropzone.scss */
 .husky-dropzone .upload-items .item .tick {
   text-align: center;
   color: #999999;
   font-size: 15px;
   line-height: 15px;
 }
-/* line 116, ../scss/modules/dropzone.scss */
+/* line 117, ../scss/modules/dropzone.scss */
 .husky-dropzone .upload-items .item.dz-success {
   border-color: #cccccc;
   background: transparent;
 }
-/* line 119, ../scss/modules/dropzone.scss */
+/* line 120, ../scss/modules/dropzone.scss */
 .husky-dropzone .upload-items .item.dz-success .success-content {
   display: block;
 }
-/* line 122, ../scss/modules/dropzone.scss */
+/* line 123, ../scss/modules/dropzone.scss */
 .husky-dropzone .upload-items .item.dz-success .loading-content {
   display: none;
 }
-/* line 130, ../scss/modules/dropzone.scss */
+/* line 131, ../scss/modules/dropzone.scss */
 .husky-dropzone.dz-drag-hover {
   opacity: 0.5;
 }
-/* line 134, ../scss/modules/dropzone.scss */
+/* line 135, ../scss/modules/dropzone.scss */
 .husky-dropzone.dropped {
   padding-bottom: 0;
   -webkit-transition: padding 300ms;
@@ -7903,9 +7904,9 @@ a.btn-black, a.btn-highlight {
   -o-transition: padding 300ms;
   transition: padding 300ms;
 }
-/* line 138, ../scss/modules/dropzone.scss */
+/* line 139, ../scss/modules/dropzone.scss */
 .husky-dropzone.dropped .description {
-  margin-top: -130px;
+  margin-top: -150px;
 }
 
 /* line 5, ../scss/modules/toggler.scss */
