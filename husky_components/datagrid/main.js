@@ -35,7 +35,7 @@
          *    Default values for options
          */
         var defaults = {
-                view: 'table',
+                view: 'thumbnail',
                 viewOptions: {
                     table: {},
                     thumbnail: {}
