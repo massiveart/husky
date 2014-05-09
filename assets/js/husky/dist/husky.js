@@ -27828,7 +27828,8 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
     var datagrid,
 
         defaults = {
-            matchings: []
+            matchings: [],
+            large: false
         },
 
         constants = {
@@ -27887,6 +27888,14 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, options);
 
             this.setVariables();
+        },
+
+        /**
+         * Takes an object with options and extends the current ones
+         * @param options {Object} new options to merge to the current ones
+         */
+        extendOptions: function(options) {
+            this.options = this.sandbox.util.extend(true, {}, this.options, options);
         },
 
         /**
@@ -27965,7 +27974,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
                     title: this.sandbox.util.cropMiddle(title, 26),
                     description: this.sandbox.util.cropMiddle(description, 32),
                     // todo: option to change large and small
-                    styleClass: constants.largeClass,
+                    styleClass: (this.options.large === true) ? constants.largeClass : constants.smallClass,
                     checked: !!record.selected
                 })
             );
@@ -28185,7 +28194,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
         destroy: function() {
             this.unbindDomEvents();
             // uncommented just for testing purposes, if you see this uncomment it!!
-            //this.sandbox.stop(this.sandbox.dom.find('*', this.$paginationContainer));
+            this.sandbox.stop(this.sandbox.dom.find('*', this.$paginationContainer));
             this.sandbox.dom.remove(this.$paginationContainer);
         },
 
@@ -28535,6 +28544,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * listens on and changes the view of the datagrid
              * @event husky.datagrid.view.change
              * @param {String} viewId The identifier of the view
+             * @param {Object} Options to merge with the current view options
              */
                 CHANGE_VIEW = namespace + 'view.change',
 
@@ -28865,7 +28875,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
             /**
              * Gets the view and starts the rendering of the data
-             * @param {String} the identifier of the decorator
+             * @param viewId {String} the identifier of the decorator
              */
             getViewDecorator: function(viewId) {
                 // todo: dynamically load a decorator from external source if local decorator doesn't exist
@@ -28877,6 +28887,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                     var isViewValid = this.isViewValid(this.gridViews[this.viewId]);
 
                     if (isViewValid === true) {
+                        // merge view options with passed ones
                         this.gridViews[this.viewId].initialize(this, this.options.viewOptions[this.viewId]);
                     } else {
                         this.sandbox.logger.log('Error: View does not meet the configured requirements. See the documentation');
@@ -28924,11 +28935,24 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             /**
              * Changes the view of the datagrid
              * @param view {String} identifier of the new view to use
+             * @param options {Object} an object with options to merge with the current view options for the view
              */
-            changeView: function(view) {
+            changeView: function(view, options) {
                 this.destroy();
                 this.getViewDecorator(view);
+                this.extendViewOptions(options);
                 this.render();
+            },
+
+            /**
+             * Takes an object with options and passes them to the view,
+             * so the view can extend its current ones with them
+             * @param options {Object} mew options
+             */
+            extendViewOptions: function(options) {
+                if (!!options && !!this.gridViews[this.viewId].extendOptions) {
+                    this.gridViews[this.viewId].extendOptions(options);
+                }
             },
 
             /**
