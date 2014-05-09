@@ -1,0 +1,43 @@
+{
+    "note": "...Successfully found husky configs for apimocker...",
+    "mockDirectory": "apimocks",
+    "quiet": false,
+    "port": "7878",
+    "latency": 700,
+    "allowedDomains": ["http://husky.lo"],
+    "webServices": {
+
+        "test": {
+            "mockFile": "test.json",
+            "verbs": ["get"]
+        },
+
+        "admin/api/datagrid": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/default.json",
+            "switch": "page"
+        },
+        "admin/api/datagrid/all": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/all.json"
+        },
+        "admin/api/datagrid/sort": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/sort.json"
+        },
+        "admin/api/datagrid/search": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/search.json"
+        },
+        "admin/api/datagrid/1": {
+            "verbs": ["PUT"],
+            "mockFile": "datagrid/id1.edited.json"
+        },
+        "admin/api/datagrid/:id": {
+            "verbs": ["PUT"],
+            "httpStatus": 400,
+            "mockFile": "datagrid/edited.json",
+            "switch": "id"
+        }
+    }
+}
