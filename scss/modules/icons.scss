@@ -83,6 +83,13 @@
   }
 }
 
+.icon-cloud-download {
+  &::after {
+    content: "\e364";
+    display: inline-block;
+  }
+}
+
 .icon-circle-ok {
     &::after {
         content: "\e199";

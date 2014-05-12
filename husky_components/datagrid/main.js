@@ -26,8 +26,9 @@
 
     define(['husky_components/datagrid/decorators/table-view',
             'husky_components/datagrid/decorators/thumbnail-view',
-            'husky_components/datagrid/decorators/dropdown-pagination'],
-            function(decoratorTableView, thumbnailView, decoratorDropdownPagination) {
+            'husky_components/datagrid/decorators/dropdown-pagination',
+            'husky_components/datagrid/decorators/showall-pagination'],
+            function(decoratorTableView, thumbnailView, decoratorDropdownPagination, showallPagination) {
 
         'use strict';
 
@@ -40,7 +41,7 @@
                     table: {},
                     thumbnail: {}
                 },
-                pagination: 'dropdown',
+                pagination: 'showall',
                 paginationOptions: {
                     dropdown: {}
                 },
@@ -67,7 +68,8 @@
                     thumbnail: thumbnailView
                 },
                 paginations: {
-                    dropdown: decoratorDropdownPagination
+                    dropdown: decoratorDropdownPagination,
+                    showall: showallPagination
                 }
             },
 
@@ -339,7 +341,9 @@
                     this.data = this.options.data;
 
                     this.gridViews[this.viewId].render(this.data, this.$element);
-                    this.paginations[this.paginationId].render(this.data, this.$element);
+                    if (!!this.paginations[this.paginationId]) {
+                        this.paginations[this.paginationId].render(this.data, this.$element);
+                    }
                 }
             },
 
@@ -392,7 +396,9 @@
              */
             render: function() {
                 this.gridViews[this.viewId].render(this.data, this.$element);
-                this.paginations[this.paginationId].render(this.data, this.$element);
+                if (!!this.paginations[this.paginationId]) {
+                    this.paginations[this.paginationId].render(this.data, this.$element);
+                }
             },
 
             /**
@@ -401,7 +407,9 @@
             destroy: function() {
                 if (this.gridViews[this.viewId].rendered === true) {
                     this.gridViews[this.viewId].destroy();
-                    this.paginations[this.paginationId].destroy();
+                    if (!!this.paginations[this.paginationId]) {
+                        this.paginations[this.paginationId].destroy();
+                    }
                 }
             },
 
@@ -954,7 +962,9 @@
                         this.data.embedded.splice(i, 1);
                         this.data.numberOfAll--;
                         this.data.total--;
-                        this.paginations[this.paginationId].rerender();
+                        if (!!this.paginations[this.paginationId]) {
+                            this.paginations[this.paginationId].rerender();
+                        }
                         return true;
                     }
                 }
@@ -971,7 +981,9 @@
                     this.data.numberOfAll++;
                     this.data.total++;
                 }
-                this.paginations[this.paginationId].rerender();
+                if (!!this.paginations[this.paginationId]) {
+                    this.paginations[this.paginationId].rerender();
+                }
             },
 
             /**
@@ -983,7 +995,9 @@
                     this.data.embedded.unshift(records[i]);
                     this.data.numberOfAll++;
                     this.data.total++;
-                    this.paginations[this.paginationId].rerender();
+                    if (!!this.paginations[this.paginationId]) {
+                        this.paginations[this.paginationId].rerender();
+                    }
                 }
             },
 

@@ -25,7 +25,7 @@ define(function() {
         },
 
         constants = {
-            paginationClass: 'pagination-wrapper',
+            paginationClass: 'pagination-wrapper dropdowns',
             paginationElementClass: 'pagination',
             prevClass: 'previous',
             nextClass: 'next',

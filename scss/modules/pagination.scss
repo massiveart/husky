@@ -5,77 +5,95 @@
 .pagination-wrapper {
     margin-top: 20px;
     font-size: $smallFontSize;
+    @include clear-float;
 
-    &:after {
-        clear: both;
-    }
-
+  &.dropdowns {
     .show-elements {
-        float: left;
+      float: left;
     }
 
     .dropdown-menu {
-        width: 200px;
+      width: 200px;
     }
 
     .pagination {
+      height: 30px;
+      float: right;
+
+      .pagination-main {
+        margin: 0;
+        display: inline-block;
+        list-style: none;
+        border-top: 1px solid $grayLighter;
+        border-bottom: 1px solid $grayLighter;
+        padding: 0 10px;
+        line-height: 28px;
         height: 30px;
-        float: right;
+      }
 
-        .pagination-main {
-            margin: 0;
-            display: inline-block;
-            list-style: none;
-            border-top: 1px solid $grayLighter;
-            border-bottom: 1px solid $grayLighter;
-            padding: 0 10px;
-            line-height: 28px;
-            height: 30px;
+      .pagination-prev {
+        padding: 0 13px;
+        border: 1px solid $grayLighter;
+        border-radius: 0 $borderRadius $borderRadius 0;
+        line-height: 28px;
+        height: 30px;
+
+        &::after {
+          content: "";
+          display: inline-block;
+          position: relative;
+          top: 3px;
+          left: 0px;
+          width: 0;
+          height: 0;
+          border-top: 7px solid transparent;
+          border-bottom: 7px solid transparent;
+          border-left: 10px solid #000;
         }
+      }
 
-        .pagination-prev {
-            padding: 0 13px;
-            border: 1px solid $grayLighter;
-            border-radius: 0 $borderRadius $borderRadius 0;
-            line-height: 28px;
-            height: 30px;
+      .pagination-next {
+        padding: 0 13px;
+        border: 1px solid $grayLighter;
+        border-radius: $borderRadius 0 0 $borderRadius;
+        line-height: 28px;
+        height: 30px;
 
-            &::after {
-                content: "";
-                display: inline-block;
-                position: relative;
-                top: 3px;
-                left: 0px;
-                width: 0;
-                height: 0;
-                border-top: 7px solid transparent;
-                border-bottom: 7px solid transparent;
-                border-left: 10px solid #000;
-            }
+        &::after {
+          content: "";
+          display: inline-block;
+          position: relative;
+          top: 3px;
+          left: 0px;
+          width: 0;
+          height: 0;
+          border-top: 7px solid transparent;
+          border-bottom: 7px solid transparent;
+          border-right: 10px solid #000;
         }
-
-        .pagination-next {
-            padding: 0 13px;
-            border: 1px solid $grayLighter;
-            border-radius: $borderRadius 0 0 $borderRadius;
-            line-height: 28px;
-            height: 30px;
-
-            &::after {
-                content: "";
-                display: inline-block;
-                position: relative;
-                top: 3px;
-                left: 0px;
-                width: 0;
-                height: 0;
-                border-top: 7px solid transparent;
-                border-bottom: 7px solid transparent;
-                border-right: 10px solid #000;
-              }
-        }
+      }
     }
+  }
 
+  &.showall {
+    cursor: pointer;
+    margin-top: 0;
+    padding-left: 10px;
+    display: inline-block;
+
+    .square {
+      width: 50px;
+      height: 50px;
+      border: 1px dashed $grayLighter;
+      float: left;
+    }
+    .text {
+      display: inline-block;
+      padding-left: 10px;
+      line-height: 50px;
+      float: left;
+    }
+  }
 }
 
 

@@ -32,7 +32,7 @@ define(function() {
             largeClass: 'large',
             titleClass: 'title',
             downloadClass: 'download',
-            downloadIcon: 'download',
+            downloadIcon: 'cloud-download',
             checkboxClass: 'checkbox',
             descriptionClass: 'description',
             thumbnailSrcProperty: 'thumb',
