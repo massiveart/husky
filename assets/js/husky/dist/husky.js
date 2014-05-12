@@ -39020,7 +39020,9 @@ define('__component__$dropzone@husky',[], function() {
             successCallback: null,
             beforeSendingCallback: null,
             removeFileCallback: null,
-            pluginOptions: {}
+            pluginOptions: {},
+            fadeOutDuration: 200, //ms
+            fadeOutDelay: 1500 //ms
         },
 
         constants = {
@@ -39102,6 +39104,15 @@ define('__component__$dropzone@husky',[], function() {
             return createEventName.call(this, 'file-removed');
         },
 
+        /**
+         * raised after files got uploaded and faded out from the dropzone
+         * @event husky.dropzone.<instance-name>.files-added
+         * @param {Array} all newly added files
+         */
+            FILES_ADDED = function() {
+            return createEventName.call(this, 'files-added');
+        },
+
         /** returns normalized event names */
             createEventName = function(postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
@@ -39118,6 +39129,7 @@ define('__component__$dropzone@husky',[], function() {
             // merge defaults, type defaults and options
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.dropzone = null;
+            this.lastUploadedFile = null;
 
             this.render();
             this.bindDomEvents();
@@ -39166,6 +39178,9 @@ define('__component__$dropzone@husky',[], function() {
                     }),
                     previewsContainer: this.$find('.' + constants.uploadedItemContainerClass)[0],
                     init: function() {
+                        // store dropzone context
+                        that.dropzone = this;
+
                         // gets called if file gets added (drop or via the upload window)
                         this.on('addedfile', function(file) {
                             this.sandbox.dom.addClass(this.$el, constants.droppedClass);
@@ -39187,10 +39202,15 @@ define('__component__$dropzone@husky',[], function() {
 
                         // gets called if the file was uploaded successfully
                         this.on('success', function(file, response) {
-                            if (typeof this.options.successCallback === 'function') {
-                                this.options.successCallback(file, response);
-                            } else {
-                                this.sandbox.emit(SUCCESS.call(this), file, response);
+                            if (this.lastUploadedFile !== file) {
+                                file.response = response;
+                                this.lastUploadedFile = file;
+                                if (typeof this.options.successCallback === 'function') {
+                                    this.options.successCallback(file, response);
+                                } else {
+                                    this.sandbox.emit(SUCCESS.call(this), file, response);
+                                }
+                                this.removeAllFiles();
                             }
                         }.bind(that));
 
@@ -39212,7 +39232,53 @@ define('__component__$dropzone@husky',[], function() {
 
             // merge the default plugin options with with passed ones
             this.sandbox.util.extend(true, {}, options, this.options.pluginOptions);
-            this.dropzone = this.sandbox.dropzone.initialize(this.$el, options);
+            this.sandbox.dropzone.initialize(this.$el, options);
+        },
+
+        /**
+         * Removes all files from the dropzone
+         * but only if all dropped files got uploaded
+         */
+        removeAllFiles: function() {
+            // if all files got uploaded
+            if (this.dropzone.getUploadingFiles.call(this.dropzone).length === 0) {
+                this.sandbox.util.delay(
+                    function() {
+                        this.sandbox.dom.fadeOut(
+                            this.$find('.' + constants.uploadItemClass),
+                            this.options.fadeOutDuration,
+                            function() {
+                                if (this.$find('.' + constants.uploadItemClass + ':animated').length === 0) {
+                                    this.afterFadeOut();
+                                }
+                            }.bind(this)
+                        );
+                    }.bind(this),
+                    this.options.fadeOutDelay
+                );
+            }
+        },
+
+        /**
+         * Function gets called after all dropped files
+         * have faded out
+         */
+        afterFadeOut: function() {
+            this.sandbox.dom.removeClass(this.$el, constants.droppedClass);
+            this.sandbox.emit(FILES_ADDED.call(this), this.getResponseArray(this.dropzone.files));
+        },
+
+        /**
+         * Returns an array with responses for a given array of files
+         * @param files {Array} array of files with response properties
+         * @returns {Array} array of responses
+         */
+        getResponseArray: function(files) {
+            var arrReturn = [], i, length;
+            for (i = -1, length = files.length; ++i < length;) {
+                arrReturn.push(files[i].response);
+            }
+            return arrReturn;
         }
     };
 
@@ -40540,6 +40606,10 @@ define('husky_extensions/util',[],function() {
 
             app.core.util.uniqueId = function(prefix) {
                 return _.uniqueId(prefix);
+            };
+
+            app.core.util.delay = function(delay, callback) {
+                return _.delay(delay, callback);
             };
 
 			app.core.util.template = _.template;
