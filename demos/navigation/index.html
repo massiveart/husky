@@ -34,15 +34,13 @@
 </div>
 
 <div data-aura-component="navigation@husky" class="" data-aura-select-action="webspaces/cn_cn"
-     data-aura-url="/navigation"
+     data-aura-url="http://husky.lo:7878/admin/api/navigation"
      data-aura-user-name="Donald Duck"
      data-aura-system-version="1.111"
      data-aura-user-locales='["en_us","en","de","de_at"]'
      data-aura-user-locale="en_us"
      data-aura-translations='{"versionHistory":"Version history","user":"User"}'
      ></div>
-
-<script src="../js/sinon.js"></script>
 <script src="../js/jquery.js"></script>
 
 <script src="../js/require.js"></script>
@@ -55,54 +53,8 @@
     require(['lib/husky'], function(Husky) {
         'use strict';
 
-        var fakeServer = sinon.fakeServer.create(),
-                app = Husky({ debug: { enable: true }}),
+              var app = Husky({ debug: { enable: true }}),
                 _ = app.sandbox.util._;
-
-        fakeServer.respondWith('GET', '/navigation', [200, { 'Content-Type': 'application/json' },
-            '{"title":"Sulu 2.0", "id":"1", "items":[' +
-
-                    '{"title":"", "items":[' +
-                    '{"title":"Dashboard", "action":"dashboard", "icon":"dashboard", "id":"2", "hasSettings":"true"},' +
-
-                    '{"title":"Contacts", "hasSettings":"true", "icon":"contact-book", "id":"3", "items":[' +
-                    '{"title":"Companies", "action":"contacts\/accounts", "id":"4"},' +
-                    '{"title":"People", "action":"contacts\/contacts", "id":"5"}' +
-                    ']},' +
-
-                    '{"title":"Media", "icon":"star", "hasSettings":"true", "id":"6", "items":[' +
-                    '{"title":"Images", "id":"7", "action":"media\/images"},' +
-                    '{"title":"Documents", "id":"8", "action":"media\/documents"},' +
-                    '{"title":"Movies", "id":"9", "action":"media\/movies"}' +
-                    ']},' +
-
-                    '{"title":"Messages", "icon":"asterisk", "id":"10"},' +
-
-                    '{"title":"Settings", "icon":"cogwheels", "id":"11", "items":[' +
-                    '{"title":"Roles &amp; Permissions", "action":"settings\/roles", "type":"content", "id":"12"},' +
-                    '{"title":"Translate", "action":"settings\/translate", "id":"13"}' +
-                    ']}' +
-                    ']},' +
-
-                    '{"title":"Web-Spaces", "items":[' +
-                    '{"title":"Americas", "icon":"globe", "hasSettings":"true", "id":"14", "items":[' +
-                    '{"title":"en_us", "action":"webspaces\/en_us", "id":"15"},' +
-                    '{"title":"en_cn", "action":"webspaces\/en_cn", "id":"16"},' +
-                    '{"title":"es_mx", "action":"webspaces\/es_mx", "id":"17"}' +
-                    ']},' +
-                    '{"title":"Europe", "icon":"globe", "hasSettings":"true", "id":"18", "items":[' +
-                    '{"title":"en_gb", "action":"webspaces\/en_gb", "id":"19"},' +
-                    '{"title":"de_de", "action":"webspaces\/de_de", "id":"20"},' +
-                    '{"title":"de_at", "action":"webspaces\/de_at", "id":"21"}' +
-                    ']},' +
-                    '{"title":"Asia", "icon":"globe", "id":"22", "items":[' +
-                    '{"title":"cn_cn", "action":"webspaces\/cn_cn", "id":"23"},' +
-                    '{"title":"jp_jp", "action":"webspaces\/jp_jp", "id":"24"},' +
-                    '{"title":"This item has a way to long text", "action":"webspaces\/jps_jps", "id":"25"}' +
-                    ']}' +
-                    ']}' +
-                    ']}'
-        ]);
 
         app.start().then(function() {
             app.logger.log('Aura started...');
@@ -119,13 +71,6 @@
                 app.sandbox.dom.html('#collapse', label + ' navigation');
                 app.sandbox.emit(eventName, force ? true : false);
             }.bind(this);
-
-            app.sandbox.on('husky.util.load.data', function() {
-                setTimeout(function() {
-                    fakeServer.respond();
-                }, 500);
-            });
-
 
             app.sandbox.on('husky.navigation.collapsed', function() {
                 this.collapsed = true;

@@ -51,7 +51,6 @@
 
         </div>
 
-        <script src="../js/sinon.js"></script>
         <script src="../js/jquery.js"></script>
 
         <script src="../js/require.js"></script>
@@ -70,12 +69,6 @@
 
                 app.start().then(function() {
                     app.logger.log('Aura started...');
-
-                    var fakeServer = sinon.fakeServer.create();
-
-                    fakeServer.respondWith('GET', '/contacts', [200, { 'Content-Type': 'application/json' },
-                        '{"total": 3, "items": [ { "id": "1", "name": "Private" }, { "id": "2", "name": "Mobile" }, { "id": "3", "name":"Work" }] }'
-                    ]);
 
 
                     app.sandbox.start([
@@ -123,7 +116,7 @@
                             name: 'dropdown@husky',
                             options: {
                                 el: '#dd2',
-                                url: '/contacts',
+                                url: 'http://husky.lo:7878/admin/api/dropdown',
                                 trigger: '.drop-down-trigger',
                                 setParentDropDown: true,
                                 excludeItems: [
@@ -140,13 +133,6 @@
                         $('#type-name2').text(item.name);
                         $('#type-name2').data('id', item.id);
                     });
-
-                    app.sandbox.on('husky.dropdown.dialog2.data.load', function() {
-                        setTimeout(function() {
-                            fakeServer.respond();
-                        }, 1000);
-                    });
-
                 });
             });
 

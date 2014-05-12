@@ -38,6 +38,60 @@
             "httpStatus": 400,
             "mockFile": "datagrid/edited.json",
             "switch": "id"
+        },
+
+        "admin/api/autocomplete": {
+            "verbs": ["GET"],
+            "mockFile": "auto-complete/countries.json",
+            "switch": "query"
+        },
+
+        "admin/api/autocompletelist": {
+            "verbs": ["GET"],
+            "mockFile": "auto-complete-list/tags.json",
+            "switch": "query"
+        },
+
+        "admin/api/columnnavigation": {
+            "verbs": ["GET"],
+            "mockFile": "column-navigation/columns.json",
+            "switch": "children"
+        },
+        "admin/api/columnnavigation/children": {
+            "verbs": ["GET"],
+            "mockFile": "column-navigation/nodes.json",
+            "switch": "parent"
+        },
+
+        "admin/api/columnoptions": {
+            "verbs": ["GET"],
+            "mockFile": "column-options/columns.json"
+        },
+
+        "admin/api/dropdown": {
+            "verbs": ["GET"],
+            "mockFile": "dropdown/items.json"
+        },
+
+        "admin/api/navigation": {
+            "verbs": ["GET"],
+            "mockFile": "navigation/items.json"
+        },
+
+        "admin/api/smartcontent": {
+            "verbs": ["GET"],
+            "mockFile": "smart-content/items.json",
+            "switch": "dataSource"
+        },
+
+        "admin/api/tabs": {
+            "verbs": ["GET"],
+            "mockFile": "tabs/items.json"
+        },
+
+        "admin/api/validation/autocomplete": {
+            "verbs": ["GET"],
+            "mockFile": "validation/autocomplete/prefetch.json"
         }
     }
 }
