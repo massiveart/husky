@@ -120,6 +120,10 @@ define(function() {
                 return _.uniqueId(prefix);
             };
 
+            app.core.util.delay = function(delay, callback) {
+                return _.delay(delay, callback);
+            };
+
 			app.core.util.template = _.template;
         }
     };
