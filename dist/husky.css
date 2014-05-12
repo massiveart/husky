@@ -861,7 +861,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
 }
 
 /* line 100, ../scss/typo.scss */
-.bold, .header .header-left .username {
+.bold {
   font-family: Helvetica, Arial, sans-serif !important;
 }
 
@@ -4509,88 +4509,6 @@ span.error {
   font-size: 14px;
   color: #ea524e;
   font-weight: bold;
-}
-
-/* line 16, ../scss/modules/header.scss */
-.header {
-  color: #999999;
-  width: 100%;
-  height: 50px;
-  padding: 10px 16px;
-  background-color: #333333;
-  box-shadow: 0 5px 0 0 rgba(0, 0, 0, 0.25);
-}
-/* line 24, ../scss/modules/header.scss */
-.header .header-logo {
-  font-size: 18px;
-  color: #fff;
-  line-height: 30px;
-}
-/* line 29, ../scss/modules/header.scss */
-.header .header-logo::after {
-  content: " ";
-  clear: both;
-}
-/* line 35, ../scss/modules/header.scss */
-.header.header-fixed-top {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100;
-}
-/* line 44, ../scss/modules/header.scss */
-.header .header-left {
-  position: absolute;
-  width: 250px;
-}
-/* line 50, ../scss/modules/header.scss */
-.header .header-left .username {
-  display: inline-block;
-  margin-top: 10px;
-}
-/* line 56, ../scss/modules/header.scss */
-.header .header-left .logout {
-  margin-top: 10px;
-  margin-left: 5px;
-  text-decoration: none;
-  color: inherit;
-  font-size: 0.8em;
-}
-/* line 63, ../scss/modules/header.scss */
-.header .header-left .logout:hover {
-  text-decoration: underline;
-}
-/* line 69, ../scss/modules/header.scss */
-.header .header-right {
-  position: absolute;
-  width: 175px;
-  margin-left: 1134px;
-}
-/* line 76, ../scss/modules/header.scss */
-.header .header-mid {
-  position: absolute;
-  width: 800px;
-  margin-left: 284px;
-}
-/* line 82, ../scss/modules/header.scss */
-.header .header-mid .left {
-  font-size: 18px;
-  margin-top: 8px;
-}
-/* line 87, ../scss/modules/header.scss */
-.header .header-mid .right {
-  text-align: right;
-  font-size: 14px;
-  margin-top: 10px;
-}
-/* line 93, ../scss/modules/header.scss */
-.header .header-mid .icon-btn {
-  color: white;
-}
-/* line 96, ../scss/modules/header.scss */
-.header .header-mid .icon-btn.disable {
-  color: #999999;
-  cursor: default !important;
 }
 
 /* line 37, ../scss/modules/navigation.scss */
