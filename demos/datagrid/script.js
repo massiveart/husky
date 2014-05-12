@@ -153,6 +153,15 @@ require(['lib/husky'], function(Husky) {
                 app.sandbox.emit('husky.datagrid.record.add', { id: "", content1: "", content2: "", content3: "" });
             });
 
+            $('#add-records').on('click', function() {
+                app.sandbox.emit('husky.datagrid.records.add', [
+                    {id: 5000, content1: 'Added record 1', content2: 'something new', content3: {alt: "lorempixel", thumb: "http://placehold.it/170x170"}},
+                    {id: 5001, content1: 'Added record 2', content2: 'something new', content3: {alt: "lorempixel", thumb: "http://placehold.it/170x170"}, selected: true},
+                    {id: 5002, content1: 'Added record 3', content2: 'something new', content3: {alt: "lorempixel", thumb: "http://placehold.it/170x170"}, selected: true},
+                    {id: 5003, content1: 'Added record 4', content2: 'something new', content3: {alt: "lorempixel", thumb: "http://placehold.it/170x170"}}
+                ]);
+            });
+
             $('#update-url').on('click', function() {
                 app.sandbox.emit('husky.datagrid.url.update', { search: null, content1: "fdsa" });
             });

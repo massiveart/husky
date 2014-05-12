@@ -167,6 +167,13 @@
                 RECORD_ADD = namespace + 'record.add',
 
             /**
+             * used to add a data record
+             * @event husky.datagrid.record.add
+             * @param {Object} the data of the new record
+             */
+                RECORDS_ADD = namespace + 'records.add',
+
+            /**
              * used to remove a data-record
              * @event husky.datagrid.row.remove
              * @param {String} id of the row to be removed
@@ -675,8 +682,10 @@
                     callback(this.getSelectedItemIds());
                 }.bind(this));
 
-                // add a data record
+                // add a single data record
                 this.sandbox.on(RECORD_ADD, this.addRecordHandler.bind(this));
+                // add multiple data records
+                this.sandbox.on(RECORDS_ADD, this.addRecordsHandler.bind(this));
 
                 // remove a data record
                 this.sandbox.on(RECORD_REMOVE, this.removeRecordHandler.bind(this));
@@ -751,11 +760,30 @@
             },
 
             /**
-             * Handles the row add event
+             * Handles the record add event
              */
             addRecordHandler: function(recordData) {
                 if (!!this.gridViews[this.viewId].addRecord) {
+                    if (!!recordData.id) {
+                        this.pushRecords([recordData]);
+                    }
                     this.gridViews[this.viewId].addRecord(recordData);
+                }
+            },
+
+            /**
+             * Handles the event for adding multiple records
+             * to a view
+             * @param records {Array} array with new records to add
+             */
+            addRecordsHandler: function(records) {
+                if (!!this.gridViews[this.viewId].addRecord) {
+                    this.sandbox.util.foreach(records, function(record) {
+                        if (!!record.id) {
+                            this.pushRecords([record]);
+                        }
+                        this.gridViews[this.viewId].addRecord(record);
+                    }.bind(this));
                 }
             },
 
@@ -942,8 +970,8 @@
                     this.data.embedded.push(records[i]);
                     this.data.numberOfAll++;
                     this.data.total++;
-                    this.paginations[this.paginationId].rerender();
                 }
+                this.paginations[this.paginationId].rerender();
             },
 
             /**

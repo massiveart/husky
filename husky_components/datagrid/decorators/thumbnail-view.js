@@ -21,7 +21,8 @@ define(function() {
 
         defaults = {
             matchings: [],
-            large: false
+            large: false,
+            fadeInDuration: 400
         },
 
         constants = {
@@ -110,19 +111,20 @@ define(function() {
             this.sandbox.dom.append($container, this.$el);
             this.data = data;
 
-            this.renderThumbnails();
+            this.renderThumbnails(this.data.embedded);
 
             this.rendered = true;
         },
 
         /**
          * Parses the data and passes it to a render function
+         * @param thumbnails {Array} array with thumbnails to render
          */
-        renderThumbnails: function() {
+        renderThumbnails: function(thumbnails) {
             var imgSrc, imgAlt, title, description, id;
 
             // loop through each data record
-            this.sandbox.util.foreach(this.data.embedded, function(record) {
+            this.sandbox.util.foreach(thumbnails, function(record) {
                 imgSrc = imgAlt = title = '';
                 description = [];
 
@@ -141,7 +143,7 @@ define(function() {
                     }
                 }.bind(this));
 
-                id = record[constants.idProperty]
+                id = record[constants.idProperty];
                 description = description.join(constants.descriptionDelimiter);
 
                 // pass the found data to a render method
@@ -165,7 +167,6 @@ define(function() {
                     imgAlt: imgAlt,
                     title: this.sandbox.util.cropMiddle(title, 26),
                     description: this.sandbox.util.cropMiddle(description, 32),
-                    // todo: option to change large and small
                     styleClass: (this.options.large === true) ? constants.largeClass : constants.smallClass,
                     checked: !!record.selected
                 })
@@ -174,7 +175,9 @@ define(function() {
                 this.selectItem(id, true);
             }
             this.sandbox.dom.data(this.$thumbnails[id], 'id', id);
+            this.sandbox.dom.hide(this.$thumbnails[id]);
             this.sandbox.dom.append(this.$el, this.$thumbnails[id]);
+            this.sandbox.dom.fadeIn(this.$thumbnails[id], this.options.fadeInDuration);
 
             this.bindThumbnailDomEvents(id);
         },
@@ -231,6 +234,15 @@ define(function() {
         unselectItem: function(id) {
             this.sandbox.dom.removeClass(this.$thumbnails[id], constants.selectedClass);
             datagrid.setItemUnselected.call(datagrid, id);
+        },
+
+        /**
+         * Adds a record to the view
+         * @param record
+         * @public
+         */
+        addRecord: function(record) {
+            this.renderThumbnails([record]);
         },
 
         /**
