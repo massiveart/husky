@@ -32,65 +32,52 @@ require(['lib/husky'], function(Husky) {
                             },
                             className: "myClass",
                             removeRow: true,
-                            progressRow: true,
-                            excludeFields: [''],
                             editable: true,
-                            validation:true,
+                            validation: true,
                             addRowTop: true,
                             //fullWidth: true, // uncomment for full-width mode
-                            contentContainer: '#content',
-                            matchings: [
-                                {
-                                    content: 'Content 1',
-                                    width: "25%",
-                                    attribute: "content1",
-                                    editable: true,
-                                    validation: {
-                                        required: true
-                                    }
-                                },
-                                {
-                                    content: 'Content 2',
-                                    width: "25%",
-                                    attribute: "content2",
-                                    editable: false,
-                                    validation: {
-                                        required: true
-                                    }
-                                },
-                                {content: 'Content 3', width: "25%", attribute: "content3"},
-                                {
-                                    content: 'Date',
-                                    width: "25%",
-                                    attribute: 'date',
-                                    type: 'date'
-                                }
-                            ]
+                            contentContainer: '#content'
                         },
                         thumbnail: {
-                            matchings: [
-                                {
-                                    attribute: "content3",
-                                    type: 'thumbnail'
-                                },
-                                {
-                                    attribute: "content1",
-                                    type: 'title'
-                                },
-                                {
-                                    attribute: "content2"
-
-                                },
-                                {
-                                    attribute: 'date'
-                                }
-                            ]
                         }
                     },
                     sortable: true,
                     searchInstanceName: 'test',
                     columnOptionsInstanceName: '',
-                    el: '#datagrid'
+                    el: '#datagrid',
+                    matchings: [
+                        {
+                            content: 'Content 1',
+                            width: "25%",
+                            id: "content1",
+                            editable: true,
+                            type: 'title',
+                            validation: {
+                                required: true
+                            }
+                        },
+                        {
+                            content: 'Content 2',
+                            width: "25%",
+                            id: "content2",
+                            editable: false,
+                            validation: {
+                                required: true
+                            }
+                        },
+                        {
+                            content: 'Content 3',
+                            width: "25%",
+                            id: "content3",
+                            type: 'thumbnail'
+                        },
+                        {
+                            content: 'Date',
+                            width: "25%",
+                            id: 'date',
+                            type: 'date'
+                        }
+                    ]
                 }
             },
             {
@@ -213,13 +200,14 @@ require(['lib/husky'], function(Husky) {
                 app.sandbox.emit('husky.datagrid.data.save');
             });
 
-            view = 'table';
+            view = 'thumbnail';
             $('#change-view').on('click', function() {
-               app.sandbox.emit('husky.datagrid.view.change', view, {large: true});
+               var large = (Math.random() < 0.5) ? true : false;
+               app.sandbox.emit('husky.datagrid.view.change', view, {large: large});
                view = (view === 'thumbnail') ? 'table' : 'thumbnail';
             });
 
-            pagination = 'dropdown';
+            pagination = 'showall';
             $('#change-pagination').on('click', function() {
                 app.sandbox.emit('husky.datagrid.pagination.change', pagination);
                 pagination = (pagination === 'dropdown') ? 'showall' : 'dropdown';

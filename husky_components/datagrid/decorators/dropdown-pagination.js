@@ -21,7 +21,7 @@ define(function() {
 
         defaults = {
             showElementsSteps: [10, 20, 50, 100, 500],
-            pageSize: 4
+            pageSize: 10
         },
 
         constants = {

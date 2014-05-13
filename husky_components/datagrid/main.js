@@ -10,7 +10,6 @@
  * @param {String} [options.fieldsData.{}.disabled] either 'true' or 'false'
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
  * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
- * @param {Array} [options.excludeFields=['id']] array of fields to exclude by the view
  * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
  * @param {String} [options.view='table'] name of the view to use
  * @param {Object} [options.paginationOptions] Configuration Object for the pagination
@@ -19,6 +18,13 @@
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search events
  * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
+ *
+ * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
+ * @param {String} [options.matchings.content] column title
+ * @param {String} [options.matchings.width] width of column (used by the table view)
+ * @param {String} [options.matchings.class] css class of the column
+ * @param {String} [options.matchings.type] type of the column. Used to manipulate its content (e.g. 'date')
+ * @param {String} [options.matchings.attribute] mapping information to data (if not set it will just iterate through attributes)
  *
  */
 
@@ -36,18 +42,17 @@
          *    Default values for options
          */
         var defaults = {
-                view: 'thumbnail',
+                view: 'table',
                 viewOptions: {
                     table: {},
                     thumbnail: {}
                 },
-                pagination: 'showall',
+                pagination: 'dropdown',
                 paginationOptions: {
                     dropdown: {}
                 },
-                sortable: false,
-                excludeFields: ['id'],
-                fieldsData: null,
+                sortable: true,
+                matchings: [],
                 url: null,
                 data: null,
                 instance: 'datagrid',
@@ -184,8 +189,8 @@
 
             /**
              * used to remove a data-record
-             * @event husky.datagrid.row.remove
-             * @param {String} id of the row to be removed
+             * @event husky.datagrid.record.remove
+             * @param {String} id of the record to be removed
              */
                 RECORD_REMOVE = namespace + 'record.remove',
 
@@ -296,7 +301,11 @@
                 // extend default options and set variables
                 this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
-                this.matchings = null;
+
+                this.matchings = [];
+                this.requestFields = [];
+                this.filterMatchings(this.options.matchings);
+
                 this.types = types;
 
                 this.gridViews = {};
@@ -327,19 +336,16 @@
              * Gets the data either via the url or the array
              */
             getData: function() {
-                var fieldsData, url;
+                var url;
 
                 if (!!this.options.url) {
                     url = this.options.url;
 
-                    // parse fields data
-                    if (!!this.options.fieldsData) {
-                        fieldsData = this.parseFieldsData(this.options.fieldsData);
-                        url += '&fields=' + fieldsData.urlFields;
-                        this.matchings = fieldsData.matchings;
-                    }
-
                     this.sandbox.logger.log('load data from url');
+                    if (this.requestFields.length > 0) {
+                        url += (url.indexOf('?') === -1) ? '?' : '&';
+                        url += 'fields=' + this.requestFields.join(',');
+                    }
                     this.load({ url: url});
 
                 } else if (!!this.options.data.items) {
@@ -355,47 +361,40 @@
             },
 
             /**
-             * parses fields data retrieved from api
-             * @param fields {Array} array with columns-data
-             * @returns {{columns: Array, urlFields: string}}
+             * Takes an array of matchings and filters disabled matchings out of it
+             * Moreover it constructs the array of fields which should be requested from a server
+             * The filtered matchings are available in this.matchings
+             * The request-fields are available in this.requestFields
+             *
+             * @param fields {Array} array with matchings
              */
-            parseFieldsData: function(fields) {
-                var data = [],
-                    urlfields = [],
-                    fieldsCount = 0,
-                    tmp;
+            filterMatchings: function(matchings) {
+                var matchingObject;
+                this.matchings = [];
+                this.requestFields = [];
 
-                this.sandbox.util.foreach(fields, function(field) {
+                this.sandbox.util.foreach(matchings, function(matching) {
+                    matchingObject = {};
 
-                    tmp = {};
+                    // only add matching if it's not disabled
+                    if (matching.disabled !== 'true' && matching.disabled !== true) {
 
-                    if (field.disabled !== 'true' && field.disabled !== true) {
-
-                        // data
-                        for (var key in field) {
+                        // build up the matching with the keys of the passed matching
+                        for (var key in matching) {
                             if (key === 'translation') {
-                                tmp.content = this.sandbox.translate(field.translation);
+                                matchingObject.content = this.sandbox.translate(matching.translation);
                             } else if (key === 'id') {
-                                tmp.attribute = field.id;
+                                matchingObject.attribute = matching.id;
                             } else {
-                                tmp[key] = field[key];
+                                matchingObject[key] = matching[key];
                             }
                         }
-
-                        data.push(tmp);
-                        urlfields.push(field.id);
-
-                    } else if (field.id === 'id') {
-                        urlfields.push(field.id);
+                        // push the constructed matching to the global matchings array
+                        this.matchings.push(matchingObject);
                     }
-
-                    fieldsCount++;
-
+                    // always load the id (never ever even think about not loading the id)
+                    this.requestFields.push(matching.id);
                 }.bind(this));
-                return {
-                    matchings: data,
-                    urlFields: urlfields.join(',')
-                };
             },
 
             /**
@@ -1082,16 +1081,13 @@
              * Note that the also the arrangement of fields/columns can be changed and the view can react to it
              * @param fieldsData {Array}
              */
-            filterGrid: function(fieldsData) {
-                var template, url,
-                    parsed = this.parseFieldsData(fieldsData);
+            filterGrid: function(matchings) {
+                var uriTemplate, url;
 
-                template = this.sandbox.uritemplate.parse(this.data.links.filter);
-                url = this.sandbox.uritemplate.expand(template, {fieldsList: parsed.urlFields.split(',')});
+                this.filterMatchings(matchings);
 
-                this.matchings = parsed.matchings;
-                // pass new matchings to the view
-                this.gridViews[this.viewId].options.matchings = this.matchings;
+                uriTemplate = this.sandbox.uritemplate.parse(this.data.links.filter);
+                url = this.sandbox.uritemplate.expand(uriTemplate, {fieldsList: this.requestFields.join(',')});
 
                 this.load({
                     url: url,

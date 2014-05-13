@@ -3,6 +3,8 @@
  * @constructor
  *
  * @param {Object} [viewOptions] Configuration object
+ * @param {Boolean} [viewOptions.large] If true large thumbnails get rendered
+ * @param {Number} [viewOptions.fadeInDuration] duration of the fade in animation
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -20,7 +22,6 @@ define(function() {
     var datagrid,
 
         defaults = {
-            matchings: [],
             large: false,
             fadeInDuration: 400
         },
@@ -129,7 +130,7 @@ define(function() {
                 description = [];
 
                 // foreach matching configured get the corresponding datum from the record
-                this.sandbox.util.foreach(this.options.matchings, function(matching) {
+                this.sandbox.util.foreach(datagrid.matchings, function(matching) {
 
                     // get the thumbnail and the title data (to place it on top)
                     // with the rest generate a description string

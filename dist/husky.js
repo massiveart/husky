@@ -26144,13 +26144,8 @@ define('__component__$column-options@husky',[],function() {
  * @param {String} [options.columnMinWidth] sets the minimal width of table columns
  * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
  * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
+ * @param {Array} [options.excludeFields=['id']] array of fields to exclude by the view
  *
- * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
- * @param {String} [options.matchings.content] column title
- * @param {String} [options.matchings.width] width of column (used by the table view)
- * @param {String} [options.matchings.class] css class of the column
- * @param {String} [options.matchings.type] type of the column. Used to manipulate its content (e.g. 'date')
- * @param {String} [options.matchings.attribute] mapping information to data (if not set it will just iterate through attributes)
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -26174,24 +26169,24 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             className: 'datagridcontainer',
             fullWidth: false,
             contentContainer: null,
-            removeRow: true,
+            removeRow: false,
             selectItem: {
-                type: null,      // checkbox, radio button
+                type: 'checkbox',      // checkbox, radio button
                 width: '50px'    // numerous value
             },
             validation: false, // TODO does not work for added rows
             validationDebug: false,
             addRowTop: true,
             startTabIndex: 99999,
-            columnMinWidth: '70px',
-            matchings: []
+            excludeFields: [''],
+            columnMinWidth: '70px'
         },
 
         constants = {
             viewClass: 'table-container',
             fullWidthClass: 'fullwidth',
             // if datagrid is in fullwidth-mode (options.fullWidth is true)
-            // this number gets subracted from the tabels final width in the resize listener
+            // this number gets subracted from the tables final width in the resize listener
             overflowIconSpacing: 30,
             ascClass: 'icon-arrow-up',
             descClass: 'icon-arrow-down',
@@ -26325,6 +26320,11 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.sandbox.dom.append(this.$el, this.$tableContainer);
             this.sandbox.dom.append(this.$tableContainer, this.prepareTable());
 
+            // add full-width class if configured
+            if (this.options.fullWidth === true) {
+                this.sandbox.dom.addClass(this.$el, constants.fullWidthClass);
+            }
+
             this.bindDomEvents();
             this.onResize();
 
@@ -26344,6 +26344,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         destroy: function() {
             this.unbindDomEvents();
             this.sandbox.stop(this.sandbox.dom.find('*', this.$tableContainer));
+            // remove full-width class if configured
+            if (this.options.fullWidth === true) {
+                this.sandbox.dom.removeClass(this.$el, constants.fullWidthClass);
+            }
             this.sandbox.dom.remove(this.$tableContainer);
         },
 
@@ -26501,7 +26505,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
             this.$table = $table = this.sandbox.dom.createElement('<table' + (!!this.options.validationDebug ? 'data-debug="true"' : '' ) + '/>');
 
-            if (!!this.data.head || !!this.options.matchings) {
+            if (!!this.data.head || !!datagrid.matchings) {
                 $thead = this.sandbox.dom.createElement('<thead/>');
                 this.sandbox.dom.append($thead, this.prepareTableHead());
                 this.sandbox.dom.append($table, $thead);
@@ -26540,7 +26544,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 tblColumnStyle, minWidth;
 
             tblColumns = [];
-            headData = this.options.matchings || this.data.head;
+            headData = datagrid.matchings || this.data.head;
 
             // add a checkbox to head row
             if (!!this.options.selectItem && !!this.options.selectItem.type) {
@@ -26572,65 +26576,65 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.tabIndexParam = 1;
 
             this.sandbox.util.foreach(headData, function(column) {
+                if (this.options.excludeFields.indexOf(column.attribute) < 0) {
+                    isSortable = false;
 
-                isSortable = false;
+                    if (!!datagrid.data.links && !!this.data.links.sortable) {
+                        //is column sortable - check with received sort-links
+                        this.sandbox.util.each(this.data.links.sortable, function(index) {
+                            if (index === column.attribute) {
+                                isSortable = true;
+                                return false;
+                            }
+                        }.bind(this));
+                    }
 
-                if (!!datagrid.data.links && !!this.data.links.sortable) {
-                    //is column sortable - check with received sort-links
-                    this.sandbox.util.each(this.data.links.sortable, function(index) {
-                        if (index === column.attribute) {
-                            isSortable = true;
-                            return false;
+                    // calculate width
+                    tblColumnStyle = [];
+                    if (column.width) {
+                        minWidth = column.width;
+                    } else if (column.minWidth) {
+                        minWidth = column.minWidth;
+                    } else {
+                        minWidth = getTextWidth.call(this, column.content, [], isSortable);
+                        minWidth = (minWidth > datagrid.getNumberAndUnit(this.options.columnMinWidth).number) ? minWidth + 'px' : this.options.columnMinWidth;
+
+                    }
+                    tblColumnStyle.push('min-width:' + minWidth);
+                    column.minWidth = minWidth;
+
+                    // get width and measureunit
+                    if (!!column.width) {
+                        widthValues = datagrid.getNumberAndUnit(column.width);
+                        tblColumnStyle.push('max-width:' + widthValues.number + widthValues.unit);
+                        tblColumnStyle.push('width:' + widthValues.number + widthValues.unit);
+                    }
+
+                    // add to row structure when valid entry
+                    if (column.attribute !== undefined) {
+                        this.rowStructure.push({
+                            attribute: column.attribute,
+                            editable: column.editable,
+                            validation: column.validation,
+                            type: column.type
+                        });
+
+                        if (!!column.editable) {
+                            this.tabIndexParam++;
                         }
-                    }.bind(this));
-                }
+                    }
 
-                // calculate width
-                tblColumnStyle = [];
-                if (column.width) {
-                    minWidth = column.width;
-                } else if (column.minWidth) {
-                    minWidth = column.minWidth;
-                } else {
-                    minWidth = getTextWidth.call(this, column.content, [], isSortable);
-                    minWidth = (minWidth > datagrid.getNumberAndUnit(this.options.columnMinWidth).number) ? minWidth + 'px' : this.options.columnMinWidth;
 
-                }
-                tblColumnStyle.push('min-width:' + minWidth);
-                column.minWidth = minWidth;
-
-                // get width and measureunit
-                if (!!column.width) {
-                    widthValues = datagrid.getNumberAndUnit(column.width);
-                    tblColumnStyle.push('max-width:' + widthValues.number + widthValues.unit);
-                    tblColumnStyle.push('width:' + widthValues.number + widthValues.unit);
-                }
-
-                // add to row structure when valid entry
-                if (column.attribute !== undefined) {
-                    this.rowStructure.push({
-                        attribute: column.attribute,
-                        editable: column.editable,
-                        validation: column.validation,
-                        type: column.type
-                    });
-
-                    if (!!column.editable) {
-                        this.tabIndexParam++;
+                    // add html to table header cell if sortable
+                    if (!!isSortable) {
+                        dataAttribute = ' data-attribute="' + column.attribute + '"';
+                        tblCellClass = ((!!column.class) ? ' class="' + column.class + ' "' + constants.sortableClass : ' class="'+ constants.sortableClass +'"');
+                        tblColumns.push('<th' + tblCellClass + ' style="' + tblColumnStyle.join(';') + '" ' + dataAttribute + '>' + column.content + '<span></span></th>');
+                    } else {
+                        tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
+                        tblColumns.push('<th' + tblCellClass + ' style="' + tblColumnStyle.join(';') + '" >' + column.content + '</th>');
                     }
                 }
-
-
-                // add html to table header cell if sortable
-                if (!!isSortable) {
-                    dataAttribute = ' data-attribute="' + column.attribute + '"';
-                    tblCellClass = ((!!column.class) ? ' class="' + column.class + ' "' + constants.sortableClass : ' class="'+ constants.sortableClass +'"');
-                    tblColumns.push('<th' + tblCellClass + ' style="' + tblColumnStyle.join(';') + '" ' + dataAttribute + '>' + column.content + '<span></span></th>');
-                } else {
-                    tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
-                    tblColumns.push('<th' + tblCellClass + ' style="' + tblColumnStyle.join(';') + '" >' + column.content + '</th>');
-                }
-
             }.bind(this));
 
             // remove-row entry
@@ -26754,7 +26758,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 value = '';
             }
 
-            if (datagrid.options.excludeFields.indexOf(key) < 0) {
+            if (this.options.excludeFields.indexOf(key) < 0) {
                 tblCellClasses = [];
                 tblCellContent = (!!value.thumb) ? '<img alt="' + (value.alt || '') + '" src="' + value.thumb + '"/>' : value;
 
@@ -26769,7 +26773,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                         validationAttr += ['data-validation-', k, '="', validation[k], '" '].join('');
                     }
                 }
-                tblCellStyle = 'style="max-width:' + this.options.matchings[index].minWidth + '"';
+                tblCellStyle = 'style="max-width:' + datagrid.matchings[index].minWidth + '"';
 
                 // call the type manipulate to manipulate the content of the cell
                 if (!!type) {
@@ -27205,16 +27209,19 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 }
             }
 
-            if (this.options.fullWidth === true) {
-                finalWidth = finalWidth - constants.overflowIconSpacing;
-            }
-
             // now set width
             this.sandbox.dom.width(this.$el, finalWidth);
 
             // check scrollwidth and add class
             if (this.sandbox.dom.get(this.$tableContainer, 0).scrollWidth > finalWidth) {
                 this.sandbox.dom.addClass(this.$tableContainer, constants.overflowClass);
+
+                // if overflown and in full width mode reduce list-width
+                if (this.options.fullWidth === true) {
+                    finalWidth = finalWidth - constants.overflowIconSpacing;
+                    this.sandbox.dom.width(this.$el, finalWidth);
+                }
+
             } else {
                 this.sandbox.dom.removeClass(this.$tableContainer, constants.overflowClass);
             }
@@ -27357,6 +27364,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
  * @constructor
  *
  * @param {Object} [viewOptions] Configuration object
+ * @param {Boolean} [viewOptions.large] If true large thumbnails get rendered
+ * @param {Number} [viewOptions.fadeInDuration] duration of the fade in animation
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -27374,7 +27383,6 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
     var datagrid,
 
         defaults = {
-            matchings: [],
             large: false,
             fadeInDuration: 400
         },
@@ -27483,7 +27491,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
                 description = [];
 
                 // foreach matching configured get the corresponding datum from the record
-                this.sandbox.util.foreach(this.options.matchings, function(matching) {
+                this.sandbox.util.foreach(datagrid.matchings, function(matching) {
 
                     // get the thumbnail and the title data (to place it on top)
                     // with the rest generate a description string
@@ -28138,7 +28146,6 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
  * @param {String} [options.fieldsData.{}.disabled] either 'true' or 'false'
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
  * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
- * @param {Array} [options.excludeFields=['id']] array of fields to exclude by the view
  * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
  * @param {String} [options.view='table'] name of the view to use
  * @param {Object} [options.paginationOptions] Configuration Object for the pagination
@@ -28147,6 +28154,13 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search events
  * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
+ *
+ * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
+ * @param {String} [options.matchings.content] column title
+ * @param {String} [options.matchings.width] width of column (used by the table view)
+ * @param {String} [options.matchings.class] css class of the column
+ * @param {String} [options.matchings.type] type of the column. Used to manipulate its content (e.g. 'date')
+ * @param {String} [options.matchings.attribute] mapping information to data (if not set it will just iterate through attributes)
  *
  */
 
@@ -28164,18 +28178,17 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
          *    Default values for options
          */
         var defaults = {
-                view: 'thumbnail',
+                view: 'table',
                 viewOptions: {
                     table: {},
                     thumbnail: {}
                 },
-                pagination: 'showall',
+                pagination: 'dropdown',
                 paginationOptions: {
                     dropdown: {}
                 },
-                sortable: false,
-                excludeFields: ['id'],
-                fieldsData: null,
+                sortable: true,
+                matchings: [],
                 url: null,
                 data: null,
                 instance: 'datagrid',
@@ -28424,7 +28437,11 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 // extend default options and set variables
                 this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
-                this.matchings = null;
+
+                this.matchings = [];
+                this.requestFields = [];
+                this.filterMatchings(this.options.matchings);
+
                 this.types = types;
 
                 this.gridViews = {};
@@ -28455,19 +28472,16 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * Gets the data either via the url or the array
              */
             getData: function() {
-                var fieldsData, url;
+                var url;
 
                 if (!!this.options.url) {
                     url = this.options.url;
 
-                    // parse fields data
-                    if (!!this.options.fieldsData) {
-                        fieldsData = this.parseFieldsData(this.options.fieldsData);
-                        url += '&fields=' + fieldsData.urlFields;
-                        this.matchings = fieldsData.matchings;
-                    }
-
                     this.sandbox.logger.log('load data from url');
+                    if (this.requestFields.length > 0) {
+                        url += (url.indexOf('?') === -1) ? '?' : '&';
+                        url += 'fields=' + this.requestFields.join(',');
+                    }
                     this.load({ url: url});
 
                 } else if (!!this.options.data.items) {
@@ -28483,47 +28497,40 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             },
 
             /**
-             * parses fields data retrieved from api
-             * @param fields {Array} array with columns-data
-             * @returns {{columns: Array, urlFields: string}}
+             * Takes an array of matchings and filters disabled matchings out of it
+             * Moreover it constructs the array of fields which should be requested from a server
+             * The filtered matchings are available in this.matchings
+             * The request-fields are available in this.requestFields
+             *
+             * @param fields {Array} array with matchings
              */
-            parseFieldsData: function(fields) {
-                var data = [],
-                    urlfields = [],
-                    fieldsCount = 0,
-                    tmp;
+            filterMatchings: function(matchings) {
+                var matchingObject;
+                this.matchings = [];
+                this.requestFields = [];
 
-                this.sandbox.util.foreach(fields, function(field) {
+                this.sandbox.util.foreach(matchings, function(matching) {
+                    matchingObject = {};
 
-                    tmp = {};
+                    // only add matching if it's not disabled
+                    if (matching.disabled !== 'true' && matching.disabled !== true) {
 
-                    if (field.disabled !== 'true' && field.disabled !== true) {
-
-                        // data
-                        for (var key in field) {
+                        // build up the matching with the keys of the passed matching
+                        for (var key in matching) {
                             if (key === 'translation') {
-                                tmp.content = this.sandbox.translate(field.translation);
+                                matchingObject.content = this.sandbox.translate(matching.translation);
                             } else if (key === 'id') {
-                                tmp.attribute = field.id;
+                                matchingObject.attribute = matching.id;
                             } else {
-                                tmp[key] = field[key];
+                                matchingObject[key] = matching[key];
                             }
                         }
-
-                        data.push(tmp);
-                        urlfields.push(field.id);
-
-                    } else if (field.id === 'id') {
-                        urlfields.push(field.id);
+                        // push the constructed matching to the global matchings array
+                        this.matchings.push(matchingObject);
                     }
-
-                    fieldsCount++;
-
+                    // always load the id (never ever even think about not loading the id)
+                    this.requestFields.push(matching.id);
                 }.bind(this));
-                return {
-                    matchings: data,
-                    urlFields: urlfields.join(',')
-                };
             },
 
             /**
@@ -29210,16 +29217,13 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * Note that the also the arrangement of fields/columns can be changed and the view can react to it
              * @param fieldsData {Array}
              */
-            filterGrid: function(fieldsData) {
-                var template, url,
-                    parsed = this.parseFieldsData(fieldsData);
+            filterGrid: function(matchings) {
+                var uriTemplate, url;
 
-                template = this.sandbox.uritemplate.parse(this.data.links.filter);
-                url = this.sandbox.uritemplate.expand(template, {fieldsList: parsed.urlFields.split(',')});
+                this.filterMatchings(matchings);
 
-                this.matchings = parsed.matchings;
-                // pass new matchings to the view
-                this.gridViews[this.viewId].options.matchings = this.matchings;
+                uriTemplate = this.sandbox.uritemplate.parse(this.data.links.filter);
+                url = this.sandbox.uritemplate.expand(uriTemplate, {fieldsList: this.requestFields.join(',')});
 
                 this.load({
                     url: url,
