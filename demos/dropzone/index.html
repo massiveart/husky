@@ -31,15 +31,13 @@
                  data-aura-component="dropzone@husky"
                  data-aura-description-key="Or click to add"
                  data-aura-title-key="Drag and drop assets here to upload"
-                 data-aura-url="/upload"
+                 data-aura-url="http://husky.lo:7878/admin/api/dropzone"
                  data-aura-instance-name="pictures"></div>
         </div>
     </div>
 </div>
 
-<script src="../js/sinon.js"></script>
 <script src="../js/jquery.js"></script>
-
 <script src="../js/require.js"></script>
 
 <script type="text/javascript">
@@ -50,23 +48,11 @@ require.config({
 require(['lib/husky'], function(Husky) {
     'use strict';
 
-
-       var  fakeServer = sinon.fakeServer.create(),
-            app = Husky({ debug: { enable: true }}),
+            var app = Husky({ debug: { enable: true }}),
             _ = app.sandbox.util._;
-
-    fakeServer.respondWith('POST', '/upload', [200, { 'Content-Type': 'application/json' },
-        '{"total": 1, "_embedded": [{"id": 1, "name": "Picture 1", "category": "products"}]}'
-    ]);
 
     app.start().then(function() {
         app.logger.log('Aura started...');
-
-        app.sandbox.on('husky.dropzone.pictures.uploading', function() {
-           setTimeout(function() {
-               fakeServer.respond();
-           }, 1000);
-        });
     });
 
 
