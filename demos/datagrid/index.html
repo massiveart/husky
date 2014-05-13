@@ -1,0 +1,55 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../dist/husky.css">
+
+    <style type="text/css">
+        #content {
+            max-width: 800px;
+            /*margin: auto;*/
+            margin: 0 0px;
+            padding: 0 50px;
+        }
+        h1 {
+            padding: 20px 0 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="content" class="grid">
+        <h1>Husky Datagrid Demo</h1>
+        <div id="toolbar" class="grid-row m-top-30 m-bottom-10" style="text-align:right;clear:both;"></div>
+        <div id="datagrid" class="grid-row"></div>
+        <div class="grid-row  m-top-30">
+            <div id="add-row" class="grid-col-3"><span>Add Row</span></div>
+            <div id="get-selected" class="grid-col-3"><span>Get Selected</span></div>
+            <div id="update" class="grid-col-3"><span>Update</span></div>
+            <div id="update-url" class="grid-col-3"><span>Update url</span></div>
+        </div>
+        <div class="grid-row  m-top-30">
+            <div id="change-columns" class="grid-col-3"><span>Change Columns</span></div>
+            <div id="change-pagination" class="grid-col-3"><span>Change the pagination</span></div>
+            <div id="change-view" class="grid-col-3"><span>Change the view</span></div>
+            <div id="add-records" class="grid-col-3"><span>Add records to current view</span></div>
+        </div>
+        <div class="grid-row m-top-30">
+            <div class="grid-col-6">Note: First row can be edited. The others produce a validation error</div>
+        </div>
+
+    </div>
+
+    <script src="../../bower_components/jquery/jquery.js"></script>
+    <script data-main="script" src="../../bower_components/requirejs/require.js"></script>
+
+</body>
+</html>

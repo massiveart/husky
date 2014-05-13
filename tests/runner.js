@@ -14,7 +14,6 @@ require.config({
     paths: {
         'jquery': 'bower_components/jquery/jquery',
         'underscore': 'bower_components/underscore/underscore',
-        'sinon': 'node_modules/sinon/pkg/sinon',
         'aura': 'bower_components/aura/lib',
         'husky': 'lib/husky'
     },
@@ -25,9 +24,6 @@ require.config({
         },
         'underscore': {
             exports: '_'
-        },
-        'sinon': {
-            exports: 'sinon'
         }
     },
 

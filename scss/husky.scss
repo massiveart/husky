@@ -1,7 +1,6 @@
 @charset "UTF-8";
 
 @import
-	"abstract/abstract-loader.scss",
 	"abstract/abstract-validation.scss";
 
 
@@ -26,7 +25,6 @@
     "modules/column-options.scss",
     "modules/grid.scss",
     "modules/form.scss",
-    "modules/header.scss",
     "modules/navigation.scss",
     "modules/dropdown.scss",
     "modules/tables.scss",
@@ -50,4 +48,4 @@
     "modules/process",
     "modules/content-types",
     "modules/dropzone",
-    "modules/toggler";
+    "modules/thumbnails";

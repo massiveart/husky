@@ -70,9 +70,7 @@
     </div>
 </div>
 
-<script src="../js/sinon.js"></script>
 <script src="../js/jquery.js"></script>
-
 <script src="../js/require.js"></script>
 
 <script type="text/javascript">
@@ -83,8 +81,7 @@
     require(['lib/husky'], function(Husky) {
         'use strict';
 
-        var fakeServer = sinon.fakeServer.create(),
-                app = Husky({ debug: { enable: true }}),
+                var app = Husky({ debug: { enable: true }}),
                 _ = app.sandbox.util._,
 
                 testData = [
@@ -221,14 +218,6 @@
 
         app.start().then(function() {
             app.logger.log('Aura started...');
-
-
-            fakeServer.respondWith('GET', '/toolbar', [200, { 'Content-Type': 'application/json' },
-                JSON.stringify(testData)
-            ]);
-
-            fakeServer.respondWith('GET', 'items.json', [200, { 'Content-Type': 'application/json' },
-                '{"_embedded": [{"id": "23","title": "export1","icon": "floppy-save"},{"id": "24","icon": "cancel","title": "export2"},{"id": "25","icon": "test","title": "export3"}]}']);
 
             app.sandbox.on('husky.toolbar.contact.initialized', function() {
                 app.sandbox.emit('husky.toolbar.contact.items.set', 'state', stateItems, 1);
@@ -483,12 +472,6 @@
                     }
                 },
             ]);
-
-            app.sandbox.on('husky.util.load.data', function() {
-                setTimeout(function() {
-                    fakeServer.respond();
-                }, 100);
-            });
 
             $('#disable').on('click', function() {
                 app.sandbox.emit('husky.toolbar.contact.item.disable', '1');

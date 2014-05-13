@@ -1,0 +1,18 @@
+{
+    "id": "529f1f5b7783e",
+    "title": "Contacts",
+    "items": [
+        {
+            "title": "Details",
+            "action": "details"
+        },
+        {
+            "title": "Permissions",
+            "action": "permissions"
+        },
+        {
+            "title": "Settings",
+            "action": "settings"
+        }
+    ]
+}

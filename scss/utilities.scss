@@ -40,14 +40,6 @@
     position: absolute;
 }
 
-.is-loading:not(.navigation-column-item) {
-  @extend %abstract-loader-black;
-
-    background-repeat: no-repeat;
-    background-position: center center;
-
-}
-
 .align-left {
     text-align: left;
 }
