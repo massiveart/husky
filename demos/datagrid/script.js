@@ -9,7 +9,7 @@ require(['lib/husky'], function(Husky) {
 
 
     var app,
-        view,
+        view, pagination,
         _;
 
     app = new Husky({ debug: { enable: true }});
@@ -217,6 +217,12 @@ require(['lib/husky'], function(Husky) {
             $('#change-view').on('click', function() {
                app.sandbox.emit('husky.datagrid.view.change', view, {large: true});
                view = (view === 'thumbnail') ? 'table' : 'thumbnail';
+            });
+
+            pagination = 'dropdown';
+            $('#change-pagination').on('click', function() {
+                app.sandbox.emit('husky.datagrid.pagination.change', pagination);
+                pagination = (pagination === 'dropdown') ? 'showall' : 'dropdown';
             });
 
             app.sandbox.dom.on('#change-columns','click', function () {

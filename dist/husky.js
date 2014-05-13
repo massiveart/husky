@@ -27519,13 +27519,13 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
                 this.sandbox.util.template(templates.item)({
                     imgSrc: imgSrc,
                     imgAlt: imgAlt,
-                    title: this.sandbox.util.cropMiddle(title, 26),
+                    title: this.sandbox.util.cropMiddle(title, 24),
                     description: this.sandbox.util.cropMiddle(description, 32),
                     styleClass: (this.options.large === true) ? constants.largeClass : constants.smallClass,
                     checked: !!record.selected
                 })
             );
-            if (!!record.selected === true) {
+            if (record.selected === true) {
                 this.selectItem(id, true);
             }
             this.sandbox.dom.data(this.$thumbnails[id], 'id', id);
@@ -27913,7 +27913,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
         prepareShowElementsDropdown: function() {
             var i, length, data = [];
 
-            for(i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
+            for (i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
                 if (this.options.showElementsSteps[i] > this.data.numberOfAll) {
                     break;
                 }
@@ -27966,7 +27966,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
     var datagrid,
 
         defaults = {
-            pageSize: 10
+            pageSize: 9
         },
 
         constants = {
@@ -27980,6 +27980,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
          */
             translations = {
             showAll: 'pagination.show-all',
+            showOnly: 'pagination.show-only',
             elements: 'pagination.elements'
         },
 
@@ -27990,7 +27991,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             structure: [
                 '<div class="' + constants.squareClass + '"></div>',
                 '<div class="' + constants.textClass + '">',
-                translations.showAll,
+                '<%= desc %>',
                 ' <strong><%= number %></strong> ',
                 translations.elements,
                 '</div>'
@@ -28025,13 +28026,35 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             this.data = data;
 
             this.$paginationContainer = this.sandbox.dom.createElement('<div class="' + constants.paginationClass + '"/>');
-            this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
-                number: this.data.numberOfAll
-            }));
+            if (this.data.numberOfAll > this.data.total) {
+                this.renderShowAll();
+            } else {
+                this.renderShowOnly();
+            }
 
             this.sandbox.dom.append(this.$el, this.$paginationContainer);
 
             this.bindDomEvents();
+        },
+
+        /**
+         * Renders the markup for showing all records
+         */
+        renderShowAll: function() {
+            this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
+                desc: translations.showAll,
+                number: this.data.numberOfAll
+            }));
+        },
+
+        /**
+         * Renders the markup for not showing all records
+         */
+        renderShowOnly: function() {
+            this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
+                desc: translations.showOnly,
+                number: this.options.pageSize
+            }));
         },
 
         /**
@@ -28072,7 +28095,11 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
          */
         bindDomEvents: function () {
             this.sandbox.dom.on(this.$paginationContainer, 'click', function() {
-                this.showAll();
+                if (this.data.numberOfAll > this.data.total) {
+                    this.showAll();
+                } else {
+                    this.showOnly();
+                }
             }.bind(this));
         },
 
@@ -28081,6 +28108,13 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
          */
         showAll: function() {
             datagrid.changePage.call(datagrid, this.data.links.all);
+        },
+
+        /**
+         * Shows only the configured amount of elements in the datagrid
+         */
+        showOnly: function() {
+            datagrid.changePage.call(datagrid, null, 1, this.options.pageSize);
         },
 
         /**
@@ -28118,13 +28152,13 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
 
 (function() {
 
+    
+
     define('__component__$datagrid@husky',['husky_components/datagrid/decorators/table-view',
             'husky_components/datagrid/decorators/thumbnail-view',
             'husky_components/datagrid/decorators/dropdown-pagination',
             'husky_components/datagrid/decorators/showall-pagination'],
             function(decoratorTableView, thumbnailView, decoratorDropdownPagination, showallPagination) {
-
-        
 
         /**
          *    Default values for options
@@ -28254,6 +28288,13 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @param {Object} Options to merge with the current view options
              */
                 CHANGE_VIEW = namespace + 'view.change',
+
+            /**
+             * listens on and changes the pagination of the datagrid
+             * @event husky.datagrid.pagination.change
+             * @param {String} paginationId The identifier of the pagination
+             */
+                CHANGE_PAGINATION = namespace + 'pagination.change',
 
             /**
              * used to add a data record
@@ -28665,6 +28706,16 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             },
 
             /**
+             * Changes the pagination of the datagrid
+             * @param pagination {String} identifier of the new pagination to use
+             */
+            changePagination: function(pagination) {
+                this.destroy();
+                this.getPaginationDecorator(pagination);
+                this.render();
+            },
+
+            /**
              * Takes an object with options and passes them to the view,
              * so the view can extend its current ones with them
              * @param options {Object} mew options
@@ -28778,6 +28829,9 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
 
                 // changes the view of the datagrid
                 this.sandbox.on(CHANGE_VIEW, this.changeView.bind(this));
+
+                // changes the view of the datagrid
+                this.sandbox.on(CHANGE_PAGINATION, this.changePagination.bind(this));
 
                 // trigger selectedItems
                 this.sandbox.on(ITEMS_GET_SELECTED, function(callback) {

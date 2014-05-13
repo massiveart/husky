@@ -302,7 +302,7 @@ define(function() {
         prepareShowElementsDropdown: function() {
             var i, length, data = [];
 
-            for(i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
+            for (i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
                 if (this.options.showElementsSteps[i] > this.data.numberOfAll) {
                     break;
                 }

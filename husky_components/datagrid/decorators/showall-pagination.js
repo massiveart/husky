@@ -19,7 +19,7 @@ define(function () {
     var datagrid,
 
         defaults = {
-            pageSize: 10
+            pageSize: 9
         },
 
         constants = {
@@ -33,6 +33,7 @@ define(function () {
          */
             translations = {
             showAll: 'pagination.show-all',
+            showOnly: 'pagination.show-only',
             elements: 'pagination.elements'
         },
 
@@ -43,7 +44,7 @@ define(function () {
             structure: [
                 '<div class="' + constants.squareClass + '"></div>',
                 '<div class="' + constants.textClass + '">',
-                translations.showAll,
+                '<%= desc %>',
                 ' <strong><%= number %></strong> ',
                 translations.elements,
                 '</div>'
@@ -78,13 +79,35 @@ define(function () {
             this.data = data;
 
             this.$paginationContainer = this.sandbox.dom.createElement('<div class="' + constants.paginationClass + '"/>');
-            this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
-                number: this.data.numberOfAll
-            }));
+            if (this.data.numberOfAll > this.data.total) {
+                this.renderShowAll();
+            } else {
+                this.renderShowOnly();
+            }
 
             this.sandbox.dom.append(this.$el, this.$paginationContainer);
 
             this.bindDomEvents();
+        },
+
+        /**
+         * Renders the markup for showing all records
+         */
+        renderShowAll: function() {
+            this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
+                desc: translations.showAll,
+                number: this.data.numberOfAll
+            }));
+        },
+
+        /**
+         * Renders the markup for not showing all records
+         */
+        renderShowOnly: function() {
+            this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
+                desc: translations.showOnly,
+                number: this.options.pageSize
+            }));
         },
 
         /**
@@ -125,7 +148,11 @@ define(function () {
          */
         bindDomEvents: function () {
             this.sandbox.dom.on(this.$paginationContainer, 'click', function() {
-                this.showAll();
+                if (this.data.numberOfAll > this.data.total) {
+                    this.showAll();
+                } else {
+                    this.showOnly();
+                }
             }.bind(this));
         },
 
@@ -134,6 +161,13 @@ define(function () {
          */
         showAll: function() {
             datagrid.changePage.call(datagrid, this.data.links.all);
+        },
+
+        /**
+         * Shows only the configured amount of elements in the datagrid
+         */
+        showOnly: function() {
+            datagrid.changePage.call(datagrid, null, 1, this.options.pageSize);
         },
 
         /**

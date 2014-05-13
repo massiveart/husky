@@ -24,13 +24,13 @@
 
 (function() {
 
+    'use strict';
+
     define(['husky_components/datagrid/decorators/table-view',
             'husky_components/datagrid/decorators/thumbnail-view',
             'husky_components/datagrid/decorators/dropdown-pagination',
             'husky_components/datagrid/decorators/showall-pagination'],
             function(decoratorTableView, thumbnailView, decoratorDropdownPagination, showallPagination) {
-
-        'use strict';
 
         /**
          *    Default values for options
@@ -160,6 +160,13 @@
              * @param {Object} Options to merge with the current view options
              */
                 CHANGE_VIEW = namespace + 'view.change',
+
+            /**
+             * listens on and changes the pagination of the datagrid
+             * @event husky.datagrid.pagination.change
+             * @param {String} paginationId The identifier of the pagination
+             */
+                CHANGE_PAGINATION = namespace + 'pagination.change',
 
             /**
              * used to add a data record
@@ -571,6 +578,16 @@
             },
 
             /**
+             * Changes the pagination of the datagrid
+             * @param pagination {String} identifier of the new pagination to use
+             */
+            changePagination: function(pagination) {
+                this.destroy();
+                this.getPaginationDecorator(pagination);
+                this.render();
+            },
+
+            /**
              * Takes an object with options and passes them to the view,
              * so the view can extend its current ones with them
              * @param options {Object} mew options
@@ -684,6 +701,9 @@
 
                 // changes the view of the datagrid
                 this.sandbox.on(CHANGE_VIEW, this.changeView.bind(this));
+
+                // changes the view of the datagrid
+                this.sandbox.on(CHANGE_PAGINATION, this.changePagination.bind(this));
 
                 // trigger selectedItems
                 this.sandbox.on(ITEMS_GET_SELECTED, function(callback) {

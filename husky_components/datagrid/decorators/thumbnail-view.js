@@ -165,13 +165,13 @@ define(function() {
                 this.sandbox.util.template(templates.item)({
                     imgSrc: imgSrc,
                     imgAlt: imgAlt,
-                    title: this.sandbox.util.cropMiddle(title, 26),
+                    title: this.sandbox.util.cropMiddle(title, 24),
                     description: this.sandbox.util.cropMiddle(description, 32),
                     styleClass: (this.options.large === true) ? constants.largeClass : constants.smallClass,
                     checked: !!record.selected
                 })
             );
-            if (!!record.selected === true) {
+            if (record.selected === true) {
                 this.selectItem(id, true);
             }
             this.sandbox.dom.data(this.$thumbnails[id], 'id', id);
