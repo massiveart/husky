@@ -44,9 +44,9 @@ define(function () {
             structure: [
                 '<div class="' + constants.squareClass + '"></div>',
                 '<div class="' + constants.textClass + '">',
-                '<%= desc %>',
-                ' <strong><%= number %></strong> ',
-                translations.elements,
+                    '<%= desc %>',
+                    '<strong><%= number %></strong> ',
+                    translations.elements,
                 '</div>'
             ].join('')
         };
@@ -54,9 +54,9 @@ define(function () {
     return {
 
         /**
-         * Initailizes the pagination
-         * @param {Object} the context of the datagrid
-         * @param {Object} the options used by this pagination
+         * Initializes the pagination
+         * @param {Object} context The context of the datagrid
+         * @param {Object} options The options used by this pagination
          */
         initialize: function (context, options) {
             // context of the datagrid-component

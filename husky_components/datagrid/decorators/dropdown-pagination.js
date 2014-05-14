@@ -38,23 +38,23 @@ define(function() {
          */
         templates = {
             pageLabel: [
-                '<%=translate("pagination.page")%>',
+                '<%= translate("pagination.page") %>',
                 '<strong> <%= i %> </strong>',
-                '<%=translate("pagination.of")%> <%= pages %>'
+                '<%= translate("pagination.of") %> <%= pages %>'
             ].join(''),
 
             pageChanger: [
-                '<div class="', constants.nextClass ,' pagination-prev pull-right pointer"></div>',
-                '<div class="', constants.pageChangeClass ,' pagination-main pull-right pointer">',
+                '<div class="', constants.nextClass , ' pagination-prev pull-right pointer"></div>',
+                '<div class="', constants.pageChangeClass , ' pagination-main pull-right pointer">',
                     '<span class="inline-block"><%= label %></span>',
                     '<span class="dropdown-toggle inline-block"></span>',
                 '</div>',
-                '<div class="'+ constants.prevClass +' pagination-next pull-right pointer"></div>'
+                '<div class="' + constants.prevClass + ' pagination-next pull-right pointer"></div>'
             ].join(''),
 
             showElements: [
                 '<div class="show-elements">',
-                    '<div class="'+ constants.sizeChangeClass +' dropdown-trigger">',
+                    '<div class="' + constants.sizeChangeClass + ' dropdown-trigger">',
                         '<%= desc %>',
                         '<span class="dropdown-toggle"></span>',
                     '</div>',
@@ -75,9 +75,9 @@ define(function() {
     return {
 
         /**
-         * Initailizes the pagination
-         * @param {Object} the context of the datagrid
-         * @param {Object} the options used by this pagination
+         * Initializes the pagination
+         * @param {Object} context The context of the datagrid
+         * @param {Object} options The options used by this pagination
          */
         initialize: function(context, options) {
             // context of the datagrid-component
@@ -100,7 +100,7 @@ define(function() {
             this.$el = $container;
             this.data = data;
 
-            this.$paginationContainer = this.sandbox.dom.createElement('<div class="'+ constants.paginationClass +'"/>');
+            this.$paginationContainer = this.sandbox.dom.createElement('<div class="' + constants.paginationClass + '"/>');
             this.preparePagination();
             this.sandbox.dom.append(this.$el, this.$paginationContainer);
 
@@ -150,12 +150,12 @@ define(function() {
          */
         bindCustomEvents: function() {
             // pagination dropdown item clicked
-            this.sandbox.on('husky.dropdown.'+ datagrid.options.instance +'-pagination-dropdown.item.click', function(item) {
+            this.sandbox.on('husky.dropdown.' + datagrid.options.instance + '-pagination-dropdown.item.click', function(item) {
                 datagrid.changePage.call(datagrid, null, item.id);
             }.bind(this));
 
             // show-elements dropdown item clicked
-            this.sandbox.on('husky.dropdown.'+ datagrid.options.instance +'-pagination-dropdown-show.item.click', function(item) {
+            this.sandbox.on('husky.dropdown.' + datagrid.options.instance + '-pagination-dropdown-show.item.click', function(item) {
                 if (this.data.pageSize !== item.id || this.data.total === this.data.numberOfAll) {
                     // show all
                     if (item.id === 0) {
@@ -232,8 +232,8 @@ define(function() {
                     description = this.sandbox.translate(translations.showAllElements);
                 } else {
                     description = this.sandbox.translate(translations.show) +
-                                  ' <strong>'+ this.data.total +'</strong> '+
-                                  this.sandbox.translate(translations.elementsOf) +' '+ this.data.numberOfAll;
+                        ' <strong>' + this.data.total + '</strong> ' +
+                        this.sandbox.translate(translations.elementsOf) + ' ' + this.data.numberOfAll;
                 }
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
                     'desc': description
@@ -308,7 +308,7 @@ define(function() {
                 }
                 data.push({
                     id: this.options.showElementsSteps[i],
-                    name: '<strong>'+ this.options.showElementsSteps[i] +'</strong> ' + this.sandbox.translate(translations.elementsPerPage)
+                    name: '<strong>' + this.options.showElementsSteps[i] + '</strong> ' + this.sandbox.translate(translations.elementsPerPage)
                 });
             }
 

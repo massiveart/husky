@@ -10,7 +10,6 @@
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
  * @param {Function} [destroy] function to destroy the view and unbind events
- *
  */
 define(function() {
 
@@ -47,20 +46,20 @@ define(function() {
 
         templates = {
             item: [
-                '<div class="'+ constants.itemClass +' <%= styleClass %>">',
-                    '<div class="'+ constants.imageClass +'">',
-                        '<img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
-                    '</div>',
-                    '<div class="'+ constants.textClass +'">',
-                        '<span class="'+ constants.titleClass +'"><%= title %></span><br />',
-                        '<span class="'+ constants.descriptionClass +'"><%= description %></span>',
-                    '</div>',
-                    '<div class="'+ constants.checkboxClass +' custom-checkbox no-spacing">',
-                        '<input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
-                        '<span class="icon"></span>',
-                    '</div>',
-                    '<div class="icon-'+ constants.downloadIcon +' '+ constants.downloadClass +'"></div>',
-                '</div>'
+                    '<div class="' + constants.itemClass + ' <%= styleClass %>">',
+                        '<div class="' + constants.imageClass + '">',
+                            '<img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
+                        '</div>',
+                        '<div class="' + constants.textClass + '">',
+                            '<span class="' + constants.titleClass + '"><%= title %></span><br />',
+                            '<span class="' + constants.descriptionClass + '"><%= description %></span>',
+                        '</div>',
+                        '<div class="' + constants.checkboxClass + ' custom-checkbox no-spacing">',
+                            '<input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
+                            '<span class="icon"></span>',
+                        '</div>',
+                        '<div class="icon-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
+                    '</div>'
             ].join('')
         };
 
@@ -68,8 +67,8 @@ define(function() {
 
         /**
          * Initializes the view, gets called only once
-         * @param {Object} the context of the datagrid class
-         * @param {Object} the options used by the view
+         * @param {Object} context The context of the datagrid class
+         * @param {Object} options The options used by the view
          */
         initialize: function(context, options) {
             // context of the datagrid-component
@@ -108,7 +107,7 @@ define(function() {
          * Method to render data in this view
          */
         render: function(data, $container) {
-            this.$el = this.sandbox.dom.createElement('<div class="'+ constants.containerClass +'"/>');
+            this.$el = this.sandbox.dom.createElement('<div class="' + constants.containerClass + '"/>');
             this.sandbox.dom.append($container, this.$el);
             this.data = data;
 
@@ -217,7 +216,7 @@ define(function() {
         },
 
         /**
-         * Unselects an item with a given id
+         * Selects an item with a given id
          * @param id {Number|String} the id of the item
          * @param onlyView {Boolean} if true the selection only affects this view and not the data array
          */
@@ -251,7 +250,8 @@ define(function() {
          * @param id {Number|String} the id of the item
          */
         downloadHandler: function(id) {
-            console.log('download', id);
+            // not yet implemented
+            this.sandbox.logger.warn('Download handler not yet implemented!', id);
         }
     };
 });
