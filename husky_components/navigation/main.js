@@ -633,7 +633,7 @@ define(function() {
                 this.animating = true;
                 var expandedHeight = CONSTANTS.ITEM_LABEL_HEIGHT + this.sandbox.dom.outerHeight($childList);
 
-                $($items).stop();
+                this.sandbox.dom.stop($items);
                 this.sandbox.dom.animate($items, {
                     height: (expandedHeight + 30)
                 }, {

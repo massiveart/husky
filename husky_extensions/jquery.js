@@ -302,6 +302,10 @@
                 event.stopPropagation();
             };
 
+            app.core.dom.stop = function(selector) {
+                $(selector).stop();
+            };
+
             app.core.dom.preventDefault = function(event) {
                 event.preventDefault();
             };
