@@ -25,18 +25,17 @@
  * @param {String} [options.matchings.class] css class of the column
  * @param {String} [options.matchings.type] type of the column. Used to manipulate its content (e.g. 'date')
  * @param {String} [options.matchings.attribute] mapping information to data (if not set it will just iterate through attributes)
- *
  */
-
 (function() {
 
     'use strict';
 
-    define(['husky_components/datagrid/decorators/table-view',
-            'husky_components/datagrid/decorators/thumbnail-view',
-            'husky_components/datagrid/decorators/dropdown-pagination',
-            'husky_components/datagrid/decorators/showall-pagination'],
-            function(decoratorTableView, thumbnailView, decoratorDropdownPagination, showallPagination) {
+    define([
+        'husky_components/datagrid/decorators/table-view',
+        'husky_components/datagrid/decorators/thumbnail-view',
+        'husky_components/datagrid/decorators/dropdown-pagination',
+        'husky_components/datagrid/decorators/showall-pagination'
+    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination, showallPagination) {
 
         /**
          *    Default values for options
@@ -86,53 +85,53 @@
              * raised when the the current page changes
              * @event husky.datagrid.page.change
              */
-                PAGE_CHANGE = namespace + 'page.change',
+            PAGE_CHANGE = namespace + 'page.change',
 
             /**
              * raised when the data is updated
              * @event husky.datagrid.updated
              */
-                UPDATED = namespace + 'updated',
+            UPDATED = namespace + 'updated',
 
             /**
              * raised when item is deselected
              * @event husky.datagrid.item.deselect
              * @param {String} id of deselected item
              */
-                ITEM_DESELECT = namespace + 'item.deselect',
+            ITEM_DESELECT = namespace + 'item.deselect',
 
             /**
              * raised when selection of items changes
              * @event husky.datagrid.number.selections
              */
-                NUMBER_SELECTIONS = namespace + 'number.selections',
+            NUMBER_SELECTIONS = namespace + 'number.selections',
 
             /**
              * raised when item is selected
              * @event husky.datagrid.item.select
              * @param {String} if of selected item
              */
-                ITEM_SELECT = namespace + 'item.select',
+            ITEM_SELECT = namespace + 'item.select',
 
             /**
              * raised when all items get deselected via the header checkbox
              * @event husky.datagrid.all.deselect
              */
-                ALL_DESELECT = namespace + 'all.deselect',
+            ALL_DESELECT = namespace + 'all.deselect',
 
             /**
              * raised when all items get deselected via the header checkbox
              * @event husky.datagrid.all.select
              * @param {Array} ids of all items that have been clicked
              */
-                ALL_SELECT = namespace + 'all.select',
+            ALL_SELECT = namespace + 'all.select',
 
             /**
              * raised when data was saved
              * @event husky.datagrid.data.saved
              * @param {Object} data returned
              */
-                DATA_SAVED = namespace + 'data.saved',
+            DATA_SAVED = namespace + 'data.saved',
 
             /**
              * raised when save of data failed
@@ -141,13 +140,13 @@
              * @param {String} error thrown
              *
              */
-                DATA_SAVE_FAILED = namespace + 'data.save.failed',
+            DATA_SAVE_FAILED = namespace + 'data.save.failed',
 
             /**
              * raised when editable table is changed
              * @event husky.datagrid.data.save
              */
-                DATA_CHANGED = namespace + 'data.changed',
+            DATA_CHANGED = namespace + 'data.changed',
 
 
         /* PROVIDED EVENTS */
@@ -156,7 +155,7 @@
              * raised when husky.datagrid.data.get is triggered
              * @event husky.datagrid.data.provide
              */
-                DATA_PROVIDE = namespace + 'data.provide',
+            DATA_PROVIDE = namespace + 'data.provide',
 
             /**
              * listens on and changes the view of the datagrid
@@ -164,41 +163,41 @@
              * @param {String} viewId The identifier of the view
              * @param {Object} Options to merge with the current view options
              */
-                CHANGE_VIEW = namespace + 'view.change',
+            CHANGE_VIEW = namespace + 'view.change',
 
             /**
              * listens on and changes the pagination of the datagrid
              * @event husky.datagrid.pagination.change
              * @param {String} paginationId The identifier of the pagination
              */
-                CHANGE_PAGINATION = namespace + 'pagination.change',
+            CHANGE_PAGINATION = namespace + 'pagination.change',
 
             /**
              * used to add a data record
              * @event husky.datagrid.record.add
              * @param {Object} the data of the new record
              */
-                RECORD_ADD = namespace + 'record.add',
+            RECORD_ADD = namespace + 'record.add',
 
             /**
              * used to add a data record
              * @event husky.datagrid.record.add
              * @param {Object} the data of the new record
              */
-                RECORDS_ADD = namespace + 'records.add',
+            RECORDS_ADD = namespace + 'records.add',
 
             /**
              * used to remove a data-record
              * @event husky.datagrid.record.remove
              * @param {String} id of the record to be removed
              */
-                RECORD_REMOVE = namespace + 'record.remove',
+            RECORD_REMOVE = namespace + 'record.remove',
 
             /**
              * used to trigger an update of the data
              * @event husky.datagrid.update
              */
-                UPDATE = namespace + 'update',
+            UPDATE = namespace + 'update',
 
             /**
              * used to filter data by search
@@ -206,33 +205,33 @@
              * @param {String} searchField
              * @param {String} searchString
              */
-                DATA_SEARCH = namespace + 'data.search',
+            DATA_SEARCH = namespace + 'data.search',
 
             /**
              * raised when data is sorted
              * @event husky.datagrid.data.sort
              */
-                DATA_SORT = namespace + 'data.sort',
+            DATA_SORT = namespace + 'data.sort',
 
             /**
              * used to filter data by updating an url parameter
              * @event husky.datagrid.url.update
              * @param {Object} url parameter : key
              */
-                URL_UPDATE = namespace + 'url.update',
+            URL_UPDATE = namespace + 'url.update',
 
             /**
              * triggers husky.datagrid.data.provide
              * @event husky.datagrid.data.get
              */
-                DATA_GET = namespace + 'data.get',
+            DATA_GET = namespace + 'data.get',
 
             /**
              * triggers husky.datagrid.items.selected event, which returns all selected item ids
              * @event husky.datagrid.items.get-selected
              * @param  {Function} callback function receives array of selected items
              */
-                ITEMS_GET_SELECTED = namespace + 'items.get-selected',
+            ITEMS_GET_SELECTED = namespace + 'items.get-selected',
 
 
         /**
@@ -240,55 +239,53 @@
          * --------------------------------------------------------------------
          */
 
-        /**
-         * function updates an url by a given parameter name and value and returns it. The parameter is either added or updated.
-         * If value is not set, the parameter will be removed from url
-         * @param {String} url Url string to be updated
-         * @param {String} paramName Parameter which should be added / updated / removed
-         * @param {String|Null} paramValue Value of the parameter. If not set, parameter will be removed from url
-         * @returns {String} updated url
-         */
-        setGetParameter = function(url, paramName, paramValue) {
-            if (url.indexOf(paramName + "=") >= 0)
-            {
-                var prefix = url.substring(0, url.indexOf(paramName)),
-                    suffix = url.substring(url.indexOf(paramName));
-                suffix = suffix.substring(suffix.indexOf('=') + 1);
-                suffix = (suffix.indexOf('&') >= 0) ? suffix.substring(suffix.indexOf('&')) : '';
-                if (!!paramValue) {
-                    url = prefix + paramName + '=' + paramValue + suffix;
-                } else {
-                    if (url.substr(url.indexOf(paramName)-1,1) === '&' ) {
-                        url = url.substring(0,prefix.length-1) + suffix;
+            /**
+             * function updates an url by a given parameter name and value and returns it. The parameter is either added or updated.
+             * If value is not set, the parameter will be removed from url
+             * @param {String} url Url string to be updated
+             * @param {String} paramName Parameter which should be added / updated / removed
+             * @param {String|Null} paramValue Value of the parameter. If not set, parameter will be removed from url
+             * @returns {String} updated url
+             */
+            setGetParameter = function(url, paramName, paramValue) {
+                if (url.indexOf(paramName + "=") >= 0) {
+                    var prefix = url.substring(0, url.indexOf(paramName)),
+                        suffix = url.substring(url.indexOf(paramName));
+                    suffix = suffix.substring(suffix.indexOf('=') + 1);
+                    suffix = (suffix.indexOf('&') >= 0) ? suffix.substring(suffix.indexOf('&')) : '';
+                    if (!!paramValue) {
+                        url = prefix + paramName + '=' + paramValue + suffix;
                     } else {
-                        url = prefix + suffix.substring(1, suffix.length);
+                        if (url.substr(url.indexOf(paramName) - 1, 1) === '&') {
+                            url = url.substring(0, prefix.length - 1) + suffix;
+                        } else {
+                            url = prefix + suffix.substring(1, suffix.length);
+                        }
                     }
                 }
-            }
-            else if (!!paramValue)
-            {
-                if (url.indexOf("?") < 0) {
-                    url += "?" + paramName + "=" + paramValue;
+                else if (!!paramValue) {
+                    if (url.indexOf("?") < 0) {
+                        url += "?" + paramName + "=" + paramValue;
+                    }
+                    else {
+                        url += "&" + paramName + "=" + paramValue;
+                    }
                 }
-                else {
-                    url += "&" + paramName + "=" + paramValue;
-                }
-            }
-            return url;
-        },
+                return url;
+            },
 
-        /**
-         * Brings a date into the right format
-         * @param date {String} the date to parse
-         * @returns {String}
-         */
-        parseDate = function(date) {
-            var parsedDate = this.sandbox.date.format(date);
-            if (parsedDate !== null) {
-                return parsedDate;
-            }
-            return date;
-        };
+            /**
+             * Brings a date into the right format
+             * @param date {String} the date to parse
+             * @returns {String}
+             */
+            parseDate = function(date) {
+                var parsedDate = this.sandbox.date.format(date);
+                if (parsedDate !== null) {
+                    return parsedDate;
+                }
+                return date;
+            };
 
         return {
 
@@ -366,7 +363,7 @@
              * The filtered matchings are available in this.matchings
              * The request-fields are available in this.requestFields
              *
-             * @param fields {Array} array with matchings
+             * @param {Array} matchings array with matchings
              */
             filterMatchings: function(matchings) {
                 var matchingObject;
@@ -398,7 +395,7 @@
             },
 
             /**
-             * Renderes the data of the datagrid
+             * Renders the data of the datagrid
              */
             render: function() {
                 this.gridViews[this.viewId].render(this.data, this.$element);
@@ -458,14 +455,16 @@
                     this.sandbox.dom.hide(this.$loader);
                     this.sandbox.dom.append(this.$element, this.$loader);
 
-                    this.sandbox.start([{
-                        name: 'loader@husky',
-                        options: {
-                            el: this.$loader,
-                            size: '100px',
-                            color: '#cccccc'
+                    this.sandbox.start([
+                        {
+                            name: 'loader@husky',
+                            options: {
+                                el: this.$loader,
+                                size: '100px',
+                                color: '#cccccc'
+                            }
                         }
-                    }]);
+                    ]);
                 }
 
                 this.sandbox.dom.show(this.$loader);
@@ -510,7 +509,7 @@
              * @param viewId {String} the identifier of the decorator
              */
             getViewDecorator: function(viewId) {
-                // todo: dynamically load a decorator from external source if local decorator doesn't exist
+                // TODO: dynamically load a decorator from external source if local decorator doesn't exist
                 this.viewId = viewId;
 
                 // if view is not already loaded, load it
@@ -544,7 +543,7 @@
 
             /**
              * Gets the Pagination and initializes it
-             * @param {String} the identifier of the pagination
+             * @param {String} paginationId the identifier of the pagination
              */
             getPaginationDecorator: function(paginationId) {
                 // todo: dynamically load a decorator if local decorator doesn't exist
@@ -832,7 +831,7 @@
              * Sets all data records unselected
              */
             deselectAllItems: function() {
-                for (var i = -1, length = this.data.embedded.length; ++i<length;) {
+                for (var i = -1, length = this.data.embedded.length; ++i < length;) {
                     this.data.embedded[i].selected = false;
                 }
                 // emit events with selected data
@@ -845,7 +844,7 @@
              */
             selectAllItems: function() {
                 var ids = [], i, length;
-                for (i = -1, length = this.data.embedded.length; ++i<length;) {
+                for (i = -1, length = this.data.embedded.length; ++i < length;) {
                     this.data.embedded[i].selected = true;
                     ids.push(this.data.embedded[i].id);
                 }
@@ -892,12 +891,12 @@
              * @returns {Boolean} returns true if item is selected
              */
             itemIsSelected: function(id) {
-              for (var i = -1, length = this.data.embedded.length; ++i < length;) {
-                  if (this.data.embedded[i].id === id) {
-                      return this.data.embedded[i].selected;
-                  }
-              }
-              return false;
+                for (var i = -1, length = this.data.embedded.length; ++i < length;) {
+                    if (this.data.embedded[i].id === id) {
+                        return this.data.embedded[i].selected;
+                    }
+                }
+                return false;
             },
 
             /**
@@ -1079,7 +1078,7 @@
              * Filters fields out of the data passed to the view
              * So its possible to hide fields/columns
              * Note that the also the arrangement of fields/columns can be changed and the view can react to it
-             * @param fieldsData {Array}
+             * @param {Array} matchings
              */
             filterGrid: function(matchings) {
                 var uriTemplate, url;

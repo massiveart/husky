@@ -25,7 +25,6 @@
  * @param {Function} [destroy] function to destroy the view and unbind events
  * @param {Function} [onResize] function which gets automatically executed on window resize
  * @param {Function} [unbindCustomEvents] function to unbind the custom events of this object
- *
  */
 define(function() {
 
@@ -164,8 +163,8 @@ define(function() {
 
         /**
          * Initializes the view, gets called only once
-         * @param {Object} the context of the datagrid class
-         * @param {Object} the options used by the view
+         * @param {Object} context The context of the datagrid class
+         * @param {Object} options The options used by the view
          */
         initialize: function(context, options) {
             // context of the datagrid-component
@@ -322,7 +321,7 @@ define(function() {
         setVariables: function() {
             this.rendered = false;
             this.$tableContainer = null;
-            this.$table;
+            this.$table = null;
             this.$el = null;
             this.data = null;
             this.rowId = 0;
