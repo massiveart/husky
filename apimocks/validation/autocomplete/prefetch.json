@@ -1,0 +1,11 @@
+{
+    "total": 3,
+    "_embedded": [
+        { "id": "1", "name": "Coca Cola" },
+        { "id": "2", "name": "Disneyland" },
+        { "id": "3", "name": "Microsoft" },
+        { "id": "3", "name": "GNB" },
+        { "id": "3", "name": "PLEASE" },
+        { "id": "3", "name": "Pepsi" }
+    ]
+}

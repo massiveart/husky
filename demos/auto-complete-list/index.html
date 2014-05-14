@@ -36,7 +36,6 @@
                 </div>
             </div>
         </div>
-        <script src="../js/sinon.js"></script>
         <script src="../js/jquery.js"></script>
         <script src="../js/require.js"></script>
         <script>
@@ -48,12 +47,7 @@
                 'use strict';
 
                 var app = Husky({ debug: { enable: true }}),
-                        _ = app.sandbox.util._,
-
-                fakeServer = sinon.fakeServer.create();
-                fakeServer.respondWith('GET', '?query=TagX', [200, { 'Content-Type': 'application/json' },
-                    '{"total": 1, "_embedded": [{"id": 103, "name": "TagX"}]}'
-                ]);
+                        _ = app.sandbox.util._;
 
                 app.start([{
                     name: 'auto-complete-list@husky',
@@ -63,6 +57,7 @@
                         label: 'Tags',
                         suggestionsUrl: '',
                         itemsUrl: '',
+                        remoteUrl: 'http://husky.lo:7878/admin/api/autocompletelist',
                         autoCompleteIcon: 'tag',
                         items: ['Tag1', 'Tag2', 'Tag3', 'Tag4'],
                         suggestions: ["Sugg1", "Sugg2", "Sugg3", "Sugg4"],
@@ -78,6 +73,7 @@
                             label: 'Links',
                             suggestionsUrl: '',
                             itemsUrl: '',
+                            remoteUrl: 'http://husky.lo:7878/admin/api/autocompletelist',
                             items: ['Link1', 'Link2', 'Link3', 'Link4'],
                             autoCompleteIcon: 'tag',
                             suggestions: ["SuggA", "SuggB", "SuggC", "SuggD"],
@@ -89,12 +85,6 @@
                         setTimeout(function() {
                             app.sandbox.emit('husky.auto-complete-list.I1.set-tags', ['Set1', 'Set2', 'Set3']);
                         }, 3000);
-
-                        app.sandbox.on('husky.auto-complete.I1.request-match', function() {
-                            setTimeout(function() {
-                                fakeServer.respond();
-                            }, 100)
-                        });
                     });
             });
         </script>
