@@ -528,6 +528,27 @@
   }
 }
 
+.icon-play {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e174";
+    display: inline-block;
+  }
+}
+
+.icon-play-down {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e174";
+    display: inline-block;
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+  }
+}
+
 .icon-half-ok {
   &::after {
     font-family: $baseIconHalflingsFont;
