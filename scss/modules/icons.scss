@@ -530,7 +530,6 @@
 
 .icon-play {
   &::after {
-    font-family: $baseIconHalflingsFont;
     content: "\e174";
     display: inline-block;
   }
@@ -538,7 +537,6 @@
 
 .icon-play-down {
   &::after {
-    font-family: $baseIconHalflingsFont;
     content: "\e174";
     display: inline-block;
     -moz-transform: rotate(90deg);
