@@ -132,6 +132,13 @@
     }
 }
 
+.icon-picture {
+  &::after {
+    content: "\e139";
+    display: inline-block;
+  }
+}
+
 .icon-cogwheels {
     &::after {
         content: "\e138";
