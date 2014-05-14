@@ -492,6 +492,89 @@ table {
   /* IE 10+ */
 }
 
+/**
+**  Rotate 360 animation
+**/
+@-webkit-keyframes ROTATE-ANIMATION {
+  /* line 31, ../scss/animations.scss */
+  0% {
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  /* line 36, ../scss/animations.scss */
+  100% {
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@-moz-keyframes ROTATE-ANIMATION {
+  /* line 43, ../scss/animations.scss */
+  0% {
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  /* line 48, ../scss/animations.scss */
+  100% {
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@-o-keyframes ROTATE-ANIMATION {
+  /* line 55, ../scss/animations.scss */
+  0% {
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  /* line 60, ../scss/animations.scss */
+  100% {
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ROTATE-ANIMATION {
+  /* line 67, ../scss/animations.scss */
+  0% {
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  /* line 72, ../scss/animations.scss */
+  100% {
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
 /* line 7, ../scss/utilities.scss */
 .pull-right {
   float: right !important;
@@ -3738,66 +3821,85 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
 }
 
 /* line 472, ../scss/modules/icons.scss */
+.icon-cloud-upload::after {
+  content: "\e365";
+  display: inline-block;
+}
+
+/* line 479, ../scss/modules/icons.scss */
 .icon-show-thumbnails::after {
   content: "\e157";
   display: inline-block;
 }
 
-/* line 479, ../scss/modules/icons.scss */
+/* line 486, ../scss/modules/icons.scss */
 .icon-eye-open::after {
   content: "\e052";
   display: inline-block;
 }
 
-/* line 486, ../scss/modules/icons.scss */
+/* line 493, ../scss/modules/icons.scss */
 .icon-half-eye-open::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e105";
   display: inline-block;
 }
 
-/* line 494, ../scss/modules/icons.scss */
+/* line 501, ../scss/modules/icons.scss */
 .icon-half-eye-close::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e106";
   display: inline-block;
 }
 
-/* line 502, ../scss/modules/icons.scss */
+/* line 509, ../scss/modules/icons.scss */
 .icon-floppy-save::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e175";
   display: inline-block;
 }
 
-/* line 510, ../scss/modules/icons.scss */
+/* line 517, ../scss/modules/icons.scss */
 .icon-floppy-saved::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e173";
   display: inline-block;
 }
 
-/* line 518, ../scss/modules/icons.scss */
+/* line 525, ../scss/modules/icons.scss */
 .icon-half-ok::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e013";
   display: inline-block;
 }
 
-/* line 526, ../scss/modules/icons.scss */
-.icon-half-remove::after {
+/* line 533, ../scss/modules/icons.scss */
+.icon-repeat::after {
+  font-family: "Glyphicons Halflings Regular";
+  content: "\e030";
+  display: inline-block;
+}
+
+/* line 541, ../scss/modules/icons.scss */
+.icon-::after {
   font-family: "Glyphicons Halflings Regular";
   content: "\e014";
   display: inline-block;
 }
 
-/* line 534, ../scss/modules/icons.scss */
+/* line 549, ../scss/modules/icons.scss */
 .icon-remove2::after {
   content: "\e208";
   display: inline-block;
 }
 
-/* line 541, ../scss/modules/icons.scss */
+/* line 556, ../scss/modules/icons.scss */
+.icon-ok::after {
+  content: "\e207";
+  display: inline-block;
+}
+
+/* line 563, ../scss/modules/icons.scss */
 .icon-publish::after {
   content: "";
   display: inline-block;
@@ -3809,7 +3911,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   font-size: medium !important;
 }
 
-/* line 554, ../scss/modules/icons.scss */
+/* line 576, ../scss/modules/icons.scss */
 .icon-unpublish::after {
   content: "";
   display: inline-block;
@@ -3821,7 +3923,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   font-size: medium !important;
 }
 
-/* line 567, ../scss/modules/icons.scss */
+/* line 589, ../scss/modules/icons.scss */
 .icon-test::after {
   content: "";
   display: inline-block;
@@ -3833,25 +3935,25 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   font-size: medium !important;
 }
 
-/* line 580, ../scss/modules/icons.scss */
+/* line 602, ../scss/modules/icons.scss */
 .icon-right-arrow::after {
   content: "\e212";
   display: inline-block;
 }
 
-/* line 587, ../scss/modules/icons.scss */
+/* line 609, ../scss/modules/icons.scss */
 .icon-step-backward::after {
   content: "\e171";
   display: inline-block;
 }
 
-/* line 594, ../scss/modules/icons.scss */
+/* line 616, ../scss/modules/icons.scss */
 .icon-step-forward::after {
   content: "\e179";
   display: inline-block;
 }
 
-/* line 601, ../scss/modules/icons.scss */
+/* line 623, ../scss/modules/icons.scss */
 .icon-disk-export::after {
   content: "\e420";
   display: inline-block;
@@ -7606,101 +7708,167 @@ a.btn-black, a.btn-highlight {
   cursor: default;
 }
 
-/* line 5, ../scss/modules/toggler.scss */
-.husky-toggler {
-  width: 35px;
-  height: 20px;
-  border-radius: 11px;
-  display: inline-block;
-  vertical-align: middle;
-  cursor: pointer;
-}
-/* line 20, ../scss/modules/toggler.scss */
-.husky-toggler.outline {
-  margin-top: -2px;
-}
-/* line 22, ../scss/modules/toggler.scss */
-.husky-toggler.outline .toggler-wrapper {
-  border-color: #acdae6;
-  height: 22px;
-  border-radius: 11px;
-}
-/* line 27, ../scss/modules/toggler.scss */
-.husky-toggler.outline .switch {
-  border-color: #acdae6;
-  top: 1px;
-  left: 1px;
-}
-/* line 35, ../scss/modules/toggler.scss */
-.husky-toggler .toggler-wrapper {
-  background: white;
-  border: 1px solid #cccccc;
-  border-radius: 10px;
+/* line 5, ../scss/modules/dropzone.scss */
+.husky-dropzone {
+  overflow: hidden;
   position: relative;
-  width: 35px;
-  height: 20px;
   top: 0px;
   left: 0px;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  -webkit-transition: all 100ms ease-in;
-  -moz-transition: all 100ms ease-in;
-  -o-transition: all 100ms ease-in;
-  transition: all 100ms ease-in;
+  padding-bottom: 20px;
+  width: 100%;
+  height: auto;
+  border: 1px dashed #cccccc;
+  border-radius: 3px;
+  cursor: pointer;
+  -webkit-transition: opacity 300ms;
+  -moz-transition: opacity 300ms;
+  -o-transition: opacity 300ms;
+  transition: opacity 300ms;
 }
-/* line 48, ../scss/modules/toggler.scss */
-.husky-toggler .switch {
+/* line 22, ../scss/modules/dropzone.scss */
+.husky-dropzone .description {
+  text-align: center;
+  height: 130px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  -webkit-transition: margin-top 300ms;
+  -moz-transition: margin-top 300ms;
+  -o-transition: margin-top 300ms;
+  transition: margin-top 300ms;
+}
+/* line 31, ../scss/modules/dropzone.scss */
+.husky-dropzone .description .icon {
+  color: #52b6ca;
+  font-size: 62px;
+  line-height: 70px;
+  margin-bottom: 15px;
+}
+/* line 37, ../scss/modules/dropzone.scss */
+.husky-dropzone .description .title {
+  font-size: 24px;
+  line-height: 24px;
+}
+/* line 41, ../scss/modules/dropzone.scss */
+.husky-dropzone .description span {
+  display: block;
+}
+/* line 46, ../scss/modules/dropzone.scss */
+.husky-dropzone .upload-items {
+  height: 130px;
+  padding: 20px 0 0 20px;
+}
+/* line 36, ../scss/mixins.scss */
+.husky-dropzone .upload-items:after {
+  clear: both;
+  content: ' ';
+  display: block;
+}
+/* line 51, ../scss/modules/dropzone.scss */
+.husky-dropzone .upload-items .item {
+  width: 70px;
+  height: 90px;
+  border: 1px solid white;
   background: white;
-  width: 20px;
-  height: 20px;
-  border-radius: 10px;
-  border: 1px solid #cccccc;
-  margin: -1px 0 0 -1px;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  z-index: 10;
-  -webkit-transition: all 100ms ease-in;
-  -moz-transition: all 100ms ease-in;
-  -o-transition: all 100ms ease-in;
-  transition: all 100ms ease-in;
+  border-radius: 2px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  float: left;
 }
-/* line 62, ../scss/modules/toggler.scss */
-.husky-toggler input {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  -webkit-transition: all 100ms ease-in;
-  -moz-transition: all 100ms ease-in;
-  -o-transition: all 100ms ease-in;
-  transition: all 100ms ease-in;
-  opacity: 0;
-  z-index: 0;
+/* line 61, ../scss/modules/dropzone.scss */
+.husky-dropzone .upload-items .item .success-content {
+  display: none;
 }
-/* line 74, ../scss/modules/toggler.scss */
-.husky-toggler.checked.outline .toggler-wrapper {
-  border-color: #acdae6;
+/* line 64, ../scss/modules/dropzone.scss */
+.husky-dropzone .upload-items .item .loading-content {
+  padding-top: 20px;
 }
-/* line 76, ../scss/modules/toggler.scss */
-.husky-toggler.checked.outline .toggler-wrapper .switch {
-  left: 14px;
+/* line 67, ../scss/modules/dropzone.scss */
+.husky-dropzone .upload-items .item .file-size {
+  text-align: center;
+  font-size: 9px;
+  line-height: 10px;
+  color: #999999;
+  padding-top: 15px;
+  padding-bottom: 5px;
 }
-/* line 82, ../scss/modules/toggler.scss */
-.husky-toggler.checked .toggler-wrapper {
-  background: #5dc774;
-  border-color: #5dc774;
+/* line 74, ../scss/modules/dropzone.scss */
+.husky-dropzone .upload-items .item .file-size * {
+  font-weight: normal;
 }
-/* line 87, ../scss/modules/toggler.scss */
-.husky-toggler.checked .switch {
-  border-color: #5dc774;
-  left: 15px;
+/* line 78, ../scss/modules/dropzone.scss */
+.husky-dropzone .upload-items .item .progress {
+  width: 50px;
+  height: 6px;
+  margin: 0 auto;
+  background: #cccccc;
+  border-radius: 3px;
+  overflow: hidden;
 }
-/* line 91, ../scss/modules/toggler.scss */
-.husky-toggler.checked input {
-  left: 17px;
+/* line 85, ../scss/modules/dropzone.scss */
+.husky-dropzone .upload-items .item .progress .bar {
+  height: 100%;
+  background: #52b6ca;
+  width: 0%;
+}
+/* line 91, ../scss/modules/dropzone.scss */
+.husky-dropzone .upload-items .item .icon {
+  height: 25px;
+  color: #999999;
+  font-size: 25px;
+  text-align: center;
+  animation: ROTATE-ANIMATION 1s linear 0 infinite;
+  -webkit-animation: ROTATE-ANIMATION 1s linear 0 infinite;
+  -moz-animation: ROTATE-ANIMATION 1s linear 0 infinite;
+  -o-animation: ROTATE-ANIMATION 1s linear 0 infinite;
+}
+/* line 101, ../scss/modules/dropzone.scss */
+.husky-dropzone .upload-items .item .image {
+  padding: 10px 10px 5px 10px;
+  height: 65px;
+  line-height: 45px;
+  text-align: center;
+}
+/* line 106, ../scss/modules/dropzone.scss */
+.husky-dropzone .upload-items .item .image img {
+  vertical-align: bottom;
+}
+/* line 110, ../scss/modules/dropzone.scss */
+.husky-dropzone .upload-items .item .tick {
+  text-align: center;
+  color: #999999;
+  font-size: 15px;
+  line-height: 15px;
+}
+/* line 117, ../scss/modules/dropzone.scss */
+.husky-dropzone .upload-items .item.dz-success {
+  border-color: #cccccc;
+  background: transparent;
+}
+/* line 120, ../scss/modules/dropzone.scss */
+.husky-dropzone .upload-items .item.dz-success .success-content {
+  display: block;
+}
+/* line 123, ../scss/modules/dropzone.scss */
+.husky-dropzone .upload-items .item.dz-success .loading-content {
+  display: none;
+}
+/* line 131, ../scss/modules/dropzone.scss */
+.husky-dropzone.dz-drag-hover {
+  opacity: 0.5;
+}
+/* line 135, ../scss/modules/dropzone.scss */
+.husky-dropzone.dropped {
+  padding-bottom: 0;
+  -webkit-transition: padding 300ms;
+  -moz-transition: padding 300ms;
+  -o-transition: padding 300ms;
+  transition: padding 300ms;
+}
+/* line 139, ../scss/modules/dropzone.scss */
+.husky-dropzone.dropped .description {
+  margin-top: -150px;
 }
 
 /* line 36, ../scss/mixins.scss */

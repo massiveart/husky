@@ -5,6 +5,7 @@
     "port": "7878",
     "latency": 700,
     "allowedDomains": ["http://husky.lo"],
+    "allowedHeaders": ["Content-Type", "Cache-Control", "X-Requested-With"],
     "webServices": {
 
         "test": {
@@ -92,6 +93,11 @@
         "admin/api/validation/autocomplete": {
             "verbs": ["GET"],
             "mockFile": "validation/autocomplete/prefetch.json"
+        },
+
+        "admin/api/dropzone": {
+            "verbs": ["POST"],
+            "mockFile": "dropzone/uploaded.json"
         }
     }
 }
