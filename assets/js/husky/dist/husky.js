@@ -31931,6 +31931,14 @@ define('__component__$search@husky',[], function() {
 
 });
 
+/**
+ * @class Tabs
+ * @constructor
+ *
+ * @param {Object} [options] Configuration object
+ */
+// TODO: complete yuidoc
+
 /*****************************************************************************
  *
  *  Tabs
@@ -31957,9 +31965,7 @@ define('__component__$search@husky',[], function() {
  *  Data options
  *      - items
  *          - forceReload: overwrites default-setting for certain item
- *
- *  TODO select first (or with parameter) item after load
- *
+ * *
  *****************************************************************************/
 
 define('__component__$tabs@husky',[],function() {
@@ -31976,6 +31982,65 @@ define('__component__$tabs@husky',[],function() {
             callback: null,
             forceSelect: true,
             skin: ''
+        },
+
+        /**
+         * enable tabs
+         * @event husky.tabs.activate
+         */
+            ACTIVATE = function () {
+            return this.createEventName('activate');
+        },
+
+        /**
+         * disable tabs
+         * @event husky.tabs.deactivate
+         */
+            DEACTIVATE = function () {
+            return this.createEventName('deactivate');
+        },
+
+        /**
+         * used to show a certain item
+         * @event husky.tabs.item.show
+         * @param {String} id Id of item to show
+         */
+            ITEM_SHOW = function () {
+            return this.createEventName('item.show');
+        },
+
+        /**
+         * used to hide a certain item
+         * @event husky.tabs.item.hide
+         * @param {String} id Id of item to hide
+         */
+            ITEM_HIDE = function () {
+            return this.createEventName('item.hide');
+        },
+
+        /**
+         * used to select a certain item
+         * @event husky.tabs.item.select
+         * @param {String} id Id of item to enable
+         */
+            ITEM_SELECT = function () {
+            return this.createEventName('item.select');
+        },
+
+        /**
+         * used to get selected items
+         * @event husky.tabs.item.getSelected
+         */
+            GET_SELECTED = function () {
+            return this.createEventName('getSelected');
+        },
+
+        /**
+         * triggered when component was initialized
+         * @event husky.tabs.initialized
+         */
+            INITIALIZED = function () {
+            return this.createEventName('initialized');
         },
 
         selectItem = function(event) {
@@ -32002,7 +32067,15 @@ define('__component__$tabs@husky',[],function() {
         triggerSelectEvent = function(item) {
 
             item.forceReload = (item.forceReload && typeof item.forceReload !== "undefined") ? item.forceReload : this.options.forceReload;
-            this.sandbox.emit(createEventString.call(this, 'item.select'), item);
+            this.sandbox.emit(ITEM_SELECT.call(this), item);
+        },
+
+        showItem = function(item) {
+            this.sandbox.dom.show(this.domItems[item]);
+        },
+
+        hideItem = function(item) {
+            this.sandbox.dom.hide(this.domItems[item]);
         },
 
         bindDOMEvents = function() {
@@ -32010,23 +32083,18 @@ define('__component__$tabs@husky',[],function() {
         },
 
         bindCustomEvents = function() {
-            this.sandbox.on(createEventString.call(this, 'getSelected'), function(callback) {
+            this.sandbox.on(GET_SELECTED.call(this), function(callback) {
                 var selection = this.sandbox.dom.find('.is-selected', this.options.el);
                 callback.call(this.items[this.sandbox.dom.data(selection, 'id')]);
             }.bind(this));
 
-            this.sandbox.on(createEventString.call(this, 'activate'), function() {
-                this.activate();
-            }.bind(this));
+            this.sandbox.on(ACTIVATE.call(this), this.activate.bind(this));
 
-            this.sandbox.on(createEventString.call(this, 'deactivate'), function() {
-                this.deactivate();
-            }.bind(this));
-        },
+            this.sandbox.on(DEACTIVATE.call(this), this.deactivate.bind(this));
 
-        createEventString = function(ending) {
-            var instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
-            return 'husky.tabs.' + instanceName + ending;
+            this.sandbox.on(ITEM_SHOW.call(this), showItem.bind(this));
+
+            this.sandbox.on(ITEM_HIDE.call(this), hideItem.bind(this));
         };
 
     return {
@@ -32037,6 +32105,9 @@ define('__component__$tabs@husky',[],function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.$el = this.sandbox.dom.$(this.options.el);
             this.active = true;
+
+            this.items = [];
+            this.domItems = {};
 
             // load data and call render
             if (!!this.options.url) {
@@ -32054,6 +32125,11 @@ define('__component__$tabs@husky',[],function() {
             bindDOMEvents.call(this);
 
             bindCustomEvents.call(this);
+        },
+
+        createEventName: function(ending) {
+            var instanceName = this.options.instanceName ? this.options.instanceName + '.' : '';
+            return 'husky.tabs.' + instanceName + ending;
         },
 
         /**
@@ -32110,6 +32186,7 @@ define('__component__$tabs@husky',[],function() {
             this.sandbox.dom.append($element, $list);
 
             this.items = [];
+            this.domItems = {}
 
             this.sandbox.util.foreach(data.items, function(item, index) {
                 this.items[item.id] = item;
@@ -32117,6 +32194,10 @@ define('__component__$tabs@husky',[],function() {
                     '<li data-id="' + item.id + '"><a href="#">' + this.sandbox.translate(item.title) + '</a></li>'
                 );
                 this.sandbox.dom.append($list, $item);
+
+                if (!!item.disabled && item.disabled.toString() === 'true') {
+                    this.sandbox.dom.hide($item);
+                }
 
                 // set min-width of element
                 this.setMinWidth($item);
@@ -32131,6 +32212,8 @@ define('__component__$tabs@husky',[],function() {
                         selectedItem = item;
                     }
                 }
+                this.domItems[item.id] = $item;
+
             }.bind(this));
 
             // force selection of first element
@@ -32140,7 +32223,7 @@ define('__component__$tabs@husky',[],function() {
             }
 
             // initialization finished
-            this.sandbox.emit(createEventString.call(this, 'initialized'), selectedItem);
+            this.sandbox.emit(INITIALIZED.call(this), selectedItem);
         }
     };
 
