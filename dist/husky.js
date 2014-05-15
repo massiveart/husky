@@ -30384,7 +30384,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     matchingObject = {};
 
                     // only add matching if it's not disabled
-                    if (matching.disabled !== 'true' && matching.disabled !== true) {
+                    if ((matching.disabled !== 'true' && matching.disabled !== true)) {
 
                         // build up the matching with the keys of the passed matching
                         for (var key in matching) {
@@ -30398,9 +30398,11 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                         }
                         // push the constructed matching to the global matchings array
                         this.matchings.push(matchingObject);
+                        this.requestFields.push(matching.id);
+                    } else if (matching.id === 'id') {
+                        this.requestFields.push(matching.id);
                     }
                     // always load the id (never ever even think about not loading the id)
-                    this.requestFields.push(matching.id);
                 }.bind(this));
             },
 
