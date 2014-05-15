@@ -29862,13 +29862,17 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             this.$paginationContainer = this.sandbox.dom.createElement('<div class="' + constants.paginationClass + '"/>');
             if (this.data.numberOfAll > this.data.total) {
                 this.renderShowAll();
-            } else {
+            } else if (this.data.numberOfAll > this.options.pageSize) {
                 this.renderShowOnly();
+            } else {
+                return false;
             }
 
             this.sandbox.dom.append(this.$el, this.$paginationContainer);
 
             this.bindDomEvents();
+
+            return true;
         },
 
         /**
@@ -30384,7 +30388,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     matchingObject = {};
 
                     // only add matching if it's not disabled
-                    if (matching.disabled !== 'true' && matching.disabled !== true) {
+                    if ((matching.disabled !== 'true' && matching.disabled !== true)) {
 
                         // build up the matching with the keys of the passed matching
                         for (var key in matching) {
@@ -30398,9 +30402,11 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                         }
                         // push the constructed matching to the global matchings array
                         this.matchings.push(matchingObject);
+                        this.requestFields.push(matching.id);
+                    } else if (matching.id === 'id') {
+                        this.requestFields.push(matching.id);
                     }
                     // always load the id (never ever even think about not loading the id)
-                    this.requestFields.push(matching.id);
                 }.bind(this));
             },
 
@@ -30579,10 +30585,12 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @param options {Object} an object with options to merge with the current view options for the view
              */
             changeView: function(view, options) {
-                this.destroy();
-                this.getViewDecorator(view);
-                this.extendViewOptions(options);
-                this.render();
+                if (view !== this.viewId) {
+                    this.destroy();
+                    this.getViewDecorator(view);
+                    this.extendViewOptions(options);
+                    this.render();
+                }
             },
 
             /**
@@ -30590,9 +30598,11 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @param pagination {String} identifier of the new pagination to use
              */
             changePagination: function(pagination) {
-                this.destroy();
-                this.getPaginationDecorator(pagination);
-                this.render();
+                if (pagination !== this.paginationId) {
+                    this.destroy();
+                    this.getPaginationDecorator(pagination);
+                    this.render();
+                }
             },
 
             /**
@@ -31060,10 +31070,10 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, pageSize: pageSize});
                 }
 
-                this.sandbox.emit(PAGE_CHANGE.call(this).call(this), url);
+                this.sandbox.emit(PAGE_CHANGE.call(this), url);
                 this.load({url: url,
                     success: function() {
-                        this.sandbox.emit(UPDATED.call(this).call(this), 'changed page');
+                        this.sandbox.emit(UPDATED.call(this), 'changed page');
                     }.bind(this)});
             },
 
