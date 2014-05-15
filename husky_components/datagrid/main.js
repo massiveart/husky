@@ -18,6 +18,7 @@
  * @param {String} [options.searchInstanceName=null] if set, a listener will be set for the corresponding search events
  * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
+ * @param {String} [options.instanceName] name of the datagrid instance
  *
  * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
  * @param {String} [options.matchings.content] column title
@@ -54,7 +55,7 @@
                 matchings: [],
                 url: null,
                 data: null,
-                instance: 'datagrid',
+                instanceName: '',
                 searchInstanceName: null,
                 columnOptionsInstanceName: null,
                 defaultMeasureUnit: 'px'
@@ -85,53 +86,69 @@
              * raised when the the current page changes
              * @event husky.datagrid.page.change
              */
-            PAGE_CHANGE = namespace + 'page.change',
+                PAGE_CHANGE = function () {
+                return this.createEventName('page.change');
+            },
 
             /**
              * raised when the data is updated
              * @event husky.datagrid.updated
              */
-            UPDATED = namespace + 'updated',
+                UPDATED = function () {
+                return this.createEventName('updated');
+            },
 
             /**
              * raised when item is deselected
              * @event husky.datagrid.item.deselect
              * @param {String} id of deselected item
              */
-            ITEM_DESELECT = namespace + 'item.deselect',
+                ITEM_DESELECT = function () {
+                return this.createEventName('item.deselect');
+            },
 
             /**
              * raised when selection of items changes
              * @event husky.datagrid.number.selections
              */
-            NUMBER_SELECTIONS = namespace + 'number.selections',
+                NUMBER_SELECTIONS = function () {
+                return this.createEventName('number.selections');
+            },
 
             /**
              * raised when item is selected
              * @event husky.datagrid.item.select
              * @param {String} if of selected item
              */
-            ITEM_SELECT = namespace + 'item.select',
+                ITEM_SELECT = function () {
+                return this.createEventName('item.select');
+            },
 
             /**
              * raised when all items get deselected via the header checkbox
              * @event husky.datagrid.all.deselect
              */
-            ALL_DESELECT = namespace + 'all.deselect',
+                ALL_DESELECT = function () {
+                return this.createEventName('all.deselect');
+            },
 
             /**
              * raised when all items get deselected via the header checkbox
              * @event husky.datagrid.all.select
              * @param {Array} ids of all items that have been clicked
              */
-            ALL_SELECT = namespace + 'all.select',
+                ALL_SELECT = function () {
+                return this.createEventName('all.select');
+            },
 
             /**
              * raised when data was saved
              * @event husky.datagrid.data.saved
              * @param {Object} data returned
              */
-            DATA_SAVED = namespace + 'data.saved',
+                DATA_SAVED = function () {
+                return this.createEventName('updated');
+            },
 
             /**
              * raised when save of data failed
@@ -140,13 +157,17 @@
              * @param {String} error thrown
              *
              */
-            DATA_SAVE_FAILED = namespace + 'data.save.failed',
+                DATA_SAVE_FAILED = function () {
+                return this.createEventName('data.save.failed');
+            },
 
             /**
              * raised when editable table is changed
              * @event husky.datagrid.data.save
              */
-            DATA_CHANGED = namespace + 'data.changed',
+                DATA_CHANGED = function () {
+                return this.createEventName('data.changed');
+            },
 
 
         /* PROVIDED EVENTS */
@@ -155,7 +176,9 @@
              * raised when husky.datagrid.data.get is triggered
              * @event husky.datagrid.data.provide
              */
-            DATA_PROVIDE = namespace + 'data.provide',
+                DATA_PROVIDE = function () {
+                return this.createEventName('data.provide');
+            },
 
             /**
              * listens on and changes the view of the datagrid
@@ -163,41 +186,53 @@
              * @param {String} viewId The identifier of the view
              * @param {Object} Options to merge with the current view options
              */
-            CHANGE_VIEW = namespace + 'view.change',
+                CHANGE_VIEW = function () {
+                return this.createEventName('view.change');
+            },
 
             /**
              * listens on and changes the pagination of the datagrid
              * @event husky.datagrid.pagination.change
              * @param {String} paginationId The identifier of the pagination
              */
-            CHANGE_PAGINATION = namespace + 'pagination.change',
+                CHANGE_PAGINATION = function () {
+                return this.createEventName('pagination.change');
+            },
 
             /**
              * used to add a data record
              * @event husky.datagrid.record.add
              * @param {Object} the data of the new record
              */
-            RECORD_ADD = namespace + 'record.add',
+                RECORD_ADD = function () {
+                return this.createEventName('record.add');
+            },
 
             /**
              * used to add a data record
              * @event husky.datagrid.record.add
              * @param {Object} the data of the new record
              */
-            RECORDS_ADD = namespace + 'records.add',
+                RECORDS_ADD = function () {
+                return this.createEventName('records.add');
+            },
 
             /**
              * used to remove a data-record
              * @event husky.datagrid.record.remove
              * @param {String} id of the record to be removed
              */
-            RECORD_REMOVE = namespace + 'record.remove',
+                RECORD_REMOVE = function () {
+                return this.createEventName('record.remove');
+            },
 
             /**
              * used to trigger an update of the data
              * @event husky.datagrid.update
              */
-            UPDATE = namespace + 'update',
+                UPDATE = function () {
+                return this.createEventName('update');
+            },
 
             /**
              * used to filter data by search
@@ -205,33 +240,43 @@
              * @param {String} searchField
              * @param {String} searchString
              */
-            DATA_SEARCH = namespace + 'data.search',
+                DATA_SEARCH = function () {
+                return this.createEventName('data.search');
+            },
 
             /**
              * raised when data is sorted
              * @event husky.datagrid.data.sort
              */
-            DATA_SORT = namespace + 'data.sort',
+                DATA_SORT = function () {
+                return this.createEventName('data.sort');
+            },
 
             /**
              * used to filter data by updating an url parameter
              * @event husky.datagrid.url.update
              * @param {Object} url parameter : key
              */
-            URL_UPDATE = namespace + 'url.update',
+                URL_UPDATE = function () {
+                return this.createEventName('url.update');
+            },
 
             /**
              * triggers husky.datagrid.data.provide
              * @event husky.datagrid.data.get
              */
-            DATA_GET = namespace + 'data.get',
+                DATA_GET = function () {
+                return this.createEventName('data.get');
+            },
 
             /**
              * triggers husky.datagrid.items.selected event, which returns all selected item ids
              * @event husky.datagrid.items.get-selected
              * @param  {Function} callback function receives array of selected items
              */
-            ITEMS_GET_SELECTED = namespace + 'items.get-selected',
+                ITEMS_GET_SELECTED = function () {
+                return this.createEventName('items.get-selected');
+            },
 
 
         /**
@@ -285,9 +330,19 @@
                     return parsedDate;
                 }
                 return date;
-            };
+            }
 
         return {
+
+            /**
+             * Creates the eventnames
+             * @param postfix {String} event name to append
+             */
+            createEventName: function (postfix) {
+                var xy = namespace + ((!!this.options.instanceName) ? this.options.instanceName + '.' : '') + postfix;
+                console.log(xy);
+                return xy;
+            },
 
             /**
              * Initialize the datagrid component
@@ -686,35 +741,35 @@
                 this.sandbox.on('husky.navigation.size.changed', this.windowResizeListener.bind(this));
 
                 // listen for private events
-                this.sandbox.on(UPDATE, this.updateGrid.bind(this));
+                this.sandbox.on(UPDATE.call(this), this.updateGrid.bind(this));
 
                 // provide the datagrid-data via event
-                this.sandbox.on(DATA_GET, this.provideData.bind(this));
+                this.sandbox.on(DATA_GET.call(this), this.provideData.bind(this));
 
                 // filter data
-                this.sandbox.on(DATA_SEARCH, this.searchGrid.bind(this));
+                this.sandbox.on(DATA_SEARCH.call(this), this.searchGrid.bind(this));
 
                 // filter data
-                this.sandbox.on(URL_UPDATE, this.updateUrl.bind(this));
+                this.sandbox.on(URL_UPDATE.call(this), this.updateUrl.bind(this));
 
                 // changes the view of the datagrid
-                this.sandbox.on(CHANGE_VIEW, this.changeView.bind(this));
+                this.sandbox.on(CHANGE_VIEW.call(this), this.changeView.bind(this));
 
                 // changes the view of the datagrid
-                this.sandbox.on(CHANGE_PAGINATION, this.changePagination.bind(this));
+                this.sandbox.on(CHANGE_PAGINATION.call(this), this.changePagination.bind(this));
 
                 // trigger selectedItems
-                this.sandbox.on(ITEMS_GET_SELECTED, function(callback) {
+                this.sandbox.on(ITEMS_GET_SELECTED.call(this), function(callback) {
                     callback(this.getSelectedItemIds());
                 }.bind(this));
 
                 // add a single data record
-                this.sandbox.on(RECORD_ADD, this.addRecordHandler.bind(this));
+                this.sandbox.on(RECORD_ADD.call(this), this.addRecordHandler.bind(this));
                 // add multiple data records
-                this.sandbox.on(RECORDS_ADD, this.addRecordsHandler.bind(this));
+                this.sandbox.on(RECORDS_ADD.call(this), this.addRecordsHandler.bind(this));
 
                 // remove a data record
-                this.sandbox.on(RECORD_REMOVE, this.removeRecordHandler.bind(this));
+                this.sandbox.on(RECORD_REMOVE.call(this), this.removeRecordHandler.bind(this));
 
                 this.startColumnOptionsListener();
                 this.startSearchListener();
@@ -773,7 +828,7 @@
              * Provides data of the list to the caller
              */
             provideData: function() {
-                this.sandbox.emit(DATA_PROVIDE, this.data);
+                this.sandbox.emit(DATA_PROVIDE.call(this), this.data);
             },
 
             /**
@@ -835,8 +890,8 @@
                     this.data.embedded[i].selected = false;
                 }
                 // emit events with selected data
-                this.sandbox.emit(ALL_DESELECT);
-                this.sandbox.emit(NUMBER_SELECTIONS, 0);
+                this.sandbox.emit(ALL_DESELECT.call(this));
+                this.sandbox.emit(NUMBER_SELECTIONS.call(this), 0);
             },
 
             /**
@@ -849,8 +904,8 @@
                     ids.push(this.data.embedded[i].id);
                 }
                 // emit events with selected data
-                this.sandbox.emit(ALL_SELECT, ids);
-                this.sandbox.emit(NUMBER_SELECTIONS, this.data.embedded.length);
+                this.sandbox.emit(ALL_SELECT.call(this), ids);
+                this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.data.embedded.length);
             },
 
             /**
@@ -882,7 +937,7 @@
                         this.data.embedded[i].selected = false;
                     }
                 }
-                this.sandbox.emit(NUMBER_SELECTIONS, count);
+                this.sandbox.emit(NUMBER_SELECTIONS.call(this), count);
             },
 
             /**
@@ -909,8 +964,8 @@
                 if (itemIndex !== null) {
                     this.data.embedded[itemIndex].selected = true;
                     // emit events with selected data
-                    this.sandbox.emit(ITEM_SELECT, id);
-                    this.sandbox.emit(NUMBER_SELECTIONS, this.getSelectedItemIds().length);
+                    this.sandbox.emit(ITEM_SELECT.call(this), id);
+                    this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                     return true;
                 }
                 return false;
@@ -926,8 +981,8 @@
                 if (itemIndex !== null) {
                     this.data.embedded[itemIndex].selected = false;
                     // emit events with selected data
-                    this.sandbox.emit(ITEM_DESELECT, id);
-                    this.sandbox.emit(NUMBER_SELECTIONS, this.getSelectedItemIds().length);
+                    this.sandbox.emit(ITEM_DESELECT.call(this), id);
+                    this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                     return true;
                 }
                 return false;
@@ -949,7 +1004,7 @@
                 this.load({
                     url: url,
                     success: function() {
-                        this.sandbox.emit(UPDATED);
+                        this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
             },
@@ -1050,10 +1105,10 @@
                     url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, pageSize: pageSize});
                 }
 
-                this.sandbox.emit(PAGE_CHANGE, url);
+                this.sandbox.emit(PAGE_CHANGE.call(this).call(this), url);
                 this.load({url: url,
                     success: function() {
-                        this.sandbox.emit(UPDATED, 'changed page');
+                        this.sandbox.emit(UPDATED.call(this).call(this), 'changed page');
                     }.bind(this)});
             },
 
@@ -1068,7 +1123,7 @@
                 this.load({
                     url: this.data.links.self,
                     success: function() {
-                        this.sandbox.emit(UPDATED);
+                        this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
             },
@@ -1091,7 +1146,7 @@
                 this.load({
                     url: url,
                     success: function() {
-                        this.sandbox.emit(UPDATED);
+                        this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
             },
@@ -1114,12 +1169,12 @@
                         template = this.sandbox.uritemplate.parse(this.data.links.sortable[attribute]);
                         url = this.sandbox.uritemplate.expand(template, {sortOrder: direction});
 
-                        this.sandbox.emit(DATA_SORT);
+                        this.sandbox.emit(DATA_SORT.call(this));
 
                         this.load({
                             url: url,
                             success: function() {
-                                this.sandbox.emit(UPDATED);
+                                this.sandbox.emit(UPDATED.call(this));
                             }.bind(this)
                         });
                     }
@@ -1140,7 +1195,7 @@
                 this.load({
                     url: url,
                     success: function() {
-                        this.sandbox.emit(UPDATED);
+                        this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
             },
@@ -1163,11 +1218,11 @@
                     url = url + '/' + data.id;
                 }
 
-                this.sandbox.emit(DATA_CHANGED);
+                this.sandbox.emit(DATA_CHANGED.call(this));
 
                 this.sandbox.util.save(url, method, data)
                     .then(function(data, textStatus) {
-                        this.sandbox.emit(DATA_SAVED, data, textStatus);
+                        this.sandbox.emit(DATA_SAVED.call(this), data, textStatus);
 
                         if (typeof success === 'function') {
                             success(data, textStatus);
@@ -1183,7 +1238,7 @@
                         }
                     }.bind(this))
                     .fail(function(jqXHR, textStatus, error) {
-                        this.sandbox.emit(DATA_SAVE_FAILED, textStatus, error);
+                        this.sandbox.emit(DATA_SAVE_FAILED.call(this), textStatus, error);
 
                         if (typeof fail === 'function') {
                             fail(jqXHR, textStatus, error);

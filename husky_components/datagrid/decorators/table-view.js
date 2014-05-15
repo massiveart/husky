@@ -107,57 +107,59 @@ define(function() {
             ].join('')
     },
 
-     namespace = 'husky.datagrid.',
-
     /**
      * raised when clicked on an item
      * @event husky.datagrid.item.click
      * @param {String} id of item that was clicked
      */
-        ITEM_CLICK = namespace + 'item.click',
+        ITEM_CLICK = function () {
+        return datagrid.createEventName.call(datagrid, 'item.click');
+    },
 
-    /**
-     * used to update the table width and its containers due to responsiveness
-     * @event husky.datagrid.update.table
-     */
-        UPDATE_TABLE = namespace + 'update.table',
+        /**
+         * used to update the table width and its containers due to responsiveness
+         * @event husky.datagrid.update.table
+         */
+            UPDATE_TABLE = function () {
+            return datagrid.createEventName.call(datagrid, 'update.table');
+        },
 
-    /**
-     * calculates the width of a text by creating a tablehead element and measure its width
-     * @param text
-     * @param classArray
-     * @param isSortable
-     */
-    getTextWidth = function(text, classArray, isSortable) {
-        var elWidth, el,
-            sortIconWidth = 0,
-            paddings = 20;
-        // handle css classes
-        if (!classArray) {
-            classArray = [];
-        }
-        if (isSortable) {
-            classArray.push(constants.sortableClass);
-            sortIconWidth = 20;
-        }
-        classArray.push(constants.isSelectedClass);
+        /**
+         * calculates the width of a text by creating a tablehead element and measure its width
+         * @param text
+         * @param classArray
+         * @param isSortable
+         */
+            getTextWidth = function (text, classArray, isSortable) {
+            var elWidth, el,
+                sortIconWidth = 0,
+                paddings = 20;
+            // handle css classes
+            if (!classArray) {
+                classArray = [];
+            }
+            if (isSortable) {
+                classArray.push(constants.sortableClass);
+                sortIconWidth = 20;
+            }
+            classArray.push(constants.isSelectedClass);
 
-        el = this.sandbox.dom.createElement('<table style="width:auto"><thead><tr><th class="' + classArray.join(',') + '">' + text + '</th></tr></thead></table>');
-        this.sandbox.dom.css(el, {
-            'position': 'absolute',
-            'visibility': 'hidden',
-            'height': 'auto',
-            'width': 'auto'
-        });
-        this.sandbox.dom.append('body', el);
+            el = this.sandbox.dom.createElement('<table style="width:auto"><thead><tr><th class="' + classArray.join(',') + '">' + text + '</th></tr></thead></table>');
+            this.sandbox.dom.css(el, {
+                'position': 'absolute',
+                'visibility': 'hidden',
+                'height': 'auto',
+                'width': 'auto'
+            });
+            this.sandbox.dom.append('body', el);
 
-        // text width + paddings and sorting icon
-        elWidth = this.sandbox.dom.width(el) + paddings + sortIconWidth;
+            // text width + paddings and sorting icon
+            elWidth = this.sandbox.dom.width(el) + paddings + sortIconWidth;
 
-        this.sandbox.dom.remove(el);
+            this.sandbox.dom.remove(el);
 
-        return elWidth;
-    };
+            return elWidth;
+        };
 
     return {
 
@@ -228,14 +230,14 @@ define(function() {
          */
         bindCustomEvents: function() {
             // checks table width
-            this.sandbox.on(UPDATE_TABLE, this.onResize.bind(this));
+            this.sandbox.on(UPDATE_TABLE.call(this), this.onResize.bind(this));
         },
 
         /**
          * Unbinds the custom-events by this view
          */
         unBindCustomEvents: function() {
-            this.sandbox.off(UPDATE_TABLE);
+            this.sandbox.off(UPDATE_TABLE.call(this));
         },
 
         /**
@@ -309,9 +311,9 @@ define(function() {
         emitRowClickedEvent: function(event) {
             var id = this.sandbox.dom.$(event.currentTarget).data('id');
             if (!!id) {
-                this.sandbox.emit(ITEM_CLICK, id);
+                this.sandbox.emit(ITEM_CLICK.call(this), id);
             } else {
-                this.sandbox.emit(ITEM_CLICK, event);
+                this.sandbox.emit(ITEM_CLICK.call(this), event);
             }
         },
 
