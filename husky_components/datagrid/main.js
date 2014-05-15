@@ -3,11 +3,6 @@
  * @constructor
  *
  * @param {Object} [options] Configuration object
- * @param {Array} [options.fieldsData] fields data will extend url and set tableHead automatically
- * @param {Object} [options.fieldsData.{}] fields object
- * @param {String} [options.fieldsData.{}.id] field name
- * @param {String} [options.fieldsData.{}.translation] translation key which will be translated automatically
- * @param {String} [options.fieldsData.{}.disabled] either 'true' or 'false'
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
  * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
  * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
@@ -294,14 +289,14 @@
              */
             setGetParameter = function(url, paramName, paramValue) {
                 if (url.indexOf(paramName + "=") >= 0) {
-                    var prefix = url.substring(0, url.indexOf(paramName)),
-                        suffix = url.substring(url.indexOf(paramName));
+                    var prefix = url.substring(0, url.indexOf(paramName + "=")),
+                        suffix = url.substring(url.indexOf(paramName + "="));
                     suffix = suffix.substring(suffix.indexOf('=') + 1);
                     suffix = (suffix.indexOf('&') >= 0) ? suffix.substring(suffix.indexOf('&')) : '';
                     if (!!paramValue) {
                         url = prefix + paramName + '=' + paramValue + suffix;
                     } else {
-                        if (url.substr(url.indexOf(paramName) - 1, 1) === '&') {
+                        if (url.substr(url.indexOf(paramName + '=') - 1, 1) === '&') {
                             url = url.substring(0, prefix.length - 1) + suffix;
                         } else {
                             url = prefix + suffix.substring(1, suffix.length);
@@ -330,7 +325,7 @@
                     return parsedDate;
                 }
                 return date;
-            }
+            };
 
         return {
 
@@ -339,9 +334,7 @@
              * @param postfix {String} event name to append
              */
             createEventName: function (postfix) {
-                var xy = namespace + ((!!this.options.instanceName) ? this.options.instanceName + '.' : '') + postfix;
-                console.log(xy);
-                return xy;
+                return namespace + ((!!this.options.instanceName) ? this.options.instanceName + '.' : '') + postfix;
             },
 
             /**
