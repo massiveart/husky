@@ -81,13 +81,17 @@ define(function () {
             this.$paginationContainer = this.sandbox.dom.createElement('<div class="' + constants.paginationClass + '"/>');
             if (this.data.numberOfAll > this.data.total) {
                 this.renderShowAll();
-            } else {
+            } else if (this.data.numberOfAll > this.options.pageSize) {
                 this.renderShowOnly();
+            } else {
+                return false;
             }
 
             this.sandbox.dom.append(this.$el, this.$paginationContainer);
 
             this.bindDomEvents();
+
+            return true;
         },
 
         /**

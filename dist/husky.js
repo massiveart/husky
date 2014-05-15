@@ -29862,13 +29862,17 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             this.$paginationContainer = this.sandbox.dom.createElement('<div class="' + constants.paginationClass + '"/>');
             if (this.data.numberOfAll > this.data.total) {
                 this.renderShowAll();
-            } else {
+            } else if (this.data.numberOfAll > this.options.pageSize) {
                 this.renderShowOnly();
+            } else {
+                return false;
             }
 
             this.sandbox.dom.append(this.$el, this.$paginationContainer);
 
             this.bindDomEvents();
+
+            return true;
         },
 
         /**
@@ -29965,11 +29969,6 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
  * @constructor
  *
  * @param {Object} [options] Configuration object
- * @param {Array} [options.fieldsData] fields data will extend url and set tableHead automatically
- * @param {Object} [options.fieldsData.{}] fields object
- * @param {String} [options.fieldsData.{}.id] field name
- * @param {String} [options.fieldsData.{}.translation] translation key which will be translated automatically
- * @param {String} [options.fieldsData.{}.disabled] either 'true' or 'false'
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
  * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
  * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
@@ -30256,14 +30255,14 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              */
             setGetParameter = function(url, paramName, paramValue) {
                 if (url.indexOf(paramName + "=") >= 0) {
-                    var prefix = url.substring(0, url.indexOf(paramName)),
-                        suffix = url.substring(url.indexOf(paramName));
+                    var prefix = url.substring(0, url.indexOf(paramName + "=")),
+                        suffix = url.substring(url.indexOf(paramName + "="));
                     suffix = suffix.substring(suffix.indexOf('=') + 1);
                     suffix = (suffix.indexOf('&') >= 0) ? suffix.substring(suffix.indexOf('&')) : '';
                     if (!!paramValue) {
                         url = prefix + paramName + '=' + paramValue + suffix;
                     } else {
-                        if (url.substr(url.indexOf(paramName) - 1, 1) === '&') {
+                        if (url.substr(url.indexOf(paramName + '=') - 1, 1) === '&') {
                             url = url.substring(0, prefix.length - 1) + suffix;
                         } else {
                             url = prefix + suffix.substring(1, suffix.length);
@@ -30292,7 +30291,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     return parsedDate;
                 }
                 return date;
-            }
+            };
 
         return {
 
@@ -30301,9 +30300,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @param postfix {String} event name to append
              */
             createEventName: function (postfix) {
-                var xy = namespace + ((!!this.options.instanceName) ? this.options.instanceName + '.' : '') + postfix;
-                console.log(xy);
-                return xy;
+                return namespace + ((!!this.options.instanceName) ? this.options.instanceName + '.' : '') + postfix;
             },
 
             /**
@@ -30391,7 +30388,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     matchingObject = {};
 
                     // only add matching if it's not disabled
-                    if (matching.disabled !== 'true' && matching.disabled !== true) {
+                    if ((matching.disabled !== 'true' && matching.disabled !== true)) {
 
                         // build up the matching with the keys of the passed matching
                         for (var key in matching) {
@@ -30405,9 +30402,11 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                         }
                         // push the constructed matching to the global matchings array
                         this.matchings.push(matchingObject);
+                        this.requestFields.push(matching.id);
+                    } else if (matching.id === 'id') {
+                        this.requestFields.push(matching.id);
                     }
                     // always load the id (never ever even think about not loading the id)
-                    this.requestFields.push(matching.id);
                 }.bind(this));
             },
 
@@ -30586,10 +30585,12 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @param options {Object} an object with options to merge with the current view options for the view
              */
             changeView: function(view, options) {
-                this.destroy();
-                this.getViewDecorator(view);
-                this.extendViewOptions(options);
-                this.render();
+                if (view !== this.viewId) {
+                    this.destroy();
+                    this.getViewDecorator(view);
+                    this.extendViewOptions(options);
+                    this.render();
+                }
             },
 
             /**
@@ -30597,9 +30598,11 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @param pagination {String} identifier of the new pagination to use
              */
             changePagination: function(pagination) {
-                this.destroy();
-                this.getPaginationDecorator(pagination);
-                this.render();
+                if (pagination !== this.paginationId) {
+                    this.destroy();
+                    this.getPaginationDecorator(pagination);
+                    this.render();
+                }
             },
 
             /**
@@ -31067,10 +31070,10 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, pageSize: pageSize});
                 }
 
-                this.sandbox.emit(PAGE_CHANGE.call(this).call(this), url);
+                this.sandbox.emit(PAGE_CHANGE.call(this), url);
                 this.load({url: url,
                     success: function() {
-                        this.sandbox.emit(UPDATED.call(this).call(this), 'changed page');
+                        this.sandbox.emit(UPDATED.call(this), 'changed page');
                     }.bind(this)});
             },
 
