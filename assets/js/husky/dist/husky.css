@@ -7784,9 +7784,9 @@ a.btn-black, a.btn-highlight {
   padding: 10px 20px 20px 20px;
   background: #dddddd;
   border: 1px solid #cccccc;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
-  -moz-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
-  box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.06) 2px 2px 0px 0px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.06) 2px 2px 0px 0px;
+  box-shadow: rgba(0, 0, 0, 0.06) 2px 2px 0px 0px;
 }
 /* line 56, ../scss/modules/content-types.scss */
 .text-block .container label {

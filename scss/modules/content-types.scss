@@ -51,7 +51,7 @@
         padding: 10px 20px 20px 20px;
         background: $grayLighterer;
         border: 1px solid $grayLighter;
-        @include standard-box-shadow(3px);
+        @include standard-box-shadow(2px, rgba(0,0,0,0.06));
 
         label {
             margin-bottom: 10px;
