@@ -11,6 +11,12 @@
             "action": "permissions"
         },
         {
+            "id": "disable-tab",
+            "title": "Disabled Tab",
+            "action": "disabled",
+            "disabled": "true"
+        },
+        {
             "title": "Settings",
             "action": "settings"
         }
