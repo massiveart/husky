@@ -33,10 +33,10 @@
     @include clear-float;
 
     &.small {
-      width: $thumbnailSmallWidth;
+      width: $thumbnailSmallWidth - 1px;
       height: $thumbnailSmallHeight;
       margin-bottom: 20px;
-      margin-right: 12px;
+      margin-right: 8px;
 
       .image {
         float: left;
@@ -51,7 +51,7 @@
       .text {
         float: left;
         padding-top: 20px;
-        width: $thumbnailSmallWidth - $imgSmallWidth;
+        width: $thumbnailSmallWidth - $imgSmallWidth -1px;
       }
       .checkbox {
         position: absolute;
@@ -69,10 +69,10 @@
     }
 
     &.large {
-      width: $thumbnailLargeWidth - 2px;
+      width: $thumbnailLargeWidth - 3px;
       height: $thumbnailLargeHeight - 2px;
       margin-bottom: 40px;
-      margin-right: 20px;
+      margin-right: 18px;
       border: 1px solid $grayLighter;
       padding: 10px;
 

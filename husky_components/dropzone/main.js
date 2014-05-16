@@ -41,7 +41,10 @@ define([], function() {
             method: 'POST',
             url: '/',
             paramName: 'file',
-            headers: {},
+            headers: {
+                // to prevent a 406 error-response
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+            },
             uploadMultiple: false,
             successCallback: null,
             beforeSendingCallback: null,
@@ -180,8 +183,8 @@ define([], function() {
         render: function() {
             this.sandbox.dom.addClass(this.$el, constants.contianerClass);
             this.sandbox.dom.html(this.$el, this.sandbox.util.template(templates.basic)({
-                description: this.options.descriptionKey,
-                title: this.options.titleKey,
+                description: this.sandbox.translate(this.options.descriptionKey),
+                title: this.sandbox.translate(this.options.titleKey),
                 icon: this.options.descriptionIcon,
                 instanceName: this.options.instanceName
             }));

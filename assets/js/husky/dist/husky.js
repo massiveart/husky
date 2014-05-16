@@ -29808,9 +29808,9 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             structure: [
                 '<div class="' + constants.squareClass + '"></div>',
                 '<div class="' + constants.textClass + '">',
-                    '<%= desc %>',
-                    '<strong><%= number %></strong> ',
-                    translations.elements,
+                    '<%= translate(desc) %>',
+                    '<strong> <%= number %></strong> ',
+                    '<%= translate(elements) %>',
                 '</div>'
             ].join('')
         };
@@ -29864,7 +29864,9 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
         renderShowAll: function() {
             this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
                 desc: translations.showAll,
-                number: this.data.numberOfAll
+                number: this.data.numberOfAll,
+                elements: translations.elements,
+                translate: this.sandbox.translate
             }));
         },
 
@@ -29874,7 +29876,9 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
         renderShowOnly: function() {
             this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
                 desc: translations.showOnly,
-                number: this.options.pageSize
+                number: this.options.pageSize,
+                elements: translations.elements,
+                translate: this.sandbox.translate
             }));
         },
 
@@ -39668,7 +39672,10 @@ define('__component__$dropzone@husky',[], function() {
             method: 'POST',
             url: '/',
             paramName: 'file',
-            headers: {},
+            headers: {
+                // to prevent a 406 error-response
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+            },
             uploadMultiple: false,
             successCallback: null,
             beforeSendingCallback: null,
@@ -39807,8 +39814,8 @@ define('__component__$dropzone@husky',[], function() {
         render: function() {
             this.sandbox.dom.addClass(this.$el, constants.contianerClass);
             this.sandbox.dom.html(this.$el, this.sandbox.util.template(templates.basic)({
-                description: this.options.descriptionKey,
-                title: this.options.titleKey,
+                description: this.sandbox.translate(this.options.descriptionKey),
+                title: this.sandbox.translate(this.options.titleKey),
                 icon: this.options.descriptionIcon,
                 instanceName: this.options.instanceName
             }));
