@@ -351,6 +351,10 @@
                 this.requestFields = [];
                 this.filterMatchings(this.options.matchings);
 
+                // make a copy of the decorators for each datagrid instance
+                // if you directly access the decorators variable the datagrid-context in the decorators will be overwritten
+                this.decorators = this.sandbox.util.extend(true, {}, decorators);
+
                 this.types = types;
 
                 this.gridViews = {};
@@ -564,7 +568,7 @@
 
                 // if view is not already loaded, load it
                 if (!this.gridViews[this.viewId]) {
-                    this.gridViews[this.viewId] = decorators.views[this.viewId];
+                    this.gridViews[this.viewId] = this.decorators.views[this.viewId];
                     var isViewValid = this.isViewValid(this.gridViews[this.viewId]);
 
                     if (isViewValid === true) {
@@ -602,7 +606,7 @@
 
                     // load the pagination if not already loaded
                     if (!this.paginations[this.paginationId]) {
-                        this.paginations[this.paginationId] = decorators.paginations[this.paginationId];
+                        this.paginations[this.paginationId] = this.decorators.paginations[this.paginationId];
                         var paginationIsValid = this.isPaginationValid(this.paginations[this.paginationId]);
                         if (paginationIsValid === true) {
                             this.paginations[this.paginationId].initialize(this, this.options.paginationOptions[this.paginationId]);

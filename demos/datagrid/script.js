@@ -81,6 +81,61 @@ require(['lib/husky'], function(Husky) {
                 }
             },
             {
+                name: 'datagrid@husky',
+                options: {
+                    url: 'http://husky.lo:7878/admin/api/datagrid',
+                    paginationOptions: {
+                        dropdown: {
+                            pageSize: 4
+                        }
+                    },
+                    view: 'thumbnail',
+                    viewOptions: {
+                        thumbnail: {
+                            large: true
+                        }
+                    },
+                    sortable: true,
+                    searchInstanceName: 'test',
+                    columnOptionsInstanceName: '',
+                    el: '#datagrid2',
+                    instanceName: 'grid2',
+                    matchings: [
+                        {
+                            content: 'Content 1',
+                            width: "25%",
+                            id: "content1",
+                            editable: true,
+                            type: 'title',
+                            validation: {
+                                required: true
+                            }
+                        },
+                        {
+                            content: 'Content 2',
+                            width: "25%",
+                            id: "content2",
+                            editable: false,
+                            validation: {
+                                required: true
+                            }
+                        },
+                        {
+                            content: 'Content 3',
+                            width: "25%",
+                            id: "content3",
+                            type: 'thumbnail'
+                        },
+                        {
+                            content: 'Date',
+                            width: "25%",
+                            id: 'date',
+                            type: 'date'
+                        }
+                    ]
+                }
+            },
+            {
                 name: 'toolbar@husky',
                 options: {
                     el: '#toolbar',

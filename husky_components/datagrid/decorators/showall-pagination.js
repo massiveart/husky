@@ -13,12 +13,7 @@ define(function () {
 
     'use strict';
 
-    /**
-     * Variable to store the datagrid context
-     */
-    var datagrid,
-
-        defaults = {
+    var defaults = {
             pageSize: 9
         },
 
@@ -60,10 +55,10 @@ define(function () {
          */
         initialize: function (context, options) {
             // context of the datagrid-component
-            datagrid = context;
+            this.datagrid = context;
 
             // make sandbox available in this-context
-            this.sandbox = datagrid.sandbox;
+            this.sandbox = this.datagrid.sandbox;
 
             // merge defaults with pagination options
             this.options = this.sandbox.util.extend(true, {}, defaults, options);
@@ -164,14 +159,14 @@ define(function () {
          * Shows all elements in the datagrid
          */
         showAll: function() {
-            datagrid.changePage.call(datagrid, this.data.links.all);
+            this.datagrid.changePage.call(this.datagrid, this.data.links.all);
         },
 
         /**
          * Shows only the configured amount of elements in the datagrid
          */
         showOnly: function() {
-            datagrid.changePage.call(datagrid, null, 1, this.options.pageSize);
+            this.datagrid.changePage.call(this.datagrid, null, 1, this.options.pageSize);
         },
 
         /**
