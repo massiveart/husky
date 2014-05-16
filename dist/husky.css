@@ -8030,10 +8030,10 @@ a.btn-black, a.btn-highlight {
 }
 /* line 35, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.small {
-  width: 260px;
+  width: 259px;
   height: 70px;
   margin-bottom: 20px;
-  margin-right: 12px;
+  margin-right: 8px;
 }
 /* line 41, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.small .image {
@@ -8070,10 +8070,10 @@ a.btn-black, a.btn-highlight {
 }
 /* line 71, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.large {
-  width: 188px;
+  width: 187px;
   height: 248px;
   margin-bottom: 40px;
-  margin-right: 20px;
+  margin-right: 18px;
   border: 1px solid #cccccc;
   padding: 10px;
 }
