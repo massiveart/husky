@@ -29769,6 +29769,8 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
  * @constructor
  *
  * @param {Object} [paginationOptions] Configuration object
+ * @param {Number} [paginationOptions.pageSize] maximum elements per page
+ * @param {Function} [paginationOptions.showAllHandler] function to call if pagination is clicked. Default action gets not executed if set
  *
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
@@ -29780,7 +29782,8 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
     
 
     var defaults = {
-            pageSize: 9
+            pageSize: 9,
+            showAllHandler: null
         },
 
         constants = {
@@ -29923,9 +29926,14 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
 
         /**
          * Shows all elements in the datagrid
+         * or just executes the handler if passed
          */
         showAll: function() {
-            this.datagrid.changePage.call(this.datagrid, this.data.links.all);
+            if (typeof this.options.showAllHandler !== 'function') {
+                this.datagrid.changePage.call(this.datagrid, this.data.links.all);
+            } else {
+                this.options.showAllHandler();
+            }
         },
 
         /**
