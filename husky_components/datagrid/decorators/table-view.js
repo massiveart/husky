@@ -30,12 +30,7 @@ define(function() {
 
     'use strict';
 
-    /**
-     * Variable to store the datagrid context
-     */
-    var datagrid,
-
-        defaults = {
+    var defaults = {
             editable: false,
             className: 'datagridcontainer',
             fullWidth: false,
@@ -113,7 +108,7 @@ define(function() {
      * @param {String} id of item that was clicked
      */
         ITEM_CLICK = function () {
-        return datagrid.createEventName.call(datagrid, 'item.click');
+        return this.datagrid.createEventName.call(this.datagrid, 'item.click');
     },
 
         /**
@@ -121,7 +116,7 @@ define(function() {
          * @event husky.datagrid.update.table
          */
             UPDATE_TABLE = function () {
-            return datagrid.createEventName.call(datagrid, 'update.table');
+            return this.datagrid.createEventName.call(this.datagrid, 'update.table');
         },
 
         /**
@@ -169,11 +164,11 @@ define(function() {
          * @param {Object} options The options used by the view
          */
         initialize: function(context, options) {
-            // context of the datagrid-component
-            datagrid = context;
+            // store context of the datagrid-component
+            this.datagrid = context;
 
             // make sandbox available in this-context
-            this.sandbox = datagrid.sandbox;
+            this.sandbox = this.datagrid.sandbox;
 
             // merge defaults with options
             this.options = this.sandbox.util.extend(true, {}, defaults, options);
@@ -203,7 +198,7 @@ define(function() {
 
             // initialize validation
             if (!!this.options.validation) {
-                this.sandbox.form.create(datagrid.$el);
+                this.sandbox.form.create(this.datagrid.$el);
             }
 
             this.setHeaderClasses();
@@ -229,7 +224,7 @@ define(function() {
          * view (like an extension)
          */
         bindCustomEvents: function() {
-            // checks table width
+            // checks table widths
             this.sandbox.on(UPDATE_TABLE.call(this), this.onResize.bind(this));
         },
 
@@ -261,7 +256,7 @@ define(function() {
                 );
                 //select all event
                 this.sandbox.dom.on(
-                    this.sandbox.dom.find('#' + constants.selectAllName),
+                    this.sandbox.dom.find('#' + constants.selectAllName, this.$tableContainer),
                     'click',
                     this.selectAllItems.bind(this)
                 );
@@ -296,7 +291,7 @@ define(function() {
             }
 
             // add sortable events if configured
-            if (datagrid.options.sortable) {
+            if (this.datagrid.options.sortable) {
                 this.sandbox.dom.on(
                     this.sandbox.dom.find('thead th[data-attribute]', this.$tableContainer),
                     'click',
@@ -337,11 +332,11 @@ define(function() {
                 if (this.sandbox.dom.css(this.options.contentContainer, 'max-width') === 'none') {
                     this.originalMaxWidth = null;
                 } else {
-                    this.originalMaxWidth = datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
+                    this.originalMaxWidth = this.datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
                 }
-                this.contentMarginRight = datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'margin-right')).number;
-                this.contentPaddings = datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-right')).number;
-                this.contentPaddings += datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-left')).number;
+                this.contentMarginRight = this.datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'margin-right')).number;
+                this.contentPaddings = this.datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-right')).number;
+                this.contentPaddings += this.datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-left')).number;
             } else {
                 this.contentMarginRight = 0;
                 this.contentPaddings = 0;
@@ -350,11 +345,11 @@ define(function() {
 
         /**
          * Sets the header classes used for sorting purposes
-         * uses datagrid.sort
+         * uses this.datagrid.sort
          */
         setHeaderClasses: function() {
-            var attribute = datagrid.sort.attribute,
-                direction = datagrid.sort.direction,
+            var attribute = this.datagrid.sort.attribute,
+                direction = this.datagrid.sort.direction,
                 $element = this.sandbox.dom.find('thead th[data-attribute=' + attribute + ']', this.$tableContainer),
                 $span = this.sandbox.dom.children($element, 'span')[0];
 
@@ -378,7 +373,7 @@ define(function() {
 
             this.$table = $table = this.sandbox.dom.createElement('<table' + (!!this.options.validationDebug ? 'data-debug="true"' : '' ) + '/>');
 
-            if (!!this.data.head || !!datagrid.matchings) {
+            if (!!this.data.head || !!this.datagrid.matchings) {
                 $thead = this.sandbox.dom.createElement('<thead/>');
                 this.sandbox.dom.append($thead, this.prepareTableHead());
                 this.sandbox.dom.append($table, $thead);
@@ -417,13 +412,13 @@ define(function() {
                 tblColumnStyle, minWidth;
 
             tblColumns = [];
-            headData = datagrid.matchings || this.data.head;
+            headData = this.datagrid.matchings || this.data.head;
 
             // add a checkbox to head row
             if (!!this.options.selectItem && !!this.options.selectItem.type) {
                 // default values
                 if (this.options.selectItem.width) {
-                    checkboxValues = datagrid.getNumberAndUnit(this.options.selectItem.width);
+                    checkboxValues = this.datagrid.getNumberAndUnit(this.options.selectItem.width);
                 }
                 minWidth = checkboxValues.number + checkboxValues.unit;
 
@@ -452,7 +447,7 @@ define(function() {
                 if (this.options.excludeFields.indexOf(column.attribute) < 0) {
                     isSortable = false;
 
-                    if (!!datagrid.data.links && !!this.data.links.sortable) {
+                    if (!!this.datagrid.data.links && !!this.data.links.sortable) {
                         //is column sortable - check with received sort-links
                         this.sandbox.util.each(this.data.links.sortable, function(index) {
                             if (index === column.attribute) {
@@ -470,7 +465,7 @@ define(function() {
                         minWidth = column.minWidth;
                     } else {
                         minWidth = getTextWidth.call(this, column.content, [], isSortable);
-                        minWidth = (minWidth > datagrid.getNumberAndUnit(this.options.columnMinWidth).number) ? minWidth + 'px' : this.options.columnMinWidth;
+                        minWidth = (minWidth > this.datagrid.getNumberAndUnit(this.options.columnMinWidth).number) ? minWidth + 'px' : this.options.columnMinWidth;
 
                     }
                     tblColumnStyle.push('min-width:' + minWidth);
@@ -478,7 +473,7 @@ define(function() {
 
                     // get width and measureunit
                     if (!!column.width) {
-                        widthValues = datagrid.getNumberAndUnit(column.width);
+                        widthValues = this.datagrid.getNumberAndUnit(column.width);
                         tblColumnStyle.push('max-width:' + widthValues.number + widthValues.unit);
                         tblColumnStyle.push('width:' + widthValues.number + widthValues.unit);
                     }
@@ -548,7 +543,7 @@ define(function() {
 
             } else {
                 this.tblColumns = [];
-                this.tblRowAttributes = ' data-dom-id="dom-' + this.options.instance + '-' + this.rowId + '"';
+                this.tblRowAttributes = ' data-dom-id="dom-' + this.datagrid.options.instanceName + '-' + this.rowId + '"';
                 this.rowId++;
 
                 if (!!this.options.className && this.options.className !== '') {
@@ -646,11 +641,11 @@ define(function() {
                         validationAttr += ['data-validation-', k, '="', validation[k], '" '].join('');
                     }
                 }
-                tblCellStyle = 'style="max-width:' + datagrid.matchings[index].minWidth + '"';
+                tblCellStyle = 'style="max-width:' + this.datagrid.matchings[index].minWidth + '"';
 
                 // call the type manipulate to manipulate the content of the cell
                 if (!!type) {
-                    tblCellContent = datagrid.manipulateContent(tblCellContent, type);
+                    tblCellContent = this.datagrid.manipulateContent(tblCellContent, type);
                 }
 
                 if (!!editable) {
@@ -731,7 +726,7 @@ define(function() {
                 data.id = lastFocusedRowCurrentData.id;
 
                 // validate locally
-                if (!!this.options.validation && !this.sandbox.form.validate('#' + datagrid.elId)) {
+                if (!!this.options.validation && !this.sandbox.form.validate('#' + this.datagrid.elId)) {
                     isValid = false;
                 }
 
@@ -750,10 +745,10 @@ define(function() {
 
                     // trigger save action when data changed
                     if (!!valuesChanged || true) {
-                        url = datagrid.getUrlWithoutParams();
+                        url = this.datagrid.getUrlWithoutParams();
 
                         // pass data to datagrid to save it
-                        datagrid.saveGrid.call(datagrid, data, url,
+                        this.datagrid.saveGrid.call(this.datagrid, data, url,
                             this.saveSuccess.bind(this, this.lastFocusedRow.domId, $tr),
                             this.saveFail.bind(this, this.lastFocusedRow.domId, $tr),
                             this.options.addRowTop);
@@ -1004,12 +999,12 @@ define(function() {
             if (!!this.options.validation) {
                 $editableElements = this.sandbox.dom.find('.' + constants.editableClass, $tblRow);
                 this.sandbox.util.each($editableElements, function(index, $element) {
-                    this.sandbox.form.removeField('#' + datagrid.elId, $element);
+                    this.sandbox.form.removeField('#' + this.datagrid.elId, $element);
                 }.bind(this));
             }
 
             if (!!id) {
-                datagrid.removeRecord.call(datagrid, id);
+                this.datagrid.removeRecord.call(this.datagrid, id);
             }
             this.sandbox.dom.remove($tblRow);
 
@@ -1128,18 +1123,18 @@ define(function() {
                         'checked', false
                     );
 
-                    datagrid.setItemUnselected.call(datagrid, itemId);
+                    this.datagrid.setItemUnselected.call(this.datagrid, itemId);
                 } else {
                     this.sandbox.dom.addClass($element, constants.isSelectedClass);
                     this.sandbox.dom.prop($element, 'checked', true);
                     if (!!itemId) {
-                        datagrid.setItemSelected.call(datagrid, itemId);
+                        this.datagrid.setItemSelected.call(this.datagrid, itemId);
                     }
                 }
 
             } else if (this.sandbox.dom.attr($element, 'type') === 'radio') {
 
-                datagrid.deselectAllItems.call(datagrid);
+                this.datagrid.deselectAllItems.call(this.datagrid);
 
                 this.sandbox.dom.removeClass(
                     this.sandbox.dom.find('tr input[type="radio"]', this.$tableContainer), constants.isSelectedClass);
@@ -1150,7 +1145,7 @@ define(function() {
                 this.sandbox.dom.prop($element, 'checked', true);
 
                 if (!!itemId) {
-                    datagrid.setItemSelected.call(datagrid, itemId);
+                    this.datagrid.setItemSelected.call(this.datagrid, itemId);
                 }
             }
 
@@ -1204,11 +1199,11 @@ define(function() {
             if (this.sandbox.dom.prop($headCheckbox, 'checked') === false) {
                 this.sandbox.dom.prop($checkboxes, 'checked', false);
                 this.sandbox.dom.removeClass($checkboxes, constants.isSelectedClass);
-                datagrid.deselectAllItems.call(datagrid);
+                this.datagrid.deselectAllItems.call(this.datagrid);
             } else {
                 this.sandbox.dom.prop($checkboxes, 'checked', true);
                 this.sandbox.dom.addClass($checkboxes, constants.isSelectedClass);
-                datagrid.selectAllItems.call(datagrid);
+                this.datagrid.selectAllItems.call(this.datagrid);
             }
         },
 
@@ -1227,7 +1222,7 @@ define(function() {
                 direction = this.sandbox.dom.hasClass($span, constants.ascClass) ? 'desc' : 'asc';
 
                 // delegate sorting to datagrid
-                datagrid.sortGrid.call(datagrid, attribute, direction);
+                this.datagrid.sortGrid.call(this.datagrid, attribute, direction);
         }
     };
 });

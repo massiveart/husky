@@ -15,12 +15,7 @@ define(function() {
 
     'use strict';
 
-    /**
-     * Variable to store the datagrid context
-     */
-    var datagrid,
-
-        defaults = {
+    var defaults = {
             large: false,
             fadeInDuration: 400
         },
@@ -72,10 +67,10 @@ define(function() {
          */
         initialize: function(context, options) {
             // context of the datagrid-component
-            datagrid = context;
+            this.datagrid = context;
 
             // make sandbox available in this-context
-            this.sandbox = datagrid.sandbox;
+            this.sandbox = this.datagrid.sandbox;
 
             // merge defaults with options
             this.options = this.sandbox.util.extend(true, {}, defaults, options);
@@ -129,14 +124,14 @@ define(function() {
                 description = [];
 
                 // foreach matching configured get the corresponding datum from the record
-                this.sandbox.util.foreach(datagrid.matchings, function(matching) {
+                this.sandbox.util.foreach(this.datagrid.matchings, function(matching) {
 
                     // get the thumbnail and the title data (to place it on top)
                     // with the rest generate a description string
-                    if (matching.type === datagrid.types.THUMBNAIL) {
+                    if (matching.type === this.datagrid.types.THUMBNAIL) {
                         imgSrc = record[matching.attribute][constants.thumbnailSrcProperty];
                         imgAlt = record[matching.attribute][constants.thumbnailAltProperty];
-                    } else if (matching.type === datagrid.types.TITLE) {
+                    } else if (matching.type === this.datagrid.types.TITLE) {
                         title = record[matching.attribute];
                     } else {
                         description.push(record[matching.attribute]);
@@ -208,7 +203,7 @@ define(function() {
          * @param id {Number|String} the id of the item
          */
         toggleItemSelected: function(id) {
-            if (datagrid.itemIsSelected.call(datagrid, id) === true) {
+            if (this.datagrid.itemIsSelected.call(this.datagrid, id) === true) {
                 this.unselectItem(id);
             } else {
                 this.selectItem(id);
@@ -223,7 +218,7 @@ define(function() {
         selectItem: function(id, onlyView) {
             this.sandbox.dom.addClass(this.$thumbnails[id], constants.selectedClass);
             if (onlyView !== true) {
-                datagrid.setItemSelected.call(datagrid, id);
+                this.datagrid.setItemSelected.call(this.datagrid, id);
             }
         },
 
@@ -233,7 +228,7 @@ define(function() {
          */
         unselectItem: function(id) {
             this.sandbox.dom.removeClass(this.$thumbnails[id], constants.selectedClass);
-            datagrid.setItemUnselected.call(datagrid, id);
+            this.datagrid.setItemUnselected.call(this.datagrid, id);
         },
 
         /**

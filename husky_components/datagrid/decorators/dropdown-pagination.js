@@ -14,12 +14,7 @@ define(function() {
 
     'use strict';
 
-    /**
-     * Variable to store the datagrid context
-     */
-    var datagrid,
-
-        defaults = {
+     var defaults = {
             showElementsSteps: [10, 20, 50, 100, 500],
             pageSize: 10
         },
@@ -81,10 +76,10 @@ define(function() {
          */
         initialize: function(context, options) {
             // context of the datagrid-component
-            datagrid = context;
+            this.datagrid = context;
 
             // make sandbox available in this-context
-            this.sandbox = datagrid.sandbox;
+            this.sandbox = this.datagrid.sandbox;
 
             // merge defaults with pagination options
             this.options = this.sandbox.util.extend(true, {}, defaults, options);
@@ -150,22 +145,22 @@ define(function() {
          */
         bindCustomEvents: function() {
             // pagination dropdown item clicked
-            this.sandbox.on('husky.dropdown.' + datagrid.options.instance + '-pagination-dropdown.item.click', function(item) {
-                datagrid.changePage.call(datagrid, null, item.id);
+            this.sandbox.on('husky.dropdown.' + this.datagrid.options.instanceName + '-pagination-dropdown.item.click', function(item) {
+                this.datagrid.changePage.call(this.datagrid, null, item.id);
             }.bind(this));
 
             // show-elements dropdown item clicked
-            this.sandbox.on('husky.dropdown.' + datagrid.options.instance + '-pagination-dropdown-show.item.click', function(item) {
+            this.sandbox.on('husky.dropdown.' + this.datagrid.options.instanceName + '-pagination-dropdown-show.item.click', function(item) {
                 if (this.data.pageSize !== item.id || this.data.total === this.data.numberOfAll) {
                     // show all
                     if (item.id === 0) {
                         // only if not already all are shown
                         if (this.data.total !== this.data.numberOfAll) {
-                            datagrid.changePage.call(datagrid, this.data.links.all);
+                            this.datagrid.changePage.call(this.datagrid, this.data.links.all);
                         }
                     } else {
                         // always jump to the first page
-                        datagrid.changePage.call(datagrid, null, 1, item.id);
+                        this.datagrid.changePage.call(this.datagrid, null, 1, item.id);
                     }
                 }
             }.bind(this));
@@ -195,7 +190,7 @@ define(function() {
          */
         nextPage: function() {
             if (!!this.data.links.next) {
-                datagrid.changePage.call(datagrid, this.data.links.next);
+                this.datagrid.changePage.call(this.datagrid, this.data.links.next);
             }
         },
 
@@ -204,7 +199,7 @@ define(function() {
          */
         prevPage: function() {
             if (!!this.data.links.prev) {
-                datagrid.changePage.call(datagrid, this.data.links.prev);
+                this.datagrid.changePage.call(this.datagrid, this.data.links.prev);
             }
         },
 
@@ -288,7 +283,7 @@ define(function() {
                     options: {
                         el: this.sandbox.dom.find('.' + constants.pageChangeClass, this.$paginationContainer),
                         setParentDropDown: true,
-                        instanceName: datagrid.options.instance + '-pagination-dropdown',
+                        instanceName: this.datagrid.options.instanceName + '-pagination-dropdown',
                         alignment: 'right',
                         data: data
                     }
@@ -324,7 +319,7 @@ define(function() {
                     options: {
                         el: this.sandbox.dom.find('.' + constants.sizeChangeClass, this.$paginationContainer),
                         setParentDropDown: true,
-                        instanceName: datagrid.options.instance + '-pagination-dropdown-show',
+                        instanceName: this.datagrid.options.instanceName + '-pagination-dropdown-show',
                         alignment: 'left',
                         data: data
                     }

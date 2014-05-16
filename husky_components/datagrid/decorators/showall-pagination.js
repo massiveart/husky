@@ -3,6 +3,8 @@
  * @constructor
  *
  * @param {Object} [paginationOptions] Configuration object
+ * @param {Number} [paginationOptions.pageSize] maximum elements per page
+ * @param {Function} [paginationOptions.showAllHandler] function to call if pagination is clicked. Default action gets not executed if set
  *
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
@@ -13,13 +15,9 @@ define(function () {
 
     'use strict';
 
-    /**
-     * Variable to store the datagrid context
-     */
-    var datagrid,
-
-        defaults = {
-            pageSize: 9
+    var defaults = {
+            pageSize: 9,
+            showAllHandler: null
         },
 
         constants = {
@@ -60,10 +58,10 @@ define(function () {
          */
         initialize: function (context, options) {
             // context of the datagrid-component
-            datagrid = context;
+            this.datagrid = context;
 
             // make sandbox available in this-context
-            this.sandbox = datagrid.sandbox;
+            this.sandbox = this.datagrid.sandbox;
 
             // merge defaults with pagination options
             this.options = this.sandbox.util.extend(true, {}, defaults, options);
@@ -162,16 +160,21 @@ define(function () {
 
         /**
          * Shows all elements in the datagrid
+         * or just executes the handler if passed
          */
         showAll: function() {
-            datagrid.changePage.call(datagrid, this.data.links.all);
+            if (typeof this.options.showAllHandler !== 'function') {
+                this.datagrid.changePage.call(this.datagrid, this.data.links.all);
+            } else {
+                this.options.showAllHandler();
+            }
         },
 
         /**
          * Shows only the configured amount of elements in the datagrid
          */
         showOnly: function() {
-            datagrid.changePage.call(datagrid, null, 1, this.options.pageSize);
+            this.datagrid.changePage.call(this.datagrid, null, 1, this.options.pageSize);
         },
 
         /**
