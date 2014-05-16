@@ -619,7 +619,8 @@
              * @param options {Object} an object with options to merge with the current view options for the view
              */
             changeView: function(view, options) {
-                if (view !== this.viewId) {
+                // only change if view or options are different
+                if (view !== this.viewId || this.sandbox.util.compare(options, this.options.viewOptions[this.viewId])) {
                     this.destroy();
                     this.getViewDecorator(view);
                     this.extendViewOptions(options);
