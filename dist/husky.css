@@ -7955,32 +7955,34 @@ a.btn-black, a.btn-highlight {
 /* line 106, ../scss/modules/dropzone.scss */
 .husky-dropzone .upload-items .item .image img {
   vertical-align: bottom;
+  max-width: 100%;
+  max-height: 100%;
 }
-/* line 110, ../scss/modules/dropzone.scss */
+/* line 112, ../scss/modules/dropzone.scss */
 .husky-dropzone .upload-items .item .tick {
   text-align: center;
   color: #999999;
   font-size: 15px;
   line-height: 15px;
 }
-/* line 117, ../scss/modules/dropzone.scss */
+/* line 119, ../scss/modules/dropzone.scss */
 .husky-dropzone .upload-items .item.dz-success {
   border-color: #cccccc;
   background: transparent;
 }
-/* line 120, ../scss/modules/dropzone.scss */
+/* line 122, ../scss/modules/dropzone.scss */
 .husky-dropzone .upload-items .item.dz-success .success-content {
   display: block;
 }
-/* line 123, ../scss/modules/dropzone.scss */
+/* line 125, ../scss/modules/dropzone.scss */
 .husky-dropzone .upload-items .item.dz-success .loading-content {
   display: none;
 }
-/* line 131, ../scss/modules/dropzone.scss */
+/* line 133, ../scss/modules/dropzone.scss */
 .husky-dropzone.dz-drag-hover {
   opacity: 0.5;
 }
-/* line 135, ../scss/modules/dropzone.scss */
+/* line 137, ../scss/modules/dropzone.scss */
 .husky-dropzone.dropped {
   padding-bottom: 0;
   -webkit-transition: padding 300ms;
@@ -7988,7 +7990,7 @@ a.btn-black, a.btn-highlight {
   -o-transition: padding 300ms;
   transition: padding 300ms;
 }
-/* line 139, ../scss/modules/dropzone.scss */
+/* line 141, ../scss/modules/dropzone.scss */
 .husky-dropzone.dropped .description {
   margin-top: -150px;
 }
