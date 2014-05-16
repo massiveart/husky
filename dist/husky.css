@@ -8051,7 +8051,7 @@ a.btn-black, a.btn-highlight {
 .husky-thumbnails .item.small .text {
   float: left;
   padding-top: 20px;
-  width: 190px;
+  width: 190px -1px;
 }
 /* line 56, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.small .checkbox {
