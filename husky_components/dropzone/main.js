@@ -41,7 +41,10 @@ define([], function() {
             method: 'POST',
             url: '/',
             paramName: 'file',
-            headers: {},
+            headers: {
+                // to prevent a 406 error-response
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+            },
             uploadMultiple: false,
             successCallback: null,
             beforeSendingCallback: null,
