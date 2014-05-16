@@ -51,7 +51,7 @@
       .text {
         float: left;
         padding-top: 20px;
-        width: $thumbnailSmallWidth - $imgSmallWidth;
+        width: $thumbnailSmallWidth - $imgSmallWidth -1px;
       }
       .checkbox {
         position: absolute;
