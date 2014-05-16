@@ -619,10 +619,13 @@
              * @param options {Object} an object with options to merge with the current view options for the view
              */
             changeView: function(view, options) {
-                this.destroy();
-                this.getViewDecorator(view);
-                this.extendViewOptions(options);
-                this.render();
+                // only change if view or if options are passed (could be passed to the same view)
+                if (view !== this.viewId || !!options) {
+                    this.destroy();
+                    this.getViewDecorator(view);
+                    this.extendViewOptions(options);
+                    this.render();
+                }
             },
 
             /**
@@ -630,9 +633,11 @@
              * @param pagination {String} identifier of the new pagination to use
              */
             changePagination: function(pagination) {
-                this.destroy();
-                this.getPaginationDecorator(pagination);
-                this.render();
+                if (pagination !== this.paginationId) {
+                    this.destroy();
+                    this.getPaginationDecorator(pagination);
+                    this.render();
+                }
             },
 
             /**
@@ -1100,10 +1105,10 @@
                     url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, pageSize: pageSize});
                 }
 
-                this.sandbox.emit(PAGE_CHANGE.call(this).call(this), url);
+                this.sandbox.emit(PAGE_CHANGE.call(this), url);
                 this.load({url: url,
                     success: function() {
-                        this.sandbox.emit(UPDATED.call(this).call(this), 'changed page');
+                        this.sandbox.emit(UPDATED.call(this), 'changed page');
                     }.bind(this)});
             },
 

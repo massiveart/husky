@@ -29862,13 +29862,17 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             this.$paginationContainer = this.sandbox.dom.createElement('<div class="' + constants.paginationClass + '"/>');
             if (this.data.numberOfAll > this.data.total) {
                 this.renderShowAll();
-            } else {
+            } else if (this.data.numberOfAll > this.options.pageSize) {
                 this.renderShowOnly();
+            } else {
+                return false;
             }
 
             this.sandbox.dom.append(this.$el, this.$paginationContainer);
 
             this.bindDomEvents();
+
+            return true;
         },
 
         /**
@@ -30581,10 +30585,13 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @param options {Object} an object with options to merge with the current view options for the view
              */
             changeView: function(view, options) {
-                this.destroy();
-                this.getViewDecorator(view);
-                this.extendViewOptions(options);
-                this.render();
+                // only change if view or if options are passed (could be passed to the same view)
+                if (view !== this.viewId || !!options) {
+                    this.destroy();
+                    this.getViewDecorator(view);
+                    this.extendViewOptions(options);
+                    this.render();
+                }
             },
 
             /**
@@ -30592,9 +30599,11 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @param pagination {String} identifier of the new pagination to use
              */
             changePagination: function(pagination) {
-                this.destroy();
-                this.getPaginationDecorator(pagination);
-                this.render();
+                if (pagination !== this.paginationId) {
+                    this.destroy();
+                    this.getPaginationDecorator(pagination);
+                    this.render();
+                }
             },
 
             /**
@@ -31062,10 +31071,10 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, pageSize: pageSize});
                 }
 
-                this.sandbox.emit(PAGE_CHANGE.call(this).call(this), url);
+                this.sandbox.emit(PAGE_CHANGE.call(this), url);
                 this.load({url: url,
                     success: function() {
-                        this.sandbox.emit(UPDATED.call(this).call(this), 'changed page');
+                        this.sandbox.emit(UPDATED.call(this), 'changed page');
                     }.bind(this)});
             },
 
@@ -41165,7 +41174,7 @@ define('husky_extensions/util',[],function() {
 
             // for comparing arrays
             app.core.util.compare = function(a, b) {
-                if (this.typeOf(a) === 'array' && this.typeOf(b) === 'array') {
+                if (typeof a === 'object' && typeof b === 'object') {
                     return JSON.stringify(a) === JSON.stringify(b);
                 }
             };

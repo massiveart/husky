@@ -486,6 +486,8 @@
   &::after {
     content: "\e157";
     display: inline-block;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
   }
 }
 
