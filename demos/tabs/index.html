@@ -42,6 +42,10 @@
                     <div class="grid-col-6 m-top-30 pointer" id="deactivate">Deactivate</div>
                     <div class="grid-col-6 m-top-30 pointer" id="activate">Activate</div>
                 </div>
+                <div class="grid-row">
+                    <div class="grid-col-6 m-top-30 pointer" id="enable-item">enable item</div>
+                    <div class="grid-col-6 m-top-30 pointer" id="disable-item">disable item</div>
+                </div>
             </div>
         </div>
 
@@ -66,9 +70,16 @@
 
                 $('#deactivate').on('click', function() {
                     app.sandbox.emit('husky.tabs.contacts.deactivate');
-                })
+                });
                 $('#activate').on('click', function() {
                     app.sandbox.emit('husky.tabs.contacts.activate');
+                });
+
+                $('#enable-item').on('click', function() {
+                    app.sandbox.emit('husky.tabs.contacts.item.show','disable-tab');
+                })
+                $('#disable-item').on('click', function() {
+                    app.sandbox.emit('husky.tabs.contacts.item.hide','disable-tab');
                 })
             });
         </script>
