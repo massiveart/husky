@@ -42,9 +42,9 @@ define(function () {
             structure: [
                 '<div class="' + constants.squareClass + '"></div>',
                 '<div class="' + constants.textClass + '">',
-                    '<%= desc %>',
-                    '<strong><%= number %></strong> ',
-                    translations.elements,
+                    '<%= translate(desc) %>',
+                    '<strong> <%= number %></strong> ',
+                    '<%= translate(elements) %>',
                 '</div>'
             ].join('')
         };
@@ -98,7 +98,9 @@ define(function () {
         renderShowAll: function() {
             this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
                 desc: translations.showAll,
-                number: this.data.numberOfAll
+                number: this.data.numberOfAll,
+                elements: translations.elements,
+                translate: this.sandbox.translate
             }));
         },
 
@@ -108,7 +110,9 @@ define(function () {
         renderShowOnly: function() {
             this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
                 desc: translations.showOnly,
-                number: this.options.pageSize
+                number: this.options.pageSize,
+                elements: translations.elements,
+                translate: this.sandbox.translate
             }));
         },
 
