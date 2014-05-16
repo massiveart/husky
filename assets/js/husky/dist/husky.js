@@ -39727,8 +39727,8 @@ define('__component__$dropzone@husky',[], function() {
         render: function() {
             this.sandbox.dom.addClass(this.$el, constants.contianerClass);
             this.sandbox.dom.html(this.$el, this.sandbox.util.template(templates.basic)({
-                description: this.options.descriptionKey,
-                title: this.options.titleKey,
+                description: this.sandbox.translate(this.options.descriptionKey),
+                title: this.sandbox.translate(this.options.titleKey),
                 icon: this.options.descriptionIcon,
                 instanceName: this.options.instanceName
             }));
