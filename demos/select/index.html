@@ -195,15 +195,20 @@
                             defaultLabel: 'This one is single select.. try it',
                             valueName: 'category',
                             multipleSelect: false,
+                            emitValues: true,
                             data: [
                                 {id: 0, category: 'Deutsch'},
                                 {id: 1, category: 'English'},
                                 {id: 2, category: 'Spanish'},
                                 {id: 3, category: 'Italienisch'},
                                 {divider: true},
-                                {category: 'Add new', callback: function(){
-                                    console.log("called function");
-                                } }
+                                {
+                                    category: 'Add new',
+                                    updateLabel: false,
+                                    callback: function(){
+                                        console.log("called function");
+                                    }
+                                }
                             ]
                         }
                     },
