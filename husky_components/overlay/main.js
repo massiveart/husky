@@ -85,7 +85,8 @@ define([], function() {
             buttonsDefaultAlign: 'center',
             cancelDefaultText: 'Cancel',
             okDefaultText: 'Ok',
-            languageChanger: null
+            languageChanger: null,
+            cssClass: ''
         },
 
         internalSlideDefaults = {
@@ -174,7 +175,7 @@ define([], function() {
                 '</div>'
             ].join(''),
             slideSkeleton: [
-                '<div class="slide slide-<%= index %>">',
+                '<div class="slide slide-<%= index %> <%= cssClass %>">',
                 '   <div class="overlay-header">',
                 '       <span class="title"><%= title %></span>',
                 '       <% if (!!closeIcon) { %><a class="icon-<%= closeIcon %> close-button" href="#"></a><% } %>',
@@ -454,7 +455,7 @@ define([], function() {
 
                     this.sandbox.emit(INITIALIZED.call(this));
 
-                    this.insertOverlay();
+                    this.insertOverlay(false);
 
                     // set width to n-width
                     this.overlay.width = this.sandbox.dom.outerWidth(this.overlay.$slides.find('.slide'));
@@ -468,10 +469,10 @@ define([], function() {
                     });
 
                     this.sandbox.dom.css(this.overlay.$content, 'height', maxHeight + 'px');
-                    this.resizeHandler();
-                    this.setCoordinates();
+
+                    this.insertOverlay(true);
                 } else {
-                    this.insertOverlay();
+                    this.insertOverlay(true);
                 }
             }
         },
@@ -509,7 +510,7 @@ define([], function() {
         /**
          * Inserts the overlay-element into the DOM
          */
-        insertOverlay: function() {
+        insertOverlay: function(emitEvent) {
             this.sandbox.dom.append(this.$el, this.overlay.$el);
 
             //ensures that the overlay box fits the window form the beginning
@@ -522,7 +523,9 @@ define([], function() {
                 this.sandbox.dom.append(this.$el, this.$backdrop);
             }
 
-            this.sandbox.emit(OPENED.call(this));
+            if (!!emitEvent) {
+                this.sandbox.emit(OPENED.call(this));
+            }
         },
 
         /**

@@ -25,6 +25,18 @@
                 max-width: 100%;
                 height: 300px;
             }
+
+            .column-navigation-slide .overlay-header {
+                margin-bottom: 0px;
+            }
+
+            .column-navigation-slide .overlay-content {
+                margin: 0px;
+            }
+
+            .column-navigation-slide .overlay-footer {
+                margin: 0px;
+            }
         </style>
     </head>
     <body>
@@ -127,11 +139,14 @@
                             el: '#overlaySlides',
                             triggerEl: '#slides',
                             draggable: true,
+                            instanceName: 'slides',
+                            skin: 'wide',
                             slides: [
                                 {
                                     title: 'Slide2',
-                                    data: '',
+                                    data: '<div id="column-navigation"/>',
                                     type: 'error',
+                                    cssClass: 'column-navigation-slide',
                                     closeCallback: function() {
                                         console.log('You clicked on close');
                                     },
@@ -231,14 +246,26 @@
                     }
                 ]).then(function() {
                     app.logger.log('Aura started...');
-                    app.sandbox.on('husky.overlay.deactivated.opened', function() {
-                        setTimeout(function() {
-                            app.sandbox.emit('husky.overlay.deactivated.okbutton.activate');
-                            setTimeout(function() {
-                                app.sandbox.emit('husky.overlay.deactivated.okbutton.deactivate');
-                            }, 2000);
-                        }, 2000);
+                    app.sandbox.on('husky.overlay.slides.opened', function() {
+                        app.sandbox.start(
+                                [
+                                    {
+                                        name: 'column-navigation@husky',
+                                        options: {
+                                            el: '#column-navigation',
+                                            url: 'http://husky.lo:7878/admin/api/columnnavigation?children=1.2.3.1',
+                                            selected: '1.2.3.1',
+                                            noPageDescription: 'No Pages',
+                                            sizeRelativeTo: '#overlaySlides .slide-0 .overlay-content',
+                                            wrapper: {height: 100},
+                                            showEdit: false,
+                                            showStatus: false
+                                        }
+                                    }
+                                ]
+                        )
                     });
+
 
                     $('#warning').click(function() {
                         var $element = $('<div/>');
