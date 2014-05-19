@@ -39688,7 +39688,8 @@ define('__component__$dropzone@husky',[], function() {
             fadeOutDelay: 1500, //ms
             showOverlayOnScrollTop: 50,
             scrollContainer: 'body',
-            overlayTitle: 'sulu.dropzone.overlay-title'
+            overlayTitle: 'sulu.dropzone.overlay-title',
+            showOverlay: true
         },
 
         constants = {
@@ -39815,9 +39816,11 @@ define('__component__$dropzone@husky',[], function() {
                 this.sandbox.dom.trigger(this.$dropzone, 'click');
             }.bind(this));
 
-            this.sandbox.dom.on(this.sandbox.dom.$document, 'dragenter', function() {
-                this.openOverlay();
-            }.bind(this));
+            if (this.options.showOverlay) {
+                this.sandbox.dom.on(this.sandbox.dom.$document, 'dragenter', function() {
+                    this.openOverlay();
+                }.bind(this));
+            }
         },
 
         /**
