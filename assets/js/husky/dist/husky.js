@@ -36763,8 +36763,9 @@ define('__component__$smart-content@husky',[], function() {
                     '</div>'].join(''),
 
                 dataSource: ['<div class="item-half left">',
-                    '<span class="desc"><%= dataSourceStr %></span>',
-                    '<input type="text" value="<%= dataSourceValStr %>" class="data-source form-element"/>',
+                    '<span class="desc"><%= dataSourceLabelStr %></span>',
+                    '<div class="btn action"><%= dataSourceButtonStr %></div>',
+                    '<span class="sublabel"><%= dataSourceLabelStr %>: <%= dataSourceValStr %></span>',
                     '</div>'].join(''),
 
                 subFolders: ['<div class="item-half">',
@@ -36945,7 +36946,8 @@ define('__component__$smart-content@husky',[], function() {
                 visible: 'smart-content.visible',
                 of: 'smart-content.of',
                 configureSmartContent: 'smart-content.configure-smart-content',
-                dataSource: 'smart-content.data-source',
+                dataSourceLabel: 'smart-content.data-source.label',
+                dataSourceButton: 'smart-content.data-source.button',
                 includeSubFolders: 'smart-content.include-sub-folders',
                 filterByCategory: 'smart-content.filter-by-category',
                 filterByTags: 'smart-content.filter-by-tags',
@@ -37257,6 +37259,7 @@ define('__component__$smart-content@husky',[], function() {
                         data: this.$overlayContent,
                         title: this.sandbox.translate(this.translations.configureSmartContent),
                         instanceName: 'smart-content.' + this.options.instanceName,
+                        skin: 'wide',
                         okCallback: function() {
                             this.itemsVisible = this.options.visibleItems;
                             this.getOverlayData();
@@ -37274,7 +37277,8 @@ define('__component__$smart-content@husky',[], function() {
             this.$overlayContent = this.sandbox.dom.createElement(_.template(templates.overlayContent.main)());
 
             this.$overlayContent.append(_.template(templates.overlayContent.dataSource)({
-                dataSourceStr: this.sandbox.translate(this.translations.dataSource),
+                dataSourceLabelStr: this.sandbox.translate(this.translations.dataSourceLabel),
+                dataSourceButtonStr: this.sandbox.translate(this.translations.dataSourceButton),
                 dataSourceValStr: this.options.dataSource
             }));
             this.$overlayContent.append(_.template(templates.overlayContent.subFolders)({
