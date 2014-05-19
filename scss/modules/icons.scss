@@ -76,6 +76,20 @@
     }
 }
 
+.icon-download {
+  &::after {
+    content: "\e201";
+    display: inline-block;
+  }
+}
+
+.icon-cloud-download {
+  &::after {
+    content: "\e364";
+    display: inline-block;
+  }
+}
+
 .icon-circle-ok {
     &::after {
         content: "\e199";
@@ -116,6 +130,13 @@
         content: "\e137";
         display: inline-block;
     }
+}
+
+.icon-picture {
+  &::after {
+    content: "\e139";
+    display: inline-block;
+  }
 }
 
 .icon-cogwheels {
@@ -454,10 +475,19 @@
   }
 }
 
+.icon-cloud-upload {
+  &::after {
+    content: "\e365";
+    display: inline-block;
+  }
+}
+
 .icon-show-thumbnails {
   &::after {
     content: "\e157";
     display: inline-block;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
   }
 }
 
@@ -500,6 +530,25 @@
   }
 }
 
+.icon-play {
+  &::after {
+    content: "\e174";
+    display: inline-block;
+  }
+}
+
+.icon-play-down {
+  &::after {
+    content: "\e174";
+    display: inline-block;
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+  }
+}
+
 .icon-half-ok {
   &::after {
     font-family: $baseIconHalflingsFont;
@@ -508,7 +557,15 @@
   }
 }
 
-.icon-half-remove {
+.icon-repeat {
+  &::after {
+    font-family: $baseIconHalflingsFont;
+    content: "\e030";
+    display: inline-block;
+  }
+}
+
+.icon- {
   &::after {
     font-family: $baseIconHalflingsFont;
     content: "\e014";
@@ -519,6 +576,13 @@
 .icon-remove2 {
   &::after {
     content: "\e208";
+    display: inline-block;
+  }
+}
+
+.icon-ok {
+  &::after {
+    content: "\e207";
     display: inline-block;
   }
 }

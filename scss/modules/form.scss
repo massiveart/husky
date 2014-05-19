@@ -8,7 +8,7 @@
     border: 1px solid $inputBorderColor;
     padding: 0 5px;
     font-size: 14px;
-    border-radius: $inputBorderRadius;
+    border-radius: $borderRadius;
     border: 1px solid $grayLighter;
 
     &:focus {
@@ -68,7 +68,9 @@ input {
 // attention! it is always assumed, that form group consists of 2 elements.
 // the first is the label, the second is the form element itself
 
-.form-group {
+.form-group,
+.form-group-vertical,
+.form-vertical .form-group {
     min-height: 30px;
 
     > :first-child {
@@ -109,8 +111,6 @@ input {
         > :nth-child(2) {
             width: 100%;
         }
-
-
     }
 }
 
@@ -211,7 +211,7 @@ label {
             font-family: $checkboxIconFont;
             font-size: 12px;
             text-align: center;
-            border-radius: 2px;
+            border-radius: $borderRadiusSmall;
         }
     }
 }
@@ -321,8 +321,8 @@ textarea.form-element {
     }
     .cke_inner,
     .cke_wysiwyg_frame {
-        border-bottom-left-radius: $inputBorderRadius !important;
-        border-bottom-right-radius: $inputBorderRadius !important;
+        border-bottom-left-radius: $borderRadius !important;
+        border-bottom-right-radius: $borderRadius !important;
     }
 }
 

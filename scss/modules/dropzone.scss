@@ -1,0 +1,145 @@
+//
+// Dropzone
+// --------------------------------------------------
+
+.husky-dropzone {
+  $dropzoneHeight: 130px;
+  $transitionDuration: 300ms;
+  $previewItemWidth: 70px;
+  overflow: hidden;
+  position: relative;
+  top: 0px;
+  left: 0px;
+  padding-bottom: 20px;
+
+  width: 100%;
+  height: auto;
+  border: 1px dashed $grayLighter;
+  border-radius: $borderRadius;
+  cursor: pointer;
+  @include single-transition(opacity, $transitionDuration);
+
+  .description {
+    text-align: center;
+    height: $dropzoneHeight;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    @include single-transition(margin-top, $transitionDuration);
+
+    .icon {
+      color: $blue;
+      font-size: 62px;
+      line-height: 70px;
+      margin-bottom: 15px;
+    }
+    .title {
+      font-size: $reallyBigFontSize;
+      line-height: $reallyBigFontSize;
+    }
+    span {
+      display: block;
+    }
+  }
+
+  .upload-items {
+    height: $dropzoneHeight;
+    padding: 20px 0 0 20px;
+    @include clear-float;
+
+    .item {
+      width: $previewItemWidth;
+      height: 90px;
+      border: 1px solid $white;
+      background: $white;
+      border-radius: $borderRadiusSmall;
+      margin-right: 20px;
+      margin-bottom: 20px;
+      float: left;
+
+      .success-content {
+        display: none;
+      }
+      .loading-content {
+        padding-top: 20px;
+      }
+      .file-size {
+        text-align: center;
+        font-size: $smallestFontSize;
+        line-height: 10px;
+        color: $grayLight;
+        padding-top: 15px;
+        padding-bottom: 5px;
+        * {
+          font-weight: normal;
+        }
+      }
+      .progress {
+        width: 50px;
+        height: 6px;
+        margin: 0 auto;
+        background: $grayLighter;
+        border-radius: 3px;
+        overflow: hidden;
+        .bar {
+          height: 100%;
+          background: $blue;
+          width: 0%;
+        }
+      }
+      .icon {
+        height: 25px;
+        color: $grayLight;
+        font-size: 25px;
+        text-align: center;
+        animation: ROTATE-ANIMATION 1s linear 0 infinite;
+        -webkit-animation: ROTATE-ANIMATION 1s linear 0 infinite;
+        -moz-animation: ROTATE-ANIMATION 1s linear 0 infinite;
+        -o-animation: ROTATE-ANIMATION 1s linear 0 infinite;
+      }
+      .image {
+        padding: 10px 10px 5px 10px;
+        height: 65px;
+        line-height: 45px;
+        text-align: center;
+        img {
+          vertical-align: bottom;
+          max-width: 100%;
+          max-height: 100%;
+        }
+      }
+      .tick {
+        text-align: center;
+        color: $grayLight;
+        font-size: 15px;
+        line-height: 15px;
+      }
+
+      &.dz-success {
+        border-color: $grayLighter;
+        background: transparent;
+        .success-content {
+          display: block;
+        }
+        .loading-content {
+          display: none;
+        }
+      }
+    }
+  }
+
+  // hover with file
+  &.dz-drag-hover {
+    opacity: 0.5;
+  }
+  // at least on file dropped
+  &.dropped {
+    padding-bottom: 0;
+    @include single-transition(padding, $transitionDuration);
+
+    .description {
+      margin-top: -$dropzoneHeight - 20px;
+    }
+  }
+}

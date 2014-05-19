@@ -18,7 +18,7 @@
         background: $grayLighter;
         padding: 0px 5px 0px 10px;
         line-height: 30px;
-        border-radius: 4px;
+        border-radius: $borderRadius;
         clear: both;
         font-size: $smallFontSize;
         .checkbox {
@@ -61,7 +61,7 @@
         background-color: #FFF;
         border: 1px solid $grayLighter;
         z-index: 2000;
-        border-radius: $dropdownBorderRadius;
+        border-radius: $borderRadius;
 
         .divider {
             max-width: 100%;
@@ -132,7 +132,7 @@
             top: 12px;
             min-width: 200px;
             max-width: 100%;
-            border-radius: $dropdownBorderRadiusSmall;
+            border-radius: $borderRadiusSmall;
 
             &.top {
                 top: auto;

@@ -310,6 +310,15 @@ module.exports = function(grunt) {
                             '.bower_components/tagmanager/tagmanager.js'
                         ],
                         dest: 'bower_components/tagmanager'
+                    },
+                    // dropzone.js
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            '.bower_components/dropzone/downloads/dropzone.js'
+                        ],
+                        dest: 'bower_components/dropzone'
                     }
                 ]
             }

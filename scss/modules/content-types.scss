@@ -23,10 +23,21 @@
             }
         }
 
-        .options-remove, .options-change {
+        .options-change {
+          float: left;
+          cursor: pointer;
+          margin-left: 10px;
+          margin-top: 2px;
+          display: none;
+          .dropdown-toggle::after {
+            margin-left: 0;
+          }
+        }
+        .options-remove {
             float: right;
             cursor: pointer;
             margin-top: 5px;
+            margin-left: 8px;
             display: none;
         }
 
@@ -39,6 +50,8 @@
     .container {
         padding: 10px 20px 20px 20px;
         background: $grayLighterer;
+        border: 1px solid $grayLighter;
+        @include standard-box-shadow(2px, rgba(0,0,0,0.06));
 
         label {
             margin-bottom: 10px;

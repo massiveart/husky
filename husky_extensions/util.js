@@ -9,7 +9,7 @@ define(function() {
 
             // for comparing arrays
             app.core.util.compare = function(a, b) {
-                if (this.typeOf(a) === 'array' && this.typeOf(b) === 'array') {
+                if (typeof a === 'object' && typeof b === 'object') {
                     return JSON.stringify(a) === JSON.stringify(b);
                 }
             };
@@ -118,6 +118,10 @@ define(function() {
 
             app.core.util.uniqueId = function(prefix) {
                 return _.uniqueId(prefix);
+            };
+
+            app.core.util.delay = function(delay, callback) {
+                return _.delay(delay, callback);
             };
 
 			app.core.util.template = _.template;

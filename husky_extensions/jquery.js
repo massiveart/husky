@@ -238,6 +238,14 @@
                 $(selector).trigger(eventType, params);
             };
 
+            app.core.dom.select = function(selector, handler) {
+                if (!!handler) {
+                    return $(selector).select(handler);
+                } else {
+                    return $(selector).select();
+                }
+            };
+
             app.core.dom.toggleClass = function(selector, className) {
                 $(selector).toggleClass(className);
             };
@@ -292,6 +300,10 @@
 
             app.core.dom.stopPropagation = function(event) {
                 event.stopPropagation();
+            };
+
+            app.core.dom.stop = function(selector) {
+                $(selector).stop();
             };
 
             app.core.dom.preventDefault = function(event) {
@@ -397,6 +409,10 @@
 
             app.core.dom.focus = function(selector) {
                 $(selector).focus();
+            };
+
+            app.core.dom.click = function(selector) {
+                $(selector).click();
             };
 
             app.core.dom.animate = function(selector, properties, options) {

@@ -1,0 +1,20 @@
+{
+    "_embedded": [
+        {
+            "id": 1,
+            "name": "Page X"
+        },
+        {
+            "id": 2,
+            "name": "Page Y"
+        },
+        {
+            "id": 3,
+            "name": "Page Z"
+        },
+        {
+            "id": 4,
+            "name": "Page Q"
+        }
+    ]
+}
