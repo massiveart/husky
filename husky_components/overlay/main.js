@@ -66,6 +66,7 @@ define([], function() {
             backdropClose: true,
             backdropColor: '#000000',
             skin: '',
+            type: 'normal',
             backdropAlpha: 0.5,
             cssClass: '',
             slides: []
@@ -103,6 +104,7 @@ define([], function() {
             footerSelector: '.overlay-footer',
             contentSelector: '.overlay-content',
             headerSelector: '.overlay-header',
+            slidesSelector: '.slides',
             draggableClass: 'draggable',
             backdropClass: 'husky-overlay-backdrop',
             overlayOkSelector: '.overlay-ok',
@@ -172,7 +174,7 @@ define([], function() {
                 '</div>'
             ].join(''),
             slideSkeleton: [
-                '<div class="slide-<%= index %>">',
+                '<div class="slide slide-<%= index %>">',
                 '   <div class="overlay-header">',
                 '       <span class="title"><%= title %></span>',
                 '       <% if (!!closeIcon) { %><a class="icon-<%= closeIcon %> close-button" href="#"></a><% } %>',
@@ -283,8 +285,9 @@ define([], function() {
         initialize: function() {
             this.sandbox.logger.log('initialize', this);
 
+            var type = this.options.type || defaults.type;
             // merge defaults, type defaults and options
-            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+            this.options = this.sandbox.util.extend(true, {}, defaults, types[type], this.options);
 
             // make component element invisible (overlay and backdrop are fixed)
             this.sandbox.dom.width(this.$el, 0);
@@ -305,10 +308,11 @@ define([], function() {
          *  - for each slide default values
          */
         initSlideOptions: function() {
+            var key, type;
             if (this.options.slides.length === 0) {
                 this.slides[0] = this.sandbox.util.extend({}, slideDefaults);
                 this.slides[0].id = 0;
-                for (var key in slideDefaults) {
+                for (key in slideDefaults) {
                     // check options for slide property
                     if (this.options.hasOwnProperty(key)) {
                         this.slides[0][key] = this.options[key];
@@ -316,12 +320,14 @@ define([], function() {
                     }
                 }
 
-                this.slides[0] = this.sandbox.util.extend({}, types[this.slides[0].type], this.slides[0]);
+                type = types[this.slides[0].type];
+                this.slides[0] = this.sandbox.util.extend({}, type, this.slides[0]);
             } else {
                 this.sandbox.util.foreach(this.options.slides, function(value, i) {
                     this.slides[i] = this.sandbox.util.extend({}, slideDefaults, value);
 
-                    this.slides[i] = this.sandbox.util.extend({}, types[this.slides[i].type], this.slides[i]);
+                    type = types[this.slides[i].type];
+                    this.slides[i] = this.sandbox.util.extend({}, type, this.slides[i]);
                     if (this.slides[i].index === -1) {
                         this.slides[i].index = i;
                     }
@@ -409,6 +415,7 @@ define([], function() {
                 collapsed: false,
                 normalHeight: null,
                 $el: null,
+                $slides: null,
                 slides: []
             };
             this.$backdrop = null;
@@ -449,6 +456,10 @@ define([], function() {
                 }
 
                 this.insertOverlay();
+
+                // set width to n-width
+                this.overlay.width = this.sandbox.dom.outerWidth(this.overlay.$slides.find('.slide'));
+                this.sandbox.dom.css(this.overlay.$slides, 'width', (this.slides.length * this.overlay.width) + 'px');
             }
         },
 
@@ -515,12 +526,14 @@ define([], function() {
                 )
             );
 
+            this.overlay.$slides = this.sandbox.dom.find(constants.slidesSelector, this.overlay.$el);
+
             var slide, $el;
             for (slide in this.slides) {
                 $el = this.initSlideSkeleton(slide);
                 this.initButtons(slide);
                 this.setContent(slide);
-                this.sandbox.dom.append(this.overlay.$el, $el);
+                this.sandbox.dom.append(this.overlay.$slides, $el);
             }
         },
 
@@ -589,7 +602,7 @@ define([], function() {
                     inactive = this.slides[slide].okInactive;
                 } else if (button.type === buttonTypes.CANCEL) {
                     template = templates.cancelButton;
-                    text = this.options.slides[slide].cancelDefaultText;
+                    text = this.slides[slide].cancelDefaultText;
                 }
 
                 classes = (!!button.classes) ? ' ' + button.classes : '';

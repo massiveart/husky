@@ -128,8 +128,20 @@
                             triggerEl: '#slides',
                             slides: [
                                 {
-                                    title: 'This is the title of the overlay',
+                                    title: 'Slide 1',
                                     data: testData,
+                                    closeCallback: function() {
+                                        console.log('You clicked on close');
+                                    },
+                                    okCallback: function() {
+                                        console.log('You clicked on ok');
+                                        return true;
+                                    }
+                                },
+                                {
+                                    title: 'Slide2',
+                                    data: testData,
+                                    type: 'error',
                                     closeCallback: function() {
                                         console.log('You clicked on close');
                                     },
