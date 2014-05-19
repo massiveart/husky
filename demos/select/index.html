@@ -89,10 +89,23 @@
                     <div class="grid-col-6" id="actionSelectSingle"></div>
                 </td>
             </tr>
-            <tr>
-                <td><button id="toggleState">toggle state of button 7</button></td>
-                <td><button id="update">update</button></td>
-            </tr>
+                <tr>
+                    <td>
+                        <button id="toggleState">toggle state of button 7</button>
+                    </td>
+                    <td>
+                        <button id="update">update</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <button id="changeData5">change data ddms 5</button>
+                    </td>
+                    <td>
+                        <button id="changeData4">change data ddms 4</button>
+                    </td>
+                </tr>
             </tbody>
         </table>
 
@@ -413,6 +426,17 @@
                 app.sandbox.emit('husky.select.ddms5.update',data, [1500]);
                 console.log('updated dropdown 5');
             });
+
+            $('#changeData5').on('click', function() {
+                $('#ddms5').data('selection', '3').data('selection-values', 'Italienisch');
+                app.sandbox.emit('husky.select.ddms5.data.changed');
+            });
+
+            $('#changeData4').on('click', function() {
+                $('#ddms4').data('selection', '1,2,3').data('selection-values', 'Deutsch,English,Spanish');
+                app.sandbox.emit('husky.select.ddms4.data.changed');
+            });
+
         });
 
     });
