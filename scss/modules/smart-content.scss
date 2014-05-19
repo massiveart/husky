@@ -110,6 +110,19 @@
 }
 
 .smart-content-overlay {
+    .column-navigation-slide {
+        .overlay-header {
+            margin-bottom: 0px;
+        }
+        .overlay-content {
+            margin: 0px;
+        }
+
+        .overlay-footer {
+            margin: 0px;
+        }
+    }
+
     .overlay-header {
         margin-bottom: 15px;
     }

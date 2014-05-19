@@ -103,7 +103,8 @@ define([], function() {
             resultKey: '_embedded',
             translations: {},
             elementDataName: 'smart-content',
-            externalConfigs: false
+            externalConfigs: false,
+            columnNavigationUrl: ''
         },
 
         sortMethods = {
@@ -132,7 +133,7 @@ define([], function() {
         },
 
         /** templates for component */
-            templates = {
+        templates = {
             skeleton: [
                 '<div class="smart-content-container form-element">',
                 '<div class="smart-header"></div>',
@@ -163,16 +164,16 @@ define([], function() {
 
                 dataSource: ['<div class="item-half left">',
                     '<span class="desc"><%= dataSourceLabelStr %></span>',
-                    '<div class="btn action"><%= dataSourceButtonStr %></div>',
-                    '<span class="sublabel"><%= dataSourceLabelStr %>: <%= dataSourceValStr %></span>',
+                    '<div class="btn action" id="select-data-source-action"><%= dataSourceButtonStr %></div>',
+                    '<span class="sublabel"><%= dataSourceLabelStr %>:</span> <span class="sublabel data-source"><%= dataSourceValStr %></span>',
                     '</div>'].join(''),
 
                 subFolders: ['<div class="item-half">',
                     '<div class="check<%= disabled %>">',
                     '<label>',
                     '<div class="custom-checkbox">',
-                        '<input type="checkbox" class="includeSubCheck form-element"<%= includeSubCheckedStr %>/>',
-                        '<span class="icon"></span>',
+                    '<input type="checkbox" class="includeSubCheck form-element"<%= includeSubCheckedStr %>/>',
+                    '<span class="icon"></span>',
                     '</div>',
                     '<span class="description"><%= includeSubStr %></span>',
                     '</label>',
@@ -181,26 +182,26 @@ define([], function() {
 
                 categories: ['<div class="item full">',
                     '<span class="desc"><%= filterByCatStr %></span>',
-                    '<div class="' + constants.categoryDDClass + '"></div>',
+                        '<div class="' + constants.categoryDDClass + '"></div>',
                     '</div>'].join(''),
 
                 tagList: ['<div class="item full tags<%= disabled %>">',
                     '<span class="desc"><%= filterByTagsStr %></span>',
-                    '<div class="' + constants.tagListClass + '"></div>',
+                        '<div class="' + constants.tagListClass + '"></div>',
                     '</div>'].join(''),
 
                 sortBy: ['<div class="item-half left">',
                     '<span class="desc"><%= sortByStr %></span>',
-                    '<div class="' + constants.sortByDDClass + '"></div>',
+                        '<div class="' + constants.sortByDDClass + '"></div>',
                     '</div>'].join(''),
 
                 sortMethod: ['<div class="item-half">',
-                    '<div class="' + constants.sortMethodDDClass + ' sortMethod"></div>',
+                        '<div class="' + constants.sortMethodDDClass + ' sortMethod"></div>',
                     '</div>'].join(''),
 
                 presentAs: ['<div class="item-half left">',
                     '<span class="desc"><%= presentAsStr %></span>',
-                    '<div class="' + constants.presentAsDDClass + '"></div>',
+                        '<div class="' + constants.presentAsDDClass + '"></div>',
                     '</div>'].join(''),
 
                 limitResult: ['<div class="item-half">',
@@ -214,13 +215,13 @@ define([], function() {
          * namespace for events
          * @type {string}
          */
-            eventNamespace = 'husky.smart-content.',
+        eventNamespace = 'husky.smart-content.',
 
         /**
          * raised after initialization process
          * @event husky.smart-content.initialize
          */
-            INITIALIZED = function() {
+        INITIALIZED = function() {
             return createEventName.call(this, 'initialize');
         },
 
@@ -228,7 +229,7 @@ define([], function() {
          * raised when all overlay components returned their value
          * @event husky.smart-content.input-retrieved
          */
-            INPUT_RETRIEVED = function() {
+        INPUT_RETRIEVED = function() {
             return createEventName.call(this, 'input-retrieved');
         },
 
@@ -236,7 +237,7 @@ define([], function() {
          * raised before data is requested with AJAX
          * @event husky.smart-content.data-request
          */
-            DATA_REQUEST = function() {
+        DATA_REQUEST = function() {
             return createEventName.call(this, 'data-request');
         },
 
@@ -244,7 +245,7 @@ define([], function() {
          * raised when data has returned from the ajax request
          * @event husky.smart-content.data-retrieved
          */
-            DATA_RETRIEVED = function() {
+        DATA_RETRIEVED = function() {
             return createEventName.call(this, 'data-retrieved');
         },
 
@@ -252,7 +253,7 @@ define([], function() {
          * raised when the overlay data has been changed
          * @event husky.smart-content.data-changed
          */
-            DATA_CHANGED = function() {
+        DATA_CHANGED = function() {
             return createEventName.call(this, 'data-changed');
         },
 
@@ -261,7 +262,7 @@ define([], function() {
          * (options.externalConfigs has to be true)
          * @event husky.smart-content.external-configs
          */
-            EXTERNAL_CONFIGS = function() {
+        EXTERNAL_CONFIGS = function() {
             return createEventName.call(this, 'external-configs');
         },
 
@@ -270,12 +271,12 @@ define([], function() {
          * it uses the new configs
          * @event husky.smart-content.set-configs
          */
-            SET_CONFIGS = function() {
+        SET_CONFIGS = function() {
             return createEventName.call(this, 'set-configs');
         },
 
         /** returns normalized event names */
-            createEventName = function(postFix) {
+        createEventName = function(postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         };
 
@@ -522,8 +523,8 @@ define([], function() {
 
             this.sandbox.dom.html(this.$footer, [
                 '<span>',
-                '<strong>' + this.itemsVisible + ' </strong>', this.sandbox.translate(this.translations.of) , ' ',
-                '<strong>' + this.items.length + ' </strong>', this.sandbox.translate(this.translations.visible),
+                    '<strong>' + this.itemsVisible + ' </strong>', this.sandbox.translate(this.translations.of) , ' ',
+                    '<strong>' + this.items.length + ' </strong>', this.sandbox.translate(this.translations.visible),
                 '</span>'
             ].join(''));
 
@@ -539,12 +540,12 @@ define([], function() {
             if (this.itemsVisible < this.items.length) {
                 this.sandbox.dom.append(
                     this.$footer,
-                    '<span class="' + constants.viewTogglerClass + '">(' + this.sandbox.translate(this.translations.viewAll) + ')</span>'
+                        '<span class="' + constants.viewTogglerClass + '">(' + this.sandbox.translate(this.translations.viewAll) + ')</span>'
                 );
             } else if (this.items.length > this.options.visibleItems) {
                 this.sandbox.dom.append(
                     this.$footer,
-                    '<span class="' + constants.viewTogglerClass + '">(' + this.sandbox.translate(this.translations.viewLess) + ')</span>'
+                        '<span class="' + constants.viewTogglerClass + '">(' + this.sandbox.translate(this.translations.viewLess) + ')</span>'
                 );
             }
         },
@@ -655,17 +656,85 @@ define([], function() {
                         triggerEl: this.$button,
                         el: $element,
                         container: this.$el,
-                        data: this.$overlayContent,
-                        title: this.sandbox.translate(this.translations.configureSmartContent),
                         instanceName: 'smart-content.' + this.options.instanceName,
                         skin: 'wide',
-                        okCallback: function() {
-                            this.itemsVisible = this.options.visibleItems;
-                            this.getOverlayData();
-                        }.bind(this)
+                        slides: [
+                            {
+                                title: this.sandbox.translate(this.translations.configureSmartContent),
+                                data: this.$overlayContent,
+                                okCallback: function() {
+                                    this.itemsVisible = this.options.visibleItems;
+                                    this.getOverlayData();
+                                }.bind(this)
+                            },
+                            {
+                                title: this.sandbox.translate(this.translations.configureSmartContent),
+                                data: '<div id="column-navigation"/>',
+                                cssClass: 'column-navigation-slide',
+                                okInactive: true,
+                                buttons: [
+                                    {
+                                        type: 'ok',
+                                        inactive: false,
+                                        align: 'right'
+                                    },
+                                    {
+                                        type: 'cancel',
+                                        inactive: false,
+                                        align: 'left'
+                                    }
+                                ],
+                                okCallback: function() {
+                                    this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-left');
+                                    this.overlayData.dataSource = this.selectedDataSourceItem.path;
+                                    this.sandbox.dom.text(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent), this.overlayData.dataSource);
+                                    return false;
+                                }.bind(this),
+                                closeCallback: function() {
+                                    this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-left');
+                                    this.selectedDataSourceItem = null;
+                                    return true;
+                                }.bind(this)
+                            }
+                        ]
                     }
                 }
             ]);
+
+            this.bindColumnNavigationEvents();
+        },
+
+        bindColumnNavigationEvents: function() {
+            // init column navigation after initialize of overlay
+            this.sandbox.on('husky.overlay.smart-content.' + this.options.instanceName + '.initialized', function() {
+                this.sandbox.start(
+                    [
+                        {
+                            name: 'column-navigation@husky',
+                            options: {
+                                el: '#column-navigation',
+                                url: this.options.columnNavigationUrl,
+                                noPageDescription: 'No Pages',
+                                sizeRelativeTo: '.smart-content-overlay .slide-0 .overlay-content',
+                                wrapper: {height: 100},
+                                showEdit: false,
+                                showStatus: false
+                            }
+                        }
+                    ]
+                );
+            }.bind(this));
+
+            // activate button OK when a page is selected
+            this.sandbox.on('husky.column-navigation.selected', function(item) {
+                this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.okbutton.activate');
+                this.selectedDataSourceItem = item;
+            }.bind(this));
+
+            // slide to column navigation by click on the action button
+            this.sandbox.dom.on(this.$el, 'click', function() {
+                this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-right');
+            }.bind(this), '#select-data-source-action');
         },
 
         /**
@@ -851,7 +920,7 @@ define([], function() {
             );
 
             //data-source
-            this.overlayData.dataSource = this.sandbox.dom.val(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent));
+            this.overlayData.dataSource = this.sandbox.dom.text(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent));
 
             //category
             this.sandbox.emit('husky.select.' + this.options.instanceName + constants.categoryDDClass + '.getChecked',

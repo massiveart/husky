@@ -7158,93 +7158,105 @@ a.btn-black, a.btn-highlight {
   cursor: pointer;
 }
 
-/* line 113, ../scss/modules/smart-content.scss */
+/* line 114, ../scss/modules/smart-content.scss */
+.smart-content-overlay .column-navigation-slide .overlay-header {
+  margin-bottom: 0px;
+}
+/* line 117, ../scss/modules/smart-content.scss */
+.smart-content-overlay .column-navigation-slide .overlay-content {
+  margin: 0px;
+}
+/* line 121, ../scss/modules/smart-content.scss */
+.smart-content-overlay .column-navigation-slide .overlay-footer {
+  margin: 0px;
+}
+/* line 126, ../scss/modules/smart-content.scss */
 .smart-content-overlay .overlay-header {
   margin-bottom: 15px;
 }
-/* line 116, ../scss/modules/smart-content.scss */
+/* line 129, ../scss/modules/smart-content.scss */
 .smart-content-overlay .overlay-footer {
   margin-top: 5px;
 }
 
-/* line 121, ../scss/modules/smart-content.scss */
+/* line 134, ../scss/modules/smart-content.scss */
 .smart-overlay-content {
   height: 100%;
   font-size: 12px;
 }
-/* line 125, ../scss/modules/smart-content.scss */
+/* line 138, ../scss/modules/smart-content.scss */
 .smart-overlay-content .form-element {
   margin: 0;
 }
-/* line 128, ../scss/modules/smart-content.scss */
+/* line 141, ../scss/modules/smart-content.scss */
 .smart-overlay-content .desc {
   font-size: 14px;
   color: #999999;
   padding-bottom: 5px;
   display: block;
 }
-/* line 134, ../scss/modules/smart-content.scss */
+/* line 147, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item, .smart-overlay-content .item-half {
   margin-bottom: 25px;
   min-height: 55px;
 }
-/* line 138, ../scss/modules/smart-content.scss */
+/* line 151, ../scss/modules/smart-content.scss */
 .smart-overlay-content label {
   color: black;
   font-size: 12px;
 }
-/* line 142, ../scss/modules/smart-content.scss */
+/* line 155, ../scss/modules/smart-content.scss */
 .smart-overlay-content .sublabel {
   font-size: 10px;
 }
-/* line 145, ../scss/modules/smart-content.scss */
+/* line 158, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item-half {
   float: left;
   width: 270px;
 }
-/* line 149, ../scss/modules/smart-content.scss */
+/* line 162, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item {
   padding-right: 20px;
 }
-/* line 152, ../scss/modules/smart-content.scss */
+/* line 165, ../scss/modules/smart-content.scss */
 .smart-overlay-content .left {
   margin-right: 20px;
 }
-/* line 155, ../scss/modules/smart-content.scss */
+/* line 168, ../scss/modules/smart-content.scss */
 .smart-overlay-content .full {
   padding-right: 0;
 }
-/* line 158, ../scss/modules/smart-content.scss */
+/* line 171, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check {
   margin-top: 30px;
 }
-/* line 160, ../scss/modules/smart-content.scss */
+/* line 173, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check .description {
   padding-left: 5px;
 }
-/* line 163, ../scss/modules/smart-content.scss */
+/* line 176, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check.disabled {
   display: none;
 }
-/* line 167, ../scss/modules/smart-content.scss */
+/* line 180, ../scss/modules/smart-content.scss */
 .smart-overlay-content .sortMethod {
   margin-top: 25px;
 }
-/* line 171, ../scss/modules/smart-content.scss */
+/* line 184, ../scss/modules/smart-content.scss */
 .smart-overlay-content input.limit-to,
 .smart-overlay-content input.data-source {
   padding-left: 10px;
   border-radius: 0;
 }
-/* line 175, ../scss/modules/smart-content.scss */
+/* line 188, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tags.disabled {
   display: none;
 }
-/* line 178, ../scss/modules/smart-content.scss */
+/* line 191, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list {
   border-radius: 3px 3px 0 0;
 }
-/* line 180, ../scss/modules/smart-content.scss */
+/* line 193, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list input {
   margin: 7px 0 0 0;
 }
