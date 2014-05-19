@@ -67,7 +67,6 @@ define([], function() {
             backdropColor: '#000000',
             skin: '',
             backdropAlpha: 0.5,
-            type: 'normal',
             cssClass: '',
             slides: []
         },
@@ -78,10 +77,10 @@ define([], function() {
             closeIcon: 'remove2',
             closeCallback: null,
             okCallback: null,
+            type: 'normal',
             data: '',
             tabs: null,
             okInactive: false,
-            buttons: [],
             buttonsDefaultAlign: 'center',
             cancelDefaultText: 'Cancel',
             okDefaultText: 'Ok',
@@ -168,7 +167,7 @@ define([], function() {
         /** templates for component */
             templates = {
             overlaySkeleton: [
-                '<div class="husky-overlay-container<%= skin %> smart-content-overlay">',
+                '<div class="husky-overlay-container <%= skin %> smart-content-overlay">',
                 '   <div class="slides"></div>',
                 '</div>'
             ].join(''),
@@ -284,9 +283,8 @@ define([], function() {
         initialize: function() {
             this.sandbox.logger.log('initialize', this);
 
-            var type = (!!this.options.type) ? this.options.type : defaults.type;
             // merge defaults, type defaults and options
-            this.options = this.sandbox.util.extend(true, {}, defaults, types[type], this.options);
+            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
             // make component element invisible (overlay and backdrop are fixed)
             this.sandbox.dom.width(this.$el, 0);
@@ -317,12 +315,15 @@ define([], function() {
                         delete this.options[key];
                     }
                 }
+
+                this.slides[0] = this.sandbox.util.extend({}, types[this.slides[0].type], this.slides[0]);
             } else {
                 this.sandbox.util.foreach(this.options.slides, function(value, i) {
-                    this.slides[i] = this.sandbox.util.extend({}, value, slideDefaults);
+                    this.slides[i] = this.sandbox.util.extend({}, slideDefaults, value);
 
-                    if (this.slides[i].id === -1) {
-                        this.slides[i].id = i;
+                    this.slides[i] = this.sandbox.util.extend({}, types[this.slides[i].type], this.slides[i]);
+                    if (this.slides[i].index === -1) {
+                        this.slides[i].index = i;
                     }
                 }.bind(this));
             }
@@ -527,8 +528,7 @@ define([], function() {
             this.overlay.slides[slide] = this.sandbox.util.extend({}, internalSlideDefaults);
 
             this.overlay.slides[slide].$el = this.sandbox.dom.createElement(
-                this.sandbox.util.template(templates.slideSkeleton, this.slides[slide]
-                )
+                this.sandbox.util.template(templates.slideSkeleton, this.slides[slide])
             );
             this.overlay.slides[slide].$close = this.sandbox.dom.find(constants.closeSelector, this.overlay.slides[slide].$el);
             this.overlay.slides[slide].$footer = this.sandbox.dom.find(constants.footerSelector, this.overlay.slides[slide].$el);
@@ -542,12 +542,12 @@ define([], function() {
 
             // add draggable class if overlay is draggable
             if (this.slides[slide].draggable === true) {
-                this.sandbox.dom.addClass(this.overlay.$el, constants.draggableClass);
+                this.sandbox.dom.addClass(this.overlay.slides[slide].$el, constants.draggableClass);
             }
 
             // add classes for various styling
-            this.sandbox.dom.addClass(this.overlay.$footer, this.options.buttonsDefaultAlign);
-            this.sandbox.dom.addClass(this.overlay.$el, this.options.cssClass);
+            this.sandbox.dom.addClass(this.overlay.slides[slide].$footer, this.options.buttonsDefaultAlign);
+            this.sandbox.dom.addClass(this.overlay.slides[slide].$el, this.options.cssClass);
 
             return this.overlay.slides[slide].$el;
         },
@@ -558,11 +558,11 @@ define([], function() {
         renderLanguageChanger: function(slide) {
             var $element = this.sandbox.dom.createElement('<div/>');
 
-            this.overlay.$languageChanger = this.sandbox.dom.createElement(
+            this.overlay.slides[slide].$languageChanger = this.sandbox.dom.createElement(
                 '<div class="'+ constants.languageChangerClass +'"/>'
             );
-            this.sandbox.dom.append(this.overlay.$header, this.overlay.$languageChanger);
-            this.sandbox.dom.append(this.overlay.$languageChanger, $element);
+            this.sandbox.dom.append(this.overlay.slides[slide].$header, this.overlay.slides[slide].$languageChanger);
+            this.sandbox.dom.append(this.overlay.slides[slide].$languageChanger, $element);
 
             this.sandbox.start([{
                 name: 'select@husky',
@@ -585,11 +585,11 @@ define([], function() {
                 button = this.slides[slide].buttons[i];
                 if (button.type === buttonTypes.OK) {
                     template = templates.okButton;
-                    text = this.options.okDefaultText;
-                    inactive = this.options.okInactive;
+                    text = this.slides[slide].okDefaultText;
+                    inactive = this.slides[slide].okInactive;
                 } else if (button.type === buttonTypes.CANCEL) {
                     template = templates.cancelButton;
-                    text = this.options.cancelDefaultText;
+                    text = this.options.slides[slide].cancelDefaultText;
                 }
 
                 classes = (!!button.classes) ? ' ' + button.classes : '';
