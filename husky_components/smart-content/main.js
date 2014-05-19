@@ -163,7 +163,8 @@ define([], function() {
 
                 dataSource: ['<div class="item-half left">',
                     '<span class="desc"><%= dataSourceStr %></span>',
-                    '<input type="text" value="<%= dataSourceValStr %>" class="data-source form-element"/>',
+                    '<div class="btn action"><%= dataSourceStr %></div>',
+                    //'<input type="text" value="<%= dataSourceValStr %>" class="data-source form-element"/>',
                     '</div>'].join(''),
 
                 subFolders: ['<div class="item-half">',
@@ -656,6 +657,7 @@ define([], function() {
                         data: this.$overlayContent,
                         title: this.sandbox.translate(this.translations.configureSmartContent),
                         instanceName: 'smart-content.' + this.options.instanceName,
+                        skin: 'wide',
                         okCallback: function() {
                             this.itemsVisible = this.options.visibleItems;
                             this.getOverlayData();
