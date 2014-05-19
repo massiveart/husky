@@ -32355,6 +32355,9 @@ define('__component__$dependent-select@husky',[],function() {
 
 define('__component__$select@husky',[], function() {
 
+    // TODO update: init liste neu und selected anpassen
+    //
+
     
 
     var defaults = {
@@ -32464,7 +32467,13 @@ define('__component__$select@husky',[], function() {
             EVENT_GET_CHECKED = function() {
             return getEventName.call(this, 'get-checked');
         },
-
+        /**
+         * update the elements of the dropdown list
+         * @event husky.select[.INSTANCE_NAME].update
+         */
+            EVENT_UPDATE = function() {
+            return getEventName.call(this, 'update');
+        },
 
         getEventName = function(suffix) {
             return 'husky.select.' + this.options.instanceName + '.' + suffix;
@@ -32549,12 +32558,20 @@ define('__component__$select@husky',[], function() {
             }
             // TODO load data from url
         },
-
-        addDropdownElement: function(id, value, disabled, callback) {
+        /**
+         * Adds a dropdown element to the dropdown list
+         * @param id
+         * @param value
+         * @param disabled
+         * @param callback
+         * @param updateLabel
+         */
+        addDropdownElement: function(id, value, disabled, callback, updateLabel) {
             var $item,
                 idString = (!!id || id === 0) ? id.toString() : this.sandbox.util.uniqueId();
+
             if (this.options.preSelectedElements.indexOf(id) >= 0 || this.options.preSelectedElements.indexOf(value) >= 0) {
-                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, 'checked'));
+                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, 'checked', updateLabel));
                 this.selectedElements.push(idString);
                 this.selectedElementsValues.push(value);
                 if (this.options.emitValues === true) {
@@ -32563,7 +32580,7 @@ define('__component__$select@husky',[], function() {
                     this.triggerPreSelect(value);
                 }
             } else {
-                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, ''));
+                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, '', updateLabel));
             }
 
             // store callback if callback is set
@@ -32578,12 +32595,18 @@ define('__component__$select@husky',[], function() {
             this.sandbox.dom.append(this.$list, $item);
         },
 
+        /**
+         * Adds a divider element to the dropdown list
+         */
         addDivider: function(){
             var $item = this.sandbox.dom.$('<hr class="divider"/>');
             this.sandbox.dom.append(this.$list, $item);
         },
 
-        // generate dropDown with given items
+        /**
+         * Generates the dropdown list with the given items
+         * @param items
+         */
         generateDropDown: function(items) {
             if (typeof this.options.deselectField === 'string' && this.options.deselectField !== 'false') {
                 this.addDropdownElement(constants.deselectFieldKey, this.sandbox.translate(this.options.deselectField));
@@ -32598,7 +32621,7 @@ define('__component__$select@husky',[], function() {
                         if(value.divider === true) {
                             this.addDivider();
                         } else {
-                            this.addDropdownElement(value.id, value[this.options.valueName], !!value.disabled, value.callback);
+                            this.addDropdownElement(value.id, value[this.options.valueName], !!value.disabled, value.callback, value.updateLabel);
                         }
 
                     }.bind(this));
@@ -32636,6 +32659,31 @@ define('__component__$select@husky',[], function() {
             this.sandbox.on(EVENT_ENABLE.call(this), this.enable.bind(this));
 
             this.sandbox.on(EVENT_GET_CHECKED.call(this), this.getChecked.bind(this));
+
+            this.sandbox.on(EVENT_UPDATE.call(this), this.updateDropdown.bind(this));
+        },
+
+        /**
+         * Updates the dropdown list
+         * @param data
+         * @param preselected
+         */
+        updateDropdown: function(data, preselected){
+
+            // TODO
+            // selected values
+            // label
+
+            this.options.preSelectedElements = preselected;
+            this.selectedElements = [];
+            this.selectedElementsValues = [];
+            this.sandbox.dom.empty(this.$list);
+
+            if(!!data && data.length > 0) {
+                this.generateDropDown(data);
+            } else {
+                this.sandbox.logger.warn('error invalid data for update!');
+            }
         },
 
         updateSelectionAttribute: function() {
@@ -32670,51 +32718,58 @@ define('__component__$select@husky',[], function() {
         // trigger event with clicked item
         clickItem: function(event) {
 
-            var key, value, $checkbox, index, callback;
+            var key, value, $checkbox, index, callback, updateLabel;
 
             key = this.sandbox.dom.attr(event.currentTarget, 'data-id');
             callback = this.sandbox.dom.data(event.currentTarget, 'selectCallback');
             index = this.selectedElements.indexOf(key);
+            updateLabel = this.sandbox.dom.attr(event.currentTarget, 'data-update-label');
 
-            // if single select then uncheck all results
-            if (this.options.multipleSelect === false) {
-                // if deselect was selected
-                if (key === constants.deselectFieldKey) {
-                    index = 0;
-                    this.uncheckAll(key);
-                    // if new element was selected
-                } else if (index === -1) {
-                    this.uncheckAll(key);
-                    // same element was selected
-                } else if (this.options.repeatSelect !== true) {
-                    this.hideDropDown();
-                    return;
+            if(updateLabel !== 'false') {
+
+                // if single select then uncheck all results
+                if (this.options.multipleSelect === false) {
+                    // if deselect was selected
+                    if (key === constants.deselectFieldKey) {
+                        index = 0;
+                        this.uncheckAll(key);
+                        // if new element was selected
+                    } else if (index === -1) {
+                        this.uncheckAll(key);
+                        // same element was selected
+                    } else if (this.options.repeatSelect !== true) {
+                        this.hideDropDown();
+                        return;
+                    }
                 }
+
             }
 
             value = this.sandbox.dom.text(this.sandbox.dom.find('.item-value', event.currentTarget));
             $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget)[0];
 
-            // deselect
-            if (index >= 0) {
-                this.sandbox.dom.removeClass($checkbox, 'is-selected');
-                this.sandbox.dom.prop($checkbox, 'checked', false);
-                this.selectedElements.splice(index, 1);
-                this.selectedElementsValues.splice(index, 1);
+            if(!!updateLabel && updateLabel !== 'false') {
+                // deselect
+                if (index >= 0) {
+                    this.sandbox.dom.removeClass($checkbox, 'is-selected');
+                    this.sandbox.dom.prop($checkbox, 'checked', false);
+                    this.selectedElements.splice(index, 1);
+                    this.selectedElementsValues.splice(index, 1);
 
                 // select
-            } else {
-                this.sandbox.dom.addClass($checkbox, 'is-selected');
-                this.sandbox.dom.prop($checkbox, 'checked', true);
-                this.selectedElements.push(key);
-                this.selectedElementsValues.push(value);
+                } else {
+                    this.sandbox.dom.addClass($checkbox, 'is-selected');
+                    this.sandbox.dom.prop($checkbox, 'checked', true);
+                    this.selectedElements.push(key);
+                    this.selectedElementsValues.push(value);
+                }
+
+                // update data attribute
+                this.updateSelectionAttribute();
+
+                // change label
+                this.changeLabel();
             }
-
-            // update data attribute
-            this.updateSelectionAttribute();
-
-            // change label
-            this.changeLabel();
 
             // hide if single select
             if (this.options.multipleSelect === false) {
@@ -32878,13 +32933,20 @@ define('__component__$select@husky',[], function() {
                     '</div>'
                 ].join('');
             },
-            menuElement: function(index, value, checked) {
-                var hiddenClass = '';
+            menuElement: function(index, value, checked, updateLabel) {
+                var hiddenClass = '',
+                    update = 'true';
+
                 if (this.options.multipleSelect === false) {
                     hiddenClass = ' hidden';
                 }
+
+                if(updateLabel !== undefined && updateLabel === false){
+                    update = 'false';
+                }
+
                 return [
-                    '<li data-id="', index, '">',
+                    '<li data-id="', index, '" data-update-label="',update,'">',
                     '    <div>',
                     '        <div class="check' + hiddenClass + '">',
                     '           <div class="custom-checkbox no-spacing">',
@@ -38083,6 +38145,10 @@ define('husky_extensions/collection',[],function() {
 
             app.core.dom.animate = function(selector, properties, options) {
                 $(selector).animate(properties, options);
+            };
+
+            app.core.dom.empty = function(selector){
+              $(selector).empty();
             };
 
             app.core.util.ajax = $.ajax;
