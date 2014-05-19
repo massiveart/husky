@@ -46,9 +46,7 @@
         font-size: 16px;
         line-height: $inputHeight;
         vertical-align: middle;
-
-        @extend .icon-class;
-        @extend .icon-search;
+        text-decoration: none;
     }
 
     .remove-icon {
@@ -60,21 +58,34 @@
         margin: auto;
         background-color: $white;
         padding-left: 3px;
+        text-decoration: none;
     }
 
     /** look and feel **/
 
     &.gray {
+        .search-icon {
+          font-size: 20px;
+          color: $searchBarGray;
+        }
+        .remove-icon {
+          color: $searchBarGray;
+          background-color: transparent;
+        }
         .search-input {
             background-color: $searchBarGray;
-
             @include input-placeholder {
-              color: $white;
+              color: $searchBarGray;
             }
-
-            &:focus {
-                background-color: $white;
-            }
+        }
+        &.focus {
+          .search-input {
+            background-color: $white;
+          }
+          .search-icon,
+          .remove-icon {
+            color: #3e3e3e;
+          }
         }
     }
 

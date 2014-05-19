@@ -53,7 +53,7 @@ define(function() {
                 '       <footer>',
                 '       </footer>',
                 '   </div>',
-                '   <div class="icon-remove2 navigation-close-icon">',
+                '   <div class="fa-times navigation-close-icon">',
                 '</nav>'].join(''),
             /** main navigation items (with icons)*/
             mainItem: [
@@ -64,10 +64,10 @@ define(function() {
                 '           <span class="navigation-item-title"><%= translate(item.title) %></span>',
                 '       </a>',
                 '       <% if (item.hasSettings) { %>',
-                '           <a class="icon-cogwheel navigation-settings-icon js-navigation-settings" id="<%= item.id %>" href="#"></a>',
+                '           <a class="fa-cogwheel navigation-settings-icon js-navigation-settings" id="<%= item.id %>" href="#"></a>',
                 '       <% } %>',
                 '       <% if (item.items && item.items.length > 0) { %>',
-                '           <a class="icon-chevron-right navigation-toggle-icon" href="#"></a>',
+                '           <a class="fa-chevron-right navigation-toggle-icon" href="#"></a>',
                 '       <% } %>',
                 '   </div>',
                 '</li>'].join(''),
@@ -77,9 +77,9 @@ define(function() {
                 '       <div class="navigation-subitems-toggle">',
                 '           <a class="<% if (!!item.action) { %>js-navigation-item <% } %> navigation-item" href="#"><%= translate(item.title) %></a>',
                 '           <% if (item.hasSettings) { %>',
-                '           <a class="icon-cogwheel navigation-settings-icon js-navigation-settings" href="#"></a>',
+                '           <a class="fa-cogwheel navigation-settings-icon js-navigation-settings" href="#"></a>',
                 '           <% } %>',
-                '           <a class="icon-chevron-right navigation-toggle-icon" href="#"></a>',
+                '           <a class="fa-chevron-right navigation-toggle-icon" href="#"></a>',
                 '       </div>',
                 '</li>'].join(''),
             /** siple sub item */
@@ -91,12 +91,12 @@ define(function() {
             //footer template
             footer: [
                 '<div class="user">',
-                '<div class="icon-user pic"></div>',
+                '<span class="fa-user pic"></span>',
                 '<div class="name"><%= userName %></div>',
                 '</div>',
                 '<div class="options">',
                 '<div class="locale-dropdown"></div>',
-                '<a href="<%= logoutRoute %>" title="Logout" class="icon-lock logout"></a>',
+                '<a href="<%= logoutRoute %>" title="Logout" class="fa-lock logout"></a>',
                 '</div>',
                 '<div class="version"><%= system %> (<%= version %>, <a href="#"><%= versionHistory %></a>)</div>'
             ].join('')
@@ -313,7 +313,7 @@ define(function() {
                     // create item
                     $elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.mainItem, {
                         item: item,
-                        icon: item.icon ? 'icon-' + item.icon : '',
+                        icon: item.icon ? 'fa-' + item.icon : '',
                         translate: this.sandbox.translate
                     }));
                     this.sandbox.dom.append($sectionList, $elem);
@@ -584,10 +584,10 @@ define(function() {
             }
 
             if (isExpanded && !navWasCollapsed) {
-                $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
+                $toggle = this.sandbox.dom.find('.fa-chevron-down', event.currentTarget);
                 this.animateSlideUp($items, $toggle);
             } else if (this.collapsed !== true) {
-                $toggle = this.sandbox.dom.find('.icon-chevron-right', event.currentTarget);
+                $toggle = this.sandbox.dom.find('.fa-chevron-right', event.currentTarget);
                 this.animateSlideDown($items, $toggle, $childList);
             }
 
@@ -617,8 +617,8 @@ define(function() {
                 this.sandbox.dom.removeClass($items, 'is-expanded');
 
                 // change toggle item
-                this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
-                this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
+                this.sandbox.dom.removeClass($toggle, 'fa-chevron-down');
+                this.sandbox.dom.prependClass($toggle, 'fa-chevron-right');
             }
         },
 
@@ -652,8 +652,8 @@ define(function() {
                 this.sandbox.dom.addClass($items, 'is-expanded');
 
                 // change toggle item
-                this.sandbox.dom.removeClass($toggle, 'icon-chevron-right');
-                this.sandbox.dom.prependClass($toggle, 'icon-chevron-down');
+                this.sandbox.dom.removeClass($toggle, 'fa-chevron-right');
+                this.sandbox.dom.prependClass($toggle, 'fa-chevron-down');
 
                 this.sandbox.dom.one($items, CONSTANTS.TRANSITIONEND_EVENT, this.checkBottomHit.bind(this));
             }

@@ -15,7 +15,7 @@
                 {
                     "title": "Contacts",
                     "hasSettings": "true",
-                    "icon": "contact-book",
+                    "icon": "user",
                     "id": "3",
                     "items": [
                         {
@@ -32,7 +32,7 @@
                 },
                 {
                     "title": "Media",
-                    "icon": "star",
+                    "icon": "image",
                     "hasSettings": "true",
                     "id": "6",
                     "items": [
@@ -60,7 +60,7 @@
                 },
                 {
                     "title": "Settings",
-                    "icon": "cogwheels",
+                    "icon": "gear",
                     "id": "11",
                     "items": [
                         {
@@ -83,7 +83,7 @@
             "items": [
                 {
                     "title": "Americas",
-                    "icon": "globe",
+                    "icon": "bullseye",
                     "hasSettings": "true",
                     "id": "14",
                     "items": [
@@ -106,7 +106,7 @@
                 },
                 {
                     "title": "Europe",
-                    "icon": "globe",
+                    "icon": "bullseye",
                     "hasSettings": "true",
                     "id": "18",
                     "items": [
@@ -129,7 +129,7 @@
                 },
                 {
                     "title": "Asia",
-                    "icon": "globe",
+                    "icon": "bullseye",
                     "id": "22",
                     "items": [
                         {
