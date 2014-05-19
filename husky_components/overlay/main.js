@@ -182,7 +182,7 @@ define([], function() {
                 '   <div class="overlay-content"></div>',
                 '   <div class="overlay-footer">',
                 '   </div>',
-                '</div>',
+                '</div>'
             ].join(''),
             okButton: [
                 '<div class="btn action overlay-ok<%= classes %>">',
@@ -453,13 +453,26 @@ define([], function() {
                     }
 
                     this.sandbox.emit(INITIALIZED.call(this));
+
+                    this.insertOverlay();
+
+                    // set width to n-width
+                    this.overlay.width = this.sandbox.dom.outerWidth(this.overlay.$slides.find('.slide'));
+                    this.sandbox.dom.css(this.overlay.$slides, 'width', (this.slides.length * this.overlay.width) + 'px');
+
+                    this.overlay.$content = this.sandbox.dom.find(constants.contentSelector, this.overlay.$el);
+                    var maxHeight = -1;
+
+                    $(this.overlay.$content).each(function() {
+                        maxHeight = maxHeight > $(this).height() ? maxHeight : $(this).height();
+                    });
+
+                    this.sandbox.dom.css(this.overlay.$content, 'height', maxHeight + 'px');
+                    this.resizeHandler();
+                    this.setCoordinates();
+                } else {
+                    this.insertOverlay();
                 }
-
-                this.insertOverlay();
-
-                // set width to n-width
-                this.overlay.width = this.sandbox.dom.outerWidth(this.overlay.$slides.find('.slide'));
-                this.sandbox.dom.css(this.overlay.$slides, 'width', (this.slides.length * this.overlay.width) + 'px');
             }
         },
 
@@ -485,8 +498,6 @@ define([], function() {
             this.overlay.opened = false;
             this.dragged = false;
             this.collapsed = false;
-
-            this.sandbox.dom.css(this.overlay.$content, {'height': 'auto'});
 
             this.sandbox.emit(CLOSED.call(this));
 
@@ -554,7 +565,7 @@ define([], function() {
             }
 
             // add draggable class if overlay is draggable
-            if (this.slides[slide].draggable === true) {
+            if (this.options.draggable === true) {
                 this.sandbox.dom.addClass(this.overlay.slides[slide].$el, constants.draggableClass);
             }
 
@@ -726,18 +737,19 @@ define([], function() {
             }
 
             if (this.options.draggable === true) {
-                this.sandbox.dom.on(this.overlay.$header, 'mousedown', function(e) {
-                    var origin = {
-                        y: e.clientY - (this.sandbox.dom.offset(this.overlay.$header).top - this.sandbox.dom.scrollTop(this.sandbox.dom.$window)),
-                        x: e.clientX - (this.sandbox.dom.offset(this.overlay.$header).left - this.sandbox.dom.scrollLeft(this.sandbox.dom.$window))
-                    };
+                this.sandbox.util.foreach(this.overlay.slides, function(slide) {
+                    this.sandbox.dom.on(slide.$header, 'mousedown', function(e) {
+                        var origin = {
+                            y: e.clientY - (this.sandbox.dom.offset(this.overlay.slides[this.activeSlide].$header).top - this.sandbox.dom.scrollTop(this.sandbox.dom.$window)),
+                            x: e.clientX - (this.sandbox.dom.offset(this.overlay.slides[this.activeSlide].$header).left - this.sandbox.dom.scrollLeft(this.sandbox.dom.$window))
+                        };
 
-                    //bind the mousemove event if mouse is down on header
-                    this.sandbox.dom.on(this.sandbox.dom.$document, 'mousemove.overlay' + this.options.instanceName, function(event) {
-                        this.draggableHandler(event, origin);
+                        //bind the mousemove event if mouse is down on header
+                        this.sandbox.dom.on(this.sandbox.dom.$document, 'mousemove.overlay' + this.options.instanceName, function(event) {
+                            this.draggableHandler(event, origin);
+                        }.bind(this));
                     }.bind(this));
                 }.bind(this));
-
                 this.sandbox.dom.on(this.sandbox.dom.$document, 'mouseup', function() {
                     this.sandbox.dom.off(this.sandbox.dom.$document, 'mousemove.overlay' + this.options.instanceName);
                 }.bind(this));
@@ -757,7 +769,6 @@ define([], function() {
 
         /**
          * Handles the click on an overlay tab
-         * @param tab {object} tab object with $el property
          */
         showTab: function(tab, slide) {
             slide = slide || this.activeSlide;
@@ -811,7 +822,6 @@ define([], function() {
             this.dragged = true;
 
             if (this.overlay.collapsed === true) {
-                this.sandbox.dom.css(this.overlay.$content, {'height': 'auto'});
                 this.overlay.collapsed = false;
             }
         },
@@ -837,7 +847,6 @@ define([], function() {
 
                 //if overlay reached its beginning height - stop
                 if (this.sandbox.dom.height(this.overlay.$el) >= this.overlay.normalHeight) {
-                    this.sandbox.dom.height(this.overlay.$content, 'auto');
                     this.sandbox.dom.css(this.overlay.$content, {'overflow': 'visible'});
                     this.overlay.collapsed = false;
 

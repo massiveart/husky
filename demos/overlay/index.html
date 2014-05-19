@@ -126,10 +126,12 @@
                         options: {
                             el: '#overlaySlides',
                             triggerEl: '#slides',
+                            draggable: true,
                             slides: [
                                 {
-                                    title: 'Slide 1',
-                                    data: testData,
+                                    title: 'Slide2',
+                                    data: '',
+                                    type: 'error',
                                     closeCallback: function() {
                                         console.log('You clicked on close');
                                     },
@@ -139,9 +141,8 @@
                                     }
                                 },
                                 {
-                                    title: 'Slide2',
+                                    title: 'Slide 1',
                                     data: testData,
-                                    type: 'error',
                                     closeCallback: function() {
                                         console.log('You clicked on close');
                                     },
