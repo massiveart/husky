@@ -34949,6 +34949,13 @@ define('__component__$select@husky',[], function() {
             EVENT_UPDATE = function() {
             return getEventName.call(this, 'update');
         },
+        /**
+         * update the elements of the dropdown list
+         * @event husky.select[.INSTANCE_NAME].update
+         */
+            EVENT_DATA_CHANGED = function() {
+            return getEventName.call(this, 'data.changed');
+        },
 
         getEventName = function(suffix) {
             return 'husky.select.' + this.options.instanceName + '.' + suffix;
@@ -35136,6 +35143,36 @@ define('__component__$select@husky',[], function() {
             this.sandbox.on(EVENT_GET_CHECKED.call(this), this.getChecked.bind(this));
 
             this.sandbox.on(EVENT_UPDATE.call(this), this.updateDropdown.bind(this));
+
+            this.sandbox.on(EVENT_DATA_CHANGED.call(this), this.dataChanged.bind(this));
+        },
+
+        /**
+         * Should be triggered when data attributes have changed
+         */
+        dataChanged: function(){
+            var selectedIds = this.sandbox.dom.data(this.$el,'selection'),
+                selectedValues = this.sandbox.dom.data(this.$el,'selection-values'),
+                id, $checkbox;
+
+            this.selectedElements = selectedIds.split(',').map(parseInt);
+            this.selectedElementsValues = selectedValues.split(',');
+
+            this.sandbox.util.foreach(this.$list, function($el){
+                id = this.sandbox.dom.data($el, 'id');
+                $checkbox = this.sandbox.dom.find('input[type=checkbox]', $el);
+                if(this.selectedElements.indexOf(id) > -1){
+                    this.sandbox.dom.addClass($checkbox, 'is-selected');
+                    this.sandbox.dom.prop($checkbox, 'checked', true);
+                } else {
+                    this.sandbox.dom.removeClass($checkbox, 'is-selected');
+                    this.sandbox.dom.prop($checkbox, 'checked', false);
+                }
+
+            }.bind(this));
+
+            this.changeLabel();
+
         },
 
         /**
@@ -35144,10 +35181,6 @@ define('__component__$select@husky',[], function() {
          * @param preselected
          */
         updateDropdown: function(data, preselected){
-
-            // TODO
-            // selected values
-            // label
 
             this.options.preSelectedElements = preselected;
             this.selectedElements = [];
