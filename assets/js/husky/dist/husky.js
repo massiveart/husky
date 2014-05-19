@@ -26692,7 +26692,7 @@ define('__component__$navigation@husky',[],function() {
                 '       <footer>',
                 '       </footer>',
                 '   </div>',
-                '   <div class="icon-remove2 navigation-close-icon">',
+                '   <div class="fa-times navigation-close-icon">',
                 '</nav>'].join(''),
             /** main navigation items (with icons)*/
             mainItem: [
@@ -26703,10 +26703,10 @@ define('__component__$navigation@husky',[],function() {
                 '           <span class="navigation-item-title"><%= translate(item.title) %></span>',
                 '       </a>',
                 '       <% if (item.hasSettings) { %>',
-                '           <a class="icon-cogwheel navigation-settings-icon js-navigation-settings" id="<%= item.id %>" href="#"></a>',
+                '           <a class="fa-cogwheel navigation-settings-icon js-navigation-settings" id="<%= item.id %>" href="#"></a>',
                 '       <% } %>',
                 '       <% if (item.items && item.items.length > 0) { %>',
-                '           <a class="icon-chevron-right navigation-toggle-icon" href="#"></a>',
+                '           <a class="fa-chevron-right navigation-toggle-icon" href="#"></a>',
                 '       <% } %>',
                 '   </div>',
                 '</li>'].join(''),
@@ -26716,9 +26716,9 @@ define('__component__$navigation@husky',[],function() {
                 '       <div class="navigation-subitems-toggle">',
                 '           <a class="<% if (!!item.action) { %>js-navigation-item <% } %> navigation-item" href="#"><%= translate(item.title) %></a>',
                 '           <% if (item.hasSettings) { %>',
-                '           <a class="icon-cogwheel navigation-settings-icon js-navigation-settings" href="#"></a>',
+                '           <a class="fa-cogwheel navigation-settings-icon js-navigation-settings" href="#"></a>',
                 '           <% } %>',
-                '           <a class="icon-chevron-right navigation-toggle-icon" href="#"></a>',
+                '           <a class="fa-chevron-right navigation-toggle-icon" href="#"></a>',
                 '       </div>',
                 '</li>'].join(''),
             /** siple sub item */
@@ -26730,12 +26730,12 @@ define('__component__$navigation@husky',[],function() {
             //footer template
             footer: [
                 '<div class="user">',
-                '<div class="icon-user pic"></div>',
+                '<span class="fa-user pic"></span>',
                 '<div class="name"><%= userName %></div>',
                 '</div>',
                 '<div class="options">',
                 '<div class="locale-dropdown"></div>',
-                '<a href="<%= logoutRoute %>" title="Logout" class="icon-lock logout"></a>',
+                '<a href="<%= logoutRoute %>" title="Logout" class="fa-lock logout"></a>',
                 '</div>',
                 '<div class="version"><%= system %> (<%= version %>, <a href="#"><%= versionHistory %></a>)</div>'
             ].join('')
@@ -26952,7 +26952,7 @@ define('__component__$navigation@husky',[],function() {
                     // create item
                     $elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.mainItem, {
                         item: item,
-                        icon: item.icon ? 'icon-' + item.icon : '',
+                        icon: item.icon ? 'fa-' + item.icon : '',
                         translate: this.sandbox.translate
                     }));
                     this.sandbox.dom.append($sectionList, $elem);
@@ -27223,10 +27223,10 @@ define('__component__$navigation@husky',[],function() {
             }
 
             if (isExpanded && !navWasCollapsed) {
-                $toggle = this.sandbox.dom.find('.icon-chevron-down', event.currentTarget);
+                $toggle = this.sandbox.dom.find('.fa-chevron-down', event.currentTarget);
                 this.animateSlideUp($items, $toggle);
             } else if (this.collapsed !== true) {
-                $toggle = this.sandbox.dom.find('.icon-chevron-right', event.currentTarget);
+                $toggle = this.sandbox.dom.find('.fa-chevron-right', event.currentTarget);
                 this.animateSlideDown($items, $toggle, $childList);
             }
 
@@ -27256,8 +27256,8 @@ define('__component__$navigation@husky',[],function() {
                 this.sandbox.dom.removeClass($items, 'is-expanded');
 
                 // change toggle item
-                this.sandbox.dom.removeClass($toggle, 'icon-chevron-down');
-                this.sandbox.dom.prependClass($toggle, 'icon-chevron-right');
+                this.sandbox.dom.removeClass($toggle, 'fa-chevron-down');
+                this.sandbox.dom.prependClass($toggle, 'fa-chevron-right');
             }
         },
 
@@ -27291,8 +27291,8 @@ define('__component__$navigation@husky',[],function() {
                 this.sandbox.dom.addClass($items, 'is-expanded');
 
                 // change toggle item
-                this.sandbox.dom.removeClass($toggle, 'icon-chevron-right');
-                this.sandbox.dom.prependClass($toggle, 'icon-chevron-down');
+                this.sandbox.dom.removeClass($toggle, 'fa-chevron-right');
+                this.sandbox.dom.prependClass($toggle, 'fa-chevron-down');
 
                 this.sandbox.dom.one($items, CONSTANTS.TRANSITIONEND_EVENT, this.checkBottomHit.bind(this));
             }
@@ -27585,14 +27585,14 @@ define('__component__$column-options@husky',[],function() {
             header: [
                 '<div class="column-options-header">',
                 '   <span class="title"><%= title %></span>',
-                '   <a href="#" class="icon-remove2 close-button"></a>',
+                '   <a href="#" class="fa-times close-button"></a>',
                 '</div>'
             ].join('')
         },
 
         iconClasses = {
-            visible: 'icon-half-eye-open',
-            hidden: 'icon-half-eye-close'
+            visible: 'fa-eye',
+            hidden: 'fa-eye-slash'
         },
 
 
@@ -28007,8 +28007,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             // if datagrid is in fullwidth-mode (options.fullWidth is true)
             // this number gets subracted from the tables final width in the resize listener
             overflowIconSpacing: 30,
-            ascClass: 'icon-arrow-up',
-            descClass: 'icon-arrow-down',
+            ascClass: 'fa-caret-up',
+            descClass: 'fa-caret-down',
             additionalHeaderClasses: ' m-left-5 small-font',
             rowRemoverClass: 'row-remover',
             editableClass: 'editable',
@@ -28028,7 +28028,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         templates = {
             removeRow: [
                 '<td class="remove-row">',
-                    '<span class="icon-bin pointer '+ constants.rowRemoverClass +'"></span>',
+                    '<span class="fa-trash-o pointer '+ constants.rowRemoverClass +'"></span>',
                 '</td>'
             ].join(''),
 
@@ -29235,7 +29235,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
                             '<input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
                             '<span class="icon"></span>',
                         '</div>',
-                        '<div class="icon-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
+                        '<div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
                     '</div>'
             ].join('')
         };
@@ -31744,8 +31744,8 @@ define('__component__$search@husky',[], function() {
 
     var templates = {
             skeleton: [
-                '<a class="search-icon" href="#"></a>',
-                '<a class="icon-circle-remove remove-icon" href="#"></a>',
+                '<a class="fa-search search-icon" href="#"></a>',
+                '<a class="fa-times-circle remove-icon" href="#"></a>',
                 '<input id="search-input" type="text" class="form-element input-round search-input" placeholder="<%= placeholderText %>"/>'
             ].join('')
         },
@@ -31820,6 +31820,12 @@ define('__component__$search@husky',[], function() {
             this.sandbox.dom.on(this.$el, 'mousedown', this.submitSearch.bind(this), '.search-icon');
             this.sandbox.dom.on(this.$el, 'mousedown', this.removeSearch.bind(this), '.remove-icon');
             this.sandbox.dom.on(this.$el, 'keyup onchange', this.checkKeyPressed.bind(this), '#search-input');
+            this.sandbox.dom.on(this.$find('input'), 'focus', function() {
+                this.sandbox.dom.addClass(this.$el, 'focus');
+            }.bind(this));
+            this.sandbox.dom.on(this.$find('input'), 'blur', function() {
+                this.sandbox.dom.removeClass(this.$el, 'focus');
+            }.bind(this));
 
             if (this.options.slide === true) {
                 this.sandbox.dom.on(this.$find('input'), 'focus', this.expand.bind(this));
@@ -33456,7 +33462,7 @@ define('__component__$auto-complete@husky',[], function() {
         setTemplate: function() {
             var iconHTML = '';
             if (this.options.suggestionImg !== '') {
-                iconHTML = '<span class="icon-' + this.options.suggestionImg + ' icon"></span>';
+                iconHTML = '<span class="fa-' + this.options.suggestionImg + ' icon"></span>';
             }
             this._template = this.sandbox.util.template('' +
                 '<div class="' + this.options.suggestionClass + '" data-id="<%= id %>">' +
@@ -33916,8 +33922,8 @@ define('__component__$auto-complete-list@husky',[], function() {
                 AjaxPushAllItems: false,
                 AjaxPushParameters: null,
                 togglerSelector: '.toggler',
-                arrowDownClass: 'arrow-down',
-                arrowUpClass: 'arrow-up',
+                arrowDownClass: 'fa-caret-down',
+                arrowUpClass: 'fa-caret-up',
                 slideDuration: 500,
                 elementTagDataName: 'tags',
                 autoCompleteIcon: 'tag',
@@ -33932,7 +33938,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                     '        <%= label %>',
                     '            <div class="auto-complete-list">',
                     '                <div class="husky-auto-complete"></div>',
-                    '                <div class="toggler"><span></span></div>',
+                    '                <div class="toggler"></div>',
                     '            </div>',
                     '        </label>',
                     '    </div>'
@@ -34365,7 +34371,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                         $el: this.sandbox.dom.find(this.options.togglerSelector, this.$el),
                         pos: togglerPosUp
                     };
-                    this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowUpClass);
+                    this.sandbox.dom.prependClass(this.toggler.$el, this.options.arrowUpClass);
                 }
             },
 
@@ -34412,7 +34418,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              */
             togglerDown: function() {
                 this.sandbox.dom.removeClass(this.toggler.$el, this.options.arrowUpClass);
-                this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowDownClass);
+                this.sandbox.dom.prependClass(this.toggler.$el, this.options.arrowDownClass);
                 this.toggler.pos = togglerPosDown;
             },
 
@@ -34421,7 +34427,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              */
             togglerUp: function() {
                 this.sandbox.dom.removeClass(this.toggler.$el, this.options.arrowDownClass);
-                this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowUpClass);
+                this.sandbox.dom.prependClass(this.toggler.$el, this.options.arrowUpClass);
                 this.toggler.pos = togglerPosUp;
             },
 
@@ -35916,7 +35922,7 @@ define('__component__$column-navigation@husky',[], function() {
          * @param $container
          */
         addLoadingIcon: function($container) {
-            this.sandbox.dom.removeClass($container, 'inactive icon-chevron-right');
+            this.sandbox.dom.removeClass($container, 'fa-chevron-right inactive');
 
             if (this.$loader === null) {
                 this.$loader = this.sandbox.dom.createElement('<div class="husky-column-navigation-loader"/>');
@@ -35945,7 +35951,7 @@ define('__component__$column-navigation@husky',[], function() {
             if (!!this.$selectedElement) {
                 var $arrow = this.sandbox.dom.find('.arrow', this.$selectedElement);
                 this.sandbox.dom.hide(this.$loader);
-                this.sandbox.dom.prependClass($arrow, 'icon-chevron-right');
+                this.sandbox.dom.prependClass($arrow, 'fa-chevron-right');
             }
         },
 
@@ -36024,22 +36030,18 @@ define('__component__$column-navigation@husky',[], function() {
         },
 
         /**
-         * Shows the edit icon
+         * Sets the text width
          * @param {Object} event
          */
         itemMouseEnter: function(event) {
-            var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
-            this.sandbox.dom.toggle($edit);
             this.setItemsTextWidth(event.currentTarget);
         },
 
         /**
-         * Hides the edit icon
+         * Sets the text width
          * @param {Object} event
          */
         itemMouseLeave: function(event) {
-            var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
-            this.sandbox.dom.toggle($edit);
             this.setItemsTextWidth(event.currentTarget);
         },
 
@@ -36281,7 +36283,7 @@ define('__component__$column-navigation@husky',[], function() {
 
             noPage: function(description) {
                 return ['<div class="no-page">',
-                            '<span class="icon-file"></span>',
+                            '<span class="fa-file-o"></span>',
                             '<div class="text">', description ,'</div>',
                         '</div>'].join('');
             },
@@ -36295,9 +36297,9 @@ define('__component__$column-navigation@husky',[], function() {
                 // link
                 if (!!data[this.options.linkedName]) {
                     if (data[this.options.linkedName] === 'internal') {
-                        item.push('<span class="icon-internal-link pull-left m-right-5"></span>');
+                        item.push('<span class="fa-chain pull-left m-right-5"></span>');
                     } else if (data[this.options.linkedName] === 'external') {
-                        item.push('<span class="icon-external-link pull-left m-right-5"></span>');
+                        item.push('<span class="fa-external-link pull-left m-right-5"></span>');
                     }
                 }
 
@@ -36306,7 +36308,7 @@ define('__component__$column-navigation@husky',[], function() {
                     if (data[this.options.typeName].name === 'ghost') {
                         item.push('<span class="ghost pull-left m-right-5">', data[this.options.typeName].value, '</span>');
                     } else if (data[this.options.typeName].name === 'shadow') {
-                        item.push('<span class="icon-shadow-node pull-left m-right-5"></span>');
+                        item.push('<span class="fa-share pull-left m-right-5"></span>');
                     }
                 }
 
@@ -36325,8 +36327,8 @@ define('__component__$column-navigation@husky',[], function() {
 
                 // icons right (subpage, edit)
                 item.push('<span class="icons-right">');
-                item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
-                !!data[this.options.hasSubName] ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
+                item.push('<span class="fa-pencil edit hidden pull-left"></span>');
+                !!data[this.options.hasSubName] ? item.push('<span class="fa-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
                 return item.join('');
             },
@@ -36338,13 +36340,13 @@ define('__component__$column-navigation@husky',[], function() {
             options: {
                 add: function(id) {
                     return ['<div id="', id, '" class="align-center add pointer">',
-                        '<span class="icon-add"></span>',
+                        '<span class="fa-plus-circle"></span>',
                         '</div>'].join('');
                 },
 
                 settings: function(id) {
                     return ['<div id="', id, '" class="align-center settings pointer drop-down-trigger">',
-                        '<span class="icon-cogwheel inline-block"></span><span class="dropdown-toggle inline-block"></span>',
+                        '<span class="fa-gear inline-block"></span><span class="dropdown-toggle inline-block"></span>',
                         '</div>'].join('');
                 }
             }
@@ -39697,7 +39699,7 @@ define('__component__$dropzone@husky',[], function() {
         templates = {
             basic: [
                 '<div class="'+ constants.descriptionClass +'">',
-                    '<div class="icon-<%= icon %> icon"></div>',
+                    '<div class="fa-<%= icon %> icon"></div>',
                     '<span class="title"><%= title %></span>',
                     '<span><%= description %></span>',
                 '</div>',
@@ -39706,7 +39708,7 @@ define('__component__$dropzone@husky',[], function() {
             uploadItem: [
                 '<div class="'+ constants.uploadItemClass +'">' +
                     '<div class="loading-content">',
-                        '<div class="icon-<%= cancelIcon %> icon" data-dz-remove></div>',
+                        '<div class="fa-<%= cancelIcon %> icon" data-dz-remove></div>',
                         '<div class="file-size" data-dz-size></div>',
                         '<div class="progress">',
                             '<div class="bar" data-dz-uploadprogress></div>',
@@ -39716,7 +39718,7 @@ define('__component__$dropzone@husky',[], function() {
                         '<div class="image">',
                             '<img data-dz-thumbnail />',
                         '</div>',
-                        '<div class="icon-ok tick"></div>',
+                        '<div class="fa-check tick"></div>',
                     '</div>',
                 '</div>'
             ].join('')
