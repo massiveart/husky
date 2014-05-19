@@ -311,7 +311,7 @@ define([], function() {
             var key, type;
             if (this.options.slides.length === 0) {
                 this.slides[0] = this.sandbox.util.extend({}, slideDefaults);
-                this.slides[0].id = 0;
+                this.slides[0].index = 0;
                 for (key in slideDefaults) {
                     // check options for slide property
                     if (this.options.hasOwnProperty(key)) {
