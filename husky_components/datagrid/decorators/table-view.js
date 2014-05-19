@@ -54,8 +54,8 @@ define(function() {
             // if datagrid is in fullwidth-mode (options.fullWidth is true)
             // this number gets subracted from the tables final width in the resize listener
             overflowIconSpacing: 30,
-            ascClass: 'icon-arrow-up',
-            descClass: 'icon-arrow-down',
+            ascClass: 'fa-caret-up',
+            descClass: 'fa-caret-down',
             additionalHeaderClasses: ' m-left-5 small-font',
             rowRemoverClass: 'row-remover',
             editableClass: 'editable',
@@ -75,7 +75,7 @@ define(function() {
         templates = {
             removeRow: [
                 '<td class="remove-row">',
-                    '<span class="icon-bin pointer '+ constants.rowRemoverClass +'"></span>',
+                    '<span class="fa-trash-o pointer '+ constants.rowRemoverClass +'"></span>',
                 '</td>'
             ].join(''),
 

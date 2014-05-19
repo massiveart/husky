@@ -38,11 +38,10 @@
       line-height: 20px;
       border-radius: $borderRadiusSmall;
 
-      [class^="icon-"] {
+      [class^="fa-"] {
           font-size: 10px;
 
           & + .text {
-              top: -1px;
               font-size: $smallFontSize;
           }
       }
@@ -65,20 +64,16 @@
     &.inactive {
         cursor: default;
     }
-    [class^="icon-"] {
+    [class^="fa-"] {
         font-size: 18px;
         margin-left: -15px;
         display: inline-block;
-        margin-bottom: -5px;
 
         & + .text {
           font-size: $baseFontSize;
           display: inline-block;
           margin-right: -20px;
           margin-left: 5px;
-          position: relative;
-          top: -4px;
-          left: 0px;
           padding: 0;
         }
 

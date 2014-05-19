@@ -66,7 +66,7 @@ define([], function() {
         templates = {
             basic: [
                 '<div class="'+ constants.descriptionClass +'">',
-                    '<div class="icon-<%= icon %> icon"></div>',
+                    '<div class="fa-<%= icon %> icon"></div>',
                     '<span class="title"><%= title %></span>',
                     '<span><%= description %></span>',
                 '</div>',
@@ -75,7 +75,7 @@ define([], function() {
             uploadItem: [
                 '<div class="'+ constants.uploadItemClass +'">' +
                     '<div class="loading-content">',
-                        '<div class="icon-<%= cancelIcon %> icon" data-dz-remove></div>',
+                        '<div class="fa-<%= cancelIcon %> icon" data-dz-remove></div>',
                         '<div class="file-size" data-dz-size></div>',
                         '<div class="progress">',
                             '<div class="bar" data-dz-uploadprogress></div>',
@@ -85,7 +85,7 @@ define([], function() {
                         '<div class="image">',
                             '<img data-dz-thumbnail />',
                         '</div>',
-                        '<div class="icon-ok tick"></div>',
+                        '<div class="fa-check tick"></div>',
                     '</div>',
                 '</div>'
             ].join('')
