@@ -91,6 +91,7 @@
             </tr>
             <tr>
                 <td><button id="toggleState">toggle state of button 7</button></td>
+                <td><button id="update">update</button></td>
             </tr>
             </tbody>
         </table>
@@ -393,6 +394,27 @@
                     app.sandbox.emit('husky.select.ddms7.disable');
                     state7 = 0;
                 }
+            });
+
+            $('#update').on('click', function() {
+
+                var data = [
+                    {id: 0, category: 'Deutsch 1'},
+                    {id: 1, category: 'English 1'},
+                    {id: 2, category: 'Spanish 1'},
+                    {id: 3, category: 'Italienisch 1'},
+                    {divider: true},
+                    {
+                        category: 'Add new 1',
+                        updateLabel: false,
+                        callback: function(){
+                            console.log("called function");
+                        }
+                    }
+                ];
+
+                app.sandbox.emit('husky.select.ddms5.update',data, [1500]);
+                console.log('updated dropdown 5');
             });
         });
 

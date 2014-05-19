@@ -148,7 +148,13 @@ define([], function() {
             EVENT_GET_CHECKED = function() {
             return getEventName.call(this, 'get-checked');
         },
-
+        /**
+         * update the elements of the dropdown list
+         * @event husky.select[.INSTANCE_NAME].update
+         */
+            EVENT_UPDATE = function() {
+            return getEventName.call(this, 'update');
+        },
 
         getEventName = function(suffix) {
             return 'husky.select.' + this.options.instanceName + '.' + suffix;
@@ -334,6 +340,31 @@ define([], function() {
             this.sandbox.on(EVENT_ENABLE.call(this), this.enable.bind(this));
 
             this.sandbox.on(EVENT_GET_CHECKED.call(this), this.getChecked.bind(this));
+
+            this.sandbox.on(EVENT_UPDATE.call(this), this.updateDropdown.bind(this));
+        },
+
+        /**
+         * Updates the dropdown list
+         * @param data
+         * @param preselected
+         */
+        updateDropdown: function(data, preselected){
+
+            // TODO
+            // selected values
+            // label
+
+            this.options.preSelectedElements = preselected;
+            this.selectedElements = [];
+            this.selectedElementsValues = [];
+            this.sandbox.dom.empty(this.$list);
+
+            if(!!data && data.length > 0) {
+                this.generateDropDown(data);
+            } else {
+                this.sandbox.logger.warn('error invalid data for update!');
+            }
         },
 
         updateSelectionAttribute: function() {
@@ -392,7 +423,7 @@ define([], function() {
                         return;
                     }
                 }
-                
+
             }
 
             value = this.sandbox.dom.text(this.sandbox.dom.find('.item-value', event.currentTarget));
