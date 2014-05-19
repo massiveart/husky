@@ -68,20 +68,20 @@ define([], function() {
          * namespace for events
          * @type {string}
          */
-            eventNamespace = 'husky.column-navigation.',
+        eventNamespace = 'husky.column-navigation.',
 
         /**
          * @event husky.column-navigation.loaded
          * @description the component has loaded everything successfully and will be rendered
          */
-            LOADED = eventNamespace + 'loaded',
+        LOADED = eventNamespace + 'loaded',
 
         /**
          * @event husky.column-navigation.selected
          * @description an navigation element has been selected
          * @param {Object} selected object
          */
-            SELECTED = eventNamespace + 'selected',
+        SELECTED = eventNamespace + 'selected',
 
         /**
          * @event husky.column-navigation.settings
@@ -89,28 +89,35 @@ define([], function() {
          * @param {Object} selected column navigation object
          * @param {Object} clicked dropdown item
          */
-            SETTINGS = eventNamespace + 'settings',
+        SETTINGS = eventNamespace + 'settings',
 
         /**
          * @event husky.column-navigation.add
          * @description the add button has been clicked
          * @param {Object} parent object from active column level
          */
-            ADD = eventNamespace + 'add',
+        ADD = eventNamespace + 'add',
 
         /**
          * @event husky.column-navigation.edit
          * @description the edit icon has been clicked
          * @param {Object} clicked object
          */
-            EDIT = eventNamespace + 'edit',
+        EDIT = eventNamespace + 'edit',
 
         /**
          * @event husky.column-navigation.get-breadcrumb
          * @description the breadcrumb will be returned
          * @param {Function} callback function which will process the breadcrumb objects
          */
-            BREADCRUMB = eventNamespace + 'get-breadcrumb';
+        BREADCRUMB = eventNamespace + 'get-breadcrumb',
+
+        /**
+         * @event husky.column-navigation.resize
+         * @description the element will be resized
+         * @param {Function} callback function which will process the breadcrumb objects
+         */
+        RESIZE = eventNamespace + 'resize';
 
     return {
 
@@ -213,6 +220,7 @@ define([], function() {
         setContainerHeight: function() {
             var height = this.sandbox.dom.height(this.options.sizeRelativeTo),
                 top = this.sandbox.dom.offset(this.$el).top - (this.options.sizeRelativeTo !== this.sandbox.dom.$window ? this.sandbox.dom.offset(this.options.sizeRelativeTo).top : 0);
+            top = top < 0 ? 0 : top;
 
             this.sandbox.dom.height(
                 this.$columnContainer, (height - top) * this.options.wrapper.height / 100
@@ -527,6 +535,12 @@ define([], function() {
             this.sandbox.on(BREADCRUMB, this.getBreadCrumb.bind(this));
 
             this.sandbox.on('husky.dropdown.' + this.options.instanceName + '.settings.dropdown.item.click', this.dropdownItemClicked.bind(this));
+
+            this.sandbox.on(RESIZE, function() {
+                this.setContainerHeight();
+                this.setContainerMaxWidth();
+                this.setOverflowClass();
+            }.bind(this));
         },
 
         dropdownItemClicked: function(item) {
@@ -577,7 +591,7 @@ define([], function() {
         showOptionsAtLast: function() {
             var $lastColumn = this.sandbox.dom.last(this.sandbox.dom.find('.column', this.$columnContainer));
             this.showOptions({
-               currentTarget: $lastColumn
+                currentTarget: $lastColumn
             });
         },
 
@@ -708,7 +722,7 @@ define([], function() {
          */
         setContainerMaxWidth: function() {
             var width = this.sandbox.dom.width(this.options.sizeRelativeTo),
-                left = this.sandbox.dom.offset(this.$el).left - (this.options.sizeRelativeTo !== this.sandbox.dom.$window ? this.sandbox.dom.offset(this.options.sizeRelativeTo).left : 0);
+                left = (this.options.sizeRelativeTo === this.sandbox.dom.$window ? this.sandbox.dom.offset(this.$el).left : 0);
 
 
             this.sandbox.dom.css(this.$el, {
@@ -801,9 +815,9 @@ define([], function() {
 
             noPage: function(description) {
                 return ['<div class="no-page">',
-                            '<span class="icon-file"></span>',
-                            '<div class="text">', description ,'</div>',
-                        '</div>'].join('');
+                    '<span class="icon-file"></span>',
+                    '<div class="text">', description , '</div>',
+                    '</div>'].join('');
             },
 
             item: function(width, data) {

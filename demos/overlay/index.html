@@ -118,12 +118,17 @@
                                 '<h3>Most awesome overlay</h3>' +
                                 '<p>here could be anything</p>' +
                                 '<div class="grid-row divider">' +
-                                '<div class="grid-col-7 pull-left">' +
+                                '<div class="grid-col-5 pull-left">' +
                                 '<div>Some text</div>' +
                                 '</div>' +
                                 '<div class="grid-col-2 pull-right">' +
                                 '<div class="btn gray-dark fit only-icon">' +
                                 '<div class="icon-circle-minus"></div>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="grid-col-2 pull-right">' +
+                                '<div id="action" class="btn action fit only-icon pointer">' +
+                                '<div class="icon-circle-plus"></div>' +
                                 '</div>' +
                                 '</div>' +
                                 '</div>' +
@@ -143,10 +148,8 @@
                             skin: 'wide',
                             slides: [
                                 {
-                                    title: 'Slide2',
-                                    data: '<div id="column-navigation"/>',
-                                    type: 'error',
-                                    cssClass: 'column-navigation-slide',
+                                    title: 'Slide 1',
+                                    data: testData,
                                     closeCallback: function() {
                                         console.log('You clicked on close');
                                     },
@@ -156,13 +159,27 @@
                                     }
                                 },
                                 {
-                                    title: 'Slide 1',
-                                    data: testData,
-                                    closeCallback: function() {
-                                        console.log('You clicked on close');
-                                    },
+                                    title: 'Slide2',
+                                    data: '<div id="column-navigation"/>',
+                                    cssClass: 'column-navigation-slide',
+                                    buttons: [
+                                        {
+                                            type: 'ok',
+                                            inactive: false,
+                                            align: 'right'
+                                        },
+                                        {
+                                            type: 'cancel',
+                                            inactive: false,
+                                            align: 'left'
+                                        }
+                                    ],
                                     okCallback: function() {
-                                        console.log('You clicked on ok');
+                                        app.sandbox.emit('husky.overlay.slides.slide-left');
+                                        return false;
+                                    },
+                                    closeCallback: function() {
+                                        app.sandbox.emit('husky.overlay.slides.slide-left');
                                         return true;
                                     }
                                 }
@@ -246,7 +263,7 @@
                     }
                 ]).then(function() {
                     app.logger.log('Aura started...');
-                    app.sandbox.on('husky.overlay.slides.opened', function() {
+                    app.sandbox.on('husky.overlay.slides.initialized', function() {
                         app.sandbox.start(
                                 [
                                     {
@@ -263,9 +280,12 @@
                                         }
                                     }
                                 ]
-                        )
+                        );
                     });
 
+                    $('body').on('click', '#action', function() {
+                        app.sandbox.emit('husky.overlay.slides.slide-right');
+                    });
 
                     $('#warning').click(function() {
                         var $element = $('<div/>');
