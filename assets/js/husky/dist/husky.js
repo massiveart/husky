@@ -36740,7 +36740,13 @@ define('__component__$smart-content@husky',[], function() {
             translations: {},
             elementDataName: 'smart-content',
             externalConfigs: false,
-            columnNavigationUrl: ''
+            columnNavigationUrl: '',
+            hideDataSource: false,
+            hideCategories: false,
+            hideTags: false,
+            hideSortBy: false,
+            hidePresentAs: false,
+            hideLimit: false
         },
 
         sortMethods = {
@@ -36800,8 +36806,8 @@ define('__component__$smart-content@husky',[], function() {
 
                 dataSource: ['<div class="item-half left">',
                     '<span class="desc"><%= dataSourceLabelStr %></span>',
-                    '<div class="btn action" id="select-data-source-action"><%= dataSourceButtonStr %></div>',
-                    '<span class="sublabel"><%= dataSourceLabelStr %>:</span> <span class="sublabel data-source"><%= dataSourceValStr %></span>',
+                    '<div class="btn action fit" id="select-data-source-action"><%= dataSourceButtonStr %></div>',
+                    '<div><span class="sublabel"><%= dataSourceLabelStr %>:</span> <span class="sublabel data-source"><%= dataSourceValStr %></span></div>',
                     '</div>'].join(''),
 
                 subFolders: ['<div class="item-half">',
@@ -36998,7 +37004,10 @@ define('__component__$smart-content@husky',[], function() {
                 from: 'smart-content.from',
                 subFoldersInclusive: 'smart-content.sub-folders-inclusive',
                 viewAll: 'smart-content.view-all',
-                viewLess: 'smart-content.view-less'
+                viewLess: 'smart-content.view-less',
+                chooseDataSource: 'smart-content.choose-data-source',
+                chooseDataSourceOk: 'smart-content.choose-data-source.ok',
+                chooseDataSourceCancel: 'smart-content.choose-data-source.cancel'
             };
 
             this.translations = this.sandbox.util.extend(true, {}, this.translations, this.options.translations);
@@ -37304,10 +37313,12 @@ define('__component__$smart-content@husky',[], function() {
                                 }.bind(this)
                             },
                             {
-                                title: this.sandbox.translate(this.translations.configureSmartContent),
-                                data: '<div id="column-navigation"/>',
+                                title: this.sandbox.translate(this.translations.chooseDataSource),
+                                data: '<div id="column-navigation-' + this.options.instanceName + '"/>',
                                 cssClass: 'column-navigation-slide',
                                 okInactive: true,
+                                okDefaultText: this.sandbox.translate(this.translations.chooseDataSourceOk),
+                                cancelDefaultText: this.sandbox.translate(this.translations.chooseDataSourceCancel),
                                 buttons: [
                                     {
                                         type: 'ok',
@@ -37329,7 +37340,7 @@ define('__component__$smart-content@husky',[], function() {
                                 closeCallback: function() {
                                     this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-left');
                                     this.selectedDataSourceItem = null;
-                                    return true;
+                                    return false;
                                 }.bind(this)
                             }
                         ]
@@ -37343,15 +37354,16 @@ define('__component__$smart-content@husky',[], function() {
         bindColumnNavigationEvents: function() {
             // init column navigation after initialize of overlay
             this.sandbox.on('husky.overlay.smart-content.' + this.options.instanceName + '.initialized', function() {
+
                 this.sandbox.start(
                     [
                         {
                             name: 'column-navigation@husky',
                             options: {
-                                el: '#column-navigation',
+                                el: '#column-navigation-' + this.options.instanceName + '',
                                 url: this.options.columnNavigationUrl,
                                 noPageDescription: 'No Pages',
-                                sizeRelativeTo: '.smart-content-overlay .slide-0 .overlay-content',
+                                sizeRelativeTo: '.smart-content-overlay .slide-1 .overlay-content',
                                 wrapper: {height: 100},
                                 showEdit: false,
                                 showStatus: false
@@ -37359,6 +37371,12 @@ define('__component__$smart-content@husky',[], function() {
                         }
                     ]
                 );
+            }.bind(this));
+
+            this.sandbox.once('husky.overlay.smart-content.' + this.options.instanceName + '.opened', function() {
+                // set height of smart-content column navigation slide (missing margins)
+                var height = this.sandbox.dom.outerHeight('.smart-content-overlay .slide-1 .overlay-content') + 24;
+                this.sandbox.dom.css('.smart-content-overlay .slide-1 .overlay-content', 'height', height + 'px');
             }.bind(this));
 
             // activate button OK when a page is selected
@@ -37380,40 +37398,52 @@ define('__component__$smart-content@husky',[], function() {
 
             this.$overlayContent = this.sandbox.dom.createElement(_.template(templates.overlayContent.main)());
 
-            this.$overlayContent.append(_.template(templates.overlayContent.dataSource)({
-                dataSourceLabelStr: this.sandbox.translate(this.translations.dataSourceLabel),
-                dataSourceButtonStr: this.sandbox.translate(this.translations.dataSourceButton),
-                dataSourceValStr: this.options.dataSource
-            }));
-            this.$overlayContent.append(_.template(templates.overlayContent.subFolders)({
-                includeSubStr: this.sandbox.translate(this.translations.includeSubFolders),
-                includeSubCheckedStr: (this.options.includeSubFolders) ? ' checked' : '',
-                disabled: (this.overlayDisabled.subFolders) ? ' disabled' : ''
-            }));
-            this.$overlayContent.append('<div class="clear"></div>');
-            this.$overlayContent.append(_.template(templates.overlayContent.categories)({
-                filterByCatStr: this.sandbox.translate(this.translations.filterByCategory)
-            }));
-            this.$overlayContent.append(_.template(templates.overlayContent.tagList)({
-                filterByTagsStr: this.sandbox.translate(this.translations.filterByTags),
-                disabled: (this.overlayDisabled.tags) ? ' disabled' : ''
-            }));
-            this.$overlayContent.append(_.template(templates.overlayContent.sortBy)({
-                sortByStr: this.sandbox.translate(this.translations.sortBy)
-            }));
-            this.$overlayContent.append(_.template(templates.overlayContent.sortMethod)({
-                filterByTagsStr: this.sandbox.translate(this.translations.filterByTags)
-            }));
+            if (!this.options.hideDataSource) {
+                this.$overlayContent.append(_.template(templates.overlayContent.dataSource)({
+                    dataSourceLabelStr: this.sandbox.translate(this.translations.dataSourceLabel),
+                    dataSourceButtonStr: this.sandbox.translate(this.translations.dataSourceButton),
+                    dataSourceValStr: this.options.dataSource
+                }));
+                this.$overlayContent.append(_.template(templates.overlayContent.subFolders)({
+                    includeSubStr: this.sandbox.translate(this.translations.includeSubFolders),
+                    includeSubCheckedStr: (this.options.includeSubFolders) ? ' checked' : '',
+                    disabled: (this.overlayDisabled.subFolders) ? ' disabled' : ''
+                }));
+                this.$overlayContent.append('<div class="clear"></div>');
+            }
+            if (!this.options.hideCategories) {
+                this.$overlayContent.append(_.template(templates.overlayContent.categories)({
+                    filterByCatStr: this.sandbox.translate(this.translations.filterByCategory)
+                }));
+            }
+            if (!this.options.hideTags) {
+                this.$overlayContent.append(_.template(templates.overlayContent.tagList)({
+                    filterByTagsStr: this.sandbox.translate(this.translations.filterByTags),
+                    disabled: (this.overlayDisabled.tags) ? ' disabled' : ''
+                }));
+            }
+            if (!this.options.hideSortBy) {
+                this.$overlayContent.append(_.template(templates.overlayContent.sortBy)({
+                    sortByStr: this.sandbox.translate(this.translations.sortBy)
+                }));
+                this.$overlayContent.append(_.template(templates.overlayContent.sortMethod)({
+                    filterByTagsStr: this.sandbox.translate(this.translations.filterByTags)
+                }));
+            }
             this.$overlayContent.append('<div class="clear"></div>');
 
-            this.$overlayContent.append(_.template(templates.overlayContent.presentAs)({
-                presentAsStr: this.sandbox.translate(this.translations.presentAs)
-            }));
-            this.$overlayContent.append(_.template(templates.overlayContent.limitResult)({
-                limitResultToStr: this.sandbox.translate(this.translations.limitResultTo),
-                limitResult: (this.options.limitResult > 0) ? this.options.limitResult : '',
-                disabled: (this.overlayDisabled.limitResult) ? ' disabled' : ''
-            }));
+            if (!this.options.hidePresentAs) {
+                this.$overlayContent.append(_.template(templates.overlayContent.presentAs)({
+                    presentAsStr: this.sandbox.translate(this.translations.presentAs)
+                }));
+            }
+            if (!this.options.hideLimit) {
+                this.$overlayContent.append(_.template(templates.overlayContent.limitResult)({
+                    limitResultToStr: this.sandbox.translate(this.translations.limitResultTo),
+                    limitResult: (this.options.limitResult > 0) ? this.options.limitResult : '',
+                    disabled: (this.overlayDisabled.limitResult) ? ' disabled' : ''
+                }));
+            }
             this.$overlayContent.append('<div class="clear"></div>');
         },
 
