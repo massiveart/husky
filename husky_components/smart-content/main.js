@@ -118,7 +118,7 @@ define([], function() {
             sourceSelector: '.source',
             footerClass: 'smart-footer',
             viewTogglerClass: 'view-toggler',
-            buttonClass: 'icon-adjust-alt',
+            buttonClass: 'fa-filter',
             includeSubSelector: '.includeSubCheck',
             categoryDDClass: 'category-dropdown',
             tagListClass: 'tag-list',
@@ -147,7 +147,7 @@ define([], function() {
             ].join(''),
             noContent: [
                 '<div class="no-content">',
-                '<span class="icon-file"></span>',
+                '<span class="fa-file"></span>',
                 '<div class="text"><%= noContentStr %></div>',
                 '</div>'
             ].join(''),

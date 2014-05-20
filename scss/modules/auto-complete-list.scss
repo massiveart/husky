@@ -8,7 +8,7 @@
     .toggler {
         position: absolute;
         right: 0px;
-        bottom: 3px;
+        bottom: 6px;
         content: "";
         display: inline-block;
         height: 20px;
@@ -16,25 +16,7 @@
         padding: 5px 10px;
         cursor: pointer;
         text-align: center;
-    }
-
-    .arrow-down span,
-    .arrow-up span {
-        width: 0;
-        height: 0;
-        display: block;
-    }
-
-    .arrow-down span {
-        border-left: 4px solid rgba(0, 0, 0, 0);
-        border-right: 4px solid rgba(0, 0, 0, 0);
-        border-top: 6px solid #000000;
-    }
-
-    .arrow-up span {
-        border-left: 4px solid rgba(0, 0, 0, 0);
-        border-right: 4px solid rgba(0, 0, 0, 0);
-        border-bottom: 6px solid #000000;
+        color: $iconGray;
     }
 
     label {
@@ -81,22 +63,23 @@
 .auto-complete-list-selection {
     display: inline-block;
     margin: 4px 5px 4px 0;
-    padding: 0 4px 2px 4px;
+    padding: 0 4px 0px 4px;
     border-radius: $borderRadiusSmall;
     background-color: #ccc;
     color: #000;
     font-size: 12px;
-    line-height: normal;
+    line-height: 20px;
 
     .tm-tag-remove {
-        @extend .icon-remove;
-        font-family: $baseIconFont;
-        position: relative;
-        top: 2px;
-        padding-left: 2px;
+        @extend .fa;
+        &::before {
+          content: $fa-var-times;
+        }
+        padding-left: 8px;
         cursor: pointer;
         text-decoration: none;
-        color: $black;
+        color: $iconGray;
+        font-size: 14px;
     }
 }
 
@@ -105,6 +88,7 @@
     left: 0;
     width: 100%;
     background-color: #ddd;
+    @include standard-box-shadow(2px, rgba(0,0,0,0.06));
 
     h5 {
         margin: 0;

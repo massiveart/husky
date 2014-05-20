@@ -529,10 +529,10 @@ define([], function() {
             basicStructure: function(defaultLabel, icon) {
                 var iconSpan = '', dropdownToggle = '';
                 if (!!icon) {
-                    iconSpan = '<span class="icon-' + icon + ' icon"></span>';
+                    iconSpan = '<span class="fa-' + icon + ' icon"></span>';
                 }
                 if (!!this.options.data && !!this.options.data.length) {
-                    dropdownToggle = '<span class="dropdown-toggle inline-block"></span>';
+                    dropdownToggle = '<span class="fa-caret-down toggle-icon"></span>';
                 }
                 return [
                     '<div class="husky-select-container">',

@@ -59,7 +59,8 @@ $columnOptionsContainerWidth: 400px;
         padding-right: 10px;
         padding-left: 5px;
         right: 10px;
-        &:after {
+        font-size: 18px;
+        &::before {
             line-height: 50px;
             vertical-align:center;
         }

@@ -87,8 +87,8 @@
                 testData = [
                     {
                         'id': '1',
-                        'icon': 'user-add',
-                        'disabledIcon': 'cogwheel',
+                        'icon': 'plus-circle',
+                        'disabledIcon': 'gear',
                         'iconSize': 'large',
                         'class': 'highlight',
                         'position': 1,
@@ -104,9 +104,9 @@
                     },
                     {
                         'id': 'edit',
-                        'icon': 'cogwheel',
+                        'icon': 'gear',
                         'iconSize': 'large',
-                        'disabledIcon': 'user-add',
+                        'disabledIcon': 'plus-circle',
                         'title': '',
                         'group': 2,
                         'position': 2,
@@ -127,14 +127,14 @@
                     },
                     {
                         'id': 'state',
-                        'icon': 'publish',
+                        'icon': 'husky-publish',
                         'group': 2,
                         'title': 'Publish',
                         'position': 2,
                         'type': 'select'
                     },
                     {
-                        'icon': 'file-import',
+                        'icon': 'cloud-upload',
                         'title': 'Import',
                         'group': 1,
                         'position': 2,
@@ -145,14 +145,14 @@
                         }
                     },
                     {
-                        'icon': 'file-import',
+                        'icon': 'cloud-download',
                         'title': 'Work',
                         'group': 1,
                         'hidden': true,
                         'position': 3
                     },
                     {
-                        'icon': 'cogwheels',
+                        'icon': 'gear',
                         'title': 'Something else',
                         'group': 1,
                         'hideTitle': true,
@@ -164,7 +164,7 @@
                         'position': 1
                     },
                     {
-                        'icon': 'file-export',
+                        'icon': 'cloud-download',
                         'title': 'Export',
                         'group': 1,
                         'position': 5,
@@ -190,14 +190,14 @@
                 {
                     'id': 'publish',
                     'title': 'Publish',
-                    'icon': 'publish',
+                    'icon': 'husky-publish',
                     'callback': function() {
                         console.log("publish it");
                     }
                 },
                 {
                     'id': 'unpublish',
-                    'icon': 'unpublish',
+                    'icon': 'husky-unpublish',
                     'title': 'Unpublish',
                     'callback': function() {
                         console.log("unpublish it");
@@ -205,7 +205,7 @@
                 },
                 {
                     'id': 'test',
-                    'icon': 'test',
+                    'icon': 'husky-test',
                     'title': 'Test',
                     'callback': function() {
                         console.log("set Test-state");
@@ -266,7 +266,7 @@
                         ],
                         data: [
                             {
-                                icon: 'circle-plus',
+                                icon: 'plus-circle',
                                 class: 'highlight',
                                 title: 'add',
                                 group: 1,
@@ -276,7 +276,7 @@
                                 ]
                             },
                             {
-                                icon: 'bin',
+                                icon: 'trash-o',
                                 group: 1,
                                 title: 'delete',
                                 disabled: true
@@ -287,16 +287,16 @@
                                 disabled: true
                             },
                             {
-                                icon: 'file-import',
+                                icon: 'cloud-upload',
                                 group: 1,
                                 disabled: true
                             },
                             {
-                                icon: 'file-export',
+                                icon: 'cloud-download',
                                 group: 1
                             },
                             {
-                                icon: 'cogwheels',
+                                icon: 'gear',
                                 group: 1,
                                 items: [
                                     {title: 'action 1', disabled: true},
@@ -325,7 +325,7 @@
                         ],
                         data: [
                             {
-                                icon: 'circle-plus',
+                                icon: 'plus-circle',
                                 class: 'highlight',
                                 group: 1,
                                 id: 'loadit',
@@ -338,7 +338,7 @@
                                 }
                             },
                             {
-                                icon: 'bin',
+                                icon: 'trash-o',
                                 group: 1,
                                 disabled: true
                             },
@@ -348,17 +348,17 @@
                                 disabled: true
                             },
                             {
-                                icon: 'file-import',
+                                icon: 'cloud-upload',
                                 group: 1,
                                 disabled: true
                             },
                             {
-                                icon: 'file-export',
+                                icon: 'cloud-download',
                                 title: 'export',
                                 group: 1
                             },
                             {
-                                icon: 'cogwheels',
+                                icon: 'gear',
                                 group: 1
                             }
                         ]
@@ -382,7 +382,7 @@
                         ],
                         data: [
                             {
-                                icon: 'floppy-save',
+                                icon: 'floppy-o',
                                 class: 'highlight',
                                 group: 1,
                                 id: 'loadit',
@@ -395,20 +395,20 @@
                                 }
                             },
                             {
-                                icon: 'brush',
+                                icon: 'pencil',
                                 group: 1,
                                 title: 'Overview',
                                 type: 'select',
                                 items: [{title: 'Overview'}, {title: 'Landing'}]
                             },
                             {
-                                icon: 'cogwheel',
+                                icon: 'gear',
                                 group: 1,
                                 items: [{title: 'do something'}]
                             },
                             {
                                 'id': 'state',
-                                'icon': 'publish',
+                                'icon': 'husky-publish',
                                 'group': 1,
                                 'title': 'Publish',
                                 'type': 'select',
@@ -441,12 +441,12 @@
                         ],
                         data: [
                             {
-                                icon: 'circle-plus',
+                                icon: 'plus-circle',
                                 class: 'highlight-white',
                                 group: 1
                             },
                             {
-                                icon: 'bin',
+                                icon: 'trash-o',
                                 group: 1,
                                 disabled: true
                             },
@@ -456,16 +456,16 @@
                                 disabled: true
                             },
                             {
-                                icon: 'file-import',
+                                icon: 'cloud-upload',
                                 group: 1,
                                 disabled: true
                             },
                             {
-                                icon: 'file-export',
+                                icon: 'cloud-download',
                                 group: 1
                             },
                             {
-                                icon: 'cogwheels',
+                                icon: 'gear',
                                 group: 1
                             }
                         ]
