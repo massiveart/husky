@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Toggler - husky</title>
+    <title>ThumbnailView (Datagrid Decorator) - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -148,7 +148,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>Toggler Class</h1>
+                        <h1>ThumbnailView (Datagrid Decorator) Class</h1>
 <div class="box meta">
     
 
@@ -156,13 +156,13 @@
 
     
         <div class="foundat">
-            Defined in: <a href="../files/husky_components_toggler_main.js.html#l12"><code>husky_components&#x2F;toggler&#x2F;main.js:12</code></a>
+            Defined in: <a href="../files/husky_components_datagrid_decorators_thumbnail-view.js.html#l1"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;thumbnail-view.js:1</code></a>
         </div>
     
 
     
         
-            Module: <a href="../modules/husky_components_process.html">husky/components/process</a>
+            Module: <a href="../modules/husky_components_column-options.html">husky/components/column-options</a>
         
     
 
@@ -178,8 +178,8 @@
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_Toggler" class="method item">
-    <h3 class="name"><code>Toggler</code></h3>
+        <div id="method_ThumbnailView (Datagrid Decorator)" class="method item">
+    <h3 class="name"><code>ThumbnailView (Datagrid Decorator)</code></h3>
 
     
         <div class="args">
@@ -187,7 +187,31 @@
             
                 <li class="arg">
                     
-                        <code class="optional">[options]</code>
+                        <code class="optional">[viewOptions]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[rendered]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[initialize]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[render]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[destroy]</code>
                     
                 </li>
             
@@ -220,7 +244,7 @@
             
         
         
-        <a href="../files/husky_components_toggler_main.js.html#l12"><code>husky_components&#x2F;toggler&#x2F;main.js:12</code></a>
+        <a href="../files/husky_components_datagrid_decorators_thumbnail-view.js.html#l1"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;thumbnail-view.js:1</code></a>
         
         </p>
 
@@ -242,7 +266,7 @@
             
                 <li class="param">
                     
-                        <code class="param-name optional">[options]</code>
+                        <code class="param-name optional">[viewOptions]</code>
                         <span class="type">Object</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
@@ -259,13 +283,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[instanceName]</code>
+                                    <code class="param-name optional">[large]</code>
                                     <span class="type">Boolean</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>name of the component instance, gets used for events and the checkbox name. Can also be set through the DOM-id</p>
+                                    <p>If true large thumbnails get rendered</p>
 
                                 </div>
 
@@ -274,28 +298,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[checked]</code>
-                                    <span class="type">Boolean</span>
+                                    <code class="param-name optional">[fadeInDuration]</code>
+                                    <span class="type">Number</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>beginning state of the button</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[outline]</code>
-                                    <span class="type">Boolean</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>if true component gets a bright border</p>
+                                    <p>duration of the fade in animation</p>
 
                                 </div>
 
@@ -303,6 +312,74 @@
                             </li>
                             
                         </ul>
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[rendered]</code>
+                        <span class="type">Boolean</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>property used by the datagrid-main class</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[initialize]</code>
+                        <span class="type">Function</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>function which gets called once at the start of the view</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[render]</code>
+                        <span class="type">Function</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>function to render data</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[destroy]</code>
+                        <span class="type">Function</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>function to destroy the view and unbind events</p>
+
+                    </div>
+
                     
                 </li>
             
@@ -326,8 +403,6 @@
         
         
         
-            <li class="api-class-tab events"><a href="#events">Events</a></li>
-        
     </ul>
 
     <div>
@@ -341,35 +416,6 @@
             
 
             
-                <div class="index-section events">
-                    <h3>Events</h3>
-
-                    <ul class="index-list events">
-                        
-                            <li class="index-item event">
-                                <a href="#event_husky.toggler.&lt;instance-name&gt;.change">husky.toggler.&lt;instance-name&gt;.change</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
-                                <a href="#event_husky.toggler.&lt;instance-name&gt;.changed">husky.toggler.&lt;instance-name&gt;.changed</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
-                                <a href="#event_husky.toggler.&lt;instance-name&gt;.initialize">husky.toggler.&lt;instance-name&gt;.initialize</a>
-
-                                
-                                
-                            </li>
-                        
-                    </ul>
-                </div>
-            
         </div>
 
         
@@ -378,192 +424,6 @@
 
         
 
-        
-            <div id="events" class="api-class-tabpanel">
-                <h2 class="off-left">Events</h2>
-
-                
-                    <div id="event_husky.toggler.&lt;instance-name&gt;.change" class="events item">
-    <h3 class="name"><code>husky.toggler.&lt;instance-name&gt;.change</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_toggler_main.js.html#l63"><code>husky_components&#x2F;toggler&#x2F;main.js:63</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>event to turn the button on or off</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Event Payload:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">on</code>
-                        <span class="type">Boolean</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>To turn the button on or off</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.toggler.&lt;instance-name&gt;.changed" class="events item">
-    <h3 class="name"><code>husky.toggler.&lt;instance-name&gt;.changed</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_toggler_main.js.html#l54"><code>husky_components&#x2F;toggler&#x2F;main.js:54</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>raised after initialization process</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Event Payload:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">on</code>
-                        <span class="type">Boolean</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>True if button is on</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.toggler.&lt;instance-name&gt;.initialize" class="events item">
-    <h3 class="name"><code>husky.toggler.&lt;instance-name&gt;.initialize</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_toggler_main.js.html#l46"><code>husky_components&#x2F;toggler&#x2F;main.js:46</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>raised after initialization process</p>
-
-    </div>
-
-    
-
-
-    
-</div>
-
-                
-            </div>
         
     </div>
 </div>

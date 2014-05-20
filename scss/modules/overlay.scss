@@ -22,6 +22,16 @@
         width: $overlayContainerWidthWide
     }
 
+    &.dropzone {
+        width: $overlayContainerWidthExtraWide;
+        .overlay-content {
+            margin-bottom: 20px;
+        }
+        .overlay-footer {
+            display: none;
+        }
+    }
+
     &.draggable {
         .overlay-header {
             cursor: move;

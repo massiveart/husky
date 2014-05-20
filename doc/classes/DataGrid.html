@@ -55,6 +55,10 @@
             
                 <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
             
+                <li><a href="../classes/DropdownPagination (Datagrid Decorator).html">DropdownPagination (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Dropzone.html">Dropzone</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -69,7 +73,15 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
+                <li><a href="../classes/ShowAllPagination (Datagrid Decorator).html">ShowAllPagination (Datagrid Decorator)</a></li>
+            
                 <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Tabs.html">Tabs</a></li>
+            
+                <li><a href="../classes/ThumbnailView (Datagrid Decorator).html">ThumbnailView (Datagrid Decorator)</a></li>
             
                 <li><a href="../classes/Toggler.html">Toggler</a></li>
             
@@ -87,9 +99,13 @@
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
+                <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
                 <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_overlay.html">husky/components/overlay</a></li>
             
                 <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
             
@@ -243,118 +259,6 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[autoRemoveHandling]</code>
-                                    <span class="type">Boolean</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>raises an event before a row is removed</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[fieldsData]</code>
-                                    <span class="type">Array</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>fields data will extend url and set tableHead automatically</p>
-
-                                </div>
-
-                                
-                                    <ul class="params-list">
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[{}]</code>
-                                                <span class="type">Object</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                fields object
-                                            </div>
-                                        </li>
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[{}.id]</code>
-                                                <span class="type">String</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                field name
-                                            </div>
-                                        </li>
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[{}.translation]</code>
-                                                <span class="type">String</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                translation key which will be translated automatically
-                                            </div>
-                                        </li>
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[{}.disabled]</code>
-                                                <span class="type">String</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                either 'true' or 'false'
-                                            </div>
-                                        </li>
-                                        
-                                    </ul>
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[editable]</code>
-                                    <span class="type">Boolean</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>will not set class is-selectable to prevent hover effect for complete rows</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[className]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>additional classname for the wrapping div</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
                                     <code class="param-name optional">[data]</code>
                                     <span class="type">Object</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
@@ -385,43 +289,28 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[elementType=table]</code>
+                                    <code class="param-name optional">[pagination=dropdown]</code>
+                                    <span class="type">Boolean | String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of the pagination to use. If false no pagination will be initialized</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[view=&#x27;table&#x27;]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>type of datagrid (currently only table is available)</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[excludeFields=[id]</code>
-                                    <span class="type">Array</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>array of field to exclude</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[pagination=false]</code>
-                                    <span class="type">Boolean</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>display a pagination</p>
+                                    <p>name of the view to use</p>
 
                                 </div>
 
@@ -441,121 +330,20 @@
                                 </div>
 
                                 
-                                    <ul class="params-list">
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[pageSize]</code>
-                                                <span class="type">Number</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                Number of items per page
-                                            </div>
-                                        </li>
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[showPages]</code>
-                                                <span class="type">Boolean</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                show pages as visual numbers
-                                            </div>
-                                        </li>
-                                        
-                                    </ul>
-                                
                             </li>
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[pageSize]</code>
-                                    <span class="type">Number</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>lines per page</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[showPages]</code>
-                                    <span class="type">Number</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>amount of pages that will be shown</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[removeRow]</code>
-                                    <span class="type">Boolean</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>displays in the last column an icon to remove a row</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[selectItem]</code>
+                                    <code class="param-name optional">[viewOptions]</code>
                                     <span class="type">Object</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>Configuration object of select item (column)</p>
+                                    <p>Configuration Object for the view</p>
 
                                 </div>
 
-                                
-                                    <ul class="params-list">
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[type]</code>
-                                                <span class="type">String</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                Type of select [checkbox, radio]
-                                            </div>
-                                        </li>
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[width]</code>
-                                                <span class="type">String</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                Width of select column
-                                            </div>
-                                        </li>
-                                        
-                                    </ul>
                                 
                             </li>
                             
@@ -567,101 +355,7 @@
                                 
 
                                 <div class="param-description">
-                                    <p>Defines if list is sortable</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[columns]</code>
-                                    <span class="type">Array</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>configuration array of columns</p>
-
-                                </div>
-
-                                
-                                    <ul class="params-list">
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[content]</code>
-                                                <span class="type">String</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                column title
-                                            </div>
-                                        </li>
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[width]</code>
-                                                <span class="type">String</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                width of column
-                                            </div>
-                                        </li>
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[class]</code>
-                                                <span class="type">String</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                css class of th
-                                            </div>
-                                        </li>
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[type]</code>
-                                                <span class="type">String</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                type of the column. Used to manipulate its content (e.g. 'date')
-                                            </div>
-                                        </li>
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[attribute]</code>
-                                                <span class="type">String</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                mapping information to data (if not set it will just iterate of attributes)
-                                            </div>
-                                        </li>
-                                        
-                                    </ul>
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[appendTBody]</code>
-                                    <span class="type">Boolean</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>add TBODY to table</p>
+                                    <p>Defines if records are sortable</p>
 
                                 </div>
 
@@ -676,7 +370,7 @@
                                 
 
                                 <div class="param-description">
-                                    <p>if set, a listener will be set for the corresponding search event</p>
+                                    <p>if set, a listener will be set for the corresponding search events</p>
 
                                 </div>
 
@@ -715,13 +409,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[paginationTemplate]</code>
+                                    <code class="param-name optional">[instanceName]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>template for pagination</p>
+                                    <p>name of the datagrid instance</p>
 
                                 </div>
 
@@ -730,121 +424,80 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[validation]</code>
-                                    <span class="type">Boolean</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>enables validation for datagrid</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[addRowTop]</code>
-                                    <span class="type">Boolean</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>adds row to the top of the table when add row is triggered</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[startTabIndex]</code>
-                                    <span class="type">Boolean</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>start index for tabindex</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[progressRow]</code>
-                                    <span class="type">Boolean</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>has to be enabled when datagrid is editable to show progress of save action</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[columnMinWidth]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>sets the minimal width of table columns</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[contentContainer]</code>
-                                    <span class="type">String | Object</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>the container which holds the datagrid; this options resizes the contentContainer for responsiveness</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[showElementsSteps]</code>
+                                    <code class="param-name optional">[matchings]</code>
                                     <span class="type">Array</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>Array which contains the steps for the Show-Elements-dropdown as integers</p>
+                                    <p>configuration array of columns if fieldsData isn&#39;t set</p>
 
                                 </div>
 
                                 
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[fullWidth]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
+                                    <ul class="params-list">
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[content]</code>
+                                                <span class="type">String</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
 
-                                <div class="param-description">
-                                    <p>If true datagrid style will be full-width mode</p>
+                                            <div class="param-description">
+                                                column title
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[width]</code>
+                                                <span class="type">String</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
 
-                                </div>
+                                            <div class="param-description">
+                                                width of column (used by the table view)
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[class]</code>
+                                                <span class="type">String</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
 
+                                            <div class="param-description">
+                                                css class of the column
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[type]</code>
+                                                <span class="type">String</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                type of the column. Used to manipulate its content (e.g. 'date')
+                                            </div>
+                                        </li>
+                                        
+                                        <li class="param">
+                                            
+                                                <code class="param-name optional">[attribute]</code>
+                                                <span class="type">String</span>
+                                                <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+
+                                            <div class="param-description">
+                                                mapping information to data (if not set it will just iterate through attributes)
+                                            </div>
+                                        </li>
+                                        
+                                    </ul>
                                 
                             </li>
                             
@@ -956,13 +609,6 @@
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.datagrid.item.click">husky.datagrid.item.click</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
                                 <a href="#event_husky.datagrid.item.deselect">husky.datagrid.item.deselect</a>
 
                                 
@@ -984,13 +630,6 @@
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.datagrid.items.selected">husky.datagrid.items.selected</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
                                 <a href="#event_husky.datagrid.number.selections">husky.datagrid.number.selections</a>
 
                                 
@@ -1005,28 +644,28 @@
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.datagrid.row.add">husky.datagrid.row.add</a>
+                                <a href="#event_husky.datagrid.pagination.change">husky.datagrid.pagination.change</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.datagrid.row.remove">husky.datagrid.row.remove</a>
+                                <a href="#event_husky.datagrid.record.add">husky.datagrid.record.add</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.datagrid.row.remove-click">husky.datagrid.row.remove-click</a>
+                                <a href="#event_husky.datagrid.record.add">husky.datagrid.record.add</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.datagrid.row.removed">husky.datagrid.row.removed</a>
+                                <a href="#event_husky.datagrid.record.remove">husky.datagrid.record.remove</a>
 
                                 
                                 
@@ -1034,13 +673,6 @@
                         
                             <li class="index-item event">
                                 <a href="#event_husky.datagrid.update">husky.datagrid.update</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
-                                <a href="#event_husky.datagrid.update.table">husky.datagrid.update.table</a>
 
                                 
                                 
@@ -1055,6 +687,13 @@
                         
                             <li class="index-item event">
                                 <a href="#event_husky.datagrid.url.update">husky.datagrid.url.update</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.datagrid.view.change">husky.datagrid.view.change</a>
 
                                 
                                 
@@ -1099,7 +738,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l138"><code>husky_components&#x2F;datagrid&#x2F;main.js:138</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l122"><code>husky_components&#x2F;datagrid&#x2F;main.js:122</code></a>
         
         </p>
 
@@ -1143,7 +782,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l144"><code>husky_components&#x2F;datagrid&#x2F;main.js:144</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l130"><code>husky_components&#x2F;datagrid&#x2F;main.js:130</code></a>
         
         </p>
 
@@ -1211,7 +850,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l227"><code>husky_components&#x2F;datagrid&#x2F;main.js:227</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l232"><code>husky_components&#x2F;datagrid&#x2F;main.js:232</code></a>
         
         </p>
 
@@ -1293,7 +932,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l269"><code>husky_components&#x2F;datagrid&#x2F;main.js:269</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l259"><code>husky_components&#x2F;datagrid&#x2F;main.js:259</code></a>
         
         </p>
 
@@ -1337,7 +976,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l178"><code>husky_components&#x2F;datagrid&#x2F;main.js:178</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l170"><code>husky_components&#x2F;datagrid&#x2F;main.js:170</code></a>
         
         </p>
 
@@ -1381,7 +1020,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l212"><code>husky_components&#x2F;datagrid&#x2F;main.js:212</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l159"><code>husky_components&#x2F;datagrid&#x2F;main.js:159</code></a>
         
         </p>
 
@@ -1391,7 +1030,7 @@
     </div>
 
     <div class="description">
-        <p>raised when editable list is changed</p>
+        <p>raised when editable table is changed</p>
 
     </div>
 
@@ -1425,7 +1064,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l203"><code>husky_components&#x2F;datagrid&#x2F;main.js:203</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l148"><code>husky_components&#x2F;datagrid&#x2F;main.js:148</code></a>
         
         </p>
 
@@ -1509,7 +1148,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l196"><code>husky_components&#x2F;datagrid&#x2F;main.js:196</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l139"><code>husky_components&#x2F;datagrid&#x2F;main.js:139</code></a>
         
         </p>
 
@@ -1577,7 +1216,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l184"><code>husky_components&#x2F;datagrid&#x2F;main.js:184</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l242"><code>husky_components&#x2F;datagrid&#x2F;main.js:242</code></a>
         
         </p>
 
@@ -1591,74 +1230,6 @@
 
     </div>
 
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.datagrid.item.click" class="events item">
-    <h3 class="name"><code>husky.datagrid.item.click</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_datagrid_main.js.html#l124"><code>husky_components&#x2F;datagrid&#x2F;main.js:124</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>raised when clicked on an item</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Event Payload:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">id</code>
-                        <span class="type">String</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>of item that was clicked</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
     
 
 
@@ -1689,7 +1260,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l110"><code>husky_components&#x2F;datagrid&#x2F;main.js:110</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l96"><code>husky_components&#x2F;datagrid&#x2F;main.js:96</code></a>
         
         </p>
 
@@ -1757,7 +1328,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l117"><code>husky_components&#x2F;datagrid&#x2F;main.js:117</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l113"><code>husky_components&#x2F;datagrid&#x2F;main.js:113</code></a>
         
         </p>
 
@@ -1825,7 +1396,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l262"><code>husky_components&#x2F;datagrid&#x2F;main.js:262</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l267"><code>husky_components&#x2F;datagrid&#x2F;main.js:267</code></a>
         
         </p>
 
@@ -1870,74 +1441,6 @@
 </div>
 
                 
-                    <div id="event_husky.datagrid.items.selected" class="events item">
-    <h3 class="name"><code>husky.datagrid.items.selected</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_datagrid_main.js.html#l131"><code>husky_components&#x2F;datagrid&#x2F;main.js:131</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>raised when husky.datagrid.items.get-selected is triggered</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Event Payload:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">ids</code>
-                        <span class="type">Array</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>of all items that have been clicked</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-
-    
-</div>
-
-                
                     <div id="event_husky.datagrid.number.selections" class="events item">
     <h3 class="name"><code>husky.datagrid.number.selections</code></h3>
     <span class="type"></span>
@@ -1961,7 +1464,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l190"><code>husky_components&#x2F;datagrid&#x2F;main.js:190</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l105"><code>husky_components&#x2F;datagrid&#x2F;main.js:105</code></a>
         
         </p>
 
@@ -2005,7 +1508,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l166"><code>husky_components&#x2F;datagrid&#x2F;main.js:166</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l80"><code>husky_components&#x2F;datagrid&#x2F;main.js:80</code></a>
         
         </p>
 
@@ -2026,8 +1529,8 @@
 </div>
 
                 
-                    <div id="event_husky.datagrid.row.add" class="events item">
-    <h3 class="name"><code>husky.datagrid.row.add</code></h3>
+                    <div id="event_husky.datagrid.pagination.change" class="events item">
+    <h3 class="name"><code>husky.datagrid.pagination.change</code></h3>
     <span class="type"></span>
 
     
@@ -2049,7 +1552,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l248"><code>husky_components&#x2F;datagrid&#x2F;main.js:248</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l188"><code>husky_components&#x2F;datagrid&#x2F;main.js:188</code></a>
         
         </p>
 
@@ -2059,7 +1562,7 @@
     </div>
 
     <div class="description">
-        <p>used to add a row</p>
+        <p>listens on and changes the pagination of the datagrid</p>
 
     </div>
 
@@ -2071,14 +1574,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name">id</code>
+                        <code class="param-name">paginationId</code>
                         <span class="type">String</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>of the row to be removed</p>
+                        <p>The identifier of the pagination</p>
 
                     </div>
 
@@ -2094,8 +1597,8 @@
 </div>
 
                 
-                    <div id="event_husky.datagrid.row.remove" class="events item">
-    <h3 class="name"><code>husky.datagrid.row.remove</code></h3>
+                    <div id="event_husky.datagrid.record.add" class="events item">
+    <h3 class="name"><code>husky.datagrid.record.add</code></h3>
     <span class="type"></span>
 
     
@@ -2117,7 +1620,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l255"><code>husky_components&#x2F;datagrid&#x2F;main.js:255</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l206"><code>husky_components&#x2F;datagrid&#x2F;main.js:206</code></a>
         
         </p>
 
@@ -2127,7 +1630,7 @@
     </div>
 
     <div class="description">
-        <p>used to remove a row</p>
+        <p>used to add a data record</p>
 
     </div>
 
@@ -2139,98 +1642,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name">id</code>
-                        <span class="type">String</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>of the row to be removed</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.datagrid.row.remove-click" class="events item">
-    <h3 class="name"><code>husky.datagrid.row.remove-click</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_datagrid_main.js.html#l151"><code>husky_components&#x2F;datagrid&#x2F;main.js:151</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>click - raised when clicked on the remove-row-icon</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Event Payload:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">event</code>
+                        <code class="param-name">the</code>
                         <span class="type">Object</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>object of click</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name">id</code>
-                        <span class="type">String</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>of item that was clicked for removal</p>
+                        <p>data of the new record</p>
 
                     </div>
 
@@ -2246,8 +1665,8 @@
 </div>
 
                 
-                    <div id="event_husky.datagrid.row.removed" class="events item">
-    <h3 class="name"><code>husky.datagrid.row.removed</code></h3>
+                    <div id="event_husky.datagrid.record.add" class="events item">
+    <h3 class="name"><code>husky.datagrid.record.add</code></h3>
     <span class="type"></span>
 
     
@@ -2269,7 +1688,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l159"><code>husky_components&#x2F;datagrid&#x2F;main.js:159</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l197"><code>husky_components&#x2F;datagrid&#x2F;main.js:197</code></a>
         
         </p>
 
@@ -2279,7 +1698,75 @@
     </div>
 
     <div class="description">
-        <p>raised when row got removed</p>
+        <p>used to add a data record</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">the</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>data of the new record</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.datagrid.record.remove" class="events item">
+    <h3 class="name"><code>husky.datagrid.record.remove</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_datagrid_main.js.html#l215"><code>husky_components&#x2F;datagrid&#x2F;main.js:215</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>used to remove a data-record</p>
 
     </div>
 
@@ -2298,7 +1785,7 @@
                     
 
                     <div class="param-description">
-                        <p>of item that was removed</p>
+                        <p>of the record to be removed</p>
 
                     </div>
 
@@ -2337,7 +1824,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l221"><code>husky_components&#x2F;datagrid&#x2F;main.js:221</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l224"><code>husky_components&#x2F;datagrid&#x2F;main.js:224</code></a>
         
         </p>
 
@@ -2348,50 +1835,6 @@
 
     <div class="description">
         <p>used to trigger an update of the data</p>
-
-    </div>
-
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.datagrid.update.table" class="events item">
-    <h3 class="name"><code>husky.datagrid.update.table</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_datagrid_main.js.html#l242"><code>husky_components&#x2F;datagrid&#x2F;main.js:242</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>used to update the table width and its containers due to responsiveness</p>
 
     </div>
 
@@ -2425,7 +1868,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l172"><code>husky_components&#x2F;datagrid&#x2F;main.js:172</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l88"><code>husky_components&#x2F;datagrid&#x2F;main.js:88</code></a>
         
         </p>
 
@@ -2469,7 +1912,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l235"><code>husky_components&#x2F;datagrid&#x2F;main.js:235</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l250"><code>husky_components&#x2F;datagrid&#x2F;main.js:250</code></a>
         
         </p>
 
@@ -2499,6 +1942,90 @@
 
                     <div class="param-description">
                         <p>parameter : key</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.datagrid.view.change" class="events item">
+    <h3 class="name"><code>husky.datagrid.view.change</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_datagrid_main.js.html#l178"><code>husky_components&#x2F;datagrid&#x2F;main.js:178</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>listens on and changes the view of the datagrid</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">viewId</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The identifier of the view</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">Options</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>to merge with the current view options</p>
 
                     </div>
 
