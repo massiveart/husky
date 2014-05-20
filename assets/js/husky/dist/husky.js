@@ -35259,11 +35259,11 @@ define('__component__$select@husky',[], function() {
         /**
          * Updates the dropdown list
          * @param data
-         * @param preselected
+         * @param preselected array of ids
          */
         updateDropdown: function(data, preselected){
 
-            this.options.preSelectedElements = preselected;
+            this.options.preSelectedElements = preselected.map(String);
             this.selectedElements = [];
             this.selectedElementsValues = [];
             this.sandbox.dom.empty(this.$list);
