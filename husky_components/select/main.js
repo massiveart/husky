@@ -157,10 +157,10 @@ define([], function() {
         },
         /**
          * update the elements of the dropdown list
-         * @event husky.select[.INSTANCE_NAME].update
+         * @event data-changed
          */
             EVENT_DATA_CHANGED = function() {
-            return getEventName.call(this, 'data.changed');
+            return 'data-changed';
         },
 
         getEventName = function(suffix) {
@@ -337,6 +337,8 @@ define([], function() {
                 }
             }.bind(this), '.husky-select-dropdown-container li');
 
+            this.sandbox.dom.on(this.$el, EVENT_DATA_CHANGED.call(this), this.dataChanged.bind(this));
+
         },
 
         bindCustomEvents: function() {
@@ -349,8 +351,6 @@ define([], function() {
             this.sandbox.on(EVENT_GET_CHECKED.call(this), this.getChecked.bind(this));
 
             this.sandbox.on(EVENT_UPDATE.call(this), this.updateDropdown.bind(this));
-
-            this.sandbox.on(EVENT_DATA_CHANGED.call(this), this.dataChanged.bind(this));
         },
 
         /**
@@ -358,10 +358,17 @@ define([], function() {
          */
         dataChanged: function(){
             var selectedIds = this.sandbox.dom.data(this.$el,'selection'),
-                selectedValues = this.sandbox.dom.data(this.$el,'selection-values'),
+                selectedValues = this.sandbox.dom.data(this.$el,'selectionValues'),
                 id, $checkbox;
 
-            this.selectedElements = selectedIds.split(',').map(parseInt);
+            if(typeof selectedIds === 'string') {
+                this.selectedElements = selectedIds.split(',').map(parseInt);
+            } else if(Array.isArray(selectedIds)) {
+                this.selectedElements = selectedIds.map(parseInt);
+            } else if(typeof selectedIds === 'number'){
+                this.selectedElements.push(selectedIds);
+            }
+
             this.selectedElementsValues = selectedValues.split(',');
 
             this.sandbox.util.foreach(this.$list, function($el){
@@ -401,8 +408,8 @@ define([], function() {
         },
 
         updateSelectionAttribute: function() {
-            this.sandbox.dom.attr(this.$el, 'data-selection', this.selectedElements);
-            this.sandbox.dom.attr(this.$el, 'data-selection-values', this.selectedElementsValues);
+            this.sandbox.dom.data(this.$el, 'selection', this.selectedElements);
+            this.sandbox.dom.data(this.$el, 'selectionValues', this.selectedElementsValues);
         },
 
         //unchecks all checked elements
@@ -413,7 +420,7 @@ define([], function() {
                 key, index, $checkbox;
 
             for (; ++i < length;) {
-                key = this.sandbox.dom.attr(elements[i], 'data-id');
+                key = this.sandbox.dom.data(elements[i], 'id');
                 $checkbox = this.sandbox.dom.find('input[type=checkbox]', elements[i])[0];
                 index = this.selectedElements.indexOf(key);
 
@@ -434,7 +441,7 @@ define([], function() {
 
             var key, value, $checkbox, index, callback, updateLabel;
 
-            key = this.sandbox.dom.attr(event.currentTarget, 'data-id');
+            key = this.sandbox.dom.data(event.currentTarget, 'id');
             callback = this.sandbox.dom.data(event.currentTarget, 'selectCallback');
             index = this.selectedElements.indexOf(key);
             updateLabel = this.sandbox.dom.attr(event.currentTarget, 'data-update-label');

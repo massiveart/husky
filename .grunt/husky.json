@@ -21,7 +21,7 @@
             "ckeditor" : "vendor/ckeditor/ckeditor",
             "jqueryAdapter" : "vendor/ckeditor/adapters/jquery",
             "husky": "lib/husky",
-            "husky-select": "husky_components/select/select-type",
+            "type/husky-select": "husky_components/select/select-type",
 
             "__component__$navigation@husky": "husky_components/navigation/main",
             "__component__$column-options@husky": "husky_components/column-options/main",
@@ -74,6 +74,7 @@
             "typeahead",
             "dropzone",
             "tagsManager",
+            "type/husky-select",
 
             "husky",
             "__component__$navigation@husky",

@@ -25815,6 +25815,64 @@ if (typeof exports == "object") {
 
 define("tagsManager", function(){});
 
+/*
+ * This file is part of the Husky Validation.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
+define('type/husky-select',[
+    'type/default',
+    'form/util'
+], function(Default) {
+
+    
+
+    return function($el, options) {
+        var defaults = {
+                id: 'id',
+                label: 'value'
+            },
+
+            typeInterface = {
+                setValue: function(data) {
+
+                    this.$el.data({
+                        'selection': data[this.options.id],
+                        'selectionValues': data[this.options.label]
+                    }).trigger('data-changed');
+                },
+
+                getValue: function() {
+
+                    // For single select
+
+                    var data = {},
+                        values = this.$el.data('selection-values');
+
+                    data[this.options.label] = Array.isArray(values) ? values[0] : values;
+                    data[this.options.id] = this.$el.data('selection')[0];
+
+                    return data;
+                },
+
+                needsValidation: function() {
+                    return false;
+                },
+
+                validate: function() {
+                    return true;
+                }
+            };
+
+        return new Default($el, defaults, options, 'husky-select', typeInterface);
+    };
+});
+
 define('bower_components/aura/lib/platform',[],function() {
   // The bind method is used for callbacks.
   //
@@ -34951,10 +35009,10 @@ define('__component__$select@husky',[], function() {
         },
         /**
          * update the elements of the dropdown list
-         * @event husky.select[.INSTANCE_NAME].update
+         * @event data-changed
          */
             EVENT_DATA_CHANGED = function() {
-            return getEventName.call(this, 'data.changed');
+            return 'data-changed';
         },
 
         getEventName = function(suffix) {
@@ -35131,6 +35189,8 @@ define('__component__$select@husky',[], function() {
                 }
             }.bind(this), '.husky-select-dropdown-container li');
 
+            this.sandbox.dom.on(this.$el, EVENT_DATA_CHANGED.call(this), this.dataChanged.bind(this));
+
         },
 
         bindCustomEvents: function() {
@@ -35143,8 +35203,6 @@ define('__component__$select@husky',[], function() {
             this.sandbox.on(EVENT_GET_CHECKED.call(this), this.getChecked.bind(this));
 
             this.sandbox.on(EVENT_UPDATE.call(this), this.updateDropdown.bind(this));
-
-            this.sandbox.on(EVENT_DATA_CHANGED.call(this), this.dataChanged.bind(this));
         },
 
         /**
@@ -35152,7 +35210,7 @@ define('__component__$select@husky',[], function() {
          */
         dataChanged: function(){
             var selectedIds = this.sandbox.dom.data(this.$el,'selection'),
-                selectedValues = this.sandbox.dom.data(this.$el,'selection-values'),
+                selectedValues = this.sandbox.dom.data(this.$el,'selectionValues'),
                 id, $checkbox;
 
             this.selectedElements = selectedIds.split(',').map(parseInt);
@@ -35195,8 +35253,8 @@ define('__component__$select@husky',[], function() {
         },
 
         updateSelectionAttribute: function() {
-            this.sandbox.dom.attr(this.$el, 'data-selection', this.selectedElements);
-            this.sandbox.dom.attr(this.$el, 'data-selection-values', this.selectedElementsValues);
+            this.sandbox.dom.data(this.$el, 'selection', this.selectedElements);
+            this.sandbox.dom.data(this.$el, 'selectionValues', this.selectedElementsValues);
         },
 
         //unchecks all checked elements
@@ -35207,7 +35265,7 @@ define('__component__$select@husky',[], function() {
                 key, index, $checkbox;
 
             for (; ++i < length;) {
-                key = this.sandbox.dom.attr(elements[i], 'data-id');
+                key = this.sandbox.dom.data(elements[i], 'id');
                 $checkbox = this.sandbox.dom.find('input[type=checkbox]', elements[i])[0];
                 index = this.selectedElements.indexOf(key);
 
@@ -35228,7 +35286,7 @@ define('__component__$select@husky',[], function() {
 
             var key, value, $checkbox, index, callback, updateLabel;
 
-            key = this.sandbox.dom.attr(event.currentTarget, 'data-id');
+            key = this.sandbox.dom.data(event.currentTarget, 'id');
             callback = this.sandbox.dom.data(event.currentTarget, 'selectCallback');
             index = this.selectedElements.indexOf(key);
             updateLabel = this.sandbox.dom.attr(event.currentTarget, 'data-update-label');

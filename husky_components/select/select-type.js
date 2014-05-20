@@ -18,16 +18,30 @@ define([
     return function($el, options) {
         var defaults = {
                 id: 'id',
-                label: 'name'
+                label: 'value'
             },
 
             typeInterface = {
-                setValue: function(value) {
-                    this.$el.data('selection', value).trigger('husky.select.'+$el.instanceName+'.data.changed');
+                setValue: function(data) {
+
+                    this.$el.data({
+                        'selection': data[this.options.id],
+                        'selectionValues': data[this.options.label]
+                    }).trigger('data-changed');
                 },
 
                 getValue: function() {
-                    return this.$el.data('selection');
+
+                    // For single select
+
+                    var data = {},
+                        ids = this.$el.data('selection'),
+                        values = this.$el.data('selection-values');
+
+                    data[this.options.label] = Array.isArray(values) ? values[0] : values;
+                    data[this.options.id] = Array.isArray(ids) ? ids[0] : ids;
+
+                    return data;
                 },
 
                 needsValidation: function() {

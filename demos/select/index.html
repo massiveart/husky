@@ -59,7 +59,9 @@
             </tr>
             <tr>
                 <td>
-                    <div class="grid-col-11" id="ddms5"></div>
+                    <form id="mylittleform">
+                        <div class="grid-col-11" id="ddms5" data-type-label="category" data-mapper-property="dropdown" data-type="husky-select" data-form="true"></div>
+                    </form>
                 </td>
                 <td>
                     <div class="grid-col-11" id="ddms6"></div>
@@ -103,7 +105,16 @@
                         <button id="changeData5">change data ddms 5</button>
                     </td>
                     <td>
-                        <button id="changeData4">change data ddms 4</button>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <button id="setDataDDMS5">set data ddms 5</button>
+                    </td>
+                    <td>
+                        <button id="getDataDDMS5">get data ddms 5</button>
                     </td>
                 </tr>
             </tbody>
@@ -132,14 +143,19 @@
 
 <script>
     require.config({
-        baseUrl: '../../'
+        baseUrl: '../../',
+        paths: {
+            "form": "bower_components/husky-validation/dist/validation",
+            "type/husky-select": "husky_components/select/select-type"
+        }
     });
 
-    require(['lib/husky'], function(Husky) {
+    require(['lib/husky', 'form'], function(Husky, Form) {
         'use strict';
 
         var app = Husky({ debug: { enable: true }}),
                 _ = app.sandbox.util._,
+                form = new Form($('#mylittleform')),
                 state7 = 0;
 
         app.start([
@@ -428,13 +444,32 @@
             });
 
             $('#changeData5').on('click', function() {
-                $('#ddms5').data('selection', '3').data('selection-values', 'Italienisch');
-                app.sandbox.emit('husky.select.ddms5.data.changed');
+                $('#ddms5').data({
+                    'selection': '3',
+                    'selection-values': 'Italienisch'
+                }).trigger('data-changed');
             });
 
-            $('#changeData4').on('click', function() {
-                $('#ddms4').data('selection', '1,2,3').data('selection-values', 'Deutsch,English,Spanish');
-                app.sandbox.emit('husky.select.ddms4.data.changed');
+            $('#setDataDDMS5').on('click', function() {
+                console.log('started setdata');
+
+                form.initialized.then(function() {
+                    form.mapper.setData({
+                        dropdown: {
+                            id: 3,
+                            category: "Italienisch"
+                        }
+                    }).then(
+                            function() {
+                                console.log('resolved setdata');
+                            }
+                    );
+                });
+            });
+
+
+            $('#getDataDDMS5').on('click', function() {
+                console.log(form.mapper.getData());
             });
 
         });
