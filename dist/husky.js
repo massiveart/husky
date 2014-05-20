@@ -25841,6 +25841,10 @@ define('type/husky-select',[
             typeInterface = {
                 setValue: function(data) {
 
+                    if(!data){
+                        return;
+                    }
+
                     this.$el.data({
                         'selection': data[this.options.id],
                         'selectionValues': data[this.options.label]
@@ -35093,9 +35097,13 @@ define('__component__$select@husky',[], function() {
         // prepares data for dropDown, if options.data not set load with ajax
         prepareData: function() {
             if (this.options.data.length > 0) {
-                this.options.preSelectedElements.map(function(el, index, arr){
-                    arr[index] = el.toString();
-                });
+                if (this.options.preSelectedElements.length > 0) {
+                    this.options.preSelectedElements.map(function(el, index, arr) {
+                        if(!!arr[index] || arr[index] === 0){
+                            arr[index] = el.toString();
+                        }
+                    });
+                }
                 this.generateDropDown(this.options.data);
             } else {
                 this.sandbox.logger.log('error: data not set');

@@ -24,6 +24,10 @@ define([
             typeInterface = {
                 setValue: function(data) {
 
+                    if(!data){
+                        return;
+                    }
+
                     this.$el.data({
                         'selection': data[this.options.id],
                         'selectionValues': data[this.options.label]
