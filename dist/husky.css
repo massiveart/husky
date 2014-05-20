@@ -7160,7 +7160,7 @@ a.btn-black, a.btn-highlight {
 
 /* line 114, ../scss/modules/smart-content.scss */
 .smart-content-overlay .column-navigation-slide .overlay-header {
-  margin-bottom: 0px;
+  margin-bottom: 1px;
 }
 /* line 117, ../scss/modules/smart-content.scss */
 .smart-content-overlay .column-navigation-slide .overlay-content {
