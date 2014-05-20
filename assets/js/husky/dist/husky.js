@@ -37559,7 +37559,8 @@ define('__component__$smart-content@husky',[], function() {
          */
         setURI: function() {
             var delimiter = (this.options.url.indexOf('?') === -1) ? '?' : '&',
-                newURI = [this.options.url,
+                newURI = [
+                    this.options.url,
                     delimiter, this.options.dataSourceParameter, '=', this.overlayData.dataSource,
                     '&', this.options.includeSubFoldersParameter, '=', this.overlayData.includeSubFolders,
                     '&', this.options.categoryParameter, '=', this.overlayData.category,
@@ -37567,8 +37568,10 @@ define('__component__$smart-content@husky',[], function() {
                     '&', this.options.sortByParameter, '=', this.overlayData.sortBy,
                     '&', this.options.sortMethodParameter, '=', this.overlayData.sortMethod,
                     '&', this.options.presentAsParameter, '=', this.overlayData.presentAs,
-                    '&', this.options.limitResultParameter, '=', this.overlayData.limitResult].join('');
-            if (newURI !== this.URI.str) {
+                    '&', this.options.limitResultParameter, '=', this.overlayData.limitResult
+                ].join('');
+            // min source must be selected
+            if (this.overlayData.dataSource.length > 0 && newURI !== this.URI.str) {
                 //emit data changed event only if old URI is not null (not at the startup)
                 if (this.URI.str !== '') {
                     this.sandbox.emit(DATA_CHANGED.call(this), this.sandbox.dom.data(this.$el, 'smart-content'), this.$el);
