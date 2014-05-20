@@ -35516,6 +35516,7 @@ define('__component__$password-fields@husky',[], function() {
  * @params {Number} [options.scrollBarWidth] with of scrollbar
  * @params {String} [options.url] url to load data
  * @params {String} [options.selected] id of selected element - needed to restore state
+ * @params {String} [options.editIcon] icon class of edit button
  * @params {Array}  [options.data] array of data displayed in the settings dropdown
  * @params {String} [options.instanceName] name of current instance
  * @params {String} [options.hasSubName] name of hasSub-key
@@ -35527,6 +35528,7 @@ define('__component__$password-fields@husky',[], function() {
  * @params {Number} [options.visibleRatio] minimum ratio of how much of a column must be visible to display the navigation
  * @params {String} [options.sizeRelativeTo] dom object which is used to calculate height / width (default $window)
  * @params {Boolean} [options.showEdit] hide or display edit elements
+ * @params {Boolean} [options.showEditIcon] hide or display edit icon element
  * @params {Boolean} [options.showStatus] hide or display status of elements
  */
 define('__component__$column-navigation@husky',[], function() {
@@ -35546,6 +35548,7 @@ define('__component__$column-navigation@husky',[], function() {
             data: null,
             instanceName: 'undefined',
             hasSubName: 'hasSub',
+            editIcon: 'icon-edit-pen',
             idName: 'id',
             linkedName: 'linked',
             publishedName: 'publishedState',
@@ -35555,6 +35558,7 @@ define('__component__$column-navigation@husky',[], function() {
             noPageDescription: 'public.no-pages',
             sizeRelativeTo: null,
             showEdit: true,
+            showEditIcon: true,
             showStatus: true
         },
 
@@ -36357,8 +36361,8 @@ define('__component__$column-navigation@husky',[], function() {
 
                 // icons right (subpage, edit)
                 item.push('<span class="icons-right">');
-                if (!!this.options.showEdit) {
-                    item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
+                if (!!this.options.showEditIcon) {
+                    item.push('<span class="' + this.options.editIcon + ' edit hidden pull-left"></span>');
                 }
                 !!data[this.options.hasSubName] ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
@@ -37349,25 +37353,13 @@ define('__component__$smart-content@husky',[], function() {
                                 cancelDefaultText: this.sandbox.translate(this.translations.chooseDataSourceCancel),
                                 buttons: [
                                     {
-                                        type: 'ok',
-                                        inactive: false,
-                                        align: 'right'
-                                    },
-                                    {
                                         type: 'cancel',
                                         inactive: false,
-                                        align: 'left'
+                                        align: 'center'
                                     }
                                 ],
-                                okCallback: function() {
-                                    this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-left');
-                                    this.overlayData.dataSource = this.selectedDataSourceItem.path;
-                                    this.sandbox.dom.text(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent), this.overlayData.dataSource);
-                                    return false;
-                                }.bind(this),
                                 closeCallback: function() {
                                     this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-left');
-                                    this.selectedDataSourceItem = null;
                                     return false;
                                 }.bind(this)
                             }
@@ -37394,9 +37386,10 @@ define('__component__$smart-content@husky',[], function() {
             }.bind(this));
 
             // activate button OK when a page is selected
-            this.sandbox.on('husky.column-navigation.selected', function(item) {
-                this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.okbutton.activate');
-                this.selectedDataSourceItem = item;
+            this.sandbox.on('husky.column-navigation.edit', function(item) {
+                this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-left');
+                this.overlayData.dataSource = item.path;
+                this.sandbox.dom.text(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent), this.overlayData.dataSource);
             }.bind(this));
 
             // slide to column navigation by click on the action button
@@ -37419,6 +37412,7 @@ define('__component__$smart-content@husky',[], function() {
                             noPageDescription: 'No Pages',
                             sizeRelativeTo: '.smart-content-overlay .slide-1 .overlay-content',
                             wrapper: {height: 100},
+                            editIcon: 'icon-half-ok',
                             showEdit: false,
                             showStatus: false
                         }

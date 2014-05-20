@@ -7208,55 +7208,56 @@ a.btn-black, a.btn-highlight {
 /* line 155, ../scss/modules/smart-content.scss */
 .smart-overlay-content .sublabel {
   font-size: 10px;
+  color: #999999;
 }
-/* line 158, ../scss/modules/smart-content.scss */
+/* line 159, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item-half {
   float: left;
   width: 270px;
 }
-/* line 162, ../scss/modules/smart-content.scss */
+/* line 163, ../scss/modules/smart-content.scss */
 .smart-overlay-content .item {
   padding-right: 20px;
 }
-/* line 165, ../scss/modules/smart-content.scss */
+/* line 166, ../scss/modules/smart-content.scss */
 .smart-overlay-content .left {
   margin-right: 20px;
 }
-/* line 168, ../scss/modules/smart-content.scss */
+/* line 169, ../scss/modules/smart-content.scss */
 .smart-overlay-content .full {
   padding-right: 0;
 }
-/* line 171, ../scss/modules/smart-content.scss */
+/* line 172, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check {
   margin-top: 30px;
 }
-/* line 173, ../scss/modules/smart-content.scss */
+/* line 174, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check .description {
   padding-left: 5px;
 }
-/* line 176, ../scss/modules/smart-content.scss */
+/* line 177, ../scss/modules/smart-content.scss */
 .smart-overlay-content .check.disabled {
   display: none;
 }
-/* line 180, ../scss/modules/smart-content.scss */
+/* line 181, ../scss/modules/smart-content.scss */
 .smart-overlay-content .sortMethod {
   margin-top: 25px;
 }
-/* line 184, ../scss/modules/smart-content.scss */
+/* line 185, ../scss/modules/smart-content.scss */
 .smart-overlay-content input.limit-to,
 .smart-overlay-content input.data-source {
   padding-left: 10px;
   border-radius: 0;
 }
-/* line 188, ../scss/modules/smart-content.scss */
+/* line 189, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tags.disabled {
   display: none;
 }
-/* line 191, ../scss/modules/smart-content.scss */
+/* line 192, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list {
   border-radius: 3px 3px 0 0;
 }
-/* line 193, ../scss/modules/smart-content.scss */
+/* line 194, ../scss/modules/smart-content.scss */
 .smart-overlay-content .tag-list input {
   margin: 7px 0 0 0;
 }

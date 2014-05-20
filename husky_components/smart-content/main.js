@@ -713,25 +713,13 @@ define([], function() {
                                 cancelDefaultText: this.sandbox.translate(this.translations.chooseDataSourceCancel),
                                 buttons: [
                                     {
-                                        type: 'ok',
-                                        inactive: false,
-                                        align: 'right'
-                                    },
-                                    {
                                         type: 'cancel',
                                         inactive: false,
-                                        align: 'left'
+                                        align: 'center'
                                     }
                                 ],
-                                okCallback: function() {
-                                    this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-left');
-                                    this.overlayData.dataSource = this.selectedDataSourceItem.path;
-                                    this.sandbox.dom.text(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent), this.overlayData.dataSource);
-                                    return false;
-                                }.bind(this),
                                 closeCallback: function() {
                                     this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-left');
-                                    this.selectedDataSourceItem = null;
                                     return false;
                                 }.bind(this)
                             }
@@ -758,9 +746,12 @@ define([], function() {
             }.bind(this));
 
             // activate button OK when a page is selected
-            this.sandbox.on('husky.column-navigation.selected', function(item) {
-                this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.okbutton.activate');
-                this.selectedDataSourceItem = item;
+            this.sandbox.on('husky.column-navigation.edit', function(item) {
+                this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-left');
+
+                var $element = this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent);
+                this.overlayData.dataSource = item.path;
+                this.sandbox.dom.text($element, this.sandbox.util.cropMiddle(this.overlayData.dataSource, 30, '...'));
             }.bind(this));
 
             // slide to column navigation by click on the action button
@@ -783,6 +774,7 @@ define([], function() {
                             noPageDescription: 'No Pages',
                             sizeRelativeTo: '.smart-content-overlay .slide-1 .overlay-content',
                             wrapper: {height: 100},
+                            editIcon: 'icon-half-ok',
                             showEdit: false,
                             showStatus: false
                         }
