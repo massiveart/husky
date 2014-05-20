@@ -331,7 +331,7 @@ define([], function() {
              * Bind several events
              */
             bindEvents: function() {
-                this.sandbox.on(createEventName.call(this, 'getTags'), function(callback) {
+                this.sandbox.on(createEventName.call(this, 'get-tags'), function(callback) {
                     if (typeof callback === 'function') {
                         callback(this.getTags());
                     } else {

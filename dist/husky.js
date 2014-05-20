@@ -34168,7 +34168,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * Bind several events
              */
             bindEvents: function() {
-                this.sandbox.on(createEventName.call(this, 'getTags'), function(callback) {
+                this.sandbox.on(createEventName.call(this, 'get-tags'), function(callback) {
                     if (typeof callback === 'function') {
                         callback(this.getTags());
                     } else {
@@ -37625,35 +37625,35 @@ define('__component__$smart-content@husky',[], function() {
             this.overlayData.dataSource = this.sandbox.dom.text(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent));
 
             //category
-            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.categoryDDClass + '.getChecked',
+            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.categoryDDClass + '.get-checked',
                 function(category) {
                     this.overlayData.category = category;
                     categoryDef.resolve();
                 }.bind(this));
 
             //tags
-            this.sandbox.emit('husky.auto-complete-list.' + this.options.instanceName + constants.tagListClass + '.getTags',
+            this.sandbox.emit('husky.auto-complete-list.' + this.options.instanceName + constants.tagListClass + '.get-tags',
                 function(tags) {
                     this.overlayData.tags = tags;
                     tagsDef.resolve();
                 }.bind(this));
 
             //sort by
-            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.sortByDDClass + '.getChecked',
+            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.sortByDDClass + '.get-checked',
                 function(sortBy) {
                     this.overlayData.sortBy = sortBy;
                     sortByDef.resolve();
                 }.bind(this));
 
             //sort method
-            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.sortMethodDDClass + '.getChecked',
+            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.sortMethodDDClass + '.get-checked',
                 function(sortMethod) {
                     this.overlayData.sortMethod = (sortMethod[0] === sortMethods.asc) ? 'asc' : 'desc';
                     sortMethodDef.resolve();
                 }.bind(this));
 
             //present as
-            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.presentAsDDClass + '.getChecked',
+            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.presentAsDDClass + '.get-checked',
                 function(presentAs) {
                     this.overlayData.presentAs = presentAs;
                     presentAsDef.resolve();
