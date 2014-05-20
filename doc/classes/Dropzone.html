@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>AutoCompleteList - husky</title>
+    <title>Dropzone - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -148,7 +148,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>AutoCompleteList Class</h1>
+                        <h1>Dropzone Class</h1>
 <div class="box meta">
     
 
@@ -156,13 +156,13 @@
 
     
         <div class="foundat">
-            Defined in: <a href="../files/husky_components_auto-complete-list_main.js.html#l12"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:12</code></a>
+            Defined in: <a href="../files/husky_components_dropzone_main.js.html#l12"><code>husky_components&#x2F;dropzone&#x2F;main.js:12</code></a>
         </div>
     
 
     
         
-            Module: <a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a>
+            Module: <a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a>
         
     
 
@@ -178,8 +178,8 @@
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_AutoCompleteList" class="method item">
-    <h3 class="name"><code>AutoCompleteList</code></h3>
+        <div id="method_Dropzone" class="method item">
+    <h3 class="name"><code>Dropzone</code></h3>
 
     
         <div class="args">
@@ -220,7 +220,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l12"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:12</code></a>
+        <a href="../files/husky_components_dropzone_main.js.html#l12"><code>husky_components&#x2F;dropzone&#x2F;main.js:12</code></a>
         
         </p>
 
@@ -259,13 +259,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[instanceName]</code>
+                                    <code class="param-name optional">[titleKey]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>name of the component instance</p>
+                                    <p>The title to display if no items are dropped (can be a translation key)</p>
 
                                 </div>
 
@@ -274,28 +274,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[items]</code>
-                                    <span class="type">Array</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>preloaded items</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[itemsUrl]</code>
+                                    <code class="param-name optional">[descriptionKey]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>url to load items</p>
+                                    <p>The description to display if no items are dropped (can be a translation key)</p>
 
                                 </div>
 
@@ -304,13 +289,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[itemsKey]</code>
+                                    <code class="param-name optional">[descriptionIcon]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>Key for AJAX response</p>
+                                    <p>The icon to display if no items are dropped</p>
 
                                 </div>
 
@@ -319,28 +304,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[suggestions]</code>
-                                    <span class="type">Array</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>suggestions for suggestions box</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[suggestionsHeadline]</code>
+                                    <code class="param-name optional">[cancelLoadingIcon]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>Headline for suggestions bxo</p>
+                                    <p>the icon which gets displayed while a file item gets uploaded</p>
 
                                 </div>
 
@@ -349,13 +319,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[suggestionsUrl]</code>
+                                    <code class="param-name optional">[method]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>url to load suggestions</p>
+                                    <p>method to use for uploading &#39;PUT&#39; or &#39;POST&#39;</p>
 
                                 </div>
 
@@ -364,13 +334,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[suggestionsKey]</code>
+                                    <code class="param-name optional">[url]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>Key for AJAX response</p>
+                                    <p>url to upload the files to</p>
 
                                 </div>
 
@@ -379,13 +349,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[inputSelector]</code>
+                                    <code class="param-name optional">[paramName]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>CSS-selector for input wrapper div</p>
+                                    <p>the name of the parameter which will contain the file(s). Note that if uploadMultiple is set to true the parameter Name gets extended with &#39;[]&#39;</p>
 
                                 </div>
 
@@ -394,88 +364,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[label]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>label (headline)</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[autocomplete]</code>
-                                    <span class="type">Boolean</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>enable/disable autocomplete</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[localData]</code>
-                                    <span class="type">Array</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>local data passed to the autocomplete component</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[prefetchUrl]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>url to prefetch data for the autocomplete component</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[remoteUrl]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>url to fetch data  for the autocomplete component from on input</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[autocompleteOptions]</code>
+                                    <code class="param-name optional">[headers]</code>
                                     <span class="type">Object</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>options to pass to the autocomplete component</p>
+                                    <p>additional headers to pass with each request</p>
 
                                 </div>
 
@@ -484,43 +379,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[autocompleteParameter]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>name of parameter which contains the user&#39;s input (for auto-complete)</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[maxListItems]</code>
-                                    <span class="type">Integer</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>maximum amount of list items accepted (0 = no limit)</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[CapitalizeFirstLetter]</code>
+                                    <code class="param-name optional">[uploadMultiple]</code>
                                     <span class="type">Boolean</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>if true the first letter of each item gets capitalized</p>
+                                    <p>if true a request can upload multiple files</p>
 
                                 </div>
 
@@ -529,13 +394,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[listItemClass]</code>
-                                    <span class="type">String</span>
+                                    <code class="param-name optional">[successCallback]</code>
+                                    <span class="type">Function</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>CSS-class for list items</p>
+                                    <p>callback which gets called if a file got successfully uploaded. First parameter is the file, the second the response</p>
 
                                 </div>
 
@@ -544,13 +409,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[suggestionDeactivatedClass]</code>
-                                    <span class="type">String</span>
+                                    <code class="param-name optional">[beforeSendingCallback]</code>
+                                    <span class="type">Function</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>CSS-class for suggestion-element if suggestion is already used</p>
+                                    <p>callback which gets called before a file gets uploaded. First parameter is the file.</p>
 
                                 </div>
 
@@ -559,13 +424,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[AjaxPush]</code>
-                                    <span class="type">String</span>
+                                    <code class="param-name optional">[removeFileCallback]</code>
+                                    <span class="type">Function</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>url to which added list items get send via ajax POST</p>
+                                    <p>callback which gets called after a file got removed. First parameter is the file.</p>
 
                                 </div>
 
@@ -574,28 +439,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[AjaxPushAllItems]</code>
-                                    <span class="type">Boolean</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>if true all list items get sent if an item is added</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[AjaxPushParameters]</code>
+                                    <code class="param-name optional">[pluginOptions]</code>
                                     <span class="type">Object</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>additional parameter payload to push with each AjaxPush</p>
+                                    <p>Options to pass to the dropzone-plugin to completely override all options set by husky. Use with care.</p>
 
                                 </div>
 
@@ -604,13 +454,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[togglerSelector]</code>
-                                    <span class="type">String</span>
+                                    <code class="param-name optional">[showOverlayOnScrollTop]</code>
+                                    <span class="type">Number</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>CSS-selector for suggestion-toggler</p>
+                                    <p>number of scroll-top on which the overlay will be displayed</p>
 
                                 </div>
 
@@ -619,13 +469,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[arrowDownClass]</code>
-                                    <span class="type">String</span>
+                                    <code class="param-name optional">[scrollContainer]</code>
+                                    <span class="type">Object | String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>CSS-class for arrow down icon</p>
+                                    <p>element to check to scroll-top on</p>
 
                                 </div>
 
@@ -634,88 +484,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[arrowUpClass]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>CSS-class for arrow up icon</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[slideDuration]</code>
-                                    <span class="type">Integer</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>ms - duration for sliding suggestinos up/down</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[elementTagDataName]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>attribute name to store list of tags on element</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[autoCompleteIcon]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>Icon Class-suffix for autocomplete-suggestion-icon</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[delimiters]</code>
-                                    <span class="type">Array</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>Array of key-codes which trigger a tag input</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[noNewTags]</code>
+                                    <code class="param-name optional">[showOverlay]</code>
                                     <span class="type">Boolean</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>If true only auto-completed tags are accepted</p>
+                                    <p>if true the dropzone will be displayed in an overlay if its not visible any more or the passed scroll-top is reached</p>
 
                                 </div>
 
@@ -767,56 +542,35 @@
                     <ul class="index-list events">
                         
                             <li class="index-item event">
-                                <a href="#event_husky.auto-complete-list.initialized">husky.auto-complete-list.initialized</a>
+                                <a href="#event_husky.dropzone.&lt;instance-name&gt;.file-remove">husky.dropzone.&lt;instance-name&gt;.file-remove</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.auto-complete-list.item-added">husky.auto-complete-list.item-added</a>
+                                <a href="#event_husky.dropzone.&lt;instance-name&gt;.files-added">husky.dropzone.&lt;instance-name&gt;.files-added</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.auto-complete-list.item-deleted">husky.auto-complete-list.item-deleted</a>
+                                <a href="#event_husky.dropzone.&lt;instance-name&gt;.initialize">husky.dropzone.&lt;instance-name&gt;.initialize</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.auto-complete-list.items-request">husky.auto-complete-list.items-request</a>
+                                <a href="#event_husky.dropzone.&lt;instance-name&gt;.success">husky.dropzone.&lt;instance-name&gt;.success</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.auto-complete-list.sug-added">husky.auto-complete-list.sug-added</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
-                                <a href="#event_husky.auto-complete-list.sug-closed">husky.auto-complete-list.sug-closed</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
-                                <a href="#event_husky.auto-complete-list.sug-opened">husky.auto-complete-list.sug-opened</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
-                                <a href="#event_husky.auto-complete-list.sug-request">husky.auto-complete-list.sug-request</a>
+                                <a href="#event_husky.dropzone.&lt;instance-name&gt;.uploading">husky.dropzone.&lt;instance-name&gt;.uploading</a>
 
                                 
                                 
@@ -838,8 +592,8 @@
                 <h2 class="off-left">Events</h2>
 
                 
-                    <div id="event_husky.auto-complete-list.initialized" class="events item">
-    <h3 class="name"><code>husky.auto-complete-list.initialized</code></h3>
+                    <div id="event_husky.dropzone.&lt;instance-name&gt;.file-remove" class="events item">
+    <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.file-remove</code></h3>
     <span class="type"></span>
 
     
@@ -861,7 +615,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l117"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:117</code></a>
+        <a href="../files/husky_components_dropzone_main.js.html#l134"><code>husky_components&#x2F;dropzone&#x2F;main.js:134</code></a>
         
         </p>
 
@@ -871,51 +625,7 @@
     </div>
 
     <div class="description">
-        <p>raised after initialization</p>
-
-    </div>
-
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.auto-complete-list.item-added" class="events item">
-    <h3 class="name"><code>husky.auto-complete-list.item-added</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l158"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:158</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>raised after an item is added</p>
+        <p>raised after file got removed from the zone</p>
 
     </div>
 
@@ -927,172 +637,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name">item</code>
-                        <span class="type">String</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>value</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.auto-complete-list.item-deleted" class="events item">
-    <h3 class="name"><code>husky.auto-complete-list.item-deleted</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l150"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:150</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>raised after an item is deleted</p>
-
-    </div>
-
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.auto-complete-list.items-request" class="events item">
-    <h3 class="name"><code>husky.auto-complete-list.items-request</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l125"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:125</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>raised after AJAX request for loading items is sent</p>
-
-    </div>
-
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.auto-complete-list.sug-added" class="events item">
-    <h3 class="name"><code>husky.auto-complete-list.sug-added</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l141"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:141</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>raised after a suggestion element is clicked and added to the list</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Event Payload:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">suggestion</code>
+                        <code class="param-name">the</code>
                         <span class="type">Object</span>
                     
 
                     
 
                     <div class="param-description">
-                        <ul>
-<li>the suggestion element with id, name, DOM-object</li>
-</ul>
+                        <p>file</p>
 
                     </div>
 
@@ -1108,8 +660,8 @@
 </div>
 
                 
-                    <div id="event_husky.auto-complete-list.sug-closed" class="events item">
-    <h3 class="name"><code>husky.auto-complete-list.sug-closed</code></h3>
+                    <div id="event_husky.dropzone.&lt;instance-name&gt;.files-added" class="events item">
+    <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.files-added</code></h3>
     <span class="type"></span>
 
     
@@ -1131,7 +683,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l167"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:167</code></a>
+        <a href="../files/husky_components_dropzone_main.js.html#l143"><code>husky_components&#x2F;dropzone&#x2F;main.js:143</code></a>
         
         </p>
 
@@ -1141,7 +693,75 @@
     </div>
 
     <div class="description">
-        <p>raised when the suggestion container is closed</p>
+        <p>raised after files got uploaded and faded out from the dropzone</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">all</code>
+                        <span class="type">Array</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>newly added files</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.dropzone.&lt;instance-name&gt;.initialize" class="events item">
+    <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.initialize</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_dropzone_main.js.html#l107"><code>husky_components&#x2F;dropzone&#x2F;main.js:107</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>raised after initialization process</p>
 
     </div>
 
@@ -1152,8 +772,8 @@
 </div>
 
                 
-                    <div id="event_husky.auto-complete-list.sug-opened" class="events item">
-    <h3 class="name"><code>husky.auto-complete-list.sug-opened</code></h3>
+                    <div id="event_husky.dropzone.&lt;instance-name&gt;.success" class="events item">
+    <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.success</code></h3>
     <span class="type"></span>
 
     
@@ -1175,7 +795,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l175"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:175</code></a>
+        <a href="../files/husky_components_dropzone_main.js.html#l124"><code>husky_components&#x2F;dropzone&#x2F;main.js:124</code></a>
         
         </p>
 
@@ -1185,10 +805,50 @@
     </div>
 
     <div class="description">
-        <p>raised when the suggestion container is opened</p>
+        <p>raised after file got successfully uploaded</p>
 
     </div>
 
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">the</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>file</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">the</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>response</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
     
 
 
@@ -1196,8 +856,8 @@
 </div>
 
                 
-                    <div id="event_husky.auto-complete-list.sug-request" class="events item">
-    <h3 class="name"><code>husky.auto-complete-list.sug-request</code></h3>
+                    <div id="event_husky.dropzone.&lt;instance-name&gt;.uploading" class="events item">
+    <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.uploading</code></h3>
     <span class="type"></span>
 
     
@@ -1219,7 +879,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l133"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:133</code></a>
+        <a href="../files/husky_components_dropzone_main.js.html#l115"><code>husky_components&#x2F;dropzone&#x2F;main.js:115</code></a>
         
         </p>
 
@@ -1229,10 +889,34 @@
     </div>
 
     <div class="description">
-        <p>raised after AJAX request for loading suggestions is sent</p>
+        <p>raised before sending a file</p>
 
     </div>
 
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">the</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>file</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
     
 
 
