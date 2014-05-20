@@ -37388,8 +37388,10 @@ define('__component__$smart-content@husky',[], function() {
             // activate button OK when a page is selected
             this.sandbox.on('husky.column-navigation.edit', function(item) {
                 this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-left');
+
+                var $element = this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent);
                 this.overlayData.dataSource = item.path;
-                this.sandbox.dom.text(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent), this.overlayData.dataSource);
+                this.sandbox.dom.text($element, this.sandbox.util.cropMiddle(this.overlayData.dataSource, 30, '...'));
             }.bind(this));
 
             // slide to column navigation by click on the action button
