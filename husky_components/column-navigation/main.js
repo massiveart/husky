@@ -20,6 +20,7 @@
  * @params {Number} [options.scrollBarWidth] with of scrollbar
  * @params {String} [options.url] url to load data
  * @params {String} [options.selected] id of selected element - needed to restore state
+ * @params {String} [options.editIcon] icon class of edit button
  * @params {Array}  [options.data] array of data displayed in the settings dropdown
  * @params {String} [options.instanceName] name of current instance
  * @params {String} [options.hasSubName] name of hasSub-key
@@ -31,6 +32,7 @@
  * @params {Number} [options.visibleRatio] minimum ratio of how much of a column must be visible to display the navigation
  * @params {String} [options.sizeRelativeTo] dom object which is used to calculate height / width (default $window)
  * @params {Boolean} [options.showEdit] hide or display edit elements
+ * @params {Boolean} [options.showEditIcon] hide or display edit icon element
  * @params {Boolean} [options.showStatus] hide or display status of elements
  */
 define([], function() {
@@ -50,6 +52,7 @@ define([], function() {
             data: null,
             instanceName: 'undefined',
             hasSubName: 'hasSub',
+            editIcon: 'icon-edit-pen',
             idName: 'id',
             linkedName: 'linked',
             publishedName: 'publishedState',
@@ -59,6 +62,7 @@ define([], function() {
             noPageDescription: 'public.no-pages',
             sizeRelativeTo: null,
             showEdit: true,
+            showEditIcon: true,
             showStatus: true
         },
 
@@ -861,8 +865,8 @@ define([], function() {
 
                 // icons right (subpage, edit)
                 item.push('<span class="icons-right">');
-                if (!!this.options.showEdit) {
-                    item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
+                if (!!this.options.showEditIcon) {
+                    item.push('<span class="' + this.options.editIcon + ' edit hidden pull-left"></span>');
                 }
                 !!data[this.options.hasSubName] ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
