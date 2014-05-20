@@ -55,6 +55,10 @@
             
                 <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
             
+                <li><a href="../classes/DropdownPagination (Datagrid Decorator).html">DropdownPagination (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Dropzone.html">Dropzone</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -69,7 +73,15 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
+                <li><a href="../classes/ShowAllPagination (Datagrid Decorator).html">ShowAllPagination (Datagrid Decorator)</a></li>
+            
                 <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Tabs.html">Tabs</a></li>
+            
+                <li><a href="../classes/ThumbnailView (Datagrid Decorator).html">ThumbnailView (Datagrid Decorator)</a></li>
             
                 <li><a href="../classes/Toggler.html">Toggler</a></li>
             
@@ -87,9 +99,13 @@
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
+                <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
                 <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_overlay.html">husky/components/overlay</a></li>
             
                 <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
             
@@ -147,7 +163,7 @@ define(function() {
 
             // for comparing arrays
             app.core.util.compare = function(a, b) {
-                if (this.typeOf(a) === &#x27;array&#x27; &amp;&amp; this.typeOf(b) === &#x27;array&#x27;) {
+                if (typeof a === &#x27;object&#x27; &amp;&amp; typeof b === &#x27;object&#x27;) {
                     return JSON.stringify(a) === JSON.stringify(b);
                 }
             };
@@ -256,6 +272,10 @@ define(function() {
 
             app.core.util.uniqueId = function(prefix) {
                 return _.uniqueId(prefix);
+            };
+
+            app.core.util.delay = function(delay, callback) {
+                return _.delay(delay, callback);
             };
 
 			app.core.util.template = _.template;

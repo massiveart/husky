@@ -55,6 +55,10 @@
             
                 <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
             
+                <li><a href="../classes/DropdownPagination (Datagrid Decorator).html">DropdownPagination (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Dropzone.html">Dropzone</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -69,7 +73,15 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
+                <li><a href="../classes/ShowAllPagination (Datagrid Decorator).html">ShowAllPagination (Datagrid Decorator)</a></li>
+            
                 <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Tabs.html">Tabs</a></li>
+            
+                <li><a href="../classes/ThumbnailView (Datagrid Decorator).html">ThumbnailView (Datagrid Decorator)</a></li>
             
                 <li><a href="../classes/Toggler.html">Toggler</a></li>
             
@@ -87,9 +99,13 @@
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
+                <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
                 <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_overlay.html">husky/components/overlay</a></li>
             
                 <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
             
@@ -164,10 +180,12 @@
  * @param {Function} [options.selectCallback] callbackfunction, when element is selected
  * @param {String} [options.valueName] name of property which should be used
  * @param {String} [options.style] &quot;normal&quot;, &quot;small&quot;, &quot;big&quot;, &quot;action&quot; for different appearance
+ * @param {String} [options.skin] style class to set to the elements component (e.g &#x27;white&#x27;)
  * @param {Boolean} [options.emitValues] If true the value is emited with events instead of the id
  * @param {Boolean} [options.fixedLabel] If true the label never gets changed
  * @param {String} [options.icon] icon to set into the label
  * @param {Function} [options.noItemsCallback] callback function which gets executed at click on label if no dropdown-items exist
+ * @param {Boolean} [options.repeatSelect] If true dropdown item can be selected n-times in succession
  */
 
 define([], function() {
@@ -187,10 +205,12 @@ define([], function() {
             selectCallback: null,
             deselectCallback: null,
             style: &#x27;normal&#x27;,
+            skin: &#x27;&#x27;,
             emitValues: false,
             fixedLabel: false,
             icon: null,
-            noItemsCallback: null
+            noItemsCallback: null,
+            repeatSelect: false
         },
 
         constants = {
@@ -323,6 +343,9 @@ define([], function() {
             } else if (this.options.style === &#x27;action&#x27;) {
                 this.sandbox.dom.addClass(button, &#x27;action&#x27;);
             }
+
+            // add skin style
+            this.sandbox.dom.addClass(button, this.options.skin);
 
             this.$list = this.$find(&#x27;.&#x27; + constants.listClass);
             this.$dropdownContainer = this.$find(&#x27;.&#x27; + constants.dropdownContainerClass);
@@ -488,7 +511,7 @@ define([], function() {
                 } else if (index === -1) {
                     this.uncheckAll(key);
                     // same element was selected
-                } else {
+                } else if (this.options.repeatSelect !== true) {
                     this.hideDropDown();
                     return;
                 }

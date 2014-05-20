@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Column-Options - husky</title>
+    <title>Dropzone - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -148,7 +148,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>Column-Options Class</h1>
+                        <h1>Dropzone Class</h1>
 <div class="box meta">
     
 
@@ -156,13 +156,13 @@
 
     
         <div class="foundat">
-            Defined in: <a href="../files/husky_components_column-options_main.js.html#l13"><code>husky_components&#x2F;column-options&#x2F;main.js:13</code></a>
+            Defined in: <a href="../files/husky_components_dropzone_main.js.html#l12"><code>husky_components&#x2F;dropzone&#x2F;main.js:12</code></a>
         </div>
     
 
     
         
-            Module: <a href="../modules/husky_components_column-options.html">husky/components/column-options</a>
+            Module: <a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a>
         
     
 
@@ -178,8 +178,8 @@
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_Column-Options" class="method item">
-    <h3 class="name"><code>Column-Options</code></h3>
+        <div id="method_Dropzone" class="method item">
+    <h3 class="name"><code>Dropzone</code></h3>
 
     
         <div class="args">
@@ -220,7 +220,7 @@
             
         
         
-        <a href="../files/husky_components_column-options_main.js.html#l13"><code>husky_components&#x2F;column-options&#x2F;main.js:13</code></a>
+        <a href="../files/husky_components_dropzone_main.js.html#l12"><code>husky_components&#x2F;dropzone&#x2F;main.js:12</code></a>
         
         </p>
 
@@ -259,13 +259,88 @@
                             
                             <li class="param">
                                 
+                                    <code class="param-name optional">[titleKey]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>The title to display if no items are dropped (can be a translation key)</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[descriptionKey]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>The description to display if no items are dropped (can be a translation key)</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[descriptionIcon]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>The icon to display if no items are dropped</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[cancelLoadingIcon]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>the icon which gets displayed while a file item gets uploaded</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[method]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>method to use for uploading &#39;PUT&#39; or &#39;POST&#39;</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
                                     <code class="param-name optional">[url]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>url to fetch data from</p>
+                                    <p>url to upload the files to</p>
 
                                 </div>
 
@@ -274,13 +349,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[instanceName]</code>
+                                    <code class="param-name optional">[paramName]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>name of the instance - will affect events name</p>
+                                    <p>the name of the parameter which will contain the file(s). Note that if uploadMultiple is set to true the parameter Name gets extended with &#39;[]&#39;</p>
 
                                 </div>
 
@@ -289,13 +364,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[data]</code>
+                                    <code class="param-name optional">[headers]</code>
                                     <span class="type">Object</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>if no url is provided</p>
+                                    <p>additional headers to pass with each request</p>
 
                                 </div>
 
@@ -304,102 +379,73 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[trigger]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>the dom item which opens the component</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[header]</code>
-                                    <span class="type">Object</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>Configuration object for the header</p>
-
-                                </div>
-
-                                
-                                    <ul class="params-list">
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[disabled]</code>
-                                                <span class="type">Boolean</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                defines if header should be shown
-                                            </div>
-                                        </li>
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[title]</code>
-                                                <span class="type">String</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                headline of the header
-                                            </div>
-                                        </li>
-                                        
-                                    </ul>
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[footer]</code>
-                                    <span class="type">Object</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>Configuration object for the header</p>
-
-                                </div>
-
-                                
-                                    <ul class="params-list">
-                                        
-                                        <li class="param">
-                                            
-                                                <code class="param-name optional">[disabled]</code>
-                                                <span class="type">Boolean</span>
-                                                <span class="flag optional" title="This parameter is optional.">optional</span>
-                                            
-
-                                            <div class="param-description">
-                                                defines if footer should be shown
-                                            </div>
-                                        </li>
-                                        
-                                    </ul>
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[hidden]</code>
+                                    <code class="param-name optional">[uploadMultiple]</code>
                                     <span class="type">Boolean</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>defines if component should be hidden when component is initialized</p>
+                                    <p>if true a request can upload multiple files</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[successCallback]</code>
+                                    <span class="type">Function</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>callback which gets called if a file got successfully uploaded. First parameter is the file, the second the response</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[beforeSendingCallback]</code>
+                                    <span class="type">Function</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>callback which gets called before a file gets uploaded. First parameter is the file.</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[removeFileCallback]</code>
+                                    <span class="type">Function</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>callback which gets called after a file got removed. First parameter is the file.</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[pluginOptions]</code>
+                                    <span class="type">Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>Options to pass to the dropzone-plugin to completely override all options set by husky. Use with care.</p>
 
                                 </div>
 
@@ -451,42 +497,35 @@
                     <ul class="index-list events">
                         
                             <li class="index-item event">
-                                <a href="#event_husky.column-options[.INSTANCE_NAME].get-all">husky.column-options[.INSTANCE_NAME].get-all</a>
+                                <a href="#event_husky.dropzone.&lt;instance-name&gt;.file-remove">husky.dropzone.&lt;instance-name&gt;.file-remove</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.column-options[.INSTANCE_NAME].get-selected">husky.column-options[.INSTANCE_NAME].get-selected</a>
+                                <a href="#event_husky.dropzone.&lt;instance-name&gt;.files-added">husky.dropzone.&lt;instance-name&gt;.files-added</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.column-options[.INSTANCE_NAME].initialized">husky.column-options[.INSTANCE_NAME].initialized</a>
+                                <a href="#event_husky.dropzone.&lt;instance-name&gt;.initialize">husky.dropzone.&lt;instance-name&gt;.initialize</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.column-options[.INSTANCE_NAME].item.disabled">husky.column-options[.INSTANCE_NAME].item.disabled</a>
+                                <a href="#event_husky.dropzone.&lt;instance-name&gt;.success">husky.dropzone.&lt;instance-name&gt;.success</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item event">
-                                <a href="#event_husky.column-options[.INSTANCE_NAME].item.enabled">husky.column-options[.INSTANCE_NAME].item.enabled</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
-                                <a href="#event_husky.column-options[.INSTANCE_NAME].saved">husky.column-options[.INSTANCE_NAME].saved</a>
+                                <a href="#event_husky.dropzone.&lt;instance-name&gt;.uploading">husky.dropzone.&lt;instance-name&gt;.uploading</a>
 
                                 
                                 
@@ -508,8 +547,8 @@
                 <h2 class="off-left">Events</h2>
 
                 
-                    <div id="event_husky.column-options[.INSTANCE_NAME].get-all" class="events item">
-    <h3 class="name"><code>husky.column-options[.INSTANCE_NAME].get-all</code></h3>
+                    <div id="event_husky.dropzone.&lt;instance-name&gt;.file-remove" class="events item">
+    <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.file-remove</code></h3>
     <span class="type"></span>
 
     
@@ -531,7 +570,7 @@
             
         
         
-        <a href="../files/husky_components_column-options_main.js.html#l117"><code>husky_components&#x2F;column-options&#x2F;main.js:117</code></a>
+        <a href="../files/husky_components_dropzone_main.js.html#l127"><code>husky_components&#x2F;dropzone&#x2F;main.js:127</code></a>
         
         </p>
 
@@ -541,139 +580,7 @@
     </div>
 
     <div class="description">
-        <p>used for receiving all columns</p>
-
-    </div>
-
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.column-options[.INSTANCE_NAME].get-selected" class="events item">
-    <h3 class="name"><code>husky.column-options[.INSTANCE_NAME].get-selected</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_column-options_main.js.html#l108"><code>husky_components&#x2F;column-options&#x2F;main.js:108</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>used for receiving all visible columns</p>
-
-    </div>
-
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.column-options[.INSTANCE_NAME].initialized" class="events item">
-    <h3 class="name"><code>husky.column-options[.INSTANCE_NAME].initialized</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_column-options_main.js.html#l69"><code>husky_components&#x2F;column-options&#x2F;main.js:69</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>triggered when component is completely initialized</p>
-
-    </div>
-
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.column-options[.INSTANCE_NAME].item.disabled" class="events item">
-    <h3 class="name"><code>husky.column-options[.INSTANCE_NAME].item.disabled</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_column-options_main.js.html#l88"><code>husky_components&#x2F;column-options&#x2F;main.js:88</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>triggered when item was disabled</p>
+        <p>raised after file got removed from the zone</p>
 
     </div>
 
@@ -685,14 +592,14 @@
             
                 <li class="param">
                     
-                        <code class="param-name">item</code>
+                        <code class="param-name">the</code>
                         <span class="type">Object</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>that was disabled</p>
+                        <p>file</p>
 
                     </div>
 
@@ -708,8 +615,8 @@
 </div>
 
                 
-                    <div id="event_husky.column-options[.INSTANCE_NAME].item.enabled" class="events item">
-    <h3 class="name"><code>husky.column-options[.INSTANCE_NAME].item.enabled</code></h3>
+                    <div id="event_husky.dropzone.&lt;instance-name&gt;.files-added" class="events item">
+    <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.files-added</code></h3>
     <span class="type"></span>
 
     
@@ -731,7 +638,7 @@
             
         
         
-        <a href="../files/husky_components_column-options_main.js.html#l78"><code>husky_components&#x2F;column-options&#x2F;main.js:78</code></a>
+        <a href="../files/husky_components_dropzone_main.js.html#l136"><code>husky_components&#x2F;dropzone&#x2F;main.js:136</code></a>
         
         </p>
 
@@ -741,7 +648,7 @@
     </div>
 
     <div class="description">
-        <p>triggered when item was enabled</p>
+        <p>raised after files got uploaded and faded out from the dropzone</p>
 
     </div>
 
@@ -753,82 +660,210 @@
             
                 <li class="param">
                     
-                        <code class="param-name">item</code>
-                        <span class="type">Object</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>that was enabled</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.column-options[.INSTANCE_NAME].saved" class="events item">
-    <h3 class="name"><code>husky.column-options[.INSTANCE_NAME].saved</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_column-options_main.js.html#l98"><code>husky_components&#x2F;column-options&#x2F;main.js:98</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>triggered when save was clicked</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Event Payload:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">Contains</code>
+                        <code class="param-name">all</code>
                         <span class="type">Array</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>all visible items</p>
+                        <p>newly added files</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.dropzone.&lt;instance-name&gt;.initialize" class="events item">
+    <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.initialize</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_dropzone_main.js.html#l100"><code>husky_components&#x2F;dropzone&#x2F;main.js:100</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>raised after initialization process</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.dropzone.&lt;instance-name&gt;.success" class="events item">
+    <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.success</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_dropzone_main.js.html#l117"><code>husky_components&#x2F;dropzone&#x2F;main.js:117</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>raised after file got successfully uploaded</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">the</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>file</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">the</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>response</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.dropzone.&lt;instance-name&gt;.uploading" class="events item">
+    <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.uploading</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_dropzone_main.js.html#l108"><code>husky_components&#x2F;dropzone&#x2F;main.js:108</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>raised before sending a file</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">the</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>file</p>
 
                     </div>
 

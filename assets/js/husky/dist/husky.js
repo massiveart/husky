@@ -36678,6 +36678,14 @@ return {
  * @params {Boolean} [options.subFoldersDisabled] if true sub-folders overlay-item will be disabled
  * @params {Boolean} [options.tagsDisabled] if true tags overlay-item will be disabled
  * @params {Boolean} [options.limitResultDisabled] if true limit-result overlay-item will be disabled
+ * @params {Boolean} [options.translations.externalConfigs] if true component waits for external config object
+ * @params {String} [options.columnNavigationUrl] url for column navigation
+ * @params {Boolean} [options.hideDataSource] if true data-source selection hidden
+ * @params {Boolean} [options.hideCategories] if true categories hidden
+ * @params {Boolean} [options.hideTags] if true tags hidden
+ * @params {Boolean} [options.hideSortBy] if true sort by hidden
+ * @params {Boolean} [options.hidePresentAs] if true present as hidden
+ * @params {Boolean} [options.hideLimit] if true limit hidden
  *
  * @params {Object} [options.translations] object that gets merged with the default translation-keys
  * @params {String} [options.translations.noContentFound] translation key
@@ -36685,7 +36693,8 @@ return {
  * @params {String} [options.translations.visible] translation key
  * @params {String} [options.translations.of] translation key
  * @params {String} [options.translations.configureSmartContent] translation key
- * @params {String} [options.translations.dataSource] translation key
+ * @params {String} [options.translations.dataSourceLabel] translation key
+ * @params {String} [options.translations.dataSourceButton] translation key
  * @params {String} [options.translations.includeSubFolders] translation key
  * @params {String} [options.translations.filterByCategory] translation key
  * @params {String} [options.translations.filterByTags] translation key
@@ -36697,12 +36706,13 @@ return {
  * @params {String} [options.translations.limitResultTo] translation key
  * @params {String} [options.translations.noCategory] translation key
  * @params {String} [options.translations.choosePresentAs] translation key
- * @params {String} [options.translations.chooseDataSource] translation key
  * @params {String} [options.translations.from] translation key
  * @params {String} [options.translations.subFoldersInclusive] translation key
  * @params {String} [options.translations.viewAll] translation key
  * @params {String} [options.translations.viewLess] translation key
- * @params {Boolean} [options.translations.externalConfigs] if true component waits for external config object
+ * @params {String} [options.translations.chooseDataSource] translation key
+ * @params {String} [options.translations.chooseDataSourceOk] translation key
+ * @params {String} [options.translations.chooseDataSourceCancel] translation key
  */
 define('__component__$smart-content@husky',[], function() {
 
@@ -36801,55 +36811,73 @@ define('__component__$smart-content@husky',[], function() {
                 '</li>'
             ].join(''),
             overlayContent: {
-                main: ['<div class="smart-overlay-content">',
-                    '</div>'].join(''),
+                main: [
+                    '<div class="smart-overlay-content">',
+                    '</div>'
+                ].join(''),
 
-                dataSource: ['<div class="item-half left">',
-                    '<span class="desc"><%= dataSourceLabelStr %></span>',
-                    '<div class="btn action fit" id="select-data-source-action"><%= dataSourceButtonStr %></div>',
-                    '<div><span class="sublabel"><%= dataSourceLabelStr %>:</span> <span class="sublabel data-source"><%= dataSourceValStr %></span></div>',
-                    '</div>'].join(''),
+                dataSource: [
+                    '<div class="item-half left">',
+                        '<span class="desc"><%= dataSourceLabelStr %></span>',
+                        '<div class="btn action fit" id="select-data-source-action"><%= dataSourceButtonStr %></div>',
+                        '<div><span class="sublabel"><%= dataSourceLabelStr %>:</span> <span class="sublabel data-source"><%= dataSourceValStr %></span></div>',
+                    '</div>'
+                ].join(''),
 
-                subFolders: ['<div class="item-half">',
-                    '<div class="check<%= disabled %>">',
-                    '<label>',
-                    '<div class="custom-checkbox">',
-                    '<input type="checkbox" class="includeSubCheck form-element"<%= includeSubCheckedStr %>/>',
-                    '<span class="icon"></span>',
-                    '</div>',
-                    '<span class="description"><%= includeSubStr %></span>',
-                    '</label>',
-                    '</div>',
-                    '</div>'].join(''),
+                subFolders: [
+                    '<div class="item-half">',
+                        '<div class="check<%= disabled %>">',
+                        '<label>',
+                            '<div class="custom-checkbox">',
+                                '<input type="checkbox" class="includeSubCheck form-element"<%= includeSubCheckedStr %>/>',
+                                '<span class="icon"></span>',
+                            '</div>',
+                            '<span class="description"><%= includeSubStr %></span>',
+                        '</label>',
+                        '</div>',
+                    '</div>'
+                ].join(''),
 
-                categories: ['<div class="item full">',
+                categories: [
+                    '<div class="item full">',
                     '<span class="desc"><%= filterByCatStr %></span>',
                         '<div class="' + constants.categoryDDClass + '"></div>',
-                    '</div>'].join(''),
+                    '</div>'
+                ].join(''),
 
-                tagList: ['<div class="item full tags<%= disabled %>">',
+                tagList: [
+                    '<div class="item full tags<%= disabled %>">',
                     '<span class="desc"><%= filterByTagsStr %></span>',
                         '<div class="' + constants.tagListClass + '"></div>',
-                    '</div>'].join(''),
+                    '</div>'
+                ].join(''),
 
-                sortBy: ['<div class="item-half left">',
+                sortBy: [
+                    '<div class="item-half left">',
                     '<span class="desc"><%= sortByStr %></span>',
                         '<div class="' + constants.sortByDDClass + '"></div>',
-                    '</div>'].join(''),
+                    '</div>'
+                ].join(''),
 
-                sortMethod: ['<div class="item-half">',
+                sortMethod: [
+                    '<div class="item-half">',
                         '<div class="' + constants.sortMethodDDClass + ' sortMethod"></div>',
-                    '</div>'].join(''),
+                    '</div>'
+                ].join(''),
 
-                presentAs: ['<div class="item-half left">',
-                    '<span class="desc"><%= presentAsStr %></span>',
+                presentAs: [
+                    '<div class="item-half left">',
+                        '<span class="desc"><%= presentAsStr %></span>',
                         '<div class="' + constants.presentAsDDClass + '"></div>',
-                    '</div>'].join(''),
+                    '</div>'
+                ].join(''),
 
-                limitResult: ['<div class="item-half">',
-                    '<span class="desc"><%= limitResultToStr %></span>',
-                    '<input type="text" value="<%= limitResult %>" class="limit-to form-element"<%= disabled %>/>',
-                    '</div>'].join('')
+                limitResult: [
+                    '<div class="item-half">',
+                        '<span class="desc"><%= limitResultToStr %></span>',
+                        '<input type="text" value="<%= limitResult %>" class="limit-to form-element"<%= disabled %>/>',
+                    '</div>'
+                ].join('')
             }
         },
 
@@ -37351,28 +37379,14 @@ define('__component__$smart-content@husky',[], function() {
             this.bindColumnNavigationEvents();
         },
 
+        /**
+         * column navigation events
+         */
         bindColumnNavigationEvents: function() {
             // init column navigation after initialize of overlay
-            this.sandbox.on('husky.overlay.smart-content.' + this.options.instanceName + '.initialized', function() {
+            this.sandbox.on('husky.overlay.smart-content.' + this.options.instanceName + '.initialized', this.initColumnNavigation.bind(this));
 
-                this.sandbox.start(
-                    [
-                        {
-                            name: 'column-navigation@husky',
-                            options: {
-                                el: '#column-navigation-' + this.options.instanceName + '',
-                                url: this.options.columnNavigationUrl,
-                                noPageDescription: 'No Pages',
-                                sizeRelativeTo: '.smart-content-overlay .slide-1 .overlay-content',
-                                wrapper: {height: 100},
-                                showEdit: false,
-                                showStatus: false
-                            }
-                        }
-                    ]
-                );
-            }.bind(this));
-
+            // adopt height of column navigation once
             this.sandbox.once('husky.overlay.smart-content.' + this.options.instanceName + '.opened', function() {
                 // set height of smart-content column navigation slide (missing margins)
                 var height = this.sandbox.dom.outerHeight('.smart-content-overlay .slide-1 .overlay-content') + 24;
@@ -37389,6 +37403,28 @@ define('__component__$smart-content@husky',[], function() {
             this.sandbox.dom.on(this.$el, 'click', function() {
                 this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-right');
             }.bind(this), '#select-data-source-action');
+        },
+
+        /**
+         * initialize column navigation
+         */
+        initColumnNavigation: function() {
+            this.sandbox.start(
+                [
+                    {
+                        name: 'column-navigation@husky',
+                        options: {
+                            el: '#column-navigation-' + this.options.instanceName + '',
+                            url: this.options.columnNavigationUrl,
+                            noPageDescription: 'No Pages',
+                            sizeRelativeTo: '.smart-content-overlay .slide-1 .overlay-content',
+                            wrapper: {height: 100},
+                            showEdit: false,
+                            showStatus: false
+                        }
+                    }
+                ]
+            );
         },
 
         /**
@@ -37658,12 +37694,6 @@ define('__component__$smart-content@husky',[], function() {
  * @params {Object} [options] Configuration object
  * @params {String} [options.trigger] List of events on which the overlay should be opened
  * @params {String} [options.triggerEl] Element that triggers the overlay
- * @params {String} [options.title] the title of the overlay
- * @params {String|Boolean} [options.closeIcon] icon class for the close button. If false no close icon will be displayed
- * @params {Function} [options.closeCallback] callback which gets executed after the overlay gets closed
- * @params {Function} [options.okCallback] callback which gets executed after the overlay gets submited
- * @params {String|Object} [options.data] HTML or DOM-object which acts as the overlay-content
- * @params {String} [options.message] String to render as content. Used by warnings and erros
  * @params {String} [options.instanceName] instance name of the component
  * @params {Boolean} [options.draggable] if true overlay is draggable
  * @params {Boolean} [options.openOnStart] if true overlay is opened after initialization
@@ -37673,25 +37703,34 @@ define('__component__$smart-content@husky',[], function() {
  * @params {Boolean} [options.backdropClose] if true overlay closes with click on backdrop
  * @params {String} [options.backdropColor] Color of the backdrop
  * @params {Number} [options.backdropAlpha] Alpha-value of the backdrop
- * @params {Boolean} [options.okInactive] If true all ok-buttons start deactivated
- * @params {String} [options.okDefaultText] The default text for ok buttons
- * @params {String} [options.cancelDefaultText] The default text for cancel buttons
  * @params {String} [options.type] The type of the overlay ('normal', 'error' or 'warning')
  * @params {Array} [options.buttonsDefaultAlign] the align of the buttons in the footer ('center', 'left' or 'right'). Can be overriden by each button individually
  *
- * @params {Object} [options.languageChanger] If set language-changer will be displayed in the header
- * @params {Array} [options.languageChanger.locales] array of locale strings for the dropdown
- * @params {String} [options.languageChanger.preSelected] locale which is selected at the beginning
+ * @params {Array} [options.slides] array of slide objects, will be rendered in a row and can slided with events
+ * @params {String} [options.slides[].title] the title of the overlay
+ * @params {String|Boolean} [options.slides[].closeIcon] icon class for the close button. If false no close icon will be displayed
+ * @params {Function} [options.slides[].closeCallback] callback which gets executed after the overlay gets closed
+ * @params {Function} [options.slides[].okCallback] callback which gets executed after the overlay gets submited
+ * @params {String|Object} [options.slides[].data] HTML or DOM-object which acts as the overlay-content
+ * @params {String} [options.slides[].message] String to render as content. Used by warnings and errors
+ * @params {Boolean} [options.slides[].okInactive] If true all ok-buttons start deactivated
+ * @params {String} [options.slides[].okDefaultText] The default text for ok buttons
+ * @params {String} [options.slides[].cancelDefaultText] The default text for cancel buttons
+ * @params {String} [options.slides[].type] The type of the overlay ('normal', 'error' or 'warning')
  *
- * @params {Array} [options.tabs] array of tabs-data to use instead of options.data and options.message
- * @params {String} [options.tabs.title] the title of the tab
- * @params {String|Object} [options.tabs.data] HTML or DOM-Object to display when tab is active
+ * @params {Object} [options.slides[].languageChanger] If set language-changer will be displayed in the header
+ * @params {Array} [options.slides[].languageChanger.locales] array of locale strings for the dropdown
+ * @params {String} [options.slides[].languageChanger.preSelected] locale which is selected at the beginning
  *
- * @params {Array} [options.buttons] an array of buttons to add to the footer
- * @params {String} [options.buttons.type] type of the button ('ok', 'cancel')
- * @params {String} [options.buttons.icon] icon of the button
- * @params {String} [options.buttons.text] text of the button. If text and icon are not set the defaultText-options come into place
- * @params {Boolean} [options.buttons.inactive] If true button starts inactive
+ * @params {Array} [options.slides[].tabs] array of tabs-data to use instead of options.data and options.message
+ * @params {String} [options.slides[].tabs.title] the title of the tab
+ * @params {String|Object} [options.slides[].tabs.data] HTML or DOM-Object to display when tab is active
+ *
+ * @params {Array} [options.slides[].buttons] an array of buttons to add to the footer
+ * @params {String} [options.slides[].buttons.type] type of the button ('ok', 'cancel')
+ * @params {String} [options.slides[].buttons.icon] icon of the button
+ * @params {String} [options.slides[].buttons.text] text of the button. If text and icon are not set the defaultText-options come into place
+ * @params {Boolean} [options.slides[].buttons.inactive] If true button starts inactive
  */
 define('__component__$overlay@husky',[], function() {
 
@@ -37837,10 +37876,10 @@ define('__component__$overlay@husky',[], function() {
             ].join(''),
             cancelButton: [
                 '<div class="btn gray black-text overlay-cancel<%= classes %>">',
-                '<% if (!!icon) { %>',
-                '<span class="icon-<%= icon %>"></span>',
-                '<% } %>',
-                '<span class="text"><%= text %></span>',
+                '   <% if (!!icon) { %>',
+                '   <span class="icon-<%= icon %>"></span>',
+                '   <% } %>',
+                '   <span class="text"><%= text %></span>',
                 '</div>'
             ].join(''),
             backdrop: [
@@ -37977,6 +38016,7 @@ define('__component__$overlay@husky',[], function() {
         initSlideOptions: function() {
             var key, type;
             if (this.options.slides.length === 0) {
+                // no slide given: extract it from options
                 this.slides[0] = this.sandbox.util.extend({}, slideDefaults);
                 this.slides[0].index = 0;
                 for (key in slideDefaults) {
@@ -37990,6 +38030,7 @@ define('__component__$overlay@husky',[], function() {
                 type = types[this.slides[0].type];
                 this.slides[0] = this.sandbox.util.extend({}, type, this.slides[0]);
             } else {
+                // extend each slide with type and defaults
                 this.sandbox.util.foreach(this.options.slides, function(value, i) {
                     this.slides[i] = this.sandbox.util.extend({}, slideDefaults, value);
 
@@ -38174,6 +38215,9 @@ define('__component__$overlay@husky',[], function() {
             this.slideTo(this.activeSlide);
         },
 
+        /**
+         * slide to given number
+         */
         slideTo: function(slide) {
             this.sandbox.dom.css(this.overlay.$slides, 'left', '-' + slide * this.overlay.width + 'px');
         },

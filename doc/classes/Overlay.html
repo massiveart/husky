@@ -55,6 +55,10 @@
             
                 <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
             
+                <li><a href="../classes/DropdownPagination (Datagrid Decorator).html">DropdownPagination (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Dropzone.html">Dropzone</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -69,7 +73,15 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
+                <li><a href="../classes/ShowAllPagination (Datagrid Decorator).html">ShowAllPagination (Datagrid Decorator)</a></li>
+            
                 <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Tabs.html">Tabs</a></li>
+            
+                <li><a href="../classes/ThumbnailView (Datagrid Decorator).html">ThumbnailView (Datagrid Decorator)</a></li>
             
                 <li><a href="../classes/Toggler.html">Toggler</a></li>
             
@@ -87,9 +99,13 @@
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
+                <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
                 <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_overlay.html">husky/components/overlay</a></li>
             
                 <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
             
@@ -146,7 +162,7 @@
 
     
         
-            Module: <a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a>
+            Module: <a href="../modules/husky_components_overlay.html">husky/components/overlay</a>
         
     
 
@@ -273,111 +289,6 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[container]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>slector or DOM object in which the overlay gets inserted</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[title]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>the title of the overlay</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[closeIcon]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>icon class for the close button</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[okIcon]</code>
-                                    <span class="type">String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>icon class for the ok button</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[closeCallback]</code>
-                                    <span class="type">Function</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>callback which gets executed after the overlay gets closed</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[okCallback]</code>
-                                    <span class="type">Function</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>callback which gets executed after the overlay gets submited</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[data]</code>
-                                    <span class="type">String | Object</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>HTML or DOM-object which acts as the overlay-content</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
                                     <code class="param-name optional">[instanceName]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
@@ -453,8 +364,38 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[backdropColor]</code>
+                                    <code class="param-name optional">[skin]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>set an overlay skin to manipulate overlay&#39;s appearance. Possible skins: &#39;&#39; or &#39;wide&#39;</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[backdropClose]</code>
                                     <span class="type">Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>if true overlay closes with click on backdrop</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[backdropColor]</code>
+                                    <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
@@ -469,7 +410,7 @@
                             <li class="param">
                                 
                                     <code class="param-name optional">[backdropAlpha]</code>
-                                    <span class="type">Boolean</span>
+                                    <span class="type">Number</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
@@ -483,13 +424,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[okInactive]</code>
-                                    <span class="type">Boolean</span>
+                                    <code class="param-name optional">[type]</code>
+                                    <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>If true ok button is deactivated</p>
+                                    <p>The type of the overlay (&#39;normal&#39;, &#39;error&#39; or &#39;warning&#39;)</p>
 
                                 </div>
 
@@ -498,13 +439,343 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[skin]</code>
+                                    <code class="param-name optional">[buttonsDefaultAlign]</code>
+                                    <span class="type">Array</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>the align of the buttons in the footer (&#39;center&#39;, &#39;left&#39; or &#39;right&#39;). Can be overriden by each button individually</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides]</code>
+                                    <span class="type">Array</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>array of slide objects, will be rendered in a row and can slided with events</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>set an overlay skin to manipulate overlay&#39;s appearance. Possible skins: &#39;&#39; or &#39;wide&#39;</p>
+                                    <p>the title of the overlay</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">String | Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>icon class for the close button. If false no close icon will be displayed</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">Function</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>callback which gets executed after the overlay gets closed</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">Function</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>callback which gets executed after the overlay gets submited</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">String | Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>HTML or DOM-object which acts as the overlay-content</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>String to render as content. Used by warnings and errors</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>If true all ok-buttons start deactivated</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>The default text for ok buttons</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>The default text for cancel buttons</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>The type of the overlay (&#39;normal&#39;, &#39;error&#39; or &#39;warning&#39;)</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>If set language-changer will be displayed in the header</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">Array</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>array of locale strings for the dropdown</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>locale which is selected at the beginning</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">Array</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>array of tabs-data to use instead of options.data and options.message</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>the title of the tab</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">String | Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>HTML or DOM-Object to display when tab is active</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">Array</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>an array of buttons to add to the footer</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>type of the button (&#39;ok&#39;, &#39;cancel&#39;)</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>icon of the button</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>text of the button. If text and icon are not set the defaultText-options come into place</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[slides[]</code>
+                                    <span class="type">Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>If true button starts inactive</p>
 
                                 </div>
 
@@ -647,7 +918,21 @@
                             </li>
                         
                             <li class="index-item event">
+                                <a href="#event_husky.overlay.&lt;instance-name&gt;.closing">husky.overlay.&lt;instance-name&gt;.closing</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
                                 <a href="#event_husky.overlay.&lt;instance-name&gt;.initialize">husky.overlay.&lt;instance-name&gt;.initialize</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.overlay.&lt;instance-name&gt;.language-changed">husky.overlay.&lt;instance-name&gt;.language-changed</a>
 
                                 
                                 
@@ -676,6 +961,20 @@
                         
                             <li class="index-item event">
                                 <a href="#event_husky.overlay.&lt;instance-name&gt;.remove">husky.overlay.&lt;instance-name&gt;.remove</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.overlay.&lt;instance-name&gt;.slide-left">husky.overlay.&lt;instance-name&gt;.slide-left</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.overlay.&lt;instance-name&gt;.slide-right">husky.overlay.&lt;instance-name&gt;.slide-right</a>
 
                                 
                                 
@@ -722,7 +1021,7 @@
             
         
         
-        <a href="../files/husky_components_navigation_main.js.html#l159"><code>husky_components&#x2F;navigation&#x2F;main.js:159</code></a>
+        <a href="../files/husky_components_navigation_main.js.html#l152"><code>husky_components&#x2F;navigation&#x2F;main.js:152</code></a>
         
         </p>
 
@@ -794,7 +1093,7 @@
             
         
         
-        <a href="../files/husky_components_navigation_main.js.html#l144"><code>husky_components&#x2F;navigation&#x2F;main.js:144</code></a>
+        <a href="../files/husky_components_navigation_main.js.html#l137"><code>husky_components&#x2F;navigation&#x2F;main.js:137</code></a>
         
         </p>
 
@@ -864,7 +1163,7 @@
             
         
         
-        <a href="../files/husky_components_navigation_main.js.html#l211"><code>husky_components&#x2F;navigation&#x2F;main.js:211</code></a>
+        <a href="../files/husky_components_navigation_main.js.html#l204"><code>husky_components&#x2F;navigation&#x2F;main.js:204</code></a>
         
         </p>
 
@@ -910,7 +1209,7 @@
             
         
         
-        <a href="../files/husky_components_navigation_main.js.html#l137"><code>husky_components&#x2F;navigation&#x2F;main.js:137</code></a>
+        <a href="../files/husky_components_navigation_main.js.html#l130"><code>husky_components&#x2F;navigation&#x2F;main.js:130</code></a>
         
         </p>
 
@@ -980,7 +1279,7 @@
             
         
         
-        <a href="../files/husky_components_navigation_main.js.html#l199"><code>husky_components&#x2F;navigation&#x2F;main.js:199</code></a>
+        <a href="../files/husky_components_navigation_main.js.html#l192"><code>husky_components&#x2F;navigation&#x2F;main.js:192</code></a>
         
         </p>
 
@@ -1026,7 +1325,7 @@
             
         
         
-        <a href="../files/husky_components_navigation_main.js.html#l205"><code>husky_components&#x2F;navigation&#x2F;main.js:205</code></a>
+        <a href="../files/husky_components_navigation_main.js.html#l198"><code>husky_components&#x2F;navigation&#x2F;main.js:198</code></a>
         
         </p>
 
@@ -1072,7 +1371,7 @@
             
         
         
-        <a href="../files/husky_components_navigation_main.js.html#l174"><code>husky_components&#x2F;navigation&#x2F;main.js:174</code></a>
+        <a href="../files/husky_components_navigation_main.js.html#l167"><code>husky_components&#x2F;navigation&#x2F;main.js:167</code></a>
         
         </p>
 
@@ -1119,7 +1418,7 @@ only raised when not forced</p>
             
         
         
-        <a href="../files/husky_components_navigation_main.js.html#l181"><code>husky_components&#x2F;navigation&#x2F;main.js:181</code></a>
+        <a href="../files/husky_components_navigation_main.js.html#l174"><code>husky_components&#x2F;navigation&#x2F;main.js:174</code></a>
         
         </p>
 
@@ -1165,7 +1464,7 @@ only raised when not forced</p>
             
         
         
-        <a href="../files/husky_components_navigation_main.js.html#l166"><code>husky_components&#x2F;navigation&#x2F;main.js:166</code></a>
+        <a href="../files/husky_components_navigation_main.js.html#l159"><code>husky_components&#x2F;navigation&#x2F;main.js:159</code></a>
         
         </p>
 
@@ -1235,7 +1534,7 @@ only raised when not forced</p>
             
         
         
-        <a href="../files/husky_components_navigation_main.js.html#l151"><code>husky_components&#x2F;navigation&#x2F;main.js:151</code></a>
+        <a href="../files/husky_components_navigation_main.js.html#l144"><code>husky_components&#x2F;navigation&#x2F;main.js:144</code></a>
         
         </p>
 
@@ -1305,7 +1604,7 @@ only raised when not forced</p>
             
         
         
-        <a href="../files/husky_components_navigation_main.js.html#l187"><code>husky_components&#x2F;navigation&#x2F;main.js:187</code></a>
+        <a href="../files/husky_components_navigation_main.js.html#l180"><code>husky_components&#x2F;navigation&#x2F;main.js:180</code></a>
         
         </p>
 
@@ -1351,7 +1650,7 @@ only raised when not forced</p>
             
         
         
-        <a href="../files/husky_components_navigation_main.js.html#l193"><code>husky_components&#x2F;navigation&#x2F;main.js:193</code></a>
+        <a href="../files/husky_components_navigation_main.js.html#l186"><code>husky_components&#x2F;navigation&#x2F;main.js:186</code></a>
         
         </p>
 
@@ -1395,7 +1694,7 @@ only raised when not forced</p>
             
         
         
-        <a href="../files/husky_components_overlay_main.js.html#l111"><code>husky_components&#x2F;overlay&#x2F;main.js:111</code></a>
+        <a href="../files/husky_components_overlay_main.js.html#l237"><code>husky_components&#x2F;overlay&#x2F;main.js:237</code></a>
         
         </p>
 
@@ -1406,6 +1705,50 @@ only raised when not forced</p>
 
     <div class="description">
         <p>raised after overlay is closed</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.overlay.&lt;instance-name&gt;.closing" class="events item">
+    <h3 class="name"><code>husky.overlay.&lt;instance-name&gt;.closing</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_overlay_main.js.html#l245"><code>husky_components&#x2F;overlay&#x2F;main.js:245</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>raised after overlay is closing</p>
 
     </div>
 
@@ -1439,7 +1782,7 @@ only raised when not forced</p>
             
         
         
-        <a href="../files/husky_components_overlay_main.js.html#l95"><code>husky_components&#x2F;overlay&#x2F;main.js:95</code></a>
+        <a href="../files/husky_components_overlay_main.js.html#l221"><code>husky_components&#x2F;overlay&#x2F;main.js:221</code></a>
         
         </p>
 
@@ -1453,6 +1796,90 @@ only raised when not forced</p>
 
     </div>
 
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.overlay.&lt;instance-name&gt;.language-changed" class="events item">
+    <h3 class="name"><code>husky.overlay.&lt;instance-name&gt;.language-changed</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_overlay_main.js.html#l277"><code>husky_components&#x2F;overlay&#x2F;main.js:277</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>emited after the language changer is changed</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">selected</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>language</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">currently</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>active tab</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
     
 
 
@@ -1483,7 +1910,7 @@ only raised when not forced</p>
             
         
         
-        <a href="../files/husky_components_overlay_main.js.html#l119"><code>husky_components&#x2F;overlay&#x2F;main.js:119</code></a>
+        <a href="../files/husky_components_overlay_main.js.html#l253"><code>husky_components&#x2F;overlay&#x2F;main.js:253</code></a>
         
         </p>
 
@@ -1493,7 +1920,7 @@ only raised when not forced</p>
     </div>
 
     <div class="description">
-        <p>used to activate ok button</p>
+        <p>used to activate all ok buttons</p>
 
     </div>
 
@@ -1527,7 +1954,7 @@ only raised when not forced</p>
             
         
         
-        <a href="../files/husky_components_overlay_main.js.html#l127"><code>husky_components&#x2F;overlay&#x2F;main.js:127</code></a>
+        <a href="../files/husky_components_overlay_main.js.html#l261"><code>husky_components&#x2F;overlay&#x2F;main.js:261</code></a>
         
         </p>
 
@@ -1537,7 +1964,7 @@ only raised when not forced</p>
     </div>
 
     <div class="description">
-        <p>used to deactivate ok button</p>
+        <p>used to deactivate all ok buttons</p>
 
     </div>
 
@@ -1571,7 +1998,7 @@ only raised when not forced</p>
             
         
         
-        <a href="../files/husky_components_overlay_main.js.html#l103"><code>husky_components&#x2F;overlay&#x2F;main.js:103</code></a>
+        <a href="../files/husky_components_overlay_main.js.html#l229"><code>husky_components&#x2F;overlay&#x2F;main.js:229</code></a>
         
         </p>
 
@@ -1615,7 +2042,7 @@ only raised when not forced</p>
             
         
         
-        <a href="../files/husky_components_overlay_main.js.html#l135"><code>husky_components&#x2F;overlay&#x2F;main.js:135</code></a>
+        <a href="../files/husky_components_overlay_main.js.html#l269"><code>husky_components&#x2F;overlay&#x2F;main.js:269</code></a>
         
         </p>
 
@@ -1626,6 +2053,94 @@ only raised when not forced</p>
 
     <div class="description">
         <p>removes the component</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.overlay.&lt;instance-name&gt;.slide-left" class="events item">
+    <h3 class="name"><code>husky.overlay.&lt;instance-name&gt;.slide-left</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_overlay_main.js.html#l287"><code>husky_components&#x2F;overlay&#x2F;main.js:287</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>slide left</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.overlay.&lt;instance-name&gt;.slide-right" class="events item">
+    <h3 class="name"><code>husky.overlay.&lt;instance-name&gt;.slide-right</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_overlay_main.js.html#l295"><code>husky_components&#x2F;overlay&#x2F;main.js:295</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>slide right</p>
 
     </div>
 
