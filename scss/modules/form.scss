@@ -152,8 +152,7 @@ label {
 // -------------------------
 .custom-checkbox {
     $checkboxSize: 15px;
-    $checkboxIconFont: $baseIconFont;
-    $checkboxIcon: "\e207";
+    $checkboxIcon: $fa-var-check;
 
     width: $checkboxSize;
     height: $checkboxSize;
@@ -187,9 +186,11 @@ label {
             background-color: $green;
             color: $white;
             &::after {
+              @extend .fa;
+              display: inline-block;
+              margin-top: -1px;
+              margin-left: -1px;
               content: $checkboxIcon;
-              position: relative;
-              top: -3px;
             }
           }
         }
@@ -208,8 +209,8 @@ label {
 
             border: 1px solid $grayLighter;
             background-color: #fff;
-            font-family: $checkboxIconFont;
-            font-size: 12px;
+            font-size: 15px;
+            line-height: $checkboxSize - 2px;
             text-align: center;
             border-radius: $borderRadiusSmall;
         }

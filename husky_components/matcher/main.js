@@ -67,7 +67,7 @@ define([], function() {
                 '<div class="inner">',
                 '<span class="headline"><%= columnStr %></span>',
                 '<div class="column-dropdown"></div>',
-                '<a class="icon-half-ok save-button btn btn-highlight btn-large ok-button" href="#"></a>',
+                '<a class="fa-check save-button btn btn-highlight btn-large ok-button" href="#"></a>',
                 '<div class="button"><%= skipStr %></div>',
                 '</div>'
             ].join(''),

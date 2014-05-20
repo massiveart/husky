@@ -67,7 +67,8 @@
     [class^="fa-"] {
         font-size: 18px;
         margin-left: -15px;
-        display: inline-block;
+        display: inline;
+        line-height: 32px;
 
         & + .text {
           font-size: $baseFontSize;
@@ -122,6 +123,7 @@ a.btn-black, a.btn-highlight {
 
 
 .addButton {
+    @extend .fa;
     border-radius: $borderRadius;
     display: inline-block;
     font-size: 12px;
@@ -134,8 +136,7 @@ a.btn-black, a.btn-highlight {
     cursor: pointer;
 
     &:before {
-        content: '\e191';
-        font-family: $baseIconFont;
+        content: $fa-var-plus-circle;
         font-size: 10px;
         padding-right: 5px;
     }

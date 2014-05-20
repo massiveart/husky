@@ -10,7 +10,7 @@
   border-width: 2px;
 }
 
-/* line 28, ../scss/abstract/abstract-validation.scss */
+/* line 14, ../scss/abstract/abstract-validation.scss */
 .husky-auto-complete-success .husky-validate:not(label):not(span):not(p), .husky-validate-success .husky-validate:not(label):not(span):not(p) {
   border-color: #1FCA23;
   border-width: 1px;
@@ -965,7 +965,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   padding: 0;
   height: 20px;
 }
-/* line 36, ../scss/mixins.scss */
+/* line 32, ../scss/mixins.scss */
 .breadcrumb:after {
   clear: both;
   content: ' ';
@@ -1039,14 +1039,14 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
  * -------------------------- */
 @font-face {
   font-family: 'FontAwesome';
-  src: url("../../fonts/fontawesome/fontawesome-webfont.eot?v=4.1.0");
-  src: url("../../fonts/fontawesome/fontawesome-webfont.eot?#iefix&v=4.1.0") format("embedded-opentype"), url("../../fonts/fontawesome/fontawesome-webfont.woff?v=4.1.0") format("woff"), url("../../fonts/fontawesome/fontawesome-webfont.ttf?v=4.1.0") format("truetype"), url("../../fonts/fontawesome/fontawesome-webfont.svg?v=4.1.0#fontawesomeregular") format("svg");
+  src: url("fonts/fontawesome/fontawesome-webfont.eot?v=4.1.0");
+  src: url("fonts/fontawesome/fontawesome-webfont.eot?#iefix&v=4.1.0") format("embedded-opentype"), url("fonts/fontawesome/fontawesome-webfont.woff?v=4.1.0") format("woff"), url("fonts/fontawesome/fontawesome-webfont.ttf?v=4.1.0") format("truetype"), url("fonts/fontawesome/fontawesome-webfont.svg?v=4.1.0#fontawesomeregular") format("svg");
   font-weight: normal;
   font-style: normal;
 }
 
 /* line 4, ../scss/fontsawesome/_core.scss */
-.fa, [class^="fa-"], .navigation-item-container .navigation-items li:hover:not(.navigation-subitems) a::before, .navigation-item-container .navigation-items li.is-selected a::before, .pagination-wrapper.dropdowns .pagination .pagination-prev::after, .pagination-wrapper.dropdowns .pagination .pagination-next::after, .auto-complete-list-selection .tm-tag-remove, .husky-datagrid .table-container.overflow:after, .text-block .head label::before {
+.fa, [class^="fa-"], .custom-checkbox input:checked + .icon::after, .custom-checkbox input.is-checked + .icon::after, .navigation-item-container .navigation-items li:hover:not(.navigation-subitems) a::before, .navigation-item-container .navigation-items li.is-selected a::before, .addButton, .pagination-wrapper.dropdowns .pagination .pagination-prev::after, .pagination-wrapper.dropdowns .pagination .pagination-next::after, .auto-complete-list-selection .tm-tag-remove, .husky-datagrid .table-container.overflow:after, .husky-matcher.overflow .wrapper:after, .text-block .head label::before {
   display: inline-block;
   font-family: FontAwesome;
   font-style: normal;
@@ -1132,11 +1132,11 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
 }
 
 /* line 14, ../scss/fontsawesome/_bordered-pulled.scss */
-.fa.pull-left, .pull-left[class^="fa-"], .navigation-item-container .navigation-items li:hover:not(.navigation-subitems) a.pull-left::before, .navigation-item-container .navigation-items li.is-selected a.pull-left::before, .pagination-wrapper.dropdowns .pagination .pull-left.pagination-prev::after, .pagination-wrapper.dropdowns .pagination .pull-left.pagination-next::after, .auto-complete-list-selection .pull-left.tm-tag-remove, .husky-datagrid .pull-left.table-container.overflow:after, .text-block .head label.pull-left::before {
+.fa.pull-left, .pull-left[class^="fa-"], .custom-checkbox input:checked + .pull-left.icon::after, .custom-checkbox input.is-checked + .pull-left.icon::after, .navigation-item-container .navigation-items li:hover:not(.navigation-subitems) a.pull-left::before, .navigation-item-container .navigation-items li.is-selected a.pull-left::before, .pull-left.addButton, .pagination-wrapper.dropdowns .pagination .pull-left.pagination-prev::after, .pagination-wrapper.dropdowns .pagination .pull-left.pagination-next::after, .auto-complete-list-selection .pull-left.tm-tag-remove, .husky-datagrid .pull-left.table-container.overflow:after, .husky-matcher.overflow .pull-left.wrapper:after, .text-block .head label.pull-left::before {
   margin-right: .3em;
 }
 /* line 15, ../scss/fontsawesome/_bordered-pulled.scss */
-.fa.pull-right, .pull-right[class^="fa-"], .navigation-item-container .navigation-items li:hover:not(.navigation-subitems) a.pull-right::before, .navigation-item-container .navigation-items li.is-selected a.pull-right::before, .pagination-wrapper.dropdowns .pagination .pull-right.pagination-prev::after, .pagination-wrapper.dropdowns .pagination .pull-right.pagination-next::after, .auto-complete-list-selection .pull-right.tm-tag-remove, .husky-datagrid .pull-right.table-container.overflow:after, .text-block .head label.pull-right::before {
+.fa.pull-right, .pull-right[class^="fa-"], .custom-checkbox input:checked + .pull-right.icon::after, .custom-checkbox input.is-checked + .pull-right.icon::after, .navigation-item-container .navigation-items li:hover:not(.navigation-subitems) a.pull-right::before, .navigation-item-container .navigation-items li.is-selected a.pull-right::before, .pull-right.addButton, .pagination-wrapper.dropdowns .pagination .pull-right.pagination-prev::after, .pagination-wrapper.dropdowns .pagination .pull-right.pagination-next::after, .auto-complete-list-selection .pull-right.tm-tag-remove, .husky-datagrid .pull-right.table-container.overflow:after, .husky-matcher.overflow .pull-right.wrapper:after, .text-block .head label.pull-right::before {
   margin-left: .3em;
 }
 
@@ -3542,6 +3542,11 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   content: "\f1e2";
 }
 
+/* line 20, ../scss/fontsawesome/font-awesome.scss */
+[class^="fa-"] {
+  text-decoration: none;
+}
+
 /* line 4, ../scss/dropdown-menu.scss */
 .custom-dropdown-menu {
   background-color: white;
@@ -3681,7 +3686,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   position: absolute;
   top: 0px;
   right: 0px;
-  font-size: 12px;
+  font-size: 16px;
   text-decoration: none;
   color: black;
   line-height: 12px;
@@ -3706,7 +3711,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   text-align: center;
   border-radius: 0 0 3px 3px;
 }
-/* line 36, ../scss/mixins.scss */
+/* line 32, ../scss/mixins.scss */
 .overlay-footer:after {
   clear: both;
   content: ' ';
@@ -3774,526 +3779,8 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   z-index: 999;
 }
 
-/* line 5, ../scss/modules/icons.scss */
-.icon-class {
-  font-family: "Glyphicons";
-}
-
-/* line 9, ../scss/modules/icons.scss */
-[class^="icon-"] {
-  font-family: "Glyphicons";
-}
-/* line 11, ../scss/modules/icons.scss */
-[class^="icon-"]::after {
-  text-transform: none;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-style: normal;
-  font-weight: normal;
-}
-
-/* line 17, ../scss/modules/icons.scss */
-.icon-tag::after {
-  content: "\E066";
-  display: inline-block;
-}
-
-/* line 24, ../scss/modules/icons.scss */
-.icon-remove::after {
-  content: "\E208";
-  display: inline-block;
-}
-
-/* line 31, ../scss/modules/icons.scss */
-.icon-add::after {
-  content: "\E191";
-  display: inline-block;
-}
-
-/* line 38, ../scss/modules/icons.scss */
-.icon-down::after {
-  content: "\e159";
-  display: inline-block;
-}
-
-/* line 45, ../scss/modules/icons.scss */
-.icon-search::after {
-  content: "\e028";
-  display: inline-block;
-}
-
-/* line 52, ../scss/modules/icons.scss */
-.icon-history::after {
-  content: "\e058";
-  display: inline-block;
-}
-
-/* line 59, ../scss/modules/icons.scss */
-.icon-circle-remove::after {
-  content: "\e193";
-  display: inline-block;
-}
-
-/* line 66, ../scss/modules/icons.scss */
-.icon-circle-minus::after {
-  content: "\e192";
-  display: inline-block;
-}
-
-/* line 73, ../scss/modules/icons.scss */
-.icon-circle-arrow-down::after {
-  content: "\e220";
-  display: inline-block;
-}
-
-/* line 80, ../scss/modules/icons.scss */
-.icon-download::after {
-  content: "\e201";
-  display: inline-block;
-}
-
-/* line 87, ../scss/modules/icons.scss */
-.icon-cloud-download::after {
-  content: "\e364";
-  display: inline-block;
-}
-
-/* line 94, ../scss/modules/icons.scss */
-.icon-circle-ok::after {
-  content: "\e199";
-  display: inline-block;
-}
-
-/* line 101, ../scss/modules/icons.scss */
-.icon-circle-plus::after {
-  content: "\e191";
-  display: inline-block;
-}
-
-/* line 108, ../scss/modules/icons.scss */
-.icon-edit::after {
-  content: "\e151";
-  display: inline-block;
-}
-
-/* line 115, ../scss/modules/icons.scss */
-.icon-edit-pen::after {
-  content: "\270f";
-  display: inline-block;
-}
-
-/* line 122, ../scss/modules/icons.scss */
-.icon-settings::after {
-  content: "\e281";
-  display: inline-block;
-}
-
-/* line 129, ../scss/modules/icons.scss */
-.icon-cogwheel::after {
-  content: "\e137";
-  display: inline-block;
-}
-
-/* line 136, ../scss/modules/icons.scss */
-.icon-picture::after {
-  content: "\e139";
-  display: inline-block;
-}
-
-/* line 143, ../scss/modules/icons.scss */
-.icon-cogwheels::after {
-  content: "\e138";
-  display: inline-block;
-}
-
-/* line 150, ../scss/modules/icons.scss */
-.icon-caution::after {
-  content: "\e197";
-  display: inline-block;
-}
-
-/* line 157, ../scss/modules/icons.scss */
-.icon-contact-book::after {
-  content: "\e089";
-  display: inline-block;
-}
-
-/* line 164, ../scss/modules/icons.scss */
-.icon-parents::after {
-  content: "\e025";
-  display: inline-block;
-}
-
-/* line 170, ../scss/modules/icons.scss */
-.icon-keys {
-  cursor: pointer;
-}
-/* line 172, ../scss/modules/icons.scss */
-.icon-keys::after {
-  content: "\e045";
-  display: inline-block;
-}
-
-/* line 179, ../scss/modules/icons.scss */
-.icon-floppy-save::after {
-  content: "\e447";
-  display: inline-block;
-}
-
-/* line 186, ../scss/modules/icons.scss */
-.icon-building::after {
-  content: "\e090";
-  display: inline-block;
-}
-
-/* line 193, ../scss/modules/icons.scss */
-.icon-bank::after {
-  content: "\e264";
-  display: inline-block;
-}
-
-/* line 200, ../scss/modules/icons.scss */
-.icon-book::after {
-  content: "\e072";
-  display: inline-block;
-}
-
-/* line 207, ../scss/modules/icons.scss */
-.icon-book-open::after {
-  content: "\e352";
-  display: inline-block;
-}
-
-/* line 214, ../scss/modules/icons.scss */
-.icon-view::after {
-  content: "\e052";
-  display: inline-block;
-}
-
-/* line 221, ../scss/modules/icons.scss */
-.icon-delete::after {
-  content: "\e017";
-  display: inline-block;
-}
-
-/* line 228, ../scss/modules/icons.scss */
-.icon-factory::after {
-  content: "\e451";
-  display: inline-block;
-}
-
-/* line 235, ../scss/modules/icons.scss */
-.icon-live::after {
-  content: "\e033";
-  display: inline-block;
-}
-
-/* line 242, ../scss/modules/icons.scss */
-.icon-security::after {
-  content: "\e205";
-  display: inline-block;
-}
-
-/* line 249, ../scss/modules/icons.scss */
-.icon-lock::after {
-  content: "\1f512";
-  display: inline-block;
-}
-
-/* line 256, ../scss/modules/icons.scss */
-.icon-chevron-right::after {
-  font-family: "Glyphicons Halflings Regular";
-  content: "\e080";
-  display: inline-block;
-}
-
-/* line 264, ../scss/modules/icons.scss */
-.icon-chevron-left::after {
-  font-family: "Glyphicons Halflings Regular";
-  content: "\e079";
-  display: inline-block;
-}
-
-/* line 272, ../scss/modules/icons.scss */
-.icon-warning::after {
-  content: "\e079";
-  display: inline-block;
-}
-
-/* line 279, ../scss/modules/icons.scss */
-.icon-chevron-down::after {
-  font-family: "Glyphicons Halflings Regular";
-  content: "\e114";
-  display: inline-block;
-}
-
-/* line 287, ../scss/modules/icons.scss */
-.icon-chevron-up::after {
-  font-family: "Glyphicons Halflings Regular";
-  content: "\e113";
-  display: inline-block;
-}
-
-/* line 295, ../scss/modules/icons.scss */
-.icon-archive::after {
-  content: "\e150";
-  display: inline-block;
-}
-
-/* line 302, ../scss/modules/icons.scss */
-.icon-check::after {
-  content: "\e153";
-  display: inline-block;
-}
-
-/* line 309, ../scss/modules/icons.scss */
-.icon-adjust-alt::after {
-  content: "\e140";
-  display: inline-block;
-}
-
-/* line 316, ../scss/modules/icons.scss */
-.icon-list::after {
-  content: "\e115";
-  display: inline-block;
-}
-
-/* line 323, ../scss/modules/icons.scss */
-.icon-items::after {
-  content: "\e319";
-  display: inline-block;
-}
-
-/* line 330, ../scss/modules/icons.scss */
-.icon-star::after {
-  content: "\e050";
-  display: inline-block;
-}
-
-/* line 337, ../scss/modules/icons.scss */
-.icon-globe::after {
-  content: "\e341";
-  display: inline-block;
-}
-
-/* line 344, ../scss/modules/icons.scss */
-.icon-dashboard::after {
-  content: "\e332";
-  display: inline-block;
-}
-
-/* line 350, ../scss/modules/icons.scss */
-.icon-move {
-  content: "\e188";
-  display: inline-block;
-  font-family: "Glyphicons";
-  -moz-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
-}
-
-/* line 362, ../scss/modules/icons.scss */
-.icon-arrow-down::after {
-  content: "\e224";
-  display: inline-block;
-  -moz-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
-}
-
-/* line 375, ../scss/modules/icons.scss */
-.icon-arrow-up::after {
-  content: "\e225";
-  display: inline-block;
-  -moz-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
-}
-
-/* line 388, ../scss/modules/icons.scss */
-.icon-arrow::after {
-  content: "\e223";
-  display: inline-block;
-}
-
-/* line 395, ../scss/modules/icons.scss */
-.icon-internal-link::after {
-  content: "\e051";
-  display: inline-block;
-}
-
-/* line 402, ../scss/modules/icons.scss */
-.icon-external-link::after {
-  content: "\e242";
-  display: inline-block;
-}
-
-/* line 409, ../scss/modules/icons.scss */
-.icon-shadow-node::after {
-  content: "\e223";
-  display: inline-block;
-}
-
-/* line 416, ../scss/modules/icons.scss */
-.icon-brush::after {
-  content: "\e235";
-  display: inline-block;
-}
-
-/* line 423, ../scss/modules/icons.scss */
-.icon-user::after {
-  content: "\e004";
-  display: inline-block;
-}
-
-/* line 430, ../scss/modules/icons.scss */
-.icon-user-add::after {
-  content: "\e007";
-  display: inline-block;
-}
-
-/* line 437, ../scss/modules/icons.scss */
-.icon-asterisk::after {
-  content: "\002a";
-  display: inline-block;
-}
-
-/* line 444, ../scss/modules/icons.scss */
-.icon-bin::after {
-  content: "\e017";
-  display: inline-block;
-}
-
-/* line 451, ../scss/modules/icons.scss */
-.icon-retweet::after {
-  content: "\e081";
-  display: inline-block;
-}
-
-/* line 458, ../scss/modules/icons.scss */
-.icon-file::after {
-  content: "\E037";
-  display: inline-block;
-}
-
-/* line 465, ../scss/modules/icons.scss */
-.icon-file-import::after {
-  content: "\e359";
-  display: inline-block;
-}
-
-/* line 472, ../scss/modules/icons.scss */
-.icon-file-export::after {
-  content: "\e360";
-  display: inline-block;
-}
-
-/* line 479, ../scss/modules/icons.scss */
-.icon-cloud-upload::after {
-  content: "\e365";
-  display: inline-block;
-}
-
-/* line 486, ../scss/modules/icons.scss */
-.icon-show-thumbnails::after {
-  content: "\e157";
-  display: inline-block;
-  -webkit-font-smoothing: auto;
-  -moz-osx-font-smoothing: auto;
-}
-
-/* line 495, ../scss/modules/icons.scss */
-.icon-eye-open::after {
-  content: "\e052";
-  display: inline-block;
-}
-
-/* line 502, ../scss/modules/icons.scss */
-.icon-half-eye-open::after {
-  font-family: "Glyphicons Halflings Regular";
-  content: "\e105";
-  display: inline-block;
-}
-
-/* line 510, ../scss/modules/icons.scss */
-.icon-half-eye-close::after {
-  font-family: "Glyphicons Halflings Regular";
-  content: "\e106";
-  display: inline-block;
-}
-
-/* line 518, ../scss/modules/icons.scss */
-.icon-floppy-save::after {
-  font-family: "Glyphicons Halflings Regular";
-  content: "\e175";
-  display: inline-block;
-}
-
-/* line 526, ../scss/modules/icons.scss */
-.icon-floppy-saved::after {
-  font-family: "Glyphicons Halflings Regular";
-  content: "\e173";
-  display: inline-block;
-}
-
-/* line 534, ../scss/modules/icons.scss */
-.icon-play::after {
-  content: "\e174";
-  display: inline-block;
-}
-
-/* line 541, ../scss/modules/icons.scss */
-.icon-play-down::after {
-  content: "\e174";
-  display: inline-block;
-  -moz-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
-}
-
-/* line 553, ../scss/modules/icons.scss */
-.icon-half-ok::after {
-  font-family: "Glyphicons Halflings Regular";
-  content: "\e013";
-  display: inline-block;
-}
-
-/* line 561, ../scss/modules/icons.scss */
-.icon-repeat::after {
-  font-family: "Glyphicons Halflings Regular";
-  content: "\e030";
-  display: inline-block;
-}
-
-/* line 569, ../scss/modules/icons.scss */
-.icon-::after {
-  font-family: "Glyphicons Halflings Regular";
-  content: "\e014";
-  display: inline-block;
-}
-
-/* line 577, ../scss/modules/icons.scss */
-.icon-remove2::after {
-  content: "\e208";
-  display: inline-block;
-}
-
-/* line 584, ../scss/modules/icons.scss */
-.icon-ok::after {
-  content: "\e207";
-  display: inline-block;
-}
-
-/* line 591, ../scss/modules/icons.scss */
-.icon-publish::after {
+/* line 6, ../scss/modules/custom-icons.scss */
+.fa-husky-publish::after {
   content: "";
   display: inline-block;
   width: 9px;
@@ -4302,10 +3789,11 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   border: 3px solid white;
   background: #5dc774;
   font-size: medium !important;
+  margin-bottom: -1px;
 }
 
-/* line 604, ../scss/modules/icons.scss */
-.icon-unpublish::after {
+/* line 20, ../scss/modules/custom-icons.scss */
+.fa-husky-unpublish::after {
   content: "";
   display: inline-block;
   width: 9px;
@@ -4314,10 +3802,11 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   border: 3px solid white;
   background: #ea524e;
   font-size: medium !important;
+  margin-bottom: -1px;
 }
 
-/* line 617, ../scss/modules/icons.scss */
-.icon-test::after {
+/* line 34, ../scss/modules/custom-icons.scss */
+.fa-husky-test::after {
   content: "";
   display: inline-block;
   width: 9px;
@@ -4326,30 +3815,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   border: 3px solid white;
   background: #f2d212;
   font-size: medium !important;
-}
-
-/* line 630, ../scss/modules/icons.scss */
-.icon-right-arrow::after {
-  content: "\e212";
-  display: inline-block;
-}
-
-/* line 637, ../scss/modules/icons.scss */
-.icon-step-backward::after {
-  content: "\e171";
-  display: inline-block;
-}
-
-/* line 644, ../scss/modules/icons.scss */
-.icon-step-forward::after {
-  content: "\e179";
-  display: inline-block;
-}
-
-/* line 651, ../scss/modules/icons.scss */
-.icon-disk-export::after {
-  content: "\e420";
-  display: inline-block;
+  margin-bottom: -1px;
 }
 
 /* line 8, ../scss/modules/core.scss */
@@ -4855,12 +4321,12 @@ label.spacing-left {
   display: inline-block;
   margin: 0 5px 0 0;
 }
-/* line 166, ../scss/modules/form.scss */
+/* line 165, ../scss/modules/form.scss */
 .custom-checkbox.no-spacing {
   top: 0;
   margin: 0;
 }
-/* line 171, ../scss/modules/form.scss */
+/* line 170, ../scss/modules/form.scss */
 .custom-checkbox input {
   opacity: 0;
   width: 15px;
@@ -4873,19 +4339,20 @@ label.spacing-left {
   padding: 0;
   cursor: pointer;
 }
-/* line 185, ../scss/modules/form.scss */
+/* line 184, ../scss/modules/form.scss */
 .custom-checkbox input:checked + .icon, .custom-checkbox input.is-checked + .icon {
   border-color: #5dc774;
   background-color: #5dc774;
   color: white;
 }
-/* line 189, ../scss/modules/form.scss */
+/* line 188, ../scss/modules/form.scss */
 .custom-checkbox input:checked + .icon::after, .custom-checkbox input.is-checked + .icon::after {
-  content: "\e207";
-  position: relative;
-  top: -3px;
+  display: inline-block;
+  margin-top: -1px;
+  margin-left: -1px;
+  content: "\f00c";
 }
-/* line 197, ../scss/modules/form.scss */
+/* line 198, ../scss/modules/form.scss */
 .custom-checkbox input + .icon {
   position: absolute;
   top: 0px;
@@ -4897,33 +4364,33 @@ label.spacing-left {
   height: 15px;
   border: 1px solid #cccccc;
   background-color: #fff;
-  font-family: "Glyphicons";
-  font-size: 12px;
+  font-size: 15px;
+  line-height: 13px;
   text-align: center;
   border-radius: 2px;
 }
 
-/* line 222, ../scss/modules/form.scss */
+/* line 223, ../scss/modules/form.scss */
 textarea {
   resize: both;
 }
 
-/* line 226, ../scss/modules/form.scss */
+/* line 227, ../scss/modules/form.scss */
 textarea.vertical {
   resize: vertical;
 }
 
-/* line 230, ../scss/modules/form.scss */
+/* line 231, ../scss/modules/form.scss */
 textarea.horizontal {
   resize: horizontal;
 }
 
-/* line 234, ../scss/modules/form.scss */
+/* line 235, ../scss/modules/form.scss */
 textarea.noResize {
   resize: none;
 }
 
-/* line 238, ../scss/modules/form.scss */
+/* line 239, ../scss/modules/form.scss */
 textarea.form-element {
   width: 100%;
   height: 40px;
@@ -4933,7 +4400,7 @@ textarea.form-element {
   font-family: inherit;
 }
 
-/* line 249, ../scss/modules/form.scss */
+/* line 250, ../scss/modules/form.scss */
 .custom-radio {
   width: 15px;
   height: 15px;
@@ -4943,12 +4410,12 @@ textarea.form-element {
   display: inline-block;
   margin: 0 5px 0 0;
 }
-/* line 259, ../scss/modules/form.scss */
+/* line 260, ../scss/modules/form.scss */
 .custom-radio.no-spacing {
   top: 0;
   margin: 0;
 }
-/* line 264, ../scss/modules/form.scss */
+/* line 265, ../scss/modules/form.scss */
 .custom-radio input {
   width: 15px;
   height: 15px;
@@ -4961,11 +4428,11 @@ textarea.form-element {
   margin: 0;
   padding: 0;
 }
-/* line 278, ../scss/modules/form.scss */
+/* line 279, ../scss/modules/form.scss */
 .custom-radio input:checked + .icon, .custom-radio input.is-checked + .icon {
   border-color: white;
 }
-/* line 281, ../scss/modules/form.scss */
+/* line 282, ../scss/modules/form.scss */
 .custom-radio input:checked + .icon::after, .custom-radio input.is-checked + .icon::after {
   content: "";
   display: block;
@@ -4974,7 +4441,7 @@ textarea.form-element {
   border-radius: 15px;
   background-color: #5dc774;
 }
-/* line 292, ../scss/modules/form.scss */
+/* line 293, ../scss/modules/form.scss */
 .custom-radio input + .icon {
   display: block;
   position: absolute;
@@ -4990,23 +4457,23 @@ textarea.form-element {
   margin: 0;
 }
 
-/* line 314, ../scss/modules/form.scss */
+/* line 315, ../scss/modules/form.scss */
 .cke.cke_chrome {
   box-shadow: none !important;
   border: 0 !important;
 }
-/* line 319, ../scss/modules/form.scss */
+/* line 320, ../scss/modules/form.scss */
 .cke .cke_inner {
   border: 1px solid #cccccc !important;
 }
-/* line 323, ../scss/modules/form.scss */
+/* line 324, ../scss/modules/form.scss */
 .cke .cke_inner,
 .cke .cke_wysiwyg_frame {
   border-bottom-left-radius: 3px !important;
   border-bottom-right-radius: 3px !important;
 }
 
-/* line 331, ../scss/modules/form.scss */
+/* line 332, ../scss/modules/form.scss */
 span.error {
   font-size: 14px;
   color: #ea524e;
@@ -5951,9 +5418,10 @@ table {
 .btn [class^="fa-"] {
   font-size: 18px;
   margin-left: -15px;
-  display: inline-block;
+  display: inline;
+  line-height: 32px;
 }
-/* line 72, ../scss/modules/btns.scss */
+/* line 73, ../scss/modules/btns.scss */
 .btn [class^="fa-"] + .text {
   font-size: 14px;
   display: inline-block;
@@ -5961,11 +5429,11 @@ table {
   margin-left: 5px;
   padding: 0;
 }
-/* line 80, ../scss/modules/btns.scss */
+/* line 81, ../scss/modules/btns.scss */
 .btn [class^="fa-"]:only-child {
   margin-left: 0;
 }
-/* line 84, ../scss/modules/btns.scss */
+/* line 85, ../scss/modules/btns.scss */
 .btn .text {
   padding: 0 8px;
 }
@@ -5973,43 +5441,43 @@ table {
 /**
 ** Buttons-classes on the bottom and should be replaced in the code with the classes above
 **/
-/* line 92, ../scss/modules/btns.scss */
+/* line 93, ../scss/modules/btns.scss */
 a.btn {
   color: #000;
   text-decoration: none;
 }
 
-/* line 97, ../scss/modules/btns.scss */
+/* line 98, ../scss/modules/btns.scss */
 .btn-large {
   padding: 0 25px;
   font-size: 18px;
   line-height: 30px;
 }
 
-/* line 103, ../scss/modules/btns.scss */
+/* line 104, ../scss/modules/btns.scss */
 .btn-black {
   background-color: #000;
   color: white;
 }
 
-/* line 108, ../scss/modules/btns.scss */
+/* line 109, ../scss/modules/btns.scss */
 .btn-highlight {
   background-color: #52b6ca;
   color: white;
 }
 
-/* line 113, ../scss/modules/btns.scss */
+/* line 114, ../scss/modules/btns.scss */
 a.btn-black, a.btn-highlight {
   color: white;
 }
 
-/* line 118, ../scss/modules/btns.scss */
+/* line 119, ../scss/modules/btns.scss */
 .btn-gray {
   background-color: #cccccc;
   color: black;
 }
 
-/* line 124, ../scss/modules/btns.scss */
+/* line 125, ../scss/modules/btns.scss */
 .addButton {
   border-radius: 3px;
   display: inline-block;
@@ -6022,10 +5490,9 @@ a.btn-black, a.btn-highlight {
   vertical-align: middle;
   cursor: pointer;
 }
-/* line 136, ../scss/modules/btns.scss */
+/* line 138, ../scss/modules/btns.scss */
 .addButton:before {
-  content: '\e191';
-  font-family: "Glyphicons";
+  content: "\f055";
   font-size: 10px;
   padding-right: 5px;
 }
@@ -6035,7 +5502,7 @@ a.btn-black, a.btn-highlight {
   margin-top: 20px;
   font-size: 12px;
 }
-/* line 36, ../scss/mixins.scss */
+/* line 32, ../scss/mixins.scss */
 .pagination-wrapper:after {
   clear: both;
   content: ' ';
@@ -6451,7 +5918,7 @@ a.btn-black, a.btn-highlight {
 }
 
 /*styles related to the whole container*/
-/* line 36, ../scss/mixins.scss */
+/* line 32, ../scss/mixins.scss */
 .husky-toolbar:after {
   clear: both;
   content: ' ';
@@ -6473,7 +5940,7 @@ a.btn-black, a.btn-highlight {
 }
 /* line 26, ../scss/modules/toolbar.scss */
 .husky-toolbar.small .toolbar-item a {
-  line-height: 18px;
+  line-height: 17px;
   min-width: 30px;
 }
 /* line 30, ../scss/modules/toolbar.scss */
@@ -6650,18 +6117,18 @@ a.btn-black, a.btn-highlight {
 .toolbar-item a {
   text-align: center;
   color: black;
-  padding: 0 10px 0 9px;
+  padding: 0 10px 0 8px;
   display: table;
   text-decoration: none;
   height: 100%;
-  line-height: 28px;
+  line-height: 30px;
   outline: none;
   width: 100%;
   min-width: 50px;
 }
 /* line 206, ../scss/modules/toolbar.scss */
 .toolbar-item a .icon, .toolbar-item a.icon {
-  font-size: 15px;
+  font-size: 16px;
   padding-right: 0px;
   display: inline-block;
 }
@@ -6823,18 +6290,18 @@ a.btn-black, a.btn-highlight {
   color: #999999;
 }
 /* line 37, ../scss/modules/matrix.scss */
-.table.matrix span[class^="icon-"] {
+.table.matrix span[class^="fa-"] {
   border: 1px solid black;
   color: black;
   border-radius: 12px;
   width: 24px;
   height: 24px;
-  line-height: 23px;
+  line-height: 22px;
   display: inline-block;
   text-align: center;
 }
 /* line 50, ../scss/modules/matrix.scss */
-.table.matrix span[class^="icon-"].is-active {
+.table.matrix span[class^="fa-"].is-active {
   color: white;
   border-color: #5dc774;
   background-color: #5dc774;
@@ -7241,7 +6708,7 @@ a.btn-black, a.btn-highlight {
   padding: 5px 10px 5px 15px;
 }
 /* line 10, ../scss/modules/select.scss */
-.husky-select-container.big .dropdown-label .dropdown-toggle {
+.husky-select-container.big .dropdown-label .toggle-icon {
   right: 15px;
   top: 5px;
 }
@@ -7251,8 +6718,13 @@ a.btn-black, a.btn-highlight {
   padding: 0px 5px 0px 10px;
   line-height: 30px;
   border-radius: 3px;
-  clear: both;
   font-size: 12px;
+}
+/* line 32, ../scss/mixins.scss */
+.husky-select-container .dropdown-label:after {
+  clear: both;
+  content: ' ';
+  display: block;
 }
 /* line 24, ../scss/modules/select.scss */
 .husky-select-container .dropdown-label .checkbox {
@@ -7263,29 +6735,24 @@ a.btn-black, a.btn-highlight {
   float: left;
   font-size: 15px;
   padding-right: 4px;
+  display: block;
+  line-height: 30px;
 }
-/* line 32, ../scss/modules/select.scss */
-.husky-select-container .dropdown-label .dropdown-toggle {
+/* line 34, ../scss/modules/select.scss */
+.husky-select-container .dropdown-label .toggle-icon {
   position: absolute;
   top: 0px;
   right: 10px;
+  font-size: 14px;
+  line-height: 30px;
 }
-/* line 40, ../scss/modules/select.scss */
+/* line 44, ../scss/modules/select.scss */
 .husky-select-container.disabled .dropdown-label {
   background: #dddddd;
   color: #666666;
   cursor: default;
 }
-/* line 45, ../scss/modules/select.scss */
-.husky-select-container.disabled .dropdown-toggle {
-  cursor: default;
-}
-/* line 48, ../scss/modules/select.scss */
-.husky-select-container.disabled .dropdown-toggle:after {
-  border-top-color: #666666;
-  cursor: default;
-}
-/* line 54, ../scss/modules/select.scss */
+/* line 51, ../scss/modules/select.scss */
 .husky-select-container .dropdown-list {
   width: 100%;
   /*display: inline-block;*/
@@ -7298,92 +6765,88 @@ a.btn-black, a.btn-highlight {
   z-index: 2000;
   border-radius: 3px;
 }
-/* line 66, ../scss/modules/select.scss */
+/* line 63, ../scss/modules/select.scss */
 .husky-select-container .dropdown-list.top {
   top: inherit;
   bottom: 5px;
 }
-/* line 72, ../scss/modules/select.scss */
+/* line 69, ../scss/modules/select.scss */
 .husky-select-container .dropdown-list .disabled,
 .husky-select-container .dropdown-list .disabled:hover {
   background: none;
   cursor: default;
 }
-/* line 75, ../scss/modules/select.scss */
+/* line 72, ../scss/modules/select.scss */
 .husky-select-container .dropdown-list .disabled .item-value,
 .husky-select-container .dropdown-list .disabled:hover .item-value {
   color: #999999;
 }
-/* line 79, ../scss/modules/select.scss */
+/* line 76, ../scss/modules/select.scss */
 .husky-select-container .dropdown-list .check {
   float: left;
   width: 20px;
   margin-right: 10px;
   padding-top: 7px;
 }
-/* line 85, ../scss/modules/select.scss */
+/* line 82, ../scss/modules/select.scss */
 .husky-select-container .dropdown-list .item-value {
   float: left;
   line-height: 30px;
 }
-/* line 90, ../scss/modules/select.scss */
+/* line 87, ../scss/modules/select.scss */
 .husky-select-container .dropdown-list > ul {
   list-style: none;
   margin: 0;
   padding: 10px 0;
 }
-/* line 95, ../scss/modules/select.scss */
+/* line 92, ../scss/modules/select.scss */
 .husky-select-container .dropdown-list > ul input {
   margin: 0;
 }
-/* line 99, ../scss/modules/select.scss */
+/* line 96, ../scss/modules/select.scss */
 .husky-select-container .dropdown-list > ul > li {
   padding: 0px 10px 0px 20px;
   clear: both;
   height: 30px;
 }
-/* line 105, ../scss/modules/select.scss */
+/* line 102, ../scss/modules/select.scss */
 .husky-select-container .dropdown-list > ul > li:hover, .husky-select-container .dropdown-list > ul > li.hover {
   background-color: #52b6ca;
   cursor: pointer;
 }
-/* line 109, ../scss/modules/select.scss */
+/* line 106, ../scss/modules/select.scss */
 .husky-select-container .dropdown-list > ul > li:hover .item-value {
   color: white;
 }
-/* line 117, ../scss/modules/select.scss */
+/* line 114, ../scss/modules/select.scss */
 .husky-select-container.small .dropdown-label {
   font-size: 10px;
   line-height: 20px;
 }
-/* line 121, ../scss/modules/select.scss */
-.husky-select-container.small .dropdown-toggle::after {
-  top: 0;
+/* line 118, ../scss/modules/select.scss */
+.husky-select-container.small .toggle-icon {
+  line-height: 20px;
 }
-/* line 124, ../scss/modules/select.scss */
+/* line 121, ../scss/modules/select.scss */
 .husky-select-container.small .dropdown-list {
   top: 12px;
   min-width: 200px;
   max-width: 100%;
   border-radius: 2px;
 }
-/* line 130, ../scss/modules/select.scss */
+/* line 127, ../scss/modules/select.scss */
 .husky-select-container.small .dropdown-list.top {
   top: auto;
   bottom: -3px;
 }
-/* line 138, ../scss/modules/select.scss */
+/* line 135, ../scss/modules/select.scss */
 .husky-select-container.white .dropdown-label {
   background: white;
 }
-/* line 144, ../scss/modules/select.scss */
+/* line 141, ../scss/modules/select.scss */
 .husky-select-container.action .dropdown-label {
   background: #52b6ca;
   color: white;
-}
-/* line 148, ../scss/modules/select.scss */
-.husky-select-container.action .dropdown-toggle::after {
-  border-top-color: white;
 }
 
 /* line 5, ../scss/modules/smart-content.scss */
@@ -7411,12 +6874,12 @@ a.btn-black, a.btn-highlight {
   padding-right: 3px;
 }
 /* line 27, ../scss/modules/smart-content.scss */
-.smart-header .icon-adjust-alt {
+.smart-header .fa-filter {
   display: block;
   position: absolute;
   top: 10px;
   right: 20px;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 15px;
   color: black;
   padding: 5px 10px;
@@ -7424,7 +6887,7 @@ a.btn-black, a.btn-highlight {
   border-radius: 2px;
 }
 /* line 39, ../scss/modules/smart-content.scss */
-.smart-header .icon-adjust-alt:hover {
+.smart-header .fa-filter:hover {
   background: #efefef;
 }
 
@@ -7444,7 +6907,7 @@ a.btn-black, a.btn-highlight {
   height: 210px;
 }
 /* line 57, ../scss/modules/smart-content.scss */
-.smart-content .no-content .icon-file {
+.smart-content .no-content .fa-file {
   display: block;
   position: absolute;
   top: 0px;
@@ -7760,8 +7223,7 @@ a.btn-black, a.btn-highlight {
 .husky-matcher.overflow .wrapper:after {
   color: #cccccc;
   font-size: 22px;
-  font-family: "Glyphicons";
-  content: '\e212';
+  content: "\f061";
   position: absolute;
   right: -35px;
   top: 110px;
@@ -8248,7 +7710,7 @@ a.btn-black, a.btn-highlight {
   height: 130px;
   padding: 20px 0 0 20px;
 }
-/* line 36, ../scss/mixins.scss */
+/* line 32, ../scss/mixins.scss */
 .husky-dropzone .upload-items:after {
   clear: both;
   content: ' ';
@@ -8364,7 +7826,7 @@ a.btn-black, a.btn-highlight {
   margin-top: -150px;
 }
 
-/* line 36, ../scss/mixins.scss */
+/* line 32, ../scss/mixins.scss */
 .husky-thumbnails:after {
   clear: both;
   content: ' ';
@@ -8391,7 +7853,7 @@ a.btn-black, a.btn-highlight {
   position: relative;
   cursor: pointer;
 }
-/* line 36, ../scss/mixins.scss */
+/* line 32, ../scss/mixins.scss */
 .husky-thumbnails .item:after {
   clear: both;
   content: ' ';

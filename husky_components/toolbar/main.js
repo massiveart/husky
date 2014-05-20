@@ -536,7 +536,7 @@ define(function() {
                 enabled = true;
             }
             var icon = (!!enabled ? item.icon : !!item.disabledIcon ? item.disabledIcon : item.icon);
-            return 'icon-' + icon;
+            return 'fa-' + icon;
         },
 
         /**

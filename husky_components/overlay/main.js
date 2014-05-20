@@ -59,7 +59,7 @@ define([], function() {
             trigger: 'click',
             triggerEl: null,
             title: '',
-            closeIcon: 'remove2',
+            closeIcon: 'times',
             closeCallback: null,
             okCallback: null,
             data: '',
@@ -101,7 +101,7 @@ define([], function() {
                 buttons: [
                     {
                         type: 'ok',
-                        icon: 'half-ok',
+                        icon: 'check',
                         classes: 'tick',
                         inactive: false
                     }
@@ -155,7 +155,7 @@ define([], function() {
                 '<div class="husky-overlay-container<%= skin %> smart-content-overlay">',
                 '<div class="overlay-header">',
                 '<span class="title"><%= title %></span>',
-                '<% if (!!closeIcon) { %><a class="icon-<%= closeIcon %> close-button" href="#"></a><% } %>',
+                '<% if (!!closeIcon) { %><a class="fa-<%= closeIcon %> close-button" href="#"></a><% } %>',
                 '</div>',
                 '<div class="overlay-content"></div>',
                 '<div class="overlay-footer">',
@@ -165,7 +165,7 @@ define([], function() {
             okButton: [
                 '<div class="btn action overlay-ok<%= classes %>">',
                     '<% if (!!icon) { %>',
-                    '<span class="icon-<%= icon %>"></span>',
+                    '<span class="fa-<%= icon %>"></span>',
                     '<% } %>',
                     '<span class="text"><%= text %></span>',
                 '</div>'
@@ -173,7 +173,7 @@ define([], function() {
             cancelButton: [
                 '<div class="btn gray black-text overlay-cancel<%= classes %>">',
                     '<% if (!!icon) { %>',
-                    '<span class="icon-<%= icon %>"></span>',
+                    '<span class="fa-<%= icon %>"></span>',
                     '<% } %>',
                     '<span class="text"><%= text %></span>',
                 '</div>'

@@ -31523,7 +31523,7 @@ define('__component__$matrix@husky',[],function() {
         },
 
         bindDOMEvents: function() {
-            sandbox.dom.on(this.$element, 'click', this.toggleIcon.bind(this), 'tbody > tr > td:has(span[class^="icon-"])');
+            sandbox.dom.on(this.$element, 'click', this.toggleIcon.bind(this), 'tbody > tr > td:has(span[class^="fa-"])');
             sandbox.dom.on(this.$element, 'click', this.setRowActive.bind(this), 'tbody > tr > td:last-child');
         },
 
@@ -31535,14 +31535,14 @@ define('__component__$matrix@husky',[],function() {
         toggleIcon: function(event) {
             var $target = event.currentTarget,
                 $tr = sandbox.dom.parent($target),
-                $allTargets = sandbox.dom.find('span[class^="icon-"]', $tr),
+                $allTargets = sandbox.dom.find('span[class^="fa-"]', $tr),
                 $activeTargets,
                 $link = sandbox.dom.find('td:last-child span', $tr);
 
-            $target = sandbox.dom.find('span[class^="icon-"]', $target);
+            $target = sandbox.dom.find('span[class^="fa-"]', $target);
             sandbox.dom.toggleClass($target, activeClass);
 
-            $activeTargets = sandbox.dom.find('span[class^="icon-"].' + activeClass, $tr);
+            $activeTargets = sandbox.dom.find('span[class^="fa-"].' + activeClass, $tr);
             if ($activeTargets.length < $allTargets.length) {
                 sandbox.dom.html($link, this.options.captions.all);
             } else {
@@ -31559,8 +31559,8 @@ define('__component__$matrix@husky',[],function() {
 
         setRowActive: function(event) {
             var $tr = sandbox.dom.parent(event.currentTarget),
-                $targets = sandbox.dom.find('span[class^="icon-"]', $tr),
-                $activeTargets = sandbox.dom.find('span[class^="icon-"].' + activeClass, $tr),
+                $targets = sandbox.dom.find('span[class^="fa-"]', $tr),
+                $activeTargets = sandbox.dom.find('span[class^="fa-"].' + activeClass, $tr),
                 $link = sandbox.dom.find('td:last-child span', $tr);
 
             if ($activeTargets.length < $targets.length) {
@@ -31580,7 +31580,7 @@ define('__component__$matrix@husky',[],function() {
         },
 
         setAllActive: function() {
-            var $targets = sandbox.dom.find('span[class^="icon-"]', this.$element),
+            var $targets = sandbox.dom.find('span[class^="fa-"]', this.$element),
                 $trs = sandbox.dom.find('tbody > tr', this.$element);
             sandbox.dom.addClass($targets, activeClass);
 
@@ -31595,7 +31595,7 @@ define('__component__$matrix@husky',[],function() {
         },
 
         unsetAllActive: function() {
-            var $targets = sandbox.dom.find('span[class^="icon-"]', this.$element),
+            var $targets = sandbox.dom.find('span[class^="fa-"]', this.$element),
                 $trs = sandbox.dom.find('tbody > tr', this.$element);
             sandbox.dom.removeClass($targets, activeClass);
 
@@ -31694,7 +31694,7 @@ define('__component__$matrix@husky',[],function() {
                         title = '';
                     }
                     $span = sandbox.dom.createElement(
-                        '<span ' + title + ' class="icon-' + this.options.values.horizontal[j] + ' pointer"/>'
+                        '<span ' + title + ' class="fa-' + this.options.values.horizontal[j] + ' pointer"/>'
                     );
                     sandbox.dom.data($span, 'value', this.options.values.horizontal[j]);
                     sandbox.dom.data($span, 'section', this.options.values.vertical[i]);
@@ -32778,7 +32778,7 @@ define('__component__$toolbar@husky',[],function() {
                 enabled = true;
             }
             var icon = (!!enabled ? item.icon : !!item.disabledIcon ? item.disabledIcon : item.icon);
-            return 'icon-' + icon;
+            return 'fa-' + icon;
         },
 
         /**
@@ -35330,10 +35330,10 @@ define('__component__$select@husky',[], function() {
             basicStructure: function(defaultLabel, icon) {
                 var iconSpan = '', dropdownToggle = '';
                 if (!!icon) {
-                    iconSpan = '<span class="icon-' + icon + ' icon"></span>';
+                    iconSpan = '<span class="fa-' + icon + ' icon"></span>';
                 }
                 if (!!this.options.data && !!this.options.data.length) {
-                    dropdownToggle = '<span class="dropdown-toggle inline-block"></span>';
+                    dropdownToggle = '<span class="fa-caret-down toggle-icon"></span>';
                 }
                 return [
                     '<div class="husky-select-container">',
@@ -35486,7 +35486,7 @@ define('__component__$password-fields@husky',[], function() {
                 '        <div class="grid-col-6 form-group">',
                 '                <label for="',this.options.ids.inputPassword1,'">', this.options.labels.inputPassword1, '</label>',
                 '                <div class="align-right hidden" id="', this.options.ids.generateLabel, '">',
-                '                    <span class="icon-keys m-right-10"></span><span class="pointer">', this.options.labels.generateLabel, '</span>',
+                '                    <span class="fa-key m-right-10"></span><span class="pointer">', this.options.labels.generateLabel, '</span>',
                 '                </div>',
                 '                <input class="form-element" value="', this.options.values.inputPassword1, '" type="text" id="', this.options.ids.inputPassword1, '"', (!!this.options.validation ? 'data-validation-equal="' + this.options.instanceName + '"' : ''), '/>',
                 '        </div>',
@@ -35739,10 +35739,10 @@ define('__component__$column-navigation@husky',[], function() {
         load: function(url, columnNumber) {
             if (!!url) {
                 this.columnLoadStarted = true;
-
                 this.sandbox.util.load(url)
                     .then(function(response) {
                         this.removeBigLoader();
+                        console.log('here');
                         this.columnLoadStarted = false;
                         this.parseData(response, columnNumber);
                         this.handleLastEmptyColumn();
@@ -36722,7 +36722,7 @@ define('__component__$smart-content@husky',[], function() {
             sourceSelector: '.source',
             footerClass: 'smart-footer',
             viewTogglerClass: 'view-toggler',
-            buttonClass: 'icon-adjust-alt',
+            buttonClass: 'fa-filter',
             includeSubSelector: '.includeSubCheck',
             categoryDDClass: 'category-dropdown',
             tagListClass: 'tag-list',
@@ -36751,7 +36751,7 @@ define('__component__$smart-content@husky',[], function() {
             ].join(''),
             noContent: [
                 '<div class="no-content">',
-                '<span class="icon-file"></span>',
+                '<span class="fa-file"></span>',
                 '<div class="text"><%= noContentStr %></div>',
                 '</div>'
             ].join(''),
@@ -37566,7 +37566,7 @@ define('__component__$overlay@husky',[], function() {
             trigger: 'click',
             triggerEl: null,
             title: '',
-            closeIcon: 'remove2',
+            closeIcon: 'times',
             closeCallback: null,
             okCallback: null,
             data: '',
@@ -37608,7 +37608,7 @@ define('__component__$overlay@husky',[], function() {
                 buttons: [
                     {
                         type: 'ok',
-                        icon: 'half-ok',
+                        icon: 'check',
                         classes: 'tick',
                         inactive: false
                     }
@@ -37662,7 +37662,7 @@ define('__component__$overlay@husky',[], function() {
                 '<div class="husky-overlay-container<%= skin %> smart-content-overlay">',
                 '<div class="overlay-header">',
                 '<span class="title"><%= title %></span>',
-                '<% if (!!closeIcon) { %><a class="icon-<%= closeIcon %> close-button" href="#"></a><% } %>',
+                '<% if (!!closeIcon) { %><a class="fa-<%= closeIcon %> close-button" href="#"></a><% } %>',
                 '</div>',
                 '<div class="overlay-content"></div>',
                 '<div class="overlay-footer">',
@@ -37672,7 +37672,7 @@ define('__component__$overlay@husky',[], function() {
             okButton: [
                 '<div class="btn action overlay-ok<%= classes %>">',
                     '<% if (!!icon) { %>',
-                    '<span class="icon-<%= icon %>"></span>',
+                    '<span class="fa-<%= icon %>"></span>',
                     '<% } %>',
                     '<span class="text"><%= text %></span>',
                 '</div>'
@@ -37680,7 +37680,7 @@ define('__component__$overlay@husky',[], function() {
             cancelButton: [
                 '<div class="btn gray black-text overlay-cancel<%= classes %>">',
                     '<% if (!!icon) { %>',
-                    '<span class="icon-<%= icon %>"></span>',
+                    '<span class="fa-<%= icon %>"></span>',
                     '<% } %>',
                     '<span class="text"><%= text %></span>',
                 '</div>'
@@ -38366,7 +38366,7 @@ define('__component__$label@husky',[],function() {
     constants = {
         textClass: 'text',
         closeClass: 'close',
-        closeIconClass: 'icon-circle-remove'
+        closeIconClass: 'fa-times-circle'
     },
 
     /**
@@ -38622,7 +38622,7 @@ define('__component__$matcher@husky',[], function() {
                 '<div class="inner">',
                 '<span class="headline"><%= columnStr %></span>',
                 '<div class="column-dropdown"></div>',
-                '<a class="icon-half-ok save-button btn btn-highlight btn-large ok-button" href="#"></a>',
+                '<a class="fa-check save-button btn btn-highlight btn-large ok-button" href="#"></a>',
                 '<div class="button"><%= skipStr %></div>',
                 '</div>'
             ].join(''),
