@@ -25852,10 +25852,11 @@ define('type/husky-select',[
                     // For single select
 
                     var data = {},
+                        ids = this.$el.data('selection'),
                         values = this.$el.data('selection-values');
 
                     data[this.options.label] = Array.isArray(values) ? values[0] : values;
-                    data[this.options.id] = this.$el.data('selection')[0];
+                    data[this.options.id] = Array.isArray(ids) ? ids[0] : ids;
 
                     return data;
                 },
@@ -35108,7 +35109,7 @@ define('__component__$select@husky',[], function() {
          */
         addDropdownElement: function(id, value, disabled, callback, updateLabel) {
             var $item,
-                idString = (!!id || id === 0) ? id.toString() : this.sandbox.util.uniqueId();
+                idString = (!!id || id === 0) ? id : this.sandbox.util.uniqueId();
 
             if (this.options.preSelectedElements.indexOf(id) >= 0 || this.options.preSelectedElements.indexOf(value) >= 0) {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, 'checked', updateLabel));
@@ -35213,7 +35214,14 @@ define('__component__$select@husky',[], function() {
                 selectedValues = this.sandbox.dom.data(this.$el,'selectionValues'),
                 id, $checkbox;
 
-            this.selectedElements = selectedIds.split(',').map(parseInt);
+            if(typeof selectedIds === 'string') {
+                this.selectedElements = selectedIds.split(',').map(parseInt);
+            } else if(Array.isArray(selectedIds)) {
+                this.selectedElements = selectedIds.map(parseInt);
+            } else if(typeof selectedIds === 'number'){
+                this.selectedElements.push(selectedIds);
+            }
+
             this.selectedElementsValues = selectedValues.split(',');
 
             this.sandbox.util.foreach(this.$list, function($el){

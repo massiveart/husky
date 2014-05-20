@@ -258,7 +258,7 @@ define([], function() {
             var $item,
                 idString = (!!id || id === 0) ? id.toString() : this.sandbox.util.uniqueId();
 
-            if (this.options.preSelectedElements.indexOf(id) >= 0 || this.options.preSelectedElements.indexOf(value) >= 0) {
+            if (this.options.preSelectedElements.indexOf(idString) >= 0 || this.options.preSelectedElements.indexOf(value) >= 0) {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, 'checked', updateLabel));
                 this.selectedElements.push(idString);
                 this.selectedElementsValues.push(value);
@@ -361,18 +361,21 @@ define([], function() {
                 selectedValues = this.sandbox.dom.data(this.$el,'selectionValues'),
                 id, $checkbox;
 
+            this.selectedElements = [];
+            this.selectedElementsValues = [];
+
             if(typeof selectedIds === 'string') {
-                this.selectedElements = selectedIds.split(',').map(parseInt);
+                this.selectedElements = selectedIds.split(',');
             } else if(Array.isArray(selectedIds)) {
-                this.selectedElements = selectedIds.map(parseInt);
+                this.selectedElements = selectedIds.map(String);
             } else if(typeof selectedIds === 'number'){
-                this.selectedElements.push(selectedIds);
+                this.selectedElements.push(selectedIds.toString());
             }
 
             this.selectedElementsValues = selectedValues.split(',');
 
             this.sandbox.util.foreach(this.$list, function($el){
-                id = this.sandbox.dom.data($el, 'id');
+                id = this.sandbox.dom.data($el, 'id') || '';
                 $checkbox = this.sandbox.dom.find('input[type=checkbox]', $el);
                 if(this.selectedElements.indexOf(id) > -1){
                     this.sandbox.dom.addClass($checkbox, 'is-selected');
@@ -385,6 +388,7 @@ define([], function() {
             }.bind(this));
 
             this.changeLabel();
+            this.updateSelectionAttribute();
 
         },
 
@@ -421,8 +425,13 @@ define([], function() {
 
             for (; ++i < length;) {
                 key = this.sandbox.dom.data(elements[i], 'id');
+
+                if(key === undefined){
+                    key = '';
+                }
+
                 $checkbox = this.sandbox.dom.find('input[type=checkbox]', elements[i])[0];
-                index = this.selectedElements.indexOf(key);
+                index = this.selectedElements.indexOf(key.toString());
 
                 if (index >= 0) {
                     if (clickedElementKey !== key) {
@@ -441,7 +450,7 @@ define([], function() {
 
             var key, value, $checkbox, index, callback, updateLabel;
 
-            key = this.sandbox.dom.data(event.currentTarget, 'id');
+            key = this.sandbox.dom.data(event.currentTarget, 'id').toString();
             callback = this.sandbox.dom.data(event.currentTarget, 'selectCallback');
             index = this.selectedElements.indexOf(key);
             updateLabel = this.sandbox.dom.attr(event.currentTarget, 'data-update-label');
@@ -481,7 +490,7 @@ define([], function() {
                 } else {
                     this.sandbox.dom.addClass($checkbox, 'is-selected');
                     this.sandbox.dom.prop($checkbox, 'checked', true);
-                    this.selectedElements.push(key);
+                    this.selectedElements.push(key.toString());
                     this.selectedElementsValues.push(value);
                 }
 
