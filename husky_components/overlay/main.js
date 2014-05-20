@@ -16,12 +16,6 @@
  * @params {Object} [options] Configuration object
  * @params {String} [options.trigger] List of events on which the overlay should be opened
  * @params {String} [options.triggerEl] Element that triggers the overlay
- * @params {String} [options.title] the title of the overlay
- * @params {String|Boolean} [options.closeIcon] icon class for the close button. If false no close icon will be displayed
- * @params {Function} [options.closeCallback] callback which gets executed after the overlay gets closed
- * @params {Function} [options.okCallback] callback which gets executed after the overlay gets submited
- * @params {String|Object} [options.data] HTML or DOM-object which acts as the overlay-content
- * @params {String} [options.message] String to render as content. Used by warnings and erros
  * @params {String} [options.instanceName] instance name of the component
  * @params {Boolean} [options.draggable] if true overlay is draggable
  * @params {Boolean} [options.openOnStart] if true overlay is opened after initialization
@@ -31,25 +25,34 @@
  * @params {Boolean} [options.backdropClose] if true overlay closes with click on backdrop
  * @params {String} [options.backdropColor] Color of the backdrop
  * @params {Number} [options.backdropAlpha] Alpha-value of the backdrop
- * @params {Boolean} [options.okInactive] If true all ok-buttons start deactivated
- * @params {String} [options.okDefaultText] The default text for ok buttons
- * @params {String} [options.cancelDefaultText] The default text for cancel buttons
  * @params {String} [options.type] The type of the overlay ('normal', 'error' or 'warning')
  * @params {Array} [options.buttonsDefaultAlign] the align of the buttons in the footer ('center', 'left' or 'right'). Can be overriden by each button individually
  *
- * @params {Object} [options.languageChanger] If set language-changer will be displayed in the header
- * @params {Array} [options.languageChanger.locales] array of locale strings for the dropdown
- * @params {String} [options.languageChanger.preSelected] locale which is selected at the beginning
+ * @params {Array} [options.slides] array of slide objects, will be rendered in a row and can slided with events
+ * @params {String} [options.slides[].title] the title of the overlay
+ * @params {String|Boolean} [options.slides[].closeIcon] icon class for the close button. If false no close icon will be displayed
+ * @params {Function} [options.slides[].closeCallback] callback which gets executed after the overlay gets closed
+ * @params {Function} [options.slides[].okCallback] callback which gets executed after the overlay gets submited
+ * @params {String|Object} [options.slides[].data] HTML or DOM-object which acts as the overlay-content
+ * @params {String} [options.slides[].message] String to render as content. Used by warnings and errors
+ * @params {Boolean} [options.slides[].okInactive] If true all ok-buttons start deactivated
+ * @params {String} [options.slides[].okDefaultText] The default text for ok buttons
+ * @params {String} [options.slides[].cancelDefaultText] The default text for cancel buttons
+ * @params {String} [options.slides[].type] The type of the overlay ('normal', 'error' or 'warning')
  *
- * @params {Array} [options.tabs] array of tabs-data to use instead of options.data and options.message
- * @params {String} [options.tabs.title] the title of the tab
- * @params {String|Object} [options.tabs.data] HTML or DOM-Object to display when tab is active
+ * @params {Object} [options.slides[].languageChanger] If set language-changer will be displayed in the header
+ * @params {Array} [options.slides[].languageChanger.locales] array of locale strings for the dropdown
+ * @params {String} [options.slides[].languageChanger.preSelected] locale which is selected at the beginning
  *
- * @params {Array} [options.buttons] an array of buttons to add to the footer
- * @params {String} [options.buttons.type] type of the button ('ok', 'cancel')
- * @params {String} [options.buttons.icon] icon of the button
- * @params {String} [options.buttons.text] text of the button. If text and icon are not set the defaultText-options come into place
- * @params {Boolean} [options.buttons.inactive] If true button starts inactive
+ * @params {Array} [options.slides[].tabs] array of tabs-data to use instead of options.data and options.message
+ * @params {String} [options.slides[].tabs.title] the title of the tab
+ * @params {String|Object} [options.slides[].tabs.data] HTML or DOM-Object to display when tab is active
+ *
+ * @params {Array} [options.slides[].buttons] an array of buttons to add to the footer
+ * @params {String} [options.slides[].buttons.type] type of the button ('ok', 'cancel')
+ * @params {String} [options.slides[].buttons.icon] icon of the button
+ * @params {String} [options.slides[].buttons.text] text of the button. If text and icon are not set the defaultText-options come into place
+ * @params {Boolean} [options.slides[].buttons.inactive] If true button starts inactive
  */
 define([], function() {
 
@@ -195,10 +198,10 @@ define([], function() {
             ].join(''),
             cancelButton: [
                 '<div class="btn gray black-text overlay-cancel<%= classes %>">',
-                '<% if (!!icon) { %>',
-                '<span class="icon-<%= icon %>"></span>',
-                '<% } %>',
-                '<span class="text"><%= text %></span>',
+                '   <% if (!!icon) { %>',
+                '   <span class="icon-<%= icon %>"></span>',
+                '   <% } %>',
+                '   <span class="text"><%= text %></span>',
                 '</div>'
             ].join(''),
             backdrop: [
@@ -335,6 +338,7 @@ define([], function() {
         initSlideOptions: function() {
             var key, type;
             if (this.options.slides.length === 0) {
+                // no slide given: extract it from options
                 this.slides[0] = this.sandbox.util.extend({}, slideDefaults);
                 this.slides[0].index = 0;
                 for (key in slideDefaults) {
@@ -348,6 +352,7 @@ define([], function() {
                 type = types[this.slides[0].type];
                 this.slides[0] = this.sandbox.util.extend({}, type, this.slides[0]);
             } else {
+                // extend each slide with type and defaults
                 this.sandbox.util.foreach(this.options.slides, function(value, i) {
                     this.slides[i] = this.sandbox.util.extend({}, slideDefaults, value);
 
@@ -532,6 +537,9 @@ define([], function() {
             this.slideTo(this.activeSlide);
         },
 
+        /**
+         * slide to given number
+         */
         slideTo: function(slide) {
             this.sandbox.dom.css(this.overlay.$slides, 'left', '-' + slide * this.overlay.width + 'px');
         },

@@ -42,6 +42,14 @@
  * @params {Boolean} [options.subFoldersDisabled] if true sub-folders overlay-item will be disabled
  * @params {Boolean} [options.tagsDisabled] if true tags overlay-item will be disabled
  * @params {Boolean} [options.limitResultDisabled] if true limit-result overlay-item will be disabled
+ * @params {Boolean} [options.translations.externalConfigs] if true component waits for external config object
+ * @params {String} [options.columnNavigationUrl] url for column navigation
+ * @params {Boolean} [options.hideDataSource] if true data-source selection hidden
+ * @params {Boolean} [options.hideCategories] if true categories hidden
+ * @params {Boolean} [options.hideTags] if true tags hidden
+ * @params {Boolean} [options.hideSortBy] if true sort by hidden
+ * @params {Boolean} [options.hidePresentAs] if true present as hidden
+ * @params {Boolean} [options.hideLimit] if true limit hidden
  *
  * @params {Object} [options.translations] object that gets merged with the default translation-keys
  * @params {String} [options.translations.noContentFound] translation key
@@ -49,7 +57,8 @@
  * @params {String} [options.translations.visible] translation key
  * @params {String} [options.translations.of] translation key
  * @params {String} [options.translations.configureSmartContent] translation key
- * @params {String} [options.translations.dataSource] translation key
+ * @params {String} [options.translations.dataSourceLabel] translation key
+ * @params {String} [options.translations.dataSourceButton] translation key
  * @params {String} [options.translations.includeSubFolders] translation key
  * @params {String} [options.translations.filterByCategory] translation key
  * @params {String} [options.translations.filterByTags] translation key
@@ -61,12 +70,13 @@
  * @params {String} [options.translations.limitResultTo] translation key
  * @params {String} [options.translations.noCategory] translation key
  * @params {String} [options.translations.choosePresentAs] translation key
- * @params {String} [options.translations.chooseDataSource] translation key
  * @params {String} [options.translations.from] translation key
  * @params {String} [options.translations.subFoldersInclusive] translation key
  * @params {String} [options.translations.viewAll] translation key
  * @params {String} [options.translations.viewLess] translation key
- * @params {Boolean} [options.translations.externalConfigs] if true component waits for external config object
+ * @params {String} [options.translations.chooseDataSource] translation key
+ * @params {String} [options.translations.chooseDataSourceOk] translation key
+ * @params {String} [options.translations.chooseDataSourceCancel] translation key
  */
 define([], function() {
 
@@ -165,55 +175,73 @@ define([], function() {
                 '</li>'
             ].join(''),
             overlayContent: {
-                main: ['<div class="smart-overlay-content">',
-                    '</div>'].join(''),
+                main: [
+                    '<div class="smart-overlay-content">',
+                    '</div>'
+                ].join(''),
 
-                dataSource: ['<div class="item-half left">',
-                    '<span class="desc"><%= dataSourceLabelStr %></span>',
-                    '<div class="btn action fit" id="select-data-source-action"><%= dataSourceButtonStr %></div>',
-                    '<div><span class="sublabel"><%= dataSourceLabelStr %>:</span> <span class="sublabel data-source"><%= dataSourceValStr %></span></div>',
-                    '</div>'].join(''),
+                dataSource: [
+                    '<div class="item-half left">',
+                        '<span class="desc"><%= dataSourceLabelStr %></span>',
+                        '<div class="btn action fit" id="select-data-source-action"><%= dataSourceButtonStr %></div>',
+                        '<div><span class="sublabel"><%= dataSourceLabelStr %>:</span> <span class="sublabel data-source"><%= dataSourceValStr %></span></div>',
+                    '</div>'
+                ].join(''),
 
-                subFolders: ['<div class="item-half">',
-                    '<div class="check<%= disabled %>">',
-                    '<label>',
-                    '<div class="custom-checkbox">',
-                    '<input type="checkbox" class="includeSubCheck form-element"<%= includeSubCheckedStr %>/>',
-                    '<span class="icon"></span>',
-                    '</div>',
-                    '<span class="description"><%= includeSubStr %></span>',
-                    '</label>',
-                    '</div>',
-                    '</div>'].join(''),
+                subFolders: [
+                    '<div class="item-half">',
+                        '<div class="check<%= disabled %>">',
+                        '<label>',
+                            '<div class="custom-checkbox">',
+                                '<input type="checkbox" class="includeSubCheck form-element"<%= includeSubCheckedStr %>/>',
+                                '<span class="icon"></span>',
+                            '</div>',
+                            '<span class="description"><%= includeSubStr %></span>',
+                        '</label>',
+                        '</div>',
+                    '</div>'
+                ].join(''),
 
-                categories: ['<div class="item full">',
+                categories: [
+                    '<div class="item full">',
                     '<span class="desc"><%= filterByCatStr %></span>',
                         '<div class="' + constants.categoryDDClass + '"></div>',
-                    '</div>'].join(''),
+                    '</div>'
+                ].join(''),
 
-                tagList: ['<div class="item full tags<%= disabled %>">',
+                tagList: [
+                    '<div class="item full tags<%= disabled %>">',
                     '<span class="desc"><%= filterByTagsStr %></span>',
                         '<div class="' + constants.tagListClass + '"></div>',
-                    '</div>'].join(''),
+                    '</div>'
+                ].join(''),
 
-                sortBy: ['<div class="item-half left">',
+                sortBy: [
+                    '<div class="item-half left">',
                     '<span class="desc"><%= sortByStr %></span>',
                         '<div class="' + constants.sortByDDClass + '"></div>',
-                    '</div>'].join(''),
+                    '</div>'
+                ].join(''),
 
-                sortMethod: ['<div class="item-half">',
+                sortMethod: [
+                    '<div class="item-half">',
                         '<div class="' + constants.sortMethodDDClass + ' sortMethod"></div>',
-                    '</div>'].join(''),
+                    '</div>'
+                ].join(''),
 
-                presentAs: ['<div class="item-half left">',
-                    '<span class="desc"><%= presentAsStr %></span>',
+                presentAs: [
+                    '<div class="item-half left">',
+                        '<span class="desc"><%= presentAsStr %></span>',
                         '<div class="' + constants.presentAsDDClass + '"></div>',
-                    '</div>'].join(''),
+                    '</div>'
+                ].join(''),
 
-                limitResult: ['<div class="item-half">',
-                    '<span class="desc"><%= limitResultToStr %></span>',
-                    '<input type="text" value="<%= limitResult %>" class="limit-to form-element"<%= disabled %>/>',
-                    '</div>'].join('')
+                limitResult: [
+                    '<div class="item-half">',
+                        '<span class="desc"><%= limitResultToStr %></span>',
+                        '<input type="text" value="<%= limitResult %>" class="limit-to form-element"<%= disabled %>/>',
+                    '</div>'
+                ].join('')
             }
         },
 
@@ -715,28 +743,14 @@ define([], function() {
             this.bindColumnNavigationEvents();
         },
 
+        /**
+         * column navigation events
+         */
         bindColumnNavigationEvents: function() {
             // init column navigation after initialize of overlay
-            this.sandbox.on('husky.overlay.smart-content.' + this.options.instanceName + '.initialized', function() {
+            this.sandbox.on('husky.overlay.smart-content.' + this.options.instanceName + '.initialized', this.initColumnNavigation.bind(this));
 
-                this.sandbox.start(
-                    [
-                        {
-                            name: 'column-navigation@husky',
-                            options: {
-                                el: '#column-navigation-' + this.options.instanceName + '',
-                                url: this.options.columnNavigationUrl,
-                                noPageDescription: 'No Pages',
-                                sizeRelativeTo: '.smart-content-overlay .slide-1 .overlay-content',
-                                wrapper: {height: 100},
-                                showEdit: false,
-                                showStatus: false
-                            }
-                        }
-                    ]
-                );
-            }.bind(this));
-
+            // adopt height of column navigation once
             this.sandbox.once('husky.overlay.smart-content.' + this.options.instanceName + '.opened', function() {
                 // set height of smart-content column navigation slide (missing margins)
                 var height = this.sandbox.dom.outerHeight('.smart-content-overlay .slide-1 .overlay-content') + 24;
@@ -753,6 +767,28 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'click', function() {
                 this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-right');
             }.bind(this), '#select-data-source-action');
+        },
+
+        /**
+         * initialize column navigation
+         */
+        initColumnNavigation: function() {
+            this.sandbox.start(
+                [
+                    {
+                        name: 'column-navigation@husky',
+                        options: {
+                            el: '#column-navigation-' + this.options.instanceName + '',
+                            url: this.options.columnNavigationUrl,
+                            noPageDescription: 'No Pages',
+                            sizeRelativeTo: '.smart-content-overlay .slide-1 .overlay-content',
+                            wrapper: {height: 100},
+                            showEdit: false,
+                            showStatus: false
+                        }
+                    }
+                ]
+            );
         },
 
         /**
