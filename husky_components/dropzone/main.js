@@ -27,6 +27,9 @@
  * @params {Function} [options.beforeSendingCallback] callback which gets called before a file gets uploaded. First parameter is the file.
  * @params {Function} [options.removeFileCallback] callback which gets called after a file got removed. First parameter is the file.
  * @params {Object} [options.pluginOptions] Options to pass to the dropzone-plugin to completely override all options set by husky. Use with care.
+ * @params {Number} [options.showOverlayOnScrollTop] number of scroll-top on which the overlay will be displayed
+ * @params {Object|String} [options.scrollContainer] element to check to scroll-top on
+ * @params {Boolean} [options.showOverlay] if true the dropzone will be displayed in an overlay if its not visible any more or the passed scroll-top is reached
  */
 define([], function() {
 
@@ -51,7 +54,11 @@ define([], function() {
             removeFileCallback: null,
             pluginOptions: {},
             fadeOutDuration: 200, //ms
-            fadeOutDelay: 1500 //ms
+            fadeOutDelay: 1500, //ms
+            showOverlayOnScrollTop: 50,
+            scrollContainer: 'body',
+            overlayTitle: 'sulu.dropzone.overlay-title',
+            showOverlay: true
         },
 
         constants = {
@@ -66,7 +73,7 @@ define([], function() {
         templates = {
             basic: [
                 '<div class="'+ constants.descriptionClass +'">',
-                    '<div class="icon-<%= icon %> icon"></div>',
+                    '<div class="fa-<%= icon %> icon"></div>',
                     '<span class="title"><%= title %></span>',
                     '<span><%= description %></span>',
                 '</div>',
@@ -75,7 +82,7 @@ define([], function() {
             uploadItem: [
                 '<div class="'+ constants.uploadItemClass +'">' +
                     '<div class="loading-content">',
-                        '<div class="icon-<%= cancelIcon %> icon" data-dz-remove></div>',
+                        '<div class="fa-<%= cancelIcon %> icon" data-dz-remove></div>',
                         '<div class="file-size" data-dz-size></div>',
                         '<div class="progress">',
                             '<div class="bar" data-dz-uploadprogress></div>',
@@ -85,7 +92,7 @@ define([], function() {
                         '<div class="image">',
                             '<img data-dz-thumbnail />',
                         '</div>',
-                        '<div class="icon-ok tick"></div>',
+                        '<div class="fa-check tick"></div>',
                     '</div>',
                 '</div>'
             ].join('')
@@ -158,7 +165,9 @@ define([], function() {
             // merge defaults, type defaults and options
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.dropzone = null;
+            this.$dropzone = null;
             this.lastUploadedFile = null;
+            this.overlayOpened = false;
 
             this.render();
             this.bindDomEvents();
@@ -171,23 +180,65 @@ define([], function() {
          */
         bindDomEvents: function() {
             // delegate click on elements children to element
-            this.sandbox.dom.on(this.$find('*'), 'click', function(event) {
+            this.sandbox.dom.on(this.sandbox.dom.find('*', this.$dropzone), 'click', function(event) {
                 this.sandbox.dom.stopPropagation(event);
-                this.sandbox.dom.trigger(this.$el, 'click');
+                this.sandbox.dom.trigger(this.$dropzone, 'click');
             }.bind(this));
+
+            if (this.options.showOverlay) {
+                this.sandbox.dom.on(this.sandbox.dom.$document, 'dragenter', function() {
+                    this.openOverlay();
+                }.bind(this));
+            }
+        },
+
+        /**
+         * Opens the dropzone in an overlay
+         */
+        openOverlay: function() {
+            // open the overlay only if it's not already opened and if the dropzone is not visible
+            if (this.overlayOpened === false) {
+                if (this.sandbox.dom.visible(this.$dropzone) === false ||
+                    this.sandbox.dom.scrollTop(this.options.scrollContainer) > this.options.showOverlayOnScrollTop) {
+
+                    // set height of components element to prevent the site from bumping
+                    this.sandbox.dom.height(this.$el, this.sandbox.dom.outerHeight(this.$el));
+
+                    var $container = this.sandbox.dom.createElement('<div/>');
+                    this.sandbox.dom.append(this.$el, $container);
+                    this.sandbox.start([{
+                        name: 'overlay@husky',
+                        options: {
+                            el: $container,
+                            openOnStart: true,
+                            removeOnClose: true,
+                            data: this.$dropzone,
+                            title: this.options.overlayTitle,
+                            skin: 'dropzone',
+                            closeCallback: function() {
+                                this.sandbox.dom.append(this.$el, this.$dropzone);
+                                this.sandbox.dom.height(this.$el, '');
+                                this.overlayOpened = false;
+                            }.bind(this)
+                        }
+                    }]);
+                    this.overlayOpened = true;
+                }
+            }
         },
 
         /**
          * Renders the component
          */
         render: function() {
-            this.sandbox.dom.addClass(this.$el, constants.contianerClass);
-            this.sandbox.dom.html(this.$el, this.sandbox.util.template(templates.basic)({
+            this.$dropzone = this.sandbox.dom.createElement('<div class="'+ constants.contianerClass +'"/>');
+            this.sandbox.dom.html(this.$dropzone, this.sandbox.util.template(templates.basic)({
                 description: this.sandbox.translate(this.options.descriptionKey),
                 title: this.sandbox.translate(this.options.titleKey),
                 icon: this.options.descriptionIcon,
                 instanceName: this.options.instanceName
             }));
+            this.sandbox.dom.append(this.$el, this.$dropzone);
             this.startDropzone();
         },
 
@@ -205,14 +256,14 @@ define([], function() {
                     previewTemplate: this.sandbox.util.template(templates.uploadItem)({
                         cancelIcon: this.options.cancelLoadingIcon
                     }),
-                    previewsContainer: this.$find('.' + constants.uploadedItemContainerClass)[0],
+                    previewsContainer: this.sandbox.dom.find('.' + constants.uploadedItemContainerClass, this.$dropzone)[0],
                     init: function() {
                         // store dropzone context
                         that.dropzone = this;
 
                         // gets called if file gets added (drop or via the upload window)
                         this.on('addedfile', function(file) {
-                            this.sandbox.dom.addClass(this.$el, constants.droppedClass);
+                            this.sandbox.dom.addClass(this.$dropzone, constants.droppedClass);
 
                             // prevent the the upload window to open on click on the preview item
                             this.sandbox.dom.on(file.previewElement, 'click', function(event) {
@@ -254,14 +305,14 @@ define([], function() {
 
                         // gets called if all files are removed from the zone
                         this.on('reset', function() {
-                            this.sandbox.dom.removeClass(this.$el, constants.droppedClass);
+                            this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
                         }.bind(that));
                     }
                 };
 
             // merge the default plugin options with with passed ones
             this.sandbox.util.extend(true, {}, options, this.options.pluginOptions);
-            this.sandbox.dropzone.initialize(this.$el, options);
+            this.sandbox.dropzone.initialize(this.$dropzone, options);
         },
 
         /**
@@ -274,10 +325,10 @@ define([], function() {
                 this.sandbox.util.delay(
                     function() {
                         this.sandbox.dom.fadeOut(
-                            this.$find('.' + constants.uploadItemClass),
+                            this.sandbox.dom.find('.' + constants.uploadItemClass, this.$dropzone),
                             this.options.fadeOutDuration,
                             function() {
-                                if (this.$find('.' + constants.uploadItemClass + ':animated').length === 0) {
+                                if (this.sandbox.dom.find('.' + constants.uploadItemClass + ':animated', this.$dropzone).length === 0) {
                                     this.afterFadeOut();
                                 }
                             }.bind(this)
@@ -293,7 +344,7 @@ define([], function() {
          * have faded out
          */
         afterFadeOut: function() {
-            this.sandbox.dom.removeClass(this.$el, constants.droppedClass);
+            this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
             this.sandbox.emit(FILES_ADDED.call(this), this.getResponseArray(this.dropzone.files));
         },
 

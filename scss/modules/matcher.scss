@@ -18,10 +18,10 @@ $matcherTransDuration: 0.3s;
     }
 
     &.overflow .wrapper:after {
+        @extend .fa;
         color: $grayLighter;
         font-size: 22px;
-        font-family: $baseIconFont;
-        content: '\e212';
+        content: $fa-var-arrow-right;
         position: absolute;
         right: -35px;
         top: 110px;

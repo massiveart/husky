@@ -7,7 +7,7 @@
             font-size: $baseFontSize;
             padding: 5px 10px 5px 15px;
 
-            .dropdown-toggle {
+            .toggle-icon {
                 right: 15px;
                 top: 5px;
             }
@@ -19,8 +19,8 @@
         padding: 0px 5px 0px 10px;
         line-height: 30px;
         border-radius: $borderRadius;
-        clear: both;
         font-size: $smallFontSize;
+        @include clear-float;
         .checkbox {
             padding-right: 20px;
         }
@@ -28,11 +28,15 @@
             float: left;
             font-size: 15px;
             padding-right: 4px;
+            display: block;
+            line-height: 30px;
         }
-        .dropdown-toggle {
+        .toggle-icon {
             position: absolute;
             top: 0px;
             right: 10px;
+            font-size: 14px;
+            line-height: 30px;
         }
     }
 
@@ -40,13 +44,6 @@
         .dropdown-label {
             background: $grayLighterer;
             color: $gray;
-            cursor: default;
-        }
-        .dropdown-toggle {
-            cursor: default;
-        }
-        .dropdown-toggle:after {
-            border-top-color: $gray;
             cursor: default;
         }
     }
@@ -125,8 +122,8 @@
             font-size: $reallySmallFontSize;
             line-height: 20px;
         }
-        .dropdown-toggle::after {
-            top: 0;
+        .toggle-icon {
+          line-height: 20px;
         }
         .dropdown-list {
             top: 12px;
@@ -151,9 +148,6 @@
         .dropdown-label {
             background: $blue;
             color: $white;
-        }
-        .dropdown-toggle::after {
-            border-top-color: $white;
         }
     }
 

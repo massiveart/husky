@@ -32,44 +32,34 @@
       }
 
       .pagination-prev {
-        padding: 0 13px;
+        padding: 0 13px 0 8px;
         border: 1px solid $grayLighter;
         border-radius: 0 $borderRadius $borderRadius 0;
-        line-height: 28px;
+        line-height: 32px;
         height: 30px;
+        text-align: center;
 
         &::after {
-          content: "";
+          @extend .fa;
+          content: $fa-var-chevron-right;
           display: inline-block;
-          position: relative;
-          top: 3px;
-          left: 0px;
-          width: 0;
-          height: 0;
-          border-top: 7px solid transparent;
-          border-bottom: 7px solid transparent;
-          border-left: 10px solid #000;
+          font-size: 16px;
         }
       }
 
       .pagination-next {
-        padding: 0 13px;
+        padding: 0 13px 0 8px;
         border: 1px solid $grayLighter;
         border-radius: $borderRadius 0 0 $borderRadius;
-        line-height: 28px;
+        line-height: 32px;
         height: 30px;
+        text-align: center;
 
         &::after {
-          content: "";
+          @extend .fa;
+          content: $fa-var-chevron-left;
           display: inline-block;
-          position: relative;
-          top: 3px;
-          left: 0px;
-          width: 0;
-          height: 0;
-          border-top: 7px solid transparent;
-          border-bottom: 7px solid transparent;
-          border-right: 10px solid #000;
+          font-size: 16px;
         }
       }
     }

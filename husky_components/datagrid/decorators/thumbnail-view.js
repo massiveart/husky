@@ -53,7 +53,7 @@ define(function() {
                             '<input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
                             '<span class="icon"></span>',
                         '</div>',
-                        '<div class="icon-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
+                        '<div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
                     '</div>'
             ].join('')
         };
