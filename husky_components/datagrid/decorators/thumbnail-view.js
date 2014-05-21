@@ -133,8 +133,10 @@ define(function() {
                         imgAlt = record[matching.attribute][constants.thumbnailAltProperty];
                     } else if (matching.type === this.datagrid.types.TITLE) {
                         title = record[matching.attribute];
-                    } else {
-                        description.push(record[matching.attribute]);
+                    } else if (matching.type === this.datagrid.types.BYTES) {
+                        description.push(
+                            this.datagrid.manipulateContent.call(this.datagrid, record[matching.attribute], this.datagrid.types.BYTES)
+                        );
                     }
                 }.bind(this));
 

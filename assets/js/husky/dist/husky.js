@@ -29315,8 +29315,10 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
                         imgAlt = record[matching.attribute][constants.thumbnailAltProperty];
                     } else if (matching.type === this.datagrid.types.TITLE) {
                         title = record[matching.attribute];
-                    } else {
-                        description.push(record[matching.attribute]);
+                    } else if (matching.type === this.datagrid.types.BYTES) {
+                        description.push(
+                            this.datagrid.manipulateContent.call(this.datagrid, record[matching.attribute], this.datagrid.types.BYTES)
+                        );
                     }
                 }.bind(this));
 
@@ -30017,7 +30019,8 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             types = {
                 DATE: 'date',
                 THUMBNAIL: 'thumbnail',
-                TITLE: 'title'
+                TITLE: 'title',
+                BYTES: 'bytes'
             },
 
             decorators = {
@@ -30270,6 +30273,21 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     }
                 }
                 return url;
+            },
+
+            /**
+             * Takes bytes and returns a more readable string
+             * @param bytes {Number}
+             * @returns {string}
+             */
+            parseBytes = function(bytes) {
+                if (bytes === 0) {
+                    return '0 Byte';
+                }
+                var k = 1000,
+                sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+                i = Math.floor(Math.log(bytes) / Math.log(k));
+                return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
             },
 
             /**
@@ -30672,11 +30690,13 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * Manipulates the content of a cell with a process realted to the columns type
              * @param content {String} the content of the cell
              * @param type {String} the columns type
-             * @returns {String} the manipualted content
+             * @returns {String} the manipulated content
              */
             manipulateContent: function(content, type) {
                 if (type === types.DATE) {
                     content = parseDate.call(this, content);
+                } else if (type === types.BYTES) {
+                    content = parseBytes.call(this, content);
                 }
                 return content;
             },

@@ -61,6 +61,7 @@ require(['lib/husky'], function(Husky) {
                             width: "25%",
                             id: "content2",
                             editable: false,
+                            type: 'bytes',
                             validation: {
                                 required: true
                             }
@@ -116,6 +117,7 @@ require(['lib/husky'], function(Husky) {
                             width: "25%",
                             id: "content2",
                             editable: false,
+                            type: 'bytes',
                             validation: {
                                 required: true
                             }

@@ -17,7 +17,7 @@
         {
             "id": "1",
             "content1": "B Hallo 1.1",
-            "content2": "C Hallo 1.2",
+            "content2": 23,
             "content3": {
                 "thumb": "http://placehold.it/170x170",
                 "alt": "lorempixel"
@@ -27,7 +27,7 @@
         {
             "id": "2",
             "content1": "A Hallo 1.1",
-            "content2": "B Hallo 1.2",
+            "content2": 234938720390,
             "content3": {
                 "thumb": "http://placehold.it/170x170",
                 "alt": "lorempixel"
@@ -37,7 +37,7 @@
         {
             "id": "3",
             "content1": "C Hallo 1.1",
-            "content2": "D Hallo 1.2",
+            "content2": 10953,
             "content3": {
                 "thumb": "http://placehold.it/170x170",
                 "alt": "lorempixel"
@@ -47,7 +47,7 @@
         {
             "id": "4",
             "content1": "D Hallo 1.1",
-            "content2": "A Hallo 1.2",
+            "content2": 3265489,
             "content3": {
                 "thumb": "http://placehold.it/170x170",
                 "alt": "lorempixel"
