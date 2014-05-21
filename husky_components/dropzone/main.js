@@ -132,15 +132,6 @@ define([], function() {
         },
 
         /**
-         * raised after file got removed from the zone
-         * @event husky.dropzone.<instance-name>.file-remove
-         * @param {Object} the file
-         */
-            FILE_REMOVED = function() {
-            return createEventName.call(this, 'file-removed');
-        },
-
-        /**
          * raised after files got uploaded and faded out from the dropzone
          * @event husky.dropzone.<instance-name>.files-added
          * @param {Array} all newly added files
@@ -298,8 +289,6 @@ define([], function() {
                         this.on('removedfile', function(file) {
                             if (typeof this.options.removeFileCallback === 'function') {
                                 this.options.removeFileCallback(file);
-                            } else {
-                                this.sandbox.emit(FILE_REMOVED.call(this), file);
                             }
                         }.bind(that));
 
@@ -346,6 +335,7 @@ define([], function() {
         afterFadeOut: function() {
             this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
             this.sandbox.emit(FILES_ADDED.call(this), this.getResponseArray(this.dropzone.files));
+            this.dropzone.removeAllFiles();
         },
 
         /**
