@@ -41388,7 +41388,7 @@ define('husky_extensions/util',[],function() {
                 var substrLength;
 
                 // return text if it doesn't need to be cropped
-                if (text.length <= maxLength) {
+                if (!text || text.length <= maxLength) {
                     return text;
                 }
 
