@@ -105,7 +105,8 @@ define(function() {
                             disabled: true,
                             singleSelect: true,
                             instanceName: i,
-                            data: []
+                            data: [],
+                            defaultLabel: this.sandbox.dom.isArray(this.options.defaultLabels) ? this.options.defaultLabels[depth] : this.options.defaultLabels
                         }
                     }
                 ]);
