@@ -29,7 +29,7 @@ define(function() {
         },
 
         bindDOMEvents: function() {
-            sandbox.dom.on(this.$element, 'click', this.toggleIcon.bind(this), 'tbody > tr > td:has(span[class^="icon-"])');
+            sandbox.dom.on(this.$element, 'click', this.toggleIcon.bind(this), 'tbody > tr > td:has(span[class^="fa-"])');
             sandbox.dom.on(this.$element, 'click', this.setRowActive.bind(this), 'tbody > tr > td:last-child');
         },
 
@@ -41,14 +41,14 @@ define(function() {
         toggleIcon: function(event) {
             var $target = event.currentTarget,
                 $tr = sandbox.dom.parent($target),
-                $allTargets = sandbox.dom.find('span[class^="icon-"]', $tr),
+                $allTargets = sandbox.dom.find('span[class^="fa-"]', $tr),
                 $activeTargets,
                 $link = sandbox.dom.find('td:last-child span', $tr);
 
-            $target = sandbox.dom.find('span[class^="icon-"]', $target);
+            $target = sandbox.dom.find('span[class^="fa-"]', $target);
             sandbox.dom.toggleClass($target, activeClass);
 
-            $activeTargets = sandbox.dom.find('span[class^="icon-"].' + activeClass, $tr);
+            $activeTargets = sandbox.dom.find('span[class^="fa-"].' + activeClass, $tr);
             if ($activeTargets.length < $allTargets.length) {
                 sandbox.dom.html($link, this.options.captions.all);
             } else {
@@ -65,8 +65,8 @@ define(function() {
 
         setRowActive: function(event) {
             var $tr = sandbox.dom.parent(event.currentTarget),
-                $targets = sandbox.dom.find('span[class^="icon-"]', $tr),
-                $activeTargets = sandbox.dom.find('span[class^="icon-"].' + activeClass, $tr),
+                $targets = sandbox.dom.find('span[class^="fa-"]', $tr),
+                $activeTargets = sandbox.dom.find('span[class^="fa-"].' + activeClass, $tr),
                 $link = sandbox.dom.find('td:last-child span', $tr);
 
             if ($activeTargets.length < $targets.length) {
@@ -86,7 +86,7 @@ define(function() {
         },
 
         setAllActive: function() {
-            var $targets = sandbox.dom.find('span[class^="icon-"]', this.$element),
+            var $targets = sandbox.dom.find('span[class^="fa-"]', this.$element),
                 $trs = sandbox.dom.find('tbody > tr', this.$element);
             sandbox.dom.addClass($targets, activeClass);
 
@@ -101,7 +101,7 @@ define(function() {
         },
 
         unsetAllActive: function() {
-            var $targets = sandbox.dom.find('span[class^="icon-"]', this.$element),
+            var $targets = sandbox.dom.find('span[class^="fa-"]', this.$element),
                 $trs = sandbox.dom.find('tbody > tr', this.$element);
             sandbox.dom.removeClass($targets, activeClass);
 
@@ -200,7 +200,7 @@ define(function() {
                         title = '';
                     }
                     $span = sandbox.dom.createElement(
-                        '<span ' + title + ' class="icon-' + this.options.values.horizontal[j] + ' pointer"/>'
+                        '<span ' + title + ' class="fa-' + this.options.values.horizontal[j] + ' pointer"/>'
                     );
                     sandbox.dom.data($span, 'value', this.options.values.horizontal[j]);
                     sandbox.dom.data($span, 'section', this.options.values.vertical[i]);

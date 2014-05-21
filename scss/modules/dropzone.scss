@@ -30,9 +30,10 @@
 
     .icon {
       color: $blue;
-      font-size: 62px;
-      line-height: 70px;
-      margin-bottom: 15px;
+      font-size: 72px;
+      line-height: 72px;
+      margin-bottom: 5px;
+      margin-top: 10px;
     }
     .title {
       font-size: $reallyBigFontSize;
@@ -93,6 +94,7 @@
         color: $grayLight;
         font-size: 25px;
         text-align: center;
+        display: block;
         animation: ROTATE-ANIMATION 1s linear 0 infinite;
         -webkit-animation: ROTATE-ANIMATION 1s linear 0 infinite;
         -moz-animation: ROTATE-ANIMATION 1s linear 0 infinite;
@@ -114,6 +116,7 @@
         color: $grayLight;
         font-size: 15px;
         line-height: 15px;
+        display: block;
       }
 
       &.dz-success {

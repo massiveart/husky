@@ -78,8 +78,8 @@ define([], function() {
                 AjaxPushAllItems: false,
                 AjaxPushParameters: null,
                 togglerSelector: '.toggler',
-                arrowDownClass: 'arrow-down',
-                arrowUpClass: 'arrow-up',
+                arrowDownClass: 'fa-caret-down',
+                arrowUpClass: 'fa-caret-up',
                 slideDuration: 500,
                 elementTagDataName: 'tags',
                 autoCompleteIcon: 'tag',
@@ -94,7 +94,7 @@ define([], function() {
                     '        <%= label %>',
                     '            <div class="auto-complete-list">',
                     '                <div class="husky-auto-complete"></div>',
-                    '                <div class="toggler"><span></span></div>',
+                    '                <div class="toggler"></div>',
                     '            </div>',
                     '        </label>',
                     '    </div>'
@@ -527,7 +527,7 @@ define([], function() {
                         $el: this.sandbox.dom.find(this.options.togglerSelector, this.$el),
                         pos: togglerPosUp
                     };
-                    this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowUpClass);
+                    this.sandbox.dom.prependClass(this.toggler.$el, this.options.arrowUpClass);
                 }
             },
 
@@ -574,7 +574,7 @@ define([], function() {
              */
             togglerDown: function() {
                 this.sandbox.dom.removeClass(this.toggler.$el, this.options.arrowUpClass);
-                this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowDownClass);
+                this.sandbox.dom.prependClass(this.toggler.$el, this.options.arrowDownClass);
                 this.toggler.pos = togglerPosDown;
             },
 
@@ -583,7 +583,7 @@ define([], function() {
              */
             togglerUp: function() {
                 this.sandbox.dom.removeClass(this.toggler.$el, this.options.arrowDownClass);
-                this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowUpClass);
+                this.sandbox.dom.prependClass(this.toggler.$el, this.options.arrowUpClass);
                 this.toggler.pos = togglerPosUp;
             },
 

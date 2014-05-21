@@ -61,6 +61,7 @@ require(['lib/husky'], function(Husky) {
                             width: "25%",
                             id: "content2",
                             editable: false,
+                            type: 'bytes',
                             validation: {
                                 required: true
                             }
@@ -116,6 +117,7 @@ require(['lib/husky'], function(Husky) {
                             width: "25%",
                             id: "content2",
                             editable: false,
+                            type: 'bytes',
                             validation: {
                                 required: true
                             }
@@ -154,7 +156,7 @@ require(['lib/husky'], function(Husky) {
                     data: [
                         {
                             id: 'add',
-                            icon: 'user-add',
+                            icon: 'plus-circle',
                             class: 'highlight',
                             group: '0',
                             callback: function() {
@@ -163,7 +165,7 @@ require(['lib/husky'], function(Husky) {
                         },
                         {
                             id: 'delete',
-                            icon: 'bin',
+                            icon: 'trash-o',
                             group: '1',
                             callback: function() {
                                 app.sandbox.emit('sulu.list-toolbar.delete');
@@ -171,7 +173,7 @@ require(['lib/husky'], function(Husky) {
                         },
                         {
                             id: 'settings',
-                            icon: 'cogwheel',
+                            icon: 'gear',
                             group: '1',
                             items: [
                                 {

@@ -55,14 +55,14 @@ define(function() {
             header: [
                 '<div class="column-options-header">',
                 '   <span class="title"><%= title %></span>',
-                '   <a href="#" class="icon-remove2 close-button"></a>',
+                '   <a href="#" class="fa-times close-button"></a>',
                 '</div>'
             ].join('')
         },
 
         iconClasses = {
-            visible: 'icon-half-eye-open',
-            hidden: 'icon-half-eye-close'
+            visible: 'fa-eye',
+            hidden: 'fa-eye-slash'
         },
 
 

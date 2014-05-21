@@ -59,7 +59,8 @@
             types = {
                 DATE: 'date',
                 THUMBNAIL: 'thumbnail',
-                TITLE: 'title'
+                TITLE: 'title',
+                BYTES: 'bytes'
             },
 
             decorators = {
@@ -312,6 +313,21 @@
                     }
                 }
                 return url;
+            },
+
+            /**
+             * Takes bytes and returns a more readable string
+             * @param bytes {Number}
+             * @returns {string}
+             */
+            parseBytes = function(bytes) {
+                if (bytes === 0) {
+                    return '0 Byte';
+                }
+                var k = 1000,
+                sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+                i = Math.floor(Math.log(bytes) / Math.log(k));
+                return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
             },
 
             /**
@@ -714,11 +730,13 @@
              * Manipulates the content of a cell with a process realted to the columns type
              * @param content {String} the content of the cell
              * @param type {String} the columns type
-             * @returns {String} the manipualted content
+             * @returns {String} the manipulated content
              */
             manipulateContent: function(content, type) {
                 if (type === types.DATE) {
                     content = parseDate.call(this, content);
+                } else if (type === types.BYTES) {
+                    content = parseBytes.call(this, content);
                 }
                 return content;
             },

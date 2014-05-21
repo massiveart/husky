@@ -1,0 +1,47 @@
+//
+// Custom Icons which need to by styled separately
+// --------------------------------------------------
+
+.fa-husky-publish {
+    &::after {
+        content: "";
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        border: 3px solid $white;
+        background: $green;
+        font-size: medium!important;
+        margin-bottom: -1px;
+    }
+}
+
+.fa-husky-unpublish {
+   &::after {
+     content: "";
+     display: inline-block;
+     width: 9px;
+     height: 9px;
+     border-radius: 50%;
+     border: 3px solid $white;
+     background: $red;
+     font-size: medium!important;
+     margin-bottom: -1px;
+   }
+ }
+
+.fa-husky-test {
+  &::after {
+    content: "";
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 3px solid $white;
+    background: $yellow;
+    font-size: medium!important;
+    margin-bottom: -1px;
+  }
+}
+
+
