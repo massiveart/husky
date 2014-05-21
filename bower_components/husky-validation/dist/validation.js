@@ -1841,19 +1841,32 @@ define('type/select',[
     return function($el, options) {
         var defaults = {
                 id: 'id',
-                label: 'name'
+                label: 'name',
+                type: 'object'
             },
 
             typeInterface = {
                 setValue: function(value) {
-                    this.$el.val(value[this.options.id]);
+                    if (typeof value === 'object') {
+                        this.$el.val(value[this.options.id]);
+                    } else {
+                        // find option where id == value and set it to selected
+                        this.$el.find('option[id='+value+']').attr('selected','selected');
+                        this.options.type = 'string';
+                    }
                 },
 
                 getValue: function() {
-                    var result = {};
-                    result[this.options.id] = Util.getValue(this.$el);
-                    result[this.options.label] = this.$el.find('option:selected').text();
-                    return result;
+                    if (this.options.type === 'object') {
+                        var result = {};
+                        result[this.options.id] = Util.getValue(this.$el);
+                        result[this.options.label] = this.$el.find('option:selected').text();
+                        return result;
+                    } else {
+                        // return id of selected element
+                        return this.$el.children(':selected').attr('id');
+                    }
+
                 },
 
                 needsValidation: function() {
