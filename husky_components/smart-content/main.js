@@ -750,8 +750,9 @@ define([], function() {
                 this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-left');
 
                 var $element = this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent);
-                this.overlayData.dataSource = item.path;
-                this.sandbox.dom.text($element, this.sandbox.util.cropMiddle(this.overlayData.dataSource, 30, '...'));
+                this.overlayData.dataSource = item.id;
+                this.sandbox.dom.text($element, this.sandbox.util.cropMiddle(item.path, 30, '...'));
+                this.sandbox.dom.data($element, 'id', item.id);
             }.bind(this));
 
             // slide to column navigation by click on the action button
@@ -764,7 +765,7 @@ define([], function() {
          * initialize column navigation
          */
         initColumnNavigation: function() {
-            var url = this.options.columnNavigationUrl.replace('{path}', this.overlayData.dataSource || '/');
+            var url = this.options.columnNavigationUrl.replace('{dataSource}', this.overlayData.dataSource || '');
 
             this.sandbox.start(
                 [
@@ -984,7 +985,7 @@ define([], function() {
             );
 
             //data-source
-            this.overlayData.dataSource = this.sandbox.dom.text(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent));
+            this.overlayData.dataSource = this.sandbox.dom.data(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent), 'id');
 
             //category
             this.sandbox.emit('husky.select.' + this.options.instanceName + constants.categoryDDClass + '.get-checked',
