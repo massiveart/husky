@@ -132,6 +132,14 @@ define([], function() {
         },
 
         /**
+         * listens on and opens the data-source folder-overlay
+         * @event husky.dropzone.<instance-name>.open-data-source
+         */
+            OPEN_DATA_SOURCE = function() {
+            return createEventName.call(this, 'open-data-source');
+        },
+
+        /**
          * raised after files got uploaded and faded out from the dropzone
          * @event husky.dropzone.<instance-name>.files-added
          * @param {Array} all newly added files
@@ -160,6 +168,7 @@ define([], function() {
             this.lastUploadedFile = null;
             this.overlayOpened = false;
 
+            this.bindCustomEvents();
             this.render();
             this.bindDomEvents();
 
@@ -181,6 +190,16 @@ define([], function() {
                     this.openOverlay();
                 }.bind(this));
             }
+        },
+
+        /**
+         * Binds custom-related events
+         */
+        bindCustomEvents: function() {
+            // opens the data-source folder-overlay
+            this.sandbox.on(OPEN_DATA_SOURCE.call(this), function() {
+                this.sandbox.dom.trigger(this.$dropzone, 'click');
+            }.bind(this));
         },
 
         /**
