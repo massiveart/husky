@@ -35550,6 +35550,7 @@ define('__component__$column-navigation@husky',[], function() {
             hasSubName: 'hasSub',
             editIcon: 'icon-edit-pen',
             idName: 'id',
+            pathName: 'path',
             linkedName: 'linked',
             publishedName: 'publishedState',
             titleName: 'title',
@@ -35844,7 +35845,7 @@ define('__component__$column-navigation@husky',[], function() {
                 }
 
                 // needed to select node in last level of nodes
-                if (!!this.options.selected && this.options.selected === value[this.options.idName]) {
+                if (!!this.options.selected && (this.options.selected === value[this.options.idName] || this.options.selected === value[this.options.pathName])) {
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
                     lastSelected = value;
@@ -37404,13 +37405,16 @@ define('__component__$smart-content@husky',[], function() {
          * initialize column navigation
          */
         initColumnNavigation: function() {
+            var url = this.options.columnNavigationUrl.replace('{path}', this.overlayData.dataSource || '/');
+            
             this.sandbox.start(
                 [
                     {
                         name: 'column-navigation@husky',
                         options: {
                             el: '#column-navigation-' + this.options.instanceName + '',
-                            url: this.options.columnNavigationUrl,
+                            url: url,
+                            selected: this.overlayData.dataSource,
                             noPageDescription: 'No Pages',
                             sizeRelativeTo: '.smart-content-overlay .slide-1 .overlay-content',
                             wrapper: {height: 100},

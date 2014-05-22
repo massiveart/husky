@@ -764,13 +764,16 @@ define([], function() {
          * initialize column navigation
          */
         initColumnNavigation: function() {
+            var url = this.options.columnNavigationUrl.replace('{path}', this.overlayData.dataSource || '/');
+
             this.sandbox.start(
                 [
                     {
                         name: 'column-navigation@husky',
                         options: {
                             el: '#column-navigation-' + this.options.instanceName + '',
-                            url: this.options.columnNavigationUrl,
+                            url: url,
+                            selected: this.overlayData.dataSource,
                             noPageDescription: 'No Pages',
                             sizeRelativeTo: '.smart-content-overlay .slide-1 .overlay-content',
                             wrapper: {height: 100},
