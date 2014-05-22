@@ -249,6 +249,20 @@ define(function() {
         downloadHandler: function(id) {
             // not yet implemented
             this.sandbox.logger.warn('Download handler not yet implemented!', id);
+        },
+
+        /**
+         * Removes a data record from the view
+         * @param recordId {Number|String} the records identifier
+         * @returns {Boolean} true if deleted succesfully
+         */
+        removeRecord: function(recordId) {
+            if (!!this.$thumbnails[recordId]) {
+                this.sandbox.dom.remove(this.$thumbnails[recordId]);
+                this.datagrid.removeRecord.call(this.datagrid, recordId);
+                return true;
+            }
+            return false;
         }
     };
 });

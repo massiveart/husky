@@ -4,7 +4,7 @@
  *
  * @param {Object} [paginationOptions] Configuration object
  * @param {Number} [paginationOptions.pageSize] maximum elements per page
- * @param {Function} [paginationOptions.showAllHandler] function to call if pagination is clicked. Default action gets not executed if set
+ * @param {Function} [paginationOptions.showAllHandler] function to call if pagination is clicked. If set pagination will always be displayed. Default action gets not executed if set.
  *
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
@@ -77,7 +77,7 @@ define(function () {
             this.data = data;
 
             this.$paginationContainer = this.sandbox.dom.createElement('<div class="' + constants.paginationClass + '"/>');
-            if (this.data.numberOfAll > this.data.total) {
+            if (this.data.numberOfAll > this.data.total || !!this.options.showAllHandler) {
                 this.renderShowAll();
             } else if (this.data.numberOfAll > this.options.pageSize) {
                 this.renderShowOnly();
@@ -154,7 +154,7 @@ define(function () {
          */
         bindDomEvents: function () {
             this.sandbox.dom.on(this.$paginationContainer, 'click', function() {
-                if (this.data.numberOfAll > this.data.total) {
+                if (this.data.numberOfAll > this.data.total || !!this.options.showAllHandler) {
                     this.showAll();
                 } else {
                     this.showOnly();
