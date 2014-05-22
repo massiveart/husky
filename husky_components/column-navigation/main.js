@@ -54,6 +54,7 @@ define([], function() {
             hasSubName: 'hasSub',
             editIcon: 'icon-edit-pen',
             idName: 'id',
+            pathName: 'path',
             linkedName: 'linked',
             publishedName: 'publishedState',
             titleName: 'title',
@@ -348,7 +349,7 @@ define([], function() {
                 }
 
                 // needed to select node in last level of nodes
-                if (!!this.options.selected && this.options.selected === value[this.options.idName]) {
+                if (!!this.options.selected && (this.options.selected === value[this.options.idName] || this.options.selected === value[this.options.pathName])) {
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
                     lastSelected = value;
