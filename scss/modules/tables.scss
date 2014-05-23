@@ -53,6 +53,10 @@ table {
         td {
             vertical-align: middle;
             font-family: Helvetica, Arial;
+            img {
+              max-height: 50px;
+              max-width: 50px;
+            }
         }
     }
 
