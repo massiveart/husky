@@ -190,6 +190,14 @@ define([], function() {
             },
 
             /**
+             * raised after all item were added
+             * @event husky.auto-complete-list.items-added
+             */
+                ITEMS_ADDED = function() {
+                return createEventName.call(this, 'items-added');
+            },
+
+            /**
              * raised when the suggestion container is closed
              * @event husky.auto-complete-list.sug-closed
              */
@@ -226,7 +234,13 @@ define([], function() {
                 this.initSuggestions();
                 this.initItems();
 
-                this.sandbox.emit(INITIALIZED.call(this));
+                if (this.options.autocomplete === true) {
+                    this.sandbox.on('husky.auto-complete.'+this.options.instanceName+'.initialized', function() {
+                        this.sandbox.emit(INITIALIZED.call(this));
+                    }.bind(this));
+                } else {
+                    this.sandbox.emit(INITIALIZED.call(this));
+                }
             },
 
             /**
@@ -463,7 +477,7 @@ define([], function() {
                     success: function(data) {
                         this.options.items = this.options.items.concat(data[this.options.itemsKey]);
                         this.startPlugins();
-                        DATA_LOADED.call(this); 
+                        DATA_LOADED.call(this);
                     }.bind(this),
 
                     error: function(error) {
@@ -701,6 +715,7 @@ define([], function() {
                 for (var i = -1, length = tags.length; ++i < length;) {
                     this.pushTag(tags[i]);
                 }
+                this.sandbox.emit(ITEMS_ADDED.call(this));
             },
 
             /**
