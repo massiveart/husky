@@ -28011,7 +28011,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             addRowTop: true,
             startTabIndex: 99999,
             excludeFields: [''],
-            columnMinWidth: '70px'
+            columnMinWidth: '70px',
+            thumbnailFormat: '50x50'
         },
 
         constants = {
@@ -28032,7 +28033,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             tableClass: 'table',
             serverValidationError: 'server-validation-error',
             oversizedClass: 'oversized',
-            overflowClass: 'overflow'
+            overflowClass: 'overflow',
+            thumbSrcKey: 'url',
+            thumbAltKey: 'alt'
         },
 
         /**
@@ -28594,11 +28597,11 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
             if (this.options.excludeFields.indexOf(key) < 0) {
                 tblCellClasses = [];
-                tblCellContent = (!!value.thumb) ? '<img alt="' + (value.alt || '') + '" src="' + value.thumb + '"/>' : value;
+                tblCellContent = value;
 
                 // prepare table cell classes
                 !!value.class && tblCellClasses.push(value.class);
-                !!value.thumb && tblCellClasses.push('thumb');
+                (type === this.datagrid.types.THUMBNAILS) && tblCellClasses.push('thumb');
 
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
@@ -28611,7 +28614,12 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
                 // call the type manipulate to manipulate the content of the cell
                 if (!!type) {
-                    tblCellContent = this.datagrid.manipulateContent(tblCellContent, type);
+                    if (type === this.datagrid.types.THUMBNAILS) {
+                        tblCellContent = this.datagrid.manipulateContent(tblCellContent, type, this.options.thumbnailFormat);
+                        tblCellContent = '<img alt="'+ tblCellContent[constants.thumbAltKey] +'" src="'+ tblCellContent[constants.thumbSrcKey] +'"/>';
+                    } else {
+                        tblCellContent = this.datagrid.manipulateContent(tblCellContent, type);
+                    }
                 }
 
                 if (!!editable) {
@@ -29212,7 +29220,9 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
 
     var defaults = {
             large: false,
-            fadeInDuration: 400
+            fadeInDuration: 400,
+            largeThumbnailFormat: '170x170',
+            smallThumbnailFormat: '50x50'
         },
 
         constants = {
@@ -29225,7 +29235,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
             downloadIcon: 'cloud-download',
             checkboxClass: 'checkbox',
             descriptionClass: 'description',
-            thumbnailSrcProperty: 'thumb',
+            thumbnailSrcProperty: 'url',
             thumbnailAltProperty: 'alt',
             idProperty: 'id',
             textClass: 'text',
@@ -29288,6 +29298,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
             this.rendered = false;
             this.data = null;
             this.$el = null;
+            this.thumbnailFormat = null;
 
             // global array to store the dom elements
             this.$thumbnails = {};
@@ -29311,7 +29322,9 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          * @param thumbnails {Array} array with thumbnails to render
          */
         renderThumbnails: function(thumbnails) {
-            var imgSrc, imgAlt, title, description, id;
+            var imgSrc, imgAlt, title, description, id, thumbnail;
+
+            this.thumbnailFormat = (this.options.large === false) ? this.options.smallThumbnailFormat : this.options.largeThumbnailFormat;
 
             // loop through each data record
             this.sandbox.util.foreach(thumbnails, function(record) {
@@ -29323,9 +29336,14 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
 
                     // get the thumbnail and the title data (to place it on top)
                     // with the rest generate a description string
-                    if (matching.type === this.datagrid.types.THUMBNAIL) {
-                        imgSrc = record[matching.attribute][constants.thumbnailSrcProperty];
-                        imgAlt = record[matching.attribute][constants.thumbnailAltProperty];
+                    if (matching.type === this.datagrid.types.THUMBNAILS) {
+                        thumbnail = this.datagrid.manipulateContent.call(this.datagrid,
+                            record[matching.attribute],
+                            this.datagrid.types.THUMBNAILS,
+                            this.thumbnailFormat
+                        );
+                        imgSrc = thumbnail[constants.thumbnailSrcProperty];
+                        imgAlt = thumbnail[constants.thumbnailAltProperty];
                     } else if (matching.type === this.datagrid.types.TITLE) {
                         title = record[matching.attribute];
                     } else if (matching.type === this.datagrid.types.BYTES) {
@@ -30045,7 +30063,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
 
             types = {
                 DATE: 'date',
-                THUMBNAIL: 'thumbnail',
+                THUMBNAILS: 'thumbnails',
                 TITLE: 'title',
                 BYTES: 'bytes'
             },
@@ -30328,6 +30346,24 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     return parsedDate;
                 }
                 return date;
+            },
+
+            /**
+             * Takes an array of thumbnails and returns an object with url and and alt
+             * @param thumbnails {Array} array of thumbnails
+             * @param format {String} the format of the thumbnail
+             * @returns {Object} with url and alt property
+             */
+            parseThumbnails = function(thumbnails, format) {
+                var thumbnail = {
+                    url: null,
+                    alt: null
+                };
+                if (!!thumbnails[format]) {
+                    thumbnail.url = thumbnails[format].url;
+                    thumbnail.alt = thumbnails[format].alt;
+                }
+                return thumbnail;
             };
 
         return {
@@ -30721,13 +30757,16 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * Manipulates the content of a cell with a process realted to the columns type
              * @param content {String} the content of the cell
              * @param type {String} the columns type
+             * @param argument {Number|String} argument to pass to the processor
              * @returns {String} the manipulated content
              */
-            manipulateContent: function(content, type) {
+            manipulateContent: function(content, type, argument) {
                 if (type === types.DATE) {
-                    content = parseDate.call(this, content);
+                    content = parseDate.call(this, content, argument);
                 } else if (type === types.BYTES) {
-                    content = parseBytes.call(this, content);
+                    content = parseBytes.call(this, content, argument);
+                } else if (type === types.THUMBNAILS) {
+                    content = parseThumbnails.call(this, content, argument)
                 }
                 return content;
             },

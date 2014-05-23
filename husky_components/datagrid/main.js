@@ -58,7 +58,7 @@
 
             types = {
                 DATE: 'date',
-                THUMBNAIL: 'thumbnail',
+                THUMBNAILS: 'thumbnails',
                 TITLE: 'title',
                 BYTES: 'bytes'
             },
@@ -341,6 +341,24 @@
                     return parsedDate;
                 }
                 return date;
+            },
+
+            /**
+             * Takes an array of thumbnails and returns an object with url and and alt
+             * @param thumbnails {Array} array of thumbnails
+             * @param format {String} the format of the thumbnail
+             * @returns {Object} with url and alt property
+             */
+            parseThumbnails = function(thumbnails, format) {
+                var thumbnail = {
+                    url: null,
+                    alt: null
+                };
+                if (!!thumbnails[format]) {
+                    thumbnail.url = thumbnails[format].url;
+                    thumbnail.alt = thumbnails[format].alt;
+                }
+                return thumbnail;
             };
 
         return {
@@ -734,13 +752,16 @@
              * Manipulates the content of a cell with a process realted to the columns type
              * @param content {String} the content of the cell
              * @param type {String} the columns type
+             * @param argument {Number|String} argument to pass to the processor
              * @returns {String} the manipulated content
              */
-            manipulateContent: function(content, type) {
+            manipulateContent: function(content, type, argument) {
                 if (type === types.DATE) {
-                    content = parseDate.call(this, content);
+                    content = parseDate.call(this, content, argument);
                 } else if (type === types.BYTES) {
-                    content = parseBytes.call(this, content);
+                    content = parseBytes.call(this, content, argument);
+                } else if (type === types.THUMBNAILS) {
+                    content = parseThumbnails.call(this, content, argument)
                 }
                 return content;
             },
