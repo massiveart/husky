@@ -17,7 +17,9 @@ define(function() {
 
     var defaults = {
             large: false,
-            fadeInDuration: 400
+            fadeInDuration: 400,
+            largeThumbnailFormat: '170x170',
+            smallThumbnailFormat: '50x50'
         },
 
         constants = {
@@ -30,7 +32,7 @@ define(function() {
             downloadIcon: 'cloud-download',
             checkboxClass: 'checkbox',
             descriptionClass: 'description',
-            thumbnailSrcProperty: 'thumb',
+            thumbnailSrcProperty: 'url',
             thumbnailAltProperty: 'alt',
             idProperty: 'id',
             textClass: 'text',
@@ -93,6 +95,7 @@ define(function() {
             this.rendered = false;
             this.data = null;
             this.$el = null;
+            this.thumbnailFormat = null;
 
             // global array to store the dom elements
             this.$thumbnails = {};
@@ -116,7 +119,9 @@ define(function() {
          * @param thumbnails {Array} array with thumbnails to render
          */
         renderThumbnails: function(thumbnails) {
-            var imgSrc, imgAlt, title, description, id;
+            var imgSrc, imgAlt, title, description, id, thumbnail;
+
+            this.thumbnailFormat = (this.options.large === false) ? this.options.smallThumbnailFormat : this.options.largeThumbnailFormat;
 
             // loop through each data record
             this.sandbox.util.foreach(thumbnails, function(record) {
@@ -128,9 +133,14 @@ define(function() {
 
                     // get the thumbnail and the title data (to place it on top)
                     // with the rest generate a description string
-                    if (matching.type === this.datagrid.types.THUMBNAIL) {
-                        imgSrc = record[matching.attribute][constants.thumbnailSrcProperty];
-                        imgAlt = record[matching.attribute][constants.thumbnailAltProperty];
+                    if (matching.type === this.datagrid.types.THUMBNAILS) {
+                        thumbnail = this.datagrid.manipulateContent.call(this.datagrid,
+                            record[matching.attribute],
+                            this.datagrid.types.THUMBNAILS,
+                            this.thumbnailFormat
+                        );
+                        imgSrc = thumbnail[constants.thumbnailSrcProperty];
+                        imgAlt = thumbnail[constants.thumbnailAltProperty];
                     } else if (matching.type === this.datagrid.types.TITLE) {
                         title = record[matching.attribute];
                     } else if (matching.type === this.datagrid.types.BYTES) {
