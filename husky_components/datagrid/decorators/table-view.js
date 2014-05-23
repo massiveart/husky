@@ -45,7 +45,8 @@ define(function() {
             addRowTop: true,
             startTabIndex: 99999,
             excludeFields: [''],
-            columnMinWidth: '70px'
+            columnMinWidth: '70px',
+            thumbnailFormat: '50x50'
         },
 
         constants = {
@@ -66,7 +67,9 @@ define(function() {
             tableClass: 'table',
             serverValidationError: 'server-validation-error',
             oversizedClass: 'oversized',
-            overflowClass: 'overflow'
+            overflowClass: 'overflow',
+            thumbSrcKey: 'url',
+            thumbAltKey: 'alt'
         },
 
         /**
@@ -628,11 +631,11 @@ define(function() {
 
             if (this.options.excludeFields.indexOf(key) < 0) {
                 tblCellClasses = [];
-                tblCellContent = (!!value.thumb) ? '<img alt="' + (value.alt || '') + '" src="' + value.thumb + '"/>' : value;
+                tblCellContent = value;
 
                 // prepare table cell classes
                 !!value.class && tblCellClasses.push(value.class);
-                !!value.thumb && tblCellClasses.push('thumb');
+                (type === this.datagrid.types.THUMBNAILS) && tblCellClasses.push('thumb');
 
                 tblCellClass = (!!tblCellClasses.length) ? 'class="' + tblCellClasses.join(' ') + '"' : '';
 
@@ -645,7 +648,12 @@ define(function() {
 
                 // call the type manipulate to manipulate the content of the cell
                 if (!!type) {
-                    tblCellContent = this.datagrid.manipulateContent(tblCellContent, type);
+                    if (type === this.datagrid.types.THUMBNAILS) {
+                        tblCellContent = this.datagrid.manipulateContent(tblCellContent, type, this.options.thumbnailFormat);
+                        tblCellContent = '<img alt="'+ tblCellContent[constants.thumbAltKey] +'" src="'+ tblCellContent[constants.thumbSrcKey] +'"/>';
+                    } else {
+                        tblCellContent = this.datagrid.manipulateContent(tblCellContent, type);
+                    }
                 }
 
                 if (!!editable) {

@@ -19,8 +19,14 @@
             "content1": "This was the only match found",
             "content2": "This was the only match found",
             "content3": {
-                "thumb": "http://placehold.it/170x170",
-                "alt": "lorempixel"
+                "50x50": {
+                    "url": "http://placehold.it/50x50",
+                    "alt": "lorempixel"
+                },
+                "170x170": {
+                    "url": "http://placehold.it/170x170",
+                    "alt": "lorempixel"
+                }
             },
             "date": "1999-03-19T22:04:29+0100"
         }

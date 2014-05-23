@@ -70,7 +70,7 @@ require(['lib/husky'], function(Husky) {
                             content: 'Content 3',
                             width: "25%",
                             id: "content3",
-                            type: 'thumbnail'
+                            type: 'thumbnails'
                         },
                         {
                             content: 'Date',
@@ -126,7 +126,7 @@ require(['lib/husky'], function(Husky) {
                             content: 'Content 3',
                             width: "25%",
                             id: "content3",
-                            type: 'thumbnail'
+                            type: 'thumbnails'
                         },
                         {
                             content: 'Date',
