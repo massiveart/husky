@@ -34021,6 +34021,23 @@ define('__component__$auto-complete-list@husky',[], function() {
             },
 
             /**
+             * used for setting tags
+             * @event husky.auto-complete-list.set-tags
+             * @param {Array} tags Array of strings
+             */
+                SET_TAGS = function() {
+                return createEventName.call(this, 'set-tags');
+            },
+
+            /**
+             * used for receiving tags
+             * @event husky.auto-complete-list.get-tags
+             */
+                GET_TAGS = function() {
+                return createEventName.call(this, 'get-tags');
+            },
+
+            /**
              * raised after AJAX request for loading items is sent
              * @event husky.auto-complete-list.items-request
              */
@@ -34051,6 +34068,14 @@ define('__component__$auto-complete-list@husky',[], function() {
              */
                 ITEM_DELETED = function() {
                 return createEventName.call(this, 'item-deleted');
+            },
+
+            /**
+             * raised after data was loaded
+             * @event husky.auto-complete-list.data-loaded
+             */
+                DATA_LOADED = function() {
+                return createEventName.call(this, 'data-loaded');
             },
 
             /**
@@ -34229,7 +34254,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * Bind several events
              */
             bindEvents: function() {
-                this.sandbox.on(createEventName.call(this, 'getTags'), function(callback) {
+                this.sandbox.on(GET_TAGS.call(this), function(callback) {
                     if (typeof callback === 'function') {
                         callback(this.getTags());
                     } else {
@@ -34237,7 +34262,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                     }
                 }.bind(this));
 
-                this.sandbox.on(createEventName.call(this, 'set-tags'), function(tags) {
+                this.sandbox.on(SET_TAGS.call(this), function(tags) {
                     this.pushTags(tags);
                 }.bind(this));
 
@@ -34336,6 +34361,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                     success: function(data) {
                         this.options.items = this.options.items.concat(data[this.options.itemsKey]);
                         this.startPlugins();
+                        DATA_LOADED.call(this); 
                     }.bind(this),
 
                     error: function(error) {
