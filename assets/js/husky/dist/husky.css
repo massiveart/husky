@@ -5327,27 +5327,32 @@ table {
   vertical-align: middle;
   font-family: Helvetica, Arial;
 }
-/* line 60, ../scss/modules/tables.scss */
+/* line 56, ../scss/modules/tables.scss */
+.table tbody td img {
+  max-height: 50px;
+  max-width: 50px;
+}
+/* line 64, ../scss/modules/tables.scss */
 .table.is-selectable tr {
   cursor: pointer;
 }
-/* line 62, ../scss/modules/tables.scss */
+/* line 66, ../scss/modules/tables.scss */
 .table.is-selectable tr:hover > td {
   background-color: #fff;
 }
-/* line 67, ../scss/modules/tables.scss */
+/* line 71, ../scss/modules/tables.scss */
 .table.is-selectable thead tr {
   cursor: auto;
 }
-/* line 73, ../scss/modules/tables.scss */
+/* line 77, ../scss/modules/tables.scss */
 .table .thumb {
   text-align: center;
 }
-/* line 76, ../scss/modules/tables.scss */
+/* line 80, ../scss/modules/tables.scss */
 .table .thumb img {
   vertical-align: middle;
 }
-/* line 81, ../scss/modules/tables.scss */
+/* line 85, ../scss/modules/tables.scss */
 .table .remove-row {
   text-align: center;
 }
