@@ -31748,7 +31748,7 @@ define('__component__$matrix@husky',[],function() {
                         title = '';
                     }
                     $span = sandbox.dom.createElement(
-                        '<span ' + title + ' class="fa-' + this.options.values.horizontal[j] + ' pointer"/>'
+                        '<span ' + title + ' class="fa-' + this.options.values.horizontal[j] + ' icon pointer"/>'
                     );
                     sandbox.dom.data($span, 'value', this.options.values.horizontal[j]);
                     sandbox.dom.data($span, 'section', this.options.values.vertical[i]);
