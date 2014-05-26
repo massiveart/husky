@@ -117,8 +117,11 @@
         .ghost {
             background: $accentColor;
             padding: 0 2px;
+            margin-right: 5px;
+            margin-top: 3px;
             color: $white;
             border-radius: $borderRadius;
+            font-size: $reallySmallFontSize;
         }
         .icons-right {
             position: absolute;
@@ -137,6 +140,9 @@
             * {
               line-height: 20px;
             }
+            .ghost {
+              line-height: 15px;
+            }
         }
         .edit {
             background-color: $accentColor;
@@ -145,11 +151,13 @@
             color: $white;
             border-radius: $borderRadius;
             display: none;
+            margin-right: 0;
         }
         .husky-column-navigation-loader {
             position: relative;
             top: 2px;
             left: -2px;
+            padding-left: 2px;
         }
 
           .arrow {
@@ -159,6 +167,7 @@
             vertical-align: middle;
             text-align: right;
             color: $black;
+            margin: 0;
         }
     }
 
