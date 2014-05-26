@@ -276,6 +276,22 @@ define([], function() {
         },
 
         /**
+         * opens the overlay
+         * @event husky.overlay.<instance-name>.open
+         */
+        OPEN = function() {
+            return createEventName.call(this, 'open');
+        },
+
+        /**
+         * closes the overlay
+         * @event husky.overlay.<instance-name>.close
+         */
+        CLOSE = function() {
+            return createEventName.call(this, 'close');
+        },
+
+        /**
          * emited after the language changer is changed
          * @event husky.overlay.<instance-name>.language-changed
          * @param {String} selected language
@@ -380,6 +396,8 @@ define([], function() {
 
             this.sandbox.on(OKBUTTON_ACTIVATE.call(this), this.activateOkButtons.bind(this));
             this.sandbox.on(OKBUTTON_DEACTIVATE.call(this), this.deactivateOkButtons.bind(this));
+            this.sandbox.on(OPEN.call(this), this.triggerHandler.bind(this));
+            this.sandbox.on(CLOSE.call(this), this.closeHandler.bind(this));
 
             // emit language-changed-event when language dropdown gets changed
             this.sandbox.on('husky.select.' + this.options.instanceName + '.selected.item', function(localeIndex) {
@@ -883,7 +901,9 @@ define([], function() {
          * @param event
          */
         closeHandler: function(event) {
-            this.sandbox.dom.preventDefault(event);
+            if (!!event) {
+                this.sandbox.dom.preventDefault(event);
+            }
             if (this.executeCallback(this.slides[this.activeSlide].closeCallback) !== false) {
                 this.closeOverlay();
             }
