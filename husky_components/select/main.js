@@ -305,14 +305,14 @@ define([], function() {
             if (items.length > 0) {
                 if (typeof(items[0]) === 'string') {
                     this.sandbox.util.each(items, function(index, value) {
-                        this.addDropdownElement(index, value);
+                        this.addDropdownElement(index, this.sandbox.translate(value));
                     }.bind(this));
                 } else if (typeof(items[0]) === 'object') {
                     this.sandbox.util.each(items, function(index, value) {
                         if (value.divider === true) {
                             this.addDivider();
                         } else {
-                            this.addDropdownElement(value.id, value[this.options.valueName], !!value.disabled, value.callback, value.updateLabel);
+                            this.addDropdownElement(value.id, this.sandbox.translate(value[this.options.valueName]), !!value.disabled, value.callback, this.sandbox.translate(value.updateLabel));
                         }
 
                     }.bind(this));
