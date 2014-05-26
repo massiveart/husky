@@ -132,12 +132,11 @@ define([], function() {
         },
 
         /**
-         * raised after file got removed from the zone
-         * @event husky.dropzone.<instance-name>.file-remove
-         * @param {Object} the file
+         * listens on and opens the data-source folder-overlay
+         * @event husky.dropzone.<instance-name>.open-data-source
          */
-            FILE_REMOVED = function() {
-            return createEventName.call(this, 'file-removed');
+            OPEN_DATA_SOURCE = function() {
+            return createEventName.call(this, 'open-data-source');
         },
 
         /**
@@ -169,6 +168,7 @@ define([], function() {
             this.lastUploadedFile = null;
             this.overlayOpened = false;
 
+            this.bindCustomEvents();
             this.render();
             this.bindDomEvents();
 
@@ -190,6 +190,16 @@ define([], function() {
                     this.openOverlay();
                 }.bind(this));
             }
+        },
+
+        /**
+         * Binds custom-related events
+         */
+        bindCustomEvents: function() {
+            // opens the data-source folder-overlay
+            this.sandbox.on(OPEN_DATA_SOURCE.call(this), function() {
+                this.sandbox.dom.trigger(this.$dropzone, 'click');
+            }.bind(this));
         },
 
         /**
@@ -298,8 +308,6 @@ define([], function() {
                         this.on('removedfile', function(file) {
                             if (typeof this.options.removeFileCallback === 'function') {
                                 this.options.removeFileCallback(file);
-                            } else {
-                                this.sandbox.emit(FILE_REMOVED.call(this), file);
                             }
                         }.bind(that));
 
@@ -346,6 +354,7 @@ define([], function() {
         afterFadeOut: function() {
             this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
             this.sandbox.emit(FILES_ADDED.call(this), this.getResponseArray(this.dropzone.files));
+            this.dropzone.removeAllFiles();
         },
 
         /**

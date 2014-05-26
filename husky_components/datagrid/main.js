@@ -58,8 +58,9 @@
 
             types = {
                 DATE: 'date',
-                THUMBNAIL: 'thumbnail',
-                TITLE: 'title'
+                THUMBNAILS: 'thumbnails',
+                TITLE: 'title',
+                BYTES: 'bytes'
             },
 
             decorators = {
@@ -315,6 +316,21 @@
             },
 
             /**
+             * Takes bytes and returns a more readable string
+             * @param bytes {Number}
+             * @returns {string}
+             */
+            parseBytes = function(bytes) {
+                if (bytes === 0) {
+                    return '0 Byte';
+                }
+                var k = 1000,
+                sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+                i = Math.floor(Math.log(bytes) / Math.log(k));
+                return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
+            },
+
+            /**
              * Brings a date into the right format
              * @param date {String} the date to parse
              * @returns {String}
@@ -325,6 +341,24 @@
                     return parsedDate;
                 }
                 return date;
+            },
+
+            /**
+             * Takes an array of thumbnails and returns an object with url and and alt
+             * @param thumbnails {Array} array of thumbnails
+             * @param format {String} the format of the thumbnail
+             * @returns {Object} with url and alt property
+             */
+            parseThumbnails = function(thumbnails, format) {
+                var thumbnail = {
+                    url: null,
+                    alt: null
+                };
+                if (!!thumbnails[format]) {
+                    thumbnail.url = thumbnails[format].url;
+                    thumbnail.alt = thumbnails[format].alt;
+                }
+                return thumbnail;
             };
 
         return {
@@ -498,9 +532,10 @@
              * Displays a loading icon
              */
             loading: function() {
-                this.$element
-                    .outerWidth(this.$element.outerWidth())
-                    .outerHeight(this.$element.outerHeight());
+                if (this.sandbox.dom.is(this.$element, ':visible')) {
+                    this.sandbox.dom.height(this.$element, this.sandbox.dom.outerHeight(this.$element));
+                    this.sandbox.dom.width(this.$element, this.sandbox.dom.outerWidth(this.$element));
+                }
 
                 this.sandbox.dom.addClass(this.$element, 'loading');
 
@@ -530,7 +565,10 @@
             stopLoading: function() {
                 this.sandbox.dom.hide(this.$loader);
                 this.sandbox.dom.removeClass(this.$element, 'loading');
-                return this.$element.outerHeight('').outerWidth('');
+
+                this.sandbox.dom.height(this.$element, '');
+                this.sandbox.dom.width(this.$element, '');
+                return this.$element;
             },
 
             /**
@@ -714,11 +752,16 @@
              * Manipulates the content of a cell with a process realted to the columns type
              * @param content {String} the content of the cell
              * @param type {String} the columns type
-             * @returns {String} the manipualted content
+             * @param argument {Number|String} argument to pass to the processor
+             * @returns {String} the manipulated content
              */
-            manipulateContent: function(content, type) {
+            manipulateContent: function(content, type, argument) {
                 if (type === types.DATE) {
-                    content = parseDate.call(this, content);
+                    content = parseDate.call(this, content, argument);
+                } else if (type === types.BYTES) {
+                    content = parseBytes.call(this, content, argument);
+                } else if (type === types.THUMBNAILS) {
+                    content = parseThumbnails.call(this, content, argument)
                 }
                 return content;
             },
@@ -853,6 +896,7 @@
                         this.pushRecords([recordData]);
                     }
                     this.gridViews[this.viewId].addRecord(recordData);
+                    this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
             },
 
@@ -869,6 +913,7 @@
                         }
                         this.gridViews[this.viewId].addRecord(record);
                     }.bind(this));
+                    this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
             },
 
@@ -878,6 +923,7 @@
             removeRecordHandler: function(recordId) {
                 if (!!this.gridViews[this.viewId].removeRecord) {
                     this.gridViews[this.viewId].removeRecord(recordId);
+                    this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
             },
 

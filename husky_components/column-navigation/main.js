@@ -475,7 +475,7 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'mouseenter', this.showOptions.bind(this), '.column');
             this.sandbox.dom.on(this.$el, 'click', this.addNode.bind(this), '#' + this.addId);
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
-            this.sandbox.dom.on(this.$el, 'dblclick', this.editNode.bind(this), 'li');
+            this.sandbox.dom.on(this.$el, 'dblclick', this.editNode.bind(this), '.edit');
 
             this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
                 this.setContainerHeight();
@@ -803,7 +803,7 @@ define([], function() {
                 // type (ghost, shadow)
                 if (!!data[this.options.typeName]) {
                     if (data[this.options.typeName].name === 'ghost') {
-                        item.push('<span class="ghost pull-left m-right-5">', data[this.options.typeName].value, '</span>');
+                        item.push('<span class="ghost pull-left">', data[this.options.typeName].value, '</span>');
                     } else if (data[this.options.typeName].name === 'shadow') {
                         item.push('<span class="fa-share pull-left m-right-5"></span>');
                     }

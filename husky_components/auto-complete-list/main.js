@@ -123,6 +123,23 @@ define([], function() {
             },
 
             /**
+             * used for setting tags
+             * @event husky.auto-complete-list.set-tags
+             * @param {Array} tags Array of strings
+             */
+                SET_TAGS = function() {
+                return createEventName.call(this, 'set-tags');
+            },
+
+            /**
+             * used for receiving tags
+             * @event husky.auto-complete-list.get-tags
+             */
+                GET_TAGS = function() {
+                return createEventName.call(this, 'get-tags');
+            },
+
+            /**
              * raised after AJAX request for loading items is sent
              * @event husky.auto-complete-list.items-request
              */
@@ -156,12 +173,28 @@ define([], function() {
             },
 
             /**
+             * raised after data was loaded
+             * @event husky.auto-complete-list.data-loaded
+             */
+                DATA_LOADED = function() {
+                return createEventName.call(this, 'data-loaded');
+            },
+
+            /**
              * raised after an item is added
              * @event husky.auto-complete-list.item-added
              * @param {string} item value
              */
                 ITEM_ADDED = function() {
                 return createEventName.call(this, 'item-added');
+            },
+
+            /**
+             * raised after all item were added
+             * @event husky.auto-complete-list.items-added
+             */
+                ITEMS_ADDED = function() {
+                return createEventName.call(this, 'items-added');
             },
 
             /**
@@ -201,7 +234,13 @@ define([], function() {
                 this.initSuggestions();
                 this.initItems();
 
-                this.sandbox.emit(INITIALIZED.call(this));
+                if (this.options.autocomplete === true) {
+                    this.sandbox.on('husky.auto-complete.'+this.options.instanceName+'.initialized', function() {
+                        this.sandbox.emit(INITIALIZED.call(this));
+                    }.bind(this));
+                } else {
+                    this.sandbox.emit(INITIALIZED.call(this));
+                }
             },
 
             /**
@@ -331,7 +370,7 @@ define([], function() {
              * Bind several events
              */
             bindEvents: function() {
-                this.sandbox.on(createEventName.call(this, 'getTags'), function(callback) {
+                this.sandbox.on(GET_TAGS.call(this), function(callback) {
                     if (typeof callback === 'function') {
                         callback(this.getTags());
                     } else {
@@ -339,7 +378,7 @@ define([], function() {
                     }
                 }.bind(this));
 
-                this.sandbox.on(createEventName.call(this, 'set-tags'), function(tags) {
+                this.sandbox.on(SET_TAGS.call(this), function(tags) {
                     this.pushTags(tags);
                 }.bind(this));
 
@@ -438,6 +477,7 @@ define([], function() {
                     success: function(data) {
                         this.options.items = this.options.items.concat(data[this.options.itemsKey]);
                         this.startPlugins();
+                        DATA_LOADED.call(this);
                     }.bind(this),
 
                     error: function(error) {
@@ -675,6 +715,7 @@ define([], function() {
                 for (var i = -1, length = tags.length; ++i < length;) {
                     this.pushTag(tags[i]);
                 }
+                this.sandbox.emit(ITEMS_ADDED.call(this));
             },
 
             /**

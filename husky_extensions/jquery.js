@@ -130,7 +130,7 @@
             };
 
             app.core.dom.height = function(selector, value) {
-                if (!value) {
+                if (typeof value === 'undefined') {
                     return $(selector).height();
                 }
                 return $(selector).height(value);
@@ -141,6 +141,14 @@
                     return $(selector).outerHeight();
                 } else {
                     return $(selector).outerHeight(includeMargin);
+                }
+            };
+
+            app.core.dom.outerWidth = function(selector, includeMargin) {
+                if (typeof includeMargin === 'undefined') {
+                    return $(selector).outerWidth();
+                } else {
+                    return $(selector).outerWidth(includeMargin);
                 }
             };
 
