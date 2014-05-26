@@ -196,6 +196,14 @@
  * @params {Boolean} [options.subFoldersDisabled] if true sub-folders overlay-item will be disabled
  * @params {Boolean} [options.tagsDisabled] if true tags overlay-item will be disabled
  * @params {Boolean} [options.limitResultDisabled] if true limit-result overlay-item will be disabled
+ * @params {Boolean} [options.translations.externalConfigs] if true component waits for external config object
+ * @params {String} [options.columnNavigationUrl] url for column navigation
+ * @params {Boolean} [options.hideDataSource] if true data-source selection hidden
+ * @params {Boolean} [options.hideCategories] if true categories hidden
+ * @params {Boolean} [options.hideTags] if true tags hidden
+ * @params {Boolean} [options.hideSortBy] if true sort by hidden
+ * @params {Boolean} [options.hidePresentAs] if true present as hidden
+ * @params {Boolean} [options.hideLimit] if true limit hidden
  *
  * @params {Object} [options.translations] object that gets merged with the default translation-keys
  * @params {String} [options.translations.noContentFound] translation key
@@ -203,7 +211,8 @@
  * @params {String} [options.translations.visible] translation key
  * @params {String} [options.translations.of] translation key
  * @params {String} [options.translations.configureSmartContent] translation key
- * @params {String} [options.translations.dataSource] translation key
+ * @params {String} [options.translations.dataSourceLabel] translation key
+ * @params {String} [options.translations.dataSourceButton] translation key
  * @params {String} [options.translations.includeSubFolders] translation key
  * @params {String} [options.translations.filterByCategory] translation key
  * @params {String} [options.translations.filterByTags] translation key
@@ -215,12 +224,13 @@
  * @params {String} [options.translations.limitResultTo] translation key
  * @params {String} [options.translations.noCategory] translation key
  * @params {String} [options.translations.choosePresentAs] translation key
- * @params {String} [options.translations.chooseDataSource] translation key
  * @params {String} [options.translations.from] translation key
  * @params {String} [options.translations.subFoldersInclusive] translation key
  * @params {String} [options.translations.viewAll] translation key
  * @params {String} [options.translations.viewLess] translation key
- * @params {Boolean} [options.translations.externalConfigs] if true component waits for external config object
+ * @params {String} [options.translations.chooseDataSource] translation key
+ * @params {String} [options.translations.chooseDataSourceOk] translation key
+ * @params {String} [options.translations.chooseDataSourceCancel] translation key
  */
 define([], function() {
 
@@ -257,7 +267,14 @@ define([], function() {
             resultKey: &#x27;_embedded&#x27;,
             translations: {},
             elementDataName: &#x27;smart-content&#x27;,
-            externalConfigs: false
+            externalConfigs: false,
+            columnNavigationUrl: &#x27;&#x27;,
+            hideDataSource: false,
+            hideCategories: false,
+            hideTags: false,
+            hideSortBy: false,
+            hidePresentAs: false,
+            hideLimit: false
         },
 
         sortMethods = {
@@ -286,7 +303,7 @@ define([], function() {
         },
 
         /** templates for component */
-            templates = {
+        templates = {
             skeleton: [
                 &#x27;&lt;div class=&quot;smart-content-container form-element&quot;&gt;&#x27;,
                 &#x27;&lt;div class=&quot;smart-header&quot;&gt;&lt;/div&gt;&#x27;,
@@ -312,54 +329,73 @@ define([], function() {
                 &#x27;&lt;/li&gt;&#x27;
             ].join(&#x27;&#x27;),
             overlayContent: {
-                main: [&#x27;&lt;div class=&quot;smart-overlay-content&quot;&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;),
+                main: [
+                    &#x27;&lt;div class=&quot;smart-overlay-content&quot;&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;
+                ].join(&#x27;&#x27;),
 
-                dataSource: [&#x27;&lt;div class=&quot;item-half left&quot;&gt;&#x27;,
-                    &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= dataSourceStr %&gt;&lt;/span&gt;&#x27;,
-                    &#x27;&lt;input type=&quot;text&quot; value=&quot;&lt;%= dataSourceValStr %&gt;&quot; class=&quot;data-source form-element&quot;/&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;),
+                dataSource: [
+                    &#x27;&lt;div class=&quot;item-half left&quot;&gt;&#x27;,
+                        &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= dataSourceLabelStr %&gt;&lt;/span&gt;&#x27;,
+                        &#x27;&lt;div class=&quot;btn action fit&quot; id=&quot;select-data-source-action&quot;&gt;&lt;%= dataSourceButtonStr %&gt;&lt;/div&gt;&#x27;,
+                        &#x27;&lt;div&gt;&lt;span class=&quot;sublabel&quot;&gt;&lt;%= dataSourceLabelStr %&gt;:&lt;/span&gt; &lt;span class=&quot;sublabel data-source&quot;&gt;&lt;%= dataSourceValStr %&gt;&lt;/span&gt;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;
+                ].join(&#x27;&#x27;),
 
-                subFolders: [&#x27;&lt;div class=&quot;item-half&quot;&gt;&#x27;,
-                    &#x27;&lt;div class=&quot;check&lt;%= disabled %&gt;&quot;&gt;&#x27;,
-                    &#x27;&lt;label&gt;&#x27;,
-                    &#x27;&lt;div class=&quot;custom-checkbox&quot;&gt;&#x27;,
-                        &#x27;&lt;input type=&quot;checkbox&quot; class=&quot;includeSubCheck form-element&quot;&lt;%= includeSubCheckedStr %&gt;/&gt;&#x27;,
-                        &#x27;&lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;,
-                    &#x27;&lt;span class=&quot;description&quot;&gt;&lt;%= includeSubStr %&gt;&lt;/span&gt;&#x27;,
-                    &#x27;&lt;/label&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;),
+                subFolders: [
+                    &#x27;&lt;div class=&quot;item-half&quot;&gt;&#x27;,
+                        &#x27;&lt;div class=&quot;check&lt;%= disabled %&gt;&quot;&gt;&#x27;,
+                        &#x27;&lt;label&gt;&#x27;,
+                            &#x27;&lt;div class=&quot;custom-checkbox&quot;&gt;&#x27;,
+                                &#x27;&lt;input type=&quot;checkbox&quot; class=&quot;includeSubCheck form-element&quot;&lt;%= includeSubCheckedStr %&gt;/&gt;&#x27;,
+                                &#x27;&lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
+                            &#x27;&lt;/div&gt;&#x27;,
+                            &#x27;&lt;span class=&quot;description&quot;&gt;&lt;%= includeSubStr %&gt;&lt;/span&gt;&#x27;,
+                        &#x27;&lt;/label&gt;&#x27;,
+                        &#x27;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;
+                ].join(&#x27;&#x27;),
 
-                categories: [&#x27;&lt;div class=&quot;item full&quot;&gt;&#x27;,
+                categories: [
+                    &#x27;&lt;div class=&quot;item full&quot;&gt;&#x27;,
                     &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= filterByCatStr %&gt;&lt;/span&gt;&#x27;,
-                    &#x27;&lt;div class=&quot;&#x27; + constants.categoryDDClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;),
+                        &#x27;&lt;div class=&quot;&#x27; + constants.categoryDDClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;
+                ].join(&#x27;&#x27;),
 
-                tagList: [&#x27;&lt;div class=&quot;item full tags&lt;%= disabled %&gt;&quot;&gt;&#x27;,
+                tagList: [
+                    &#x27;&lt;div class=&quot;item full tags&lt;%= disabled %&gt;&quot;&gt;&#x27;,
                     &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= filterByTagsStr %&gt;&lt;/span&gt;&#x27;,
-                    &#x27;&lt;div class=&quot;&#x27; + constants.tagListClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;),
+                        &#x27;&lt;div class=&quot;&#x27; + constants.tagListClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;
+                ].join(&#x27;&#x27;),
 
-                sortBy: [&#x27;&lt;div class=&quot;item-half left&quot;&gt;&#x27;,
+                sortBy: [
+                    &#x27;&lt;div class=&quot;item-half left&quot;&gt;&#x27;,
                     &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= sortByStr %&gt;&lt;/span&gt;&#x27;,
-                    &#x27;&lt;div class=&quot;&#x27; + constants.sortByDDClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;),
+                        &#x27;&lt;div class=&quot;&#x27; + constants.sortByDDClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;
+                ].join(&#x27;&#x27;),
 
-                sortMethod: [&#x27;&lt;div class=&quot;item-half&quot;&gt;&#x27;,
-                    &#x27;&lt;div class=&quot;&#x27; + constants.sortMethodDDClass + &#x27; sortMethod&quot;&gt;&lt;/div&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;),
+                sortMethod: [
+                    &#x27;&lt;div class=&quot;item-half&quot;&gt;&#x27;,
+                        &#x27;&lt;div class=&quot;&#x27; + constants.sortMethodDDClass + &#x27; sortMethod&quot;&gt;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;
+                ].join(&#x27;&#x27;),
 
-                presentAs: [&#x27;&lt;div class=&quot;item-half left&quot;&gt;&#x27;,
-                    &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= presentAsStr %&gt;&lt;/span&gt;&#x27;,
-                    &#x27;&lt;div class=&quot;&#x27; + constants.presentAsDDClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;),
+                presentAs: [
+                    &#x27;&lt;div class=&quot;item-half left&quot;&gt;&#x27;,
+                        &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= presentAsStr %&gt;&lt;/span&gt;&#x27;,
+                        &#x27;&lt;div class=&quot;&#x27; + constants.presentAsDDClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;
+                ].join(&#x27;&#x27;),
 
-                limitResult: [&#x27;&lt;div class=&quot;item-half&quot;&gt;&#x27;,
-                    &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= limitResultToStr %&gt;&lt;/span&gt;&#x27;,
-                    &#x27;&lt;input type=&quot;text&quot; value=&quot;&lt;%= limitResult %&gt;&quot; class=&quot;limit-to form-element&quot;&lt;%= disabled %&gt;/&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;)
+                limitResult: [
+                    &#x27;&lt;div class=&quot;item-half&quot;&gt;&#x27;,
+                        &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= limitResultToStr %&gt;&lt;/span&gt;&#x27;,
+                        &#x27;&lt;input type=&quot;text&quot; value=&quot;&lt;%= limitResult %&gt;&quot; class=&quot;limit-to form-element&quot;&lt;%= disabled %&gt;/&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;
+                ].join(&#x27;&#x27;)
             }
         },
 
@@ -367,13 +403,13 @@ define([], function() {
          * namespace for events
          * @type {string}
          */
-            eventNamespace = &#x27;husky.smart-content.&#x27;,
+        eventNamespace = &#x27;husky.smart-content.&#x27;,
 
         /**
          * raised after initialization process
          * @event husky.smart-content.initialize
          */
-            INITIALIZED = function() {
+        INITIALIZED = function() {
             return createEventName.call(this, &#x27;initialize&#x27;);
         },
 
@@ -381,7 +417,7 @@ define([], function() {
          * raised when all overlay components returned their value
          * @event husky.smart-content.input-retrieved
          */
-            INPUT_RETRIEVED = function() {
+        INPUT_RETRIEVED = function() {
             return createEventName.call(this, &#x27;input-retrieved&#x27;);
         },
 
@@ -389,7 +425,7 @@ define([], function() {
          * raised before data is requested with AJAX
          * @event husky.smart-content.data-request
          */
-            DATA_REQUEST = function() {
+        DATA_REQUEST = function() {
             return createEventName.call(this, &#x27;data-request&#x27;);
         },
 
@@ -397,7 +433,7 @@ define([], function() {
          * raised when data has returned from the ajax request
          * @event husky.smart-content.data-retrieved
          */
-            DATA_RETRIEVED = function() {
+        DATA_RETRIEVED = function() {
             return createEventName.call(this, &#x27;data-retrieved&#x27;);
         },
 
@@ -405,7 +441,7 @@ define([], function() {
          * raised when the overlay data has been changed
          * @event husky.smart-content.data-changed
          */
-            DATA_CHANGED = function() {
+        DATA_CHANGED = function() {
             return createEventName.call(this, &#x27;data-changed&#x27;);
         },
 
@@ -414,7 +450,7 @@ define([], function() {
          * (options.externalConfigs has to be true)
          * @event husky.smart-content.external-configs
          */
-            EXTERNAL_CONFIGS = function() {
+        EXTERNAL_CONFIGS = function() {
             return createEventName.call(this, &#x27;external-configs&#x27;);
         },
 
@@ -423,12 +459,12 @@ define([], function() {
          * it uses the new configs
          * @event husky.smart-content.set-configs
          */
-            SET_CONFIGS = function() {
+        SET_CONFIGS = function() {
             return createEventName.call(this, &#x27;set-configs&#x27;);
         },
 
         /** returns normalized event names */
-            createEventName = function(postFix) {
+        createEventName = function(postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + &#x27;.&#x27; : &#x27;&#x27;) + postFix;
         };
 
@@ -498,7 +534,8 @@ define([], function() {
                 visible: &#x27;smart-content.visible&#x27;,
                 of: &#x27;smart-content.of&#x27;,
                 configureSmartContent: &#x27;smart-content.configure-smart-content&#x27;,
-                dataSource: &#x27;smart-content.data-source&#x27;,
+                dataSourceLabel: &#x27;smart-content.data-source.label&#x27;,
+                dataSourceButton: &#x27;smart-content.data-source.button&#x27;,
                 includeSubFolders: &#x27;smart-content.include-sub-folders&#x27;,
                 filterByCategory: &#x27;smart-content.filter-by-category&#x27;,
                 filterByTags: &#x27;smart-content.filter-by-tags&#x27;,
@@ -513,7 +550,10 @@ define([], function() {
                 from: &#x27;smart-content.from&#x27;,
                 subFoldersInclusive: &#x27;smart-content.sub-folders-inclusive&#x27;,
                 viewAll: &#x27;smart-content.view-all&#x27;,
-                viewLess: &#x27;smart-content.view-less&#x27;
+                viewLess: &#x27;smart-content.view-less&#x27;,
+                chooseDataSource: &#x27;smart-content.choose-data-source&#x27;,
+                chooseDataSourceOk: &#x27;smart-content.choose-data-source.ok&#x27;,
+                chooseDataSourceCancel: &#x27;smart-content.choose-data-source.cancel&#x27;
             };
 
             this.translations = this.sandbox.util.extend(true, {}, this.translations, this.options.translations);
@@ -674,8 +714,8 @@ define([], function() {
 
             this.sandbox.dom.html(this.$footer, [
                 &#x27;&lt;span&gt;&#x27;,
-                &#x27;&lt;strong&gt;&#x27; + this.itemsVisible + &#x27; &lt;/strong&gt;&#x27;, this.sandbox.translate(this.translations.of) , &#x27; &#x27;,
-                &#x27;&lt;strong&gt;&#x27; + this.items.length + &#x27; &lt;/strong&gt;&#x27;, this.sandbox.translate(this.translations.visible),
+                    &#x27;&lt;strong&gt;&#x27; + this.itemsVisible + &#x27; &lt;/strong&gt;&#x27;, this.sandbox.translate(this.translations.of) , &#x27; &#x27;,
+                    &#x27;&lt;strong&gt;&#x27; + this.items.length + &#x27; &lt;/strong&gt;&#x27;, this.sandbox.translate(this.translations.visible),
                 &#x27;&lt;/span&gt;&#x27;
             ].join(&#x27;&#x27;));
 
@@ -691,12 +731,12 @@ define([], function() {
             if (this.itemsVisible &lt; this.items.length) {
                 this.sandbox.dom.append(
                     this.$footer,
-                    &#x27;&lt;span class=&quot;&#x27; + constants.viewTogglerClass + &#x27;&quot;&gt;(&#x27; + this.sandbox.translate(this.translations.viewAll) + &#x27;)&lt;/span&gt;&#x27;
+                        &#x27;&lt;span class=&quot;&#x27; + constants.viewTogglerClass + &#x27;&quot;&gt;(&#x27; + this.sandbox.translate(this.translations.viewAll) + &#x27;)&lt;/span&gt;&#x27;
                 );
             } else if (this.items.length &gt; this.options.visibleItems) {
                 this.sandbox.dom.append(
                     this.$footer,
-                    &#x27;&lt;span class=&quot;&#x27; + constants.viewTogglerClass + &#x27;&quot;&gt;(&#x27; + this.sandbox.translate(this.translations.viewLess) + &#x27;)&lt;/span&gt;&#x27;
+                        &#x27;&lt;span class=&quot;&#x27; + constants.viewTogglerClass + &#x27;&quot;&gt;(&#x27; + this.sandbox.translate(this.translations.viewLess) + &#x27;)&lt;/span&gt;&#x27;
                 );
             }
         },
@@ -807,16 +847,102 @@ define([], function() {
                         triggerEl: this.$button,
                         el: $element,
                         container: this.$el,
-                        data: this.$overlayContent,
-                        title: this.sandbox.translate(this.translations.configureSmartContent),
                         instanceName: &#x27;smart-content.&#x27; + this.options.instanceName,
-                        okCallback: function() {
-                            this.itemsVisible = this.options.visibleItems;
-                            this.getOverlayData();
-                        }.bind(this)
+                        skin: &#x27;wide&#x27;,
+                        slides: [
+                            {
+                                title: this.sandbox.translate(this.translations.configureSmartContent),
+                                data: this.$overlayContent,
+                                okCallback: function() {
+                                    this.itemsVisible = this.options.visibleItems;
+                                    this.getOverlayData();
+                                }.bind(this)
+                            },
+                            {
+                                title: this.sandbox.translate(this.translations.chooseDataSource),
+                                data: &#x27;&lt;div id=&quot;column-navigation-&#x27; + this.options.instanceName + &#x27;&quot;/&gt;&#x27;,
+                                cssClass: &#x27;column-navigation-slide&#x27;,
+                                okInactive: true,
+                                okDefaultText: this.sandbox.translate(this.translations.chooseDataSourceOk),
+                                cancelDefaultText: this.sandbox.translate(this.translations.chooseDataSourceCancel),
+                                buttons: [
+                                    {
+                                        type: &#x27;ok&#x27;,
+                                        inactive: false,
+                                        align: &#x27;right&#x27;
+                                    },
+                                    {
+                                        type: &#x27;cancel&#x27;,
+                                        inactive: false,
+                                        align: &#x27;left&#x27;
+                                    }
+                                ],
+                                okCallback: function() {
+                                    this.sandbox.emit(&#x27;husky.overlay.smart-content.&#x27; + this.options.instanceName + &#x27;.slide-left&#x27;);
+                                    this.overlayData.dataSource = this.selectedDataSourceItem.path;
+                                    this.sandbox.dom.text(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent), this.overlayData.dataSource);
+                                    return false;
+                                }.bind(this),
+                                closeCallback: function() {
+                                    this.sandbox.emit(&#x27;husky.overlay.smart-content.&#x27; + this.options.instanceName + &#x27;.slide-left&#x27;);
+                                    this.selectedDataSourceItem = null;
+                                    return false;
+                                }.bind(this)
+                            }
+                        ]
                     }
                 }
             ]);
+
+            this.bindColumnNavigationEvents();
+        },
+
+        /**
+         * column navigation events
+         */
+        bindColumnNavigationEvents: function() {
+            // init column navigation after initialize of overlay
+            this.sandbox.on(&#x27;husky.overlay.smart-content.&#x27; + this.options.instanceName + &#x27;.initialized&#x27;, this.initColumnNavigation.bind(this));
+
+            // adopt height of column navigation once
+            this.sandbox.once(&#x27;husky.overlay.smart-content.&#x27; + this.options.instanceName + &#x27;.opened&#x27;, function() {
+                // set height of smart-content column navigation slide (missing margins)
+                var height = this.sandbox.dom.outerHeight(&#x27;.smart-content-overlay .slide-1 .overlay-content&#x27;) + 24;
+                this.sandbox.dom.css(&#x27;.smart-content-overlay .slide-1 .overlay-content&#x27;, &#x27;height&#x27;, height + &#x27;px&#x27;);
+            }.bind(this));
+
+            // activate button OK when a page is selected
+            this.sandbox.on(&#x27;husky.column-navigation.selected&#x27;, function(item) {
+                this.sandbox.emit(&#x27;husky.overlay.smart-content.&#x27; + this.options.instanceName + &#x27;.okbutton.activate&#x27;);
+                this.selectedDataSourceItem = item;
+            }.bind(this));
+
+            // slide to column navigation by click on the action button
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, function() {
+                this.sandbox.emit(&#x27;husky.overlay.smart-content.&#x27; + this.options.instanceName + &#x27;.slide-right&#x27;);
+            }.bind(this), &#x27;#select-data-source-action&#x27;);
+        },
+
+        /**
+         * initialize column navigation
+         */
+        initColumnNavigation: function() {
+            this.sandbox.start(
+                [
+                    {
+                        name: &#x27;column-navigation@husky&#x27;,
+                        options: {
+                            el: &#x27;#column-navigation-&#x27; + this.options.instanceName + &#x27;&#x27;,
+                            url: this.options.columnNavigationUrl,
+                            noPageDescription: &#x27;No Pages&#x27;,
+                            sizeRelativeTo: &#x27;.smart-content-overlay .slide-1 .overlay-content&#x27;,
+                            wrapper: {height: 100},
+                            showEdit: false,
+                            showStatus: false
+                        }
+                    }
+                ]
+            );
         },
 
         /**
@@ -826,39 +952,52 @@ define([], function() {
 
             this.$overlayContent = this.sandbox.dom.createElement(_.template(templates.overlayContent.main)());
 
-            this.$overlayContent.append(_.template(templates.overlayContent.dataSource)({
-                dataSourceStr: this.sandbox.translate(this.translations.dataSource),
-                dataSourceValStr: this.options.dataSource
-            }));
-            this.$overlayContent.append(_.template(templates.overlayContent.subFolders)({
-                includeSubStr: this.sandbox.translate(this.translations.includeSubFolders),
-                includeSubCheckedStr: (this.options.includeSubFolders) ? &#x27; checked&#x27; : &#x27;&#x27;,
-                disabled: (this.overlayDisabled.subFolders) ? &#x27; disabled&#x27; : &#x27;&#x27;
-            }));
-            this.$overlayContent.append(&#x27;&lt;div class=&quot;clear&quot;&gt;&lt;/div&gt;&#x27;);
-            this.$overlayContent.append(_.template(templates.overlayContent.categories)({
-                filterByCatStr: this.sandbox.translate(this.translations.filterByCategory)
-            }));
-            this.$overlayContent.append(_.template(templates.overlayContent.tagList)({
-                filterByTagsStr: this.sandbox.translate(this.translations.filterByTags),
-                disabled: (this.overlayDisabled.tags) ? &#x27; disabled&#x27; : &#x27;&#x27;
-            }));
-            this.$overlayContent.append(_.template(templates.overlayContent.sortBy)({
-                sortByStr: this.sandbox.translate(this.translations.sortBy)
-            }));
-            this.$overlayContent.append(_.template(templates.overlayContent.sortMethod)({
-                filterByTagsStr: this.sandbox.translate(this.translations.filterByTags)
-            }));
+            if (!this.options.hideDataSource) {
+                this.$overlayContent.append(_.template(templates.overlayContent.dataSource)({
+                    dataSourceLabelStr: this.sandbox.translate(this.translations.dataSourceLabel),
+                    dataSourceButtonStr: this.sandbox.translate(this.translations.dataSourceButton),
+                    dataSourceValStr: this.options.dataSource
+                }));
+                this.$overlayContent.append(_.template(templates.overlayContent.subFolders)({
+                    includeSubStr: this.sandbox.translate(this.translations.includeSubFolders),
+                    includeSubCheckedStr: (this.options.includeSubFolders) ? &#x27; checked&#x27; : &#x27;&#x27;,
+                    disabled: (this.overlayDisabled.subFolders) ? &#x27; disabled&#x27; : &#x27;&#x27;
+                }));
+                this.$overlayContent.append(&#x27;&lt;div class=&quot;clear&quot;&gt;&lt;/div&gt;&#x27;);
+            }
+            if (!this.options.hideCategories) {
+                this.$overlayContent.append(_.template(templates.overlayContent.categories)({
+                    filterByCatStr: this.sandbox.translate(this.translations.filterByCategory)
+                }));
+            }
+            if (!this.options.hideTags) {
+                this.$overlayContent.append(_.template(templates.overlayContent.tagList)({
+                    filterByTagsStr: this.sandbox.translate(this.translations.filterByTags),
+                    disabled: (this.overlayDisabled.tags) ? &#x27; disabled&#x27; : &#x27;&#x27;
+                }));
+            }
+            if (!this.options.hideSortBy) {
+                this.$overlayContent.append(_.template(templates.overlayContent.sortBy)({
+                    sortByStr: this.sandbox.translate(this.translations.sortBy)
+                }));
+                this.$overlayContent.append(_.template(templates.overlayContent.sortMethod)({
+                    filterByTagsStr: this.sandbox.translate(this.translations.filterByTags)
+                }));
+            }
             this.$overlayContent.append(&#x27;&lt;div class=&quot;clear&quot;&gt;&lt;/div&gt;&#x27;);
 
-            this.$overlayContent.append(_.template(templates.overlayContent.presentAs)({
-                presentAsStr: this.sandbox.translate(this.translations.presentAs)
-            }));
-            this.$overlayContent.append(_.template(templates.overlayContent.limitResult)({
-                limitResultToStr: this.sandbox.translate(this.translations.limitResultTo),
-                limitResult: (this.options.limitResult &gt; 0) ? this.options.limitResult : &#x27;&#x27;,
-                disabled: (this.overlayDisabled.limitResult) ? &#x27; disabled&#x27; : &#x27;&#x27;
-            }));
+            if (!this.options.hidePresentAs) {
+                this.$overlayContent.append(_.template(templates.overlayContent.presentAs)({
+                    presentAsStr: this.sandbox.translate(this.translations.presentAs)
+                }));
+            }
+            if (!this.options.hideLimit) {
+                this.$overlayContent.append(_.template(templates.overlayContent.limitResult)({
+                    limitResultToStr: this.sandbox.translate(this.translations.limitResultTo),
+                    limitResult: (this.options.limitResult &gt; 0) ? this.options.limitResult : &#x27;&#x27;,
+                    disabled: (this.overlayDisabled.limitResult) ? &#x27; disabled&#x27; : &#x27;&#x27;
+                }));
+            }
             this.$overlayContent.append(&#x27;&lt;div class=&quot;clear&quot;&gt;&lt;/div&gt;&#x27;);
         },
 
@@ -1001,7 +1140,7 @@ define([], function() {
             );
 
             //data-source
-            this.overlayData.dataSource = this.sandbox.dom.val(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent));
+            this.overlayData.dataSource = this.sandbox.dom.text(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent));
 
             //category
             this.sandbox.emit(&#x27;husky.select.&#x27; + this.options.instanceName + constants.categoryDDClass + &#x27;.getChecked&#x27;,

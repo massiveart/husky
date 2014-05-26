@@ -110,6 +110,19 @@
 }
 
 .smart-content-overlay {
+    .column-navigation-slide {
+        .overlay-header {
+            margin-bottom: 1px;
+        }
+        .overlay-content {
+            margin: 0px;
+        }
+
+        .overlay-footer {
+            margin: 0px;
+        }
+    }
+
     .overlay-header {
         margin-bottom: 15px;
     }
@@ -139,9 +152,13 @@
         color: $black;
         font-size: $smallFontSize;
     }
+    .sublabel {
+        font-size: $reallySmallFontSize;
+        color: $grayLight;
+    }
     .item-half {
         float: left;
-        width: 170px;
+        width: 270px;
     }
     .item {
         padding-right: 20px;

@@ -384,7 +384,6 @@ define([], function() {
 
                 this.sandbox.on(ITEM_ADDED.call(this), function() {
                     this.setElementDataTags();
-                    console.log(this.getTags());
                     this.sandbox.emit('husky.auto-complete.' + this.options.instanceName + '.set-excludes', this.getTags());
                 }.bind(this));
 
