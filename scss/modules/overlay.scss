@@ -1,6 +1,7 @@
 //
 // Overlay
 // --------------------------------------------------
+@import "compass/css3/transition";
 
 .husky-overlay-container {
     width: $overlayContainerWidth;
@@ -11,6 +12,7 @@
     border: 1px solid $grayLight;
     z-index: 1000;
     border-radius: $borderRadius;
+    overflow: hidden;
     @include standard-box-shadow;
 
     &.right-aligned {
@@ -19,7 +21,11 @@
     }
 
     &.wide {
-        width: $overlayContainerWidthWide
+        width: $overlayContainerWidthWide;
+
+        .slides .slide {
+            width: $overlayContainerWidthWide;
+        }
     }
 
     &.dropzone {
@@ -57,6 +63,18 @@
             }
         }
     }
+
+    .slides {
+        width: 1000px;
+        position: relative;
+        left: 0px;
+        @include single-transition(left, 500ms);
+
+        .slide {
+            float: left;
+            width: $overlayContainerWidth;
+        }
+    }
 }
 
 .overlay-header {
@@ -68,7 +86,6 @@
     .title {
         color: $grayLight;
         font-size: 23px;
-        padding-right: 10px;
         vertical-align: text-top;
         display: block;
         padding: 15px 40px 10px 20px;

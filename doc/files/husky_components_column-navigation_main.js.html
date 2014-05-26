@@ -183,7 +183,9 @@
  * @params {String} [options.typeName] name of type-key
  * @params {String} [options.titleName] name of title-key
  * @params {Number} [options.visibleRatio] minimum ratio of how much of a column must be visible to display the navigation
- *
+ * @params {String} [options.sizeRelativeTo] dom object which is used to calculate height / width (default $window)
+ * @params {Boolean} [options.showEdit] hide or display edit elements
+ * @params {Boolean} [options.showStatus] hide or display status of elements
  */
 define([], function() {
 
@@ -208,7 +210,10 @@ define([], function() {
             titleName: &#x27;title&#x27;,
             typeName: &#x27;type&#x27;,
             minVisibleRatio: 1 / 2,
-            noPageDescription: &#x27;public.no-pages&#x27;
+            noPageDescription: &#x27;public.no-pages&#x27;,
+            sizeRelativeTo: null,
+            showEdit: true,
+            showStatus: true
         },
 
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
@@ -217,20 +222,20 @@ define([], function() {
          * namespace for events
          * @type {string}
          */
-            eventNamespace = &#x27;husky.column-navigation.&#x27;,
+        eventNamespace = &#x27;husky.column-navigation.&#x27;,
 
         /**
          * @event husky.column-navigation.loaded
          * @description the component has loaded everything successfully and will be rendered
          */
-            LOADED = eventNamespace + &#x27;loaded&#x27;,
+        LOADED = eventNamespace + &#x27;loaded&#x27;,
 
         /**
          * @event husky.column-navigation.selected
          * @description an navigation element has been selected
          * @param {Object} selected object
          */
-            SELECTED = eventNamespace + &#x27;selected&#x27;,
+        SELECTED = eventNamespace + &#x27;selected&#x27;,
 
         /**
          * @event husky.column-navigation.settings
@@ -238,33 +243,43 @@ define([], function() {
          * @param {Object} selected column navigation object
          * @param {Object} clicked dropdown item
          */
-            SETTINGS = eventNamespace + &#x27;settings&#x27;,
+        SETTINGS = eventNamespace + &#x27;settings&#x27;,
 
         /**
          * @event husky.column-navigation.add
          * @description the add button has been clicked
          * @param {Object} parent object from active column level
          */
-            ADD = eventNamespace + &#x27;add&#x27;,
+        ADD = eventNamespace + &#x27;add&#x27;,
 
         /**
          * @event husky.column-navigation.edit
          * @description the edit icon has been clicked
          * @param {Object} clicked object
          */
-            EDIT = eventNamespace + &#x27;edit&#x27;,
+        EDIT = eventNamespace + &#x27;edit&#x27;,
 
         /**
          * @event husky.column-navigation.get-breadcrumb
          * @description the breadcrumb will be returned
          * @param {Function} callback function which will process the breadcrumb objects
          */
-            BREADCRUMB = eventNamespace + &#x27;get-breadcrumb&#x27;;
+        BREADCRUMB = eventNamespace + &#x27;get-breadcrumb&#x27;,
+
+        /**
+         * @event husky.column-navigation.resize
+         * @description the element will be resized
+         * @param {Function} callback function which will process the breadcrumb objects
+         */
+        RESIZE = eventNamespace + &#x27;resize&#x27;;
 
     return {
 
         initialize: function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
+            // default relative
+            this.options.sizeRelativeTo = this.options.sizeRelativeTo || this.sandbox.dom.$window;
 
             this.$element = this.sandbox.dom.$(this.options.el);
             this.$selectedElement = null;
@@ -302,14 +317,16 @@ define([], function() {
             // options container - add and settings button
             this.addId = this.options.instanceName + &quot;-column-navigation-add&quot;;
             this.settingsId = this.options.instanceName + &quot;-column-navigation-settings&quot;;
-            this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer.call(this, this.options.column.width));
-            $add = this.sandbox.dom.$(this.template.options.add(this.addId));
-            $settings = this.sandbox.dom.$(this.template.options.settings(this.settingsId));
-            this.sandbox.dom.append(this.$optionsContainer, $add);
-            this.sandbox.dom.append(this.$optionsContainer, $settings);
 
-            this.hideOptions();
-            this.sandbox.dom.append($wrapper, this.$optionsContainer);
+            if (!!this.options.showEdit) {
+                this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer.call(this, this.options.column.width));
+                $add = this.sandbox.dom.$(this.template.options.add(this.addId));
+                $settings = this.sandbox.dom.$(this.template.options.settings(this.settingsId));
+                this.sandbox.dom.append(this.$optionsContainer, $add);
+                this.sandbox.dom.append(this.$optionsContainer, $settings);
+                this.hideOptions();
+                this.sandbox.dom.append($wrapper, this.$optionsContainer);
+            }
 
             this.setContainerHeight();
             this.setContainerMinWidth();
@@ -355,8 +372,12 @@ define([], function() {
          * Sets the height of the container
          */
         setContainerHeight: function() {
+            var height = this.sandbox.dom.height(this.options.sizeRelativeTo),
+                top = this.sandbox.dom.offset(this.$el).top - (this.options.sizeRelativeTo !== this.sandbox.dom.$window ? this.sandbox.dom.offset(this.options.sizeRelativeTo).top : 0);
+            top = top &lt; 0 ? 0 : top;
+
             this.sandbox.dom.height(
-                this.$columnContainer, (this.sandbox.dom.height(window) - this.sandbox.dom.offset(this.$columnContainer).top) * this.options.wrapper.height / 100
+                this.$columnContainer, (height - top) * this.options.wrapper.height / 100
             );
         },
 
@@ -668,6 +689,12 @@ define([], function() {
             this.sandbox.on(BREADCRUMB, this.getBreadCrumb.bind(this));
 
             this.sandbox.on(&#x27;husky.dropdown.&#x27; + this.options.instanceName + &#x27;.settings.dropdown.item.click&#x27;, this.dropdownItemClicked.bind(this));
+
+            this.sandbox.on(RESIZE, function() {
+                this.setContainerHeight();
+                this.setContainerMaxWidth();
+                this.setOverflowClass();
+            }.bind(this));
         },
 
         dropdownItemClicked: function(item) {
@@ -718,7 +745,7 @@ define([], function() {
         showOptionsAtLast: function() {
             var $lastColumn = this.sandbox.dom.last(this.sandbox.dom.find(&#x27;.column&#x27;, this.$columnContainer));
             this.showOptions({
-               currentTarget: $lastColumn
+                currentTarget: $lastColumn
             });
         },
 
@@ -848,8 +875,12 @@ define([], function() {
          * Sets the max width of the container
          */
         setContainerMaxWidth: function() {
+            var width = this.sandbox.dom.width(this.options.sizeRelativeTo),
+                left = (this.options.sizeRelativeTo === this.sandbox.dom.$window ? this.sandbox.dom.offset(this.$el).left : 0);
+
+
             this.sandbox.dom.css(this.$el, {
-                &#x27;max-width&#x27;: this.sandbox.dom.width(this.sandbox.dom.$window) - this.sandbox.dom.offset(this.$el).left - this.options.paddingLeft + &#x27;px&#x27;
+                &#x27;max-width&#x27;: width - left - this.options.paddingLeft + &#x27;px&#x27;
             });
         },
 
@@ -938,38 +969,40 @@ define([], function() {
 
             noPage: function(description) {
                 return [&#x27;&lt;div class=&quot;no-page&quot;&gt;&#x27;,
-                            &#x27;&lt;span class=&quot;icon-file&quot;&gt;&lt;/span&gt;&#x27;,
-                            &#x27;&lt;div class=&quot;text&quot;&gt;&#x27;, description ,&#x27;&lt;/div&gt;&#x27;,
-                        &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
+                    &#x27;&lt;span class=&quot;icon-file&quot;&gt;&lt;/span&gt;&#x27;,
+                    &#x27;&lt;div class=&quot;text&quot;&gt;&#x27;, description , &#x27;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
             },
 
             item: function(width, data) {
 
                 var item = [&#x27;&lt;li data-id=&quot;&#x27;, data[this.options.idName], &#x27;&quot; class=&quot;pointer&quot;&gt;&#x27;];
 
-                // icons left
-                item.push(&#x27;&lt;span class=&quot;icons-left&quot;&gt;&#x27;);
-                // link
-                if (!!data[this.options.linkedName]) {
-                    if (data[this.options.linkedName] === &#x27;internal&#x27;) {
-                        item.push(&#x27;&lt;span class=&quot;icon-internal-link pull-left m-right-5&quot;&gt;&lt;/span&gt;&#x27;);
-                    } else if (data[this.options.linkedName] === &#x27;external&#x27;) {
-                        item.push(&#x27;&lt;span class=&quot;icon-external-link pull-left m-right-5&quot;&gt;&lt;/span&gt;&#x27;);
+                if (!!this.options.showStatus) {
+                    // icons left
+                    item.push(&#x27;&lt;span class=&quot;icons-left&quot;&gt;&#x27;);
+                    // link
+                    if (!!data[this.options.linkedName]) {
+                        if (data[this.options.linkedName] === &#x27;internal&#x27;) {
+                            item.push(&#x27;&lt;span class=&quot;icon-internal-link pull-left m-right-5&quot;&gt;&lt;/span&gt;&#x27;);
+                        } else if (data[this.options.linkedName] === &#x27;external&#x27;) {
+                            item.push(&#x27;&lt;span class=&quot;icon-external-link pull-left m-right-5&quot;&gt;&lt;/span&gt;&#x27;);
+                        }
                     }
-                }
 
-                // type (ghost, shadow)
-                if (!!data[this.options.typeName]) {
-                    if (data[this.options.typeName].name === &#x27;ghost&#x27;) {
-                        item.push(&#x27;&lt;span class=&quot;ghost pull-left m-right-5&quot;&gt;&#x27;, data[this.options.typeName].value, &#x27;&lt;/span&gt;&#x27;);
-                    } else if (data[this.options.typeName].name === &#x27;shadow&#x27;) {
-                        item.push(&#x27;&lt;span class=&quot;icon-shadow-node pull-left m-right-5&quot;&gt;&lt;/span&gt;&#x27;);
+                    // type (ghost, shadow)
+                    if (!!data[this.options.typeName]) {
+                        if (data[this.options.typeName].name === &#x27;ghost&#x27;) {
+                            item.push(&#x27;&lt;span class=&quot;ghost pull-left m-right-5&quot;&gt;&#x27;, data[this.options.typeName].value, &#x27;&lt;/span&gt;&#x27;);
+                        } else if (data[this.options.typeName].name === &#x27;shadow&#x27;) {
+                            item.push(&#x27;&lt;span class=&quot;icon-shadow-node pull-left m-right-5&quot;&gt;&lt;/span&gt;&#x27;);
+                        }
                     }
-                }
 
-                // published
-                if (!data[this.options.publishedName]) {
-                    item.push(&#x27;&lt;span class=&quot;not-published pull-left m-right-5&quot;&gt;&amp;bull;&lt;/span&gt;&#x27;);
+                    // published
+                    if (!data[this.options.publishedName]) {
+                        item.push(&#x27;&lt;span class=&quot;not-published pull-left m-right-5&quot;&gt;&amp;bull;&lt;/span&gt;&#x27;);
+                    }
                 }
                 item.push(&#x27;&lt;/span&gt;&#x27;);
 
@@ -982,7 +1015,9 @@ define([], function() {
 
                 // icons right (subpage, edit)
                 item.push(&#x27;&lt;span class=&quot;icons-right&quot;&gt;&#x27;);
-                item.push(&#x27;&lt;span class=&quot;icon-edit-pen edit hidden pull-left&quot;&gt;&lt;/span&gt;&#x27;);
+                if (!!this.options.showEdit) {
+                    item.push(&#x27;&lt;span class=&quot;icon-edit-pen edit hidden pull-left&quot;&gt;&lt;/span&gt;&#x27;);
+                }
                 !!data[this.options.hasSubName] ? item.push(&#x27;&lt;span class=&quot;icon-chevron-right arrow inactive pull-left&quot;&gt;&lt;/span&gt;&#x27;) : &#x27;&#x27;;
                 item.push(&#x27;&lt;/span&gt;&lt;/li&gt;&#x27;);
                 return item.join(&#x27;&#x27;);
