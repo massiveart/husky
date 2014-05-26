@@ -3656,7 +3656,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   display: none;
 }
 /* line 42, ../scss/modules/overlay.scss */
-.husky-overlay-container.draggable .overlay-header {
+.husky-overlay-container .draggable .overlay-header {
   cursor: move;
   user-select: none;
   -moz-user-select: none;

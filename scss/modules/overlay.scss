@@ -38,7 +38,7 @@
         }
     }
 
-    &.draggable {
+    .draggable {
         .overlay-header {
             cursor: move;
             @include user-select(none);
