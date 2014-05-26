@@ -25854,14 +25854,21 @@ define('type/husky-select',[
             typeInterface = {
                 setValue: function(data) {
 
-                    if(!data){
+                    if(data === undefined){
                         return;
                     }
 
-                    this.$el.data({
-                        'selection': data[this.options.id],
-                        'selectionValues': data[this.options.label]
-                    }).trigger('data-changed');
+
+                    if(typeof data === 'object') {
+                        this.$el.data({
+                            'selection': data[this.options.id],
+                            'selectionValues': data[this.options.label]
+                        }).trigger('data-changed');
+                    } else {
+                        this.$el.data({
+                            'selection': data
+                        }).trigger('data-changed');
+                    }
                 },
 
                 getValue: function() {
