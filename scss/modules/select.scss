@@ -60,6 +60,13 @@
         z-index: 2000;
         border-radius: $borderRadius;
 
+        .divider {
+            max-width: 100%;
+            height: 1px;
+            background-color: #ccc;
+            margin: 0;
+        }
+
         &.top {
             top: inherit;
             bottom: 5px;

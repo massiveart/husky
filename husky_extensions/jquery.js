@@ -435,8 +435,12 @@
                 $(selector).animate(properties, options);
             };
 
+            app.core.dom.empty = function(selector){
+              $(selector).empty();
+            };
+
             /**
-             * Awesome visible method. Returns true if any part of a given element is not visible
+             * Awesome visible method. Returns false if any part of a given element is not visible
              * Method is copied and slightly adapted from https://github.com/teamdf/jquery-visible/
              * @param selector {Stirng|Object} element selector or jquery dom object
              * @param partial {Boolean} if true only returns false if every part of the element is not visible

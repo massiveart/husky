@@ -112,6 +112,7 @@
                         '<textarea></textarea>' +
                 '</div>';
 
+
                 App = app;
 
                 app.start([
@@ -125,8 +126,10 @@
                                     closeCallback: function() {
                                         console.log('You clicked on close');
                                     },
-                                    okCallback: function() {
-                                        console.log('You clicked on ok');
+                                    okCallback: function(data) {
+                                        console.log('You clicked on ok - another');
+                                        console.log('returned data ', data)
+                                        console.log($(data).find('h3').text());
                                     }
                                 }
                             },
@@ -149,8 +152,10 @@
                                     closeCallback: function() {
                                         console.log('You clicked on close');
                                     },
-                                    okCallback: function() {
-                                        console.log('You clicked on ok');
+                                    okCallback: function(data) {
+                                        console.log('You clicked on ok - another');
+                                        console.log('returned data ', data)
+                                        console.log($(data).find('h3').text());
                                     }
                                 }
                             },
@@ -165,8 +170,10 @@
                                     closeCallback: function() {
                                         console.log('You clicked on close');
                                     },
-                                    okCallback: function() {
-                                        console.log('You clicked on ok');
+                                    okCallback: function(data) {
+                                        console.log('You clicked on ok - another');
+                                        console.log('returned data ', data)
+                                        console.log($(data).find('h3').text());
                                     }
                                 }
                             },
@@ -184,8 +191,10 @@
                                     closeCallback: function() {
                                         console.log('You clicked on close');
                                     },
-                                    okCallback: function() {
-                                        console.log('You clicked on ok');
+                                    okCallback: function(data) {
+                                        console.log('You clicked on ok - another');
+                                        console.log('returned data ', data)
+                                        console.log($(data).find('h3').text());
                                     }
                                 }
                             }
@@ -216,8 +225,10 @@
                                             closeCallback: function() {
                                                 console.log('You clicked on close');
                                             },
-                                            okCallback: function() {
-                                                console.log('You clicked on ok');
+                                            okCallback: function(data) {
+                                                console.log('You clicked on ok - another');
+                                                console.log('returned data ', data)
+                                                console.log($(data).find('h3').text());
                                             }
                                         }
                                     }
@@ -239,8 +250,10 @@
                                             closeCallback: function() {
                                                 console.log('You clicked on close');
                                             },
-                                            okCallback: function() {
-                                                console.log('You clicked on ok');
+                                            okCallback: function(data) {
+                                                console.log('You clicked on ok - another');
+                                                console.log('returned data ', data)
+                                                console.log($(data).find('h3').text());
                                             }
                                         }
                                     }

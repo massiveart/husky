@@ -59,7 +59,9 @@
             </tr>
             <tr>
                 <td>
-                    <div class="grid-col-11" id="ddms5"></div>
+                    <form id="mylittleform">
+                        <div class="grid-col-11" id="ddms5" data-type-label="category" data-mapper-property="dropdown" data-type="husky-select" data-form="true"></div>
+                    </form>
                 </td>
                 <td>
                     <div class="grid-col-11" id="ddms6"></div>
@@ -89,9 +91,32 @@
                     <div class="grid-col-6" id="actionSelectSingle"></div>
                 </td>
             </tr>
-            <tr>
-                <td><button id="toggleState">toggle state of button 7</button></td>
-            </tr>
+                <tr>
+                    <td>
+                        <button id="toggleState">toggle state of button 7</button>
+                    </td>
+                    <td>
+                        <button id="update">update</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <button id="changeData5">change data ddms 5</button>
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <button id="setDataDDMS5">set data ddms 5</button>
+                    </td>
+                    <td>
+                        <button id="getDataDDMS5">get data ddms 5</button>
+                    </td>
+                </tr>
             </tbody>
         </table>
 
@@ -118,14 +143,19 @@
 
 <script>
     require.config({
-        baseUrl: '../../'
+        baseUrl: '../../',
+        paths: {
+            "form": "bower_components/husky-validation/dist/validation",
+            "type/husky-select": "husky_components/select/select-type"
+        }
     });
 
-    require(['lib/husky'], function(Husky) {
+    require(['lib/husky', 'form'], function(Husky, Form) {
         'use strict';
 
         var app = Husky({ debug: { enable: true }}),
                 _ = app.sandbox.util._,
+                form = new Form($('#mylittleform')),
                 state7 = 0;
 
         app.start([
@@ -136,7 +166,6 @@
                             instanceName: 'ddms',
                             multipleSelect: true,
                             defaultLabel: 'Please choose ...',
-                            value: 'name',
                             data: ['Deutsch', 'English', 'Spanish', 'Italienisch'],
                             preSelectedElements: ['Deutsch', 'English', 'Italienisch']
                         }
@@ -148,7 +177,7 @@
                             instanceName: 'ddms2',
                             multipleSelect: true,
                             defaultLabel: 'Please choose ...',
-                            value: 'name',
+                            valueName: 'name',
                             data: [
                                 {id: 0, name: 'Deutsch'},
                                 {id: 1, name: 'English'},
@@ -166,7 +195,7 @@
                             defaultLabel: 'Please choose ...',
                             value: 'name',
                             multipleSelect: true,
-                            data: ['Deutsch', 'English', 'Spanish', 'Italienisch']
+                            data: ['Deutsch', 'English', 'Spanish', 'divider','Italienisch']
                         }
                     },
                     {
@@ -176,7 +205,7 @@
                             instanceName: 'ddms4',
                             multipleSelect: true,
                             defaultLabel: 'Please choose ...',
-                            value: 'name',
+                            valueName: 'name',
                             data: [
                                 {id: 0, name: 'Deutsch'},
                                 {id: 1, name: 'English'},
@@ -191,13 +220,23 @@
                             el: '#ddms5',
                             instanceName: 'ddms5',
                             defaultLabel: 'This one is single select.. try it',
-                            value: 'name',
+                            valueName: 'category',
                             multipleSelect: false,
+                            emitValues: true,
+                            preSelectedElements: [0],
                             data: [
-                                {id: 0, name: 'Deutsch'},
-                                {id: 1, name: 'English'},
-                                {id: 2, name: 'Spanish'},
-                                {id: 3, name: 'Italienisch'}
+                                {id: 0, category: 'Deutsch'},
+                                {id: 1, category: 'English'},
+                                {id: 2, category: 'Spanish'},
+                                {id: 3, category: 'Italienisch'},
+                                {divider: true},
+                                {
+                                    category: 'Add new',
+                                    updateLabel: false,
+                                    callback: function(){
+                                        console.log("called function");
+                                    }
+                                }
                             ]
                         }
                     },
@@ -208,7 +247,7 @@
                             instanceName: 'ddms6',
                             multipleSelect: false,
                             defaultLabel: 'with deselect..',
-                            value: 'name',
+                            valueName: 'name',
                             deselectField: '',
                             small: true,
                             data: [
@@ -225,7 +264,7 @@
                             el: '#ddms7',
                             instanceName: 'ddms7',
                             defaultLabel: 'I am disabled',
-                            value: 'name',
+                            valueName: 'name',
                             multipleSelect: true,
                             disabled: true,
                             data: [
@@ -242,7 +281,7 @@
                             el: '#ddms8',
                             instanceName: 'ddms8',
                             defaultLabel: 'I have disabled items',
-                            value: 'name',
+                            valueName: 'name',
                             preSelectedElements: [null],
                             data: [
                                 {id: null, name: 'Deselect with null item'},
@@ -259,7 +298,7 @@
                             el: '#ddms10',
                             instanceName: 'ddms10',
                             defaultLabel: 'I stick to the bottom',
-                            value: 'name',
+                            valueName: 'name',
                             preSelectedElements: [null],
                             data: [
                                 {id: 0, name: 'Deutsch', disabled: true},
@@ -383,6 +422,57 @@
                     state7 = 0;
                 }
             });
+
+            $('#update').on('click', function() {
+
+                var data = [
+                    {id: 0, category: 'Deutsch 1'},
+                    {id: 1, category: 'English 1'},
+                    {id: 2, category: 'Spanish 1'},
+                    {id: 3, category: 'Italienisch 1'},
+                    {divider: true},
+                    {
+                        category: 'Add new 1',
+                        updateLabel: false,
+                        callback: function(){
+                            console.log("called function");
+                        }
+                    }
+                ];
+
+                app.sandbox.emit('husky.select.ddms5.update',data, [1500]);
+                console.log('updated dropdown 5');
+            });
+
+            $('#changeData5').on('click', function() {
+                $('#ddms5').data({
+                    'selection': '3',
+                    'selection-values': 'Italienisch'
+                }).trigger('data-changed');
+            });
+
+            $('#setDataDDMS5').on('click', function() {
+                console.log('started setdata');
+
+                form.initialized.then(function() {
+                    form.mapper.setData({
+                        dropdown: {
+                            id: 3,
+                            category: "Italienisch"
+                        }
+                    }).then(
+                            function() {
+                                console.log('resolved setdata');
+                            }
+                    );
+                });
+            });
+
+
+            $('#getDataDDMS5').on('click', function() {
+                console.log(form.mapper.getData());
+            });
+
         });
 
     });
