@@ -25854,10 +25854,9 @@ define('type/husky-select',[
             typeInterface = {
                 setValue: function(data) {
 
-                    if(data === undefined){
+                    if(data === undefined || data === ''){
                         return;
                     }
-
 
                     if(typeof data === 'object') {
                         this.$el.data({
