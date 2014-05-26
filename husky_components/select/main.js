@@ -36,9 +36,6 @@
 
 define([], function() {
 
-    // TODO update: init liste neu und selected anpassen
-    //
-
     'use strict';
 
     var defaults = {
@@ -50,7 +47,7 @@ define([], function() {
             preSelectedElements: [],          // Elements selected by default
             multipleSelect: false,            // Allows multiple elements to be selected
             deselectField: false,             // field for deselection is added to dropdown if value is a string
-            disabled: false,                  //if true button is disabled
+            disabled: false,                  // if true button is disabled
             selectCallback: null,
             deselectCallback: null,
             style: 'normal',
@@ -229,7 +226,6 @@ define([], function() {
             this.bindDOMEvents();
         },
 
-
         //sets the button i
         disable: function() {
             this.sandbox.dom.addClass(this.sandbox.dom.children(this.$el, '.husky-select-container'), constants.disabledClass);
@@ -242,7 +238,7 @@ define([], function() {
             if (this.options.data.length > 0) {
                 if (this.options.preSelectedElements.length > 0) {
                     this.options.preSelectedElements.map(function(el, index, arr) {
-                        if(!!arr[index] || arr[index] === 0){
+                        if (!!arr[index] || arr[index] === 0) {
                             arr[index] = el.toString();
                         }
                     });
@@ -293,7 +289,7 @@ define([], function() {
         /**
          * Adds a divider element to the dropdown list
          */
-        addDivider: function(){
+        addDivider: function() {
             var $item = this.sandbox.dom.$('<hr class="divider"/>');
             this.sandbox.dom.append(this.$list, $item);
         },
@@ -313,7 +309,7 @@ define([], function() {
                     }.bind(this));
                 } else if (typeof(items[0]) === 'object') {
                     this.sandbox.util.each(items, function(index, value) {
-                        if(value.divider === true) {
+                        if (value.divider === true) {
                             this.addDivider();
                         } else {
                             this.addDropdownElement(value.id, value[this.options.valueName], !!value.disabled, value.callback, value.updateLabel);
@@ -363,28 +359,28 @@ define([], function() {
         /**
          * Should be triggered when data attributes have changed
          */
-        dataChanged: function(){
-            var selectedIds = this.sandbox.dom.data(this.$el,'selection'),
-                selectedValues = this.sandbox.dom.data(this.$el,'selectionValues'),
+        dataChanged: function() {
+            var selectedIds = this.sandbox.dom.data(this.$el, 'selection'),
+                selectedValues = this.sandbox.dom.data(this.$el, 'selectionValues'),
                 id, $checkbox;
 
             this.selectedElements = [];
             this.selectedElementsValues = [];
 
-            if(typeof selectedIds === 'string') {
+            if (typeof selectedIds === 'string') {
                 this.selectedElements = selectedIds.split(',');
-            } else if(Array.isArray(selectedIds)) {
+            } else if (Array.isArray(selectedIds)) {
                 this.selectedElements = selectedIds.map(String);
-            } else if(typeof selectedIds === 'number'){
+            } else if (typeof selectedIds === 'number') {
                 this.selectedElements.push(selectedIds.toString());
             }
 
             this.selectedElementsValues = selectedValues.split(',');
 
-            this.sandbox.util.foreach(this.$list, function($el){
+            this.sandbox.util.foreach(this.$list, function($el) {
                 id = this.sandbox.dom.data($el, 'id') || '';
                 $checkbox = this.sandbox.dom.find('input[type=checkbox]', $el);
-                if(this.selectedElements.indexOf(id) > -1){
+                if (this.selectedElements.indexOf(id) > -1) {
                     this.sandbox.dom.addClass($checkbox, 'is-selected');
                     this.sandbox.dom.prop($checkbox, 'checked', true);
                 } else {
@@ -404,14 +400,14 @@ define([], function() {
          * @param data
          * @param preselected array of ids
          */
-        updateDropdown: function(data, preselected){
+        updateDropdown: function(data, preselected) {
 
             this.options.preSelectedElements = preselected.map(String);
             this.selectedElements = [];
             this.selectedElementsValues = [];
             this.sandbox.dom.empty(this.$list);
 
-            if(!!data && data.length > 0) {
+            if (!!data && data.length > 0) {
                 this.generateDropDown(data);
             } else {
                 this.sandbox.logger.warn('error invalid data for update!');
@@ -433,7 +429,7 @@ define([], function() {
             for (; ++i < length;) {
                 key = this.sandbox.dom.data(elements[i], 'id');
 
-                if(key === undefined){
+                if (key === undefined) {
                     key = '';
                 }
 
@@ -462,7 +458,7 @@ define([], function() {
             index = this.selectedElements.indexOf(key);
             updateLabel = this.sandbox.dom.attr(event.currentTarget, 'data-update-label');
 
-            if(updateLabel !== 'false') {
+            if (updateLabel !== 'false') {
 
                 // if single select then uncheck all results
                 if (this.options.multipleSelect === false) {
@@ -485,7 +481,7 @@ define([], function() {
             value = this.sandbox.dom.text(this.sandbox.dom.find('.item-value', event.currentTarget));
             $checkbox = this.sandbox.dom.find('input[type=checkbox]', event.currentTarget)[0];
 
-            if(!!updateLabel && updateLabel !== 'false') {
+            if (!!updateLabel && updateLabel !== 'false') {
                 // deselect
                 if (index >= 0) {
                     this.sandbox.dom.removeClass($checkbox, 'is-selected');
@@ -493,7 +489,7 @@ define([], function() {
                     this.selectedElements.splice(index, 1);
                     this.selectedElementsValues.splice(index, 1);
 
-                // select
+                    // select
                 } else {
                     this.sandbox.dom.addClass($checkbox, 'is-selected');
                     this.sandbox.dom.prop($checkbox, 'checked', true);
@@ -609,7 +605,6 @@ define([], function() {
             this.sandbox.dom.on(this.sandbox.dom.window, 'click.dropdown.' + this.options.instanceName, this.hideDropDown.bind(this));
             this.dropdownVisible = true;
 
-
             this.sandbox.dom.removeClass(this.$dropdownContainer, constants.dropdownTopClass);
             var ddHeight = this.sandbox.dom.height(this.$dropdownContainer),
                 ddTop = this.sandbox.dom.offset(this.$dropdownContainer).top,
@@ -678,12 +673,12 @@ define([], function() {
                     hiddenClass = ' hidden';
                 }
 
-                if(updateLabel !== undefined && updateLabel === false){
+                if (updateLabel !== undefined && updateLabel === false) {
                     update = 'false';
                 }
 
                 return [
-                    '<li data-id="', index, '" data-update-label="',update,'">',
+                    '<li data-id="', index, '" data-update-label="', update, '">',
                     '    <div>',
                     '        <div class="check' + hiddenClass + '">',
                     '           <div class="custom-checkbox no-spacing">',
