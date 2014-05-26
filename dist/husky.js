@@ -25865,9 +25865,7 @@ define('type/husky-select',[
                 },
 
                 getValue: function() {
-
                     // For single select
-
                     var data = {},
                         ids = this.$el.data('selection'),
                         values = this.$el.data('selection-values');
