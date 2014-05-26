@@ -338,6 +338,14 @@
                 return $(selector).toggle();
             };
 
+            app.core.dom.index = function(selector, filter) {
+                if (!!filter) {
+                    return $(selector).index(filter);
+                } else {
+                    return $(selector).index();
+                }
+            };
+
             app.core.dom.keypress = function(selector, callback) {
                 $(selector).keypress(callback);
             };
