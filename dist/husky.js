@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -35872,7 +35873,7 @@ define('__component__$column-navigation@husky',[], function() {
             data: null,
             instanceName: 'undefined',
             hasSubName: 'hasSub',
-            editIcon: 'icon-edit-pen',
+            editIcon: 'fa-pencil',
             idName: 'id',
             pathName: 'path',
             linkedName: 'linked',
@@ -36637,7 +36638,7 @@ define('__component__$column-navigation@husky',[], function() {
 
             noPage: function(description) {
                 return ['<div class="no-page">',
-                    '<span class="icon-file"></span>',
+                    '<span class="fa-file-o"></span>',
                     '<div class="text">', description , '</div>',
                     '</div>'].join('');
             },
@@ -36652,9 +36653,9 @@ define('__component__$column-navigation@husky',[], function() {
                     // link
                     if (!!data[this.options.linkedName]) {
                         if (data[this.options.linkedName] === 'internal') {
-                            item.push('<span class="icon-internal-link pull-left m-right-5"></span>');
+                            item.push('<span class="fa-internal-link pull-left m-right-5"></span>');
                         } else if (data[this.options.linkedName] === 'external') {
-                            item.push('<span class="icon-external-link pull-left m-right-5"></span>');
+                            item.push('<span class="fa-external-link pull-left m-right-5"></span>');
                         }
                     }
 
@@ -36663,7 +36664,7 @@ define('__component__$column-navigation@husky',[], function() {
                         if (data[this.options.typeName].name === 'ghost') {
                             item.push('<span class="ghost pull-left m-right-5">', data[this.options.typeName].value, '</span>');
                         } else if (data[this.options.typeName].name === 'shadow') {
-                            item.push('<span class="icon-shadow-node pull-left m-right-5"></span>');
+                            item.push('<span class="fa-shadow-node pull-left m-right-5"></span>');
                         }
                     }
 
@@ -36686,7 +36687,7 @@ define('__component__$column-navigation@husky',[], function() {
                 if (!!this.options.showEditIcon) {
                     item.push('<span class="' + this.options.editIcon + ' edit hidden pull-left"></span>');
                 }
-                !!data[this.options.hasSubName] ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
+                !!data[this.options.hasSubName] ? item.push('<span class="fa-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
                 return item.join('');
             },
@@ -38284,6 +38285,22 @@ define('__component__$overlay@husky',[], function() {
         },
 
         /**
+         * opens the overlay
+         * @event husky.overlay.<instance-name>.open
+         */
+        OPEN = function() {
+            return createEventName.call(this, 'open');
+        },
+
+        /**
+         * closes the overlay
+         * @event husky.overlay.<instance-name>.close
+         */
+        CLOSE = function() {
+            return createEventName.call(this, 'close');
+        },
+
+        /**
          * emited after the language changer is changed
          * @event husky.overlay.<instance-name>.language-changed
          * @param {String} selected language
@@ -38388,6 +38405,8 @@ define('__component__$overlay@husky',[], function() {
 
             this.sandbox.on(OKBUTTON_ACTIVATE.call(this), this.activateOkButtons.bind(this));
             this.sandbox.on(OKBUTTON_DEACTIVATE.call(this), this.deactivateOkButtons.bind(this));
+            this.sandbox.on(OPEN.call(this), this.triggerHandler.bind(this));
+            this.sandbox.on(CLOSE.call(this), this.closeHandler.bind(this));
 
             // emit language-changed-event when language dropdown gets changed
             this.sandbox.on('husky.select.' + this.options.instanceName + '.selected.item', function(localeIndex) {
@@ -38891,7 +38910,9 @@ define('__component__$overlay@husky',[], function() {
          * @param event
          */
         closeHandler: function(event) {
-            this.sandbox.dom.preventDefault(event);
+            if (!!event) {
+                this.sandbox.dom.preventDefault(event);
+            }
             if (this.executeCallback(this.slides[this.activeSlide].closeCallback) !== false) {
                 this.closeOverlay();
             }
@@ -42110,4 +42131,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-
