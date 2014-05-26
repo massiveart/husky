@@ -39,6 +39,7 @@
  * @params {String} [options.presentAsParameter] parameter for the presentation-possibility id
  * @params {String} [options.limitResultParameter] parameter for the limit-result-value
  * @params {String} [options.resultKey] key for the data in the returning JSON-result
+ * @params {String} [options.titleKey] key for the title in the returning JSON-result
  * @params {Boolean} [options.subFoldersDisabled] if true sub-folders overlay-item will be disabled
  * @params {Boolean} [options.tagsDisabled] if true tags overlay-item will be disabled
  * @params {Boolean} [options.limitResultDisabled] if true limit-result overlay-item will be disabled
@@ -111,6 +112,7 @@ define([], function() {
             limitResultParameter: 'limitResult',
             limitResultDisabled: false,
             resultKey: '_embedded',
+            titleKey: 'title',
             translations: {},
             elementDataName: 'smart-content',
             externalConfigs: false,
@@ -473,7 +475,7 @@ define([], function() {
                 }
                 this.sandbox.dom.prepend(this.$header, _.template(templates.source)({
                     desc: desc,
-                    val: this.overlayData.dataSource
+                    val: this.overlayData.title
                 }));
             }
         },
@@ -955,6 +957,7 @@ define([], function() {
                     url: this.URI.str,
 
                     success: function(data) {
+                        this.overlayData.title = data[this.options.titleKey];
                         this.items = data[this.options.resultKey];
                         this.sandbox.emit(DATA_RETRIEVED.call(this));
                     }.bind(this),
