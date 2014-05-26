@@ -36679,6 +36679,7 @@ return {
  * @params {String} [options.sortMethodParameter] parameter for the sort method
  * @params {String} [options.presentAsParameter] parameter for the presentation-possibility id
  * @params {String} [options.limitResultParameter] parameter for the limit-result-value
+ * @params {String} [options.idKey] key for the id in the returning JSON-result
  * @params {String} [options.resultKey] key for the data in the returning JSON-result
  * @params {String} [options.titleKey] key for the title in the returning JSON-result
  * @params {Boolean} [options.subFoldersDisabled] if true sub-folders overlay-item will be disabled
@@ -36752,6 +36753,7 @@ define('__component__$smart-content@husky',[], function() {
             presentAsParameter: 'presentAs',
             limitResultParameter: 'limitResult',
             limitResultDisabled: false,
+            idKey: 'id',
             resultKey: '_embedded',
             titleKey: 'title',
             translations: {},
@@ -37161,8 +37163,8 @@ define('__component__$smart-content@husky',[], function() {
                 //loop stops if no more items are left or if number of rendered items matches itemsVisible
                 for (; ++i < length && i < this.itemsVisible;) {
                     this.sandbox.dom.append(ul, _.template(templates.contentItem)({
-                        dataId: this.items[i].id,
-                        value: this.items[i].name,
+                        dataId: this.items[i][this.options.idKey],
+                        value: this.items[i][this.options.titleKey],
                         num: (i + 1)
                     }));
                 }
