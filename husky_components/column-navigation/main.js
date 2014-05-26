@@ -52,7 +52,7 @@ define([], function() {
             data: null,
             instanceName: 'undefined',
             hasSubName: 'hasSub',
-            editIcon: 'icon-edit-pen',
+            editIcon: 'fa-pencil',
             idName: 'id',
             pathName: 'path',
             linkedName: 'linked',
@@ -817,7 +817,7 @@ define([], function() {
 
             noPage: function(description) {
                 return ['<div class="no-page">',
-                    '<span class="icon-file"></span>',
+                    '<span class="fa-file-o"></span>',
                     '<div class="text">', description , '</div>',
                     '</div>'].join('');
             },
@@ -832,9 +832,9 @@ define([], function() {
                     // link
                     if (!!data[this.options.linkedName]) {
                         if (data[this.options.linkedName] === 'internal') {
-                            item.push('<span class="icon-internal-link pull-left m-right-5"></span>');
+                            item.push('<span class="fa-internal-link pull-left m-right-5"></span>');
                         } else if (data[this.options.linkedName] === 'external') {
-                            item.push('<span class="icon-external-link pull-left m-right-5"></span>');
+                            item.push('<span class="fa-external-link pull-left m-right-5"></span>');
                         }
                     }
 
@@ -843,7 +843,7 @@ define([], function() {
                         if (data[this.options.typeName].name === 'ghost') {
                             item.push('<span class="ghost pull-left m-right-5">', data[this.options.typeName].value, '</span>');
                         } else if (data[this.options.typeName].name === 'shadow') {
-                            item.push('<span class="icon-shadow-node pull-left m-right-5"></span>');
+                            item.push('<span class="fa-shadow-node pull-left m-right-5"></span>');
                         }
                     }
 
@@ -866,7 +866,7 @@ define([], function() {
                 if (!!this.options.showEditIcon) {
                     item.push('<span class="' + this.options.editIcon + ' edit hidden pull-left"></span>');
                 }
-                !!data[this.options.hasSubName] ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
+                !!data[this.options.hasSubName] ? item.push('<span class="fa-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
                 return item.join('');
             },
