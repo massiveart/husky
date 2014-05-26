@@ -38087,7 +38087,7 @@ define('__component__$overlay@husky',[], function() {
         slideDefaults = {
             index: -1,
             title: '',
-            closeIcon: 'remove2',
+            closeIcon: 'times',
             message: '',
             closeCallback: null,
             okCallback: null,
