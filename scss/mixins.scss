@@ -20,10 +20,6 @@
     -o-user-select: $value;
 }
 
-@mixin icon-mixin {
-    @include font-smoothing;
-}
-
 @mixin font-smoothing {
     text-transform: none;
     -webkit-font-smoothing: antialiased;

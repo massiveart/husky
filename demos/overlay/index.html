@@ -121,19 +121,15 @@
                                 '<div class="grid-col-5 pull-left">' +
                                 '<div>Some text</div>' +
                                 '</div>' +
-                                '<div class="grid-col-2 pull-right">' +
-                                '<div class="btn gray-dark fit only-icon">' +
-                                '<div class="icon-circle-minus"></div>' +
-                                '</div>' +
-                                '</div>' +
-                                '<div class="grid-col-2 pull-right">' +
+                                '<div class="grid-col-4 pull-right">' +
                                 '<div id="action" class="btn action fit only-icon pointer">' +
-                                '<div class="icon-circle-plus"></div>' +
+                                '<div class="fa-arrow-right"></div>' +
                                 '</div>' +
                                 '</div>' +
                                 '</div>' +
                                 '<textarea></textarea>' +
                                 '</div>';
+
 
                 App = app;
 
@@ -154,7 +150,9 @@
                                         console.log('You clicked on close');
                                     },
                                     okCallback: function() {
-                                        console.log('You clicked on ok');
+                                        console.log('You clicked on ok - another');
+                                        console.log('returned data ', data)
+                                        console.log($(data).find('h3').text());
                                         return true;
                                     }
                                 },
@@ -174,13 +172,18 @@
                                             align: 'left'
                                         }
                                     ],
-                                    okCallback: function() {
-                                        app.sandbox.emit('husky.overlay.slides.slide-left');
-                                        return false;
-                                    },
                                     closeCallback: function() {
+                                        console.log('You clicked on close');
+
                                         app.sandbox.emit('husky.overlay.slides.slide-left');
                                         return true;
+                                    },
+                                    okCallback: function(data) {
+                                        console.log('You clicked on ok - another');
+                                        console.log('returned data ', data)
+                                        console.log($(data).find('h3').text());
+                                        app.sandbox.emit('husky.overlay.slides.slide-left');
+                                        return false;
                                     }
                                 }
                             ]
@@ -261,8 +264,10 @@
                             }
                         }
                     }
+
                 ]).then(function() {
                     app.logger.log('Aura started...');
+
                     app.sandbox.on('husky.overlay.slides.initialized', function() {
                         app.sandbox.start(
                                 [
@@ -287,6 +292,15 @@
                         app.sandbox.emit('husky.overlay.slides.slide-right');
                     });
 
+                    app.sandbox.on('husky.overlay.deactivated.opened', function() {
+                        setTimeout(function() {
+                            app.sandbox.emit('husky.overlay.deactivated.okbutton.activate');
+                            setTimeout(function() {
+                                app.sandbox.emit('husky.overlay.deactivated.okbutton.deactivate');
+                            }, 2000);
+                        }, 2000);
+                    });
+
                     $('#warning').click(function() {
                         var $element = $('<div/>');
                         $('body').append($element);
@@ -303,8 +317,10 @@
                                     closeCallback: function() {
                                         console.log('You clicked on close');
                                     },
-                                    okCallback: function() {
-                                        console.log('You clicked on ok');
+                                    okCallback: function(data) {
+                                        console.log('You clicked on ok - another');
+                                        console.log('returned data ', data)
+                                        console.log($(data).find('h3').text());
                                     }
                                 }
                             }
@@ -326,8 +342,10 @@
                                     closeCallback: function() {
                                         console.log('You clicked on close');
                                     },
-                                    okCallback: function() {
-                                        console.log('You clicked on ok');
+                                    okCallback: function(data) {
+                                        console.log('You clicked on ok - another');
+                                        console.log('returned data ', data)
+                                        console.log($(data).find('h3').text());
                                     }
                                 }
                             }

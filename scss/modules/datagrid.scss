@@ -59,10 +59,10 @@
         overflow: auto;
 
         &.overflow:after {
+            @extend .fa;
+            content: $fa-var-arrow-right;
             color: $grayLighter;
             font-size: 22px;
-            font-family: $baseIconFont;
-            content: '\e212';
             position: absolute;
             right: -26px;
             top: 40%;

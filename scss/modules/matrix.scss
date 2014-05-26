@@ -34,7 +34,7 @@
         }
     }
 
-    span[class^="icon-"] {
+    .matrix-icon {
 
         border: 1px solid $black;
         color: $black;
@@ -42,7 +42,7 @@
 
         width: 24px;
         height: 24px;
-        line-height: 23px;
+        line-height: 22px;
 
         display: inline-block;
         text-align: center;

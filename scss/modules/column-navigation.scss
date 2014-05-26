@@ -46,19 +46,19 @@
                 left: 0px;
                 height: 110px;
                 width: 100%;
-                font-size: 18px;
                 text-align: center;
-                color: $grayLightMedium2;
+                color: $grayLighter;
                 height: 160px;
                 margin-top: -55px;
 
-                .icon-file {
-                  font-size: 80px;
+                .fa-file-o {
+                  font-size: 72px;
                   line-height: 80px;
-                  color: $grayLightest;
                 }
                 .text {
                     padding-top: 5px;
+                    font-size: $baseFontSize;
+                    font-weight: bold;
                 }
             }
 
@@ -79,17 +79,20 @@
 
                 li:hover {
                     background-color: $baseBackgroundColor;
+                    .edit {
+                      display: block;
+                    }
                 }
                 li.selected {
-                    @extend li:hover;
-                    
-                    .item-text {
+                  background-color: $baseBackgroundColor;
+
+                  .item-text {
                         font-weight: bold;
                     }
                 }
 
                 .inactive {
-                    color: $grayLight;
+                    color: $grayLighter;
                 }
 
                 .not-published {
@@ -114,40 +117,58 @@
         .ghost {
             background: $accentColor;
             padding: 0 2px;
-            font-size: 10px;
+            margin-right: 5px;
+            margin-top: 3px;
             color: $white;
             border-radius: $borderRadius;
+            font-size: $reallySmallFontSize;
         }
         .icons-right {
             position: absolute;
             right: 5px;
             top: 15px;
+            height: 20px;
+            * {
+              line-height: 20px;
+            }
         }
         .icons-left {
             display: block;
             float: left;
+            height: 20px;
+            font-size: 14px;
+            * {
+              line-height: 20px;
+            }
+            .ghost {
+              line-height: 15px;
+            }
         }
         .edit {
-            margin-right: 5px;
             background-color: $accentColor;
             padding: 0px 10px;
-            font-size: 10px;
+            font-size: 12px;
             color: $white;
             border-radius: $borderRadius;
+            display: none;
+            margin-right: 0;
         }
         .husky-column-navigation-loader {
             position: relative;
             top: 2px;
             left: -2px;
+            padding-left: 2px;
         }
 
-        .arrow {
+          .arrow {
             display: inline-block;
             width: 11px;
-            font-size:10px;
+            font-size: 12px;
             vertical-align: middle;
+            text-align: right;
+            color: $black;
+            margin: 0;
         }
-
     }
 
     .add {
@@ -159,7 +180,7 @@
         border-bottom-left-radius: 5px;
         -webkit-border-bottom-left-radius: 5px;
         -moz-border-radius-bottomleft: 5px;
-
+        font-size: 16px;
     }
 
     .settings {
@@ -170,5 +191,6 @@
         border-bottom-right-radius: 5px;
         -webkit-border-bottom-right-radius: 5px;
         -moz-border-radius-bottomright: 5px;
+        font-size: 16px;
     }
 }

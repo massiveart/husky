@@ -1,7 +1,6 @@
 //
 // Overlay
 // --------------------------------------------------
-
 @import "compass/css3/transition";
 
 .husky-overlay-container {
@@ -29,7 +28,17 @@
         }
     }
 
-    .draggable {
+    &.dropzone {
+        width: $overlayContainerWidthExtraWide;
+        .overlay-content {
+            margin-bottom: 20px;
+        }
+        .overlay-footer {
+            display: none;
+        }
+    }
+
+    &.draggable {
         .overlay-header {
             cursor: move;
             @include user-select(none);
@@ -58,7 +67,7 @@
     .slides {
         width: 1000px;
         position: relative;
-        left:0px;
+        left: 0px;
         @include single-transition(left, 500ms);
 
         .slide {
@@ -86,7 +95,7 @@
         position: absolute;
         top: 0px;
         right: 0px;
-        font-size: 12px;
+        font-size: 16px;
         text-decoration: none;
         color: black;
         line-height: 12px;

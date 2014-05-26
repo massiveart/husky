@@ -13,9 +13,9 @@ $footerTopMargin: 40;
 }
 
 @mixin subitem-icon-before {
-    font-family: $baseIconFont;
-    font-size: 13px;
-    content: "\e174";
+    @extend .fa;
+    font-size: 12px;
+    content: $fa-var-caret-right;
     display: inline-block;
     height: 15px;
     text-align: right;
@@ -97,7 +97,7 @@ $fadeDuration: 100ms;
         vertical-align: center;
         color: white;
         text-align: center;
-        font-size: 18px;
+        font-size: 20px;
         cursor: pointer;
         border-radius: 0 0 $borderRadiusSmall 0;
         opacity: 1;
@@ -288,13 +288,13 @@ li.is-active {
         }
 
         a {
-            padding: 0px 0 0px 20px;
+            padding: 0px 0 0px 10px;
             height: 100%;
             width: 100%;
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
-            line-height: 30px;
+            line-height: 28px;
             display: inline-block;
             color: rgba(255,255,255, 0.75);
             min-height: 30px; /* prohibits height changes on select */
@@ -342,7 +342,7 @@ li.is-active {
     padding-left: 3px;
     font-size: 20px;
     height: 100%;
-    line-height: 50px;
+    line-height: 48px;
 }
 
 .navigation-items-toggle {
@@ -365,8 +365,8 @@ li a.navigation-settings-icon {
     width: auto;
     position: absolute;
     right: $verticalMargin;
-    top: 14px;
-    font-size: 10px;
+    top: 20px;
+    font-size: 12px;
 }
 
 .navigation-subitems-toggle {
@@ -397,25 +397,16 @@ li a.navigation-settings-icon {
         white-space: nowrap;
 
         .pic {
-            color: $grayDarkLighter;
-            background: $white;
-            height: 20px;
-            width: 20px;
-            line-height: 22px;
-            border: 1px solid $white;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 16px;
-            overflow: hidden;
+            color: $white;
+            text-align: right;
+            font-size: 20px;
             display: inline-block;
             margin-right: 15px;
         }
         .name {
             display: inline-block;
-            line-height: 20px;
-            position: relative;
-            top: -5px;
-            left: 0px;
+            vertical-align: middle;
+            padding-bottom: 5px;
         }
     }
 
@@ -438,7 +429,7 @@ li a.navigation-settings-icon {
         .logout {
             color: white;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 20px;
             display: block;
             display: block;
             text-decoration: none;
@@ -486,7 +477,7 @@ li a.navigation-settings-icon {
         margin-bottom: 0;
     }
 
-    .navigation-search {
+    .navigation-search.search-container {
         margin: 0;
         margin-left: 8px;
 
@@ -497,7 +488,7 @@ li a.navigation-settings-icon {
         .search-icon {
             opacity: 1;
             z-index: 100;
-            color: $grayLight;
+            color: $searchBarGray;
         }
     }
 

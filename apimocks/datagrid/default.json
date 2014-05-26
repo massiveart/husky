@@ -17,40 +17,64 @@
         {
             "id": "1",
             "content1": "B Hallo 1.1",
-            "content2": "C Hallo 1.2",
+            "content2": 23,
             "content3": {
-                "thumb": "http://placehold.it/170x170",
-                "alt": "lorempixel"
+                "50x50": {
+                    "url": "http://placehold.it/50x50",
+                    "alt": "lorempixel"
+                },
+                "170x170": {
+                    "url": "http://placehold.it/170x170",
+                    "alt": "lorempixel"
+                }
             },
             "date": "1999-03-19T22:04:29+0100"
         },
         {
             "id": "2",
             "content1": "A Hallo 1.1",
-            "content2": "B Hallo 1.2",
+            "content2": 234938720390,
             "content3": {
-                "thumb": "http://placehold.it/170x170",
-                "alt": "lorempixel"
+                "50x50": {
+                    "url": "http://placehold.it/50x50",
+                    "alt": "lorempixel"
+                },
+                "170x170": {
+                    "url": "http://placehold.it/170x170",
+                    "alt": "lorempixel"
+                }
             },
             "date": "2014-02-19T22:04:40+0100"
         },
         {
             "id": "3",
             "content1": "C Hallo 1.1",
-            "content2": "D Hallo 1.2",
+            "content2": 10953,
             "content3": {
-                "thumb": "http://placehold.it/170x170",
-                "alt": "lorempixel"
+                "50x50": {
+                    "url": "http://placehold.it/50x50",
+                    "alt": "lorempixel"
+                },
+                "170x170": {
+                    "url": "http://placehold.it/170x170",
+                    "alt": "lorempixel"
+                }
             },
             "date": "2003-03-19T22:01:29+0100"
         },
         {
             "id": "4",
             "content1": "D Hallo 1.1",
-            "content2": "A Hallo 1.2",
+            "content2": 3265489,
             "content3": {
-                "thumb": "http://placehold.it/170x170",
-                "alt": "lorempixel"
+                "50x50": {
+                    "url": "http://placehold.it/50x50",
+                    "alt": "lorempixel"
+                },
+                "170x170": {
+                    "url": "http://placehold.it/170x170",
+                    "alt": "lorempixel"
+                }
             },
             "date": "2014-03-19T22:04:29+0100"
         }

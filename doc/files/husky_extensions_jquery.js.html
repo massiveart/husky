@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>husky_extensions/jquery.js - husky</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title="husky"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.1.0</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/AutoComplete.html">AutoComplete</a></li>
+            
+                <li><a href="../classes/AutoCompleteList.html">AutoCompleteList</a></li>
+            
+                <li><a href="../classes/CKEditor.html">CKEditor</a></li>
+            
+                <li><a href="../classes/Column-Options.html">Column-Options</a></li>
+            
+                <li><a href="../classes/ColumnNavigation.html">ColumnNavigation</a></li>
+            
+                <li><a href="../classes/DataGrid.html">DataGrid</a></li>
+            
+                <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
+            
+                <li><a href="../classes/DropdownPagination (Datagrid Decorator).html">DropdownPagination (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Dropzone.html">Dropzone</a></li>
+            
+                <li><a href="../classes/Label.html">Label</a></li>
+            
+                <li><a href="../classes/Loader.html">Loader</a></li>
+            
+                <li><a href="../classes/Matcher.html">Matcher</a></li>
+            
+                <li><a href="../classes/Overlay.html">Overlay</a></li>
+            
+                <li><a href="../classes/Process.html">Process</a></li>
+            
+                <li><a href="../classes/Search.html">Search</a></li>
+            
+                <li><a href="../classes/Select.html">Select</a></li>
+            
+                <li><a href="../classes/ShowAllPagination (Datagrid Decorator).html">ShowAllPagination (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Tabs.html">Tabs</a></li>
+            
+                <li><a href="../classes/ThumbnailView (Datagrid Decorator).html">ThumbnailView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Toggler.html">Toggler</a></li>
+            
+                <li><a href="../classes/Toolbar.html">Toolbar</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+                <li><a href="../modules/husky_components_auto-complete.html">husky/components/auto-complete</a></li>
+            
+                <li><a href="../modules/husky_components_auto-complete-list.html">husky/components/auto-complete-list</a></li>
+            
+                <li><a href="../modules/husky_components_column-navigation.html">husky/components/column-navigation</a></li>
+            
+                <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
+            
+                <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
+            
+                <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_overlay.html">husky/components/overlay</a></li>
+            
+                <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
+            
+                <li><a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a></li>
+            
+                <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: husky_extensions/jquery.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+(function() {
+
+    &#x27;use strict&#x27;;
+
+    if (window.jQuery) {
+        define(&#x27;jquery&#x27;, [], function() {
+            return window.jQuery;
+        });
+    } else {
+        require.config({
+            paths: { backbone: &#x27;bower_components/jquery/jquery&#x27; },
+            shim: { backbone: { exports: &#x27;$&#x27; } }
+        });
+    }
+
+    // add remove event for jquery
+    var initRemoveEvent = function() {
+        var ev = new $.Event(&#x27;remove&#x27;),
+            orig = $.fn.remove;
+        $.fn.remove = function() {
+            $(this).trigger(ev);
+            return orig.apply(this, arguments);
+        };
+    };
+
+    define([&#x27;jquery&#x27;], {
+
+        name: &#x27;jQuery&#x27;,
+
+        initialize: function(app) {
+
+            initRemoveEvent();
+
+            app.core.dom.window = window;
+
+            app.core.dom.$window = $(window);
+
+            app.core.dom.document = document;
+
+            app.core.dom.$document = $(document);
+
+            app.core.dom.$ = $;
+
+            app.core.dom.createElement = function(selector, props) {
+                props = props || {};
+                return $(selector, props);
+            };
+
+            app.core.dom.html = function(selector, content) {
+                if (typeof content !== &#x27;undefined&#x27;) {
+                    return $(selector).html(content);
+                }
+                return $(selector).html();
+            };
+
+            app.core.dom.parseHTML = function(data) {
+                return $.parseHTML(data);
+            };
+
+            app.core.dom.each = function(selector, callback) {
+                $(selector).each(callback);
+            };
+
+            app.core.dom.append = function(selector, element) {
+                return $(selector).append(element);
+            };
+
+            app.core.dom.prepend = function(selector, element) {
+                return $(selector).prepend(element);
+            };
+
+            app.core.dom.before = function(selector, element) {
+                return $(selector).before(element);
+            };
+
+            app.core.dom.after = function(selector, element) {
+                return $(selector).after(element);
+            };
+
+            app.core.dom.css = function(selector, style, value) {
+                if (typeof value !== &#x27;undefined&#x27;) {
+                    return $(selector).css(style, value);
+                } else {
+                    return $(selector).css(style);
+                }
+            };
+
+            app.core.dom.addClass = function(selector, classes) {
+                return $(selector).addClass(classes);
+            };
+
+            app.core.dom.removeClass = function(selector, classes) {
+                if (!classes) {
+                    return $(selector).removeClass();
+                }
+                return $(selector).removeClass(classes);
+            };
+
+            app.core.dom.toggleClass = function(selector, classes) {
+                return $(selector).toggleClass(classes);
+            };
+
+            app.core.dom.hasClass = function(selector, classes) {
+                return $(selector).hasClass(classes);
+            };
+
+            app.core.dom.prependClass = function(selector, classes) {
+                var $el = $(selector),
+                    oldClasses = $el.attr(&#x27;class&#x27;);
+
+                /* prepend class */
+                classes = classes + &#x27; &#x27; + oldClasses;
+                $el.attr(&#x27;class&#x27;, classes);
+            };
+
+            app.core.dom.parent = function(selector, filter) {
+                return $(selector).parent(filter);
+            };
+
+            app.core.dom.width = function(selector, value) {
+                if (typeof value !== &#x27;undefined&#x27;) {
+                    return $(selector).width(value);
+                } else {
+                    return $(selector).width();
+                }
+            };
+
+            app.core.dom.outerWidth = function(selector) {
+                return $(selector).outerWidth();
+            };
+
+            app.core.dom.height = function(selector, value) {
+                if (!value) {
+                    return $(selector).height();
+                }
+                return $(selector).height(value);
+            };
+
+            app.core.dom.outerHeight = function(selector, includeMargin) {
+                if (typeof includeMargin === &#x27;undefined&#x27;) {
+                    return $(selector).outerHeight();
+                } else {
+                    return $(selector).outerHeight(includeMargin);
+                }
+            };
+
+            app.core.dom.offset = function(selector, attributes) {
+                if (attributes) {
+                    return $(selector).offset(attributes);
+                } else {
+                    return $(selector).offset();
+                }
+
+            };
+
+            app.core.dom.position = function(selector) {
+                return $(selector).position();
+            };
+
+            app.core.dom.remove = function(context, selector) {
+                return $(context).remove(selector);
+            };
+
+            app.core.dom.detach = function(context, selector) {
+                return $(context).detach(selector);
+            };
+
+            app.core.dom.attr = function(selector, attributeName, value) {
+                if (!value &amp;&amp; value !== &#x27;&#x27;) {
+                    attributeName = attributeName || {};
+                    return $(selector).attr(attributeName);
+                } else {
+                    return $(selector).attr(attributeName, value);
+                }
+            };
+
+            app.core.dom.removeAttr = function(selector, attributeName) {
+                return $(selector).removeAttr(attributeName);
+            };
+
+            app.core.dom.is = function(selector, type) {
+                return $(selector).is(type);
+            };
+
+            app.core.dom.isArray = function(selector) {
+                return $.isArray(selector);
+            };
+
+            app.core.dom.data = function(selector, key, value) {
+                if (!!value || value === &#x27;&#x27;) {
+                    return $(selector).data(key, value);
+                } else {
+                    return $(selector).data(key);
+                }
+            };
+
+            app.core.dom.onReady = function(callback) {
+                $(window).on(&#x27;load&#x27;, callback);
+            };
+
+            app.core.dom.val = function(selector, value) {
+                if (!!value || value === &#x27;&#x27;) {
+                    return $(selector).val(value);
+                } else {
+                    return $(selector).val();
+                }
+            };
+
+            app.core.dom.clearVal = function(selector) {
+                return $(selector).val(&#x27;&#x27;);
+            };
+
+            app.core.dom.blur = function(selector) {
+                return $(selector).blur();
+            };
+
+            app.core.dom.on = function(selector, event, callback, filter) {
+                if (!!filter) {
+                    $(selector).on(event, filter, callback);
+                } else {
+                    $(selector).on(event, callback);
+                }
+            };
+
+            app.core.dom.one = function(selector, event, callback, filter) {
+                if (!!filter) {
+                    $(selector).one(event, filter, callback);
+                } else {
+                    $(selector).one(event, callback);
+                }
+            };
+
+            app.core.dom.off = function(selector, event, filter, handler) {
+                $(selector).off(event, filter, handler);
+            };
+
+            app.core.dom.trigger = function(selector, eventType, params) {
+                $(selector).trigger(eventType, params);
+            };
+
+            app.core.dom.select = function(selector, handler) {
+                if (!!handler) {
+                    return $(selector).select(handler);
+                } else {
+                    return $(selector).select();
+                }
+            };
+
+            app.core.dom.toggleClass = function(selector, className) {
+                $(selector).toggleClass(className);
+            };
+
+            app.core.dom.parent = function(selector, filter) {
+                return $(selector).parent(filter);
+            };
+
+            app.core.dom.parents = function(selector, filter) {
+                return $(selector).parents(filter);
+            };
+
+            app.core.dom.children = function(selector, filter) {
+                return $(selector).children(filter);
+            };
+
+            app.core.dom.next = function(selector, filter) {
+                return $(selector).next(filter);
+            };
+
+            app.core.dom.prev = function(selector, filter) {
+                return $(selector).prev(filter);
+            };
+
+            app.core.dom.closest = function(selector, filter) {
+                return $(selector).closest(filter);
+            };
+
+            app.core.dom.clone = function(selector) {
+                return $(selector).clone();
+            };
+
+            app.core.dom.text = function(selector, value) {
+                if (!!value) {
+                    return $(selector).text(value);
+                } else {
+                    return $(selector).text();
+                }
+            };
+
+            app.core.dom.prop = function(selector, propertyName, value) {
+                if (value !== undefined) {
+                    return $(selector).prop(propertyName, value);
+                } else {
+                    return $(selector).prop(propertyName);
+                }
+            };
+
+            app.core.dom.mouseleave = function(selector, handler) {
+                $(selector).mouseleave(handler);
+            };
+
+            app.core.dom.stopPropagation = function(event) {
+                event.stopPropagation();
+            };
+
+            app.core.dom.stop = function(selector) {
+                $(selector).stop();
+            };
+
+            app.core.dom.preventDefault = function(event) {
+                event.preventDefault();
+            };
+
+            app.core.dom.hide = function(selector) {
+                return $(selector).hide();
+            };
+
+            app.core.dom.show = function(selector) {
+                return $(selector).show();
+            };
+
+            app.core.dom.map = function(selector, callback) {
+                return $(selector).map(callback);
+            };
+
+            app.core.dom.get = function(selector, index) {
+                return $(selector).get(index);
+            };
+
+            app.core.dom.toggle = function(selector) {
+                return $(selector).toggle();
+            };
+
+            app.core.dom.keypress = function(selector, callback) {
+                $(selector).keypress(callback);
+            };
+
+            app.core.dom.insertAt = function(index, selector, $container, $item) {
+                if (index === 0) {
+                    app.core.dom.prepend($container, $item);
+                } else {
+                    var $before = app.core.dom.find(selector + &#x27;:nth-child(&#x27; + index + &#x27;)&#x27;, $container);
+                    app.core.dom.after($before, $item);
+                }
+            };
+
+            app.core.dom.scrollToTop = function(itemSelector) {
+                $(window).scrollTop($(itemSelector).offset().top);
+            };
+
+            app.core.dom.scrollTop = function(selector, position) {
+                if (typeof position !== &#x27;undefined&#x27;) {
+                    return $(selector).scrollTop(position);
+                } else {
+                    return $(selector).scrollTop();
+                }
+            };
+
+            app.core.dom.scrollLeft = function(selector, value) {
+                if (typeof value !== &#x27;undefined&#x27;) {
+                    return $(selector).scrollLeft(value);
+                } else {
+                    return $(selector).scrollLeft();
+                }
+            };
+
+            app.core.dom.scrollAnimate = function(position, selector) {
+                if (!!selector) {
+                    $(selector).animate({
+                        scrollTop: position
+                    }, 500);
+                } else {
+                    $(&#x27;html, body&#x27;).animate({
+                        scrollTop: position
+                    }, 500);
+                }
+            };
+
+            app.core.dom.slideUp = function(selector, duration, complete) {
+                $(selector).slideUp(duration, complete);
+            };
+
+            app.core.dom.slideDown = function(selector, duration, complete) {
+                $(selector).slideDown(duration, complete);
+            };
+
+            app.core.dom.last = function(selector) {
+                return $(selector).last();
+            };
+
+            app.core.dom.fadeIn = function(selector, duration, complete) {
+                $(selector).fadeIn(duration, complete);
+            };
+
+            app.core.dom.fadeTo = function(selector, duration, opacity, complete) {
+                $(selector).fadeTo(duration, opacity, complete);
+            };
+
+            app.core.dom.fadeOut = function(selector, duration, complete) {
+                $(selector).fadeOut(duration, complete);
+            };
+
+            app.core.dom.when = function(deffereds) {
+                return $.when(deffereds);
+            };
+
+            app.core.dom.unbind = function(selector, eventType) {
+                $(selector).unbind(eventType);
+            };
+
+            app.core.dom.focus = function(selector) {
+                $(selector).focus();
+            };
+
+            app.core.dom.click = function(selector) {
+                $(selector).click();
+            };
+
+            app.core.dom.animate = function(selector, properties, options) {
+                $(selector).animate(properties, options);
+            };
+
+            /**
+             * Awesome visible method. Returns true if any part of a given element is not visible
+             * Method is copied and slightly adapted from https://github.com/teamdf/jquery-visible/
+             * @param selector {Stirng|Object} element selector or jquery dom object
+             * @param partial {Boolean} if true only returns false if every part of the element is not visible
+             * @param hidden {Boolean} if true checks whether the element is visible, as well as wheter it&#x27;s within the viewport too. Defaults to true
+             * @param direction {String} to specify the direction to check for visibility. This can either be &#x27;horizontal&#x27;, &#x27;vertical&#x27; or &#x27;both&#x27;. Default is to &#x27;both&#x27;
+             * @returns {Boolean} true or false whether the element is visible or not
+             */
+            app.core.dom.visible = function (selector, partial, hidden, direction) {
+                if (this.length &lt; 1) {
+                    return;
+                }
+                direction = (direction) ? direction : &#x27;both&#x27;;
+                hidden = (typeof hidden === &#x27;undefined&#x27;) ? true : hidden;
+
+                var $element = $(selector), $t = $element.length &gt; 1 ? $element.eq(0) : $element,
+                    t = $t.get(0),
+                    vpWidth = app.sandbox.dom.$window.width(),
+                    vpHeight = app.sandbox.dom.$window.height(),
+                    clientSize = hidden === true ? t.offsetWidth * t.offsetHeight : true,
+                    rec, tViz, bViz, lViz, rViz, vVisible, hVisible, viewTop, viewBottom, viewLeft, viewRight,
+                    offset, _top, _bottom, _left, _right, compareTop, compareBottom, compareLeft, compareRight;
+
+                if (typeof t.getBoundingClientRect === &#x27;function&#x27;) {
+
+                    // Use this native browser method, if available.
+                    rec = t.getBoundingClientRect();
+                    tViz = rec.top &gt;= 0 &amp;&amp; rec.top &lt; vpHeight;
+                    bViz = rec.bottom &gt; 0 &amp;&amp; rec.bottom &lt;= vpHeight;
+                    lViz = rec.left &gt;= 0 &amp;&amp; rec.left &lt; vpWidth;
+                    rViz = rec.right &gt; 0 &amp;&amp; rec.right &lt;= vpWidth;
+                    vVisible = partial ? tViz || bViz : tViz &amp;&amp; bViz;
+                    hVisible = partial ? lViz || lViz : lViz &amp;&amp; rViz;
+
+                    if (direction === &#x27;both&#x27;) {
+                        return clientSize &amp;&amp; vVisible &amp;&amp; hVisible;
+                    }
+                    else if (direction === &#x27;vertical&#x27;) {
+                        return clientSize &amp;&amp; vVisible;
+                    }
+                    else if (direction === &#x27;horizontal&#x27;) {
+                        return clientSize &amp;&amp; hVisible;
+                    }
+                } else {
+
+                    viewTop = app.sandbox.dom.$window.scrollTop();
+                    viewBottom = viewTop + vpHeight;
+                    viewLeft = app.sandbox.dom.$window.scrollLeft();
+                    viewRight = viewLeft + vpWidth;
+                    offset = $t.offset();
+                    _top = offset.top;
+                    _bottom = _top + $t.height();
+                    _left = offset.left;
+                    _right = _left + $t.width();
+                    compareTop = partial === true ? _bottom : _top;
+                    compareBottom = partial === true ? _top : _bottom;
+                    compareLeft = partial === true ? _right : _left;
+                    compareRight = partial === true ? _left : _right;
+
+                    if (direction === &#x27;both&#x27;) {
+                        return !!clientSize &amp;&amp; ((compareBottom &lt;= viewBottom) &amp;&amp; (compareTop &gt;= viewTop)) &amp;&amp; ((compareRight &lt;= viewRight) &amp;&amp; (compareLeft &gt;= viewLeft));
+                    }
+                    else if (direction === &#x27;vertical&#x27;) {
+                        return !!clientSize &amp;&amp; ((compareBottom &lt;= viewBottom) &amp;&amp; (compareTop &gt;= viewTop));
+                    }
+                    else if (direction === &#x27;horizontal&#x27;) {
+                        return !!clientSize &amp;&amp; ((compareRight &lt;= viewRight) &amp;&amp; (compareLeft &gt;= viewLeft));
+                    }
+                }
+            };
+
+            app.core.util.ajax = $.ajax;
+        }
+    });
+})();
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

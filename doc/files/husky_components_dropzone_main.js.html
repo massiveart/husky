@@ -181,6 +181,12 @@
  * @params {Function} [options.beforeSendingCallback] callback which gets called before a file gets uploaded. First parameter is the file.
  * @params {Function} [options.removeFileCallback] callback which gets called after a file got removed. First parameter is the file.
  * @params {Object} [options.pluginOptions] Options to pass to the dropzone-plugin to completely override all options set by husky. Use with care.
+<<<<<<< HEAD
+=======
+ * @params {Number} [options.showOverlayOnScrollTop] number of scroll-top on which the overlay will be displayed
+ * @params {Object|String} [options.scrollContainer] element to check to scroll-top on
+ * @params {Boolean} [options.showOverlay] if true the dropzone will be displayed in an overlay if its not visible any more or the passed scroll-top is reached
+>>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
  */
 define([], function() {
 
@@ -205,7 +211,15 @@ define([], function() {
             removeFileCallback: null,
             pluginOptions: {},
             fadeOutDuration: 200, //ms
+<<<<<<< HEAD
             fadeOutDelay: 1500 //ms
+=======
+            fadeOutDelay: 1500, //ms
+            showOverlayOnScrollTop: 50,
+            scrollContainer: &#x27;body&#x27;,
+            overlayTitle: &#x27;sulu.dropzone.overlay-title&#x27;,
+            showOverlay: true
+>>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
         },
 
         constants = {
@@ -312,7 +326,13 @@ define([], function() {
             // merge defaults, type defaults and options
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.dropzone = null;
+<<<<<<< HEAD
             this.lastUploadedFile = null;
+=======
+            this.$dropzone = null;
+            this.lastUploadedFile = null;
+            this.overlayOpened = false;
+>>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
 
             this.render();
             this.bindDomEvents();
@@ -325,23 +345,80 @@ define([], function() {
          */
         bindDomEvents: function() {
             // delegate click on elements children to element
+<<<<<<< HEAD
             this.sandbox.dom.on(this.$find(&#x27;*&#x27;), &#x27;click&#x27;, function(event) {
                 this.sandbox.dom.stopPropagation(event);
                 this.sandbox.dom.trigger(this.$el, &#x27;click&#x27;);
             }.bind(this));
+=======
+            this.sandbox.dom.on(this.sandbox.dom.find(&#x27;*&#x27;, this.$dropzone), &#x27;click&#x27;, function(event) {
+                this.sandbox.dom.stopPropagation(event);
+                this.sandbox.dom.trigger(this.$dropzone, &#x27;click&#x27;);
+            }.bind(this));
+
+            if (this.options.showOverlay) {
+                this.sandbox.dom.on(this.sandbox.dom.$document, &#x27;dragenter&#x27;, function() {
+                    this.openOverlay();
+                }.bind(this));
+            }
+        },
+
+        /**
+         * Opens the dropzone in an overlay
+         */
+        openOverlay: function() {
+            // open the overlay only if it&#x27;s not already opened and if the dropzone is not visible
+            if (this.overlayOpened === false) {
+                if (this.sandbox.dom.visible(this.$dropzone) === false ||
+                    this.sandbox.dom.scrollTop(this.options.scrollContainer) &gt; this.options.showOverlayOnScrollTop) {
+
+                    // set height of components element to prevent the site from bumping
+                    this.sandbox.dom.height(this.$el, this.sandbox.dom.outerHeight(this.$el));
+
+                    var $container = this.sandbox.dom.createElement(&#x27;&lt;div/&gt;&#x27;);
+                    this.sandbox.dom.append(this.$el, $container);
+                    this.sandbox.start([{
+                        name: &#x27;overlay@husky&#x27;,
+                        options: {
+                            el: $container,
+                            openOnStart: true,
+                            removeOnClose: true,
+                            data: this.$dropzone,
+                            title: this.options.overlayTitle,
+                            skin: &#x27;dropzone&#x27;,
+                            closeCallback: function() {
+                                this.sandbox.dom.append(this.$el, this.$dropzone);
+                                this.sandbox.dom.height(this.$el, &#x27;&#x27;);
+                                this.overlayOpened = false;
+                            }.bind(this)
+                        }
+                    }]);
+                    this.overlayOpened = true;
+                }
+            }
+>>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
         },
 
         /**
          * Renders the component
          */
         render: function() {
+<<<<<<< HEAD
             this.sandbox.dom.addClass(this.$el, constants.contianerClass);
             this.sandbox.dom.html(this.$el, this.sandbox.util.template(templates.basic)({
+=======
+            this.$dropzone = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;&#x27;+ constants.contianerClass +&#x27;&quot;/&gt;&#x27;);
+            this.sandbox.dom.html(this.$dropzone, this.sandbox.util.template(templates.basic)({
+>>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
                 description: this.sandbox.translate(this.options.descriptionKey),
                 title: this.sandbox.translate(this.options.titleKey),
                 icon: this.options.descriptionIcon,
                 instanceName: this.options.instanceName
             }));
+<<<<<<< HEAD
+=======
+            this.sandbox.dom.append(this.$el, this.$dropzone);
+>>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
             this.startDropzone();
         },
 
@@ -359,14 +436,22 @@ define([], function() {
                     previewTemplate: this.sandbox.util.template(templates.uploadItem)({
                         cancelIcon: this.options.cancelLoadingIcon
                     }),
+<<<<<<< HEAD
                     previewsContainer: this.$find(&#x27;.&#x27; + constants.uploadedItemContainerClass)[0],
+=======
+                    previewsContainer: this.sandbox.dom.find(&#x27;.&#x27; + constants.uploadedItemContainerClass, this.$dropzone)[0],
+>>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
                     init: function() {
                         // store dropzone context
                         that.dropzone = this;
 
                         // gets called if file gets added (drop or via the upload window)
                         this.on(&#x27;addedfile&#x27;, function(file) {
+<<<<<<< HEAD
                             this.sandbox.dom.addClass(this.$el, constants.droppedClass);
+=======
+                            this.sandbox.dom.addClass(this.$dropzone, constants.droppedClass);
+>>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
 
                             // prevent the the upload window to open on click on the preview item
                             this.sandbox.dom.on(file.previewElement, &#x27;click&#x27;, function(event) {
@@ -408,14 +493,22 @@ define([], function() {
 
                         // gets called if all files are removed from the zone
                         this.on(&#x27;reset&#x27;, function() {
+<<<<<<< HEAD
                             this.sandbox.dom.removeClass(this.$el, constants.droppedClass);
+=======
+                            this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
+>>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
                         }.bind(that));
                     }
                 };
 
             // merge the default plugin options with with passed ones
             this.sandbox.util.extend(true, {}, options, this.options.pluginOptions);
+<<<<<<< HEAD
             this.sandbox.dropzone.initialize(this.$el, options);
+=======
+            this.sandbox.dropzone.initialize(this.$dropzone, options);
+>>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
         },
 
         /**
@@ -428,10 +521,17 @@ define([], function() {
                 this.sandbox.util.delay(
                     function() {
                         this.sandbox.dom.fadeOut(
+<<<<<<< HEAD
                             this.$find(&#x27;.&#x27; + constants.uploadItemClass),
                             this.options.fadeOutDuration,
                             function() {
                                 if (this.$find(&#x27;.&#x27; + constants.uploadItemClass + &#x27;:animated&#x27;).length === 0) {
+=======
+                            this.sandbox.dom.find(&#x27;.&#x27; + constants.uploadItemClass, this.$dropzone),
+                            this.options.fadeOutDuration,
+                            function() {
+                                if (this.sandbox.dom.find(&#x27;.&#x27; + constants.uploadItemClass + &#x27;:animated&#x27;, this.$dropzone).length === 0) {
+>>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
                                     this.afterFadeOut();
                                 }
                             }.bind(this)
@@ -447,7 +547,11 @@ define([], function() {
          * have faded out
          */
         afterFadeOut: function() {
+<<<<<<< HEAD
             this.sandbox.dom.removeClass(this.$el, constants.droppedClass);
+=======
+            this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
+>>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
             this.sandbox.emit(FILES_ADDED.call(this), this.getResponseArray(this.dropzone.files));
         },
 

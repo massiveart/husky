@@ -79,6 +79,7 @@ define([], function() {
             index: -1,
             title: '',
             closeIcon: 'remove2',
+            message: '',
             closeCallback: null,
             okCallback: null,
             type: 'normal',
@@ -122,7 +123,7 @@ define([], function() {
                 buttons: [
                     {
                         type: 'ok',
-                        icon: 'half-ok',
+                        icon: 'check',
                         classes: 'tick',
                         inactive: false
                     }
@@ -173,7 +174,7 @@ define([], function() {
         /** templates for component */
         templates = {
             overlaySkeleton: [
-                '<div class="husky-overlay-container <%= skin %> smart-content-overlay">',
+                '<div class="husky-overlay-container <%= skin %> <%= cssClass %> smart-content-overlay">',
                 '   <div class="slides"></div>',
                 '</div>'
             ].join(''),
@@ -181,7 +182,7 @@ define([], function() {
                 '<div class="slide slide-<%= index %> <%= cssClass %>">',
                 '   <div class="overlay-header">',
                 '       <span class="title"><%= title %></span>',
-                '       <% if (!!closeIcon) { %><a class="icon-<%= closeIcon %> close-button" href="#"></a><% } %>',
+                '       <% if (!!closeIcon) { %><a class="fa-<%= closeIcon %> close-button" href="#"></a><% } %>',
                 '   </div>',
                 '   <div class="overlay-content"></div>',
                 '   <div class="overlay-footer">',
@@ -191,7 +192,7 @@ define([], function() {
             okButton: [
                 '<div class="btn action overlay-ok<%= classes %>">',
                 '<% if (!!icon) { %>',
-                '<span class="icon-<%= icon %>"></span>',
+                '<span class="fa-<%= icon %>"></span>',
                 '<% } %>',
                 '<span class="text"><%= text %></span>',
                 '</div>'
@@ -199,7 +200,7 @@ define([], function() {
             cancelButton: [
                 '<div class="btn gray black-text overlay-cancel<%= classes %>">',
                 '   <% if (!!icon) { %>',
-                '   <span class="icon-<%= icon %>"></span>',
+                '   <span class="fa-<%= icon %>"></span>',
                 '   <% } %>',
                 '   <span class="text"><%= text %></span>',
                 '</div>'
@@ -345,7 +346,6 @@ define([], function() {
                     // check options for slide property
                     if (this.options.hasOwnProperty(key)) {
                         this.slides[0][key] = this.options[key];
-                        delete this.options[key];
                     }
                 }
 
@@ -604,7 +604,8 @@ define([], function() {
             this.overlay.$el = this.sandbox.dom.createElement(
                 this.sandbox.util.template(templates.overlaySkeleton,
                     {
-                        skin: this.options.skin
+                        skin: this.options.skin,
+                        cssClass: this.options.cssClass || ''
                     }
                 )
             );
@@ -725,7 +726,7 @@ define([], function() {
             if (!!this.slides[slide].data) {
                 this.sandbox.dom.html(this.overlay.slides[slide].$content, this.slides[slide].data);
             } else if (!!this.slides[slide].message) {
-                this.sandbox.dom.html(this.overlay.slides[slide].$content, this.sandbox.util.template(templates.message)({
+                this.sandbox.dom.html(this.overlay.slides[slide].$content, this.sandbox.util.template(templates.message, {
                     message: this.slides[slide].message
                 }));
 
@@ -800,6 +801,7 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'click',
                 this.okHandler.bind(this), constants.overlayOkSelector);
 
+
             this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
                 if (this.dragged === false && this.overlay.opened === true) {
                     this.resizeHandler();
@@ -870,7 +872,8 @@ define([], function() {
                 return;
             }
             this.sandbox.dom.preventDefault(event);
-            if (this.executeCallback(this.slides[this.activeSlide].okCallback) !== false) {
+
+            if (this.executeCallback(this.slides[this.activeSlide].okCallback, this.sandbox.dom.find(constants.contentSelector, this.overlay.$el)) !== false) {
                 this.closeOverlay();
             }
         },
@@ -954,10 +957,11 @@ define([], function() {
         /**
          * Executes a passed callback
          * @param callback {Function} callback to execute
+         * @param data {Object} dom content element
          */
-        executeCallback: function(callback) {
+        executeCallback: function(callback, data) {
             if (typeof callback === 'function') {
-                return callback();
+                return callback(data);
             }
         }
     };
