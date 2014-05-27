@@ -201,13 +201,22 @@ define(function() {
          * @param id {Number|String} the identifier of the thumbnail to bind events on
          */
         bindThumbnailDomEvents: function(id) {
-            this.sandbox.dom.on(this.$thumbnails[id], 'change', function() {
+            this.sandbox.dom.on(this.$thumbnails[id], 'change', function(event) {
                 this.toggleItemSelected(id);
             }.bind(this), '.' + constants.checkboxClass);
 
-            this.sandbox.dom.on(this.$thumbnails[id], 'click', function() {
+            this.sandbox.dom.on(this.$thumbnails[id], 'click', function(event) {
+                this.sandbox.dom.stopPropagation(event);
+            }.bind(this), '.' + constants.checkboxClass);
+
+            this.sandbox.dom.on(this.$thumbnails[id], 'click', function(event) {
+                this.sandbox.dom.stopPropagation(event);
                 this.downloadHandler(id);
             }.bind(this), '.' + constants.downloadClass);
+
+            this.sandbox.dom.on(this.$thumbnails[id], 'click', function() {
+                this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+            }.bind(this));
         },
 
         /**

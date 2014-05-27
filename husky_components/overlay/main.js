@@ -90,7 +90,8 @@ define([], function() {
             cancelDefaultText: 'Cancel',
             okDefaultText: 'Ok',
             languageChanger: null,
-            cssClass: ''
+            cssClass: '',
+            smallHeader: false
         },
 
         internalSlideDefaults = {
@@ -115,7 +116,8 @@ define([], function() {
             overlayOkSelector: '.overlay-ok',
             overlayCancelSelector: '.overlay-cancel',
             tabsClass: 'tabs',
-            languageChangerClass: 'language-changer'
+            languageChangerClass: 'language-changer',
+            smallHeaderClass: 'small-header'
         },
 
         types = {
@@ -662,6 +664,11 @@ define([], function() {
             // add draggable class if overlay is draggable
             if (this.options.draggable === true) {
                 this.sandbox.dom.addClass(this.overlay.slides[slide].$el, constants.draggableClass);
+            }
+
+            // add small-header class if configured
+            if (this.slides[slide].smallHeader === true) {
+                this.sandbox.dom.addClass(this.overlay.slides[slide].$header, constants.smallHeaderClass);
             }
 
             // add classes for various styling
