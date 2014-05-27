@@ -28140,15 +28140,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             ].join('')
     },
 
-    /**
-     * raised when clicked on an item
-     * @event husky.datagrid.item.click
-     * @param {String} id of item that was clicked
-     */
-        ITEM_CLICK = function () {
-        return this.datagrid.createEventName.call(this.datagrid, 'item.click');
-    },
-
         /**
          * used to update the table width and its containers due to responsiveness
          * @event husky.datagrid.update.table
@@ -28344,9 +28335,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         emitRowClickedEvent: function(event) {
             var id = this.sandbox.dom.$(event.currentTarget).data('id');
             if (!!id) {
-                this.sandbox.emit(ITEM_CLICK.call(this), id);
+                this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
             } else {
-                this.sandbox.emit(ITEM_CLICK.call(this), event);
+                this.datagrid.emitItemClickedEvent.call(this.datagrid, event);
             }
         },
 
@@ -29473,13 +29464,22 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          * @param id {Number|String} the identifier of the thumbnail to bind events on
          */
         bindThumbnailDomEvents: function(id) {
-            this.sandbox.dom.on(this.$thumbnails[id], 'change', function() {
+            this.sandbox.dom.on(this.$thumbnails[id], 'change', function(event) {
                 this.toggleItemSelected(id);
             }.bind(this), '.' + constants.checkboxClass);
 
-            this.sandbox.dom.on(this.$thumbnails[id], 'click', function() {
+            this.sandbox.dom.on(this.$thumbnails[id], 'click', function(event) {
+                this.sandbox.dom.stopPropagation(event);
+            }.bind(this), '.' + constants.checkboxClass);
+
+            this.sandbox.dom.on(this.$thumbnails[id], 'click', function(event) {
+                this.sandbox.dom.stopPropagation(event);
                 this.downloadHandler(id);
             }.bind(this), '.' + constants.downloadClass);
+
+            this.sandbox.dom.on(this.$thumbnails[id], 'click', function() {
+                this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+            }.bind(this));
         },
 
         /**
@@ -30183,6 +30183,15 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              */
                 NUMBER_SELECTIONS = function () {
                 return this.createEventName('number.selections');
+            },
+
+            /**
+             * raised when clicked on an item
+             * @event husky.datagrid.item.click
+             * @param {String} id of item that was clicked
+             */
+                ITEM_CLICK = function () {
+                return this.createEventName('item.click');
             },
 
             /**
@@ -30999,6 +31008,14 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     this.gridViews[this.viewId].removeRecord(recordId);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
+            },
+
+            /**
+             * Emits the item clicked event
+             * @param id {Number|String} id to emit with the event
+             */
+            emitItemClickedEvent: function(id) {
+                this.sandbox.emit(ITEM_CLICK.call(this), id);
             },
 
             /**
