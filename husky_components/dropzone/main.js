@@ -135,6 +135,22 @@ define([], function () {
         },
 
         /**
+         * listens on and prevents an overlay with the dropzone from poping up
+         * @event husky.dropzone.<instance-name>.open-data-source
+         */
+            LOCK_POPUP = function () {
+            return createEventName.call(this, 'lock-popup');
+        },
+
+        /**
+         * listens on and enables overlays with the dropzone to pop up
+         * @event husky.dropzone.<instance-name>.open-data-source
+         */
+            UNLOCK_POPUP = function () {
+            return createEventName.call(this, 'unlock-popup');
+        },
+
+        /**
          * raised after files got uploaded and faded out from the dropzone
          * @event husky.dropzone.<instance-name>.files-added
          * @param {Array} all newly added files
@@ -162,6 +178,7 @@ define([], function () {
             this.$dropzone = null;
             this.lastUploadedFile = null;
             this.overlayOpened = false;
+            this.lockPopUp = false;
 
             this.bindCustomEvents();
             this.render();
@@ -195,6 +212,16 @@ define([], function () {
             this.sandbox.on(OPEN_DATA_SOURCE.call(this), function () {
                 this.sandbox.dom.trigger(this.$dropzone, 'click');
             }.bind(this));
+
+            if (this.options.showOverlay) {
+                this.sandbox.on(LOCK_POPUP.call(this), function() {
+                    this.lockPopUp = true;
+                }.bind(this));
+
+                this.sandbox.on(UNLOCK_POPUP.call(this), function() {
+                    this.lockPopUp = false;
+                }.bind(this));
+            }
         },
 
         /**
@@ -202,7 +229,7 @@ define([], function () {
          */
         openOverlay: function () {
             // open the overlay only if it's not already opened and if the dropzone is not visible
-            if (this.overlayOpened === false) {
+            if (this.overlayOpened === false && this.lockPopUp === false) {
                 // set height of components element to prevent the site from bumping
                 this.sandbox.dom.height(this.$el, this.sandbox.dom.outerHeight(this.$el));
 

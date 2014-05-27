@@ -37,6 +37,8 @@
     </div>
 </div>
 <p>Note: Scroll a bit and drop a file to see the dropzone in an overlay</p>
+<div class="btn fit action" id="lock">Lock Popup</div>
+<div class="btn fit action" id="unlock">Unlock Popup</div>
 <div style="width:100px;height:1000000px"></div>
 <script src="../js/jquery.js"></script>
 <script src="../js/require.js"></script>
@@ -56,7 +58,12 @@ require(['lib/husky'], function(Husky) {
         app.logger.log('Aura started...');
     });
 
-
+    $('#lock').on('click', function() {
+       app.sandbox.emit('husky.dropzone.pictures.lock-popup');
+    });
+    $('#unlock').on('click', function() {
+       app.sandbox.emit('husky.dropzone.pictures.unlock-popup');
+    });
 });
 </script>
 
