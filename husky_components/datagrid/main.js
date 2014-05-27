@@ -112,6 +112,15 @@
             },
 
             /**
+             * raised when clicked on an item
+             * @event husky.datagrid.item.click
+             * @param {String} id of item that was clicked
+             */
+                ITEM_CLICK = function () {
+                return this.createEventName('item.click');
+            },
+
+            /**
              * raised when item is selected
              * @event husky.datagrid.item.select
              * @param {String} if of selected item
@@ -925,6 +934,14 @@
                     this.gridViews[this.viewId].removeRecord(recordId);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
+            },
+
+            /**
+             * Emits the item clicked event
+             * @param id {Number|String} id to emit with the event
+             */
+            emitItemClickedEvent: function(id) {
+                this.sandbox.emit(ITEM_CLICK.call(this), id);
             },
 
             /**

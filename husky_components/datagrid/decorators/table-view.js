@@ -105,15 +105,6 @@ define(function() {
             ].join('')
     },
 
-    /**
-     * raised when clicked on an item
-     * @event husky.datagrid.item.click
-     * @param {String} id of item that was clicked
-     */
-        ITEM_CLICK = function () {
-        return this.datagrid.createEventName.call(this.datagrid, 'item.click');
-    },
-
         /**
          * used to update the table width and its containers due to responsiveness
          * @event husky.datagrid.update.table
@@ -309,9 +300,9 @@ define(function() {
         emitRowClickedEvent: function(event) {
             var id = this.sandbox.dom.$(event.currentTarget).data('id');
             if (!!id) {
-                this.sandbox.emit(ITEM_CLICK.call(this), id);
+                this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
             } else {
-                this.sandbox.emit(ITEM_CLICK.call(this), event);
+                this.datagrid.emitItemClickedEvent.call(this.datagrid, event);
             }
         },
 
