@@ -12,7 +12,6 @@
     border: 1px solid $grayLight;
     z-index: 1000;
     border-radius: $borderRadius;
-    overflow: hidden;
     @include standard-box-shadow;
 
     &.right-aligned {
@@ -20,11 +19,16 @@
         right: 0;
     }
 
+    &.overflow-hidden {
+        /* FIXME select in slides hidden */
+        overflow: hidden;
+    }
+
     &.wide {
         width: $overlayContainerWidthWide;
 
         .slides .slide {
-            width: $overlayContainerWidthWide;
+            width: $overlayContainerWidthWide - 2;
         }
     }
 
@@ -68,14 +72,13 @@
     }
 
     .slides {
-        width: 1000px;
         position: relative;
         left: 0px;
         @include single-transition(left, 500ms);
 
         .slide {
             float: left;
-            width: $overlayContainerWidth;
+            width: $overlayContainerWidth - 2;
         }
     }
 }
