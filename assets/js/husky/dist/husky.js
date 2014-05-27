@@ -25848,17 +25848,18 @@ define('type/husky-select',[
     return function($el, options) {
         var defaults = {
                 id: 'id',
-                label: 'value'
+                label: 'value',
+                required: false
             },
 
             typeInterface = {
                 setValue: function(data) {
 
-                    if(data === undefined || data === ''){
+                    if (data === undefined || data === '') {
                         return;
                     }
 
-                    if(typeof data === 'object') {
+                    if (typeof data === 'object') {
                         this.$el.data({
                             'selection': data[this.options.id],
                             'selectionValues': data[this.options.label]
@@ -25883,11 +25884,12 @@ define('type/husky-select',[
                 },
 
                 needsValidation: function() {
-                    return false;
+                    return this.options.required;
                 },
 
                 validate: function() {
-                    return true;
+                    var value = this.getValue();
+                    return !!value.id;
                 }
             };
 
