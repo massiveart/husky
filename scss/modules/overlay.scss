@@ -30,6 +30,9 @@
 
     &.dropzone {
         width: $overlayContainerWidthExtraWide;
+        .slides .slide {
+          width: $overlayContainerWidthExtraWide
+        }
         .overlay-content {
             margin-bottom: 20px;
         }
@@ -111,6 +114,12 @@
         position: absolute;
         bottom: 10px;
         right: 20px;
+    }
+
+    &.small-header {
+      background: transparent;
+      min-height: 0;
+      height: 25px;
     }
 }
 
