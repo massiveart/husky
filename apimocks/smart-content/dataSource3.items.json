@@ -1,5 +1,6 @@
 {
     "title": "A good example (3)",
+    "path": "/path-3",
     "_embedded": [
         {
             "id": 1,
