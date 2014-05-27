@@ -25,7 +25,7 @@ define([
             typeInterface = {
                 setValue: function(data) {
 
-                    if (data === undefined || data === '') {
+                    if (data === undefined || data === '' || data === null) {
                         return;
                     }
 
