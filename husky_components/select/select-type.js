@@ -18,20 +18,27 @@ define([
     return function($el, options) {
         var defaults = {
                 id: 'id',
-                label: 'value'
+                label: 'value',
+                required: false
             },
 
             typeInterface = {
                 setValue: function(data) {
 
-                    if(!data){
+                    if (data === undefined || data === '') {
                         return;
                     }
 
-                    this.$el.data({
-                        'selection': data[this.options.id],
-                        'selectionValues': data[this.options.label]
-                    }).trigger('data-changed');
+                    if (typeof data === 'object') {
+                        this.$el.data({
+                            'selection': data[this.options.id],
+                            'selectionValues': data[this.options.label]
+                        }).trigger('data-changed');
+                    } else {
+                        this.$el.data({
+                            'selection': data
+                        }).trigger('data-changed');
+                    }
                 },
 
                 getValue: function() {
@@ -47,11 +54,12 @@ define([
                 },
 
                 needsValidation: function() {
-                    return false;
+                    return this.options.required;
                 },
 
                 validate: function() {
-                    return true;
+                    var value = this.getValue();
+                    return !!value.id;
                 }
             };
 
