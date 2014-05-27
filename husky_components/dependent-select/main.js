@@ -148,7 +148,7 @@ define(function() {
         checkAllSelected = function() {
             var $lastContainer = this.$find(this.options.container[this.options.container.length-1]),
                 lastSelectElement = this.sandbox.dom.children($lastContainer)[0],
-                selection = this.sandbox.dom.attr(lastSelectElement,'data-selection');
+                selection = this.sandbox.dom.data(lastSelectElement,'selection');
 
             // if last element is selected
             if (!!lastSelectElement && typeof selection !== 'undefined') {

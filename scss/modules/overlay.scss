@@ -12,12 +12,16 @@
     border: 1px solid $grayLight;
     z-index: 1000;
     border-radius: $borderRadius;
-    overflow: hidden;
     @include standard-box-shadow;
 
     &.right-aligned {
         left: auto;
         right: 0;
+    }
+
+    &.overflow-hidden {
+        /* FIXME select in slides hidden */
+        overflow: hidden;
     }
 
     &.wide {
