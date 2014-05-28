@@ -4467,9 +4467,10 @@ textarea.form-element {
 textarea.form-element.small {
   height: 70px;
   min-height: 70px;
+  padding: 5px;
 }
 
-/* line 254, ../scss/modules/form.scss */
+/* line 255, ../scss/modules/form.scss */
 .custom-radio {
   width: 15px;
   height: 15px;
@@ -4479,12 +4480,12 @@ textarea.form-element.small {
   display: inline-block;
   margin: 0 5px 0 0;
 }
-/* line 264, ../scss/modules/form.scss */
+/* line 265, ../scss/modules/form.scss */
 .custom-radio.no-spacing {
   top: 0;
   margin: 0;
 }
-/* line 269, ../scss/modules/form.scss */
+/* line 270, ../scss/modules/form.scss */
 .custom-radio input {
   width: 15px;
   height: 15px;
@@ -4497,11 +4498,11 @@ textarea.form-element.small {
   margin: 0;
   padding: 0;
 }
-/* line 283, ../scss/modules/form.scss */
+/* line 284, ../scss/modules/form.scss */
 .custom-radio input:checked + .icon, .custom-radio input.is-checked + .icon {
   border-color: white;
 }
-/* line 286, ../scss/modules/form.scss */
+/* line 287, ../scss/modules/form.scss */
 .custom-radio input:checked + .icon::after, .custom-radio input.is-checked + .icon::after {
   content: "";
   display: block;
@@ -4510,7 +4511,7 @@ textarea.form-element.small {
   border-radius: 15px;
   background-color: #5dc774;
 }
-/* line 297, ../scss/modules/form.scss */
+/* line 298, ../scss/modules/form.scss */
 .custom-radio input + .icon {
   display: block;
   position: absolute;
@@ -4526,23 +4527,23 @@ textarea.form-element.small {
   margin: 0;
 }
 
-/* line 319, ../scss/modules/form.scss */
+/* line 320, ../scss/modules/form.scss */
 .cke.cke_chrome {
   box-shadow: none !important;
   border: 0 !important;
 }
-/* line 324, ../scss/modules/form.scss */
+/* line 325, ../scss/modules/form.scss */
 .cke .cke_inner {
   border: 1px solid #cccccc !important;
 }
-/* line 328, ../scss/modules/form.scss */
+/* line 329, ../scss/modules/form.scss */
 .cke .cke_inner,
 .cke .cke_wysiwyg_frame {
   border-bottom-left-radius: 3px !important;
   border-bottom-right-radius: 3px !important;
 }
 
-/* line 336, ../scss/modules/form.scss */
+/* line 337, ../scss/modules/form.scss */
 span.error {
   font-size: 14px;
   color: #ea524e;
