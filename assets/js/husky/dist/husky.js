@@ -25877,6 +25877,10 @@ define('type/husky-select',[
                         ids = this.$el.data('selection'),
                         values = this.$el.data('selection-values');
 
+                    if (this.$el.attr('data-mapper-property-type') === 'string') {
+                        return Array.isArray(values) ? values[0] : values;
+                    }
+
                     data[this.options.label] = Array.isArray(values) ? values[0] : values;
                     data[this.options.id] = Array.isArray(ids) ? ids[0] : ids;
 
@@ -25889,7 +25893,11 @@ define('type/husky-select',[
 
                 validate: function() {
                     var value = this.getValue();
-                    return !!value.id;
+                    if (typeof value === 'object') {
+                        return !!value.id;
+                    } else {
+                        return value !== '' && typeof value !== 'undefined';
+                    }
                 }
             };
 
