@@ -243,6 +243,10 @@ textarea.form-element {
     padding: 10px;
     font-size: 14px;
     font-family: inherit;
+    &.small {
+      height: 70px;
+      min-height: 70px;
+    }
 }
 
 // Radio
