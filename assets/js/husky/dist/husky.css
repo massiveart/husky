@@ -6850,7 +6850,7 @@ a.btn-black, a.btn-highlight {
   max-width: 100%;
   height: 1px;
   background-color: #ccc;
-  margin: 0;
+  margin: 5px 0 10px;
 }
 /* line 70, ../scss/modules/select.scss */
 .husky-select-container .dropdown-list.top {
