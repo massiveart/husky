@@ -773,7 +773,7 @@ define([], function() {
          * initialize column navigation
          */
         initColumnNavigation: function() {
-            var url = this.options.columnNavigationUrl.replace('{dataSource}', this.overlayData.dataSource || '');
+            var url = this.options.columnNavigationUrl.replace('{/dataSource}', (!!this.overlayData.dataSource ? '/' + this.overlayData.dataSource : ''));
 
             this.sandbox.start(
                 [
@@ -786,7 +786,7 @@ define([], function() {
                             noPageDescription: 'No Pages',
                             sizeRelativeTo: '.smart-content-overlay .slide-1 .overlay-content',
                             wrapper: {height: 100},
-                            editIcon: 'icon-half-ok',
+                            editIcon: 'fa-check',
                             showEdit: false,
                             showStatus: false
                         }

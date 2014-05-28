@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -25878,6 +25877,10 @@ define('type/husky-select',[
                         ids = this.$el.data('selection'),
                         values = this.$el.data('selection-values');
 
+                    if (this.$el.attr('data-mapper-property-type') === 'string') {
+                        return Array.isArray(values) ? values[0] : values;
+                    }
+
                     data[this.options.label] = Array.isArray(values) ? values[0] : values;
                     data[this.options.id] = Array.isArray(ids) ? ids[0] : ids;
 
@@ -25890,7 +25893,11 @@ define('type/husky-select',[
 
                 validate: function() {
                     var value = this.getValue();
-                    return !!value.id;
+                    if (typeof value === 'object') {
+                        return !!value.id;
+                    } else {
+                        return value !== '' && typeof value !== 'undefined';
+                    }
                 }
             };
 
@@ -37779,7 +37786,7 @@ define('__component__$smart-content@husky',[], function() {
          * initialize column navigation
          */
         initColumnNavigation: function() {
-            var url = this.options.columnNavigationUrl.replace('{dataSource}', this.overlayData.dataSource || '');
+            var url = this.options.columnNavigationUrl.replace('{/dataSource}', (!!this.overlayData.dataSource ? '/' + this.overlayData.dataSource : ''));
 
             this.sandbox.start(
                 [
@@ -37792,7 +37799,7 @@ define('__component__$smart-content@husky',[], function() {
                             noPageDescription: 'No Pages',
                             sizeRelativeTo: '.smart-content-overlay .slide-1 .overlay-content',
                             wrapper: {height: 100},
-                            editIcon: 'icon-half-ok',
+                            editIcon: 'fa-check',
                             showEdit: false,
                             showStatus: false
                         }
@@ -38568,7 +38575,7 @@ define('__component__$overlay@husky',[], function() {
 
                     if (this.slides.length > 1) {
                         // set width to n-width
-                        this.overlay.width = this.sandbox.dom.outerWidth(this.sandbox.dom.find(this.overlay.$slides, '.slide'));
+                        this.overlay.width = this.sandbox.dom.outerWidth(this.sandbox.dom.find('.slide', this.overlay.$slides));
                         this.sandbox.dom.css(this.overlay.$slides, 'width', (this.slides.length * this.overlay.width) + 'px');
 
                         var maxHeight = -1;
@@ -42210,3 +42217,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
