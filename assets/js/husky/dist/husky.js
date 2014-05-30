@@ -17573,13 +17573,19 @@ define('form/mapper',[
                     var template = this.templates[propertyName],
                         element = template.collection.$element,
                         insertAfterLast = false,
-                        lastElement;
+                        lastElement,
+                        dfd = $.Deferred();
+
                     // check if element exists and put it after last
                     if (!append && (lastElement = element.find('*[data-mapper-property-tpl="' + template.tpl.id + '"]').last()).length > 0) {
                         element = lastElement;
                         insertAfterLast = true;
                     }
-                    that.appendChildren.call(this, element, template.tpl, data, data, insertAfterLast);
+                    that.appendChildren.call(this, element, template.tpl, data, data, insertAfterLast).then(function($element) {
+                        dfd.resolve($element);
+                    }.bind(this));
+
+                    return dfd;
                 },
 
                 /**
@@ -41659,6 +41665,10 @@ define('husky_extensions/collection',[],function() {
                 return $(selector).show();
             };
 
+            app.core.dom.trim = function(string) {
+                return $.trim(string);
+            };
+
             app.core.dom.map = function(selector, callback) {
                 return $(selector).map(callback);
             };
@@ -42200,6 +42210,26 @@ define('husky_extensions/util',[],function() {
 
                 substrLength = Math.floor((maxLength - delimiter.length)/2);
                 return text.slice(0, substrLength) + delimiter + text.slice(-substrLength);
+            },
+
+            app.core.util.cropFront = function(text, maxLength, delimiter) {
+                if (!text || text.length <= maxLength) {
+                    return text;
+                }
+
+                delimiter = delimiter || '...';
+
+                return delimiter + text.slice(-(maxLength - delimiter.length));
+            },
+
+            app.core.util.cropTail = function(text, maxLength, delimiter) {
+                if (!text || text.length <= maxLength) {
+                    return text;
+                }
+
+                delimiter = delimiter || '...';
+
+                return text.slice(0, (maxLength - delimiter.length)) + delimiter;
             },
 
             app.core.util.contains = function(list, value) {

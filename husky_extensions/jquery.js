@@ -326,6 +326,10 @@
                 return $(selector).show();
             };
 
+            app.core.dom.trim = function(string) {
+                return $.trim(string);
+            };
+
             app.core.dom.map = function(selector, callback) {
                 return $(selector).map(callback);
             };
