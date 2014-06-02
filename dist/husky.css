@@ -4077,174 +4077,174 @@ hr.divider {
   padding-right: 8px;
   min-height: 1px;
 }
-/* line 81, ../scss/modules/grid.scss */
+/* line 80, ../scss/modules/grid.scss */
+[class*="grid-col-"]:last-of-type {
+  padding-right: 0;
+}
+/* line 83, ../scss/modules/grid.scss */
 [class*="grid-col-"]:first-of-type {
   padding-left: 0;
   padding-right: 8px;
 }
-/* line 86, ../scss/modules/grid.scss */
-[class*="grid-col-"]:last-of-type {
-  padding-right: 0;
-}
-/* line 89, ../scss/modules/grid.scss */
+/* line 87, ../scss/modules/grid.scss */
 [class*="grid-col-"].no-padding {
   padding: 0;
 }
 
-/* line 94, ../scss/modules/grid.scss */
+/* line 92, ../scss/modules/grid.scss */
 .grid-col-1 {
   width: 8.33%;
 }
-/* line 98, ../scss/modules/grid.scss */
+/* line 96, ../scss/modules/grid.scss */
 .grid-col-1.floating:nth-child(n+13) {
   margin-top: 20px;
 }
-/* line 102, ../scss/modules/grid.scss */
+/* line 100, ../scss/modules/grid.scss */
 .grid-col-1.floating:nth-child(12n+1) {
   padding-left: 0;
   padding-right: 8px;
 }
-/* line 107, ../scss/modules/grid.scss */
+/* line 105, ../scss/modules/grid.scss */
 .grid-col-1.floating:nth-child(12n) {
   padding-right: 0;
 }
 
-/* line 113, ../scss/modules/grid.scss */
+/* line 111, ../scss/modules/grid.scss */
 .grid-col-2 {
   width: 16.66%;
 }
-/* line 117, ../scss/modules/grid.scss */
+/* line 115, ../scss/modules/grid.scss */
 .grid-col-2.floating:nth-child(n+7) {
   margin-top: 20px;
 }
-/* line 121, ../scss/modules/grid.scss */
+/* line 119, ../scss/modules/grid.scss */
 .grid-col-2.floating:nth-child(6n+1) {
   padding-left: 0;
   padding-right: 8px;
 }
-/* line 126, ../scss/modules/grid.scss */
+/* line 124, ../scss/modules/grid.scss */
 .grid-col-2.floating:nth-child(6n) {
   padding-right: 0;
 }
 
-/* line 132, ../scss/modules/grid.scss */
+/* line 130, ../scss/modules/grid.scss */
 .grid-col-3 {
   width: 25%;
 }
-/* line 136, ../scss/modules/grid.scss */
+/* line 134, ../scss/modules/grid.scss */
 .grid-col-3.floating:nth-child(n+5) {
   margin-top: 20px;
 }
-/* line 140, ../scss/modules/grid.scss */
+/* line 138, ../scss/modules/grid.scss */
 .grid-col-3.floating:nth-child(4n+1) {
   padding-left: 0;
   padding-right: 8px;
 }
-/* line 145, ../scss/modules/grid.scss */
+/* line 143, ../scss/modules/grid.scss */
 .grid-col-3.floating:nth-child(4n) {
   padding-right: 0;
 }
 
-/* line 151, ../scss/modules/grid.scss */
+/* line 149, ../scss/modules/grid.scss */
 .grid-col-4 {
   width: 33.33%;
 }
-/* line 155, ../scss/modules/grid.scss */
+/* line 153, ../scss/modules/grid.scss */
 .grid-col-4.floating:nth-child(n+4) {
   margin-top: 20px;
 }
-/* line 159, ../scss/modules/grid.scss */
+/* line 157, ../scss/modules/grid.scss */
 .grid-col-4.floating:nth-child(3n+1) {
   padding-left: 0;
   padding-right: 8px;
 }
-/* line 164, ../scss/modules/grid.scss */
+/* line 162, ../scss/modules/grid.scss */
 .grid-col-4.floating:nth-child(3n) {
   padding-right: 0;
 }
 
-/* line 170, ../scss/modules/grid.scss */
+/* line 168, ../scss/modules/grid.scss */
 .grid-col-5 {
   width: 41.66%;
 }
 
-/* line 174, ../scss/modules/grid.scss */
+/* line 172, ../scss/modules/grid.scss */
 .grid-col-6 {
   width: 50%;
 }
-/* line 179, ../scss/modules/grid.scss */
+/* line 177, ../scss/modules/grid.scss */
 .grid-col-6.floating:nth-child(n+3) {
   margin-top: 20px;
 }
-/* line 183, ../scss/modules/grid.scss */
+/* line 181, ../scss/modules/grid.scss */
 .grid-col-6.floating:nth-child(odd) {
   padding-left: 0;
   padding-right: 8px;
 }
-/* line 188, ../scss/modules/grid.scss */
+/* line 186, ../scss/modules/grid.scss */
 .grid-col-6.floating:nth-child(even) {
   padding-right: 0;
 }
 
-/* line 194, ../scss/modules/grid.scss */
+/* line 192, ../scss/modules/grid.scss */
 .grid-col-7 {
   width: 58.33%;
 }
 
-/* line 198, ../scss/modules/grid.scss */
+/* line 196, ../scss/modules/grid.scss */
 .grid-col-8 {
   width: 66.66%;
 }
 
-/* line 202, ../scss/modules/grid.scss */
+/* line 200, ../scss/modules/grid.scss */
 .grid-col-9 {
   width: 75%;
 }
 
-/* line 206, ../scss/modules/grid.scss */
+/* line 204, ../scss/modules/grid.scss */
 .grid-col-10 {
   width: 83.33%;
 }
 
-/* line 210, ../scss/modules/grid.scss */
+/* line 208, ../scss/modules/grid.scss */
 .grid-col-11 {
   width: 91.66%;
 }
 
-/* line 214, ../scss/modules/grid.scss */
+/* line 212, ../scss/modules/grid.scss */
 .grid-col-12 {
   width: 100%;
 }
-/* line 218, ../scss/modules/grid.scss */
+/* line 216, ../scss/modules/grid.scss */
 .grid-col-12.floating:nth-child(n+2) {
   margin-top: 20px;
 }
-/* line 221, ../scss/modules/grid.scss */
+/* line 219, ../scss/modules/grid.scss */
 .grid-col-12.floating:nth-child(n) {
   padding-left: 0;
   padding-right: 0;
 }
 
 @media (max-width: 580px) {
-  /* line 230, ../scss/modules/grid.scss */
+  /* line 228, ../scss/modules/grid.scss */
   [class*="grid-col-"] {
     width: 100%;
     margin-top: 15px;
     padding-left: 0;
     padding-right: 0;
   }
-  /* line 237, ../scss/modules/grid.scss */
+  /* line 235, ../scss/modules/grid.scss */
   [class*="grid-col-"]:first-of-type {
     margin-top: 0;
     padding-right: 0;
   }
-  /* line 243, ../scss/modules/grid.scss */
+  /* line 241, ../scss/modules/grid.scss */
   [class*="grid-col-"].floating:nth-child(n) {
     padding-right: 0;
   }
 }
 /* line 5, ../scss/modules/form.scss */
-.form-element {
+.form-element, .husky-input {
   width: 100%;
   height: 30px;
   border: 1px solid #cccccc;
@@ -4254,17 +4254,17 @@ hr.divider {
   border: 1px solid #cccccc;
 }
 /* line 14, ../scss/modules/form.scss */
-.form-element:focus {
+.form-element:focus, .husky-input:focus {
   outline: 0;
   border-color: #cccccc;
 }
 /* line 19, ../scss/modules/form.scss */
-.form-element.input-large {
+.form-element.input-large, .input-large.husky-input {
   height: 40px;
   padding: 0 10px;
 }
 /* line 24, ../scss/modules/form.scss */
-.form-element[readonly] {
+.form-element[readonly], [readonly].husky-input {
   background: none;
   border: 0;
   color: #999999;
@@ -4356,7 +4356,7 @@ label.large {
   font-weight: bold;
 }
 /* line 133, ../scss/modules/form.scss */
-label .form-element {
+label .form-element, label .husky-input {
   margin-top: 5px;
   border: 1px solid #cccccc;
 }
@@ -4456,7 +4456,7 @@ textarea.noResize {
 }
 
 /* line 240, ../scss/modules/form.scss */
-textarea.form-element {
+textarea.form-element, textarea.husky-input {
   width: 100%;
   height: 40px;
   min-height: 150px;
@@ -4465,7 +4465,7 @@ textarea.form-element {
   font-family: inherit;
 }
 /* line 247, ../scss/modules/form.scss */
-textarea.form-element.small {
+textarea.form-element.small, textarea.small.husky-input {
   height: 70px;
   min-height: 70px;
   padding: 5px;
@@ -7084,7 +7084,7 @@ a.btn-black, a.btn-highlight {
   font-size: 12px;
 }
 /* line 138, ../scss/modules/smart-content.scss */
-.smart-overlay-content .form-element {
+.smart-overlay-content .form-element, .smart-overlay-content .husky-input {
   margin: 0;
 }
 /* line 141, ../scss/modules/smart-content.scss */
@@ -7930,6 +7930,72 @@ a.btn-black, a.btn-highlight {
 /* line 144, ../scss/modules/dropzone.scss */
 .husky-dropzone.dropped .description {
   margin-top: -150px;
+}
+
+/* line 5, ../scss/modules/input.scss */
+.husky-input {
+  background: white;
+  overflow: hidden;
+  position: relative;
+  top: 0px;
+  left: 0px;
+}
+/* line 32, ../scss/mixins.scss */
+.husky-input:after {
+  clear: both;
+  content: ' ';
+  display: block;
+}
+/* line 17, ../scss/modules/input.scss */
+.husky-input .front {
+  float: left;
+  line-height: 18px;
+  margin: 5px 0;
+  padding-right: 5px;
+  border-right: 1px solid #cccccc;
+  color: #999999;
+  font-size: 16px;
+}
+/* line 26, ../scss/modules/input.scss */
+.husky-input .back {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  line-height: 18px;
+  padding: 5px 10px 5px 5px;
+  background: white;
+  color: #999999;
+  font-size: 16px;
+}
+/* line 36, ../scss/modules/input.scss */
+.husky-input .back .color-field {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  display: inline-block;
+  margin-top: 2px;
+}
+/* line 45, ../scss/modules/input.scss */
+.husky-input .input {
+  overflow: hidden;
+  padding-left: 5px;
+}
+/* line 48, ../scss/modules/input.scss */
+.husky-input .input input {
+  height: 28px;
+  border: none;
+  outline-width: 0;
+  width: 100%;
+}
+/* line 55, ../scss/modules/input.scss */
+.husky-input .text {
+  font-size: 14px;
+}
+/* line 60, ../scss/modules/input.scss */
+.husky-input.action .front {
+  color: black;
+  cursor: pointer;
 }
 
 /* line 32, ../scss/mixins.scss */

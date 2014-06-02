@@ -45,7 +45,8 @@
             "__component__$matcher@husky": "husky_components/matcher/main",
             "__component__$process@husky": "husky_components/process/main",
             "__component__$toggler@husky": "husky_components/toggler/main",
-            "__component__$dropzone@husky": "husky_components/dropzone/main"
+            "__component__$dropzone@husky": "husky_components/dropzone/main",
+            "__component__$input@husky": "husky_components/input/main"
         },
         "shim": {
             "backbone": {
@@ -99,7 +100,8 @@
             "__component__$matcher@husky",
             "__component__$process@husky",
             "__component__$toggler@husky",
-            "__component__$dropzone@husky"
+            "__component__$dropzone@husky",
+            "__component__$input@husky"
         ]
     }
 }
