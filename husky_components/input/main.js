@@ -27,15 +27,16 @@ define([], function () {
             value: '',
             placeholder: '',
             inputType: 'text',
-            validators: null,
-            type: null,
+            skin: null,
             frontIcon: null,
             frontText: null,
             frontHtml: null,
             backIcon: null,
             backText: null,
             backHtml: null,
-            action: null
+            renderMethod: null,
+            datepickerOptions: {},
+            colorPickerOptions: {}
         },
 
         constants = {
@@ -45,28 +46,32 @@ define([], function () {
             textClass: 'text',
             inputClass: 'input',
             actionClass: 'action',
-            colorFieldClass: 'color-field'
+            colorFieldClass: 'color-field',
+            colorpickerClass: 'colorpicker',
+            datepickerClass: 'pickdate'
         },
 
         templates = {
-            input: '<input type="<%= type %>" value="<%= value %>" placeholder="<%= placeholder %>" id="<%= id %>" name="<%= name %>"/>',
-            colorPickerBack: '<div class="'+ constants.colorFieldClass +'"/>',
+            input: '<input type="<%= type %>" value="<%= value %>" placeholder="<%= placeholder %>" id="<%= id %>" name="<%= name %>" data-from="false"/>',
+            colorPickerFront: '<div class="'+ constants.colorFieldClass +'"/>'
         },
 
-        actions = {
-            datepicker: function() {
-                this.pickDate();
-            },
+        renderMethods = {
             colorpicker: function() {
-                this.pickColor();
+                this.renderColorPicker();
+            },
+            datepicker: function() {
+                this.renderDatePicker();
+            },
+            time: function() {
+                this.renderTime();
             }
         },
 
-        types = {
+        skins = {
             color: {
-                frontText: '#',
-                action: 'colorpicker',
-                backHtml: templates.colorPickerBack
+                frontHtml: templates.colorPickerFront,
+                renderMethod: 'colorpicker'
             },
             phone: {
                 frontIcon: 'phone'
@@ -83,10 +88,13 @@ define([], function () {
             },
             date: {
                 frontIcon: 'calendar',
-                action: 'datepicker'
+                placeholder: 'TT - MM - JJJJ',
+                renderMethod: 'datepicker'
             },
             time: {
-                frontIcon: 'clock-o'
+                frontIcon: 'clock-o',
+                placeholder: 'HH - MM',
+                renderMethod: 'time'
             }
         },
 
@@ -117,11 +125,11 @@ define([], function () {
         initialize: function () {
             this.sandbox.logger.log('initialize', this);
 
-            // merge type defaults with defaults
-            if (!!this.options.type && !!types[this.options.type]) {
-                var defaults = this.sandbox.util.extend(true, {}, defaults, types[this.options.type]);
+            // merge skin defaults with defaults
+            if (!!this.options.skin && !!skins[this.options.skin]) {
+                var defaults = this.sandbox.util.extend(true, {}, defaults, skins[this.options.skin]);
             }
-            // merge defaults, type defaults and options
+            // merge defaults, skin defaults and options
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
             this.input = {
@@ -131,6 +139,7 @@ define([], function () {
             };
 
             this.render();
+            this.bindDomEvents();
 
             this.sandbox.emit(INITIALIZED.call(this));
         },
@@ -147,8 +156,11 @@ define([], function () {
             this.renderFront();
             this.renderInput();
             this.renderBack();
-
-            this.bindDomEvents();
+            // call a render method specific for the skin
+            // e.g. renderColorPicker
+            if (!!this.options.renderMethod && !!renderMethods[this.options.renderMethod]) {
+                renderMethods[this.options.renderMethod].call(this);
+            }
         },
 
         /**
@@ -159,11 +171,15 @@ define([], function () {
                 this.sandbox.dom.focus(this.input.$input);
             }.bind(this));
 
-            if (!!this.options.action && !!actions[this.options.action]) {
-                this.sandbox.dom.on(this.$el, 'click', function() {
-                    actions[this.options.action].call(this);
-                }.bind(this))
-            }
+            // change the input value if the data attribute got changed
+            this.sandbox.dom.on(this.$el, 'data-changed', function() {
+                this.updateValue();
+            }.bind(this));
+
+            // update the data attributes on keyup
+            this.sandbox.dom.on(this.input.$input, 'keyup', function() {
+                this.setDataAttributes();
+            }.bind(this));
         },
 
         /**
@@ -198,6 +214,7 @@ define([], function () {
             }));
             this.sandbox.dom.append($container, this.input.$input);
             this.sandbox.dom.append(this.$el, $container);
+            this.setDataAttributes();
         },
 
         /**
@@ -218,17 +235,70 @@ define([], function () {
         },
 
         /**
-         * Displays a datepicker on the input
+         * Starts the colorpicker
          */
-        pickDate: function() {
-            console.log('pick a date');
+        renderColorPicker: function() {
+            this.sandbox.dom.addClass(this.$el, constants.colorpickerClass);
+            this.changeColorPreview(this.sandbox.dom.val(this.input.$input));
+            this.sandbox.colorpicker.init(this.input.$input, this.sandbox.util.extend(true, {}, {
+                defaultValue: this.sandbox.dom.val(this.input.$input),
+                change: this.changeColorPreview.bind(this)
+            }, this.options.colorPickerOptions));
         },
 
         /**
-         * Displays a colorpicker on the input
+         * Starts the datepicker
          */
-        pickColor: function() {
-            console.log('pick a color');
+        renderDatePicker: function() {
+            this.sandbox.dom.addClass(this.$el, constants.datepickerClass);
+            this.sandbox.dom.attr(this.input.$input, 'placeholder', this.sandbox.globalize.getDatePattern());
+            this.sandbox.datepicker.init(this.input.$input, this.options.datepickerOptions);
+        },
+
+        /**
+         * Renders time specific things
+         */
+        renderTime: function() {
+            this.sandbox.dom.attr(this.input.$input, 'placeholder', this.sandbox.globalize.getTimePatter());
+        },
+
+        /**
+         * Updates the square which shows the current color for the colorpicker
+         * @param color {String} new hex color
+         */
+        changeColorPreview: function(color) {
+            this.sandbox.dom.css(this.$find('.' + constants.colorFieldClass), {
+                'background-color': color
+            });
+        },
+
+        /**
+         * Sets the input value
+         * @param value {String} new value
+         */
+        setValue: function(value) {
+            if (this.options.skin === 'color') {
+                this.sandbox.colorpicker.value(this.input.$input, value);
+            } else if (this.options.skin === 'date') {
+                this.sandbox.datepicker.setValue(this.input.$input, value);
+            } else {
+                this.sandbox.dom.val(this.input.$input, value);
+            }
+        },
+
+        /**
+         * Updates the value with what is in the
+         * data attribute
+         */
+        updateValue: function() {
+            this.setValue(this.sandbox.dom.data(this.$el, 'value'));
+        },
+
+        /**
+         * Updates the data attributes
+         */
+        setDataAttributes: function() {
+            this.sandbox.dom.data(this.$el, 'value', this.sandbox.dom.val(this.input.$input));
         },
     };
 

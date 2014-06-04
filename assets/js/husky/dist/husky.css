@@ -1051,6 +1051,232 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   display: none;
 }
 
+/* line 3, ../scss/colorpicker.scss */
+.minicolors {
+  position: relative;
+}
+
+/* line 7, ../scss/colorpicker.scss */
+.minicolors-swatch {
+  display: none;
+}
+
+/* line 11, ../scss/colorpicker.scss */
+.minicolors input[type=hidden] + .minicolors-swatch {
+  width: 28px;
+  position: static;
+  cursor: pointer;
+}
+
+/* Panel */
+/* line 19, ../scss/colorpicker.scss */
+.minicolors-panel {
+  position: absolute;
+  width: 173px;
+  height: 152px;
+  background: white;
+  z-index: 99999;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  display: none;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
+  box-shadow: rgba(0, 0, 0, 0.08) 3px 3px 0px 0px;
+}
+/* line 30, ../scss/colorpicker.scss */
+.minicolors-panel.minicolors-visible {
+  display: block;
+}
+
+/* Panel positioning */
+/* line 37, ../scss/colorpicker.scss */
+.minicolors-position-top .minicolors-panel {
+  top: -154px;
+}
+
+/* line 41, ../scss/colorpicker.scss */
+.minicolors-position-right .minicolors-panel {
+  right: 0;
+}
+
+/* line 45, ../scss/colorpicker.scss */
+.minicolors-position-bottom .minicolors-panel {
+  top: auto;
+}
+
+/* line 49, ../scss/colorpicker.scss */
+.minicolors-position-left .minicolors-panel {
+  left: 0;
+}
+
+/* line 53, ../scss/colorpicker.scss */
+.minicolors-with-opacity .minicolors-panel {
+  width: 194px;
+}
+
+/* line 58, ../scss/colorpicker.scss */
+.minicolors .minicolors-grid {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 150px;
+  height: 150px;
+  background: url("../img/jquery.minicolors.png") -120px 0;
+  cursor: crosshair;
+}
+/* line 67, ../scss/colorpicker.scss */
+.minicolors .minicolors-grid-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 150px;
+  height: 150px;
+  background: none;
+}
+
+/* line 78, ../scss/colorpicker.scss */
+.minicolors-slider-saturation .minicolors-grid {
+  background-position: -420px 0;
+}
+/* line 81, ../scss/colorpicker.scss */
+.minicolors-slider-saturation .minicolors-grid-inner {
+  background: url("../img/jquery.minicolors.png") -270px 0;
+}
+
+/* line 87, ../scss/colorpicker.scss */
+.minicolors-slider-brightness .minicolors-grid {
+  background-position: -570px 0;
+}
+/* line 90, ../scss/colorpicker.scss */
+.minicolors-slider-brightness .minicolors-grid-inner {
+  background: black;
+}
+
+/* line 95, ../scss/colorpicker.scss */
+.minicolors-slider-wheel .minicolors-grid {
+  background-position: -720px 0;
+}
+
+/* line 99, ../scss/colorpicker.scss */
+.minicolors-slider, .minicolors-opacity-slider {
+  position: absolute;
+  top: 1px;
+  left: 152px;
+  width: 20px;
+  height: 150px;
+  background: white url("../img/jquery.minicolors.png") 0 0;
+  cursor: row-resize;
+}
+
+/* line 109, ../scss/colorpicker.scss */
+.minicolors-slider-saturation .minicolors-slider {
+  background-position: -60px 0;
+}
+
+/* line 113, ../scss/colorpicker.scss */
+.minicolors-slider-brightness .minicolors-slider, .minicolors-slider-wheel .minicolors-slider {
+  background-position: -20px 0;
+}
+
+/* line 117, ../scss/colorpicker.scss */
+.minicolors-opacity-slider {
+  left: 173px;
+  background-position: -40px 0;
+  display: none;
+}
+
+/* line 123, ../scss/colorpicker.scss */
+.minicolors-with-opacity .minicolors-opacity-slider {
+  display: block;
+}
+
+/* Pickers */
+/* line 129, ../scss/colorpicker.scss */
+.minicolors-grid .minicolors-picker {
+  position: absolute;
+  top: 70px;
+  left: 70px;
+  width: 12px;
+  height: 12px;
+  border: solid 1px black;
+  border-radius: 10px;
+  margin-top: -6px;
+  margin-left: -6px;
+  background: none;
+}
+/* line 140, ../scss/colorpicker.scss */
+.minicolors-grid .minicolors-picker > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 8px;
+  border: solid 2px white;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+}
+
+/* line 154, ../scss/colorpicker.scss */
+.minicolors-picker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 2px;
+  background: white;
+  border: solid 1px black;
+  margin-top: -2px;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+}
+
+/* Inline controls */
+/* line 170, ../scss/colorpicker.scss */
+.minicolors-inline {
+  display: inline-block;
+}
+/* line 172, ../scss/colorpicker.scss */
+.minicolors-inline .minicolors-input {
+  display: none !important;
+}
+/* line 175, ../scss/colorpicker.scss */
+.minicolors-inline .minicolors-panel {
+  position: relative;
+  top: auto;
+  left: auto;
+  box-shadow: none;
+  z-index: auto;
+  display: inline-block;
+}
+
+/* Default theme */
+/* line 188, ../scss/colorpicker.scss */
+.minicolors-theme-default.minicolors-position-right .minicolors-swatch {
+  left: auto;
+  right: 5px;
+}
+/* line 192, ../scss/colorpicker.scss */
+.minicolors-theme-default.minicolors {
+  width: auto;
+  display: inline-block;
+}
+/* line 196, ../scss/colorpicker.scss */
+.minicolors-theme-default .minicolors-input {
+  height: 20px;
+  width: auto;
+  display: inline-block;
+  padding-left: 5px;
+}
+/* line 202, ../scss/colorpicker.scss */
+.minicolors-theme-default.minicolors-position-right .minicolors-input {
+  padding-right: 26px;
+  padding-left: inherit;
+}
+
 /*!
  *  Font Awesome 4.1.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
@@ -6379,11 +6605,7 @@ a.btn-black, a.btn-highlight {
   background-color: #5dc774;
 }
 
-/* line 13, ../scss/modules/validation.scss */
-.required {
-  font-family: Helvetica, Arial, sans-serif !important;
-}
-/* line 16, ../scss/modules/validation.scss */
+/* line 14, ../scss/modules/validation.scss */
 .required::after {
   content: " *";
 }
@@ -7935,7 +8157,6 @@ a.btn-black, a.btn-highlight {
 /* line 5, ../scss/modules/input.scss */
 .husky-input {
   background: white;
-  overflow: hidden;
   position: relative;
   top: 0px;
   left: 0px;
@@ -7946,29 +8167,18 @@ a.btn-black, a.btn-highlight {
   content: ' ';
   display: block;
 }
-/* line 17, ../scss/modules/input.scss */
+/* line 16, ../scss/modules/input.scss */
 .husky-input .front {
   float: left;
   line-height: 18px;
-  margin: 5px 0;
+  margin: 5px 0 0 0;
   padding-right: 5px;
   border-right: 1px solid #cccccc;
   color: #999999;
   font-size: 16px;
 }
-/* line 26, ../scss/modules/input.scss */
-.husky-input .back {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  line-height: 18px;
-  padding: 5px 10px 5px 5px;
-  background: white;
-  color: #999999;
-  font-size: 16px;
-}
-/* line 36, ../scss/modules/input.scss */
-.husky-input .back .color-field {
+/* line 25, ../scss/modules/input.scss */
+.husky-input .front .color-field {
   width: 15px;
   height: 15px;
   border: 1px solid #999999;
@@ -7976,24 +8186,44 @@ a.btn-black, a.btn-highlight {
   display: inline-block;
   margin-top: 2px;
 }
-/* line 45, ../scss/modules/input.scss */
+/* line 34, ../scss/modules/input.scss */
+.husky-input .back {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  line-height: 18px;
+  padding: 5px 10px 0 5px;
+  background: white;
+  color: #999999;
+  font-size: 16px;
+}
+/* line 44, ../scss/modules/input.scss */
 .husky-input .input {
   overflow: hidden;
   padding-left: 5px;
 }
-/* line 48, ../scss/modules/input.scss */
+/* line 47, ../scss/modules/input.scss */
 .husky-input .input input {
   height: 28px;
   border: none;
   outline-width: 0;
   width: 100%;
 }
-/* line 55, ../scss/modules/input.scss */
+/* line 54, ../scss/modules/input.scss */
 .husky-input .text {
   font-size: 14px;
 }
-/* line 60, ../scss/modules/input.scss */
-.husky-input.action .front {
+/* line 59, ../scss/modules/input.scss */
+.husky-input.colorpicker .input {
+  overflow: visible;
+}
+/* line 62, ../scss/modules/input.scss */
+.husky-input.colorpicker .front {
+  color: black;
+  cursor: pointer;
+}
+/* line 69, ../scss/modules/input.scss */
+.husky-input.pickdate .front {
   color: black;
   cursor: pointer;
 }

@@ -30,21 +30,29 @@
         <div class="grid-col-6">
             <div class="form-group">
                 <label>Phone</label>
-                <div data-aura-component="input@husky"
-                     data-aura-type="phone"
+                <div data-form="true"
+                     data-type="husky-input"
+                     data-validation-required="true"
+                     data-aura-component="input@husky"
+                     data-aura-skin="phone"
                      data-aura-instance-name="phone"
                      data-aura-input-id="myPhone"
                      data-aura-input-name="myPhoneName"
                      data-aura-placeholder="Can I have your number?"
-                     data-aura-value="0043 1122334455"></div>
+                     data-aura-value="0043 1122334455"
+                     data-mapper-property="phone"></div>
             </div>
         </div>
         <div class="grid-col-6">
             <div class="form-group">
                 <label>Password</label>
                 <div data-aura-component="input@husky"
-                     data-aura-type="password"
-                     data-aura-instance-name="password"></div>
+                     data-aura-skin="password"
+                     data-aura-instance-name="password"
+                     data-form="true"
+                     data-type="husky-input"
+                     data-validation-required="true"
+                     data-mapper-property="password"></div>
             </div>
         </div>
     </div>
@@ -53,16 +61,24 @@
             <div class="form-group">
                 <label>Url</label>
                 <div data-aura-component="input@husky"
-                     data-aura-type="url"
-                     data-aura-instance-name="url"></div>
+                     data-aura-skin="url"
+                     data-aura-instance-name="url"
+                     data-form="true"
+                     data-type="husky-input"
+                     data-validation-required="true"
+                     data-mapper-property="url"></div>
             </div>
         </div>
         <div class="grid-col-6">
             <div class="form-group">
                 <label>Mail</label>
                 <div data-aura-component="input@husky"
-                     data-aura-type="email"
-                     data-aura-instance-name="email"></div>
+                     data-aura-skin="email"
+                     data-aura-instance-name="email"
+                     data-form="true"
+                     data-type="husky-input"
+                     data-validation-required="true"
+                     data-mapper-property="email"></div>
             </div>
         </div>
     </div>
@@ -71,27 +87,53 @@
             <div class="form-group">
                 <label>Date</label>
                 <div data-aura-component="input@husky"
-                     data-aura-type="date"
-                     data-aura-instance-name="date"></div>
+                     data-aura-skin="date"
+                     data-aura-instance-name="date"
+                     data-form="true"
+                     data-type="husky-input"
+                     data-validation-required="true"
+                     data-mapper-property="date"
+                     data-value="Jan/14/1994"></div>
             </div>
         </div>
         <div class="grid-col-6">
             <div class="form-group">
                 <label>Time</label>
                 <div data-aura-component="input@husky"
-                     data-aura-type="time"
-                     data-aura-instance-name="time"></div>
+                     data-aura-skin="time"
+                     data-aura-instance-name="time"
+                     data-form="true"
+                     data-type="husky-input"
+                     data-validation-required="true"
+                     data-mapper-property="time"></div>
             </div>
         </div>
     </div>
-    <div class="grid-row small">
+    <div class="grid-row">
         <div class="grid-col-6">
             <div class="form-group">
                 <label>Color</label>
                 <div data-aura-component="input@husky"
-                     data-aura-type="color"
-                     data-aura-instance-name="color"></div>
+                     data-aura-skin="color"
+                     data-aura-instance-name="color"
+                     data-form="true"
+                     data-type="husky-input"
+                     data-validation-required="true"
+                     data-mapper-property="color"
+                     data-value="#CCCCCC"></div>
             </div>
+        </div>
+    </div>
+    <div class="grid-row m-top-30 m-bottom-30"></div>
+    <div class="grid-row">
+        <div class="grid-col-2">
+            <div id="setData" class="btn pointer">Set data</div>
+        </div>
+        <div class="grid-col-2">
+            <div id="getData" class="btn pointer">Get data</div>
+        </div>
+        <div class="grid-col-2">
+            <div id="validate" class="btn pointer">Validate</div>
         </div>
     </div>
 </div>
