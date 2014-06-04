@@ -511,7 +511,7 @@ define([], function() {
 
                     if (this.slides.length > 1) {
                         // set width to n-width
-                        this.overlay.width = this.sandbox.dom.outerWidth(this.sandbox.dom.find(this.overlay.$slides, '.slide'));
+                        this.overlay.width = this.sandbox.dom.outerWidth(this.sandbox.dom.find('.slide', this.overlay.$slides));
                         this.sandbox.dom.css(this.overlay.$slides, 'width', (this.slides.length * this.overlay.width) + 'px');
 
                         var maxHeight = -1;

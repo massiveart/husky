@@ -1245,13 +1245,19 @@ define('form/mapper',[
                     var template = this.templates[propertyName],
                         element = template.collection.$element,
                         insertAfterLast = false,
-                        lastElement;
+                        lastElement,
+                        dfd = $.Deferred();
+
                     // check if element exists and put it after last
                     if (!append && (lastElement = element.find('*[data-mapper-property-tpl="' + template.tpl.id + '"]').last()).length > 0) {
                         element = lastElement;
                         insertAfterLast = true;
                     }
-                    that.appendChildren.call(this, element, template.tpl, data, data, insertAfterLast);
+                    that.appendChildren.call(this, element, template.tpl, data, data, insertAfterLast).then(function($element) {
+                        dfd.resolve($element);
+                    }.bind(this));
+
+                    return dfd;
                 },
 
                 /**

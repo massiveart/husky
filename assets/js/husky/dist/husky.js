@@ -17573,13 +17573,19 @@ define('form/mapper',[
                     var template = this.templates[propertyName],
                         element = template.collection.$element,
                         insertAfterLast = false,
-                        lastElement;
+                        lastElement,
+                        dfd = $.Deferred();
+
                     // check if element exists and put it after last
                     if (!append && (lastElement = element.find('*[data-mapper-property-tpl="' + template.tpl.id + '"]').last()).length > 0) {
                         element = lastElement;
                         insertAfterLast = true;
                     }
-                    that.appendChildren.call(this, element, template.tpl, data, data, insertAfterLast);
+                    that.appendChildren.call(this, element, template.tpl, data, data, insertAfterLast).then(function($element) {
+                        dfd.resolve($element);
+                    }.bind(this));
+
+                    return dfd;
                 },
 
                 /**
@@ -28253,6 +28259,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (this.options.fullWidth === true) {
                 this.sandbox.dom.removeClass(this.$el, constants.fullWidthClass);
             }
+            // remove inline-styles
+            this.sandbox.dom.removeAttr(this.$el, 'style');
             this.sandbox.dom.remove(this.$tableContainer);
         },
 
@@ -29111,7 +29119,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
             // if contentContainer is set, adapt maximum size
             if (!!this.options.contentContainer) {
-                this.sandbox.dom.css(this.options.contentContainer, 'max-width', finalWidth + contentPaddings);
+                if (this.options.fullWidth === true) {
+                    this.sandbox.dom.css(this.options.contentContainer, 'max-width', finalWidth + contentPaddings);
+                }
                 finalWidth = this.sandbox.dom.width(this.options.contentContainer);
                 if (!overlaps) {
                     // if table does not overlap border, set content to original width
@@ -37787,7 +37797,7 @@ define('__component__$smart-content@husky',[], function() {
          * initialize column navigation
          */
         initColumnNavigation: function() {
-            var url = this.options.columnNavigationUrl.replace('{dataSource}', this.overlayData.dataSource || '');
+            var url = this.options.columnNavigationUrl.replace('{/dataSource}', (!!this.overlayData.dataSource ? '/' + this.overlayData.dataSource : ''));
 
             this.sandbox.start(
                 [
@@ -37800,7 +37810,7 @@ define('__component__$smart-content@husky',[], function() {
                             noPageDescription: 'No Pages',
                             sizeRelativeTo: '.smart-content-overlay .slide-1 .overlay-content',
                             wrapper: {height: 100},
-                            editIcon: 'icon-half-ok',
+                            editIcon: 'fa-check',
                             showEdit: false,
                             showStatus: false
                         }
@@ -38576,7 +38586,7 @@ define('__component__$overlay@husky',[], function() {
 
                     if (this.slides.length > 1) {
                         // set width to n-width
-                        this.overlay.width = this.sandbox.dom.outerWidth(this.sandbox.dom.find(this.overlay.$slides, '.slide'));
+                        this.overlay.width = this.sandbox.dom.outerWidth(this.sandbox.dom.find('.slide', this.overlay.$slides));
                         this.sandbox.dom.css(this.overlay.$slides, 'width', (this.slides.length * this.overlay.width) + 'px');
 
                         var maxHeight = -1;
@@ -41659,6 +41669,10 @@ define('husky_extensions/collection',[],function() {
                 return $(selector).show();
             };
 
+            app.core.dom.trim = function(string) {
+                return $.trim(string);
+            };
+
             app.core.dom.map = function(selector, callback) {
                 return $(selector).map(callback);
             };
@@ -42200,6 +42214,26 @@ define('husky_extensions/util',[],function() {
 
                 substrLength = Math.floor((maxLength - delimiter.length)/2);
                 return text.slice(0, substrLength) + delimiter + text.slice(-substrLength);
+            },
+
+            app.core.util.cropFront = function(text, maxLength, delimiter) {
+                if (!text || text.length <= maxLength) {
+                    return text;
+                }
+
+                delimiter = delimiter || '...';
+
+                return delimiter + text.slice(-(maxLength - delimiter.length));
+            },
+
+            app.core.util.cropTail = function(text, maxLength, delimiter) {
+                if (!text || text.length <= maxLength) {
+                    return text;
+                }
+
+                delimiter = delimiter || '...';
+
+                return text.slice(0, (maxLength - delimiter.length)) + delimiter;
             },
 
             app.core.util.contains = function(list, value) {

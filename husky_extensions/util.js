@@ -112,6 +112,26 @@ define(function() {
                 return text.slice(0, substrLength) + delimiter + text.slice(-substrLength);
             },
 
+            app.core.util.cropFront = function(text, maxLength, delimiter) {
+                if (!text || text.length <= maxLength) {
+                    return text;
+                }
+
+                delimiter = delimiter || '...';
+
+                return delimiter + text.slice(-(maxLength - delimiter.length));
+            },
+
+            app.core.util.cropTail = function(text, maxLength, delimiter) {
+                if (!text || text.length <= maxLength) {
+                    return text;
+                }
+
+                delimiter = delimiter || '...';
+
+                return text.slice(0, (maxLength - delimiter.length)) + delimiter;
+            },
+
             app.core.util.contains = function(list, value) {
                 return _.contains(list, value);
             };
