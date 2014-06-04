@@ -3,12 +3,12 @@
     'use strict';
 
     require.config({
-        paths: { "minicolors": 'bower_components/jquery-minicolors/jquery.minicolors' },
+        paths: { "jquery-minicolors": 'bower_components/jquery-minicolors/jquery.minicolors' },
         shim: { backbone: { deps: ['jquery'] } }
     });
 
-    define(['minicolors'], {
-        name: 'minicolors',
+    define(['jquery-minicolors'], {
+        name: 'minicolor',
 
         initialize: function(app) {
             app.sandbox.colorpicker = {
