@@ -1122,7 +1122,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   left: 1px;
   width: 150px;
   height: 150px;
-  background: url("../img/jquery.minicolors.png") -120px 0;
+  background: url("vendor/jquery.minicolors.png") -120px 0;
   cursor: crosshair;
 }
 /* line 67, ../scss/colorpicker.scss */
@@ -1141,7 +1141,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
 }
 /* line 81, ../scss/colorpicker.scss */
 .minicolors-slider-saturation .minicolors-grid-inner {
-  background: url("../img/jquery.minicolors.png") -270px 0;
+  background: url("vendor/jquery.minicolors.png") -270px 0;
 }
 
 /* line 87, ../scss/colorpicker.scss */
@@ -1165,7 +1165,7 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   left: 152px;
   width: 20px;
   height: 150px;
-  background: white url("../img/jquery.minicolors.png") 0 0;
+  background: white url("vendor/jquery.minicolors.png") 0 0;
   cursor: row-resize;
 }
 

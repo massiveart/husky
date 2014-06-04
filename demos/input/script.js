@@ -36,4 +36,8 @@ require(['lib/husky'], function(Husky) {
     $('#validate').on('click', function() {
         console.log(app.sandbox.form.validate('body'));
     }.bind(this));
+
+    $('body').on('change', function() {
+        console.log('something changed. you could now e.g. activate a save button');
+    }.bind(this));
 });

@@ -5,9 +5,9 @@
     require.config({
         paths: {
             "bootstrap-datepicker": 'bower_components/bootstrap-datepicker/bootstrap-datepicker',
-            "datepicker-ar": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.az',
-            "datepicker-az": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.bg',
-            "datepicker-bg": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.ar',
+            "datepicker-az": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.az',
+            "datepicker-bg": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.bg',
+            "datepicker-ar": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.ar',
             "datepicker-ca": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.ca',
             "datepicker-cs": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.cs',
             "datepicker-cy": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.cy',
@@ -57,27 +57,75 @@
             "datepicker-zh-CN": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.zh-CN',
             "datepicker-zh-TW": 'bower_components/bootstrap-datepicker/locales/bootstrap-datepicker.zh-TW'
         },
-        shim: { backbone: { deps: ['jquery'] } }
+        shim: {
+            "datepicker-az": {deps: ['bootstrap-datepicker']},
+            "datepicker-bg": {deps: ['bootstrap-datepicker']},
+            "datepicker-ar": {deps: ['bootstrap-datepicker']},
+            "datepicker-ca": {deps: ['bootstrap-datepicker']},
+            "datepicker-cs": {deps: ['bootstrap-datepicker']},
+            "datepicker-cy": {deps: ['bootstrap-datepicker']},
+            "datepicker-da": {deps: ['bootstrap-datepicker']},
+            "datepicker-de": {deps: ['bootstrap-datepicker']},
+            "datepicker-el": {deps: ['bootstrap-datepicker']},
+            "datepicker-es": {deps: ['bootstrap-datepicker']},
+            "datepicker-et": {deps: ['bootstrap-datepicker']},
+            "datepicker-sq": {deps: ['bootstrap-datepicker']},
+            "datepicker-fa": {deps: ['bootstrap-datepicker']},
+            "datepicker-fi": {deps: ['bootstrap-datepicker']},
+            "datepicker-fr": {deps: ['bootstrap-datepicker']},
+            "datepicker-gl": {deps: ['bootstrap-datepicker']},
+            "datepicker-he": {deps: ['bootstrap-datepicker']},
+            "datepicker-hr": {deps: ['bootstrap-datepicker']},
+            "datepicker-hu": {deps: ['bootstrap-datepicker']},
+            "datepicker-id": {deps: ['bootstrap-datepicker']},
+            "datepicker-is": {deps: ['bootstrap-datepicker']},
+            "datepicker-it": {deps: ['bootstrap-datepicker']},
+            "datepicker-ja": {deps: ['bootstrap-datepicker']},
+            "datepicker-ka": {deps: ['bootstrap-datepicker']},
+            "datepicker-kk": {deps: ['bootstrap-datepicker']},
+            "datepicker-kr": {deps: ['bootstrap-datepicker']},
+            "datepicker-lt": {deps: ['bootstrap-datepicker']},
+            "datepicker-lv": {deps: ['bootstrap-datepicker']},
+            "datepicker-mk": {deps: ['bootstrap-datepicker']},
+            "datepicker-ms": {deps: ['bootstrap-datepicker']},
+            "datepicker-nb": {deps: ['bootstrap-datepicker']},
+            "datepicker-nl": {deps: ['bootstrap-datepicker']},
+            "datepicker-nl-BE": {deps: ['bootstrap-datepicker']},
+            "datepicker-no": {deps: ['bootstrap-datepicker']},
+            "datepicker-pl": {deps: ['bootstrap-datepicker']},
+            "datepicker-pt": {deps: ['bootstrap-datepicker']},
+            "datepicker-pt-BR": {deps: ['bootstrap-datepicker']},
+            "datepicker-ro": {deps: ['bootstrap-datepicker']},
+            "datepicker-rs": {deps: ['bootstrap-datepicker']},
+            "datepicker-rs-latin": {deps: ['bootstrap-datepicker']},
+            "datepicker-ru": {deps: ['bootstrap-datepicker']},
+            "datepicker-sk": {deps: ['bootstrap-datepicker']},
+            "datepicker-sl": {deps: ['bootstrap-datepicker']},
+            "datepicker-sv": {deps: ['bootstrap-datepicker']},
+            "datepicker-sw": {deps: ['bootstrap-datepicker']},
+            "datepicker-th": {deps: ['bootstrap-datepicker']},
+            "datepicker-tr": {deps: ['bootstrap-datepicker']},
+            "datepicker-ua": {deps: ['bootstrap-datepicker']},
+            "datepicker-vi": {deps: ['bootstrap-datepicker']},
+            "datepicker-zh-CN": {deps: ['bootstrap-datepicker']},
+            "datepicker-zh-TW": {deps: ['bootstrap-datepicker']}
+        }
     });
 
-    var loadLocales = function() {
-        require([
-            'datepicker-ar', 'datepicker-az', 'datepicker-bg', 'datepicker-ca', 'datepicker-cs', 'datepicker-cy',
-            'datepicker-da', 'datepicker-de', 'datepicker-el', 'datepicker-es', 'datepicker-et', 'datepicker-fa',
-            'datepicker-fi', 'datepicker-fr', 'datepicker-gl', 'datepicker-he', 'datepicker-hr', 'datepicker-hu',
-            'datepicker-id', 'datepicker-is', 'datepicker-it', 'datepicker-ja', 'datepicker-ka', 'datepicker-kk',
-            'datepicker-kr', 'datepicker-lt', 'datepicker-lv', 'datepicker-mk', 'datepicker-ms', 'datepicker-nb',
-            'datepicker-nl', 'datepicker-nl-BE', 'datepicker-no', 'datepicker-pl', 'datepicker-pt', 'datepicker-pt-BR',
-            'datepicker-ro', 'datepicker-rs', 'datepicker-rs-latin', 'datepicker-ru', 'datepicker-sk', 'datepicker-sl',
-            'datepicker-sq', 'datepicker-sv', 'datepicker-sw', 'datepicker-th', 'datepicker-tr', 'datepicker-ua',
-            'datepicker-vi', 'datepicker-zh-CN', 'datepicker-zh-TW']);
-    };
+    define(['bootstrap-datepicker',
+        'datepicker-ar', 'datepicker-az', 'datepicker-bg', 'datepicker-ca', 'datepicker-cs', 'datepicker-cy',
+        'datepicker-da', 'datepicker-de', 'datepicker-el', 'datepicker-es', 'datepicker-et', 'datepicker-fa',
+        'datepicker-fi', 'datepicker-fr', 'datepicker-gl', 'datepicker-he', 'datepicker-hr', 'datepicker-hu',
+        'datepicker-id', 'datepicker-is', 'datepicker-it', 'datepicker-ja', 'datepicker-ka', 'datepicker-kk',
+        'datepicker-kr', 'datepicker-lt', 'datepicker-lv', 'datepicker-mk', 'datepicker-ms', 'datepicker-nb',
+        'datepicker-nl', 'datepicker-nl-BE', 'datepicker-no', 'datepicker-pl', 'datepicker-pt', 'datepicker-pt-BR',
+        'datepicker-ro', 'datepicker-rs', 'datepicker-rs-latin', 'datepicker-ru', 'datepicker-sk', 'datepicker-sl',
+        'datepicker-sq', 'datepicker-sv', 'datepicker-sw', 'datepicker-th', 'datepicker-tr', 'datepicker-ua',
+        'datepicker-vi', 'datepicker-zh-CN', 'datepicker-zh-TW'], {
 
-    define(['bootstrap-datepicker'], {
         name: 'bootstrap-datepicker',
 
         initialize: function(app) {
-            loadLocales();
 
             app.sandbox.datepicker = {
 

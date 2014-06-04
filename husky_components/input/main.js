@@ -15,6 +15,21 @@
  *
  * @params {Object} [options] Configuration object
  * @params {String} [options.instanceName] name if the the input instance
+ * @params {String} [options.inputId] DOM-id to give the actual input-tag
+ * @params {String} [options.inputName] DOM-name to give the actual input-tag. Can be usefull in forms
+ * @params {String} [options.value] value to set at the beginning
+ * @params {String} [options.placeholder] html5-placholder to use
+ * @params {String} [options.skin] name of the skin to use. Currently 'phone', 'password', 'url', 'email', 'date', 'time', 'color'. Each skin brings it's own default values. For example the password skin has automatically inputType: 'password'
+ * @params {Object} [options.datepickerOptions] config-object to pass to the datepicker component
+ * @params {Object} [options.colorPickerOptions] config-object to pass to the colorpicker component
+ * @params {String} [options.frontIcon] name of icon to display in front
+ * @params {String} [options.frontText] text to display in front
+ * @params {String} [options.frontHtml] html to display in front
+ * @params {String} [options.backIcon] name of icon to display in front
+ * @params {String} [options.backText] text to display in back
+ * @params {String} [options.backHtml] html to display in back
+ * @params {String} [options.renderMethod] name of a special render method to execute. Currently 'colorpicker', 'datepicker', 'time'. For example 'colorpicker' initializes a colorpicker and sets a css-class
+ * @params {String} [options.inputType] the actual type of the input. e.g. 'text' or 'password'
  */
 define([], function () {
 
@@ -26,8 +41,9 @@ define([], function () {
             inputName: '',
             value: '',
             placeholder: '',
-            inputType: 'text',
             skin: null,
+            datepickerOptions: {},
+            colorPickerOptions: {},
             frontIcon: null,
             frontText: null,
             frontHtml: null,
@@ -35,8 +51,7 @@ define([], function () {
             backText: null,
             backHtml: null,
             renderMethod: null,
-            datepickerOptions: {},
-            colorPickerOptions: {}
+            inputType: 'text'
         },
 
         constants = {
@@ -175,11 +190,6 @@ define([], function () {
             this.sandbox.dom.on(this.$el, 'data-changed', function() {
                 this.updateValue();
             }.bind(this));
-
-            // update the data attributes on keyup
-            this.sandbox.dom.on(this.input.$input, 'keyup', function() {
-                this.setDataAttributes();
-            }.bind(this));
         },
 
         /**
@@ -214,7 +224,6 @@ define([], function () {
             }));
             this.sandbox.dom.append($container, this.input.$input);
             this.sandbox.dom.append(this.$el, $container);
-            this.setDataAttributes();
         },
 
         /**
@@ -292,13 +301,6 @@ define([], function () {
          */
         updateValue: function() {
             this.setValue(this.sandbox.dom.data(this.$el, 'value'));
-        },
-
-        /**
-         * Updates the data attributes
-         */
-        setDataAttributes: function() {
-            this.sandbox.dom.data(this.$el, 'value', this.sandbox.dom.val(this.input.$input));
         },
     };
 

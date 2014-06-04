@@ -160,7 +160,8 @@ module.exports = function(grunt) {
                         dest: 'dist',
                         src: [
                             'fonts/{,*/}*',
-                            'vendor/ckeditor/{,**/}*'
+                            'vendor/ckeditor/{,**/}*',
+                            'vendor/jquery.minicolors.png'
                         ]
                     },
                     {
