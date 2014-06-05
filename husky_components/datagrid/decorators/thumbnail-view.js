@@ -201,8 +201,7 @@ define(function() {
          * @param id {Number|String} the identifier of the thumbnail to bind events on
          */
         bindThumbnailDomEvents: function(id) {
-            this.sandbox.dom.on(this.$thumbnails[id], 'click', function(event) {
-                this.sandbox.dom.preventDefault(event);
+            this.sandbox.dom.on(this.$thumbnails[id], 'click', function() {
                 this.toggleItemSelected(id);
             }.bind(this));
 
@@ -235,7 +234,9 @@ define(function() {
          */
         selectItem: function(id, onlyView) {
             this.sandbox.dom.addClass(this.$thumbnails[id], constants.selectedClass);
-            this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), 'checked', true);
+            if (!this.sandbox.dom.is(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), ':checked')) {
+                this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), 'checked', true);
+            }
             if (onlyView !== true) {
                 this.datagrid.setItemSelected.call(this.datagrid, id);
             }
@@ -247,7 +248,9 @@ define(function() {
          */
         unselectItem: function(id) {
             this.sandbox.dom.removeClass(this.$thumbnails[id], constants.selectedClass);
-            this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), 'checked', false);
+            if (this.sandbox.dom.is(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), ':checked')) {
+                this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), 'checked', false);
+            }
             this.datagrid.setItemUnselected.call(this.datagrid, id);
         },
 

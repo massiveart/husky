@@ -140,7 +140,7 @@ define([], function () {
         initialize: function () {
             this.sandbox.logger.log('initialize', this);
             var defaults = defaults;
-            
+
             // merge skin defaults with defaults
             if (!!this.options.skin && !!skins[this.options.skin]) {
                 defaults = this.sandbox.util.extend(true, {}, defaults, skins[this.options.skin]);
