@@ -293,8 +293,11 @@ define([], function () {
             if (this.options.renderMethod === 'colorpicker') {
                 this.sandbox.colorpicker.value(this.input.$input, value);
             } else if (this.options.renderMethod === 'datepicker') {
+                // if a date-time was passed, extract the date
+                if (value.indexOf('T') > 0) {
+                    value = value.substr(0, value.indexOf('T'));
+                }
                 value = new Date(value);
-                value = new Date(value.valueOf() - value.getTimezoneOffset() * 60000);
                 this.sandbox.datepicker.setDate(this.input.$input, value);
                 this.sandbox.dom.data(this.$el, 'value', this.sandbox.datepicker.getDate(this.input.$input).toISOString());
             } else {
