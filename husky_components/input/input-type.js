@@ -53,7 +53,11 @@ define([
                 },
 
                 getValue: function() {
-                    return this.$el.find('input').val();
+                    if (this.$el.data('auraSkin') === 'date') {
+                        return this.$el.data('value');
+                    } else {
+                        return this.$el.find('input').val();
+                    }
                 },
 
                 needsValidation: function() {

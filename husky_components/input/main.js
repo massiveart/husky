@@ -139,10 +139,11 @@ define([], function () {
          */
         initialize: function () {
             this.sandbox.logger.log('initialize', this);
-
+            var defaults = defaults;
+            
             // merge skin defaults with defaults
             if (!!this.options.skin && !!skins[this.options.skin]) {
-                var defaults = this.sandbox.util.extend(true, {}, defaults, skins[this.options.skin]);
+                defaults = this.sandbox.util.extend(true, {}, defaults, skins[this.options.skin]);
             }
             // merge defaults, skin defaults and options
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
@@ -261,7 +262,10 @@ define([], function () {
         renderDatePicker: function() {
             this.sandbox.dom.addClass(this.$el, constants.datepickerClass);
             this.sandbox.dom.attr(this.input.$input, 'placeholder', this.sandbox.globalize.getDatePattern());
-            this.sandbox.datepicker.init(this.input.$input, this.options.datepickerOptions);
+            this.sandbox.datepicker.init(this.input.$input, this.options.datepickerOptions).on('changeDate', function(event) {
+                this.sandbox.dom.data(this.$el, 'value', event.date.toISOString());
+            }.bind(this));
+            this.updateValue();
         },
 
         /**
@@ -289,7 +293,10 @@ define([], function () {
             if (this.options.renderMethod === 'colorpicker') {
                 this.sandbox.colorpicker.value(this.input.$input, value);
             } else if (this.options.renderMethod === 'datepicker') {
-                this.sandbox.datepicker.setValue(this.input.$input, value);
+                value = new Date(value);
+                value = new Date(value.valueOf() - value.getTimezoneOffset() * 60000);
+                this.sandbox.datepicker.setDate(this.input.$input, value);
+                this.sandbox.dom.data(this.$el, 'value', this.sandbox.datepicker.getDate(this.input.$input).toISOString());
             } else {
                 this.sandbox.dom.val(this.input.$input, value);
             }

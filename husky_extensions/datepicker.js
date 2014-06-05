@@ -141,6 +141,22 @@
 
                 setValue: function(selector, value) {
                     return app.core.dom.$(selector).datepicker('update', value);
+                },
+
+                getUTCDate: function(selector) {
+                    return app.core.dom.$(selector).datepicker('getUTCDate');
+                },
+
+                getDate: function(selector) {
+                    return app.core.dom.$(selector).datepicker('getDate');
+                },
+
+                setUTCDate: function(selector, date) {
+                    return app.core.dom.$(selector).datepicker('setUTCDate', date);
+                },
+
+                setDate: function(selector, date) {
+                    return app.core.dom.$(selector).datepicker('setDate', date);
                 }
             };
         }
