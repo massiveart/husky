@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -29560,20 +29561,17 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          * @param id {Number|String} the identifier of the thumbnail to bind events on
          */
         bindThumbnailDomEvents: function(id) {
-            this.sandbox.dom.on(this.$thumbnails[id], 'change', function(event) {
-                this.toggleItemSelected(id);
-            }.bind(this), '.' + constants.checkboxClass);
-
             this.sandbox.dom.on(this.$thumbnails[id], 'click', function(event) {
-                this.sandbox.dom.stopPropagation(event);
-            }.bind(this), '.' + constants.checkboxClass);
+                this.sandbox.dom.preventDefault(event);
+                this.toggleItemSelected(id);
+            }.bind(this));
 
             this.sandbox.dom.on(this.$thumbnails[id], 'click', function(event) {
                 this.sandbox.dom.stopPropagation(event);
                 this.downloadHandler(id);
             }.bind(this), '.' + constants.downloadClass);
 
-            this.sandbox.dom.on(this.$thumbnails[id], 'click', function() {
+            this.sandbox.dom.on(this.$thumbnails[id], 'dblclick', function() {
                 this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
             }.bind(this));
         },
@@ -29597,6 +29595,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          */
         selectItem: function(id, onlyView) {
             this.sandbox.dom.addClass(this.$thumbnails[id], constants.selectedClass);
+            this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), 'checked', true);
             if (onlyView !== true) {
                 this.datagrid.setItemSelected.call(this.datagrid, id);
             }
@@ -29608,6 +29607,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          */
         unselectItem: function(id) {
             this.sandbox.dom.removeClass(this.$thumbnails[id], constants.selectedClass);
+            this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), 'checked', false);
             this.datagrid.setItemUnselected.call(this.datagrid, id);
         },
 
@@ -46263,4 +46263,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-
