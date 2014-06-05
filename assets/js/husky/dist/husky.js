@@ -31969,9 +31969,9 @@ define('__component__$matrix@husky',[],function() {
                         title = '';
                     }
                     $span = sandbox.dom.createElement(
-                        '<span ' + title + ' class="fa-' + this.options.values.horizontal[j] + ' matrix-icon pointer"/>'
+                        '<span ' + title + ' class="fa-' + this.options.values.horizontal[j].icon + ' matrix-icon pointer"/>'
                     );
-                    sandbox.dom.data($span, 'value', this.options.values.horizontal[j]);
+                    sandbox.dom.data($span, 'value', this.options.values.horizontal[j].value);
                     sandbox.dom.data($span, 'section', this.options.values.vertical[i]);
 
                     // set activated if set in delivered data
