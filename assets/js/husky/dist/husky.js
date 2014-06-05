@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -41155,9 +41154,9 @@ define('__component__$input@husky',[], function () {
          * @param value {String} new value
          */
         setValue: function(value) {
-            if (this.options.skin === 'color') {
+            if (this.options.renderMethod === 'colorpicker') {
                 this.sandbox.colorpicker.value(this.input.$input, value);
-            } else if (this.options.skin === 'date') {
+            } else if (this.options.renderMethod === 'datepicker') {
                 this.sandbox.datepicker.setValue(this.input.$input, value);
             } else {
                 this.sandbox.dom.val(this.input.$input, value);
@@ -41170,7 +41169,7 @@ define('__component__$input@husky',[], function () {
          */
         updateValue: function() {
             this.setValue(this.sandbox.dom.data(this.$el, 'value'));
-        },
+        }
     };
 
 });
@@ -46264,3 +46263,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
