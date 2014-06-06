@@ -25,6 +25,13 @@ hr.divider{
 	height: 0;
 	border: 1px solid #fff;
 	margin: 0px 0 20px 0;
+    &.dark {
+      color: $grayLighter;
+      background-color: $grayLighter;
+    }
+    &.small {
+      margin-bottom: 10px;
+    }
 }
 
 
