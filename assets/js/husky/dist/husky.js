@@ -41138,7 +41138,7 @@ define('__component__$input@husky',[], function () {
             this.sandbox.dom.addClass(this.$el, constants.datepickerClass);
             this.sandbox.dom.attr(this.input.$input, 'placeholder', this.sandbox.globalize.getDatePattern());
             this.sandbox.datepicker.init(this.input.$input, this.options.datepickerOptions).on('changeDate', function(event) {
-                this.sandbox.dom.data(this.$el, 'value', event.date.toISOString());
+                this.setDatepickerValueAttr(event.date);
             }.bind(this));
             this.updateValue();
         },
@@ -41169,15 +41169,35 @@ define('__component__$input@husky',[], function () {
                 this.sandbox.colorpicker.value(this.input.$input, value);
             } else if (this.options.renderMethod === 'datepicker') {
                 // if a date-time was passed, extract the date
-                if (value.indexOf('T') > 0) {
-                    value = value.substr(0, value.indexOf('T'));
-                }
+                value = this.isoToDate(value);
                 value = new Date(value);
                 this.sandbox.datepicker.setDate(this.input.$input, value);
-                this.sandbox.dom.data(this.$el, 'value', this.sandbox.datepicker.getDate(this.input.$input).toISOString());
+                this.setDatepickerValueAttr(this.sandbox.datepicker.getDate(this.input.$input));
             } else {
                 this.sandbox.dom.val(this.input.$input, value);
             }
+        },
+
+        /**
+         * Takes a iso date-time string and returns only the date part
+         * @param datetime {String} iso-datetime-string
+         */
+        isoToDate: function(datetime) {
+            if (datetime.indexOf('T') > 0) {
+                return datetime.substr(0, datetime.indexOf('T'));
+            }
+            return datetime;
+        },
+
+        /**
+         * Sets the value attribute for the datepicker
+         * @param date {Object} a UTC date pbject
+         */
+        setDatepickerValueAttr: function(date) {
+            date = date.getFullYear() + '-' +
+                   ('0' + (date.getMonth()+1)).slice(-2) + '-' +
+                   ('0' + date.getDate()).slice(-2);
+            this.sandbox.dom.data(this.$el, 'value', date);
         },
 
         /**
