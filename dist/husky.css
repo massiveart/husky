@@ -9840,7 +9840,7 @@ a.btn-black, a.btn-highlight {
 }
 /* line 33, ../scss/modules/input.scss */
 .husky-input .front span {
-  padding-top: 2px;
+  padding-top: 1px;
 }
 /* line 37, ../scss/modules/input.scss */
 .husky-input .back {
