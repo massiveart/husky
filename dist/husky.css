@@ -5787,8 +5787,17 @@ hr.divider {
   border: 1px solid #fff;
   margin: 0px 0 20px 0;
 }
+/* line 28, ../scss/modules/core.scss */
+hr.divider.dark {
+  color: #cccccc;
+  background-color: #cccccc;
+}
+/* line 32, ../scss/modules/core.scss */
+hr.divider.small {
+  margin-bottom: 10px;
+}
 
-/* line 33, ../scss/modules/core.scss */
+/* line 40, ../scss/modules/core.scss */
 .options-dropdown-container {
   position: absolute;
   right: 0;
@@ -5796,14 +5805,14 @@ hr.divider {
   z-index: 100;
 }
 
-/* line 40, ../scss/modules/core.scss */
+/* line 47, ../scss/modules/core.scss */
 .options-toggle {
   background-color: #f1f1f1;
   padding-left: 10px;
   font-size: 15px;
   color: black;
 }
-/* line 46, ../scss/modules/core.scss */
+/* line 53, ../scss/modules/core.scss */
 .options-toggle::after {
   content: "";
   display: inline-block;
