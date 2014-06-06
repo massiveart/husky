@@ -6,6 +6,9 @@
   $dropzoneHeight: 130px;
   $transitionDuration: 300ms;
   $previewItemWidth: 70px;
+  $smallHeight: 70px;
+  $dropzoneSmallFontSize: 18px;
+
   overflow: hidden;
   position: relative;
   top: 0px;
@@ -143,6 +146,35 @@
 
     .description {
       margin-top: -$dropzoneHeight - 20px;
+    }
+  }
+
+  &.small {
+    padding-bottom: 0;
+    height: $smallHeight;
+    @include single-transition(height, $transitionDuration);
+
+    .addition {
+      display: none;
+    }
+    .description {
+      height: $smallHeight;
+
+      .icon {
+        font-size: 25px;
+        line-height: 25px;
+      }
+      .title {
+        font-size: $dropzoneSmallFontSize;
+        line-height: $dropzoneSmallFontSize;
+      }
+    }
+    .upload-items {
+      height: $smallHeight;
+    }
+
+    &.dropped {
+      height: $dropzoneHeight;
     }
   }
 }

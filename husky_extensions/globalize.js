@@ -31,6 +31,16 @@
                         } else {
                             setLanguage();
                         }
+                    },
+
+                    getLocale: function() {
+                        return Globalize.culture().name;
+                    },
+                    getDatePattern: function() {
+                        return Globalize.culture().calendar.patterns.d;
+                    },
+                    getTimePatter: function() {
+                        return Globalize.culture().calendar.patterns.t;
                     }
                 };
 

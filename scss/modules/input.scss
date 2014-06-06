@@ -1,0 +1,85 @@
+//
+// Input
+// --------------------------------------------------
+
+.husky-input {
+  @extend .form-element;
+  @include clear-float;
+
+  $inputHeight: 30px - 2px;
+
+  background: $white;
+  position: relative;
+  top: 0px;
+  left: 0px;
+
+  .front {
+    float: left;
+    line-height: $inputHeight - 10px;
+    margin: 5px 0 0 0;
+    padding-right: 5px;
+    border-right: 1px solid $grayLighter;
+    color: $grayLight;
+    font-size: 16px;
+
+    .color-field {
+      width: 15px;
+      height: 15px;
+      border: 1px solid $grayLight;
+      background-color: $grayLighter;
+      display: inline-block;
+      margin-top: 2px;
+    }
+    span {
+      padding-top: 1px;
+    }
+  }
+  .back {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    line-height: $inputHeight - 10px;
+    padding: 5px 10px 0 5px;
+    background: $white;
+    color: $grayLight;
+    font-size: 16px;
+  }
+  .input {
+    overflow: hidden;
+    padding-left: 5px;
+    input {
+      height: $inputHeight;
+      border: none;
+      outline-width: 0;
+      width: 100%;
+    }
+  }
+  .text {
+    font-size: $baseFontSize;
+  }
+
+  &.colorpicker {
+    .input {
+      overflow: visible;
+    }
+    .front {
+      color: $black;
+      cursor: pointer;
+    }
+  }
+
+  &.pickdate {
+    .front {
+      color: $black;
+      cursor: pointer;
+    }
+  }
+}
+
+.husky-validate-error {
+  .husky-input {
+    input {
+      height: $inputHeight - 2px; // because of the 2px border on error
+    }
+  }
+}
