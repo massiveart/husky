@@ -40507,7 +40507,7 @@ define('__component__$toggler@husky',[], function() {
  * @params {Function} [options.removeFileCallback] callback which gets called after a file got removed. First parameter is the file.
  * @params {Object} [options.pluginOptions] Options to pass to the dropzone-plugin to completely override all options set by husky. Use with care.
  * @params {Boolean} [options.showOverlay] if true the dropzone will be displayed in an overlay if its not visible any more or the passed scroll-top is reached
- * @params {Boolean} [options.skin] skin class for the dropzone. 'small'
+ * @params {String} [options.skin] skin class for the dropzone. currently available: 'small' or '' (default)
  */
 define('__component__$dropzone@husky',[], function () {
 
