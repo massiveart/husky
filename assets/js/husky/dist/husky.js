@@ -32869,6 +32869,7 @@ define('__component__$toolbar@husky',[],function() {
                 item.loading = false;
                 $itemLink = this.sandbox.dom.find('a', $item);
                 this.sandbox.stop(this.sandbox.dom.find('.item-loader', $item));
+                this.sandbox.dom.remove(this.sandbox.dom.find('.item-loader', $item));
                 this.sandbox.dom.show($itemLink);
             }
 
@@ -38622,7 +38623,7 @@ define('__component__$overlay@husky',[], function() {
             this.sandbox.on(CLOSE.call(this), this.closeHandler.bind(this));
 
             this.sandbox.on(SET_POSITION.call(this), function() {
-                this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
+                this.resetResizeVariables();
                 this.resizeHandler();
             }.bind(this));
 
@@ -38831,7 +38832,7 @@ define('__component__$overlay@husky',[], function() {
             this.sandbox.dom.append(this.$el, this.overlay.$el);
 
             //ensures that the overlay box fits the window form the beginning
-            this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
+            this.resetResizeVariables();
             this.resizeHandler();
 
             this.setCoordinates();
@@ -39156,6 +39157,17 @@ define('__component__$overlay@husky',[], function() {
             if (this.overlay.collapsed === true) {
                 this.overlay.collapsed = false;
             }
+        },
+
+        /**
+         * Sets all properties and variables responsible for the correct resize experience back
+         * to their initial state or re-initializes them
+         */
+        resetResizeVariables: function() {
+            this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
+            this.overlay.collapsed = false;
+            this.sandbox.dom.css(this.overlay.$content, {'overflow': 'visible'});
+            this.sandbox.dom.height(this.overlay.$content, '');
         },
 
         /**
