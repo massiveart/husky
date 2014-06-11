@@ -291,11 +291,17 @@ define([], function () {
          */
         setValue: function(value) {
             if (this.options.renderMethod === 'colorpicker') {
-                this.sandbox.colorpicker.value(this.input.$input, value);
+                if (!!value) {
+                    this.sandbox.colorpicker.value(this.input.$input, value);
+                } else {
+                    this.sandbox.dom.val(this.input.$input, value);
+                }
             } else if (this.options.renderMethod === 'datepicker') {
                 // if a date-time was passed, extract the date
-                value = this.isoToDate(value);
-                value = new Date(value);
+                if (!!value) {
+                    value = this.isoToDate(value);
+                    value = new Date(value);
+                }
                 this.sandbox.datepicker.setDate(this.input.$input, value);
                 this.setDatepickerValueAttr(this.sandbox.datepicker.getDate(this.input.$input));
             } else {
@@ -319,9 +325,11 @@ define([], function () {
          * @param date {Object} a UTC date pbject
          */
         setDatepickerValueAttr: function(date) {
-            date = date.getFullYear() + '-' +
+            if (!!date) {
+                date = date.getFullYear() + '-' +
                    ('0' + (date.getMonth()+1)).slice(-2) + '-' +
                    ('0' + date.getDate()).slice(-2);
+            }
             this.sandbox.dom.data(this.$el, 'value', date);
         },
 
