@@ -18028,8 +18028,9 @@ define('type/date',[
  */
 
 define('type/decimal',[
-    'type/default'
-], function(Default) {
+    'type/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -18043,7 +18044,7 @@ define('type/decimal',[
                 },
 
                 validate: function() {
-                    var val = this.getValue();
+                    var val = Util.getValue(this.$el);
 
                     if (val === '') {
                         return true;
@@ -18081,7 +18082,7 @@ define('type/email',[
 
             typeInterface = {
                 validate: function() {
-                    var val = this.getValue();
+                    var val = Util.getValue(this.$el);
                     if (val === '') {
                         return true;
                     }
@@ -18090,7 +18091,7 @@ define('type/email',[
                 },
 
                 needsValidation: function() {
-                    var val = this.getValue();
+                    var val = this.$el.val();
                     return val !== '';
                 }
             };
@@ -18123,7 +18124,7 @@ define('type/url',[
 
             typeInterface = {
                 validate: function() {
-                    var val = this.getValue();
+                    var val = Util.getValue(this.$el);
                     if (val === '') {
                         return true;
                     }
@@ -18135,7 +18136,7 @@ define('type/url',[
                 },
 
                 needsValidation: function() {
-                    var val = this.getValue();
+                    var val = Util.getValue(this.$el);
                     return val !== '';
                 }
             };
@@ -18521,8 +18522,9 @@ define('validator/default',[],function() {
  */
 
 define('validator/min',[
-    'validator/default'
-], function(Default) {
+    'validator/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -18533,7 +18535,7 @@ define('validator/min',[
 
             result = $.extend(new Default($el, form, defaults, options, 'min'), {
                 validate: function() {
-                    var val = this.data.element.getValue();
+                    var val = Util.getValue(this.$el);
                     return Number(val) >= this.data.min;
                 }
             });
@@ -18555,8 +18557,9 @@ define('validator/min',[
  */
 
 define('validator/max',[
-    'validator/default'
-], function(Default) {
+    'validator/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -18567,7 +18570,7 @@ define('validator/max',[
 
             result = $.extend(new Default($el, form, defaults, options, 'max'), {
                 validate: function() {
-                    var val = this.data.element.getValue();
+                    var val = Util.getValue(this.$el);
                     return Number(val) <= this.data.max;
                 }
             });
@@ -18589,8 +18592,9 @@ define('validator/max',[
  */
 
 define('validator/minLength',[
-    'validator/default'
-], function(Default) {
+    'validator/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -18601,7 +18605,7 @@ define('validator/minLength',[
 
             result = $.extend(new Default($el, form, defaults, options, 'min-length'), {
                 validate: function() {
-                    var val = this.data.element.getValue();
+                    var val = Util.getValue(this.$el);
                     return val.length >= this.data.minLength;
                 }
             });
@@ -18623,8 +18627,9 @@ define('validator/minLength',[
  */
 
 define('validator/maxLength',[
-    'validator/default'
-], function(Default) {
+    'validator/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -18635,7 +18640,7 @@ define('validator/maxLength',[
 
             result = $.extend(new Default($el, form, defaults, options, 'max-length'), {
                 validate: function() {
-                    var val = this.data.element.getValue();
+                    var val = Util.getValue(this.$el);
                     return val.length <= this.data.maxLength;
                 }
             });
@@ -18657,8 +18662,9 @@ define('validator/maxLength',[
  */
 
 define('validator/required',[
-    'validator/default'
-], function(Default) {
+    'validator/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -18666,15 +18672,18 @@ define('validator/required',[
         var defaults = { },
 
             result = $.extend(new Default($el, form, defaults, options, 'required'), {
-                validate: function(value) {
+                validate: function(value, recursion) {
+                    if (recursion && !value) {
+                        return false;
+                    }
                     if (!!this.data.required) {
-                        var val = value || this.data.element.getValue(), i;
+                        var val = value || Util.getValue(this.$el), i;
                         // for checkboxes and select multiples.
                         // check there is at least one required value
                         if ('object' === typeof val) {
                             for (i in val) {
                                 if (val.hasOwnProperty(i)) {
-                                    if (this.validate(val[i])) {
+                                    if (this.validate(val[i]), true) {
                                         return true;
                                     }
                                 }
@@ -18682,8 +18691,8 @@ define('validator/required',[
                             return false;
                         }
 
-                        // notNull && notBlank
-                        return val.length > 0 && '' !== val.replace(/^\s+/g, '').replace(/\s+$/g, '');
+                        // notNull && notBlank && not undefined
+                        return typeof val !== 'undefined' && val.length > 0 && '' !== val.replace(/^\s+/g, '').replace(/\s+$/g, '');
                     }
                     return true;
                 }
@@ -18763,7 +18772,7 @@ define('validator/unique',[
                 },
 
                 validate: function() {
-                    var val = this.data.element.getValue(),
+                    var val = Util.getValue(this.$el),
                         result;
                     if (!!this.data.unique) {
                         result = validateElements(val);
@@ -18775,7 +18784,7 @@ define('validator/unique',[
                 },
 
                 update: function() {
-                    var val = this.data.element.getValue(),
+                    var val = Util.getValue(this.$el),
                         result;
                     if (!!this.data.unique) {
                         result = validateElements(val);
@@ -18815,8 +18824,9 @@ define('validator/unique',[
  */
 
 define('validator/equal',[
-    'validator/default'
-], function(Default) {
+    'validator/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -18882,7 +18892,7 @@ define('validator/equal',[
                 },
 
                 update: function() {
-                    var val = this.data.element.getValue(),
+                    var val = Util.getValue(this.$el),
                         result;
                     if (!!this.data.equal) {
                         result = validateElements(val);
@@ -18920,8 +18930,9 @@ define('validator/equal',[
  */
 
 define('validator/regex',[
-    'validator/default'
-], function(Default) {
+    'validator/default',
+    'form/util'
+], function(Default, Util) {
 
     
 
@@ -18935,7 +18946,7 @@ define('validator/regex',[
                     // TODO flags
                     var pattern = this.data.regex,
                         regex = new RegExp(pattern),
-                        val = this.data.element.getValue();
+                        val = Util.getValue(this.$el);
 
                     if (val === '') {
                         return true;
@@ -25928,6 +25939,9 @@ define('type/husky-select',[
                         ids = this.$el.data('selection'),
                         values = this.$el.data('selection-values');
 
+                    if (ids.length ===0) {
+                        return undefined;
+                    }
                     if (this.$el.attr('data-mapper-property-type') === 'string') {
                         return Array.isArray(values) ? values[0] : values;
                     }
@@ -25944,7 +25958,7 @@ define('type/husky-select',[
 
                 validate: function() {
                     var value = this.getValue();
-                    if (typeof value === 'object') {
+                    if (typeof value === 'object' && value.hasOwnProperty('id')) {
                         return !!value.id;
                     } else {
                         return value !== '' && typeof value !== 'undefined';
