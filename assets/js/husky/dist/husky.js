@@ -18028,9 +18028,8 @@ define('type/date',[
  */
 
 define('type/decimal',[
-    'type/default',
-    'form/util'
-], function(Default, Util) {
+    'type/default'
+], function(Default) {
 
     
 
@@ -18044,7 +18043,7 @@ define('type/decimal',[
                 },
 
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.getValue();
 
                     if (val === '') {
                         return true;
@@ -18082,7 +18081,7 @@ define('type/email',[
 
             typeInterface = {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.getValue();
                     if (val === '') {
                         return true;
                     }
@@ -18091,7 +18090,7 @@ define('type/email',[
                 },
 
                 needsValidation: function() {
-                    var val = this.$el.val();
+                    var val = this.getValue();
                     return val !== '';
                 }
             };
@@ -18124,7 +18123,7 @@ define('type/url',[
 
             typeInterface = {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.getValue();
                     if (val === '') {
                         return true;
                     }
@@ -18136,7 +18135,7 @@ define('type/url',[
                 },
 
                 needsValidation: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.getValue();
                     return val !== '';
                 }
             };
@@ -18522,9 +18521,8 @@ define('validator/default',[],function() {
  */
 
 define('validator/min',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -18535,7 +18533,7 @@ define('validator/min',[
 
             result = $.extend(new Default($el, form, defaults, options, 'min'), {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.data.element.getValue();
                     return Number(val) >= this.data.min;
                 }
             });
@@ -18557,9 +18555,8 @@ define('validator/min',[
  */
 
 define('validator/max',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -18570,7 +18567,7 @@ define('validator/max',[
 
             result = $.extend(new Default($el, form, defaults, options, 'max'), {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.data.element.getValue();
                     return Number(val) <= this.data.max;
                 }
             });
@@ -18592,9 +18589,8 @@ define('validator/max',[
  */
 
 define('validator/minLength',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -18605,7 +18601,7 @@ define('validator/minLength',[
 
             result = $.extend(new Default($el, form, defaults, options, 'min-length'), {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.data.element.getValue();
                     return val.length >= this.data.minLength;
                 }
             });
@@ -18627,9 +18623,8 @@ define('validator/minLength',[
  */
 
 define('validator/maxLength',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -18640,7 +18635,7 @@ define('validator/maxLength',[
 
             result = $.extend(new Default($el, form, defaults, options, 'max-length'), {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.data.element.getValue();
                     return val.length <= this.data.maxLength;
                 }
             });
@@ -18662,9 +18657,8 @@ define('validator/maxLength',[
  */
 
 define('validator/required',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -18674,7 +18668,7 @@ define('validator/required',[
             result = $.extend(new Default($el, form, defaults, options, 'required'), {
                 validate: function(value) {
                     if (!!this.data.required) {
-                        var val = value || Util.getValue(this.$el), i;
+                        var val = value || this.data.element.getValue(), i;
                         // for checkboxes and select multiples.
                         // check there is at least one required value
                         if ('object' === typeof val) {
@@ -18769,7 +18763,7 @@ define('validator/unique',[
                 },
 
                 validate: function() {
-                    var val = Util.getValue(this.$el),
+                    var val = this.data.element.getValue(),
                         result;
                     if (!!this.data.unique) {
                         result = validateElements(val);
@@ -18781,7 +18775,7 @@ define('validator/unique',[
                 },
 
                 update: function() {
-                    var val = Util.getValue(this.$el),
+                    var val = this.data.element.getValue(),
                         result;
                     if (!!this.data.unique) {
                         result = validateElements(val);
@@ -18821,9 +18815,8 @@ define('validator/unique',[
  */
 
 define('validator/equal',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -18889,7 +18882,7 @@ define('validator/equal',[
                 },
 
                 update: function() {
-                    var val = Util.getValue(this.$el),
+                    var val = this.data.element.getValue(),
                         result;
                     if (!!this.data.equal) {
                         result = validateElements(val);
@@ -18927,9 +18920,8 @@ define('validator/equal',[
  */
 
 define('validator/regex',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -18943,7 +18935,7 @@ define('validator/regex',[
                     // TODO flags
                     var pattern = this.data.regex,
                         regex = new RegExp(pattern),
-                        val = Util.getValue(this.$el);
+                        val = this.data.element.getValue();
 
                     if (val === '') {
                         return true;
@@ -26014,7 +26006,7 @@ define('type/husky-input',[
             typeInterface = {
                 setValue: function(data) {
                     this.$el.data({
-                       value: data
+                        value: data
                     }).trigger('data-changed');
                 },
 
@@ -26033,7 +26025,7 @@ define('type/husky-input',[
                 validate: function() {
                     var value = this.getValue(),
                         type = this.$el.data('auraSkin');
-                    if (!!type && !!typeValidators[type]) {
+                    if (!!value && !!type && !!typeValidators[type]) {
                         return typeValidators[type].call(this, value);
                     } else {
                         return true;
@@ -41247,11 +41239,17 @@ define('__component__$input@husky',[], function () {
          */
         setValue: function(value) {
             if (this.options.renderMethod === 'colorpicker') {
-                this.sandbox.colorpicker.value(this.input.$input, value);
+                if (!!value) {
+                    this.sandbox.colorpicker.value(this.input.$input, value);
+                } else {
+                    this.sandbox.dom.val(this.input.$input, value);
+                }
             } else if (this.options.renderMethod === 'datepicker') {
                 // if a date-time was passed, extract the date
-                value = this.isoToDate(value);
-                value = new Date(value);
+                if (!!value) {
+                    value = this.isoToDate(value);
+                    value = new Date(value);
+                }
                 this.sandbox.datepicker.setDate(this.input.$input, value);
                 this.setDatepickerValueAttr(this.sandbox.datepicker.getDate(this.input.$input));
             } else {
@@ -41275,9 +41273,11 @@ define('__component__$input@husky',[], function () {
          * @param date {Object} a UTC date pbject
          */
         setDatepickerValueAttr: function(date) {
-            date = date.getFullYear() + '-' +
+            if (!!date) {
+                date = date.getFullYear() + '-' +
                    ('0' + (date.getMonth()+1)).slice(-2) + '-' +
                    ('0' + date.getDate()).slice(-2);
+            }
             this.sandbox.dom.data(this.$el, 'value', date);
         },
 
@@ -45099,7 +45099,7 @@ define("datepicker-zh-TW", function(){});
 
                 init: function(selector, configs) {
                     var settings = {
-                        format: app.sandbox.globalize.getDatePattern(),
+                        format: app.sandbox.globalize.getDatePattern().toLowerCase(),
                         language: app.sandbox.globalize.getLocale(),
                         autoclose: true
                     };
