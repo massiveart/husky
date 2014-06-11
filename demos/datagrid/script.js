@@ -238,7 +238,20 @@ require(['lib/husky'], function(Husky) {
                 ]);
             });
 
-            $('#update-url').on('click', function() {
+        $('#new-group').on('click', function () {
+            app.sandbox.emit('husky.datagrid.grid-thumbnails.record.add', {
+                id: 13,
+                title: 'A brand new collection',
+                mediaNumber: 0,
+                thumbnails: [
+                    {url: 'http://lorempixel.com/150/100/sports/x', title: 'Media title'},
+                    {url: 'http://lorempixel.com/150/100/sports/y', title: 'Media title'},
+                    {url: 'http://lorempixel.com/150/100/sports/z', title: 'Media title'}
+                ]
+            });
+        });
+
+        $('#update-url').on('click', function() {
                 app.sandbox.emit('husky.datagrid.url.update', { search: null, content1: "fdsa" });
             });
 
