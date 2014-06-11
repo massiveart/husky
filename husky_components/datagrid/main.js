@@ -29,9 +29,10 @@
     define([
         'husky_components/datagrid/decorators/table-view',
         'husky_components/datagrid/decorators/thumbnail-view',
+        'husky_components/datagrid/decorators/group-view',
         'husky_components/datagrid/decorators/dropdown-pagination',
         'husky_components/datagrid/decorators/showall-pagination'
-    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination, showallPagination) {
+    ], function(decoratorTableView, thumbnailView, groupView, decoratorDropdownPagination, showallPagination) {
 
         /**
          *    Default values for options
@@ -66,7 +67,8 @@
             decorators = {
                 views: {
                     table: decoratorTableView,
-                    thumbnail: thumbnailView
+                    thumbnail: thumbnailView,
+                    group: groupView
                 },
                 paginations: {
                     dropdown: decoratorDropdownPagination,
@@ -229,6 +231,15 @@
              */
                 RECORD_REMOVE = function () {
                 return this.createEventName('record.remove');
+            },
+
+            /**
+             * listens on and merges one or more data-records with a given ones
+             * @event husky.datagrid.records.change
+             * @param {Object|Array} the new data-record. Must at least contain an id-property. Can also be an array of data-records
+             */
+                RECORDS_CHANGE = function () {
+                return this.createEventName('records.change');
             },
 
             /**
@@ -438,7 +449,14 @@
                         url += (url.indexOf('?') === -1) ? '?' : '&';
                         url += 'fields=' + this.requestFields.join(',');
                     }
-                    this.load({ url: url});
+
+                    this.loading();
+                    this.load({
+                        url: url,
+                        success: function() {
+                            this.stopLoading();
+                        }.bind(this)
+                    });
 
                 } else if (!!this.options.data.items) {
 
@@ -514,18 +532,33 @@
             },
 
             /**
+             * Rerenders the view
+             */
+            rerenderView: function() {
+                this.gridViews[this.viewId].destroy();
+                this.gridViews[this.viewId].render(this.data, this.$element);
+            },
+
+            /**
+             * Rerenders the pagination
+             */
+            rerenderPagination: function() {
+                if (!!this.paginations[this.paginationId]) {
+                    this.paginations[this.paginationId].destroy();
+                    this.paginations[this.paginationId].render(this.data, this.$element);
+                }
+            },
+
+            /**
              * Loads contents via ajax
              * @param params url
              */
             load: function(params) {
                 this.currentUrl = params.url;
 
-                this.loading();
-                this.destroy();
-
                 this.sandbox.util.load(this.getUrl(params), params.data)
                     .then(function(response) {
-                        this.stopLoading();
+                        this.destroy();
                         this.parseData(response);
                         this.render();
                         if (!!params.success && typeof params.success === 'function') {
@@ -827,6 +860,9 @@
                 // remove a data record
                 this.sandbox.on(RECORD_REMOVE.call(this), this.removeRecordHandler.bind(this));
 
+                // change an exsiting data-record
+                this.sandbox.on(RECORDS_CHANGE.call(this), this.changeRecordsHandler.bind(this));
+
                 this.startColumnOptionsListener();
                 this.startSearchListener();
             },
@@ -934,6 +970,22 @@
                     this.gridViews[this.viewId].removeRecord(recordId);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
+            },
+
+            /**
+             * Merges one or more data-records with a given ones and updates the view
+             * @param records {Object|Array} the new data-record or an array of data-records
+             */
+            changeRecordsHandler: function(records) {
+                if (!this.sandbox.dom.isArray(records)) {
+                    records = [records];
+                }
+                this.sandbox.util.foreach(records, function(record) {
+                    this.changeRecord(record);
+                }.bind(this));
+
+                this.rerenderView();
+                this.rerenderPagination();
             },
 
             /**
@@ -1068,9 +1120,12 @@
                     url = setGetParameter.call(this, url, key, parameters[key]);
                 }
 
+                this.destroy();
+                this.loading();
                 this.load({
                     url: url,
                     success: function() {
+                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
@@ -1092,6 +1147,25 @@
             },
 
             /**
+             * Merges a data-record with a given one
+             * @param record {Object} the new data-record. Must contain an id-property
+             * @returns {Boolean} returns true if changed successfully
+             */
+            changeRecord: function(record) {
+                if (!!record.id) {
+                    for (var i = -1, length = this.data.embedded.length; ++i < length;) {
+                        if (record.id === this.data.embedded[i].id) {
+                            this.data.embedded[i] = this.sandbox.util.extend(true, {}, this.data.embedded[i], record);
+                            return true;
+                        }
+                    }
+                } else {
+                    this.sandbox.logger.log('Error: Failed changing a record. Must contain id-property');
+                    return false;
+                }
+            },
+
+            /**
              * Deletes a record with a given id
              * @param recordId {Number|String} the id of the record to delete
              * @returns {boolean} true if record got successfully deleted
@@ -1102,9 +1176,7 @@
                         this.data.embedded.splice(i, 1);
                         this.data.numberOfAll--;
                         this.data.total--;
-                        if (!!this.paginations[this.paginationId]) {
-                            this.paginations[this.paginationId].rerender();
-                        }
+                        this.rerenderPagination();
                         return true;
                     }
                 }
@@ -1121,9 +1193,7 @@
                     this.data.numberOfAll++;
                     this.data.total++;
                 }
-                if (!!this.paginations[this.paginationId]) {
-                    this.paginations[this.paginationId].rerender();
-                }
+                this.rerenderPagination();
             },
 
             /**
@@ -1135,9 +1205,7 @@
                     this.data.embedded.unshift(records[i]);
                     this.data.numberOfAll++;
                     this.data.total++;
-                    if (!!this.paginations[this.paginationId]) {
-                        this.paginations[this.paginationId].rerender();
-                    }
+                    this.rerenderPagination();
                 }
             },
 
@@ -1210,9 +1278,12 @@
                 uriTemplate = this.sandbox.uritemplate.parse(this.data.links.filter);
                 url = this.sandbox.uritemplate.expand(uriTemplate, {fieldsList: this.requestFields.join(',')});
 
+                this.destroy();
+                this.loading();
                 this.load({
                     url: url,
                     success: function() {
+                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
@@ -1259,9 +1330,12 @@
                 template = this.sandbox.uritemplate.parse(this.data.links.find);
                 url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
 
+                this.destroy();
+                this.loading();
                 this.load({
                     url: url,
                     success: function() {
+                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });

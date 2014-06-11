@@ -28253,7 +28253,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             oversizedClass: 'oversized',
             overflowClass: 'overflow',
             thumbSrcKey: 'url',
-            thumbAltKey: 'alt'
+            thumbAltKey: 'alt',
+            sortLoaderClass: 'sort-loader'
         },
 
         /**
@@ -29404,12 +29405,28 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         prepareSort: function(event) {
             var $element = event.currentTarget,
                 $span = this.sandbox.dom.children($element, 'span')[0],
-
                 attribute = this.sandbox.dom.data($element, 'attribute'),
-                direction = this.sandbox.dom.hasClass($span, constants.ascClass) ? 'desc' : 'asc';
+                direction = this.sandbox.dom.hasClass($span, constants.ascClass) ? 'desc' : 'asc',
+                $loaderContainer = this.sandbox.dom.createElement('<span class="'+ constants.sortLoaderClass +'"/>');
 
-                // delegate sorting to datagrid
-                this.datagrid.sortGrid.call(this.datagrid, attribute, direction);
+            this.sandbox.dom.stopPropagation(event);
+
+            // start loader beneath th
+            this.sandbox.dom.removeClass($span);
+            this.sandbox.dom.append($span, $loaderContainer);
+            this.sandbox.start([
+                {
+                    name: 'loader@husky',
+                    options: {
+                        el: $loaderContainer,
+                        size: '10px',
+                        color: '#999999'
+                    }
+                }
+            ]);
+
+            // delegate sorting to datagrid
+            this.datagrid.sortGrid.call(this.datagrid, attribute, direction);
         }
     };
 });
@@ -29812,14 +29829,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
         },
 
         /**
-         * Rerenders the pagination
-         */
-        rerender: function() {
-            this.destroy();
-            this.render(this.data, this.$el);
-        },
-
-        /**
          * Returns the pagination page size
          * @returns {Number} current Page size
          */
@@ -30154,14 +30163,6 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
         },
 
         /**
-         * Rerenders the pagination
-         */
-        rerender: function () {
-            this.destroy();
-            this.render(this.data, this.$el);
-        },
-
-        /**
          * Returns the pagination page size
          * @returns {Number} current Page size
          */
@@ -30461,6 +30462,15 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             },
 
             /**
+             * listens on and merges one or more data-records with a given ones
+             * @event husky.datagrid.records.change
+             * @param {Object|Array} the new data-record. Must at least contain an id-property. Can also be an array of data-records
+             */
+                RECORDS_CHANGE = function () {
+                return this.createEventName('records.change');
+            },
+
+            /**
              * used to trigger an update of the data
              * @event husky.datagrid.update
              */
@@ -30667,7 +30677,14 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                         url += (url.indexOf('?') === -1) ? '?' : '&';
                         url += 'fields=' + this.requestFields.join(',');
                     }
-                    this.load({ url: url});
+
+                    this.loading();
+                    this.load({
+                        url: url,
+                        success: function() {
+                            this.stopLoading();
+                        }.bind(this)
+                    });
 
                 } else if (!!this.options.data.items) {
 
@@ -30743,18 +30760,33 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             },
 
             /**
+             * Rerenders the view
+             */
+            rerenderView: function() {
+                this.gridViews[this.viewId].destroy();
+                this.gridViews[this.viewId].render(this.data, this.$element);
+            },
+
+            /**
+             * Rerenders the pagination
+             */
+            rerenderPagination: function() {
+                if (!!this.paginations[this.paginationId]) {
+                    this.paginations[this.paginationId].destroy();
+                    this.paginations[this.paginationId].render(this.data, this.$element);
+                }
+            },
+
+            /**
              * Loads contents via ajax
              * @param params url
              */
             load: function(params) {
                 this.currentUrl = params.url;
 
-                this.loading();
-                this.destroy();
-
                 this.sandbox.util.load(this.getUrl(params), params.data)
                     .then(function(response) {
-                        this.stopLoading();
+                        this.destroy();
                         this.parseData(response);
                         this.render();
                         if (!!params.success && typeof params.success === 'function') {
@@ -31056,6 +31088,9 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 // remove a data record
                 this.sandbox.on(RECORD_REMOVE.call(this), this.removeRecordHandler.bind(this));
 
+                // change an exsiting data-record
+                this.sandbox.on(RECORDS_CHANGE.call(this), this.changeRecordsHandler.bind(this));
+
                 this.startColumnOptionsListener();
                 this.startSearchListener();
             },
@@ -31163,6 +31198,22 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     this.gridViews[this.viewId].removeRecord(recordId);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
+            },
+
+            /**
+             * Merges one or more data-records with a given ones and updates the view
+             * @param records {Object|Array} the new data-record or an array of data-records
+             */
+            changeRecordsHandler: function(records) {
+                if (!this.sandbox.dom.isArray(records)) {
+                    records = [records];
+                }
+                this.sandbox.util.foreach(records, function(record) {
+                    this.changeRecord(record);
+                }.bind(this));
+
+                this.rerenderView();
+                this.rerenderPagination();
             },
 
             /**
@@ -31321,6 +31372,25 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             },
 
             /**
+             * Merges a data-record with a given one
+             * @param record {Object} the new data-record. Must contain an id-property
+             * @returns {Boolean} returns true if changed successfully
+             */
+            changeRecord: function(record) {
+                if (!!record.id) {
+                    for (var i = -1, length = this.data.embedded.length; ++i < length;) {
+                        if (record.id === this.data.embedded[i].id) {
+                            this.data.embedded[i] = this.sandbox.util.extend(true, {}, this.data.embedded[i], record);
+                            return true;
+                        }
+                    }
+                } else {
+                    this.sandbox.logger.log('Error: Failed changing a record. Must contain id-property');
+                    return false;
+                }
+            },
+
+            /**
              * Deletes a record with a given id
              * @param recordId {Number|String} the id of the record to delete
              * @returns {boolean} true if record got successfully deleted
@@ -31331,9 +31401,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                         this.data.embedded.splice(i, 1);
                         this.data.numberOfAll--;
                         this.data.total--;
-                        if (!!this.paginations[this.paginationId]) {
-                            this.paginations[this.paginationId].rerender();
-                        }
+                        this.rerenderPagination();
                         return true;
                     }
                 }
@@ -31350,9 +31418,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     this.data.numberOfAll++;
                     this.data.total++;
                 }
-                if (!!this.paginations[this.paginationId]) {
-                    this.paginations[this.paginationId].rerender();
-                }
+                this.rerenderPagination();
             },
 
             /**
@@ -31364,9 +31430,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     this.data.embedded.unshift(records[i]);
                     this.data.numberOfAll++;
                     this.data.total++;
-                    if (!!this.paginations[this.paginationId]) {
-                        this.paginations[this.paginationId].rerender();
-                    }
+                    this.rerenderPagination();
                 }
             },
 
@@ -31439,9 +31503,12 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 uriTemplate = this.sandbox.uritemplate.parse(this.data.links.filter);
                 url = this.sandbox.uritemplate.expand(uriTemplate, {fieldsList: this.requestFields.join(',')});
 
+                this.destroy();
+                this.loading();
                 this.load({
                     url: url,
                     success: function() {
+                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
@@ -31488,9 +31555,12 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 template = this.sandbox.uritemplate.parse(this.data.links.find);
                 url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
 
+                this.destroy();
+                this.loading();
                 this.load({
                     url: url,
                     success: function() {
+                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });

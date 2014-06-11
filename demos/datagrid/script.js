@@ -138,6 +138,31 @@ require(['lib/husky'], function(Husky) {
                 }
             },
             {
+                name: 'datagrid@husky',
+                options: {
+                    url: 'http://husky.lo:7878/admin/api/datagrid/groups',
+                    view: 'group',
+                    pagination: false,
+                    searchInstanceName: 'test',
+                    el: '#thumbnails-datagrid',
+                    instanceName: 'grid-thumbnails',
+                    matchings: [
+                        {
+                            id: "title",
+                            type: 'title'
+                        },
+                        {
+                            id: "mediaNumber",
+                            type: 'elements'
+                        },
+                        {
+                            id: "thumbnails",
+                            type: 'thumbnails'
+                        }
+                    ]
+                }
+            },
+            {
                 name: 'toolbar@husky',
                 options: {
                     el: '#toolbar',
@@ -195,6 +220,13 @@ require(['lib/husky'], function(Husky) {
 
             $('#add-row').on('click', function() {
                 app.sandbox.emit('husky.datagrid.record.add', { id: "", content1: "", content2: "", content3: "" });
+            });
+
+            $('#change-records').on('click', function() {
+                app.sandbox.emit('husky.datagrid.records.change', [
+                    { id: "1", content1: "changed content", content2: 1239490},
+                    { id: "2", content1: "also changed", content2: 4456767865456}
+                ]);
             });
 
             $('#add-records').on('click', function() {
