@@ -61,13 +61,14 @@ define([
                 },
 
                 needsValidation: function() {
-                    return this.options.required;
+                    var val = this.getValue();
+                    return val !== '';
                 },
 
                 validate: function() {
                     var value = this.getValue(),
                         type = this.$el.data('auraSkin');
-                    if (!!value && !!type && !!typeValidators[type]) {
+                    if (!!type && !!typeValidators[type]) {
                         return typeValidators[type].call(this, value);
                     } else {
                         return true;
