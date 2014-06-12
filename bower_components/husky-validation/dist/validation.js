@@ -461,9 +461,9 @@ define('form/element',['form/util'], function(Util) {
                                 Util.debug('Field validate', !!result ? 'true' : 'false', this.$el);
                             }
                         }
+                        that.setValid.call(this, result);
                     }
-                    that.setValid.call(this, result);
-                    return this.isValid();
+                    return result;
                 },
 
                 update: function() {

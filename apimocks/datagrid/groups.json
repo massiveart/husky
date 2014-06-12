@@ -1,0 +1,300 @@
+{
+    "_links": {
+        "self": "http://husky.lo:7878/admin/api/datagrid/group"
+    },
+    "_embedded": [
+        {
+            "id": 1,
+            "thumbnails": [
+                {
+                    "url": "http://lorempixel.com/150/100/sports/moos",
+                    "title": "Media title"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/marl",
+                    "title": "Title of media"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/qqqw",
+                    "title": "Media title"
+                }
+            ],
+            "mediaNumber": 4,
+            "title": "Collection Title",
+            "description": "Collection Description",
+            "changer": "Firstname Lastname",
+            "creator": "Firstname Lastname",
+            "changed": "2014-01-01 16:00:00",
+            "created": "2014-01-01 16:00:00"
+        },
+        {
+            "id": 2,
+            "thumbnails": [
+                {
+                    "url": "http://lorempixel.com/150/100/sports/marcel",
+                    "title": "Media title"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/asdf",
+                    "title": "Title of media"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/wer",
+                    "title": "Media title"
+                }
+            ],
+            "mediaNumber": 4,
+            "title": "Collection 2",
+            "description": "Collection Description",
+            "changer": "Firstname Lastname",
+            "creator": "Firstname Lastname",
+            "changed": "2014-01-01 16:00:00",
+            "created": "2014-01-01 16:00:00"
+        },
+        {
+            "id": 3,
+            "thumbnails": [
+                {
+                    "url": "http://lorempixel.com/150/100/sports/e",
+                    "title": "Media title"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/d",
+                    "title": "Title of media"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/c",
+                    "title": "Media title"
+                }
+            ],
+            "mediaNumber": 4,
+            "title": "Collection 3",
+            "description": "Collection Description",
+            "changer": "Firstname Lastname",
+            "creator": "Firstname Lastname",
+            "changed": "2014-01-01 16:00:00",
+            "created": "2014-01-01 16:00:00"
+        },
+        {
+            "id": 4,
+            "thumbnails": [
+                {
+                    "url": "http://lorempixel.com/150/100/sports/b",
+                    "title": "Media title"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/a",
+                    "title": "Title of media"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/j2",
+                    "title": "Media title"
+                }
+            ],
+            "mediaNumber": 4,
+            "title": "Collection 4",
+            "description": "Collection Description",
+            "changer": "Firstname Lastname",
+            "creator": "Firstname Lastname",
+            "changed": "2014-01-01 16:00:00",
+            "created": "2014-01-01 16:00:00"
+        },
+        {
+            "id": 5,
+            "thumbnails": [
+                {
+                    "url": "http://lorempixel.com/150/100/sports/285d",
+                    "title": "Media title"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/2356x",
+                    "title": "Title of media"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/987c",
+                    "title": "Media title"
+                }
+            ],
+            "mediaNumber": 4,
+            "title": "Collection 5",
+            "description": "Collection Description",
+            "changer": "Firstname Lastname",
+            "creator": "Firstname Lastname",
+            "changed": "2014-01-01 16:00:00",
+            "created": "2014-01-01 16:00:00"
+        },
+        {
+            "id": 6,
+            "thumbnails": [
+                {
+                    "url": "http://lorempixel.com/150/100/sports/asdf",
+                    "title": "Media title"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/vbx",
+                    "title": "Title of media"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/asbb",
+                    "title": "Media title"
+                }
+            ],
+            "mediaNumber": 4,
+            "title": "Collection 6",
+            "description": "Collection Description",
+            "changer": "Firstname Lastname",
+            "creator": "Firstname Lastname",
+            "changed": "2014-01-01 16:00:00",
+            "created": "2014-01-01 16:00:00"
+        },
+        {
+            "id": 7,
+            "thumbnails": [
+                {
+                    "url": "http://lorempixel.com/150/100/sports/tgha",
+                    "title": "Media title"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/werqx",
+                    "title": "Title of media"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/asdbv",
+                    "title": "Media title"
+                }
+            ],
+            "mediaNumber": 4,
+            "title": "Collection 7",
+            "description": "Collection Description",
+            "changer": "Firstname Lastname",
+            "creator": "Firstname Lastname",
+            "changed": "2014-01-01 16:00:00",
+            "created": "2014-01-01 16:00:00"
+        },
+        {
+            "id": 8,
+            "thumbnails": [
+                {
+                    "url": "http://lorempixel.com/150/100/sports/adfb",
+                    "title": "Media title"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/q34a",
+                    "title": "Title of media"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/34rt",
+                    "title": "Media title"
+                }
+            ],
+            "mediaNumber": 4,
+            "title": "Collection 8",
+            "description": "Collection Description",
+            "changer": "Firstname Lastname",
+            "creator": "Firstname Lastname",
+            "changed": "2014-01-01 16:00:00",
+            "created": "2014-01-01 16:00:00"
+        },
+        {
+            "id": 9,
+            "thumbnails": [
+                {
+                    "url": "http://lorempixel.com/150/100/sports/werq",
+                    "title": "Media title"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/asfe",
+                    "title": "Title of media"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/fgjdhd",
+                    "title": "Media title"
+                }
+            ],
+            "mediaNumber": 4,
+            "title": "Collection 9",
+            "description": "Collection Description",
+            "changer": "Firstname Lastname",
+            "creator": "Firstname Lastname",
+            "changed": "2014-01-01 16:00:00",
+            "created": "2014-01-01 16:00:00"
+        },
+        {
+            "id": 10,
+            "thumbnails": [
+                {
+                    "url": "http://lorempixel.com/150/100/sports/cvbds",
+                    "title": "Media title"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/qewrt",
+                    "title": "Title of media"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/ghkj",
+                    "title": "Media title"
+                }
+            ],
+            "mediaNumber": 4,
+            "title": "Collection 10",
+            "description": "Collection Description",
+            "changer": "Firstname Lastname",
+            "creator": "Firstname Lastname",
+            "changed": "2014-01-01 16:00:00",
+            "created": "2014-01-01 16:00:00"
+        },
+        {
+            "id": 11,
+            "thumbnails": [
+                {
+                    "url": "http://lorempixel.com/150/100/sports/ttzzws",
+                    "title": "Media title"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/qwe",
+                    "title": "Title of media"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/we",
+                    "title": "Media title"
+                }
+            ],
+            "mediaNumber": 4,
+            "title": "Collection 11",
+            "description": "Collection Description",
+            "changer": "Firstname Lastname",
+            "creator": "Firstname Lastname",
+            "changed": "2014-01-01 16:00:00",
+            "created": "2014-01-01 16:00:00"
+        },
+        {
+            "id": 12,
+            "thumbnails": [
+                {
+                    "url": "http://lorempixel.com/150/100/sports/ar",
+                    "title": "Media title"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/yxc",
+                    "title": "Title of media"
+                },
+                {
+                    "url": "http://lorempixel.com/150/100/sports/qwe",
+                    "title": "Media title"
+                }
+            ],
+            "mediaNumber": 4,
+            "title": "Collection 12",
+            "description": "Collection Description",
+            "changer": "Firstname Lastname",
+            "creator": "Firstname Lastname",
+            "changed": "2014-01-01 16:00:00",
+            "created": "2014-01-01 16:00:00"
+        }
+    ],
+    "total": 12,
+    "numberOfAll": 12,
+    "pages": 1,
+    "page": 1,
+    "pageSize": 12
+}

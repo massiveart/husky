@@ -69,7 +69,8 @@ define(function() {
             oversizedClass: 'oversized',
             overflowClass: 'overflow',
             thumbSrcKey: 'url',
-            thumbAltKey: 'alt'
+            thumbAltKey: 'alt',
+            sortLoaderClass: 'sort-loader'
         },
 
         /**
@@ -1220,12 +1221,28 @@ define(function() {
         prepareSort: function(event) {
             var $element = event.currentTarget,
                 $span = this.sandbox.dom.children($element, 'span')[0],
-
                 attribute = this.sandbox.dom.data($element, 'attribute'),
-                direction = this.sandbox.dom.hasClass($span, constants.ascClass) ? 'desc' : 'asc';
+                direction = this.sandbox.dom.hasClass($span, constants.ascClass) ? 'desc' : 'asc',
+                $loaderContainer = this.sandbox.dom.createElement('<span class="'+ constants.sortLoaderClass +'"/>');
 
-                // delegate sorting to datagrid
-                this.datagrid.sortGrid.call(this.datagrid, attribute, direction);
+            this.sandbox.dom.stopPropagation(event);
+
+            // start loader beneath th
+            this.sandbox.dom.removeClass($span);
+            this.sandbox.dom.append($span, $loaderContainer);
+            this.sandbox.start([
+                {
+                    name: 'loader@husky',
+                    options: {
+                        el: $loaderContainer,
+                        size: '10px',
+                        color: '#999999'
+                    }
+                }
+            ]);
+
+            // delegate sorting to datagrid
+            this.datagrid.sortGrid.call(this.datagrid, attribute, direction);
         }
     };
 });

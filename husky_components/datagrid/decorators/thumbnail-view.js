@@ -212,6 +212,7 @@ define(function() {
 
             this.sandbox.dom.on(this.$thumbnails[id], 'dblclick', function() {
                 this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+                this.selectItem(id);
             }.bind(this));
         },
 
