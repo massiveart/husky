@@ -16576,7 +16576,6 @@ define('form/element',['form/util'], function(Util) {
             valid,
             validators = {},
             type,
-            lastValue = null,
             dfd = null,
 
             that = {
@@ -16738,10 +16737,6 @@ define('form/element',['form/util'], function(Util) {
                     return validatorsConstraint || typeConstraint;
                 },
 
-                needsValidation: function() {
-                    return lastValue !== Util.getValue(this.$el);
-                },
-
                 reset: function() {
                     var $element = this.$el;
                     if (!!this.options.validationAddClassesParent) {
@@ -16768,34 +16763,30 @@ define('form/element',['form/util'], function(Util) {
 
             result = {
                 validate: function(force) {
+                    var result = true;
                     // only if value changed or force is set
-                    if (force || that.needsValidation.call(this)) {
-                        if (!that.hasConstraints.call(this)) {
-                            // delete state
-                            //that.reset.call(this);
-                            return true;
-                        }
+                    if (force || this.needsValidation()) {
+                        if (that.hasConstraints.call(this)) {
+                            // check each validator
+                            $.each(validators, function (key, validator) {
+                                if (!validator.validate()) {
+                                    result = false;
+                                    // TODO Messages
+                                }
+                            });
 
-                        var result = true;
-                        // check each validator
-                        $.each(validators, function(key, validator) {
-                            if (!validator.validate()) {
+                            // check type
+                            if (type !== null && !type.validate()) {
                                 result = false;
-                                // TODO Messages
                             }
-                        });
 
-                        // check type
-                        if (type !== null && !type.validate()) {
-                            result = false;
-                        }
-
-                        if (!result) {
-                            Util.debug('Field validate', !!result ? 'true' : 'false', this.$el);
+                            if (!result) {
+                                Util.debug('Field validate', !!result ? 'true' : 'false', this.$el);
+                            }
                         }
                         that.setValid.call(this, result);
                     }
-                    return this.isValid();
+                    return result;
                 },
 
                 update: function() {
@@ -16906,6 +16897,10 @@ define('form/element',['form/util'], function(Util) {
 
                 getValue: function(data) {
                     return type.getValue(data);
+                },
+
+                needsValidation: function() {
+                    return type.needsValidation();
                 },
 
                 getType: function() {
@@ -25945,7 +25940,8 @@ define('type/husky-select',[
                 },
 
                 needsValidation: function() {
-                    return this.options.required;
+                    var val = this.getValue()
+                    return !!val;
                 },
 
                 validate: function() {
@@ -26025,13 +26021,14 @@ define('type/husky-input',[
                 },
 
                 needsValidation: function() {
-                    return this.options.required;
+                    var val = this.getValue();
+                    return val !== '';
                 },
 
                 validate: function() {
                     var value = this.getValue(),
                         type = this.$el.data('auraSkin');
-                    if (!!value && !!type && !!typeValidators[type]) {
+                    if (!!type && !!typeValidators[type]) {
                         return typeValidators[type].call(this, value);
                     } else {
                         return true;
