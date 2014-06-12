@@ -531,7 +531,7 @@ define(function() {
             this.$table = $table = this.sandbox.dom.createElement(&#x27;&lt;table&#x27; + (!!this.options.validationDebug ? &#x27;data-debug=&quot;true&quot;&#x27; : &#x27;&#x27; ) + &#x27;/&gt;&#x27;);
 
             if (!!this.data.head || !!this.datagrid.matchings) {
-                $thead = this.sandbox.dom.createElement(&#x27;&lt;thead style=&quot;&#x27; + (!this.options.showHead) ? &#x27;display:none;&#x27; : &#x27;&#x27; + &#x27;&quot;/&gt;&#x27;);
+                $thead = this.sandbox.dom.createElement(&#x27;&lt;thead style=&quot;&#x27; + (!this.options.showHead ? &#x27;display:none;&#x27; : &#x27;&#x27; ) + &#x27;&quot;/&gt;&#x27;);
                 this.sandbox.dom.append($thead, this.prepareTableHead());
                 this.sandbox.dom.append($table, $thead);
             }
