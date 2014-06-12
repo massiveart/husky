@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>husky_components/datagrid/decorators/showall-pagination.js - husky</title>
+    <title>husky_components/datagrid/decorators/group-view.js - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -154,57 +154,53 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: husky_components/datagrid/decorators/showall-pagination.js</h1>
+                        <h1 class="file-heading">File: husky_components/datagrid/decorators/group-view.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
 /**
- * @class ShowAllPagination (Datagrid Decorator)
+ * @class GroupView (Datagrid Decorator)
  * @constructor
  *
- * @param {Object} [paginationOptions] Configuration object
- * @param {Number} [paginationOptions.pageSize] maximum elements per page
- * @param {Function} [paginationOptions.showAllHandler] function to call if pagination is clicked. If set pagination will always be displayed. Default action gets not executed if set.
+ * @param {Object} [options] Configuration object
  *
+ * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
- * @param {Function} [rerender] function to rerender itself
- * @param {Function} [destroy] function to destroy the pagination and unbind events
+ * @param {Function} [destroy] function to destroy the view and unbind events
  */
 define(function () {
 
     &#x27;use strict&#x27;;
 
     var defaults = {
-            pageSize: 9,
-            showAllHandler: null
+
         },
 
         constants = {
-            paginationClass: &#x27;pagination-wrapper showall&#x27;,
-            squareClass: &#x27;square&#x27;,
-            textClass: &#x27;text&#x27;
+            containerClass: &#x27;husky-groups&#x27;,
+            elementsKey: &#x27;public.elements&#x27;,
+            thumbnailClass: &#x27;thumbnail&#x27;,
+            thumbnailContainerClass: &#x27;thumbnails&#x27;,
+            groupClass: &#x27;grid-group&#x27;,
+            titleClass: &#x27;title&#x27;,
+            additionClass: &#x27;addition&#x27;,
+            firstPictureClass: &#x27;first&#x27;,
+            secondPictureClass: &#x27;second&#x27;,
+            thirdPictureClass: &#x27;third&#x27;
         },
 
-        /**
-         * Translation keys used by this class
-         */
-            translations = {
-            showAll: &#x27;pagination.show-all&#x27;,
-            showOnly: &#x27;pagination.show-only&#x27;,
-            elements: &#x27;pagination.elements&#x27;
-        },
-
-        /**
-         * Templates used by this class
-         */
-            templates = {
-            structure: [
-                &#x27;&lt;div class=&quot;&#x27; + constants.squareClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
-                &#x27;&lt;div class=&quot;&#x27; + constants.textClass + &#x27;&quot;&gt;&#x27;,
-                    &#x27;&lt;%= translate(desc) %&gt;&#x27;,
-                    &#x27;&lt;strong&gt; &lt;%= number %&gt;&lt;/strong&gt; &#x27;,
-                    &#x27;&lt;%= translate(elements) %&gt;&#x27;,
+        templates = {
+            thumbnail: [
+                &#x27;&lt;div class=&quot;&#x27;+ constants.thumbnailClass +&#x27;&quot;&gt;&#x27;,
+                &#x27;   &lt;img src=&quot;&lt;%= src %&gt;&quot; alt=&quot;&lt;%= title %&gt;&quot; title=&quot;&lt;%= title %&gt;&quot;/&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;
+            ].join(&#x27;&#x27;),
+            group: [
+                &#x27;&lt;div class=&quot;&#x27;+ constants.groupClass +&#x27;&quot;&gt;&#x27;,
+                &#x27;   &lt;div class=&quot;&#x27;+ constants.thumbnailContainerClass +&#x27;&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;   &lt;span class=&quot;&#x27;+ constants.titleClass +&#x27;&quot;&gt;&lt;%= title %&gt;&lt;/span&gt;&#x27;,
+                &#x27;   &lt;span class=&quot;&#x27;+ constants.additionClass +&#x27;&quot;&gt;&lt;%= addition %&gt;&lt;/span&gt;&#x27;,
                 &#x27;&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;)
         };
@@ -212,9 +208,9 @@ define(function () {
     return {
 
         /**
-         * Initializes the pagination
-         * @param {Object} context The context of the datagrid
-         * @param {Object} options The options used by this pagination
+         * Initializes the view, gets called only once
+         * @param {Object} context The context of the datagrid class
+         * @param {Object} options The options used by the view
          */
         initialize: function (context, options) {
             // context of the datagrid-component
@@ -223,121 +219,161 @@ define(function () {
             // make sandbox available in this-context
             this.sandbox = this.datagrid.sandbox;
 
-            // merge defaults with pagination options
+            // merge defaults with options
             this.options = this.sandbox.util.extend(true, {}, defaults, options);
 
             this.setVariables();
         },
 
         /**
-         * Renders the pagination
-         */
-        render: function (data, $container) {
-            this.$el = $container;
-            this.data = data;
-
-            this.$paginationContainer = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;&#x27; + constants.paginationClass + &#x27;&quot;/&gt;&#x27;);
-            if (this.data.numberOfAll &gt; this.data.total || !!this.options.showAllHandler) {
-                this.renderShowAll();
-            } else if (this.data.numberOfAll &gt; this.options.pageSize) {
-                this.renderShowOnly();
-            } else {
-                return false;
-            }
-
-            this.sandbox.dom.append(this.$el, this.$paginationContainer);
-
-            this.bindDomEvents();
-
-            return true;
-        },
-
-        /**
-         * Renders the markup for showing all records
-         */
-        renderShowAll: function() {
-            this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
-                desc: translations.showAll,
-                number: this.data.numberOfAll,
-                elements: translations.elements,
-                translate: this.sandbox.translate
-            }));
-        },
-
-        /**
-         * Renders the markup for not showing all records
-         */
-        renderShowOnly: function() {
-            this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
-                desc: translations.showOnly,
-                number: this.options.pageSize,
-                elements: translations.elements,
-                translate: this.sandbox.translate
-            }));
-        },
-
-        /**
-         * Returns the pagination page size
-         * @returns {Number} current Page size
-         */
-        getPageSize: function () {
-            return this.options.pageSize;
-        },
-
-        /**
-         * Sets the classes properties
+         * Sets the starting variables for the view
          */
         setVariables: function () {
-            this.$el = null;
-            this.$paginationContainer = null;
+            this.rendered = false;
             this.data = null;
+            this.$el = null;
+
+            // global array to store groups
+            this.groups = {};
         },
 
         /**
-         * Destroys the pagination
+         * Method to render data in this view
+         */
+        render: function (data, $container) {
+            this.$el = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;&#x27; + constants.containerClass + &#x27;&quot;/&gt;&#x27;);
+            this.sandbox.dom.append($container, this.$el);
+            this.data = data;
+
+            this.renderGroups(this.data.embedded);
+
+            this.rendered = true;
+        },
+
+        /**
+         * Destroys the view
          */
         destroy: function () {
-            this.unbindDomEvents();
-            this.sandbox.dom.remove(this.$paginationContainer);
+            this.sandbox.dom.remove(this.$el);
         },
 
         /**
-         * Binds dom related events
+         * Picks out the important data and passes it to
+         * a render-method
+         * @param groups {Array} the groups to render
+         * @param prepend {Boolean} if true groups get prepended
          */
-        bindDomEvents: function () {
-            this.sandbox.dom.on(this.$paginationContainer, &#x27;click&#x27;, function() {
-                if (this.data.numberOfAll &gt; this.data.total || !!this.options.showAllHandler) {
-                    this.showAll();
-                } else {
-                    this.showOnly();
-                }
+        renderGroups: function(groups, prepend) {
+            var thumbnails, title, addition;
+
+            this.sandbox.util.foreach(groups, function(group) {
+                thumbnails = [];
+                title = addition = &#x27;&#x27;;
+
+                this.sandbox.util.foreach(this.datagrid.matchings, function(matching) {
+
+                    // pick the important data out of each group
+                    if (matching.type === this.datagrid.types.THUMBNAILS) {
+                        thumbnails = group[matching.attribute];
+                    } else if (matching.type === this.datagrid.types.TITLE) {
+                        title = group[matching.attribute];
+                    } else if(matching.type === this.datagrid.types.COUNT) {
+                        addition += this.datagrid.manipulateContent.call(this.datagrid,
+                            group[matching.attribute],
+                            matching.type, this.sandbox.translate(constants.elementsKey));
+                    }
+                }.bind(this));
+
+                // render the important data
+                this.renderGroup(group.id, thumbnails, title, addition, prepend);
             }.bind(this));
         },
 
         /**
-         * Shows all elements in the datagrid
-         * or just executes the handler if passed
+         * Renders a single group
+         * @param id {Number|String} the id of the group
+         * @param thumbnails {Array} the array with thumbnails
+         * @param title {String} the group title
+         * @param addition {String} the addition of the group
+         * @param prepend {Boolean} if true the group gets prepended
          */
-        showAll: function() {
-            if (typeof this.options.showAllHandler !== &#x27;function&#x27;) {
-                this.datagrid.changePage.call(this.datagrid, this.data.links.all);
+        renderGroup: function(id, thumbnails, title, addition, prepend) {
+            var $thumbnails = [],
+                $group = this.sandbox.dom.createElement(this.sandbox.util.template(templates.group)({
+                title: title,
+                addition: addition
+            }));
+
+            // render all thumbnails
+            this.sandbox.util.foreach(thumbnails, function(thumbnail) {
+                $thumbnails.push(this.sandbox.dom.createElement(this.sandbox.util.template(templates.thumbnail)({
+                    src: thumbnail.url,
+                    title: thumbnail.title
+                })));
+            }.bind(this));
+
+            // add classes to thumbnails
+            !!$thumbnails[0] &amp;&amp; this.sandbox.dom.addClass($thumbnails[0], constants.firstPictureClass);
+            !!$thumbnails[1] &amp;&amp; this.sandbox.dom.addClass($thumbnails[1], constants.secondPictureClass);
+            !!$thumbnails[2] &amp;&amp; this.sandbox.dom.addClass($thumbnails[2], constants.thirdPictureClass);
+            // append thumbnails to group
+            this.sandbox.dom.append(this.sandbox.dom.find(&#x27;.&#x27; + constants.thumbnailContainerClass, $group), $thumbnails);
+
+            this.groups[id] = $group;
+            if (prepend === true) {
+                this.sandbox.dom.prepend(this.$el, $group);
             } else {
-                this.options.showAllHandler();
+                this.sandbox.dom.append(this.$el, $group);
+            }
+            this.bindGroupDomEvents(id);
+        },
+
+        /**
+         * Binds dom events on a group
+         * @param id {Number|String} id of the group
+         */
+        bindGroupDomEvents: function(id) {
+            // bring clicked thumbnails to front
+            this.sandbox.dom.on(this.groups[id], &#x27;click&#x27;, function(event) {
+                this.showThumbnail(id, this.sandbox.dom.$(event.currentTarget), event);
+            }.bind(this), &#x27;.&#x27; + constants.thumbnailClass);
+
+            this.sandbox.dom.on(this.groups[id], &#x27;click&#x27;, function() {
+                this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+            }.bind(this));
+        },
+
+        /**
+         * Brings a given thumbnail of a group to the front
+         * @param id {Number|String} id of the group
+         * @param $thumbnail {Object} thumbnail
+         */
+        showThumbnail: function(id, $thumbnail, event) {
+            if (!this.sandbox.dom.hasClass($thumbnail, constants.firstPictureClass)) {
+                this.sandbox.dom.stopPropagation(event);
+                var cssClass,
+                    $first = this.sandbox.dom.find(&#x27;.&#x27; + constants.thumbnailClass + &#x27;.&#x27; + constants.firstPictureClass, this.groups[id]);
+
+                if (this.sandbox.dom.hasClass($thumbnail, constants.secondPictureClass)) {
+                    cssClass = constants.secondPictureClass;
+                } else {
+                    cssClass = constants.thirdPictureClass;
+                }
+
+                this.sandbox.dom.removeClass($thumbnail, cssClass);
+                this.sandbox.dom.removeClass($first, constants.firstPictureClass);
+                this.sandbox.dom.addClass($thumbnail, constants.firstPictureClass);
+                this.sandbox.dom.addClass($first, cssClass);
             }
         },
 
         /**
-         * Shows only the configured amount of elements in the datagrid
+         * Adds a record to the view
+         * @param record
+         * @public
          */
-        showOnly: function() {
-            this.datagrid.changePage.call(this.datagrid, null, 1, this.options.pageSize);
-        },
-
-        /**
-         * Unbinds all events from the class
-         */
-        unbindDomEvents: function () {
-            this.sandbox.dom.off(this.$paginationContainer);
+        addRecord: function(record) {
+            this.renderGroups([record], true);
         }
     };
 });

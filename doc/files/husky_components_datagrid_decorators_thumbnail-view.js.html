@@ -59,6 +59,8 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/GroupView (Datagrid Decorator).html">GroupView (Datagrid Decorator)</a></li>
+            
                 <li><a href="../classes/Input.html">Input</a></li>
             
                 <li><a href="../classes/Label.html">Label</a></li>
@@ -359,21 +361,18 @@ define(function() {
          * @param id {Number|String} the identifier of the thumbnail to bind events on
          */
         bindThumbnailDomEvents: function(id) {
-            this.sandbox.dom.on(this.$thumbnails[id], &#x27;change&#x27;, function(event) {
+            this.sandbox.dom.on(this.$thumbnails[id], &#x27;click&#x27;, function() {
                 this.toggleItemSelected(id);
-            }.bind(this), &#x27;.&#x27; + constants.checkboxClass);
-
-            this.sandbox.dom.on(this.$thumbnails[id], &#x27;click&#x27;, function(event) {
-                this.sandbox.dom.stopPropagation(event);
-            }.bind(this), &#x27;.&#x27; + constants.checkboxClass);
+            }.bind(this));
 
             this.sandbox.dom.on(this.$thumbnails[id], &#x27;click&#x27;, function(event) {
                 this.sandbox.dom.stopPropagation(event);
                 this.downloadHandler(id);
             }.bind(this), &#x27;.&#x27; + constants.downloadClass);
 
-            this.sandbox.dom.on(this.$thumbnails[id], &#x27;click&#x27;, function() {
+            this.sandbox.dom.on(this.$thumbnails[id], &#x27;dblclick&#x27;, function() {
                 this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+                this.selectItem(id);
             }.bind(this));
         },
 
@@ -396,6 +395,9 @@ define(function() {
          */
         selectItem: function(id, onlyView) {
             this.sandbox.dom.addClass(this.$thumbnails[id], constants.selectedClass);
+            if (!this.sandbox.dom.is(this.sandbox.dom.find(&#x27;input[type=&quot;checkbox&quot;]&#x27;, this.$thumbnails[id]), &#x27;:checked&#x27;)) {
+                this.sandbox.dom.prop(this.sandbox.dom.find(&#x27;input[type=&quot;checkbox&quot;]&#x27;, this.$thumbnails[id]), &#x27;checked&#x27;, true);
+            }
             if (onlyView !== true) {
                 this.datagrid.setItemSelected.call(this.datagrid, id);
             }
@@ -407,6 +409,9 @@ define(function() {
          */
         unselectItem: function(id) {
             this.sandbox.dom.removeClass(this.$thumbnails[id], constants.selectedClass);
+            if (this.sandbox.dom.is(this.sandbox.dom.find(&#x27;input[type=&quot;checkbox&quot;]&#x27;, this.$thumbnails[id]), &#x27;:checked&#x27;)) {
+                this.sandbox.dom.prop(this.sandbox.dom.find(&#x27;input[type=&quot;checkbox&quot;]&#x27;, this.$thumbnails[id]), &#x27;checked&#x27;, false);
+            }
             this.datagrid.setItemUnselected.call(this.datagrid, id);
         },
 

@@ -140,6 +140,31 @@ require(['lib/husky'], function(Husky) {
                 }
             },
             {
+                name: 'datagrid@husky',
+                options: {
+                    url: 'http://husky.lo:7878/admin/api/datagrid/groups',
+                    view: 'group',
+                    pagination: false,
+                    searchInstanceName: 'test',
+                    el: '#thumbnails-datagrid',
+                    instanceName: 'grid-thumbnails',
+                    matchings: [
+                        {
+                            id: 'title',
+                            type: 'title'
+                        },
+                        {
+                            id: 'mediaNumber',
+                            type: 'count'
+                        },
+                        {
+                            id: 'thumbnails',
+                            type: 'thumbnails'
+                        }
+                    ]
+                }
+            },
+            {
                 name: 'toolbar@husky',
                 options: {
                     el: '#toolbar',
@@ -199,6 +224,13 @@ require(['lib/husky'], function(Husky) {
                 app.sandbox.emit('husky.datagrid.record.add', { id: "", content1: "", content2: "", content3: "" });
             });
 
+            $('#change-records').on('click', function() {
+                app.sandbox.emit('husky.datagrid.records.change', [
+                    { id: "1", content1: "changed content", content2: 1239490},
+                    { id: "2", content1: "also changed", content2: 4456767865456}
+                ]);
+            });
+
             $('#add-records').on('click', function() {
                 app.sandbox.emit('husky.datagrid.records.add', [
                     {id: 5000, content1: 'Added record 1', content2: 'something new', content3: {alt: "lorempixel", thumb: "http://placehold.it/170x170"}},
@@ -208,7 +240,20 @@ require(['lib/husky'], function(Husky) {
                 ]);
             });
 
-            $('#update-url').on('click', function() {
+        $('#new-group').on('click', function () {
+            app.sandbox.emit('husky.datagrid.grid-thumbnails.record.add', {
+                id: 13,
+                title: 'A brand new collection',
+                mediaNumber: 0,
+                thumbnails: [
+                    {url: 'http://lorempixel.com/150/100/sports/x', title: 'Media title'},
+                    {url: 'http://lorempixel.com/150/100/sports/y', title: 'Media title'},
+                    {url: 'http://lorempixel.com/150/100/sports/z', title: 'Media title'}
+                ]
+            });
+        });
+
+        $('#update-url').on('click', function() {
                 app.sandbox.emit('husky.datagrid.url.update', { search: null, content1: "fdsa" });
             });
 

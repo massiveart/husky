@@ -10,6 +10,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "Dependant Select",
         "DropdownPagination (Datagrid Decorator)",
         "Dropzone",
+        "GroupView (Datagrid Decorator)",
         "Input",
         "Label",
         "Loader",

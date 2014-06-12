@@ -48,12 +48,16 @@ define([
             typeInterface = {
                 setValue: function(data) {
                     this.$el.data({
-                       value: data
+                        value: data
                     }).trigger('data-changed');
                 },
 
                 getValue: function() {
-                    return this.$el.find('input').val();
+                    if (this.$el.data('auraSkin') === 'date') {
+                        return this.$el.data('value');
+                    } else {
+                        return this.$el.find('input').val();
+                    }
                 },
 
                 needsValidation: function() {
@@ -63,7 +67,7 @@ define([
                 validate: function() {
                     var value = this.getValue(),
                         type = this.$el.data('auraSkin');
-                    if (!!type && !!typeValidators[type]) {
+                    if (!!value && !!type && !!typeValidators[type]) {
                         return typeValidators[type].call(this, value);
                     } else {
                         return true;

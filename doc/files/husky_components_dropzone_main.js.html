@@ -59,6 +59,8 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/GroupView (Datagrid Decorator).html">GroupView (Datagrid Decorator)</a></li>
+            
                 <li><a href="../classes/Input.html">Input</a></li>
             
                 <li><a href="../classes/Label.html">Label</a></li>
@@ -186,6 +188,7 @@
  * @params {Function} [options.removeFileCallback] callback which gets called after a file got removed. First parameter is the file.
  * @params {Object} [options.pluginOptions] Options to pass to the dropzone-plugin to completely override all options set by husky. Use with care.
  * @params {Boolean} [options.showOverlay] if true the dropzone will be displayed in an overlay if its not visible any more or the passed scroll-top is reached
+ * @params {String} [options.skin] skin class for the dropzone. currently available: &#x27;small&#x27; or &#x27;&#x27; (default)
  */
 define([], function () {
 
@@ -211,7 +214,8 @@ define([], function () {
             pluginOptions: {},
             fadeOutDuration: 200, //ms
             fadeOutDelay: 1500, //ms
-            showOverlay: true
+            showOverlay: true,
+            skin: &#x27;&#x27;
         },
 
         constants = {
@@ -228,7 +232,7 @@ define([], function () {
                 &#x27;&lt;div class=&quot;&#x27; + constants.descriptionClass + &#x27;&quot;&gt;&#x27;,
                 &#x27;&lt;div class=&quot;fa-&lt;%= icon %&gt; icon&quot;&gt;&lt;/div&gt;&#x27;,
                 &#x27;&lt;span class=&quot;title&quot;&gt;&lt;%= title %&gt;&lt;/span&gt;&#x27;,
-                &#x27;&lt;span&gt;&lt;%= description %&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;span class=&quot;addition&quot;&gt;&lt;%= description %&gt;&lt;/span&gt;&#x27;,
                 &#x27;&lt;/div&gt;&#x27;,
                 &#x27;&lt;div class=&quot;&#x27; + constants.uploadedItemContainerClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;),
@@ -427,6 +431,7 @@ define([], function () {
                 icon: this.options.descriptionIcon,
                 instanceName: this.options.instanceName
             }));
+            this.sandbox.dom.addClass(this.$dropzone, this.options.skin);
             this.sandbox.dom.append(this.$el, this.$dropzone);
             this.startDropzone();
         },

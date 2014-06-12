@@ -47,6 +47,9 @@ define([
                         ids = this.$el.data('selection'),
                         values = this.$el.data('selection-values');
 
+                    if (ids.length ===0) {
+                        return undefined;
+                    }
                     if (this.$el.attr('data-mapper-property-type') === 'string') {
                         return Array.isArray(values) ? values[0] : values;
                     }
@@ -63,7 +66,7 @@ define([
 
                 validate: function() {
                     var value = this.getValue();
-                    if (typeof value === 'object') {
+                    if (typeof value === 'object' && value.hasOwnProperty('id')) {
                         return !!value.id;
                     } else {
                         return value !== '' && typeof value !== 'undefined';

@@ -59,6 +59,8 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/GroupView (Datagrid Decorator).html">GroupView (Datagrid Decorator)</a></li>
+            
                 <li><a href="../classes/Input.html">Input</a></li>
             
                 <li><a href="../classes/Label.html">Label</a></li>
@@ -189,9 +191,10 @@
     define([
         &#x27;husky_components/datagrid/decorators/table-view&#x27;,
         &#x27;husky_components/datagrid/decorators/thumbnail-view&#x27;,
+        &#x27;husky_components/datagrid/decorators/group-view&#x27;,
         &#x27;husky_components/datagrid/decorators/dropdown-pagination&#x27;,
         &#x27;husky_components/datagrid/decorators/showall-pagination&#x27;
-    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination, showallPagination) {
+    ], function(decoratorTableView, thumbnailView, groupView, decoratorDropdownPagination, showallPagination) {
 
         /**
          *    Default values for options
@@ -222,13 +225,15 @@
                 DATE: &#x27;date&#x27;,
                 THUMBNAILS: &#x27;thumbnails&#x27;,
                 TITLE: &#x27;title&#x27;,
-                BYTES: &#x27;bytes&#x27;
+                BYTES: &#x27;bytes&#x27;,
+                COUNT: &#x27;count&#x27;
             },
 
             decorators = {
                 views: {
                     table: decoratorTableView,
-                    thumbnail: thumbnailView
+                    thumbnail: thumbnailView,
+                    group: groupView
                 },
                 paginations: {
                     dropdown: decoratorDropdownPagination,
@@ -394,6 +399,15 @@
             },
 
             /**
+             * listens on and merges one or more data-records with a given ones
+             * @event husky.datagrid.records.change
+             * @param {Object|Array} the new data-record. Must at least contain an id-property. Can also be an array of data-records
+             */
+            RECORDS_CHANGE = function() {
+                return this.createEventName(&#x27;records.change&#x27;);
+            },
+
+            /**
              * used to trigger an update of the data
              * @event husky.datagrid.update
              */
@@ -515,6 +529,15 @@
             },
 
             /**
+             * Attaches a postfix to a number
+             * @param number
+             * @param postfix
+             */
+            parseCount = function(number, postfix) {
+                return (!!postfix) ? number + &#x27; &#x27; + postfix : number;
+            },
+
+            /**
              * Takes an array of thumbnails and returns an object with url and and alt
              * @param thumbnails {Array} array of thumbnails
              * @param format {String} the format of the thumbnail
@@ -599,7 +622,14 @@
                         url += (url.indexOf(&#x27;?&#x27;) === -1) ? &#x27;?&#x27; : &#x27;&amp;&#x27;;
                         url += &#x27;fields=&#x27; + this.requestFields.join(&#x27;,&#x27;);
                     }
-                    this.load({ url: url});
+
+                    this.loading();
+                    this.load({
+                        url: url,
+                        success: function() {
+                            this.stopLoading();
+                        }.bind(this)
+                    });
 
                 } else if (!!this.options.data.items) {
 
@@ -678,18 +708,33 @@
             },
 
             /**
+             * Rerenders the view
+             */
+            rerenderView: function() {
+                this.gridViews[this.viewId].destroy();
+                this.gridViews[this.viewId].render(this.data, this.$element);
+            },
+
+            /**
+             * Rerenders the pagination
+             */
+            rerenderPagination: function() {
+                if (!!this.paginations[this.paginationId]) {
+                    this.paginations[this.paginationId].destroy();
+                    this.paginations[this.paginationId].render(this.data, this.$element);
+                }
+            },
+
+            /**
              * Loads contents via ajax
              * @param params url
              */
             load: function(params) {
                 this.currentUrl = params.url;
 
-                this.loading();
-                this.destroy();
-
                 this.sandbox.util.load(this.getUrl(params), params.data)
                     .then(function(response) {
-                        this.stopLoading();
+                        this.destroy();
                         this.parseData(response);
                         this.render();
                         if (!!params.success &amp;&amp; typeof params.success === &#x27;function&#x27;) {
@@ -934,7 +979,9 @@
                 } else if (type === types.BYTES) {
                     content = parseBytes.call(this, content, argument);
                 } else if (type === types.THUMBNAILS) {
-                    content = parseThumbnails.call(this, content, argument)
+                    content = parseThumbnails.call(this, content, argument);
+                } else if (type === types.COUNT) {
+                    content = parseCount.call(this, content, argument);
                 }
                 return content;
             },
@@ -990,6 +1037,9 @@
 
                 // remove a data record
                 this.sandbox.on(RECORD_REMOVE.call(this), this.removeRecordHandler.bind(this));
+
+                // change an exsiting data-record
+                this.sandbox.on(RECORDS_CHANGE.call(this), this.changeRecordsHandler.bind(this));
 
                 this.startColumnOptionsListener();
                 this.startSearchListener();
@@ -1098,6 +1148,22 @@
                     this.gridViews[this.viewId].removeRecord(recordId);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
+            },
+
+            /**
+             * Merges one or more data-records with a given ones and updates the view
+             * @param records {Object|Array} the new data-record or an array of data-records
+             */
+            changeRecordsHandler: function(records) {
+                if (!this.sandbox.dom.isArray(records)) {
+                    records = [records];
+                }
+                this.sandbox.util.foreach(records, function(record) {
+                    this.changeRecord(record);
+                }.bind(this));
+
+                this.rerenderView();
+                this.rerenderPagination();
             },
 
             /**
@@ -1232,9 +1298,12 @@
                     url = setGetParameter.call(this, url, key, parameters[key]);
                 }
 
+                this.destroy();
+                this.loading();
                 this.load({
                     url: url,
                     success: function() {
+                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
@@ -1256,6 +1325,25 @@
             },
 
             /**
+             * Merges a data-record with a given one
+             * @param record {Object} the new data-record. Must contain an id-property
+             * @returns {Boolean} returns true if changed successfully
+             */
+            changeRecord: function(record) {
+                if (!!record.id) {
+                    for (var i = -1, length = this.data.embedded.length; ++i &lt; length;) {
+                        if (record.id === this.data.embedded[i].id) {
+                            this.data.embedded[i] = this.sandbox.util.extend(true, {}, this.data.embedded[i], record);
+                            return true;
+                        }
+                    }
+                } else {
+                    this.sandbox.logger.log(&#x27;Error: Failed changing a record. Must contain id-property&#x27;);
+                    return false;
+                }
+            },
+
+            /**
              * Deletes a record with a given id
              * @param recordId {Number|String} the id of the record to delete
              * @returns {boolean} true if record got successfully deleted
@@ -1266,9 +1354,7 @@
                         this.data.embedded.splice(i, 1);
                         this.data.numberOfAll--;
                         this.data.total--;
-                        if (!!this.paginations[this.paginationId]) {
-                            this.paginations[this.paginationId].rerender();
-                        }
+                        this.rerenderPagination();
                         return true;
                     }
                 }
@@ -1285,9 +1371,7 @@
                     this.data.numberOfAll++;
                     this.data.total++;
                 }
-                if (!!this.paginations[this.paginationId]) {
-                    this.paginations[this.paginationId].rerender();
-                }
+                this.rerenderPagination();
             },
 
             /**
@@ -1299,9 +1383,7 @@
                     this.data.embedded.unshift(records[i]);
                     this.data.numberOfAll++;
                     this.data.total++;
-                    if (!!this.paginations[this.paginationId]) {
-                        this.paginations[this.paginationId].rerender();
-                    }
+                    this.rerenderPagination();
                 }
             },
 
@@ -1374,9 +1456,12 @@
                 uriTemplate = this.sandbox.uritemplate.parse(this.data.links.filter);
                 url = this.sandbox.uritemplate.expand(uriTemplate, {fieldsList: this.requestFields.join(&#x27;,&#x27;)});
 
+                this.destroy();
+                this.loading();
                 this.load({
                     url: url,
                     success: function() {
+                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
@@ -1423,9 +1508,12 @@
                 template = this.sandbox.uritemplate.parse(this.data.links.find);
                 url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
 
+                this.destroy();
+                this.loading();
                 this.load({
                     url: url,
                     success: function() {
+                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });

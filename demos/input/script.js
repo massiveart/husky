@@ -23,9 +23,9 @@ require(['lib/husky'], function(Husky) {
             phone: 'invalid phone number',
             url: 'google.at',
             email: 'donald.duck@disney.com',
-            date: 'Aug/5/2016',
+            date: '2014-01-03T00:00:00+0200',
             time: '09 - 51',
-            color: '#CCCCCC'
+            color: '#a7d7a7'
         });
     }.bind(this));
 

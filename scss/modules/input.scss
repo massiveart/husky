@@ -30,6 +30,9 @@
       display: inline-block;
       margin-top: 2px;
     }
+    span {
+      padding-top: 1px;
+    }
   }
   .back {
     position: absolute;
@@ -69,6 +72,14 @@
     .front {
       color: $black;
       cursor: pointer;
+    }
+  }
+}
+
+.husky-validate-error {
+  .husky-input {
+    input {
+      height: $inputHeight - 2px; // because of the 2px border on error
     }
   }
 }

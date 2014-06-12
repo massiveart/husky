@@ -17048,6 +17048,7 @@ define('form/mapper',[
 
                     this.collections = [];
                     this.collectionsSet = {};
+                    this.emptyTemplates = {};
                     this.templates = {};
                     this.elements = [];
                     this.collectionsInitiated = $.Deferred();
@@ -17064,7 +17065,7 @@ define('form/mapper',[
                     var $element = $(value),
                         element = $element.data('element'),
                         property = $element.data('mapper-property'),
-                        $newChild, collection,
+                        $newChild, collection, emptyTemplate,
                         dfd = $.Deferred(),
                         counter = 0,
                         resolve = function() {
@@ -17121,12 +17122,21 @@ define('form/mapper',[
                         for (x = -1, len = property.length; ++x < len;) {
                             if (property[x].tpl === $newChild.id) {
                                 propertyName = property[x].data;
+                                emptyTemplate = property[x]['empty-tpl'];
+                            }
+                            // if child has empty template, set to empty templates
+                            if (property[x]['empty-tpl'] && property[x]['empty-tpl'] === $newChild.id) {
+                                this.emptyTemplates[property[x].data] = {
+                                    id: property[x]['empty-tpl'],
+                                    tpl: $child.html()
+                                };
                             }
                         }
+                        // check if template is set
                         if (!!propertyName) {
                             $newChild.propertyName = propertyName;
                             propertyCount = collection.element.getType().getMinOccurs();
-                            this.templates[propertyName] = {tpl: $newChild, collection: collection};
+                            this.templates[propertyName] = {tpl: $newChild, collection: collection, emptyTemplate: emptyTemplate};
                             // init default children
                             for (x = collection.element.getType().getMinOccurs() + 1; --x > 0;) {
                                 that.appendChildren.call(this, collection.$element, $newChild).then(function() {
@@ -17176,6 +17186,14 @@ define('form/mapper',[
                         }.bind(this));
                     }
                     that.checkFullAndEmpty.call(this, propertyName);
+                },
+
+                addEmptyTemplate: function($element, propertyName) {
+                    if (this.emptyTemplates.hasOwnProperty(propertyName)) {
+                        var $emptyTemplate = $(this.emptyTemplates[propertyName].tpl);
+                        $emptyTemplate.attr('id', this.emptyTemplates[propertyName].id);
+                        $element.append($emptyTemplate);
+                    }
                 },
 
                 removeClick: function(event) {
@@ -17285,6 +17303,7 @@ define('form/mapper',[
                     // remember first child remove the rest
                     var $element = collectionElement.$element,
                         $child = collectionElement.$child,
+                        $emptyTemplate,
                         count = collection.length,
                         dfd = $.Deferred(),
                         resolve = function() {
@@ -17297,6 +17316,8 @@ define('form/mapper',[
 
                     // no element in collection
                     if (count === 0) {
+                        // check if empty template exists for that element and show it
+                        that.addEmptyTemplate.call(this, $element, $child.propertyName);
                         dfd.resolve();
                     } else {
                         if (collection.length < collectionElement.element.getType().getMinOccurs()) {
@@ -17335,21 +17356,27 @@ define('form/mapper',[
                     $template.attr('data-mapper-property-tpl', $child.id);
                     $template.attr('data-mapper-id', _.uniqueId());
 
+                    // add template to element
+                    if (insertAfter) {
+                        $element.after($template);
+                    } else {
+                        $element.append($template);
+                    }
+
                     // add fields
-                    $.each($newFields, function(key, field) {
-                        element = form.addField($(field));
-                        if (insertAfter) {
-                            $element.after($template);
-                        } else {
-                            $element.append($template);
-                        }
-                        element.initialized.then(function() {
-                            counter--;
-                            if (counter === 0) {
-                                dfd.resolve($template);
-                            }
-                        });
-                    }.bind(this));
+                    if ($newFields.length > 0) {
+                        $.each($newFields, function(key, field) {
+                            element = form.addField($(field));
+                            element.initialized.then(function() {
+                                counter--;
+                                if (counter === 0) {
+                                    dfd.resolve($template);
+                                }
+                            });
+                        }.bind(this));
+                    } else {
+                        dfd.resolve($template);
+                    }
 
                     // if automatically set data after initialization ( needed for adding elements afterwards)
                     if (!!data) {
@@ -17381,14 +17408,16 @@ define('form/mapper',[
                 /**
                  * Delets an element from the DOM and the global object by a given unique-id
                  * @param {number} mapperId
-                 * @return {boolean} true if an element was found and deleted
+                 * @return {boolean|string} if an element was found and deleted it returns its template-name, else it returns false
                  **/
                 deleteElementByMapperId: function(mapperId) {
-                    for (var i = -1, length = this.elements.length; ++i < length;) {
-                        if (this.elements[i].data('mapper-id') === mapperId) {
+                    var i, length, templateName;
+                    for (i = -1, length = this.elements.length; ++i < length;) {
+                        if (this.elements[i].data('mapper-id').toString() === mapperId.toString()) {
+                            templateName = this.elements[i].attr('data-mapper-property-tpl');
                             this.elements[i].remove();
                             this.elements.splice(i, 1);
-                            return true;
+                            return templateName;
                         }
                     }
                     return false;
@@ -17573,6 +17602,7 @@ define('form/mapper',[
                         element = template.collection.$element,
                         insertAfterLast = false,
                         lastElement,
+                        $emptyTpl,
                         dfd = $.Deferred();
 
                     // check if element exists and put it after last
@@ -17580,6 +17610,14 @@ define('form/mapper',[
                         element = lastElement;
                         insertAfterLast = true;
                     }
+                    // check if empty template is set and lookup in dom
+                    if (template.emptyTemplate) {
+                        $emptyTpl = $(element).find('#'+template.emptyTemplate);
+                        if ($emptyTpl) {
+                            $emptyTpl.remove();
+                        }
+                    }
+
                     that.appendChildren.call(this, element, template.tpl, data, data, insertAfterLast).then(function($element) {
                         dfd.resolve($element);
                     }.bind(this));
@@ -17602,7 +17640,21 @@ define('form/mapper',[
                  * @param mapperId {Number} the unique Id of the field
                  */
                 removeFromCollection: function(mapperId) {
-                    that.deleteElementByMapperId.call(this, mapperId);
+                    var i,
+                        templateName = that.deleteElementByMapperId.call(this, mapperId);
+
+                    // check if collection still has elements with propertyName, else render empty Template
+                    if (form.$el.find('*[data-mapper-property-tpl='+templateName+']').length < 1) {
+                        // get collection with is owner of templateName
+                        for (i in this.templates) {
+                            // if emptyTemplates is set
+                            if (this.templates[i].tpl.id === templateName) {
+                                that.addEmptyTemplate.call(this, this.templates[i].collection.$element, i);
+                                return;
+                            }
+                        }
+                    }
+
                 }
             };
 
@@ -17975,9 +18027,8 @@ define('type/date',[
  */
 
 define('type/decimal',[
-    'type/default',
-    'form/util'
-], function(Default, Util) {
+    'type/default'
+], function(Default) {
 
     
 
@@ -17991,7 +18042,7 @@ define('type/decimal',[
                 },
 
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.getValue();
 
                     if (val === '') {
                         return true;
@@ -18029,7 +18080,7 @@ define('type/email',[
 
             typeInterface = {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.getValue();
                     if (val === '') {
                         return true;
                     }
@@ -18038,7 +18089,7 @@ define('type/email',[
                 },
 
                 needsValidation: function() {
-                    var val = this.$el.val();
+                    var val = this.getValue();
                     return val !== '';
                 }
             };
@@ -18071,7 +18122,7 @@ define('type/url',[
 
             typeInterface = {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.getValue();
                     if (val === '') {
                         return true;
                     }
@@ -18083,7 +18134,7 @@ define('type/url',[
                 },
 
                 needsValidation: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.getValue();
                     return val !== '';
                 }
             };
@@ -18469,9 +18520,8 @@ define('validator/default',[],function() {
  */
 
 define('validator/min',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -18482,7 +18532,7 @@ define('validator/min',[
 
             result = $.extend(new Default($el, form, defaults, options, 'min'), {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.data.element.getValue();
                     return Number(val) >= this.data.min;
                 }
             });
@@ -18504,9 +18554,8 @@ define('validator/min',[
  */
 
 define('validator/max',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -18517,7 +18566,7 @@ define('validator/max',[
 
             result = $.extend(new Default($el, form, defaults, options, 'max'), {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.data.element.getValue();
                     return Number(val) <= this.data.max;
                 }
             });
@@ -18539,9 +18588,8 @@ define('validator/max',[
  */
 
 define('validator/minLength',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -18552,7 +18600,7 @@ define('validator/minLength',[
 
             result = $.extend(new Default($el, form, defaults, options, 'min-length'), {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.data.element.getValue();
                     return val.length >= this.data.minLength;
                 }
             });
@@ -18574,9 +18622,8 @@ define('validator/minLength',[
  */
 
 define('validator/maxLength',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -18587,7 +18634,7 @@ define('validator/maxLength',[
 
             result = $.extend(new Default($el, form, defaults, options, 'max-length'), {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.data.element.getValue();
                     return val.length <= this.data.maxLength;
                 }
             });
@@ -18609,9 +18656,8 @@ define('validator/maxLength',[
  */
 
 define('validator/required',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -18619,15 +18665,18 @@ define('validator/required',[
         var defaults = { },
 
             result = $.extend(new Default($el, form, defaults, options, 'required'), {
-                validate: function(value) {
+                validate: function(value, recursion) {
+                    if (recursion && !value) {
+                        return false;
+                    }
                     if (!!this.data.required) {
-                        var val = value || Util.getValue(this.$el), i;
+                        var val = value || this.data.element.getValue(), i;
                         // for checkboxes and select multiples.
                         // check there is at least one required value
                         if ('object' === typeof val) {
                             for (i in val) {
                                 if (val.hasOwnProperty(i)) {
-                                    if (this.validate(val[i])) {
+                                    if (this.validate(val[i]), true) {
                                         return true;
                                     }
                                 }
@@ -18635,8 +18684,8 @@ define('validator/required',[
                             return false;
                         }
 
-                        // notNull && notBlank
-                        return val.length > 0 && '' !== val.replace(/^\s+/g, '').replace(/\s+$/g, '');
+                        // notNull && notBlank && not undefined
+                        return typeof val !== 'undefined' && val.length > 0 && '' !== val.replace(/^\s+/g, '').replace(/\s+$/g, '');
                     }
                     return true;
                 }
@@ -18716,7 +18765,7 @@ define('validator/unique',[
                 },
 
                 validate: function() {
-                    var val = Util.getValue(this.$el),
+                    var val = this.data.element.getValue(),
                         result;
                     if (!!this.data.unique) {
                         result = validateElements(val);
@@ -18728,7 +18777,7 @@ define('validator/unique',[
                 },
 
                 update: function() {
-                    var val = Util.getValue(this.$el),
+                    var val = this.data.element.getValue(),
                         result;
                     if (!!this.data.unique) {
                         result = validateElements(val);
@@ -18768,9 +18817,8 @@ define('validator/unique',[
  */
 
 define('validator/equal',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -18836,7 +18884,7 @@ define('validator/equal',[
                 },
 
                 update: function() {
-                    var val = Util.getValue(this.$el),
+                    var val = this.data.element.getValue(),
                         result;
                     if (!!this.data.equal) {
                         result = validateElements(val);
@@ -18874,9 +18922,8 @@ define('validator/equal',[
  */
 
 define('validator/regex',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -18890,7 +18937,7 @@ define('validator/regex',[
                     // TODO flags
                     var pattern = this.data.regex,
                         regex = new RegExp(pattern),
-                        val = Util.getValue(this.$el);
+                        val = this.data.element.getValue();
 
                     if (val === '') {
                         return true;
@@ -25883,6 +25930,9 @@ define('type/husky-select',[
                         ids = this.$el.data('selection'),
                         values = this.$el.data('selection-values');
 
+                    if (ids.length ===0) {
+                        return undefined;
+                    }
                     if (this.$el.attr('data-mapper-property-type') === 'string') {
                         return Array.isArray(values) ? values[0] : values;
                     }
@@ -25899,7 +25949,7 @@ define('type/husky-select',[
 
                 validate: function() {
                     var value = this.getValue();
-                    if (typeof value === 'object') {
+                    if (typeof value === 'object' && value.hasOwnProperty('id')) {
                         return !!value.id;
                     } else {
                         return value !== '' && typeof value !== 'undefined';
@@ -25961,12 +26011,16 @@ define('type/husky-input',[
             typeInterface = {
                 setValue: function(data) {
                     this.$el.data({
-                       value: data
+                        value: data
                     }).trigger('data-changed');
                 },
 
                 getValue: function() {
-                    return this.$el.find('input').val();
+                    if (this.$el.data('auraSkin') === 'date') {
+                        return this.$el.data('value');
+                    } else {
+                        return this.$el.find('input').val();
+                    }
                 },
 
                 needsValidation: function() {
@@ -25976,7 +26030,7 @@ define('type/husky-input',[
                 validate: function() {
                     var value = this.getValue(),
                         type = this.$el.data('auraSkin');
-                    if (!!type && !!typeValidators[type]) {
+                    if (!!value && !!type && !!typeValidators[type]) {
                         return typeValidators[type].call(this, value);
                     } else {
                         return true;
@@ -28196,7 +28250,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             oversizedClass: 'oversized',
             overflowClass: 'overflow',
             thumbSrcKey: 'url',
-            thumbAltKey: 'alt'
+            thumbAltKey: 'alt',
+            sortLoaderClass: 'sort-loader'
         },
 
         /**
@@ -28205,38 +28260,38 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         templates = {
             removeRow: [
                 '<td class="remove-row">',
-                    '<span class="fa-trash-o pointer '+ constants.rowRemoverClass +'"></span>',
+                    '<span class="fa-trash-o pointer ' + constants.rowRemoverClass + '"></span>',
                 '</td>'
             ].join(''),
 
             checkbox: [
                 '<div class="custom-checkbox">',
-                    '<input id="<%= id %>" type="checkbox" data-form="false"<% if (!!checked) { %> checked<% } %>/>',
-                    '<span class="icon"></span>',
+                '<input id="<%= id %>" type="checkbox" data-form="false"<% if (!!checked) { %> checked<% } %>/>',
+                '<span class="icon"></span>',
                 '</div>'
             ].join(''),
 
             checkboxCell: [
                 '<td>',
-                    '<%= checkbox %>',
+                '<%= checkbox %>',
                 '</td>'
             ].join(''),
 
             radio: [
                 '<td>',
-                    '<div class="custom-radio">',
-                        '<input name="<%= name %>" type="radio"/>',
-                        '<span class="icon"></span>',
-                    '</div>',
+                '<div class="custom-radio">',
+                '<input name="<%= name %>" type="radio"/>',
+                '<span class="icon"></span>',
+                '</div>',
                 '</td>'
             ].join('')
-    },
+        },
 
         /**
          * used to update the table width and its containers due to responsiveness
          * @event husky.datagrid.update.table
          */
-            UPDATE_TABLE = function () {
+        UPDATE_TABLE = function() {
             return this.datagrid.createEventName.call(this.datagrid, 'update.table');
         },
 
@@ -28246,7 +28301,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param classArray
          * @param isSortable
          */
-            getTextWidth = function (text, classArray, isSortable) {
+        getTextWidth = function(text, classArray, isSortable) {
             var elWidth, el,
                 sortIconWidth = 0,
                 paddings = 20;
@@ -28305,7 +28360,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.data = data;
             this.$el = $container;
 
-            this.$tableContainer = this.sandbox.dom.createElement('<div class="'+ constants.viewClass +'"/>');
+            this.$tableContainer = this.sandbox.dom.createElement('<div class="' + constants.viewClass + '"/>');
             this.sandbox.dom.append(this.$el, this.$tableContainer);
             this.sandbox.dom.append(this.$tableContainer, this.prepareTable());
 
@@ -28497,7 +28552,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.$table = $table = this.sandbox.dom.createElement('<table' + (!!this.options.validationDebug ? 'data-debug="true"' : '' ) + '/>');
 
             if (!!this.data.head || !!this.datagrid.matchings) {
-                $thead = this.sandbox.dom.createElement('<thead/>');
+                $thead = this.sandbox.dom.createElement('<thead style="' + (!this.options.showHead) ? 'display:none;' : '' + '"/>');
                 this.sandbox.dom.append($thead, this.prepareTableHead());
                 this.sandbox.dom.append($table, $thead);
             }
@@ -28512,7 +28567,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             tblClasses = [];
             tblClasses.push(
                 (!!this.options.className && this.options.className !== constants.tableClass) ? constants.tableClass +
-                ' ' + this.options.className : constants.tableClass
+                    ' ' + this.options.className : constants.tableClass
             );
 
             // when list should not have the hover effect for whole rows do not set the is-selectable class
@@ -28546,8 +28601,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 minWidth = checkboxValues.number + checkboxValues.unit;
 
                 tblColumns.push(
-                    '<th class="'+ constants.selectAllName +'" ',
-                    'style="width:' + minWidth + '; max-width:' + minWidth + '; min-width:' + minWidth + ';"',
+                        '<th class="' + constants.selectAllName + '" ',
+                        'style="width:' + minWidth + '; max-width:' + minWidth + '; min-width:' + minWidth + ';"',
                     ' >'
                 );
 
@@ -28619,7 +28674,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                     // add html to table header cell if sortable
                     if (!!isSortable) {
                         dataAttribute = ' data-attribute="' + column.attribute + '"';
-                        tblCellClass = ((!!column.class) ? ' class="' + column.class + ' "' + constants.sortableClass : ' class="'+ constants.sortableClass +'"');
+                        tblCellClass = ((!!column.class) ? ' class="' + column.class + ' "' + constants.sortableClass : ' class="' + constants.sortableClass + '"');
                         tblColumns.push('<th' + tblCellClass + ' style="' + tblColumnStyle.join(';') + '" ' + dataAttribute + '>' + column.content + '<span></span></th>');
                     } else {
                         tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
@@ -28717,7 +28772,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                     this.tblColumns.push(this.sandbox.util.template(templates.removeRow)());
                 }
 
-                $tableRow = this.sandbox.dom.createElement('<tr'+ this.tblRowAttributes +'>'+ this.tblColumns.join('') +'</tr>');
+                $tableRow = this.sandbox.dom.createElement('<tr' + this.tblRowAttributes + '>' + this.tblColumns.join('') + '</tr>');
 
                 if (!!row.id) {
                     this.sandbox.dom.data($tableRow, 'id', row.id);
@@ -28770,7 +28825,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 if (!!type) {
                     if (type === this.datagrid.types.THUMBNAILS) {
                         tblCellContent = this.datagrid.manipulateContent(tblCellContent, type, this.options.thumbnailFormat);
-                        tblCellContent = '<img alt="'+ tblCellContent[constants.thumbAltKey] +'" src="'+ tblCellContent[constants.thumbSrcKey] +'"/>';
+                        tblCellContent = '<img alt="' + tblCellContent[constants.thumbAltKey] + '" src="' + tblCellContent[constants.thumbSrcKey] + '"/>';
                     } else {
                         tblCellContent = this.datagrid.manipulateContent(tblCellContent, type);
                     }
@@ -28780,14 +28835,14 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                     if (!!triggeredByAddRow) {
                         // differentiate for tab index
                         if (!!this.options.addRowTop) {
-                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="'+ constants.editableClass +'" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.bottomTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
+                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="' + constants.editableClass + '" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.bottomTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
                             this.bottomTabIndex++;
                         } else {
-                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="'+ constants.editableClass +'" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.topTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
+                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="' + constants.editableClass + '" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.topTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
                             this.topTabIndex++;
                         }
                     } else {
-                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="'+ constants.editableClass +'">' + tblCellContent + '</span><input type="text" class="form-element editable-content hidden" value="' + tblCellContent + '" tabindex="' + this.topTabIndex + '" ' + validationAttr + '/></td>');
+                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="' + constants.editableClass + '">' + tblCellContent + '</span><input type="text" class="form-element editable-content hidden" value="' + tblCellContent + '" tabindex="' + this.topTabIndex + '" ' + validationAttr + '/></td>');
                         this.topTabIndex++;
 
                     }
@@ -29347,12 +29402,28 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         prepareSort: function(event) {
             var $element = event.currentTarget,
                 $span = this.sandbox.dom.children($element, 'span')[0],
-
                 attribute = this.sandbox.dom.data($element, 'attribute'),
-                direction = this.sandbox.dom.hasClass($span, constants.ascClass) ? 'desc' : 'asc';
+                direction = this.sandbox.dom.hasClass($span, constants.ascClass) ? 'desc' : 'asc',
+                $loaderContainer = this.sandbox.dom.createElement('<span class="'+ constants.sortLoaderClass +'"/>');
 
-                // delegate sorting to datagrid
-                this.datagrid.sortGrid.call(this.datagrid, attribute, direction);
+            this.sandbox.dom.stopPropagation(event);
+
+            // start loader beneath th
+            this.sandbox.dom.removeClass($span);
+            this.sandbox.dom.append($span, $loaderContainer);
+            this.sandbox.start([
+                {
+                    name: 'loader@husky',
+                    options: {
+                        el: $loaderContainer,
+                        size: '10px',
+                        color: '#999999'
+                    }
+                }
+            ]);
+
+            // delegate sorting to datagrid
+            this.datagrid.sortGrid.call(this.datagrid, attribute, direction);
         }
     };
 });
@@ -29560,21 +29631,18 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          * @param id {Number|String} the identifier of the thumbnail to bind events on
          */
         bindThumbnailDomEvents: function(id) {
-            this.sandbox.dom.on(this.$thumbnails[id], 'change', function(event) {
+            this.sandbox.dom.on(this.$thumbnails[id], 'click', function() {
                 this.toggleItemSelected(id);
-            }.bind(this), '.' + constants.checkboxClass);
-
-            this.sandbox.dom.on(this.$thumbnails[id], 'click', function(event) {
-                this.sandbox.dom.stopPropagation(event);
-            }.bind(this), '.' + constants.checkboxClass);
+            }.bind(this));
 
             this.sandbox.dom.on(this.$thumbnails[id], 'click', function(event) {
                 this.sandbox.dom.stopPropagation(event);
                 this.downloadHandler(id);
             }.bind(this), '.' + constants.downloadClass);
 
-            this.sandbox.dom.on(this.$thumbnails[id], 'click', function() {
+            this.sandbox.dom.on(this.$thumbnails[id], 'dblclick', function() {
                 this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+                this.selectItem(id);
             }.bind(this));
         },
 
@@ -29597,6 +29665,9 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          */
         selectItem: function(id, onlyView) {
             this.sandbox.dom.addClass(this.$thumbnails[id], constants.selectedClass);
+            if (!this.sandbox.dom.is(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), ':checked')) {
+                this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), 'checked', true);
+            }
             if (onlyView !== true) {
                 this.datagrid.setItemSelected.call(this.datagrid, id);
             }
@@ -29608,6 +29679,9 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          */
         unselectItem: function(id) {
             this.sandbox.dom.removeClass(this.$thumbnails[id], constants.selectedClass);
+            if (this.sandbox.dom.is(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), ':checked')) {
+                this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), 'checked', false);
+            }
             this.datagrid.setItemUnselected.call(this.datagrid, id);
         },
 
@@ -29641,6 +29715,226 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
                 return true;
             }
             return false;
+        }
+    };
+});
+
+/**
+ * @class GroupView (Datagrid Decorator)
+ * @constructor
+ *
+ * @param {Object} [options] Configuration object
+ *
+ * @param {Boolean} [rendered] property used by the datagrid-main class
+ * @param {Function} [initialize] function which gets called once at the start of the view
+ * @param {Function} [render] function to render data
+ * @param {Function} [destroy] function to destroy the view and unbind events
+ */
+define('husky_components/datagrid/decorators/group-view',[],function () {
+
+    
+
+    var defaults = {
+
+        },
+
+        constants = {
+            containerClass: 'husky-groups',
+            elementsKey: 'public.elements',
+            thumbnailClass: 'thumbnail',
+            thumbnailContainerClass: 'thumbnails',
+            groupClass: 'grid-group',
+            titleClass: 'title',
+            additionClass: 'addition',
+            firstPictureClass: 'first',
+            secondPictureClass: 'second',
+            thirdPictureClass: 'third'
+        },
+
+        templates = {
+            thumbnail: [
+                '<div class="'+ constants.thumbnailClass +'">',
+                '   <img src="<%= src %>" alt="<%= title %>" title="<%= title %>"/>',
+                '</div>'
+            ].join(''),
+            group: [
+                '<div class="'+ constants.groupClass +'">',
+                '   <div class="'+ constants.thumbnailContainerClass +'"></div>',
+                '   <span class="'+ constants.titleClass +'"><%= title %></span>',
+                '   <span class="'+ constants.additionClass +'"><%= addition %></span>',
+                '</div>'
+            ].join('')
+        };
+
+    return {
+
+        /**
+         * Initializes the view, gets called only once
+         * @param {Object} context The context of the datagrid class
+         * @param {Object} options The options used by the view
+         */
+        initialize: function (context, options) {
+            // context of the datagrid-component
+            this.datagrid = context;
+
+            // make sandbox available in this-context
+            this.sandbox = this.datagrid.sandbox;
+
+            // merge defaults with options
+            this.options = this.sandbox.util.extend(true, {}, defaults, options);
+
+            this.setVariables();
+        },
+
+        /**
+         * Sets the starting variables for the view
+         */
+        setVariables: function () {
+            this.rendered = false;
+            this.data = null;
+            this.$el = null;
+
+            // global array to store groups
+            this.groups = {};
+        },
+
+        /**
+         * Method to render data in this view
+         */
+        render: function (data, $container) {
+            this.$el = this.sandbox.dom.createElement('<div class="' + constants.containerClass + '"/>');
+            this.sandbox.dom.append($container, this.$el);
+            this.data = data;
+
+            this.renderGroups(this.data.embedded);
+
+            this.rendered = true;
+        },
+
+        /**
+         * Destroys the view
+         */
+        destroy: function () {
+            this.sandbox.dom.remove(this.$el);
+        },
+
+        /**
+         * Picks out the important data and passes it to
+         * a render-method
+         * @param groups {Array} the groups to render
+         * @param prepend {Boolean} if true groups get prepended
+         */
+        renderGroups: function(groups, prepend) {
+            var thumbnails, title, addition;
+
+            this.sandbox.util.foreach(groups, function(group) {
+                thumbnails = [];
+                title = addition = '';
+
+                this.sandbox.util.foreach(this.datagrid.matchings, function(matching) {
+
+                    // pick the important data out of each group
+                    if (matching.type === this.datagrid.types.THUMBNAILS) {
+                        thumbnails = group[matching.attribute];
+                    } else if (matching.type === this.datagrid.types.TITLE) {
+                        title = group[matching.attribute];
+                    } else if(matching.type === this.datagrid.types.COUNT) {
+                        addition += this.datagrid.manipulateContent.call(this.datagrid,
+                            group[matching.attribute],
+                            matching.type, this.sandbox.translate(constants.elementsKey));
+                    }
+                }.bind(this));
+
+                // render the important data
+                this.renderGroup(group.id, thumbnails, title, addition, prepend);
+            }.bind(this));
+        },
+
+        /**
+         * Renders a single group
+         * @param id {Number|String} the id of the group
+         * @param thumbnails {Array} the array with thumbnails
+         * @param title {String} the group title
+         * @param addition {String} the addition of the group
+         * @param prepend {Boolean} if true the group gets prepended
+         */
+        renderGroup: function(id, thumbnails, title, addition, prepend) {
+            var $thumbnails = [],
+                $group = this.sandbox.dom.createElement(this.sandbox.util.template(templates.group)({
+                title: title,
+                addition: addition
+            }));
+
+            // render all thumbnails
+            this.sandbox.util.foreach(thumbnails, function(thumbnail) {
+                $thumbnails.push(this.sandbox.dom.createElement(this.sandbox.util.template(templates.thumbnail)({
+                    src: thumbnail.url,
+                    title: thumbnail.title
+                })));
+            }.bind(this));
+
+            // add classes to thumbnails
+            !!$thumbnails[0] && this.sandbox.dom.addClass($thumbnails[0], constants.firstPictureClass);
+            !!$thumbnails[1] && this.sandbox.dom.addClass($thumbnails[1], constants.secondPictureClass);
+            !!$thumbnails[2] && this.sandbox.dom.addClass($thumbnails[2], constants.thirdPictureClass);
+            // append thumbnails to group
+            this.sandbox.dom.append(this.sandbox.dom.find('.' + constants.thumbnailContainerClass, $group), $thumbnails);
+
+            this.groups[id] = $group;
+            if (prepend === true) {
+                this.sandbox.dom.prepend(this.$el, $group);
+            } else {
+                this.sandbox.dom.append(this.$el, $group);
+            }
+            this.bindGroupDomEvents(id);
+        },
+
+        /**
+         * Binds dom events on a group
+         * @param id {Number|String} id of the group
+         */
+        bindGroupDomEvents: function(id) {
+            // bring clicked thumbnails to front
+            this.sandbox.dom.on(this.groups[id], 'click', function(event) {
+                this.showThumbnail(id, this.sandbox.dom.$(event.currentTarget), event);
+            }.bind(this), '.' + constants.thumbnailClass);
+
+            this.sandbox.dom.on(this.groups[id], 'click', function() {
+                this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+            }.bind(this));
+        },
+
+        /**
+         * Brings a given thumbnail of a group to the front
+         * @param id {Number|String} id of the group
+         * @param $thumbnail {Object} thumbnail
+         */
+        showThumbnail: function(id, $thumbnail, event) {
+            if (!this.sandbox.dom.hasClass($thumbnail, constants.firstPictureClass)) {
+                this.sandbox.dom.stopPropagation(event);
+                var cssClass,
+                    $first = this.sandbox.dom.find('.' + constants.thumbnailClass + '.' + constants.firstPictureClass, this.groups[id]);
+
+                if (this.sandbox.dom.hasClass($thumbnail, constants.secondPictureClass)) {
+                    cssClass = constants.secondPictureClass;
+                } else {
+                    cssClass = constants.thirdPictureClass;
+                }
+
+                this.sandbox.dom.removeClass($thumbnail, cssClass);
+                this.sandbox.dom.removeClass($first, constants.firstPictureClass);
+                this.sandbox.dom.addClass($thumbnail, constants.firstPictureClass);
+                this.sandbox.dom.addClass($first, cssClass);
+            }
+        },
+
+        /**
+         * Adds a record to the view
+         * @param record
+         * @public
+         */
+        addRecord: function(record) {
+            this.renderGroups([record], true);
         }
     };
 });
@@ -29750,14 +30044,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             this.prepareShowElementsDropdown();
 
             this.bindDomEvents();
-        },
-
-        /**
-         * Rerenders the pagination
-         */
-        rerender: function() {
-            this.destroy();
-            this.render(this.data, this.$el);
         },
 
         /**
@@ -30095,14 +30381,6 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
         },
 
         /**
-         * Rerenders the pagination
-         */
-        rerender: function () {
-            this.destroy();
-            this.render(this.data, this.$el);
-        },
-
-        /**
          * Returns the pagination page size
          * @returns {Number} current Page size
          */
@@ -30201,9 +30479,10 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
     define('__component__$datagrid@husky',[
         'husky_components/datagrid/decorators/table-view',
         'husky_components/datagrid/decorators/thumbnail-view',
+        'husky_components/datagrid/decorators/group-view',
         'husky_components/datagrid/decorators/dropdown-pagination',
         'husky_components/datagrid/decorators/showall-pagination'
-    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination, showallPagination) {
+    ], function(decoratorTableView, thumbnailView, groupView, decoratorDropdownPagination, showallPagination) {
 
         /**
          *    Default values for options
@@ -30234,13 +30513,15 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 DATE: 'date',
                 THUMBNAILS: 'thumbnails',
                 TITLE: 'title',
-                BYTES: 'bytes'
+                BYTES: 'bytes',
+                COUNT: 'count'
             },
 
             decorators = {
                 views: {
                     table: decoratorTableView,
-                    thumbnail: thumbnailView
+                    thumbnail: thumbnailView,
+                    group: groupView
                 },
                 paginations: {
                     dropdown: decoratorDropdownPagination,
@@ -30406,6 +30687,15 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             },
 
             /**
+             * listens on and merges one or more data-records with a given ones
+             * @event husky.datagrid.records.change
+             * @param {Object|Array} the new data-record. Must at least contain an id-property. Can also be an array of data-records
+             */
+            RECORDS_CHANGE = function() {
+                return this.createEventName('records.change');
+            },
+
+            /**
              * used to trigger an update of the data
              * @event husky.datagrid.update
              */
@@ -30527,6 +30817,15 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             },
 
             /**
+             * Attaches a postfix to a number
+             * @param number
+             * @param postfix
+             */
+            parseCount = function(number, postfix) {
+                return (!!postfix) ? number + ' ' + postfix : number;
+            },
+
+            /**
              * Takes an array of thumbnails and returns an object with url and and alt
              * @param thumbnails {Array} array of thumbnails
              * @param format {String} the format of the thumbnail
@@ -30611,7 +30910,14 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                         url += (url.indexOf('?') === -1) ? '?' : '&';
                         url += 'fields=' + this.requestFields.join(',');
                     }
-                    this.load({ url: url});
+
+                    this.loading();
+                    this.load({
+                        url: url,
+                        success: function() {
+                            this.stopLoading();
+                        }.bind(this)
+                    });
 
                 } else if (!!this.options.data.items) {
 
@@ -30690,18 +30996,33 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             },
 
             /**
+             * Rerenders the view
+             */
+            rerenderView: function() {
+                this.gridViews[this.viewId].destroy();
+                this.gridViews[this.viewId].render(this.data, this.$element);
+            },
+
+            /**
+             * Rerenders the pagination
+             */
+            rerenderPagination: function() {
+                if (!!this.paginations[this.paginationId]) {
+                    this.paginations[this.paginationId].destroy();
+                    this.paginations[this.paginationId].render(this.data, this.$element);
+                }
+            },
+
+            /**
              * Loads contents via ajax
              * @param params url
              */
             load: function(params) {
                 this.currentUrl = params.url;
 
-                this.loading();
-                this.destroy();
-
                 this.sandbox.util.load(this.getUrl(params), params.data)
                     .then(function(response) {
-                        this.stopLoading();
+                        this.destroy();
                         this.parseData(response);
                         this.render();
                         if (!!params.success && typeof params.success === 'function') {
@@ -30946,7 +31267,9 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 } else if (type === types.BYTES) {
                     content = parseBytes.call(this, content, argument);
                 } else if (type === types.THUMBNAILS) {
-                    content = parseThumbnails.call(this, content, argument)
+                    content = parseThumbnails.call(this, content, argument);
+                } else if (type === types.COUNT) {
+                    content = parseCount.call(this, content, argument);
                 }
                 return content;
             },
@@ -31002,6 +31325,9 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
 
                 // remove a data record
                 this.sandbox.on(RECORD_REMOVE.call(this), this.removeRecordHandler.bind(this));
+
+                // change an exsiting data-record
+                this.sandbox.on(RECORDS_CHANGE.call(this), this.changeRecordsHandler.bind(this));
 
                 this.startColumnOptionsListener();
                 this.startSearchListener();
@@ -31110,6 +31436,22 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     this.gridViews[this.viewId].removeRecord(recordId);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
+            },
+
+            /**
+             * Merges one or more data-records with a given ones and updates the view
+             * @param records {Object|Array} the new data-record or an array of data-records
+             */
+            changeRecordsHandler: function(records) {
+                if (!this.sandbox.dom.isArray(records)) {
+                    records = [records];
+                }
+                this.sandbox.util.foreach(records, function(record) {
+                    this.changeRecord(record);
+                }.bind(this));
+
+                this.rerenderView();
+                this.rerenderPagination();
             },
 
             /**
@@ -31244,9 +31586,12 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     url = setGetParameter.call(this, url, key, parameters[key]);
                 }
 
+                this.destroy();
+                this.loading();
                 this.load({
                     url: url,
                     success: function() {
+                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
@@ -31268,6 +31613,25 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             },
 
             /**
+             * Merges a data-record with a given one
+             * @param record {Object} the new data-record. Must contain an id-property
+             * @returns {Boolean} returns true if changed successfully
+             */
+            changeRecord: function(record) {
+                if (!!record.id) {
+                    for (var i = -1, length = this.data.embedded.length; ++i < length;) {
+                        if (record.id === this.data.embedded[i].id) {
+                            this.data.embedded[i] = this.sandbox.util.extend(true, {}, this.data.embedded[i], record);
+                            return true;
+                        }
+                    }
+                } else {
+                    this.sandbox.logger.log('Error: Failed changing a record. Must contain id-property');
+                    return false;
+                }
+            },
+
+            /**
              * Deletes a record with a given id
              * @param recordId {Number|String} the id of the record to delete
              * @returns {boolean} true if record got successfully deleted
@@ -31278,9 +31642,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                         this.data.embedded.splice(i, 1);
                         this.data.numberOfAll--;
                         this.data.total--;
-                        if (!!this.paginations[this.paginationId]) {
-                            this.paginations[this.paginationId].rerender();
-                        }
+                        this.rerenderPagination();
                         return true;
                     }
                 }
@@ -31297,9 +31659,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     this.data.numberOfAll++;
                     this.data.total++;
                 }
-                if (!!this.paginations[this.paginationId]) {
-                    this.paginations[this.paginationId].rerender();
-                }
+                this.rerenderPagination();
             },
 
             /**
@@ -31311,9 +31671,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     this.data.embedded.unshift(records[i]);
                     this.data.numberOfAll++;
                     this.data.total++;
-                    if (!!this.paginations[this.paginationId]) {
-                        this.paginations[this.paginationId].rerender();
-                    }
+                    this.rerenderPagination();
                 }
             },
 
@@ -31386,9 +31744,12 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 uriTemplate = this.sandbox.uritemplate.parse(this.data.links.filter);
                 url = this.sandbox.uritemplate.expand(uriTemplate, {fieldsList: this.requestFields.join(',')});
 
+                this.destroy();
+                this.loading();
                 this.load({
                     url: url,
                     success: function() {
+                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
@@ -31435,9 +31796,12 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 template = this.sandbox.uritemplate.parse(this.data.links.find);
                 url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
 
+                this.destroy();
+                this.loading();
                 this.load({
                     url: url,
                     success: function() {
+                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
@@ -31975,9 +32339,9 @@ define('__component__$matrix@husky',[],function() {
                         title = '';
                     }
                     $span = sandbox.dom.createElement(
-                        '<span ' + title + ' class="fa-' + this.options.values.horizontal[j] + ' matrix-icon pointer"/>'
+                        '<span ' + title + ' class="fa-' + this.options.values.horizontal[j].icon + ' matrix-icon pointer"/>'
                     );
-                    sandbox.dom.data($span, 'value', this.options.values.horizontal[j]);
+                    sandbox.dom.data($span, 'value', this.options.values.horizontal[j].value);
                     sandbox.dom.data($span, 'section', this.options.values.vertical[i]);
 
                     // set activated if set in delivered data
@@ -32816,6 +33180,7 @@ define('__component__$toolbar@husky',[],function() {
                 item.loading = false;
                 $itemLink = this.sandbox.dom.find('a', $item);
                 this.sandbox.stop(this.sandbox.dom.find('.item-loader', $item));
+                this.sandbox.dom.remove(this.sandbox.dom.find('.item-loader', $item));
                 this.sandbox.dom.show($itemLink);
             }
 
@@ -33584,7 +33949,7 @@ define('__component__$toolbar@husky',[],function() {
  * @param {Array} [options.excludes] Array of suggestions to exclude from the suggestion dropdown
  */
 
-define('__component__$auto-complete@husky',[], function() {
+define('__component__$auto-complete@husky',[], function () {
 
     
 
@@ -33616,7 +33981,7 @@ define('__component__$auto-complete@husky',[], function() {
          * raised after initialization
          * @event husky.auto-complete.initialized
          */
-            INITIALIZED = function() {
+            INITIALIZED = function () {
             return createEventName.call(this, 'initialized');
         },
 
@@ -33624,7 +33989,7 @@ define('__component__$auto-complete@husky',[], function() {
          * raised after prefetched data is retrieved
          * @event husky.auto-complete.prefetch-data
          */
-            PREFETCH_LOAD = function() {
+            PREFETCH_LOAD = function () {
             return createEventName.call(this, 'prefetch-data');
         },
 
@@ -33632,7 +33997,7 @@ define('__component__$auto-complete@husky',[], function() {
          * raised before remoted data is loaded
          * @event husky.auto-complete.remote-data-load
          */
-            REMOTE_LOAD = function() {
+            REMOTE_LOAD = function () {
             return createEventName.call(this, 'remote-data-load');
         },
 
@@ -33640,7 +34005,7 @@ define('__component__$auto-complete@husky',[], function() {
          * raised after remoted data is retrieved
          * @event husky.auto-complete.remote-data
          */
-            REMOTE_RETRIEVE = function() {
+            REMOTE_RETRIEVE = function () {
             return createEventName.call(this, 'remote-data');
         },
 
@@ -33648,7 +34013,7 @@ define('__component__$auto-complete@husky',[], function() {
          * raised before the component tries to request a match after blur
          * @event husky.auto-complete.request-match
          */
-            REQUEST_MATCH = function() {
+            REQUEST_MATCH = function () {
             return createEventName.call(this, 'request-match');
         },
 
@@ -33657,7 +34022,7 @@ define('__component__$auto-complete@husky',[], function() {
          * @event husky.auto-complete.select
          * @param {object} selected datum with id and name
          */
-            SELECT = function() {
+            SELECT = function () {
             return createEventName.call(this, 'select');
         },
 
@@ -33666,7 +34031,7 @@ define('__component__$auto-complete@husky',[], function() {
          * @event husky.auto-complete.set-excludes
          * @param {array} array of objects to exclude from suggestions
          */
-            SET_EXCLUDES = function() {
+            SET_EXCLUDES = function () {
             return createEventName.call(this, 'set-excludes');
         },
 
@@ -33675,12 +34040,12 @@ define('__component__$auto-complete@husky',[], function() {
          * @event husky.auto-complete.is-matched
          * @param {Function} Callback which gets the booloan passed
          */
-            IS_MATCHED = function() {
+            IS_MATCHED = function () {
             return createEventName.call(this, 'is-matched');
         },
 
         /** returns normalized event names */
-            createEventName = function(postFix) {
+            createEventName = function (postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         };
 
@@ -33690,7 +34055,7 @@ define('__component__$auto-complete@husky',[], function() {
          * Returns the id of the options.value object
          * @returns {Integer|null}
          */
-        getValueID: function() {
+        getValueID: function () {
             if (!!this.options.value) {
                 return this.options.value.id;
             } else {
@@ -33702,7 +34067,7 @@ define('__component__$auto-complete@husky',[], function() {
          * Returns the value of the options.value object
          * @returns {String}
          */
-        getValueName: function() {
+        getValueName: function () {
             if (!!this.options.value) {
                 return this.options.value[this.options.valueKey];
             } else {
@@ -33710,7 +34075,7 @@ define('__component__$auto-complete@husky',[], function() {
             }
         },
 
-        initialize: function() {
+        initialize: function () {
             this.sandbox.logger.log('initialize', this);
             this.sandbox.logger.log(arguments);
 
@@ -33740,7 +34105,7 @@ define('__component__$auto-complete@husky',[], function() {
         /**
          * Initializes the template for a suggestion element
          */
-        setTemplate: function() {
+        setTemplate: function () {
             var iconHTML = '';
             if (this.options.suggestionImg !== '') {
                 iconHTML = '<span class="fa-' + this.options.suggestionImg + ' icon"></span>';
@@ -33758,7 +34123,7 @@ define('__component__$auto-complete@husky',[], function() {
          * @param context {object} context for template - id, name
          * @returns {String} html of suggestion element
          */
-        buildTemplate: function(context) {
+        buildTemplate: function (context) {
             var domObj;
             if (this._template !== null) {
                 domObj = this.sandbox.dom.createElement(this._template(context));
@@ -33772,7 +34137,7 @@ define('__component__$auto-complete@husky',[], function() {
         /**
          * Initializes and appends the input, starts the typeahead-auto-complete plugin
          */
-        render: function() {
+        render: function () {
             this.sandbox.dom.addClass(this.$el, 'husky-auto-complete');
             this.initValueField();
             this.appendValueField();
@@ -33783,7 +34148,7 @@ define('__component__$auto-complete@husky',[], function() {
         /**
          * Assigns an input box to an object property
          */
-        initValueField: function() {
+        initValueField: function () {
             this.$valueField = this.sandbox.dom.createElement('<input id="' + this.options.instanceName + '" ' +
                 'class="husky-validate" ' +
                 'type="text" ' +
@@ -33796,7 +34161,7 @@ define('__component__$auto-complete@husky',[], function() {
         /**
          * Appends the input box to the component container
          */
-        appendValueField: function() {
+        appendValueField: function () {
             if (!!this.$valueField.length) {
                 this.sandbox.dom.append(this.$el, this.$valueField);
             }
@@ -33805,13 +34170,13 @@ define('__component__$auto-complete@husky',[], function() {
         /**
          * Starts the typeahead auto-complete plugin
          */
-        bindTypeahead: function() {
+        bindTypeahead: function () {
             var delimiter = (this.options.remoteUrl.indexOf('?') === -1) ? '?' : '&';
             this.sandbox.autocomplete.init(this.$valueField, {
                 name: this.options.instanceName,
                 local: this.handleData(this.localData),
                 valueKey: this.options.valueKey,
-                template: function(context) {
+                template: function (context) {
                     //saves the fact that the current input has matches
                     this.matches.push(context);
                     this.matched = true;
@@ -33820,7 +34185,7 @@ define('__component__$auto-complete@husky',[], function() {
                 prefetch: {
                     url: this.options.prefetchUrl,
                     ttl: 1,
-                    filter: function(data) {
+                    filter: function (data) {
                         this.sandbox.emit(PREFETCH_LOAD.call(this));
                         this.handleData(data);
                         return this.data;
@@ -33828,10 +34193,10 @@ define('__component__$auto-complete@husky',[], function() {
                 },
                 remote: {
                     url: this.options.remoteUrl + delimiter + this.options.getParameter + '=%QUERY',
-                    beforeSend: function() {
+                    beforeSend: function () {
                         this.sandbox.emit(REMOTE_LOAD.call(this));
                     }.bind(this),
-                    filter: function(data) {
+                    filter: function (data) {
                         this.sandbox.emit(REMOTE_RETRIEVE.call(this));
                         this.handleData(data);
                         return this.data;
@@ -33855,7 +34220,7 @@ define('__component__$auto-complete@husky',[], function() {
          * @param context {object} context with id and name
          * @returns {Boolean}
          */
-        isExcluded: function(context) {
+        isExcluded: function (context) {
             for (var i = -1, length = this.excludes.length; ++i < length;) {
                 if (context.id !== null && context.id === this.excludes[i].id) {
                     return true;
@@ -33870,12 +34235,12 @@ define('__component__$auto-complete@husky',[], function() {
         /**
          * Binds custom events
          */
-        setCustomEvents: function() {
-            this.sandbox.on(SET_EXCLUDES.call(this), function(excludes) {
+        setCustomEvents: function () {
+            this.sandbox.on(SET_EXCLUDES.call(this), function (excludes) {
                 this.excludes = this.parseExcludes(excludes);
             }.bind(this));
 
-            this.sandbox.on(IS_MATCHED.call(this), function(callback) {
+            this.sandbox.on(IS_MATCHED.call(this), function (callback) {
                 if (this.isMatchedExactly() === true && this.getClosestMatch() !== null) {
                     callback(true);
                 } else {
@@ -33883,7 +34248,7 @@ define('__component__$auto-complete@husky',[], function() {
                 }
             }.bind(this));
 
-            this.sandbox.on('husky.auto-complete.'+this.options.instanceName+'.select', function(data) {
+            this.sandbox.on('husky.auto-complete.' + this.options.instanceName + '.select', function (data) {
                 this.selectedElement = data;
             }.bind(this));
         },
@@ -33892,11 +34257,11 @@ define('__component__$auto-complete@husky',[], function() {
          * Brings an array of suggestions to exclude into the right format
          * @param excludes
          */
-        parseExcludes: function(excludes) {
+        parseExcludes: function (excludes) {
             var arrayReturn = [];
 
-            if(!!excludes.length) {
-                this.sandbox.util.foreach(excludes, function(exclude) {
+            if (!!excludes.length) {
+                this.sandbox.util.foreach(excludes, function (exclude) {
                     if (typeof exclude !== 'object') {
                         arrayReturn.push({
                             id: null,
@@ -33913,8 +34278,8 @@ define('__component__$auto-complete@husky',[], function() {
         /**
          * sets several events
          */
-        bindDomEvents: function() {
-            this.sandbox.dom.on(this.$valueField, 'typeahead:selected', function(event, datum) {
+        bindDomEvents: function () {
+            this.sandbox.dom.on(this.$valueField, 'typeahead:selected', function (event, datum) {
                 if (this.isExcluded(datum)) {
                     this.sandbox.dom.stopPropagation(event);
                     this.clearValueFieldValue();
@@ -33925,7 +34290,7 @@ define('__component__$auto-complete@husky',[], function() {
             }.bind(this));
 
             //remove state and matches on new input
-            this.sandbox.dom.on(this.$valueField, 'keypress', function(event) {
+            this.sandbox.dom.on(this.$valueField, 'keypress', function (event) {
                 if (event.keyCode !== 13) {
                     this.matched = false;
                     this.matches = [];
@@ -33933,15 +34298,15 @@ define('__component__$auto-complete@husky',[], function() {
             }.bind(this));
 
             //ensures that the blur callback does not get called
-            this.sandbox.dom.on(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), 'mousedown', function() {
+            this.sandbox.dom.on(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), 'mousedown', function () {
                 this.executeBlurHandler = false;
             }.bind(this));
 
-            this.sandbox.dom.on(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), 'click', function() {
+            this.sandbox.dom.on(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), 'click', function () {
                 return false;
             }.bind(this), '.disabled');
 
-            this.sandbox.dom.on(this.$valueField, 'blur', function() {
+            this.sandbox.dom.on(this.$valueField, 'blur', function () {
 
                 //don't do anything if the dropdown is clicked on
                 if (this.executeBlurHandler === true) {
@@ -33957,10 +34322,10 @@ define('__component__$auto-complete@husky',[], function() {
             }.bind(this));
 
             // clear data attribute when input is empty
-            this.sandbox.dom.on(this.$valueField, 'focusout', function() {
+            this.sandbox.dom.on(this.$valueField, 'focusout', function () {
                 if (this.sandbox.dom.val(this.$valueField) === '') {
                     this.sandbox.dom.data(this.$valueField, 'id', 'null');
-                    this.sandbox.logger.log("autocomplete data-id empty:", this.sandbox.dom.data(this.$valueField, 'id'));
+                    this.sandbox.dom.removeAttr(this.$valueField, 'data-id');
                 }
             }.bind(this));
         },
@@ -33968,9 +34333,9 @@ define('__component__$auto-complete@husky',[], function() {
         /**
          * Gets called when the input box triggers the blur event
          */
-        handleBlur: function() {
+        handleBlur: function () {
 
-            if(!!this.selectedElement){ // selected via dropdown
+            if (!!this.selectedElement) { // selected via dropdown
                 this.selectedElement = null;
             } else if (this.options.noNewValues === true) {
                 //check input matches an auto-complete suggestion
@@ -33981,7 +34346,7 @@ define('__component__$auto-complete@husky',[], function() {
                 } else {
                     //request to check if a match exists
                     if (this.getValueFieldValue() !== '') {
-                        this.checkMatches(this.getValueFieldValue(), function(isMatched) {
+                        this.checkMatches(this.getValueFieldValue(), function (isMatched) {
                             if (isMatched === true) {
                                 this.setValueFieldValue(this.getClosestMatch().name);
                                 this.setValueFieldId(this.getClosestMatch().id);
@@ -34007,13 +34372,13 @@ define('__component__$auto-complete@husky',[], function() {
          * @param {Function} callback to pass a boolean to
          * @param {Boolean} exactly If true string must be have an identical match
          */
-        checkMatches: function(string, callback, exactly) {
+        checkMatches: function (string, callback, exactly) {
             var delimiter = (this.options.remoteUrl.indexOf('?') === -1) ? '?' : '&';
             this.sandbox.emit(REQUEST_MATCH.call(this));
             this.sandbox.util.ajax({
                 url: this.options.remoteUrl + delimiter + this.options.getParameter + '=' + string,
 
-                success: function(data) {
+                success: function (data) {
                     this.matches = this.handleData(data);
 
                     if (exactly !== true) {
@@ -34031,7 +34396,7 @@ define('__component__$auto-complete@husky',[], function() {
                     }
                 }.bind(this),
 
-                error: function(error) {
+                error: function (error) {
                     this.sandbox.logger.log('Error requesting auto-complete-matches', error);
                     callback(false);
                 }.bind(this)
@@ -34042,7 +34407,7 @@ define('__component__$auto-complete@husky',[], function() {
          * Returns the closest match for an input
          * @returns {object} closest match with id and name
          */
-        getClosestMatch: function() {
+        getClosestMatch: function () {
             if (!!this.matches.length && this.getValueFieldValue() !== '') {
                 return this.matches[0];
             }
@@ -34053,7 +34418,7 @@ define('__component__$auto-complete@husky',[], function() {
          * Returns the trimed value of the input field
          * @returns {String}
          */
-        getValueFieldValue: function() {
+        getValueFieldValue: function () {
             return this.sandbox.dom.val(this.$valueField);
         },
 
@@ -34061,14 +34426,14 @@ define('__component__$auto-complete@husky',[], function() {
          * Sets the input box value
          * @param value {String} new input value
          */
-        setValueFieldValue: function(value) {
+        setValueFieldValue: function (value) {
             this.sandbox.autocomplete.setValue(this.$valueField, value);
         },
 
         /**
          * Deletes the input box value
          */
-        clearValueFieldValue: function() {
+        clearValueFieldValue: function () {
             this.sandbox.autocomplete.setValue(this.$valueField, '');
         },
 
@@ -34076,7 +34441,7 @@ define('__component__$auto-complete@husky',[], function() {
          * Sets the data-id attribute on the input box
          * @param id {Integer} new data-id attribute value
          */
-        setValueFieldId: function(id) {
+        setValueFieldId: function (id) {
             this.sandbox.dom.attr(this.$valueField, {'data-id': id});
         },
 
@@ -34084,7 +34449,7 @@ define('__component__$auto-complete@husky',[], function() {
          * returns the matched property (true if auto-complete suggestion exist)
          * @returns {boolean}
          */
-        isMatched: function() {
+        isMatched: function () {
             return this.matched;
         },
 
@@ -34093,7 +34458,7 @@ define('__component__$auto-complete@husky',[], function() {
          * case-insensitive
          * @returns {boolean}
          */
-        isMatchedExactly: function() {
+        isMatchedExactly: function () {
             if (this.getClosestMatch() !== null) {
                 if (this.getValueFieldValue().toLowerCase() === this.getClosestMatch().name.toLowerCase()) {
                     return true;
@@ -34106,12 +34471,12 @@ define('__component__$auto-complete@husky',[], function() {
          * Assigns loaded data to properties
          * @param data {object} with total and data array
          */
-        handleData: function(data) {
+        handleData: function (data) {
             if (typeof data === 'object') {
                 this.total = data[this.options.totalKey];
                 this.data = [];
 
-                this.sandbox.util.foreach(data[this.options.resultKey], function(key) {
+                this.sandbox.util.foreach(data[this.options.resultKey], function (key) {
                     if (this.isExcluded(key) === false) {
                         this.data.push(key);
                     }
@@ -38453,6 +38818,14 @@ define('__component__$overlay@husky',[], function() {
         },
 
         /**
+         * calls the resize handler of the overlay to set the position, height etc.
+         * @event husky.overlay.<instance-name>.set-position
+         */
+            SET_POSITION = function() {
+            return createEventName.call(this, 'set-position');
+        },
+
+        /**
          * emited after the language changer is changed
          * @event husky.overlay.<instance-name>.language-changed
          * @param {String} selected language
@@ -38559,6 +38932,11 @@ define('__component__$overlay@husky',[], function() {
             this.sandbox.on(OKBUTTON_DEACTIVATE.call(this), this.deactivateOkButtons.bind(this));
             this.sandbox.on(OPEN.call(this), this.triggerHandler.bind(this));
             this.sandbox.on(CLOSE.call(this), this.closeHandler.bind(this));
+
+            this.sandbox.on(SET_POSITION.call(this), function() {
+                this.resetResizeVariables();
+                this.resizeHandler();
+            }.bind(this));
 
             // emit language-changed-event when language dropdown gets changed
             this.sandbox.on('husky.select.' + this.options.instanceName + '.selected.item', function(localeIndex) {
@@ -38765,7 +39143,7 @@ define('__component__$overlay@husky',[], function() {
             this.sandbox.dom.append(this.$el, this.overlay.$el);
 
             //ensures that the overlay box fits the window form the beginning
-            this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
+            this.resetResizeVariables();
             this.resizeHandler();
 
             this.setCoordinates();
@@ -39093,12 +39471,21 @@ define('__component__$overlay@husky',[], function() {
         },
 
         /**
+         * Sets all properties and variables responsible for the correct resize experience back
+         * to their initial state or re-initializes them
+         */
+        resetResizeVariables: function() {
+            this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
+            this.overlay.collapsed = false;
+            this.sandbox.dom.css(this.overlay.$content, {'overflow': 'visible'});
+            this.sandbox.dom.height(this.overlay.$content, '');
+        },
+
+        /**
          * Handles the shrinking and enlarging of the overlay
          * if the window gets smaller
          */
         resizeHandler: function() {
-            this.setCoordinates();
-
             //window is getting smaller - make overlay smaller
             if (this.sandbox.dom.height(this.sandbox.dom.$window) < this.sandbox.dom.outerHeight(this.overlay.$el)) {
                 this.sandbox.dom.height(this.overlay.$content,
@@ -39123,6 +39510,9 @@ define('__component__$overlay@husky',[], function() {
                     );
                 }
             }
+
+            // update position
+            this.setCoordinates();
         },
 
         /**
@@ -40506,6 +40896,7 @@ define('__component__$toggler@husky',[], function() {
  * @params {Function} [options.removeFileCallback] callback which gets called after a file got removed. First parameter is the file.
  * @params {Object} [options.pluginOptions] Options to pass to the dropzone-plugin to completely override all options set by husky. Use with care.
  * @params {Boolean} [options.showOverlay] if true the dropzone will be displayed in an overlay if its not visible any more or the passed scroll-top is reached
+ * @params {String} [options.skin] skin class for the dropzone. currently available: 'small' or '' (default)
  */
 define('__component__$dropzone@husky',[], function () {
 
@@ -40531,7 +40922,8 @@ define('__component__$dropzone@husky',[], function () {
             pluginOptions: {},
             fadeOutDuration: 200, //ms
             fadeOutDelay: 1500, //ms
-            showOverlay: true
+            showOverlay: true,
+            skin: ''
         },
 
         constants = {
@@ -40548,7 +40940,7 @@ define('__component__$dropzone@husky',[], function () {
                 '<div class="' + constants.descriptionClass + '">',
                 '<div class="fa-<%= icon %> icon"></div>',
                 '<span class="title"><%= title %></span>',
-                '<span><%= description %></span>',
+                '<span class="addition"><%= description %></span>',
                 '</div>',
                 '<div class="' + constants.uploadedItemContainerClass + '"></div>'
             ].join(''),
@@ -40747,6 +41139,7 @@ define('__component__$dropzone@husky',[], function () {
                 icon: this.options.descriptionIcon,
                 instanceName: this.options.instanceName
             }));
+            this.sandbox.dom.addClass(this.$dropzone, this.options.skin);
             this.sandbox.dom.append(this.$el, this.$dropzone);
             this.startDropzone();
         },
@@ -41013,10 +41406,11 @@ define('__component__$input@husky',[], function () {
          */
         initialize: function () {
             this.sandbox.logger.log('initialize', this);
+            var defaults = defaults;
 
             // merge skin defaults with defaults
             if (!!this.options.skin && !!skins[this.options.skin]) {
-                var defaults = this.sandbox.util.extend(true, {}, defaults, skins[this.options.skin]);
+                defaults = this.sandbox.util.extend(true, {}, defaults, skins[this.options.skin]);
             }
             // merge defaults, skin defaults and options
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
@@ -41135,7 +41529,10 @@ define('__component__$input@husky',[], function () {
         renderDatePicker: function() {
             this.sandbox.dom.addClass(this.$el, constants.datepickerClass);
             this.sandbox.dom.attr(this.input.$input, 'placeholder', this.sandbox.globalize.getDatePattern());
-            this.sandbox.datepicker.init(this.input.$input, this.options.datepickerOptions);
+            this.sandbox.datepicker.init(this.input.$input, this.options.datepickerOptions).on('changeDate', function(event) {
+                this.setDatepickerValueAttr(event.date);
+            }.bind(this));
+            this.updateValue();
         },
 
         /**
@@ -41161,12 +41558,46 @@ define('__component__$input@husky',[], function () {
          */
         setValue: function(value) {
             if (this.options.renderMethod === 'colorpicker') {
-                this.sandbox.colorpicker.value(this.input.$input, value);
+                if (!!value) {
+                    this.sandbox.colorpicker.value(this.input.$input, value);
+                } else {
+                    this.sandbox.dom.val(this.input.$input, value);
+                }
             } else if (this.options.renderMethod === 'datepicker') {
-                this.sandbox.datepicker.setValue(this.input.$input, value);
+                // if a date-time was passed, extract the date
+                if (!!value) {
+                    value = this.isoToDate(value);
+                    value = new Date(value);
+                }
+                this.sandbox.datepicker.setDate(this.input.$input, value);
+                this.setDatepickerValueAttr(this.sandbox.datepicker.getDate(this.input.$input));
             } else {
                 this.sandbox.dom.val(this.input.$input, value);
             }
+        },
+
+        /**
+         * Takes a iso date-time string and returns only the date part
+         * @param datetime {String} iso-datetime-string
+         */
+        isoToDate: function(datetime) {
+            if (datetime.indexOf('T') > 0) {
+                return datetime.substr(0, datetime.indexOf('T'));
+            }
+            return datetime;
+        },
+
+        /**
+         * Sets the value attribute for the datepicker
+         * @param date {Object} a UTC date pbject
+         */
+        setDatepickerValueAttr: function(date) {
+            if (!!date) {
+                date = date.getFullYear() + '-' +
+                   ('0' + (date.getMonth()+1)).slice(-2) + '-' +
+                   ('0' + date.getDate()).slice(-2);
+            }
+            this.sandbox.dom.data(this.$el, 'value', date);
         },
 
         /**
@@ -44987,7 +45418,7 @@ define("datepicker-zh-TW", function(){});
 
                 init: function(selector, configs) {
                     var settings = {
-                        format: app.sandbox.globalize.getDatePattern(),
+                        format: app.sandbox.globalize.getDatePattern().toLowerCase(),
                         language: app.sandbox.globalize.getLocale(),
                         autoclose: true
                     };
@@ -44997,6 +45428,22 @@ define("datepicker-zh-TW", function(){});
 
                 setValue: function(selector, value) {
                     return app.core.dom.$(selector).datepicker('update', value);
+                },
+
+                getUTCDate: function(selector) {
+                    return app.core.dom.$(selector).datepicker('getUTCDate');
+                },
+
+                getDate: function(selector) {
+                    return app.core.dom.$(selector).datepicker('getDate');
+                },
+
+                setUTCDate: function(selector, date) {
+                    return app.core.dom.$(selector).datepicker('setUTCDate', date);
+                },
+
+                setDate: function(selector, date) {
+                    return app.core.dom.$(selector).datepicker('setDate', date);
                 }
             };
         }

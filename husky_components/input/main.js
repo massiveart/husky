@@ -139,10 +139,11 @@ define([], function () {
          */
         initialize: function () {
             this.sandbox.logger.log('initialize', this);
+            var defaults = defaults;
 
             // merge skin defaults with defaults
             if (!!this.options.skin && !!skins[this.options.skin]) {
-                var defaults = this.sandbox.util.extend(true, {}, defaults, skins[this.options.skin]);
+                defaults = this.sandbox.util.extend(true, {}, defaults, skins[this.options.skin]);
             }
             // merge defaults, skin defaults and options
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
@@ -261,7 +262,10 @@ define([], function () {
         renderDatePicker: function() {
             this.sandbox.dom.addClass(this.$el, constants.datepickerClass);
             this.sandbox.dom.attr(this.input.$input, 'placeholder', this.sandbox.globalize.getDatePattern());
-            this.sandbox.datepicker.init(this.input.$input, this.options.datepickerOptions);
+            this.sandbox.datepicker.init(this.input.$input, this.options.datepickerOptions).on('changeDate', function(event) {
+                this.setDatepickerValueAttr(event.date);
+            }.bind(this));
+            this.updateValue();
         },
 
         /**
@@ -287,12 +291,46 @@ define([], function () {
          */
         setValue: function(value) {
             if (this.options.renderMethod === 'colorpicker') {
-                this.sandbox.colorpicker.value(this.input.$input, value);
+                if (!!value) {
+                    this.sandbox.colorpicker.value(this.input.$input, value);
+                } else {
+                    this.sandbox.dom.val(this.input.$input, value);
+                }
             } else if (this.options.renderMethod === 'datepicker') {
-                this.sandbox.datepicker.setValue(this.input.$input, value);
+                // if a date-time was passed, extract the date
+                if (!!value) {
+                    value = this.isoToDate(value);
+                    value = new Date(value);
+                }
+                this.sandbox.datepicker.setDate(this.input.$input, value);
+                this.setDatepickerValueAttr(this.sandbox.datepicker.getDate(this.input.$input));
             } else {
                 this.sandbox.dom.val(this.input.$input, value);
             }
+        },
+
+        /**
+         * Takes a iso date-time string and returns only the date part
+         * @param datetime {String} iso-datetime-string
+         */
+        isoToDate: function(datetime) {
+            if (datetime.indexOf('T') > 0) {
+                return datetime.substr(0, datetime.indexOf('T'));
+            }
+            return datetime;
+        },
+
+        /**
+         * Sets the value attribute for the datepicker
+         * @param date {Object} a UTC date pbject
+         */
+        setDatepickerValueAttr: function(date) {
+            if (!!date) {
+                date = date.getFullYear() + '-' +
+                   ('0' + (date.getMonth()+1)).slice(-2) + '-' +
+                   ('0' + date.getDate()).slice(-2);
+            }
+            this.sandbox.dom.data(this.$el, 'value', date);
         },
 
         /**

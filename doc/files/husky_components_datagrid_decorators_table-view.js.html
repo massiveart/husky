@@ -59,6 +59,8 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/GroupView (Datagrid Decorator).html">GroupView (Datagrid Decorator)</a></li>
+            
                 <li><a href="../classes/Input.html">Input</a></li>
             
                 <li><a href="../classes/Label.html">Label</a></li>
@@ -227,7 +229,8 @@ define(function() {
             oversizedClass: &#x27;oversized&#x27;,
             overflowClass: &#x27;overflow&#x27;,
             thumbSrcKey: &#x27;url&#x27;,
-            thumbAltKey: &#x27;alt&#x27;
+            thumbAltKey: &#x27;alt&#x27;,
+            sortLoaderClass: &#x27;sort-loader&#x27;
         },
 
         /**
@@ -236,38 +239,38 @@ define(function() {
         templates = {
             removeRow: [
                 &#x27;&lt;td class=&quot;remove-row&quot;&gt;&#x27;,
-                    &#x27;&lt;span class=&quot;fa-trash-o pointer &#x27;+ constants.rowRemoverClass +&#x27;&quot;&gt;&lt;/span&gt;&#x27;,
+                    &#x27;&lt;span class=&quot;fa-trash-o pointer &#x27; + constants.rowRemoverClass + &#x27;&quot;&gt;&lt;/span&gt;&#x27;,
                 &#x27;&lt;/td&gt;&#x27;
             ].join(&#x27;&#x27;),
 
             checkbox: [
                 &#x27;&lt;div class=&quot;custom-checkbox&quot;&gt;&#x27;,
-                    &#x27;&lt;input id=&quot;&lt;%= id %&gt;&quot; type=&quot;checkbox&quot; data-form=&quot;false&quot;&lt;% if (!!checked) { %&gt; checked&lt;% } %&gt;/&gt;&#x27;,
-                    &#x27;&lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;input id=&quot;&lt;%= id %&gt;&quot; type=&quot;checkbox&quot; data-form=&quot;false&quot;&lt;% if (!!checked) { %&gt; checked&lt;% } %&gt;/&gt;&#x27;,
+                &#x27;&lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
                 &#x27;&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;),
 
             checkboxCell: [
                 &#x27;&lt;td&gt;&#x27;,
-                    &#x27;&lt;%= checkbox %&gt;&#x27;,
+                &#x27;&lt;%= checkbox %&gt;&#x27;,
                 &#x27;&lt;/td&gt;&#x27;
             ].join(&#x27;&#x27;),
 
             radio: [
                 &#x27;&lt;td&gt;&#x27;,
-                    &#x27;&lt;div class=&quot;custom-radio&quot;&gt;&#x27;,
-                        &#x27;&lt;input name=&quot;&lt;%= name %&gt;&quot; type=&quot;radio&quot;/&gt;&#x27;,
-                        &#x27;&lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;,
+                &#x27;&lt;div class=&quot;custom-radio&quot;&gt;&#x27;,
+                &#x27;&lt;input name=&quot;&lt;%= name %&gt;&quot; type=&quot;radio&quot;/&gt;&#x27;,
+                &#x27;&lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;,
                 &#x27;&lt;/td&gt;&#x27;
             ].join(&#x27;&#x27;)
-    },
+        },
 
         /**
          * used to update the table width and its containers due to responsiveness
          * @event husky.datagrid.update.table
          */
-            UPDATE_TABLE = function () {
+        UPDATE_TABLE = function() {
             return this.datagrid.createEventName.call(this.datagrid, &#x27;update.table&#x27;);
         },
 
@@ -277,7 +280,7 @@ define(function() {
          * @param classArray
          * @param isSortable
          */
-            getTextWidth = function (text, classArray, isSortable) {
+        getTextWidth = function(text, classArray, isSortable) {
             var elWidth, el,
                 sortIconWidth = 0,
                 paddings = 20;
@@ -336,7 +339,7 @@ define(function() {
             this.data = data;
             this.$el = $container;
 
-            this.$tableContainer = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;&#x27;+ constants.viewClass +&#x27;&quot;/&gt;&#x27;);
+            this.$tableContainer = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;&#x27; + constants.viewClass + &#x27;&quot;/&gt;&#x27;);
             this.sandbox.dom.append(this.$el, this.$tableContainer);
             this.sandbox.dom.append(this.$tableContainer, this.prepareTable());
 
@@ -528,7 +531,7 @@ define(function() {
             this.$table = $table = this.sandbox.dom.createElement(&#x27;&lt;table&#x27; + (!!this.options.validationDebug ? &#x27;data-debug=&quot;true&quot;&#x27; : &#x27;&#x27; ) + &#x27;/&gt;&#x27;);
 
             if (!!this.data.head || !!this.datagrid.matchings) {
-                $thead = this.sandbox.dom.createElement(&#x27;&lt;thead/&gt;&#x27;);
+                $thead = this.sandbox.dom.createElement(&#x27;&lt;thead style=&quot;&#x27; + (!this.options.showHead) ? &#x27;display:none;&#x27; : &#x27;&#x27; + &#x27;&quot;/&gt;&#x27;);
                 this.sandbox.dom.append($thead, this.prepareTableHead());
                 this.sandbox.dom.append($table, $thead);
             }
@@ -543,7 +546,7 @@ define(function() {
             tblClasses = [];
             tblClasses.push(
                 (!!this.options.className &amp;&amp; this.options.className !== constants.tableClass) ? constants.tableClass +
-                &#x27; &#x27; + this.options.className : constants.tableClass
+                    &#x27; &#x27; + this.options.className : constants.tableClass
             );
 
             // when list should not have the hover effect for whole rows do not set the is-selectable class
@@ -577,8 +580,8 @@ define(function() {
                 minWidth = checkboxValues.number + checkboxValues.unit;
 
                 tblColumns.push(
-                    &#x27;&lt;th class=&quot;&#x27;+ constants.selectAllName +&#x27;&quot; &#x27;,
-                    &#x27;style=&quot;width:&#x27; + minWidth + &#x27;; max-width:&#x27; + minWidth + &#x27;; min-width:&#x27; + minWidth + &#x27;;&quot;&#x27;,
+                        &#x27;&lt;th class=&quot;&#x27; + constants.selectAllName + &#x27;&quot; &#x27;,
+                        &#x27;style=&quot;width:&#x27; + minWidth + &#x27;; max-width:&#x27; + minWidth + &#x27;; min-width:&#x27; + minWidth + &#x27;;&quot;&#x27;,
                     &#x27; &gt;&#x27;
                 );
 
@@ -650,7 +653,7 @@ define(function() {
                     // add html to table header cell if sortable
                     if (!!isSortable) {
                         dataAttribute = &#x27; data-attribute=&quot;&#x27; + column.attribute + &#x27;&quot;&#x27;;
-                        tblCellClass = ((!!column.class) ? &#x27; class=&quot;&#x27; + column.class + &#x27; &quot;&#x27; + constants.sortableClass : &#x27; class=&quot;&#x27;+ constants.sortableClass +&#x27;&quot;&#x27;);
+                        tblCellClass = ((!!column.class) ? &#x27; class=&quot;&#x27; + column.class + &#x27; &quot;&#x27; + constants.sortableClass : &#x27; class=&quot;&#x27; + constants.sortableClass + &#x27;&quot;&#x27;);
                         tblColumns.push(&#x27;&lt;th&#x27; + tblCellClass + &#x27; style=&quot;&#x27; + tblColumnStyle.join(&#x27;;&#x27;) + &#x27;&quot; &#x27; + dataAttribute + &#x27;&gt;&#x27; + column.content + &#x27;&lt;span&gt;&lt;/span&gt;&lt;/th&gt;&#x27;);
                     } else {
                         tblCellClass = ((!!column.class) ? &#x27; class=&quot;&#x27; + column.class + &#x27;&quot;&#x27; : &#x27;&#x27;);
@@ -748,7 +751,7 @@ define(function() {
                     this.tblColumns.push(this.sandbox.util.template(templates.removeRow)());
                 }
 
-                $tableRow = this.sandbox.dom.createElement(&#x27;&lt;tr&#x27;+ this.tblRowAttributes +&#x27;&gt;&#x27;+ this.tblColumns.join(&#x27;&#x27;) +&#x27;&lt;/tr&gt;&#x27;);
+                $tableRow = this.sandbox.dom.createElement(&#x27;&lt;tr&#x27; + this.tblRowAttributes + &#x27;&gt;&#x27; + this.tblColumns.join(&#x27;&#x27;) + &#x27;&lt;/tr&gt;&#x27;);
 
                 if (!!row.id) {
                     this.sandbox.dom.data($tableRow, &#x27;id&#x27;, row.id);
@@ -801,7 +804,7 @@ define(function() {
                 if (!!type) {
                     if (type === this.datagrid.types.THUMBNAILS) {
                         tblCellContent = this.datagrid.manipulateContent(tblCellContent, type, this.options.thumbnailFormat);
-                        tblCellContent = &#x27;&lt;img alt=&quot;&#x27;+ tblCellContent[constants.thumbAltKey] +&#x27;&quot; src=&quot;&#x27;+ tblCellContent[constants.thumbSrcKey] +&#x27;&quot;/&gt;&#x27;;
+                        tblCellContent = &#x27;&lt;img alt=&quot;&#x27; + tblCellContent[constants.thumbAltKey] + &#x27;&quot; src=&quot;&#x27; + tblCellContent[constants.thumbSrcKey] + &#x27;&quot;/&gt;&#x27;;
                     } else {
                         tblCellContent = this.datagrid.manipulateContent(tblCellContent, type);
                     }
@@ -811,14 +814,14 @@ define(function() {
                     if (!!triggeredByAddRow) {
                         // differentiate for tab index
                         if (!!this.options.addRowTop) {
-                            this.tblColumns.push(&#x27;&lt;td data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &gt;&lt;span class=&quot;&#x27;+ constants.editableClass +&#x27;&quot; style=&quot;display: none&quot;&gt;&#x27; + tblCellContent + &#x27;&lt;/span&gt;&lt;input type=&quot;text&quot; class=&quot;form-element editable-content&quot; tabindex=&quot;&#x27; + this.bottomTabIndex + &#x27;&quot; value=&quot;&#x27; + tblCellContent + &#x27;&quot;  &#x27; + validationAttr + &#x27;/&gt;&lt;/td&gt;&#x27;);
+                            this.tblColumns.push(&#x27;&lt;td data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &gt;&lt;span class=&quot;&#x27; + constants.editableClass + &#x27;&quot; style=&quot;display: none&quot;&gt;&#x27; + tblCellContent + &#x27;&lt;/span&gt;&lt;input type=&quot;text&quot; class=&quot;form-element editable-content&quot; tabindex=&quot;&#x27; + this.bottomTabIndex + &#x27;&quot; value=&quot;&#x27; + tblCellContent + &#x27;&quot;  &#x27; + validationAttr + &#x27;/&gt;&lt;/td&gt;&#x27;);
                             this.bottomTabIndex++;
                         } else {
-                            this.tblColumns.push(&#x27;&lt;td data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &gt;&lt;span class=&quot;&#x27;+ constants.editableClass +&#x27;&quot; style=&quot;display: none&quot;&gt;&#x27; + tblCellContent + &#x27;&lt;/span&gt;&lt;input type=&quot;text&quot; class=&quot;form-element editable-content&quot; tabindex=&quot;&#x27; + this.topTabIndex + &#x27;&quot; value=&quot;&#x27; + tblCellContent + &#x27;&quot;  &#x27; + validationAttr + &#x27;/&gt;&lt;/td&gt;&#x27;);
+                            this.tblColumns.push(&#x27;&lt;td data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &gt;&lt;span class=&quot;&#x27; + constants.editableClass + &#x27;&quot; style=&quot;display: none&quot;&gt;&#x27; + tblCellContent + &#x27;&lt;/span&gt;&lt;input type=&quot;text&quot; class=&quot;form-element editable-content&quot; tabindex=&quot;&#x27; + this.topTabIndex + &#x27;&quot; value=&quot;&#x27; + tblCellContent + &#x27;&quot;  &#x27; + validationAttr + &#x27;/&gt;&lt;/td&gt;&#x27;);
                             this.topTabIndex++;
                         }
                     } else {
-                        this.tblColumns.push(&#x27;&lt;td data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &gt;&lt;span class=&quot;&#x27;+ constants.editableClass +&#x27;&quot;&gt;&#x27; + tblCellContent + &#x27;&lt;/span&gt;&lt;input type=&quot;text&quot; class=&quot;form-element editable-content hidden&quot; value=&quot;&#x27; + tblCellContent + &#x27;&quot; tabindex=&quot;&#x27; + this.topTabIndex + &#x27;&quot; &#x27; + validationAttr + &#x27;/&gt;&lt;/td&gt;&#x27;);
+                        this.tblColumns.push(&#x27;&lt;td data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &gt;&lt;span class=&quot;&#x27; + constants.editableClass + &#x27;&quot;&gt;&#x27; + tblCellContent + &#x27;&lt;/span&gt;&lt;input type=&quot;text&quot; class=&quot;form-element editable-content hidden&quot; value=&quot;&#x27; + tblCellContent + &#x27;&quot; tabindex=&quot;&#x27; + this.topTabIndex + &#x27;&quot; &#x27; + validationAttr + &#x27;/&gt;&lt;/td&gt;&#x27;);
                         this.topTabIndex++;
 
                     }
@@ -1378,12 +1381,28 @@ define(function() {
         prepareSort: function(event) {
             var $element = event.currentTarget,
                 $span = this.sandbox.dom.children($element, &#x27;span&#x27;)[0],
-
                 attribute = this.sandbox.dom.data($element, &#x27;attribute&#x27;),
-                direction = this.sandbox.dom.hasClass($span, constants.ascClass) ? &#x27;desc&#x27; : &#x27;asc&#x27;;
+                direction = this.sandbox.dom.hasClass($span, constants.ascClass) ? &#x27;desc&#x27; : &#x27;asc&#x27;,
+                $loaderContainer = this.sandbox.dom.createElement(&#x27;&lt;span class=&quot;&#x27;+ constants.sortLoaderClass +&#x27;&quot;/&gt;&#x27;);
 
-                // delegate sorting to datagrid
-                this.datagrid.sortGrid.call(this.datagrid, attribute, direction);
+            this.sandbox.dom.stopPropagation(event);
+
+            // start loader beneath th
+            this.sandbox.dom.removeClass($span);
+            this.sandbox.dom.append($span, $loaderContainer);
+            this.sandbox.start([
+                {
+                    name: &#x27;loader@husky&#x27;,
+                    options: {
+                        el: $loaderContainer,
+                        size: &#x27;10px&#x27;,
+                        color: &#x27;#999999&#x27;
+                    }
+                }
+            ]);
+
+            // delegate sorting to datagrid
+            this.datagrid.sortGrid.call(this.datagrid, attribute, direction);
         }
     };
 });

@@ -10,7 +10,7 @@
 
         "test": {
             "mockFile": "test.json",
-            "verbs": ["get"]
+            "verbs": ["GET"]
         },
 
         "admin/api/datagrid": {
@@ -39,6 +39,10 @@
             "httpStatus": 400,
             "mockFile": "datagrid/edited.json",
             "switch": "id"
+        },
+        "admin/api/datagrid/groups": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/groups.json"
         },
 
         "admin/api/autocomplete": {

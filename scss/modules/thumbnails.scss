@@ -12,6 +12,7 @@
   $imgLargeHeight: 170px;
 
   @include clear-float;
+  @include user-select(none);
 
   .download {
     font-size: 15px;
@@ -119,6 +120,104 @@
       &.large {
         border-color: $white;
       }
+    }
+  }
+}
+
+//
+// Thumbnail-Group
+// --------------------------------------------------
+
+.husky-groups {
+  $width: 190px;
+  $thumbnailWidth: 150px;
+  $thumbnailHeight: 100px;
+
+  @include clear-float;
+
+  .grid-group {
+    width: $width;
+    margin-right: 20px;
+    margin-bottom: 30px;
+    float: left;
+    cursor: pointer;
+
+    .thumbnails {
+      position: relative;
+      width: 100%;
+      height: 125px;
+
+      .thumbnail {
+        position: absolute;
+        width: $thumbnailWidth;
+        height: $thumbnailHeight;
+        @include box-sizing(border-box);
+        border: 3px solid $white;
+        border-radius: $borderRadiusSmall;
+        @include single-transition(all, 200ms, ease, 200ms);
+
+        img {
+          width: 100%;
+          height: 100%;
+          display: block;
+          border: 1px solid $grayLighterer;
+        }
+
+        &.first {
+          top: 0px;
+          right: 0px;
+          z-index: 50;
+          @include rotate(0deg);
+        }
+
+        &.second {
+          right: 10px;
+          top: 3px;
+          z-index: 40;
+          @include rotate(-3deg);
+        }
+
+        &.third {
+          right: 20px;
+          top: 6px;
+          z-index: 30;
+          @include rotate(-5deg);
+        }
+      }
+
+      &:hover {
+        .thumbnail {
+          &.first {
+            top: -10px;
+            right: -20px;
+            @include rotate(5deg);
+          }
+
+          &.second {
+            right: 10px;
+            top: -2px;
+            @include rotate(-2deg);
+          }
+
+          &.third {
+            top: 15px;
+            right: 35px;
+            @include rotate(-8deg);
+          }
+        }
+      }
+    }
+    .title {
+      display: block;
+      line-height: 14px;
+      text-align: center;
+    }
+    .addition {
+      display: block;
+      text-align: center;
+      font-size: $reallySmallFontSize;
+      color: $grayLight;
+      line-height: 14px;
     }
   }
 }
