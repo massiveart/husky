@@ -59,6 +59,8 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/Input.html">Input</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -100,6 +102,8 @@
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_input.html">husky/components/input</a></li>
             
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
@@ -199,7 +203,8 @@ define(function() {
             addRowTop: true,
             startTabIndex: 99999,
             excludeFields: [&#x27;&#x27;],
-            columnMinWidth: &#x27;70px&#x27;
+            columnMinWidth: &#x27;70px&#x27;,
+            thumbnailFormat: &#x27;50x50&#x27;
         },
 
         constants = {
@@ -208,8 +213,8 @@ define(function() {
             // if datagrid is in fullwidth-mode (options.fullWidth is true)
             // this number gets subracted from the tables final width in the resize listener
             overflowIconSpacing: 30,
-            ascClass: &#x27;icon-arrow-up&#x27;,
-            descClass: &#x27;icon-arrow-down&#x27;,
+            ascClass: &#x27;fa-caret-up&#x27;,
+            descClass: &#x27;fa-caret-down&#x27;,
             additionalHeaderClasses: &#x27; m-left-5 small-font&#x27;,
             rowRemoverClass: &#x27;row-remover&#x27;,
             editableClass: &#x27;editable&#x27;,
@@ -220,7 +225,9 @@ define(function() {
             tableClass: &#x27;table&#x27;,
             serverValidationError: &#x27;server-validation-error&#x27;,
             oversizedClass: &#x27;oversized&#x27;,
-            overflowClass: &#x27;overflow&#x27;
+            overflowClass: &#x27;overflow&#x27;,
+            thumbSrcKey: &#x27;url&#x27;,
+            thumbAltKey: &#x27;alt&#x27;
         },
 
         /**
@@ -229,7 +236,7 @@ define(function() {
         templates = {
             removeRow: [
                 &#x27;&lt;td class=&quot;remove-row&quot;&gt;&#x27;,
-                    &#x27;&lt;span class=&quot;icon-bin pointer &#x27;+ constants.rowRemoverClass +&#x27;&quot;&gt;&lt;/span&gt;&#x27;,
+                    &#x27;&lt;span class=&quot;fa-trash-o pointer &#x27;+ constants.rowRemoverClass +&#x27;&quot;&gt;&lt;/span&gt;&#x27;,
                 &#x27;&lt;/td&gt;&#x27;
             ].join(&#x27;&#x27;),
 
@@ -254,15 +261,6 @@ define(function() {
                     &#x27;&lt;/div&gt;&#x27;,
                 &#x27;&lt;/td&gt;&#x27;
             ].join(&#x27;&#x27;)
-    },
-
-    /**
-     * raised when clicked on an item
-     * @event husky.datagrid.item.click
-     * @param {String} id of item that was clicked
-     */
-        ITEM_CLICK = function () {
-        return this.datagrid.createEventName.call(this.datagrid, &#x27;item.click&#x27;);
     },
 
         /**
@@ -370,6 +368,8 @@ define(function() {
             if (this.options.fullWidth === true) {
                 this.sandbox.dom.removeClass(this.$el, constants.fullWidthClass);
             }
+            // remove inline-styles
+            this.sandbox.dom.removeAttr(this.$el, &#x27;style&#x27;);
             this.sandbox.dom.remove(this.$tableContainer);
         },
 
@@ -460,9 +460,9 @@ define(function() {
         emitRowClickedEvent: function(event) {
             var id = this.sandbox.dom.$(event.currentTarget).data(&#x27;id&#x27;);
             if (!!id) {
-                this.sandbox.emit(ITEM_CLICK.call(this), id);
+                this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
             } else {
-                this.sandbox.emit(ITEM_CLICK.call(this), event);
+                this.datagrid.emitItemClickedEvent.call(this.datagrid, event);
             }
         },
 
@@ -782,11 +782,11 @@ define(function() {
 
             if (this.options.excludeFields.indexOf(key) &lt; 0) {
                 tblCellClasses = [];
-                tblCellContent = (!!value.thumb) ? &#x27;&lt;img alt=&quot;&#x27; + (value.alt || &#x27;&#x27;) + &#x27;&quot; src=&quot;&#x27; + value.thumb + &#x27;&quot;/&gt;&#x27; : value;
+                tblCellContent = value;
 
                 // prepare table cell classes
                 !!value.class &amp;&amp; tblCellClasses.push(value.class);
-                !!value.thumb &amp;&amp; tblCellClasses.push(&#x27;thumb&#x27;);
+                (type === this.datagrid.types.THUMBNAILS) &amp;&amp; tblCellClasses.push(&#x27;thumb&#x27;);
 
                 tblCellClass = (!!tblCellClasses.length) ? &#x27;class=&quot;&#x27; + tblCellClasses.join(&#x27; &#x27;) + &#x27;&quot;&#x27; : &#x27;&#x27;;
 
@@ -799,7 +799,12 @@ define(function() {
 
                 // call the type manipulate to manipulate the content of the cell
                 if (!!type) {
-                    tblCellContent = this.datagrid.manipulateContent(tblCellContent, type);
+                    if (type === this.datagrid.types.THUMBNAILS) {
+                        tblCellContent = this.datagrid.manipulateContent(tblCellContent, type, this.options.thumbnailFormat);
+                        tblCellContent = &#x27;&lt;img alt=&quot;&#x27;+ tblCellContent[constants.thumbAltKey] +&#x27;&quot; src=&quot;&#x27;+ tblCellContent[constants.thumbSrcKey] +&#x27;&quot;/&gt;&#x27;;
+                    } else {
+                        tblCellContent = this.datagrid.manipulateContent(tblCellContent, type);
+                    }
                 }
 
                 if (!!editable) {
@@ -1223,7 +1228,9 @@ define(function() {
 
             // if contentContainer is set, adapt maximum size
             if (!!this.options.contentContainer) {
-                this.sandbox.dom.css(this.options.contentContainer, &#x27;max-width&#x27;, finalWidth + contentPaddings);
+                if (this.options.fullWidth === true) {
+                    this.sandbox.dom.css(this.options.contentContainer, &#x27;max-width&#x27;, finalWidth + contentPaddings);
+                }
                 finalWidth = this.sandbox.dom.width(this.options.contentContainer);
                 if (!overlaps) {
                     // if table does not overlap border, set content to original width

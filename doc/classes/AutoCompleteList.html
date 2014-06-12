@@ -59,6 +59,8 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/Input.html">Input</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -100,6 +102,8 @@
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_input.html">husky/components/input</a></li>
             
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
@@ -767,6 +771,20 @@
                     <ul class="index-list events">
                         
                             <li class="index-item event">
+                                <a href="#event_husky.auto-complete-list.data-loaded">husky.auto-complete-list.data-loaded</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.auto-complete-list.get-tags">husky.auto-complete-list.get-tags</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
                                 <a href="#event_husky.auto-complete-list.initialized">husky.auto-complete-list.initialized</a>
 
                                 
@@ -788,7 +806,21 @@
                             </li>
                         
                             <li class="index-item event">
+                                <a href="#event_husky.auto-complete-list.items-added">husky.auto-complete-list.items-added</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
                                 <a href="#event_husky.auto-complete-list.items-request">husky.auto-complete-list.items-request</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.auto-complete-list.set-tags">husky.auto-complete-list.set-tags</a>
 
                                 
                                 
@@ -836,6 +868,94 @@
         
             <div id="events" class="api-class-tabpanel">
                 <h2 class="off-left">Events</h2>
+
+                
+                    <div id="event_husky.auto-complete-list.data-loaded" class="events item">
+    <h3 class="name"><code>husky.auto-complete-list.data-loaded</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_auto-complete-list_main.js.html#l175"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:175</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>raised after data was loaded</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.auto-complete-list.get-tags" class="events item">
+    <h3 class="name"><code>husky.auto-complete-list.get-tags</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_auto-complete-list_main.js.html#l134"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:134</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>used for receiving tags</p>
+
+    </div>
+
+    
+
+
+    
+</div>
 
                 
                     <div id="event_husky.auto-complete-list.initialized" class="events item">
@@ -905,7 +1025,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l158"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:158</code></a>
+        <a href="../files/husky_components_auto-complete-list_main.js.html#l183"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:183</code></a>
         
         </p>
 
@@ -973,7 +1093,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l150"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:150</code></a>
+        <a href="../files/husky_components_auto-complete-list_main.js.html#l167"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:167</code></a>
         
         </p>
 
@@ -984,6 +1104,50 @@
 
     <div class="description">
         <p>raised after an item is deleted</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.auto-complete-list.items-added" class="events item">
+    <h3 class="name"><code>husky.auto-complete-list.items-added</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_auto-complete-list_main.js.html#l192"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:192</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>raised after all item were added</p>
 
     </div>
 
@@ -1017,7 +1181,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l125"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:125</code></a>
+        <a href="../files/husky_components_auto-complete-list_main.js.html#l142"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:142</code></a>
         
         </p>
 
@@ -1031,6 +1195,74 @@
 
     </div>
 
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.auto-complete-list.set-tags" class="events item">
+    <h3 class="name"><code>husky.auto-complete-list.set-tags</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_auto-complete-list_main.js.html#l125"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:125</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>used for setting tags</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">tags</code>
+                        <span class="type">Array</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Array of strings</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
     
 
 
@@ -1061,7 +1293,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l141"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:141</code></a>
+        <a href="../files/husky_components_auto-complete-list_main.js.html#l158"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:158</code></a>
         
         </p>
 
@@ -1131,7 +1363,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l167"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:167</code></a>
+        <a href="../files/husky_components_auto-complete-list_main.js.html#l200"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:200</code></a>
         
         </p>
 
@@ -1175,7 +1407,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l175"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:175</code></a>
+        <a href="../files/husky_components_auto-complete-list_main.js.html#l208"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:208</code></a>
         
         </p>
 
@@ -1219,7 +1451,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete-list_main.js.html#l133"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:133</code></a>
+        <a href="../files/husky_components_auto-complete-list_main.js.html#l150"><code>husky_components&#x2F;auto-complete-list&#x2F;main.js:150</code></a>
         
         </p>
 

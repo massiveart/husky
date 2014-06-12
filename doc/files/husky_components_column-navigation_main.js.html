@@ -59,6 +59,8 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/Input.html">Input</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -100,6 +102,8 @@
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_input.html">husky/components/input</a></li>
             
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
@@ -174,6 +178,7 @@
  * @params {Number} [options.scrollBarWidth] with of scrollbar
  * @params {String} [options.url] url to load data
  * @params {String} [options.selected] id of selected element - needed to restore state
+ * @params {String} [options.editIcon] icon class of edit button
  * @params {Array}  [options.data] array of data displayed in the settings dropdown
  * @params {String} [options.instanceName] name of current instance
  * @params {String} [options.hasSubName] name of hasSub-key
@@ -185,6 +190,7 @@
  * @params {Number} [options.visibleRatio] minimum ratio of how much of a column must be visible to display the navigation
  * @params {String} [options.sizeRelativeTo] dom object which is used to calculate height / width (default $window)
  * @params {Boolean} [options.showEdit] hide or display edit elements
+ * @params {Boolean} [options.showEditIcon] hide or display edit icon element
  * @params {Boolean} [options.showStatus] hide or display status of elements
  */
 define([], function() {
@@ -204,7 +210,9 @@ define([], function() {
             data: null,
             instanceName: &#x27;undefined&#x27;,
             hasSubName: &#x27;hasSub&#x27;,
+            editIcon: &#x27;fa-pencil&#x27;,
             idName: &#x27;id&#x27;,
+            pathName: &#x27;path&#x27;,
             linkedName: &#x27;linked&#x27;,
             publishedName: &#x27;publishedState&#x27;,
             titleName: &#x27;title&#x27;,
@@ -213,6 +221,7 @@ define([], function() {
             noPageDescription: &#x27;public.no-pages&#x27;,
             sizeRelativeTo: null,
             showEdit: true,
+            showEditIcon: true,
             showStatus: true
         },
 
@@ -411,7 +420,6 @@ define([], function() {
         load: function(url, columnNumber) {
             if (!!url) {
                 this.columnLoadStarted = true;
-
                 this.sandbox.util.load(url)
                     .then(function(response) {
                         this.removeBigLoader();
@@ -498,7 +506,7 @@ define([], function() {
                 }
 
                 // needed to select node in last level of nodes
-                if (!!this.options.selected &amp;&amp; this.options.selected === value[this.options.idName]) {
+                if (!!this.options.selected &amp;&amp; (this.options.selected === value[this.options.idName] || this.options.selected === value[this.options.pathName])) {
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
                     lastSelected = value;
@@ -594,7 +602,7 @@ define([], function() {
          * @param $container
          */
         addLoadingIcon: function($container) {
-            this.sandbox.dom.removeClass($container, &#x27;inactive icon-chevron-right&#x27;);
+            this.sandbox.dom.removeClass($container, &#x27;fa-chevron-right inactive&#x27;);
 
             if (this.$loader === null) {
                 this.$loader = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;husky-column-navigation-loader&quot;/&gt;&#x27;);
@@ -623,7 +631,7 @@ define([], function() {
             if (!!this.$selectedElement) {
                 var $arrow = this.sandbox.dom.find(&#x27;.arrow&#x27;, this.$selectedElement);
                 this.sandbox.dom.hide(this.$loader);
-                this.sandbox.dom.prependClass($arrow, &#x27;icon-chevron-right&#x27;);
+                this.sandbox.dom.prependClass($arrow, &#x27;fa-chevron-right&#x27;);
             }
         },
 
@@ -708,22 +716,18 @@ define([], function() {
         },
 
         /**
-         * Shows the edit icon
+         * Sets the text width
          * @param {Object} event
          */
         itemMouseEnter: function(event) {
-            var $edit = this.sandbox.dom.find(&#x27;.edit&#x27;, event.currentTarget);
-            this.sandbox.dom.toggle($edit);
             this.setItemsTextWidth(event.currentTarget);
         },
 
         /**
-         * Hides the edit icon
+         * Sets the text width
          * @param {Object} event
          */
         itemMouseLeave: function(event) {
-            var $edit = this.sandbox.dom.find(&#x27;.edit&#x27;, event.currentTarget);
-            this.sandbox.dom.toggle($edit);
             this.setItemsTextWidth(event.currentTarget);
         },
 
@@ -769,6 +773,8 @@ define([], function() {
         displayOptions: function($activeColumn) {
             var visibleRatio;
 
+            this.lastHoveredColumn = this.sandbox.dom.data($activeColumn, &#x27;column&#x27;);
+
             // calculate the ratio of how much of the hovered column is visible
             if (this.sandbox.dom.position($activeColumn).left + this.sandbox.dom.width($activeColumn) &gt; this.sandbox.dom.width(this.$columnContainer)) {
                 visibleRatio = (this.sandbox.dom.width(this.$columnContainer) - this.sandbox.dom.position($activeColumn).left ) / this.sandbox.dom.width($activeColumn);
@@ -778,7 +784,6 @@ define([], function() {
 
             // display the option only if the column is visible enough
             if (visibleRatio &gt;= this.options.minVisibleRatio) {
-                this.lastHoveredColumn = this.sandbox.dom.data($activeColumn, &#x27;column&#x27;);
                 this.sandbox.dom.css(this.$optionsContainer, {&#x27;visibility&#x27;: &#x27;visible&#x27;});
                 this.updateOptionsMargin($activeColumn);
             } else {
@@ -936,15 +941,16 @@ define([], function() {
          * @param {Object} event
          */
         editNode: function(event) {
-            var $listItem, id, item;
+            var $listItem, id, item, column;
 
             if (this.sandbox.dom.hasClass(event.currentTarget, &#x27;edit&#x27;) === true) {
                 $listItem = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget));
             } else {
                 $listItem = this.sandbox.dom.$(event.currentTarget);
             }
+            column = this.sandbox.dom.index(this.sandbox.dom.parents(event.currentTarget, &#x27;.column&#x27;));
             id = this.sandbox.dom.data($listItem, &#x27;id&#x27;);
-            item = this.columns[this.lastHoveredColumn][id];
+            item = this.columns[column][id];
 
             this.sandbox.dom.stopPropagation(event);
             this.sandbox.emit(EDIT, item);
@@ -969,7 +975,7 @@ define([], function() {
 
             noPage: function(description) {
                 return [&#x27;&lt;div class=&quot;no-page&quot;&gt;&#x27;,
-                    &#x27;&lt;span class=&quot;icon-file&quot;&gt;&lt;/span&gt;&#x27;,
+                    &#x27;&lt;span class=&quot;fa-file-o&quot;&gt;&lt;/span&gt;&#x27;,
                     &#x27;&lt;div class=&quot;text&quot;&gt;&#x27;, description , &#x27;&lt;/div&gt;&#x27;,
                     &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
             },
@@ -984,9 +990,9 @@ define([], function() {
                     // link
                     if (!!data[this.options.linkedName]) {
                         if (data[this.options.linkedName] === &#x27;internal&#x27;) {
-                            item.push(&#x27;&lt;span class=&quot;icon-internal-link pull-left m-right-5&quot;&gt;&lt;/span&gt;&#x27;);
+                            item.push(&#x27;&lt;span class=&quot;fa-internal-link pull-left m-right-5&quot;&gt;&lt;/span&gt;&#x27;);
                         } else if (data[this.options.linkedName] === &#x27;external&#x27;) {
-                            item.push(&#x27;&lt;span class=&quot;icon-external-link pull-left m-right-5&quot;&gt;&lt;/span&gt;&#x27;);
+                            item.push(&#x27;&lt;span class=&quot;fa-external-link pull-left m-right-5&quot;&gt;&lt;/span&gt;&#x27;);
                         }
                     }
 
@@ -995,7 +1001,7 @@ define([], function() {
                         if (data[this.options.typeName].name === &#x27;ghost&#x27;) {
                             item.push(&#x27;&lt;span class=&quot;ghost pull-left m-right-5&quot;&gt;&#x27;, data[this.options.typeName].value, &#x27;&lt;/span&gt;&#x27;);
                         } else if (data[this.options.typeName].name === &#x27;shadow&#x27;) {
-                            item.push(&#x27;&lt;span class=&quot;icon-shadow-node pull-left m-right-5&quot;&gt;&lt;/span&gt;&#x27;);
+                            item.push(&#x27;&lt;span class=&quot;fa-shadow-node pull-left m-right-5&quot;&gt;&lt;/span&gt;&#x27;);
                         }
                     }
 
@@ -1015,10 +1021,10 @@ define([], function() {
 
                 // icons right (subpage, edit)
                 item.push(&#x27;&lt;span class=&quot;icons-right&quot;&gt;&#x27;);
-                if (!!this.options.showEdit) {
-                    item.push(&#x27;&lt;span class=&quot;icon-edit-pen edit hidden pull-left&quot;&gt;&lt;/span&gt;&#x27;);
+                if (!!this.options.showEditIcon) {
+                    item.push(&#x27;&lt;span class=&quot;&#x27; + this.options.editIcon + &#x27; edit hidden pull-left&quot;&gt;&lt;/span&gt;&#x27;);
                 }
-                !!data[this.options.hasSubName] ? item.push(&#x27;&lt;span class=&quot;icon-chevron-right arrow inactive pull-left&quot;&gt;&lt;/span&gt;&#x27;) : &#x27;&#x27;;
+                !!data[this.options.hasSubName] ? item.push(&#x27;&lt;span class=&quot;fa-chevron-right arrow inactive pull-left&quot;&gt;&lt;/span&gt;&#x27;) : &#x27;&#x27;;
                 item.push(&#x27;&lt;/span&gt;&lt;/li&gt;&#x27;);
                 return item.join(&#x27;&#x27;);
             },
@@ -1030,13 +1036,13 @@ define([], function() {
             options: {
                 add: function(id) {
                     return [&#x27;&lt;div id=&quot;&#x27;, id, &#x27;&quot; class=&quot;align-center add pointer&quot;&gt;&#x27;,
-                        &#x27;&lt;span class=&quot;icon-add&quot;&gt;&lt;/span&gt;&#x27;,
+                        &#x27;&lt;span class=&quot;fa-plus-circle&quot;&gt;&lt;/span&gt;&#x27;,
                         &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
                 },
 
                 settings: function(id) {
                     return [&#x27;&lt;div id=&quot;&#x27;, id, &#x27;&quot; class=&quot;align-center settings pointer drop-down-trigger&quot;&gt;&#x27;,
-                        &#x27;&lt;span class=&quot;icon-cogwheel inline-block&quot;&gt;&lt;/span&gt;&lt;span class=&quot;dropdown-toggle inline-block&quot;&gt;&lt;/span&gt;&#x27;,
+                        &#x27;&lt;span class=&quot;fa-gear inline-block&quot;&gt;&lt;/span&gt;&lt;span class=&quot;dropdown-toggle inline-block&quot;&gt;&lt;/span&gt;&#x27;,
                         &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
                 }
             }

@@ -59,6 +59,8 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/Input.html">Input</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -100,6 +102,8 @@
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_input.html">husky/components/input</a></li>
             
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
@@ -201,7 +205,7 @@ define([], function() {
             preSelectedElements: [],          // Elements selected by default
             multipleSelect: false,            // Allows multiple elements to be selected
             deselectField: false,             // field for deselection is added to dropdown if value is a string
-            disabled: false,                  //if true button is disabled
+            disabled: false,                  // if true button is disabled
             selectCallback: null,
             deselectCallback: null,
             style: &#x27;normal&#x27;,
@@ -299,7 +303,20 @@ define([], function() {
             EVENT_GET_CHECKED = function() {
             return getEventName.call(this, &#x27;get-checked&#x27;);
         },
-
+        /**
+         * update the elements of the dropdown list
+         * @event husky.select[.INSTANCE_NAME].update
+         */
+            EVENT_UPDATE = function() {
+            return getEventName.call(this, &#x27;update&#x27;);
+        },
+        /**
+         * update the elements of the dropdown list
+         * @event data-changed
+         */
+            EVENT_DATA_CHANGED = function() {
+            return &#x27;data-changed&#x27;;
+        },
 
         getEventName = function(suffix) {
             return &#x27;husky.select.&#x27; + this.options.instanceName + &#x27;.&#x27; + suffix;
@@ -310,6 +327,8 @@ define([], function() {
 
         initialize: function() {
 
+            var selectedIds;
+
             this.sandbox.logger.log(&#x27;initialize&#x27;, this);
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
@@ -319,10 +338,22 @@ define([], function() {
             }
 
             this.selection = [];
-
             this.selectedElements = [];
             this.selectedElementsValues = [];
             this.dropdownVisible = false;
+
+            // when preselected elements is not set via options look in data-attribute
+            if(!this.options.preSelectedElements || this.options.preSelectedElements.length === 0) {
+                selectedIds = this.sandbox.dom.data(this.$el, &#x27;selection&#x27;);
+
+                if (typeof selectedIds === &#x27;string&#x27;) {
+                    this.options.preSelectedElements = selectedIds.split(&#x27;,&#x27;);
+                } else if (Array.isArray(selectedIds)) {
+                    this.options.preSelectedElements = selectedIds.map(String);
+                } else if (typeof selectedIds === &#x27;number&#x27;) {
+                    this.options.preSelectedElements.push(selectedIds.toString());
+                }
+            }
 
             this.render();
             this.sandbox.emit(EVENT_INITIALIZED.call(this));
@@ -367,7 +398,6 @@ define([], function() {
             this.bindDOMEvents();
         },
 
-
         //sets the button i
         disable: function() {
             this.sandbox.dom.addClass(this.sandbox.dom.children(this.$el, &#x27;.husky-select-container&#x27;), constants.disabledClass);
@@ -378,18 +408,33 @@ define([], function() {
         // prepares data for dropDown, if options.data not set load with ajax
         prepareData: function() {
             if (this.options.data.length &gt; 0) {
+                if (this.options.preSelectedElements.length &gt; 0) {
+                    this.options.preSelectedElements.map(function(el, index, arr) {
+                        if (!!arr[index] || arr[index] === 0) {
+                            arr[index] = el.toString();
+                        }
+                    });
+                }
                 this.generateDropDown(this.options.data);
             } else {
                 this.sandbox.logger.log(&#x27;error: data not set&#x27;);
             }
             // TODO load data from url
         },
-
-        addDropdownElement: function(id, value, disabled, callback) {
+        /**
+         * Adds a dropdown element to the dropdown list
+         * @param id
+         * @param value
+         * @param disabled
+         * @param callback
+         * @param updateLabel
+         */
+        addDropdownElement: function(id, value, disabled, callback, updateLabel) {
             var $item,
                 idString = (!!id || id === 0) ? id.toString() : this.sandbox.util.uniqueId();
-            if (this.options.preSelectedElements.indexOf(id) &gt;= 0 || this.options.preSelectedElements.indexOf(value) &gt;= 0) {
-                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, &#x27;checked&#x27;));
+
+            if (this.options.preSelectedElements.indexOf(idString) &gt;= 0 || this.options.preSelectedElements.indexOf(value) &gt;= 0) {
+                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, &#x27;checked&#x27;, updateLabel));
                 this.selectedElements.push(idString);
                 this.selectedElementsValues.push(value);
                 if (this.options.emitValues === true) {
@@ -398,7 +443,7 @@ define([], function() {
                     this.triggerPreSelect(value);
                 }
             } else {
-                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, &#x27;&#x27;));
+                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, &#x27;&#x27;, updateLabel));
             }
 
             // store callback if callback is set
@@ -413,7 +458,18 @@ define([], function() {
             this.sandbox.dom.append(this.$list, $item);
         },
 
-        // generate dropDown with given items
+        /**
+         * Adds a divider element to the dropdown list
+         */
+        addDivider: function() {
+            var $item = this.sandbox.dom.$(&#x27;&lt;hr class=&quot;divider&quot;/&gt;&#x27;);
+            this.sandbox.dom.append(this.$list, $item);
+        },
+
+        /**
+         * Generates the dropdown list with the given items
+         * @param items
+         */
         generateDropDown: function(items) {
             if (typeof this.options.deselectField === &#x27;string&#x27; &amp;&amp; this.options.deselectField !== &#x27;false&#x27;) {
                 this.addDropdownElement(constants.deselectFieldKey, this.sandbox.translate(this.options.deselectField));
@@ -421,11 +477,16 @@ define([], function() {
             if (items.length &gt; 0) {
                 if (typeof(items[0]) === &#x27;string&#x27;) {
                     this.sandbox.util.each(items, function(index, value) {
-                        this.addDropdownElement(index, value);
+                        this.addDropdownElement(index, this.sandbox.translate(value));
                     }.bind(this));
                 } else if (typeof(items[0]) === &#x27;object&#x27;) {
                     this.sandbox.util.each(items, function(index, value) {
-                        this.addDropdownElement(value.id, value[this.options.valueName], !!value.disabled, value.callback);
+                        if (value.divider === true) {
+                            this.addDivider();
+                        } else {
+                            this.addDropdownElement(value.id, this.sandbox.translate(value[this.options.valueName]), !!value.disabled, value.callback, this.sandbox.translate(value.updateLabel));
+                        }
+
                     }.bind(this));
                 }
                 this.changeLabel();
@@ -451,6 +512,8 @@ define([], function() {
                 }
             }.bind(this), &#x27;.husky-select-dropdown-container li&#x27;);
 
+            this.sandbox.dom.on(this.$el, EVENT_DATA_CHANGED.call(this), this.dataChanged.bind(this));
+
         },
 
         bindCustomEvents: function() {
@@ -461,11 +524,75 @@ define([], function() {
             this.sandbox.on(EVENT_ENABLE.call(this), this.enable.bind(this));
 
             this.sandbox.on(EVENT_GET_CHECKED.call(this), this.getChecked.bind(this));
+
+            this.sandbox.on(EVENT_UPDATE.call(this), this.updateDropdown.bind(this));
+        },
+
+        /**
+         * Should be triggered when data attributes have changed
+         */
+        dataChanged: function() {
+            var selectedIds = this.sandbox.dom.data(this.$el, &#x27;selection&#x27;),
+                selectedValues = this.sandbox.dom.data(this.$el, &#x27;selectionValues&#x27;),
+                id, $checkbox;
+
+            this.selectedElements = [];
+            this.selectedElementsValues = [];
+
+            if (typeof selectedIds === &#x27;string&#x27;) {
+                this.selectedElements = selectedIds.split(&#x27;,&#x27;);
+            } else if (Array.isArray(selectedIds)) {
+                this.selectedElements = selectedIds.map(String);
+            } else if (typeof selectedIds === &#x27;number&#x27;) {
+                this.selectedElements.push(selectedIds.toString());
+            }
+
+            if(typeof selectedValues === &#x27;string&#x27;) {
+                this.selectedElementsValues = selectedValues.split(&#x27;,&#x27;);
+            } else if(!!Array.isArray(selectedValues)){
+                this.selectedElementsValues = selectedValues;
+            }
+
+            this.sandbox.util.foreach(this.$list, function($el) {
+                id = this.sandbox.dom.data($el, &#x27;id&#x27;) || &#x27;&#x27;;
+                $checkbox = this.sandbox.dom.find(&#x27;input[type=checkbox]&#x27;, $el);
+                if (this.selectedElements.indexOf(id) &gt; -1) {
+                    this.sandbox.dom.addClass($checkbox, &#x27;is-selected&#x27;);
+                    this.sandbox.dom.prop($checkbox, &#x27;checked&#x27;, true);
+                } else {
+                    this.sandbox.dom.removeClass($checkbox, &#x27;is-selected&#x27;);
+                    this.sandbox.dom.prop($checkbox, &#x27;checked&#x27;, false);
+                }
+
+            }.bind(this));
+
+            this.changeLabel();
+            this.updateSelectionAttribute();
+
+        },
+
+        /**
+         * Updates the dropdown list
+         * @param data
+         * @param preselected array of ids
+         */
+        updateDropdown: function(data, preselected) {
+
+            this.options.preSelectedElements = preselected.map(String);
+            this.selectedElements = [];
+            this.selectedElementsValues = [];
+            this.sandbox.dom.empty(this.$list);
+
+            if (!!data &amp;&amp; data.length &gt; 0) {
+                this.generateDropDown(data);
+            } else {
+                this.sandbox.logger.warn(&#x27;error invalid data for update!&#x27;);
+            }
         },
 
         updateSelectionAttribute: function() {
-            this.sandbox.dom.attr(this.$el, &#x27;data-selection&#x27;, this.selectedElements);
-            this.sandbox.dom.attr(this.$el, &#x27;data-selection-values&#x27;, this.selectedElementsValues);
+            this.sandbox.dom.data(this.$el, &#x27;selection&#x27;, this.selectedElements);
+            this.sandbox.dom.data(this.$el, &#x27;selectionValues&#x27;, this.selectedElementsValues);
         },
 
         //unchecks all checked elements
@@ -476,9 +603,14 @@ define([], function() {
                 key, index, $checkbox;
 
             for (; ++i &lt; length;) {
-                key = this.sandbox.dom.attr(elements[i], &#x27;data-id&#x27;);
+                key = this.sandbox.dom.data(elements[i], &#x27;id&#x27;);
+
+                if (key === undefined) {
+                    key = &#x27;&#x27;;
+                }
+
                 $checkbox = this.sandbox.dom.find(&#x27;input[type=checkbox]&#x27;, elements[i])[0];
-                index = this.selectedElements.indexOf(key);
+                index = this.selectedElements.indexOf(key.toString());
 
                 if (index &gt;= 0) {
                     if (clickedElementKey !== key) {
@@ -495,51 +627,58 @@ define([], function() {
         // trigger event with clicked item
         clickItem: function(event) {
 
-            var key, value, $checkbox, index, callback;
+            var key, value, $checkbox, index, callback, updateLabel;
 
-            key = this.sandbox.dom.attr(event.currentTarget, &#x27;data-id&#x27;);
+            key = this.sandbox.dom.data(event.currentTarget, &#x27;id&#x27;).toString();
             callback = this.sandbox.dom.data(event.currentTarget, &#x27;selectCallback&#x27;);
             index = this.selectedElements.indexOf(key);
+            updateLabel = this.sandbox.dom.attr(event.currentTarget, &#x27;data-update-label&#x27;);
 
-            // if single select then uncheck all results
-            if (this.options.multipleSelect === false) {
-                // if deselect was selected
-                if (key === constants.deselectFieldKey) {
-                    index = 0;
-                    this.uncheckAll(key);
-                    // if new element was selected
-                } else if (index === -1) {
-                    this.uncheckAll(key);
-                    // same element was selected
-                } else if (this.options.repeatSelect !== true) {
-                    this.hideDropDown();
-                    return;
+            if (updateLabel !== &#x27;false&#x27;) {
+
+                // if single select then uncheck all results
+                if (this.options.multipleSelect === false) {
+                    // if deselect was selected
+                    if (key === constants.deselectFieldKey) {
+                        index = 0;
+                        this.uncheckAll(key);
+                        // if new element was selected
+                    } else if (index === -1) {
+                        this.uncheckAll(key);
+                        // same element was selected
+                    } else if (this.options.repeatSelect !== true) {
+                        this.hideDropDown();
+                        return;
+                    }
                 }
+
             }
 
             value = this.sandbox.dom.text(this.sandbox.dom.find(&#x27;.item-value&#x27;, event.currentTarget));
             $checkbox = this.sandbox.dom.find(&#x27;input[type=checkbox]&#x27;, event.currentTarget)[0];
 
-            // deselect
-            if (index &gt;= 0) {
-                this.sandbox.dom.removeClass($checkbox, &#x27;is-selected&#x27;);
-                this.sandbox.dom.prop($checkbox, &#x27;checked&#x27;, false);
-                this.selectedElements.splice(index, 1);
-                this.selectedElementsValues.splice(index, 1);
+            if (!!updateLabel &amp;&amp; updateLabel !== &#x27;false&#x27;) {
+                // deselect
+                if (index &gt;= 0) {
+                    this.sandbox.dom.removeClass($checkbox, &#x27;is-selected&#x27;);
+                    this.sandbox.dom.prop($checkbox, &#x27;checked&#x27;, false);
+                    this.selectedElements.splice(index, 1);
+                    this.selectedElementsValues.splice(index, 1);
 
-                // select
-            } else {
-                this.sandbox.dom.addClass($checkbox, &#x27;is-selected&#x27;);
-                this.sandbox.dom.prop($checkbox, &#x27;checked&#x27;, true);
-                this.selectedElements.push(key);
-                this.selectedElementsValues.push(value);
+                    // select
+                } else {
+                    this.sandbox.dom.addClass($checkbox, &#x27;is-selected&#x27;);
+                    this.sandbox.dom.prop($checkbox, &#x27;checked&#x27;, true);
+                    this.selectedElements.push(key.toString());
+                    this.selectedElementsValues.push(value);
+                }
+
+                // update data attribute
+                this.updateSelectionAttribute();
+
+                // change label
+                this.changeLabel();
             }
-
-            // update data attribute
-            this.updateSelectionAttribute();
-
-            // change label
-            this.changeLabel();
 
             // hide if single select
             if (this.options.multipleSelect === false) {
@@ -642,7 +781,6 @@ define([], function() {
             this.sandbox.dom.on(this.sandbox.dom.window, &#x27;click.dropdown.&#x27; + this.options.instanceName, this.hideDropDown.bind(this));
             this.dropdownVisible = true;
 
-
             this.sandbox.dom.removeClass(this.$dropdownContainer, constants.dropdownTopClass);
             var ddHeight = this.sandbox.dom.height(this.$dropdownContainer),
                 ddTop = this.sandbox.dom.offset(this.$dropdownContainer).top,
@@ -683,10 +821,10 @@ define([], function() {
             basicStructure: function(defaultLabel, icon) {
                 var iconSpan = &#x27;&#x27;, dropdownToggle = &#x27;&#x27;;
                 if (!!icon) {
-                    iconSpan = &#x27;&lt;span class=&quot;icon-&#x27; + icon + &#x27; icon&quot;&gt;&lt;/span&gt;&#x27;;
+                    iconSpan = &#x27;&lt;span class=&quot;fa-&#x27; + icon + &#x27; icon&quot;&gt;&lt;/span&gt;&#x27;;
                 }
                 if (!!this.options.data &amp;&amp; !!this.options.data.length) {
-                    dropdownToggle = &#x27;&lt;span class=&quot;dropdown-toggle inline-block&quot;&gt;&lt;/span&gt;&#x27;;
+                    dropdownToggle = &#x27;&lt;span class=&quot;fa-caret-down toggle-icon&quot;&gt;&lt;/span&gt;&#x27;;
                 }
                 return [
                     &#x27;&lt;div class=&quot;husky-select-container&quot;&gt;&#x27;,
@@ -703,13 +841,20 @@ define([], function() {
                     &#x27;&lt;/div&gt;&#x27;
                 ].join(&#x27;&#x27;);
             },
-            menuElement: function(index, value, checked) {
-                var hiddenClass = &#x27;&#x27;;
+            menuElement: function(index, value, checked, updateLabel) {
+                var hiddenClass = &#x27;&#x27;,
+                    update = &#x27;true&#x27;;
+
                 if (this.options.multipleSelect === false) {
                     hiddenClass = &#x27; hidden&#x27;;
                 }
+
+                if (updateLabel !== undefined &amp;&amp; updateLabel === false) {
+                    update = &#x27;false&#x27;;
+                }
+
                 return [
-                    &#x27;&lt;li data-id=&quot;&#x27;, index, &#x27;&quot;&gt;&#x27;,
+                    &#x27;&lt;li data-id=&quot;&#x27;, index, &#x27;&quot; data-update-label=&quot;&#x27;, update, &#x27;&quot;&gt;&#x27;,
                     &#x27;    &lt;div&gt;&#x27;,
                     &#x27;        &lt;div class=&quot;check&#x27; + hiddenClass + &#x27;&quot;&gt;&#x27;,
                     &#x27;           &lt;div class=&quot;custom-checkbox no-spacing&quot;&gt;&#x27;,

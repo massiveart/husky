@@ -59,6 +59,8 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/Input.html">Input</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -100,6 +102,8 @@
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_input.html">husky/components/input</a></li>
             
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
@@ -284,7 +288,7 @@
             };
 
             app.core.dom.height = function(selector, value) {
-                if (!value) {
+                if (typeof value === &#x27;undefined&#x27;) {
                     return $(selector).height();
                 }
                 return $(selector).height(value);
@@ -295,6 +299,14 @@
                     return $(selector).outerHeight();
                 } else {
                     return $(selector).outerHeight(includeMargin);
+                }
+            };
+
+            app.core.dom.outerWidth = function(selector, includeMargin) {
+                if (typeof includeMargin === &#x27;undefined&#x27;) {
+                    return $(selector).outerWidth();
+                } else {
+                    return $(selector).outerWidth(includeMargin);
                 }
             };
 
@@ -472,6 +484,10 @@
                 return $(selector).show();
             };
 
+            app.core.dom.trim = function(string) {
+                return $.trim(string);
+            };
+
             app.core.dom.map = function(selector, callback) {
                 return $(selector).map(callback);
             };
@@ -482,6 +498,14 @@
 
             app.core.dom.toggle = function(selector) {
                 return $(selector).toggle();
+            };
+
+            app.core.dom.index = function(selector, filter) {
+                if (!!filter) {
+                    return $(selector).index(filter);
+                } else {
+                    return $(selector).index();
+                }
             };
 
             app.core.dom.keypress = function(selector, callback) {
@@ -573,8 +597,12 @@
                 $(selector).animate(properties, options);
             };
 
+            app.core.dom.empty = function(selector){
+              $(selector).empty();
+            };
+
             /**
-             * Awesome visible method. Returns true if any part of a given element is not visible
+             * Awesome visible method. Returns false if any part of a given element is not visible
              * Method is copied and slightly adapted from https://github.com/teamdf/jquery-visible/
              * @param selector {Stirng|Object} element selector or jquery dom object
              * @param partial {Boolean} if true only returns false if every part of the element is not visible

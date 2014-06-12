@@ -59,6 +59,8 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/Input.html">Input</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -100,6 +102,8 @@
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_input.html">husky/components/input</a></li>
             
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
@@ -345,7 +349,7 @@ define([], function() {
         setTemplate: function() {
             var iconHTML = &#x27;&#x27;;
             if (this.options.suggestionImg !== &#x27;&#x27;) {
-                iconHTML = &#x27;&lt;span class=&quot;icon-&#x27; + this.options.suggestionImg + &#x27; icon&quot;&gt;&lt;/span&gt;&#x27;;
+                iconHTML = &#x27;&lt;span class=&quot;fa-&#x27; + this.options.suggestionImg + &#x27; icon&quot;&gt;&lt;/span&gt;&#x27;;
             }
             this._template = this.sandbox.util.template(&#x27;&#x27; +
                 &#x27;&lt;div class=&quot;&#x27; + this.options.suggestionClass + &#x27;&quot; data-id=&quot;&lt;%= id %&gt;&quot;&gt;&#x27; +

@@ -59,6 +59,8 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/Input.html">Input</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -100,6 +102,8 @@
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_input.html">husky/components/input</a></li>
             
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
@@ -158,7 +162,7 @@
  *
  * @param {Object} [paginationOptions] Configuration object
  * @param {Number} [paginationOptions.pageSize] maximum elements per page
- * @param {Function} [paginationOptions.showAllHandler] function to call if pagination is clicked. Default action gets not executed if set
+ * @param {Function} [paginationOptions.showAllHandler] function to call if pagination is clicked. If set pagination will always be displayed. Default action gets not executed if set.
  *
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
@@ -231,7 +235,7 @@ define(function () {
             this.data = data;
 
             this.$paginationContainer = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;&#x27; + constants.paginationClass + &#x27;&quot;/&gt;&#x27;);
-            if (this.data.numberOfAll &gt; this.data.total) {
+            if (this.data.numberOfAll &gt; this.data.total || !!this.options.showAllHandler) {
                 this.renderShowAll();
             } else if (this.data.numberOfAll &gt; this.options.pageSize) {
                 this.renderShowOnly();
@@ -308,7 +312,7 @@ define(function () {
          */
         bindDomEvents: function () {
             this.sandbox.dom.on(this.$paginationContainer, &#x27;click&#x27;, function() {
-                if (this.data.numberOfAll &gt; this.data.total) {
+                if (this.data.numberOfAll &gt; this.data.total || !!this.options.showAllHandler) {
                     this.showAll();
                 } else {
                     this.showOnly();

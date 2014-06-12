@@ -59,6 +59,8 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/Input.html">Input</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -100,6 +102,8 @@
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_input.html">husky/components/input</a></li>
             
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
@@ -259,7 +263,8 @@ define(function() {
                             disabled: true,
                             singleSelect: true,
                             instanceName: i,
-                            data: []
+                            data: [],
+                            defaultLabel: this.sandbox.dom.isArray(this.options.defaultLabels) ? this.options.defaultLabels[depth] : this.options.defaultLabels
                         }
                     }
                 ]);
@@ -301,7 +306,7 @@ define(function() {
         checkAllSelected = function() {
             var $lastContainer = this.$find(this.options.container[this.options.container.length-1]),
                 lastSelectElement = this.sandbox.dom.children($lastContainer)[0],
-                selection = this.sandbox.dom.attr(lastSelectElement,&#x27;data-selection&#x27;);
+                selection = this.sandbox.dom.data(lastSelectElement,&#x27;selection&#x27;);
 
             // if last element is selected
             if (!!lastSelectElement &amp;&amp; typeof selection !== &#x27;undefined&#x27;) {

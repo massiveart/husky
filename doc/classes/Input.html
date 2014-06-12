@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Matcher - husky</title>
+    <title>Input - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -152,7 +152,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>Matcher Class</h1>
+                        <h1>Input Class</h1>
 <div class="box meta">
     
 
@@ -160,13 +160,13 @@
 
     
         <div class="foundat">
-            Defined in: <a href="../files/husky_components_matcher_main.js.html#l12"><code>husky_components&#x2F;matcher&#x2F;main.js:12</code></a>
+            Defined in: <a href="../files/husky_components_input_main.js.html#l12"><code>husky_components&#x2F;input&#x2F;main.js:12</code></a>
         </div>
     
 
     
         
-            Module: <a href="../modules/husky_components_matcher.html">husky/components/matcher</a>
+            Module: <a href="../modules/husky_components_input.html">husky/components/input</a>
         
     
 
@@ -182,8 +182,8 @@
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_Matcher" class="method item">
-    <h3 class="name"><code>Matcher</code></h3>
+        <div id="method_Input" class="method item">
+    <h3 class="name"><code>Input</code></h3>
 
     
         <div class="args">
@@ -224,7 +224,7 @@
             
         
         
-        <a href="../files/husky_components_matcher_main.js.html#l12"><code>husky_components&#x2F;matcher&#x2F;main.js:12</code></a>
+        <a href="../files/husky_components_input_main.js.html#l12"><code>husky_components&#x2F;input&#x2F;main.js:12</code></a>
         
         </p>
 
@@ -269,7 +269,7 @@
                                 
 
                                 <div class="param-description">
-                                    <p>name of the instance</p>
+                                    <p>name if the the input instance</p>
 
                                 </div>
 
@@ -278,13 +278,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[dbColumns]</code>
-                                    <span class="type">Array</span>
+                                    <code class="param-name optional">[inputId]</code>
+                                    <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>Array with objects containing DB-columns information</p>
+                                    <p>DOM-id to give the actual input-tag</p>
 
                                 </div>
 
@@ -293,13 +293,73 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[data]</code>
+                                    <code class="param-name optional">[inputName]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>DOM-name to give the actual input-tag. Can be usefull in forms</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[value]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>value to set at the beginning</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[placeholder]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>html5-placholder to use</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[skin]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of the skin to use. Currently &#39;phone&#39;, &#39;password&#39;, &#39;url&#39;, &#39;email&#39;, &#39;date&#39;, &#39;time&#39;, &#39;color&#39;. Each skin brings it&#39;s own default values. For example the password skin has automatically inputType: &#39;password&#39;</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[datepickerOptions]</code>
                                     <span class="type">Object</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>columns to match</p>
+                                    <p>config-object to pass to the datepicker component</p>
 
                                 </div>
 
@@ -308,13 +368,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[translations]</code>
+                                    <code class="param-name optional">[colorPickerOptions]</code>
                                     <span class="type">Object</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>objects containing translation keys</p>
+                                    <p>config-object to pass to the colorpicker component</p>
 
                                 </div>
 
@@ -323,13 +383,118 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[multiAssignDefault]</code>
-                                    <span class="type">Boolean</span>
+                                    <code class="param-name optional">[frontIcon]</code>
+                                    <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>default value for the multiAssign-property of DB-columns</p>
+                                    <p>name of icon to display in front</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[frontText]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>text to display in front</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[frontHtml]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>html to display in front</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[backIcon]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of icon to display in front</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[backText]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>text to display in back</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[backHtml]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>html to display in back</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[renderMethod]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of a special render method to execute. Currently &#39;colorpicker&#39;, &#39;datepicker&#39;, &#39;time&#39;. For example &#39;colorpicker&#39; initializes a colorpicker and sets a css-class</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[inputType]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>the actual type of the input. e.g. &#39;text&#39; or &#39;password&#39;</p>
 
                                 </div>
 
@@ -381,35 +546,7 @@
                     <ul class="index-list events">
                         
                             <li class="index-item event">
-                                <a href="#event_husky.matcher.&lt;instance-name&gt;.edited">husky.matcher.&lt;instance-name&gt;.edited</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
-                                <a href="#event_husky.matcher.&lt;instance-name&gt;.get-data">husky.matcher.&lt;instance-name&gt;.get-data</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
-                                <a href="#event_husky.matcher.&lt;instance-name&gt;.initialize">husky.matcher.&lt;instance-name&gt;.initialize</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
-                                <a href="#event_husky.matcher.&lt;instance-name&gt;.matched">husky.matcher.&lt;instance-name&gt;.matched</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
-                                <a href="#event_husky.matcher.&lt;instance-name&gt;.skipped">husky.matcher.&lt;instance-name&gt;.skipped</a>
+                                <a href="#event_husky.input.&lt;instance-name&gt;.initialize">husky.input.&lt;instance-name&gt;.initialize</a>
 
                                 
                                 
@@ -431,8 +568,8 @@
                 <h2 class="off-left">Events</h2>
 
                 
-                    <div id="event_husky.matcher.&lt;instance-name&gt;.edited" class="events item">
-    <h3 class="name"><code>husky.matcher.&lt;instance-name&gt;.edited</code></h3>
+                    <div id="event_husky.input.&lt;instance-name&gt;.initialize" class="events item">
+    <h3 class="name"><code>husky.input.&lt;instance-name&gt;.initialize</code></h3>
     <span class="type"></span>
 
     
@@ -454,143 +591,7 @@
             
         
         
-        <a href="../files/husky_components_matcher_main.js.html#l111"><code>husky_components&#x2F;matcher&#x2F;main.js:111</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>raised after a column is edited (matched or skipped)</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Event Payload:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">Number</code>
-                        <span class="type">Number</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>of remaining unmatched columns</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.matcher.&lt;instance-name&gt;.get-data" class="events item">
-    <h3 class="name"><code>husky.matcher.&lt;instance-name&gt;.get-data</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_matcher_main.js.html#l120"><code>husky_components&#x2F;matcher&#x2F;main.js:120</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>listens on</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Event Payload:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">Callback</code>
-                        <span class="type">Function</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>to pass the array with all columns</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.matcher.&lt;instance-name&gt;.initialize" class="events item">
-    <h3 class="name"><code>husky.matcher.&lt;instance-name&gt;.initialize</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_matcher_main.js.html#l85"><code>husky_components&#x2F;matcher&#x2F;main.js:85</code></a>
+        <a href="../files/husky_components_input_main.js.html#l122"><code>husky_components&#x2F;input&#x2F;main.js:122</code></a>
         
         </p>
 
@@ -604,142 +605,6 @@
 
     </div>
 
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.matcher.&lt;instance-name&gt;.matched" class="events item">
-    <h3 class="name"><code>husky.matcher.&lt;instance-name&gt;.matched</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_matcher_main.js.html#l93"><code>husky_components&#x2F;matcher&#x2F;main.js:93</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>raised after a column is matched</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Event Payload:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">Object</code>
-                        <span class="type">Object</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>with column and matched db-column</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-
-    
-</div>
-
-                
-                    <div id="event_husky.matcher.&lt;instance-name&gt;.skipped" class="events item">
-    <h3 class="name"><code>husky.matcher.&lt;instance-name&gt;.skipped</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="../files/husky_components_matcher_main.js.html#l102"><code>husky_components&#x2F;matcher&#x2F;main.js:102</code></a>
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>raised after a column is skipped</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Event Payload:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">Object</code>
-                        <span class="type">Object</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>with column</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
     
 
 
