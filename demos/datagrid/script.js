@@ -20,6 +20,7 @@ require(['lib/husky'], function(Husky) {
                 name: 'datagrid@husky',
                 options: {
                     url: 'http://husky.lo:7878/admin/api/datagrid',
+                    preselected: ["1", "2"],
                     paginationOptions: {
                         dropdown: {
                             pageSize: 4

@@ -391,7 +391,6 @@
                 // extend default options and set variables
                 this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
-
                 this.matchings = [];
                 this.requestFields = [];
                 this.filterMatchings(this.options.matchings);
@@ -497,6 +496,9 @@
              * Renders the data of the datagrid
              */
             render: function() {
+                var count = this.setSelectedItems(this.options.preselected);
+                this.sandbox.logger.log('Selected item:', count);
+
                 this.gridViews[this.viewId].render(this.data, this.$element);
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].render(this.data, this.$element);
