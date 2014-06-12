@@ -41457,6 +41457,13 @@ define('__component__$input@husky',[], function () {
                 this.sandbox.dom.focus(this.input.$input);
             }.bind(this));
 
+            // delegat labels on input
+            if(!!this.sandbox.dom.attr(this.$el, 'id')) {
+                this.sandbox.dom.on('label[for="'+ this.sandbox.dom.attr(this.$el, 'id') +'"]', 'click', function() {
+                    this.sandbox.dom.focus(this.input.$input);
+                }.bind(this));
+            }
+
             // change the input value if the data attribute got changed
             this.sandbox.dom.on(this.$el, 'data-changed', function() {
                 this.updateValue();
