@@ -118,7 +118,9 @@ define(function () {
                     } else if (matching.type === this.datagrid.types.TITLE) {
                         title = group[matching.attribute];
                     } else if(matching.type === this.datagrid.types.COUNT) {
-                        addition += group[matching.attribute] + ' ' + this.sandbox.translate(constants.elementsKey);
+                        addition += this.datagrid.manipulateContent.call(this.datagrid,
+                            group[matching.attribute],
+                            matching.type, this.sandbox.translate(constants.elementsKey));
                     }
                 }.bind(this));
 

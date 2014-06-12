@@ -365,6 +365,15 @@
             },
 
             /**
+             * Attaches a postfix to a number
+             * @param number
+             * @param postfix
+             */
+            parseCount = function(number, postfix) {
+                return (!!postfix) ? number + ' ' + postfix : number;
+            },
+
+            /**
              * Takes an array of thumbnails and returns an object with url and and alt
              * @param thumbnails {Array} array of thumbnails
              * @param format {String} the format of the thumbnail
@@ -804,7 +813,9 @@
                 } else if (type === types.BYTES) {
                     content = parseBytes.call(this, content, argument);
                 } else if (type === types.THUMBNAILS) {
-                    content = parseThumbnails.call(this, content, argument)
+                    content = parseThumbnails.call(this, content, argument);
+                } else if (type === types.COUNT) {
+                    content = parseCount.call(this, content, argument);
                 }
                 return content;
             },
