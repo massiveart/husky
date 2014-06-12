@@ -248,7 +248,6 @@ define('form/element',['form/util'], function(Util) {
             valid,
             validators = {},
             type,
-            lastValue = null,
             dfd = null,
 
             that = {
@@ -410,10 +409,6 @@ define('form/element',['form/util'], function(Util) {
                     return validatorsConstraint || typeConstraint;
                 },
 
-                needsValidation: function() {
-                    return lastValue !== Util.getValue(this.$el);
-                },
-
                 reset: function() {
                     var $element = this.$el;
                     if (!!this.options.validationAddClassesParent) {
@@ -442,7 +437,7 @@ define('form/element',['form/util'], function(Util) {
                 validate: function(force) {
                     var result = true;
                     // only if value changed or force is set
-                    if (force || that.needsValidation.call(this)) {
+                    if (force || this.needsValidation()) {
                         if (that.hasConstraints.call(this)) {
                             // check each validator
                             $.each(validators, function (key, validator) {
@@ -574,6 +569,10 @@ define('form/element',['form/util'], function(Util) {
 
                 getValue: function(data) {
                     return type.getValue(data);
+                },
+
+                needsValidation: function() {
+                    return type.needsValidation();
                 },
 
                 getType: function() {
