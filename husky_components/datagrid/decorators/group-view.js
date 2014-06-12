@@ -117,7 +117,7 @@ define(function () {
                         thumbnails = group[matching.attribute];
                     } else if (matching.type === this.datagrid.types.TITLE) {
                         title = group[matching.attribute];
-                    } else {
+                    } else if(matching.type === this.datagrid.types.COUNT) {
                         addition += group[matching.attribute] + ' ' + this.sandbox.translate(constants.elementsKey);
                     }
                 }.bind(this));
@@ -129,7 +129,7 @@ define(function () {
 
         /**
          * Renders a single group
-         * @oaram id {Number|String} the id of the group
+         * @param id {Number|String} the id of the group
          * @param thumbnails {Array} the array with thumbnails
          * @param title {String} the group title
          * @param addition {String} the addition of the group

@@ -61,7 +61,8 @@
                 DATE: 'date',
                 THUMBNAILS: 'thumbnails',
                 TITLE: 'title',
-                BYTES: 'bytes'
+                BYTES: 'bytes',
+                COUNT: 'count'
             },
 
             decorators = {
@@ -84,7 +85,7 @@
              * raised when the the current page changes
              * @event husky.datagrid.page.change
              */
-                PAGE_CHANGE = function () {
+            PAGE_CHANGE = function() {
                 return this.createEventName('page.change');
             },
 
@@ -92,7 +93,7 @@
              * raised when the data is updated
              * @event husky.datagrid.updated
              */
-                UPDATED = function () {
+            UPDATED = function() {
                 return this.createEventName('updated');
             },
 
@@ -101,7 +102,7 @@
              * @event husky.datagrid.item.deselect
              * @param {String} id of deselected item
              */
-                ITEM_DESELECT = function () {
+            ITEM_DESELECT = function() {
                 return this.createEventName('item.deselect');
             },
 
@@ -109,7 +110,7 @@
              * raised when selection of items changes
              * @event husky.datagrid.number.selections
              */
-                NUMBER_SELECTIONS = function () {
+            NUMBER_SELECTIONS = function() {
                 return this.createEventName('number.selections');
             },
 
@@ -118,7 +119,7 @@
              * @event husky.datagrid.item.click
              * @param {String} id of item that was clicked
              */
-                ITEM_CLICK = function () {
+            ITEM_CLICK = function() {
                 return this.createEventName('item.click');
             },
 
@@ -127,7 +128,7 @@
              * @event husky.datagrid.item.select
              * @param {String} if of selected item
              */
-                ITEM_SELECT = function () {
+            ITEM_SELECT = function() {
                 return this.createEventName('item.select');
             },
 
@@ -135,7 +136,7 @@
              * raised when all items get deselected via the header checkbox
              * @event husky.datagrid.all.deselect
              */
-                ALL_DESELECT = function () {
+            ALL_DESELECT = function() {
                 return this.createEventName('all.deselect');
             },
 
@@ -144,7 +145,7 @@
              * @event husky.datagrid.all.select
              * @param {Array} ids of all items that have been clicked
              */
-                ALL_SELECT = function () {
+            ALL_SELECT = function() {
                 return this.createEventName('all.select');
             },
 
@@ -153,7 +154,7 @@
              * @event husky.datagrid.data.saved
              * @param {Object} data returned
              */
-                DATA_SAVED = function () {
+            DATA_SAVED = function() {
                 return this.createEventName('updated');
             },
 
@@ -164,7 +165,7 @@
              * @param {String} error thrown
              *
              */
-                DATA_SAVE_FAILED = function () {
+            DATA_SAVE_FAILED = function() {
                 return this.createEventName('data.save.failed');
             },
 
@@ -172,7 +173,7 @@
              * raised when editable table is changed
              * @event husky.datagrid.data.save
              */
-                DATA_CHANGED = function () {
+            DATA_CHANGED = function() {
                 return this.createEventName('data.changed');
             },
 
@@ -183,7 +184,7 @@
              * raised when husky.datagrid.data.get is triggered
              * @event husky.datagrid.data.provide
              */
-                DATA_PROVIDE = function () {
+            DATA_PROVIDE = function() {
                 return this.createEventName('data.provide');
             },
 
@@ -193,7 +194,7 @@
              * @param {String} viewId The identifier of the view
              * @param {Object} Options to merge with the current view options
              */
-                CHANGE_VIEW = function () {
+            CHANGE_VIEW = function() {
                 return this.createEventName('view.change');
             },
 
@@ -202,7 +203,7 @@
              * @event husky.datagrid.pagination.change
              * @param {String} paginationId The identifier of the pagination
              */
-                CHANGE_PAGINATION = function () {
+            CHANGE_PAGINATION = function() {
                 return this.createEventName('pagination.change');
             },
 
@@ -211,7 +212,7 @@
              * @event husky.datagrid.record.add
              * @param {Object} the data of the new record
              */
-                RECORD_ADD = function () {
+            RECORD_ADD = function() {
                 return this.createEventName('record.add');
             },
 
@@ -220,7 +221,7 @@
              * @event husky.datagrid.record.add
              * @param {Object} the data of the new record
              */
-                RECORDS_ADD = function () {
+            RECORDS_ADD = function() {
                 return this.createEventName('records.add');
             },
 
@@ -229,7 +230,7 @@
              * @event husky.datagrid.record.remove
              * @param {String} id of the record to be removed
              */
-                RECORD_REMOVE = function () {
+            RECORD_REMOVE = function() {
                 return this.createEventName('record.remove');
             },
 
@@ -238,7 +239,7 @@
              * @event husky.datagrid.records.change
              * @param {Object|Array} the new data-record. Must at least contain an id-property. Can also be an array of data-records
              */
-                RECORDS_CHANGE = function () {
+            RECORDS_CHANGE = function() {
                 return this.createEventName('records.change');
             },
 
@@ -246,7 +247,7 @@
              * used to trigger an update of the data
              * @event husky.datagrid.update
              */
-                UPDATE = function () {
+            UPDATE = function() {
                 return this.createEventName('update');
             },
 
@@ -256,7 +257,7 @@
              * @param {String} searchField
              * @param {String} searchString
              */
-                DATA_SEARCH = function () {
+            DATA_SEARCH = function() {
                 return this.createEventName('data.search');
             },
 
@@ -264,7 +265,7 @@
              * raised when data is sorted
              * @event husky.datagrid.data.sort
              */
-                DATA_SORT = function () {
+            DATA_SORT = function() {
                 return this.createEventName('data.sort');
             },
 
@@ -273,7 +274,7 @@
              * @event husky.datagrid.url.update
              * @param {Object} url parameter : key
              */
-                URL_UPDATE = function () {
+            URL_UPDATE = function() {
                 return this.createEventName('url.update');
             },
 
@@ -281,7 +282,7 @@
              * triggers husky.datagrid.data.provide
              * @event husky.datagrid.data.get
              */
-                DATA_GET = function () {
+            DATA_GET = function() {
                 return this.createEventName('data.get');
             },
 
@@ -290,7 +291,7 @@
              * @event husky.datagrid.items.get-selected
              * @param  {Function} callback function receives array of selected items
              */
-                ITEMS_GET_SELECTED = function () {
+            ITEMS_GET_SELECTED = function() {
                 return this.createEventName('items.get-selected');
             },
 
@@ -345,8 +346,8 @@
                     return '0 Byte';
                 }
                 var k = 1000,
-                sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-                i = Math.floor(Math.log(bytes) / Math.log(k));
+                    sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+                    i = Math.floor(Math.log(bytes) / Math.log(k));
                 return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
             },
 
@@ -387,7 +388,7 @@
              * Creates the eventnames
              * @param postfix {String} event name to append
              */
-            createEventName: function (postfix) {
+            createEventName: function(postfix) {
                 return namespace + ((!!this.options.instanceName) ? this.options.instanceName + '.' : '') + postfix;
             },
 

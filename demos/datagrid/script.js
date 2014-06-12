@@ -148,15 +148,15 @@ require(['lib/husky'], function(Husky) {
                     instanceName: 'grid-thumbnails',
                     matchings: [
                         {
-                            id: "title",
+                            id: 'title',
                             type: 'title'
                         },
                         {
-                            id: "mediaNumber",
-                            type: 'elements'
+                            id: 'mediaNumber',
+                            type: 'count'
                         },
                         {
-                            id: "thumbnails",
+                            id: 'thumbnails',
                             type: 'thumbnails'
                         }
                     ]
