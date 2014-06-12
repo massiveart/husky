@@ -48,7 +48,7 @@ define([
             typeInterface = {
                 setValue: function(data) {
                     this.$el.data({
-                       value: data
+                        value: data
                     }).trigger('data-changed');
                 },
 
@@ -67,7 +67,7 @@ define([
                 validate: function() {
                     var value = this.getValue(),
                         type = this.$el.data('auraSkin');
-                    if (!!type && !!typeValidators[type]) {
+                    if (!!value && !!type && !!typeValidators[type]) {
                         return typeValidators[type].call(this, value);
                     } else {
                         return true;

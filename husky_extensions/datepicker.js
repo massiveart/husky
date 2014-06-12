@@ -131,7 +131,7 @@
 
                 init: function(selector, configs) {
                     var settings = {
-                        format: app.sandbox.globalize.getDatePattern(),
+                        format: app.sandbox.globalize.getDatePattern().toLowerCase(),
                         language: app.sandbox.globalize.getLocale(),
                         autoclose: true
                     };
