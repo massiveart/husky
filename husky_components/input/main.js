@@ -187,6 +187,13 @@ define([], function () {
                 this.sandbox.dom.focus(this.input.$input);
             }.bind(this));
 
+            // delegate labels on input
+            if(!!this.sandbox.dom.attr(this.$el, 'id')) {
+                this.sandbox.dom.on('label[for="'+ this.sandbox.dom.attr(this.$el, 'id') +'"]', 'click', function() {
+                    this.sandbox.dom.focus(this.input.$input);
+                }.bind(this));
+            }
+
             // change the input value if the data attribute got changed
             this.sandbox.dom.on(this.$el, 'data-changed', function() {
                 this.updateValue();
@@ -266,6 +273,17 @@ define([], function () {
                 this.setDatepickerValueAttr(event.date);
             }.bind(this));
             this.updateValue();
+
+            this.bindDatepickerDomEvents();
+        },
+
+        /**
+         * Binds Dom-events for the datepicker
+         */
+        bindDatepickerDomEvents: function() {
+            this.sandbox.dom.on(this.input.$input, 'focusout', function() {
+                this.setDatepickerValueAttr(this.sandbox.datepicker.getDate(this.input.$input));
+            }.bind(this));
         },
 
         /**
@@ -326,9 +344,14 @@ define([], function () {
          */
         setDatepickerValueAttr: function(date) {
             if (!!date) {
-                date = date.getFullYear() + '-' +
-                   ('0' + (date.getMonth()+1)).slice(-2) + '-' +
-                   ('0' + date.getDate()).slice(-2);
+                if (this.sandbox.dom.isNumeric(date.valueOf())) {
+                    date = date.getFullYear() + '-' +
+                        ('0' + (date.getMonth()+1)).slice(-2) + '-' +
+                        ('0' + date.getDate()).slice(-2);
+                } else {
+                    date = '';
+                    this.sandbox.dom.val(this.input.$input, '');
+                }
             }
             this.sandbox.dom.data(this.$el, 'value', date);
         },

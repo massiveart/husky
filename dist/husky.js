@@ -16768,34 +16768,40 @@ define('form/element',['form/util'], function(Util) {
 
             result = {
                 validate: function(force) {
+                    var result = true,
+                        validated = false;
+
                     // only if value changed or force is set
                     if (force || that.needsValidation.call(this)) {
-                        if (!that.hasConstraints.call(this)) {
-                            // delete state
-                            //that.reset.call(this);
-                            return true;
+                        if (that.hasConstraints.call(this)) {
+                            // check each validator
+                            $.each(validators, function (key, validator) {
+                                if (!validator.validate()) {
+                                    result = false;
+                                    // TODO Messages
+                                }
+                            });
+                            validated = true;
                         }
+                    }
 
-                        var result = true;
-                        // check each validator
-                        $.each(validators, function(key, validator) {
-                            if (!validator.validate()) {
-                                result = false;
-                                // TODO Messages
-                            }
-                        });
-
-                        // check type
-                        if (type !== null && !type.validate()) {
+                    // check type
+                    if (!!type && type.needsValidation()) {
+                        if (!type.validate()) {
                             result = false;
                         }
+                        validated = true;
+                    }
 
+                    // set css classes
+                    if (validated === true) {
                         if (!result) {
                             Util.debug('Field validate', !!result ? 'true' : 'false', this.$el);
                         }
                         that.setValid.call(this, result);
                     }
-                    return this.isValid();
+
+                    return result;
                 },
 
                 update: function() {
@@ -25945,7 +25951,8 @@ define('type/husky-select',[
                 },
 
                 needsValidation: function() {
-                    return this.options.required;
+                    var val = this.getValue()
+                    return !!val;
                 },
 
                 validate: function() {
@@ -26025,13 +26032,14 @@ define('type/husky-input',[
                 },
 
                 needsValidation: function() {
-                    return this.options.required;
+                    var val = this.getValue();
+                    return val !== '';
                 },
 
                 validate: function() {
                     var value = this.getValue(),
                         type = this.$el.data('auraSkin');
-                    if (!!value && !!type && !!typeValidators[type]) {
+                    if (!!type && !!typeValidators[type]) {
                         return typeValidators[type].call(this, value);
                     } else {
                         return true;
@@ -28251,7 +28259,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             oversizedClass: 'oversized',
             overflowClass: 'overflow',
             thumbSrcKey: 'url',
-            thumbAltKey: 'alt'
+            thumbAltKey: 'alt',
+            sortLoaderClass: 'sort-loader'
         },
 
         /**
@@ -29402,12 +29411,28 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         prepareSort: function(event) {
             var $element = event.currentTarget,
                 $span = this.sandbox.dom.children($element, 'span')[0],
-
                 attribute = this.sandbox.dom.data($element, 'attribute'),
-                direction = this.sandbox.dom.hasClass($span, constants.ascClass) ? 'desc' : 'asc';
+                direction = this.sandbox.dom.hasClass($span, constants.ascClass) ? 'desc' : 'asc',
+                $loaderContainer = this.sandbox.dom.createElement('<span class="'+ constants.sortLoaderClass +'"/>');
 
-                // delegate sorting to datagrid
-                this.datagrid.sortGrid.call(this.datagrid, attribute, direction);
+            this.sandbox.dom.stopPropagation(event);
+
+            // start loader beneath th
+            this.sandbox.dom.removeClass($span);
+            this.sandbox.dom.append($span, $loaderContainer);
+            this.sandbox.start([
+                {
+                    name: 'loader@husky',
+                    options: {
+                        el: $loaderContainer,
+                        size: '10px',
+                        color: '#999999'
+                    }
+                }
+            ]);
+
+            // delegate sorting to datagrid
+            this.datagrid.sortGrid.call(this.datagrid, attribute, direction);
         }
     };
 });
@@ -29626,6 +29651,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
 
             this.sandbox.dom.on(this.$thumbnails[id], 'dblclick', function() {
                 this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+                this.selectItem(id);
             }.bind(this));
         },
 
@@ -29698,6 +29724,226 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
                 return true;
             }
             return false;
+        }
+    };
+});
+
+/**
+ * @class GroupView (Datagrid Decorator)
+ * @constructor
+ *
+ * @param {Object} [options] Configuration object
+ *
+ * @param {Boolean} [rendered] property used by the datagrid-main class
+ * @param {Function} [initialize] function which gets called once at the start of the view
+ * @param {Function} [render] function to render data
+ * @param {Function} [destroy] function to destroy the view and unbind events
+ */
+define('husky_components/datagrid/decorators/group-view',[],function () {
+
+    
+
+    var defaults = {
+
+        },
+
+        constants = {
+            containerClass: 'husky-groups',
+            elementsKey: 'public.elements',
+            thumbnailClass: 'thumbnail',
+            thumbnailContainerClass: 'thumbnails',
+            groupClass: 'grid-group',
+            titleClass: 'title',
+            additionClass: 'addition',
+            firstPictureClass: 'first',
+            secondPictureClass: 'second',
+            thirdPictureClass: 'third'
+        },
+
+        templates = {
+            thumbnail: [
+                '<div class="'+ constants.thumbnailClass +'">',
+                '   <img src="<%= src %>" alt="<%= title %>" title="<%= title %>"/>',
+                '</div>'
+            ].join(''),
+            group: [
+                '<div class="'+ constants.groupClass +'">',
+                '   <div class="'+ constants.thumbnailContainerClass +'"></div>',
+                '   <span class="'+ constants.titleClass +'"><%= title %></span>',
+                '   <span class="'+ constants.additionClass +'"><%= addition %></span>',
+                '</div>'
+            ].join('')
+        };
+
+    return {
+
+        /**
+         * Initializes the view, gets called only once
+         * @param {Object} context The context of the datagrid class
+         * @param {Object} options The options used by the view
+         */
+        initialize: function (context, options) {
+            // context of the datagrid-component
+            this.datagrid = context;
+
+            // make sandbox available in this-context
+            this.sandbox = this.datagrid.sandbox;
+
+            // merge defaults with options
+            this.options = this.sandbox.util.extend(true, {}, defaults, options);
+
+            this.setVariables();
+        },
+
+        /**
+         * Sets the starting variables for the view
+         */
+        setVariables: function () {
+            this.rendered = false;
+            this.data = null;
+            this.$el = null;
+
+            // global array to store groups
+            this.groups = {};
+        },
+
+        /**
+         * Method to render data in this view
+         */
+        render: function (data, $container) {
+            this.$el = this.sandbox.dom.createElement('<div class="' + constants.containerClass + '"/>');
+            this.sandbox.dom.append($container, this.$el);
+            this.data = data;
+
+            this.renderGroups(this.data.embedded);
+
+            this.rendered = true;
+        },
+
+        /**
+         * Destroys the view
+         */
+        destroy: function () {
+            this.sandbox.dom.remove(this.$el);
+        },
+
+        /**
+         * Picks out the important data and passes it to
+         * a render-method
+         * @param groups {Array} the groups to render
+         * @param prepend {Boolean} if true groups get prepended
+         */
+        renderGroups: function(groups, prepend) {
+            var thumbnails, title, addition;
+
+            this.sandbox.util.foreach(groups, function(group) {
+                thumbnails = [];
+                title = addition = '';
+
+                this.sandbox.util.foreach(this.datagrid.matchings, function(matching) {
+
+                    // pick the important data out of each group
+                    if (matching.type === this.datagrid.types.THUMBNAILS) {
+                        thumbnails = group[matching.attribute];
+                    } else if (matching.type === this.datagrid.types.TITLE) {
+                        title = group[matching.attribute];
+                    } else if(matching.type === this.datagrid.types.COUNT) {
+                        addition += this.datagrid.manipulateContent.call(this.datagrid,
+                            group[matching.attribute],
+                            matching.type, this.sandbox.translate(constants.elementsKey));
+                    }
+                }.bind(this));
+
+                // render the important data
+                this.renderGroup(group.id, thumbnails, title, addition, prepend);
+            }.bind(this));
+        },
+
+        /**
+         * Renders a single group
+         * @param id {Number|String} the id of the group
+         * @param thumbnails {Array} the array with thumbnails
+         * @param title {String} the group title
+         * @param addition {String} the addition of the group
+         * @param prepend {Boolean} if true the group gets prepended
+         */
+        renderGroup: function(id, thumbnails, title, addition, prepend) {
+            var $thumbnails = [],
+                $group = this.sandbox.dom.createElement(this.sandbox.util.template(templates.group)({
+                title: title,
+                addition: addition
+            }));
+
+            // render all thumbnails
+            this.sandbox.util.foreach(thumbnails, function(thumbnail) {
+                $thumbnails.push(this.sandbox.dom.createElement(this.sandbox.util.template(templates.thumbnail)({
+                    src: thumbnail.url,
+                    title: thumbnail.title
+                })));
+            }.bind(this));
+
+            // add classes to thumbnails
+            !!$thumbnails[0] && this.sandbox.dom.addClass($thumbnails[0], constants.firstPictureClass);
+            !!$thumbnails[1] && this.sandbox.dom.addClass($thumbnails[1], constants.secondPictureClass);
+            !!$thumbnails[2] && this.sandbox.dom.addClass($thumbnails[2], constants.thirdPictureClass);
+            // append thumbnails to group
+            this.sandbox.dom.append(this.sandbox.dom.find('.' + constants.thumbnailContainerClass, $group), $thumbnails);
+
+            this.groups[id] = $group;
+            if (prepend === true) {
+                this.sandbox.dom.prepend(this.$el, $group);
+            } else {
+                this.sandbox.dom.append(this.$el, $group);
+            }
+            this.bindGroupDomEvents(id);
+        },
+
+        /**
+         * Binds dom events on a group
+         * @param id {Number|String} id of the group
+         */
+        bindGroupDomEvents: function(id) {
+            // bring clicked thumbnails to front
+            this.sandbox.dom.on(this.groups[id], 'click', function(event) {
+                this.showThumbnail(id, this.sandbox.dom.$(event.currentTarget), event);
+            }.bind(this), '.' + constants.thumbnailClass);
+
+            this.sandbox.dom.on(this.groups[id], 'click', function() {
+                this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+            }.bind(this));
+        },
+
+        /**
+         * Brings a given thumbnail of a group to the front
+         * @param id {Number|String} id of the group
+         * @param $thumbnail {Object} thumbnail
+         */
+        showThumbnail: function(id, $thumbnail, event) {
+            if (!this.sandbox.dom.hasClass($thumbnail, constants.firstPictureClass)) {
+                this.sandbox.dom.stopPropagation(event);
+                var cssClass,
+                    $first = this.sandbox.dom.find('.' + constants.thumbnailClass + '.' + constants.firstPictureClass, this.groups[id]);
+
+                if (this.sandbox.dom.hasClass($thumbnail, constants.secondPictureClass)) {
+                    cssClass = constants.secondPictureClass;
+                } else {
+                    cssClass = constants.thirdPictureClass;
+                }
+
+                this.sandbox.dom.removeClass($thumbnail, cssClass);
+                this.sandbox.dom.removeClass($first, constants.firstPictureClass);
+                this.sandbox.dom.addClass($thumbnail, constants.firstPictureClass);
+                this.sandbox.dom.addClass($first, cssClass);
+            }
+        },
+
+        /**
+         * Adds a record to the view
+         * @param record
+         * @public
+         */
+        addRecord: function(record) {
+            this.renderGroups([record], true);
         }
     };
 });
@@ -29807,14 +30053,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             this.prepareShowElementsDropdown();
 
             this.bindDomEvents();
-        },
-
-        /**
-         * Rerenders the pagination
-         */
-        rerender: function() {
-            this.destroy();
-            this.render(this.data, this.$el);
         },
 
         /**
@@ -30152,14 +30390,6 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
         },
 
         /**
-         * Rerenders the pagination
-         */
-        rerender: function () {
-            this.destroy();
-            this.render(this.data, this.$el);
-        },
-
-        /**
          * Returns the pagination page size
          * @returns {Number} current Page size
          */
@@ -30256,9 +30486,10 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
     define('__component__$datagrid@husky',[
         'husky_components/datagrid/decorators/table-view',
         'husky_components/datagrid/decorators/thumbnail-view',
+        'husky_components/datagrid/decorators/group-view',
         'husky_components/datagrid/decorators/dropdown-pagination',
         'husky_components/datagrid/decorators/showall-pagination'
-    ], function(decoratorTableView, thumbnailView, decoratorDropdownPagination, showallPagination) {
+    ], function(decoratorTableView, thumbnailView, groupView, decoratorDropdownPagination, showallPagination) {
 
         /**
          *    Default values for options
@@ -30287,13 +30518,15 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 DATE: 'date',
                 THUMBNAILS: 'thumbnails',
                 TITLE: 'title',
-                BYTES: 'bytes'
+                BYTES: 'bytes',
+                COUNT: 'count'
             },
 
             decorators = {
                 views: {
                     table: decoratorTableView,
-                    thumbnail: thumbnailView
+                    thumbnail: thumbnailView,
+                    group: groupView
                 },
                 paginations: {
                     dropdown: decoratorDropdownPagination,
@@ -30309,7 +30542,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * raised when the the current page changes
              * @event husky.datagrid.page.change
              */
-                PAGE_CHANGE = function () {
+            PAGE_CHANGE = function() {
                 return this.createEventName('page.change');
             },
 
@@ -30317,7 +30550,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * raised when the data is updated
              * @event husky.datagrid.updated
              */
-                UPDATED = function () {
+            UPDATED = function() {
                 return this.createEventName('updated');
             },
 
@@ -30326,7 +30559,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @event husky.datagrid.item.deselect
              * @param {String} id of deselected item
              */
-                ITEM_DESELECT = function () {
+            ITEM_DESELECT = function() {
                 return this.createEventName('item.deselect');
             },
 
@@ -30334,7 +30567,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * raised when selection of items changes
              * @event husky.datagrid.number.selections
              */
-                NUMBER_SELECTIONS = function () {
+            NUMBER_SELECTIONS = function() {
                 return this.createEventName('number.selections');
             },
 
@@ -30343,7 +30576,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @event husky.datagrid.item.click
              * @param {String} id of item that was clicked
              */
-                ITEM_CLICK = function () {
+            ITEM_CLICK = function() {
                 return this.createEventName('item.click');
             },
 
@@ -30352,7 +30585,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @event husky.datagrid.item.select
              * @param {String} if of selected item
              */
-                ITEM_SELECT = function () {
+            ITEM_SELECT = function() {
                 return this.createEventName('item.select');
             },
 
@@ -30360,7 +30593,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * raised when all items get deselected via the header checkbox
              * @event husky.datagrid.all.deselect
              */
-                ALL_DESELECT = function () {
+            ALL_DESELECT = function() {
                 return this.createEventName('all.deselect');
             },
 
@@ -30369,7 +30602,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @event husky.datagrid.all.select
              * @param {Array} ids of all items that have been clicked
              */
-                ALL_SELECT = function () {
+            ALL_SELECT = function() {
                 return this.createEventName('all.select');
             },
 
@@ -30378,7 +30611,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @event husky.datagrid.data.saved
              * @param {Object} data returned
              */
-                DATA_SAVED = function () {
+            DATA_SAVED = function() {
                 return this.createEventName('updated');
             },
 
@@ -30389,7 +30622,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @param {String} error thrown
              *
              */
-                DATA_SAVE_FAILED = function () {
+            DATA_SAVE_FAILED = function() {
                 return this.createEventName('data.save.failed');
             },
 
@@ -30397,7 +30630,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * raised when editable table is changed
              * @event husky.datagrid.data.save
              */
-                DATA_CHANGED = function () {
+            DATA_CHANGED = function() {
                 return this.createEventName('data.changed');
             },
 
@@ -30408,7 +30641,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * raised when husky.datagrid.data.get is triggered
              * @event husky.datagrid.data.provide
              */
-                DATA_PROVIDE = function () {
+            DATA_PROVIDE = function() {
                 return this.createEventName('data.provide');
             },
 
@@ -30418,7 +30651,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @param {String} viewId The identifier of the view
              * @param {Object} Options to merge with the current view options
              */
-                CHANGE_VIEW = function () {
+            CHANGE_VIEW = function() {
                 return this.createEventName('view.change');
             },
 
@@ -30427,7 +30660,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @event husky.datagrid.pagination.change
              * @param {String} paginationId The identifier of the pagination
              */
-                CHANGE_PAGINATION = function () {
+            CHANGE_PAGINATION = function() {
                 return this.createEventName('pagination.change');
             },
 
@@ -30436,7 +30669,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @event husky.datagrid.record.add
              * @param {Object} the data of the new record
              */
-                RECORD_ADD = function () {
+            RECORD_ADD = function() {
                 return this.createEventName('record.add');
             },
 
@@ -30445,7 +30678,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @event husky.datagrid.record.add
              * @param {Object} the data of the new record
              */
-                RECORDS_ADD = function () {
+            RECORDS_ADD = function() {
                 return this.createEventName('records.add');
             },
 
@@ -30454,15 +30687,24 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @event husky.datagrid.record.remove
              * @param {String} id of the record to be removed
              */
-                RECORD_REMOVE = function () {
+            RECORD_REMOVE = function() {
                 return this.createEventName('record.remove');
+            },
+
+            /**
+             * listens on and merges one or more data-records with a given ones
+             * @event husky.datagrid.records.change
+             * @param {Object|Array} the new data-record. Must at least contain an id-property. Can also be an array of data-records
+             */
+            RECORDS_CHANGE = function() {
+                return this.createEventName('records.change');
             },
 
             /**
              * used to trigger an update of the data
              * @event husky.datagrid.update
              */
-                UPDATE = function () {
+            UPDATE = function() {
                 return this.createEventName('update');
             },
 
@@ -30472,7 +30714,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @param {String} searchField
              * @param {String} searchString
              */
-                DATA_SEARCH = function () {
+            DATA_SEARCH = function() {
                 return this.createEventName('data.search');
             },
 
@@ -30480,7 +30722,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * raised when data is sorted
              * @event husky.datagrid.data.sort
              */
-                DATA_SORT = function () {
+            DATA_SORT = function() {
                 return this.createEventName('data.sort');
             },
 
@@ -30489,7 +30731,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @event husky.datagrid.url.update
              * @param {Object} url parameter : key
              */
-                URL_UPDATE = function () {
+            URL_UPDATE = function() {
                 return this.createEventName('url.update');
             },
 
@@ -30497,7 +30739,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * triggers husky.datagrid.data.provide
              * @event husky.datagrid.data.get
              */
-                DATA_GET = function () {
+            DATA_GET = function() {
                 return this.createEventName('data.get');
             },
 
@@ -30506,7 +30748,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @event husky.datagrid.items.get-selected
              * @param  {Function} callback function receives array of selected items
              */
-                ITEMS_GET_SELECTED = function () {
+            ITEMS_GET_SELECTED = function() {
                 return this.createEventName('items.get-selected');
             },
 
@@ -30561,8 +30803,8 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     return '0 Byte';
                 }
                 var k = 1000,
-                sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-                i = Math.floor(Math.log(bytes) / Math.log(k));
+                    sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+                    i = Math.floor(Math.log(bytes) / Math.log(k));
                 return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
             },
 
@@ -30577,6 +30819,15 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     return parsedDate;
                 }
                 return date;
+            },
+
+            /**
+             * Attaches a postfix to a number
+             * @param number
+             * @param postfix
+             */
+            parseCount = function(number, postfix) {
+                return (!!postfix) ? number + ' ' + postfix : number;
             },
 
             /**
@@ -30603,7 +30854,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * Creates the eventnames
              * @param postfix {String} event name to append
              */
-            createEventName: function (postfix) {
+            createEventName: function(postfix) {
                 return namespace + ((!!this.options.instanceName) ? this.options.instanceName + '.' : '') + postfix;
             },
 
@@ -30665,7 +30916,14 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                         url += (url.indexOf('?') === -1) ? '?' : '&';
                         url += 'fields=' + this.requestFields.join(',');
                     }
-                    this.load({ url: url});
+
+                    this.loading();
+                    this.load({
+                        url: url,
+                        success: function() {
+                            this.stopLoading();
+                        }.bind(this)
+                    });
 
                 } else if (!!this.options.data.items) {
 
@@ -30741,18 +30999,33 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             },
 
             /**
+             * Rerenders the view
+             */
+            rerenderView: function() {
+                this.gridViews[this.viewId].destroy();
+                this.gridViews[this.viewId].render(this.data, this.$element);
+            },
+
+            /**
+             * Rerenders the pagination
+             */
+            rerenderPagination: function() {
+                if (!!this.paginations[this.paginationId]) {
+                    this.paginations[this.paginationId].destroy();
+                    this.paginations[this.paginationId].render(this.data, this.$element);
+                }
+            },
+
+            /**
              * Loads contents via ajax
              * @param params url
              */
             load: function(params) {
                 this.currentUrl = params.url;
 
-                this.loading();
-                this.destroy();
-
                 this.sandbox.util.load(this.getUrl(params), params.data)
                     .then(function(response) {
-                        this.stopLoading();
+                        this.destroy();
                         this.parseData(response);
                         this.render();
                         if (!!params.success && typeof params.success === 'function') {
@@ -30997,7 +31270,9 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 } else if (type === types.BYTES) {
                     content = parseBytes.call(this, content, argument);
                 } else if (type === types.THUMBNAILS) {
-                    content = parseThumbnails.call(this, content, argument)
+                    content = parseThumbnails.call(this, content, argument);
+                } else if (type === types.COUNT) {
+                    content = parseCount.call(this, content, argument);
                 }
                 return content;
             },
@@ -31053,6 +31328,9 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
 
                 // remove a data record
                 this.sandbox.on(RECORD_REMOVE.call(this), this.removeRecordHandler.bind(this));
+
+                // change an exsiting data-record
+                this.sandbox.on(RECORDS_CHANGE.call(this), this.changeRecordsHandler.bind(this));
 
                 this.startColumnOptionsListener();
                 this.startSearchListener();
@@ -31161,6 +31439,22 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     this.gridViews[this.viewId].removeRecord(recordId);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
+            },
+
+            /**
+             * Merges one or more data-records with a given ones and updates the view
+             * @param records {Object|Array} the new data-record or an array of data-records
+             */
+            changeRecordsHandler: function(records) {
+                if (!this.sandbox.dom.isArray(records)) {
+                    records = [records];
+                }
+                this.sandbox.util.foreach(records, function(record) {
+                    this.changeRecord(record);
+                }.bind(this));
+
+                this.rerenderView();
+                this.rerenderPagination();
             },
 
             /**
@@ -31295,9 +31589,12 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     url = setGetParameter.call(this, url, key, parameters[key]);
                 }
 
+                this.destroy();
+                this.loading();
                 this.load({
                     url: url,
                     success: function() {
+                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
@@ -31319,6 +31616,25 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             },
 
             /**
+             * Merges a data-record with a given one
+             * @param record {Object} the new data-record. Must contain an id-property
+             * @returns {Boolean} returns true if changed successfully
+             */
+            changeRecord: function(record) {
+                if (!!record.id) {
+                    for (var i = -1, length = this.data.embedded.length; ++i < length;) {
+                        if (record.id === this.data.embedded[i].id) {
+                            this.data.embedded[i] = this.sandbox.util.extend(true, {}, this.data.embedded[i], record);
+                            return true;
+                        }
+                    }
+                } else {
+                    this.sandbox.logger.log('Error: Failed changing a record. Must contain id-property');
+                    return false;
+                }
+            },
+
+            /**
              * Deletes a record with a given id
              * @param recordId {Number|String} the id of the record to delete
              * @returns {boolean} true if record got successfully deleted
@@ -31329,9 +31645,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                         this.data.embedded.splice(i, 1);
                         this.data.numberOfAll--;
                         this.data.total--;
-                        if (!!this.paginations[this.paginationId]) {
-                            this.paginations[this.paginationId].rerender();
-                        }
+                        this.rerenderPagination();
                         return true;
                     }
                 }
@@ -31348,9 +31662,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     this.data.numberOfAll++;
                     this.data.total++;
                 }
-                if (!!this.paginations[this.paginationId]) {
-                    this.paginations[this.paginationId].rerender();
-                }
+                this.rerenderPagination();
             },
 
             /**
@@ -31362,9 +31674,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     this.data.embedded.unshift(records[i]);
                     this.data.numberOfAll++;
                     this.data.total++;
-                    if (!!this.paginations[this.paginationId]) {
-                        this.paginations[this.paginationId].rerender();
-                    }
+                    this.rerenderPagination();
                 }
             },
 
@@ -31437,9 +31747,12 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 uriTemplate = this.sandbox.uritemplate.parse(this.data.links.filter);
                 url = this.sandbox.uritemplate.expand(uriTemplate, {fieldsList: this.requestFields.join(',')});
 
+                this.destroy();
+                this.loading();
                 this.load({
                     url: url,
                     success: function() {
+                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
@@ -31486,9 +31799,12 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 template = this.sandbox.uritemplate.parse(this.data.links.find);
                 url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
 
+                this.destroy();
+                this.loading();
                 this.load({
                     url: url,
                     success: function() {
+                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
@@ -41141,6 +41457,13 @@ define('__component__$input@husky',[], function () {
                 this.sandbox.dom.focus(this.input.$input);
             }.bind(this));
 
+            // delegate labels on input
+            if(!!this.sandbox.dom.attr(this.$el, 'id')) {
+                this.sandbox.dom.on('label[for="'+ this.sandbox.dom.attr(this.$el, 'id') +'"]', 'click', function() {
+                    this.sandbox.dom.focus(this.input.$input);
+                }.bind(this));
+            }
+
             // change the input value if the data attribute got changed
             this.sandbox.dom.on(this.$el, 'data-changed', function() {
                 this.updateValue();
@@ -41220,6 +41543,17 @@ define('__component__$input@husky',[], function () {
                 this.setDatepickerValueAttr(event.date);
             }.bind(this));
             this.updateValue();
+
+            this.bindDatepickerDomEvents();
+        },
+
+        /**
+         * Binds Dom-events for the datepicker
+         */
+        bindDatepickerDomEvents: function() {
+            this.sandbox.dom.on(this.input.$input, 'focusout', function() {
+                this.setDatepickerValueAttr(this.sandbox.datepicker.getDate(this.input.$input));
+            }.bind(this));
         },
 
         /**
@@ -41280,9 +41614,14 @@ define('__component__$input@husky',[], function () {
          */
         setDatepickerValueAttr: function(date) {
             if (!!date) {
-                date = date.getFullYear() + '-' +
-                   ('0' + (date.getMonth()+1)).slice(-2) + '-' +
-                   ('0' + date.getDate()).slice(-2);
+                if (this.sandbox.dom.isNumeric(date.valueOf())) {
+                    date = date.getFullYear() + '-' +
+                        ('0' + (date.getMonth()+1)).slice(-2) + '-' +
+                        ('0' + date.getDate()).slice(-2);
+                } else {
+                    date = '';
+                    this.sandbox.dom.val(this.input.$input, '');
+                }
             }
             this.sandbox.dom.data(this.$el, 'value', date);
         },
@@ -45686,6 +46025,10 @@ define("datepicker-zh-TW", function(){});
 
             app.core.dom.isArray = function(selector) {
                 return $.isArray(selector);
+            };
+
+            app.core.dom.isNumeric = function(number) {
+                return $.isNumeric(number);
             };
 
             app.core.dom.data = function(selector, key, value) {

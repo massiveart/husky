@@ -117,14 +117,6 @@ define(function () {
         },
 
         /**
-         * Rerenders the pagination
-         */
-        rerender: function () {
-            this.destroy();
-            this.render(this.data, this.$el);
-        },
-
-        /**
          * Returns the pagination page size
          * @returns {Number} current Page size
          */

@@ -194,6 +194,10 @@
                 return $.isArray(selector);
             };
 
+            app.core.dom.isNumeric = function(number) {
+                return $.isNumeric(number);
+            };
+
             app.core.dom.data = function(selector, key, value) {
                 if (!!value || value === '') {
                     return $(selector).data(key, value);
