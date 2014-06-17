@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -37664,23 +37663,23 @@ define('__component__$smart-content@husky',[], function() {
 
                 dataSource: [
                     '<div class="item-half left">',
-                        '<span class="desc"><%= dataSourceLabelStr %></span>',
-                        '<div class="btn action fit" id="select-data-source-action"><%= dataSourceButtonStr %></div>',
-                        '<div><span class="sublabel"><%= dataSourceLabelStr %>:</span> <span class="sublabel data-source"><%= dataSourceValStr %></span></div>',
+                    '<span class="desc"><%= dataSourceLabelStr %></span>',
+                    '<div class="btn action fit" id="select-data-source-action"><%= dataSourceButtonStr %></div>',
+                    '<div><span class="sublabel"><%= dataSourceLabelStr %>:</span> <span class="sublabel data-source"><%= dataSourceValStr %></span></div>',
                     '</div>'
                 ].join(''),
 
                 subFolders: [
                     '<div class="item-half">',
-                        '<div class="check<%= disabled %>">',
-                        '<label>',
-                            '<div class="custom-checkbox">',
-                                '<input type="checkbox" class="includeSubCheck form-element"<%= includeSubCheckedStr %>/>',
-                                '<span class="icon"></span>',
-                            '</div>',
-                            '<span class="description"><%= includeSubStr %></span>',
-                        '</label>',
-                        '</div>',
+                    '<div class="check<%= disabled %>">',
+                    '<label>',
+                    '<div class="custom-checkbox">',
+                    '<input type="checkbox" class="includeSubCheck form-element"<%= includeSubCheckedStr %>/>',
+                    '<span class="icon"></span>',
+                    '</div>',
+                    '<span class="description"><%= includeSubStr %></span>',
+                    '</label>',
+                    '</div>',
                     '</div>'
                 ].join(''),
 
@@ -37713,15 +37712,15 @@ define('__component__$smart-content@husky',[], function() {
 
                 presentAs: [
                     '<div class="item-half left">',
-                        '<span class="desc"><%= presentAsStr %></span>',
+                    '<span class="desc"><%= presentAsStr %></span>',
                         '<div class="' + constants.presentAsDDClass + '"></div>',
                     '</div>'
                 ].join(''),
 
                 limitResult: [
                     '<div class="item-half">',
-                        '<span class="desc"><%= limitResultToStr %></span>',
-                        '<input type="text" value="<%= limitResult %>" class="limit-to form-element"<%= disabled %>/>',
+                    '<span class="desc"><%= limitResultToStr %></span>',
+                    '<input type="text" value="<%= limitResult %>" class="limit-to form-element"<%= disabled %>/>',
                     '</div>'
                 ].join('')
             }
@@ -38416,10 +38415,7 @@ define('__component__$smart-content@husky',[], function() {
                 ].join('');
             // min source must be selected
             if (this.overlayData.dataSource.length > 0 && newURI !== this.URI.str) {
-                //emit data changed event only if old URI is not null (not at the startup)
-                if (this.URI.str !== '') {
-                    this.sandbox.emit(DATA_CHANGED.call(this), this.sandbox.dom.data(this.$el, 'smart-content'), this.$el);
-                }
+                this.sandbox.emit(DATA_CHANGED.call(this), this.sandbox.dom.data(this.$el, 'smart-content'), this.$el);
                 this.URI.str = newURI;
                 this.URI.hasChanged = true;
             } else {
@@ -46746,3 +46742,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
