@@ -909,7 +909,7 @@ define([], function() {
             // adopt height of column navigation once
             this.sandbox.once(&#x27;husky.overlay.smart-content.&#x27; + this.options.instanceName + &#x27;.opened&#x27;, function() {
                 // set height of smart-content column navigation slide (missing margins)
-                var height = this.sandbox.dom.outerHeight(&#x27;.smart-content-overlay .slide-1 .overlay-content&#x27;) + 24;
+                var height = this.sandbox.dom.outerHeight(&#x27;.smart-content-overlay .slide-0 .overlay-content&#x27;) + 24;
                 this.sandbox.dom.css(&#x27;.smart-content-overlay .slide-1 .overlay-content&#x27;, &#x27;height&#x27;, height + &#x27;px&#x27;);
             }.bind(this));
 
