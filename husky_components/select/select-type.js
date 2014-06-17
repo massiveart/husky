@@ -61,7 +61,8 @@ define([
                 },
 
                 needsValidation: function() {
-                    return this.options.required;
+                    var val = this.getValue()
+                    return !!val;
                 },
 
                 validate: function() {

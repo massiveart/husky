@@ -354,6 +354,10 @@
                 return $.isArray(selector);
             };
 
+            app.core.dom.isNumeric = function(number) {
+                return $.isNumeric(number);
+            };
+
             app.core.dom.data = function(selector, key, value) {
                 if (!!value || value === &#x27;&#x27;) {
                     return $(selector).data(key, value);

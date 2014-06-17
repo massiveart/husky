@@ -3224,7 +3224,7 @@
         },
         {
             "file": "husky_extensions/jquery.js",
-            "line": 446,
+            "line": 450,
             "description": "Awesome visible method. Returns false if any part of a given element is not visible\nMethod is copied and slightly adapted from https://github.com/teamdf/jquery-visible/",
             "params": [
                 {
@@ -7413,49 +7413,56 @@
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 196,
+            "line": 203,
             "description": "Renders the front of the input",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 213,
+            "line": 220,
             "description": "Renders the actual html-input field\nwith validation constraints and so on",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 230,
+            "line": 237,
             "description": "renders the back of the input",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 247,
+            "line": 254,
             "description": "Starts the colorpicker",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 259,
+            "line": 266,
             "description": "Starts the datepicker",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 271,
+            "line": 280,
+            "description": "Binds Dom-events for the datepicker",
+            "class": "Input",
+            "module": "husky/components/input"
+        },
+        {
+            "file": "husky_components/input/main.js",
+            "line": 289,
             "description": "Renders time specific things",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 278,
+            "line": 296,
             "description": "Updates the square which shows the current color for the colorpicker",
             "params": [
                 {
@@ -7469,7 +7476,7 @@
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 288,
+            "line": 306,
             "description": "Sets the input value",
             "params": [
                 {
@@ -7483,7 +7490,7 @@
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 312,
+            "line": 330,
             "description": "Takes a iso date-time string and returns only the date part",
             "params": [
                 {
@@ -7497,7 +7504,7 @@
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 323,
+            "line": 341,
             "description": "Sets the value attribute for the datepicker",
             "params": [
                 {
@@ -7511,7 +7518,7 @@
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 336,
+            "line": 359,
             "description": "Updates the value with what is in the\ndata attribute",
             "class": "Input",
             "module": "husky/components/input"
@@ -9488,21 +9495,21 @@
         },
         {
             "file": "husky_components/smart-content/main.js",
-            "line": 954,
+            "line": 951,
             "description": "Requests the data for the content",
             "class": "SmartContent",
             "module": "husky/components/smart-content"
         },
         {
             "file": "husky_components/smart-content/main.js",
-            "line": 979,
+            "line": 976,
             "description": "Gets the values of all user inputs of the overlay\nevent is emited on which the associeted component responses",
             "class": "SmartContent",
             "module": "husky/components/smart-content"
         },
         {
             "file": "husky_components/smart-content/main.js",
-            "line": 1041,
+            "line": 1038,
             "description": "Binds the tags to the element",
             "params": [
                 {
@@ -10393,7 +10400,7 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_extensions/jquery.js:446"
+            "line": " husky_extensions/jquery.js:450"
         },
         {
             "message": "replacing incorrect tag: returns with return",
@@ -11281,7 +11288,7 @@
         },
         {
             "message": "Missing item type\nAwesome visible method. Returns false if any part of a given element is not visible\nMethod is copied and slightly adapted from https://github.com/teamdf/jquery-visible/",
-            "line": " husky_extensions/jquery.js:446"
+            "line": " husky_extensions/jquery.js:450"
         },
         {
             "message": "Missing item type\ncool guy loop implementation of foreach: http://jsperf.com/loops3/2\nreturns -> callback(value, index)",
@@ -12417,47 +12424,51 @@
         },
         {
             "message": "Missing item type\nRenders the front of the input",
-            "line": " husky_components/input/main.js:196"
+            "line": " husky_components/input/main.js:203"
         },
         {
             "message": "Missing item type\nRenders the actual html-input field\nwith validation constraints and so on",
-            "line": " husky_components/input/main.js:213"
+            "line": " husky_components/input/main.js:220"
         },
         {
             "message": "Missing item type\nrenders the back of the input",
-            "line": " husky_components/input/main.js:230"
+            "line": " husky_components/input/main.js:237"
         },
         {
             "message": "Missing item type\nStarts the colorpicker",
-            "line": " husky_components/input/main.js:247"
+            "line": " husky_components/input/main.js:254"
         },
         {
             "message": "Missing item type\nStarts the datepicker",
-            "line": " husky_components/input/main.js:259"
+            "line": " husky_components/input/main.js:266"
+        },
+        {
+            "message": "Missing item type\nBinds Dom-events for the datepicker",
+            "line": " husky_components/input/main.js:280"
         },
         {
             "message": "Missing item type\nRenders time specific things",
-            "line": " husky_components/input/main.js:271"
+            "line": " husky_components/input/main.js:289"
         },
         {
             "message": "Missing item type\nUpdates the square which shows the current color for the colorpicker",
-            "line": " husky_components/input/main.js:278"
+            "line": " husky_components/input/main.js:296"
         },
         {
             "message": "Missing item type\nSets the input value",
-            "line": " husky_components/input/main.js:288"
+            "line": " husky_components/input/main.js:306"
         },
         {
             "message": "Missing item type\nTakes a iso date-time string and returns only the date part",
-            "line": " husky_components/input/main.js:312"
+            "line": " husky_components/input/main.js:330"
         },
         {
             "message": "Missing item type\nSets the value attribute for the datepicker",
-            "line": " husky_components/input/main.js:323"
+            "line": " husky_components/input/main.js:341"
         },
         {
             "message": "Missing item type\nUpdates the value with what is in the\ndata attribute",
-            "line": " husky_components/input/main.js:336"
+            "line": " husky_components/input/main.js:359"
         },
         {
             "message": "Missing item type\ndefault values for types",
@@ -13049,15 +13060,15 @@
         },
         {
             "message": "Missing item type\nRequests the data for the content",
-            "line": " husky_components/smart-content/main.js:954"
+            "line": " husky_components/smart-content/main.js:951"
         },
         {
             "message": "Missing item type\nGets the values of all user inputs of the overlay\nevent is emited on which the associeted component responses",
-            "line": " husky_components/smart-content/main.js:979"
+            "line": " husky_components/smart-content/main.js:976"
         },
         {
             "message": "Missing item type\nBinds the tags to the element",
-            "line": " husky_components/smart-content/main.js:1041"
+            "line": " husky_components/smart-content/main.js:1038"
         },
         {
             "message": "Missing item type\nTabs\nOptions (defaults)\n      - url: url to fetch data from\n      - data: if no url is provided\n      - selected: the item that's selected on initialize\n      - instanceName - enables custom events (in case of multiple tabs on one page)\n      - preselect - either true (for url) or position / title  (see preselector for more information)\n      - skin - string of class to add to the components element (e.g. 'overlay')\n      - preselector:\n          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url) - preselector itself is not going to be taken into account in this case\n          - position: compares items position against whats defined in options.preselect\n          - title: compares items title against whats defined in options.preselect\n      - forceReload - defines if tabs are forcing page to reload\n      - forceSelect - forces tabs to select first item, if no selected item has been found\n  Provides Events\n      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback\n  Triggers Events\n      - husky.tabs.<<instanceName>>.item.select [item] - triggered when item was clicked\n      - husky.tabs.<<instanceName>>.initialized [selectedItem]- triggered when tabs have been initialized\nData options\n      - items\n          - forceReload: overwrites default-setting for certain item\n *",

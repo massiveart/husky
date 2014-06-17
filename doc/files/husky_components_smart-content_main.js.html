@@ -348,23 +348,23 @@ define([], function() {
 
                 dataSource: [
                     &#x27;&lt;div class=&quot;item-half left&quot;&gt;&#x27;,
-                        &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= dataSourceLabelStr %&gt;&lt;/span&gt;&#x27;,
-                        &#x27;&lt;div class=&quot;btn action fit&quot; id=&quot;select-data-source-action&quot;&gt;&lt;%= dataSourceButtonStr %&gt;&lt;/div&gt;&#x27;,
-                        &#x27;&lt;div&gt;&lt;span class=&quot;sublabel&quot;&gt;&lt;%= dataSourceLabelStr %&gt;:&lt;/span&gt; &lt;span class=&quot;sublabel data-source&quot;&gt;&lt;%= dataSourceValStr %&gt;&lt;/span&gt;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= dataSourceLabelStr %&gt;&lt;/span&gt;&#x27;,
+                    &#x27;&lt;div class=&quot;btn action fit&quot; id=&quot;select-data-source-action&quot;&gt;&lt;%= dataSourceButtonStr %&gt;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;div&gt;&lt;span class=&quot;sublabel&quot;&gt;&lt;%= dataSourceLabelStr %&gt;:&lt;/span&gt; &lt;span class=&quot;sublabel data-source&quot;&gt;&lt;%= dataSourceValStr %&gt;&lt;/span&gt;&lt;/div&gt;&#x27;,
                     &#x27;&lt;/div&gt;&#x27;
                 ].join(&#x27;&#x27;),
 
                 subFolders: [
                     &#x27;&lt;div class=&quot;item-half&quot;&gt;&#x27;,
-                        &#x27;&lt;div class=&quot;check&lt;%= disabled %&gt;&quot;&gt;&#x27;,
-                        &#x27;&lt;label&gt;&#x27;,
-                            &#x27;&lt;div class=&quot;custom-checkbox&quot;&gt;&#x27;,
-                                &#x27;&lt;input type=&quot;checkbox&quot; class=&quot;includeSubCheck form-element&quot;&lt;%= includeSubCheckedStr %&gt;/&gt;&#x27;,
-                                &#x27;&lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
-                            &#x27;&lt;/div&gt;&#x27;,
-                            &#x27;&lt;span class=&quot;description&quot;&gt;&lt;%= includeSubStr %&gt;&lt;/span&gt;&#x27;,
-                        &#x27;&lt;/label&gt;&#x27;,
-                        &#x27;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;div class=&quot;check&lt;%= disabled %&gt;&quot;&gt;&#x27;,
+                    &#x27;&lt;label&gt;&#x27;,
+                    &#x27;&lt;div class=&quot;custom-checkbox&quot;&gt;&#x27;,
+                    &#x27;&lt;input type=&quot;checkbox&quot; class=&quot;includeSubCheck form-element&quot;&lt;%= includeSubCheckedStr %&gt;/&gt;&#x27;,
+                    &#x27;&lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;span class=&quot;description&quot;&gt;&lt;%= includeSubStr %&gt;&lt;/span&gt;&#x27;,
+                    &#x27;&lt;/label&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;,
                     &#x27;&lt;/div&gt;&#x27;
                 ].join(&#x27;&#x27;),
 
@@ -397,15 +397,15 @@ define([], function() {
 
                 presentAs: [
                     &#x27;&lt;div class=&quot;item-half left&quot;&gt;&#x27;,
-                        &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= presentAsStr %&gt;&lt;/span&gt;&#x27;,
+                    &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= presentAsStr %&gt;&lt;/span&gt;&#x27;,
                         &#x27;&lt;div class=&quot;&#x27; + constants.presentAsDDClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
                     &#x27;&lt;/div&gt;&#x27;
                 ].join(&#x27;&#x27;),
 
                 limitResult: [
                     &#x27;&lt;div class=&quot;item-half&quot;&gt;&#x27;,
-                        &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= limitResultToStr %&gt;&lt;/span&gt;&#x27;,
-                        &#x27;&lt;input type=&quot;text&quot; value=&quot;&lt;%= limitResult %&gt;&quot; class=&quot;limit-to form-element&quot;&lt;%= disabled %&gt;/&gt;&#x27;,
+                    &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= limitResultToStr %&gt;&lt;/span&gt;&#x27;,
+                    &#x27;&lt;input type=&quot;text&quot; value=&quot;&lt;%= limitResult %&gt;&quot; class=&quot;limit-to form-element&quot;&lt;%= disabled %&gt;/&gt;&#x27;,
                     &#x27;&lt;/div&gt;&#x27;
                 ].join(&#x27;&#x27;)
             }
@@ -1100,10 +1100,7 @@ define([], function() {
                 ].join(&#x27;&#x27;);
             // min source must be selected
             if (this.overlayData.dataSource.length &gt; 0 &amp;&amp; newURI !== this.URI.str) {
-                //emit data changed event only if old URI is not null (not at the startup)
-                if (this.URI.str !== &#x27;&#x27;) {
-                    this.sandbox.emit(DATA_CHANGED.call(this), this.sandbox.dom.data(this.$el, &#x27;smart-content&#x27;), this.$el);
-                }
+                this.sandbox.emit(DATA_CHANGED.call(this), this.sandbox.dom.data(this.$el, &#x27;smart-content&#x27;), this.$el);
                 this.URI.str = newURI;
                 this.URI.hasChanged = true;
             } else {

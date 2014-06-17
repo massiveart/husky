@@ -440,34 +440,40 @@ define('form/element',['form/util'], function(Util) {
 
             result = {
                 validate: function(force) {
+                    var result = true,
+                        validated = false;
+
                     // only if value changed or force is set
                     if (force || that.needsValidation.call(this)) {
-                        if (!that.hasConstraints.call(this)) {
-                            // delete state
-                            //that.reset.call(this);
-                            return true;
+                        if (that.hasConstraints.call(this)) {
+                            // check each validator
+                            $.each(validators, function (key, validator) {
+                                if (!validator.validate()) {
+                                    result = false;
+                                    // TODO Messages
+                                }
+                            });
+                            validated = true;
                         }
+                    }
 
-                        var result = true;
-                        // check each validator
-                        $.each(validators, function(key, validator) {
-                            if (!validator.validate()) {
-                                result = false;
-                                // TODO Messages
-                            }
-                        });
-
-                        // check type
-                        if (type !== null && !type.validate()) {
+                    // check type
+                    if (!!type && type.needsValidation()) {
+                        if (!type.validate()) {
                             result = false;
                         }
+                        validated = true;
+                    }
 
+                    // set css classes
+                    if (validated === true) {
                         if (!result) {
                             Util.debug('Field validate', !!result ? 'true' : 'false', this.$el);
                         }
                         that.setValid.call(this, result);
                     }
-                    return this.isValid();
+
+                    return result;
                 },
 
                 update: function() {

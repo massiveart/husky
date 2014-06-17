@@ -347,6 +347,13 @@ define([], function () {
                 this.sandbox.dom.focus(this.input.$input);
             }.bind(this));
 
+            // delegate labels on input
+            if(!!this.sandbox.dom.attr(this.$el, &#x27;id&#x27;)) {
+                this.sandbox.dom.on(&#x27;label[for=&quot;&#x27;+ this.sandbox.dom.attr(this.$el, &#x27;id&#x27;) +&#x27;&quot;]&#x27;, &#x27;click&#x27;, function() {
+                    this.sandbox.dom.focus(this.input.$input);
+                }.bind(this));
+            }
+
             // change the input value if the data attribute got changed
             this.sandbox.dom.on(this.$el, &#x27;data-changed&#x27;, function() {
                 this.updateValue();
@@ -426,6 +433,17 @@ define([], function () {
                 this.setDatepickerValueAttr(event.date);
             }.bind(this));
             this.updateValue();
+
+            this.bindDatepickerDomEvents();
+        },
+
+        /**
+         * Binds Dom-events for the datepicker
+         */
+        bindDatepickerDomEvents: function() {
+            this.sandbox.dom.on(this.input.$input, &#x27;focusout&#x27;, function() {
+                this.setDatepickerValueAttr(this.sandbox.datepicker.getDate(this.input.$input));
+            }.bind(this));
         },
 
         /**
@@ -486,9 +504,14 @@ define([], function () {
          */
         setDatepickerValueAttr: function(date) {
             if (!!date) {
-                date = date.getFullYear() + &#x27;-&#x27; +
-                   (&#x27;0&#x27; + (date.getMonth()+1)).slice(-2) + &#x27;-&#x27; +
-                   (&#x27;0&#x27; + date.getDate()).slice(-2);
+                if (this.sandbox.dom.isNumeric(date.valueOf())) {
+                    date = date.getFullYear() + &#x27;-&#x27; +
+                        (&#x27;0&#x27; + (date.getMonth()+1)).slice(-2) + &#x27;-&#x27; +
+                        (&#x27;0&#x27; + date.getDate()).slice(-2);
+                } else {
+                    date = &#x27;&#x27;;
+                    this.sandbox.dom.val(this.input.$input, &#x27;&#x27;);
+                }
             }
             this.sandbox.dom.data(this.$el, &#x27;value&#x27;, date);
         },
