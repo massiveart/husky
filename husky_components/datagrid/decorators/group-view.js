@@ -27,13 +27,20 @@ define(function () {
             additionClass: 'addition',
             firstPictureClass: 'first',
             secondPictureClass: 'second',
-            thirdPictureClass: 'third'
+            thirdPictureClass: 'third',
+            emptyThumbnailClass: 'empty',
+            emptyThumbnailIcon: 'coffee'
         },
 
         templates = {
             thumbnail: [
                 '<div class="'+ constants.thumbnailClass +'">',
                 '   <img src="<%= src %>" alt="<%= title %>" title="<%= title %>"/>',
+                '</div>'
+            ].join(''),
+            emptyThumbnail: [
+                '<div class="'+ constants.thumbnailClass +' '+ constants.emptyThumbnailClass +'">',
+                '   <span class="fa-'+ constants.emptyThumbnailIcon +'"></span>',
                 '</div>'
             ].join(''),
             group: [
@@ -145,12 +152,16 @@ define(function () {
             }));
 
             // render all thumbnails
-            this.sandbox.util.foreach(thumbnails, function(thumbnail) {
-                $thumbnails.push(this.sandbox.dom.createElement(this.sandbox.util.template(templates.thumbnail)({
-                    src: thumbnail.url,
-                    title: thumbnail.title
-                })));
-            }.bind(this));
+            if (!!thumbnails && thumbnails.length > 0) {
+                this.sandbox.util.foreach(thumbnails, function (thumbnail) {
+                    $thumbnails.push(this.sandbox.dom.createElement(this.sandbox.util.template(templates.thumbnail)({
+                        src: thumbnail.url,
+                        title: thumbnail.title
+                    })));
+                }.bind(this));
+            } else {
+                $thumbnails.push(this.sandbox.dom.createElement(templates.emptyThumbnail));
+            }
 
             // add classes to thumbnails
             !!$thumbnails[0] && this.sandbox.dom.addClass($thumbnails[0], constants.firstPictureClass);
