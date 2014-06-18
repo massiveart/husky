@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -29756,13 +29757,20 @@ define('husky_components/datagrid/decorators/group-view',[],function () {
             additionClass: 'addition',
             firstPictureClass: 'first',
             secondPictureClass: 'second',
-            thirdPictureClass: 'third'
+            thirdPictureClass: 'third',
+            emptyThumbnailClass: 'empty',
+            emptyThumbnailIcon: 'coffee'
         },
 
         templates = {
             thumbnail: [
                 '<div class="'+ constants.thumbnailClass +'">',
                 '   <img src="<%= src %>" alt="<%= title %>" title="<%= title %>"/>',
+                '</div>'
+            ].join(''),
+            emptyThumbnail: [
+                '<div class="'+ constants.thumbnailClass +' '+ constants.emptyThumbnailClass +'">',
+                '   <span class="fa-'+ constants.emptyThumbnailIcon +'"></span>',
                 '</div>'
             ].join(''),
             group: [
@@ -29874,12 +29882,16 @@ define('husky_components/datagrid/decorators/group-view',[],function () {
             }));
 
             // render all thumbnails
-            this.sandbox.util.foreach(thumbnails, function(thumbnail) {
-                $thumbnails.push(this.sandbox.dom.createElement(this.sandbox.util.template(templates.thumbnail)({
-                    src: thumbnail.url,
-                    title: thumbnail.title
-                })));
-            }.bind(this));
+            if (!!thumbnails && thumbnails.length > 0) {
+                this.sandbox.util.foreach(thumbnails, function (thumbnail) {
+                    $thumbnails.push(this.sandbox.dom.createElement(this.sandbox.util.template(templates.thumbnail)({
+                        src: thumbnail.url,
+                        title: thumbnail.title
+                    })));
+                }.bind(this));
+            } else {
+                $thumbnails.push(this.sandbox.dom.createElement(templates.emptyThumbnail));
+            }
 
             // add classes to thumbnails
             !!$thumbnails[0] && this.sandbox.dom.addClass($thumbnails[0], constants.firstPictureClass);
@@ -30841,8 +30853,13 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     alt: null
                 };
                 if (!!thumbnails[format]) {
+                    if (typeof thumbnails[format] === 'object') {
                     thumbnail.url = thumbnails[format].url;
                     thumbnail.alt = thumbnails[format].alt;
+                    } else {
+                        thumbnail.url = thumbnails[format];
+                        thumbnail.alt = '';
+                    }
                 }
                 return thumbnail;
             };
@@ -46742,4 +46759,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-
