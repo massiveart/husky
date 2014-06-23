@@ -84,6 +84,10 @@ $grid-margin-bottom-small: 10px;
         padding-left: 0;
         padding-right: $grid-padding-right;
     }
+    &:only-of-type {
+      padding-left: 0;
+      padding-right: 0;
+    }
     &.no-padding {
         padding: 0;
     }
