@@ -7016,14 +7016,14 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1276,
+            "line": 1278,
             "description": "Updates data in datagrid\nCalled when husky.datagrid.update event emitted\nEmits husky.datagrid.updated event on success",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1293,
+            "line": 1297,
             "description": "Filters fields out of the data passed to the view\nSo its possible to hide fields/columns\nNote that the also the arrangement of fields/columns can be changed and the view can react to it",
             "params": [
                 {
@@ -7037,7 +7037,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1318,
+            "line": 1324,
             "description": "Constructs the url to get sorted data and sets the request for it",
             "params": [
                 {
@@ -7056,7 +7056,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1348,
+            "line": 1354,
             "description": "triggers an api search",
             "params": [
                 {
@@ -7075,7 +7075,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1372,
+            "line": 1378,
             "description": "Takes a data-record and sends it to a url",
             "params": [
                 {
@@ -12387,23 +12387,23 @@
         },
         {
             "message": "Missing item type\nUpdates data in datagrid\nCalled when husky.datagrid.update event emitted\nEmits husky.datagrid.updated event on success",
-            "line": " husky_components/datagrid/main.js:1276"
+            "line": " husky_components/datagrid/main.js:1278"
         },
         {
             "message": "Missing item type\nFilters fields out of the data passed to the view\nSo its possible to hide fields/columns\nNote that the also the arrangement of fields/columns can be changed and the view can react to it",
-            "line": " husky_components/datagrid/main.js:1293"
+            "line": " husky_components/datagrid/main.js:1297"
         },
         {
             "message": "Missing item type\nConstructs the url to get sorted data and sets the request for it",
-            "line": " husky_components/datagrid/main.js:1318"
+            "line": " husky_components/datagrid/main.js:1324"
         },
         {
             "message": "Missing item type\ntriggers an api search",
-            "line": " husky_components/datagrid/main.js:1348"
+            "line": " husky_components/datagrid/main.js:1354"
         },
         {
             "message": "Missing item type\nTakes a data-record and sends it to a url",
-            "line": " husky_components/datagrid/main.js:1372"
+            "line": " husky_components/datagrid/main.js:1378"
         },
         {
             "message": "Missing item type\ncreates a child element in a container",
