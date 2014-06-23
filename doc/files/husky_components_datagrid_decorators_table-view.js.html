@@ -430,15 +430,19 @@ define(function() {
             // emits an event when a table row gets clicked
             this.sandbox.dom.on(
                 this.$tableContainer, &#x27;click&#x27;,
-                this.emitRowClickedEvent.bind(this), &#x27;tr&#x27;
+                this.emitRowClickedEvent.bind(this), &#x27;tbody tr&#x27;
             );
+
+            this.sandbox.dom.on(this.$tableContainer, &#x27;click&#x27;, function(event) {
+                this.sandbox.dom.stopPropagation(event);
+            }.bind(this));
 
             // add editable events if configured
             if (!!this.options.editable) {
                 this.sandbox.dom.on(
                     this.$tableContainer, &#x27;click&#x27;, this.editCellValues.bind(this), &#x27;.&#x27; + constants.editableClass
                 );
-                this.sandbox.dom.on(this.$tableContainer, &#x27;click&#x27;, this.focusOnRow.bind(this), &#x27;tr&#x27;);
+                this.sandbox.dom.on(this.$tableContainer, &#x27;click&#x27;, this.focusOnRow.bind(this), &#x27;tbody tr&#x27;);
 
                 // save on &quot;blur&quot;
                 this.sandbox.dom.on(window, &#x27;click&#x27;, function() {

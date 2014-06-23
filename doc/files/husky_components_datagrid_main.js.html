@@ -1506,20 +1506,22 @@
              * @param {String|Array} searchFields Fields that will be included into the search
              */
             searchGrid: function(searchString, searchFields) {
-                var template, url;
+                if (!!this.data.links.find) {
+                    var template, url;
 
-                template = this.sandbox.uritemplate.parse(this.data.links.find);
-                url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+                    template = this.sandbox.uritemplate.parse(this.data.links.find);
+                    url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
 
-                this.destroy();
-                this.loading();
-                this.load({
-                    url: url,
-                    success: function() {
-                        this.stopLoading();
-                        this.sandbox.emit(UPDATED.call(this));
-                    }.bind(this)
-                });
+                    this.destroy();
+                    this.loading();
+                    this.load({
+                        url: url,
+                        success: function() {
+                            this.stopLoading();
+                            this.sandbox.emit(UPDATED.call(this));
+                        }.bind(this)
+                    });
+                }
             },
 
             /**

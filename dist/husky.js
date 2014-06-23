@@ -28459,15 +28459,19 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             // emits an event when a table row gets clicked
             this.sandbox.dom.on(
                 this.$tableContainer, 'click',
-                this.emitRowClickedEvent.bind(this), 'tr'
+                this.emitRowClickedEvent.bind(this), 'tbody tr'
             );
+
+            this.sandbox.dom.on(this.$tableContainer, 'click', function(event) {
+                this.sandbox.dom.stopPropagation(event);
+            }.bind(this));
 
             // add editable events if configured
             if (!!this.options.editable) {
                 this.sandbox.dom.on(
                     this.$tableContainer, 'click', this.editCellValues.bind(this), '.' + constants.editableClass
                 );
-                this.sandbox.dom.on(this.$tableContainer, 'click', this.focusOnRow.bind(this), 'tr');
+                this.sandbox.dom.on(this.$tableContainer, 'click', this.focusOnRow.bind(this), 'tbody tr');
 
                 // save on "blur"
                 this.sandbox.dom.on(window, 'click', function() {
@@ -31827,20 +31831,22 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @param {String|Array} searchFields Fields that will be included into the search
              */
             searchGrid: function(searchString, searchFields) {
-                var template, url;
+                if (!!this.data.links.find) {
+                    var template, url;
 
-                template = this.sandbox.uritemplate.parse(this.data.links.find);
-                url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+                    template = this.sandbox.uritemplate.parse(this.data.links.find);
+                    url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
 
-                this.destroy();
-                this.loading();
-                this.load({
-                    url: url,
-                    success: function() {
-                        this.stopLoading();
-                        this.sandbox.emit(UPDATED.call(this));
-                    }.bind(this)
-                });
+                    this.destroy();
+                    this.loading();
+                    this.load({
+                        url: url,
+                        success: function() {
+                            this.stopLoading();
+                            this.sandbox.emit(UPDATED.call(this));
+                        }.bind(this)
+                    });
+                }
             },
 
             /**
