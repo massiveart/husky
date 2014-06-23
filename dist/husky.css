@@ -9094,24 +9094,36 @@ a.btn-black, a.btn-highlight {
 .husky-datagrid thead th.is-selected {
   font-weight: bold;
 }
-/* line 47, ../scss/modules/datagrid.scss */
+/* line 45, ../scss/modules/datagrid.scss */
+.husky-datagrid thead th.children-toggler {
+  padding-left: 25px;
+}
+/* line 50, ../scss/modules/datagrid.scss */
 .husky-datagrid thead .sort-loader {
   display: inline-block;
   padding-left: 3px;
 }
-/* line 52, ../scss/modules/datagrid.scss */
+/* line 55, ../scss/modules/datagrid.scss */
 .husky-datagrid thead .table-container {
   width: 100%;
 }
-/* line 58, ../scss/modules/datagrid.scss */
+/* line 61, ../scss/modules/datagrid.scss */
 .husky-datagrid tbody tr:last-child {
   border-width: 2px;
 }
-/* line 63, ../scss/modules/datagrid.scss */
+/* line 65, ../scss/modules/datagrid.scss */
+.husky-datagrid tbody .children-toggler .icon {
+  margin-right: 10px;
+}
+/* line 69, ../scss/modules/datagrid.scss */
+.husky-datagrid tbody .no-children {
+  padding-left: 15px;
+}
+/* line 74, ../scss/modules/datagrid.scss */
 .husky-datagrid .table-container {
   overflow: auto;
 }
-/* line 66, ../scss/modules/datagrid.scss */
+/* line 77, ../scss/modules/datagrid.scss */
 .husky-datagrid .table-container.overflow:after {
   content: "\f061";
   color: #cccccc;
@@ -9120,36 +9132,36 @@ a.btn-black, a.btn-highlight {
   right: -26px;
   top: 40%;
 }
-/* line 77, ../scss/modules/datagrid.scss */
+/* line 88, ../scss/modules/datagrid.scss */
 .husky-datagrid .datagrid-loader {
   position: absolute;
   top: 50%;
   left: 50%;
   margin: -50px 0 0 -50px;
 }
-/* line 84, ../scss/modules/datagrid.scss */
+/* line 95, ../scss/modules/datagrid.scss */
 .husky-datagrid .dropdown-menu {
   margin-top: 5px;
 }
-/* line 87, ../scss/modules/datagrid.scss */
+/* line 98, ../scss/modules/datagrid.scss */
 .husky-datagrid .dropdown-toggle::after {
   margin-left: 12px;
 }
-/* line 91, ../scss/modules/datagrid.scss */
+/* line 102, ../scss/modules/datagrid.scss */
 .husky-datagrid.loading {
   min-height: 150px;
 }
-/* line 100, ../scss/modules/datagrid.scss */
+/* line 111, ../scss/modules/datagrid.scss */
 .husky-datagrid.fullwidth th:first-child,
 .husky-datagrid.fullwidth td:first-child {
   padding-left: 60px;
 }
-/* line 104, ../scss/modules/datagrid.scss */
+/* line 115, ../scss/modules/datagrid.scss */
 .husky-datagrid.fullwidth .pagination-wrapper {
   padding-left: 50px;
   padding-right: 30px;
 }
-/* line 108, ../scss/modules/datagrid.scss */
+/* line 119, ../scss/modules/datagrid.scss */
 .husky-datagrid.fullwidth .overflow + .pagination-wrapper {
   padding-right: 0;
 }

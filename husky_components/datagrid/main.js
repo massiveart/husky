@@ -1352,6 +1352,25 @@
             },
 
             /**
+             * Loads the children of a record
+             * @param recordId {Number|String}
+             */
+            loadChildren: function(recordId) {
+                if (!!this.data.links.children) {
+                    var template = this.sandbox.uritemplate.parse(this.data.links.children),
+                        url = this.sandbox.uritemplate.expand(template, {parentId: recordId});
+
+                    this.sandbox.util.load(this.getUrl({url: url}))
+                        .then(function(response) {
+                            console.log(response);
+                        }.bind(this))
+                        .fail(function(status, error) {
+                            this.sandbox.logger.error(status, error);
+                        }.bind(this));
+                }
+            },
+
+            /**
              * triggers an api search
              * @param {String} searchString The String that will be searched
              * @param {String|Array} searchFields Fields that will be included into the search

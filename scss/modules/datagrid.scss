@@ -42,6 +42,9 @@
             &.is-selected {
                 font-weight: bold;
             }
+            &.children-toggler {
+                padding-left: 25px;
+            }
         }
 
         .sort-loader {
@@ -58,6 +61,14 @@
         tr:last-child {
             border-width: 2px;
         }
+      .children-toggler {
+        .icon {
+          margin-right: 10px;
+        }
+      }
+      .no-children {
+        padding-left: 15px;
+      }
     }
 
     .table-container {

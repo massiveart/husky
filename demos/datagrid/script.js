@@ -165,6 +165,33 @@ require(['lib/husky'], function(Husky) {
                 }
             },
             {
+                name: 'datagrid@husky',
+                options: {
+                    url: 'http://husky.lo:7878/admin/api/datagrid/children?depth=0',
+                    el: '#children-datagrid',
+                    instanceName: 'children-thumbnails',
+                    viewOptions: {
+                        table: {
+                            childrenPropertyName: 'children'
+                        }
+                    },
+                    matchings: [
+                        {
+                            id: 'id',
+                            disabled: true
+                        },
+                        {
+                            id: 'children',
+                            disabled: true
+                        },
+                        {
+                            id: 'name',
+                            content: 'Name'
+                        }
+                    ]
+                }
+            },
+            {
                 name: 'toolbar@husky',
                 options: {
                     el: '#toolbar',

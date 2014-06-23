@@ -44,6 +44,15 @@
             "verbs": ["GET"],
             "mockFile": "datagrid/groups.json"
         },
+        "admin/api/datagrid/children": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/children/level1.json"
+        },
+        "admin/api/datagrid/actualchildren": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/children/children.json",
+            "switch": "parent"
+        },
 
         "admin/api/autocomplete": {
             "verbs": ["GET"],
