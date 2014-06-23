@@ -20,6 +20,7 @@ require(['lib/husky'], function(Husky) {
                 name: 'datagrid@husky',
                 options: {
                     url: 'http://husky.lo:7878/admin/api/datagrid',
+                    preselected: ["1", "2"],
                     paginationOptions: {
                         dropdown: {
                             pageSize: 4
@@ -35,6 +36,7 @@ require(['lib/husky'], function(Husky) {
                             editable: true,
                             validation: true,
                             addRowTop: true,
+                            showHead: true, // false to hide table-head
                             //fullWidth: true, // uncomment for full-width mode
                             contentContainer: '#content'
                         },

@@ -29,6 +29,7 @@
     top: 0px;
     left: 0px;
     width: 100%;
+    z-index: 5;
     @include single-transition(margin-top, $transitionDuration);
 
     .icon {
@@ -50,6 +51,8 @@
   .upload-items {
     height: $dropzoneHeight;
     padding: 20px 0 0 20px;
+    position: relative;
+    z-index: 10;
     @include clear-float;
 
     .item {

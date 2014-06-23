@@ -59,6 +59,10 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/GroupView (Datagrid Decorator).html">GroupView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Input.html">Input</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -100,6 +104,8 @@
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_input.html">husky/components/input</a></li>
             
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
@@ -452,38 +458,6 @@
                                 
                             </li>
                             
-<<<<<<< HEAD
-=======
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[showOverlayOnScrollTop]</code>
-                                    <span class="type">Number</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>number of scroll-top on which the overlay will be displayed</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[scrollContainer]</code>
-                                    <span class="type">Object | String</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>element to check to scroll-top on</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
                             <li class="param">
                                 
                                     <code class="param-name optional">[showOverlay]</code>
@@ -499,7 +473,21 @@
                                 
                             </li>
                             
->>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[skin]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>skin class for the dropzone. currently available: &#39;small&#39; or &#39;&#39; (default)</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
                         </ul>
                     
                 </li>
@@ -545,13 +533,6 @@
                     <ul class="index-list events">
                         
                             <li class="index-item event">
-                                <a href="#event_husky.dropzone.&lt;instance-name&gt;.file-remove">husky.dropzone.&lt;instance-name&gt;.file-remove</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item event">
                                 <a href="#event_husky.dropzone.&lt;instance-name&gt;.files-added">husky.dropzone.&lt;instance-name&gt;.files-added</a>
 
                                 
@@ -560,6 +541,27 @@
                         
                             <li class="index-item event">
                                 <a href="#event_husky.dropzone.&lt;instance-name&gt;.initialize">husky.dropzone.&lt;instance-name&gt;.initialize</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.dropzone.&lt;instance-name&gt;.open-data-source">husky.dropzone.&lt;instance-name&gt;.open-data-source</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.dropzone.&lt;instance-name&gt;.open-data-source">husky.dropzone.&lt;instance-name&gt;.open-data-source</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.dropzone.&lt;instance-name&gt;.open-data-source">husky.dropzone.&lt;instance-name&gt;.open-data-source</a>
 
                                 
                                 
@@ -595,78 +597,6 @@
                 <h2 class="off-left">Events</h2>
 
                 
-                    <div id="event_husky.dropzone.&lt;instance-name&gt;.file-remove" class="events item">
-    <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.file-remove</code></h3>
-    <span class="type"></span>
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-<<<<<<< HEAD
-        <a href="../files/husky_components_dropzone_main.js.html#l127"><code>husky_components&#x2F;dropzone&#x2F;main.js:127</code></a>
-=======
-        <a href="../files/husky_components_dropzone_main.js.html#l134"><code>husky_components&#x2F;dropzone&#x2F;main.js:134</code></a>
->>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
-        
-        </p>
-
-        
-
-        
-    </div>
-
-    <div class="description">
-        <p>raised after file got removed from the zone</p>
-
-    </div>
-
-    
-        <div class="params">
-            <h4>Event Payload:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">the</code>
-                        <span class="type">Object</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>file</p>
-
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-
-    
-</div>
-
-                
                     <div id="event_husky.dropzone.&lt;instance-name&gt;.files-added" class="events item">
     <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.files-added</code></h3>
     <span class="type"></span>
@@ -690,11 +620,7 @@
             
         
         
-<<<<<<< HEAD
-        <a href="../files/husky_components_dropzone_main.js.html#l136"><code>husky_components&#x2F;dropzone&#x2F;main.js:136</code></a>
-=======
-        <a href="../files/husky_components_dropzone_main.js.html#l143"><code>husky_components&#x2F;dropzone&#x2F;main.js:143</code></a>
->>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
+        <a href="../files/husky_components_dropzone_main.js.html#l155"><code>husky_components&#x2F;dropzone&#x2F;main.js:155</code></a>
         
         </p>
 
@@ -762,11 +688,7 @@
             
         
         
-<<<<<<< HEAD
-        <a href="../files/husky_components_dropzone_main.js.html#l100"><code>husky_components&#x2F;dropzone&#x2F;main.js:100</code></a>
-=======
-        <a href="../files/husky_components_dropzone_main.js.html#l107"><code>husky_components&#x2F;dropzone&#x2F;main.js:107</code></a>
->>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
+        <a href="../files/husky_components_dropzone_main.js.html#l104"><code>husky_components&#x2F;dropzone&#x2F;main.js:104</code></a>
         
         </p>
 
@@ -777,6 +699,138 @@
 
     <div class="description">
         <p>raised after initialization process</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.dropzone.&lt;instance-name&gt;.open-data-source" class="events item">
+    <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.open-data-source</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_dropzone_main.js.html#l131"><code>husky_components&#x2F;dropzone&#x2F;main.js:131</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>listens on and opens the data-source folder-overlay</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.dropzone.&lt;instance-name&gt;.open-data-source" class="events item">
+    <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.open-data-source</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_dropzone_main.js.html#l139"><code>husky_components&#x2F;dropzone&#x2F;main.js:139</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>listens on and prevents an overlay with the dropzone from poping up</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.dropzone.&lt;instance-name&gt;.open-data-source" class="events item">
+    <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.open-data-source</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_dropzone_main.js.html#l147"><code>husky_components&#x2F;dropzone&#x2F;main.js:147</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>listens on and enables overlays with the dropzone to pop up</p>
 
     </div>
 
@@ -810,11 +864,7 @@
             
         
         
-<<<<<<< HEAD
-        <a href="../files/husky_components_dropzone_main.js.html#l117"><code>husky_components&#x2F;dropzone&#x2F;main.js:117</code></a>
-=======
-        <a href="../files/husky_components_dropzone_main.js.html#l124"><code>husky_components&#x2F;dropzone&#x2F;main.js:124</code></a>
->>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
+        <a href="../files/husky_components_dropzone_main.js.html#l121"><code>husky_components&#x2F;dropzone&#x2F;main.js:121</code></a>
         
         </p>
 
@@ -898,11 +948,7 @@
             
         
         
-<<<<<<< HEAD
-        <a href="../files/husky_components_dropzone_main.js.html#l108"><code>husky_components&#x2F;dropzone&#x2F;main.js:108</code></a>
-=======
-        <a href="../files/husky_components_dropzone_main.js.html#l115"><code>husky_components&#x2F;dropzone&#x2F;main.js:115</code></a>
->>>>>>> 5b2fc9e9941225624f1163c2657462b0cf45bbc4
+        <a href="../files/husky_components_dropzone_main.js.html#l112"><code>husky_components&#x2F;dropzone&#x2F;main.js:112</code></a>
         
         </p>
 

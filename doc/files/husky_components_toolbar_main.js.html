@@ -59,6 +59,10 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/GroupView (Datagrid Decorator).html">GroupView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Input.html">Input</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -100,6 +104,8 @@
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_input.html">husky/components/input</a></li>
             
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
@@ -359,8 +365,8 @@ define(function() {
 
         /** events bound to dom */
         bindDOMEvents = function() {
-            this.sandbox.dom.on(this.options.el, &#x27;click&#x27;, toggleItem.bind(this), &#x27;.dropdown-toggle&#x27;);
-            this.sandbox.dom.on(this.options.el, &#x27;click&#x27;, selectItem.bind(this), &#x27;li&#x27;);
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, toggleItem.bind(this), &#x27;.dropdown-toggle&#x27;);
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, selectItem.bind(this), &#x27;li&#x27;);
         },
 
         /** events bound to sandbox */
@@ -447,6 +453,7 @@ define(function() {
                 item.loading = false;
                 $itemLink = this.sandbox.dom.find(&#x27;a&#x27;, $item);
                 this.sandbox.stop(this.sandbox.dom.find(&#x27;.item-loader&#x27;, $item));
+                this.sandbox.dom.remove(this.sandbox.dom.find(&#x27;.item-loader&#x27;, $item));
                 this.sandbox.dom.show($itemLink);
             }
 
@@ -585,7 +592,8 @@ define(function() {
          */
         selectItem = function(event) {
 
-            event.preventDefault();
+            this.sandbox.dom.stopPropagation(event);
+            this.sandbox.dom.preventDefault(event);
 
             var item = this.items[this.sandbox.dom.data(event.currentTarget, &#x27;id&#x27;)],
                 $parent = this.sandbox.dom.parents(event.currentTarget, &#x27;li&#x27;).eq(0);
@@ -690,7 +698,7 @@ define(function() {
                 enabled = true;
             }
             var icon = (!!enabled ? item.icon : !!item.disabledIcon ? item.disabledIcon : item.icon);
-            return &#x27;icon-&#x27; + icon;
+            return &#x27;fa-&#x27; + icon;
         },
 
         /**

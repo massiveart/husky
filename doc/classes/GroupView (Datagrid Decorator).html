@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>husky/components/process - husky</title>
+    <title>GroupView (Datagrid Decorator) - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -154,16 +154,22 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>husky_components_process Module</h1>
-<div class="box clearfix meta">
+                        <h1>GroupView (Datagrid Decorator) Class</h1>
+<div class="box meta">
     
 
     
 
     
         <div class="foundat">
-            Defined in: <a href="../files/husky_components_toggler_main.js.html#l12"><code>husky_components&#x2F;toggler&#x2F;main.js:12</code></a>
+            Defined in: <a href="../files/husky_components_datagrid_decorators_group-view.js.html#l1"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;group-view.js:1</code></a>
         </div>
+    
+
+    
+        
+            Module: <a href="../modules/husky_components_column-options.html">husky/components/column-options</a>
+        
     
 
     
@@ -172,45 +178,224 @@
 
 
 <div class="box intro">
-    <p>This file is part of Husky frontend development framework.</p>
-<p>(c) MASSIVE ART WebServices GmbH</p>
-<p>This source file is subject to the MIT license that is bundled
-with this source code in the file LICENSE.</p>
-
+    
 </div>
 
 
+    <div class="constructor">
+        <h2>Constructor</h2>
+        <div id="method_GroupView (Datagrid Decorator)" class="method item">
+    <h3 class="name"><code>GroupView (Datagrid Decorator)</code></h3>
 
-<div class="yui3-g">
-    <div class="yui3-u-1-2">
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code class="optional">[options]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[rendered]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[initialize]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[render]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[destroy]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
         
-            <p>This module provides the following classes:</p>
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_datagrid_decorators_group-view.js.html#l1"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;group-view.js:1</code></a>
+        
+        </p>
 
-            <ul class="module-classes">
-            
-                <li class="module-class">
-                    <a href="../classes/Process.html">
-                        Process
-                    </a>
-                </li>
-            
-                <li class="module-class">
-                    <a href="../classes/Search.html">
-                        Search
-                    </a>
-                </li>
-            
-                <li class="module-class">
-                    <a href="../classes/Toggler.html">
-                        Toggler
-                    </a>
-                </li>
-            
-            </ul>
+
+        
+
         
     </div>
 
-    <div class="yui3-u-1-2">
+    <div class="description">
+        
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[options]</code>
+                        <span class="type">Object</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Configuration object</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[rendered]</code>
+                        <span class="type">Boolean</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>property used by the datagrid-main class</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[initialize]</code>
+                        <span class="type">Function</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>function which gets called once at the start of the view</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[render]</code>
+                        <span class="type">Function</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>function to render data</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[destroy]</code>
+                        <span class="type">Function</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>function to destroy the view and unbind events</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+    </div>
+
+
+<div id="classdocs" class="tabview">
+    <ul class="api-class-tabs">
+        <li class="api-class-tab index"><a href="#index">Index</a></li>
+
+        
+        
+        
+        
+    </ul>
+
+    <div>
+        <div id="index" class="api-class-tabpanel index">
+            <h2 class="off-left">Item Index</h2>
+
+            
+
+            
+
+            
+
+            
+        </div>
+
+        
+
+        
+
+        
+
         
     </div>
 </div>

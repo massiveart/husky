@@ -10,6 +10,8 @@ YUI.add("yuidoc-meta", function(Y) {
         "Dependant Select",
         "DropdownPagination (Datagrid Decorator)",
         "Dropzone",
+        "GroupView (Datagrid Decorator)",
+        "Input",
         "Label",
         "Loader",
         "Matcher",
@@ -31,6 +33,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "husky_components_column-navigation",
         "husky_components_column-options",
         "husky_components_dropzone",
+        "husky_components_input",
         "husky_components_label",
         "husky_components_matcher",
         "husky_components_overlay",
@@ -62,6 +65,11 @@ YUI.add("yuidoc-meta", function(Y) {
         {
             "displayName": "husky/components/dropzone",
             "name": "husky_components_dropzone",
+            "description": "This file is part of Husky frontend development framework.\n\n(c) MASSIVE ART WebServices GmbH\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE."
+        },
+        {
+            "displayName": "husky/components/input",
+            "name": "husky_components_input",
             "description": "This file is part of Husky frontend development framework.\n\n(c) MASSIVE ART WebServices GmbH\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE."
         },
         {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Label - husky</title>
+    <title>Input - husky</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -154,7 +154,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>Label Class</h1>
+                        <h1>Input Class</h1>
 <div class="box meta">
     
 
@@ -162,13 +162,13 @@
 
     
         <div class="foundat">
-            Defined in: <a href="../files/husky_components_label_main.js.html#l12"><code>husky_components&#x2F;label&#x2F;main.js:12</code></a>
+            Defined in: <a href="../files/husky_components_input_main.js.html#l12"><code>husky_components&#x2F;input&#x2F;main.js:12</code></a>
         </div>
     
 
     
         
-            Module: <a href="../modules/husky_components_label.html">husky/components/label</a>
+            Module: <a href="../modules/husky_components_input.html">husky/components/input</a>
         
     
 
@@ -184,8 +184,8 @@
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_Label" class="method item">
-    <h3 class="name"><code>Label</code></h3>
+        <div id="method_Input" class="method item">
+    <h3 class="name"><code>Input</code></h3>
 
     
         <div class="args">
@@ -226,7 +226,7 @@
             
         
         
-        <a href="../files/husky_components_label_main.js.html#l12"><code>husky_components&#x2F;label&#x2F;main.js:12</code></a>
+        <a href="../files/husky_components_input_main.js.html#l12"><code>husky_components&#x2F;input&#x2F;main.js:12</code></a>
         
         </p>
 
@@ -271,7 +271,7 @@
                                 
 
                                 <div class="param-description">
-                                    <p>name of the instance</p>
+                                    <p>name if the the input instance</p>
 
                                 </div>
 
@@ -280,13 +280,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[type]</code>
+                                    <code class="param-name optional">[inputId]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>type of the lable (WARNING, ERROR or SUCCESS)</p>
+                                    <p>DOM-id to give the actual input-tag</p>
 
                                 </div>
 
@@ -295,28 +295,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[html]</code>
-                                    <span class="type">String | Object</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>html-string or DOM-object to insert into the label</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[title]</code>
+                                    <code class="param-name optional">[inputName]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>Title of the label (if html is null)</p>
+                                    <p>DOM-name to give the actual input-tag. Can be usefull in forms</p>
 
                                 </div>
 
@@ -325,13 +310,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[description]</code>
+                                    <code class="param-name optional">[value]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>Description of the lable (if html is null)</p>
+                                    <p>value to set at the beginning</p>
 
                                 </div>
 
@@ -340,88 +325,178 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[hasClose]</code>
-                                    <span class="type">Boolean</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>if true close button gets appended to the label</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[fadeOut]</code>
-                                    <span class="type">Boolean</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>if true label fades out automatically</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[fadeOutDelay]</code>
-                                    <span class="type">Number</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>time in ms after which the fade-out starts</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[fadeDuration]</code>
-                                    <span class="type">Number</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>duration of the fade-out in ms</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[closeCallback]</code>
-                                    <span class="type">Function</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>callback to execute if the close-button is clicked</p>
-
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[insertMethod]</code>
+                                    <code class="param-name optional">[placeholder]</code>
                                     <span class="type">String</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>insert method to use for inserting the label (append or prepend)</p>
+                                    <p>html5-placholder to use</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[skin]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of the skin to use. Currently &#39;phone&#39;, &#39;password&#39;, &#39;url&#39;, &#39;email&#39;, &#39;date&#39;, &#39;time&#39;, &#39;color&#39;. Each skin brings it&#39;s own default values. For example the password skin has automatically inputType: &#39;password&#39;</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[datepickerOptions]</code>
+                                    <span class="type">Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>config-object to pass to the datepicker component</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[colorPickerOptions]</code>
+                                    <span class="type">Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>config-object to pass to the colorpicker component</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[frontIcon]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of icon to display in front</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[frontText]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>text to display in front</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[frontHtml]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>html to display in front</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[backIcon]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of icon to display in front</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[backText]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>text to display in back</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[backHtml]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>html to display in back</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[renderMethod]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of a special render method to execute. Currently &#39;colorpicker&#39;, &#39;datepicker&#39;, &#39;time&#39;. For example &#39;colorpicker&#39; initializes a colorpicker and sets a css-class</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[inputType]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>the actual type of the input. e.g. &#39;text&#39; or &#39;password&#39;</p>
 
                                 </div>
 
@@ -473,7 +548,7 @@
                     <ul class="index-list events">
                         
                             <li class="index-item event">
-                                <a href="#event_husky.label.[INSTANCE_NAME.]initialized">husky.label.[INSTANCE_NAME.]initialized</a>
+                                <a href="#event_husky.input.&lt;instance-name&gt;.initialize">husky.input.&lt;instance-name&gt;.initialize</a>
 
                                 
                                 
@@ -495,8 +570,8 @@
                 <h2 class="off-left">Events</h2>
 
                 
-                    <div id="event_husky.label.[INSTANCE_NAME.]initialized" class="events item">
-    <h3 class="name"><code>husky.label.[INSTANCE_NAME.]initialized</code></h3>
+                    <div id="event_husky.input.&lt;instance-name&gt;.initialize" class="events item">
+    <h3 class="name"><code>husky.input.&lt;instance-name&gt;.initialize</code></h3>
     <span class="type"></span>
 
     
@@ -518,7 +593,7 @@
             
         
         
-        <a href="../files/husky_components_label_main.js.html#l103"><code>husky_components&#x2F;label&#x2F;main.js:103</code></a>
+        <a href="../files/husky_components_input_main.js.html#l131"><code>husky_components&#x2F;input&#x2F;main.js:131</code></a>
         
         </p>
 

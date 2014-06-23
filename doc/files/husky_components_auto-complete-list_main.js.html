@@ -59,6 +59,10 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/GroupView (Datagrid Decorator).html">GroupView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Input.html">Input</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -100,6 +104,8 @@
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_input.html">husky/components/input</a></li>
             
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
@@ -232,8 +238,8 @@ define([], function() {
                 AjaxPushAllItems: false,
                 AjaxPushParameters: null,
                 togglerSelector: &#x27;.toggler&#x27;,
-                arrowDownClass: &#x27;arrow-down&#x27;,
-                arrowUpClass: &#x27;arrow-up&#x27;,
+                arrowDownClass: &#x27;fa-caret-down&#x27;,
+                arrowUpClass: &#x27;fa-caret-up&#x27;,
                 slideDuration: 500,
                 elementTagDataName: &#x27;tags&#x27;,
                 autoCompleteIcon: &#x27;tag&#x27;,
@@ -248,7 +254,7 @@ define([], function() {
                     &#x27;        &lt;%= label %&gt;&#x27;,
                     &#x27;            &lt;div class=&quot;auto-complete-list&quot;&gt;&#x27;,
                     &#x27;                &lt;div class=&quot;husky-auto-complete&quot;&gt;&lt;/div&gt;&#x27;,
-                    &#x27;                &lt;div class=&quot;toggler&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&#x27;,
+                    &#x27;                &lt;div class=&quot;toggler&quot;&gt;&lt;/div&gt;&#x27;,
                     &#x27;            &lt;/div&gt;&#x27;,
                     &#x27;        &lt;/label&gt;&#x27;,
                     &#x27;    &lt;/div&gt;&#x27;
@@ -274,6 +280,23 @@ define([], function() {
              */
                 INITIALIZED = function() {
                 return createEventName.call(this, &#x27;initialized&#x27;);
+            },
+
+            /**
+             * used for setting tags
+             * @event husky.auto-complete-list.set-tags
+             * @param {Array} tags Array of strings
+             */
+                SET_TAGS = function() {
+                return createEventName.call(this, &#x27;set-tags&#x27;);
+            },
+
+            /**
+             * used for receiving tags
+             * @event husky.auto-complete-list.get-tags
+             */
+                GET_TAGS = function() {
+                return createEventName.call(this, &#x27;get-tags&#x27;);
             },
 
             /**
@@ -310,12 +333,28 @@ define([], function() {
             },
 
             /**
+             * raised after data was loaded
+             * @event husky.auto-complete-list.data-loaded
+             */
+                DATA_LOADED = function() {
+                return createEventName.call(this, &#x27;data-loaded&#x27;);
+            },
+
+            /**
              * raised after an item is added
              * @event husky.auto-complete-list.item-added
              * @param {string} item value
              */
                 ITEM_ADDED = function() {
                 return createEventName.call(this, &#x27;item-added&#x27;);
+            },
+
+            /**
+             * raised after all item were added
+             * @event husky.auto-complete-list.items-added
+             */
+                ITEMS_ADDED = function() {
+                return createEventName.call(this, &#x27;items-added&#x27;);
             },
 
             /**
@@ -355,7 +394,13 @@ define([], function() {
                 this.initSuggestions();
                 this.initItems();
 
-                this.sandbox.emit(INITIALIZED.call(this));
+                if (this.options.autocomplete === true) {
+                    this.sandbox.on(&#x27;husky.auto-complete.&#x27;+this.options.instanceName+&#x27;.initialized&#x27;, function() {
+                        this.sandbox.emit(INITIALIZED.call(this));
+                    }.bind(this));
+                } else {
+                    this.sandbox.emit(INITIALIZED.call(this));
+                }
             },
 
             /**
@@ -485,7 +530,7 @@ define([], function() {
              * Bind several events
              */
             bindEvents: function() {
-                this.sandbox.on(createEventName.call(this, &#x27;getTags&#x27;), function(callback) {
+                this.sandbox.on(GET_TAGS.call(this), function(callback) {
                     if (typeof callback === &#x27;function&#x27;) {
                         callback(this.getTags());
                     } else {
@@ -493,13 +538,12 @@ define([], function() {
                     }
                 }.bind(this));
 
-                this.sandbox.on(createEventName.call(this, &#x27;set-tags&#x27;), function(tags) {
+                this.sandbox.on(SET_TAGS.call(this), function(tags) {
                     this.pushTags(tags);
                 }.bind(this));
 
                 this.sandbox.on(ITEM_ADDED.call(this), function() {
                     this.setElementDataTags();
-                    console.log(this.getTags());
                     this.sandbox.emit(&#x27;husky.auto-complete.&#x27; + this.options.instanceName + &#x27;.set-excludes&#x27;, this.getTags());
                 }.bind(this));
 
@@ -592,6 +636,7 @@ define([], function() {
                     success: function(data) {
                         this.options.items = this.options.items.concat(data[this.options.itemsKey]);
                         this.startPlugins();
+                        DATA_LOADED.call(this);
                     }.bind(this),
 
                     error: function(error) {
@@ -681,7 +726,7 @@ define([], function() {
                         $el: this.sandbox.dom.find(this.options.togglerSelector, this.$el),
                         pos: togglerPosUp
                     };
-                    this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowUpClass);
+                    this.sandbox.dom.prependClass(this.toggler.$el, this.options.arrowUpClass);
                 }
             },
 
@@ -728,7 +773,7 @@ define([], function() {
              */
             togglerDown: function() {
                 this.sandbox.dom.removeClass(this.toggler.$el, this.options.arrowUpClass);
-                this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowDownClass);
+                this.sandbox.dom.prependClass(this.toggler.$el, this.options.arrowDownClass);
                 this.toggler.pos = togglerPosDown;
             },
 
@@ -737,7 +782,7 @@ define([], function() {
              */
             togglerUp: function() {
                 this.sandbox.dom.removeClass(this.toggler.$el, this.options.arrowDownClass);
-                this.sandbox.dom.addClass(this.toggler.$el, this.options.arrowUpClass);
+                this.sandbox.dom.prependClass(this.toggler.$el, this.options.arrowUpClass);
                 this.toggler.pos = togglerPosUp;
             },
 
@@ -829,6 +874,7 @@ define([], function() {
                 for (var i = -1, length = tags.length; ++i &lt; length;) {
                     this.pushTag(tags[i]);
                 }
+                this.sandbox.emit(ITEMS_ADDED.call(this));
             },
 
             /**

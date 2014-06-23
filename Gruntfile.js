@@ -400,7 +400,8 @@ module.exports = function(grunt) {
         'compass',
         'cssmin',
         'copy:dist',
-        'copy:doc'
+        'copy:doc',
+        'yuidoc'
     ]);
 
     grunt.registerTask('build:css', [

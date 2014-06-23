@@ -403,7 +403,6 @@ define([], function() {
             }
 
             this.sandbox.on(REMOVE.call(this), this.removeComponent.bind(this));
-
             this.sandbox.on(OKBUTTON_ACTIVATE.call(this), this.activateOkButtons.bind(this));
             this.sandbox.on(OKBUTTON_DEACTIVATE.call(this), this.deactivateOkButtons.bind(this));
             this.sandbox.on(OPEN.call(this), this.triggerHandler.bind(this));
@@ -607,6 +606,8 @@ define([], function() {
 
             this.sandbox.emit(CLOSED.call(this));
 
+            this.sandbox.dom.off('body', 'keydown.' + this.options.instanceName);
+
             if (this.options.removeOnClose === true) {
                 this.removeComponent();
             }
@@ -631,6 +632,10 @@ define([], function() {
             if (!!emitEvent) {
                 this.sandbox.emit(OPENED.call(this));
             }
+
+            // listen on key-inputs
+            this.sandbox.dom.off('body', 'keydown.' + this.options.instanceName);
+            this.sandbox.dom.on('body', 'keydown.' + this.options.instanceName, this.keyHandler.bind(this));
         },
 
         /**
@@ -822,6 +827,19 @@ define([], function() {
         },
 
         /**
+         * Su
+         * @param event
+         */
+        keyHandler: function(event) {
+            // esc
+            if (event.keyCode === 27) {
+                this.closeHandler();
+            } else if (event.keyCode === 13) {
+                this.okHandler();
+            }
+        },
+
+        /**
          * Binds overlay events
          */
         bindOverlayEvents: function() {
@@ -909,10 +927,10 @@ define([], function() {
          */
         okHandler: function(event) {
             // do nothing, if button is inactive
-            if (this.sandbox.dom.hasClass(event.currentTarget, 'inactive')) {
+            if (!!event && this.sandbox.dom.hasClass(event.currentTarget, 'inactive')) {
                 return;
             }
-            this.sandbox.dom.preventDefault(event);
+            !!event && this.sandbox.dom.preventDefault(event);
 
             if (this.executeCallback(this.slides[this.activeSlide].okCallback, this.sandbox.dom.find(constants.contentSelector, this.overlay.$el)) !== false) {
                 this.closeOverlay();

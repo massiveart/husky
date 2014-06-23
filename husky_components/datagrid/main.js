@@ -14,6 +14,7 @@
  * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.instanceName] name of the datagrid instance
+ * @param {Array} [options.preselected] preselected ids
  *
  * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
  * @param {String} [options.matchings.content] column title
@@ -54,7 +55,8 @@
                 instanceName: '',
                 searchInstanceName: null,
                 columnOptionsInstanceName: null,
-                defaultMeasureUnit: 'px'
+                defaultMeasureUnit: 'px',
+                preselected: []
             },
 
             types = {
@@ -385,8 +387,13 @@
                     alt: null
                 };
                 if (!!thumbnails[format]) {
+                    if (typeof thumbnails[format] === 'object') {
                     thumbnail.url = thumbnails[format].url;
                     thumbnail.alt = thumbnails[format].alt;
+                    } else {
+                        thumbnail.url = thumbnails[format];
+                        thumbnail.alt = '';
+                    }
                 }
                 return thumbnail;
             };
@@ -409,7 +416,6 @@
 
                 // extend default options and set variables
                 this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
-
 
                 this.matchings = [];
                 this.requestFields = [];
@@ -523,6 +529,9 @@
              * Renders the data of the datagrid
              */
             render: function() {
+                var count = this.setSelectedItems(this.options.preselected);
+                this.sandbox.logger.log('Selected item:', count);
+
                 this.gridViews[this.viewId].render(this.data, this.$element);
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].render(this.data, this.$element);
@@ -1337,20 +1346,22 @@
              * @param {String|Array} searchFields Fields that will be included into the search
              */
             searchGrid: function(searchString, searchFields) {
-                var template, url;
+                if (!!this.data.links.find) {
+                    var template, url;
 
-                template = this.sandbox.uritemplate.parse(this.data.links.find);
-                url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+                    template = this.sandbox.uritemplate.parse(this.data.links.find);
+                    url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
 
-                this.destroy();
-                this.loading();
-                this.load({
-                    url: url,
-                    success: function() {
-                        this.stopLoading();
-                        this.sandbox.emit(UPDATED.call(this));
-                    }.bind(this)
-                });
+                    this.destroy();
+                    this.loading();
+                    this.load({
+                        url: url,
+                        success: function() {
+                            this.stopLoading();
+                            this.sandbox.emit(UPDATED.call(this));
+                        }.bind(this)
+                    });
+                }
             },
 
             /**

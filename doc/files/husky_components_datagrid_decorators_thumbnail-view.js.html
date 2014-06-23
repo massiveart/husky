@@ -59,6 +59,10 @@
             
                 <li><a href="../classes/Dropzone.html">Dropzone</a></li>
             
+                <li><a href="../classes/GroupView (Datagrid Decorator).html">GroupView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Input.html">Input</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -100,6 +104,8 @@
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
                 <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_input.html">husky/components/input</a></li>
             
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
@@ -171,7 +177,9 @@ define(function() {
 
     var defaults = {
             large: false,
-            fadeInDuration: 400
+            fadeInDuration: 400,
+            largeThumbnailFormat: &#x27;170x170&#x27;,
+            smallThumbnailFormat: &#x27;50x50&#x27;
         },
 
         constants = {
@@ -184,7 +192,7 @@ define(function() {
             downloadIcon: &#x27;cloud-download&#x27;,
             checkboxClass: &#x27;checkbox&#x27;,
             descriptionClass: &#x27;description&#x27;,
-            thumbnailSrcProperty: &#x27;thumb&#x27;,
+            thumbnailSrcProperty: &#x27;url&#x27;,
             thumbnailAltProperty: &#x27;alt&#x27;,
             idProperty: &#x27;id&#x27;,
             textClass: &#x27;text&#x27;,
@@ -207,7 +215,7 @@ define(function() {
                             &#x27;&lt;input type=&quot;checkbox&quot;&lt;% if (!!checked) { %&gt; checked&lt;% } %&gt;/&gt;&#x27;,
                             &#x27;&lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
                         &#x27;&lt;/div&gt;&#x27;,
-                        &#x27;&lt;div class=&quot;icon-&#x27; + constants.downloadIcon + &#x27; &#x27; + constants.downloadClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
+                        &#x27;&lt;div class=&quot;fa-&#x27; + constants.downloadIcon + &#x27; &#x27; + constants.downloadClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
                     &#x27;&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;)
         };
@@ -247,6 +255,7 @@ define(function() {
             this.rendered = false;
             this.data = null;
             this.$el = null;
+            this.thumbnailFormat = null;
 
             // global array to store the dom elements
             this.$thumbnails = {};
@@ -270,7 +279,9 @@ define(function() {
          * @param thumbnails {Array} array with thumbnails to render
          */
         renderThumbnails: function(thumbnails) {
-            var imgSrc, imgAlt, title, description, id;
+            var imgSrc, imgAlt, title, description, id, thumbnail;
+
+            this.thumbnailFormat = (this.options.large === false) ? this.options.smallThumbnailFormat : this.options.largeThumbnailFormat;
 
             // loop through each data record
             this.sandbox.util.foreach(thumbnails, function(record) {
@@ -282,13 +293,20 @@ define(function() {
 
                     // get the thumbnail and the title data (to place it on top)
                     // with the rest generate a description string
-                    if (matching.type === this.datagrid.types.THUMBNAIL) {
-                        imgSrc = record[matching.attribute][constants.thumbnailSrcProperty];
-                        imgAlt = record[matching.attribute][constants.thumbnailAltProperty];
+                    if (matching.type === this.datagrid.types.THUMBNAILS) {
+                        thumbnail = this.datagrid.manipulateContent.call(this.datagrid,
+                            record[matching.attribute],
+                            this.datagrid.types.THUMBNAILS,
+                            this.thumbnailFormat
+                        );
+                        imgSrc = thumbnail[constants.thumbnailSrcProperty];
+                        imgAlt = thumbnail[constants.thumbnailAltProperty];
                     } else if (matching.type === this.datagrid.types.TITLE) {
                         title = record[matching.attribute];
-                    } else {
-                        description.push(record[matching.attribute]);
+                    } else if (matching.type === this.datagrid.types.BYTES) {
+                        description.push(
+                            this.datagrid.manipulateContent.call(this.datagrid, record[matching.attribute], this.datagrid.types.BYTES)
+                        );
                     }
                 }.bind(this));
 
@@ -335,6 +353,7 @@ define(function() {
          * Destroys the view
          */
         destroy: function() {
+            this.sandbox.dom.off(&#x27;body&#x27;, &#x27;click.grid-thumbnails&#x27;);
             this.sandbox.dom.remove(this.$el);
         },
 
@@ -343,13 +362,22 @@ define(function() {
          * @param id {Number|String} the identifier of the thumbnail to bind events on
          */
         bindThumbnailDomEvents: function(id) {
-            this.sandbox.dom.on(this.$thumbnails[id], &#x27;change&#x27;, function() {
+            this.sandbox.dom.on(this.$thumbnails[id], &#x27;click&#x27;, function(event) {
+                this.sandbox.dom.stopPropagation(event);
                 this.toggleItemSelected(id);
-            }.bind(this), &#x27;.&#x27; + constants.checkboxClass);
+            }.bind(this));
 
-            this.sandbox.dom.on(this.$thumbnails[id], &#x27;click&#x27;, function() {
+            this.sandbox.dom.on(this.$thumbnails[id], &#x27;click&#x27;, function(event) {
+                this.sandbox.dom.stopPropagation(event);
                 this.downloadHandler(id);
             }.bind(this), &#x27;.&#x27; + constants.downloadClass);
+
+            this.sandbox.dom.on(this.$thumbnails[id], &#x27;dblclick&#x27;, function() {
+                this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+                this.selectItem(id);
+            }.bind(this));
+
+            this.sandbox.dom.on(&#x27;body&#x27;, &#x27;click.grid-thumbnails&#x27;, this.unselectAll.bind(this));
         },
 
         /**
@@ -371,6 +399,9 @@ define(function() {
          */
         selectItem: function(id, onlyView) {
             this.sandbox.dom.addClass(this.$thumbnails[id], constants.selectedClass);
+            if (!this.sandbox.dom.is(this.sandbox.dom.find(&#x27;input[type=&quot;checkbox&quot;]&#x27;, this.$thumbnails[id]), &#x27;:checked&#x27;)) {
+                this.sandbox.dom.prop(this.sandbox.dom.find(&#x27;input[type=&quot;checkbox&quot;]&#x27;, this.$thumbnails[id]), &#x27;checked&#x27;, true);
+            }
             if (onlyView !== true) {
                 this.datagrid.setItemSelected.call(this.datagrid, id);
             }
@@ -382,6 +413,9 @@ define(function() {
          */
         unselectItem: function(id) {
             this.sandbox.dom.removeClass(this.$thumbnails[id], constants.selectedClass);
+            if (this.sandbox.dom.is(this.sandbox.dom.find(&#x27;input[type=&quot;checkbox&quot;]&#x27;, this.$thumbnails[id]), &#x27;:checked&#x27;)) {
+                this.sandbox.dom.prop(this.sandbox.dom.find(&#x27;input[type=&quot;checkbox&quot;]&#x27;, this.$thumbnails[id]), &#x27;checked&#x27;, false);
+            }
             this.datagrid.setItemUnselected.call(this.datagrid, id);
         },
 
@@ -401,6 +435,29 @@ define(function() {
         downloadHandler: function(id) {
             // not yet implemented
             this.sandbox.logger.warn(&#x27;Download handler not yet implemented!&#x27;, id);
+        },
+
+        /**
+         * Removes a data record from the view
+         * @param recordId {Number|String} the records identifier
+         * @returns {Boolean} true if deleted succesfully
+         */
+        removeRecord: function(recordId) {
+            if (!!this.$thumbnails[recordId]) {
+                this.sandbox.dom.remove(this.$thumbnails[recordId]);
+                this.datagrid.removeRecord.call(this.datagrid, recordId);
+                return true;
+            }
+            return false;
+        },
+
+        /**
+         * Unselects all thumbnails
+         */
+        unselectAll: function() {
+            this.sandbox.util.each(this.$thumbnails, function(id) {
+                this.unselectItem(id);
+            }.bind(this));
         }
     };
 });
