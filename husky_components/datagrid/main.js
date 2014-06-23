@@ -1243,34 +1243,36 @@
              * @param pageSize {Number} new page size. Has to be set if no Uri is passed
              */
             changePage: function(uri, page, pageSize) {
-                var url, uriTemplate;
+                if (!!this.data.links.pagination) {
+                    var url, uriTemplate;
 
-                // if a url is passed load the data from this url
-                if (!!uri) {
-                    url = uri;
+                    // if a url is passed load the data from this url
+                    if (!!uri) {
+                        url = uri;
 
-                    // else generate an own uri
-                } else {
-                    // return if no page is passed or passed invalidly
-                    if (!page || page > this.data.pages || page < 1) {
-                        this.sandbox.logger.log("invalid page number or reached start/end!");
-                        return;
+                        // else generate an own uri
+                    } else {
+                        // return if no page is passed or passed invalidly
+                        if (!page || page > this.data.pages || page < 1) {
+                            this.sandbox.logger.log("invalid page number or reached start/end!");
+                            return;
+                        }
+                        // if no pageSize is passed keep current pageSize
+                        if (!pageSize) {
+                            pageSize = this.data.pageSize;
+                        }
+
+                        // generate uri for loading
+                        uriTemplate = this.sandbox.uritemplate.parse(this.data.links.pagination);
+                        url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, pageSize: pageSize});
                     }
-                    // if no pageSize is passed keep current pageSize
-                    if (!pageSize) {
-                        pageSize = this.data.pageSize;
-                    }
 
-                    // generate uri for loading
-                    uriTemplate = this.sandbox.uritemplate.parse(this.data.links.pagination);
-                    url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, pageSize: pageSize});
+                    this.sandbox.emit(PAGE_CHANGE.call(this), url);
+                    this.load({url: url,
+                        success: function() {
+                            this.sandbox.emit(UPDATED.call(this), 'changed page');
+                        }.bind(this)});
                 }
-
-                this.sandbox.emit(PAGE_CHANGE.call(this), url);
-                this.load({url: url,
-                    success: function() {
-                        this.sandbox.emit(UPDATED.call(this), 'changed page');
-                    }.bind(this)});
             },
 
             /**
@@ -1279,14 +1281,16 @@
              * Emits husky.datagrid.updated event on success
              */
             updateGrid: function() {
-                this.resetSortingOptions();
+                if (!!this.data.links.self) {
+                    this.resetSortingOptions();
 
-                this.load({
-                    url: this.data.links.self,
-                    success: function() {
-                        this.sandbox.emit(UPDATED.call(this));
-                    }.bind(this)
-                });
+                    this.load({
+                        url: this.data.links.self,
+                        success: function() {
+                            this.sandbox.emit(UPDATED.call(this));
+                        }.bind(this)
+                    });
+                }
             },
 
 
@@ -1297,22 +1301,24 @@
              * @param {Array} matchings
              */
             filterGrid: function(matchings) {
-                var uriTemplate, url;
+                if (!!this.data.links.filter) {
+                    var uriTemplate, url;
 
-                this.filterMatchings(matchings);
+                    this.filterMatchings(matchings);
 
-                uriTemplate = this.sandbox.uritemplate.parse(this.data.links.filter);
-                url = this.sandbox.uritemplate.expand(uriTemplate, {fieldsList: this.requestFields.join(',')});
+                    uriTemplate = this.sandbox.uritemplate.parse(this.data.links.filter);
+                    url = this.sandbox.uritemplate.expand(uriTemplate, {fieldsList: this.requestFields.join(',')});
 
-                this.destroy();
-                this.loading();
-                this.load({
-                    url: url,
-                    success: function() {
-                        this.stopLoading();
-                        this.sandbox.emit(UPDATED.call(this));
-                    }.bind(this)
-                });
+                    this.destroy();
+                    this.loading();
+                    this.load({
+                        url: url,
+                        success: function() {
+                            this.stopLoading();
+                            this.sandbox.emit(UPDATED.call(this));
+                        }.bind(this)
+                    });
+                }
             },
 
             /**
@@ -1321,7 +1327,7 @@
              * @param direction {String} the sort method to use 'asc' or 'desc'
              */
             sortGrid: function(attribute, direction) {
-                if (this.options.sortable === true) {
+                if (this.options.sortable === true && !!this.data.links.sortable[attribute]) {
                     var template, url;
 
                     // if passed attribute is sortable
