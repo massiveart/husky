@@ -9,14 +9,6 @@
                 {
                     "url": "http://lorempixel.com/150/100/sports/moos",
                     "title": "Media title"
-                },
-                {
-                    "url": "http://lorempixel.com/150/100/sports/marl",
-                    "title": "Title of media"
-                },
-                {
-                    "url": "http://lorempixel.com/150/100/sports/qqqw",
-                    "title": "Media title"
                 }
             ],
             "mediaNumber": 4,
@@ -37,10 +29,6 @@
                 {
                     "url": "http://lorempixel.com/150/100/sports/asdf",
                     "title": "Title of media"
-                },
-                {
-                    "url": "http://lorempixel.com/150/100/sports/wer",
-                    "title": "Media title"
                 }
             ],
             "mediaNumber": 4,
@@ -53,21 +41,8 @@
         },
         {
             "id": 3,
-            "thumbnails": [
-                {
-                    "url": "http://lorempixel.com/150/100/sports/e",
-                    "title": "Media title"
-                },
-                {
-                    "url": "http://lorempixel.com/150/100/sports/d",
-                    "title": "Title of media"
-                },
-                {
-                    "url": "http://lorempixel.com/150/100/sports/c",
-                    "title": "Media title"
-                }
-            ],
-            "mediaNumber": 4,
+            "thumbnails": [],
+            "mediaNumber": 0,
             "title": "Collection 3",
             "description": "Collection Description",
             "changer": "Firstname Lastname",
@@ -101,21 +76,8 @@
         },
         {
             "id": 5,
-            "thumbnails": [
-                {
-                    "url": "http://lorempixel.com/150/100/sports/285d",
-                    "title": "Media title"
-                },
-                {
-                    "url": "http://lorempixel.com/150/100/sports/2356x",
-                    "title": "Title of media"
-                },
-                {
-                    "url": "http://lorempixel.com/150/100/sports/987c",
-                    "title": "Media title"
-                }
-            ],
-            "mediaNumber": 4,
+            "thumbnails": [],
+            "mediaNumber": 0,
             "title": "Collection 5",
             "description": "Collection Description",
             "changer": "Firstname Lastname",

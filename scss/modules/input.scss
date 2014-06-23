@@ -30,8 +30,14 @@
       display: inline-block;
       margin-top: 2px;
     }
-    span {
+    a {
       padding-top: 1px;
+      text-decoration: none;
+      cursor: default;
+      &.clickable {
+        color: $black;
+        cursor: pointer;
+      }
     }
   }
   .back {

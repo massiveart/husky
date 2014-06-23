@@ -153,6 +153,7 @@
         height: $thumbnailHeight;
         @include box-sizing(border-box);
         border: 3px solid $white;
+        background: $white;
         border-radius: $borderRadiusSmall;
         @include single-transition(all, 200ms, ease, 200ms);
 
@@ -160,14 +161,27 @@
           width: 100%;
           height: 100%;
           display: block;
-          border: 1px solid $grayLighterer;
         }
-
+        &.empty {
+          width: 145px;
+          height: 95px;
+          background: $white;
+          text-align: center;
+          line-height: 95px;
+          font-size: 40px;
+          color: $grayLighter;
+        }
         &.first {
           top: 0px;
           right: 0px;
           z-index: 50;
           @include rotate(0deg);
+
+          &:only-child {
+            @include single-transition(none);
+            position: relative;
+            margin: 0 auto;
+          }
         }
 
         &.second {
@@ -191,6 +205,11 @@
             top: -10px;
             right: -20px;
             @include rotate(5deg);
+            &:only-child {
+              @include rotate(0deg);
+              top: 0px;
+              left: 0px;
+            }
           }
 
           &.second {

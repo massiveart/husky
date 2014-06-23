@@ -365,8 +365,8 @@ define(function() {
 
         /** events bound to dom */
         bindDOMEvents = function() {
-            this.sandbox.dom.on(this.options.el, &#x27;click&#x27;, toggleItem.bind(this), &#x27;.dropdown-toggle&#x27;);
-            this.sandbox.dom.on(this.options.el, &#x27;click&#x27;, selectItem.bind(this), &#x27;li&#x27;);
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, toggleItem.bind(this), &#x27;.dropdown-toggle&#x27;);
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, selectItem.bind(this), &#x27;li&#x27;);
         },
 
         /** events bound to sandbox */
@@ -592,7 +592,8 @@ define(function() {
          */
         selectItem = function(event) {
 
-            event.preventDefault();
+            this.sandbox.dom.stopPropagation(event);
+            this.sandbox.dom.preventDefault(event);
 
             var item = this.items[this.sandbox.dom.data(event.currentTarget, &#x27;id&#x27;)],
                 $parent = this.sandbox.dom.parents(event.currentTarget, &#x27;li&#x27;).eq(0);

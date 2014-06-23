@@ -246,6 +246,7 @@ define([], function () {
                             removeOnClose: true,
                             draggable: false,
                             data: this.$dropzone,
+                            instanceName: 'dropzone-' + this.options.instanceName,
                             skin: 'dropzone',
                             smallHeader: true,
                             closeCallback: function () {
@@ -376,6 +377,9 @@ define([], function () {
          * have faded out
          */
         afterFadeOut: function () {
+            if (this.overlayOpened === true) {
+                this.sandbox.emit('husky.overlay.dropzone-'+ this.options.instanceName +'.close');
+            }
             this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
             this.sandbox.emit(FILES_ADDED.call(this), this.getResponseArray(this.dropzone.files));
             this.dropzone.removeAllFiles();

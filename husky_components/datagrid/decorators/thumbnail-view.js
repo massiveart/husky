@@ -193,6 +193,7 @@ define(function() {
          * Destroys the view
          */
         destroy: function() {
+            this.sandbox.dom.off('body', 'click.grid-thumbnails');
             this.sandbox.dom.remove(this.$el);
         },
 
@@ -201,7 +202,8 @@ define(function() {
          * @param id {Number|String} the identifier of the thumbnail to bind events on
          */
         bindThumbnailDomEvents: function(id) {
-            this.sandbox.dom.on(this.$thumbnails[id], 'click', function() {
+            this.sandbox.dom.on(this.$thumbnails[id], 'click', function(event) {
+                this.sandbox.dom.stopPropagation(event);
                 this.toggleItemSelected(id);
             }.bind(this));
 
@@ -214,6 +216,8 @@ define(function() {
                 this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
                 this.selectItem(id);
             }.bind(this));
+
+            this.sandbox.dom.on('body', 'click.grid-thumbnails', this.unselectAll.bind(this));
         },
 
         /**
@@ -285,6 +289,15 @@ define(function() {
                 return true;
             }
             return false;
+        },
+
+        /**
+         * Unselects all thumbnails
+         */
+        unselectAll: function() {
+            this.sandbox.util.each(this.$thumbnails, function(id) {
+                this.unselectItem(id);
+            }.bind(this));
         }
     };
 });
