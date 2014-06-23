@@ -28208,6 +28208,7 @@ define('__component__$column-options@husky',[],function() {
  * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
  * @param {Array} [options.excludeFields=['id']] array of fields to exclude by the view
  * @param {Boolean} [options.showHead] if TRUE head would be showed
+ * @param {Boolean|String} [options.childrenPropertyName] name of the property which containes the number of children. If false no child-list will be initialized
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -28237,7 +28238,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             excludeFields: [''],
             columnMinWidth: '70px',
             thumbnailFormat: '50x50',
-            showHead: true
+            showHead: true,
+            childList: false,
+            childrenPropertyName: false
         },
 
         constants = {
@@ -28261,7 +28264,11 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             overflowClass: 'overflow',
             thumbSrcKey: 'url',
             thumbAltKey: 'alt',
-            sortLoaderClass: 'sort-loader'
+            sortLoaderClass: 'sort-loader',
+            childrenSlideDownIcon: 'fa-caret-right',
+            childrenSlideUpIcon: 'fa-caret-down',
+            slideDownClass: 'children-toggler',
+            noChildrenClass: 'no-children'
         },
 
         /**
@@ -28282,7 +28289,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             ].join(''),
 
             checkboxCell: [
-                '<td>',
+                '<td style="width: <%= width %>; max-width: <%= width %>; min-width: <%= width %>;">',
                 '<%= checkbox %>',
                 '</td>'
             ].join(''),
@@ -28490,6 +28497,13 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                     this.prepareSort.bind(this)
                 );
             }
+
+            // add load-children events if configured
+            if (!!this.options.childrenPropertyName) {
+                this.sandbox.dom.on(this.$tableContainer, 'click',
+                    this.prepareChildrenLoad.bind(this), 'tbody tr'
+                );
+            }
         },
 
         /**
@@ -28601,7 +28615,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
         prepareTableHead: function() {
             var tblColumns, tblCellClass, headData, widthValues, checkboxValues, dataAttribute, isSortable,
-                tblColumnStyle, minWidth;
+                tblColumnStyle, minWidth, count = 0;
 
             tblColumns = [];
             headData = this.datagrid.matchings || this.data.head;
@@ -28684,17 +28698,22 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                         }
                     }
 
+                    // add children-toggler class if children toggle is enabled
+                    if (!!this.options.childrenPropertyName && count === 0) {
+                        tblCellClass = constants.slideDownClass;
+                    }
 
                     // add html to table header cell if sortable
                     if (!!isSortable) {
                         dataAttribute = ' data-attribute="' + column.attribute + '"';
-                        tblCellClass = ((!!column.class) ? ' class="' + column.class + ' "' + constants.sortableClass : ' class="' + constants.sortableClass + '"');
-                        tblColumns.push('<th' + tblCellClass + ' style="' + tblColumnStyle.join(';') + '" ' + dataAttribute + '>' + column.content + '<span></span></th>');
+                        tblCellClass += ((!!column.class) ? ' ' + column.class + ' ' + constants.sortableClass : ' ' + constants.sortableClass + '');
+                        tblColumns.push('<th class="' + tblCellClass + '" style="' + tblColumnStyle.join(';') + '" ' + dataAttribute + '>' + column.content + '<span></span></th>');
                     } else {
-                        tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
-                        tblColumns.push('<th' + tblCellClass + ' style="' + tblColumnStyle.join(';') + '" >' + column.content + '</th>');
+                        tblCellClass += ((!!column.class) ? ' ' + column.class + '' : '');
+                        tblColumns.push('<th class="' + tblCellClass + '" style="' + tblColumnStyle.join(';') + '" >' + column.content + '</th>');
                     }
                 }
+                count++;
             }.bind(this));
 
             // remove-row entry
@@ -28750,7 +28769,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                         checkbox: this.sandbox.util.template(templates.checkbox)({
                             id: '',
                             checked: !!row.selected
-                        })
+                        }),
+                        width: this.options.selectItem.width
                     }));
 
                     // add a radio to each row
@@ -28769,14 +28789,14 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
                     this.sandbox.util.foreach(this.rowStructure, function(key, index) {
                         key.editable = key.editable || false;
-                        this.createRowCell(key.attribute, row[key.attribute], key.type, key.editable, key.validation, triggeredByAddRow, index);
+                        this.createRowCell(key.attribute, row[key.attribute], key.type, key.editable, key.validation, triggeredByAddRow, index, row);
                     }.bind(this));
 
                 } else {
                     i = 0;
                     for (key in row) {
                         if (row.hasOwnProperty(key)) {
-                            this.createRowCell(key, row[key], null, false, null, triggeredByAddRow, i);
+                            this.createRowCell(key, row[key], null, false, null, triggeredByAddRow, i, row);
                             i++;
                         }
                     }
@@ -28805,8 +28825,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param validation information for field
          * @param triggeredByAddRow triggered trough add row
          * @param index
+         * @param row {Object} the row object
          */
-        createRowCell: function(key, value, type, editable, validation, triggeredByAddRow, index) {
+        createRowCell: function (key, value, type, editable, validation, triggeredByAddRow, index, row) {
             var tblCellClasses,
                 tblCellContent,
                 tblCellStyle,
@@ -28859,6 +28880,13 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                         this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="' + constants.editableClass + '">' + tblCellContent + '</span><input type="text" class="form-element editable-content hidden" value="' + tblCellContent + '" tabindex="' + this.topTabIndex + '" ' + validationAttr + '/></td>');
                         this.topTabIndex++;
 
+                    }
+                    // if record has children and is first element in row add an icon
+                } else if (index === 0 && !!this.options.childrenPropertyName) {
+                    if (row[this.options.childrenPropertyName] > 0) {
+                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '><div class="' + constants.slideDownClass + '"><span class="' + constants.childrenSlideDownIcon + ' icon"></span>' + tblCellContent + '</div></td>')
+                    } else {
+                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '><div class="' + constants.noChildrenClass + '">' + tblCellContent + '</div></td>')
                     }
                 } else {
                     this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '>' + tblCellContent + '</td>');
@@ -29403,6 +29431,33 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 this.sandbox.dom.prop($checkboxes, 'checked', true);
                 this.sandbox.dom.addClass($checkboxes, constants.isSelectedClass);
                 this.datagrid.selectAllItems.call(this.datagrid);
+            }
+        },
+
+        /**
+         * Takes a record id and returns true if the record has children
+         * @param id {Number|String} the id of the record
+         * @returns {boolean} true if has children, false if not
+         */
+        recordHasChildren: function(id) {
+            for (var i = -1, length = this.data.embedded.length; ++i < length;) {
+                if (this.data.embedded[i].id === id) {
+                    return this.data.embedded[i][this.options.childrenPropertyName] > 0;
+                }
+            }
+            return false;
+        },
+
+        /**
+         * Handles the click on a table row if elements in the grid have children
+         *
+         * @param event
+         */
+        prepareChildrenLoad: function(event) {
+            this.sandbox.dom.stopPropagation(event);
+            var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
+            if (!!recordId && this.recordHasChildren(recordId)) {
+                this.datagrid.loadChildren.call(this.datagrid, recordId);
             }
         },
 
@@ -31834,6 +31889,25 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                             }.bind(this)
                         });
                     }
+                }
+            },
+
+            /**
+             * Loads the children of a record
+             * @param recordId {Number|String}
+             */
+            loadChildren: function(recordId) {
+                if (!!this.data.links.children) {
+                    var template = this.sandbox.uritemplate.parse(this.data.links.children),
+                        url = this.sandbox.uritemplate.expand(template, {parentId: recordId});
+
+                    this.sandbox.util.load(this.getUrl({url: url}))
+                        .then(function(response) {
+                            console.log(response);
+                        }.bind(this))
+                        .fail(function(status, error) {
+                            this.sandbox.logger.error(status, error);
+                        }.bind(this));
                 }
             },
 
