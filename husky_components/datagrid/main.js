@@ -222,6 +222,7 @@
              * used to add a data record
              * @event husky.datagrid.record.add
              * @param {Object} the data of the new record
+             * @param callback {Function} callback to execute after process has been finished
              */
             RECORDS_ADD = function() {
                 return this.createEventName('records.add');
@@ -970,8 +971,9 @@
              * Handles the event for adding multiple records
              * to a view
              * @param records {Array} array with new records to add
+             * @param callback {Function} callback to execute after process has been finished
              */
-            addRecordsHandler: function(records) {
+            addRecordsHandler: function(records, callback) {
                 if (!!this.gridViews[this.viewId].addRecord) {
                     this.sandbox.util.foreach(records, function(record) {
                         if (!!record.id) {
@@ -979,6 +981,9 @@
                         }
                         this.gridViews[this.viewId].addRecord(record);
                     }.bind(this));
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
             },
