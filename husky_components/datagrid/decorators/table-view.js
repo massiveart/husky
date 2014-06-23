@@ -17,7 +17,7 @@
  * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
  * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
  * @param {Array} [options.excludeFields=['id']] array of fields to exclude by the view
- *
+ * @param {Boolean} [options.showHead] if TRUE head would be showed
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -46,7 +46,8 @@ define(function() {
             startTabIndex: 99999,
             excludeFields: [''],
             columnMinWidth: '70px',
-            thumbnailFormat: '50x50'
+            thumbnailFormat: '50x50',
+            showHead: true
         },
 
         constants = {
