@@ -17,7 +17,7 @@
  * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
  * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
  * @param {Array} [options.excludeFields=['id']] array of fields to exclude by the view
- *
+ * @param {Boolean} [options.showHead] if TRUE head would be showed
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -46,7 +46,8 @@ define(function() {
             startTabIndex: 99999,
             excludeFields: [''],
             columnMinWidth: '70px',
-            thumbnailFormat: '50x50'
+            thumbnailFormat: '50x50',
+            showHead: true
         },
 
         constants = {
@@ -79,38 +80,38 @@ define(function() {
         templates = {
             removeRow: [
                 '<td class="remove-row">',
-                    '<span class="fa-trash-o pointer '+ constants.rowRemoverClass +'"></span>',
+                    '<span class="fa-trash-o pointer ' + constants.rowRemoverClass + '"></span>',
                 '</td>'
             ].join(''),
 
             checkbox: [
                 '<div class="custom-checkbox">',
-                    '<input id="<%= id %>" type="checkbox" data-form="false"<% if (!!checked) { %> checked<% } %>/>',
-                    '<span class="icon"></span>',
+                '<input id="<%= id %>" type="checkbox" data-form="false"<% if (!!checked) { %> checked<% } %>/>',
+                '<span class="icon"></span>',
                 '</div>'
             ].join(''),
 
             checkboxCell: [
                 '<td>',
-                    '<%= checkbox %>',
+                '<%= checkbox %>',
                 '</td>'
             ].join(''),
 
             radio: [
                 '<td>',
-                    '<div class="custom-radio">',
-                        '<input name="<%= name %>" type="radio"/>',
-                        '<span class="icon"></span>',
-                    '</div>',
+                '<div class="custom-radio">',
+                '<input name="<%= name %>" type="radio"/>',
+                '<span class="icon"></span>',
+                '</div>',
                 '</td>'
             ].join('')
-    },
+        },
 
         /**
          * used to update the table width and its containers due to responsiveness
          * @event husky.datagrid.update.table
          */
-            UPDATE_TABLE = function () {
+        UPDATE_TABLE = function() {
             return this.datagrid.createEventName.call(this.datagrid, 'update.table');
         },
 
@@ -120,7 +121,7 @@ define(function() {
          * @param classArray
          * @param isSortable
          */
-            getTextWidth = function (text, classArray, isSortable) {
+        getTextWidth = function(text, classArray, isSortable) {
             var elWidth, el,
                 sortIconWidth = 0,
                 paddings = 20;
@@ -179,7 +180,7 @@ define(function() {
             this.data = data;
             this.$el = $container;
 
-            this.$tableContainer = this.sandbox.dom.createElement('<div class="'+ constants.viewClass +'"/>');
+            this.$tableContainer = this.sandbox.dom.createElement('<div class="' + constants.viewClass + '"/>');
             this.sandbox.dom.append(this.$el, this.$tableContainer);
             this.sandbox.dom.append(this.$tableContainer, this.prepareTable());
 
@@ -371,7 +372,7 @@ define(function() {
             this.$table = $table = this.sandbox.dom.createElement('<table' + (!!this.options.validationDebug ? 'data-debug="true"' : '' ) + '/>');
 
             if (!!this.data.head || !!this.datagrid.matchings) {
-                $thead = this.sandbox.dom.createElement('<thead/>');
+                $thead = this.sandbox.dom.createElement('<thead style="' + (!this.options.showHead ? 'display:none;' : '' ) + '"/>');
                 this.sandbox.dom.append($thead, this.prepareTableHead());
                 this.sandbox.dom.append($table, $thead);
             }
@@ -386,7 +387,7 @@ define(function() {
             tblClasses = [];
             tblClasses.push(
                 (!!this.options.className && this.options.className !== constants.tableClass) ? constants.tableClass +
-                ' ' + this.options.className : constants.tableClass
+                    ' ' + this.options.className : constants.tableClass
             );
 
             // when list should not have the hover effect for whole rows do not set the is-selectable class
@@ -420,8 +421,8 @@ define(function() {
                 minWidth = checkboxValues.number + checkboxValues.unit;
 
                 tblColumns.push(
-                    '<th class="'+ constants.selectAllName +'" ',
-                    'style="width:' + minWidth + '; max-width:' + minWidth + '; min-width:' + minWidth + ';"',
+                        '<th class="' + constants.selectAllName + '" ',
+                        'style="width:' + minWidth + '; max-width:' + minWidth + '; min-width:' + minWidth + ';"',
                     ' >'
                 );
 
@@ -493,7 +494,7 @@ define(function() {
                     // add html to table header cell if sortable
                     if (!!isSortable) {
                         dataAttribute = ' data-attribute="' + column.attribute + '"';
-                        tblCellClass = ((!!column.class) ? ' class="' + column.class + ' "' + constants.sortableClass : ' class="'+ constants.sortableClass +'"');
+                        tblCellClass = ((!!column.class) ? ' class="' + column.class + ' "' + constants.sortableClass : ' class="' + constants.sortableClass + '"');
                         tblColumns.push('<th' + tblCellClass + ' style="' + tblColumnStyle.join(';') + '" ' + dataAttribute + '>' + column.content + '<span></span></th>');
                     } else {
                         tblCellClass = ((!!column.class) ? ' class="' + column.class + '"' : '');
@@ -591,7 +592,7 @@ define(function() {
                     this.tblColumns.push(this.sandbox.util.template(templates.removeRow)());
                 }
 
-                $tableRow = this.sandbox.dom.createElement('<tr'+ this.tblRowAttributes +'>'+ this.tblColumns.join('') +'</tr>');
+                $tableRow = this.sandbox.dom.createElement('<tr' + this.tblRowAttributes + '>' + this.tblColumns.join('') + '</tr>');
 
                 if (!!row.id) {
                     this.sandbox.dom.data($tableRow, 'id', row.id);
@@ -644,7 +645,7 @@ define(function() {
                 if (!!type) {
                     if (type === this.datagrid.types.THUMBNAILS) {
                         tblCellContent = this.datagrid.manipulateContent(tblCellContent, type, this.options.thumbnailFormat);
-                        tblCellContent = '<img alt="'+ tblCellContent[constants.thumbAltKey] +'" src="'+ tblCellContent[constants.thumbSrcKey] +'"/>';
+                        tblCellContent = '<img alt="' + tblCellContent[constants.thumbAltKey] + '" src="' + tblCellContent[constants.thumbSrcKey] + '"/>';
                     } else {
                         tblCellContent = this.datagrid.manipulateContent(tblCellContent, type);
                     }
@@ -654,14 +655,14 @@ define(function() {
                     if (!!triggeredByAddRow) {
                         // differentiate for tab index
                         if (!!this.options.addRowTop) {
-                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="'+ constants.editableClass +'" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.bottomTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
+                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="' + constants.editableClass + '" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.bottomTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
                             this.bottomTabIndex++;
                         } else {
-                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="'+ constants.editableClass +'" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.topTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
+                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="' + constants.editableClass + '" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.topTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
                             this.topTabIndex++;
                         }
                     } else {
-                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="'+ constants.editableClass +'">' + tblCellContent + '</span><input type="text" class="form-element editable-content hidden" value="' + tblCellContent + '" tabindex="' + this.topTabIndex + '" ' + validationAttr + '/></td>');
+                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="' + constants.editableClass + '">' + tblCellContent + '</span><input type="text" class="form-element editable-content hidden" value="' + tblCellContent + '" tabindex="' + this.topTabIndex + '" ' + validationAttr + '/></td>');
                         this.topTabIndex++;
 
                     }

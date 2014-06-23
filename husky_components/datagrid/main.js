@@ -14,6 +14,7 @@
  * @param {String} [options.columnOptionsInstanceName=null] if set, a listener will be set for listening for column changes
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.instanceName] name of the datagrid instance
+ * @param {Array} [options.preselected] preselected ids
  *
  * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
  * @param {String} [options.matchings.content] column title
@@ -54,7 +55,8 @@
                 instanceName: '',
                 searchInstanceName: null,
                 columnOptionsInstanceName: null,
-                defaultMeasureUnit: 'px'
+                defaultMeasureUnit: 'px',
+                preselected: []
             },
 
             types = {
@@ -415,7 +417,6 @@
                 // extend default options and set variables
                 this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
-
                 this.matchings = [];
                 this.requestFields = [];
                 this.filterMatchings(this.options.matchings);
@@ -528,6 +529,9 @@
              * Renders the data of the datagrid
              */
             render: function() {
+                var count = this.setSelectedItems(this.options.preselected);
+                this.sandbox.logger.log('Selected item:', count);
+
                 this.gridViews[this.viewId].render(this.data, this.$element);
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].render(this.data, this.$element);
