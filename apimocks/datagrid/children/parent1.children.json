@@ -6,12 +6,14 @@
         {
             "id": 11,
             "name": "Category 1.1",
-            "children": 0
+            "children": 3,
+            "parent": 1
         },
         {
             "id": 12,
             "name": "Category 1.2",
-            "children": 0
+            "children": 0,
+            "parent": 1
         }
     ],
     "total": 2,

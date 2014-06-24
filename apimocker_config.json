@@ -53,6 +53,10 @@
             "mockFile": "datagrid/children/children.json",
             "switch": "parent"
         },
+        "admin/api/datagrid/children/sorted": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/children/sorted.json"
+        },
 
         "admin/api/autocomplete": {
             "verbs": ["GET"],

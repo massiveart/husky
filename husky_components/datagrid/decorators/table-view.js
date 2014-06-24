@@ -7,6 +7,7 @@
  * @param {String} [options.className] additional classname for the wrapping div
  * @param {Boolean} [options.removeRow] displays in the last column an icon to remove a row
  * @param {Object} [options.selectItem] Configuration object of select item (column)
+ * @param {Boolean} [options.selectItem.inFirstCell] If true checkbox is in the first cell. If true checkbox gets its own cell
  * @param {String} [options.selectItem.type] Type of select [checkbox, radio]
  * @param {String} [options.selectItem.width] Width of select column
  * @param {Boolean} [options.validation] enables validation for datagrid
@@ -18,6 +19,11 @@
  * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
  * @param {Array} [options.excludeFields=['id']] array of fields to exclude by the view
  * @param {Boolean} [options.showHead] if TRUE head would be showed
+ * @param {Array} [options.icons] array of icons to display
+ * @param {String} [options.icons[].icon] the actual icon which sould be displayed
+ * @param {String} [options.icons[].column] the id of the column in which the icon should be displayed
+ * @param {String} [options.icons[].align] the align of the icon. 'left' org 'right'
+ * @param {Function} [options.icons.callback] a callback to execute if the icon got clicked. Gets the id of the data-record as first argument
  * @param {Boolean|String} [options.childrenPropertyName] name of the property which containes the number of children. If false no child-list will be initialized
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
@@ -39,6 +45,7 @@ define(function() {
             removeRow: false,
             selectItem: {
                 type: 'checkbox',      // checkbox, radio button
+                inFirstCell: false,
                 width: '50px'    // numerous value
             },
             validation: false, // TODO does not work for added rows
@@ -50,6 +57,7 @@ define(function() {
             thumbnailFormat: '50x50',
             showHead: true,
             childList: false,
+            icons: [],
             childrenPropertyName: false
         },
 
@@ -78,7 +86,10 @@ define(function() {
             childrenSlideDownIcon: 'fa-caret-right',
             childrenSlideUpIcon: 'fa-caret-down',
             slideDownClass: 'children-toggler',
-            noChildrenClass: 'no-children'
+            noChildrenClass: 'no-children',
+            childrenIndentClass: 'child-indent',
+            childrenLoadedClass: 'children-loaded',
+            childrenIndentPx: 25 //px
         },
 
         /**
@@ -96,6 +107,12 @@ define(function() {
                 '<input id="<%= id %>" type="checkbox" data-form="false"<% if (!!checked) { %> checked<% } %>/>',
                 '<span class="icon"></span>',
                 '</div>'
+            ].join(''),
+
+            icon: [
+                '<span class="grid-icon <%= align %>">',
+                    '<span class="fa-<%= icon %>"></span>',
+                '</span>'
             ].join(''),
 
             checkboxCell: [
@@ -254,10 +271,8 @@ define(function() {
         bindDomEvents: function() {
             // select events for checkboxes and radio buttons
             if (!!this.options.selectItem.type) {
-                this.sandbox.dom.on(
-                    this.sandbox.dom.find('input[type="checkbox"], input[type="radio"]', this.$tableContainer),
-                    'click',
-                    this.selectItem.bind(this)
+                this.sandbox.dom.on(this.$tableContainer, 'click', this.selectItem.bind(this),
+                    'input[type="checkbox"], input[type="radio"]'
                 );
                 //select all event
                 this.sandbox.dom.on(
@@ -278,6 +293,12 @@ define(function() {
             this.sandbox.dom.on(
                 this.$tableContainer, 'click',
                 this.emitRowClickedEvent.bind(this), 'tbody tr'
+            );
+
+            // calls the icon-callback on click on an icon
+            this.sandbox.dom.on(
+                this.$tableContainer, 'click',
+                this.callIconCallback.bind(this), 'tr .grid-icon'
             );
 
             this.sandbox.dom.on(this.$tableContainer, 'click', function(event) {
@@ -314,6 +335,18 @@ define(function() {
                     this.prepareChildrenLoad.bind(this), 'tbody tr'
                 );
             }
+        },
+
+        /**
+         * Binds the click event on the passed icons/buttons
+         * @param $icon {Object} the icon-dom-object
+         * @param recordId {Number|String} the record-id which gets passed to the callback
+         * @param callback {Function} callback to execute after the click
+         */
+        bindIconDomEvents: function($icon, recordId, callback) {
+            this.sandbox.dom.on($icon, 'click', function() {
+                callback(recordId);
+            });
         },
 
         /**
@@ -573,21 +606,24 @@ define(function() {
                     radioPrefix = '';
                 }
 
-                // add a checkbox to each row
-                if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
-                    this.tblColumns.push(this.sandbox.util.template(templates.checkboxCell)({
-                        checkbox: this.sandbox.util.template(templates.checkbox)({
-                            id: '',
-                            checked: !!row.selected
-                        }),
-                        width: this.options.selectItem.width
-                    }));
+                // if the select-item should have its own cell add a checkbox or a radio-button
+                if (this.options.selectItem.inFirstCell !== true) {
+                    // add a checkbox-cell to each row
+                    if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
+                        this.tblColumns.push(this.sandbox.util.template(templates.checkboxCell)({
+                            checkbox: this.sandbox.util.template(templates.checkbox)({
+                                id: '',
+                                checked: !!row.selected
+                            }),
+                            width: this.options.selectItem.width
+                        }));
 
-                    // add a radio to each row
-                } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
-                    this.tblColumns.push(this.sandbox.util.template(templates.radio)({
-                        name: 'husky-radio' + radioPrefix
-                    }));
+                        // add a radio to each row
+                    } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
+                        this.tblColumns.push(this.sandbox.util.template(templates.radio)({
+                            name: 'husky-radio' + radioPrefix
+                        }));
+                    }
                 }
 
                 // when row structure contains more elements than the id then use the structure to set values
@@ -643,7 +679,9 @@ define(function() {
                 tblCellStyle,
                 tblCellClass,
                 k,
-                validationAttr = '';
+                validationAttr = '',
+                $cell,
+                $innerContainer;
 
             if (!value) {
                 value = '';
@@ -680,29 +718,85 @@ define(function() {
                     if (!!triggeredByAddRow) {
                         // differentiate for tab index
                         if (!!this.options.addRowTop) {
-                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="' + constants.editableClass + '" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.bottomTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
+                            $cell = '<td data-field="' + key + '" ' + tblCellClass + ' ><span class="' + constants.editableClass + '" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.bottomTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>';
                             this.bottomTabIndex++;
                         } else {
-                            this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="' + constants.editableClass + '" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.topTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>');
+                            $cell = '<td data-field="' + key + '" ' + tblCellClass + ' ><span class="' + constants.editableClass + '" style="display: none">' + tblCellContent + '</span><input type="text" class="form-element editable-content" tabindex="' + this.topTabIndex + '" value="' + tblCellContent + '"  ' + validationAttr + '/></td>';
                             this.topTabIndex++;
                         }
                     } else {
-                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ><span class="' + constants.editableClass + '">' + tblCellContent + '</span><input type="text" class="form-element editable-content hidden" value="' + tblCellContent + '" tabindex="' + this.topTabIndex + '" ' + validationAttr + '/></td>');
+                        $cell = '<td data-field="' + key + '" ' + tblCellClass + ' ><span class="' + constants.editableClass + '">' + tblCellContent + '</span><input type="text" class="form-element editable-content hidden" value="' + tblCellContent + '" tabindex="' + this.topTabIndex + '" ' + validationAttr + '/></td>';
                         this.topTabIndex++;
 
                     }
                     // if record has children and is first element in row add an icon
                 } else if (index === 0 && !!this.options.childrenPropertyName) {
                     if (row[this.options.childrenPropertyName] > 0) {
-                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '><div class="' + constants.slideDownClass + '"><span class="' + constants.childrenSlideDownIcon + ' icon"></span>' + tblCellContent + '</div></td>')
+                        $cell = '<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '><div class="' + constants.slideDownClass + ' ' + constants.childrenIndentClass + '"><span class="' + constants.childrenSlideDownIcon + ' toggle-icon"></span>' + tblCellContent + '</div></td>';
                     } else {
-                        this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '><div class="' + constants.noChildrenClass + '">' + tblCellContent + '</div></td>')
+                        $cell = '<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '><div class="' + constants.noChildrenClass + ' ' + constants.childrenIndentClass + '">' + tblCellContent + '</div></td>';
                     }
+                    $cell = this.sandbox.dom.createElement($cell);
+                    $innerContainer = this.sandbox.dom.find('.' + constants.childrenIndentClass, $cell);
                 } else {
-                    this.tblColumns.push('<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '>' + tblCellContent + '</td>');
+                    $cell = '<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '>' + tblCellContent + '</td>';
                 }
+                $cell = this.sandbox.dom.createElement($cell);
+
+                // add checkbox to first cell if configured
+                if (index === 0 && this.options.selectItem.inFirstCell === true) {
+                    this.sandbox.dom.prepend($innerContainer || $cell, this.sandbox.util.template(templates.checkbox)({
+                        id: '',
+                        checked: !!row.selected
+                    }));
+                    // double the colspan because of the extra cell in the header
+                    this.sandbox.dom.prop($cell, 'colspan', 2);
+                }
+
+                this.addIconsToCell($innerContainer || $cell, key, row);
+
+                // push the html string to the global array
+                this.tblColumns.push(this.sandbox.dom.outerHTML($cell));
             } else {
                 this.tblRowAttributes += ' data-' + key + '="' + value + '"';
+            }
+        },
+
+        /**
+         * Adds configured icons to a cell
+         * @param $container {Object} the dom-object to append the icons to
+         * @param column {String} the identifier of the column
+         * @param row {Object} the row object
+         * @
+         */
+        addIconsToCell: function($container, column, row) {
+            if (!!this.options.icons) {
+                var i, length, $icon;
+
+                for (i = -1, length = this.options.icons.length; ++i < length;) {
+                    if (column === this.options.icons[i].column) {
+                        $icon = this.sandbox.dom.createElement(this.sandbox.util.template(templates.icon)({
+                            icon: this.options.icons[i].icon,
+                            align: this.options.icons[i].align || 'left'
+                        }));
+                        this.sandbox.dom.attr($icon, 'data-icon-index', i);
+                        this.sandbox.dom.append($container, $icon);
+                    }
+                }
+            }
+        },
+
+        /**
+         * Handles the click an an icon (calls the defined callback)
+         * @param event
+         */
+        callIconCallback: function(event) {
+            this.sandbox.dom.stopPropagation(event);
+            var index = this.sandbox.dom.data(event.currentTarget, 'iconIndex'),
+                recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, 'tr'), 'id');
+            // call the callback
+            if (!!this.options.icons[index] && typeof this.options.icons[index].callback === 'function') {
+                this.options.icons[index].callback(recordId);
             }
         },
 
@@ -711,15 +805,21 @@ define(function() {
          * @param row
          */
         addRecord: function(row) {
-            var $row, $firstInputField, $checkbox;
+            var $row, $firstInputField, $checkbox, $parent;
             // check for other element types when implemented
             $row = this.sandbox.dom.$(this.prepareTableRow(row, true));
 
             // when unsaved new row exists - save it
             this.prepareSave();
 
-            // prepend or append row
-            if (!!this.options.addRowTop) {
+            if (!!row.parent) {
+                $parent = this.sandbox.dom.find('tr[data-id="' + row.parent + '"]', this.$tableContainer);
+            }
+
+            // if record has a parent insert it after its parent else prepend or append row
+            if (!!$parent) {
+                this.insertChild($row, $parent, row.parent);
+            } else if (!!this.options.addRowTop) {
                 this.sandbox.dom.prepend(this.$table, $row);
             } else {
                 this.sandbox.dom.append(this.$table, $row);
@@ -740,6 +840,32 @@ define(function() {
                     this.sandbox.dom.removeClass($checkbox, constants.isSelectedClass);
                 }
             }
+        },
+
+        /**
+         * Inserts a child-element after a parent element and indents it
+         * @param $child
+         * @param $parent
+         * @param parentId {Number|String} the id of the parent
+         */
+        insertChild: function ($child, $parent, parentId) {
+            var $parentIcon, depth = this.sandbox.dom.data($parent, 'depth') || 0;
+            depth = parseInt(depth, 10);
+            $parentIcon = this.sandbox.dom.find('.' + constants.slideDownClass + ' .toggle-icon', $parent);
+
+            this.sandbox.dom.attr($child, 'data-parent', parentId);
+            this.sandbox.dom.data($child, 'depth', depth + 1);
+
+            // change the icon of the parent
+            this.sandbox.dom.removeClass($parentIcon, constants.childrenSlideDownIcon);
+            this.sandbox.dom.prependClass($parentIcon, constants.childrenSlideUpIcon);
+
+            // indent the children-rows
+            this.sandbox.dom.css(this.sandbox.dom.find('.' + constants.childrenIndentClass, $child), {
+                'margin-left': (constants.childrenIndentPx * (depth + 1)) + 'px'
+            });
+
+            this.sandbox.dom.after($parent, $child);
         },
 
         /**
@@ -1231,7 +1357,7 @@ define(function() {
             this.sandbox.dom.stopPropagation(event);
 
             var $headCheckbox = this.sandbox.dom.find('th input[type="checkbox"]', this.$tableContainer)[0],
-                $checkboxes = this.sandbox.dom.find('input[type="checkbox"]', this.$tableContainer);
+                $checkboxes = this.sandbox.dom.find('input[type="checkbox"]:visible', this.$tableContainer);
 
             if (this.sandbox.dom.prop($headCheckbox, 'checked') === false) {
                 this.sandbox.dom.prop($checkboxes, 'checked', false);
@@ -1266,9 +1392,64 @@ define(function() {
         prepareChildrenLoad: function(event) {
             this.sandbox.dom.stopPropagation(event);
             var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
-            if (!!recordId && this.recordHasChildren(recordId)) {
-                this.datagrid.loadChildren.call(this.datagrid, recordId);
+
+            // only load children if they are not already loaded
+            if (!this.sandbox.dom.hasClass(event.currentTarget, constants.childrenLoadedClass)) {
+                if (!!recordId && this.recordHasChildren(recordId)) {
+                    this.sandbox.dom.addClass(event.currentTarget, constants.childrenLoadedClass);
+                    this.datagrid.loadChildren.call(this.datagrid, recordId);
+                }
+            } else {
+                this.toggleChildren(event.currentTarget, recordId);
             }
+        },
+
+        /**
+         * Toggles the already loaded children of a parent element
+         * @param $parent
+         * @param parentId
+         */
+        toggleChildren: function($parent, parentId) {
+            var $children = this.sandbox.dom.find('tr[data-parent="'+ parentId +'"]', this.$tableContainer);
+
+            if (this.sandbox.dom.is($children, ':visible')) {
+                this.hideChildren($parent, parentId);
+            } else {
+                this.showChildren($parent, parentId);
+            }
+        },
+
+        /**
+         * Shows the first-level of children of a record
+         * @param $parent
+         * @param parentId
+         */
+        showChildren: function($parent, parentId) {
+            var $children = this.sandbox.dom.find('tr[data-parent="'+ parentId +'"]', this.$tableContainer),
+                $parentIcon = this.sandbox.dom.find('.' + constants.slideDownClass + ' .toggle-icon', $parent);
+
+            this.sandbox.dom.removeClass($parentIcon, constants.childrenSlideDownIcon);
+            this.sandbox.dom.prependClass($parentIcon, constants.childrenSlideUpIcon);
+            this.sandbox.dom.show($children);
+        },
+
+        /**
+         * Recursivly hides all children of a given parent (with nested ones)
+         * @param $parent
+         * @param parentId
+         */
+        hideChildren: function($parent, parentId) {
+            var $children = this.sandbox.dom.find('tr[data-parent="'+ parentId +'"]', this.$tableContainer),
+                $parentIcon = this.sandbox.dom.find('.' + constants.slideDownClass + ' .toggle-icon', $parent);
+
+            this.sandbox.util.foreach($children, function($child) {
+                if (this.sandbox.dom.hasClass($child, constants.childrenLoadedClass)) {
+                    this.hideChildren($child, this.sandbox.dom.data($child, 'id'));
+                }
+            }.bind(this));
+            this.sandbox.dom.removeClass($parentIcon, constants.childrenSlideUpIcon);
+            this.sandbox.dom.prependClass($parentIcon, constants.childrenSlideDownIcon);
+            this.sandbox.dom.hide($children);
         },
 
         /**

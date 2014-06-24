@@ -1,5 +1,5 @@
 .husky-datagrid {
-    $fullWidthPaddingLeft: 60px;
+    $fullWidthPaddingLeft: 50px;
     $overflowIconSpacing: 30px;
 
     position: relative;
@@ -43,7 +43,7 @@
                 font-weight: bold;
             }
             &.children-toggler {
-                padding-left: 25px;
+                padding-left: 0px;
             }
         }
 
@@ -61,13 +61,34 @@
         tr:last-child {
             border-width: 2px;
         }
-      .children-toggler {
-        .icon {
+      .child-indent {
+        .toggle-icon {
           margin-right: 10px;
         }
+        .custom-checkbox {
+          margin-right: 12px;
+        }
       }
-      .no-children {
-        padding-left: 15px;
+      tr:hover {
+        .grid-icon {
+          opacity: 1;
+        }
+      }
+      .grid-icon {
+        width: 30px;
+        height: 20px;
+        cursor: pointer;
+        color: $white;
+        background: $blue;
+        text-align: center;
+        border-radius: $borderRadiusSmall;
+        margin-left: 10px;
+        display: inline-block;
+        opacity: 0;
+        @include single-transition(opacity, 100ms, ease-in, 200ms);
+        &.right {
+          float: right;
+        }
       }
     }
 

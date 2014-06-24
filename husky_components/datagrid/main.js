@@ -978,8 +978,8 @@
                     this.sandbox.util.foreach(records, function(record) {
                         if (!!record.id) {
                             this.pushRecords([record]);
+                            this.gridViews[this.viewId].addRecord(record);
                         }
-                        this.gridViews[this.viewId].addRecord(record);
                     }.bind(this));
                     if (typeof callback === 'function') {
                         callback();
@@ -1362,7 +1362,7 @@
 
                     this.sandbox.util.load(this.getUrl({url: url}))
                         .then(function(response) {
-                            console.log(response);
+                            this.addRecordsHandler(response['_embedded']);
                         }.bind(this))
                         .fail(function(status, error) {
                             this.sandbox.logger.error(status, error);

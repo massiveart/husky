@@ -169,13 +169,41 @@ require(['lib/husky'], function(Husky) {
                 options: {
                     url: 'http://husky.lo:7878/admin/api/datagrid/children?depth=0',
                     el: '#children-datagrid',
-                    instanceName: 'children-thumbnails',
+                    instanceName: 'children-grid',
+                    sortable: true,
+                    pagination: false,
                     viewOptions: {
                         table: {
-                            childrenPropertyName: 'children'
+                            childrenPropertyName: 'children',
+                            icons: [
+                                {
+                                    icon: 'pencil',
+                                    column: 'name',
+                                    align: 'left',
+                                    callback: function(id) {
+                                        console.log('You clicked on edit for ' + id);
+                                    }
+                                },
+                                {
+                                    icon: 'plus-circle',
+                                    column: 'name',
+                                    align: 'left',
+                                    callback: function(id) {
+                                        console.log('You clicked on add for ' + id);
+                                    }
+                                }
+                            ],
+                            selectItem: {
+                                type: 'checkbox',
+                                inFirstCell: true
+                            }
                         }
                     },
                     matchings: [
+                        {
+                            id: 'name',
+                            content: 'Name'
+                        },
                         {
                             id: 'id',
                             disabled: true
@@ -185,8 +213,8 @@ require(['lib/husky'], function(Husky) {
                             disabled: true
                         },
                         {
-                            id: 'name',
-                            content: 'Name'
+                            id: 'parent',
+                            disabled: true
                         }
                     ]
                 }
