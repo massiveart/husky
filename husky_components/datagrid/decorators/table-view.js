@@ -9,7 +9,6 @@
  * @param {Object} [options.selectItem] Configuration object of select item (column)
  * @param {Boolean} [options.selectItem.inFirstCell] If true checkbox is in the first cell. If true checkbox gets its own cell
  * @param {String} [options.selectItem.type] Type of select [checkbox, radio]
- * @param {String} [options.selectItem.width] Width of select column
  * @param {Boolean} [options.validation] enables validation for datagrid
  * @param {Boolean} [options.validationDebug] enables validation debug for datagrid
  * @param {Boolean} [options.addRowTop] adds row to the top of the table when add row is triggered
@@ -45,8 +44,7 @@ define(function() {
             removeRow: false,
             selectItem: {
                 type: 'checkbox',      // checkbox, radio button
-                inFirstCell: false,
-                width: '50px'    // numerous value
+                inFirstCell: false
             },
             validation: false, // TODO does not work for added rows
             validationDebug: false,
@@ -116,7 +114,7 @@ define(function() {
             ].join(''),
 
             checkboxCell: [
-                '<td style="width: <%= width %>; max-width: <%= width %>; min-width: <%= width %>;">',
+                '<td class="checkbox-cell">',
                 '<%= checkbox %>',
                 '</td>'
             ].join(''),
@@ -465,16 +463,8 @@ define(function() {
 
             // add a checkbox to head row
             if (!!this.options.selectItem && !!this.options.selectItem.type) {
-                // default values
-                if (this.options.selectItem.width) {
-                    checkboxValues = this.datagrid.getNumberAndUnit(this.options.selectItem.width);
-                }
-                minWidth = checkboxValues.number + checkboxValues.unit;
-
                 tblColumns.push(
-                        '<th class="' + constants.selectAllName + '" ',
-                        'style="width:' + minWidth + '; max-width:' + minWidth + '; min-width:' + minWidth + ';"',
-                    ' >'
+                        '<th class="' + constants.selectAllName + ' checkbox-cell">'
                 );
 
                 if (this.options.selectItem.type === 'checkbox') {
@@ -614,8 +604,7 @@ define(function() {
                             checkbox: this.sandbox.util.template(templates.checkbox)({
                                 id: '',
                                 checked: !!row.selected
-                            }),
-                            width: this.options.selectItem.width
+                            })
                         }));
 
                         // add a radio to each row

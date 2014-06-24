@@ -22,6 +22,9 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        .checkbox-cell {
+          box-sizing: content-box;
+        }
     }
 
     thead {
