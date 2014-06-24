@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -15115,7 +15114,14 @@ define('aura/ext/debug', [],function() {
   };
 });
 
-;!function(exports, undefined) {
+/*!
+ * EventEmitter2
+ * https://github.com/hij1nx/EventEmitter2
+ *
+ * Copyright (c) 2013 hij1nx
+ * Licensed under the MIT license.
+ */
+;!function(undefined) {
 
   var isArray = Array.isArray ? Array.isArray : function _isArray(obj) {
     return Object.prototype.toString.call(obj) === "[object Array]";
@@ -15448,10 +15454,10 @@ define('aura/ext/debug', [],function() {
         this.event = type;
         listeners[i].apply(this, args);
       }
-      return (listeners.length > 0) || this._all;
+      return (listeners.length > 0) || !!this._all;
     }
     else {
-      return this._all;
+      return !!this._all;
     }
 
   };
@@ -15514,12 +15520,12 @@ define('aura/ext/debug', [],function() {
 
   EventEmitter.prototype.onAny = function(fn) {
 
-    if(!this._all) {
-      this._all = [];
-    }
-
     if (typeof fn !== 'function') {
       throw new Error('onAny only accepts instances of Function');
+    }
+
+    if(!this._all) {
+      this._all = [];
     }
 
     // Add the function to the event listener collection.
@@ -15668,14 +15674,19 @@ define('aura/ext/debug', [],function() {
   };
 
   if (typeof define === 'function' && define.amd) {
+     // AMD. Register as an anonymous module.
     define('eventemitter',[],function() {
       return EventEmitter;
     });
-  } else {
+  } else if (typeof exports === 'object') {
+    // CommonJS
     exports.EventEmitter2 = EventEmitter;
   }
-
-}(typeof process !== 'undefined' && typeof process.title !== 'undefined' && typeof exports !== 'undefined' ? exports : window);
+  else {
+    // Browser global.
+    window.EventEmitter2 = EventEmitter;
+  }
+}();
 
 define('aura/ext/mediator', ['eventemitter','underscore'],function () {
   
@@ -16325,7 +16336,6 @@ define('aura/ext/components', [],function() {
     };
   };
 });
-
 
 /*
  * This file is part of the Husky Validation.
@@ -17694,6 +17704,7 @@ require.config({
         'type/string': 'js/types/string',
         'type/date': 'js/types/date',
         'type/decimal': 'js/types/decimal',
+        'type/hiddenData': 'js/types/hiddenData',
         'type/email': 'js/types/email',
         'type/url': 'js/types/url',
         'type/label': 'js/types/label',
@@ -18041,6 +18052,7 @@ define('type/decimal',[
 
     return function($el, options) {
         var defaults = {
+                format: 'n', // n, d, c, p
                 regExp: /^-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/
             },
 
@@ -18056,10 +18068,75 @@ define('type/decimal',[
                     }
 
                     return this.options.regExp.test(val);
+                },
+
+                getModelData: function(val) {
+                    return Globalize.parseFloat(val);
+                },
+
+                getViewData: function(val) {
+                    if(typeof val === 'string'){
+                        val = parseFloat(val);
+                    }
+                    return Globalize.format(val, this.options.format);
                 }
             };
 
         return new Default($el, defaults, options, 'decimal', typeInterface);
+    };
+});
+
+/*
+ * This file is part of the Husky Validation.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
+define('type/hiddenData',[
+    'type/default'
+], function(Default) {
+
+    
+
+    return function($el, options) {
+        var defaults = {
+                id: 'id',
+                defaultValue: null
+            },
+
+            typeInterface = {
+
+                hiddenData: null,
+
+                setValue: function(value) {
+                    this.hiddenData = value;
+                    if (typeof value === 'object' && !!value[this.options.id]) {
+                        this.$el.data('id', value[this.options.id]);
+                    }
+                },
+
+                getValue: function() {
+                    if (this.hiddenData !== null) {
+                        return this.hiddenData;
+                    } else {
+                        return this.options.defaultValue;
+                    }
+                },
+
+                needsValidation: function() {
+                    return false;
+                },
+
+                validate: function() {
+                    return true;
+                }
+            };
+
+        return new Default($el, defaults, options, 'hiddenData', typeInterface);
     };
 });
 
@@ -18959,6 +19036,7 @@ define('validator/regex',[
     };
 
 });
+
 
 define("husky-validation", function(){});
 
@@ -46857,3 +46935,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
