@@ -183,7 +183,6 @@
  * @param {String} [options.icons[].column] the id of the column in which the icon should be displayed
  * @param {String} [options.icons[].align] the align of the icon. &#x27;left&#x27; org &#x27;right&#x27;
  * @param {Function} [options.icons.callback] a callback to execute if the icon got clicked. Gets the id of the data-record as first argument
- * @param {Boolean|String} [options.childrenPropertyName] name of the property which containes the number of children. If false no child-list will be initialized
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -215,8 +214,7 @@ define(function() {
             thumbnailFormat: &#x27;50x50&#x27;,
             showHead: true,
             childList: false,
-            icons: [],
-            childrenPropertyName: false
+            icons: []
         },
 
         constants = {
@@ -259,6 +257,8 @@ define(function() {
                     &#x27;&lt;span class=&quot;fa-trash-o pointer &#x27; + constants.rowRemoverClass + &#x27;&quot;&gt;&lt;/span&gt;&#x27;,
                 &#x27;&lt;/td&gt;&#x27;
             ].join(&#x27;&#x27;),
+
+            checkboxPlaceholder: &#x27;&lt;span class=&quot;checkbox-placeholder&quot;&gt;&lt;/span&gt;&#x27;,
 
             checkbox: [
                 &#x27;&lt;div class=&quot;custom-checkbox&quot;&gt;&#x27;,
@@ -488,7 +488,7 @@ define(function() {
             }
 
             // add load-children events if configured
-            if (!!this.options.childrenPropertyName) {
+            if (!!this.datagrid.options.childrenPropertyName) {
                 this.sandbox.dom.on(this.$tableContainer, &#x27;click&#x27;,
                     this.prepareChildrenLoad.bind(this), &#x27;tbody tr&#x27;
                 );
@@ -692,7 +692,7 @@ define(function() {
                     }
 
                     // add children-toggler class if children toggle is enabled
-                    if (!!this.options.childrenPropertyName &amp;&amp; count === 0) {
+                    if (!!this.datagrid.options.childrenPropertyName &amp;&amp; count === 0) {
                         tblCellClass = constants.slideDownClass;
                     }
 
@@ -758,20 +758,25 @@ define(function() {
 
                 // if the select-item should have its own cell add a checkbox or a radio-button
                 if (this.options.selectItem.inFirstCell !== true) {
-                    // add a checkbox-cell to each row
-                    if (!!this.options.selectItem.type &amp;&amp; this.options.selectItem.type === &#x27;checkbox&#x27;) {
-                        this.tblColumns.push(this.sandbox.util.template(templates.checkboxCell)({
-                            checkbox: this.sandbox.util.template(templates.checkbox)({
-                                id: &#x27;&#x27;,
-                                checked: !!row.selected
-                            })
-                        }));
+                    // and don&#x27;t display the checkbox anyway if only leaves should a checkbox and record has children
+                    if (!(this.datagrid.options.onlySelectLeaves === true &amp;&amp; row[this.datagrid.options.childrenPropertyName] &gt; 0)) {
+                        // add a checkbox-cell to each row
+                        if (!!this.options.selectItem.type &amp;&amp; this.options.selectItem.type === &#x27;checkbox&#x27;) {
+                            this.tblColumns.push(this.sandbox.util.template(templates.checkboxCell)({
+                                checkbox: this.sandbox.util.template(templates.checkbox)({
+                                    id: &#x27;&#x27;,
+                                    checked: !!row.selected
+                                })
+                            }));
 
-                        // add a radio to each row
-                    } else if (!!this.options.selectItem.type &amp;&amp; this.options.selectItem.type === &#x27;radio&#x27;) {
-                        this.tblColumns.push(this.sandbox.util.template(templates.radio)({
-                            name: &#x27;husky-radio&#x27; + radioPrefix
-                        }));
+                            // add a radio to each row
+                        } else if (!!this.options.selectItem.type &amp;&amp; this.options.selectItem.type === &#x27;radio&#x27;) {
+                            this.tblColumns.push(this.sandbox.util.template(templates.radio)({
+                                name: &#x27;husky-radio&#x27; + radioPrefix
+                            }));
+                        }
+                    } else {
+                        this.tblColumns.push(&#x27;&lt;td&gt;&lt;/td&gt;&#x27;);
                     }
                 }
 
@@ -879,8 +884,8 @@ define(function() {
 
                     }
                     // if record has children and is first element in row add an icon
-                } else if (index === 0 &amp;&amp; !!this.options.childrenPropertyName) {
-                    if (row[this.options.childrenPropertyName] &gt; 0) {
+                } else if (index === 0 &amp;&amp; !!this.datagrid.options.childrenPropertyName) {
+                    if (row[this.datagrid.options.childrenPropertyName] &gt; 0) {
                         $cell = &#x27;&lt;td data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &#x27; + tblCellStyle + &#x27;&gt;&lt;div class=&quot;&#x27; + constants.slideDownClass + &#x27; &#x27; + constants.childrenIndentClass + &#x27;&quot;&gt;&lt;span class=&quot;&#x27; + constants.childrenSlideDownIcon + &#x27; toggle-icon&quot;&gt;&lt;/span&gt;&#x27; + tblCellContent + &#x27;&lt;/div&gt;&lt;/td&gt;&#x27;;
                     } else {
                         $cell = &#x27;&lt;td data-field=&quot;&#x27; + key + &#x27;&quot; &#x27; + tblCellClass + &#x27; &#x27; + tblCellStyle + &#x27;&gt;&lt;div class=&quot;&#x27; + constants.noChildrenClass + &#x27; &#x27; + constants.childrenIndentClass + &#x27;&quot;&gt;&#x27; + tblCellContent + &#x27;&lt;/div&gt;&lt;/td&gt;&#x27;;
@@ -894,10 +899,15 @@ define(function() {
 
                 // add checkbox to first cell if configured
                 if (index === 0 &amp;&amp; this.options.selectItem.inFirstCell === true) {
-                    this.sandbox.dom.prepend($innerContainer || $cell, this.sandbox.util.template(templates.checkbox)({
-                        id: &#x27;&#x27;,
-                        checked: !!row.selected
-                    }));
+                    // dont display a checkbox if only leaves should get a checkbox and record has children
+                    if (!(this.datagrid.options.onlySelectLeaves === true &amp;&amp; row[this.datagrid.options.childrenPropertyName] &gt; 0)) {
+                        this.sandbox.dom.prepend($innerContainer || $cell, this.sandbox.util.template(templates.checkbox)({
+                            id: &#x27;&#x27;,
+                            checked: !!row.selected
+                        }));
+                    } else {
+                        this.sandbox.dom.prepend($innerContainer || $cell, templates.checkboxPlaceholder);
+                    }
                     // double the colspan because of the extra cell in the header
                     this.sandbox.dom.prop($cell, &#x27;colspan&#x27;, 2);
                 }
@@ -1527,7 +1537,7 @@ define(function() {
         recordHasChildren: function(id) {
             for (var i = -1, length = this.data.embedded.length; ++i &lt; length;) {
                 if (this.data.embedded[i].id === id) {
-                    return this.data.embedded[i][this.options.childrenPropertyName] &gt; 0;
+                    return this.data.embedded[i][this.datagrid.options.childrenPropertyName] &gt; 0;
                 }
             }
             return false;

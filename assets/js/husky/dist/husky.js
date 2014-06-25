@@ -28292,7 +28292,6 @@ define('__component__$column-options@husky',[],function() {
  * @param {String} [options.icons[].column] the id of the column in which the icon should be displayed
  * @param {String} [options.icons[].align] the align of the icon. 'left' org 'right'
  * @param {Function} [options.icons.callback] a callback to execute if the icon got clicked. Gets the id of the data-record as first argument
- * @param {Boolean|String} [options.childrenPropertyName] name of the property which containes the number of children. If false no child-list will be initialized
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -28324,8 +28323,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             thumbnailFormat: '50x50',
             showHead: true,
             childList: false,
-            icons: [],
-            childrenPropertyName: false
+            icons: []
         },
 
         constants = {
@@ -28368,6 +28366,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                     '<span class="fa-trash-o pointer ' + constants.rowRemoverClass + '"></span>',
                 '</td>'
             ].join(''),
+
+            checkboxPlaceholder: '<span class="checkbox-placeholder"></span>',
 
             checkbox: [
                 '<div class="custom-checkbox">',
@@ -28597,7 +28597,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             }
 
             // add load-children events if configured
-            if (!!this.options.childrenPropertyName) {
+            if (!!this.datagrid.options.childrenPropertyName) {
                 this.sandbox.dom.on(this.$tableContainer, 'click',
                     this.prepareChildrenLoad.bind(this), 'tbody tr'
                 );
@@ -28801,7 +28801,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                     }
 
                     // add children-toggler class if children toggle is enabled
-                    if (!!this.options.childrenPropertyName && count === 0) {
+                    if (!!this.datagrid.options.childrenPropertyName && count === 0) {
                         tblCellClass = constants.slideDownClass;
                     }
 
@@ -28867,20 +28867,25 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
                 // if the select-item should have its own cell add a checkbox or a radio-button
                 if (this.options.selectItem.inFirstCell !== true) {
-                    // add a checkbox-cell to each row
-                    if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
-                        this.tblColumns.push(this.sandbox.util.template(templates.checkboxCell)({
-                            checkbox: this.sandbox.util.template(templates.checkbox)({
-                                id: '',
-                                checked: !!row.selected
-                            })
-                        }));
+                    // and don't display the checkbox anyway if only leaves should a checkbox and record has children
+                    if (!(this.datagrid.options.onlySelectLeaves === true && row[this.datagrid.options.childrenPropertyName] > 0)) {
+                        // add a checkbox-cell to each row
+                        if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
+                            this.tblColumns.push(this.sandbox.util.template(templates.checkboxCell)({
+                                checkbox: this.sandbox.util.template(templates.checkbox)({
+                                    id: '',
+                                    checked: !!row.selected
+                                })
+                            }));
 
-                        // add a radio to each row
-                    } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
-                        this.tblColumns.push(this.sandbox.util.template(templates.radio)({
-                            name: 'husky-radio' + radioPrefix
-                        }));
+                            // add a radio to each row
+                        } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
+                            this.tblColumns.push(this.sandbox.util.template(templates.radio)({
+                                name: 'husky-radio' + radioPrefix
+                            }));
+                        }
+                    } else {
+                        this.tblColumns.push('<td></td>');
                     }
                 }
 
@@ -28988,8 +28993,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
                     }
                     // if record has children and is first element in row add an icon
-                } else if (index === 0 && !!this.options.childrenPropertyName) {
-                    if (row[this.options.childrenPropertyName] > 0) {
+                } else if (index === 0 && !!this.datagrid.options.childrenPropertyName) {
+                    if (row[this.datagrid.options.childrenPropertyName] > 0) {
                         $cell = '<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '><div class="' + constants.slideDownClass + ' ' + constants.childrenIndentClass + '"><span class="' + constants.childrenSlideDownIcon + ' toggle-icon"></span>' + tblCellContent + '</div></td>';
                     } else {
                         $cell = '<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '><div class="' + constants.noChildrenClass + ' ' + constants.childrenIndentClass + '">' + tblCellContent + '</div></td>';
@@ -29003,10 +29008,15 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
                 // add checkbox to first cell if configured
                 if (index === 0 && this.options.selectItem.inFirstCell === true) {
-                    this.sandbox.dom.prepend($innerContainer || $cell, this.sandbox.util.template(templates.checkbox)({
-                        id: '',
-                        checked: !!row.selected
-                    }));
+                    // dont display a checkbox if only leaves should get a checkbox and record has children
+                    if (!(this.datagrid.options.onlySelectLeaves === true && row[this.datagrid.options.childrenPropertyName] > 0)) {
+                        this.sandbox.dom.prepend($innerContainer || $cell, this.sandbox.util.template(templates.checkbox)({
+                            id: '',
+                            checked: !!row.selected
+                        }));
+                    } else {
+                        this.sandbox.dom.prepend($innerContainer || $cell, templates.checkboxPlaceholder);
+                    }
                     // double the colspan because of the extra cell in the header
                     this.sandbox.dom.prop($cell, 'colspan', 2);
                 }
@@ -29636,7 +29646,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         recordHasChildren: function(id) {
             for (var i = -1, length = this.data.embedded.length; ++i < length;) {
                 if (this.data.embedded[i].id === id) {
-                    return this.data.embedded[i][this.options.childrenPropertyName] > 0;
+                    return this.data.embedded[i][this.datagrid.options.childrenPropertyName] > 0;
                 }
             }
             return false;
@@ -30805,6 +30815,8 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.instanceName] name of the datagrid instance
  * @param {Array} [options.preselected] preselected ids
+ * @param {Boolean|String} [options.childrenPropertyName] name of the property which containes the number of children. False to indaticate that list is flat
+ * @param {Boolean} [options.onlySelectLeaves] If true only the outermost children can be selected
  *
  * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
  * @param {String} [options.matchings.content] column title
@@ -30846,7 +30858,9 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 searchInstanceName: null,
                 columnOptionsInstanceName: null,
                 defaultMeasureUnit: 'px',
-                preselected: []
+                preselected: [],
+                onlySelectLeaves: false,
+                childrenPropertyName: false
             },
 
             types = {
@@ -31835,12 +31849,14 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             selectAllItems: function() {
                 var ids = [], i, length;
                 for (i = -1, length = this.data.embedded.length; ++i < length;) {
-                    this.data.embedded[i].selected = true;
-                    ids.push(this.data.embedded[i].id);
+                    if (this.selectingAllowed(this.data.embedded[i].id)) {
+                        this.data.embedded[i].selected = true;
+                        ids.push(this.data.embedded[i].id);
+                    }
                 }
                 // emit events with selected data
                 this.sandbox.emit(ALL_SELECT.call(this), ids);
-                this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.data.embedded.length);
+                this.sandbox.emit(NUMBER_SELECTIONS.call(this), ids.length);
             },
 
             /**
@@ -31858,14 +31874,14 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             },
 
             /**
-             * Sets all data records with their ids contained in the passed one selected and
+             * Sets all data records with their ids contained in the passed array selected and
              * deselects all data records not contained.
              * @param items {Array} array with all items that should be selected
              */
             setSelectedItems: function(items) {
                 var count = 0, i, length;
                 for (i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (items.indexOf(this.data.embedded[i].id) !== -1) {
+                    if (items.indexOf(this.data.embedded[i].id) !== -1 && this.selectingAllowed(this.data.embedded[i].id)) {
                         this.data.embedded[i].selected = true;
                         count++;
                     } else {
@@ -31896,7 +31912,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              */
             setItemSelected: function(id) {
                 var itemIndex = this.getRecordIndexById(id);
-                if (itemIndex !== null) {
+                if (itemIndex !== null && this.selectingAllowed(id)) {
                     this.data.embedded[itemIndex].selected = true;
                     // emit events with selected data
                     this.sandbox.emit(ITEM_SELECT.call(this), id);
@@ -31921,6 +31937,18 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     return true;
                 }
                 return false;
+            },
+
+            /**
+             * Returns true if selection for the data-record is allowed
+             * @param id {Number|String} the id of the data-record
+             */
+            selectingAllowed: function(id) {
+                var itemIndex = this.getRecordIndexById(id);
+                if (this.options.onlySelectLeaves === true && this.data.embedded[itemIndex][this.options.childrenPropertyName] > 0) {
+                    return false;
+                }
+                return true;
             },
 
             /**
