@@ -33627,7 +33627,7 @@ define('__component__$toolbar@husky',[],function() {
             if ((item.items && item.items.length > 0) || item.loading) {
                 return;
             }
-
+            hideDropdowns.call(this);
             if (!item.disabled) {
                 triggerSelectEvent.call(this, item, $parent);
             } else {
