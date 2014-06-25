@@ -172,9 +172,10 @@ require(['lib/husky'], function(Husky) {
                     instanceName: 'children-grid',
                     sortable: true,
                     pagination: false,
+                    childrenPropertyName: 'children',
+                    onlySelectLeaves: true,
                     viewOptions: {
                         table: {
-                            childrenPropertyName: 'children',
                             icons: [
                                 {
                                     icon: 'pencil',
@@ -195,7 +196,7 @@ require(['lib/husky'], function(Husky) {
                             ],
                             selectItem: {
                                 type: 'checkbox',
-                                inFirstCell: true
+                                inFirstCell: true,
                             }
                         }
                     },

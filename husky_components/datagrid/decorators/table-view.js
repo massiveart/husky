@@ -23,7 +23,6 @@
  * @param {String} [options.icons[].column] the id of the column in which the icon should be displayed
  * @param {String} [options.icons[].align] the align of the icon. 'left' org 'right'
  * @param {Function} [options.icons.callback] a callback to execute if the icon got clicked. Gets the id of the data-record as first argument
- * @param {Boolean|String} [options.childrenPropertyName] name of the property which containes the number of children. If false no child-list will be initialized
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -55,8 +54,7 @@ define(function() {
             thumbnailFormat: '50x50',
             showHead: true,
             childList: false,
-            icons: [],
-            childrenPropertyName: false
+            icons: []
         },
 
         constants = {
@@ -99,6 +97,8 @@ define(function() {
                     '<span class="fa-trash-o pointer ' + constants.rowRemoverClass + '"></span>',
                 '</td>'
             ].join(''),
+
+            checkboxPlaceholder: '<span class="checkbox-placeholder"></span>',
 
             checkbox: [
                 '<div class="custom-checkbox">',
@@ -328,7 +328,7 @@ define(function() {
             }
 
             // add load-children events if configured
-            if (!!this.options.childrenPropertyName) {
+            if (!!this.datagrid.options.childrenPropertyName) {
                 this.sandbox.dom.on(this.$tableContainer, 'click',
                     this.prepareChildrenLoad.bind(this), 'tbody tr'
                 );
@@ -532,7 +532,7 @@ define(function() {
                     }
 
                     // add children-toggler class if children toggle is enabled
-                    if (!!this.options.childrenPropertyName && count === 0) {
+                    if (!!this.datagrid.options.childrenPropertyName && count === 0) {
                         tblCellClass = constants.slideDownClass;
                     }
 
@@ -598,20 +598,25 @@ define(function() {
 
                 // if the select-item should have its own cell add a checkbox or a radio-button
                 if (this.options.selectItem.inFirstCell !== true) {
-                    // add a checkbox-cell to each row
-                    if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
-                        this.tblColumns.push(this.sandbox.util.template(templates.checkboxCell)({
-                            checkbox: this.sandbox.util.template(templates.checkbox)({
-                                id: '',
-                                checked: !!row.selected
-                            })
-                        }));
+                    // and don't display the checkbox anyway if only leaves should a checkbox and record has children
+                    if (!(this.datagrid.options.onlySelectLeaves === true && row[this.datagrid.options.childrenPropertyName] > 0)) {
+                        // add a checkbox-cell to each row
+                        if (!!this.options.selectItem.type && this.options.selectItem.type === 'checkbox') {
+                            this.tblColumns.push(this.sandbox.util.template(templates.checkboxCell)({
+                                checkbox: this.sandbox.util.template(templates.checkbox)({
+                                    id: '',
+                                    checked: !!row.selected
+                                })
+                            }));
 
-                        // add a radio to each row
-                    } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
-                        this.tblColumns.push(this.sandbox.util.template(templates.radio)({
-                            name: 'husky-radio' + radioPrefix
-                        }));
+                            // add a radio to each row
+                        } else if (!!this.options.selectItem.type && this.options.selectItem.type === 'radio') {
+                            this.tblColumns.push(this.sandbox.util.template(templates.radio)({
+                                name: 'husky-radio' + radioPrefix
+                            }));
+                        }
+                    } else {
+                        this.tblColumns.push('<td></td>');
                     }
                 }
 
@@ -719,8 +724,8 @@ define(function() {
 
                     }
                     // if record has children and is first element in row add an icon
-                } else if (index === 0 && !!this.options.childrenPropertyName) {
-                    if (row[this.options.childrenPropertyName] > 0) {
+                } else if (index === 0 && !!this.datagrid.options.childrenPropertyName) {
+                    if (row[this.datagrid.options.childrenPropertyName] > 0) {
                         $cell = '<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '><div class="' + constants.slideDownClass + ' ' + constants.childrenIndentClass + '"><span class="' + constants.childrenSlideDownIcon + ' toggle-icon"></span>' + tblCellContent + '</div></td>';
                     } else {
                         $cell = '<td data-field="' + key + '" ' + tblCellClass + ' ' + tblCellStyle + '><div class="' + constants.noChildrenClass + ' ' + constants.childrenIndentClass + '">' + tblCellContent + '</div></td>';
@@ -734,10 +739,15 @@ define(function() {
 
                 // add checkbox to first cell if configured
                 if (index === 0 && this.options.selectItem.inFirstCell === true) {
-                    this.sandbox.dom.prepend($innerContainer || $cell, this.sandbox.util.template(templates.checkbox)({
-                        id: '',
-                        checked: !!row.selected
-                    }));
+                    // dont display a checkbox if only leaves should get a checkbox and record has children
+                    if (!(this.datagrid.options.onlySelectLeaves === true && row[this.datagrid.options.childrenPropertyName] > 0)) {
+                        this.sandbox.dom.prepend($innerContainer || $cell, this.sandbox.util.template(templates.checkbox)({
+                            id: '',
+                            checked: !!row.selected
+                        }));
+                    } else {
+                        this.sandbox.dom.prepend($innerContainer || $cell, templates.checkboxPlaceholder);
+                    }
                     // double the colspan because of the extra cell in the header
                     this.sandbox.dom.prop($cell, 'colspan', 2);
                 }
@@ -1367,7 +1377,7 @@ define(function() {
         recordHasChildren: function(id) {
             for (var i = -1, length = this.data.embedded.length; ++i < length;) {
                 if (this.data.embedded[i].id === id) {
-                    return this.data.embedded[i][this.options.childrenPropertyName] > 0;
+                    return this.data.embedded[i][this.datagrid.options.childrenPropertyName] > 0;
                 }
             }
             return false;
