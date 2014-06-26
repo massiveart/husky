@@ -55,6 +55,14 @@
             
                 <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
             
+                <li><a href="../classes/DropdownPagination (Datagrid Decorator).html">DropdownPagination (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Dropzone.html">Dropzone</a></li>
+            
+                <li><a href="../classes/GroupView (Datagrid Decorator).html">GroupView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Input.html">Input</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -69,7 +77,15 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
+                <li><a href="../classes/ShowAllPagination (Datagrid Decorator).html">ShowAllPagination (Datagrid Decorator)</a></li>
+            
                 <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Tabs.html">Tabs</a></li>
+            
+                <li><a href="../classes/ThumbnailView (Datagrid Decorator).html">ThumbnailView (Datagrid Decorator)</a></li>
             
                 <li><a href="../classes/Toggler.html">Toggler</a></li>
             
@@ -87,9 +103,15 @@
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
+                <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_input.html">husky/components/input</a></li>
+            
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
                 <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_overlay.html">husky/components/overlay</a></li>
             
                 <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
             
@@ -423,6 +445,21 @@
                             
                             <li class="param">
                                 
+                                    <code class="param-name optional">[skin]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>style class to set to the elements component (e.g &#39;white&#39;)</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
                                     <code class="param-name optional">[emitValues]</code>
                                     <span class="type">Boolean</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
@@ -481,6 +518,21 @@
                                 
                             </li>
                             
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[repeatSelect]</code>
+                                    <span class="type">Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>If true dropdown item can be selected n-times in succession</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
                         </ul>
                     
                 </li>
@@ -524,6 +576,13 @@
                     <h3>Events</h3>
 
                     <ul class="index-list events">
+                        
+                            <li class="index-item event">
+                                <a href="#event_data-changed">data-changed</a>
+
+                                
+                                
+                            </li>
                         
                             <li class="index-item event">
                                 <a href="#event_husky.select[.INSTANCE_NAME].deselected.item">husky.select[.INSTANCE_NAME].deselected.item</a>
@@ -595,6 +654,13 @@
                                 
                             </li>
                         
+                            <li class="index-item event">
+                                <a href="#event_husky.select[.INSTANCE_NAME].update">husky.select[.INSTANCE_NAME].update</a>
+
+                                
+                                
+                            </li>
+                        
                     </ul>
                 </div>
             
@@ -609,6 +675,50 @@
         
             <div id="events" class="api-class-tabpanel">
                 <h2 class="off-left">Events</h2>
+
+                
+                    <div id="event_data-changed" class="events item">
+    <h3 class="name"><code>data-changed</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_select_main.js.html#l155"><code>husky_components&#x2F;select&#x2F;main.js:155</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>update the elements of the dropdown list</p>
+
+    </div>
+
+    
+
+
+    
+</div>
 
                 
                     <div id="event_husky.select[.INSTANCE_NAME].deselected.item" class="events item">
@@ -634,7 +744,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l76"><code>husky_components&#x2F;select&#x2F;main.js:76</code></a>
+        <a href="../files/husky_components_select_main.js.html#l80"><code>husky_components&#x2F;select&#x2F;main.js:80</code></a>
         
         </p>
 
@@ -702,7 +812,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l109"><code>husky_components&#x2F;select&#x2F;main.js:109</code></a>
+        <a href="../files/husky_components_select_main.js.html#l113"><code>husky_components&#x2F;select&#x2F;main.js:113</code></a>
         
         </p>
 
@@ -746,7 +856,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l102"><code>husky_components&#x2F;select&#x2F;main.js:102</code></a>
+        <a href="../files/husky_components_select_main.js.html#l106"><code>husky_components&#x2F;select&#x2F;main.js:106</code></a>
         
         </p>
 
@@ -790,7 +900,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l137"><code>husky_components&#x2F;select&#x2F;main.js:137</code></a>
+        <a href="../files/husky_components_select_main.js.html#l141"><code>husky_components&#x2F;select&#x2F;main.js:141</code></a>
         
         </p>
 
@@ -834,7 +944,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l130"><code>husky_components&#x2F;select&#x2F;main.js:130</code></a>
+        <a href="../files/husky_components_select_main.js.html#l134"><code>husky_components&#x2F;select&#x2F;main.js:134</code></a>
         
         </p>
 
@@ -878,7 +988,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l68"><code>husky_components&#x2F;select&#x2F;main.js:68</code></a>
+        <a href="../files/husky_components_select_main.js.html#l72"><code>husky_components&#x2F;select&#x2F;main.js:72</code></a>
         
         </p>
 
@@ -922,7 +1032,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l93"><code>husky_components&#x2F;select&#x2F;main.js:93</code></a>
+        <a href="../files/husky_components_select_main.js.html#l97"><code>husky_components&#x2F;select&#x2F;main.js:97</code></a>
         
         </p>
 
@@ -990,7 +1100,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l84"><code>husky_components&#x2F;select&#x2F;main.js:84</code></a>
+        <a href="../files/husky_components_select_main.js.html#l88"><code>husky_components&#x2F;select&#x2F;main.js:88</code></a>
         
         </p>
 
@@ -1058,7 +1168,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l123"><code>husky_components&#x2F;select&#x2F;main.js:123</code></a>
+        <a href="../files/husky_components_select_main.js.html#l127"><code>husky_components&#x2F;select&#x2F;main.js:127</code></a>
         
         </p>
 
@@ -1102,7 +1212,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l116"><code>husky_components&#x2F;select&#x2F;main.js:116</code></a>
+        <a href="../files/husky_components_select_main.js.html#l120"><code>husky_components&#x2F;select&#x2F;main.js:120</code></a>
         
         </p>
 
@@ -1113,6 +1223,50 @@
 
     <div class="description">
         <p>used for toggling enabled/disabled dropdown menu</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.select[.INSTANCE_NAME].update" class="events item">
+    <h3 class="name"><code>husky.select[.INSTANCE_NAME].update</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_select_main.js.html#l148"><code>husky_components&#x2F;select&#x2F;main.js:148</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>update the elements of the dropdown list</p>
 
     </div>
 

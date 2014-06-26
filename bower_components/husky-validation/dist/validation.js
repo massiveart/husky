@@ -84,13 +84,26 @@ define('form/util',[], function() {
         },
 
         /**
+         * returns true if element is checkbox
+         * @param el {String|Object} valid selector or dom-object
+         * @returns {Boolean}
+         */
+        isCheckbox: function(el) {
+            var $el = $(el);
+
+            return $el.is(':checkbox');
+        },
+
+        /**
          * Returns input values for elements
          * @param el {String|Object} valid selector or dom-object
          * @returns {String} value or empty string
          */
         getValue: function(el) {
             var $el = $(el);
-            if (this.isValueField($el)) {
+            if (this.isCheckbox($el)) {
+                return $el.prop('checked');
+            } else if (this.isValueField($el)) {
                 return $el.val();
             } else {
                 return $el.html();
@@ -104,7 +117,9 @@ define('form/util',[], function() {
          */
         setValue: function(el, value) {
             var $el = $(el);
-            if (this.isValueField($el)) {
+            if (this.isCheckbox($el)) {
+                $el.prop('checked', value);
+            } else if (this.isValueField($el)) {
                 $el.val(value);
             } else {
                 $el.html(value);
@@ -424,34 +439,40 @@ define('form/element',['form/util'], function(Util) {
 
             result = {
                 validate: function(force) {
+                    var result = true,
+                        validated = false;
+
                     // only if value changed or force is set
                     if (force || that.needsValidation.call(this)) {
-                        if (!that.hasConstraints.call(this)) {
-                            // delete state
-                            //that.reset.call(this);
-                            return true;
+                        if (that.hasConstraints.call(this)) {
+                            // check each validator
+                            $.each(validators, function (key, validator) {
+                                if (!validator.validate()) {
+                                    result = false;
+                                    // TODO Messages
+                                }
+                            });
+                            validated = true;
                         }
+                    }
 
-                        var result = true;
-                        // check each validator
-                        $.each(validators, function(key, validator) {
-                            if (!validator.validate()) {
-                                result = false;
-                                // TODO Messages
-                            }
-                        });
-
-                        // check type
-                        if (type !== null && !type.validate()) {
+                    // check type
+                    if (!!type && type.needsValidation()) {
+                        if (!type.validate()) {
                             result = false;
                         }
+                        validated = true;
+                    }
 
+                    // set css classes
+                    if (validated === true) {
                         if (!result) {
                             Util.debug('Field validate', !!result ? 'true' : 'false', this.$el);
                         }
                         that.setValid.call(this, result);
                     }
-                    return this.isValid();
+
+                    return result;
                 },
 
                 update: function() {
@@ -705,6 +726,7 @@ define('form/mapper',[
 
                     this.collections = [];
                     this.collectionsSet = {};
+                    this.emptyTemplates = {};
                     this.templates = {};
                     this.elements = [];
                     this.collectionsInitiated = $.Deferred();
@@ -721,7 +743,7 @@ define('form/mapper',[
                     var $element = $(value),
                         element = $element.data('element'),
                         property = $element.data('mapper-property'),
-                        $newChild, collection,
+                        $newChild, collection, emptyTemplate,
                         dfd = $.Deferred(),
                         counter = 0,
                         resolve = function() {
@@ -778,12 +800,21 @@ define('form/mapper',[
                         for (x = -1, len = property.length; ++x < len;) {
                             if (property[x].tpl === $newChild.id) {
                                 propertyName = property[x].data;
+                                emptyTemplate = property[x]['empty-tpl'];
+                            }
+                            // if child has empty template, set to empty templates
+                            if (property[x]['empty-tpl'] && property[x]['empty-tpl'] === $newChild.id) {
+                                this.emptyTemplates[property[x].data] = {
+                                    id: property[x]['empty-tpl'],
+                                    tpl: $child.html()
+                                };
                             }
                         }
+                        // check if template is set
                         if (!!propertyName) {
                             $newChild.propertyName = propertyName;
                             propertyCount = collection.element.getType().getMinOccurs();
-                            this.templates[propertyName] = {tpl: $newChild, collection: collection};
+                            this.templates[propertyName] = {tpl: $newChild, collection: collection, emptyTemplate: emptyTemplate};
                             // init default children
                             for (x = collection.element.getType().getMinOccurs() + 1; --x > 0;) {
                                 that.appendChildren.call(this, collection.$element, $newChild).then(function() {
@@ -833,6 +864,14 @@ define('form/mapper',[
                         }.bind(this));
                     }
                     that.checkFullAndEmpty.call(this, propertyName);
+                },
+
+                addEmptyTemplate: function($element, propertyName) {
+                    if (this.emptyTemplates.hasOwnProperty(propertyName)) {
+                        var $emptyTemplate = $(this.emptyTemplates[propertyName].tpl);
+                        $emptyTemplate.attr('id', this.emptyTemplates[propertyName].id);
+                        $element.append($emptyTemplate);
+                    }
                 },
 
                 removeClick: function(event) {
@@ -942,6 +981,7 @@ define('form/mapper',[
                     // remember first child remove the rest
                     var $element = collectionElement.$element,
                         $child = collectionElement.$child,
+                        $emptyTemplate,
                         count = collection.length,
                         dfd = $.Deferred(),
                         resolve = function() {
@@ -954,6 +994,8 @@ define('form/mapper',[
 
                     // no element in collection
                     if (count === 0) {
+                        // check if empty template exists for that element and show it
+                        that.addEmptyTemplate.call(this, $element, $child.propertyName);
                         dfd.resolve();
                     } else {
                         if (collection.length < collectionElement.element.getType().getMinOccurs()) {
@@ -992,21 +1034,27 @@ define('form/mapper',[
                     $template.attr('data-mapper-property-tpl', $child.id);
                     $template.attr('data-mapper-id', _.uniqueId());
 
+                    // add template to element
+                    if (insertAfter) {
+                        $element.after($template);
+                    } else {
+                        $element.append($template);
+                    }
+
                     // add fields
-                    $.each($newFields, function(key, field) {
-                        element = form.addField($(field));
-                        if (insertAfter) {
-                            $element.after($template);
-                        } else {
-                            $element.append($template);
-                        }
-                        element.initialized.then(function() {
-                            counter--;
-                            if (counter === 0) {
-                                dfd.resolve($template);
-                            }
-                        });
-                    }.bind(this));
+                    if ($newFields.length > 0) {
+                        $.each($newFields, function(key, field) {
+                            element = form.addField($(field));
+                            element.initialized.then(function() {
+                                counter--;
+                                if (counter === 0) {
+                                    dfd.resolve($template);
+                                }
+                            });
+                        }.bind(this));
+                    } else {
+                        dfd.resolve($template);
+                    }
 
                     // if automatically set data after initialization ( needed for adding elements afterwards)
                     if (!!data) {
@@ -1038,14 +1086,16 @@ define('form/mapper',[
                 /**
                  * Delets an element from the DOM and the global object by a given unique-id
                  * @param {number} mapperId
-                 * @return {boolean} true if an element was found and deleted
+                 * @return {boolean|string} if an element was found and deleted it returns its template-name, else it returns false
                  **/
                 deleteElementByMapperId: function(mapperId) {
-                    for (var i = -1, length = this.elements.length; ++i < length;) {
-                        if (this.elements[i].data('mapper-id') === mapperId) {
+                    var i, length, templateName;
+                    for (i = -1, length = this.elements.length; ++i < length;) {
+                        if (this.elements[i].data('mapper-id').toString() === mapperId.toString()) {
+                            templateName = this.elements[i].attr('data-mapper-property-tpl');
                             this.elements[i].remove();
                             this.elements.splice(i, 1);
-                            return true;
+                            return templateName;
                         }
                     }
                     return false;
@@ -1229,13 +1279,28 @@ define('form/mapper',[
                     var template = this.templates[propertyName],
                         element = template.collection.$element,
                         insertAfterLast = false,
-                        lastElement;
+                        lastElement,
+                        $emptyTpl,
+                        dfd = $.Deferred();
+
                     // check if element exists and put it after last
                     if (!append && (lastElement = element.find('*[data-mapper-property-tpl="' + template.tpl.id + '"]').last()).length > 0) {
                         element = lastElement;
                         insertAfterLast = true;
                     }
-                    that.appendChildren.call(this, element, template.tpl, data, data, insertAfterLast);
+                    // check if empty template is set and lookup in dom
+                    if (template.emptyTemplate) {
+                        $emptyTpl = $(element).find('#'+template.emptyTemplate);
+                        if ($emptyTpl) {
+                            $emptyTpl.remove();
+                        }
+                    }
+
+                    that.appendChildren.call(this, element, template.tpl, data, data, insertAfterLast).then(function($element) {
+                        dfd.resolve($element);
+                    }.bind(this));
+
+                    return dfd;
                 },
 
                 /**
@@ -1253,7 +1318,21 @@ define('form/mapper',[
                  * @param mapperId {Number} the unique Id of the field
                  */
                 removeFromCollection: function(mapperId) {
-                    that.deleteElementByMapperId.call(this, mapperId);
+                    var i,
+                        templateName = that.deleteElementByMapperId.call(this, mapperId);
+
+                    // check if collection still has elements with propertyName, else render empty Template
+                    if (form.$el.find('*[data-mapper-property-tpl='+templateName+']').length < 1) {
+                        // get collection with is owner of templateName
+                        for (i in this.templates) {
+                            // if emptyTemplates is set
+                            if (this.templates[i].tpl.id === templateName) {
+                                that.addEmptyTemplate.call(this, this.templates[i].collection.$element, i);
+                                return;
+                            }
+                        }
+                    }
+
                 }
             };
 
@@ -1286,6 +1365,7 @@ require.config({
         'type/string': 'js/types/string',
         'type/date': 'js/types/date',
         'type/decimal': 'js/types/decimal',
+        'type/hiddenData': 'js/types/hiddenData',
         'type/email': 'js/types/email',
         'type/url': 'js/types/url',
         'type/label': 'js/types/label',
@@ -1626,14 +1706,14 @@ define('type/date',[
  */
 
 define('type/decimal',[
-    'type/default',
-    'form/util'
-], function(Default, Util) {
+    'type/default'
+], function(Default) {
 
     
 
     return function($el, options) {
         var defaults = {
+                format: 'n', // n, d, c, p
                 regExp: /^-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/
             },
 
@@ -1642,17 +1722,82 @@ define('type/decimal',[
                 },
 
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.getValue();
 
                     if (val === '') {
                         return true;
                     }
 
                     return this.options.regExp.test(val);
+                },
+
+                getModelData: function(val) {
+                    return Globalize.parseFloat(val);
+                },
+
+                getViewData: function(val) {
+                    if(typeof val === 'string'){
+                        val = parseFloat(val);
+                    }
+                    return Globalize.format(val, this.options.format);
                 }
             };
 
         return new Default($el, defaults, options, 'decimal', typeInterface);
+    };
+});
+
+/*
+ * This file is part of the Husky Validation.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ *
+ */
+
+define('type/hiddenData',[
+    'type/default'
+], function(Default) {
+
+    
+
+    return function($el, options) {
+        var defaults = {
+                id: 'id',
+                defaultValue: null
+            },
+
+            typeInterface = {
+
+                hiddenData: null,
+
+                setValue: function(value) {
+                    this.hiddenData = value;
+                    if (!!value && typeof value === 'object' && !!value[this.options.id]) {
+                        this.$el.data('id', value[this.options.id]);
+                    }
+                },
+
+                getValue: function() {
+                    if (this.hiddenData !== null) {
+                        return this.hiddenData;
+                    } else {
+                        return this.options.defaultValue;
+                    }
+                },
+
+                needsValidation: function() {
+                    return false;
+                },
+
+                validate: function() {
+                    return true;
+                }
+            };
+
+        return new Default($el, defaults, options, 'hiddenData', typeInterface);
     };
 });
 
@@ -1680,7 +1825,7 @@ define('type/email',[
 
             typeInterface = {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.getValue();
                     if (val === '') {
                         return true;
                     }
@@ -1689,7 +1834,7 @@ define('type/email',[
                 },
 
                 needsValidation: function() {
-                    var val = this.$el.val();
+                    var val = this.getValue();
                     return val !== '';
                 }
             };
@@ -1722,7 +1867,7 @@ define('type/url',[
 
             typeInterface = {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.getValue();
                     if (val === '') {
                         return true;
                     }
@@ -1734,7 +1879,7 @@ define('type/url',[
                 },
 
                 needsValidation: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.getValue();
                     return val !== '';
                 }
             };
@@ -1825,19 +1970,32 @@ define('type/select',[
     return function($el, options) {
         var defaults = {
                 id: 'id',
-                label: 'name'
+                label: 'name',
+                type: 'object'
             },
 
             typeInterface = {
                 setValue: function(value) {
-                    this.$el.val(value[this.options.id]);
+                    if (typeof value === 'object') {
+                        this.$el.val(value[this.options.id]);
+                    } else {
+                        // find option where id == value and set it to selected
+                        this.$el.find('option[id='+value+']').attr('selected','selected');
+                        this.options.type = 'string';
+                    }
                 },
 
                 getValue: function() {
-                    var result = {};
-                    result[this.options.id] = Util.getValue(this.$el);
-                    result[this.options.label] = this.$el.find('option:selected').text();
-                    return result;
+                    if (this.options.type === 'object') {
+                        var result = {};
+                        result[this.options.id] = Util.getValue(this.$el);
+                        result[this.options.label] = this.$el.find('option:selected').text();
+                        return result;
+                    } else {
+                        // return id of selected element
+                        return this.$el.children(':selected').attr('id');
+                    }
+
                 },
 
                 needsValidation: function() {
@@ -2107,9 +2265,8 @@ define('validator/default',[],function() {
  */
 
 define('validator/min',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -2120,7 +2277,7 @@ define('validator/min',[
 
             result = $.extend(new Default($el, form, defaults, options, 'min'), {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.data.element.getValue();
                     return Number(val) >= this.data.min;
                 }
             });
@@ -2142,9 +2299,8 @@ define('validator/min',[
  */
 
 define('validator/max',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -2155,7 +2311,7 @@ define('validator/max',[
 
             result = $.extend(new Default($el, form, defaults, options, 'max'), {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.data.element.getValue();
                     return Number(val) <= this.data.max;
                 }
             });
@@ -2177,9 +2333,8 @@ define('validator/max',[
  */
 
 define('validator/minLength',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -2190,7 +2345,7 @@ define('validator/minLength',[
 
             result = $.extend(new Default($el, form, defaults, options, 'min-length'), {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.data.element.getValue();
                     return val.length >= this.data.minLength;
                 }
             });
@@ -2212,9 +2367,8 @@ define('validator/minLength',[
  */
 
 define('validator/maxLength',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -2225,7 +2379,7 @@ define('validator/maxLength',[
 
             result = $.extend(new Default($el, form, defaults, options, 'max-length'), {
                 validate: function() {
-                    var val = Util.getValue(this.$el);
+                    var val = this.data.element.getValue();
                     return val.length <= this.data.maxLength;
                 }
             });
@@ -2247,9 +2401,8 @@ define('validator/maxLength',[
  */
 
 define('validator/required',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -2257,15 +2410,18 @@ define('validator/required',[
         var defaults = { },
 
             result = $.extend(new Default($el, form, defaults, options, 'required'), {
-                validate: function(value) {
+                validate: function(value, recursion) {
+                    if (recursion && !value) {
+                        return false;
+                    }
                     if (!!this.data.required) {
-                        var val = value || Util.getValue(this.$el), i;
+                        var val = value || this.data.element.getValue(), i;
                         // for checkboxes and select multiples.
                         // check there is at least one required value
                         if ('object' === typeof val) {
                             for (i in val) {
                                 if (val.hasOwnProperty(i)) {
-                                    if (this.validate(val[i])) {
+                                    if (this.validate(val[i]), true) {
                                         return true;
                                     }
                                 }
@@ -2273,8 +2429,8 @@ define('validator/required',[
                             return false;
                         }
 
-                        // notNull && notBlank
-                        return val.length > 0 && '' !== val.replace(/^\s+/g, '').replace(/\s+$/g, '');
+                        // notNull && notBlank && not undefined
+                        return typeof val !== 'undefined' && val.length > 0 && '' !== val.replace(/^\s+/g, '').replace(/\s+$/g, '');
                     }
                     return true;
                 }
@@ -2354,7 +2510,7 @@ define('validator/unique',[
                 },
 
                 validate: function() {
-                    var val = Util.getValue(this.$el),
+                    var val = this.data.element.getValue(),
                         result;
                     if (!!this.data.unique) {
                         result = validateElements(val);
@@ -2366,7 +2522,7 @@ define('validator/unique',[
                 },
 
                 update: function() {
-                    var val = Util.getValue(this.$el),
+                    var val = this.data.element.getValue(),
                         result;
                     if (!!this.data.unique) {
                         result = validateElements(val);
@@ -2406,9 +2562,8 @@ define('validator/unique',[
  */
 
 define('validator/equal',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -2474,7 +2629,7 @@ define('validator/equal',[
                 },
 
                 update: function() {
-                    var val = Util.getValue(this.$el),
+                    var val = this.data.element.getValue(),
                         result;
                     if (!!this.data.equal) {
                         result = validateElements(val);
@@ -2512,9 +2667,8 @@ define('validator/equal',[
  */
 
 define('validator/regex',[
-    'validator/default',
-    'form/util'
-], function(Default, Util) {
+    'validator/default'
+], function(Default) {
 
     
 
@@ -2528,7 +2682,7 @@ define('validator/regex',[
                     // TODO flags
                     var pattern = this.data.regex,
                         regex = new RegExp(pattern),
-                        val = Util.getValue(this.$el);
+                        val = this.data.element.getValue();
 
                     if (val === '') {
                         return true;

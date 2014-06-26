@@ -205,8 +205,8 @@ define(function() {
 
         /** events bound to dom */
         bindDOMEvents = function() {
-            this.sandbox.dom.on(this.options.el, 'click', toggleItem.bind(this), '.dropdown-toggle');
-            this.sandbox.dom.on(this.options.el, 'click', selectItem.bind(this), 'li');
+            this.sandbox.dom.on(this.$el, 'click', toggleItem.bind(this), '.dropdown-toggle');
+            this.sandbox.dom.on(this.$el, 'click', selectItem.bind(this), 'li');
         },
 
         /** events bound to sandbox */
@@ -293,6 +293,7 @@ define(function() {
                 item.loading = false;
                 $itemLink = this.sandbox.dom.find('a', $item);
                 this.sandbox.stop(this.sandbox.dom.find('.item-loader', $item));
+                this.sandbox.dom.remove(this.sandbox.dom.find('.item-loader', $item));
                 this.sandbox.dom.show($itemLink);
             }
 
@@ -431,7 +432,8 @@ define(function() {
          */
         selectItem = function(event) {
 
-            event.preventDefault();
+            this.sandbox.dom.stopPropagation(event);
+            this.sandbox.dom.preventDefault(event);
 
             var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')],
                 $parent = this.sandbox.dom.parents(event.currentTarget, 'li').eq(0);
@@ -440,7 +442,7 @@ define(function() {
             if ((item.items && item.items.length > 0) || item.loading) {
                 return;
             }
-
+            hideDropdowns.call(this);
             if (!item.disabled) {
                 triggerSelectEvent.call(this, item, $parent);
             } else {
@@ -536,7 +538,7 @@ define(function() {
                 enabled = true;
             }
             var icon = (!!enabled ? item.icon : !!item.disabledIcon ? item.disabledIcon : item.icon);
-            return 'icon-' + icon;
+            return 'fa-' + icon;
         },
 
         /**

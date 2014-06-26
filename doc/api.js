@@ -8,6 +8,10 @@ YUI.add("yuidoc-meta", function(Y) {
         "ColumnNavigation",
         "DataGrid",
         "Dependant Select",
+        "DropdownPagination (Datagrid Decorator)",
+        "Dropzone",
+        "GroupView (Datagrid Decorator)",
+        "Input",
         "Label",
         "Loader",
         "Matcher",
@@ -15,7 +19,11 @@ YUI.add("yuidoc-meta", function(Y) {
         "Process",
         "Search",
         "Select",
+        "ShowAllPagination (Datagrid Decorator)",
         "SmartContent",
+        "TableView (Datagrid Decorator)",
+        "Tabs",
+        "ThumbnailView (Datagrid Decorator)",
         "Toggler",
         "Toolbar"
     ],
@@ -24,8 +32,11 @@ YUI.add("yuidoc-meta", function(Y) {
         "husky_components_auto-complete-list",
         "husky_components_column-navigation",
         "husky_components_column-options",
+        "husky_components_dropzone",
+        "husky_components_input",
         "husky_components_label",
         "husky_components_matcher",
+        "husky_components_overlay",
         "husky_components_process",
         "husky_components_smart-content",
         "husky_components_toolbar"
@@ -52,6 +63,16 @@ YUI.add("yuidoc-meta", function(Y) {
             "description": "This file is part of Husky frontend development framework.\n\n(c) MASSIVE ART WebServices GmbH\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE."
         },
         {
+            "displayName": "husky/components/dropzone",
+            "name": "husky_components_dropzone",
+            "description": "This file is part of Husky frontend development framework.\n\n(c) MASSIVE ART WebServices GmbH\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE."
+        },
+        {
+            "displayName": "husky/components/input",
+            "name": "husky_components_input",
+            "description": "This file is part of Husky frontend development framework.\n\n(c) MASSIVE ART WebServices GmbH\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE."
+        },
+        {
             "displayName": "husky/components/label",
             "name": "husky_components_label",
             "description": "This file is part of Husky frontend development framework.\n\n(c) MASSIVE ART WebServices GmbH\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE."
@@ -59,6 +80,11 @@ YUI.add("yuidoc-meta", function(Y) {
         {
             "displayName": "husky/components/matcher",
             "name": "husky_components_matcher",
+            "description": "This file is part of Husky frontend development framework.\n\n(c) MASSIVE ART WebServices GmbH\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE."
+        },
+        {
+            "displayName": "husky/components/overlay",
+            "name": "husky_components_overlay",
             "description": "This file is part of Husky frontend development framework.\n\n(c) MASSIVE ART WebServices GmbH\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE."
         },
         {

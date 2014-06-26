@@ -1,0 +1,131 @@
+{
+    "_links": {
+        "self": "http://husky.lo:7878/admin/api/columnnavigation/2",
+        "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=2&depth=1"
+    },
+    "_embedded": [
+        {
+            "title": "Page 2.1",
+            "id": "2.1",
+            "hasSub": false,
+            "publishedState": false,
+            "linked": false,
+            "type": false,
+            "_links": {
+                "self": "http://husky.lo:7878/admin/api/columnnavigation/2.1",
+                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=2.1&depth=1"
+            },
+            "_embedded": []
+        },
+        {
+            "title": "Page 2.2",
+            "id": "2.2",
+            "hasSub": false,
+            "publishedState": true,
+            "linked": "internal",
+            "type": false,
+            "_links": {
+                "self": "http://husky.lo:7878/admin/api/columnnavigation/2.2",
+                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=2.2&depth=1"
+            },
+            "_embedded": []
+        },
+        {
+            "title": "Page 2.3",
+            "id": "2.3",
+            "hasSub": false,
+            "publishedState": true,
+            "linked": "external",
+            "type": false,
+            "_links": {
+                "self": "http://husky.lo:7878/admin/api/columnnavigation/2.3",
+                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=2.3&depth=1"
+            },
+            "_embedded": []
+        },
+        {
+            "title": "Page 2.4",
+            "id": "2.4",
+            "hasSub": false,
+            "publishedState": false,
+            "linked": "external",
+            "type": false,
+            "_links": {
+                "self": "http://husky.lo:7878/admin/api/columnnavigation/2.4",
+                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=2.4&depth=1"
+            },
+            "_embedded": []
+        },
+        {
+            "title": "Page 2.5",
+            "id": "2.5",
+            "hasSub": false,
+            "publishedState": true,
+            "linked": false,
+            "type": {
+                "name": "ghost",
+                "value": "en_en"
+            },
+            "_links": {
+                "self": "http://husky.lo:7878/admin/api/columnnavigation/2.5",
+                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=2.5&depth=1"
+            },
+            "_embedded": []
+        },
+        {
+            "title": "Page 2.6",
+            "id": "2.6",
+            "hasSub": false,
+            "publishedState": true,
+            "linked": false,
+            "type": false,
+            "_links": {
+                "self": "http://husky.lo:7878/admin/api/columnnavigation/2.6",
+                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=2.6&depth=1"
+            },
+            "_embedded": []
+        },
+        {
+            "title": "Page 2.7",
+            "id": "2.7",
+            "hasSub": false,
+            "publishedState": true,
+            "linked": false,
+            "type": false,
+            "_links": {
+                "self": "http://husky.lo:7878/admin/api/columnnavigation/2.7",
+                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=2.7&depth=1"
+            },
+            "_embedded": []
+        },
+        {
+            "title": "Page 2.8",
+            "id": "2.8",
+            "hasSub": false,
+            "publishedState": true,
+            "linked": false,
+            "type": false,
+            "_links": {
+                "self": "http://husky.lo:7878/admin/api/columnnavigation/2.8",
+                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=2.8&depth=1"
+            },
+            "_embedded": []
+        },
+        {
+            "title": "Page 2.9",
+            "id": "2.9",
+            "hasSub": false,
+            "publishedState": true,
+            "linked": false,
+            "type": false,
+            "_links": {
+                "self": "http://husky.lo:7878/admin/api/columnnavigation/2.9",
+                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=2.9&depth=1"
+            },
+            "_embedded": []
+        }
+    ],
+    "title": "Page 2",
+    "id": "2",
+    "hasSub": true
+}

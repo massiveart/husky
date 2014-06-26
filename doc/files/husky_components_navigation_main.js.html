@@ -55,6 +55,14 @@
             
                 <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
             
+                <li><a href="../classes/DropdownPagination (Datagrid Decorator).html">DropdownPagination (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Dropzone.html">Dropzone</a></li>
+            
+                <li><a href="../classes/GroupView (Datagrid Decorator).html">GroupView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Input.html">Input</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -69,7 +77,15 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
+                <li><a href="../classes/ShowAllPagination (Datagrid Decorator).html">ShowAllPagination (Datagrid Decorator)</a></li>
+            
                 <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Tabs.html">Tabs</a></li>
+            
+                <li><a href="../classes/ThumbnailView (Datagrid Decorator).html">ThumbnailView (Datagrid Decorator)</a></li>
             
                 <li><a href="../classes/Toggler.html">Toggler</a></li>
             
@@ -87,9 +103,15 @@
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
+                <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_input.html">husky/components/input</a></li>
+            
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
                 <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_overlay.html">husky/components/overlay</a></li>
             
                 <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
             
@@ -182,6 +204,7 @@ define(function() {
                 &#x27;   &lt;div class=&quot;navigation-content&quot;&gt;&#x27;,
                 &#x27;       &lt;div class=&quot;wrapper&quot;&gt;&#x27;,
                 &#x27;           &lt;header class=&quot;navigation-header&quot;&gt;&#x27;,
+                &#x27;               &lt;div class=&quot;logo&quot;&gt;&lt;/div&gt;&#x27;,
                 &#x27;               &lt;div class=&quot;navigation-header-title&quot;&gt;&lt;% if (data.title) { %&gt; &lt;%= translate(data.title) %&gt;&lt;% } %&gt;&lt;/div&gt;&#x27;,
                 &#x27;           &lt;/header&gt;&#x27;,
                 &#x27;           &lt;div id=&quot;navigation-search&quot; class=&quot;navigation-search&quot;&gt;&lt;/div&gt;&#x27;,
@@ -190,16 +213,8 @@ define(function() {
                 &#x27;       &lt;footer&gt;&#x27;,
                 &#x27;       &lt;/footer&gt;&#x27;,
                 &#x27;   &lt;/div&gt;&#x27;,
-                &#x27;   &lt;div class=&quot;icon-remove2 navigation-close-icon&quot;&gt;&#x27;,
+                &#x27;   &lt;div class=&quot;fa-times navigation-close-icon&quot;&gt;&#x27;,
                 &#x27;&lt;/nav&gt;&#x27;].join(&#x27;&#x27;),
-            headerImage: [
-                &#x27;&lt;div class=&quot;navigation-header-image&quot;&gt;&#x27;,
-                &#x27;   &lt;img alt=&quot;#&quot; src=&quot;&lt;%= icon %&gt;&quot;/&gt;&#x27;,
-                &#x27;&lt;/div&gt;&#x27;
-            ].join(&#x27;&#x27;),
-            headerText: [
-                &#x27;&lt;div class=&quot;navigation-header-text&quot;&gt;&lt;span&gt;&lt;%= text %&gt;&lt;/span&gt;&lt;/div&gt;&#x27;
-            ].join(&#x27;&#x27;),
             /** main navigation items (with icons)*/
             mainItem: [
                 &#x27;&lt;li class=&quot;js-navigation-items navigation-items&quot; id=&quot;&lt;%= item.id %&gt;&quot; data-id=&quot;&lt;%= item.id %&gt;&quot;&gt;&#x27;,
@@ -209,10 +224,10 @@ define(function() {
                 &#x27;           &lt;span class=&quot;navigation-item-title&quot;&gt;&lt;%= translate(item.title) %&gt;&lt;/span&gt;&#x27;,
                 &#x27;       &lt;/a&gt;&#x27;,
                 &#x27;       &lt;% if (item.hasSettings) { %&gt;&#x27;,
-                &#x27;           &lt;a class=&quot;icon-cogwheel navigation-settings-icon js-navigation-settings&quot; id=&quot;&lt;%= item.id %&gt;&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
+                &#x27;           &lt;a class=&quot;fa-cogwheel navigation-settings-icon js-navigation-settings&quot; id=&quot;&lt;%= item.id %&gt;&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
                 &#x27;       &lt;% } %&gt;&#x27;,
                 &#x27;       &lt;% if (item.items &amp;&amp; item.items.length &gt; 0) { %&gt;&#x27;,
-                &#x27;           &lt;a class=&quot;icon-chevron-right navigation-toggle-icon&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
+                &#x27;           &lt;a class=&quot;fa-chevron-right navigation-toggle-icon&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
                 &#x27;       &lt;% } %&gt;&#x27;,
                 &#x27;   &lt;/div&gt;&#x27;,
                 &#x27;&lt;/li&gt;&#x27;].join(&#x27;&#x27;),
@@ -222,9 +237,9 @@ define(function() {
                 &#x27;       &lt;div class=&quot;navigation-subitems-toggle&quot;&gt;&#x27;,
                 &#x27;           &lt;a class=&quot;&lt;% if (!!item.action) { %&gt;js-navigation-item &lt;% } %&gt; navigation-item&quot; href=&quot;#&quot;&gt;&lt;%= translate(item.title) %&gt;&lt;/a&gt;&#x27;,
                 &#x27;           &lt;% if (item.hasSettings) { %&gt;&#x27;,
-                &#x27;           &lt;a class=&quot;icon-cogwheel navigation-settings-icon js-navigation-settings&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
+                &#x27;           &lt;a class=&quot;fa-cogwheel navigation-settings-icon js-navigation-settings&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
                 &#x27;           &lt;% } %&gt;&#x27;,
-                &#x27;           &lt;a class=&quot;icon-chevron-right navigation-toggle-icon&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
+                &#x27;           &lt;a class=&quot;fa-chevron-right navigation-toggle-icon&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
                 &#x27;       &lt;/div&gt;&#x27;,
                 &#x27;&lt;/li&gt;&#x27;].join(&#x27;&#x27;),
             /** siple sub item */
@@ -236,12 +251,12 @@ define(function() {
             //footer template
             footer: [
                 &#x27;&lt;div class=&quot;user&quot;&gt;&#x27;,
-                &#x27;&lt;div class=&quot;icon-user pic&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;&lt;span class=&quot;fa-user pic&quot;&gt;&lt;/span&gt;&#x27;,
                 &#x27;&lt;div class=&quot;name&quot;&gt;&lt;%= userName %&gt;&lt;/div&gt;&#x27;,
                 &#x27;&lt;/div&gt;&#x27;,
                 &#x27;&lt;div class=&quot;options&quot;&gt;&#x27;,
                 &#x27;&lt;div class=&quot;locale-dropdown&quot;&gt;&lt;/div&gt;&#x27;,
-                &#x27;&lt;a href=&quot;&lt;%= logoutRoute %&gt;&quot; title=&quot;Logout&quot; class=&quot;icon-lock logout&quot;&gt;&lt;/a&gt;&#x27;,
+                &#x27;&lt;a href=&quot;&lt;%= logoutRoute %&gt;&quot; title=&quot;Logout&quot; class=&quot;fa-lock logout&quot;&gt;&lt;/a&gt;&#x27;,
                 &#x27;&lt;/div&gt;&#x27;,
                 &#x27;&lt;div class=&quot;version&quot;&gt;&lt;%= system %&gt; (&lt;%= version %&gt;, &lt;a href=&quot;#&quot;&gt;&lt;%= versionHistory %&gt;&lt;/a&gt;)&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;)
@@ -404,21 +419,6 @@ define(function() {
                 this.sandbox.util.extend(true, {}, this.options, {translate: this.sandbox.translate}))
             );
 
-            // render header image
-            if (typeof this.options.data.icon === &#x27;string&#x27;) {
-                this.sandbox.dom.prepend(this.sandbox.dom.find(&#x27;header.navigation-header&#x27;, this.$el),
-                    this.sandbox.template.parse(templates.headerImage, {
-                        icon: this.options.data.icon
-                    })
-                );
-            } else {
-                this.sandbox.dom.prepend(this.sandbox.dom.find(&#x27;header.navigation-header&#x27;, this.$el),
-                    this.sandbox.template.parse(templates.headerText, {
-                        text: this.options.data.title.substr(0, 1)
-                    })
-                );
-            }
-
             this.$navigation = this.$find(&#x27;.navigation&#x27;, this.$el);
             this.$navigationContent = this.$find(&#x27;.navigation-content&#x27;, this.$navigation);
 
@@ -473,7 +473,7 @@ define(function() {
                     // create item
                     $elem = this.sandbox.dom.createElement(this.sandbox.template.parse(templates.mainItem, {
                         item: item,
-                        icon: item.icon ? &#x27;icon-&#x27; + item.icon : &#x27;&#x27;,
+                        icon: item.icon ? &#x27;fa-&#x27; + item.icon : &#x27;&#x27;,
                         translate: this.sandbox.translate
                     }));
                     this.sandbox.dom.append($sectionList, $elem);
@@ -744,10 +744,10 @@ define(function() {
             }
 
             if (isExpanded &amp;&amp; !navWasCollapsed) {
-                $toggle = this.sandbox.dom.find(&#x27;.icon-chevron-down&#x27;, event.currentTarget);
+                $toggle = this.sandbox.dom.find(&#x27;.fa-chevron-down&#x27;, event.currentTarget);
                 this.animateSlideUp($items, $toggle);
             } else if (this.collapsed !== true) {
-                $toggle = this.sandbox.dom.find(&#x27;.icon-chevron-right&#x27;, event.currentTarget);
+                $toggle = this.sandbox.dom.find(&#x27;.fa-chevron-right&#x27;, event.currentTarget);
                 this.animateSlideDown($items, $toggle, $childList);
             }
 
@@ -777,8 +777,8 @@ define(function() {
                 this.sandbox.dom.removeClass($items, &#x27;is-expanded&#x27;);
 
                 // change toggle item
-                this.sandbox.dom.removeClass($toggle, &#x27;icon-chevron-down&#x27;);
-                this.sandbox.dom.prependClass($toggle, &#x27;icon-chevron-right&#x27;);
+                this.sandbox.dom.removeClass($toggle, &#x27;fa-chevron-down&#x27;);
+                this.sandbox.dom.prependClass($toggle, &#x27;fa-chevron-right&#x27;);
             }
         },
 
@@ -793,7 +793,7 @@ define(function() {
                 this.animating = true;
                 var expandedHeight = CONSTANTS.ITEM_LABEL_HEIGHT + this.sandbox.dom.outerHeight($childList);
 
-                $($items).stop();
+                this.sandbox.dom.stop($items);
                 this.sandbox.dom.animate($items, {
                     height: (expandedHeight + 30)
                 }, {
@@ -812,8 +812,8 @@ define(function() {
                 this.sandbox.dom.addClass($items, &#x27;is-expanded&#x27;);
 
                 // change toggle item
-                this.sandbox.dom.removeClass($toggle, &#x27;icon-chevron-right&#x27;);
-                this.sandbox.dom.prependClass($toggle, &#x27;icon-chevron-down&#x27;);
+                this.sandbox.dom.removeClass($toggle, &#x27;fa-chevron-right&#x27;);
+                this.sandbox.dom.prependClass($toggle, &#x27;fa-chevron-down&#x27;);
 
                 this.sandbox.dom.one($items, CONSTANTS.TRANSITIONEND_EVENT, this.checkBottomHit.bind(this));
             }

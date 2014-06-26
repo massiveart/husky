@@ -40,14 +40,6 @@
     position: absolute;
 }
 
-.is-loading:not(.navigation-column-item) {
-  @extend %abstract-loader-black;
-
-    background-repeat: no-repeat;
-    background-position: center center;
-
-}
-
 .align-left {
     text-align: left;
 }
@@ -238,6 +230,23 @@
 
 .m-left-30 {
     margin-left: 30px !important;
+}
+
+// margins 40px
+.m-top-40 {
+    margin-top: 40px !important;
+}
+
+.m-bottom-40 {
+    margin-bottom: 40px !important;
+}
+
+.m-right-40 {
+    margin-right: 40px !important;
+}
+
+.m-left-40 {
+    margin-left: 40px !important;
 }
 
 // Height shorthands

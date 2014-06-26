@@ -1,0 +1,124 @@
+{
+    "note": "...Successfully found husky configs for apimocker...",
+    "mockDirectory": "apimocks",
+    "quiet": false,
+    "port": "7878",
+    "latency": 700,
+    "allowedDomains": ["http://husky.lo"],
+    "allowedHeaders": ["Content-Type", "Cache-Control", "X-Requested-With"],
+    "webServices": {
+
+        "test": {
+            "mockFile": "test.json",
+            "verbs": ["GET"]
+        },
+
+        "admin/api/datagrid": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/default.json",
+            "switch": "page"
+        },
+        "admin/api/datagrid/all": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/all.json"
+        },
+        "admin/api/datagrid/sort": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/sort.json"
+        },
+        "admin/api/datagrid/search": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/search.json"
+        },
+        "admin/api/datagrid/1": {
+            "verbs": ["PUT"],
+            "mockFile": "datagrid/id1.edited.json"
+        },
+        "admin/api/datagrid/:id": {
+            "verbs": ["PUT"],
+            "httpStatus": 400,
+            "mockFile": "datagrid/edited.json",
+            "switch": "id"
+        },
+        "admin/api/datagrid/groups": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/groups.json"
+        },
+        "admin/api/datagrid/children": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/children/level1.json"
+        },
+        "admin/api/datagrid/children/all": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/children/all.json"
+        },
+        "admin/api/datagrid/actualchildren": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/children/children.json",
+            "switch": "parent"
+        },
+        "admin/api/datagrid/children/sorted": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/children/sorted.json"
+        },
+
+        "admin/api/autocomplete": {
+            "verbs": ["GET"],
+            "mockFile": "auto-complete/countries.json",
+            "switch": "query"
+        },
+
+        "admin/api/autocompletelist": {
+            "verbs": ["GET"],
+            "mockFile": "auto-complete-list/tags.json",
+            "switch": "query"
+        },
+
+        "admin/api/columnnavigation": {
+            "verbs": ["GET"],
+            "mockFile": "column-navigation/columns.json",
+            "switch": "children"
+        },
+        "admin/api/columnnavigation/children": {
+            "verbs": ["GET"],
+            "mockFile": "column-navigation/nodes.json",
+            "switch": "parent"
+        },
+
+        "admin/api/columnoptions": {
+            "verbs": ["GET"],
+            "mockFile": "column-options/columns.json"
+        },
+
+        "admin/api/dropdown": {
+            "verbs": ["GET"],
+            "mockFile": "dropdown/items.json"
+        },
+
+        "admin/api/navigation": {
+            "verbs": ["GET"],
+            "mockFile": "navigation/items.json"
+        },
+
+        "admin/api/smartcontent": {
+            "verbs": ["GET"],
+            "mockFile": "smart-content/items.json",
+            "switch": "dataSource"
+        },
+
+        "admin/api/tabs": {
+            "verbs": ["GET"],
+            "mockFile": "tabs/items.json"
+        },
+
+        "admin/api/validation/autocomplete": {
+            "verbs": ["GET"],
+            "mockFile": "validation/autocomplete/prefetch.json"
+        },
+
+        "admin/api/dropzone": {
+            "verbs": ["POST"],
+            "mockFile": "dropzone/uploaded.json"
+        }
+    }
+}

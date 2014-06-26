@@ -20,6 +20,7 @@
  * @params {Number} [options.scrollBarWidth] with of scrollbar
  * @params {String} [options.url] url to load data
  * @params {String} [options.selected] id of selected element - needed to restore state
+ * @params {String} [options.editIcon] icon class of edit button
  * @params {Array}  [options.data] array of data displayed in the settings dropdown
  * @params {String} [options.instanceName] name of current instance
  * @params {String} [options.hasSubName] name of hasSub-key
@@ -29,7 +30,10 @@
  * @params {String} [options.typeName] name of type-key
  * @params {String} [options.titleName] name of title-key
  * @params {Number} [options.visibleRatio] minimum ratio of how much of a column must be visible to display the navigation
- *
+ * @params {String} [options.sizeRelativeTo] dom object which is used to calculate height / width (default $window)
+ * @params {Boolean} [options.showEdit] hide or display edit elements
+ * @params {Boolean} [options.showEditIcon] hide or display edit icon element
+ * @params {Boolean} [options.showStatus] hide or display status of elements
  */
 define([], function() {
 
@@ -48,13 +52,19 @@ define([], function() {
             data: null,
             instanceName: 'undefined',
             hasSubName: 'hasSub',
+            editIcon: 'fa-pencil',
             idName: 'id',
+            pathName: 'path',
             linkedName: 'linked',
             publishedName: 'publishedState',
             titleName: 'title',
             typeName: 'type',
             minVisibleRatio: 1 / 2,
-            noPageDescription: 'public.no-pages'
+            noPageDescription: 'public.no-pages',
+            sizeRelativeTo: null,
+            showEdit: true,
+            showEditIcon: true,
+            showStatus: true
         },
 
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
@@ -63,20 +73,20 @@ define([], function() {
          * namespace for events
          * @type {string}
          */
-            eventNamespace = 'husky.column-navigation.',
+        eventNamespace = 'husky.column-navigation.',
 
         /**
          * @event husky.column-navigation.loaded
          * @description the component has loaded everything successfully and will be rendered
          */
-            LOADED = eventNamespace + 'loaded',
+        LOADED = eventNamespace + 'loaded',
 
         /**
          * @event husky.column-navigation.selected
          * @description an navigation element has been selected
          * @param {Object} selected object
          */
-            SELECTED = eventNamespace + 'selected',
+        SELECTED = eventNamespace + 'selected',
 
         /**
          * @event husky.column-navigation.settings
@@ -84,33 +94,43 @@ define([], function() {
          * @param {Object} selected column navigation object
          * @param {Object} clicked dropdown item
          */
-            SETTINGS = eventNamespace + 'settings',
+        SETTINGS = eventNamespace + 'settings',
 
         /**
          * @event husky.column-navigation.add
          * @description the add button has been clicked
          * @param {Object} parent object from active column level
          */
-            ADD = eventNamespace + 'add',
+        ADD = eventNamespace + 'add',
 
         /**
          * @event husky.column-navigation.edit
          * @description the edit icon has been clicked
          * @param {Object} clicked object
          */
-            EDIT = eventNamespace + 'edit',
+        EDIT = eventNamespace + 'edit',
 
         /**
          * @event husky.column-navigation.get-breadcrumb
          * @description the breadcrumb will be returned
          * @param {Function} callback function which will process the breadcrumb objects
          */
-            BREADCRUMB = eventNamespace + 'get-breadcrumb';
+        BREADCRUMB = eventNamespace + 'get-breadcrumb',
+
+        /**
+         * @event husky.column-navigation.resize
+         * @description the element will be resized
+         * @param {Function} callback function which will process the breadcrumb objects
+         */
+        RESIZE = eventNamespace + 'resize';
 
     return {
 
         initialize: function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+
+            // default relative
+            this.options.sizeRelativeTo = this.options.sizeRelativeTo || this.sandbox.dom.$window;
 
             this.$element = this.sandbox.dom.$(this.options.el);
             this.$selectedElement = null;
@@ -148,14 +168,16 @@ define([], function() {
             // options container - add and settings button
             this.addId = this.options.instanceName + "-column-navigation-add";
             this.settingsId = this.options.instanceName + "-column-navigation-settings";
-            this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer.call(this, this.options.column.width));
-            $add = this.sandbox.dom.$(this.template.options.add(this.addId));
-            $settings = this.sandbox.dom.$(this.template.options.settings(this.settingsId));
-            this.sandbox.dom.append(this.$optionsContainer, $add);
-            this.sandbox.dom.append(this.$optionsContainer, $settings);
 
-            this.hideOptions();
-            this.sandbox.dom.append($wrapper, this.$optionsContainer);
+            if (!!this.options.showEdit) {
+                this.$optionsContainer = this.sandbox.dom.$(this.template.optionsContainer.call(this, this.options.column.width));
+                $add = this.sandbox.dom.$(this.template.options.add(this.addId));
+                $settings = this.sandbox.dom.$(this.template.options.settings(this.settingsId));
+                this.sandbox.dom.append(this.$optionsContainer, $add);
+                this.sandbox.dom.append(this.$optionsContainer, $settings);
+                this.hideOptions();
+                this.sandbox.dom.append($wrapper, this.$optionsContainer);
+            }
 
             this.setContainerHeight();
             this.setContainerMinWidth();
@@ -201,8 +223,12 @@ define([], function() {
          * Sets the height of the container
          */
         setContainerHeight: function() {
+            var height = this.sandbox.dom.height(this.options.sizeRelativeTo),
+                top = this.sandbox.dom.offset(this.$el).top - (this.options.sizeRelativeTo !== this.sandbox.dom.$window ? this.sandbox.dom.offset(this.options.sizeRelativeTo).top : 0);
+            top = top < 0 ? 0 : top;
+
             this.sandbox.dom.height(
-                this.$columnContainer, (this.sandbox.dom.height(window) - this.sandbox.dom.offset(this.$columnContainer).top) * this.options.wrapper.height / 100
+                this.$columnContainer, (height - top) * this.options.wrapper.height / 100
             );
         },
 
@@ -236,7 +262,6 @@ define([], function() {
         load: function(url, columnNumber) {
             if (!!url) {
                 this.columnLoadStarted = true;
-
                 this.sandbox.util.load(url)
                     .then(function(response) {
                         this.removeBigLoader();
@@ -323,7 +348,7 @@ define([], function() {
                 }
 
                 // needed to select node in last level of nodes
-                if (!!this.options.selected && this.options.selected === value[this.options.idName]) {
+                if (!!this.options.selected && (this.options.selected === value[this.options.idName] || this.options.selected === value[this.options.pathName])) {
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
                     lastSelected = value;
@@ -419,7 +444,7 @@ define([], function() {
          * @param $container
          */
         addLoadingIcon: function($container) {
-            this.sandbox.dom.removeClass($container, 'inactive icon-chevron-right');
+            this.sandbox.dom.removeClass($container, 'fa-chevron-right inactive');
 
             if (this.$loader === null) {
                 this.$loader = this.sandbox.dom.createElement('<div class="husky-column-navigation-loader"/>');
@@ -448,7 +473,7 @@ define([], function() {
             if (!!this.$selectedElement) {
                 var $arrow = this.sandbox.dom.find('.arrow', this.$selectedElement);
                 this.sandbox.dom.hide(this.$loader);
-                this.sandbox.dom.prependClass($arrow, 'icon-chevron-right');
+                this.sandbox.dom.prependClass($arrow, 'fa-chevron-right');
             }
         },
 
@@ -514,6 +539,12 @@ define([], function() {
             this.sandbox.on(BREADCRUMB, this.getBreadCrumb.bind(this));
 
             this.sandbox.on('husky.dropdown.' + this.options.instanceName + '.settings.dropdown.item.click', this.dropdownItemClicked.bind(this));
+
+            this.sandbox.on(RESIZE, function() {
+                this.setContainerHeight();
+                this.setContainerMaxWidth();
+                this.setOverflowClass();
+            }.bind(this));
         },
 
         dropdownItemClicked: function(item) {
@@ -527,22 +558,18 @@ define([], function() {
         },
 
         /**
-         * Shows the edit icon
+         * Sets the text width
          * @param {Object} event
          */
         itemMouseEnter: function(event) {
-            var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
-            this.sandbox.dom.toggle($edit);
             this.setItemsTextWidth(event.currentTarget);
         },
 
         /**
-         * Hides the edit icon
+         * Sets the text width
          * @param {Object} event
          */
         itemMouseLeave: function(event) {
-            var $edit = this.sandbox.dom.find('.edit', event.currentTarget);
-            this.sandbox.dom.toggle($edit);
             this.setItemsTextWidth(event.currentTarget);
         },
 
@@ -564,7 +591,7 @@ define([], function() {
         showOptionsAtLast: function() {
             var $lastColumn = this.sandbox.dom.last(this.sandbox.dom.find('.column', this.$columnContainer));
             this.showOptions({
-               currentTarget: $lastColumn
+                currentTarget: $lastColumn
             });
         },
 
@@ -588,6 +615,8 @@ define([], function() {
         displayOptions: function($activeColumn) {
             var visibleRatio;
 
+            this.lastHoveredColumn = this.sandbox.dom.data($activeColumn, 'column');
+
             // calculate the ratio of how much of the hovered column is visible
             if (this.sandbox.dom.position($activeColumn).left + this.sandbox.dom.width($activeColumn) > this.sandbox.dom.width(this.$columnContainer)) {
                 visibleRatio = (this.sandbox.dom.width(this.$columnContainer) - this.sandbox.dom.position($activeColumn).left ) / this.sandbox.dom.width($activeColumn);
@@ -597,7 +626,6 @@ define([], function() {
 
             // display the option only if the column is visible enough
             if (visibleRatio >= this.options.minVisibleRatio) {
-                this.lastHoveredColumn = this.sandbox.dom.data($activeColumn, 'column');
                 this.sandbox.dom.css(this.$optionsContainer, {'visibility': 'visible'});
                 this.updateOptionsMargin($activeColumn);
             } else {
@@ -694,8 +722,12 @@ define([], function() {
          * Sets the max width of the container
          */
         setContainerMaxWidth: function() {
+            var width = this.sandbox.dom.width(this.options.sizeRelativeTo),
+                left = (this.options.sizeRelativeTo === this.sandbox.dom.$window ? this.sandbox.dom.offset(this.$el).left : 0);
+
+
             this.sandbox.dom.css(this.$el, {
-                'max-width': this.sandbox.dom.width(this.sandbox.dom.$window) - this.sandbox.dom.offset(this.$el).left - this.options.paddingLeft + 'px'
+                'max-width': width - left - this.options.paddingLeft + 'px'
             });
         },
 
@@ -751,15 +783,16 @@ define([], function() {
          * @param {Object} event
          */
         editNode: function(event) {
-            var $listItem, id, item;
+            var $listItem, id, item, column;
 
             if (this.sandbox.dom.hasClass(event.currentTarget, 'edit') === true) {
                 $listItem = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget));
             } else {
                 $listItem = this.sandbox.dom.$(event.currentTarget);
             }
+            column = this.sandbox.dom.index(this.sandbox.dom.parents(event.currentTarget, '.column'));
             id = this.sandbox.dom.data($listItem, 'id');
-            item = this.columns[this.lastHoveredColumn][id];
+            item = this.columns[column][id];
 
             this.sandbox.dom.stopPropagation(event);
             this.sandbox.emit(EDIT, item);
@@ -784,38 +817,40 @@ define([], function() {
 
             noPage: function(description) {
                 return ['<div class="no-page">',
-                            '<span class="icon-file"></span>',
-                            '<div class="text">', description ,'</div>',
-                        '</div>'].join('');
+                    '<span class="fa-file-o"></span>',
+                    '<div class="text">', description , '</div>',
+                    '</div>'].join('');
             },
 
             item: function(width, data) {
 
                 var item = ['<li data-id="', data[this.options.idName], '" class="pointer">'];
 
-                // icons left
-                item.push('<span class="icons-left">');
-                // link
-                if (!!data[this.options.linkedName]) {
-                    if (data[this.options.linkedName] === 'internal') {
-                        item.push('<span class="icon-internal-link pull-left m-right-5"></span>');
-                    } else if (data[this.options.linkedName] === 'external') {
-                        item.push('<span class="icon-external-link pull-left m-right-5"></span>');
+                if (!!this.options.showStatus) {
+                    // icons left
+                    item.push('<span class="icons-left">');
+                    // link
+                    if (!!data[this.options.linkedName]) {
+                        if (data[this.options.linkedName] === 'internal') {
+                            item.push('<span class="fa-internal-link pull-left m-right-5"></span>');
+                        } else if (data[this.options.linkedName] === 'external') {
+                            item.push('<span class="fa-external-link pull-left m-right-5"></span>');
+                        }
                     }
-                }
 
-                // type (ghost, shadow)
-                if (!!data[this.options.typeName]) {
-                    if (data[this.options.typeName].name === 'ghost') {
-                        item.push('<span class="ghost pull-left m-right-5">', data[this.options.typeName].value, '</span>');
-                    } else if (data[this.options.typeName].name === 'shadow') {
-                        item.push('<span class="icon-shadow-node pull-left m-right-5"></span>');
+                    // type (ghost, shadow)
+                    if (!!data[this.options.typeName]) {
+                        if (data[this.options.typeName].name === 'ghost') {
+                            item.push('<span class="ghost pull-left m-right-5">', data[this.options.typeName].value, '</span>');
+                        } else if (data[this.options.typeName].name === 'shadow') {
+                            item.push('<span class="fa-shadow-node pull-left m-right-5"></span>');
+                        }
                     }
-                }
 
-                // published
-                if (!data[this.options.publishedName]) {
-                    item.push('<span class="not-published pull-left m-right-5">&bull;</span>');
+                    // published
+                    if (!data[this.options.publishedName]) {
+                        item.push('<span class="not-published pull-left m-right-5">&bull;</span>');
+                    }
                 }
                 item.push('</span>');
 
@@ -828,8 +863,10 @@ define([], function() {
 
                 // icons right (subpage, edit)
                 item.push('<span class="icons-right">');
-                item.push('<span class="icon-edit-pen edit hidden pull-left"></span>');
-                !!data[this.options.hasSubName] ? item.push('<span class="icon-chevron-right arrow inactive pull-left"></span>') : '';
+                if (!!this.options.showEditIcon) {
+                    item.push('<span class="' + this.options.editIcon + ' edit hidden pull-left"></span>');
+                }
+                !!data[this.options.hasSubName] ? item.push('<span class="fa-chevron-right arrow inactive pull-left"></span>') : '';
                 item.push('</span></li>');
                 return item.join('');
             },
@@ -841,13 +878,13 @@ define([], function() {
             options: {
                 add: function(id) {
                     return ['<div id="', id, '" class="align-center add pointer">',
-                        '<span class="icon-add"></span>',
+                        '<span class="fa-plus-circle"></span>',
                         '</div>'].join('');
                 },
 
                 settings: function(id) {
                     return ['<div id="', id, '" class="align-center settings pointer drop-down-trigger">',
-                        '<span class="icon-cogwheel inline-block"></span><span class="dropdown-toggle inline-block"></span>',
+                        '<span class="fa-gear inline-block"></span><span class="dropdown-toggle inline-block"></span>',
                         '</div>'].join('');
                 }
             }

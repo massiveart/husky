@@ -3,7 +3,7 @@
         <div class="grid-col-6">
             <label class="required"><%=translate('demo.firstName') %>:</label>
             <input type="text"
-                   class="form-element"
+                   class="husky-validate"
                    id="firstName"
                    name="firstName"
                    data-mapper-property="firstName"
@@ -71,7 +71,7 @@
             <label for="undefined">
                <%=translate('company') %>
             </label>
-            <div data-aura-component="auto-complete@husky" data-aura-url="/contacts"></div>
+            <div data-aura-component="auto-complete@husky" data-aura-prefetch-url="http://husky.lo:7878/admin/api/validation/autocomplete"></div>
         </div>
         <div class="grid-col-4 floating">
             <label>

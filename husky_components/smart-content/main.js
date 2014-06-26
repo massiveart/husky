@@ -38,10 +38,21 @@
  * @params {String} [options.sortMethodParameter] parameter for the sort method
  * @params {String} [options.presentAsParameter] parameter for the presentation-possibility id
  * @params {String} [options.limitResultParameter] parameter for the limit-result-value
+ * @params {String} [options.idKey] key for the id in the returning JSON-result
  * @params {String} [options.resultKey] key for the data in the returning JSON-result
+ * @params {String} [options.titleKey] key for the title in the returning JSON-result
+ * @params {String} [options.pathKey] key for the path in the returning JSON-result
  * @params {Boolean} [options.subFoldersDisabled] if true sub-folders overlay-item will be disabled
  * @params {Boolean} [options.tagsDisabled] if true tags overlay-item will be disabled
  * @params {Boolean} [options.limitResultDisabled] if true limit-result overlay-item will be disabled
+ * @params {Boolean} [options.translations.externalConfigs] if true component waits for external config object
+ * @params {String} [options.columnNavigationUrl] url for column navigation
+ * @params {Boolean} [options.hideDataSource] if true data-source selection hidden
+ * @params {Boolean} [options.hideCategories] if true categories hidden
+ * @params {Boolean} [options.hideTags] if true tags hidden
+ * @params {Boolean} [options.hideSortBy] if true sort by hidden
+ * @params {Boolean} [options.hidePresentAs] if true present as hidden
+ * @params {Boolean} [options.hideLimit] if true limit hidden
  *
  * @params {Object} [options.translations] object that gets merged with the default translation-keys
  * @params {String} [options.translations.noContentFound] translation key
@@ -49,7 +60,8 @@
  * @params {String} [options.translations.visible] translation key
  * @params {String} [options.translations.of] translation key
  * @params {String} [options.translations.configureSmartContent] translation key
- * @params {String} [options.translations.dataSource] translation key
+ * @params {String} [options.translations.dataSourceLabel] translation key
+ * @params {String} [options.translations.dataSourceButton] translation key
  * @params {String} [options.translations.includeSubFolders] translation key
  * @params {String} [options.translations.filterByCategory] translation key
  * @params {String} [options.translations.filterByTags] translation key
@@ -61,12 +73,13 @@
  * @params {String} [options.translations.limitResultTo] translation key
  * @params {String} [options.translations.noCategory] translation key
  * @params {String} [options.translations.choosePresentAs] translation key
- * @params {String} [options.translations.chooseDataSource] translation key
  * @params {String} [options.translations.from] translation key
  * @params {String} [options.translations.subFoldersInclusive] translation key
  * @params {String} [options.translations.viewAll] translation key
  * @params {String} [options.translations.viewLess] translation key
- * @params {Boolean} [options.translations.externalConfigs] if true component waits for external config object
+ * @params {String} [options.translations.chooseDataSource] translation key
+ * @params {String} [options.translations.chooseDataSourceOk] translation key
+ * @params {String} [options.translations.chooseDataSourceCancel] translation key
  */
 define([], function() {
 
@@ -100,10 +113,20 @@ define([], function() {
             presentAsParameter: 'presentAs',
             limitResultParameter: 'limitResult',
             limitResultDisabled: false,
+            idKey: 'id',
             resultKey: '_embedded',
+            titleKey: 'title',
+            pathKey: 'path',
             translations: {},
             elementDataName: 'smart-content',
-            externalConfigs: false
+            externalConfigs: false,
+            columnNavigationUrl: '',
+            hideDataSource: false,
+            hideCategories: false,
+            hideTags: false,
+            hideSortBy: false,
+            hidePresentAs: false,
+            hideLimit: false
         },
 
         sortMethods = {
@@ -118,7 +141,7 @@ define([], function() {
             sourceSelector: '.source',
             footerClass: 'smart-footer',
             viewTogglerClass: 'view-toggler',
-            buttonClass: 'icon-adjust-alt',
+            buttonClass: 'fa-filter',
             includeSubSelector: '.includeSubCheck',
             categoryDDClass: 'category-dropdown',
             tagListClass: 'tag-list',
@@ -132,7 +155,7 @@ define([], function() {
         },
 
         /** templates for component */
-            templates = {
+        templates = {
             skeleton: [
                 '<div class="smart-content-container form-element">',
                 '<div class="smart-header"></div>',
@@ -147,7 +170,7 @@ define([], function() {
             ].join(''),
             noContent: [
                 '<div class="no-content">',
-                '<span class="icon-file"></span>',
+                '<span class="fa-file"></span>',
                 '<div class="text"><%= noContentStr %></div>',
                 '</div>'
             ].join(''),
@@ -158,54 +181,73 @@ define([], function() {
                 '</li>'
             ].join(''),
             overlayContent: {
-                main: ['<div class="smart-overlay-content">',
-                    '</div>'].join(''),
+                main: [
+                    '<div class="smart-overlay-content">',
+                    '</div>'
+                ].join(''),
 
-                dataSource: ['<div class="item-half left">',
-                    '<span class="desc"><%= dataSourceStr %></span>',
-                    '<input type="text" value="<%= dataSourceValStr %>" class="data-source form-element"/>',
-                    '</div>'].join(''),
+                dataSource: [
+                    '<div class="item-half left">',
+                    '<span class="desc"><%= dataSourceLabelStr %></span>',
+                    '<div class="btn action fit" id="select-data-source-action"><%= dataSourceButtonStr %></div>',
+                    '<div><span class="sublabel"><%= dataSourceLabelStr %>:</span> <span class="sublabel data-source"><%= dataSourceValStr %></span></div>',
+                    '</div>'
+                ].join(''),
 
-                subFolders: ['<div class="item-half">',
+                subFolders: [
+                    '<div class="item-half">',
                     '<div class="check<%= disabled %>">',
                     '<label>',
                     '<div class="custom-checkbox">',
-                        '<input type="checkbox" class="includeSubCheck form-element"<%= includeSubCheckedStr %>/>',
-                        '<span class="icon"></span>',
+                    '<input type="checkbox" class="includeSubCheck form-element"<%= includeSubCheckedStr %>/>',
+                    '<span class="icon"></span>',
                     '</div>',
                     '<span class="description"><%= includeSubStr %></span>',
                     '</label>',
                     '</div>',
-                    '</div>'].join(''),
+                    '</div>'
+                ].join(''),
 
-                categories: ['<div class="item full">',
+                categories: [
+                    '<div class="item full">',
                     '<span class="desc"><%= filterByCatStr %></span>',
-                    '<div class="' + constants.categoryDDClass + '"></div>',
-                    '</div>'].join(''),
+                        '<div class="' + constants.categoryDDClass + '"></div>',
+                    '</div>'
+                ].join(''),
 
-                tagList: ['<div class="item full tags<%= disabled %>">',
+                tagList: [
+                    '<div class="item full tags<%= disabled %>">',
                     '<span class="desc"><%= filterByTagsStr %></span>',
-                    '<div class="' + constants.tagListClass + '"></div>',
-                    '</div>'].join(''),
+                        '<div class="' + constants.tagListClass + '"></div>',
+                    '</div>'
+                ].join(''),
 
-                sortBy: ['<div class="item-half left">',
+                sortBy: [
+                    '<div class="item-half left">',
                     '<span class="desc"><%= sortByStr %></span>',
-                    '<div class="' + constants.sortByDDClass + '"></div>',
-                    '</div>'].join(''),
+                        '<div class="' + constants.sortByDDClass + '"></div>',
+                    '</div>'
+                ].join(''),
 
-                sortMethod: ['<div class="item-half">',
-                    '<div class="' + constants.sortMethodDDClass + ' sortMethod"></div>',
-                    '</div>'].join(''),
+                sortMethod: [
+                    '<div class="item-half">',
+                        '<div class="' + constants.sortMethodDDClass + ' sortMethod"></div>',
+                    '</div>'
+                ].join(''),
 
-                presentAs: ['<div class="item-half left">',
+                presentAs: [
+                    '<div class="item-half left">',
                     '<span class="desc"><%= presentAsStr %></span>',
-                    '<div class="' + constants.presentAsDDClass + '"></div>',
-                    '</div>'].join(''),
+                        '<div class="' + constants.presentAsDDClass + '"></div>',
+                    '</div>'
+                ].join(''),
 
-                limitResult: ['<div class="item-half">',
+                limitResult: [
+                    '<div class="item-half">',
                     '<span class="desc"><%= limitResultToStr %></span>',
                     '<input type="text" value="<%= limitResult %>" class="limit-to form-element"<%= disabled %>/>',
-                    '</div>'].join('')
+                    '</div>'
+                ].join('')
             }
         },
 
@@ -213,13 +255,13 @@ define([], function() {
          * namespace for events
          * @type {string}
          */
-            eventNamespace = 'husky.smart-content.',
+        eventNamespace = 'husky.smart-content.',
 
         /**
          * raised after initialization process
          * @event husky.smart-content.initialize
          */
-            INITIALIZED = function() {
+        INITIALIZED = function() {
             return createEventName.call(this, 'initialize');
         },
 
@@ -227,7 +269,7 @@ define([], function() {
          * raised when all overlay components returned their value
          * @event husky.smart-content.input-retrieved
          */
-            INPUT_RETRIEVED = function() {
+        INPUT_RETRIEVED = function() {
             return createEventName.call(this, 'input-retrieved');
         },
 
@@ -235,7 +277,7 @@ define([], function() {
          * raised before data is requested with AJAX
          * @event husky.smart-content.data-request
          */
-            DATA_REQUEST = function() {
+        DATA_REQUEST = function() {
             return createEventName.call(this, 'data-request');
         },
 
@@ -243,7 +285,7 @@ define([], function() {
          * raised when data has returned from the ajax request
          * @event husky.smart-content.data-retrieved
          */
-            DATA_RETRIEVED = function() {
+        DATA_RETRIEVED = function() {
             return createEventName.call(this, 'data-retrieved');
         },
 
@@ -251,7 +293,7 @@ define([], function() {
          * raised when the overlay data has been changed
          * @event husky.smart-content.data-changed
          */
-            DATA_CHANGED = function() {
+        DATA_CHANGED = function() {
             return createEventName.call(this, 'data-changed');
         },
 
@@ -260,7 +302,7 @@ define([], function() {
          * (options.externalConfigs has to be true)
          * @event husky.smart-content.external-configs
          */
-            EXTERNAL_CONFIGS = function() {
+        EXTERNAL_CONFIGS = function() {
             return createEventName.call(this, 'external-configs');
         },
 
@@ -269,12 +311,12 @@ define([], function() {
          * it uses the new configs
          * @event husky.smart-content.set-configs
          */
-            SET_CONFIGS = function() {
+        SET_CONFIGS = function() {
             return createEventName.call(this, 'set-configs');
         },
 
         /** returns normalized event names */
-            createEventName = function(postFix) {
+        createEventName = function(postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         };
 
@@ -344,7 +386,8 @@ define([], function() {
                 visible: 'smart-content.visible',
                 of: 'smart-content.of',
                 configureSmartContent: 'smart-content.configure-smart-content',
-                dataSource: 'smart-content.data-source',
+                dataSourceLabel: 'smart-content.data-source.label',
+                dataSourceButton: 'smart-content.data-source.button',
                 includeSubFolders: 'smart-content.include-sub-folders',
                 filterByCategory: 'smart-content.filter-by-category',
                 filterByTags: 'smart-content.filter-by-tags',
@@ -359,7 +402,10 @@ define([], function() {
                 from: 'smart-content.from',
                 subFoldersInclusive: 'smart-content.sub-folders-inclusive',
                 viewAll: 'smart-content.view-all',
-                viewLess: 'smart-content.view-less'
+                viewLess: 'smart-content.view-less',
+                chooseDataSource: 'smart-content.choose-data-source',
+                chooseDataSourceOk: 'smart-content.choose-data-source.ok',
+                chooseDataSourceCancel: 'smart-content.choose-data-source.cancel'
             };
 
             this.translations = this.sandbox.util.extend(true, {}, this.translations, this.options.translations);
@@ -423,7 +469,9 @@ define([], function() {
          * Renders the source text and prepends it to the header
          */
         prependSource: function() {
-            var desc;
+            var desc, $element = this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent);
+            this.sandbox.dom.text($element, this.sandbox.util.cropMiddle(this.overlayData.path, 30, '...'));
+
             if (typeof(this.overlayData.dataSource) !== 'undefined') {
                 desc = this.sandbox.translate(this.translations.from);
                 if (this.overlayData.includeSubFolders !== false) {
@@ -433,7 +481,7 @@ define([], function() {
                 }
                 this.sandbox.dom.prepend(this.$header, _.template(templates.source)({
                     desc: desc,
-                    val: this.overlayData.dataSource
+                    val: this.overlayData.title
                 }));
             }
         },
@@ -478,8 +526,8 @@ define([], function() {
                 //loop stops if no more items are left or if number of rendered items matches itemsVisible
                 for (; ++i < length && i < this.itemsVisible;) {
                     this.sandbox.dom.append(ul, _.template(templates.contentItem)({
-                        dataId: this.items[i].id,
-                        value: this.items[i].name,
+                        dataId: this.items[i][this.options.idKey],
+                        value: this.items[i][this.options.titleKey],
                         num: (i + 1)
                     }));
                 }
@@ -520,8 +568,8 @@ define([], function() {
 
             this.sandbox.dom.html(this.$footer, [
                 '<span>',
-                '<strong>' + this.itemsVisible + ' </strong>', this.sandbox.translate(this.translations.of) , ' ',
-                '<strong>' + this.items.length + ' </strong>', this.sandbox.translate(this.translations.visible),
+                    '<strong>' + this.itemsVisible + ' </strong>', this.sandbox.translate(this.translations.of) , ' ',
+                    '<strong>' + this.items.length + ' </strong>', this.sandbox.translate(this.translations.visible),
                 '</span>'
             ].join(''));
 
@@ -537,12 +585,12 @@ define([], function() {
             if (this.itemsVisible < this.items.length) {
                 this.sandbox.dom.append(
                     this.$footer,
-                    '<span class="' + constants.viewTogglerClass + '">(' + this.sandbox.translate(this.translations.viewAll) + ')</span>'
+                        '<span class="' + constants.viewTogglerClass + '">(' + this.sandbox.translate(this.translations.viewAll) + ')</span>'
                 );
             } else if (this.items.length > this.options.visibleItems) {
                 this.sandbox.dom.append(
                     this.$footer,
-                    '<span class="' + constants.viewTogglerClass + '">(' + this.sandbox.translate(this.translations.viewLess) + ')</span>'
+                        '<span class="' + constants.viewTogglerClass + '">(' + this.sandbox.translate(this.translations.viewLess) + ')</span>'
                 );
             }
         },
@@ -653,16 +701,98 @@ define([], function() {
                         triggerEl: this.$button,
                         el: $element,
                         container: this.$el,
-                        data: this.$overlayContent,
-                        title: this.sandbox.translate(this.translations.configureSmartContent),
                         instanceName: 'smart-content.' + this.options.instanceName,
-                        okCallback: function() {
-                            this.itemsVisible = this.options.visibleItems;
-                            this.getOverlayData();
-                        }.bind(this)
+                        skin: 'wide',
+                        slides: [
+                            {
+                                title: this.sandbox.translate(this.translations.configureSmartContent),
+                                data: this.$overlayContent,
+                                okCallback: function() {
+                                    this.itemsVisible = this.options.visibleItems;
+                                    this.getOverlayData();
+                                }.bind(this)
+                            },
+                            {
+                                title: this.sandbox.translate(this.translations.chooseDataSource),
+                                data: '<div id="column-navigation-' + this.options.instanceName + '"/>',
+                                cssClass: 'column-navigation-slide',
+                                okInactive: true,
+                                okDefaultText: this.sandbox.translate(this.translations.chooseDataSourceOk),
+                                cancelDefaultText: this.sandbox.translate(this.translations.chooseDataSourceCancel),
+                                buttons: [
+                                    {
+                                        type: 'cancel',
+                                        inactive: false,
+                                        align: 'center'
+                                    }
+                                ],
+                                closeCallback: function() {
+                                    this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-left');
+                                    return false;
+                                }.bind(this)
+                            }
+                        ]
                     }
                 }
             ]);
+
+            this.bindColumnNavigationEvents();
+        },
+
+        /**
+         * column navigation events
+         */
+        bindColumnNavigationEvents: function() {
+            // init column navigation after initialize of overlay
+            this.sandbox.on('husky.overlay.smart-content.' + this.options.instanceName + '.initialized', this.initColumnNavigation.bind(this));
+
+            // adopt height of column navigation once
+            this.sandbox.once('husky.overlay.smart-content.' + this.options.instanceName + '.opened', function() {
+                // set height of smart-content column navigation slide (missing margins)
+                var height = this.sandbox.dom.outerHeight('.smart-content-overlay .slide-0 .overlay-content') + 24;
+                this.sandbox.dom.css('.smart-content-overlay .slide-1 .overlay-content', 'height', height + 'px');
+            }.bind(this));
+
+            // activate button OK when a page is selected
+            this.sandbox.on('husky.column-navigation.edit', function(item) {
+                this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-left');
+
+                var $element = this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent);
+                this.overlayData.dataSource = item.id;
+                this.sandbox.dom.text($element, this.sandbox.util.cropMiddle(item.path, 30, '...'));
+                this.sandbox.dom.data($element, 'id', item.id);
+            }.bind(this));
+
+            // slide to column navigation by click on the action button
+            this.sandbox.dom.on(this.$el, 'click', function() {
+                this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-right');
+            }.bind(this), '#select-data-source-action');
+        },
+
+        /**
+         * initialize column navigation
+         */
+        initColumnNavigation: function() {
+            var url = this.options.columnNavigationUrl.replace('{/dataSource}', (!!this.overlayData.dataSource ? '/' + this.overlayData.dataSource : ''));
+
+            this.sandbox.start(
+                [
+                    {
+                        name: 'column-navigation@husky',
+                        options: {
+                            el: '#column-navigation-' + this.options.instanceName + '',
+                            url: url,
+                            selected: this.overlayData.dataSource,
+                            noPageDescription: 'No Pages',
+                            sizeRelativeTo: '.smart-content-overlay .slide-1 .overlay-content',
+                            wrapper: {height: 100},
+                            editIcon: 'fa-check',
+                            showEdit: false,
+                            showStatus: false
+                        }
+                    }
+                ]
+            );
         },
 
         /**
@@ -672,39 +802,52 @@ define([], function() {
 
             this.$overlayContent = this.sandbox.dom.createElement(_.template(templates.overlayContent.main)());
 
-            this.$overlayContent.append(_.template(templates.overlayContent.dataSource)({
-                dataSourceStr: this.sandbox.translate(this.translations.dataSource),
-                dataSourceValStr: this.options.dataSource
-            }));
-            this.$overlayContent.append(_.template(templates.overlayContent.subFolders)({
-                includeSubStr: this.sandbox.translate(this.translations.includeSubFolders),
-                includeSubCheckedStr: (this.options.includeSubFolders) ? ' checked' : '',
-                disabled: (this.overlayDisabled.subFolders) ? ' disabled' : ''
-            }));
-            this.$overlayContent.append('<div class="clear"></div>');
-            this.$overlayContent.append(_.template(templates.overlayContent.categories)({
-                filterByCatStr: this.sandbox.translate(this.translations.filterByCategory)
-            }));
-            this.$overlayContent.append(_.template(templates.overlayContent.tagList)({
-                filterByTagsStr: this.sandbox.translate(this.translations.filterByTags),
-                disabled: (this.overlayDisabled.tags) ? ' disabled' : ''
-            }));
-            this.$overlayContent.append(_.template(templates.overlayContent.sortBy)({
-                sortByStr: this.sandbox.translate(this.translations.sortBy)
-            }));
-            this.$overlayContent.append(_.template(templates.overlayContent.sortMethod)({
-                filterByTagsStr: this.sandbox.translate(this.translations.filterByTags)
-            }));
+            if (!this.options.hideDataSource) {
+                this.$overlayContent.append(_.template(templates.overlayContent.dataSource)({
+                    dataSourceLabelStr: this.sandbox.translate(this.translations.dataSourceLabel),
+                    dataSourceButtonStr: this.sandbox.translate(this.translations.dataSourceButton),
+                    dataSourceValStr: this.options.dataSource.path
+                }));
+                this.$overlayContent.append(_.template(templates.overlayContent.subFolders)({
+                    includeSubStr: this.sandbox.translate(this.translations.includeSubFolders),
+                    includeSubCheckedStr: (this.options.includeSubFolders) ? ' checked' : '',
+                    disabled: (this.overlayDisabled.subFolders) ? ' disabled' : ''
+                }));
+                this.$overlayContent.append('<div class="clear"></div>');
+            }
+            if (!this.options.hideCategories) {
+                this.$overlayContent.append(_.template(templates.overlayContent.categories)({
+                    filterByCatStr: this.sandbox.translate(this.translations.filterByCategory)
+                }));
+            }
+            if (!this.options.hideTags) {
+                this.$overlayContent.append(_.template(templates.overlayContent.tagList)({
+                    filterByTagsStr: this.sandbox.translate(this.translations.filterByTags),
+                    disabled: (this.overlayDisabled.tags) ? ' disabled' : ''
+                }));
+            }
+            if (!this.options.hideSortBy) {
+                this.$overlayContent.append(_.template(templates.overlayContent.sortBy)({
+                    sortByStr: this.sandbox.translate(this.translations.sortBy)
+                }));
+                this.$overlayContent.append(_.template(templates.overlayContent.sortMethod)({
+                    filterByTagsStr: this.sandbox.translate(this.translations.filterByTags)
+                }));
+            }
             this.$overlayContent.append('<div class="clear"></div>');
 
-            this.$overlayContent.append(_.template(templates.overlayContent.presentAs)({
-                presentAsStr: this.sandbox.translate(this.translations.presentAs)
-            }));
-            this.$overlayContent.append(_.template(templates.overlayContent.limitResult)({
-                limitResultToStr: this.sandbox.translate(this.translations.limitResultTo),
-                limitResult: (this.options.limitResult > 0) ? this.options.limitResult : '',
-                disabled: (this.overlayDisabled.limitResult) ? ' disabled' : ''
-            }));
+            if (!this.options.hidePresentAs) {
+                this.$overlayContent.append(_.template(templates.overlayContent.presentAs)({
+                    presentAsStr: this.sandbox.translate(this.translations.presentAs)
+                }));
+            }
+            if (!this.options.hideLimit) {
+                this.$overlayContent.append(_.template(templates.overlayContent.limitResult)({
+                    limitResultToStr: this.sandbox.translate(this.translations.limitResultTo),
+                    limitResult: (this.options.limitResult > 0) ? this.options.limitResult : '',
+                    disabled: (this.overlayDisabled.limitResult) ? ' disabled' : ''
+                }));
+            }
             this.$overlayContent.append('<div class="clear"></div>');
         },
 
@@ -784,7 +927,8 @@ define([], function() {
          */
         setURI: function() {
             var delimiter = (this.options.url.indexOf('?') === -1) ? '?' : '&',
-                newURI = [this.options.url,
+                newURI = [
+                    this.options.url,
                     delimiter, this.options.dataSourceParameter, '=', this.overlayData.dataSource,
                     '&', this.options.includeSubFoldersParameter, '=', this.overlayData.includeSubFolders,
                     '&', this.options.categoryParameter, '=', this.overlayData.category,
@@ -792,12 +936,11 @@ define([], function() {
                     '&', this.options.sortByParameter, '=', this.overlayData.sortBy,
                     '&', this.options.sortMethodParameter, '=', this.overlayData.sortMethod,
                     '&', this.options.presentAsParameter, '=', this.overlayData.presentAs,
-                    '&', this.options.limitResultParameter, '=', this.overlayData.limitResult].join('');
-            if (newURI !== this.URI.str) {
-                //emit data changed event only if old URI is not null (not at the startup)
-                if (this.URI.str !== '') {
-                    this.sandbox.emit(DATA_CHANGED.call(this), this.sandbox.dom.data(this.$el, 'smart-content'), this.$el);
-                }
+                    '&', this.options.limitResultParameter, '=', this.overlayData.limitResult
+                ].join('');
+            // min source must be selected
+            if (this.overlayData.dataSource.length > 0 && newURI !== this.URI.str) {
+                this.sandbox.emit(DATA_CHANGED.call(this), this.sandbox.dom.data(this.$el, 'smart-content'), this.$el);
                 this.URI.str = newURI;
                 this.URI.hasChanged = true;
             } else {
@@ -817,6 +960,8 @@ define([], function() {
                     url: this.URI.str,
 
                     success: function(data) {
+                        this.overlayData.title = data[this.options.titleKey];
+                        this.overlayData.path = data[this.options.pathKey];
                         this.items = data[this.options.resultKey];
                         this.sandbox.emit(DATA_RETRIEVED.call(this));
                     }.bind(this),
@@ -847,38 +992,38 @@ define([], function() {
             );
 
             //data-source
-            this.overlayData.dataSource = this.sandbox.dom.val(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent));
+            this.overlayData.dataSource = this.sandbox.dom.data(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent), 'id');
 
             //category
-            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.categoryDDClass + '.getChecked',
+            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.categoryDDClass + '.get-checked',
                 function(category) {
                     this.overlayData.category = category;
                     categoryDef.resolve();
                 }.bind(this));
 
             //tags
-            this.sandbox.emit('husky.auto-complete-list.' + this.options.instanceName + constants.tagListClass + '.getTags',
+            this.sandbox.emit('husky.auto-complete-list.' + this.options.instanceName + constants.tagListClass + '.get-tags',
                 function(tags) {
                     this.overlayData.tags = tags;
                     tagsDef.resolve();
                 }.bind(this));
 
             //sort by
-            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.sortByDDClass + '.getChecked',
+            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.sortByDDClass + '.get-checked',
                 function(sortBy) {
                     this.overlayData.sortBy = sortBy;
                     sortByDef.resolve();
                 }.bind(this));
 
             //sort method
-            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.sortMethodDDClass + '.getChecked',
+            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.sortMethodDDClass + '.get-checked',
                 function(sortMethod) {
                     this.overlayData.sortMethod = (sortMethod[0] === sortMethods.asc) ? 'asc' : 'desc';
                     sortMethodDef.resolve();
                 }.bind(this));
 
             //present as
-            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.presentAsDDClass + '.getChecked',
+            this.sandbox.emit('husky.select.' + this.options.instanceName + constants.presentAsDDClass + '.get-checked',
                 function(presentAs) {
                     this.overlayData.presentAs = presentAs;
                     presentAsDef.resolve();

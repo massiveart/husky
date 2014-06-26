@@ -1,0 +1,24 @@
+{
+    "id": "529f1f5b7783e",
+    "title": "Contacts",
+    "items": [
+        {
+            "title": "Details",
+            "action": "details"
+        },
+        {
+            "title": "Permissions",
+            "action": "permissions"
+        },
+        {
+            "id": "disable-tab",
+            "title": "Disabled Tab",
+            "action": "disabled",
+            "disabled": "true"
+        },
+        {
+            "title": "Settings",
+            "action": "settings"
+        }
+    ]
+}

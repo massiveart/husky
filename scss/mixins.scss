@@ -20,10 +20,6 @@
     -o-user-select: $value;
 }
 
-@mixin icon-mixin {
-    @include font-smoothing;
-}
-
 @mixin font-smoothing {
     text-transform: none;
     -webkit-font-smoothing: antialiased;
@@ -38,4 +34,16 @@
     content: ' ';
     display: block;
   }
+}
+
+@mixin box-sizing($value) {
+  -webkit-box-sizing: $value; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: $value; /* Firefox, other Gecko */
+  box-sizing: $value; /* Opera/IE 8+ */
+}
+
+@mixin rotate($angle) {
+  transform:rotate($angle);
+  -ms-transform:rotate($angle); /* IE 9 */
+  -webkit-transform:rotate($angle); /* Opera, Chrome, and Safari */
 }

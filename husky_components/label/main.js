@@ -52,7 +52,7 @@ define(function() {
     constants = {
         textClass: 'text',
         closeClass: 'close',
-        closeIconClass: 'icon-circle-remove'
+        closeIconClass: 'fa-times-circle'
     },
 
     /**

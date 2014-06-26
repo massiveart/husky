@@ -1,6 +1,7 @@
 //
 // Overlay
 // --------------------------------------------------
+@import "compass/css3/transition";
 
 .husky-overlay-container {
     width: $overlayContainerWidth;
@@ -18,11 +19,33 @@
         right: 0;
     }
 
-    &.wide {
-        width: $overlayContainerWidthWide
+    &.overflow-hidden {
+        /* FIXME select in slides hidden */
+        overflow: hidden;
     }
 
-    &.draggable {
+    &.wide {
+        width: $overlayContainerWidthWide;
+
+        .slides .slide {
+            width: $overlayContainerWidthWide - 2;
+        }
+    }
+
+    &.dropzone {
+        width: $overlayContainerWidthExtraWide;
+        .slides .slide {
+          width: $overlayContainerWidthExtraWide
+        }
+        .overlay-content {
+            margin-bottom: 20px;
+        }
+        .overlay-footer {
+            display: none;
+        }
+    }
+
+    .draggable {
         .overlay-header {
             cursor: move;
             @include user-select(none);
@@ -47,6 +70,17 @@
             }
         }
     }
+
+    .slides {
+        position: relative;
+        left: 0px;
+        @include single-transition(left, 500ms);
+
+        .slide {
+            float: left;
+            width: $overlayContainerWidth - 2;
+        }
+    }
 }
 
 .overlay-header {
@@ -58,7 +92,6 @@
     .title {
         color: $grayLight;
         font-size: 23px;
-        padding-right: 10px;
         vertical-align: text-top;
         display: block;
         padding: 15px 40px 10px 20px;
@@ -68,7 +101,7 @@
         position: absolute;
         top: 0px;
         right: 0px;
-        font-size: 12px;
+        font-size: 16px;
         text-decoration: none;
         color: black;
         line-height: 12px;
@@ -84,6 +117,12 @@
         position: absolute;
         bottom: 10px;
         right: 20px;
+    }
+
+    &.small-header {
+      background: transparent;
+      min-height: 0;
+      height: 25px;
     }
 }
 

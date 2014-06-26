@@ -23,8 +23,16 @@ body {
 hr.divider{
 	color:#fff;
 	height: 0;
-	border: 1px solid #fff;
+	border-bottom: 1px solid #fff;
+    border-top: none;
 	margin: 0px 0 20px 0;
+    &.dark {
+      color: $grayLighter;
+      border-color: $grayLighter;
+    }
+    &.small {
+      margin-bottom: 10px;
+    }
 }
 
 

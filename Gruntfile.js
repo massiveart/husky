@@ -160,7 +160,8 @@ module.exports = function(grunt) {
                         dest: 'dist',
                         src: [
                             'fonts/{,*/}*',
-                            'vendor/ckeditor/{,**/}*'
+                            'vendor/ckeditor/{,**/}*',
+                            'vendor/jquery.minicolors.png'
                         ]
                     },
                     {
@@ -298,7 +299,7 @@ module.exports = function(grunt) {
 						flatten: true,
 						src: [
 							'.bower_components/typeahead.js/dist/typeahead.js',
-							'.bower_components/typeahead.js/dist/typeahead.min.js',
+							'.bower_components/typeahead.js/dist/typeahead.min.js'
 						],
 						dest: 'bower_components/typeahead.js'
 					},
@@ -310,6 +311,33 @@ module.exports = function(grunt) {
                             '.bower_components/tagmanager/tagmanager.js'
                         ],
                         dest: 'bower_components/tagmanager'
+                    },
+                    // dropzone.js
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            '.bower_components/dropzone/downloads/dropzone.js'
+                        ],
+                        dest: 'bower_components/dropzone'
+                    },
+                    // minicolors
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            '.bower_components/jquery-minicolors/jquery.minicolors.js',
+                            '.bower_components/jquery-minicolors/jquery.minicolors.css',
+                            '.bower_components/jquery-minicolors/jquery.minicolors.png'
+                        ],
+                        dest: 'bower_components/jquery-minicolors'
+                    },
+                    // bootstrap-datepicker
+                    {
+                        expand: true,
+                        cwd: '.bower_components/bootstrap-datepicker/js/',
+                        src: ['**'],
+                        dest: 'bower_components/bootstrap-datepicker/'
                     }
                 ]
             }
@@ -372,7 +400,8 @@ module.exports = function(grunt) {
         'compass',
         'cssmin',
         'copy:dist',
-        'copy:doc'
+        'copy:doc',
+        'yuidoc'
     ]);
 
     grunt.registerTask('build:css', [

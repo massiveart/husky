@@ -55,6 +55,14 @@
             
                 <li><a href="../classes/Dependant Select.html">Dependant Select</a></li>
             
+                <li><a href="../classes/DropdownPagination (Datagrid Decorator).html">DropdownPagination (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Dropzone.html">Dropzone</a></li>
+            
+                <li><a href="../classes/GroupView (Datagrid Decorator).html">GroupView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Input.html">Input</a></li>
+            
                 <li><a href="../classes/Label.html">Label</a></li>
             
                 <li><a href="../classes/Loader.html">Loader</a></li>
@@ -69,7 +77,15 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
+                <li><a href="../classes/ShowAllPagination (Datagrid Decorator).html">ShowAllPagination (Datagrid Decorator)</a></li>
+            
                 <li><a href="../classes/SmartContent.html">SmartContent</a></li>
+            
+                <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
+            
+                <li><a href="../classes/Tabs.html">Tabs</a></li>
+            
+                <li><a href="../classes/ThumbnailView (Datagrid Decorator).html">ThumbnailView (Datagrid Decorator)</a></li>
             
                 <li><a href="../classes/Toggler.html">Toggler</a></li>
             
@@ -87,9 +103,15 @@
             
                 <li><a href="../modules/husky_components_column-options.html">husky/components/column-options</a></li>
             
+                <li><a href="../modules/husky_components_dropzone.html">husky/components/dropzone</a></li>
+            
+                <li><a href="../modules/husky_components_input.html">husky/components/input</a></li>
+            
                 <li><a href="../modules/husky_components_label.html">husky/components/label</a></li>
             
                 <li><a href="../modules/husky_components_matcher.html">husky/components/matcher</a></li>
+            
+                <li><a href="../modules/husky_components_overlay.html">husky/components/overlay</a></li>
             
                 <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
             
@@ -160,8 +182,8 @@ define([], function() {
 
     var templates = {
             skeleton: [
-                &#x27;&lt;a class=&quot;search-icon&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
-                &#x27;&lt;a class=&quot;icon-circle-remove remove-icon&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
+                &#x27;&lt;a class=&quot;fa-search search-icon&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
+                &#x27;&lt;a class=&quot;fa-times-circle remove-icon&quot; href=&quot;#&quot;&gt;&lt;/a&gt;&#x27;,
                 &#x27;&lt;input id=&quot;search-input&quot; type=&quot;text&quot; class=&quot;form-element input-round search-input&quot; placeholder=&quot;&lt;%= placeholderText %&gt;&quot;/&gt;&#x27;
             ].join(&#x27;&#x27;)
         },
@@ -236,6 +258,12 @@ define([], function() {
             this.sandbox.dom.on(this.$el, &#x27;mousedown&#x27;, this.submitSearch.bind(this), &#x27;.search-icon&#x27;);
             this.sandbox.dom.on(this.$el, &#x27;mousedown&#x27;, this.removeSearch.bind(this), &#x27;.remove-icon&#x27;);
             this.sandbox.dom.on(this.$el, &#x27;keyup onchange&#x27;, this.checkKeyPressed.bind(this), &#x27;#search-input&#x27;);
+            this.sandbox.dom.on(this.$find(&#x27;input&#x27;), &#x27;focus&#x27;, function() {
+                this.sandbox.dom.addClass(this.$el, &#x27;focus&#x27;);
+            }.bind(this));
+            this.sandbox.dom.on(this.$find(&#x27;input&#x27;), &#x27;blur&#x27;, function() {
+                this.sandbox.dom.removeClass(this.$el, &#x27;focus&#x27;);
+            }.bind(this));
 
             if (this.options.slide === true) {
                 this.sandbox.dom.on(this.$find(&#x27;input&#x27;), &#x27;focus&#x27;, this.expand.bind(this));

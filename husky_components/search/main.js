@@ -22,8 +22,8 @@ define([], function() {
 
     var templates = {
             skeleton: [
-                '<a class="search-icon" href="#"></a>',
-                '<a class="icon-circle-remove remove-icon" href="#"></a>',
+                '<a class="fa-search search-icon" href="#"></a>',
+                '<a class="fa-times-circle remove-icon" href="#"></a>',
                 '<input id="search-input" type="text" class="form-element input-round search-input" placeholder="<%= placeholderText %>"/>'
             ].join('')
         },
@@ -98,6 +98,12 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'mousedown', this.submitSearch.bind(this), '.search-icon');
             this.sandbox.dom.on(this.$el, 'mousedown', this.removeSearch.bind(this), '.remove-icon');
             this.sandbox.dom.on(this.$el, 'keyup onchange', this.checkKeyPressed.bind(this), '#search-input');
+            this.sandbox.dom.on(this.$find('input'), 'focus', function() {
+                this.sandbox.dom.addClass(this.$el, 'focus');
+            }.bind(this));
+            this.sandbox.dom.on(this.$find('input'), 'blur', function() {
+                this.sandbox.dom.removeClass(this.$el, 'focus');
+            }.bind(this));
 
             if (this.options.slide === true) {
                 this.sandbox.dom.on(this.$find('input'), 'focus', this.expand.bind(this));

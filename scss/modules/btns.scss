@@ -38,11 +38,10 @@
       line-height: 20px;
       border-radius: $borderRadiusSmall;
 
-      [class^="icon-"] {
+      [class^="fa-"] {
           font-size: 10px;
 
           & + .text {
-              top: -1px;
               font-size: $smallFontSize;
           }
       }
@@ -65,20 +64,17 @@
     &.inactive {
         cursor: default;
     }
-    [class^="icon-"] {
+    [class^="fa-"] {
         font-size: 18px;
         margin-left: -15px;
-        display: inline-block;
-        margin-bottom: -5px;
+        display: inline;
+        line-height: 32px;
 
         & + .text {
           font-size: $baseFontSize;
           display: inline-block;
           margin-right: -20px;
           margin-left: 5px;
-          position: relative;
-          top: -4px;
-          left: 0px;
           padding: 0;
         }
 
@@ -127,6 +123,7 @@ a.btn-black, a.btn-highlight {
 
 
 .addButton {
+    @extend .fa;
     border-radius: $borderRadius;
     display: inline-block;
     font-size: 12px;
@@ -139,8 +136,7 @@ a.btn-black, a.btn-highlight {
     cursor: pointer;
 
     &:before {
-        content: '\e191';
-        font-family: $baseIconFont;
+        content: $fa-var-plus-circle;
         font-size: 10px;
         padding-right: 5px;
     }

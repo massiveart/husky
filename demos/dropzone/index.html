@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Husky dropzone demo</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../dist/husky.css">
+</head>
+<style>
+    body {
+        padding: 50px 0 0 50px;
+    }
+</style>
+<body>
+
+<h1>Husky dropzone demo</h1>
+<div class="grid">
+    <div class="grid-row">
+        <div class="grid-col-6">
+            <div id="awsomeDropzone"
+                 data-aura-component="dropzone@husky"
+                 data-aura-description-key="Or click to add"
+                 data-aura-title-key="Drag and drop assets here to upload"
+                 data-aura-url="http://husky.lo:7878/admin/api/dropzone"
+                 data-aura-instance-name="pictures"
+                 data-aura-show-overlay="true"></div>
+        </div>
+    </div>
+    <div class="grid-row">
+        <div class="grid-col-6">
+            <div id="smallDropzone"
+                 data-aura-component="dropzone@husky"
+                 data-aura-title-key="Click or drag and drop new version"
+                 data-aura-url="http://husky.lo:7878/admin/api/dropzone"
+                 data-aura-skin="small"
+                 data-aura-instance-name="small"
+                 data-aura-show-overlay="false"></div>
+        </div>
+    </div>
+</div>
+<p>Note: Scroll a bit and drop a file to see the dropzone in an overlay</p>
+<div class="btn fit action" id="lock">Lock Popup</div>
+<div class="btn fit action" id="unlock">Unlock Popup</div>
+<div style="width:100px;height:1000000px"></div>
+<script src="../js/jquery.js"></script>
+<script src="../js/require.js"></script>
+
+<script type="text/javascript">
+require.config({
+    baseUrl: '../../'
+});
+
+require(['lib/husky'], function(Husky) {
+    'use strict';
+
+            var app = Husky({ debug: { enable: true }}),
+            _ = app.sandbox.util._;
+
+    app.start().then(function() {
+        app.logger.log('Aura started...');
+    });
+
+    $('#lock').on('click', function() {
+       app.sandbox.emit('husky.dropzone.pictures.lock-popup');
+    });
+    $('#unlock').on('click', function() {
+       app.sandbox.emit('husky.dropzone.pictures.unlock-popup');
+    });
+});
+</script>
+
+</body>
+</html>

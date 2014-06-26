@@ -9,7 +9,7 @@ define(function() {
 
             // for comparing arrays
             app.core.util.compare = function(a, b) {
-                if (this.typeOf(a) === 'array' && this.typeOf(b) === 'array') {
+                if (typeof a === 'object' && typeof b === 'object') {
                     return JSON.stringify(a) === JSON.stringify(b);
                 }
             };
@@ -99,7 +99,7 @@ define(function() {
                 var substrLength;
 
                 // return text if it doesn't need to be cropped
-                if (text.length <= maxLength) {
+                if (!text || text.length <= maxLength) {
                     return text;
                 }
 
@@ -112,12 +112,36 @@ define(function() {
                 return text.slice(0, substrLength) + delimiter + text.slice(-substrLength);
             },
 
+            app.core.util.cropFront = function(text, maxLength, delimiter) {
+                if (!text || text.length <= maxLength) {
+                    return text;
+                }
+
+                delimiter = delimiter || '...';
+
+                return delimiter + text.slice(-(maxLength - delimiter.length));
+            },
+
+            app.core.util.cropTail = function(text, maxLength, delimiter) {
+                if (!text || text.length <= maxLength) {
+                    return text;
+                }
+
+                delimiter = delimiter || '...';
+
+                return text.slice(0, (maxLength - delimiter.length)) + delimiter;
+            },
+
             app.core.util.contains = function(list, value) {
                 return _.contains(list, value);
             };
 
             app.core.util.uniqueId = function(prefix) {
                 return _.uniqueId(prefix);
+            };
+
+            app.core.util.delay = function(delay, callback) {
+                return _.delay(delay, callback);
             };
 
 			app.core.util.template = _.template;

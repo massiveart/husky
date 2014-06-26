@@ -24,7 +24,7 @@ $toolbarSmallHeight: 20px;
             min-width: 30px;
 
             a  {
-                line-height: $toolbarSmallHeight - 2px;
+                line-height: $toolbarSmallHeight - 3px;
                 min-width: 30px;
 
                 .icon, &.icon {
@@ -194,17 +194,17 @@ $toolbarSmallHeight: 20px;
     a {
         text-align: center;
         color: black;
-        padding: 0 10px 0 9px;
+        padding: 0 10px 0 8px;
         display: table;
         text-decoration: none;
         height: 100%;
-        line-height: $toolbarHeight - 2px;
+        line-height: $toolbarHeight;
         outline: none;
         width: 100%;
         min-width: 50px;
 
         .icon, &.icon {
-            font-size: 15px;
+            font-size: 16px;
             padding-right: 0px;
             display: inline-block;
         }
