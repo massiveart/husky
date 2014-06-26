@@ -30922,6 +30922,14 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
         /* TRIGGERS EVENTS */
 
             /**
+             * raised after initialization has finished
+             * @event husky.datagrid.initialized
+             */
+            INITIALIZED = function() {
+                return this.createEventName('initialized');
+            },
+
+            /**
              * raised when the the current page changes
              * @event husky.datagrid.page.change
              */
@@ -31288,6 +31296,8 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
 
                 // Should only be be called once
                 this.bindCustomEvents();
+
+                this.sandbox.emit(INITIALIZED.call(this));
             },
 
             /**
