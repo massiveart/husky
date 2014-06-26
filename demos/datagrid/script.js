@@ -286,6 +286,7 @@ require(['lib/husky'], function(Husky) {
                     childrenPropertyName: 'children',
                     viewOptions: {
                         table: {
+                            openChildId: 12,
                             hideChildrenAtBeginning: true,
                             icons: [
                                 {
