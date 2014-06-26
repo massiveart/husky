@@ -319,6 +319,12 @@
             
                 <li class="arg">
                     
+                        <code class="optional">[options.hideChildrenAtBeginning]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
                         <code class="optional">[rendered]</code>
                     
                 </li>
@@ -761,6 +767,23 @@
             
                 <li class="param">
                     
+                        <code class="param-name optional">[options.hideChildrenAtBeginning]</code>
+                        <span class="type">Function</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>if true children get hidden, if all children are loaded at the beginning</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
                         <code class="param-name optional">[rendered]</code>
                         <span class="type">Boolean</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
@@ -902,6 +925,13 @@
                     <ul class="index-list events">
                         
                             <li class="index-item event">
+                                <a href="#event_husky.datagrid.table.open-child">husky.datagrid.table.open-child</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
                                 <a href="#event_husky.datagrid.update.table">husky.datagrid.update.table</a>
 
                                 
@@ -922,6 +952,74 @@
         
             <div id="events" class="api-class-tabpanel">
                 <h2 class="off-left">Events</h2>
+
+                
+                    <div id="event_husky.datagrid.table.open-child" class="events item">
+    <h3 class="name"><code>husky.datagrid.table.open-child</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l141"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:141</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>used to update the table width and its containers due to responsiveness</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">id</code>
+                        <span class="type">Number | String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The id of the data-record to open the parents for</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
 
                 
                     <div id="event_husky.datagrid.update.table" class="events item">
@@ -947,7 +1045,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l132"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:132</code></a>
+        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l133"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:133</code></a>
         
         </p>
 

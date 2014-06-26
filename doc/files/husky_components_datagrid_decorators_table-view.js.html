@@ -183,6 +183,7 @@
  * @param {String} [options.icons[].column] the id of the column in which the icon should be displayed
  * @param {String} [options.icons[].align] the align of the icon. &#x27;left&#x27; org &#x27;right&#x27;
  * @param {Function} [options.icons.callback] a callback to execute if the icon got clicked. Gets the id of the data-record as first argument
+ * @param {Function} [options.hideChildrenAtBeginning] if true children get hidden, if all children are loaded at the beginning
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -213,7 +214,7 @@ define(function() {
             columnMinWidth: &#x27;70px&#x27;,
             thumbnailFormat: &#x27;50x50&#x27;,
             showHead: true,
-            childList: false,
+            hideChildrenAtBeginning: true,
             icons: []
         },
 
@@ -295,6 +296,15 @@ define(function() {
          */
         UPDATE_TABLE = function() {
             return this.datagrid.createEventName.call(this.datagrid, &#x27;update.table&#x27;);
+        },
+
+        /**
+         * used to update the table width and its containers due to responsiveness
+         * @event husky.datagrid.table.open-child
+         * @param {Number|String} id The id of the data-record to open the parents for
+         */
+        OPEN_PARENTS = function() {
+            return this.datagrid.createEventName.call(this.datagrid, &#x27;table.open-parents&#x27;);
         },
 
         /**
@@ -406,6 +416,8 @@ define(function() {
         bindCustomEvents: function() {
             // checks table widths
             this.sandbox.on(UPDATE_TABLE.call(this), this.onResize.bind(this));
+            // opens all parents for a given child
+            this.sandbox.on(OPEN_PARENTS.call(this), this.openAllParents.bind(this));
         },
 
         /**
@@ -496,18 +508,6 @@ define(function() {
         },
 
         /**
-         * Binds the click event on the passed icons/buttons
-         * @param $icon {Object} the icon-dom-object
-         * @param recordId {Number|String} the record-id which gets passed to the callback
-         * @param callback {Function} callback to execute after the click
-         */
-        bindIconDomEvents: function($icon, recordId, callback) {
-            this.sandbox.dom.on($icon, &#x27;click&#x27;, function() {
-                callback(recordId);
-            });
-        },
-
-        /**
          * Emits the row-clicked event
          */
         emitRowClickedEvent: function(event) {
@@ -588,7 +588,7 @@ define(function() {
 
             if (!!this.data.embedded) {
                 $tbody = this.sandbox.dom.createElement(&#x27;&lt;tbody/&gt;&#x27;);
-                this.sandbox.dom.append($tbody, this.prepareTableRows());
+                this.prepareTableRows($tbody);
                 this.sandbox.dom.append($table, $tbody);
             }
 
@@ -719,18 +719,25 @@ define(function() {
 
         /**
          * Itterates over all items and prepares the rows
-         * @returns {string} returns a string of all rows
+         * @param {Object} container to insert the table-rows the table-rows to
          */
-        prepareTableRows: function() {
-            var tblRows = [];
+        prepareTableRows: function($container) {
+            var $row, $parent;
 
             if (!!this.data.embedded) {
                 this.data.embedded.forEach(function(row) {
-                    tblRows.push(this.prepareTableRow(row, false));
+                    $parent = null;
+                    $row = this.prepareTableRow(row, false);
+                    if (!!row.parent) {
+                        $parent = this.sandbox.dom.find(&#x27;tr[data-id=&quot;&#x27; + row.parent + &#x27;&quot;]&#x27;, $container);
+                    }
+                    if (!!$parent) {
+                        this.insertChild($row, $parent, row.parent, this.options.hideChildrenAtBeginning);
+                    } else {
+                        this.sandbox.dom.append($container, $row);
+                    }
                 }.bind(this));
             }
-
-            return tblRows;
         },
 
         /**
@@ -758,7 +765,7 @@ define(function() {
 
                 // if the select-item should have its own cell add a checkbox or a radio-button
                 if (this.options.selectItem.inFirstCell !== true) {
-                    // and don&#x27;t display the checkbox anyway if only leaves should a checkbox and record has children
+                    // and don&#x27;t display the checkbox anyway if only leaves should have a checkbox and record has children
                     if (!(this.datagrid.options.onlySelectLeaves === true &amp;&amp; row[this.datagrid.options.childrenPropertyName] &gt; 0)) {
                         // add a checkbox-cell to each row
                         if (!!this.options.selectItem.type &amp;&amp; this.options.selectItem.type === &#x27;checkbox&#x27;) {
@@ -977,7 +984,7 @@ define(function() {
 
             // if record has a parent insert it after its parent else prepend or append row
             if (!!$parent) {
-                this.insertChild($row, $parent, row.parent);
+                this.insertChild($row, $parent, row.parent, false);
             } else if (!!this.options.addRowTop) {
                 this.sandbox.dom.prepend(this.$table, $row);
             } else {
@@ -1006,23 +1013,34 @@ define(function() {
          * @param $child
          * @param $parent
          * @param parentId {Number|String} the id of the parent
+         * @param hidden {Boolean} if true child gets hidden
          */
-        insertChild: function ($child, $parent, parentId) {
+        insertChild: function ($child, $parent, parentId, hidden) {
             var $parentIcon, depth = this.sandbox.dom.data($parent, &#x27;depth&#x27;) || 0;
             depth = parseInt(depth, 10);
             $parentIcon = this.sandbox.dom.find(&#x27;.&#x27; + constants.slideDownClass + &#x27; .toggle-icon&#x27;, $parent);
 
+            // make sure parent has children-loaded class
+            this.sandbox.dom.addClass($parent, constants.childrenLoadedClass);
+
             this.sandbox.dom.attr($child, &#x27;data-parent&#x27;, parentId);
             this.sandbox.dom.data($child, &#x27;depth&#x27;, depth + 1);
-
-            // change the icon of the parent
-            this.sandbox.dom.removeClass($parentIcon, constants.childrenSlideDownIcon);
-            this.sandbox.dom.prependClass($parentIcon, constants.childrenSlideUpIcon);
 
             // indent the children-rows
             this.sandbox.dom.css(this.sandbox.dom.find(&#x27;.&#x27; + constants.childrenIndentClass, $child), {
                 &#x27;margin-left&#x27;: (constants.childrenIndentPx * (depth + 1)) + &#x27;px&#x27;
             });
+
+            if (hidden === true) {
+                // change the icon of the parent
+                this.sandbox.dom.removeClass($parentIcon, constants.childrenSlideUpIcon);
+                this.sandbox.dom.prependClass($parentIcon, constants.childrenSlideDownIcon);
+                this.sandbox.dom.hide($child);
+            } else {
+                // change the icon of the parent
+                this.sandbox.dom.removeClass($parentIcon, constants.childrenSlideDownIcon);
+                this.sandbox.dom.prependClass($parentIcon, constants.childrenSlideUpIcon);
+            }
 
             this.sandbox.dom.after($parent, $child);
         },
@@ -1574,6 +1592,22 @@ define(function() {
             if (this.sandbox.dom.is($children, &#x27;:visible&#x27;)) {
                 this.hideChildren($parent, parentId);
             } else {
+                this.showChildren($parent, parentId);
+            }
+        },
+
+        /**
+         * Opens all parents of a data-record and because of that makes sure that the data-record is visible in the table
+         * @param id {Number|String} the id of the data-record
+         */
+        openAllParents: function(id) {
+            var $child = this.sandbox.dom.find(&#x27;tr[data-id=&quot;&#x27;+ id +&#x27;&quot;]&#x27;, this.$tableContainer),
+                parentId = this.sandbox.dom.data($child, &#x27;parent&#x27;),
+                $parent = this.sandbox.dom.find(&#x27;tr[data-id=&quot;&#x27;+ parentId +&#x27;&quot;]&#x27;, this.$tableContainer)
+            if (!!parentId &amp;&amp; !!$parent) {
+                if (!!this.sandbox.dom.data($parent, &#x27;parent&#x27;)) {
+                    this.openAllParents(parentId);
+                }
                 this.showChildren($parent, parentId);
             }
         },
