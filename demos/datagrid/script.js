@@ -421,7 +421,7 @@ require(['lib/husky'], function(Husky) {
         });
 
         $('#open-category').on('click', function () {
-            app.sandbox.emit('husky.datagrid.children-grid-beginning.table.open-parents', 113)
+            app.sandbox.emit('husky.datagrid.children-grid-beginning.table.open-parents', 113);
         });
 
         $('#update-url').on('click', function() {
