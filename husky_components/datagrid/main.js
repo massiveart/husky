@@ -544,8 +544,7 @@
              * Renders the data of the datagrid
              */
             render: function() {
-                var count = this.setSelectedItems(this.options.preselected);
-                this.sandbox.logger.log('Selected item:', count);
+                this.setSelectedItems(this.options.preselected);
 
                 this.gridViews[this.viewId].render(this.data, this.$element);
                 if (!!this.paginations[this.paginationId]) {

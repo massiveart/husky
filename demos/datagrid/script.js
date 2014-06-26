@@ -333,6 +333,45 @@ require(['lib/husky'], function(Husky) {
                 }
             },
             {
+                name: 'datagrid@husky',
+                options: {
+                    url: 'http://husky.lo:7878/admin/api/datagrid/children/all',
+                    el: '#assignment-datagrid',
+                    instanceName: 'assignment-datagrid',
+                    pagination: false,
+                    childrenPropertyName: 'children',
+                    preselected: [1, 22],
+                    viewOptions: {
+                        table: {
+                            showHead: false,
+                            cssClass: 'white-box',
+                            selectItem: {
+                                type: 'checkbox',
+                                inFirstCell: true
+                            }
+                        }
+                    },
+                    matchings: [
+                        {
+                            id: 'name',
+                            content: 'Name'
+                        },
+                        {
+                            id: 'id',
+                            disabled: true
+                        },
+                        {
+                            id: 'children',
+                            disabled: true
+                        },
+                        {
+                            id: 'parent',
+                            disabled: true
+                        }
+                    ]
+                }
+            },
+            {
                 name: 'toolbar@husky',
                 options: {
                     el: '#toolbar',

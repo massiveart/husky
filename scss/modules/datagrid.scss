@@ -110,6 +110,17 @@
             right: -26px;
             top: 40%;
         }
+
+      &.no-head {
+        thead {
+          display: none;
+        }
+        tbody {
+          tr:last-child {
+            border-bottom: none;
+          }
+        }
+      }
     }
 
     .datagrid-loader {
@@ -147,4 +158,20 @@
             padding-right: 0;
         }
     }
+
+  &.white-box {
+      background: $white;
+      border-radius: 3px;
+      border: 1px solid $grayLighter;
+      padding: 0 20px;
+      tbody {
+        tr:first-child {
+          height: 49px;
+        }
+        td {
+          padding-left: 0;
+          padding-right: 0;
+        }
+      }
+  }
 }

@@ -31,11 +31,12 @@
     float: left;
     position: relative;
     cursor: pointer;
+    border: 1px solid $grayLighter;
     @include clear-float;
 
     &.small {
       width: $thumbnailSmallWidth - 1px;
-      height: $thumbnailSmallHeight;
+      height: $thumbnailSmallHeight - 2px;
       margin-bottom: 20px;
       margin-right: 8px;
 
@@ -43,8 +44,8 @@
         float: left;
         width: $imgSmallWidth;
         text-align: center;
-        line-height: $thumbnailSmallHeight - 20px;
-        padding: 10px;
+        line-height: $thumbnailSmallHeight - 23px;
+        padding: 8px;
         img {
             vertical-align: middle;
             max-width: 100%;
@@ -76,7 +77,6 @@
       height: $thumbnailLargeHeight - 2px;
       margin-bottom: 40px;
       margin-right: 18px;
-      border: 1px solid $grayLighter;
       padding: 10px;
 
       .image {
@@ -117,9 +117,7 @@
       .download {
         display: block;
       }
-      &.large {
-        border-color: $white;
-      }
+      border-color: $white;
     }
   }
 }
