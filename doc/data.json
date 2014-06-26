@@ -6067,7 +6067,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 223,
+            "line": 221,
             "description": "Toggles an item with a given id selected or unselected",
             "params": [
                 {
@@ -6081,7 +6081,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 235,
+            "line": 233,
             "description": "Selects an item with a given id",
             "params": [
                 {
@@ -6100,13 +6100,18 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 250,
+            "line": 248,
             "description": "Unselects an item with a given id",
             "params": [
                 {
                     "name": "id",
                     "description": "the id of the item",
                     "type": "Number|String"
+                },
+                {
+                    "name": "onlyView",
+                    "description": "if true the selection only affects this view and not the data array",
+                    "type": "Boolean"
                 }
             ],
             "class": "ThumbnailView (Datagrid Decorator)",
@@ -6114,7 +6119,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 262,
+            "line": 263,
             "description": "Adds a record to the view",
             "params": [
                 {
@@ -6129,7 +6134,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 271,
+            "line": 272,
             "description": "Handles the click onto the download button of an item",
             "params": [
                 {
@@ -6143,7 +6148,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 280,
+            "line": 281,
             "description": "Removes a data record from the view",
             "params": [
                 {
@@ -6161,7 +6166,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 294,
+            "line": 295,
             "description": "Unselects all thumbnails",
             "class": "ThumbnailView (Datagrid Decorator)",
             "module": "husky/components/column-options"
@@ -10924,7 +10929,7 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:280"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:281"
         },
         {
             "message": "replacing incorrect tag: returns with return",
@@ -12460,31 +12465,31 @@
         },
         {
             "message": "Missing item type\nToggles an item with a given id selected or unselected",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:223"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:221"
         },
         {
             "message": "Missing item type\nSelects an item with a given id",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:235"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:233"
         },
         {
             "message": "Missing item type\nUnselects an item with a given id",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:250"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:248"
         },
         {
             "message": "Missing item type\nAdds a record to the view",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:262"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:263"
         },
         {
             "message": "Missing item type\nHandles the click onto the download button of an item",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:271"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:272"
         },
         {
             "message": "Missing item type\nRemoves a data record from the view",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:280"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:281"
         },
         {
             "message": "Missing item type\nUnselects all thumbnails",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:294"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:295"
         },
         {
             "message": "Missing item type\nDefault values for options",
