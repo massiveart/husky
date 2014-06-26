@@ -1361,6 +1361,12 @@
                     "optional": true
                 },
                 {
+                    "name": "options.cssClass",
+                    "description": "css-class to give the the components element. (e.g. \"white-box\")",
+                    "type": "String|Number|Null",
+                    "optional": true
+                },
+                {
                     "name": "rendered",
                     "description": "property used by the datagrid-main class",
                     "type": "Boolean",
@@ -5274,14 +5280,14 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 94,
+            "line": 97,
             "description": "Templates used by this class",
             "class": "TableView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 135,
+            "line": 138,
             "description": "used to update the table width and its containers due to responsiveness",
             "itemtype": "event",
             "name": "husky.datagrid.update.table",
@@ -5290,7 +5296,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 143,
+            "line": 146,
             "description": "used to update the table width and its containers due to responsiveness",
             "itemtype": "event",
             "name": "husky.datagrid.table.open-child",
@@ -5306,7 +5312,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 152,
+            "line": 155,
             "description": "calculates the width of a text by creating a tablehead element and measure its width",
             "params": [
                 {
@@ -5327,7 +5333,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 191,
+            "line": 194,
             "description": "Initializes the view, gets called only once",
             "params": [
                 {
@@ -5346,70 +5352,70 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 210,
+            "line": 213,
             "description": "Method to render data in table view",
             "class": "TableView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 245,
+            "line": 259,
             "description": "Destroys the view",
             "class": "TableView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 260,
+            "line": 278,
             "description": "Binds custom events to the datagrid related to this\nview (like an extension)",
             "class": "TableView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 271,
+            "line": 289,
             "description": "Unbinds the custom-events by this view",
             "class": "TableView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 278,
+            "line": 296,
             "description": "Unbinds the Dom-Events of the view",
             "class": "TableView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 286,
+            "line": 304,
             "description": "Binds Dom related events for this table-view",
             "class": "TableView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 358,
+            "line": 376,
             "description": "Emits the row-clicked event",
             "class": "TableView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 370,
+            "line": 388,
             "description": "Sets the components starting properties",
             "class": "TableView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 401,
+            "line": 419,
             "description": "Sets the header classes used for sorting purposes\nuses this.datagrid.sort",
             "class": "TableView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 422,
+            "line": 440,
             "description": "Perapres the structure of the datagrid when element type is table",
             "return": {
                 "description": "returns table element",
@@ -5420,7 +5426,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 460,
+            "line": 482,
             "description": "Prepares table head",
             "return": {
                 "description": "returns table head",
@@ -5431,7 +5437,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 568,
+            "line": 590,
             "description": "Itterates over all items and prepares the rows",
             "params": [
                 {
@@ -5445,7 +5451,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 591,
+            "line": 613,
             "description": "Responsible for creating a single table-row",
             "params": [
                 {
@@ -5467,7 +5473,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 674,
+            "line": 696,
             "description": "Sets the value of row cell and the data-id attribute for the row",
             "params": [
                 {
@@ -5510,7 +5516,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 779,
+            "line": 801,
             "description": "Adds configured icons to a cell",
             "params": [
                 {
@@ -5534,7 +5540,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 803,
+            "line": 825,
             "description": "Handles the click an an icon (calls the defined callback)",
             "params": [
                 {
@@ -5547,7 +5553,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 817,
+            "line": 839,
             "description": "Adds a row to the datagrid",
             "params": [
                 {
@@ -5560,7 +5566,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 859,
+            "line": 881,
             "description": "Inserts a child-element after a parent element and indents it",
             "params": [
                 {
@@ -5587,14 +5593,14 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 896,
+            "line": 918,
             "description": "Perparse to save new/changed data includes validation",
             "class": "TableView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 962,
+            "line": 984,
             "description": "Checks wether data is in row or not",
             "params": [
                 {
@@ -5607,7 +5613,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 979,
+            "line": 1001,
             "description": "Callback for save success",
             "params": [
                 {
@@ -5628,7 +5634,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 998,
+            "line": 1020,
             "description": "Callback for save fail",
             "params": [
                 {
@@ -5649,7 +5655,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1017,
+            "line": 1039,
             "description": "Hides input fields and displays new content for table row",
             "params": [
                 {
@@ -5662,7 +5668,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1043,
+            "line": 1065,
             "description": "Resets the min-width of columns and",
             "params": [
                 {
@@ -5675,7 +5681,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1060,
+            "line": 1082,
             "description": "Makes the widths of columns fixed when the table is in edit mode\nprevents changes in column width",
             "params": [
                 {
@@ -5688,7 +5694,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1080,
+            "line": 1102,
             "description": "Sets the data for a row",
             "params": [
                 {
@@ -5705,7 +5711,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1110,
+            "line": 1132,
             "description": "Sets the validation error class for a dom element",
             "params": [
                 {
@@ -5722,7 +5728,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1132,
+            "line": 1154,
             "description": "Returns an object with the current values of the inputfields, id and domId",
             "params": [
                 {
@@ -5739,7 +5745,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1158,
+            "line": 1180,
             "description": "Prepares for removing a row\nRaises the husky.datagrid.record.remove-click event when auto remove handling is not set to true",
             "params": [
                 {
@@ -5752,7 +5758,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1168,
+            "line": 1190,
             "description": "Removes a row from the datagrid",
             "params": [
                 {
@@ -5765,14 +5771,14 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1206,
+            "line": 1228,
             "description": "Gets automatically executed on window resize\nresponsible for the responsiveness",
             "class": "TableView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1286,
+            "line": 1308,
             "description": "Selectes or deselects the clicked item",
             "params": [
                 {
@@ -5785,7 +5791,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1342,
+            "line": 1364,
             "description": "Shows input and hides span",
             "params": [
                 {
@@ -5798,14 +5804,14 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1357,
+            "line": 1379,
             "description": "Put focus on table row and remember values",
             "class": "TableView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1377,
+            "line": 1399,
             "description": "Selects or deselect all available items of the list",
             "params": [
                 {
@@ -5818,7 +5824,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1398,
+            "line": 1420,
             "description": "Takes a record id and returns true if the record has children",
             "params": [
                 {
@@ -5836,7 +5842,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1412,
+            "line": 1434,
             "description": "Handles the click on a table row if elements in the grid have children",
             "params": [
                 {
@@ -5849,7 +5855,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1432,
+            "line": 1454,
             "description": "Toggles the already loaded children of a parent element",
             "params": [
                 {
@@ -5866,7 +5872,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1447,
+            "line": 1469,
             "description": "Opens all parents of a data-record and because of that makes sure that the data-record is visible in the table",
             "params": [
                 {
@@ -5880,7 +5886,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1463,
+            "line": 1485,
             "description": "Shows the first-level of children of a record",
             "params": [
                 {
@@ -5897,7 +5903,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1477,
+            "line": 1499,
             "description": "Recursivly hides all children of a given parent (with nested ones)",
             "params": [
                 {
@@ -5914,7 +5920,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1496,
+            "line": 1518,
             "description": "Handles the click on a sortable column title\n\nCreates the function parameters need for sorting\nand delegates the sorting itself to the datagrid",
             "params": [
                 {
@@ -6667,28 +6673,28 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 556,
+            "line": 555,
             "description": "Destroys the view and the pagination",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 568,
+            "line": 567,
             "description": "Rerenders the view",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 576,
+            "line": 575,
             "description": "Rerenders the pagination",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 586,
+            "line": 585,
             "description": "Loads contents via ajax",
             "params": [
                 {
@@ -6701,28 +6707,28 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 607,
+            "line": 606,
             "description": "Displays a loading icon",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 638,
+            "line": 637,
             "description": "Hides the loading icon",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 650,
+            "line": 649,
             "description": "Gets the view and a load to get data and render it",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 660,
+            "line": 659,
             "description": "Takes a data object and sets it to the global data-property",
             "params": [
                 {
@@ -6736,7 +6742,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 675,
+            "line": 674,
             "description": "Gets the view and starts the rendering of the data",
             "params": [
                 {
@@ -6750,7 +6756,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 697,
+            "line": 696,
             "description": "Validates a given view",
             "params": [
                 {
@@ -6768,7 +6774,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 712,
+            "line": 711,
             "description": "Gets the Pagination and initializes it",
             "params": [
                 {
@@ -6782,7 +6788,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 734,
+            "line": 733,
             "description": "Changes the view of the datagrid",
             "params": [
                 {
@@ -6801,7 +6807,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 749,
+            "line": 748,
             "description": "Changes the pagination of the datagrid",
             "params": [
                 {
@@ -6815,7 +6821,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 761,
+            "line": 760,
             "description": "Takes an object with options and passes them to the view,\nso the view can extend its current ones with them",
             "params": [
                 {
@@ -6829,7 +6835,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 772,
+            "line": 771,
             "description": "Validates a given pagination",
             "params": [
                 {
@@ -6847,7 +6853,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 788,
+            "line": 787,
             "description": "Returns url with page size and page param at the end",
             "params": [
                 {
@@ -6864,7 +6870,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 812,
+            "line": 811,
             "description": "returns number and unit",
             "params": [
                 {
@@ -6881,7 +6887,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 827,
+            "line": 826,
             "description": "Manipulates the content of a cell with a process realted to the columns type",
             "params": [
                 {
@@ -6909,49 +6915,49 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 847,
+            "line": 846,
             "description": "Reset the sorting properties",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 855,
+            "line": 854,
             "description": "Binds Dom-related events",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 862,
+            "line": 861,
             "description": "Bind custom-related events",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 906,
+            "line": 905,
             "description": "Listens on search events to trigger a grid search",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 917,
+            "line": 916,
             "description": "Starts a listener on column options to trigger a grid filter",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 928,
+            "line": 927,
             "description": "Returns url without params",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 941,
+            "line": 940,
             "description": "Returns the index of a data record for a given id",
             "params": [
                 {
@@ -6969,28 +6975,28 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 955,
+            "line": 954,
             "description": "Provides data of the list to the caller",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 962,
+            "line": 961,
             "description": "calls the funciton of the view responsible for the responsiveness",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 971,
+            "line": 970,
             "description": "Handles the record add event",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 984,
+            "line": 983,
             "description": "Handles the event for adding multiple records\nto a view",
             "params": [
                 {
@@ -7009,14 +7015,14 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1005,
+            "line": 1004,
             "description": "Handles the row remove event",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1015,
+            "line": 1014,
             "description": "Merges one or more data-records with a given ones and updates the view",
             "params": [
                 {
@@ -7030,7 +7036,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1031,
+            "line": 1030,
             "description": "Emits the item clicked event",
             "params": [
                 {
@@ -7044,28 +7050,28 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1039,
+            "line": 1038,
             "description": "Methods for data manipulation\n--------------------------------------------------------------------",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1044,
+            "line": 1043,
             "description": "Sets all data records unselected",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1056,
+            "line": 1055,
             "description": "Sets all data records selected",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1072,
+            "line": 1071,
             "description": "Returns the ids of all selected items",
             "return": {
                 "description": "array with all ids",
@@ -7076,7 +7082,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1086,
+            "line": 1085,
             "description": "Sets all data records with their ids contained in the passed array selected and\ndeselects all data records not contained.",
             "params": [
                 {
@@ -7090,7 +7096,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1104,
+            "line": 1103,
             "description": "Returns true if an item with a given id is selected",
             "params": [
                 {
@@ -7108,7 +7114,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1118,
+            "line": 1117,
             "description": "Sets a data record with a given id selected",
             "params": [
                 {
@@ -7126,7 +7132,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1135,
+            "line": 1134,
             "description": "Sets a data record with a given id unselected",
             "params": [
                 {
@@ -7143,7 +7149,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1152,
+            "line": 1151,
             "description": "Returns true if selection for the data-record is allowed",
             "params": [
                 {
@@ -7157,7 +7163,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1164,
+            "line": 1163,
             "description": "updates the current url by given parameter object",
             "params": [
                 {
@@ -7171,7 +7177,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1188,
+            "line": 1187,
             "description": "Takes a record and overrides the one with the same id",
             "params": [
                 {
@@ -7189,7 +7195,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1203,
+            "line": 1202,
             "description": "Merges a data-record with a given one",
             "params": [
                 {
@@ -7207,7 +7213,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1222,
+            "line": 1221,
             "description": "Deletes a record with a given id",
             "params": [
                 {
@@ -7225,7 +7231,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1240,
+            "line": 1239,
             "description": "Takes an array of records and pushes them to the global array",
             "params": [
                 {
@@ -7239,7 +7245,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1253,
+            "line": 1252,
             "description": "Takes an array of records and unshifts them to the global array",
             "params": [
                 {
@@ -7253,7 +7259,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1266,
+            "line": 1265,
             "description": "Called when the current page should change\nEmits husky.datagrid.updated event on success",
             "params": [
                 {
@@ -7277,14 +7283,14 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1306,
+            "line": 1305,
             "description": "Updates data in datagrid\nCalled when husky.datagrid.update event emitted\nEmits husky.datagrid.updated event on success",
             "class": "DataGrid",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1325,
+            "line": 1324,
             "description": "Filters fields out of the data passed to the view\nSo its possible to hide fields/columns\nNote that the also the arrangement of fields/columns can be changed and the view can react to it",
             "params": [
                 {
@@ -7298,7 +7304,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1352,
+            "line": 1351,
             "description": "Constructs the url to get sorted data and sets the request for it",
             "params": [
                 {
@@ -7317,7 +7323,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1382,
+            "line": 1381,
             "description": "Loads the children of a record",
             "params": [
                 {
@@ -7331,7 +7337,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1401,
+            "line": 1400,
             "description": "triggers an api search",
             "params": [
                 {
@@ -7350,7 +7356,7 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 1425,
+            "line": 1424,
             "description": "Takes a data-record and sends it to a url",
             "params": [
                 {
@@ -10886,23 +10892,23 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/decorators/table-view.js:422"
+            "line": " husky_components/datagrid/decorators/table-view.js:440"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/decorators/table-view.js:460"
+            "line": " husky_components/datagrid/decorators/table-view.js:482"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/decorators/table-view.js:591"
+            "line": " husky_components/datagrid/decorators/table-view.js:613"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/decorators/table-view.js:1132"
+            "line": " husky_components/datagrid/decorators/table-view.js:1154"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/decorators/table-view.js:1398"
+            "line": " husky_components/datagrid/decorators/table-view.js:1420"
         },
         {
             "message": "replacing incorrect tag: returns with return",
@@ -10926,43 +10932,43 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:697"
+            "line": " husky_components/datagrid/main.js:696"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:772"
+            "line": " husky_components/datagrid/main.js:771"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:788"
+            "line": " husky_components/datagrid/main.js:787"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:812"
+            "line": " husky_components/datagrid/main.js:811"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:827"
+            "line": " husky_components/datagrid/main.js:826"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:941"
+            "line": " husky_components/datagrid/main.js:940"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:1104"
+            "line": " husky_components/datagrid/main.js:1103"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:1188"
+            "line": " husky_components/datagrid/main.js:1187"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:1203"
+            "line": " husky_components/datagrid/main.js:1202"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/main.js:1222"
+            "line": " husky_components/datagrid/main.js:1221"
         },
         {
             "message": "replacing incorrect tag: returns with return",
@@ -12222,183 +12228,183 @@
         },
         {
             "message": "Missing item type\nTemplates used by this class",
-            "line": " husky_components/datagrid/decorators/table-view.js:94"
+            "line": " husky_components/datagrid/decorators/table-view.js:97"
         },
         {
             "message": "Missing item type\ncalculates the width of a text by creating a tablehead element and measure its width",
-            "line": " husky_components/datagrid/decorators/table-view.js:152"
+            "line": " husky_components/datagrid/decorators/table-view.js:155"
         },
         {
             "message": "Missing item type\nInitializes the view, gets called only once",
-            "line": " husky_components/datagrid/decorators/table-view.js:191"
+            "line": " husky_components/datagrid/decorators/table-view.js:194"
         },
         {
             "message": "Missing item type\nMethod to render data in table view",
-            "line": " husky_components/datagrid/decorators/table-view.js:210"
+            "line": " husky_components/datagrid/decorators/table-view.js:213"
         },
         {
             "message": "Missing item type\nDestroys the view",
-            "line": " husky_components/datagrid/decorators/table-view.js:245"
+            "line": " husky_components/datagrid/decorators/table-view.js:259"
         },
         {
             "message": "Missing item type\nBinds custom events to the datagrid related to this\nview (like an extension)",
-            "line": " husky_components/datagrid/decorators/table-view.js:260"
-        },
-        {
-            "message": "Missing item type\nUnbinds the custom-events by this view",
-            "line": " husky_components/datagrid/decorators/table-view.js:271"
-        },
-        {
-            "message": "Missing item type\nUnbinds the Dom-Events of the view",
             "line": " husky_components/datagrid/decorators/table-view.js:278"
         },
         {
+            "message": "Missing item type\nUnbinds the custom-events by this view",
+            "line": " husky_components/datagrid/decorators/table-view.js:289"
+        },
+        {
+            "message": "Missing item type\nUnbinds the Dom-Events of the view",
+            "line": " husky_components/datagrid/decorators/table-view.js:296"
+        },
+        {
             "message": "Missing item type\nBinds Dom related events for this table-view",
-            "line": " husky_components/datagrid/decorators/table-view.js:286"
+            "line": " husky_components/datagrid/decorators/table-view.js:304"
         },
         {
             "message": "Missing item type\nEmits the row-clicked event",
-            "line": " husky_components/datagrid/decorators/table-view.js:358"
+            "line": " husky_components/datagrid/decorators/table-view.js:376"
         },
         {
             "message": "Missing item type\nSets the components starting properties",
-            "line": " husky_components/datagrid/decorators/table-view.js:370"
+            "line": " husky_components/datagrid/decorators/table-view.js:388"
         },
         {
             "message": "Missing item type\nSets the header classes used for sorting purposes\nuses this.datagrid.sort",
-            "line": " husky_components/datagrid/decorators/table-view.js:401"
+            "line": " husky_components/datagrid/decorators/table-view.js:419"
         },
         {
             "message": "Missing item type\nPerapres the structure of the datagrid when element type is table",
-            "line": " husky_components/datagrid/decorators/table-view.js:422"
+            "line": " husky_components/datagrid/decorators/table-view.js:440"
         },
         {
             "message": "Missing item type\nPrepares table head",
-            "line": " husky_components/datagrid/decorators/table-view.js:460"
+            "line": " husky_components/datagrid/decorators/table-view.js:482"
         },
         {
             "message": "Missing item type\nItterates over all items and prepares the rows",
-            "line": " husky_components/datagrid/decorators/table-view.js:568"
+            "line": " husky_components/datagrid/decorators/table-view.js:590"
         },
         {
             "message": "Missing item type\nResponsible for creating a single table-row",
-            "line": " husky_components/datagrid/decorators/table-view.js:591"
+            "line": " husky_components/datagrid/decorators/table-view.js:613"
         },
         {
             "message": "Missing item type\nSets the value of row cell and the data-id attribute for the row",
-            "line": " husky_components/datagrid/decorators/table-view.js:674"
+            "line": " husky_components/datagrid/decorators/table-view.js:696"
         },
         {
             "message": "Missing item type\nAdds configured icons to a cell",
-            "line": " husky_components/datagrid/decorators/table-view.js:779"
+            "line": " husky_components/datagrid/decorators/table-view.js:801"
         },
         {
             "message": "Missing item type\nHandles the click an an icon (calls the defined callback)",
-            "line": " husky_components/datagrid/decorators/table-view.js:803"
+            "line": " husky_components/datagrid/decorators/table-view.js:825"
         },
         {
             "message": "Missing item type\nAdds a row to the datagrid",
-            "line": " husky_components/datagrid/decorators/table-view.js:817"
+            "line": " husky_components/datagrid/decorators/table-view.js:839"
         },
         {
             "message": "Missing item type\nInserts a child-element after a parent element and indents it",
-            "line": " husky_components/datagrid/decorators/table-view.js:859"
+            "line": " husky_components/datagrid/decorators/table-view.js:881"
         },
         {
             "message": "Missing item type\nPerparse to save new/changed data includes validation",
-            "line": " husky_components/datagrid/decorators/table-view.js:896"
+            "line": " husky_components/datagrid/decorators/table-view.js:918"
         },
         {
             "message": "Missing item type\nChecks wether data is in row or not",
-            "line": " husky_components/datagrid/decorators/table-view.js:962"
+            "line": " husky_components/datagrid/decorators/table-view.js:984"
         },
         {
             "message": "Missing item type\nCallback for save success",
-            "line": " husky_components/datagrid/decorators/table-view.js:979"
+            "line": " husky_components/datagrid/decorators/table-view.js:1001"
         },
         {
             "message": "Missing item type\nCallback for save fail",
-            "line": " husky_components/datagrid/decorators/table-view.js:998"
+            "line": " husky_components/datagrid/decorators/table-view.js:1020"
         },
         {
             "message": "Missing item type\nHides input fields and displays new content for table row",
-            "line": " husky_components/datagrid/decorators/table-view.js:1017"
+            "line": " husky_components/datagrid/decorators/table-view.js:1039"
         },
         {
             "message": "Missing item type\nResets the min-width of columns and",
-            "line": " husky_components/datagrid/decorators/table-view.js:1043"
+            "line": " husky_components/datagrid/decorators/table-view.js:1065"
         },
         {
             "message": "Missing item type\nMakes the widths of columns fixed when the table is in edit mode\nprevents changes in column width",
-            "line": " husky_components/datagrid/decorators/table-view.js:1060"
+            "line": " husky_components/datagrid/decorators/table-view.js:1082"
         },
         {
             "message": "Missing item type\nSets the data for a row",
-            "line": " husky_components/datagrid/decorators/table-view.js:1080"
+            "line": " husky_components/datagrid/decorators/table-view.js:1102"
         },
         {
             "message": "Missing item type\nSets the validation error class for a dom element",
-            "line": " husky_components/datagrid/decorators/table-view.js:1110"
-        },
-        {
-            "message": "Missing item type\nReturns an object with the current values of the inputfields, id and domId",
             "line": " husky_components/datagrid/decorators/table-view.js:1132"
         },
         {
+            "message": "Missing item type\nReturns an object with the current values of the inputfields, id and domId",
+            "line": " husky_components/datagrid/decorators/table-view.js:1154"
+        },
+        {
             "message": "Missing item type\nPrepares for removing a row\nRaises the husky.datagrid.record.remove-click event when auto remove handling is not set to true",
-            "line": " husky_components/datagrid/decorators/table-view.js:1158"
+            "line": " husky_components/datagrid/decorators/table-view.js:1180"
         },
         {
             "message": "Missing item type\nRemoves a row from the datagrid",
-            "line": " husky_components/datagrid/decorators/table-view.js:1168"
+            "line": " husky_components/datagrid/decorators/table-view.js:1190"
         },
         {
             "message": "Missing item type\nGets automatically executed on window resize\nresponsible for the responsiveness",
-            "line": " husky_components/datagrid/decorators/table-view.js:1206"
+            "line": " husky_components/datagrid/decorators/table-view.js:1228"
         },
         {
             "message": "Missing item type\nSelectes or deselects the clicked item",
-            "line": " husky_components/datagrid/decorators/table-view.js:1286"
+            "line": " husky_components/datagrid/decorators/table-view.js:1308"
         },
         {
             "message": "Missing item type\nShows input and hides span",
-            "line": " husky_components/datagrid/decorators/table-view.js:1342"
+            "line": " husky_components/datagrid/decorators/table-view.js:1364"
         },
         {
             "message": "Missing item type\nPut focus on table row and remember values",
-            "line": " husky_components/datagrid/decorators/table-view.js:1357"
+            "line": " husky_components/datagrid/decorators/table-view.js:1379"
         },
         {
             "message": "Missing item type\nSelects or deselect all available items of the list",
-            "line": " husky_components/datagrid/decorators/table-view.js:1377"
+            "line": " husky_components/datagrid/decorators/table-view.js:1399"
         },
         {
             "message": "Missing item type\nTakes a record id and returns true if the record has children",
-            "line": " husky_components/datagrid/decorators/table-view.js:1398"
+            "line": " husky_components/datagrid/decorators/table-view.js:1420"
         },
         {
             "message": "Missing item type\nHandles the click on a table row if elements in the grid have children",
-            "line": " husky_components/datagrid/decorators/table-view.js:1412"
+            "line": " husky_components/datagrid/decorators/table-view.js:1434"
         },
         {
             "message": "Missing item type\nToggles the already loaded children of a parent element",
-            "line": " husky_components/datagrid/decorators/table-view.js:1432"
+            "line": " husky_components/datagrid/decorators/table-view.js:1454"
         },
         {
             "message": "Missing item type\nOpens all parents of a data-record and because of that makes sure that the data-record is visible in the table",
-            "line": " husky_components/datagrid/decorators/table-view.js:1447"
+            "line": " husky_components/datagrid/decorators/table-view.js:1469"
         },
         {
             "message": "Missing item type\nShows the first-level of children of a record",
-            "line": " husky_components/datagrid/decorators/table-view.js:1463"
+            "line": " husky_components/datagrid/decorators/table-view.js:1485"
         },
         {
             "message": "Missing item type\nRecursivly hides all children of a given parent (with nested ones)",
-            "line": " husky_components/datagrid/decorators/table-view.js:1477"
+            "line": " husky_components/datagrid/decorators/table-view.js:1499"
         },
         {
             "message": "Missing item type\nHandles the click on a sortable column title\n\nCreates the function parameters need for sorting\nand delegates the sorting itself to the datagrid",
-            "line": " husky_components/datagrid/decorators/table-view.js:1496"
+            "line": " husky_components/datagrid/decorators/table-view.js:1518"
         },
         {
             "message": "Missing item type\nInitializes the view, gets called only once",
@@ -12510,219 +12516,219 @@
         },
         {
             "message": "Missing item type\nDestroys the view and the pagination",
-            "line": " husky_components/datagrid/main.js:556"
+            "line": " husky_components/datagrid/main.js:555"
         },
         {
             "message": "Missing item type\nRerenders the view",
-            "line": " husky_components/datagrid/main.js:568"
+            "line": " husky_components/datagrid/main.js:567"
         },
         {
             "message": "Missing item type\nRerenders the pagination",
-            "line": " husky_components/datagrid/main.js:576"
+            "line": " husky_components/datagrid/main.js:575"
         },
         {
             "message": "Missing item type\nLoads contents via ajax",
-            "line": " husky_components/datagrid/main.js:586"
+            "line": " husky_components/datagrid/main.js:585"
         },
         {
             "message": "Missing item type\nDisplays a loading icon",
-            "line": " husky_components/datagrid/main.js:607"
+            "line": " husky_components/datagrid/main.js:606"
         },
         {
             "message": "Missing item type\nHides the loading icon",
-            "line": " husky_components/datagrid/main.js:638"
+            "line": " husky_components/datagrid/main.js:637"
         },
         {
             "message": "Missing item type\nGets the view and a load to get data and render it",
-            "line": " husky_components/datagrid/main.js:650"
+            "line": " husky_components/datagrid/main.js:649"
         },
         {
             "message": "Missing item type\nTakes a data object and sets it to the global data-property",
-            "line": " husky_components/datagrid/main.js:660"
+            "line": " husky_components/datagrid/main.js:659"
         },
         {
             "message": "Missing item type\nGets the view and starts the rendering of the data",
-            "line": " husky_components/datagrid/main.js:675"
+            "line": " husky_components/datagrid/main.js:674"
         },
         {
             "message": "Missing item type\nValidates a given view",
-            "line": " husky_components/datagrid/main.js:697"
+            "line": " husky_components/datagrid/main.js:696"
         },
         {
             "message": "Missing item type\nGets the Pagination and initializes it",
-            "line": " husky_components/datagrid/main.js:712"
+            "line": " husky_components/datagrid/main.js:711"
         },
         {
             "message": "Missing item type\nChanges the view of the datagrid",
-            "line": " husky_components/datagrid/main.js:734"
+            "line": " husky_components/datagrid/main.js:733"
         },
         {
             "message": "Missing item type\nChanges the pagination of the datagrid",
-            "line": " husky_components/datagrid/main.js:749"
+            "line": " husky_components/datagrid/main.js:748"
         },
         {
             "message": "Missing item type\nTakes an object with options and passes them to the view,\nso the view can extend its current ones with them",
-            "line": " husky_components/datagrid/main.js:761"
+            "line": " husky_components/datagrid/main.js:760"
         },
         {
             "message": "Missing item type\nValidates a given pagination",
-            "line": " husky_components/datagrid/main.js:772"
+            "line": " husky_components/datagrid/main.js:771"
         },
         {
             "message": "Missing item type\nReturns url with page size and page param at the end",
-            "line": " husky_components/datagrid/main.js:788"
+            "line": " husky_components/datagrid/main.js:787"
         },
         {
             "message": "Missing item type\nreturns number and unit",
-            "line": " husky_components/datagrid/main.js:812"
+            "line": " husky_components/datagrid/main.js:811"
         },
         {
             "message": "Missing item type\nManipulates the content of a cell with a process realted to the columns type",
-            "line": " husky_components/datagrid/main.js:827"
+            "line": " husky_components/datagrid/main.js:826"
         },
         {
             "message": "Missing item type\nReset the sorting properties",
-            "line": " husky_components/datagrid/main.js:847"
+            "line": " husky_components/datagrid/main.js:846"
         },
         {
             "message": "Missing item type\nBinds Dom-related events",
-            "line": " husky_components/datagrid/main.js:855"
+            "line": " husky_components/datagrid/main.js:854"
         },
         {
             "message": "Missing item type\nBind custom-related events",
-            "line": " husky_components/datagrid/main.js:862"
+            "line": " husky_components/datagrid/main.js:861"
         },
         {
             "message": "Missing item type\nListens on search events to trigger a grid search",
-            "line": " husky_components/datagrid/main.js:906"
+            "line": " husky_components/datagrid/main.js:905"
         },
         {
             "message": "Missing item type\nStarts a listener on column options to trigger a grid filter",
-            "line": " husky_components/datagrid/main.js:917"
+            "line": " husky_components/datagrid/main.js:916"
         },
         {
             "message": "Missing item type\nReturns url without params",
-            "line": " husky_components/datagrid/main.js:928"
+            "line": " husky_components/datagrid/main.js:927"
         },
         {
             "message": "Missing item type\nReturns the index of a data record for a given id",
-            "line": " husky_components/datagrid/main.js:941"
+            "line": " husky_components/datagrid/main.js:940"
         },
         {
             "message": "Missing item type\nProvides data of the list to the caller",
-            "line": " husky_components/datagrid/main.js:955"
+            "line": " husky_components/datagrid/main.js:954"
         },
         {
             "message": "Missing item type\ncalls the funciton of the view responsible for the responsiveness",
-            "line": " husky_components/datagrid/main.js:962"
+            "line": " husky_components/datagrid/main.js:961"
         },
         {
             "message": "Missing item type\nHandles the record add event",
-            "line": " husky_components/datagrid/main.js:971"
+            "line": " husky_components/datagrid/main.js:970"
         },
         {
             "message": "Missing item type\nHandles the event for adding multiple records\nto a view",
-            "line": " husky_components/datagrid/main.js:984"
+            "line": " husky_components/datagrid/main.js:983"
         },
         {
             "message": "Missing item type\nHandles the row remove event",
-            "line": " husky_components/datagrid/main.js:1005"
+            "line": " husky_components/datagrid/main.js:1004"
         },
         {
             "message": "Missing item type\nMerges one or more data-records with a given ones and updates the view",
-            "line": " husky_components/datagrid/main.js:1015"
+            "line": " husky_components/datagrid/main.js:1014"
         },
         {
             "message": "Missing item type\nEmits the item clicked event",
-            "line": " husky_components/datagrid/main.js:1031"
+            "line": " husky_components/datagrid/main.js:1030"
         },
         {
             "message": "Missing item type\nMethods for data manipulation\n--------------------------------------------------------------------",
-            "line": " husky_components/datagrid/main.js:1039"
+            "line": " husky_components/datagrid/main.js:1038"
         },
         {
             "message": "Missing item type\nSets all data records unselected",
-            "line": " husky_components/datagrid/main.js:1044"
+            "line": " husky_components/datagrid/main.js:1043"
         },
         {
             "message": "Missing item type\nSets all data records selected",
-            "line": " husky_components/datagrid/main.js:1056"
+            "line": " husky_components/datagrid/main.js:1055"
         },
         {
             "message": "Missing item type\nReturns the ids of all selected items",
-            "line": " husky_components/datagrid/main.js:1072"
+            "line": " husky_components/datagrid/main.js:1071"
         },
         {
             "message": "Missing item type\nSets all data records with their ids contained in the passed array selected and\ndeselects all data records not contained.",
-            "line": " husky_components/datagrid/main.js:1086"
+            "line": " husky_components/datagrid/main.js:1085"
         },
         {
             "message": "Missing item type\nReturns true if an item with a given id is selected",
-            "line": " husky_components/datagrid/main.js:1104"
+            "line": " husky_components/datagrid/main.js:1103"
         },
         {
             "message": "Missing item type\nSets a data record with a given id selected",
-            "line": " husky_components/datagrid/main.js:1118"
+            "line": " husky_components/datagrid/main.js:1117"
         },
         {
             "message": "Missing item type\nSets a data record with a given id unselected",
-            "line": " husky_components/datagrid/main.js:1135"
+            "line": " husky_components/datagrid/main.js:1134"
         },
         {
             "message": "Missing item type\nReturns true if selection for the data-record is allowed",
-            "line": " husky_components/datagrid/main.js:1152"
+            "line": " husky_components/datagrid/main.js:1151"
         },
         {
             "message": "Missing item type\nupdates the current url by given parameter object",
-            "line": " husky_components/datagrid/main.js:1164"
+            "line": " husky_components/datagrid/main.js:1163"
         },
         {
             "message": "Missing item type\nTakes a record and overrides the one with the same id",
-            "line": " husky_components/datagrid/main.js:1188"
+            "line": " husky_components/datagrid/main.js:1187"
         },
         {
             "message": "Missing item type\nMerges a data-record with a given one",
-            "line": " husky_components/datagrid/main.js:1203"
+            "line": " husky_components/datagrid/main.js:1202"
         },
         {
             "message": "Missing item type\nDeletes a record with a given id",
-            "line": " husky_components/datagrid/main.js:1222"
+            "line": " husky_components/datagrid/main.js:1221"
         },
         {
             "message": "Missing item type\nTakes an array of records and pushes them to the global array",
-            "line": " husky_components/datagrid/main.js:1240"
+            "line": " husky_components/datagrid/main.js:1239"
         },
         {
             "message": "Missing item type\nTakes an array of records and unshifts them to the global array",
-            "line": " husky_components/datagrid/main.js:1253"
+            "line": " husky_components/datagrid/main.js:1252"
         },
         {
             "message": "Missing item type\nCalled when the current page should change\nEmits husky.datagrid.updated event on success",
-            "line": " husky_components/datagrid/main.js:1266"
+            "line": " husky_components/datagrid/main.js:1265"
         },
         {
             "message": "Missing item type\nUpdates data in datagrid\nCalled when husky.datagrid.update event emitted\nEmits husky.datagrid.updated event on success",
-            "line": " husky_components/datagrid/main.js:1306"
+            "line": " husky_components/datagrid/main.js:1305"
         },
         {
             "message": "Missing item type\nFilters fields out of the data passed to the view\nSo its possible to hide fields/columns\nNote that the also the arrangement of fields/columns can be changed and the view can react to it",
-            "line": " husky_components/datagrid/main.js:1325"
+            "line": " husky_components/datagrid/main.js:1324"
         },
         {
             "message": "Missing item type\nConstructs the url to get sorted data and sets the request for it",
-            "line": " husky_components/datagrid/main.js:1352"
+            "line": " husky_components/datagrid/main.js:1351"
         },
         {
             "message": "Missing item type\nLoads the children of a record",
-            "line": " husky_components/datagrid/main.js:1382"
+            "line": " husky_components/datagrid/main.js:1381"
         },
         {
             "message": "Missing item type\ntriggers an api search",
-            "line": " husky_components/datagrid/main.js:1401"
+            "line": " husky_components/datagrid/main.js:1400"
         },
         {
             "message": "Missing item type\nTakes a data-record and sends it to a url",
-            "line": " husky_components/datagrid/main.js:1425"
+            "line": " husky_components/datagrid/main.js:1424"
         },
         {
             "message": "Missing item type\ncreates a child element in a container",
