@@ -213,6 +213,10 @@
                 return $(selector).html();
             };
 
+            app.core.dom.outerHTML = function(selector) {
+                return $(selector).wrapAll(&#x27;&lt;div&gt;&lt;/div&gt;&#x27;).parent().html();
+            };
+
             app.core.dom.parseHTML = function(data) {
                 return $.parseHTML(data);
             };
@@ -334,7 +338,7 @@
             };
 
             app.core.dom.attr = function(selector, attributeName, value) {
-                if (!value &amp;&amp; value !== &#x27;&#x27;) {
+                if (typeof value === &#x27;undefined&#x27;) {
                     attributeName = attributeName || {};
                     return $(selector).attr(attributeName);
                 } else {

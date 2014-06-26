@@ -15,6 +15,8 @@
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.instanceName] name of the datagrid instance
  * @param {Array} [options.preselected] preselected ids
+ * @param {Boolean|String} [options.childrenPropertyName] name of the property which contains the number of children. False to indaticate that list is flat
+ * @param {Boolean} [options.onlySelectLeaves] If true only the outermost children can be selected
  *
  * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
  * @param {String} [options.matchings.content] column title
@@ -56,7 +58,9 @@
                 searchInstanceName: null,
                 columnOptionsInstanceName: null,
                 defaultMeasureUnit: 'px',
-                preselected: []
+                preselected: [],
+                onlySelectLeaves: false,
+                childrenPropertyName: false
             },
 
             types = {
@@ -978,8 +982,8 @@
                     this.sandbox.util.foreach(records, function(record) {
                         if (!!record.id) {
                             this.pushRecords([record]);
+                            this.gridViews[this.viewId].addRecord(record);
                         }
-                        this.gridViews[this.viewId].addRecord(record);
                     }.bind(this));
                     if (typeof callback === 'function') {
                         callback();
@@ -1045,12 +1049,14 @@
             selectAllItems: function() {
                 var ids = [], i, length;
                 for (i = -1, length = this.data.embedded.length; ++i < length;) {
-                    this.data.embedded[i].selected = true;
-                    ids.push(this.data.embedded[i].id);
+                    if (this.selectingAllowed(this.data.embedded[i].id)) {
+                        this.data.embedded[i].selected = true;
+                        ids.push(this.data.embedded[i].id);
+                    }
                 }
                 // emit events with selected data
                 this.sandbox.emit(ALL_SELECT.call(this), ids);
-                this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.data.embedded.length);
+                this.sandbox.emit(NUMBER_SELECTIONS.call(this), ids.length);
             },
 
             /**
@@ -1068,14 +1074,14 @@
             },
 
             /**
-             * Sets all data records with their ids contained in the passed one selected and
+             * Sets all data records with their ids contained in the passed array selected and
              * deselects all data records not contained.
              * @param items {Array} array with all items that should be selected
              */
             setSelectedItems: function(items) {
                 var count = 0, i, length;
                 for (i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (items.indexOf(this.data.embedded[i].id) !== -1) {
+                    if (items.indexOf(this.data.embedded[i].id) !== -1 && this.selectingAllowed(this.data.embedded[i].id)) {
                         this.data.embedded[i].selected = true;
                         count++;
                     } else {
@@ -1106,7 +1112,7 @@
              */
             setItemSelected: function(id) {
                 var itemIndex = this.getRecordIndexById(id);
-                if (itemIndex !== null) {
+                if (itemIndex !== null && this.selectingAllowed(id)) {
                     this.data.embedded[itemIndex].selected = true;
                     // emit events with selected data
                     this.sandbox.emit(ITEM_SELECT.call(this), id);
@@ -1131,6 +1137,18 @@
                     return true;
                 }
                 return false;
+            },
+
+            /**
+             * Returns true if selection for the data-record is allowed
+             * @param id {Number|String} the id of the data-record
+             */
+            selectingAllowed: function(id) {
+                var itemIndex = this.getRecordIndexById(id);
+                if (this.options.onlySelectLeaves === true && this.data.embedded[itemIndex][this.options.childrenPropertyName] > 0) {
+                    return false;
+                }
+                return true;
             },
 
             /**
@@ -1348,6 +1366,25 @@
                             }.bind(this)
                         });
                     }
+                }
+            },
+
+            /**
+             * Loads the children of a record
+             * @param recordId {Number|String}
+             */
+            loadChildren: function(recordId) {
+                if (!!this.data.links.children) {
+                    var template = this.sandbox.uritemplate.parse(this.data.links.children),
+                        url = this.sandbox.uritemplate.expand(template, {parentId: recordId});
+
+                    this.sandbox.util.load(this.getUrl({url: url}))
+                        .then(function(response) {
+                            this.addRecordsHandler(response['_embedded']);
+                        }.bind(this))
+                        .fail(function(status, error) {
+                            this.sandbox.logger.error(status, error);
+                        }.bind(this));
                 }
             },
 
