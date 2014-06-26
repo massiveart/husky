@@ -48,6 +48,10 @@
             "verbs": ["GET"],
             "mockFile": "datagrid/children/level1.json"
         },
+        "admin/api/datagrid/children/all": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/children/all.json"
+        },
         "admin/api/datagrid/actualchildren": {
             "verbs": ["GET"],
             "mockFile": "datagrid/children/children.json",

@@ -15,7 +15,7 @@
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.instanceName] name of the datagrid instance
  * @param {Array} [options.preselected] preselected ids
- * @param {Boolean|String} [options.childrenPropertyName] name of the property which containes the number of children. False to indaticate that list is flat
+ * @param {Boolean|String} [options.childrenPropertyName] name of the property which contains the number of children. False to indaticate that list is flat
  * @param {Boolean} [options.onlySelectLeaves] If true only the outermost children can be selected
  *
  * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set

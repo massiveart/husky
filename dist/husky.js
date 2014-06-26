@@ -39776,16 +39776,21 @@ define('__component__$overlay@husky',[], function() {
                 this.sandbox.dom.css(this.overlay.$el, {'z-index': 10000});
             }.bind(this));
 
+            //stop propagation
+            this.sandbox.dom.on(this.overlay.$el, 'click', function(event) {
+                this.sandbox.dom.stopPropagation(event);
+            }.bind(this));
+
             // close handler for close icon
-            this.sandbox.dom.on(this.$el, 'click',
+            this.sandbox.dom.on(this.overlay.$el, 'click',
                 this.closeHandler.bind(this), constants.closeSelector);
 
             // close handler for cancel buttons
-            this.sandbox.dom.on(this.$el, 'click',
+            this.sandbox.dom.on(this.overlay.$el, 'click',
                 this.closeHandler.bind(this), constants.overlayCancelSelector);
 
             // binds the events for ok-buttons
-            this.sandbox.dom.on(this.$el, 'click',
+            this.sandbox.dom.on(this.overlay.$el, 'click',
                 this.okHandler.bind(this), constants.overlayOkSelector);
 
             this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
@@ -39871,6 +39876,7 @@ define('__component__$overlay@husky',[], function() {
         closeHandler: function(event) {
             if (!!event) {
                 this.sandbox.dom.preventDefault(event);
+                this.sandbox.dom.stopPropagation(event);
             }
             if (this.executeCallback(this.slides[this.activeSlide].closeCallback) !== false) {
                 this.closeOverlay();

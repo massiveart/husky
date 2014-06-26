@@ -1009,16 +1009,21 @@ define([], function() {
                 this.sandbox.dom.css(this.overlay.$el, {&#x27;z-index&#x27;: 10000});
             }.bind(this));
 
+            //stop propagation
+            this.sandbox.dom.on(this.overlay.$el, &#x27;click&#x27;, function(event) {
+                this.sandbox.dom.stopPropagation(event);
+            }.bind(this));
+
             // close handler for close icon
-            this.sandbox.dom.on(this.$el, &#x27;click&#x27;,
+            this.sandbox.dom.on(this.overlay.$el, &#x27;click&#x27;,
                 this.closeHandler.bind(this), constants.closeSelector);
 
             // close handler for cancel buttons
-            this.sandbox.dom.on(this.$el, &#x27;click&#x27;,
+            this.sandbox.dom.on(this.overlay.$el, &#x27;click&#x27;,
                 this.closeHandler.bind(this), constants.overlayCancelSelector);
 
             // binds the events for ok-buttons
-            this.sandbox.dom.on(this.$el, &#x27;click&#x27;,
+            this.sandbox.dom.on(this.overlay.$el, &#x27;click&#x27;,
                 this.okHandler.bind(this), constants.overlayOkSelector);
 
             this.sandbox.dom.on(this.sandbox.dom.$window, &#x27;resize&#x27;, function() {
@@ -1104,6 +1109,7 @@ define([], function() {
         closeHandler: function(event) {
             if (!!event) {
                 this.sandbox.dom.preventDefault(event);
+                this.sandbox.dom.stopPropagation(event);
             }
             if (this.executeCallback(this.slides[this.activeSlide].closeCallback) !== false) {
                 this.closeOverlay();

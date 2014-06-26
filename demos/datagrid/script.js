@@ -173,6 +173,61 @@ require(['lib/husky'], function(Husky) {
                     sortable: true,
                     pagination: false,
                     childrenPropertyName: 'children',
+                    viewOptions: {
+                        table: {
+                            icons: [
+                                {
+                                    icon: 'pencil',
+                                    column: 'name',
+                                    align: 'left',
+                                    callback: function(id) {
+                                        console.log('You clicked on edit for ' + id);
+                                    }
+                                },
+                                {
+                                    icon: 'plus-circle',
+                                    column: 'name',
+                                    align: 'left',
+                                    callback: function(id) {
+                                        console.log('You clicked on add for ' + id);
+                                    }
+                                }
+                            ],
+                            selectItem: {
+                                type: 'checkbox',
+                                inFirstCell: true
+                            }
+                        }
+                    },
+                    matchings: [
+                        {
+                            id: 'name',
+                            content: 'Name'
+                        },
+                        {
+                            id: 'id',
+                            disabled: true
+                        },
+                        {
+                            id: 'children',
+                            disabled: true
+                        },
+                        {
+                            id: 'parent',
+                            disabled: true
+                        }
+                    ]
+                }
+            },
+            {
+                name: 'datagrid@husky',
+                options: {
+                    url: 'http://husky.lo:7878/admin/api/datagrid/children?depth=0',
+                    el: '#children-datagrid-only-leaves',
+                    instanceName: 'children-grid-only-leaves',
+                    sortable: true,
+                    pagination: false,
+                    childrenPropertyName: 'children',
                     onlySelectLeaves: true,
                     viewOptions: {
                         table: {
@@ -196,7 +251,63 @@ require(['lib/husky'], function(Husky) {
                             ],
                             selectItem: {
                                 type: 'checkbox',
-                                inFirstCell: true,
+                                inFirstCell: true
+                            }
+                        }
+                    },
+                    matchings: [
+                        {
+                            id: 'name',
+                            content: 'Name'
+                        },
+                        {
+                            id: 'id',
+                            disabled: true
+                        },
+                        {
+                            id: 'children',
+                            disabled: true
+                        },
+                        {
+                            id: 'parent',
+                            disabled: true
+                        }
+                    ]
+                }
+            },
+            {
+                name: 'datagrid@husky',
+                options: {
+                    url: 'http://husky.lo:7878/admin/api/datagrid/children/all',
+                    el: '#children-datagrid-beginning',
+                    instanceName: 'children-grid-beginning',
+                    sortable: true,
+                    pagination: false,
+                    childrenPropertyName: 'children',
+                    viewOptions: {
+                        table: {
+                            hideChildrenAtBeginning: true,
+                            icons: [
+                                {
+                                    icon: 'pencil',
+                                    column: 'name',
+                                    align: 'left',
+                                    callback: function(id) {
+                                        console.log('You clicked on edit for ' + id);
+                                    }
+                                },
+                                {
+                                    icon: 'plus-circle',
+                                    column: 'name',
+                                    align: 'left',
+                                    callback: function(id) {
+                                        console.log('You clicked on add for ' + id);
+                                    }
+                                }
+                            ],
+                            selectItem: {
+                                type: 'checkbox',
+                                inFirstCell: true
                             }
                         }
                     },
@@ -307,6 +418,10 @@ require(['lib/husky'], function(Husky) {
                     {url: 'http://lorempixel.com/150/100/sports/z', title: 'Media title'}
                 ]
             });
+        });
+
+        $('#open-category').on('click', function () {
+            app.sandbox.emit('husky.datagrid.children-grid-beginning.table.open-parents', 113)
         });
 
         $('#update-url').on('click', function() {
