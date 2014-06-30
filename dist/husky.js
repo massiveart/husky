@@ -30883,6 +30883,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
  * @param {Array} [options.preselected] preselected ids
  * @param {Boolean|String} [options.childrenPropertyName] name of the property which contains the number of children. False to indaticate that list is flat
  * @param {Boolean} [options.onlySelectLeaves] If true only the outermost children can be selected
+ * @param {Boolean} [options.resizeListeners] If true a resize-listener will be instantiated, which is responsible for responsiveness
  *
  * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
  * @param {String} [options.matchings.content] column title
@@ -30926,7 +30927,8 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 defaultMeasureUnit: 'px',
                 preselected: [],
                 onlySelectLeaves: false,
-                childrenPropertyName: false
+                childrenPropertyName: false,
+                resizeListeners: true
             },
 
             types = {
@@ -31741,7 +31743,9 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * Binds Dom-related events
              */
             bindDOMEvents: function() {
-                this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.windowResizeListener.bind(this));
+                if (this.options.resizeListeners === true) {
+                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.windowResizeListener.bind(this));
+                }
             },
 
             /**
