@@ -47,7 +47,7 @@ define([
                         ids = this.$el.data('selection'),
                         values = this.$el.data('selection-values');
 
-                    if (ids.length ===0) {
+                    if (!ids || ids.length === 0) {
                         return undefined;
                     }
                     if (this.$el.attr('data-mapper-property-type') === 'string') {
@@ -61,7 +61,7 @@ define([
                 },
 
                 needsValidation: function() {
-                    var val = this.getValue()
+                    var val = this.getValue();
                     return !!val;
                 },
 
