@@ -28291,7 +28291,9 @@ define('__component__$column-options@husky',[],function() {
  * @param {String} [options.icons[].column] the id of the column in which the icon should be displayed
  * @param {String} [options.icons[].align] the align of the icon. 'left' org 'right'
  * @param {Function} [options.icons.callback] a callback to execute if the icon got clicked. Gets the id of the data-record as first argument
- * @param {Function} [options.hideChildrenAtBeginning] if true children get hidden, if all children are loaded at the beginning
+ * @param {Boolean} [options.hideChildrenAtBeginning] if true children get hidden, if all children are loaded at the beginning
+ * @param {String|Number|Null} [options.openChildId] the id of the children to open all parents for. (only relevant in a child-list)
+ * @param {String|Number|Null} [options.cssClass] css-class to give the the components element. (e.g. "white-box")
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -28319,10 +28321,12 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             addRowTop: true,
             startTabIndex: 99999,
             excludeFields: [''],
+            cssClass: null,
             columnMinWidth: '70px',
             thumbnailFormat: '50x50',
             showHead: true,
             hideChildrenAtBeginning: true,
+            openChildId: null,
             icons: []
         },
 
@@ -28354,6 +28358,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             noChildrenClass: 'no-children',
             childrenIndentClass: 'child-indent',
             childrenLoadedClass: 'children-loaded',
+            noHeadClass: 'no-head',
             childrenIndentPx: 25 //px
         },
 
@@ -28477,6 +28482,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * Method to render data in table view
          */
         render: function(data, $container) {
+            var selected = null;
             this.data = data;
             this.$el = $container;
 
@@ -28489,6 +28495,11 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 this.sandbox.dom.addClass(this.$el, constants.fullWidthClass);
             }
 
+            // add custom-css class
+            if (!!this.options.cssClass) {
+                this.sandbox.dom.addClass(this.$el, this.options.cssClass);
+            }
+
             this.bindDomEvents();
             this.onResize();
 
@@ -28498,6 +28509,17 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             }
 
             this.setHeaderClasses();
+
+            // try to open all parents for a child if configured
+            if (!!this.options.openChildId) {
+                this.openAllParents(this.options.openChildId);
+                this.options.openChildId = null;
+            }
+            // try to open all parents for selected records
+            selected = this.datagrid.getSelectedItemIds.call(this.datagrid);
+            this.sandbox.util.foreach(selected, function(recordId) {
+                this.openAllParents(recordId);
+            }.bind(this));
 
             this.rendered = true;
         },
@@ -28511,6 +28533,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             // remove full-width class if configured
             if (this.options.fullWidth === true) {
                 this.sandbox.dom.removeClass(this.$el, constants.fullWidthClass);
+            }
+            // remove configured css-class
+            if (!!this.options.cssClass) {
+                this.sandbox.dom.removeClass(this.options.cssClass);
             }
             // remove inline-styles
             this.sandbox.dom.removeAttr(this.$el, 'style');
@@ -28689,9 +28715,13 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.$table = $table = this.sandbox.dom.createElement('<table' + (!!this.options.validationDebug ? 'data-debug="true"' : '' ) + '/>');
 
             if (!!this.data.head || !!this.datagrid.matchings) {
-                $thead = this.sandbox.dom.createElement('<thead style="' + (!this.options.showHead ? 'display:none;' : '' ) + '"/>');
+                $thead = this.sandbox.dom.createElement('<thead/>');
                 this.sandbox.dom.append($thead, this.prepareTableHead());
                 this.sandbox.dom.append($table, $thead);
+            }
+
+            if (this.options.showHead === false) {
+                this.sandbox.dom.addClass(this.$tableContainer, constants.noHeadClass);
             }
 
             if (!!this.data.embedded) {
@@ -29901,7 +29931,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
             this.data = data;
 
             this.renderThumbnails(this.data.embedded);
-
+            this.sandbox.dom.on('body', 'click.grid-thumbnails.' + this.datagrid.options.instanceName, this.unselectAll.bind(this));
             this.rendered = true;
         },
 
@@ -29984,7 +30014,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          * Destroys the view
          */
         destroy: function() {
-            this.sandbox.dom.off('body', 'click.grid-thumbnails');
+            this.sandbox.dom.off('body', 'click.grid-thumbnails.' + this.ddatagrid.options.instanceName);
             this.sandbox.dom.remove(this.$el);
         },
 
@@ -30007,8 +30037,6 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
                 this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
                 this.selectItem(id);
             }.bind(this));
-
-            this.sandbox.dom.on('body', 'click.grid-thumbnails', this.unselectAll.bind(this));
         },
 
         /**
@@ -30017,9 +30045,9 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          */
         toggleItemSelected: function(id) {
             if (this.datagrid.itemIsSelected.call(this.datagrid, id) === true) {
-                this.unselectItem(id);
+                this.unselectItem(id, false);
             } else {
-                this.selectItem(id);
+                this.selectItem(id, false);
             }
         },
 
@@ -30041,13 +30069,16 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
         /**
          * Unselects an item with a given id
          * @param id {Number|String} the id of the item
+         * @param onlyView {Boolean} if true the selection only affects this view and not the data array
          */
-        unselectItem: function(id) {
+        unselectItem: function(id, onlyView) {
             this.sandbox.dom.removeClass(this.$thumbnails[id], constants.selectedClass);
             if (this.sandbox.dom.is(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), ':checked')) {
                 this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), 'checked', false);
             }
-            this.datagrid.setItemUnselected.call(this.datagrid, id);
+            if (onlyView !== true) {
+                this.datagrid.setItemUnselected.call(this.datagrid, id);
+            }
         },
 
         /**
@@ -30087,8 +30118,9 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          */
         unselectAll: function() {
             this.sandbox.util.each(this.$thumbnails, function(id) {
-                this.unselectItem(id);
+                this.unselectItem(id, true);
             }.bind(this));
+            this.datagrid.deselectAllItems.call(this.datagrid);
         }
     };
 });
@@ -30921,6 +30953,14 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
         /* TRIGGERS EVENTS */
 
             /**
+             * raised after initialization has finished
+             * @event husky.datagrid.initialized
+             */
+            INITIALIZED = function() {
+                return this.createEventName('initialized');
+            },
+
+            /**
              * raised when the the current page changes
              * @event husky.datagrid.page.change
              */
@@ -31287,6 +31327,8 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
 
                 // Should only be be called once
                 this.bindCustomEvents();
+
+                this.sandbox.emit(INITIALIZED.call(this));
             },
 
             /**
@@ -31367,8 +31409,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * Renders the data of the datagrid
              */
             render: function() {
-                var count = this.setSelectedItems(this.options.preselected);
-                this.sandbox.logger.log('Selected item:', count);
+                this.setSelectedItems(this.options.preselected);
 
                 this.gridViews[this.viewId].render(this.data, this.$element);
                 if (!!this.paginations[this.paginationId]) {
@@ -38990,6 +39031,8 @@ define('__component__$smart-content@husky',[], function() {
  * @params {Number} [options.backdropAlpha] Alpha-value of the backdrop
  * @params {String} [options.type] The type of the overlay ('normal', 'error' or 'warning')
  * @params {Array} [options.buttonsDefaultAlign] the align of the buttons in the footer ('center', 'left' or 'right'). Can be overriden by each button individually
+ * @params {Array} [options.supportKeyInput] if true pressing enter will submit the overlay and esc will close it
+ * @params {Array} [options.propagateEvents] If false click-events will be stoped at the components-element
  *
  * @params {Array} [options.slides] array of slide objects, will be rendered in a row and can slided with events
  * @params {String} [options.slides[].title] the title of the overlay
@@ -39032,6 +39075,8 @@ define('__component__$overlay@husky',[], function() {
             backdropClose: true,
             backdropColor: '#000000',
             skin: '',
+            supportKeyInput: true,
+            propagateEvents: true,
             type: 'normal',
             backdropAlpha: 0.5,
             cssClass: '',
@@ -39597,8 +39642,10 @@ define('__component__$overlay@husky',[], function() {
             }
 
             // listen on key-inputs
-            this.sandbox.dom.off('body', 'keydown.' + this.options.instanceName);
-            this.sandbox.dom.on('body', 'keydown.' + this.options.instanceName, this.keyHandler.bind(this));
+            if (this.options.supportKeyInput === true) {
+                this.sandbox.dom.off('body', 'keydown.' + this.options.instanceName);
+                this.sandbox.dom.on('body', 'keydown.' + this.options.instanceName, this.keyHandler.bind(this));
+            }
         },
 
         /**
@@ -39813,9 +39860,11 @@ define('__component__$overlay@husky',[], function() {
             }.bind(this));
 
             //stop propagation
-            this.sandbox.dom.on(this.overlay.$el, 'click', function(event) {
-                this.sandbox.dom.stopPropagation(event);
-            }.bind(this));
+            if (this.options.propagateEvents === false) {
+                this.sandbox.dom.on(this.overlay.$el, 'click', function(event) {
+                    this.sandbox.dom.stopPropagation(event);
+                }.bind(this));
+            }
 
             // close handler for close icon
             this.sandbox.dom.on(this.overlay.$el, 'click',

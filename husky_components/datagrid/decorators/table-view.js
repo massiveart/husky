@@ -23,7 +23,9 @@
  * @param {String} [options.icons[].column] the id of the column in which the icon should be displayed
  * @param {String} [options.icons[].align] the align of the icon. 'left' org 'right'
  * @param {Function} [options.icons.callback] a callback to execute if the icon got clicked. Gets the id of the data-record as first argument
- * @param {Function} [options.hideChildrenAtBeginning] if true children get hidden, if all children are loaded at the beginning
+ * @param {Boolean} [options.hideChildrenAtBeginning] if true children get hidden, if all children are loaded at the beginning
+ * @param {String|Number|Null} [options.openChildId] the id of the children to open all parents for. (only relevant in a child-list)
+ * @param {String|Number|Null} [options.cssClass] css-class to give the the components element. (e.g. "white-box")
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -51,10 +53,12 @@ define(function() {
             addRowTop: true,
             startTabIndex: 99999,
             excludeFields: [''],
+            cssClass: null,
             columnMinWidth: '70px',
             thumbnailFormat: '50x50',
             showHead: true,
             hideChildrenAtBeginning: true,
+            openChildId: null,
             icons: []
         },
 
@@ -86,6 +90,7 @@ define(function() {
             noChildrenClass: 'no-children',
             childrenIndentClass: 'child-indent',
             childrenLoadedClass: 'children-loaded',
+            noHeadClass: 'no-head',
             childrenIndentPx: 25 //px
         },
 
@@ -209,6 +214,7 @@ define(function() {
          * Method to render data in table view
          */
         render: function(data, $container) {
+            var selected = null;
             this.data = data;
             this.$el = $container;
 
@@ -221,6 +227,11 @@ define(function() {
                 this.sandbox.dom.addClass(this.$el, constants.fullWidthClass);
             }
 
+            // add custom-css class
+            if (!!this.options.cssClass) {
+                this.sandbox.dom.addClass(this.$el, this.options.cssClass);
+            }
+
             this.bindDomEvents();
             this.onResize();
 
@@ -230,6 +241,17 @@ define(function() {
             }
 
             this.setHeaderClasses();
+
+            // try to open all parents for a child if configured
+            if (!!this.options.openChildId) {
+                this.openAllParents(this.options.openChildId);
+                this.options.openChildId = null;
+            }
+            // try to open all parents for selected records
+            selected = this.datagrid.getSelectedItemIds.call(this.datagrid);
+            this.sandbox.util.foreach(selected, function(recordId) {
+                this.openAllParents(recordId);
+            }.bind(this));
 
             this.rendered = true;
         },
@@ -243,6 +265,10 @@ define(function() {
             // remove full-width class if configured
             if (this.options.fullWidth === true) {
                 this.sandbox.dom.removeClass(this.$el, constants.fullWidthClass);
+            }
+            // remove configured css-class
+            if (!!this.options.cssClass) {
+                this.sandbox.dom.removeClass(this.options.cssClass);
             }
             // remove inline-styles
             this.sandbox.dom.removeAttr(this.$el, 'style');
@@ -421,9 +447,13 @@ define(function() {
             this.$table = $table = this.sandbox.dom.createElement('<table' + (!!this.options.validationDebug ? 'data-debug="true"' : '' ) + '/>');
 
             if (!!this.data.head || !!this.datagrid.matchings) {
-                $thead = this.sandbox.dom.createElement('<thead style="' + (!this.options.showHead ? 'display:none;' : '' ) + '"/>');
+                $thead = this.sandbox.dom.createElement('<thead/>');
                 this.sandbox.dom.append($thead, this.prepareTableHead());
                 this.sandbox.dom.append($table, $thead);
+            }
+
+            if (this.options.showHead === false) {
+                this.sandbox.dom.addClass(this.$tableContainer, constants.noHeadClass);
             }
 
             if (!!this.data.embedded) {

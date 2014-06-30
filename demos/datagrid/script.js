@@ -286,6 +286,7 @@ require(['lib/husky'], function(Husky) {
                     childrenPropertyName: 'children',
                     viewOptions: {
                         table: {
+                            openChildId: 12,
                             hideChildrenAtBeginning: true,
                             icons: [
                                 {
@@ -305,6 +306,45 @@ require(['lib/husky'], function(Husky) {
                                     }
                                 }
                             ],
+                            selectItem: {
+                                type: 'checkbox',
+                                inFirstCell: true
+                            }
+                        }
+                    },
+                    matchings: [
+                        {
+                            id: 'name',
+                            content: 'Name'
+                        },
+                        {
+                            id: 'id',
+                            disabled: true
+                        },
+                        {
+                            id: 'children',
+                            disabled: true
+                        },
+                        {
+                            id: 'parent',
+                            disabled: true
+                        }
+                    ]
+                }
+            },
+            {
+                name: 'datagrid@husky',
+                options: {
+                    url: 'http://husky.lo:7878/admin/api/datagrid/children/all',
+                    el: '#assignment-datagrid',
+                    instanceName: 'assignment-datagrid',
+                    pagination: false,
+                    childrenPropertyName: 'children',
+                    preselected: [1, 22],
+                    viewOptions: {
+                        table: {
+                            showHead: false,
+                            cssClass: 'white-box',
                             selectItem: {
                                 type: 'checkbox',
                                 inFirstCell: true
@@ -421,7 +461,7 @@ require(['lib/husky'], function(Husky) {
         });
 
         $('#open-category').on('click', function () {
-            app.sandbox.emit('husky.datagrid.children-grid-beginning.table.open-parents', 113)
+            app.sandbox.emit('husky.datagrid.children-grid-beginning.table.open-parents', 113);
         });
 
         $('#update-url').on('click', function() {

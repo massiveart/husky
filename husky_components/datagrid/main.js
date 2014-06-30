@@ -88,6 +88,14 @@
         /* TRIGGERS EVENTS */
 
             /**
+             * raised after initialization has finished
+             * @event husky.datagrid.initialized
+             */
+            INITIALIZED = function() {
+                return this.createEventName('initialized');
+            },
+
+            /**
              * raised when the the current page changes
              * @event husky.datagrid.page.change
              */
@@ -454,6 +462,8 @@
 
                 // Should only be be called once
                 this.bindCustomEvents();
+
+                this.sandbox.emit(INITIALIZED.call(this));
             },
 
             /**
@@ -534,8 +544,7 @@
              * Renders the data of the datagrid
              */
             render: function() {
-                var count = this.setSelectedItems(this.options.preselected);
-                this.sandbox.logger.log('Selected item:', count);
+                this.setSelectedItems(this.options.preselected);
 
                 this.gridViews[this.viewId].render(this.data, this.$element);
                 if (!!this.paginations[this.paginationId]) {
