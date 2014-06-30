@@ -28502,7 +28502,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             }
 
             this.bindDomEvents();
-            this.onResize();
+            if (this.datagrid.options.resizeListeners === true) {
+                this.onResize();
+            }
 
             // initialize validation
             if (!!this.options.validation) {
