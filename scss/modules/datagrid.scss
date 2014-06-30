@@ -164,6 +164,10 @@
       border-radius: 3px;
       border: 1px solid $grayLighter;
       padding: 0 20px;
+      overflow: hidden;
+      .table-container {
+        margin-bottom: -1px;
+      }
       tbody {
         tr:first-child {
           height: 49px;
