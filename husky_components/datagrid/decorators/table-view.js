@@ -233,7 +233,9 @@ define(function() {
             }
 
             this.bindDomEvents();
-            this.onResize();
+            if (this.datagrid.options.resizeListeners === true) {
+                this.onResize();
+            }
 
             // initialize validation
             if (!!this.options.validation) {
