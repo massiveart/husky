@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -31409,12 +31410,32 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * Renders the data of the datagrid
              */
             render: function() {
-                this.setSelectedItems(this.options.preselected);
+                this.preSelectItems();
 
                 this.gridViews[this.viewId].render(this.data, this.$element);
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].render(this.data, this.$element);
                 }
+            },
+
+            /**
+             * Preselects items because of passed options via javascript and the dom
+             */
+            preSelectItems: function() {
+                var dataSelected = this.sandbox.dom.data(this.$el, 'selected');
+                if (!!dataSelected) {
+                    this.options.preselected = this.sandbox.util.union(this.options.preselected, dataSelected);
+                }
+                this.setSelectedItems(this.options.preselected);
+                this.setSelectedItemsToData();
+            },
+
+            /**
+             * Sets the ids of slected records into the dom
+             */
+            setSelectedItemsToData: function() {
+                this.sandbox.dom.removeAttr(this.$el, 'data-selected');
+                this.sandbox.dom.data(this.$el, 'selected', this.getSelectedItemIds());
             },
 
             /**
@@ -31915,6 +31936,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 // emit events with selected data
                 this.sandbox.emit(ALL_DESELECT.call(this));
                 this.sandbox.emit(NUMBER_SELECTIONS.call(this), 0);
+                this.setSelectedItemsToData();
             },
 
             /**
@@ -31931,6 +31953,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 // emit events with selected data
                 this.sandbox.emit(ALL_SELECT.call(this), ids);
                 this.sandbox.emit(NUMBER_SELECTIONS.call(this), ids.length);
+                this.setSelectedItemsToData();
             },
 
             /**
@@ -31991,6 +32014,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     // emit events with selected data
                     this.sandbox.emit(ITEM_SELECT.call(this), id);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
+                    this.setSelectedItemsToData();
                     return true;
                 }
                 return false;
@@ -32008,6 +32032,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     // emit events with selected data
                     this.sandbox.emit(ITEM_DESELECT.call(this), id);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
+                    this.setSelectedItemsToData();
                     return true;
                 }
                 return false;
@@ -47299,8 +47324,11 @@ define('husky_extensions/util',[],function() {
                 return _.delay(delay, callback);
             };
 
+            app.core.util.union = function() {
+                return _.union.apply(this, arguments);
+            };
+
 			app.core.util.template = _.template;
         }
     };
 });
-
