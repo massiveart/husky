@@ -168,6 +168,9 @@
         tr:first-child {
           height: 49px;
         }
+        tr:last-child {
+          border-bottom: none;
+        }
         td {
           padding-left: 0;
           padding-right: 0;
