@@ -9218,6 +9218,10 @@ a.btn-black, a.btn-highlight {
   height: 49px;
 }
 /* line 171, ../scss/modules/datagrid.scss */
+.husky-datagrid.white-box tbody tr:last-child {
+  border-bottom: none;
+}
+/* line 174, ../scss/modules/datagrid.scss */
 .husky-datagrid.white-box tbody td {
   padding-left: 0;
   padding-right: 0;
