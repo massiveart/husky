@@ -544,12 +544,32 @@
              * Renders the data of the datagrid
              */
             render: function() {
-                this.setSelectedItems(this.options.preselected);
+                this.preSelectItems();
 
                 this.gridViews[this.viewId].render(this.data, this.$element);
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].render(this.data, this.$element);
                 }
+            },
+
+            /**
+             * Preselects items because of passed options via javascript and the dom
+             */
+            preSelectItems: function() {
+                var dataSelected = this.sandbox.dom.data(this.$el, 'selected');
+                if (!!dataSelected) {
+                    this.options.preselected = this.sandbox.util.union(this.options.preselected, dataSelected);
+                }
+                this.setSelectedItems(this.options.preselected);
+                this.setSelectedItemsToData();
+            },
+
+            /**
+             * Sets the ids of slected records into the dom
+             */
+            setSelectedItemsToData: function() {
+                this.sandbox.dom.removeAttr(this.$el, 'data-selected');
+                this.sandbox.dom.data(this.$el, 'selected', this.getSelectedItemIds());
             },
 
             /**
@@ -1050,6 +1070,7 @@
                 // emit events with selected data
                 this.sandbox.emit(ALL_DESELECT.call(this));
                 this.sandbox.emit(NUMBER_SELECTIONS.call(this), 0);
+                this.setSelectedItemsToData();
             },
 
             /**
@@ -1066,6 +1087,7 @@
                 // emit events with selected data
                 this.sandbox.emit(ALL_SELECT.call(this), ids);
                 this.sandbox.emit(NUMBER_SELECTIONS.call(this), ids.length);
+                this.setSelectedItemsToData();
             },
 
             /**
@@ -1126,6 +1148,7 @@
                     // emit events with selected data
                     this.sandbox.emit(ITEM_SELECT.call(this), id);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
+                    this.setSelectedItemsToData();
                     return true;
                 }
                 return false;
@@ -1143,6 +1166,7 @@
                     // emit events with selected data
                     this.sandbox.emit(ITEM_DESELECT.call(this), id);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
+                    this.setSelectedItemsToData();
                     return true;
                 }
                 return false;

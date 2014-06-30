@@ -460,6 +460,10 @@ require(['lib/husky'], function(Husky) {
             });
         });
 
+        $('#get-from-data').on('click', function () {
+            console.log('This ids were in the dom:', $('#assignment-datagrid').data('selected'));
+        });
+
         $('#open-category').on('click', function () {
             app.sandbox.emit('husky.datagrid.children-grid-beginning.table.open-parents', 113);
         });
