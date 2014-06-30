@@ -9820,7 +9820,7 @@
         },
         {
             "file": "husky_components/smart-content/main.js",
-            "line": 1038,
+            "line": 1041,
             "description": "Binds the tags to the element",
             "params": [
                 {
@@ -13439,7 +13439,7 @@
         },
         {
             "message": "Missing item type\nBinds the tags to the element",
-            "line": " husky_components/smart-content/main.js:1038"
+            "line": " husky_components/smart-content/main.js:1041"
         },
         {
             "message": "Missing item type\nTabs\nOptions (defaults)\n      - url: url to fetch data from\n      - data: if no url is provided\n      - selected: the item that's selected on initialize\n      - instanceName - enables custom events (in case of multiple tabs on one page)\n      - preselect - either true (for url) or position / title  (see preselector for more information)\n      - skin - string of class to add to the components element (e.g. 'overlay')\n      - preselector:\n          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url) - preselector itself is not going to be taken into account in this case\n          - position: compares items position against whats defined in options.preselect\n          - title: compares items title against whats defined in options.preselect\n      - forceReload - defines if tabs are forcing page to reload\n      - forceSelect - forces tabs to select first item, if no selected item has been found\n  Provides Events\n      - husky.tabs.<<instanceName>>.getSelected [callback(item)] - returns item with callback\n  Triggers Events\n      - husky.tabs.<<instanceName>>.item.select [item] - triggered when item was clicked\n      - husky.tabs.<<instanceName>>.initialized [selectedItem]- triggered when tabs have been initialized\nData options\n      - items\n          - forceReload: overwrites default-setting for certain item\n *",
