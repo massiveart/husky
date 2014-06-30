@@ -1046,7 +1046,9 @@
              * Bind custom-related events
              */
             bindCustomEvents: function() {
-                this.sandbox.on(&#x27;husky.navigation.size.changed&#x27;, this.windowResizeListener.bind(this));
+                if (this.options.resizeListeners === true) {
+                    this.sandbox.on(&#x27;husky.navigation.size.changed&#x27;, this.windowResizeListener.bind(this));
+                }
 
                 // listen for private events
                 this.sandbox.on(UPDATE.call(this), this.updateGrid.bind(this));

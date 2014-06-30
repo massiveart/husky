@@ -31754,7 +31754,9 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * Bind custom-related events
              */
             bindCustomEvents: function() {
-                this.sandbox.on('husky.navigation.size.changed', this.windowResizeListener.bind(this));
+                if (this.options.resizeListeners === true) {
+                    this.sandbox.on('husky.navigation.size.changed', this.windowResizeListener.bind(this));
+                }
 
                 // listen for private events
                 this.sandbox.on(UPDATE.call(this), this.updateGrid.bind(this));
