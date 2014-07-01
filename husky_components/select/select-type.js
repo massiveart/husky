@@ -45,11 +45,22 @@ define([
                     // For single select
                     var data = {},
                         ids = this.$el.data('selection'),
-                        values = this.$el.data('selection-values');
+                        values = this.$el.data('selection-values'),
+                        returnValue = this.$el.attr('data-mapper-return-value');
 
-                    if (ids.length ===0) {
+                    if (!ids || ids.length === 0) {
                         return undefined;
                     }
+
+                    // check if 'data-mapper-return-value' is defined
+                    if (typeof returnValue !== 'undefined') {
+                        if (returnValue === 'id') {
+                            return Array.isArray(ids) ? ids[0] : ids;
+                        } else if(returnValue === 'value'){
+                            return Array.isArray(values) ? values[0] : values;
+                        }
+                    }
+                    // return value if property type is set to string
                     if (this.$el.attr('data-mapper-property-type') === 'string') {
                         return Array.isArray(values) ? values[0] : values;
                     }
@@ -61,7 +72,7 @@ define([
                 },
 
                 needsValidation: function() {
-                    var val = this.getValue()
+                    var val = this.getValue();
                     return !!val;
                 },
 

@@ -304,6 +304,10 @@ define(function() {
                 return _.delay(delay, callback);
             };
 
+            app.core.util.union = function() {
+                return _.union.apply(this, arguments);
+            };
+
 			app.core.util.template = _.template;
         }
     };

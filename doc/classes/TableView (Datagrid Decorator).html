@@ -223,13 +223,13 @@
             
                 <li class="arg">
                     
-                        <code class="optional">[options.selectItem.type]</code>
+                        <code class="optional">[options.selectItem.inFirstCell]</code>
                     
                 </li>
             
                 <li class="arg">
                     
-                        <code class="optional">[options.selectItem.width]</code>
+                        <code class="optional">[options.selectItem.type]</code>
                     
                 </li>
             
@@ -284,6 +284,54 @@
                 <li class="arg">
                     
                         <code class="optional">[options.showHead]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[options.icons]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[options.icons[]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[options.icons[]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[options.icons[]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[options.icons.callback]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[options.hideChildrenAtBeginning]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[options.openChildId]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[options.cssClass]</code>
                     
                 </li>
             
@@ -459,6 +507,23 @@
             
                 <li class="param">
                     
+                        <code class="param-name optional">[options.selectItem.inFirstCell]</code>
+                        <span class="type">Boolean</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>If true checkbox is in the first cell. If true checkbox gets its own cell</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
                         <code class="param-name optional">[options.selectItem.type]</code>
                         <span class="type">String</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
@@ -468,23 +533,6 @@
 
                     <div class="param-description">
                         <p>Type of select [checkbox, radio]</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[options.selectItem.width]</code>
-                        <span class="type">String</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>Width of select column</p>
 
                     </div>
 
@@ -646,6 +694,142 @@
             
                 <li class="param">
                     
+                        <code class="param-name optional">[options.icons]</code>
+                        <span class="type">Array</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>array of icons to display</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[options.icons[]</code>
+                        <span class="type">String</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>the actual icon which sould be displayed</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[options.icons[]</code>
+                        <span class="type">String</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>the id of the column in which the icon should be displayed</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[options.icons[]</code>
+                        <span class="type">String</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>the align of the icon. &#39;left&#39; org &#39;right&#39;</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[options.icons.callback]</code>
+                        <span class="type">Function</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>a callback to execute if the icon got clicked. Gets the id of the data-record as first argument</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[options.hideChildrenAtBeginning]</code>
+                        <span class="type">Boolean</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>if true children get hidden, if all children are loaded at the beginning</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[options.openChildId]</code>
+                        <span class="type">String | Number | Null</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>the id of the children to open all parents for. (only relevant in a child-list)</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[options.cssClass]</code>
+                        <span class="type">String | Number | Null</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>css-class to give the the components element. (e.g. &quot;white-box&quot;)</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
                         <code class="param-name optional">[rendered]</code>
                         <span class="type">Boolean</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
@@ -787,6 +971,13 @@
                     <ul class="index-list events">
                         
                             <li class="index-item event">
+                                <a href="#event_husky.datagrid.table.open-child">husky.datagrid.table.open-child</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
                                 <a href="#event_husky.datagrid.update.table">husky.datagrid.update.table</a>
 
                                 
@@ -807,6 +998,74 @@
         
             <div id="events" class="api-class-tabpanel">
                 <h2 class="off-left">Events</h2>
+
+                
+                    <div id="event_husky.datagrid.table.open-child" class="events item">
+    <h3 class="name"><code>husky.datagrid.table.open-child</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l146"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:146</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>used to update the table width and its containers due to responsiveness</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">id</code>
+                        <span class="type">Number | String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The id of the data-record to open the parents for</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
 
                 
                     <div id="event_husky.datagrid.update.table" class="events item">
@@ -832,7 +1091,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l110"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:110</code></a>
+        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l138"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:138</code></a>
         
         </p>
 

@@ -15,6 +15,9 @@
  * @param {String} [options.url] url to fetch data from
  * @param {String} [options.instanceName] name of the datagrid instance
  * @param {Array} [options.preselected] preselected ids
+ * @param {Boolean|String} [options.childrenPropertyName] name of the property which contains the number of children. False to indaticate that list is flat
+ * @param {Boolean} [options.onlySelectLeaves] If true only the outermost children can be selected
+ * @param {Boolean} [options.resizeListeners] If true a resize-listener will be instantiated, which is responsible for responsiveness
  *
  * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
  * @param {String} [options.matchings.content] column title
@@ -56,7 +59,10 @@
                 searchInstanceName: null,
                 columnOptionsInstanceName: null,
                 defaultMeasureUnit: 'px',
-                preselected: []
+                preselected: [],
+                onlySelectLeaves: false,
+                childrenPropertyName: false,
+                resizeListeners: true
             },
 
             types = {
@@ -82,6 +88,14 @@
             namespace = 'husky.datagrid.',
 
         /* TRIGGERS EVENTS */
+
+            /**
+             * raised after initialization has finished
+             * @event husky.datagrid.initialized
+             */
+            INITIALIZED = function() {
+                return this.createEventName('initialized');
+            },
 
             /**
              * raised when the the current page changes
@@ -222,6 +236,7 @@
              * used to add a data record
              * @event husky.datagrid.record.add
              * @param {Object} the data of the new record
+             * @param callback {Function} callback to execute after process has been finished
              */
             RECORDS_ADD = function() {
                 return this.createEventName('records.add');
@@ -449,6 +464,8 @@
 
                 // Should only be be called once
                 this.bindCustomEvents();
+
+                this.sandbox.emit(INITIALIZED.call(this));
             },
 
             /**
@@ -529,13 +546,32 @@
              * Renders the data of the datagrid
              */
             render: function() {
-                var count = this.setSelectedItems(this.options.preselected);
-                this.sandbox.logger.log('Selected item:', count);
+                this.preSelectItems();
 
                 this.gridViews[this.viewId].render(this.data, this.$element);
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].render(this.data, this.$element);
                 }
+            },
+
+            /**
+             * Preselects items because of passed options via javascript and the dom
+             */
+            preSelectItems: function() {
+                var dataSelected = this.sandbox.dom.data(this.$el, 'selected');
+                if (!!dataSelected) {
+                    this.options.preselected = this.sandbox.util.union(this.options.preselected, dataSelected);
+                }
+                this.setSelectedItems(this.options.preselected);
+                this.setSelectedItemsToData();
+            },
+
+            /**
+             * Sets the ids of slected records into the dom
+             */
+            setSelectedItemsToData: function() {
+                this.sandbox.dom.removeAttr(this.$el, 'data-selected');
+                this.sandbox.dom.data(this.$el, 'selected', this.getSelectedItemIds());
             },
 
             /**
@@ -841,14 +877,18 @@
              * Binds Dom-related events
              */
             bindDOMEvents: function() {
-                this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.windowResizeListener.bind(this));
+                if (this.options.resizeListeners === true) {
+                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.windowResizeListener.bind(this));
+                }
             },
 
             /**
              * Bind custom-related events
              */
             bindCustomEvents: function() {
-                this.sandbox.on('husky.navigation.size.changed', this.windowResizeListener.bind(this));
+                if (this.options.resizeListeners === true) {
+                    this.sandbox.on('husky.navigation.size.changed', this.windowResizeListener.bind(this));
+                }
 
                 // listen for private events
                 this.sandbox.on(UPDATE.call(this), this.updateGrid.bind(this));
@@ -970,15 +1010,19 @@
              * Handles the event for adding multiple records
              * to a view
              * @param records {Array} array with new records to add
+             * @param callback {Function} callback to execute after process has been finished
              */
-            addRecordsHandler: function(records) {
+            addRecordsHandler: function(records, callback) {
                 if (!!this.gridViews[this.viewId].addRecord) {
                     this.sandbox.util.foreach(records, function(record) {
                         if (!!record.id) {
                             this.pushRecords([record]);
+                            this.gridViews[this.viewId].addRecord(record);
                         }
-                        this.gridViews[this.viewId].addRecord(record);
                     }.bind(this));
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
                 }
             },
@@ -1032,6 +1076,7 @@
                 // emit events with selected data
                 this.sandbox.emit(ALL_DESELECT.call(this));
                 this.sandbox.emit(NUMBER_SELECTIONS.call(this), 0);
+                this.setSelectedItemsToData();
             },
 
             /**
@@ -1040,12 +1085,15 @@
             selectAllItems: function() {
                 var ids = [], i, length;
                 for (i = -1, length = this.data.embedded.length; ++i < length;) {
-                    this.data.embedded[i].selected = true;
-                    ids.push(this.data.embedded[i].id);
+                    if (this.selectingAllowed(this.data.embedded[i].id)) {
+                        this.data.embedded[i].selected = true;
+                        ids.push(this.data.embedded[i].id);
+                    }
                 }
                 // emit events with selected data
                 this.sandbox.emit(ALL_SELECT.call(this), ids);
-                this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.data.embedded.length);
+                this.sandbox.emit(NUMBER_SELECTIONS.call(this), ids.length);
+                this.setSelectedItemsToData();
             },
 
             /**
@@ -1063,14 +1111,14 @@
             },
 
             /**
-             * Sets all data records with their ids contained in the passed one selected and
+             * Sets all data records with their ids contained in the passed array selected and
              * deselects all data records not contained.
              * @param items {Array} array with all items that should be selected
              */
             setSelectedItems: function(items) {
                 var count = 0, i, length;
                 for (i = -1, length = this.data.embedded.length; ++i < length;) {
-                    if (items.indexOf(this.data.embedded[i].id) !== -1) {
+                    if (items.indexOf(this.data.embedded[i].id) !== -1 && this.selectingAllowed(this.data.embedded[i].id)) {
                         this.data.embedded[i].selected = true;
                         count++;
                     } else {
@@ -1101,11 +1149,12 @@
              */
             setItemSelected: function(id) {
                 var itemIndex = this.getRecordIndexById(id);
-                if (itemIndex !== null) {
+                if (itemIndex !== null && this.selectingAllowed(id)) {
                     this.data.embedded[itemIndex].selected = true;
                     // emit events with selected data
                     this.sandbox.emit(ITEM_SELECT.call(this), id);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
+                    this.setSelectedItemsToData();
                     return true;
                 }
                 return false;
@@ -1123,9 +1172,22 @@
                     // emit events with selected data
                     this.sandbox.emit(ITEM_DESELECT.call(this), id);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
+                    this.setSelectedItemsToData();
                     return true;
                 }
                 return false;
+            },
+
+            /**
+             * Returns true if selection for the data-record is allowed
+             * @param id {Number|String} the id of the data-record
+             */
+            selectingAllowed: function(id) {
+                var itemIndex = this.getRecordIndexById(id);
+                if (this.options.onlySelectLeaves === true && this.data.embedded[itemIndex][this.options.childrenPropertyName] > 0) {
+                    return false;
+                }
+                return true;
             },
 
             /**
@@ -1238,34 +1300,36 @@
              * @param pageSize {Number} new page size. Has to be set if no Uri is passed
              */
             changePage: function(uri, page, pageSize) {
-                var url, uriTemplate;
+                if (!!this.data.links.pagination) {
+                    var url, uriTemplate;
 
-                // if a url is passed load the data from this url
-                if (!!uri) {
-                    url = uri;
+                    // if a url is passed load the data from this url
+                    if (!!uri) {
+                        url = uri;
 
-                    // else generate an own uri
-                } else {
-                    // return if no page is passed or passed invalidly
-                    if (!page || page > this.data.pages || page < 1) {
-                        this.sandbox.logger.log("invalid page number or reached start/end!");
-                        return;
+                        // else generate an own uri
+                    } else {
+                        // return if no page is passed or passed invalidly
+                        if (!page || page > this.data.pages || page < 1) {
+                            this.sandbox.logger.log("invalid page number or reached start/end!");
+                            return;
+                        }
+                        // if no pageSize is passed keep current pageSize
+                        if (!pageSize) {
+                            pageSize = this.data.pageSize;
+                        }
+
+                        // generate uri for loading
+                        uriTemplate = this.sandbox.uritemplate.parse(this.data.links.pagination);
+                        url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, pageSize: pageSize});
                     }
-                    // if no pageSize is passed keep current pageSize
-                    if (!pageSize) {
-                        pageSize = this.data.pageSize;
-                    }
 
-                    // generate uri for loading
-                    uriTemplate = this.sandbox.uritemplate.parse(this.data.links.pagination);
-                    url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, pageSize: pageSize});
+                    this.sandbox.emit(PAGE_CHANGE.call(this), url);
+                    this.load({url: url,
+                        success: function() {
+                            this.sandbox.emit(UPDATED.call(this), 'changed page');
+                        }.bind(this)});
                 }
-
-                this.sandbox.emit(PAGE_CHANGE.call(this), url);
-                this.load({url: url,
-                    success: function() {
-                        this.sandbox.emit(UPDATED.call(this), 'changed page');
-                    }.bind(this)});
             },
 
             /**
@@ -1274,14 +1338,16 @@
              * Emits husky.datagrid.updated event on success
              */
             updateGrid: function() {
-                this.resetSortingOptions();
+                if (!!this.data.links.self) {
+                    this.resetSortingOptions();
 
-                this.load({
-                    url: this.data.links.self,
-                    success: function() {
-                        this.sandbox.emit(UPDATED.call(this));
-                    }.bind(this)
-                });
+                    this.load({
+                        url: this.data.links.self,
+                        success: function() {
+                            this.sandbox.emit(UPDATED.call(this));
+                        }.bind(this)
+                    });
+                }
             },
 
 
@@ -1292,22 +1358,24 @@
              * @param {Array} matchings
              */
             filterGrid: function(matchings) {
-                var uriTemplate, url;
+                if (!!this.data.links.filter) {
+                    var uriTemplate, url;
 
-                this.filterMatchings(matchings);
+                    this.filterMatchings(matchings);
 
-                uriTemplate = this.sandbox.uritemplate.parse(this.data.links.filter);
-                url = this.sandbox.uritemplate.expand(uriTemplate, {fieldsList: this.requestFields.join(',')});
+                    uriTemplate = this.sandbox.uritemplate.parse(this.data.links.filter);
+                    url = this.sandbox.uritemplate.expand(uriTemplate, {fieldsList: this.requestFields.join(',')});
 
-                this.destroy();
-                this.loading();
-                this.load({
-                    url: url,
-                    success: function() {
-                        this.stopLoading();
-                        this.sandbox.emit(UPDATED.call(this));
-                    }.bind(this)
-                });
+                    this.destroy();
+                    this.loading();
+                    this.load({
+                        url: url,
+                        success: function() {
+                            this.stopLoading();
+                            this.sandbox.emit(UPDATED.call(this));
+                        }.bind(this)
+                    });
+                }
             },
 
             /**
@@ -1316,7 +1384,7 @@
              * @param direction {String} the sort method to use 'asc' or 'desc'
              */
             sortGrid: function(attribute, direction) {
-                if (this.options.sortable === true) {
+                if (this.options.sortable === true && !!this.data.links.sortable[attribute]) {
                     var template, url;
 
                     // if passed attribute is sortable
@@ -1337,6 +1405,25 @@
                             }.bind(this)
                         });
                     }
+                }
+            },
+
+            /**
+             * Loads the children of a record
+             * @param recordId {Number|String}
+             */
+            loadChildren: function(recordId) {
+                if (!!this.data.links.children) {
+                    var template = this.sandbox.uritemplate.parse(this.data.links.children),
+                        url = this.sandbox.uritemplate.expand(template, {parentId: recordId});
+
+                    this.sandbox.util.load(this.getUrl({url: url}))
+                        .then(function(response) {
+                            this.addRecordsHandler(response['_embedded']);
+                        }.bind(this))
+                        .fail(function(status, error) {
+                            this.sandbox.logger.error(status, error);
+                        }.bind(this));
                 }
             },
 

@@ -445,6 +445,51 @@
                             
                             <li class="param">
                                 
+                                    <code class="param-name optional">[childrenPropertyName]</code>
+                                    <span class="type">Boolean | String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>name of the property which contains the number of children. False to indaticate that list is flat</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[onlySelectLeaves]</code>
+                                    <span class="type">Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>If true only the outermost children can be selected</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[resizeListeners]</code>
+                                    <span class="type">Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>If true a resize-listener will be instantiated, which is responsible for responsiveness</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
                                     <code class="param-name optional">[matchings]</code>
                                     <span class="type">Array</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
@@ -630,6 +675,13 @@
                             </li>
                         
                             <li class="index-item event">
+                                <a href="#event_husky.datagrid.initialized">husky.datagrid.initialized</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
                                 <a href="#event_husky.datagrid.item.click">husky.datagrid.item.click</a>
 
                                 
@@ -773,7 +825,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l137"><code>husky_components&#x2F;datagrid&#x2F;main.js:137</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l151"><code>husky_components&#x2F;datagrid&#x2F;main.js:151</code></a>
         
         </p>
 
@@ -817,7 +869,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l145"><code>husky_components&#x2F;datagrid&#x2F;main.js:145</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l159"><code>husky_components&#x2F;datagrid&#x2F;main.js:159</code></a>
         
         </p>
 
@@ -885,7 +937,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l256"><code>husky_components&#x2F;datagrid&#x2F;main.js:256</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l271"><code>husky_components&#x2F;datagrid&#x2F;main.js:271</code></a>
         
         </p>
 
@@ -967,7 +1019,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l283"><code>husky_components&#x2F;datagrid&#x2F;main.js:283</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l298"><code>husky_components&#x2F;datagrid&#x2F;main.js:298</code></a>
         
         </p>
 
@@ -1011,7 +1063,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l185"><code>husky_components&#x2F;datagrid&#x2F;main.js:185</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l199"><code>husky_components&#x2F;datagrid&#x2F;main.js:199</code></a>
         
         </p>
 
@@ -1055,7 +1107,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l174"><code>husky_components&#x2F;datagrid&#x2F;main.js:174</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l188"><code>husky_components&#x2F;datagrid&#x2F;main.js:188</code></a>
         
         </p>
 
@@ -1099,7 +1151,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l163"><code>husky_components&#x2F;datagrid&#x2F;main.js:163</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l177"><code>husky_components&#x2F;datagrid&#x2F;main.js:177</code></a>
         
         </p>
 
@@ -1183,7 +1235,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l154"><code>husky_components&#x2F;datagrid&#x2F;main.js:154</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l168"><code>husky_components&#x2F;datagrid&#x2F;main.js:168</code></a>
         
         </p>
 
@@ -1251,7 +1303,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l266"><code>husky_components&#x2F;datagrid&#x2F;main.js:266</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l281"><code>husky_components&#x2F;datagrid&#x2F;main.js:281</code></a>
         
         </p>
 
@@ -1262,6 +1314,50 @@
 
     <div class="description">
         <p>raised when data is sorted</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.datagrid.initialized" class="events item">
+    <h3 class="name"><code>husky.datagrid.initialized</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_datagrid_main.js.html#l92"><code>husky_components&#x2F;datagrid&#x2F;main.js:92</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>raised after initialization has finished</p>
 
     </div>
 
@@ -1295,7 +1391,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l119"><code>husky_components&#x2F;datagrid&#x2F;main.js:119</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l133"><code>husky_components&#x2F;datagrid&#x2F;main.js:133</code></a>
         
         </p>
 
@@ -1363,7 +1459,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l102"><code>husky_components&#x2F;datagrid&#x2F;main.js:102</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l116"><code>husky_components&#x2F;datagrid&#x2F;main.js:116</code></a>
         
         </p>
 
@@ -1431,7 +1527,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l128"><code>husky_components&#x2F;datagrid&#x2F;main.js:128</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l142"><code>husky_components&#x2F;datagrid&#x2F;main.js:142</code></a>
         
         </p>
 
@@ -1499,7 +1595,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l291"><code>husky_components&#x2F;datagrid&#x2F;main.js:291</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l306"><code>husky_components&#x2F;datagrid&#x2F;main.js:306</code></a>
         
         </p>
 
@@ -1567,7 +1663,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l111"><code>husky_components&#x2F;datagrid&#x2F;main.js:111</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l125"><code>husky_components&#x2F;datagrid&#x2F;main.js:125</code></a>
         
         </p>
 
@@ -1611,7 +1707,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l86"><code>husky_components&#x2F;datagrid&#x2F;main.js:86</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l100"><code>husky_components&#x2F;datagrid&#x2F;main.js:100</code></a>
         
         </p>
 
@@ -1655,7 +1751,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l203"><code>husky_components&#x2F;datagrid&#x2F;main.js:203</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l217"><code>husky_components&#x2F;datagrid&#x2F;main.js:217</code></a>
         
         </p>
 
@@ -1723,7 +1819,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l221"><code>husky_components&#x2F;datagrid&#x2F;main.js:221</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l235"><code>husky_components&#x2F;datagrid&#x2F;main.js:235</code></a>
         
         </p>
 
@@ -1753,6 +1849,22 @@
 
                     <div class="param-description">
                         <p>data of the new record</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">callback</code>
+                        <span class="type">Function</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>callback to execute after process has been finished</p>
 
                     </div>
 
@@ -1791,7 +1903,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l212"><code>husky_components&#x2F;datagrid&#x2F;main.js:212</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l226"><code>husky_components&#x2F;datagrid&#x2F;main.js:226</code></a>
         
         </p>
 
@@ -1859,7 +1971,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l230"><code>husky_components&#x2F;datagrid&#x2F;main.js:230</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l245"><code>husky_components&#x2F;datagrid&#x2F;main.js:245</code></a>
         
         </p>
 
@@ -1927,7 +2039,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l239"><code>husky_components&#x2F;datagrid&#x2F;main.js:239</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l254"><code>husky_components&#x2F;datagrid&#x2F;main.js:254</code></a>
         
         </p>
 
@@ -1995,7 +2107,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l248"><code>husky_components&#x2F;datagrid&#x2F;main.js:248</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l263"><code>husky_components&#x2F;datagrid&#x2F;main.js:263</code></a>
         
         </p>
 
@@ -2039,7 +2151,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l94"><code>husky_components&#x2F;datagrid&#x2F;main.js:94</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l108"><code>husky_components&#x2F;datagrid&#x2F;main.js:108</code></a>
         
         </p>
 
@@ -2083,7 +2195,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l274"><code>husky_components&#x2F;datagrid&#x2F;main.js:274</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l289"><code>husky_components&#x2F;datagrid&#x2F;main.js:289</code></a>
         
         </p>
 
@@ -2151,7 +2263,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_main.js.html#l193"><code>husky_components&#x2F;datagrid&#x2F;main.js:193</code></a>
+        <a href="../files/husky_components_datagrid_main.js.html#l207"><code>husky_components&#x2F;datagrid&#x2F;main.js:207</code></a>
         
         </p>
 

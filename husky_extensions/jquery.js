@@ -53,6 +53,10 @@
                 return $(selector).html();
             };
 
+            app.core.dom.outerHTML = function(selector) {
+                return $(selector).wrapAll('<div></div>').parent().html();
+            };
+
             app.core.dom.parseHTML = function(data) {
                 return $.parseHTML(data);
             };
@@ -174,7 +178,7 @@
             };
 
             app.core.dom.attr = function(selector, attributeName, value) {
-                if (!value && value !== '') {
+                if (typeof value === 'undefined') {
                     attributeName = attributeName || {};
                     return $(selector).attr(attributeName);
                 } else {

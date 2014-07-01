@@ -27,6 +27,8 @@
  * @params {Number} [options.backdropAlpha] Alpha-value of the backdrop
  * @params {String} [options.type] The type of the overlay ('normal', 'error' or 'warning')
  * @params {Array} [options.buttonsDefaultAlign] the align of the buttons in the footer ('center', 'left' or 'right'). Can be overriden by each button individually
+ * @params {Array} [options.supportKeyInput] if true pressing enter will submit the overlay and esc will close it
+ * @params {Array} [options.propagateEvents] If false click-events will be stoped at the components-element
  *
  * @params {Array} [options.slides] array of slide objects, will be rendered in a row and can slided with events
  * @params {String} [options.slides[].title] the title of the overlay
@@ -69,6 +71,8 @@ define([], function() {
             backdropClose: true,
             backdropColor: '#000000',
             skin: '',
+            supportKeyInput: true,
+            propagateEvents: true,
             type: 'normal',
             backdropAlpha: 0.5,
             cssClass: '',
@@ -634,8 +638,10 @@ define([], function() {
             }
 
             // listen on key-inputs
-            this.sandbox.dom.off('body', 'keydown.' + this.options.instanceName);
-            this.sandbox.dom.on('body', 'keydown.' + this.options.instanceName, this.keyHandler.bind(this));
+            if (this.options.supportKeyInput === true) {
+                this.sandbox.dom.off('body', 'keydown.' + this.options.instanceName);
+                this.sandbox.dom.on('body', 'keydown.' + this.options.instanceName, this.keyHandler.bind(this));
+            }
         },
 
         /**
@@ -849,16 +855,23 @@ define([], function() {
                 this.sandbox.dom.css(this.overlay.$el, {'z-index': 10000});
             }.bind(this));
 
+            //stop propagation
+            if (this.options.propagateEvents === false) {
+                this.sandbox.dom.on(this.overlay.$el, 'click', function(event) {
+                    this.sandbox.dom.stopPropagation(event);
+                }.bind(this));
+            }
+
             // close handler for close icon
-            this.sandbox.dom.on(this.$el, 'click',
+            this.sandbox.dom.on(this.overlay.$el, 'click',
                 this.closeHandler.bind(this), constants.closeSelector);
 
             // close handler for cancel buttons
-            this.sandbox.dom.on(this.$el, 'click',
+            this.sandbox.dom.on(this.overlay.$el, 'click',
                 this.closeHandler.bind(this), constants.overlayCancelSelector);
 
             // binds the events for ok-buttons
-            this.sandbox.dom.on(this.$el, 'click',
+            this.sandbox.dom.on(this.overlay.$el, 'click',
                 this.okHandler.bind(this), constants.overlayOkSelector);
 
             this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
@@ -944,6 +957,7 @@ define([], function() {
         closeHandler: function(event) {
             if (!!event) {
                 this.sandbox.dom.preventDefault(event);
+                this.sandbox.dom.stopPropagation(event);
             }
             if (this.executeCallback(this.slides[this.activeSlide].closeCallback) !== false) {
                 this.closeOverlay();

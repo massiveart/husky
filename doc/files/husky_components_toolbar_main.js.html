@@ -602,7 +602,7 @@ define(function() {
             if ((item.items &amp;&amp; item.items.length &gt; 0) || item.loading) {
                 return;
             }
-
+            hideDropdowns.call(this);
             if (!item.disabled) {
                 triggerSelectEvent.call(this, item, $parent);
             } else {
