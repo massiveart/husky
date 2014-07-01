@@ -439,6 +439,12 @@ define(function() {
          * @param highlight {boolean} if true a highlight effect is played
          */
         toggleEnabled = function(enabled, id, highlight) {
+
+            // check if toolbar has an item with specified id
+            if (!this.items[id]) {
+                return;
+            }
+
             var item = this.items[id],
                 $item = this.sandbox.dom.find(&#x27;[data-id=&quot;&#x27; + id + &#x27;&quot;]&#x27;, this.$el),
                 $iconItem = this.sandbox.dom.find(&#x27;[data-id=&quot;&#x27; + id + &#x27;&quot;] .icon&#x27;, this.$el),
