@@ -64,15 +64,19 @@ $fadeDuration: 100ms;
         }
     }
 }
+.husky-navigation {
+  float: left;
+  height: 100%;
 
+}
 .navigation {
-    float: left;
     width: 250px;
     height: 100%;
+    position: relative;
+    top: 0px;
+    left: 0px;
     background-color: $navigationBackgroundColor;
     overflow-x: visible;
-    position: fixed;
-    top: 0px;
     z-index: 101;
 
 

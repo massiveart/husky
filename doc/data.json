@@ -8401,7 +8401,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 130,
+            "line": 131,
             "description": "listens on and activates the matching navigation-item",
             "itemtype": "event",
             "name": "husky.navigation.select-item",
@@ -8417,7 +8417,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 137,
+            "line": 138,
             "description": "raised when navigation was collapsed",
             "itemtype": "event",
             "name": "husky.navigation.collapsed",
@@ -8433,7 +8433,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 144,
+            "line": 145,
             "description": "raised when navigation was un-collapsed",
             "itemtype": "event",
             "name": "husky.navigation.uncollapsed",
@@ -8449,7 +8449,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 152,
+            "line": 153,
             "description": "forces navigation to collapse",
             "itemtype": "event",
             "name": "husky.navigation.collapse",
@@ -8465,7 +8465,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 159,
+            "line": 160,
             "description": "forces navigation to uncollapse",
             "itemtype": "event",
             "name": "husky.navigation.uncollapse",
@@ -8481,7 +8481,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 167,
+            "line": 168,
             "description": "raised when navigation collapse / uncollapse of navigation is triggered. called before transition starts\nonly raised when not forced",
             "itemtype": "event",
             "name": "husky.navigation.size.change",
@@ -8490,7 +8490,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 174,
+            "line": 175,
             "description": "raised when navigation was un / collapsed. called when transition is finished. only raised when not forced",
             "itemtype": "event",
             "name": "husky.navigation.size.changed",
@@ -8499,7 +8499,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 180,
+            "line": 181,
             "description": "raised when the user locale is changed",
             "itemtype": "event",
             "name": "husky.navigation.user-locale.changed",
@@ -8508,7 +8508,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 186,
+            "line": 187,
             "description": "raised when the version history is clicked",
             "itemtype": "event",
             "name": "husky.navigation.version-history.clicked",
@@ -8517,7 +8517,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 192,
+            "line": 193,
             "description": "show the navigation when it was hidden before",
             "itemtype": "event",
             "name": "husky.navigation.show",
@@ -8526,7 +8526,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 198,
+            "line": 199,
             "description": "triggers the update of the navigation size",
             "itemtype": "event",
             "name": "husky.navigation.show.size",
@@ -8535,7 +8535,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 204,
+            "line": 205,
             "description": "hides the navigation completely",
             "itemtype": "event",
             "name": "husky.navigation.hide",
@@ -8544,7 +8544,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 241,
+            "line": 242,
             "description": "renders the navigation\ngets called after navigation data was loaded",
             "params": [
                 {
@@ -8557,49 +8557,49 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 294,
+            "line": 295,
             "description": "renders main navigation elements",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 330,
+            "line": 331,
             "description": "renders sub-navigation elements",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 361,
+            "line": 362,
             "description": "Renders the footer of the navigation",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 392,
+            "line": 393,
             "description": "Handles the event when the collapsed Footer is clicked",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 403,
+            "line": 404,
             "description": "Interaction",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 443,
+            "line": 444,
             "description": "event listener",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 512,
+            "line": 513,
             "description": "Takes an action and select the matching navigation point",
             "params": [
                 {
@@ -8613,7 +8613,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 541,
+            "line": 542,
             "description": "gets called when settings icon is clicked",
             "emits": "husky.navigation.item.settings (name, id, parent)",
             "params": [
@@ -8627,7 +8627,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 559,
+            "line": 560,
             "description": "Toggles menu element with submenu\nRaises navigation.toggle",
             "params": [
                 {
@@ -8644,7 +8644,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 599,
+            "line": 600,
             "description": "Handles the slide-up animation",
             "params": [
                 {
@@ -8661,7 +8661,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 625,
+            "line": 626,
             "description": "Handles the slide-down animation",
             "params": [
                 {
@@ -8682,21 +8682,21 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 686,
+            "line": 687,
             "description": "Removes the inline-style for expanded items",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 696,
+            "line": 697,
             "description": "Resets the inline-style height for expanded items",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 712,
+            "line": 713,
             "description": "toggles sections",
             "params": [
                 {
@@ -8709,7 +8709,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 802,
+            "line": 810,
             "description": "Selects menu element without submenu\nRaises navigation.select",
             "params": [
                 {
@@ -8731,7 +8731,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 854,
+            "line": 862,
             "description": "Takes an id and returns the matching item",
             "params": [
                 {
@@ -8749,14 +8749,14 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 868,
+            "line": 876,
             "description": "Shows the navigation",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 879,
+            "line": 887,
             "description": "Hides the navigaiton",
             "class": "Overlay",
             "module": "husky/components/matcher"
@@ -11189,11 +11189,11 @@
         },
         {
             "message": "unknown tag: emits",
-            "line": " husky_components/navigation/main.js:541"
+            "line": " husky_components/navigation/main.js:542"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/navigation/main.js:854"
+            "line": " husky_components/navigation/main.js:862"
         },
         {
             "message": "replacing incorrect tag: params with param",
@@ -13089,79 +13089,79 @@
         },
         {
             "message": "Missing item type\nrenders the navigation\ngets called after navigation data was loaded",
-            "line": " husky_components/navigation/main.js:241"
+            "line": " husky_components/navigation/main.js:242"
         },
         {
             "message": "Missing item type\nrenders main navigation elements",
-            "line": " husky_components/navigation/main.js:294"
+            "line": " husky_components/navigation/main.js:295"
         },
         {
             "message": "Missing item type\nrenders sub-navigation elements",
-            "line": " husky_components/navigation/main.js:330"
+            "line": " husky_components/navigation/main.js:331"
         },
         {
             "message": "Missing item type\nRenders the footer of the navigation",
-            "line": " husky_components/navigation/main.js:361"
+            "line": " husky_components/navigation/main.js:362"
         },
         {
             "message": "Missing item type\nHandles the event when the collapsed Footer is clicked",
-            "line": " husky_components/navigation/main.js:392"
+            "line": " husky_components/navigation/main.js:393"
         },
         {
             "message": "Missing item type\nInteraction",
-            "line": " husky_components/navigation/main.js:403"
+            "line": " husky_components/navigation/main.js:404"
         },
         {
             "message": "Missing item type\nevent listener",
-            "line": " husky_components/navigation/main.js:443"
+            "line": " husky_components/navigation/main.js:444"
         },
         {
             "message": "Missing item type\nTakes an action and select the matching navigation point",
-            "line": " husky_components/navigation/main.js:512"
+            "line": " husky_components/navigation/main.js:513"
         },
         {
             "message": "Missing item type\ngets called when settings icon is clicked",
-            "line": " husky_components/navigation/main.js:541"
+            "line": " husky_components/navigation/main.js:542"
         },
         {
             "message": "Missing item type\nToggles menu element with submenu\nRaises navigation.toggle",
-            "line": " husky_components/navigation/main.js:559"
+            "line": " husky_components/navigation/main.js:560"
         },
         {
             "message": "Missing item type\nHandles the slide-up animation",
-            "line": " husky_components/navigation/main.js:599"
+            "line": " husky_components/navigation/main.js:600"
         },
         {
             "message": "Missing item type\nHandles the slide-down animation",
-            "line": " husky_components/navigation/main.js:625"
+            "line": " husky_components/navigation/main.js:626"
         },
         {
             "message": "Missing item type\nRemoves the inline-style for expanded items",
-            "line": " husky_components/navigation/main.js:686"
+            "line": " husky_components/navigation/main.js:687"
         },
         {
             "message": "Missing item type\nResets the inline-style height for expanded items",
-            "line": " husky_components/navigation/main.js:696"
+            "line": " husky_components/navigation/main.js:697"
         },
         {
             "message": "Missing item type\ntoggles sections",
-            "line": " husky_components/navigation/main.js:712"
+            "line": " husky_components/navigation/main.js:713"
         },
         {
             "message": "Missing item type\nSelects menu element without submenu\nRaises navigation.select",
-            "line": " husky_components/navigation/main.js:802"
+            "line": " husky_components/navigation/main.js:810"
         },
         {
             "message": "Missing item type\nTakes an id and returns the matching item",
-            "line": " husky_components/navigation/main.js:854"
+            "line": " husky_components/navigation/main.js:862"
         },
         {
             "message": "Missing item type\nShows the navigation",
-            "line": " husky_components/navigation/main.js:868"
+            "line": " husky_components/navigation/main.js:876"
         },
         {
             "message": "Missing item type\nHides the navigaiton",
-            "line": " husky_components/navigation/main.js:879"
+            "line": " husky_components/navigation/main.js:887"
         },
         {
             "message": "Missing item type",
