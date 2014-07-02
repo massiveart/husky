@@ -352,8 +352,6 @@ define(function() {
 
     return {
 
-        view: true,
-
         initialize: function() {
             console.log(this._ref);
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
