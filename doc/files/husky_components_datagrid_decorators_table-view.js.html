@@ -174,7 +174,6 @@
  * @param {Boolean} [options.addRowTop] adds row to the top of the table when add row is triggered
  * @param {Boolean} [options.startTabIndex] start index for tabindex
  * @param {String} [options.columnMinWidth] sets the minimal width of table columns
- * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
  * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
  * @param {Array} [options.excludeFields=[&#x27;id&#x27;]] array of fields to exclude by the view
  * @param {Boolean} [options.showHead] if TRUE head would be showed
@@ -202,7 +201,6 @@ define(function() {
             editable: false,
             className: &#x27;datagridcontainer&#x27;,
             fullWidth: false,
-            contentContainer: null,
             removeRow: false,
             selectItem: {
                 type: &#x27;checkbox&#x27;,      // checkbox, radio button
@@ -561,21 +559,8 @@ define(function() {
             this.errorInRow = [];
             this.bottomTabIndex = this.options.startTabIndex || 49999;
             this.topTabIndex = this.options.startTabIndex || 50000;
-
-            // initialize variables for needed for responsivness
-            if (!!this.options.contentContainer) {
-                if (this.sandbox.dom.css(this.options.contentContainer, &#x27;max-width&#x27;) === &#x27;none&#x27;) {
-                    this.originalMaxWidth = null;
-                } else {
-                    this.originalMaxWidth = this.datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, &#x27;max-width&#x27;)).number;
-                }
-                this.contentMarginRight = this.datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, &#x27;margin-right&#x27;)).number;
-                this.contentPaddings = this.datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, &#x27;padding-right&#x27;)).number;
-                this.contentPaddings += this.datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, &#x27;padding-left&#x27;)).number;
-            } else {
-                this.contentMarginRight = 0;
-                this.contentPaddings = 0;
-            }
+            this.contentMarginRight = 0;
+            this.contentPaddings = 0;
         },
 
         /**
@@ -1394,7 +1379,6 @@ define(function() {
         onResize: function() {
             var finalWidth,
                 contentPaddings = 0,
-                content = !!this.options.contentContainer ? this.options.contentContainer : this.$el,
                 tableWidth = this.sandbox.dom.width(this.$table),
                 tableOffset = this.sandbox.dom.offset(this.$table),
                 contentWidth = this.sandbox.dom.width(content),
@@ -1403,13 +1387,6 @@ define(function() {
                 originalMaxWidth = contentWidth;
 
             tableOffset.right = tableOffset.left + tableWidth;
-
-
-            if (!!this.options.contentContainer &amp;&amp; !!this.originalMaxWidth) {
-                // get original max-width and right margin
-                originalMaxWidth = this.originalMaxWidth;
-                contentPaddings = this.contentPaddings;
-            }
 
             // if table is greater than max content width
             if (tableWidth &gt; originalMaxWidth - contentPaddings &amp;&amp; contentWidth &lt; windowWidth - tableOffset.left) {
@@ -1435,18 +1412,6 @@ define(function() {
             // width is not allowed to be smaller than the width of content
             if (finalWidth &lt; contentWidth) {
                 finalWidth = contentWidth;
-            }
-
-            // if contentContainer is set, adapt maximum size
-            if (!!this.options.contentContainer) {
-                if (this.options.fullWidth === true) {
-                    this.sandbox.dom.css(this.options.contentContainer, &#x27;max-width&#x27;, finalWidth + contentPaddings);
-                }
-                finalWidth = this.sandbox.dom.width(this.options.contentContainer);
-                if (!overlaps) {
-                    // if table does not overlap border, set content to original width
-                    this.sandbox.dom.css(this.options.contentContainer, &#x27;max-width&#x27;, &#x27;&#x27;);
-                }
             }
 
             // now set width
