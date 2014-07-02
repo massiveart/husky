@@ -4888,7 +4888,7 @@
         },
         {
             "file": "husky_components/column-options/main.js",
-            "line": 383,
+            "line": 381,
             "description": "renders list",
             "params": [
                 {
@@ -4901,7 +4901,7 @@
         },
         {
             "file": "husky_components/column-options/main.js",
-            "line": 411,
+            "line": 409,
             "description": "rerenders list items (reset)",
             "class": "Column-Options",
             "module": "husky/components/column-options"
@@ -9983,7 +9983,7 @@
         },
         {
             "file": "husky_components/tabs/main.js",
-            "line": 202,
+            "line": 200,
             "description": "Sets the min-width of an item to its width in selected state\n(to avoid bumping)",
             "params": [
                 {
@@ -12113,11 +12113,11 @@
         },
         {
             "message": "Missing item type\nrenders list",
-            "line": " husky_components/column-options/main.js:383"
+            "line": " husky_components/column-options/main.js:381"
         },
         {
             "message": "Missing item type\nrerenders list items (reset)",
-            "line": " husky_components/column-options/main.js:411"
+            "line": " husky_components/column-options/main.js:409"
         },
         {
             "message": "Missing item type\nTemplates used by this class",
@@ -13521,7 +13521,7 @@
         },
         {
             "message": "Missing item type\nSets the min-width of an item to its width in selected state\n(to avoid bumping)",
-            "line": " husky_components/tabs/main.js:202"
+            "line": " husky_components/tabs/main.js:200"
         },
         {
             "message": "Missing item type\nnamespace for events",

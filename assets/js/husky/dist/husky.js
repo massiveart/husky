@@ -28206,8 +28206,6 @@ define('__component__$column-options@husky',[],function() {
 
     return {
 
-        view: true,
-
         initialize: function() {
             console.log(this._ref);
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
@@ -33275,8 +33273,6 @@ define('__component__$tabs@husky',[],function() {
 
     return {
 
-        view: true,
-
         initialize: function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.$el = this.sandbox.dom.$(this.options.el);
@@ -35973,8 +35969,6 @@ define('__component__$dependent-select@husky',[],function() {
 
     return {
 
-        view: true,
-
         initialize: function() {
 
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
@@ -37826,8 +37820,6 @@ define('__component__$loader@husky',[],function() {
         };
 
     return {
-
-        view: true,
 
         initialize: function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
