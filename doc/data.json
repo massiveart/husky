@@ -8703,7 +8703,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 810,
+            "line": 811,
             "description": "Selects menu element without submenu\nRaises navigation.select",
             "params": [
                 {
@@ -8725,7 +8725,7 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 862,
+            "line": 863,
             "description": "Takes an id and returns the matching item",
             "params": [
                 {
@@ -8743,14 +8743,14 @@
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 876,
+            "line": 877,
             "description": "Shows the navigation",
             "class": "Overlay",
             "module": "husky/components/matcher"
         },
         {
             "file": "husky_components/navigation/main.js",
-            "line": 887,
+            "line": 888,
             "description": "Hides the navigaiton",
             "class": "Overlay",
             "module": "husky/components/matcher"
@@ -11187,7 +11187,7 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/navigation/main.js:862"
+            "line": " husky_components/navigation/main.js:863"
         },
         {
             "message": "replacing incorrect tag: params with param",
@@ -13143,19 +13143,19 @@
         },
         {
             "message": "Missing item type\nSelects menu element without submenu\nRaises navigation.select",
-            "line": " husky_components/navigation/main.js:810"
+            "line": " husky_components/navigation/main.js:811"
         },
         {
             "message": "Missing item type\nTakes an id and returns the matching item",
-            "line": " husky_components/navigation/main.js:862"
+            "line": " husky_components/navigation/main.js:863"
         },
         {
             "message": "Missing item type\nShows the navigation",
-            "line": " husky_components/navigation/main.js:876"
+            "line": " husky_components/navigation/main.js:877"
         },
         {
             "message": "Missing item type\nHides the navigaiton",
-            "line": " husky_components/navigation/main.js:887"
+            "line": " husky_components/navigation/main.js:888"
         },
         {
             "message": "Missing item type",

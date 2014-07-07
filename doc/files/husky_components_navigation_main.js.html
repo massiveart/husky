@@ -934,6 +934,7 @@ define(function() {
                     this.sandbox.dom.width(this.$el, this.sandbox.dom.width(this.$navigation));
                     this.sandbox.dom.addClass(this.$navigation, &#x27;collapseIcon&#x27;);
                 } else {
+                    this.sandbox.dom.removeClass(this.$navigation, &#x27;collapseIcon&#x27;);
                     this.sandbox.dom.css(this.$el, {&#x27;width&#x27;: &#x27;&#x27;});
                 }
                 this.sandbox.dom.removeClass(this.$navigation, &#x27;collapsed&#x27;);
