@@ -353,7 +353,7 @@ define(function() {
          * Destroys the view
          */
         destroy: function() {
-            this.sandbox.dom.off(&#x27;body&#x27;, &#x27;click.grid-thumbnails.&#x27; + this.ddatagrid.options.instanceName);
+            this.sandbox.dom.off(&#x27;body&#x27;, &#x27;click.grid-thumbnails.&#x27; + this.datagrid.options.instanceName);
             this.sandbox.dom.remove(this.$el);
         },
 

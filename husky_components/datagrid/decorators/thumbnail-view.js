@@ -193,7 +193,7 @@ define(function() {
          * Destroys the view
          */
         destroy: function() {
-            this.sandbox.dom.off('body', 'click.grid-thumbnails.' + this.ddatagrid.options.instanceName);
+            this.sandbox.dom.off('body', 'click.grid-thumbnails.' + this.datagrid.options.instanceName);
             this.sandbox.dom.remove(this.$el);
         },
 
