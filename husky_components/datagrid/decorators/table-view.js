@@ -153,6 +153,15 @@ define(function() {
         },
 
         /**
+         * triggered when a radio button inside the datagrid is clicked
+         * @event husky.datagrid.table.open-child
+         * @param {Number|String} id The id of the data-record to open the parents for
+         */
+        RADIO_CLICKED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, 'radio.clicked');
+        },
+
+        /**
          * calculates the width of a text by creating a tablehead element and measure its width
          * @param text
          * @param classArray
@@ -327,7 +336,6 @@ define(function() {
                 );
             }
 
-            // emits an event when a table row gets clicked
             this.sandbox.dom.on(
                 this.$tableContainer, 'click',
                 this.emitRowClickedEvent.bind(this), 'tbody tr'
@@ -337,6 +345,12 @@ define(function() {
             this.sandbox.dom.on(
                 this.$tableContainer, 'click',
                 this.callIconCallback.bind(this), 'tr .grid-icon'
+            );
+
+            // calls the icon-callback on click on an icon
+            this.sandbox.dom.on(
+                this.sandbox.dom.find('.custom-radio.custom-filter',this.$tableContainer), 'click',
+                this.radioClickedCallback.bind(this)
             );
 
             this.sandbox.dom.on(this.$tableContainer, 'click', function(event) {
@@ -373,6 +387,16 @@ define(function() {
                     this.prepareChildrenLoad.bind(this), 'tbody tr'
                 );
             }
+        },
+
+        /**
+         * emits radio-clicked event and stops event propagation
+         */
+        radioClickedCallback: function(event) {
+            var parent = this.sandbox.dom.closest(event.currentTarget, 'tr'),
+                id = this.sandbox.dom.data(parent, 'id');
+            this.sandbox.emit(RADIO_CLICKED.call(this), id);
+            event.stopPropagation();
         },
 
         /**
@@ -738,13 +762,11 @@ define(function() {
                 tblCellStyle = 'style="max-width:' + this.datagrid.matchings[index].minWidth + '"';
 
                 // call the type manipulate to manipulate the content of the cell
-                if (!!type) {
-                    if (type === this.datagrid.types.THUMBNAILS) {
-                        tblCellContent = this.datagrid.manipulateContent(tblCellContent, type, this.options.thumbnailFormat);
-                        tblCellContent = '<img alt="' + tblCellContent[constants.thumbAltKey] + '" src="' + tblCellContent[constants.thumbSrcKey] + '"/>';
-                    } else {
-                        tblCellContent = this.datagrid.manipulateContent(tblCellContent, type);
-                    }
+                if (!!type && type === this.datagrid.types.THUMBNAILS) {
+                    tblCellContent = this.datagrid.manipulateContent(tblCellContent, type, this.options.thumbnailFormat);
+                    tblCellContent = '<img alt="' + tblCellContent[constants.thumbAltKey] + '" src="' + tblCellContent[constants.thumbSrcKey] + '"/>';
+                } else {
+                    tblCellContent = this.datagrid.processContentFilter(key, tblCellContent, type, index);
                 }
 
                 if (!!editable) {
