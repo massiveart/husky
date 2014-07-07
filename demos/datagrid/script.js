@@ -98,9 +98,6 @@ require(['lib/husky'], function(Husky) {
                             large: true
                         }
                     },
-                    contentFilters: {
-                        content1: 'asdfasdf'
-                    },
                     sortable: true,
                     searchInstanceName: 'test',
                     columnOptionsInstanceName: '',

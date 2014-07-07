@@ -43,20 +43,20 @@ define(function() {
 
         templates = {
             item: [
-                    '<div class="' + constants.itemClass + ' <%= styleClass %>">',
-                        '<div class="' + constants.imageClass + '">',
-                            '<img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
-                        '</div>',
-                        '<div class="' + constants.textClass + '">',
-                            '<span class="' + constants.titleClass + '"><%= title %></span><br />',
-                            '<span class="' + constants.descriptionClass + '"><%= description %></span>',
-                        '</div>',
-                        '<div class="' + constants.checkboxClass + ' custom-checkbox no-spacing">',
-                            '<input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
-                            '<span class="icon"></span>',
-                        '</div>',
-                        '<div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
-                    '</div>'
+                '<div class="' + constants.itemClass + ' <%= styleClass %>">',
+                '<div class="' + constants.imageClass + '">',
+                '<img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
+                '</div>',
+                '<div class="' + constants.textClass + '">',
+                '<span class="' + constants.titleClass + '"><%= title %></span><br />',
+                '<span class="' + constants.descriptionClass + '"><%= description %></span>',
+                '</div>',
+                '<div class="' + constants.checkboxClass + ' custom-checkbox no-spacing">',
+                '<input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
+                '<span class="icon"></span>',
+                '</div>',
+                '<div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
+                '</div>'
             ].join('')
         };
 
