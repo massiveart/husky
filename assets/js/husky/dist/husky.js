@@ -30940,8 +30940,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
  * @param {Boolean|String} [options.childrenPropertyName] name of the property which contains the number of children. False to indaticate that list is flat
  * @param {Boolean} [options.onlySelectLeaves] If true only the outermost children can be selected
  * @param {Boolean} [options.resizeListeners] If true a resize-listener will be instantiated, which is responsible for responsiveness
- * @param {Boolean} [options.contentFilters] If true a resize-listener will be instantiated, which is responsible for responsiveness
- *
+ * @param {String|Function} [options.contentFilters] Used for filtering data at a specifig attribute / column. If defined as callback the rows value will be passed. If defined as a string, an existing filter template will be applied (see matching types)
  * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
  * @param {String} [options.matchings.content] column title
  * @param {String} [options.matchings.width] width of column (used by the table view)
