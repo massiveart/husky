@@ -30028,7 +30028,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          * Destroys the view
          */
         destroy: function() {
-            this.sandbox.dom.off('body', 'click.grid-thumbnails.' + this.ddatagrid.options.instanceName);
+            this.sandbox.dom.off('body', 'click.grid-thumbnails.' + this.datagrid.options.instanceName);
             this.sandbox.dom.remove(this.$el);
         },
 
@@ -31488,9 +31488,9 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @param params url
              */
             load: function(params) {
-                this.currentUrl = params.url;
+                this.currentUrl = this.getUrl(params);
 
-                this.sandbox.util.load(this.getUrl(params), params.data)
+                this.sandbox.util.load(this.currentUrl, params.data)
                     .then(function(response) {
                         this.destroy();
                         this.parseData(response);
