@@ -278,13 +278,14 @@ define(function () {
                 title = addition = &#x27;&#x27;;
 
                 this.sandbox.util.foreach(this.datagrid.matchings, function(matching) {
-                    var argument, result, type = matching.type;
+                    var argument, result,
+                        type = matching.type;
 
-                    // get argument
+                    // prepare data for processing
                     if (matching.type === this.datagrid.types.COUNT) {
                         argument = this.sandbox.translate(constants.elementsKey);
                     } else if (matching.type === this.datagrid.types.THUMBNAILS) {
-                        type = null; // do not apply default processor
+                        type = null; // do not apply default processor on thumbnails
                     }
 
                     // process

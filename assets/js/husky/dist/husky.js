@@ -28616,6 +28616,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 );
             }
 
+            // emits an event when a table row gets clicked
             this.sandbox.dom.on(
                 this.$tableContainer, 'click',
                 this.emitRowClickedEvent.bind(this), 'tbody tr'
@@ -28627,7 +28628,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 this.callIconCallback.bind(this), 'tr .grid-icon'
             );
 
-            // calls the icon-callback on click on an icon
+            // calls the radio-clicked event and stops further event-propagation
             this.sandbox.dom.on(
                 this.sandbox.dom.find('.custom-radio.custom-filter',this.$tableContainer), 'click',
                 this.radioClickedCallback.bind(this)
@@ -29900,20 +29901,20 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
 
         templates = {
             item: [
-                    '<div class="' + constants.itemClass + ' <%= styleClass %>">',
-                        '<div class="' + constants.imageClass + '">',
-                            '<img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
-                        '</div>',
-                        '<div class="' + constants.textClass + '">',
-                            '<span class="' + constants.titleClass + '"><%= title %></span><br />',
-                            '<span class="' + constants.descriptionClass + '"><%= description %></span>',
-                        '</div>',
-                        '<div class="' + constants.checkboxClass + ' custom-checkbox no-spacing">',
-                            '<input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
-                            '<span class="icon"></span>',
-                        '</div>',
-                        '<div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
-                    '</div>'
+                '<div class="' + constants.itemClass + ' <%= styleClass %>">',
+                '<div class="' + constants.imageClass + '">',
+                '<img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
+                '</div>',
+                '<div class="' + constants.textClass + '">',
+                '<span class="' + constants.titleClass + '"><%= title %></span><br />',
+                '<span class="' + constants.descriptionClass + '"><%= description %></span>',
+                '</div>',
+                '<div class="' + constants.checkboxClass + ' custom-checkbox no-spacing">',
+                '<input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
+                '<span class="icon"></span>',
+                '</div>',
+                '<div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
+                '</div>'
             ].join('')
         };
 
@@ -30288,13 +30289,14 @@ define('husky_components/datagrid/decorators/group-view',[],function () {
                 title = addition = '';
 
                 this.sandbox.util.foreach(this.datagrid.matchings, function(matching) {
-                    var argument, result, type = matching.type;
+                    var argument, result,
+                        type = matching.type;
 
-                    // get argument
+                    // prepare data for processing
                     if (matching.type === this.datagrid.types.COUNT) {
                         argument = this.sandbox.translate(constants.elementsKey);
                     } else if (matching.type === this.datagrid.types.THUMBNAILS) {
-                        type = null; // do not apply default processor
+                        type = null; // do not apply default processor on thumbnails
                     }
 
                     // process

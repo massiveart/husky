@@ -496,6 +496,7 @@ define(function() {
                 );
             }
 
+            // emits an event when a table row gets clicked
             this.sandbox.dom.on(
                 this.$tableContainer, &#x27;click&#x27;,
                 this.emitRowClickedEvent.bind(this), &#x27;tbody tr&#x27;
@@ -507,7 +508,7 @@ define(function() {
                 this.callIconCallback.bind(this), &#x27;tr .grid-icon&#x27;
             );
 
-            // calls the icon-callback on click on an icon
+            // calls the radio-clicked event and stops further event-propagation
             this.sandbox.dom.on(
                 this.sandbox.dom.find(&#x27;.custom-radio.custom-filter&#x27;,this.$tableContainer), &#x27;click&#x27;,
                 this.radioClickedCallback.bind(this)
