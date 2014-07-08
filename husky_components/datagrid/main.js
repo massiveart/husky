@@ -18,7 +18,7 @@
  * @param {Boolean|String} [options.childrenPropertyName] name of the property which contains the number of children. False to indaticate that list is flat
  * @param {Boolean} [options.onlySelectLeaves] If true only the outermost children can be selected
  * @param {Boolean} [options.resizeListeners] If true a resize-listener will be instantiated, which is responsible for responsiveness
- *
+ * @param {String|Function} [options.contentFilters] Used for filtering data at a specifig attribute / column. If defined as callback the rows value will be passed. If defined as a string, an existing filter template will be applied (see matching types)
  * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
  * @param {String} [options.matchings.content] column title
  * @param {String} [options.matchings.width] width of column (used by the table view)
@@ -51,6 +51,7 @@
                 paginationOptions: {
                     dropdown: {}
                 },
+                contentFilters: null,
                 sortable: true,
                 matchings: [],
                 url: null,
@@ -70,6 +71,7 @@
                 THUMBNAILS: 'thumbnails',
                 TITLE: 'title',
                 BYTES: 'bytes',
+                RADIO: 'radio',
                 COUNT: 'count'
             },
 
@@ -85,6 +87,89 @@
                 }
             },
 
+            filters = {
+                /**
+                 * Takes bytes and returns a more readable string
+                 * @param bytes {Number}
+                 * @returns {string}
+                 */
+                bytes: function(bytes) {
+                    if (bytes === 0) {
+                        return '0 Byte';
+                    }
+                    var k = 1000,
+                        sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+                        i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
+                },
+
+                title: function(content) {
+                    return content;
+                },
+
+                /**
+                 * Brings a date into the right format
+                 * @param date {String} the date to parse
+                 * @returns {String}
+                 */
+                date: function(date) {
+                    var parsedDate = this.sandbox.date.format(date);
+                    if (parsedDate !== null) {
+                        return parsedDate;
+                    }
+                    return date;
+                },
+
+                /**
+                 * Attaches a postfix to a number
+                 * @param number
+                 * @param postfix
+                 */
+                count: function(number, postfix) {
+                    return (!!postfix) ? number + ' ' + postfix : number;
+                },
+
+                /**
+                 * Takes an array of thumbnails and returns an object with url and and alt
+                 * @param thumbnails {Array} array of thumbnails
+                 * @param format {String} the format of the thumbnail
+                 * @returns {Object} with url and alt property
+                 */
+                thumbnails: function(thumbnails, format) {
+                    var thumbnail = {
+                        url: null,
+                        alt: null
+                    };
+                    if (!!thumbnails[format]) {
+                        if (typeof thumbnails[format] === 'object') {
+                            thumbnail.url = thumbnails[format].url;
+                            thumbnail.alt = thumbnails[format].alt;
+                        } else {
+                            thumbnail.url = thumbnails[format];
+                            thumbnail.alt = '';
+                        }
+                    }
+                    return thumbnail;
+                },
+
+                /**
+                 * checks for bool value and sets radio to true
+                 */
+                radio: function(content, index, columnName) {
+                    var checked = (!content) ? false : true;
+                    return this.sandbox.util.template(templates.radio, {checked: checked, radioId: index, columnName: columnName});
+                }
+            },
+
+            templates = {
+                radio: [
+                    '<div class="custom-radio custom-filter">',
+                    '   <input name="radio-<%= columnName %>-<%= radioId %>" class="" type="radio" class="form-element" <% if (checked) { print("checked")} %>/>',
+                    '   <span class="icon"></span>',
+                    '</div>'
+                ].join('')
+            },
+
             namespace = 'husky.datagrid.',
 
         /* TRIGGERS EVENTS */
@@ -93,7 +178,7 @@
              * raised after initialization has finished
              * @event husky.datagrid.initialized
              */
-            INITIALIZED = function() {
+                INITIALIZED = function() {
                 return this.createEventName('initialized');
             },
 
@@ -101,7 +186,7 @@
              * raised when the the current page changes
              * @event husky.datagrid.page.change
              */
-            PAGE_CHANGE = function() {
+                PAGE_CHANGE = function() {
                 return this.createEventName('page.change');
             },
 
@@ -109,7 +194,7 @@
              * raised when the data is updated
              * @event husky.datagrid.updated
              */
-            UPDATED = function() {
+                UPDATED = function() {
                 return this.createEventName('updated');
             },
 
@@ -118,7 +203,7 @@
              * @event husky.datagrid.item.deselect
              * @param {String} id of deselected item
              */
-            ITEM_DESELECT = function() {
+                ITEM_DESELECT = function() {
                 return this.createEventName('item.deselect');
             },
 
@@ -126,7 +211,7 @@
              * raised when selection of items changes
              * @event husky.datagrid.number.selections
              */
-            NUMBER_SELECTIONS = function() {
+                NUMBER_SELECTIONS = function() {
                 return this.createEventName('number.selections');
             },
 
@@ -135,7 +220,7 @@
              * @event husky.datagrid.item.click
              * @param {String} id of item that was clicked
              */
-            ITEM_CLICK = function() {
+                ITEM_CLICK = function() {
                 return this.createEventName('item.click');
             },
 
@@ -144,7 +229,7 @@
              * @event husky.datagrid.item.select
              * @param {String} if of selected item
              */
-            ITEM_SELECT = function() {
+                ITEM_SELECT = function() {
                 return this.createEventName('item.select');
             },
 
@@ -152,7 +237,7 @@
              * raised when all items get deselected via the header checkbox
              * @event husky.datagrid.all.deselect
              */
-            ALL_DESELECT = function() {
+                ALL_DESELECT = function() {
                 return this.createEventName('all.deselect');
             },
 
@@ -161,7 +246,7 @@
              * @event husky.datagrid.all.select
              * @param {Array} ids of all items that have been clicked
              */
-            ALL_SELECT = function() {
+                ALL_SELECT = function() {
                 return this.createEventName('all.select');
             },
 
@@ -170,7 +255,7 @@
              * @event husky.datagrid.data.saved
              * @param {Object} data returned
              */
-            DATA_SAVED = function() {
+                DATA_SAVED = function() {
                 return this.createEventName('updated');
             },
 
@@ -181,7 +266,7 @@
              * @param {String} error thrown
              *
              */
-            DATA_SAVE_FAILED = function() {
+                DATA_SAVE_FAILED = function() {
                 return this.createEventName('data.save.failed');
             },
 
@@ -189,10 +274,9 @@
              * raised when editable table is changed
              * @event husky.datagrid.data.save
              */
-            DATA_CHANGED = function() {
+                DATA_CHANGED = function() {
                 return this.createEventName('data.changed');
             },
-
 
         /* PROVIDED EVENTS */
 
@@ -200,7 +284,7 @@
              * raised when husky.datagrid.data.get is triggered
              * @event husky.datagrid.data.provide
              */
-            DATA_PROVIDE = function() {
+                DATA_PROVIDE = function() {
                 return this.createEventName('data.provide');
             },
 
@@ -210,7 +294,7 @@
              * @param {String} viewId The identifier of the view
              * @param {Object} Options to merge with the current view options
              */
-            CHANGE_VIEW = function() {
+                CHANGE_VIEW = function() {
                 return this.createEventName('view.change');
             },
 
@@ -219,7 +303,7 @@
              * @event husky.datagrid.pagination.change
              * @param {String} paginationId The identifier of the pagination
              */
-            CHANGE_PAGINATION = function() {
+                CHANGE_PAGINATION = function() {
                 return this.createEventName('pagination.change');
             },
 
@@ -228,7 +312,7 @@
              * @event husky.datagrid.record.add
              * @param {Object} the data of the new record
              */
-            RECORD_ADD = function() {
+                RECORD_ADD = function() {
                 return this.createEventName('record.add');
             },
 
@@ -238,7 +322,7 @@
              * @param {Object} the data of the new record
              * @param callback {Function} callback to execute after process has been finished
              */
-            RECORDS_ADD = function() {
+                RECORDS_ADD = function() {
                 return this.createEventName('records.add');
             },
 
@@ -247,7 +331,7 @@
              * @event husky.datagrid.record.remove
              * @param {String} id of the record to be removed
              */
-            RECORD_REMOVE = function() {
+                RECORD_REMOVE = function() {
                 return this.createEventName('record.remove');
             },
 
@@ -256,7 +340,7 @@
              * @event husky.datagrid.records.change
              * @param {Object|Array} the new data-record. Must at least contain an id-property. Can also be an array of data-records
              */
-            RECORDS_CHANGE = function() {
+                RECORDS_CHANGE = function() {
                 return this.createEventName('records.change');
             },
 
@@ -264,7 +348,7 @@
              * used to trigger an update of the data
              * @event husky.datagrid.update
              */
-            UPDATE = function() {
+                UPDATE = function() {
                 return this.createEventName('update');
             },
 
@@ -274,7 +358,7 @@
              * @param {String} searchField
              * @param {String} searchString
              */
-            DATA_SEARCH = function() {
+                DATA_SEARCH = function() {
                 return this.createEventName('data.search');
             },
 
@@ -282,7 +366,7 @@
              * raised when data is sorted
              * @event husky.datagrid.data.sort
              */
-            DATA_SORT = function() {
+                DATA_SORT = function() {
                 return this.createEventName('data.sort');
             },
 
@@ -291,7 +375,7 @@
              * @event husky.datagrid.url.update
              * @param {Object} url parameter : key
              */
-            URL_UPDATE = function() {
+                URL_UPDATE = function() {
                 return this.createEventName('url.update');
             },
 
@@ -299,7 +383,7 @@
              * triggers husky.datagrid.data.provide
              * @event husky.datagrid.data.get
              */
-            DATA_GET = function() {
+                DATA_GET = function() {
                 return this.createEventName('data.get');
             },
 
@@ -308,10 +392,9 @@
              * @event husky.datagrid.items.get-selected
              * @param  {Function} callback function receives array of selected items
              */
-            ITEMS_GET_SELECTED = function() {
+                ITEMS_GET_SELECTED = function() {
                 return this.createEventName('items.get-selected');
             },
-
 
         /**
          * Private Methods
@@ -326,7 +409,7 @@
              * @param {String|Null} paramValue Value of the parameter. If not set, parameter will be removed from url
              * @returns {String} updated url
              */
-            setGetParameter = function(url, paramName, paramValue) {
+                setGetParameter = function(url, paramName, paramValue) {
                 if (url.indexOf(paramName + "=") >= 0) {
                     var prefix = url.substring(0, url.indexOf(paramName + "=")),
                         suffix = url.substring(url.indexOf(paramName + "="));
@@ -351,66 +434,6 @@
                     }
                 }
                 return url;
-            },
-
-            /**
-             * Takes bytes and returns a more readable string
-             * @param bytes {Number}
-             * @returns {string}
-             */
-            parseBytes = function(bytes) {
-                if (bytes === 0) {
-                    return '0 Byte';
-                }
-                var k = 1000,
-                    sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-                    i = Math.floor(Math.log(bytes) / Math.log(k));
-                return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
-            },
-
-            /**
-             * Brings a date into the right format
-             * @param date {String} the date to parse
-             * @returns {String}
-             */
-            parseDate = function(date) {
-                var parsedDate = this.sandbox.date.format(date);
-                if (parsedDate !== null) {
-                    return parsedDate;
-                }
-                return date;
-            },
-
-            /**
-             * Attaches a postfix to a number
-             * @param number
-             * @param postfix
-             */
-            parseCount = function(number, postfix) {
-                return (!!postfix) ? number + ' ' + postfix : number;
-            },
-
-            /**
-             * Takes an array of thumbnails and returns an object with url and and alt
-             * @param thumbnails {Array} array of thumbnails
-             * @param format {String} the format of the thumbnail
-             * @returns {Object} with url and alt property
-             */
-            parseThumbnails = function(thumbnails, format) {
-                var thumbnail = {
-                    url: null,
-                    alt: null
-                };
-                if (!!thumbnails[format]) {
-                    if (typeof thumbnails[format] === 'object') {
-                    thumbnail.url = thumbnails[format].url;
-                    thumbnail.alt = thumbnails[format].alt;
-                    } else {
-                        thumbnail.url = thumbnails[format];
-                        thumbnail.alt = '';
-                    }
-                }
-                return thumbnail;
             };
 
         return {
@@ -850,17 +873,38 @@
              * @param content {String} the content of the cell
              * @param type {String} the columns type
              * @param argument {Number|String} argument to pass to the processor
+             * @param columnName {String} Name of the column
              * @returns {String} the manipulated content
              */
-            manipulateContent: function(content, type, argument) {
-                if (type === types.DATE) {
-                    content = parseDate.call(this, content, argument);
-                } else if (type === types.BYTES) {
-                    content = parseBytes.call(this, content, argument);
-                } else if (type === types.THUMBNAILS) {
-                    content = parseThumbnails.call(this, content, argument);
-                } else if (type === types.COUNT) {
-                    content = parseCount.call(this, content, argument);
+            manipulateContent: function(content, type, argument, columnName) {
+                if (filters.hasOwnProperty(type)) {
+                    return filters[type].call(this, content, argument, columnName);
+                }
+                return content;
+            },
+
+            /**
+             * Checks if a filter was set for specified column and processes it
+             * @param {String} attributeName name of processed attribute
+             * @param {String} content the content which is processed
+             * @param {String} [type] if no filter is set, the type is processed
+             * @param {Number|String} [argument] argument to pass to the processor
+             * @returns {String} the manipulated content
+             */
+            processContentFilter: function(attributeName, content, type, argument) {
+                // check if filter is set for current column
+                if (!!this.options.contentFilters && this.options.contentFilters.hasOwnProperty(attributeName)) {
+                    // check if filter is function or string and call filter
+                    if (typeof this.options.contentFilters[attributeName] === 'function') {
+                        return this.options.contentFilters[attributeName].call(this, content, argument);
+                    } else if (typeof this.options.contentFilters[attributeName] === 'string') {
+                        type = this.options.contentFilters[attributeName];
+                        return this.manipulateContent(content, type, argument, attributeName);
+                    }
+                }
+                // if no filter was set, check if type is set and call
+                else if (!!type) {
+                    return this.manipulateContent(content, type, argument);
                 }
                 return content;
             },
@@ -1349,7 +1393,6 @@
                     });
                 }
             },
-
 
             /**
              * Filters fields out of the data passed to the view
