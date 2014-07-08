@@ -28436,9 +28436,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * triggered when a radio button inside the datagrid is clicked
          * @event husky.datagrid.table.open-child
          * @param {Number|String} id The id of the data-record to open the parents for
+         * @param {String} columnName column name
          */
-        RADIO_CLICKED = function() {
-            return this.datagrid.createEventName.call(this.datagrid, 'radio.clicked');
+        RADIO_SELECTED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, 'radio.selected');
         },
 
         /**
@@ -28674,9 +28675,11 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * emits radio-clicked event and stops event propagation
          */
         radioClickedCallback: function(event) {
-            var parent = this.sandbox.dom.closest(event.currentTarget, 'tr'),
-                id = this.sandbox.dom.data(parent, 'id');
-            this.sandbox.emit(RADIO_CLICKED.call(this), id);
+            var parentTr = this.sandbox.dom.closest(event.currentTarget, 'tr'),
+                parentTd = this.sandbox.dom.closest(event.currentTarget, 'td'),
+                id = this.sandbox.dom.data(parentTr, 'id'),
+                field = this.sandbox.dom.data(parentTd, 'field');
+            this.sandbox.emit(RADIO_SELECTED.call(this), id, field);
             event.stopPropagation();
         },
 
