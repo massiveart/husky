@@ -4183,14 +4183,14 @@
         },
         {
             "file": "husky_components/ckeditor/main.js",
-            "line": 101,
+            "line": 102,
             "description": "Binds Events to emit a custom changed event",
             "class": "CKEditor",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/ckeditor/main.js",
-            "line": 117,
+            "line": 118,
             "description": "Emits the custom changed event",
             "class": "CKEditor",
             "module": "husky/components/column-navigation"
@@ -11919,11 +11919,11 @@
         },
         {
             "message": "Missing item type\nBinds Events to emit a custom changed event",
-            "line": " husky_components/ckeditor/main.js:101"
+            "line": " husky_components/ckeditor/main.js:102"
         },
         {
             "message": "Missing item type\nEmits the custom changed event",
-            "line": " husky_components/ckeditor/main.js:117"
+            "line": " husky_components/ckeditor/main.js:118"
         },
         {
             "message": "Missing item type\nnamespace for events",
