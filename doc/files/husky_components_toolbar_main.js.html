@@ -428,18 +428,20 @@ define(function() {
             }.bind(this));
 
             this.sandbox.on(ITEMS_SET.call(this), function(button, items, itemId) {
-                if (items.length &gt; 0 &amp;&amp; !!this.items[button]) {
-                    deleteDropdown.call(this, this.items[button]);
-                    this.sandbox.dom.addClass(this.sandbox.dom.children(this.items[button].$el, &#x27;a&#x27;), &#x27;dropdown-toggle&#x27;);
-                    this.items[button].items = items;
-                    createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
-                    setButtonWidth.call(this, this.items[button].$el, this.items[button]);
-                    if (!!itemId) {
-                        this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemId);
+                if (!!this.items[button]) {
+                    if (items.length &gt; 0) {
+                        deleteDropdown.call(this, this.items[button]);
+                        this.sandbox.dom.addClass(this.sandbox.dom.children(this.items[button].$el, &#x27;a&#x27;), &#x27;dropdown-toggle&#x27;);
+                        this.items[button].items = items;
+                        createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
+                        setButtonWidth.call(this, this.items[button].$el, this.items[button]);
+                        if (!!itemId) {
+                            this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemId);
+                        }
+                    } else {
+                        deleteDropdown.call(this, this.items[button]);
+                        this.sandbox.dom.removeClass(this.sandbox.dom.children(this.items[button].$el, &#x27;a&#x27;), &#x27;dropdown-toggle&#x27;);
                     }
-                } else {
-                    deleteDropdown.call(this, this.items[button]);
-                    this.sandbox.dom.removeClass(this.sandbox.dom.children(this.items[button].$el, &#x27;a&#x27;), &#x27;dropdown-toggle&#x27;);
                 }
             }.bind(this));
         },
