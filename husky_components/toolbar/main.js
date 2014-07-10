@@ -256,7 +256,7 @@ define(function() {
             }.bind(this));
 
             this.sandbox.on(ITEMS_SET.call(this), function(button, items, itemId) {
-                if (items.length > 0) {
+                if (items.length > 0 && !!this.items[button]) {
                     deleteDropdown.call(this, this.items[button]);
                     this.sandbox.dom.addClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
                     this.items[button].items = items;
