@@ -118,16 +118,31 @@ define(function () {
                 title = addition = '';
 
                 this.sandbox.util.foreach(this.datagrid.matchings, function(matching) {
+                    var argument, result,
+                        type = matching.type;
 
-                    // pick the important data out of each group
+                    // prepare data for processing
+                    if (matching.type === this.datagrid.types.COUNT) {
+                        argument = this.sandbox.translate(constants.elementsKey);
+                    } else if (matching.type === this.datagrid.types.THUMBNAILS) {
+                        type = null; // do not apply default processor on thumbnails
+                    }
+
+                    // process
+                    result = this.datagrid.processContentFilter.call(this.datagrid,
+                        matching.attribute,
+                        group[matching.attribute],
+                        type,
+                        argument
+                    );
+
+                    // set data
                     if (matching.type === this.datagrid.types.THUMBNAILS) {
-                        thumbnails = group[matching.attribute];
+                        thumbnails = result;
                     } else if (matching.type === this.datagrid.types.TITLE) {
-                        title = group[matching.attribute];
+                        title = result;
                     } else if(matching.type === this.datagrid.types.COUNT) {
-                        addition += this.datagrid.manipulateContent.call(this.datagrid,
-                            group[matching.attribute],
-                            matching.type, this.sandbox.translate(constants.elementsKey));
+                        addition += result;
                     }
                 }.bind(this));
 

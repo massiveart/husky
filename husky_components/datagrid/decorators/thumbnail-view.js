@@ -43,20 +43,20 @@ define(function() {
 
         templates = {
             item: [
-                    '<div class="' + constants.itemClass + ' <%= styleClass %>">',
-                        '<div class="' + constants.imageClass + '">',
-                            '<img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
-                        '</div>',
-                        '<div class="' + constants.textClass + '">',
-                            '<span class="' + constants.titleClass + '"><%= title %></span><br />',
-                            '<span class="' + constants.descriptionClass + '"><%= description %></span>',
-                        '</div>',
-                        '<div class="' + constants.checkboxClass + ' custom-checkbox no-spacing">',
-                            '<input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
-                            '<span class="icon"></span>',
-                        '</div>',
-                        '<div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
-                    '</div>'
+                '<div class="' + constants.itemClass + ' <%= styleClass %>">',
+                '<div class="' + constants.imageClass + '">',
+                '<img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
+                '</div>',
+                '<div class="' + constants.textClass + '">',
+                '<span class="' + constants.titleClass + '"><%= title %></span><br />',
+                '<span class="' + constants.descriptionClass + '"><%= description %></span>',
+                '</div>',
+                '<div class="' + constants.checkboxClass + ' custom-checkbox no-spacing">',
+                '<input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
+                '<span class="icon"></span>',
+                '</div>',
+                '<div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
+                '</div>'
             ].join('')
         };
 
@@ -130,23 +130,30 @@ define(function() {
 
                 // foreach matching configured get the corresponding datum from the record
                 this.sandbox.util.foreach(this.datagrid.matchings, function(matching) {
+                    var argument, result;
+
+                    // get argument
+                    if (matching.type === this.datagrid.types.THUMBNAILS) {
+                        argument = this.thumbnailFormat;
+                    }
+
+                    // process
+                    result = this.datagrid.processContentFilter.call(this.datagrid,
+                        matching.attribute,
+                        record[matching.attribute],
+                        matching.type,
+                        argument
+                    );
 
                     // get the thumbnail and the title data (to place it on top)
                     // with the rest generate a description string
                     if (matching.type === this.datagrid.types.THUMBNAILS) {
-                        thumbnail = this.datagrid.manipulateContent.call(this.datagrid,
-                            record[matching.attribute],
-                            this.datagrid.types.THUMBNAILS,
-                            this.thumbnailFormat
-                        );
-                        imgSrc = thumbnail[constants.thumbnailSrcProperty];
-                        imgAlt = thumbnail[constants.thumbnailAltProperty];
+                        imgSrc = result[constants.thumbnailSrcProperty];
+                        imgAlt = result[constants.thumbnailAltProperty];
                     } else if (matching.type === this.datagrid.types.TITLE) {
-                        title = record[matching.attribute];
+                        title = result;
                     } else if (matching.type === this.datagrid.types.BYTES) {
-                        description.push(
-                            this.datagrid.manipulateContent.call(this.datagrid, record[matching.attribute], this.datagrid.types.BYTES)
-                        );
+                        description.push(result);
                     }
                 }.bind(this));
 

@@ -311,6 +311,16 @@ define(function() {
         },
 
         /**
+         * triggered when a radio button inside the datagrid is clicked
+         * @event husky.datagrid.table.open-child
+         * @param {Number|String} id The id of the data-record to open the parents for
+         * @param {String} columnName column name
+         */
+        RADIO_SELECTED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, &#x27;radio.selected&#x27;);
+        },
+
+        /**
          * calculates the width of a text by creating a tablehead element and measure its width
          * @param text
          * @param classArray
@@ -497,6 +507,12 @@ define(function() {
                 this.callIconCallback.bind(this), &#x27;tr .grid-icon&#x27;
             );
 
+            // calls the radio-clicked event and stops further event-propagation
+            this.sandbox.dom.on(
+                this.sandbox.dom.find(&#x27;.custom-radio.custom-filter&#x27;,this.$tableContainer), &#x27;click&#x27;,
+                this.radioClickedCallback.bind(this)
+            );
+
             this.sandbox.dom.on(this.$tableContainer, &#x27;click&#x27;, function(event) {
                 this.sandbox.dom.stopPropagation(event);
             }.bind(this));
@@ -531,6 +547,18 @@ define(function() {
                     this.prepareChildrenLoad.bind(this), &#x27;tbody tr&#x27;
                 );
             }
+        },
+
+        /**
+         * emits radio-clicked event and stops event propagation
+         */
+        radioClickedCallback: function(event) {
+            var parentTr = this.sandbox.dom.closest(event.currentTarget, &#x27;tr&#x27;),
+                parentTd = this.sandbox.dom.closest(event.currentTarget, &#x27;td&#x27;),
+                id = this.sandbox.dom.data(parentTr, &#x27;id&#x27;),
+                field = this.sandbox.dom.data(parentTd, &#x27;field&#x27;);
+            this.sandbox.emit(RADIO_SELECTED.call(this), id, field);
+            event.stopPropagation();
         },
 
         /**
@@ -883,13 +911,11 @@ define(function() {
                 tblCellStyle = &#x27;style=&quot;max-width:&#x27; + this.datagrid.matchings[index].minWidth + &#x27;&quot;&#x27;;
 
                 // call the type manipulate to manipulate the content of the cell
-                if (!!type) {
-                    if (type === this.datagrid.types.THUMBNAILS) {
-                        tblCellContent = this.datagrid.manipulateContent(tblCellContent, type, this.options.thumbnailFormat);
-                        tblCellContent = &#x27;&lt;img alt=&quot;&#x27; + tblCellContent[constants.thumbAltKey] + &#x27;&quot; src=&quot;&#x27; + tblCellContent[constants.thumbSrcKey] + &#x27;&quot;/&gt;&#x27;;
-                    } else {
-                        tblCellContent = this.datagrid.manipulateContent(tblCellContent, type);
-                    }
+                if (!!type &amp;&amp; type === this.datagrid.types.THUMBNAILS) {
+                    tblCellContent = this.datagrid.manipulateContent(tblCellContent, type, this.options.thumbnailFormat);
+                    tblCellContent = &#x27;&lt;img alt=&quot;&#x27; + tblCellContent[constants.thumbAltKey] + &#x27;&quot; src=&quot;&#x27; + tblCellContent[constants.thumbSrcKey] + &#x27;&quot;/&gt;&#x27;;
+                } else {
+                    tblCellContent = this.datagrid.processContentFilter(key, tblCellContent, type, index);
                 }
 
                 if (!!editable) {
