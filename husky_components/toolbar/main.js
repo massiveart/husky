@@ -268,18 +268,20 @@ define(function() {
             }.bind(this));
 
             this.sandbox.on(ITEMS_SET.call(this), function(button, items, itemId) {
-                if (items.length > 0 && !!this.items[button]) {
-                    deleteDropdown.call(this, this.items[button]);
-                    this.sandbox.dom.addClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
-                    this.items[button].items = items;
-                    createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
-                    setButtonWidth.call(this, this.items[button].$el, this.items[button]);
-                    if (!!itemId) {
-                        this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemId);
+                if (!!this.items[button]) {
+                    if (items.length > 0) {
+                        deleteDropdown.call(this, this.items[button]);
+                        this.sandbox.dom.addClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
+                        this.items[button].items = items;
+                        createDropdownMenu.call(this, this.items[button].$el, this.items[button]);
+                        setButtonWidth.call(this, this.items[button].$el, this.items[button]);
+                        if (!!itemId) {
+                            this.sandbox.emit(ITEM_CHANGE.call(this), this.items[button].id, itemId);
+                        }
+                    } else {
+                        deleteDropdown.call(this, this.items[button]);
+                        this.sandbox.dom.removeClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
                     }
-                } else {
-                    deleteDropdown.call(this, this.items[button]);
-                    this.sandbox.dom.removeClass(this.sandbox.dom.children(this.items[button].$el, 'a'), 'dropdown-toggle');
                 }
             }.bind(this));
         },
