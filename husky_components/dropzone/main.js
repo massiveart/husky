@@ -23,6 +23,7 @@
  * @params {String} [options.paramName] the name of the parameter which will contain the file(s). Note that if uploadMultiple is set to true the parameter Name gets extended with '[]'
  * @params {Object} [options.headers] additional headers to pass with each request
  * @params {Boolean} [options.uploadMultiple] if true a request can upload multiple files
+ * @params {Number} [options.maxFiles] defines the maximum of files in the dropzone
  * @params {Function} [options.successCallback] callback which gets called if a file got successfully uploaded. First parameter is the file, the second the response
  * @params {Function} [options.beforeSendingCallback] callback which gets called before a file gets uploaded. First parameter is the file.
  * @params {Function} [options.removeFileCallback] callback which gets called after a file got removed. First parameter is the file.
@@ -52,6 +53,7 @@ define([], function () {
             beforeSendingCallback: null,
             removeFileCallback: null,
             pluginOptions: {},
+            maxFiles: null,
             fadeOutDuration: 200, //ms
             fadeOutDelay: 1500, //ms
             showOverlay: true,
@@ -287,6 +289,7 @@ define([], function () {
                     method: this.options.method,
                     paramName: this.options.paramName,
                     uploadMultiple: this.options.uploadMultiple,
+                    maxFiles: this.options.maxFiles,
                     headers: this.options.headers,
                     previewTemplate: this.sandbox.util.template(templates.uploadItem)({
                         cancelIcon: this.options.cancelLoadingIcon
@@ -344,7 +347,7 @@ define([], function () {
                 };
 
             // merge the default plugin options with with passed ones
-            this.sandbox.util.extend(true, {}, options, this.options.pluginOptions);
+            options = this.sandbox.util.extend(true, {}, options, this.options.pluginOptions);
             this.sandbox.dropzone.initialize(this.$dropzone, options);
         },
 

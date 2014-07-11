@@ -80,8 +80,6 @@ define(function() {
 
     return {
 
-        view: true,
-
         initialize: function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
