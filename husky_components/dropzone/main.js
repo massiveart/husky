@@ -52,6 +52,7 @@ define([], function () {
             successCallback: null,
             beforeSendingCallback: null,
             removeFileCallback: null,
+            pluginOptions: {},
             maxFiles: null,
             fadeOutDuration: 200, //ms
             fadeOutDelay: 1500, //ms

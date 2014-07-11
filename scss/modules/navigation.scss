@@ -64,11 +64,12 @@ $fadeDuration: 100ms;
         }
     }
 }
+
 .husky-navigation {
   float: left;
   height: 100%;
-
 }
+
 .navigation {
     width: 250px;
     height: 100%;
@@ -78,8 +79,6 @@ $fadeDuration: 100ms;
     background-color: $navigationBackgroundColor;
     overflow-x: visible;
     z-index: 101;
-
-
 
     .navigation-close-icon {
         display: none;
@@ -246,7 +245,7 @@ li.is-active {
         }
     }
 
-    /* sub-items */
+/* sub-items */
 .navigation-items-list {
         position: absolute;
         left: 0px;
@@ -427,9 +426,11 @@ li a.navigation-settings-icon {
             color: $black;
             width: 60px;
         }
+
         .dropdown-list {
             min-width: 150px;
         }
+
         .logout {
             color: white;
             cursor: pointer;
@@ -539,7 +540,6 @@ li a.navigation-settings-icon {
 
     footer {
         padding-left: 15px;
-        height: auto;
         cursor: pointer;
         height: ($footerOuterHeightColappsed) * 1px;
         overflow: hidden;
@@ -549,9 +549,11 @@ li a.navigation-settings-icon {
             height: 0px;
             margin: 0px;
         }
+
         .user {
             opacity: 1;
             height: 20px;
+
             .pic {
                 opacity: 1;
                 height: 20px;
