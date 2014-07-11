@@ -23,7 +23,7 @@ require(['lib/husky'], function(Husky) {
                     preselected: ["1", "2"],
                     paginationOptions: {
                         dropdown: {
-                            pageSize: 4
+                            limit: 4
                         }
                     },
                     viewOptions: {
@@ -89,7 +89,7 @@ require(['lib/husky'], function(Husky) {
                     url: 'http://husky.lo:7878/admin/api/datagrid',
                     paginationOptions: {
                         dropdown: {
-                            pageSize: 4
+                            limit: 4
                         }
                     },
                     view: 'thumbnail',
@@ -173,6 +173,7 @@ require(['lib/husky'], function(Husky) {
                     sortable: true,
                     pagination: false,
                     childrenPropertyName: 'children',
+                    resultKey: 'categories',
                     viewOptions: {
                         table: {
                             icons: [
@@ -229,6 +230,7 @@ require(['lib/husky'], function(Husky) {
                     pagination: false,
                     childrenPropertyName: 'children',
                     onlySelectLeaves: true,
+                    resultKey: 'categories',
                     viewOptions: {
                         table: {
                             icons: [
@@ -284,6 +286,7 @@ require(['lib/husky'], function(Husky) {
                     sortable: true,
                     pagination: false,
                     childrenPropertyName: 'children',
+                    resultKey: 'categories',
                     viewOptions: {
                         table: {
                             openChildId: 12,
@@ -340,6 +343,7 @@ require(['lib/husky'], function(Husky) {
                     instanceName: 'assignment-datagrid',
                     pagination: false,
                     childrenPropertyName: 'children',
+                    resultKey: 'categories',
                     preselected: [1, 22],
                     viewOptions: {
                         table: {

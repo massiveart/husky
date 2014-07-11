@@ -30424,7 +30424,7 @@ define('husky_components/datagrid/decorators/group-view',[],function () {
  *
  * @param {Object} [paginationOptions] Configuration object
  * @param {Array} [options.showElementsSteps] Array which contains the steps for the Show-Elements-dropdown as integers
- * @param {Number} [options.pageSize] Data records per page
+ * @param {Number} [options.limit] Data records per page
  *
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
@@ -30436,7 +30436,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
      var defaults = {
             showElementsSteps: [10, 20, 50, 100, 500],
-            pageSize: 10
+            limit: 10
         },
 
         constants = {
@@ -30527,10 +30527,10 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
         /**
          * Returns the pagination page size
-         * @returns {Number} current Page size
+         * @returns {Number} current limit
          */
-        getPageSize: function() {
-            return this.options.pageSize;
+        getLimit: function() {
+            return this.options.limit;
         },
 
         /**
@@ -30563,11 +30563,11 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
             // show-elements dropdown item clicked
             this.sandbox.on('husky.dropdown.' + this.datagrid.options.instanceName + '-pagination-dropdown-show.item.click', function(item) {
-                if (this.data.pageSize !== item.id || this.data.total === this.data.numberOfAll) {
+                if (this.data.limit !== item.id || this.data.embedded.length === this.data.total) {
                     // show all
                     if (item.id === 0) {
                         // only if not already all are shown
-                        if (this.data.total !== this.data.numberOfAll) {
+                        if (this.data.embedded.length !== this.data.total) {
                             this.datagrid.changePage.call(this.datagrid, this.data.links.all);
                         }
                     } else {
@@ -30634,13 +30634,13 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 description;
 
             // if first defined step is bigger than the number of all elements don't display show-elements dropdown
-            if (this.data.numberOfAll > this.options.showElementsSteps[0]) {
-                if (this.data.total === this.data.numberOfAll) {
+            if (this.data.total > this.options.showElementsSteps[0]) {
+                if (this.data.embedded.length === this.data.total) {
                     description = this.sandbox.translate(translations.showAllElements);
                 } else {
                     description = this.sandbox.translate(translations.show) +
-                        ' <strong>' + this.data.total + '</strong> ' +
-                        this.sandbox.translate(translations.elementsOf) + ' ' + this.data.numberOfAll;
+                        ' <strong>' + this.data.embedded.length + '</strong> ' +
+                        this.sandbox.translate(translations.elementsOf) + ' ' + this.data.total;
                 }
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
                     'desc': description
@@ -30710,7 +30710,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             var i, length, data = [];
 
             for (i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
-                if (this.options.showElementsSteps[i] > this.data.numberOfAll) {
+                if (this.options.showElementsSteps[i] > this.data.total) {
                     break;
                 }
                 data.push({
@@ -30746,7 +30746,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
  * @constructor
  *
  * @param {Object} [paginationOptions] Configuration object
- * @param {Number} [paginationOptions.pageSize] maximum elements per page
+ * @param {Number} [paginationOptions.limit] maximum elements per page
  * @param {Function} [paginationOptions.showAllHandler] function to call if pagination is clicked. If set pagination will always be displayed. Default action gets not executed if set.
  *
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -30759,7 +30759,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
     
 
     var defaults = {
-            pageSize: 9,
+            limit: 9,
             showAllHandler: null
         },
 
@@ -30820,9 +30820,9 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             this.data = data;
 
             this.$paginationContainer = this.sandbox.dom.createElement('<div class="' + constants.paginationClass + '"/>');
-            if (this.data.numberOfAll > this.data.total || !!this.options.showAllHandler) {
+            if (this.data.total > this.data.embedded.length || !!this.options.showAllHandler) {
                 this.renderShowAll();
-            } else if (this.data.numberOfAll > this.options.pageSize) {
+            } else if (this.data.total > this.options.limit) {
                 this.renderShowOnly();
             } else {
                 return false;
@@ -30841,7 +30841,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
         renderShowAll: function() {
             this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
                 desc: translations.showAll,
-                number: this.data.numberOfAll,
+                number: this.data.total,
                 elements: translations.elements,
                 translate: this.sandbox.translate
             }));
@@ -30853,7 +30853,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
         renderShowOnly: function() {
             this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
                 desc: translations.showOnly,
-                number: this.options.pageSize,
+                number: this.options.limit,
                 elements: translations.elements,
                 translate: this.sandbox.translate
             }));
@@ -30861,10 +30861,10 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
 
         /**
          * Returns the pagination page size
-         * @returns {Number} current Page size
+         * @returns {Number} current limit
          */
-        getPageSize: function () {
-            return this.options.pageSize;
+        getLimit: function () {
+            return this.options.limit;
         },
 
         /**
@@ -30889,7 +30889,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
          */
         bindDomEvents: function () {
             this.sandbox.dom.on(this.$paginationContainer, 'click', function() {
-                if (this.data.numberOfAll > this.data.total || !!this.options.showAllHandler) {
+                if (this.data.total > this.data.embedded.length || !!this.options.showAllHandler) {
                     this.showAll();
                 } else {
                     this.showOnly();
@@ -30913,7 +30913,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
          * Shows only the configured amount of elements in the datagrid
          */
         showOnly: function() {
-            this.datagrid.changePage.call(this.datagrid, null, 1, this.options.pageSize);
+            this.datagrid.changePage.call(this.datagrid, null, 1, this.options.limit);
         },
 
         /**
@@ -30931,6 +30931,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
  *
  * @param {Object} [options] Configuration object
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
+ * @param {String} [options.resultKey] the name of the data-array in the embedded in the response
  * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
  * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
  * @param {String} [options.view='table'] name of the view to use
@@ -30990,7 +30991,8 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 preselected: [],
                 onlySelectLeaves: false,
                 childrenPropertyName: false,
-                resizeListeners: true
+                resizeListeners: true,
+                resultKey: 'items'
             },
 
             types = {
@@ -31635,12 +31637,11 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             parseData: function(data) {
                 this.data = {};
                 this.data.links = data._links;
-                this.data.embedded = data._embedded;
+                this.data.embedded = data._embedded[this.options.resultKey];
                 this.data.total = data.total;
-                this.data.numberOfAll = data.numberOfAll;
                 this.data.page = data.page;
                 this.data.pages = data.pages;
-                this.data.pageSize = data.pageSize;
+                this.data.limit = data.limit;
             },
 
             /**
@@ -31749,7 +31750,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 var bool = true;
                 if (typeof pagination.initialize === 'undefined' ||
                     typeof pagination.render === 'undefined' ||
-                    typeof pagination.getPageSize === 'undefined' ||
+                    typeof pagination.getLimit === 'undefined' ||
                     typeof pagination.destroy === 'undefined') {
                     bool = false;
                 }
@@ -31767,11 +31768,11 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 }
 
                 var delimiter = '?', url = params.url;
-                if (!!this.options.pagination && !!this.paginations[this.paginationId].getPageSize()) {
+                if (!!this.options.pagination && !!this.paginations[this.paginationId].getLimit()) {
                     if (params.url.indexOf('?') !== -1) {
                         delimiter = '&';
                     }
-                    url = params.url + delimiter + 'pageSize=' + this.paginations[this.paginationId].getPageSize();
+                    url = params.url + delimiter + 'limit=' + this.paginations[this.paginationId].getLimit();
                     if (params.page > 1) {
                         url += '&page=' + params.page;
                     }
@@ -32228,8 +32229,6 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 for (var i = -1, length = this.data.embedded.length; ++i < length;) {
                     if (recordId === this.data.embedded[i].id) {
                         this.data.embedded.splice(i, 1);
-                        this.data.numberOfAll--;
-                        this.data.total--;
                         this.rerenderPagination();
                         return true;
                     }
@@ -32244,8 +32243,6 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             pushRecords: function(records) {
                 for (var i = -1, length = records.length; ++i < length;) {
                     this.data.embedded.push(records[i]);
-                    this.data.numberOfAll++;
-                    this.data.total++;
                 }
                 this.rerenderPagination();
             },
@@ -32257,8 +32254,6 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
             unshiftRecords: function(records) {
                 for (var i = -1, length = records.length; ++i < length;) {
                     this.data.embedded.unshift(records[i]);
-                    this.data.numberOfAll++;
-                    this.data.total++;
                     this.rerenderPagination();
                 }
             },
@@ -32268,9 +32263,9 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * Emits husky.datagrid.updated event on success
              * @param uri {String} Url to load the new data from
              * @param page {Number} the page to change to
-             * @param pageSize {Number} new page size. Has to be set if no Uri is passed
+             * @param limit {Number} new page size. Has to be set if no Uri is passed
              */
-            changePage: function(uri, page, pageSize) {
+            changePage: function(uri, page, limit) {
                 if (!!this.data.links.pagination) {
                     var url, uriTemplate;
 
@@ -32285,14 +32280,14 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                             this.sandbox.logger.log("invalid page number or reached start/end!");
                             return;
                         }
-                        // if no pageSize is passed keep current pageSize
-                        if (!pageSize) {
-                            pageSize = this.data.pageSize;
+                        // if no limit is passed keep current limit
+                        if (!limit) {
+                            limit = this.data.limit;
                         }
 
                         // generate uri for loading
                         uriTemplate = this.sandbox.uritemplate.parse(this.data.links.pagination);
-                        url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, pageSize: pageSize});
+                        url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, limit: limit});
                     }
 
                     this.sandbox.emit(PAGE_CHANGE.call(this), url);
@@ -32389,7 +32384,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
 
                     this.sandbox.util.load(this.getUrl({url: url}))
                         .then(function(response) {
-                            this.addRecordsHandler(response['_embedded']);
+                            this.addRecordsHandler(response._embedded[this.options.resultKey]);
                         }.bind(this))
                         .fail(function(status, error) {
                             this.sandbox.logger.error(status, error);
@@ -34557,7 +34552,6 @@ define('__component__$toolbar@husky',[],function() {
  * @param {String} [options.remoteUrl] url to fetch data on input
  * @param {String} [options.getParameter] name for GET-parameter in remote query
  * @param {String} [options.valueKey] Name of value-property in suggestion
- * @param {String} [options.totalKey] Key for total-property in JSON-result
  * @param {String} [options.resultKey] Key for suggestions-array in JSON result
  * @param {object} [options.value] with name (value of the input box), id (data-id of the input box)
  * @param {String} [options.instanceName] name of the component instance
@@ -34583,8 +34577,7 @@ define('__component__$auto-complete@husky',[], function () {
             remoteUrl: '',
             getParameter: 'query',
             valueKey: 'name',
-            totalKey: 'total',
-            resultKey: '_embedded',
+            resultKey: 'countries',
             value: null,
             instanceName: 'undefined',
             noNewValues: false,
@@ -34705,14 +34698,13 @@ define('__component__$auto-complete@husky',[], function () {
 
             this._template = null;
             this.data = null;
-            this.total = 0;
             this.matched = true;
             this.matches = [];
             this.executeBlurHandler = true;
             this.excludes = this.parseExcludes(this.options.excludes);
             this.localData = {};
-            this.localData[this.options.resultKey] = this.options.localData;
-            this.localData[this.options.totalKey] = this.options.localData.length;
+            this.localData._embedded = {};
+            this.localData._embedded[this.options.resultKey] = this.options.localData;
 
             this.setTemplate();
 
@@ -35090,14 +35082,13 @@ define('__component__$auto-complete@husky',[], function () {
 
         /**
          * Assigns loaded data to properties
-         * @param data {object} with total and data array
+         * @param data {object} with data array
          */
         handleData: function (data) {
             if (typeof data === 'object') {
-                this.total = data[this.options.totalKey];
                 this.data = [];
 
-                this.sandbox.util.foreach(data[this.options.resultKey], function (key) {
+                this.sandbox.util.foreach(data._embedded[this.options.resultKey], function (key) {
                     if (this.isExcluded(key) === false) {
                         this.data.push(key);
                     }
@@ -35168,7 +35159,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                 instanceName: 'undefined',
                 items: [],
                 itemsUrl: '',
-                itemsKey: '_embedded',
+                itemsKey: 'tags',
                 suggestions: [],
                 suggestionsHeadline: '',
                 suggestionsUrl: '',
@@ -35439,7 +35430,8 @@ define('__component__$auto-complete-list@husky',[], function() {
                                 prefetchUrl: this.options.prefetchUrl,
                                 remoteUrl: this.options.remoteUrl,
                                 getParameter: this.options.getParameter,
-                                suggestionImg: this.options.autoCompleteIcon
+                                suggestionImg: this.options.autoCompleteIcon,
+                                resultKey: this.options.itemsKey
                             },
                             this.options.autocompleteOptions
                         )
@@ -35585,7 +35577,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                     url: this.options.itemsUrl,
 
                     success: function(data) {
-                        this.options.items = this.options.items.concat(data[this.options.itemsKey]);
+                        this.options.items = this.options.items.concat(data._embedded[this.options.itemsKey]);
                         this.startPlugins();
                         DATA_LOADED.call(this);
                     }.bind(this),
@@ -36981,6 +36973,7 @@ define('__component__$password-fields@husky',[], function() {
  * @params {String} [options.publishedName] name of published-key
  * @params {String} [options.typeName] name of type-key
  * @params {String} [options.titleName] name of title-key
+ * @params {String} [options.resultKey] The name of the array in the responded _embedded
  * @params {Number} [options.visibleRatio] minimum ratio of how much of a column must be visible to display the navigation
  * @params {String} [options.sizeRelativeTo] dom object which is used to calculate height / width (default $window)
  * @params {Boolean} [options.showEdit] hide or display edit elements
@@ -37013,6 +37006,7 @@ define('__component__$column-navigation@husky',[], function() {
             typeName: 'type',
             minVisibleRatio: 1 / 2,
             noPageDescription: 'public.no-pages',
+            resultKey: 'nodes',
             sizeRelativeTo: null,
             showEdit: true,
             showEditIcon: true,
@@ -37284,7 +37278,7 @@ define('__component__$column-navigation@husky',[], function() {
 
             $list = this.sandbox.dom.find('ul', $column);
 
-            this.sandbox.util.each(data._embedded, function(index, value) {
+            this.sandbox.util.each(data._embedded[this.options.resultKey], function(index, value) {
 
                 this.storeDataItem(newColumn, value);
                 var $element = this.sandbox.dom.$(this.template.item.call(this, this.options.column.width, value));
@@ -37293,7 +37287,7 @@ define('__component__$column-navigation@husky',[], function() {
                 this.setItemsTextWidth($element);
 
                 // remember which item has subitems to display a whole tree when column navigation should be restored
-                if (!!value[this.options.hasSubName] && value._embedded.length > 0) {
+                if (!!value[this.options.hasSubName] && value._embedded[this.options.resultKey].length > 0) {
                     nodeWithSubNodes = value;
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
@@ -38133,7 +38127,9 @@ return {
  * @params {String} [options.presentAsParameter] parameter for the presentation-possibility id
  * @params {String} [options.limitResultParameter] parameter for the limit-result-value
  * @params {String} [options.idKey] key for the id in the returning JSON-result
- * @params {String} [options.resultKey] key for the data in the returning JSON-result
+ * @params {String} [options.resultKey] key for the data in the returning JSON-embedded-result
+ * @params {String} [options.tagsResultKey] key for the data in the returning JSON-embedded-result for the tags-component
+ * @params {String} [options.columnNavigationResultKey] key for the data in the returning JSON-embedded-result for the column-navigation component
  * @params {String} [options.titleKey] key for the title in the returning JSON-result
  * @params {String} [options.pathKey] key for the path in the returning JSON-result
  * @params {Boolean} [options.subFoldersDisabled] if true sub-folders overlay-item will be disabled
@@ -38208,7 +38204,9 @@ define('__component__$smart-content@husky',[], function() {
             limitResultParameter: 'limitResult',
             limitResultDisabled: false,
             idKey: 'id',
-            resultKey: '_embedded',
+            resultKey: 'items',
+            tagsResultKey: 'tags',
+            columnNavigationResultKey: 'nodes',
             titleKey: 'title',
             pathKey: 'path',
             translations: {},
@@ -38882,7 +38880,8 @@ define('__component__$smart-content@husky',[], function() {
                             wrapper: {height: 100},
                             editIcon: 'fa-check',
                             showEdit: false,
-                            showStatus: false
+                            showStatus: false,
+                            resultKey: this.options.columnNavigationResultKey
                         }
                     }
                 ]
@@ -38971,7 +38970,8 @@ define('__component__$smart-content@husky',[], function() {
                         remoteUrl: this.options.tagsAutoCompleteUrl,
                         autocomplete: (this.options.tagsAutoCompleteUrl !== ''),
                         getParameter: this.options.tagsGetParameter,
-                        noNewTags: true
+                        noNewTags: true,
+                        itemsKey: this.options.tagsResultKey
                     }
                 },
                 {
@@ -39056,7 +39056,7 @@ define('__component__$smart-content@husky',[], function() {
                     success: function(data) {
                         this.overlayData.title = data[this.options.titleKey];
                         this.overlayData.path = data[this.options.pathKey];
-                        this.items = data[this.options.resultKey];
+                        this.items = data._embedded[this.options.resultKey];
                         this.sandbox.emit(DATA_RETRIEVED.call(this));
                     }.bind(this),
 

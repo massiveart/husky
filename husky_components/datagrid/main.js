@@ -4,6 +4,7 @@
  *
  * @param {Object} [options] Configuration object
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
+ * @param {String} [options.resultKey] the name of the data-array in the embedded in the response
  * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
  * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
  * @param {String} [options.view='table'] name of the view to use
@@ -63,7 +64,8 @@
                 preselected: [],
                 onlySelectLeaves: false,
                 childrenPropertyName: false,
-                resizeListeners: true
+                resizeListeners: true,
+                resultKey: 'items'
             },
 
             types = {
@@ -708,12 +710,11 @@
             parseData: function(data) {
                 this.data = {};
                 this.data.links = data._links;
-                this.data.embedded = data._embedded;
+                this.data.embedded = data._embedded[this.options.resultKey];
                 this.data.total = data.total;
-                this.data.numberOfAll = data.numberOfAll;
                 this.data.page = data.page;
                 this.data.pages = data.pages;
-                this.data.pageSize = data.pageSize;
+                this.data.limit = data.limit;
             },
 
             /**
@@ -822,7 +823,7 @@
                 var bool = true;
                 if (typeof pagination.initialize === 'undefined' ||
                     typeof pagination.render === 'undefined' ||
-                    typeof pagination.getPageSize === 'undefined' ||
+                    typeof pagination.getLimit === 'undefined' ||
                     typeof pagination.destroy === 'undefined') {
                     bool = false;
                 }
@@ -840,11 +841,11 @@
                 }
 
                 var delimiter = '?', url = params.url;
-                if (!!this.options.pagination && !!this.paginations[this.paginationId].getPageSize()) {
+                if (!!this.options.pagination && !!this.paginations[this.paginationId].getLimit()) {
                     if (params.url.indexOf('?') !== -1) {
                         delimiter = '&';
                     }
-                    url = params.url + delimiter + 'pageSize=' + this.paginations[this.paginationId].getPageSize();
+                    url = params.url + delimiter + 'limit=' + this.paginations[this.paginationId].getLimit();
                     if (params.page > 1) {
                         url += '&page=' + params.page;
                     }
@@ -1301,8 +1302,6 @@
                 for (var i = -1, length = this.data.embedded.length; ++i < length;) {
                     if (recordId === this.data.embedded[i].id) {
                         this.data.embedded.splice(i, 1);
-                        this.data.numberOfAll--;
-                        this.data.total--;
                         this.rerenderPagination();
                         return true;
                     }
@@ -1317,8 +1316,6 @@
             pushRecords: function(records) {
                 for (var i = -1, length = records.length; ++i < length;) {
                     this.data.embedded.push(records[i]);
-                    this.data.numberOfAll++;
-                    this.data.total++;
                 }
                 this.rerenderPagination();
             },
@@ -1330,8 +1327,6 @@
             unshiftRecords: function(records) {
                 for (var i = -1, length = records.length; ++i < length;) {
                     this.data.embedded.unshift(records[i]);
-                    this.data.numberOfAll++;
-                    this.data.total++;
                     this.rerenderPagination();
                 }
             },
@@ -1341,9 +1336,9 @@
              * Emits husky.datagrid.updated event on success
              * @param uri {String} Url to load the new data from
              * @param page {Number} the page to change to
-             * @param pageSize {Number} new page size. Has to be set if no Uri is passed
+             * @param limit {Number} new page size. Has to be set if no Uri is passed
              */
-            changePage: function(uri, page, pageSize) {
+            changePage: function(uri, page, limit) {
                 if (!!this.data.links.pagination) {
                     var url, uriTemplate;
 
@@ -1358,14 +1353,14 @@
                             this.sandbox.logger.log("invalid page number or reached start/end!");
                             return;
                         }
-                        // if no pageSize is passed keep current pageSize
-                        if (!pageSize) {
-                            pageSize = this.data.pageSize;
+                        // if no limit is passed keep current limit
+                        if (!limit) {
+                            limit = this.data.limit;
                         }
 
                         // generate uri for loading
                         uriTemplate = this.sandbox.uritemplate.parse(this.data.links.pagination);
-                        url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, pageSize: pageSize});
+                        url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, limit: limit});
                     }
 
                     this.sandbox.emit(PAGE_CHANGE.call(this), url);
@@ -1462,7 +1457,7 @@
 
                     this.sandbox.util.load(this.getUrl({url: url}))
                         .then(function(response) {
-                            this.addRecordsHandler(response['_embedded']);
+                            this.addRecordsHandler(response._embedded[this.options.resultKey]);
                         }.bind(this))
                         .fail(function(status, error) {
                             this.sandbox.logger.error(status, error);

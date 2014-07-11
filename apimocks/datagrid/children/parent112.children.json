@@ -2,7 +2,7 @@
     "_links": {
         "self": "http://husky.lo:7878/admin/api/datagrid/actualchildren?parent=112"
     },
-    "_embedded": [
+    "_embedded": {"categories": [
         {
             "id": 1121,
             "name": "Category 1.1.2.1",
@@ -15,10 +15,9 @@
             "children": 4,
             "parent": 112
         }
-    ],
+    ]},
     "total": 2,
-    "numberOfAll": 2,
     "pages": 1,
     "page": 1,
-    "pageSize": 2
+    "limit": 2
 }

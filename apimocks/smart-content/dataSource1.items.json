@@ -1,14 +1,14 @@
 {
     "title": "A good example (1)",
     "path": "/path-1",
-    "_embedded": [
+    "_embedded": {"products": [
         {
             "id": 1,
-            "name": "Produkt X"
+            "title": "Produkt X"
         },
         {
             "id": 2,
-            "name": "Produkt Y"
+            "title": "Produkt Y"
         }
-    ]
+    ]}
 }

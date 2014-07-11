@@ -57,7 +57,7 @@ define([], function() {
                 instanceName: 'undefined',
                 items: [],
                 itemsUrl: '',
-                itemsKey: '_embedded',
+                itemsKey: 'tags',
                 suggestions: [],
                 suggestionsHeadline: '',
                 suggestionsUrl: '',
@@ -328,7 +328,8 @@ define([], function() {
                                 prefetchUrl: this.options.prefetchUrl,
                                 remoteUrl: this.options.remoteUrl,
                                 getParameter: this.options.getParameter,
-                                suggestionImg: this.options.autoCompleteIcon
+                                suggestionImg: this.options.autoCompleteIcon,
+                                resultKey: this.options.itemsKey
                             },
                             this.options.autocompleteOptions
                         )
@@ -474,7 +475,7 @@ define([], function() {
                     url: this.options.itemsUrl,
 
                     success: function(data) {
-                        this.options.items = this.options.items.concat(data[this.options.itemsKey]);
+                        this.options.items = this.options.items.concat(data._embedded[this.options.itemsKey]);
                         this.startPlugins();
                         DATA_LOADED.call(this);
                     }.bind(this),

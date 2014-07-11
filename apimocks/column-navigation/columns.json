@@ -3,7 +3,7 @@
         "self": "http://husky.lo:7878/admin/api/columnnavigation/0",
         "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=0&depth=1"
     },
-    "_embedded": [
+    "_embedded": {"nodes": [
         {
             "path": "/page-1",
             "title": "Page 1 has a way too long title",
@@ -19,7 +19,7 @@
                 "self": "http://husky.lo:7878/admin/api/columnnavigation/1",
                 "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=1&depth=1"
             },
-            "_embedded": []
+            "_embedded": {"nodes": []}
         },
         {
             "path": "/page-2",
@@ -36,7 +36,7 @@
                 "self": "http://husky.lo:7878/admin/api/columnnavigation/2",
                 "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=2&depth=1"
             },
-            "_embedded": []
+            "_embedded": {"nodes": []}
         },
         {
             "path": "/page-3",
@@ -53,7 +53,7 @@
                 "self": "http://husky.lo:7878/admin/api/columnnavigation/3",
                 "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=3&depth=1"
             },
-            "_embedded": []
+            "_embedded": {"nodes": []}
         },
         {
             "path": "/page-4",
@@ -70,7 +70,7 @@
                 "self": "http://husky.lo:7878/admin/api/columnnavigation/4",
                 "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=4&depth=1"
             },
-            "_embedded": []
+            "_embedded": {"nodes": []}
         },
         {
             "path": "/page-5-adsfasdfasdfasdfasdfsdfasfasdfsadfasd",
@@ -87,7 +87,7 @@
                 "self": "http://husky.lo:7878/admin/api/columnnavigation/5",
                 "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=5&depth=1"
             },
-            "_embedded": []
+            "_embedded": {"nodes": []}
         },
         {
             "path": "/page-6",
@@ -104,7 +104,7 @@
                 "self": "http://husky.lo:7878/admin/api/columnnavigation/6",
                 "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=6&depth=1"
             },
-            "_embedded": []
+            "_embedded": {"nodes": []}
         },
         {
             "path": "/page-7",
@@ -118,7 +118,7 @@
                 "self": "http://husky.lo:7878/admin/api/columnnavigation/7",
                 "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=7&depth=1"
             },
-            "_embedded": []
+            "_embedded": {"nodes": []}
         },
         {
             "path": "/page-8",
@@ -132,7 +132,7 @@
                 "self": "http://husky.lo:7878/admin/api/columnnavigation/8",
                 "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=8&depth=1"
             },
-            "_embedded": []
+            "_embedded": {"nodes": []}
         },
         {
             "path": "/page-9",
@@ -146,9 +146,9 @@
                 "self": "http://husky.lo:7878/admin/api/columnnavigation/9",
                 "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=9&depth=1"
             },
-            "_embedded": []
+            "_embedded": {"nodes": []}
         }
-    ],
+    ]},
     "title": "Root",
     "path": "/",
     "id": "0",

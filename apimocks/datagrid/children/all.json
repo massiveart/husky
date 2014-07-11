@@ -5,7 +5,7 @@
             "name": "http://husky.lo:7878/admin/api/datagrid/children/sorted"
         }
     },
-    "_embedded": [
+    "_embedded": {"categories": [
         {
             "id": 1,
             "name": "Category 1",
@@ -91,10 +91,9 @@
             "parent": 11
         }
 
-    ],
+    ]},
     "total": 14,
-    "numberOfAll": 14,
     "pages": 1,
     "page": 1,
-    "pageSize": 14
+    "limit": 14
 }

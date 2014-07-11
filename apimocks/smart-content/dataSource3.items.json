@@ -1,46 +1,46 @@
 {
     "title": "A good example (3)",
     "path": "/path-3",
-    "_embedded": [
+    "_embedded": {"products": [
         {
             "id": 1,
-            "name": "Produkt A"
+            "title": "Produkt A"
         },
         {
             "id": 2,
-            "name": "Produkt B"
+            "title": "Produkt B"
         },
         {
             "id": 3,
-            "name": "Produkt C"
+            "title": "Produkt C"
         },
         {
             "id": 4,
-            "name": "Produkt D"
+            "title": "Produkt D"
         },
         {
             "id": 5,
-            "name": "Produkt E"
+            "title": "Produkt E"
         },
         {
             "id": 6,
-            "name": "Produkt F"
+            "title": "Produkt F"
         },
         {
             "id": 7,
-            "name": "Produkt G"
+            "title": "Produkt G"
         },
         {
             "id": 8,
-            "name": "Produkt H"
+            "title": "Produkt H"
         },
         {
             "id": 9,
-            "name": "Produkt I"
+            "title": "Produkt I"
         },
         {
             "id": 10,
-            "name": "Produkt J"
+            "title": "Produkt J"
         }
-    ]
+    ]}
 }

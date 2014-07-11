@@ -84,6 +84,7 @@
                             instanceName: 'smartcontent1',
                             dataSource: '123-123-123',
                             columnNavigationUrl: 'http://husky.lo:7878/admin/api/columnnavigation',
+                            resultKey: 'products',
                             categories: [
                                 {id: 1, name: 'New products'},
                                 {id: 2, name: 'Old products'},
@@ -115,6 +116,7 @@
                             subFoldersDisabled: true,
                             categories: [],
                             externalConfigs: true,
+                            resultKey: 'products',
                             sortBy: [
                                 {id: null, name: 'No sorting'},
                                 {id: 4, name: 'First name'},
@@ -140,6 +142,7 @@
                         app.sandbox.emit('husky.smart-content.smartcontent1.set-configs', {
                             dataSource: '/newdatasource',
                             subFoldersDisabled: true,
+                            resultKey: 'products',
                             categories: [
                                 {id: 44, name: 'New Category 1'},
                                 {id: 48, name: 'New Category 2'}

@@ -13,7 +13,7 @@
             "content2": "http://husky.lo:7878/admin/api/datagrid/sort?page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"
         }
     },
-    "_embedded": [
+    "_embedded": {"items": [
         {
             "id": "1",
             "content1": "A This content is sorted",
@@ -44,10 +44,9 @@
             },
             "date": "2003-03-19T22:01:29+0100"
         }
-    ],
+    ]},
     "total": 3,
-    "numberOfAll": 12,
     "pages": 4,
     "page": 1,
-    "pageSize": 4
+    "limit": 4
 }

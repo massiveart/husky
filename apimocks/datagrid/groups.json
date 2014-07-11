@@ -2,7 +2,7 @@
     "_links": {
         "self": "http://husky.lo:7878/admin/api/datagrid/group"
     },
-    "_embedded": [
+    "_embedded": {"items": [
         {
             "id": 1,
             "thumbnails": [
@@ -253,10 +253,9 @@
             "changed": "2014-01-01 16:00:00",
             "created": "2014-01-01 16:00:00"
         }
-    ],
+    ]},
     "total": 12,
-    "numberOfAll": 12,
     "pages": 1,
     "page": 1,
-    "pageSize": 12
+    "limit": 12
 }
