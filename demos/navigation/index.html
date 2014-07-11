@@ -18,20 +18,14 @@
 
     <style>
         #content {
-            margin-left: 300px;
+            padding: 20px;
+            overflow: hidden;
+            height: 100%;
         }
     </style>
 
 </head>
 <body>
-
-<div id="content">
-    <a href="#" id="collapse">collapse navigation</a>
-    <a href="#" id="force">force collapse navigation</a>
-    <a href="#" id="show">show navigation</a>
-    <a href="#" id="hide">hide navigation</a>
-    <a href="#" id="select">activate movies/rerender footer</a>
-</div>
 
 <div data-aura-component="navigation@husky" class="" data-aura-select-action="webspaces/cn_cn"
      data-aura-url="http://husky.lo:7878/admin/api/navigation"
@@ -41,6 +35,13 @@
      data-aura-user-locale="en_us"
      data-aura-translations='{"versionHistory":"Version history","user":"User"}'
      ></div>
+<div id="content">
+    <a href="#" id="collapse">collapse navigation</a>
+    <a href="#" id="force">force collapse navigation</a>
+    <a href="#" id="show">show navigation</a>
+    <a href="#" id="hide">hide navigation</a>
+    <a href="#" id="select">activate movies/rerender footer</a>
+</div>
 <script src="../js/jquery.js"></script>
 
 <script src="../js/require.js"></script>
