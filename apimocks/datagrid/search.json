@@ -13,18 +13,20 @@
             "content2": "http://husky.lo:7878/admin/api/datagrid/sort?page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"
         }
     },
-    "_embedded": {"items": [
-        {
-            "id": "1",
-            "content1": "This was the only match found",
-            "content2": "This was the only match found",
-            "content3": {
-                "50x50": "http://placehold.it/50x50",
-                "170x170": "http://placehold.it/170x170"
-            },
-            "date": "1999-03-19T22:04:29+0100"
-        }
-    ]},
+    "_embedded": {
+        "items": [
+            {
+                "id": "1",
+                "content1": "This was the only match found",
+                "content2": "This was the only match found",
+                "content3": {
+                    "50x50": "http://placehold.it/50x50",
+                    "170x170": "http://placehold.it/170x170"
+                },
+                "date": "1999-03-19T22:04:29+0100"
+            }
+        ]
+    },
     "total": 1,
     "pages": 1,
     "page": 1,

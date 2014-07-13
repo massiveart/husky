@@ -2,7 +2,9 @@
     "_links": {
         "self": "http://husky.lo:7878/admin/api/columnnavigation/999999"
     },
-    "_embedded": {"nodes": []},
+    "_embedded": {
+        "nodes": []
+    },
     "title": "",
     "id": "999999",
     "hasSub": false

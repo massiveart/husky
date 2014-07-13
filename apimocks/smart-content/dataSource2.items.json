@@ -1,22 +1,24 @@
 {
     "title": "A good example (2)",
     "path": "/path-2",
-    "_embedded": {"products": [
-        {
-            "id": 1,
-            "title": "Page X"
-        },
-        {
-            "id": 2,
-            "title": "Page Y"
-        },
-        {
-            "id": 3,
-            "title": "Page Z"
-        },
-        {
-            "id": 4,
-            "title": "Page Q"
-        }
-    ]}
+    "_embedded": {
+        "products": [
+            {
+                "id": 1,
+                "title": "Page X"
+            },
+            {
+                "id": 2,
+                "title": "Page Y"
+            },
+            {
+                "id": 3,
+                "title": "Page Z"
+            },
+            {
+                "id": 4,
+                "title": "Page Q"
+            }
+        ]
+    }
 }

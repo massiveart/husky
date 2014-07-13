@@ -1,7 +1,9 @@
 {
     "_links": {
     },
-    "_embedded": {"categories": []},
+    "_embedded": {
+        "categories": []
+    },
     "total": 0,
     "pages": 1,
     "page": 1,
