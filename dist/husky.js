@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -35103,7 +35102,7 @@ define('__component__$auto-complete@husky',[], function () {
  * @param {String} [options.instanceName] name of the component instance
  * @param {Array} [options.items] preloaded items
  * @param {String} [options.itemsUrl] url to load items
- * @param {String} [options.itemsKey] Key for AJAX response
+ * @param {String} [options.resultKey] Key for AJAX response
  * @param {Array} [options.suggestions] suggestions for suggestions box
  * @param {String} [options.suggestionsHeadline] Headline for suggestions bxo
  * @param {String} [options.suggestionsUrl] url to load suggestions
@@ -35143,7 +35142,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                 instanceName: 'undefined',
                 items: [],
                 itemsUrl: '',
-                itemsKey: 'tags',
+                resultKey: 'tags',
                 suggestions: [],
                 suggestionsHeadline: '',
                 suggestionsUrl: '',
@@ -35415,7 +35414,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                                 remoteUrl: this.options.remoteUrl,
                                 getParameter: this.options.getParameter,
                                 suggestionImg: this.options.autoCompleteIcon,
-                                resultKey: this.options.itemsKey
+                                resultKey: this.options.resultKey
                             },
                             this.options.autocompleteOptions
                         )
@@ -35561,7 +35560,7 @@ define('__component__$auto-complete-list@husky',[], function() {
                     url: this.options.itemsUrl,
 
                     success: function(data) {
-                        this.options.items = this.options.items.concat(data._embedded[this.options.itemsKey]);
+                        this.options.items = this.options.items.concat(data._embedded[this.options.resultKey]);
                         this.startPlugins();
                         DATA_LOADED.call(this);
                     }.bind(this),
@@ -47437,3 +47436,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+

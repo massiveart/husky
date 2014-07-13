@@ -616,7 +616,7 @@
                             "optional": true
                         },
                         {
-                            "name": "itemsKey",
+                            "name": "resultKey",
                             "description": "Key for AJAX response",
                             "type": "String",
                             "optional": true

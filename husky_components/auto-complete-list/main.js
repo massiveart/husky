@@ -17,7 +17,7 @@
  * @param {String} [options.instanceName] name of the component instance
  * @param {Array} [options.items] preloaded items
  * @param {String} [options.itemsUrl] url to load items
- * @param {String} [options.itemsKey] Key for AJAX response
+ * @param {String} [options.resultKey] Key for AJAX response
  * @param {Array} [options.suggestions] suggestions for suggestions box
  * @param {String} [options.suggestionsHeadline] Headline for suggestions bxo
  * @param {String} [options.suggestionsUrl] url to load suggestions
@@ -57,7 +57,7 @@ define([], function() {
                 instanceName: 'undefined',
                 items: [],
                 itemsUrl: '',
-                itemsKey: 'tags',
+                resultKey: 'tags',
                 suggestions: [],
                 suggestionsHeadline: '',
                 suggestionsUrl: '',
@@ -329,7 +329,7 @@ define([], function() {
                                 remoteUrl: this.options.remoteUrl,
                                 getParameter: this.options.getParameter,
                                 suggestionImg: this.options.autoCompleteIcon,
-                                resultKey: this.options.itemsKey
+                                resultKey: this.options.resultKey
                             },
                             this.options.autocompleteOptions
                         )
@@ -475,7 +475,7 @@ define([], function() {
                     url: this.options.itemsUrl,
 
                     success: function(data) {
-                        this.options.items = this.options.items.concat(data._embedded[this.options.itemsKey]);
+                        this.options.items = this.options.items.concat(data._embedded[this.options.resultKey]);
                         this.startPlugins();
                         DATA_LOADED.call(this);
                     }.bind(this),
