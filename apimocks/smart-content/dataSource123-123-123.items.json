@@ -1,13 +1,15 @@
 {
     "title": "A good example (123-123-123)",
     "path": "/path-123-123-123",
-    "_embedded": [
-    {
-        "id": 1,
-        "name": "Produkt X"
-    },
-    {
-        "id": 2,
-        "name": "Produkt Y"
-    }
-]}
+    "_embedded": {
+        "products": [
+            {
+                "id": 1,
+                "title": "Produkt X"
+            },
+            {
+                "id": 2,
+                "title": "Produkt Y"
+            }
+        ]
+    }}

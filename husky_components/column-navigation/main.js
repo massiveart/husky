@@ -29,6 +29,7 @@
  * @params {String} [options.publishedName] name of published-key
  * @params {String} [options.typeName] name of type-key
  * @params {String} [options.titleName] name of title-key
+ * @params {String} [options.resultKey] The name of the array in the responded _embedded
  * @params {Number} [options.visibleRatio] minimum ratio of how much of a column must be visible to display the navigation
  * @params {String} [options.sizeRelativeTo] dom object which is used to calculate height / width (default $window)
  * @params {Boolean} [options.showEdit] hide or display edit elements
@@ -61,6 +62,7 @@ define([], function() {
             typeName: 'type',
             minVisibleRatio: 1 / 2,
             noPageDescription: 'public.no-pages',
+            resultKey: 'nodes',
             sizeRelativeTo: null,
             showEdit: true,
             showEditIcon: true,
@@ -332,7 +334,7 @@ define([], function() {
 
             $list = this.sandbox.dom.find('ul', $column);
 
-            this.sandbox.util.each(data._embedded, function(index, value) {
+            this.sandbox.util.each(data._embedded[this.options.resultKey], function(index, value) {
 
                 this.storeDataItem(newColumn, value);
                 var $element = this.sandbox.dom.$(this.template.item.call(this, this.options.column.width, value));
@@ -341,7 +343,7 @@ define([], function() {
                 this.setItemsTextWidth($element);
 
                 // remember which item has subitems to display a whole tree when column navigation should be restored
-                if (!!value[this.options.hasSubName] && value._embedded.length > 0) {
+                if (!!value[this.options.hasSubName] && value._embedded[this.options.resultKey].length > 0) {
                     nodeWithSubNodes = value;
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;

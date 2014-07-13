@@ -164,7 +164,7 @@
  *
  * @param {Object} [paginationOptions] Configuration object
  * @param {Array} [options.showElementsSteps] Array which contains the steps for the Show-Elements-dropdown as integers
- * @param {Number} [options.pageSize] Data records per page
+ * @param {Number} [options.limit] Data records per page
  *
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
@@ -176,7 +176,7 @@ define(function() {
 
      var defaults = {
             showElementsSteps: [10, 20, 50, 100, 500],
-            pageSize: 10
+            limit: 10
         },
 
         constants = {
@@ -267,10 +267,10 @@ define(function() {
 
         /**
          * Returns the pagination page size
-         * @returns {Number} current Page size
+         * @returns {Number} current limit
          */
-        getPageSize: function() {
-            return this.options.pageSize;
+        getLimit: function() {
+            return this.options.limit;
         },
 
         /**
@@ -303,11 +303,11 @@ define(function() {
 
             // show-elements dropdown item clicked
             this.sandbox.on(&#x27;husky.dropdown.&#x27; + this.datagrid.options.instanceName + &#x27;-pagination-dropdown-show.item.click&#x27;, function(item) {
-                if (this.data.pageSize !== item.id || this.data.total === this.data.numberOfAll) {
+                if (this.data.limit !== item.id || this.data.embedded.length === this.data.total) {
                     // show all
                     if (item.id === 0) {
                         // only if not already all are shown
-                        if (this.data.total !== this.data.numberOfAll) {
+                        if (this.data.embedded.length !== this.data.total) {
                             this.datagrid.changePage.call(this.datagrid, this.data.links.all);
                         }
                     } else {
@@ -374,13 +374,13 @@ define(function() {
                 description;
 
             // if first defined step is bigger than the number of all elements don&#x27;t display show-elements dropdown
-            if (this.data.numberOfAll &gt; this.options.showElementsSteps[0]) {
-                if (this.data.total === this.data.numberOfAll) {
+            if (this.data.total &gt; this.options.showElementsSteps[0]) {
+                if (this.data.embedded.length === this.data.total) {
                     description = this.sandbox.translate(translations.showAllElements);
                 } else {
                     description = this.sandbox.translate(translations.show) +
-                        &#x27; &lt;strong&gt;&#x27; + this.data.total + &#x27;&lt;/strong&gt; &#x27; +
-                        this.sandbox.translate(translations.elementsOf) + &#x27; &#x27; + this.data.numberOfAll;
+                        &#x27; &lt;strong&gt;&#x27; + this.data.embedded.length + &#x27;&lt;/strong&gt; &#x27; +
+                        this.sandbox.translate(translations.elementsOf) + &#x27; &#x27; + this.data.total;
                 }
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
                     &#x27;desc&#x27;: description
@@ -450,7 +450,7 @@ define(function() {
             var i, length, data = [];
 
             for (i = -1, length = this.options.showElementsSteps.length; ++i &lt; length;) {
-                if (this.options.showElementsSteps[i] &gt; this.data.numberOfAll) {
+                if (this.options.showElementsSteps[i] &gt; this.data.total) {
                     break;
                 }
                 data.push({

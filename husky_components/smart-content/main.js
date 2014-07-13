@@ -39,7 +39,9 @@
  * @params {String} [options.presentAsParameter] parameter for the presentation-possibility id
  * @params {String} [options.limitResultParameter] parameter for the limit-result-value
  * @params {String} [options.idKey] key for the id in the returning JSON-result
- * @params {String} [options.resultKey] key for the data in the returning JSON-result
+ * @params {String} [options.resultKey] key for the data in the returning JSON-embedded-result
+ * @params {String} [options.tagsResultKey] key for the data in the returning JSON-embedded-result for the tags-component
+ * @params {String} [options.columnNavigationResultKey] key for the data in the returning JSON-embedded-result for the column-navigation component
  * @params {String} [options.titleKey] key for the title in the returning JSON-result
  * @params {String} [options.pathKey] key for the path in the returning JSON-result
  * @params {Boolean} [options.subFoldersDisabled] if true sub-folders overlay-item will be disabled
@@ -114,7 +116,9 @@ define([], function() {
             limitResultParameter: 'limitResult',
             limitResultDisabled: false,
             idKey: 'id',
-            resultKey: '_embedded',
+            resultKey: 'items',
+            tagsResultKey: 'tags',
+            columnNavigationResultKey: 'nodes',
             titleKey: 'title',
             pathKey: 'path',
             translations: {},
@@ -788,7 +792,8 @@ define([], function() {
                             wrapper: {height: 100},
                             editIcon: 'fa-check',
                             showEdit: false,
-                            showStatus: false
+                            showStatus: false,
+                            resultKey: this.options.columnNavigationResultKey
                         }
                     }
                 ]
@@ -877,7 +882,8 @@ define([], function() {
                         remoteUrl: this.options.tagsAutoCompleteUrl,
                         autocomplete: (this.options.tagsAutoCompleteUrl !== ''),
                         getParameter: this.options.tagsGetParameter,
-                        noNewTags: true
+                        noNewTags: true,
+                        itemsKey: this.options.tagsResultKey
                     }
                 },
                 {
@@ -962,7 +968,7 @@ define([], function() {
                     success: function(data) {
                         this.overlayData.title = data[this.options.titleKey];
                         this.overlayData.path = data[this.options.pathKey];
-                        this.items = data[this.options.resultKey];
+                        this.items = data._embedded[this.options.resultKey];
                         this.sandbox.emit(DATA_RETRIEVED.call(this));
                     }.bind(this),
 

@@ -3,152 +3,172 @@
         "self": "http://husky.lo:7878/admin/api/columnnavigation/0",
         "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=0&depth=1"
     },
-    "_embedded": [
-        {
-            "path": "/page-1",
-            "title": "Page 1 has a way too long title",
-            "id": "1",
-            "hasSub": true,
-            "publishedState": true,
-            "linked": "internal",
-            "type": {
-                "name": "false",
-                "value": "false"
+    "_embedded": {
+        "nodes": [
+            {
+                "path": "/page-1",
+                "title": "Page 1 has a way too long title",
+                "id": "1",
+                "hasSub": true,
+                "publishedState": true,
+                "linked": "internal",
+                "type": {
+                    "name": "false",
+                    "value": "false"
+                },
+                "_links": {
+                    "self": "http://husky.lo:7878/admin/api/columnnavigation/1",
+                    "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=1&depth=1"
+                },
+                "_embedded": {
+                    "nodes": []
+                }
             },
-            "_links": {
-                "self": "http://husky.lo:7878/admin/api/columnnavigation/1",
-                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=1&depth=1"
+            {
+                "path": "/page-2",
+                "title": "Page 2",
+                "id": "2",
+                "hasSub": true,
+                "publishedState": true,
+                "linked": "external",
+                "type": {
+                    "name": "false",
+                    "value": "false"
+                },
+                "_links": {
+                    "self": "http://husky.lo:7878/admin/api/columnnavigation/2",
+                    "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=2&depth=1"
+                },
+                "_embedded": {
+                    "nodes": []
+                }
             },
-            "_embedded": []
-        },
-        {
-            "path": "/page-2",
-            "title": "Page 2",
-            "id": "2",
-            "hasSub": true,
-            "publishedState": true,
-            "linked": "external",
-            "type": {
-                "name": "false",
-                "value": "false"
+            {
+                "path": "/page-3",
+                "title": "Page 3",
+                "id": "3",
+                "hasSub": false,
+                "publishedState": false,
+                "linked": false,
+                "type": {
+                    "name": "ghost",
+                    "value": "us_en"
+                },
+                "_links": {
+                    "self": "http://husky.lo:7878/admin/api/columnnavigation/3",
+                    "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=3&depth=1"
+                },
+                "_embedded": {
+                    "nodes": []
+                }
             },
-            "_links": {
-                "self": "http://husky.lo:7878/admin/api/columnnavigation/2",
-                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=2&depth=1"
+            {
+                "path": "/page-4",
+                "title": "Page 4",
+                "id": "4",
+                "hasSub": false,
+                "publishedState": true,
+                "linked": false,
+                "type": {
+                    "name": "shadow",
+                    "value": "true"
+                },
+                "_links": {
+                    "self": "http://husky.lo:7878/admin/api/columnnavigation/4",
+                    "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=4&depth=1"
+                },
+                "_embedded": {
+                    "nodes": []
+                }
             },
-            "_embedded": []
-        },
-        {
-            "path": "/page-3",
-            "title": "Page 3",
-            "id": "3",
-            "hasSub": false,
-            "publishedState": false,
-            "linked": false,
-            "type": {
-                "name": "ghost",
-                "value": "us_en"
+            {
+                "path": "/page-5-adsfasdfasdfasdfasdfsdfasfasdfsadfasd",
+                "title": "Page 5",
+                "id": "5",
+                "hasSub": false,
+                "publishedState": false,
+                "linked": "internal",
+                "type": {
+                    "name": "ghost",
+                    "value": "us_en"
+                },
+                "_links": {
+                    "self": "http://husky.lo:7878/admin/api/columnnavigation/5",
+                    "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=5&depth=1"
+                },
+                "_embedded": {
+                    "nodes": []
+                }
             },
-            "_links": {
-                "self": "http://husky.lo:7878/admin/api/columnnavigation/3",
-                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=3&depth=1"
+            {
+                "path": "/page-6",
+                "title": "Page 6",
+                "id": "6",
+                "hasSub": false,
+                "publishedState": true,
+                "linked": "external",
+                "type": {
+                    "name": "shadow",
+                    "value": true
+                },
+                "_links": {
+                    "self": "http://husky.lo:7878/admin/api/columnnavigation/6",
+                    "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=6&depth=1"
+                },
+                "_embedded": {
+                    "nodes": []
+                }
             },
-            "_embedded": []
-        },
-        {
-            "path": "/page-4",
-            "title": "Page 4",
-            "id": "4",
-            "hasSub": false,
-            "publishedState": true,
-            "linked": false,
-            "type": {
-                "name": "shadow",
-                "value": "true"
+            {
+                "path": "/page-7",
+                "title": "Page 7",
+                "id": "7",
+                "hasSub": false,
+                "publishedState": false,
+                "linked": false,
+                "type": false,
+                "_links": {
+                    "self": "http://husky.lo:7878/admin/api/columnnavigation/7",
+                    "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=7&depth=1"
+                },
+                "_embedded": {
+                    "nodes": []
+                }
             },
-            "_links": {
-                "self": "http://husky.lo:7878/admin/api/columnnavigation/4",
-                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=4&depth=1"
+            {
+                "path": "/page-8",
+                "title": "Page 8",
+                "id": "8",
+                "hasSub": true,
+                "publishedState": false,
+                "linked": false,
+                "type": false,
+                "_links": {
+                    "self": "http://husky.lo:7878/admin/api/columnnavigation/8",
+                    "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=8&depth=1"
+                },
+                "_embedded": {
+                    "nodes": []
+                }
             },
-            "_embedded": []
-        },
-        {
-            "path": "/page-5-adsfasdfasdfasdfasdfsdfasfasdfsadfasd",
-            "title": "Page 5",
-            "id": "5",
-            "hasSub": false,
-            "publishedState": false,
-            "linked": "internal",
-            "type": {
-                "name": "ghost",
-                "value": "us_en"
-            },
-            "_links": {
-                "self": "http://husky.lo:7878/admin/api/columnnavigation/5",
-                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=5&depth=1"
-            },
-            "_embedded": []
-        },
-        {
-            "path": "/page-6",
-            "title": "Page 6",
-            "id": "6",
-            "hasSub": false,
-            "publishedState": true,
-            "linked": "external",
-            "type": {
-                "name": "shadow",
-                "value": true
-            },
-            "_links": {
-                "self": "http://husky.lo:7878/admin/api/columnnavigation/6",
-                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=6&depth=1"
-            },
-            "_embedded": []
-        },
-        {
-            "path": "/page-7",
-            "title": "Page 7",
-            "id": "7",
-            "hasSub": false,
-            "publishedState": false,
-            "linked": false,
-            "type": false,
-            "_links": {
-                "self": "http://husky.lo:7878/admin/api/columnnavigation/7",
-                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=7&depth=1"
-            },
-            "_embedded": []
-        },
-        {
-            "path": "/page-8",
-            "title": "Page 8",
-            "id": "8",
-            "hasSub": true,
-            "publishedState": false,
-            "linked": false,
-            "type": false,
-            "_links": {
-                "self": "http://husky.lo:7878/admin/api/columnnavigation/8",
-                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=8&depth=1"
-            },
-            "_embedded": []
-        },
-        {
-            "path": "/page-9",
-            "title": "Page 9",
-            "id": "9",
-            "hasSub": false,
-            "publishedState": false,
-            "linked": false,
-            "type": false,
-            "_links": {
-                "self": "http://husky.lo:7878/admin/api/columnnavigation/9",
-                "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=9&depth=1"
-            },
-            "_embedded": []
-        }
-    ],
+            {
+                "path": "/page-9",
+                "title": "Page 9",
+                "id": "9",
+                "hasSub": false,
+                "publishedState": false,
+                "linked": false,
+                "type": false,
+                "_links": {
+                    "self": "http://husky.lo:7878/admin/api/columnnavigation/9",
+                    "children": "http://husky.lo:7878/admin/api/columnnavigation/children?parent=9&depth=1"
+                },
+                "_embedded": {
+                    "nodes": []
+                }
+            }
+        ]
+    },
     "title": "Root",
     "path": "/",
     "id": "0",

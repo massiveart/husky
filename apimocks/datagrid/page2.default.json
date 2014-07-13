@@ -4,7 +4,7 @@
         "first": "http://husky.lo:7878/admin/api/datagrid?page=1&pageSize=4",
         "last": "http://husky.lo:7878/admin/api/datagrid?page=3&pageSize=4",
         "next": "http://husky.lo:7878/admin/api/datagrid?page=3&pageSize=4",
-        "prev": "http://husky.lo:7878/admin/api/datagrid?page=1&pageSize=4",
+        "previous": "http://husky.lo:7878/admin/api/datagrid?page=1&pageSize=4",
         "all": "http://husky.lo:7878/admin/api/datagrid/all",
         "filter": "http://husky.lo:7878/admin/api/datagrid?fields={fieldsList}",
         "pagination": "http://husky.lo:7878/admin/api/datagrid?page={page}&pageSize={pageSize}",
@@ -14,51 +14,52 @@
             "content2": "http://husky.lo:7878/admin/api/datagrid/sort?page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"
         }
     },
-    "_embedded": [
-        {
-            "id": "5",
-            "content1": "Page 2 Content",
-            "content2": "We don't buy anything",
-            "content3": {
-                "50x50": "http://placehold.it/50x50",
-                "170x170": "http://placehold.it/170x170"
+    "_embedded": {
+        "items": [
+            {
+                "id": "5",
+                "content1": "Page 2 Content",
+                "content2": "We don't buy anything",
+                "content3": {
+                    "50x50": "http://placehold.it/50x50",
+                    "170x170": "http://placehold.it/170x170"
+                },
+                "date": "1999-03-19T22:04:29+0100"
             },
-            "date": "1999-03-19T22:04:29+0100"
-        },
-        {
-            "id": "6",
-            "content1": "A Hallo 1.1",
-            "content2": "Page 2 Content",
-            "content3": {
-                "50x50": "http://placehold.it/50x50",
-                "170x170": "http://placehold.it/170x170"
+            {
+                "id": "6",
+                "content1": "A Hallo 1.1",
+                "content2": "Page 2 Content",
+                "content3": {
+                    "50x50": "http://placehold.it/50x50",
+                    "170x170": "http://placehold.it/170x170"
+                },
+                "date": "2014-02-19T22:04:40+0100"
             },
-            "date": "2014-02-19T22:04:40+0100"
-        },
-        {
-            "id": "7",
-            "content1": "C Hallo 1.1",
-            "content2": "Page 2 Content",
-            "content3": {
-                "50x50": "http://placehold.it/50x50",
-                "170x170": "http://placehold.it/170x170"
+            {
+                "id": "7",
+                "content1": "C Hallo 1.1",
+                "content2": "Page 2 Content",
+                "content3": {
+                    "50x50": "http://placehold.it/50x50",
+                    "170x170": "http://placehold.it/170x170"
+                },
+                "date": "2003-03-19T22:01:29+0100"
             },
-            "date": "2003-03-19T22:01:29+0100"
-        },
-        {
-            "id": "8",
-            "content1": "Something else",
-            "content2": "A Hallo 1.2",
-            "content3": {
-                "50x50": "http://placehold.it/50x50",
-                "170x170": "http://placehold.it/170x170"
-            },
-            "date": "2014-03-19T22:04:29+0100"
-        }
-    ],
-    "total": 4,
-    "numberOfAll": 12,
+            {
+                "id": "8",
+                "content1": "Something else",
+                "content2": "A Hallo 1.2",
+                "content3": {
+                    "50x50": "http://placehold.it/50x50",
+                    "170x170": "http://placehold.it/170x170"
+                },
+                "date": "2014-03-19T22:04:29+0100"
+            }
+        ]
+    },
+    "total": 12,
     "pages": 3,
     "page": 2,
-    "pageSize": 4
+    "limit": 4
 }
