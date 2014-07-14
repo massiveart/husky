@@ -32,6 +32,8 @@
  * @param {String} [options.icon] icon to set into the label
  * @param {Function} [options.noItemsCallback] callback function which gets executed at click on label if no dropdown-items exist
  * @param {Boolean} [options.repeatSelect] If true dropdown item can be selected n-times in succession
+ * @param {Boolean} [options.editable] If true the menu items are editable
+ * @param {String} [options.url] url to save data
  */
 
 define([], function() {
@@ -56,7 +58,10 @@ define([], function() {
             fixedLabel: false,
             icon: null,
             noItemsCallback: null,
-            repeatSelect: false
+            repeatSelect: false,
+            editable: false,                  // if true the menu items are editable
+            url: null                         // url to save data
+
         },
 
         constants = {
@@ -66,7 +71,49 @@ define([], function() {
             deselectFieldKey: 'deselectindex',
             deselectFieldDefaultValue: '',
             disabledClass: 'disabled',
-            dropdownTopClass: 'top'
+            dropdownTopClass: 'top',
+            templateRemoveSelector: '.remove-row',
+            templateAddSelector: '#addRow',
+            editableFieldKey: 'editableindex',
+            typeRowSelector: '.type-row',
+            contentInnerSelector: '.content-inner'
+        },
+
+        templates = {
+            row: function() {
+                return[
+                    '<div class="grid-row type-row" data-id="">',
+                    '   <div class="grid-col-8 pull-left"><input class="form-element" type="text" value=""/></div>',
+                    '   <div class="grid-col-2 pull-right"><div class="remove-row btn gray-dark fit only-icon pull-right"><div class="fa-minus-circle"></div></div></div>',
+                    '</div>'].join('');
+            },
+            addOverlayRow: function(valueField, item) {
+                return [
+                    '<div class="grid-row type-row" data-id="', item.id ,'">',
+                    '    <div class="grid-col-8 pull-left"><input class="form-element" type="text" value="', item[valueField],'"/></div>',
+                    '    <div class="grid-col-2 pull-right"><div class="remove-row btn gray-dark fit only-icon pull-right"><div class="fa-minus-circle"></div></div></div>',
+                    '</div>',
+                ].join('')
+            },
+            addOverlaySkeleton: function() {
+                return [
+                    '<div class="content-inner">',
+                    '   <% _.each(data, function(item) { %>',
+                    '        <%= rowTemplate("category", item) %>',
+                    '   <% }); %>',
+                    '</div>',
+                    '<div class="grid-row">',
+                    '   <div id="addRow" class="addButton">',
+                            this.sandbox.translate(translations.addItem),
+                    '   </div>',
+                    '</div>'
+                ].join('');
+            }
+        },
+
+        translations = {
+            addItem: 'select.add-item',
+            editEntries: 'select.edit-entries'
         },
 
         /**
@@ -118,6 +165,13 @@ define([], function() {
             return getEventName.call(this, 'disable');
         },
         /**
+         * used for making the menu items editable
+         * @event husky.select[.INSTANCE_NAME].edit
+         */
+            EVENT_EDIT = function() {
+            return getEventName.call(this, 'edit');
+        },
+        /**
          * used for toggling enabled/disabled dropdown menu
          * @event husky.select[.INSTANCE_NAME].toggle
          */
@@ -159,6 +213,13 @@ define([], function() {
             EVENT_DATA_CHANGED = function() {
             return 'data-changed';
         },
+        /**
+         * Remove event
+         * @event husky.select.[instanceName].remove
+         */
+            REMOVE = function() {
+            return getEventName.call(this, 'remove');
+        },
 
         getEventName = function(suffix) {
             return 'husky.select.' + this.options.instanceName + '.' + suffix;
@@ -166,8 +227,13 @@ define([], function() {
 
     return {
 
-
         initialize: function() {
+
+            // Arrays to hold the elements to remove, if editable.
+            if (this.options.editable === true) {
+                this.elementsToRemove = [];
+                this.$elementsToRemove = [];
+            }
 
             var selectedIds;
 
@@ -232,6 +298,9 @@ define([], function() {
             if (this.options.disabled === true) {
                 this.disable();
             }
+
+            this.addEditEntry();
+
         },
 
         //sets the button in enabled state
@@ -245,6 +314,17 @@ define([], function() {
             this.sandbox.dom.addClass(this.sandbox.dom.children(this.$el, '.husky-select-container'), constants.disabledClass);
             this.hideDropDown();
             this.sandbox.dom.off(this.$el);
+        },
+
+        // If 'editable' flag is set in the options an 'Edit' menu entry is
+        // added to the list.
+        addEditEntry: function() {
+            if (this.options.editable === true) {
+                this.addDivider();
+                this.addDropdownElement(constants.editableFieldKey,
+                        this.sandbox.translate(translations.editEntries)
+                        );
+            }
         },
 
         // prepares data for dropDown, if options.data not set load with ajax
@@ -261,8 +341,8 @@ define([], function() {
             } else {
                 this.sandbox.logger.log('error: data not set');
             }
-            // TODO load data from url
         },
+
         /**
          * Adds a dropdown element to the dropdown list
          * @param id
@@ -273,7 +353,7 @@ define([], function() {
          */
         addDropdownElement: function(id, value, disabled, callback, updateLabel) {
             var $item,
-                idString = (!!id || id === 0) ? id.toString() : this.sandbox.util.uniqueId();
+                idString = (id != null) ? id.toString() : this.sandbox.util.uniqueId();
 
             if (this.options.preSelectedElements.indexOf(idString) >= 0 || this.options.preSelectedElements.indexOf(value) >= 0) {
                 $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, 'checked', updateLabel));
@@ -364,9 +444,7 @@ define([], function() {
             this.sandbox.on(EVENT_HIDE.call(this), this.hideDropDown.bind(this));
             this.sandbox.on(EVENT_DISABLE.call(this), this.disable.bind(this));
             this.sandbox.on(EVENT_ENABLE.call(this), this.enable.bind(this));
-
             this.sandbox.on(EVENT_GET_CHECKED.call(this), this.getChecked.bind(this));
-
             this.sandbox.on(EVENT_UPDATE.call(this), this.updateDropdown.bind(this));
         },
 
@@ -419,7 +497,6 @@ define([], function() {
          * @param preselected array of ids
          */
         updateDropdown: function(data, preselected) {
-
             this.options.preSelectedElements = preselected.map(String);
             this.selectedElements = [];
             this.selectedElementsValues = [];
@@ -430,6 +507,7 @@ define([], function() {
             } else {
                 this.sandbox.logger.warn('error invalid data for update!');
             }
+            this.addEditEntry();
         },
 
         updateSelectionAttribute: function() {
@@ -466,6 +544,274 @@ define([], function() {
             }
         },
 
+        /**
+         * Opens the overlay for edditing.
+         */
+        openEditDialog: function() {
+            this.elementsToRemove = [];
+            this.$elementsToRemove = [];
+
+            var $element = this.sandbox.dom.createElement('<div/>'),
+                $content = this.renderOverlayContent();
+            this.sandbox.dom.append(this.$el, $element);
+
+            this.bindOverlayContentEvents($content);
+            this.sandbox.start([{ name: 'overlay@husky',
+                options: {
+                    el: $element,
+                    openOnStart:true,
+                    removeOnClose:true,
+                    instanceName: 'husky-select',
+                    title: this.sandbox.translate('public.edit-entries'),
+                    closeCallback: function() {
+                        this.onCloseWithCancel()
+                    }.bind(this),
+                    okCallback: function(data) {
+                        this.onCloseWithOk(data);
+                    }.bind(this),
+                    data: $content
+                }
+            }]);
+        },
+
+        /**
+         * Callback for close of overlay with ok button
+         */
+        onCloseWithOk: function(domData) {
+            this.removeDeletedItems();
+            if (!!domData) {
+                this.saveNewEditedItemsAndClose(domData, 'PATCH');
+            }
+        },
+
+        saveNewEditedItemsAndClose: function(domData, method) {
+            var data = this.parseDataFromDom(domData),
+                changedData = this.getChangedData(data);
+
+            if (changedData.length > 0) {
+                this.sandbox.util.save(this.options.url, method, changedData)
+                    .then(function(response) {
+                        var mergeData = this.mergeDomAndRequestData(response,
+                            this.parseDataFromDom(domData, true));
+                        this.options.data = mergeData.slice(0);
+                        this.updateDropdown(mergeData, [null]);
+                    }.bind(this)).fail(function(status, error) {
+                        this.sandbox.logger.error(status, error);
+                    }.bind(this));
+            }
+
+        },
+
+        /**
+         * Merges data returned by the rest api and the dom
+         * @param updatedData
+         * @param parsedDomData
+         */
+        mergeDomAndRequestData: function(updatedData, parsedDomData) {
+            this.sandbox.util.foreach(parsedDomData, function(parsedEl) {
+                this.sandbox.util.foreach(updatedData, function(updatedEl) {
+                    if (parsedEl.id === updatedEl.id) {
+                        parsedEl[this.options.valueName] = updatedEl[this.options.valueName];
+                    } else if (parsedEl[this.options.valueName] === updatedEl[this.options.valueName]) {
+                        parsedEl.id = updatedEl.id;
+                    }
+                }.bind(this));
+            }.bind(this));
+
+            return parsedDomData;
+        },
+
+        /**
+         * Bind overlay specific events
+         * @param $element
+         */
+        bindOverlayContentEvents: function($element) {
+            this.sandbox.dom.on($element,
+                    'click',
+                    this.markElementForRemoval.bind(this),
+                    constants.templateRemoveSelector);
+            this.sandbox.dom.on($element,
+                    'click',
+                    this.addElement.bind(this),
+                    constants.templateAddSelector);
+            this.sandbox.on(REMOVE.call(this), function(id, $row) {
+                this.updateRemoveList(id, $row);
+            }.bind(this));
+        },
+
+        /**
+         * Adds new item to the list or removes existing
+         * @param id of element to remove
+         * @param $row dom row of elment to remove
+         */
+        updateRemoveList: function(id, $row) {
+            if (this.elementsToRemove.indexOf(id) === -1) {
+                if (id != null) {
+                    this.elementsToRemove.push(id);
+                }
+                this.$elementsToRemove.push($row);
+            } else {
+                if (id != null) {
+                    this.elementsToRemove.splice(this.elementsToRemove.indexOf(id), 1);
+                }
+                this.$elementsToRemove.splice(this.elementsToRemove.indexOf($row), 1);
+            }
+        },
+
+        /**
+         * delete elements
+         * @param id
+         */
+        deleteItem: function(id) {
+            this.sandbox.util.save(this.options.url + '/' + id, 'DELETE')
+                .then(function() {
+                    // Remove items
+                    var origData = this.options.data.slice(0);
+                    this.sandbox.util.each(origData, function(index, $el) {
+                        if (id === $el.id) {
+                            var i = this.options.data.indexOf($el);
+                            this.options.data.splice(i, 1);
+                        }
+                    this.updateDropdown(this.options.data, [null]);
+            }.bind(this));
+                }.bind(this)).fail(function(status, error) {
+                    this.sandbox.logger.error(status, error);
+                    return null;
+                }.bind(this));
+        },
+
+        /**
+         * Deletes removed items
+         */
+        removeDeletedItems: function() {
+            // remove dom elements - important for the getChangedData method
+            if (!!this.$elementsToRemove && this.$elementsToRemove.length > 0) {
+                this.sandbox.util.each(this.$elementsToRemove, function(index, $el) {
+                    this.sandbox.dom.remove($el);
+                }.bind(this));
+            }
+
+            // remove items from db
+            if (!!this.elementsToRemove && this.elementsToRemove.length > 0) {
+                this.sandbox.util.each(this.elementsToRemove, function(index, el) {
+                    this.deleteItem(el);
+                }.bind(this));
+            }
+        },
+
+        /**
+         * Extracts data from dom structure
+         * @param domData
+         * @param excludeDeleted
+         */
+        parseDataFromDom: function(domData, excludeDeleted) {
+            var $rows = this.sandbox.dom.find(constants.typeRowSelector, domData),
+                data = [],
+                id, value, deleted, obj;
+
+            this.sandbox.dom.each($rows, function(index, $el) {
+
+                deleted = this.sandbox.dom.hasClass($el, 'faded');
+
+                if (!!excludeDeleted) {
+                    if (!deleted) {
+                        id = this.sandbox.dom.data($el, 'id');
+                        value = this.sandbox.dom.val(this.sandbox.dom.find('input', $el));
+                        if (value !== '') {
+                            obj = {id: id};
+                            obj[this.options.valueName] = value;
+                            data.push(obj);
+                        }
+                    }
+                } else {
+                    id = this.sandbox.dom.data($el, 'id');
+                    value = this.sandbox.dom.val(this.sandbox.dom.find('input', $el));
+                    if (value !== '') {
+                        obj = {id: id};
+                        obj[this.options.valueName] = value;
+                        data.push(obj);
+                    }
+                }
+
+            }.bind(this));
+
+            return data;
+        },
+
+        /**
+         * Compares original and new data
+         */
+        getChangedData: function(newData) {
+            var changedData = [];
+            this.sandbox.util.each(newData, function(idx, el) {
+                if (el.id === '') {
+                    changedData.push(el);
+                } else {
+                    this.sandbox.util.each(this.options.data, function(idx, origEl) {
+                        if (el.id === origEl.id &&
+                            el[this.options.valueName] !== origEl[this.options.valueName] &&
+                            el[this.options.valueName] !== '') {
+                            changedData.push(el);
+                        }
+                    }.bind(this));
+                }
+            }.bind(this));
+
+            return changedData;
+        },
+
+        /**
+         * Callback for close of overlay with cancel button
+         */
+        onCloseWithCancel: function() {
+            this.elementsToRemove = [];
+            this.$elementsToRemove = [];
+        },
+
+        /**
+         * Render content for the overlay
+         */
+        renderOverlayContent: function() {
+            var data = [];
+
+            return this.sandbox.dom.createElement(this.sandbox.util.template(
+                    templates.addOverlaySkeleton.call(this),
+                    {data: this.options.data, rowTemplate: templates.addOverlayRow}));
+        },
+        /**
+         * Adds an element
+         */
+        addElement: function(event) {
+            var $row = this.sandbox.dom.createElement(
+                        templates.addOverlayRow.call(this, this.options.valueName, {}
+                    ));
+            this.sandbox.dom.append(
+                    this.$find(constants.contentInnerSelector),
+                    $row);
+        },
+
+        /**
+         * Marks an element for removal
+         */
+        markElementForRemoval: function(event) {
+            var $row = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget)),
+                id = this.sandbox.dom.data($row, 'id');
+
+            if (id != null) {
+                this.sandbox.emit(REMOVE.call(this), id, $row);
+            }
+
+            this.toggleStateOfRow($row);
+        },
+
+        /**
+         * Marks a row as removed
+         * @param $row
+         */
+        toggleStateOfRow: function($row) {
+            this.sandbox.dom.toggleClass($row, 'faded');
+        },
+
         // trigger event with clicked item
         clickItem: function(event) {
 
@@ -475,6 +821,13 @@ define([], function() {
             callback = this.sandbox.dom.data(event.currentTarget, 'selectCallback');
             index = this.selectedElements.indexOf(key);
             updateLabel = this.sandbox.dom.attr(event.currentTarget, 'data-update-label');
+
+            // Edit button was pressed
+            if (key == constants.editableFieldKey) {
+                this.hideDropDown();
+                this.openEditDialog();
+                return;
+            }
 
             if (updateLabel !== 'false') {
 
@@ -535,7 +888,6 @@ define([], function() {
             if (typeof callback === 'function') {
                 callback();
             }
-
             if (index >= 0) {
                 this.triggerDeselect(key);
             } else {
@@ -591,7 +943,7 @@ define([], function() {
         },
 
         /**
-         * Handles the click on the drodpwn label
+         * Handles the click on the drodown label
          */
         labelClickHandler: function() {
             // if dropdown is not empty

@@ -119,6 +119,18 @@
         "admin/api/dropzone": {
             "verbs": ["POST"],
             "mockFile": "dropzone/uploaded.json"
+        },
+
+        "admin/api/select/:id": {
+            "verbs": ["DELETE"],
+            "httpStatus": 204,
+            "mockFile": "select/delete.json",
+            "switch": "id"
+        },
+
+        "admin/api/select": {
+            "verbs": ["PATCH"],
+            "mockFile": "select/patch.json"
         }
     }
 }
