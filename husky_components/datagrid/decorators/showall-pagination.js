@@ -3,7 +3,7 @@
  * @constructor
  *
  * @param {Object} [paginationOptions] Configuration object
- * @param {Number} [paginationOptions.pageSize] maximum elements per page
+ * @param {Number} [paginationOptions.limit] maximum elements per page
  * @param {Function} [paginationOptions.showAllHandler] function to call if pagination is clicked. If set pagination will always be displayed. Default action gets not executed if set.
  *
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -16,7 +16,7 @@ define(function () {
     'use strict';
 
     var defaults = {
-            pageSize: 9,
+            limit: 9,
             showAllHandler: null
         },
 
@@ -77,9 +77,9 @@ define(function () {
             this.data = data;
 
             this.$paginationContainer = this.sandbox.dom.createElement('<div class="' + constants.paginationClass + '"/>');
-            if (this.data.numberOfAll > this.data.total || !!this.options.showAllHandler) {
+            if (this.data.total > this.data.embedded.length || !!this.options.showAllHandler) {
                 this.renderShowAll();
-            } else if (this.data.numberOfAll > this.options.pageSize) {
+            } else if (this.data.total > this.options.limit) {
                 this.renderShowOnly();
             } else {
                 return false;
@@ -98,7 +98,7 @@ define(function () {
         renderShowAll: function() {
             this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
                 desc: translations.showAll,
-                number: this.data.numberOfAll,
+                number: this.data.total,
                 elements: translations.elements,
                 translate: this.sandbox.translate
             }));
@@ -110,7 +110,7 @@ define(function () {
         renderShowOnly: function() {
             this.sandbox.dom.html(this.$paginationContainer, this.sandbox.util.template(templates.structure)({
                 desc: translations.showOnly,
-                number: this.options.pageSize,
+                number: this.options.limit,
                 elements: translations.elements,
                 translate: this.sandbox.translate
             }));
@@ -118,10 +118,10 @@ define(function () {
 
         /**
          * Returns the pagination page size
-         * @returns {Number} current Page size
+         * @returns {Number} current limit
          */
-        getPageSize: function () {
-            return this.options.pageSize;
+        getLimit: function () {
+            return this.options.limit;
         },
 
         /**
@@ -146,7 +146,7 @@ define(function () {
          */
         bindDomEvents: function () {
             this.sandbox.dom.on(this.$paginationContainer, 'click', function() {
-                if (this.data.numberOfAll > this.data.total || !!this.options.showAllHandler) {
+                if (this.data.total > this.data.embedded.length || !!this.options.showAllHandler) {
                     this.showAll();
                 } else {
                     this.showOnly();
@@ -170,7 +170,7 @@ define(function () {
          * Shows only the configured amount of elements in the datagrid
          */
         showOnly: function() {
-            this.datagrid.changePage.call(this.datagrid, null, 1, this.options.pageSize);
+            this.datagrid.changePage.call(this.datagrid, null, 1, this.options.limit);
         },
 
         /**

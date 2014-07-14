@@ -1020,6 +1020,11 @@ define([], function() {
                 this.sandbox.dom.on(this.overlay.$el, &#x27;click&#x27;, function(event) {
                     this.sandbox.dom.stopPropagation(event);
                 }.bind(this));
+                if (this.options.backdrop === true) {
+                    this.sandbox.dom.on(this.$backdrop, &#x27;click&#x27;, function(event) {
+                        this.sandbox.dom.stopPropagation(event);
+                    }.bind(this));
+                }
             }
 
             // close handler for close icon

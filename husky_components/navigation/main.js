@@ -108,7 +108,7 @@ define(function() {
                 hide: 'navigation.hide',
                 show: 'navigation.show'
             },
-            resizeWidth: 800,
+            resizeWidth: 1210,
             forceCollapse: false,
             systemName: 'Sulu 2.0',
             footer: true,
@@ -119,6 +119,7 @@ define(function() {
             }
         },
         CONSTANTS = {
+            COMPONENT_CLASS: 'husky-navigation',
             UNCOLLAPSED_WIDTH: 250, //px
             COLLAPSED_WIDTH: 50, //px
             ITEM_LABEL_HEIGHT: 50, //px
@@ -252,15 +253,15 @@ define(function() {
             this.items = [];
 
             // add container class to current div
-            this.sandbox.dom.addClass(this.$el, 'navigation-container');
+            this.sandbox.dom.addClass(this.$el, CONSTANTS.COMPONENT_CLASS);
 
             // render skeleton
             this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton,
                 this.sandbox.util.extend(true, {}, this.options, {translate: this.sandbox.translate}))
             );
 
-            this.$navigation = this.$find('.navigation', this.$el);
-            this.$navigationContent = this.$find('.navigation-content', this.$navigation);
+            this.$navigation = this.$find('.navigation');
+            this.$navigationContent = this.$find('.navigation-content');
 
             // start search component
             this.sandbox.start([
@@ -751,6 +752,9 @@ define(function() {
 
         collapse: function() {
             if (this.hidden === false) {
+                this.sandbox.dom.one(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function() {
+                    this.sandbox.dom.css(this.$el, {'width': ''});
+                }.bind(this));
                 this.sandbox.dom.addClass(this.$navigation, 'collapsed');
                 this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
                 this.removeHeightforExpanded();
@@ -765,12 +769,17 @@ define(function() {
 
         unCollapse: function(forced) {
             if ((this.stayCollapsed === false || forced === true) && this.hidden === false) {
+                if (forced) {
+                    // freeze width of parent so that the navigation overlaps the content
+                    this.sandbox.dom.width(this.$el, this.sandbox.dom.width(this.$navigation));
+                    this.sandbox.dom.addClass(this.$navigation, 'collapseIcon');
+                } else {
+                    this.sandbox.dom.removeClass(this.$navigation, 'collapseIcon');
+                    this.sandbox.dom.css(this.$el, {'width': ''});
+                }
                 this.sandbox.dom.removeClass(this.$navigation, 'collapsed');
                 this.hideToolTip();
                 this.setHeightForExpanded();
-                if (forced) {
-                    this.sandbox.dom.addClass(this.$navigation, 'collapseIcon');
-                }
                 if (this.collapsed) {
                     this.sandbox.emit(EVENT_UNCOLLAPSED, CONSTANTS.UNCOLLAPSED_WIDTH);
                     if (!forced) {

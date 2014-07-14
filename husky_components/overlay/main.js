@@ -860,6 +860,11 @@ define([], function() {
                 this.sandbox.dom.on(this.overlay.$el, 'click', function(event) {
                     this.sandbox.dom.stopPropagation(event);
                 }.bind(this));
+                if (this.options.backdrop === true) {
+                    this.sandbox.dom.on(this.$backdrop, 'click', function(event) {
+                        this.sandbox.dom.stopPropagation(event);
+                    }.bind(this));
+                }
             }
 
             // close handler for close icon

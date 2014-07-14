@@ -4,7 +4,7 @@
  *
  * @param {Object} [paginationOptions] Configuration object
  * @param {Array} [options.showElementsSteps] Array which contains the steps for the Show-Elements-dropdown as integers
- * @param {Number} [options.pageSize] Data records per page
+ * @param {Number} [options.limit] Data records per page
  *
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
@@ -16,7 +16,7 @@ define(function() {
 
      var defaults = {
             showElementsSteps: [10, 20, 50, 100, 500],
-            pageSize: 10
+            limit: 10
         },
 
         constants = {
@@ -107,10 +107,10 @@ define(function() {
 
         /**
          * Returns the pagination page size
-         * @returns {Number} current Page size
+         * @returns {Number} current limit
          */
-        getPageSize: function() {
-            return this.options.pageSize;
+        getLimit: function() {
+            return this.options.limit;
         },
 
         /**
@@ -143,11 +143,11 @@ define(function() {
 
             // show-elements dropdown item clicked
             this.sandbox.on('husky.dropdown.' + this.datagrid.options.instanceName + '-pagination-dropdown-show.item.click', function(item) {
-                if (this.data.pageSize !== item.id || this.data.total === this.data.numberOfAll) {
+                if (this.data.limit !== item.id || this.data.embedded.length === this.data.total) {
                     // show all
                     if (item.id === 0) {
                         // only if not already all are shown
-                        if (this.data.total !== this.data.numberOfAll) {
+                        if (this.data.embedded.length !== this.data.total) {
                             this.datagrid.changePage.call(this.datagrid, this.data.links.all);
                         }
                     } else {
@@ -214,13 +214,13 @@ define(function() {
                 description;
 
             // if first defined step is bigger than the number of all elements don't display show-elements dropdown
-            if (this.data.numberOfAll > this.options.showElementsSteps[0]) {
-                if (this.data.total === this.data.numberOfAll) {
+            if (this.data.total > this.options.showElementsSteps[0]) {
+                if (this.data.embedded.length === this.data.total) {
                     description = this.sandbox.translate(translations.showAllElements);
                 } else {
                     description = this.sandbox.translate(translations.show) +
-                        ' <strong>' + this.data.total + '</strong> ' +
-                        this.sandbox.translate(translations.elementsOf) + ' ' + this.data.numberOfAll;
+                        ' <strong>' + this.data.embedded.length + '</strong> ' +
+                        this.sandbox.translate(translations.elementsOf) + ' ' + this.data.total;
                 }
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
                     'desc': description
@@ -290,7 +290,7 @@ define(function() {
             var i, length, data = [];
 
             for (i = -1, length = this.options.showElementsSteps.length; ++i < length;) {
-                if (this.options.showElementsSteps[i] > this.data.numberOfAll) {
+                if (this.options.showElementsSteps[i] > this.data.total) {
                     break;
                 }
                 data.push({

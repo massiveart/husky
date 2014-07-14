@@ -6,41 +6,42 @@
             "name": "http://husky.lo:7878/admin/api/datagrid/children/sorted"
         }
     },
-    "_embedded": [
-        {
-            "id": 1,
-            "name": "Category 1",
-            "children": 2
-        },
-        {
-            "id": 2,
-            "name": "Category 2",
-            "children": 3
-        },
-        {
-            "id": 3,
-            "name": "Category 3",
-            "children": 0
-        },
-        {
-            "id": 4,
-            "name": "Category 4",
-            "children": 0
-        },
-        {
-            "id": 5,
-            "name": "Category 5",
-            "children": 2
-        },
-        {
-            "id": 6,
-            "name": "Category 6",
-            "children": 0
-        }
-    ],
+    "_embedded": {
+        "categories": [
+            {
+                "id": 1,
+                "name": "Category 1",
+                "children": 2
+            },
+            {
+                "id": 2,
+                "name": "Category 2",
+                "children": 3
+            },
+            {
+                "id": 3,
+                "name": "Category 3",
+                "children": 0
+            },
+            {
+                "id": 4,
+                "name": "Category 4",
+                "children": 0
+            },
+            {
+                "id": 5,
+                "name": "Category 5",
+                "children": 2
+            },
+            {
+                "id": 6,
+                "name": "Category 6",
+                "children": 0
+            }
+        ]
+    },
     "total": 6,
-    "numberOfAll": 6,
     "pages": 1,
     "page": 1,
-    "pageSize": 6
+    "limit": 6
 }

@@ -166,8 +166,6 @@ define(function() {
 
     return {
 
-        view: true,
-
         initialize: function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.$el = this.sandbox.dom.$(this.options.el);

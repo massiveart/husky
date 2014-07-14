@@ -62,7 +62,7 @@ define(function() {
         ERROR: {
             title: 'Error',
             labelClass: 'husky-label-error',
-            fadeOut: false
+            fadeOutDelay: 10000
         },
         WARNING: {
             fadeOutDelay: 5000,

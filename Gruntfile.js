@@ -184,28 +184,6 @@ module.exports = function(grunt) {
                     }
                 ]
             },
-            doc: {
-                files: [
-                    {
-                        expand: true,
-                        dot: true,
-                        cwd: './',
-                        dest: 'assets/js/husky/',
-                        src: [
-                            'dist/{,*/}*'
-                        ]
-                    },
-                    {
-                        expand: true,
-                        dot: true,
-                        cwd: './',
-                        dest: 'assets/js/husky/dist/',
-                        src: [
-                            'fonts/{,*/}*'
-                        ]
-                    }
-                ]
-            },
             bower: {
                 files: [
                     // aura
@@ -400,7 +378,6 @@ module.exports = function(grunt) {
         'compass',
         'cssmin',
         'copy:dist',
-        'copy:doc',
         'yuidoc'
     ]);
 
@@ -408,7 +385,6 @@ module.exports = function(grunt) {
         'compass',
         'cssmin',
         'copy:dist',
-        'copy:doc'
     ]);
 
     grunt.registerTask('update', [
