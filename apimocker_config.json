@@ -126,11 +126,6 @@
             "httpStatus": 204,
             "mockFile": "select/delete.json",
             "switch": "id"
-        },
-
-        "admin/api/select": {
-            "verbs": ["PATCH"],
-            "mockFile": "select/patch.json"
         }
     }
 }
