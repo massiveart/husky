@@ -551,8 +551,8 @@
                         for (var key in matching) {
                             if (key === 'translation') {
                                 matchingObject.content = this.sandbox.translate(matching.translation);
-                            } else if (key === 'id') {
-                                matchingObject.attribute = matching.id;
+                            } else if (key === 'name') {
+                                matchingObject.attribute = matching.name;
                             } else {
                                 matchingObject[key] = matching[key];
                             }
@@ -560,7 +560,7 @@
                         // push the constructed matching to the global matchings array
                         this.matchings.push(matchingObject);
                         this.requestFields.push(matching.id);
-                    } else if (matching.id === 'id') {
+                    } else if (matching.name === 'id') {
                         this.requestFields.push(matching.id);
                     }
                     // always load the id (never ever even think about not loading the id)
