@@ -33,14 +33,19 @@
  * @param {Function} [options.noItemsCallback] callback function which gets executed at click on label if no dropdown-items exist
  * @param {Boolean} [options.repeatSelect] If true dropdown item can be selected n-times in succession
  * @param {Boolean} [options.editable] If true the menu items are editable
- * @param {String} [options.url] url to save data
+ * @param {Dictionary} [options.translations] translation keys for 'addItem' and 'editEntries'
  */
 
 define([], function() {
 
     'use strict';
 
-    var defaults = {
+    var translations = {
+        addItem: 'select.add-item',
+        editEntries: 'select.edit-entries'
+    },
+
+        defaults = {
             data: [],                         // data array
             valueName: 'name',                // name of text property
             instanceName: 'undefined',        // instance name
@@ -59,9 +64,8 @@ define([], function() {
             icon: null,
             noItemsCallback: null,
             repeatSelect: false,
-            editable: false,                  // if true the menu items are editable
-            url: null                         // url to save data
-
+            editable: false,
+            translations: translations
         },
 
         constants = {
@@ -104,16 +108,11 @@ define([], function() {
                     '</div>',
                     '<div class="grid-row">',
                     '   <div id="addRow" class="addButton">',
-                            this.sandbox.translate(translations.addItem),
+                            this.sandbox.translate(defaults.translations.addItem),
                     '   </div>',
                     '</div>'
                 ].join('');
             }
-        },
-
-        translations = {
-            addItem: 'select.add-item',
-            editEntries: 'select.edit-entries'
         },
 
         /**
@@ -221,6 +220,22 @@ define([], function() {
             return getEventName.call(this, 'remove');
         },
 
+        /**
+         * Saved event
+         * @event husky.select.[instanceName].saved
+         */
+            SAVED = function() {
+            return getEventName.call(this, 'saved');
+        },
+
+        /**
+         * Deleted event
+         * @event husky.select.[instanceName].deleted
+         */
+            DELETED = function() {
+            return getEventName.call(this, 'deleted');
+        },
+
         getEventName = function(suffix) {
             return 'husky.select.' + this.options.instanceName + '.' + suffix;
         };
@@ -228,12 +243,6 @@ define([], function() {
     return {
 
         initialize: function() {
-
-            // Arrays to hold the elements to remove, if editable.
-            if (this.options.editable === true) {
-                this.elementsToRemove = [];
-                this.$elementsToRemove = [];
-            }
 
             var selectedIds;
 
@@ -589,21 +598,16 @@ define([], function() {
                 changedData = this.getChangedData(data);
 
             if (changedData.length > 0) {
-                this.sandbox.util.save(this.options.url, method, changedData)
-                    .then(function(response) {
-                        var mergeData = this.mergeDomAndRequestData(response,
-                            this.parseDataFromDom(domData, true));
-                        this.options.data = mergeData.slice(0);
-                        this.updateDropdown(mergeData, [null]);
-                    }.bind(this)).fail(function(status, error) {
-                        this.sandbox.logger.error(status, error);
-                    }.bind(this));
+                var mergeData = this.mergeDomAndRequestData(changedData,
+                    this.parseDataFromDom(domData, true));
+                this.options.data = mergeData.slice(0);
+                this.updateDropdown(mergeData, [null]);
+                this.sandbox.emit(SAVED.call(this), changedData);
             }
-
         },
 
         /**
-         * Merges data returned by the rest api and the dom
+         * Merges data
          * @param updatedData
          * @param parsedDomData
          */
@@ -663,21 +667,15 @@ define([], function() {
          * @param id
          */
         deleteItem: function(id) {
-            this.sandbox.util.save(this.options.url + '/' + id, 'DELETE')
-                .then(function() {
-                    // Remove items
-                    var origData = this.options.data.slice(0);
-                    this.sandbox.util.each(origData, function(index, $el) {
-                        if (id === $el.id) {
-                            var i = this.options.data.indexOf($el);
-                            this.options.data.splice(i, 1);
-                        }
-                    this.updateDropdown(this.options.data, [null]);
+            // Remove items
+            var origData = this.options.data.slice(0);
+            this.sandbox.util.each(origData, function(index, $el) {
+                if (id === $el.id) {
+                    var i = this.options.data.indexOf($el);
+                    this.options.data.splice(i, 1);
+                }
             }.bind(this));
-                }.bind(this)).fail(function(status, error) {
-                    this.sandbox.logger.error(status, error);
-                    return null;
-                }.bind(this));
+            this.updateDropdown(this.options.data, [null]);
         },
 
         /**
@@ -696,6 +694,9 @@ define([], function() {
                 this.sandbox.util.each(this.elementsToRemove, function(index, el) {
                     this.deleteItem(el);
                 }.bind(this));
+                this.sandbox.emit(DELETED.call(this), this.elementsToRemove);
+                this.elementsToRemove = [];
+                this.$elementsToRemove = [];
             }
         },
 
