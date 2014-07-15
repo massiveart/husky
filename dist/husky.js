@@ -39243,6 +39243,7 @@ define('__component__$smart-content@husky',[], function() {
  * @params {Array} [options.buttonsDefaultAlign] the align of the buttons in the footer ('center', 'left' or 'right'). Can be overriden by each button individually
  * @params {Array} [options.supportKeyInput] if true pressing enter will submit the overlay and esc will close it
  * @params {Array} [options.propagateEvents] If false click-events will be stoped at the components-element
+ * @params {Array} [options.verticalSpacing] defines the minimum spacing in pixel to the bottom and the top
  *
  * @params {Array} [options.slides] array of slide objects, will be rendered in a row and can slided with events
  * @params {String} [options.slides[].title] the title of the overlay
@@ -39277,6 +39278,7 @@ define('__component__$overlay@husky',[], function() {
     var defaults = {
             trigger: 'click',
             triggerEl: null,
+            verticalSpacing: 20, //px
             instanceName: 'undefined',
             draggable: true,
             openOnStart: false,
@@ -40214,15 +40216,15 @@ define('__component__$overlay@husky',[], function() {
          */
         resizeHandler: function() {
             //window is getting smaller - make overlay smaller
-            if (this.sandbox.dom.height(this.sandbox.dom.$window) < this.sandbox.dom.outerHeight(this.overlay.$el)) {
+            if (this.sandbox.dom.height(this.sandbox.dom.$window) < this.sandbox.dom.outerHeight(this.overlay.$el) + this.options.verticalSpacing*2) {
                 this.sandbox.dom.height(this.overlay.$content,
-                    (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content))
+                    (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing*2)
                 );
                 this.sandbox.dom.css(this.overlay.$content, {'overflow': 'scroll'});
                 this.overlay.collapsed = true;
 
                 //window is getting bigger - make the overlay bigger
-            } else if (this.sandbox.dom.height(this.sandbox.dom.$window) > this.sandbox.dom.outerHeight(this.overlay.$el) &&
+            } else if (this.sandbox.dom.height(this.sandbox.dom.$window) > this.sandbox.dom.outerHeight(this.overlay.$el) + this.options.verticalSpacing*2 &&
                 this.overlay.collapsed === true) {
 
                 //if overlay reached its beginning height - stop
@@ -40233,7 +40235,7 @@ define('__component__$overlay@husky',[], function() {
                     // else enlarge further
                 } else {
                     this.sandbox.dom.height(this.overlay.$content,
-                        (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content))
+                        (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing*2)
                     );
                 }
             }
