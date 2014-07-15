@@ -51,7 +51,7 @@ require(['lib/husky'], function(Husky) {
                         {
                             content: 'Content 1',
                             width: "25%",
-                            id: "content1",
+                            name: "content1",
                             editable: true,
                             type: 'title',
                             validation: {
@@ -61,7 +61,7 @@ require(['lib/husky'], function(Husky) {
                         {
                             content: 'Content 2',
                             width: "25%",
-                            id: "content2",
+                            name: "content2",
                             editable: false,
                             type: 'bytes',
                             validation: {
@@ -71,13 +71,13 @@ require(['lib/husky'], function(Husky) {
                         {
                             content: 'Content 3',
                             width: "25%",
-                            id: "content3",
+                            name: "content3",
                             type: 'thumbnails'
                         },
                         {
                             content: 'Date',
                             width: "25%",
-                            id: 'date',
+                            name: 'date',
                             type: 'date'
                         }
                     ]
@@ -107,7 +107,7 @@ require(['lib/husky'], function(Husky) {
                         {
                             content: 'Content 1',
                             width: "25%",
-                            id: "content1",
+                            name: "content1",
                             editable: true,
                             type: 'title',
                             validation: {
@@ -117,7 +117,7 @@ require(['lib/husky'], function(Husky) {
                         {
                             content: 'Content 2',
                             width: "25%",
-                            id: "content2",
+                            name: "content2",
                             editable: false,
                             type: 'bytes',
                             validation: {
@@ -127,13 +127,13 @@ require(['lib/husky'], function(Husky) {
                         {
                             content: 'Content 3',
                             width: "25%",
-                            id: "content3",
+                            name: "content3",
                             type: 'thumbnails'
                         },
                         {
                             content: 'Date',
                             width: "25%",
-                            id: 'date',
+                            name: 'date',
                             type: 'date'
                         }
                     ]
@@ -150,15 +150,15 @@ require(['lib/husky'], function(Husky) {
                     instanceName: 'grid-thumbnails',
                     matchings: [
                         {
-                            id: 'title',
+                            name: 'title',
                             type: 'title'
                         },
                         {
-                            id: 'mediaNumber',
+                            name: 'mediaNumber',
                             type: 'count'
                         },
                         {
-                            id: 'thumbnails',
+                            name: 'thumbnails',
                             type: 'thumbnails'
                         }
                     ]
@@ -202,19 +202,19 @@ require(['lib/husky'], function(Husky) {
                     },
                     matchings: [
                         {
-                            id: 'name',
+                            name: 'name',
                             content: 'Name'
                         },
                         {
-                            id: 'id',
+                            name: 'id',
                             disabled: true
                         },
                         {
-                            id: 'children',
+                            name: 'children',
                             disabled: true
                         },
                         {
-                            id: 'parent',
+                            name: 'parent',
                             disabled: true
                         }
                     ]
@@ -259,19 +259,19 @@ require(['lib/husky'], function(Husky) {
                     },
                     matchings: [
                         {
-                            id: 'name',
+                            name: 'name',
                             content: 'Name'
                         },
                         {
-                            id: 'id',
+                            name: 'id',
                             disabled: true
                         },
                         {
-                            id: 'children',
+                            name: 'children',
                             disabled: true
                         },
                         {
-                            id: 'parent',
+                            name: 'parent',
                             disabled: true
                         }
                     ]
@@ -317,19 +317,19 @@ require(['lib/husky'], function(Husky) {
                     },
                     matchings: [
                         {
-                            id: 'name',
+                            name: 'name',
                             content: 'Name'
                         },
                         {
-                            id: 'id',
+                            name: 'id',
                             disabled: true
                         },
                         {
-                            id: 'children',
+                            name: 'children',
                             disabled: true
                         },
                         {
-                            id: 'parent',
+                            name: 'parent',
                             disabled: true
                         }
                     ]
@@ -357,19 +357,19 @@ require(['lib/husky'], function(Husky) {
                     },
                     matchings: [
                         {
-                            id: 'name',
+                            name: 'name',
                             content: 'Name'
                         },
                         {
-                            id: 'id',
+                            name: 'id',
                             disabled: true
                         },
                         {
-                            id: 'children',
+                            name: 'children',
                             disabled: true
                         },
                         {
-                            id: 'parent',
+                            name: 'parent',
                             disabled: true
                         }
                     ]

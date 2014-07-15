@@ -711,17 +711,17 @@
                         for (var key in matching) {
                             if (key === &#x27;translation&#x27;) {
                                 matchingObject.content = this.sandbox.translate(matching.translation);
-                            } else if (key === &#x27;id&#x27;) {
-                                matchingObject.attribute = matching.id;
+                            } else if (key === &#x27;name&#x27;) {
+                                matchingObject.attribute = matching.name;
                             } else {
                                 matchingObject[key] = matching[key];
                             }
                         }
                         // push the constructed matching to the global matchings array
                         this.matchings.push(matchingObject);
-                        this.requestFields.push(matching.id);
-                    } else if (matching.id === &#x27;id&#x27;) {
-                        this.requestFields.push(matching.id);
+                        this.requestFields.push(matching.name);
+                    } else if (matching.name === &#x27;id&#x27;) {
+                        this.requestFields.push(matching.name);
                     }
                     // always load the id (never ever even think about not loading the id)
                 }.bind(this));
