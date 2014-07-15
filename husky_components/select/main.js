@@ -103,7 +103,7 @@ define([], function() {
                 return [
                     '<div class="content-inner">',
                     '   <% _.each(data, function(item) { %>',
-                    '        <%= rowTemplate("category", item) %>',
+                    '        <%= rowTemplate(valueName, item) %>',
                     '   <% }); %>',
                     '</div>',
                     '<div class="grid-row">',
@@ -777,7 +777,11 @@ define([], function() {
 
             return this.sandbox.dom.createElement(this.sandbox.util.template(
                     templates.addOverlaySkeleton.call(this),
-                    {data: this.options.data, rowTemplate: templates.addOverlayRow}));
+                    {
+                        data: this.options.data,
+                        rowTemplate: templates.addOverlayRow,
+                        valueName: this.options.valueName
+                    }));
         },
         /**
          * Adds an element
