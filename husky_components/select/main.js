@@ -455,6 +455,9 @@ define([], function() {
             this.sandbox.on(EVENT_ENABLE.call(this), this.enable.bind(this));
             this.sandbox.on(EVENT_GET_CHECKED.call(this), this.getChecked.bind(this));
             this.sandbox.on(EVENT_UPDATE.call(this), this.updateDropdown.bind(this));
+            this.sandbox.on(REMOVE.call(this), function(id, $row) {
+                this.updateRemoveList(id, $row);
+            }.bind(this));
         },
 
         /**
@@ -638,9 +641,6 @@ define([], function() {
                     'click',
                     this.addElement.bind(this),
                     constants.templateAddSelector);
-            this.sandbox.on(REMOVE.call(this), function(id, $row) {
-                this.updateRemoveList(id, $row);
-            }.bind(this));
         },
 
         /**
