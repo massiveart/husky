@@ -31,12 +31,11 @@
     float: left;
     position: relative;
     cursor: pointer;
-    border: 1px solid $grayLighter;
     @include clear-float;
 
     &.small {
       width: $thumbnailSmallWidth - 1px;
-      height: $thumbnailSmallHeight - 2px;
+      height: $thumbnailSmallHeight;
       margin-bottom: 20px;
       margin-right: 8px;
 
@@ -44,7 +43,7 @@
         float: left;
         width: $imgSmallWidth;
         text-align: center;
-        line-height: $thumbnailSmallHeight - 23px;
+        line-height: $thumbnailSmallHeight - 20px;
         padding: 8px;
         img {
             vertical-align: middle;
@@ -73,6 +72,7 @@
     }
 
     &.large {
+      border: 1px solid $grayLighter;
       width: $thumbnailLargeWidth - 3px;
       height: $thumbnailLargeHeight - 2px;
       margin-bottom: 40px;
@@ -111,13 +111,15 @@
     &.is-selected {
       background: $white;
 
+      &.large {
+        border-color: $white;
+      }
       .checkbox {
         display: block;
       }
       .download {
         display: block;
       }
-      border-color: $white;
     }
   }
 }

@@ -10071,7 +10071,6 @@ a.btn-black, a.btn-highlight {
   float: left;
   position: relative;
   cursor: pointer;
-  border: 1px solid #cccccc;
 }
 /* line 32, ../scss/mixins.scss */
 .husky-thumbnails .item:after {
@@ -10079,34 +10078,34 @@ a.btn-black, a.btn-highlight {
   content: ' ';
   display: block;
 }
-/* line 37, ../scss/modules/thumbnails.scss */
+/* line 36, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.small {
   width: 259px;
-  height: 68px;
+  height: 70px;
   margin-bottom: 20px;
   margin-right: 8px;
 }
-/* line 43, ../scss/modules/thumbnails.scss */
+/* line 42, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.small .image {
   float: left;
   width: 70px;
   text-align: center;
-  line-height: 47px;
+  line-height: 50px;
   padding: 8px;
 }
-/* line 49, ../scss/modules/thumbnails.scss */
+/* line 48, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.small .image img {
   vertical-align: middle;
   max-width: 100%;
   max-height: 100%;
 }
-/* line 55, ../scss/modules/thumbnails.scss */
+/* line 54, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.small .text {
   float: left;
   padding-top: 20px;
   width: 190px -1px;
 }
-/* line 60, ../scss/modules/thumbnails.scss */
+/* line 59, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.small .checkbox {
   position: absolute;
   top: 10px;
@@ -10114,15 +10113,16 @@ a.btn-black, a.btn-highlight {
   left: auto;
   display: none;
 }
-/* line 67, ../scss/modules/thumbnails.scss */
+/* line 66, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.small .download {
   position: absolute;
   right: 10px;
   bottom: 10px;
   display: none;
 }
-/* line 75, ../scss/modules/thumbnails.scss */
+/* line 74, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item.large {
+  border: 1px solid #cccccc;
   width: 187px;
   height: 248px;
   margin-bottom: 40px;
@@ -10163,13 +10163,16 @@ a.btn-black, a.btn-highlight {
 /* line 111, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item:hover, .husky-thumbnails .item.is-selected {
   background: white;
-  border-color: white;
 }
 /* line 114, ../scss/modules/thumbnails.scss */
+.husky-thumbnails .item:hover.large, .husky-thumbnails .item.is-selected.large {
+  border-color: white;
+}
+/* line 117, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item:hover .checkbox, .husky-thumbnails .item.is-selected .checkbox {
   display: block;
 }
-/* line 117, ../scss/modules/thumbnails.scss */
+/* line 120, ../scss/modules/thumbnails.scss */
 .husky-thumbnails .item:hover .download, .husky-thumbnails .item.is-selected .download {
   display: block;
 }
@@ -10180,7 +10183,7 @@ a.btn-black, a.btn-highlight {
   content: ' ';
   display: block;
 }
-/* line 136, ../scss/modules/thumbnails.scss */
+/* line 138, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group {
   width: 190px;
   margin-right: 20px;
@@ -10188,13 +10191,13 @@ a.btn-black, a.btn-highlight {
   float: left;
   cursor: pointer;
 }
-/* line 143, ../scss/modules/thumbnails.scss */
+/* line 145, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group .thumbnails {
   position: relative;
   width: 100%;
   height: 125px;
 }
-/* line 148, ../scss/modules/thumbnails.scss */
+/* line 150, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group .thumbnails .thumbnail {
   position: absolute;
   width: 150px;
@@ -10214,13 +10217,13 @@ a.btn-black, a.btn-highlight {
   -o-transition: all 200ms ease 200ms;
   transition: all 200ms ease 200ms;
 }
-/* line 158, ../scss/modules/thumbnails.scss */
+/* line 160, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group .thumbnails .thumbnail img {
   width: 100%;
   height: 100%;
   display: block;
 }
-/* line 163, ../scss/modules/thumbnails.scss */
+/* line 165, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group .thumbnails .thumbnail.empty {
   width: 145px;
   height: 95px;
@@ -10230,7 +10233,7 @@ a.btn-black, a.btn-highlight {
   font-size: 40px;
   color: #cccccc;
 }
-/* line 172, ../scss/modules/thumbnails.scss */
+/* line 174, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group .thumbnails .thumbnail.first {
   top: 0px;
   right: 0px;
@@ -10241,7 +10244,7 @@ a.btn-black, a.btn-highlight {
   -webkit-transform: rotate(0deg);
   /* Opera, Chrome, and Safari */
 }
-/* line 178, ../scss/modules/thumbnails.scss */
+/* line 180, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group .thumbnails .thumbnail.first:only-child {
   -webkit-transition: none 1s;
   -moz-transition: none 1s;
@@ -10250,7 +10253,7 @@ a.btn-black, a.btn-highlight {
   position: relative;
   margin: 0 auto;
 }
-/* line 185, ../scss/modules/thumbnails.scss */
+/* line 187, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group .thumbnails .thumbnail.second {
   right: 10px;
   top: 3px;
@@ -10261,7 +10264,7 @@ a.btn-black, a.btn-highlight {
   -webkit-transform: rotate(-3deg);
   /* Opera, Chrome, and Safari */
 }
-/* line 192, ../scss/modules/thumbnails.scss */
+/* line 194, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group .thumbnails .thumbnail.third {
   right: 20px;
   top: 6px;
@@ -10272,7 +10275,7 @@ a.btn-black, a.btn-highlight {
   -webkit-transform: rotate(-5deg);
   /* Opera, Chrome, and Safari */
 }
-/* line 202, ../scss/modules/thumbnails.scss */
+/* line 204, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group .thumbnails:hover .thumbnail.first {
   top: -10px;
   right: -20px;
@@ -10282,7 +10285,7 @@ a.btn-black, a.btn-highlight {
   -webkit-transform: rotate(5deg);
   /* Opera, Chrome, and Safari */
 }
-/* line 206, ../scss/modules/thumbnails.scss */
+/* line 208, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group .thumbnails:hover .thumbnail.first:only-child {
   transform: rotate(0deg);
   -ms-transform: rotate(0deg);
@@ -10292,7 +10295,7 @@ a.btn-black, a.btn-highlight {
   top: 0px;
   left: 0px;
 }
-/* line 213, ../scss/modules/thumbnails.scss */
+/* line 215, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group .thumbnails:hover .thumbnail.second {
   right: 10px;
   top: -2px;
@@ -10302,7 +10305,7 @@ a.btn-black, a.btn-highlight {
   -webkit-transform: rotate(-2deg);
   /* Opera, Chrome, and Safari */
 }
-/* line 219, ../scss/modules/thumbnails.scss */
+/* line 221, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group .thumbnails:hover .thumbnail.third {
   top: 15px;
   right: 35px;
@@ -10312,13 +10315,13 @@ a.btn-black, a.btn-highlight {
   -webkit-transform: rotate(-8deg);
   /* Opera, Chrome, and Safari */
 }
-/* line 227, ../scss/modules/thumbnails.scss */
+/* line 229, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group .title {
   display: block;
   line-height: 14px;
   text-align: center;
 }
-/* line 232, ../scss/modules/thumbnails.scss */
+/* line 234, ../scss/modules/thumbnails.scss */
 .husky-groups .grid-group .addition {
   display: block;
   text-align: center;
