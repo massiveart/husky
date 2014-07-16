@@ -27245,6 +27245,12 @@ define('__component__$navigation@husky',[],function() {
             VERSION_HISTORY_CLICKED = namespace + 'version-history.clicked',
 
         /**
+         * raised when the username gets clicked
+         * @event husky.navigation.username.clicked
+         */
+            USERNAME_CLICKED = namespace + 'username.clicked',
+
+        /**
          * show the navigation when it was hidden before
          * @event husky.navigation.show
          */
@@ -27493,6 +27499,11 @@ define('__component__$navigation@husky',[],function() {
             this.sandbox.dom.on(this.$el, 'click', function() {
                 this.sandbox.emit(VERSION_HISTORY_CLICKED);
             }.bind(this), 'footer .version a');
+
+            // user clicked
+            this.sandbox.dom.on(this.$el, 'click', function() {
+                this.sandbox.emit(USERNAME_CLICKED);
+            }.bind(this), 'footer .user');
         },
 
         /**
@@ -29965,18 +29976,19 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
         templates = {
             item: [
                 '<div class="' + constants.itemClass + ' <%= styleClass %>">',
-                '<div class="' + constants.imageClass + '">',
-                '<img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
-                '</div>',
-                '<div class="' + constants.textClass + '">',
-                '<span class="' + constants.titleClass + '"><%= title %></span><br />',
-                '<span class="' + constants.descriptionClass + '"><%= description %></span>',
-                '</div>',
-                '<div class="' + constants.checkboxClass + ' custom-checkbox no-spacing">',
-                '<input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
-                '<span class="icon"></span>',
-                '</div>',
-                '<div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
+                '   <div class="' + constants.imageClass + '">',
+                '       <div class="fa-coffee empty"></div>',
+                '       <img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
+                '   </div>',
+                '   <div class="' + constants.textClass + '">',
+                '       <span class="' + constants.titleClass + '"><%= title %></span><br />',
+                '       <span class="' + constants.descriptionClass + '"><%= description %></span>',
+                '   </div>',
+                '   <div class="' + constants.checkboxClass + ' custom-checkbox no-spacing">',
+                '       <input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
+                '       <span class="icon"></span>',
+                '   </div>',
+                '   <div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
                 '</div>'
             ].join('')
         };
@@ -32777,12 +32789,18 @@ define('__component__$dropdown@husky',[], function() {
         // make dropDown visible
         showDropDown: function() {
             this.sandbox.logger.log(this.name, 'show dropdown');
+            this.sandbox.dom.removeClass(this.$dropDown, 'top');
             // on click on trigger outside check
             this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.show(this.$dropDown);
             this.sandbox.emit('husky.dropdown.' + this.options.instanceName + '.showing');
             if (!!this.options.toggleClassOn) {
                 this.sandbox.dom.addClass(this.options.toggleClassOn, 'is-active');
+            }
+            // add up class if dropdown would pass the screen borders
+            if ((this.sandbox.dom.offset(this.$dropDown).top - this.sandbox.dom.scrollTop(this.sandbox.dom.window) +
+                this.sandbox.dom.outerHeight(this.$dropDown)) > this.sandbox.dom.height(this.sandbox.dom.window)) {
+                this.sandbox.dom.addClass(this.$dropDown, 'top');
             }
         },
 

@@ -351,6 +351,12 @@ define(function() {
             VERSION_HISTORY_CLICKED = namespace + &#x27;version-history.clicked&#x27;,
 
         /**
+         * raised when the username gets clicked
+         * @event husky.navigation.username.clicked
+         */
+            USERNAME_CLICKED = namespace + &#x27;username.clicked&#x27;,
+
+        /**
          * show the navigation when it was hidden before
          * @event husky.navigation.show
          */
@@ -599,6 +605,11 @@ define(function() {
             this.sandbox.dom.on(this.$el, &#x27;click&#x27;, function() {
                 this.sandbox.emit(VERSION_HISTORY_CLICKED);
             }.bind(this), &#x27;footer .version a&#x27;);
+
+            // user clicked
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, function() {
+                this.sandbox.emit(USERNAME_CLICKED);
+            }.bind(this), &#x27;footer .user&#x27;);
         },
 
         /**
