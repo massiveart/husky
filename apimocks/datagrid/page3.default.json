@@ -1,17 +1,34 @@
 {
     "_links": {
-        "self": "http://husky.lo:7878/admin/api/datagrid?page=3&pageSize=4",
-        "first": "http://husky.lo:7878/admin/api/datagrid?page=1&pageSize=4",
-        "last": "http://husky.lo:7878/admin/api/datagrid?page=3&pageSize=4",
-        "next": "",
-        "previous": "http://husky.lo:7878/admin/api/datagrid?page=2&pageSize=4",
-        "all": "http://husky.lo:7878/admin/api/datagrid/all",
-        "filter": "http://husky.lo:7878/admin/api/datagrid?fields={fieldsList}",
-        "pagination": "http://husky.lo:7878/admin/api/datagrid?page={page}&pageSize={pageSize}",
-        "find": "http://husky.lo:7878/admin/api/datagrid/search?pageSize=4&search={searchString}{&searchFields}",
+        "self": {
+            "href": "http://husky.lo:7878/admin/api/datagrid?page=3&pageSize=4"
+        },
+        "first": {
+            "href": "http://husky.lo:7878/admin/api/datagrid?page=1&pageSize=4"
+        },
+        "last": {
+            "href": "http://husky.lo:7878/admin/api/datagrid?page=3&pageSize=4"
+        },
+        "previous": {
+            "href": "http://husky.lo:7878/admin/api/datagrid?page=2&pageSize=4"
+        },
+        "all": {
+            "href": "http://husky.lo:7878/admin/api/datagrid/all"
+        },
+        "filter": {
+            "href": "http://husky.lo:7878/admin/api/datagrid?fields={fieldsList}"
+        },
+        "pagination": {
+            "href": "http://husky.lo:7878/admin/api/datagrid?page={page}&pageSize={pageSize}"
+        },
+        "find": {
+            "href": "http://husky.lo:7878/admin/api/datagrid/search?pageSize=4&search={searchString}{&searchFields}"
+        },
         "sortable": {
-            "content1": "http://husky.lo:7878/admin/api/datagrid/sort?page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",
-            "content2": "http://husky.lo:7878/admin/api/datagrid/sort?page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"
+            "href": {
+                "content1": "http://husky.lo:7878/admin/api/datagrid/sort?page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",
+                "content2": "http://husky.lo:7878/admin/api/datagrid/sort?page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"
+            }
         }
     },
     "_embedded": {

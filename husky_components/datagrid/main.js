@@ -999,7 +999,7 @@
              * Returns url without params
              */
             getUrlWithoutParams: function() {
-                var url = this.data.links.self;
+                var url = this.data.links.self.href;
 
                 if (url.indexOf('?') !== -1) {
                     return url.substring(0, url.indexOf('?'));
@@ -1339,7 +1339,7 @@
              * @param limit {Number} new page size. Has to be set if no Uri is passed
              */
             changePage: function(uri, page, limit) {
-                if (!!this.data.links.pagination) {
+                if (!!this.data.links.pagination || !!uri) {
                     var url, uriTemplate;
 
                     // if a url is passed load the data from this url
@@ -1359,7 +1359,7 @@
                         }
 
                         // generate uri for loading
-                        uriTemplate = this.sandbox.uritemplate.parse(this.data.links.pagination);
+                        uriTemplate = this.sandbox.uritemplate.parse(this.data.links.pagination.href);
                         url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, limit: limit});
                     }
 
@@ -1381,7 +1381,7 @@
                     this.resetSortingOptions();
 
                     this.load({
-                        url: this.data.links.self,
+                        url: this.data.links.self.href,
                         success: function() {
                             this.sandbox.emit(UPDATED.call(this));
                         }.bind(this)
@@ -1401,7 +1401,7 @@
 
                     this.filterMatchings(matchings);
 
-                    uriTemplate = this.sandbox.uritemplate.parse(this.data.links.filter);
+                    uriTemplate = this.sandbox.uritemplate.parse(this.data.links.filter.href);
                     url = this.sandbox.uritemplate.expand(uriTemplate, {fieldsList: this.requestFields.join(',')});
 
                     this.destroy();
@@ -1422,16 +1422,16 @@
              * @param direction {String} the sort method to use 'asc' or 'desc'
              */
             sortGrid: function(attribute, direction) {
-                if (this.options.sortable === true && !!this.data.links.sortable[attribute]) {
+                if (this.options.sortable === true && !!this.data.links.sortable.href[attribute]) {
                     var template, url;
 
                     // if passed attribute is sortable
-                    if (!!attribute && !!this.data.links.sortable[attribute]) {
+                    if (!!attribute && !!this.data.links.sortable.href[attribute]) {
 
                         this.sort.attribute = attribute;
                         this.sort.direction = direction;
 
-                        template = this.sandbox.uritemplate.parse(this.data.links.sortable[attribute]);
+                        template = this.sandbox.uritemplate.parse(this.data.links.sortable.href[attribute]);
                         url = this.sandbox.uritemplate.expand(template, {sortOrder: direction});
 
                         this.sandbox.emit(DATA_SORT.call(this));
@@ -1452,7 +1452,7 @@
              */
             loadChildren: function(recordId) {
                 if (!!this.data.links.children) {
-                    var template = this.sandbox.uritemplate.parse(this.data.links.children),
+                    var template = this.sandbox.uritemplate.parse(this.data.links.children.href),
                         url = this.sandbox.uritemplate.expand(template, {parentId: recordId});
 
                     this.sandbox.util.load(this.getUrl({url: url}))
@@ -1474,7 +1474,7 @@
                 if (!!this.data.links.find) {
                     var template, url;
 
-                    template = this.sandbox.uritemplate.parse(this.data.links.find);
+                    template = this.sandbox.uritemplate.parse(this.data.links.find.href);
                     url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
 
                     this.destroy();
