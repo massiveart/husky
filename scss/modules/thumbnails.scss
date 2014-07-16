@@ -45,7 +45,11 @@
         text-align: center;
         line-height: $thumbnailSmallHeight - 20px;
         padding: 8px;
+        position: relative;
         img {
+            display: block;
+            position: relative;
+            z-index: 10;
             vertical-align: middle;
             max-width: 100%;
             max-height: 100%;
@@ -69,6 +73,17 @@
         bottom: 10px;
         display: none;
       }
+      .empty {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: $thumbnailSmallHeight;
+        line-height: $thumbnailSmallHeight;
+        z-index: 5;
+        font-size: 25px;
+        color: $grayLighter;
+      }
     }
 
     &.large {
@@ -85,7 +100,11 @@
         text-align: center;
         line-height: $imgLargeHeight;
         margin-bottom: 10px;
+        position: relative;
         img {
+          display: block;
+          position: relative;
+          z-index: 10;
           vertical-align: bottom;
           max-width: 100%;
           max-height: 100%;
@@ -104,6 +123,17 @@
         position: absolute;
         bottom: 10px;
         right: 10px;
+      }
+      .empty {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 5;
+        height: $imgLargeHeight - 10px;
+        line-height: $imgLargeHeight - 10px;
+        font-size: 70px;
+        color: $grayLighter;
       }
     }
 
