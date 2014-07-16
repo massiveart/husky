@@ -160,7 +160,7 @@ define(function () {
          */
         showAll: function() {
             if (typeof this.options.showAllHandler !== 'function') {
-                this.datagrid.changePage.call(this.datagrid, this.data.links.all);
+                this.datagrid.changePage.call(this.datagrid, this.data.links.all.href);
             } else {
                 this.options.showAllHandler();
             }

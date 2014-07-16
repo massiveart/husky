@@ -22,6 +22,8 @@
 
 .dropdown-menu {
     width: 250px;
+    max-height: 350px;
+    overflow: scroll;
     display: inline-block;
     position: absolute;
     top: 20px;
@@ -33,6 +35,12 @@
     border: 1px solid $grayLighter;
     z-index: 90;
     border-radius: $borderRadius;
+
+    &.top {
+      top: auto;
+      bottom: 25px;
+      margin-bottom: 0;
+    }
 
     & > ul {
         list-style: none;

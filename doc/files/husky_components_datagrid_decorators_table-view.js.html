@@ -431,7 +431,7 @@ define(function() {
          */
         destroy: function() {
             this.unbindDomEvents();
-            this.sandbox.stop(this.sandbox.dom.find(&#x27;*&#x27;, this.$tableContainer));
+            //this.sandbox.stop(this.sandbox.dom.find(&#x27;*&#x27;, this.$tableContainer));
             // remove full-width class if configured
             if (this.options.fullWidth === true) {
                 this.sandbox.dom.removeClass(this.$el, constants.fullWidthClass);
@@ -693,7 +693,7 @@ define(function() {
 
                     if (!!this.datagrid.data.links &amp;&amp; !!this.data.links.sortable) {
                         //is column sortable - check with received sort-links
-                        this.sandbox.util.each(this.data.links.sortable, function(index) {
+                        this.sandbox.util.each(this.data.links.sortable.href, function(index) {
                             if (index === column.attribute) {
                                 isSortable = true;
                                 return false;

@@ -1,6 +1,8 @@
 {
     "_links": {
-        "self": "http://husky.lo:7878/admin/api/datagrid/group"
+        "self": {
+            "href": "http://husky.lo:7878/admin/api/datagrid/group"
+        }
     },
     "_embedded": {
         "items": [

@@ -148,7 +148,7 @@ define(function() {
                     if (item.id === 0) {
                         // only if not already all are shown
                         if (this.data.embedded.length !== this.data.total) {
-                            this.datagrid.changePage.call(this.datagrid, this.data.links.all);
+                            this.datagrid.changePage.call(this.datagrid, this.data.links.all.href);
                         }
                     } else {
                         // always jump to the first page
@@ -182,7 +182,7 @@ define(function() {
          */
         nextPage: function() {
             if (!!this.data.links.next) {
-                this.datagrid.changePage.call(this.datagrid, this.data.links.next);
+                this.datagrid.changePage.call(this.datagrid, this.data.links.next.href);
             }
         },
 
@@ -190,8 +190,8 @@ define(function() {
          * Triggers a page change to the previous page
          */
         prevPage: function() {
-            if (!!this.data.links.prev) {
-                this.datagrid.changePage.call(this.datagrid, this.data.links.prev);
+            if (!!this.data.links.previous) {
+                this.datagrid.changePage.call(this.datagrid, this.data.links.previous.href);
             }
         },
 

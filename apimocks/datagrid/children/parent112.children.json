@@ -1,6 +1,8 @@
 {
     "_links": {
-        "self": "http://husky.lo:7878/admin/api/datagrid/actualchildren?parent=112"
+        "self": {
+            "href": "http://husky.lo:7878/admin/api/datagrid/actualchildren?parent=112"
+        }
     },
     "_embedded": {
         "categories": [

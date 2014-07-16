@@ -1,9 +1,15 @@
 {
     "_links": {
-        "self": "http://husky.lo:7878/admin/api/datagrid/children?depth=0",
-        "children": "http://husky.lo:7878/admin/api/datagrid/actualchildren?parent={parentId}",
+        "self": {
+            "href": "http://husky.lo:7878/admin/api/datagrid/children?depth=0"
+        },
+        "children": {
+            "href": "http://husky.lo:7878/admin/api/datagrid/actualchildren?parent={parentId}"
+        },
         "sortable": {
-            "name": "http://husky.lo:7878/admin/api/datagrid/children/sorted"
+            "href": {
+                "name": "http://husky.lo:7878/admin/api/datagrid/children/sorted"
+            }
         }
     },
     "_embedded": {

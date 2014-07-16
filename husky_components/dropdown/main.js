@@ -249,12 +249,18 @@ define([], function() {
         // make dropDown visible
         showDropDown: function() {
             this.sandbox.logger.log(this.name, 'show dropdown');
+            this.sandbox.dom.removeClass(this.$dropDown, 'top');
             // on click on trigger outside check
             this.sandbox.dom.one(this.sandbox.dom.window, 'click', this.hideDropDown.bind(this));
             this.sandbox.dom.show(this.$dropDown);
             this.sandbox.emit('husky.dropdown.' + this.options.instanceName + '.showing');
             if (!!this.options.toggleClassOn) {
                 this.sandbox.dom.addClass(this.options.toggleClassOn, 'is-active');
+            }
+            // add up class if dropdown would pass the screen borders
+            if ((this.sandbox.dom.offset(this.$dropDown).top - this.sandbox.dom.scrollTop(this.sandbox.dom.window) +
+                this.sandbox.dom.outerHeight(this.$dropDown)) > this.sandbox.dom.height(this.sandbox.dom.window)) {
+                this.sandbox.dom.addClass(this.$dropDown, 'top');
             }
         },
 
