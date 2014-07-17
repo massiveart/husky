@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -31073,7 +31072,8 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 TITLE: 'title',
                 BYTES: 'bytes',
                 RADIO: 'radio',
-                COUNT: 'count'
+                COUNT: 'count',
+                TRANSLATION: 'translation'
             },
 
             decorators = {
@@ -31120,6 +31120,16 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     }
                     return date;
                 },
+
+                /**
+                 * Translates a string
+                 * @param val {String} the string to translate
+                 * @returns {String}
+                 */
+                translation: function(val) {
+                   return this.sandbox.translate(val);
+                },
+
 
                 /**
                  * Attaches a postfix to a number
@@ -47545,3 +47555,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+

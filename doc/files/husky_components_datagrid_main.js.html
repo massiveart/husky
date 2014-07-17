@@ -234,7 +234,8 @@
                 TITLE: &#x27;title&#x27;,
                 BYTES: &#x27;bytes&#x27;,
                 RADIO: &#x27;radio&#x27;,
-                COUNT: &#x27;count&#x27;
+                COUNT: &#x27;count&#x27;,
+                TRANSLATION: &#x27;translation&#x27;
             },
 
             decorators = {
@@ -281,6 +282,16 @@
                     }
                     return date;
                 },
+
+                /**
+                 * Translates a string
+                 * @param val {String} the string to translate
+                 * @returns {String}
+                 */
+                translation: function(val) {
+                   return this.sandbox.translate(val);
+                },
+
 
                 /**
                  * Attaches a postfix to a number
