@@ -213,14 +213,6 @@ define([], function() {
             return 'data-changed';
         },
         /**
-         * Remove event
-         * @event husky.select.[instanceName].remove
-         */
-            REMOVE = function() {
-            return getEventName.call(this, 'remove');
-        },
-
-        /**
          * Saved event
          * @event husky.select.[instanceName].saved
          */
@@ -455,9 +447,6 @@ define([], function() {
             this.sandbox.on(EVENT_ENABLE.call(this), this.enable.bind(this));
             this.sandbox.on(EVENT_GET_CHECKED.call(this), this.getChecked.bind(this));
             this.sandbox.on(EVENT_UPDATE.call(this), this.updateDropdown.bind(this));
-            this.sandbox.on(REMOVE.call(this), function(id, $row) {
-                this.updateRemoveList(id, $row);
-            }.bind(this));
         },
 
         /**
@@ -508,11 +497,17 @@ define([], function() {
          * @param data
          * @param preselected array of ids
          */
-        updateDropdown: function(data, preselected) {
+        updateDropdown: function(data, preselected, merge) {
+            if (!!merge) {
+                data = this.mergeDomAndRequestData(
+                        data, this.parseDataFromDom(this.domData, true));
+            }
             this.options.preSelectedElements = preselected.map(String);
             this.selectedElements = [];
             this.selectedElementsValues = [];
             this.sandbox.dom.empty(this.$list);
+
+            this.options.data = data;
 
             if (!!data && data.length > 0) {
                 this.generateDropDown(data);
@@ -590,6 +585,7 @@ define([], function() {
          * Callback for close of overlay with ok button
          */
         onCloseWithOk: function(domData) {
+            this.domData = domData;
             this.removeDeletedItems();
             if (!!domData) {
                 this.saveNewEditedItemsAndClose(domData, 'PATCH');
@@ -604,7 +600,7 @@ define([], function() {
                 var mergeData = this.mergeDomAndRequestData(changedData,
                     this.parseDataFromDom(domData, true));
                 this.options.data = mergeData.slice(0);
-                this.updateDropdown(mergeData, [null]);
+                this.updateDropdown(mergeData, []);
                 this.sandbox.emit(SAVED.call(this), changedData);
             }
         },
@@ -617,7 +613,7 @@ define([], function() {
         mergeDomAndRequestData: function(updatedData, parsedDomData) {
             this.sandbox.util.foreach(parsedDomData, function(parsedEl) {
                 this.sandbox.util.foreach(updatedData, function(updatedEl) {
-                    if (parsedEl.id === updatedEl.id) {
+                    if (parsedEl.id === updatedEl.id && parsedEl.id !== '') {
                         parsedEl[this.options.valueName] = updatedEl[this.options.valueName];
                     } else if (parsedEl[this.options.valueName] === updatedEl[this.options.valueName]) {
                         parsedEl.id = updatedEl.id;
@@ -675,7 +671,7 @@ define([], function() {
                     this.options.data.splice(i, 1);
                 }
             }.bind(this));
-            this.updateDropdown(this.options.data, [null]);
+            this.updateDropdown(this.options.data, []);
         },
 
         /**
@@ -803,7 +799,7 @@ define([], function() {
                 id = this.sandbox.dom.data($row, 'id');
 
             if (id != null) {
-                this.sandbox.emit(REMOVE.call(this), id, $row);
+                this.updateRemoveList(id, $row);
             }
 
             this.toggleStateOfRow($row);
@@ -1022,7 +1018,9 @@ define([], function() {
                 if (!!icon) {
                     iconSpan = '<span class="fa-' + icon + ' icon"></span>';
                 }
-                if (!!this.options.data && !!this.options.data.length) {
+                if (!!this.options.data &&
+                        !!this.options.data.length ||
+                        this.options.editable) {
                     dropdownToggle = '<span class="fa-caret-down toggle-icon"></span>';
                 }
                 return [
