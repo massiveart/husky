@@ -660,7 +660,7 @@ define(function() {
          */
 
         prepareTableHead: function() {
-            var tblColumns, tblCellClass, headData, widthValues, checkboxValues, dataAttribute, isSortable,
+            var tblColumns, tblCellClass, headData, widthValues, dataAttribute,
                 tblColumnStyle, minWidth, count = 0;
 
             tblColumns = [];
@@ -689,20 +689,10 @@ define(function() {
 
             this.sandbox.util.foreach(headData, function(column) {
                 if (this.options.excludeFields.indexOf(column.attribute) &lt; 0) {
-                    isSortable = false;
-
-                    if (!!this.datagrid.data.links &amp;&amp; !!this.data.links.sortable) {
-                        //is column sortable - check with received sort-links
-                        this.sandbox.util.each(this.data.links.sortable.href, function(index) {
-                            if (index === column.attribute) {
-                                isSortable = true;
-                                return false;
-                            }
-                        }.bind(this));
-                    }
 
                     // calculate width
                     tblColumnStyle = [];
+                    tblCellClass = &#x27;&#x27;;
                     if (column.width) {
                         minWidth = column.width;
                     } else if (column.minWidth) {
@@ -742,7 +732,7 @@ define(function() {
                     }
 
                     // add html to table header cell if sortable
-                    if (!!isSortable) {
+                    if (!!column.sortable) {
                         dataAttribute = &#x27; data-attribute=&quot;&#x27; + column.attribute + &#x27;&quot;&#x27;;
                         tblCellClass += ((!!column.class) ? &#x27; &#x27; + column.class + &#x27; &#x27; + constants.sortableClass : &#x27; &#x27; + constants.sortableClass + &#x27;&#x27;);
                         tblColumns.push(&#x27;&lt;th class=&quot;&#x27; + tblCellClass + &#x27;&quot; style=&quot;&#x27; + tblColumnStyle.join(&#x27;;&#x27;) + &#x27;&quot; &#x27; + dataAttribute + &#x27;&gt;&#x27; + column.content + &#x27;&lt;span&gt;&lt;/span&gt;&lt;/th&gt;&#x27;);
