@@ -698,7 +698,7 @@ define(function() {
                     } else if (column.minWidth) {
                         minWidth = column.minWidth;
                     } else {
-                        minWidth = getTextWidth.call(this, column.content, [], isSortable);
+                        minWidth = getTextWidth.call(this, column.content, [], column.sortable);
                         minWidth = (minWidth &gt; this.datagrid.getNumberAndUnit(this.options.columnMinWidth).number) ? minWidth + &#x27;px&#x27; : this.options.columnMinWidth;
 
                     }
