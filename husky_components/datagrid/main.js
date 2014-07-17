@@ -1422,17 +1422,17 @@
              * @param direction {String} the sort method to use 'asc' or 'desc'
              */
             sortGrid: function(attribute, direction) {
-                if (this.options.sortable === true && !!this.data.links.sortable.href[attribute]) {
+                if (this.options.sortable === true && !!this.data.links.sortable) {
                     var template, url;
 
                     // if passed attribute is sortable
-                    if (!!attribute && !!this.data.links.sortable.href[attribute]) {
+                    if (!!attribute) {
 
                         this.sort.attribute = attribute;
                         this.sort.direction = direction;
 
-                        template = this.sandbox.uritemplate.parse(this.data.links.sortable.href[attribute]);
-                        url = this.sandbox.uritemplate.expand(template, {sortOrder: direction});
+                        template = this.sandbox.uritemplate.parse(this.data.links.sortable.href);
+                        url = this.sandbox.uritemplate.expand(template, {sortBy: attribute, sortOrder: direction});
 
                         this.sandbox.emit(DATA_SORT.call(this));
 

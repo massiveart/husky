@@ -500,7 +500,7 @@ define(function() {
          */
 
         prepareTableHead: function() {
-            var tblColumns, tblCellClass, headData, widthValues, checkboxValues, dataAttribute, isSortable,
+            var tblColumns, tblCellClass, headData, widthValues, dataAttribute,
                 tblColumnStyle, minWidth, count = 0;
 
             tblColumns = [];
@@ -529,20 +529,10 @@ define(function() {
 
             this.sandbox.util.foreach(headData, function(column) {
                 if (this.options.excludeFields.indexOf(column.attribute) < 0) {
-                    isSortable = false;
-
-                    if (!!this.datagrid.data.links && !!this.data.links.sortable) {
-                        //is column sortable - check with received sort-links
-                        this.sandbox.util.each(this.data.links.sortable.href, function(index) {
-                            if (index === column.attribute) {
-                                isSortable = true;
-                                return false;
-                            }
-                        }.bind(this));
-                    }
 
                     // calculate width
                     tblColumnStyle = [];
+                    tblCellClass = '';
                     if (column.width) {
                         minWidth = column.width;
                     } else if (column.minWidth) {
@@ -582,7 +572,7 @@ define(function() {
                     }
 
                     // add html to table header cell if sortable
-                    if (!!isSortable) {
+                    if (!!column.sortable) {
                         dataAttribute = ' data-attribute="' + column.attribute + '"';
                         tblCellClass += ((!!column.class) ? ' ' + column.class + ' ' + constants.sortableClass : ' ' + constants.sortableClass + '');
                         tblColumns.push('<th class="' + tblCellClass + '" style="' + tblColumnStyle.join(';') + '" ' + dataAttribute + '>' + column.content + '<span></span></th>');
