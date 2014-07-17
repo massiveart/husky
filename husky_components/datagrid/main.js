@@ -735,7 +735,7 @@
              */
             parseLinks: function(links) {
                 var linksObj = {};
-                this.sandbox.util.each(links, function(link, index) {
+                this.sandbox.util.each(links, function(index, link) {
                     linksObj[index] = {
                         href: decodeURI(link.href)
                     };
