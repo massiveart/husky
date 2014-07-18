@@ -33,7 +33,7 @@
  * @param {Function} [options.noItemsCallback] callback function which gets executed at click on label if no dropdown-items exist
  * @param {Boolean} [options.repeatSelect] If true dropdown item can be selected n-times in succession
  * @param {Boolean} [options.editable] If true the menu items are editable
- * @param {Dictionary} [options.translations] translation keys for 'addItem' and 'editEntries'
+ * @param {Object} [options.translations] translation keys for 'addItem' and 'editEntries'
  * @param {String} [options.direction] 'bottom', 'top', or 'auto' pop up direction of the drop down.
  */
 
@@ -976,7 +976,7 @@ define([], function() {
         },
 
         /**
-         * Handles the click on the drodown label
+         * Handles the click on the dropdown label
          */
         labelClickHandler: function() {
             // if dropdown is not empty
