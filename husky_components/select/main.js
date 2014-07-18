@@ -216,7 +216,7 @@ define([], function() {
          * Saved event
          * @event husky.select.[instanceName].saved
          */
-            SAVED = function() {
+            EVENT_SAVED = function() {
             return getEventName.call(this, 'saved');
         },
 
@@ -224,8 +224,16 @@ define([], function() {
          * Deleted event
          * @event husky.select.[instanceName].deleted
          */
-            DELETED = function() {
+            EVENT_DELETED = function() {
             return getEventName.call(this, 'deleted');
+        },
+
+        /**
+         * Revert event
+         * @event husky.select.[instanceName].revert
+         */
+            EVENT_REVERT = function() {
+            return getEventName.call(this, 'revert');
         },
 
         getEventName = function(suffix) {
@@ -235,11 +243,13 @@ define([], function() {
     return {
 
         initialize: function() {
-
             var selectedIds;
 
             this.sandbox.logger.log('initialize', this);
             this.options = this.sandbox.util.extend({}, defaults, this.options);
+
+            // Used as a fallback to revert to the last committed data
+            this.mergedData = this.options.data.slice(0);
 
             // if deselectfield is set to true, set it to default value
             if (!!this.options.deselectField && this.options.deselectField.toString() === 'true') {
@@ -447,6 +457,7 @@ define([], function() {
             this.sandbox.on(EVENT_ENABLE.call(this), this.enable.bind(this));
             this.sandbox.on(EVENT_GET_CHECKED.call(this), this.getChecked.bind(this));
             this.sandbox.on(EVENT_UPDATE.call(this), this.updateDropdown.bind(this));
+            this.sandbox.on(EVENT_REVERT.call(this), this.revert.bind(this));
         },
 
         /**
@@ -493,14 +504,27 @@ define([], function() {
         },
 
         /**
+         * Reverts the dropdown list
+         */
+        revert: function() {
+            this.updateDropdown(
+                    this.mergedData,
+                    this.options.preSelectedElements,
+                    false
+                    );
+        },
+
+        /**
          * Updates the dropdown list
          * @param data
          * @param preselected array of ids
+         * @param merge - merge given data with dom
          */
         updateDropdown: function(data, preselected, merge) {
             if (!!merge) {
                 data = this.mergeDomAndRequestData(
                         data, this.parseDataFromDom(this.domData, true));
+                this.mergedData = data.slice(0);
             }
             this.options.preSelectedElements = preselected.map(String);
             this.selectedElements = [];
@@ -600,8 +624,8 @@ define([], function() {
                 var mergeData = this.mergeDomAndRequestData(changedData,
                     this.parseDataFromDom(domData, true));
                 this.options.data = mergeData.slice(0);
-                this.updateDropdown(mergeData, []);
-                this.sandbox.emit(SAVED.call(this), changedData);
+                this.updateDropdown(mergeData, this.options.preSelectedElements);
+                this.sandbox.emit(EVENT_SAVED.call(this), changedData);
             }
         },
 
@@ -671,7 +695,10 @@ define([], function() {
                     this.options.data.splice(i, 1);
                 }
             }.bind(this));
-            this.updateDropdown(this.options.data, []);
+            this.updateDropdown(
+                    this.options.data,
+                    this.options.preSelectedElements
+                    );
         },
 
         /**
@@ -690,7 +717,7 @@ define([], function() {
                 this.sandbox.util.each(this.elementsToRemove, function(index, el) {
                     this.deleteItem(el);
                 }.bind(this));
-                this.sandbox.emit(DELETED.call(this), this.elementsToRemove);
+                this.sandbox.emit(EVENT_DELETED.call(this), this.elementsToRemove);
                 this.elementsToRemove = [];
                 this.$elementsToRemove = [];
             }
