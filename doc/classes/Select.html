@@ -77,8 +77,6 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
-                <li><a href="../classes/ShowAllPagination (Datagrid Decorator).html">ShowAllPagination (Datagrid Decorator)</a></li>
-            
                 <li><a href="../classes/SmartContent.html">SmartContent</a></li>
             
                 <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
@@ -533,6 +531,51 @@
                                 
                             </li>
                             
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[editable]</code>
+                                    <span class="type">Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>If true the menu items are editable</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[translations]</code>
+                                    <span class="type">Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>translation keys for &#39;addItem&#39; and &#39;editEntries&#39;</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[direction]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>&#39;bottom&#39;, &#39;top&#39;, or &#39;auto&#39; pop up direction of the drop down.</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
                         </ul>
                     
                 </li>
@@ -585,6 +628,27 @@
                             </li>
                         
                             <li class="index-item event">
+                                <a href="#event_husky.select.[instanceName].deleted">husky.select.[instanceName].deleted</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.select.[instanceName].revert">husky.select.[instanceName].revert</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.select.[instanceName].saved">husky.select.[instanceName].saved</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
                                 <a href="#event_husky.select[.INSTANCE_NAME].deselected.item">husky.select[.INSTANCE_NAME].deselected.item</a>
 
                                 
@@ -593,6 +657,13 @@
                         
                             <li class="index-item event">
                                 <a href="#event_husky.select[.INSTANCE_NAME].disable">husky.select[.INSTANCE_NAME].disable</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.select[.INSTANCE_NAME].edit">husky.select[.INSTANCE_NAME].edit</a>
 
                                 
                                 
@@ -700,7 +771,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l155"><code>husky_components&#x2F;select&#x2F;main.js:155</code></a>
+        <a href="../files/husky_components_select_main.js.html#l210"><code>husky_components&#x2F;select&#x2F;main.js:210</code></a>
         
         </p>
 
@@ -711,6 +782,138 @@
 
     <div class="description">
         <p>update the elements of the dropdown list</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.select.[instanceName].deleted" class="events item">
+    <h3 class="name"><code>husky.select.[instanceName].deleted</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_select_main.js.html#l225"><code>husky_components&#x2F;select&#x2F;main.js:225</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Deleted event</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.select.[instanceName].revert" class="events item">
+    <h3 class="name"><code>husky.select.[instanceName].revert</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_select_main.js.html#l233"><code>husky_components&#x2F;select&#x2F;main.js:233</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Revert event</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.select.[instanceName].saved" class="events item">
+    <h3 class="name"><code>husky.select.[instanceName].saved</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_select_main.js.html#l217"><code>husky_components&#x2F;select&#x2F;main.js:217</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Saved event</p>
 
     </div>
 
@@ -744,7 +947,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l80"><code>husky_components&#x2F;select&#x2F;main.js:80</code></a>
+        <a href="../files/husky_components_select_main.js.html#l128"><code>husky_components&#x2F;select&#x2F;main.js:128</code></a>
         
         </p>
 
@@ -812,7 +1015,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l113"><code>husky_components&#x2F;select&#x2F;main.js:113</code></a>
+        <a href="../files/husky_components_select_main.js.html#l161"><code>husky_components&#x2F;select&#x2F;main.js:161</code></a>
         
         </p>
 
@@ -823,6 +1026,50 @@
 
     <div class="description">
         <p>used for disabling select</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.select[.INSTANCE_NAME].edit" class="events item">
+    <h3 class="name"><code>husky.select[.INSTANCE_NAME].edit</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_select_main.js.html#l168"><code>husky_components&#x2F;select&#x2F;main.js:168</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>used for making the menu items editable</p>
 
     </div>
 
@@ -856,7 +1103,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l106"><code>husky_components&#x2F;select&#x2F;main.js:106</code></a>
+        <a href="../files/husky_components_select_main.js.html#l154"><code>husky_components&#x2F;select&#x2F;main.js:154</code></a>
         
         </p>
 
@@ -900,7 +1147,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l141"><code>husky_components&#x2F;select&#x2F;main.js:141</code></a>
+        <a href="../files/husky_components_select_main.js.html#l196"><code>husky_components&#x2F;select&#x2F;main.js:196</code></a>
         
         </p>
 
@@ -944,7 +1191,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l134"><code>husky_components&#x2F;select&#x2F;main.js:134</code></a>
+        <a href="../files/husky_components_select_main.js.html#l189"><code>husky_components&#x2F;select&#x2F;main.js:189</code></a>
         
         </p>
 
@@ -988,7 +1235,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l72"><code>husky_components&#x2F;select&#x2F;main.js:72</code></a>
+        <a href="../files/husky_components_select_main.js.html#l120"><code>husky_components&#x2F;select&#x2F;main.js:120</code></a>
         
         </p>
 
@@ -1032,7 +1279,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l97"><code>husky_components&#x2F;select&#x2F;main.js:97</code></a>
+        <a href="../files/husky_components_select_main.js.html#l145"><code>husky_components&#x2F;select&#x2F;main.js:145</code></a>
         
         </p>
 
@@ -1100,7 +1347,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l88"><code>husky_components&#x2F;select&#x2F;main.js:88</code></a>
+        <a href="../files/husky_components_select_main.js.html#l136"><code>husky_components&#x2F;select&#x2F;main.js:136</code></a>
         
         </p>
 
@@ -1168,7 +1415,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l127"><code>husky_components&#x2F;select&#x2F;main.js:127</code></a>
+        <a href="../files/husky_components_select_main.js.html#l182"><code>husky_components&#x2F;select&#x2F;main.js:182</code></a>
         
         </p>
 
@@ -1212,7 +1459,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l120"><code>husky_components&#x2F;select&#x2F;main.js:120</code></a>
+        <a href="../files/husky_components_select_main.js.html#l175"><code>husky_components&#x2F;select&#x2F;main.js:175</code></a>
         
         </p>
 
@@ -1256,7 +1503,7 @@
             
         
         
-        <a href="../files/husky_components_select_main.js.html#l148"><code>husky_components&#x2F;select&#x2F;main.js:148</code></a>
+        <a href="../files/husky_components_select_main.js.html#l203"><code>husky_components&#x2F;select&#x2F;main.js:203</code></a>
         
         </p>
 
