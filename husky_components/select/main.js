@@ -34,6 +34,7 @@
  * @param {Boolean} [options.repeatSelect] If true dropdown item can be selected n-times in succession
  * @param {Boolean} [options.editable] If true the menu items are editable
  * @param {Dictionary} [options.translations] translation keys for 'addItem' and 'editEntries'
+ * @param {String} [options.direction] 'bottom', 'top', or 'auto' pop up direction of the drop down.
  */
 
 define([], function() {
@@ -65,6 +66,7 @@ define([], function() {
             noItemsCallback: null,
             repeatSelect: false,
             editable: false,
+            direction: 'auto',
             translations: translations
         },
 
@@ -1011,10 +1013,13 @@ define([], function() {
                 ddTop = this.sandbox.dom.offset(this.$dropdownContainer).top,
                 windowHeight = this.sandbox.dom.height(this.sandbox.dom.window),
                 scrollTop = this.sandbox.dom.scrollTop(this.sandbox.dom.window);
-
-            // check if dropdown container overlaps bottom of browser
-            if (ddHeight + ddTop > windowHeight + scrollTop) {
+            if (this.options.direction === 'top') {
                 this.sandbox.dom.addClass(this.$dropdownContainer, constants.dropdownTopClass);
+            } else if (this.options.direction !== 'bottom') {
+                // check if dropdown container overlaps bottom of browser
+                if (ddHeight + ddTop > windowHeight + scrollTop) {
+                    this.sandbox.dom.addClass(this.$dropdownContainer, constants.dropdownTopClass);
+                }
             }
         },
 
