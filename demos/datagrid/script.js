@@ -45,6 +45,7 @@ require(['lib/husky'], function(Husky) {
                     },
                     sortable: true,
                     searchInstanceName: 'test',
+                    searchFields: ['fullName'],
                     columnOptionsInstanceName: '',
                     el: '#datagrid',
                     matchings: [

@@ -58,6 +58,7 @@
                 data: null,
                 instanceName: '',
                 searchInstanceName: null,
+                searchFields: [],
                 columnOptionsInstanceName: null,
                 defaultMeasureUnit: 'px',
                 preselected: [],
@@ -1499,7 +1500,12 @@
                     var template, url;
 
                     template = this.sandbox.uritemplate.parse(this.data.links.find.href);
-                    url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+
+                    if(!!searchFields) {
+                        url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+                    } else {
+                        url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: this.options.searchFields.join(',')});
+                    }
 
                     this.destroy();
                     this.loading();

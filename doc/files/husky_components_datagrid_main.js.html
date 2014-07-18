@@ -219,6 +219,7 @@
                 data: null,
                 instanceName: &#x27;&#x27;,
                 searchInstanceName: null,
+                searchFields: [],
                 columnOptionsInstanceName: null,
                 defaultMeasureUnit: &#x27;px&#x27;,
                 preselected: [],
@@ -1661,7 +1662,12 @@
                     var template, url;
 
                     template = this.sandbox.uritemplate.parse(this.data.links.find.href);
-                    url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+
+                    if(!!searchFields) {
+                        url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+                    } else {
+                        url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: this.options.searchFields.join(&#x27;,&#x27;)});
+                    }
 
                     this.destroy();
                     this.loading();
