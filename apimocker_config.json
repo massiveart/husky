@@ -18,10 +18,6 @@
             "mockFile": "datagrid/default.json",
             "switch": "page"
         },
-        "admin/api/datagrid/all": {
-            "verbs": ["GET"],
-            "mockFile": "datagrid/all.json"
-        },
         "admin/api/datagrid/sort": {
             "verbs": ["GET"],
             "mockFile": "datagrid/sort.json"

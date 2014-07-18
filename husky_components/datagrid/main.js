@@ -35,9 +35,8 @@
         'husky_components/datagrid/decorators/table-view',
         'husky_components/datagrid/decorators/thumbnail-view',
         'husky_components/datagrid/decorators/group-view',
-        'husky_components/datagrid/decorators/dropdown-pagination',
-        'husky_components/datagrid/decorators/showall-pagination'
-    ], function(decoratorTableView, thumbnailView, groupView, decoratorDropdownPagination, showallPagination) {
+        'husky_components/datagrid/decorators/dropdown-pagination'
+    ], function(decoratorTableView, thumbnailView, groupView, decoratorDropdownPagination) {
 
         /**
          *    Default values for options
@@ -85,8 +84,7 @@
                     group: groupView
                 },
                 paginations: {
-                    dropdown: decoratorDropdownPagination,
-                    showall: showallPagination
+                    dropdown: decoratorDropdownPagination
                 }
             },
 

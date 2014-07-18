@@ -12,9 +12,6 @@
         "previous": {
             "href": "http://husky.lo:7878/admin/api/datagrid?page=2&pageSize=4"
         },
-        "all": {
-            "href": "http://husky.lo:7878/admin/api/datagrid/all"
-        },
         "filter": {
             "href": "http://husky.lo:7878/admin/api/datagrid?fields={fieldsList}"
         },
