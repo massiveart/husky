@@ -584,7 +584,7 @@ define([], function() {
 
             var $element = this.sandbox.dom.createElement('<div/>'),
                 $content = this.renderOverlayContent();
-            this.sandbox.dom.append(this.$el, $element);
+            this.sandbox.dom.append('body', $element);
 
             this.bindOverlayContentEvents($content);
             this.sandbox.start([{ name: 'overlay@husky',
@@ -811,10 +811,13 @@ define([], function() {
          */
         addElement: function(event) {
             var $row = this.sandbox.dom.createElement(
-                        templates.addOverlayRow.call(this, this.options.valueName, {}
+                        templates.addOverlayRow.call(
+                            this,
+                            this.options.valueName, {}
                     ));
             this.sandbox.dom.append(
-                    this.$find(constants.contentInnerSelector),
+                    this.sandbox.dom.find(
+                        constants.contentInnerSelector),
                     $row);
         },
 
