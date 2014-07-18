@@ -45,6 +45,7 @@ require(['lib/husky'], function(Husky) {
                     },
                     sortable: true,
                     searchInstanceName: 'test',
+                    searchFields: ['fullName'],
                     columnOptionsInstanceName: '',
                     el: '#datagrid',
                     matchings: [
@@ -53,6 +54,7 @@ require(['lib/husky'], function(Husky) {
                             width: "25%",
                             name: "content1",
                             editable: true,
+                            sortable: true,
                             type: 'title',
                             validation: {
                                 required: true
@@ -63,6 +65,7 @@ require(['lib/husky'], function(Husky) {
                             width: "25%",
                             name: "content2",
                             editable: false,
+                            sortable: true,
                             type: 'bytes',
                             validation: {
                                 required: true
@@ -77,6 +80,7 @@ require(['lib/husky'], function(Husky) {
                         {
                             content: 'Date',
                             width: "25%",
+                            sortable: true,
                             name: 'date',
                             type: 'date'
                         }
@@ -109,6 +113,7 @@ require(['lib/husky'], function(Husky) {
                             width: "25%",
                             name: "content1",
                             editable: true,
+                            sortable: true,
                             type: 'title',
                             validation: {
                                 required: true
@@ -119,6 +124,7 @@ require(['lib/husky'], function(Husky) {
                             width: "25%",
                             name: "content2",
                             editable: false,
+                            sortable: true,
                             type: 'bytes',
                             validation: {
                                 required: true
@@ -133,6 +139,7 @@ require(['lib/husky'], function(Husky) {
                         {
                             content: 'Date',
                             width: "25%",
+                            sortable: true,
                             name: 'date',
                             type: 'date'
                         }
@@ -203,6 +210,7 @@ require(['lib/husky'], function(Husky) {
                     matchings: [
                         {
                             name: 'name',
+                            sortable: true,
                             content: 'Name'
                         },
                         {
@@ -260,6 +268,7 @@ require(['lib/husky'], function(Husky) {
                     matchings: [
                         {
                             name: 'name',
+                            sortable: true,
                             content: 'Name'
                         },
                         {
@@ -318,6 +327,7 @@ require(['lib/husky'], function(Husky) {
                     matchings: [
                         {
                             name: 'name',
+                            sortable: true,
                             content: 'Name'
                         },
                         {
@@ -358,6 +368,7 @@ require(['lib/husky'], function(Husky) {
                     matchings: [
                         {
                             name: 'name',
+                            sortable: true,
                             content: 'Name'
                         },
                         {

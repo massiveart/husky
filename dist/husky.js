@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -28886,7 +28885,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
 
         prepareTableHead: function() {
-            var tblColumns, tblCellClass, headData, widthValues, checkboxValues, dataAttribute, isSortable,
+            var tblColumns, tblCellClass, headData, widthValues, dataAttribute,
                 tblColumnStyle, minWidth, count = 0;
 
             tblColumns = [];
@@ -28915,26 +28914,16 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
             this.sandbox.util.foreach(headData, function(column) {
                 if (this.options.excludeFields.indexOf(column.attribute) < 0) {
-                    isSortable = false;
-
-                    if (!!this.datagrid.data.links && !!this.data.links.sortable) {
-                        //is column sortable - check with received sort-links
-                        this.sandbox.util.each(this.data.links.sortable.href, function(index) {
-                            if (index === column.attribute) {
-                                isSortable = true;
-                                return false;
-                            }
-                        }.bind(this));
-                    }
 
                     // calculate width
                     tblColumnStyle = [];
+                    tblCellClass = '';
                     if (column.width) {
                         minWidth = column.width;
                     } else if (column.minWidth) {
                         minWidth = column.minWidth;
                     } else {
-                        minWidth = getTextWidth.call(this, column.content, [], isSortable);
+                        minWidth = getTextWidth.call(this, column.content, [], column.sortable);
                         minWidth = (minWidth > this.datagrid.getNumberAndUnit(this.options.columnMinWidth).number) ? minWidth + 'px' : this.options.columnMinWidth;
 
                     }
@@ -28968,7 +28957,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                     }
 
                     // add html to table header cell if sortable
-                    if (!!isSortable) {
+                    if (!!column.sortable) {
                         dataAttribute = ' data-attribute="' + column.attribute + '"';
                         tblCellClass += ((!!column.class) ? ' ' + column.class + ' ' + constants.sortableClass : ' ' + constants.sortableClass + '');
                         tblColumns.push('<th class="' + tblCellClass + '" style="' + tblColumnStyle.join(';') + '" ' + dataAttribute + '>' + column.content + '<span></span></th>');
@@ -31058,6 +31047,7 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 data: null,
                 instanceName: '',
                 searchInstanceName: null,
+                searchFields: [],
                 columnOptionsInstanceName: null,
                 defaultMeasureUnit: 'px',
                 preselected: [],
@@ -31073,7 +31063,8 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                 TITLE: 'title',
                 BYTES: 'bytes',
                 RADIO: 'radio',
-                COUNT: 'count'
+                COUNT: 'count',
+                TRANSLATION: 'translation'
             },
 
             decorators = {
@@ -31120,6 +31111,16 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     }
                     return date;
                 },
+
+                /**
+                 * Translates a string
+                 * @param val {String} the string to translate
+                 * @returns {String}
+                 */
+                translation: function(val) {
+                   return this.sandbox.translate(val);
+                },
+
 
                 /**
                  * Attaches a postfix to a number
@@ -31708,12 +31709,27 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              */
             parseData: function(data) {
                 this.data = {};
-                this.data.links = data._links;
+                this.data.links = this.parseLinks(data._links);
                 this.data.embedded = data._embedded[this.options.resultKey];
                 this.data.total = data.total;
                 this.data.page = data.page;
                 this.data.pages = data.pages;
                 this.data.limit = data.limit;
+            },
+
+            /**
+             * Unescapes all passed links
+             * @param links {Object}
+             * @returns {Object}
+             */
+            parseLinks: function(links) {
+                var linksObj = {};
+                this.sandbox.util.each(links, function(index, link) {
+                    linksObj[index] = {
+                        href: decodeURI(link.href)
+                    };
+                }.bind(this));
+                return linksObj;
             },
 
             /**
@@ -32421,17 +32437,17 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
              * @param direction {String} the sort method to use 'asc' or 'desc'
              */
             sortGrid: function(attribute, direction) {
-                if (this.options.sortable === true && !!this.data.links.sortable.href[attribute]) {
+                if (this.options.sortable === true && !!this.data.links.sortable) {
                     var template, url;
 
                     // if passed attribute is sortable
-                    if (!!attribute && !!this.data.links.sortable.href[attribute]) {
+                    if (!!attribute) {
 
                         this.sort.attribute = attribute;
                         this.sort.direction = direction;
 
-                        template = this.sandbox.uritemplate.parse(this.data.links.sortable.href[attribute]);
-                        url = this.sandbox.uritemplate.expand(template, {sortOrder: direction});
+                        template = this.sandbox.uritemplate.parse(this.data.links.sortable.href);
+                        url = this.sandbox.uritemplate.expand(template, {sortBy: attribute, sortOrder: direction});
 
                         this.sandbox.emit(DATA_SORT.call(this));
 
@@ -32474,7 +32490,12 @@ define('husky_components/datagrid/decorators/showall-pagination',[],function () 
                     var template, url;
 
                     template = this.sandbox.uritemplate.parse(this.data.links.find.href);
-                    url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+
+                    if(!!searchFields) {
+                        url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+                    } else {
+                        url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: this.options.searchFields.join(',')});
+                    }
 
                     this.destroy();
                     this.loading();
@@ -47545,3 +47566,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+

@@ -59,6 +59,7 @@
                 data: null,
                 instanceName: '',
                 searchInstanceName: null,
+                searchFields: [],
                 columnOptionsInstanceName: null,
                 defaultMeasureUnit: 'px',
                 preselected: [],
@@ -74,7 +75,8 @@
                 TITLE: 'title',
                 BYTES: 'bytes',
                 RADIO: 'radio',
-                COUNT: 'count'
+                COUNT: 'count',
+                TRANSLATION: 'translation'
             },
 
             decorators = {
@@ -121,6 +123,16 @@
                     }
                     return date;
                 },
+
+                /**
+                 * Translates a string
+                 * @param val {String} the string to translate
+                 * @returns {String}
+                 */
+                translation: function(val) {
+                   return this.sandbox.translate(val);
+                },
+
 
                 /**
                  * Attaches a postfix to a number
@@ -709,12 +721,27 @@
              */
             parseData: function(data) {
                 this.data = {};
-                this.data.links = data._links;
+                this.data.links = this.parseLinks(data._links);
                 this.data.embedded = data._embedded[this.options.resultKey];
                 this.data.total = data.total;
                 this.data.page = data.page;
                 this.data.pages = data.pages;
                 this.data.limit = data.limit;
+            },
+
+            /**
+             * Unescapes all passed links
+             * @param links {Object}
+             * @returns {Object}
+             */
+            parseLinks: function(links) {
+                var linksObj = {};
+                this.sandbox.util.each(links, function(index, link) {
+                    linksObj[index] = {
+                        href: decodeURI(link.href)
+                    };
+                }.bind(this));
+                return linksObj;
             },
 
             /**
@@ -1422,17 +1449,17 @@
              * @param direction {String} the sort method to use 'asc' or 'desc'
              */
             sortGrid: function(attribute, direction) {
-                if (this.options.sortable === true && !!this.data.links.sortable.href[attribute]) {
+                if (this.options.sortable === true && !!this.data.links.sortable) {
                     var template, url;
 
                     // if passed attribute is sortable
-                    if (!!attribute && !!this.data.links.sortable.href[attribute]) {
+                    if (!!attribute) {
 
                         this.sort.attribute = attribute;
                         this.sort.direction = direction;
 
-                        template = this.sandbox.uritemplate.parse(this.data.links.sortable.href[attribute]);
-                        url = this.sandbox.uritemplate.expand(template, {sortOrder: direction});
+                        template = this.sandbox.uritemplate.parse(this.data.links.sortable.href);
+                        url = this.sandbox.uritemplate.expand(template, {sortBy: attribute, sortOrder: direction});
 
                         this.sandbox.emit(DATA_SORT.call(this));
 
@@ -1475,7 +1502,12 @@
                     var template, url;
 
                     template = this.sandbox.uritemplate.parse(this.data.links.find.href);
-                    url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+
+                    if(!!searchFields) {
+                        url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+                    } else {
+                        url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: this.options.searchFields.join(',')});
+                    }
 
                     this.destroy();
                     this.loading();

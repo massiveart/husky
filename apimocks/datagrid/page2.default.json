@@ -28,10 +28,7 @@
             "href": "http://husky.lo:7878/admin/api/datagrid/search?pageSize=4&search={searchString}{&searchFields}"
         },
         "sortable": {
-            "href": {
-                "content1": "http://husky.lo:7878/admin/api/datagrid/sort?page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",
-                "content2": "http://husky.lo:7878/admin/api/datagrid/sort?page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"
-            }
+            "href": "http://husky.lo:7878/admin/api/datagrid/sort?page=1&pageSize=4&sortBy={sortBy}&sortOrder={sortOrder}"
         }
     },
     "_embedded": {

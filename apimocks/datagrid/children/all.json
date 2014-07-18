@@ -4,9 +4,7 @@
             "href": "http://husky.lo:7878/admin/api/datagrid/children/all"
         },
         "sortable": {
-            "href": {
-                "name": "http://husky.lo:7878/admin/api/datagrid/children/sorted"
-            }
+            "href": "http://husky.lo:7878/admin/api/datagrid/children/sorted"
         }
     },
     "_embedded": {
