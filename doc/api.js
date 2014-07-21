@@ -19,7 +19,6 @@ YUI.add("yuidoc-meta", function(Y) {
         "Process",
         "Search",
         "Select",
-        "ShowAllPagination (Datagrid Decorator)",
         "SmartContent",
         "TableView (Datagrid Decorator)",
         "Tabs",

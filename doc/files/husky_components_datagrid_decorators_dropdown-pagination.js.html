@@ -77,8 +77,6 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
-                <li><a href="../classes/ShowAllPagination (Datagrid Decorator).html">ShowAllPagination (Datagrid Decorator)</a></li>
-            
                 <li><a href="../classes/SmartContent.html">SmartContent</a></li>
             
                 <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
@@ -221,7 +219,6 @@ define(function() {
          * Translation keys used by this class
          */
         translations = {
-            showAllElements: &#x27;pagination.show-all-elements&#x27;,
             show: &#x27;pagination.show&#x27;,
             elementsOf: &#x27;pagination.elements-of&#x27;,
             elementsPerPage: &#x27;pagination.elements-per-page&#x27;
@@ -304,16 +301,8 @@ define(function() {
             // show-elements dropdown item clicked
             this.sandbox.on(&#x27;husky.dropdown.&#x27; + this.datagrid.options.instanceName + &#x27;-pagination-dropdown-show.item.click&#x27;, function(item) {
                 if (this.data.limit !== item.id || this.data.embedded.length === this.data.total) {
-                    // show all
-                    if (item.id === 0) {
-                        // only if not already all are shown
-                        if (this.data.embedded.length !== this.data.total) {
-                            this.datagrid.changePage.call(this.datagrid, this.data.links.all.href);
-                        }
-                    } else {
-                        // always jump to the first page
-                        this.datagrid.changePage.call(this.datagrid, null, 1, item.id);
-                    }
+                    // always jump to the first page
+                    this.datagrid.changePage.call(this.datagrid, null, 1, item.id);
                 }
             }.bind(this));
         },
@@ -375,13 +364,9 @@ define(function() {
 
             // if first defined step is bigger than the number of all elements don&#x27;t display show-elements dropdown
             if (this.data.total &gt; this.options.showElementsSteps[0]) {
-                if (this.data.embedded.length === this.data.total) {
-                    description = this.sandbox.translate(translations.showAllElements);
-                } else {
-                    description = this.sandbox.translate(translations.show) +
-                        &#x27; &lt;strong&gt;&#x27; + this.data.embedded.length + &#x27;&lt;/strong&gt; &#x27; +
-                        this.sandbox.translate(translations.elementsOf) + &#x27; &#x27; + this.data.total;
-                }
+                description = this.sandbox.translate(translations.show) +
+                    &#x27; &lt;strong&gt;&#x27; + this.data.embedded.length + &#x27;&lt;/strong&gt; &#x27; +
+                    this.sandbox.translate(translations.elementsOf) + &#x27; &#x27; + this.data.total;
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
                     &#x27;desc&#x27;: description
                 }));
@@ -458,12 +443,6 @@ define(function() {
                     name: &#x27;&lt;strong&gt;&#x27; + this.options.showElementsSteps[i] + &#x27;&lt;/strong&gt; &#x27; + this.sandbox.translate(translations.elementsPerPage)
                 });
             }
-
-            data.push({divider: true});
-            data.push({
-                id: 0,
-                name: this.sandbox.translate(translations.showAllElements)
-            });
 
             this.sandbox.start([
                 {

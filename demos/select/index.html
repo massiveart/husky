@@ -77,6 +77,11 @@
             </tr>
             <tr>
                 <td>
+                    <div class="grid-col-11" id="ddms12"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <div class="grid-col-6" id="ddms9"></div>
                 </td>
                 <td>
@@ -316,6 +321,25 @@
                             data: ['EN_EN', 'EN_US', 'DE_DE', 'DE_AT'],
                             preSelectedElements: ['EN_EN'],
                             style: 'big'
+                        }
+                    },
+                    {
+                        name: 'select@husky',
+                        options: {
+                            el: '#ddms12',
+                            instanceName: 'ddms12',
+                            defaultLabel: 'I have editable items',
+                            valueName: 'category',
+                            preSelectedElements: [null],
+                            data: [
+                                {id: 0, category: 'German'},
+                                {id: 1, category: 'English'},
+                                {id: 2, category: 'Spanish'},
+                                {id: 3, category: 'Italian'}
+                                ],
+                            editable: true,
+                            url: 'http://localhost:7878/admin/api/select'
+
                         }
                     },
                     {

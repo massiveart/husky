@@ -77,8 +77,6 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
-                <li><a href="../classes/ShowAllPagination (Datagrid Decorator).html">ShowAllPagination (Datagrid Decorator)</a></li>
-            
                 <li><a href="../classes/SmartContent.html">SmartContent</a></li>
             
                 <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
@@ -195,9 +193,8 @@
         &#x27;husky_components/datagrid/decorators/table-view&#x27;,
         &#x27;husky_components/datagrid/decorators/thumbnail-view&#x27;,
         &#x27;husky_components/datagrid/decorators/group-view&#x27;,
-        &#x27;husky_components/datagrid/decorators/dropdown-pagination&#x27;,
-        &#x27;husky_components/datagrid/decorators/showall-pagination&#x27;
-    ], function(decoratorTableView, thumbnailView, groupView, decoratorDropdownPagination, showallPagination) {
+        &#x27;husky_components/datagrid/decorators/dropdown-pagination&#x27;
+    ], function(decoratorTableView, thumbnailView, groupView, decoratorDropdownPagination) {
 
         /**
          *    Default values for options
@@ -246,8 +243,7 @@
                     group: groupView
                 },
                 paginations: {
-                    dropdown: decoratorDropdownPagination,
-                    showall: showallPagination
+                    dropdown: decoratorDropdownPagination
                 }
             },
 

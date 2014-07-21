@@ -61,7 +61,6 @@ define(function() {
          * Translation keys used by this class
          */
         translations = {
-            showAllElements: 'pagination.show-all-elements',
             show: 'pagination.show',
             elementsOf: 'pagination.elements-of',
             elementsPerPage: 'pagination.elements-per-page'
@@ -144,16 +143,8 @@ define(function() {
             // show-elements dropdown item clicked
             this.sandbox.on('husky.dropdown.' + this.datagrid.options.instanceName + '-pagination-dropdown-show.item.click', function(item) {
                 if (this.data.limit !== item.id || this.data.embedded.length === this.data.total) {
-                    // show all
-                    if (item.id === 0) {
-                        // only if not already all are shown
-                        if (this.data.embedded.length !== this.data.total) {
-                            this.datagrid.changePage.call(this.datagrid, this.data.links.all.href);
-                        }
-                    } else {
-                        // always jump to the first page
-                        this.datagrid.changePage.call(this.datagrid, null, 1, item.id);
-                    }
+                    // always jump to the first page
+                    this.datagrid.changePage.call(this.datagrid, null, 1, item.id);
                 }
             }.bind(this));
         },
@@ -215,13 +206,9 @@ define(function() {
 
             // if first defined step is bigger than the number of all elements don't display show-elements dropdown
             if (this.data.total > this.options.showElementsSteps[0]) {
-                if (this.data.embedded.length === this.data.total) {
-                    description = this.sandbox.translate(translations.showAllElements);
-                } else {
-                    description = this.sandbox.translate(translations.show) +
-                        ' <strong>' + this.data.embedded.length + '</strong> ' +
-                        this.sandbox.translate(translations.elementsOf) + ' ' + this.data.total;
-                }
+                description = this.sandbox.translate(translations.show) +
+                    ' <strong>' + this.data.embedded.length + '</strong> ' +
+                    this.sandbox.translate(translations.elementsOf) + ' ' + this.data.total;
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
                     'desc': description
                 }));
@@ -298,12 +285,6 @@ define(function() {
                     name: '<strong>' + this.options.showElementsSteps[i] + '</strong> ' + this.sandbox.translate(translations.elementsPerPage)
                 });
             }
-
-            data.push({divider: true});
-            data.push({
-                id: 0,
-                name: this.sandbox.translate(translations.showAllElements)
-            });
 
             this.sandbox.start([
                 {
