@@ -107,9 +107,12 @@
     float: left;
   }
   .right {
-    float: right;
+    float: left;
   }
   .selected {
     background: $blue;
+  }
+  .inactive {
+    background: transparent;
   }
 }

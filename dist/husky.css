@@ -1075,11 +1075,15 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
 }
 /* line 109, ../scss/various.scss */
 .husky-position .right {
-  float: right;
+  float: left;
 }
 /* line 112, ../scss/various.scss */
 .husky-position .selected {
   background: #52b6ca;
+}
+/* line 115, ../scss/various.scss */
+.husky-position .inactive {
+  background: transparent;
 }
 
 /* line 3, ../scss/colorpicker.scss */
@@ -9704,30 +9708,31 @@ a.btn-black, a.btn-highlight {
   line-height: 30px;
   cursor: pointer;
   margin-top: 9px;
+  padding-top: 1px;
 }
-/* line 138, ../scss/modules/content-types.scss */
+/* line 139, ../scss/modules/content-types.scss */
 .white-box .header .icon.action {
   background: #52b6ca;
   color: white;
 }
-/* line 142, ../scss/modules/content-types.scss */
+/* line 143, ../scss/modules/content-types.scss */
 .white-box .header .icon.border {
   border: 1px solid #cccccc;
   box-sizing: initial;
   height: 28px;
   line-height: 28px;
 }
-/* line 148, ../scss/modules/content-types.scss */
+/* line 149, ../scss/modules/content-types.scss */
 .white-box .header .icon.left {
   float: left;
   margin-right: 20px;
 }
-/* line 152, ../scss/modules/content-types.scss */
+/* line 153, ../scss/modules/content-types.scss */
 .white-box .header .icon.right {
   float: right;
   margin-left: 20px;
 }
-/* line 158, ../scss/modules/content-types.scss */
+/* line 159, ../scss/modules/content-types.scss */
 .white-box .header .position {
   width: 32px;
   height: 32px;
@@ -9736,22 +9741,22 @@ a.btn-black, a.btn-highlight {
   left: 50%;
   margin: -16px 0 0 -16px;
 }
-/* line 168, ../scss/modules/content-types.scss */
+/* line 169, ../scss/modules/content-types.scss */
 .white-box .content {
   position: relative;
   top: 0px;
   left: 0px;
 }
-/* line 173, ../scss/modules/content-types.scss */
+/* line 174, ../scss/modules/content-types.scss */
 .white-box .content .loader {
   padding: 50px 0;
 }
-/* line 176, ../scss/modules/content-types.scss */
+/* line 177, ../scss/modules/content-types.scss */
 .white-box .content .no-content {
   text-align: center;
   height: 210px;
 }
-/* line 180, ../scss/modules/content-types.scss */
+/* line 181, ../scss/modules/content-types.scss */
 .white-box .content .no-content .icon {
   display: block;
   position: absolute;
@@ -9763,50 +9768,50 @@ a.btn-black, a.btn-highlight {
   font-size: 125px;
   color: #efefef;
 }
-/* line 191, ../scss/modules/content-types.scss */
+/* line 192, ../scss/modules/content-types.scss */
 .white-box .content .no-content .text {
   padding-top: 160px;
   font-weight: bold;
   color: #e4e4e4;
   font-size: 24px;
 }
-/* line 198, ../scss/modules/content-types.scss */
+/* line 199, ../scss/modules/content-types.scss */
 .white-box .content .items-list {
   list-style-type: none;
   margin: 0;
   padding: 0 20px;
 }
-/* line 202, ../scss/modules/content-types.scss */
+/* line 203, ../scss/modules/content-types.scss */
 .white-box .content .items-list li {
   font-size: 14px;
   line-height: 50px;
   border-bottom: 1px solid #cccccc;
   position: relative;
 }
-/* line 207, ../scss/modules/content-types.scss */
+/* line 208, ../scss/modules/content-types.scss */
 .white-box .content .items-list li .icon {
   cursor: move;
   color: #999999;
   font-size: 15px;
   padding-right: 15px;
 }
-/* line 213, ../scss/modules/content-types.scss */
+/* line 214, ../scss/modules/content-types.scss */
 .white-box .content .items-list li img {
   vertical-align: middle;
   padding-top: 8px;
   padding-bottom: 8px;
   padding-right: 20px;
 }
-/* line 219, ../scss/modules/content-types.scss */
+/* line 220, ../scss/modules/content-types.scss */
 .white-box .content .items-list li .num {
   color: #999999;
   padding-right: 10px;
 }
-/* line 223, ../scss/modules/content-types.scss */
+/* line 224, ../scss/modules/content-types.scss */
 .white-box .content .items-list li .value {
   color: #999999;
 }
-/* line 226, ../scss/modules/content-types.scss */
+/* line 227, ../scss/modules/content-types.scss */
 .white-box .content .items-list li .remove {
   position: absolute;
   top: 50%;
@@ -9814,18 +9819,18 @@ a.btn-black, a.btn-highlight {
   margin-top: -8px;
   cursor: pointer;
 }
-/* line 233, ../scss/modules/content-types.scss */
+/* line 234, ../scss/modules/content-types.scss */
 .white-box .content .items-list li:last-child {
   border-width: 2px;
 }
-/* line 240, ../scss/modules/content-types.scss */
+/* line 241, ../scss/modules/content-types.scss */
 .white-box .footer {
   padding: 15px 20px 20px 20px;
   line-height: 14px;
   color: #999999;
   font-size: 12px;
 }
-/* line 245, ../scss/modules/content-types.scss */
+/* line 246, ../scss/modules/content-types.scss */
 .white-box .footer span {
   padding-right: 5px;
 }
