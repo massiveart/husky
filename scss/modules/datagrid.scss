@@ -160,9 +160,6 @@
     }
 
   &.white-box {
-      background: $white;
-      border-radius: 3px;
-      border: 1px solid $grayLighter;
       padding: 0 20px;
       overflow: hidden;
       .table-container {
@@ -178,6 +175,18 @@
         td {
           padding-left: 0;
           padding-right: 0;
+        }
+      }
+  }
+
+  &.minimal {
+      padding: 0;
+      tbody {
+        td.thumb {
+          width: 1px;
+          img {
+            height: 30px;
+          }
         }
       }
   }
