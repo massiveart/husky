@@ -87,3 +87,29 @@
         }
     }
 }
+
+.husky-position {
+  width: 100%;
+  height: 100%;
+
+  & > div {
+    width: 33.33%;
+    height: 33.33%;
+    background: $iconGray;
+    cursor: pointer;
+    border: 1px solid $white;
+  }
+  .left {
+    float: left;
+    clear: left;
+  }
+  .middle {
+    float: left;
+  }
+  .right {
+    float: right;
+  }
+  .selected {
+    background: $blue;
+  }
+}

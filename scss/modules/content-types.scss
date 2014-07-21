@@ -154,6 +154,15 @@
         margin-left: 20px;
       }
     }
+
+    .position {
+      width: 32px;
+      height: 32px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -16px 0 0 -16px;
+    }
   }
 
   .content {

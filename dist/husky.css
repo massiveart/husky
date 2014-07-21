@@ -1051,6 +1051,37 @@ h1.divider:after, h2.divider:after, h3.divider:after, h4.divider:after, h5.divid
   display: none;
 }
 
+/* line 91, ../scss/various.scss */
+.husky-position {
+  width: 100%;
+  height: 100%;
+}
+/* line 95, ../scss/various.scss */
+.husky-position > div {
+  width: 33.33%;
+  height: 33.33%;
+  background: #262626;
+  cursor: pointer;
+  border: 1px solid white;
+}
+/* line 102, ../scss/various.scss */
+.husky-position .left {
+  float: left;
+  clear: left;
+}
+/* line 106, ../scss/various.scss */
+.husky-position .middle {
+  float: left;
+}
+/* line 109, ../scss/various.scss */
+.husky-position .right {
+  float: right;
+}
+/* line 112, ../scss/various.scss */
+.husky-position .selected {
+  background: #52b6ca;
+}
+
 /* line 3, ../scss/colorpicker.scss */
 .minicolors {
   position: relative;
@@ -9696,22 +9727,31 @@ a.btn-black, a.btn-highlight {
   float: right;
   margin-left: 20px;
 }
-/* line 159, ../scss/modules/content-types.scss */
+/* line 158, ../scss/modules/content-types.scss */
+.white-box .header .position {
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -16px 0 0 -16px;
+}
+/* line 168, ../scss/modules/content-types.scss */
 .white-box .content {
   position: relative;
   top: 0px;
   left: 0px;
 }
-/* line 164, ../scss/modules/content-types.scss */
+/* line 173, ../scss/modules/content-types.scss */
 .white-box .content .loader {
   padding: 50px 0;
 }
-/* line 167, ../scss/modules/content-types.scss */
+/* line 176, ../scss/modules/content-types.scss */
 .white-box .content .no-content {
   text-align: center;
   height: 210px;
 }
-/* line 171, ../scss/modules/content-types.scss */
+/* line 180, ../scss/modules/content-types.scss */
 .white-box .content .no-content .icon {
   display: block;
   position: absolute;
@@ -9723,50 +9763,50 @@ a.btn-black, a.btn-highlight {
   font-size: 125px;
   color: #efefef;
 }
-/* line 182, ../scss/modules/content-types.scss */
+/* line 191, ../scss/modules/content-types.scss */
 .white-box .content .no-content .text {
   padding-top: 160px;
   font-weight: bold;
   color: #e4e4e4;
   font-size: 24px;
 }
-/* line 189, ../scss/modules/content-types.scss */
+/* line 198, ../scss/modules/content-types.scss */
 .white-box .content .items-list {
   list-style-type: none;
   margin: 0;
   padding: 0 20px;
 }
-/* line 193, ../scss/modules/content-types.scss */
+/* line 202, ../scss/modules/content-types.scss */
 .white-box .content .items-list li {
   font-size: 14px;
   line-height: 50px;
   border-bottom: 1px solid #cccccc;
   position: relative;
 }
-/* line 198, ../scss/modules/content-types.scss */
+/* line 207, ../scss/modules/content-types.scss */
 .white-box .content .items-list li .icon {
   cursor: move;
   color: #999999;
   font-size: 15px;
   padding-right: 15px;
 }
-/* line 204, ../scss/modules/content-types.scss */
+/* line 213, ../scss/modules/content-types.scss */
 .white-box .content .items-list li img {
   vertical-align: middle;
   padding-top: 8px;
   padding-bottom: 8px;
   padding-right: 20px;
 }
-/* line 210, ../scss/modules/content-types.scss */
+/* line 219, ../scss/modules/content-types.scss */
 .white-box .content .items-list li .num {
   color: #999999;
   padding-right: 10px;
 }
-/* line 214, ../scss/modules/content-types.scss */
+/* line 223, ../scss/modules/content-types.scss */
 .white-box .content .items-list li .value {
   color: #999999;
 }
-/* line 217, ../scss/modules/content-types.scss */
+/* line 226, ../scss/modules/content-types.scss */
 .white-box .content .items-list li .remove {
   position: absolute;
   top: 50%;
@@ -9774,18 +9814,18 @@ a.btn-black, a.btn-highlight {
   margin-top: -8px;
   cursor: pointer;
 }
-/* line 224, ../scss/modules/content-types.scss */
+/* line 233, ../scss/modules/content-types.scss */
 .white-box .content .items-list li:last-child {
   border-width: 2px;
 }
-/* line 231, ../scss/modules/content-types.scss */
+/* line 240, ../scss/modules/content-types.scss */
 .white-box .footer {
   padding: 15px 20px 20px 20px;
   line-height: 14px;
   color: #999999;
   font-size: 12px;
 }
-/* line 236, ../scss/modules/content-types.scss */
+/* line 245, ../scss/modules/content-types.scss */
 .white-box .footer span {
   padding-right: 5px;
 }
