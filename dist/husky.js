@@ -34835,10 +34835,10 @@ define('__component__$auto-complete@husky',[], function () {
                 iconHTML = '<span class="fa-' + this.options.suggestionImg + ' icon"></span>';
             }
             this._template = this.sandbox.util.template('' +
-                '<div class="' + this.options.suggestionClass + '" data-id="<%= id %>">' +
+                '<div class="' + this.options.suggestionClass + '" data-id="<%= context[\'id \']%>">' +
                 '   <div class="border">' +
                 iconHTML +
-                '		<div class="text"><%= name %></div>' +
+                '		<div class="text"><%= context[this.options.valueKey] %></div>' +
                 '	</div>' +
                 '</div>');
         },
@@ -34850,7 +34850,7 @@ define('__component__$auto-complete@husky',[], function () {
         buildTemplate: function (context) {
             var domObj;
             if (this._template !== null) {
-                domObj = this.sandbox.dom.createElement(this._template(context));
+                domObj = this.sandbox.dom.createElement(this._template({context:context}));
                 if (this.isExcluded(context)) {
                     this.sandbox.dom.addClass(domObj, 'disabled');
                 }
