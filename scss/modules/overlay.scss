@@ -32,6 +32,14 @@
         }
     }
 
+    &.medium {
+        width: $overlayContainerMediumWidth;
+
+        .slides .slide {
+            width: $overlayContainerMediumWidth - 2;
+        }
+    }
+
     &.dropzone {
         width: $overlayContainerWidthExtraWide;
         .slides .slide {
