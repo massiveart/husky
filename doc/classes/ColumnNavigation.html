@@ -503,13 +503,13 @@
                             
                             <li class="param">
                                 
-                                    <code class="param-name optional">[sizeRelativeTo]</code>
-                                    <span class="type">String</span>
+                                    <code class="param-name optional">[responsive]</code>
+                                    <span class="type">Boolean</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
                                 
 
                                 <div class="param-description">
-                                    <p>dom object which is used to calculate height / width (default $window)</p>
+                                    <p>If true the resize listener gets initialized. Otherwise the column navigation just takes up 100 % of the height and width</p>
 
                                 </div>
 
@@ -555,6 +555,36 @@
 
                                 <div class="param-description">
                                     <p>hide or display status of elements</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[multipleSelect]</code>
+                                    <span class="type">Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>If true checkboxes will be shown instead of the blue button</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[skin]</code>
+                                    <span class="type">String</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>css class which gets added to the components element. Available: &#39;&#39;, &#39;fixed-height-small&#39;</p>
 
                                 </div>
 
@@ -627,6 +657,20 @@
                             </li>
                         
                             <li class="index-item event">
+                                <a href="#event_husky.column-navigation.get-selected">husky.column-navigation.get-selected</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.column-navigation.initialized">husky.column-navigation.initialized</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
                                 <a href="#event_husky.column-navigation.loaded">husky.column-navigation.loaded</a>
 
                                 
@@ -693,7 +737,7 @@
             
         
         
-        <a href="../files/husky_components_column-navigation_main.js.html#l101"><code>husky_components&#x2F;column-navigation&#x2F;main.js:101</code></a>
+        <a href="../files/husky_components_column-navigation_main.js.html#l128"><code>husky_components&#x2F;column-navigation&#x2F;main.js:128</code></a>
         
         </p>
 
@@ -761,7 +805,7 @@
             
         
         
-        <a href="../files/husky_components_column-navigation_main.js.html#l108"><code>husky_components&#x2F;column-navigation&#x2F;main.js:108</code></a>
+        <a href="../files/husky_components_column-navigation_main.js.html#l137"><code>husky_components&#x2F;column-navigation&#x2F;main.js:137</code></a>
         
         </p>
 
@@ -829,7 +873,7 @@
             
         
         
-        <a href="../files/husky_components_column-navigation_main.js.html#l115"><code>husky_components&#x2F;column-navigation&#x2F;main.js:115</code></a>
+        <a href="../files/husky_components_column-navigation_main.js.html#l146"><code>husky_components&#x2F;column-navigation&#x2F;main.js:146</code></a>
         
         </p>
 
@@ -874,6 +918,118 @@
 </div>
 
                 
+                    <div id="event_husky.column-navigation.get-selected" class="events item">
+    <h3 class="name"><code>husky.column-navigation.get-selected</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_column-navigation_main.js.html#l109"><code>husky_components&#x2F;column-navigation&#x2F;main.js:109</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>listens on and passes the selected nodes to a given callback</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">callback</code>
+                        <span class="type">Function</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>to pass the ids to</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
+
+                
+                    <div id="event_husky.column-navigation.initialized" class="events item">
+    <h3 class="name"><code>husky.column-navigation.initialized</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_column-navigation_main.js.html#l84"><code>husky_components&#x2F;column-navigation&#x2F;main.js:84</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>thrown after initialization has finished</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
                     <div id="event_husky.column-navigation.loaded" class="events item">
     <h3 class="name"><code>husky.column-navigation.loaded</code></h3>
     <span class="type"></span>
@@ -897,7 +1053,7 @@
             
         
         
-        <a href="../files/husky_components_column-navigation_main.js.html#l80"><code>husky_components&#x2F;column-navigation&#x2F;main.js:80</code></a>
+        <a href="../files/husky_components_column-navigation_main.js.html#l92"><code>husky_components&#x2F;column-navigation&#x2F;main.js:92</code></a>
         
         </p>
 
@@ -941,7 +1097,7 @@
             
         
         
-        <a href="../files/husky_components_column-navigation_main.js.html#l122"><code>husky_components&#x2F;column-navigation&#x2F;main.js:122</code></a>
+        <a href="../files/husky_components_column-navigation_main.js.html#l155"><code>husky_components&#x2F;column-navigation&#x2F;main.js:155</code></a>
         
         </p>
 
@@ -1009,7 +1165,7 @@
             
         
         
-        <a href="../files/husky_components_column-navigation_main.js.html#l86"><code>husky_components&#x2F;column-navigation&#x2F;main.js:86</code></a>
+        <a href="../files/husky_components_column-navigation_main.js.html#l100"><code>husky_components&#x2F;column-navigation&#x2F;main.js:100</code></a>
         
         </p>
 
@@ -1077,7 +1233,7 @@
             
         
         
-        <a href="../files/husky_components_column-navigation_main.js.html#l93"><code>husky_components&#x2F;column-navigation&#x2F;main.js:93</code></a>
+        <a href="../files/husky_components_column-navigation_main.js.html#l118"><code>husky_components&#x2F;column-navigation&#x2F;main.js:118</code></a>
         
         </p>
 

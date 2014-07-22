@@ -22,28 +22,19 @@
                 min-height: 300px;
                 background: #f1f1f1;
             }
+            .container {
+                height: 300px;
+            }
         </style>
     </head>
     <body>
 
         <div id="content" class="grid">
-            <div id="column-navigation" class="grid-row"></div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
+            <div id="column-navigation"></div>
+            <div class="m-bottom-30"></div>
+            <div class="container">
+                <div id="column-navigation-2"></div>
+            </div>
         </div>
 
         <script src="../../bower_components/jquery/jquery.js"></script>
@@ -65,7 +56,7 @@
                 _ = app.sandbox.util._;
 
                 app.start([
-                            {
+                            /*{
                                 name: 'column-navigation@husky',
                                 options: {
                                     el: '#column-navigation',
@@ -73,6 +64,19 @@
                                     selected: '1.2.3.1',
                                     noPageDescription: 'No Pages'
 
+                                }
+                            }*/
+                            {
+                                name: 'column-navigation@husky',
+                                options: {
+                                    el: '#column-navigation-2',
+                                    url: 'http://husky.lo:7878/admin/api/columnnavigation?children=1.2.3.1',
+                                    selected: '1.2.3.1',
+                                    noPageDescription: 'No Pages',
+                                    responsive: false,
+                                    showEdit: false,
+                                    showStatus: false,
+                                    multipleSelect: true
                                 }
                             }
                         ]).then(function () {
