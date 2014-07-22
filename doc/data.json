@@ -2106,7 +2106,7 @@
                         },
                         {
                             "name": "skin",
-                            "description": "set an overlay skin to manipulate overlay's appearance. Possible skins: '' or 'wide'",
+                            "description": "set an overlay skin to manipulate overlay's appearance. Possible skins: '', 'wide' or 'medium'",
                             "type": "String",
                             "optional": true
                         },
