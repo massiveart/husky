@@ -948,15 +948,27 @@
                             "optional": true
                         },
                         {
-                            "name": "multipleSelect",
-                            "description": "If true checkboxes will be shown instead of the blue button",
+                            "name": "skin",
+                            "description": "css class which gets added to the components element. Available: '', 'fixed-height-small'",
+                            "type": "String",
+                            "optional": true
+                        },
+                        {
+                            "name": "markable",
+                            "description": "If true a node gets marked with a css class on click on the blue button",
                             "type": "Boolean",
                             "optional": true
                         },
                         {
-                            "name": "skin",
-                            "description": "css class which gets added to the components element. Available: '', 'fixed-height-small'",
+                            "name": "markedClass",
+                            "description": "The css-class which gets set on the node if node gets marked",
                             "type": "String",
+                            "optional": true
+                        },
+                        {
+                            "name": "premarkedIds",
+                            "description": "an array of uuids of nodes which should be marked from the beginning on",
+                            "type": "Array",
                             "optional": true
                         }
                     ]
@@ -4193,7 +4205,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 78,
+            "line": 82,
             "description": "namespace for events",
             "type": "{string}",
             "class": "ColumnNavigation",
@@ -4201,7 +4213,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 84,
+            "line": 88,
             "itemtype": "event",
             "name": "husky.column-navigation.initialized",
             "description": "thrown after initialization has finished",
@@ -4210,7 +4222,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 92,
+            "line": 96,
             "itemtype": "event",
             "name": "husky.column-navigation.loaded",
             "description": "the component has loaded everything successfully and will be rendered",
@@ -4219,7 +4231,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 100,
+            "line": 104,
             "itemtype": "event",
             "name": "husky.column-navigation.selected",
             "description": "an navigation element has been selected",
@@ -4235,7 +4247,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 109,
+            "line": 113,
             "itemtype": "event",
             "name": "husky.column-navigation.get-selected",
             "description": "listens on and passes the selected nodes to a given callback",
@@ -4251,7 +4263,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 118,
+            "line": 122,
             "itemtype": "event",
             "name": "husky.column-navigation.settings",
             "description": "an navigation element has been selected and a item from selected dropdown clicked",
@@ -4272,7 +4284,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 128,
+            "line": 132,
             "itemtype": "event",
             "name": "husky.column-navigation.add",
             "description": "the add button has been clicked",
@@ -4288,7 +4300,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 137,
+            "line": 141,
             "itemtype": "event",
             "name": "husky.column-navigation.edit",
             "description": "the edit icon has been clicked",
@@ -4304,7 +4316,23 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 146,
+            "line": 150,
+            "itemtype": "event",
+            "name": "husky.column-navigation.unmark",
+            "description": "listens on and unmarks a node with a given id",
+            "params": [
+                {
+                    "name": "the",
+                    "description": "id of the node to unmark",
+                    "type": "Number|String"
+                }
+            ],
+            "class": "ColumnNavigation",
+            "module": "husky/components/column-navigation"
+        },
+        {
+            "file": "husky_components/column-navigation/main.js",
+            "line": 159,
             "itemtype": "event",
             "name": "husky.column-navigation.get-breadcrumb",
             "description": "the breadcrumb will be returned",
@@ -4320,7 +4348,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 155,
+            "line": 168,
             "itemtype": "event",
             "name": "husky.column-navigation.resize",
             "description": "the element will be resized",
@@ -4336,41 +4364,41 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 164,
+            "line": 177,
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 194,
+            "line": 209,
             "description": "Renders basic structure (wrapper) of column navigation",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 239,
+            "line": 254,
             "description": "Starts the big loader, before loading content during the initialization",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 262,
+            "line": 277,
             "description": "Detatches the big loader from the column-navigation",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 269,
+            "line": 284,
             "description": "Sets the height of the container",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 282,
+            "line": 297,
             "description": "Instantiats the dropdown component",
             "params": [
                 {
@@ -4383,7 +4411,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 304,
+            "line": 319,
             "description": "Loads data from a specific url and triggers the parsing",
             "params": [
                 {
@@ -4402,7 +4430,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 334,
+            "line": 349,
             "description": "Removes removes data and removes dom elements",
             "params": [
                 {
@@ -4416,7 +4444,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 361,
+            "line": 376,
             "description": "Parses the received data and renders columns",
             "params": [
                 {
@@ -4435,7 +4463,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 419,
+            "line": 434,
             "description": "Sets the width of the text-container of an item",
             "params": [
                 {
@@ -4449,7 +4477,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 436,
+            "line": 451,
             "description": "Crops the item text of an item depending on its width",
             "params": [
                 {
@@ -4463,7 +4491,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 459,
+            "line": 474,
             "description": "Sets/removes all needed classes to display a node as selected",
             "params": [
                 {
@@ -4476,7 +4504,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 469,
+            "line": 484,
             "description": "Returns column to put the node elements in",
             "params": [
                 {
@@ -4493,7 +4521,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 489,
+            "line": 504,
             "description": "Adds the loading icon to a contianer",
             "params": [
                 {
@@ -4506,14 +4534,14 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 516,
+            "line": 531,
             "description": "Removes loading icon from selected element",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 527,
+            "line": 542,
             "description": "Stores data in internal structure - seperated by column number",
             "params": [
                 {
@@ -4532,21 +4560,35 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 565,
+            "line": 580,
             "description": "Sets an overflow-class to the container if the navigation is scrollable",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 577,
+            "line": 592,
             "description": "Inserts some markup into the last column if column is empty",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 616,
+            "line": 632,
+            "description": "Unmarks a node for a given id",
+            "params": [
+                {
+                    "name": "id",
+                    "description": "the id of the node to unmark",
+                    "type": "Number|String"
+                }
+            ],
+            "class": "ColumnNavigation",
+            "module": "husky/components/column-navigation"
+        },
+        {
+            "file": "husky_components/column-navigation/main.js",
+            "line": 644,
             "description": "Passes all selected nodes to a callback",
             "params": [
                 {
@@ -4560,7 +4602,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 631,
+            "line": 659,
             "description": "Sets the text width",
             "params": [
                 {
@@ -4574,7 +4616,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 639,
+            "line": 667,
             "description": "Sets the text width",
             "params": [
                 {
@@ -4588,7 +4630,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 647,
+            "line": 675,
             "description": "Returns the breadcrumb",
             "params": [
                 {
@@ -4602,14 +4644,14 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 659,
+            "line": 687,
             "description": "Shows the options at the last available column",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 669,
+            "line": 697,
             "description": "Shows the options below the last hovered column",
             "params": [
                 {
@@ -4623,7 +4665,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 682,
+            "line": 710,
             "description": "Displays the options-navigation under a given column",
             "params": [
                 {
@@ -4637,7 +4679,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 707,
+            "line": 735,
             "description": "Updates the position of the options",
             "params": [
                 {
@@ -4651,14 +4693,14 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 716,
+            "line": 744,
             "description": "Hides options",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 723,
+            "line": 751,
             "description": "Item was selected and data will be loaded if has sub",
             "params": [
                 {
@@ -4672,28 +4714,28 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 782,
+            "line": 810,
             "description": "Sets the width of the container equal to the width of its columns",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 794,
+            "line": 822,
             "description": "Sets the max width of the container",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 807,
+            "line": 835,
             "description": "Sets the min-width of the container",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 822,
+            "line": 850,
             "description": "Scrolls if needed",
             "params": [
                 {
@@ -4706,7 +4748,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 832,
+            "line": 860,
             "description": "Removes the selected class from old elements",
             "params": [
                 {
@@ -4720,14 +4762,14 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 846,
+            "line": 874,
             "description": "Emits an add event",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 854,
+            "line": 882,
             "description": "Emits an edit event",
             "params": [
                 {
@@ -4741,7 +4783,7 @@
         },
         {
             "file": "husky_components/column-navigation/main.js",
-            "line": 874,
+            "line": 908,
             "description": "Templates for various parts",
             "class": "ColumnNavigation",
             "module": "husky/components/column-navigation"
@@ -11172,8 +11214,16 @@
             "line": " husky_components/column-navigation/main.js:13"
         },
         {
+            "message": "replacing incorrect tag: params with param",
+            "line": " husky_components/column-navigation/main.js:13"
+        },
+        {
+            "message": "replacing incorrect tag: params with param",
+            "line": " husky_components/column-navigation/main.js:13"
+        },
+        {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/column-navigation/main.js:469"
+            "line": " husky_components/column-navigation/main.js:484"
         },
         {
             "message": "replacing incorrect tag: returns with return",
@@ -12217,151 +12267,155 @@
         },
         {
             "message": "Missing item type\nnamespace for events",
-            "line": " husky_components/column-navigation/main.js:78"
+            "line": " husky_components/column-navigation/main.js:82"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/column-navigation/main.js:164"
+            "line": " husky_components/column-navigation/main.js:177"
         },
         {
             "message": "Missing item type\nRenders basic structure (wrapper) of column navigation",
-            "line": " husky_components/column-navigation/main.js:194"
+            "line": " husky_components/column-navigation/main.js:209"
         },
         {
             "message": "Missing item type\nStarts the big loader, before loading content during the initialization",
-            "line": " husky_components/column-navigation/main.js:239"
+            "line": " husky_components/column-navigation/main.js:254"
         },
         {
             "message": "Missing item type\nDetatches the big loader from the column-navigation",
-            "line": " husky_components/column-navigation/main.js:262"
+            "line": " husky_components/column-navigation/main.js:277"
         },
         {
             "message": "Missing item type\nSets the height of the container",
-            "line": " husky_components/column-navigation/main.js:269"
+            "line": " husky_components/column-navigation/main.js:284"
         },
         {
             "message": "Missing item type\nInstantiats the dropdown component",
-            "line": " husky_components/column-navigation/main.js:282"
+            "line": " husky_components/column-navigation/main.js:297"
         },
         {
             "message": "Missing item type\nLoads data from a specific url and triggers the parsing",
-            "line": " husky_components/column-navigation/main.js:304"
+            "line": " husky_components/column-navigation/main.js:319"
         },
         {
             "message": "Missing item type\nRemoves removes data and removes dom elements",
-            "line": " husky_components/column-navigation/main.js:334"
+            "line": " husky_components/column-navigation/main.js:349"
         },
         {
             "message": "Missing item type\nParses the received data and renders columns",
-            "line": " husky_components/column-navigation/main.js:361"
+            "line": " husky_components/column-navigation/main.js:376"
         },
         {
             "message": "Missing item type\nSets the width of the text-container of an item",
-            "line": " husky_components/column-navigation/main.js:419"
+            "line": " husky_components/column-navigation/main.js:434"
         },
         {
             "message": "Missing item type\nCrops the item text of an item depending on its width",
-            "line": " husky_components/column-navigation/main.js:436"
+            "line": " husky_components/column-navigation/main.js:451"
         },
         {
             "message": "Missing item type\nSets/removes all needed classes to display a node as selected",
-            "line": " husky_components/column-navigation/main.js:459"
+            "line": " husky_components/column-navigation/main.js:474"
         },
         {
             "message": "Missing item type\nReturns column to put the node elements in",
-            "line": " husky_components/column-navigation/main.js:469"
+            "line": " husky_components/column-navigation/main.js:484"
         },
         {
             "message": "Missing item type\nAdds the loading icon to a contianer",
-            "line": " husky_components/column-navigation/main.js:489"
+            "line": " husky_components/column-navigation/main.js:504"
         },
         {
             "message": "Missing item type\nRemoves loading icon from selected element",
-            "line": " husky_components/column-navigation/main.js:516"
+            "line": " husky_components/column-navigation/main.js:531"
         },
         {
             "message": "Missing item type\nStores data in internal structure - seperated by column number",
-            "line": " husky_components/column-navigation/main.js:527"
+            "line": " husky_components/column-navigation/main.js:542"
         },
         {
             "message": "Missing item type\nSets an overflow-class to the container if the navigation is scrollable",
-            "line": " husky_components/column-navigation/main.js:565"
+            "line": " husky_components/column-navigation/main.js:580"
         },
         {
             "message": "Missing item type\nInserts some markup into the last column if column is empty",
-            "line": " husky_components/column-navigation/main.js:577"
+            "line": " husky_components/column-navigation/main.js:592"
+        },
+        {
+            "message": "Missing item type\nUnmarks a node for a given id",
+            "line": " husky_components/column-navigation/main.js:632"
         },
         {
             "message": "Missing item type\nPasses all selected nodes to a callback",
-            "line": " husky_components/column-navigation/main.js:616"
+            "line": " husky_components/column-navigation/main.js:644"
         },
         {
             "message": "Missing item type\nSets the text width",
-            "line": " husky_components/column-navigation/main.js:631"
-        },
-        {
-            "message": "Missing item type\nSets the text width",
-            "line": " husky_components/column-navigation/main.js:639"
-        },
-        {
-            "message": "Missing item type\nReturns the breadcrumb",
-            "line": " husky_components/column-navigation/main.js:647"
-        },
-        {
-            "message": "Missing item type\nShows the options at the last available column",
             "line": " husky_components/column-navigation/main.js:659"
         },
         {
+            "message": "Missing item type\nSets the text width",
+            "line": " husky_components/column-navigation/main.js:667"
+        },
+        {
+            "message": "Missing item type\nReturns the breadcrumb",
+            "line": " husky_components/column-navigation/main.js:675"
+        },
+        {
+            "message": "Missing item type\nShows the options at the last available column",
+            "line": " husky_components/column-navigation/main.js:687"
+        },
+        {
             "message": "Missing item type\nShows the options below the last hovered column",
-            "line": " husky_components/column-navigation/main.js:669"
+            "line": " husky_components/column-navigation/main.js:697"
         },
         {
             "message": "Missing item type\nDisplays the options-navigation under a given column",
-            "line": " husky_components/column-navigation/main.js:682"
+            "line": " husky_components/column-navigation/main.js:710"
         },
         {
             "message": "Missing item type\nUpdates the position of the options",
-            "line": " husky_components/column-navigation/main.js:707"
+            "line": " husky_components/column-navigation/main.js:735"
         },
         {
             "message": "Missing item type\nHides options",
-            "line": " husky_components/column-navigation/main.js:716"
+            "line": " husky_components/column-navigation/main.js:744"
         },
         {
             "message": "Missing item type\nItem was selected and data will be loaded if has sub",
-            "line": " husky_components/column-navigation/main.js:723"
+            "line": " husky_components/column-navigation/main.js:751"
         },
         {
             "message": "Missing item type\nSets the width of the container equal to the width of its columns",
-            "line": " husky_components/column-navigation/main.js:782"
+            "line": " husky_components/column-navigation/main.js:810"
         },
         {
             "message": "Missing item type\nSets the max width of the container",
-            "line": " husky_components/column-navigation/main.js:794"
-        },
-        {
-            "message": "Missing item type\nSets the min-width of the container",
-            "line": " husky_components/column-navigation/main.js:807"
-        },
-        {
-            "message": "Missing item type\nScrolls if needed",
             "line": " husky_components/column-navigation/main.js:822"
         },
         {
+            "message": "Missing item type\nSets the min-width of the container",
+            "line": " husky_components/column-navigation/main.js:835"
+        },
+        {
+            "message": "Missing item type\nScrolls if needed",
+            "line": " husky_components/column-navigation/main.js:850"
+        },
+        {
             "message": "Missing item type\nRemoves the selected class from old elements",
-            "line": " husky_components/column-navigation/main.js:832"
+            "line": " husky_components/column-navigation/main.js:860"
         },
         {
             "message": "Missing item type\nEmits an add event",
-            "line": " husky_components/column-navigation/main.js:846"
+            "line": " husky_components/column-navigation/main.js:874"
         },
         {
             "message": "Missing item type\nEmits an edit event",
-            "line": " husky_components/column-navigation/main.js:854"
+            "line": " husky_components/column-navigation/main.js:882"
         },
         {
             "message": "Missing item type\nTemplates for various parts",
-            "line": " husky_components/column-navigation/main.js:874"
+            "line": " husky_components/column-navigation/main.js:908"
         },
         {
             "message": "Missing item type\nDOM events",

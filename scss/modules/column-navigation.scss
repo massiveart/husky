@@ -104,6 +104,14 @@
                         font-weight: bold;
                     }
                 }
+                li.marked {
+                  .markedIcon {
+                    display: block;
+                  }
+                  .edit {
+                    display: none;
+                  }
+                }
 
                 .inactive {
                     color: $grayLighter;
@@ -136,6 +144,13 @@
             color: $white;
             border-radius: $borderRadius;
             font-size: $reallySmallFontSize;
+        }
+        .markedIcon {
+            width: 14px;
+            margin-right: 5px;
+            margin-top: 1px;
+            color: $grayLight;
+            display: none;
         }
         .icons-right {
             position: absolute;

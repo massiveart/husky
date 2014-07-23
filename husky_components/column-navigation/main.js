@@ -35,8 +35,10 @@
  * @params {Boolean} [options.showEdit] hide or display edit elements
  * @params {Boolean} [options.showEditIcon] hide or display edit icon element
  * @params {Boolean} [options.showStatus] hide or display status of elements
- * @params {Boolean} [options.multipleSelect] If true checkboxes will be shown instead of the blue button
  * @params {String} [options.skin] css class which gets added to the components element. Available: '', 'fixed-height-small'
+ * @params {Boolean} [options.markable] If true a node gets marked with a css class on click on the blue button
+ * @params {String} [options.markedClass] The css-class which gets set on the node if node gets marked
+ * @params {Array} [options.premarkedIds] an array of uuids of nodes which should be marked from the beginning on
  */
 define([], function() {
 
@@ -70,7 +72,9 @@ define([], function() {
             showEdit: true,
             showEditIcon: true,
             showStatus: true,
-            multipleSelect: false
+            premarkedIds: [],
+            markedClass: 'marked',
+            markable: false
         },
 
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
@@ -144,6 +148,15 @@ define([], function() {
         },
 
         /**
+         * @event husky.column-navigation.unmark
+         * @description listens on and unmarks a node with a given id
+         * @param {Number|String} the id of the node to unmark
+         */
+        UNMARK = function() {
+            return createEventName.call(this, 'unmark');
+        },
+
+        /**
          * @event husky.column-navigation.get-breadcrumb
          * @description the breadcrumb will be returned
          * @param {Function} callback function which will process the breadcrumb objects
@@ -181,6 +194,8 @@ define([], function() {
 
             this.columns = [];
             this.selected = [];
+            // array with all marked ids
+            this.marked = this.options.premarkedIds || [];
 
             this.render();
             this.startBigLoader();
@@ -388,7 +403,7 @@ define([], function() {
                 this.setItemsTextWidth($element);
 
                 // remember which item has subitems to display a whole tree when column navigation should be restored
-                if (!!value[this.options.hasSubName] && value._embedded[this.options.resultKey].length > 0) {
+                if (!!value[this.options.hasSubName] && !! value._embedded[this.options.resultKey] && value._embedded[this.options.resultKey].length > 0) {
                     nodeWithSubNodes = value;
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
@@ -591,6 +606,7 @@ define([], function() {
         bindCustomEvents: function() {
             this.sandbox.on(BREADCRUMB.call(this), this.getBreadCrumb.bind(this));
             this.sandbox.on(GET_SELECTED.call(this), this.getSelected.bind(this));
+            this.sandbox.on(UNMARK.call(this), this.unmark.bind(this));
 
             this.sandbox.on('husky.dropdown.' + this.options.instanceName + '.settings.dropdown.item.click', this.dropdownItemClicked.bind(this));
 
@@ -610,6 +626,18 @@ define([], function() {
                 } else {
                     this.sandbox.emit(SETTINGS.call(this), item, this.selected[this.lastHoveredColumn]);
                 }
+            }
+        },
+
+        /**
+         * Unmarks a node for a given id
+         * @param id {Number|String} the id of the node to unmark
+         */
+        unmark: function(id) {
+            var $element = this.$find('li[data-id="'+ id +'"]');
+            if (!!$element.length) {
+                this.sandbox.dom.removeClass($element, this.options.markedClass);
+                this.marked.splice(this.marked.indexOf(id), 1);
             }
         },
 
@@ -864,8 +892,14 @@ define([], function() {
                 $listItem = this.sandbox.dom.$(event.currentTarget);
             }
             column = this.sandbox.dom.index(this.sandbox.dom.parents(event.currentTarget, '.column'));
-            id = this.sandbox.dom.data($listItem, 'id');
+            id = this.sandbox.dom.attr($listItem, 'data-id');
             item = this.columns[column][id];
+
+            if (this.options.markable === true) {
+                this.sandbox.dom.addClass($listItem, this.options.markedClass);
+                this.marked.push(id);
+                this.setItemsTextWidth($listItem);
+            }
 
             this.sandbox.dom.stopPropagation(event);
             this.sandbox.emit(EDIT.call(this), item);
@@ -897,14 +931,13 @@ define([], function() {
 
             item: function(width, data) {
 
-                var item = ['<li data-id="', data[this.options.idName], '" class="pointer">'];
+                var isMarked = (this.marked.indexOf(data[this.options.idName]) !== -1),
+                    item = ['<li data-id="', data[this.options.idName], '" class="pointer'+ ((isMarked === true) ? ' ' + this.options.markedClass : '' )+'">'];
 
                 // icons left
                 item.push('<span class="icons-left">');
 
-                if (this.options.multipleSelect === true) {
-                    item.push('<div class="custom-checkbox"><input type="checkbox" class="form-element"><span class="icon"></span></div>');
-                }
+                item.push('<span class="fa-check pull-left markedIcon"></span>');
 
                 if (!!this.options.showStatus) {
                     // link
@@ -941,7 +974,7 @@ define([], function() {
 
                 // icons right (subpage, edit)
                 item.push('<span class="icons-right">');
-                if (!!this.options.showEditIcon && this.options.multipleSelect === false) {
+                if (!!this.options.showEditIcon) {
                     item.push('<span class="' + this.options.editIcon + ' edit hidden pull-left"></span>');
                 }
                 !!data[this.options.hasSubName] ? item.push('<span class="fa-chevron-right arrow inactive pull-left"></span>') : '';
