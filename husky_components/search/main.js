@@ -82,7 +82,6 @@ define([], function() {
         render: function() {
             this.sandbox.dom.addClass(this.$el, 'search-container');
             this.sandbox.dom.addClass(this.$el, this.options.appearance);
-            console.log(this.options.slide);
             if (this.options.slide === true) {
                 this.sandbox.dom.addClass(this.$el, constants.slideClass);
                 this.collapse();
