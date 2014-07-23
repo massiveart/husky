@@ -334,7 +334,7 @@ define([], function() {
             ].join(&#x27;&#x27;),
             noContent: [
                 &#x27;&lt;div class=&quot;no-content&quot;&gt;&#x27;,
-                &#x27;&lt;span class=&quot;fa-file icon&quot;&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;span class=&quot;fa-coffee icon&quot;&gt;&lt;/span&gt;&#x27;,
                 &#x27;&lt;div class=&quot;text&quot;&gt;&lt;%= noContentStr %&gt;&lt;/div&gt;&#x27;,
                 &#x27;&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;),
@@ -918,7 +918,7 @@ define([], function() {
             }.bind(this));
 
             // activate button OK when a page is selected
-            this.sandbox.on(&#x27;husky.column-navigation.edit&#x27;, function(item) {
+            this.sandbox.on(&#x27;husky.column-navigation.smart-content&#x27;+ this.options.instanceName +&#x27;.edit&#x27;, function(item) {
                 this.sandbox.emit(&#x27;husky.overlay.smart-content.&#x27; + this.options.instanceName + &#x27;.slide-left&#x27;);
 
                 var $element = this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent);
@@ -947,9 +947,8 @@ define([], function() {
                             el: &#x27;#column-navigation-&#x27; + this.options.instanceName + &#x27;&#x27;,
                             url: url,
                             selected: this.overlayData.dataSource,
-                            noPageDescription: &#x27;No Pages&#x27;,
-                            sizeRelativeTo: &#x27;.smart-content-overlay .slide-1 .overlay-content&#x27;,
-                            wrapper: {height: 100},
+                            instanceName: &#x27;smart-content&#x27; + this.options.instanceName,
+                            responsive: false,
                             editIcon: &#x27;fa-check&#x27;,
                             showEdit: false,
                             showStatus: false,

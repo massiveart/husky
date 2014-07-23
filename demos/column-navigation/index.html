@@ -21,35 +21,30 @@
                 width: 800px;
                 min-height: 300px;
                 background: #f1f1f1;
+                margin: 50px;
+            }
+            .container {
+                height: 300px;
             }
         </style>
     </head>
     <body>
 
         <div id="content" class="grid">
-            <div id="column-navigation" class="grid-row"></div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
-            <div class="grid-row m-top-30">Some Content</div>
+            <h1>Husky Column-Navigation Demo</h1>
+            <div id="column-navigation"></div>
+            <div class="m-bottom-30"></div>
+            <div class="container">
+                <div id="column-navigation-2"></div>
+            </div>
         </div>
 
         <script src="../../bower_components/jquery/jquery.js"></script>
         <script src="../js/require.js"></script>
 
         <script>
+            var app;
+
             require.config({
                 baseUrl: '../../'
             });
@@ -58,8 +53,7 @@
                 'use strict';
 
 
-                var app,
-                        _;
+                var _;
 
                 app = new Husky({ debug: { enable: true }});
                 _ = app.sandbox.util._;
@@ -73,6 +67,21 @@
                                     selected: '1.2.3.1',
                                     noPageDescription: 'No Pages'
 
+                                }
+                            },
+                            {
+                                name: 'column-navigation@husky',
+                                options: {
+                                    el: '#column-navigation-2',
+                                    url: 'http://husky.lo:7878/admin/api/columnnavigation?children=1.2.3.1',
+                                    selected: '1.2.3.1',
+                                    noPageDescription: 'No Pages',
+                                    instanceName: 'withsomeoptions',
+                                    responsive: false,
+                                    showEdit: false,
+                                    showStatus: false,
+                                    markable: true,
+                                    premarkedIds: ['1.2.1', '1.1', '1.3', '2']
                                 }
                             }
                         ]).then(function () {
