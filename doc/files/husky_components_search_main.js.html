@@ -240,7 +240,6 @@ define([], function() {
         render: function() {
             this.sandbox.dom.addClass(this.$el, &#x27;search-container&#x27;);
             this.sandbox.dom.addClass(this.$el, this.options.appearance);
-            console.log(this.options.slide);
             if (this.options.slide === true) {
                 this.sandbox.dom.addClass(this.$el, constants.slideClass);
                 this.collapse();

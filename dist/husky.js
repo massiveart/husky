@@ -28318,7 +28318,6 @@ define('__component__$column-options@husky',[],function() {
     return {
 
         initialize: function() {
-            console.log(this._ref);
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
             this.overlayLoaded = false;
 
@@ -32953,7 +32952,6 @@ define('__component__$search@husky',[], function() {
         render: function() {
             this.sandbox.dom.addClass(this.$el, 'search-container');
             this.sandbox.dom.addClass(this.$el, this.options.appearance);
-            console.log(this.options.slide);
             if (this.options.slide === true) {
                 this.sandbox.dom.addClass(this.$el, constants.slideClass);
                 this.collapse();

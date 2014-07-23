@@ -4866,7 +4866,7 @@
         },
         {
             "file": "husky_components/column-options/main.js",
-            "line": 381,
+            "line": 380,
             "description": "renders list",
             "params": [
                 {
@@ -4879,7 +4879,7 @@
         },
         {
             "file": "husky_components/column-options/main.js",
-            "line": 409,
+            "line": 408,
             "description": "rerenders list items (reset)",
             "class": "Column-Options",
             "module": "husky/components/column-options"
@@ -9368,7 +9368,7 @@
         },
         {
             "file": "husky_components/search/main.js",
-            "line": 199,
+            "line": 198,
             "description": "function emits event based on options.name",
             "params": [
                 {
@@ -12325,11 +12325,11 @@
         },
         {
             "message": "Missing item type\nrenders list",
-            "line": " husky_components/column-options/main.js:381"
+            "line": " husky_components/column-options/main.js:380"
         },
         {
             "message": "Missing item type\nrerenders list items (reset)",
-            "line": " husky_components/column-options/main.js:409"
+            "line": " husky_components/column-options/main.js:408"
         },
         {
             "message": "Missing item type\nTemplates used by this class",
@@ -13541,7 +13541,7 @@
         },
         {
             "message": "Missing item type\nfunction emits event based on options.name",
-            "line": " husky_components/search/main.js:199"
+            "line": " husky_components/search/main.js:198"
         },
         {
             "message": "Missing item type\nAdds a dropdown element to the dropdown list",
