@@ -527,24 +527,29 @@ define([], function() {
 
                     this.overlay.$content = this.sandbox.dom.find(constants.contentSelector, this.overlay.$el);
 
-                    if (this.slides.length > 1) {
-                        // set width to n-width
-                        this.overlay.width = this.sandbox.dom.outerWidth(this.sandbox.dom.find('.slide', this.overlay.$slides));
-                        this.sandbox.dom.css(this.overlay.$slides, 'width', (this.slides.length * this.overlay.width) + 'px');
-
-                        var maxHeight = -1;
-
-                        $(this.overlay.$content).each(function() {
-                            maxHeight = maxHeight > $(this).height() ? maxHeight : $(this).height();
-                        });
-
-                        this.sandbox.dom.css(this.overlay.$content, 'height', maxHeight + 'px');
-                    }
-
                     this.insertOverlay(true);
+                    this.setSlidesHeight();
                 } else {
                     this.insertOverlay(true);
                 }
+            }
+        },
+
+        /**
+         * Sets the height of all slides equal
+         */
+        setSlidesHeight: function() {
+            if (this.slides.length > 1) {
+                var maxHeight = -1;
+                // set width to n-width
+                this.overlay.width = this.sandbox.dom.outerWidth(this.sandbox.dom.find('.slide', this.overlay.$slides));
+                this.sandbox.dom.css(this.overlay.$slides, 'width', (this.slides.length * this.overlay.width) + 'px');
+
+                $(this.overlay.$content).each(function() {
+                    maxHeight = maxHeight > $(this).height() ? maxHeight : $(this).height();
+                });
+
+                this.sandbox.dom.css(this.overlay.$content, 'height', maxHeight + 'px');
             }
         },
 
@@ -994,6 +999,7 @@ define([], function() {
             this.overlay.collapsed = false;
             this.sandbox.dom.css(this.overlay.$content, {'overflow': 'visible'});
             this.sandbox.dom.height(this.overlay.$content, '');
+            this.setSlidesHeight();
         },
 
         /**

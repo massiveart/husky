@@ -31,10 +31,14 @@
  * @params {String} [options.titleName] name of title-key
  * @params {String} [options.resultKey] The name of the array in the responded _embedded
  * @params {Number} [options.visibleRatio] minimum ratio of how much of a column must be visible to display the navigation
- * @params {String} [options.sizeRelativeTo] dom object which is used to calculate height / width (default $window)
+ * @params {Boolean} [options.responsive] If true the resize listener gets initialized. Otherwise the column navigation just takes up 100 % of the height and width
  * @params {Boolean} [options.showEdit] hide or display edit elements
  * @params {Boolean} [options.showEditIcon] hide or display edit icon element
  * @params {Boolean} [options.showStatus] hide or display status of elements
+ * @params {String} [options.skin] css class which gets added to the components element. Available: '', 'fixed-height-small'
+ * @params {Boolean} [options.markable] If true a node gets marked with a css class on click on the blue button
+ * @params {String} [options.markedClass] The css-class which gets set on the node if node gets marked
+ * @params {Array} [options.premarkedIds] an array of uuids of nodes which should be marked from the beginning on
  */
 define([], function() {
 
@@ -51,7 +55,7 @@ define([], function() {
             url: null,
             selected: null,
             data: null,
-            instanceName: 'undefined',
+            instanceName: '',
             hasSubName: 'hasSub',
             editIcon: 'fa-pencil',
             idName: 'id',
@@ -62,11 +66,15 @@ define([], function() {
             typeName: 'type',
             minVisibleRatio: 1 / 2,
             noPageDescription: 'public.no-pages',
+            skin: '',
             resultKey: 'nodes',
-            sizeRelativeTo: null,
+            responsive: true,
             showEdit: true,
             showEditIcon: true,
-            showStatus: true
+            showStatus: true,
+            premarkedIds: [],
+            markedClass: 'marked',
+            markable: false
         },
 
         DISPLAYEDCOLUMNS = 2, // number of displayed columns with content
@@ -78,17 +86,38 @@ define([], function() {
         eventNamespace = 'husky.column-navigation.',
 
         /**
+         * @event husky.column-navigation.initialized
+         * @description thrown after initialization has finished
+         */
+        INITIALIZED = function() {
+            return createEventName.call(this, 'initialized');
+        },
+
+        /**
          * @event husky.column-navigation.loaded
          * @description the component has loaded everything successfully and will be rendered
          */
-        LOADED = eventNamespace + 'loaded',
+        LOADED = function() {
+            return createEventName.call(this, 'loaded');
+        },
 
         /**
          * @event husky.column-navigation.selected
          * @description an navigation element has been selected
          * @param {Object} selected object
          */
-        SELECTED = eventNamespace + 'selected',
+        SELECTED = function() {
+            return createEventName.call(this, 'selected');
+        },
+
+        /**
+         * @event husky.column-navigation.get-selected
+         * @description listens on and passes the selected nodes to a given callback
+         * @param {Function} callback to pass the ids to
+         */
+        GET_SELECTED = function() {
+            return createEventName.call(this, 'get-selected');
+        },
 
         /**
          * @event husky.column-navigation.settings
@@ -96,43 +125,64 @@ define([], function() {
          * @param {Object} selected column navigation object
          * @param {Object} clicked dropdown item
          */
-        SETTINGS = eventNamespace + 'settings',
+        SETTINGS = function() {
+            return createEventName.call(this, 'settings');
+        },
 
         /**
          * @event husky.column-navigation.add
          * @description the add button has been clicked
          * @param {Object} parent object from active column level
          */
-        ADD = eventNamespace + 'add',
+        ADD = function() {
+            return createEventName.call(this, 'add');
+        },
 
         /**
          * @event husky.column-navigation.edit
          * @description the edit icon has been clicked
          * @param {Object} clicked object
          */
-        EDIT = eventNamespace + 'edit',
+        EDIT = function() {
+            return createEventName.call(this, 'edit');
+        },
+
+        /**
+         * @event husky.column-navigation.unmark
+         * @description listens on and unmarks a node with a given id
+         * @param {Number|String} the id of the node to unmark
+         */
+        UNMARK = function() {
+            return createEventName.call(this, 'unmark');
+        },
 
         /**
          * @event husky.column-navigation.get-breadcrumb
          * @description the breadcrumb will be returned
          * @param {Function} callback function which will process the breadcrumb objects
          */
-        BREADCRUMB = eventNamespace + 'get-breadcrumb',
+        BREADCRUMB = function() {
+            return createEventName.call(this, 'get-breadcrumb');
+        },
 
         /**
          * @event husky.column-navigation.resize
          * @description the element will be resized
          * @param {Function} callback function which will process the breadcrumb objects
          */
-        RESIZE = eventNamespace + 'resize';
+        RESIZE = function() {
+            return createEventName.call(this, 'resize');
+        },
+
+        /** returns normalized event names */
+        createEventName = function(postFix) {
+            return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
+        };
 
     return {
 
         initialize: function() {
             this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
-
-            // default relative
-            this.options.sizeRelativeTo = this.options.sizeRelativeTo || this.sandbox.dom.$window;
 
             this.$element = this.sandbox.dom.$(this.options.el);
             this.$selectedElement = null;
@@ -144,12 +194,16 @@ define([], function() {
 
             this.columns = [];
             this.selected = [];
+            // array with all marked ids
+            this.marked = this.options.premarkedIds || [];
 
             this.render();
             this.startBigLoader();
             this.load(this.options.url, 0);
             this.bindDOMEvents();
             this.bindCustomEvents();
+
+            this.sandbox.emit(INITIALIZED.call(this));
         },
 
         /**
@@ -158,13 +212,17 @@ define([], function() {
         render: function() {
             var $add, $settings, $wrapper;
 
+            this.sandbox.dom.addClass(this.$el, 'husky-column-navigation');
+            if (!!this.options.skin) {
+                this.sandbox.dom.addClass(this.$el, this.options.skin);
+            }
+
             $wrapper = this.sandbox.dom.$(this.template.wrapper.call(this));
             this.sandbox.dom.append(this.$element, $wrapper);
 
             // navigation container
 
             this.$columnContainer = this.sandbox.dom.$(this.template.columnContainer.call(this));
-            this.setContainerHeight();
             this.sandbox.dom.append($wrapper, this.$columnContainer);
 
             // options container - add and settings button
@@ -181,8 +239,10 @@ define([], function() {
                 this.sandbox.dom.append($wrapper, this.$optionsContainer);
             }
 
-            this.setContainerHeight();
-            this.setContainerMinWidth();
+            if (this.options.responsive === true) {
+                this.setContainerHeight();
+                this.setContainerMinWidth();
+            }
 
             //init dropdown for settings in options container
             if (!!this.options.data) {
@@ -225,8 +285,8 @@ define([], function() {
          * Sets the height of the container
          */
         setContainerHeight: function() {
-            var height = this.sandbox.dom.height(this.options.sizeRelativeTo),
-                top = this.sandbox.dom.offset(this.$el).top - (this.options.sizeRelativeTo !== this.sandbox.dom.$window ? this.sandbox.dom.offset(this.options.sizeRelativeTo).top : 0);
+            var height = this.sandbox.dom.height(this.sandbox.dom.$window),
+                top = this.sandbox.dom.offset(this.$el).top - (this.sandbox.dom.$window !== this.sandbox.dom.$window ? this.sandbox.dom.offset(this.sandbox.dom.$window).top : 0);
             top = top < 0 ? 0 : top;
 
             this.sandbox.dom.height(
@@ -274,7 +334,7 @@ define([], function() {
                         this.scrollIfNeeded(this.filledColumns + 1);
                         this.setOverflowClass();
                         this.showOptionsAtLast();
-                        this.sandbox.emit(LOADED);
+                        this.sandbox.emit(LOADED.call(this));
                     }.bind(this))
                     .fail(function(error) {
                         this.columnLoadStarted = false;
@@ -299,17 +359,17 @@ define([], function() {
 
             for (i = length; i > newColumn; i--) {
                 delete this.columns[i];
-                this.sandbox.dom.remove('#column-' + i);
+                this.sandbox.dom.remove('#column'+ this.options.instanceName +'-' + i);
                 this.filledColumns--;
             }
 
             // check if element in dom exists
-            tmp = this.sandbox.dom.find('#column-' + newColumn);
+            tmp = this.sandbox.dom.find('#column'+ this.options.instanceName +'-' + newColumn);
             if (tmp.length === 1) {
                 this.$addColumn = tmp[0];
             }
 
-            this.sandbox.dom.remove('#column-' + newColumn + ' li');
+            this.sandbox.dom.remove('#column'+ this.options.instanceName +'-' + newColumn + ' li');
 
         },
 
@@ -343,7 +403,7 @@ define([], function() {
                 this.setItemsTextWidth($element);
 
                 // remember which item has subitems to display a whole tree when column navigation should be restored
-                if (!!value[this.options.hasSubName] && value._embedded[this.options.resultKey].length > 0) {
+                if (!!value[this.options.hasSubName] && !! value._embedded[this.options.resultKey] && value._embedded[this.options.resultKey].length > 0) {
                     nodeWithSubNodes = value;
                     this.setElementSelected($element);
                     this.selected[newColumn] = value;
@@ -504,11 +564,17 @@ define([], function() {
             this.sandbox.dom.on(this.$el, 'click', this.editNode.bind(this), '.edit');
             this.sandbox.dom.on(this.$el, 'dblclick', this.editNode.bind(this), 'li');
 
-            this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function() {
-                this.setContainerHeight();
-                this.setContainerMaxWidth();
-                this.setOverflowClass();
-            }.bind(this));
+            this.sandbox.dom.on(this.$el, 'click', function(event) {
+                this.sandbox.dom.stopPropagation(event);
+            }.bind(this), 'input[type="checkbox"]');
+
+            if (this.options.responsive === true) {
+                this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function () {
+                    this.setContainerHeight();
+                    this.setContainerMaxWidth();
+                    this.setOverflowClass();
+                }.bind(this));
+            }
         },
 
         /**
@@ -538,15 +604,19 @@ define([], function() {
         },
 
         bindCustomEvents: function() {
-            this.sandbox.on(BREADCRUMB, this.getBreadCrumb.bind(this));
+            this.sandbox.on(BREADCRUMB.call(this), this.getBreadCrumb.bind(this));
+            this.sandbox.on(GET_SELECTED.call(this), this.getSelected.bind(this));
+            this.sandbox.on(UNMARK.call(this), this.unmark.bind(this));
 
             this.sandbox.on('husky.dropdown.' + this.options.instanceName + '.settings.dropdown.item.click', this.dropdownItemClicked.bind(this));
 
-            this.sandbox.on(RESIZE, function() {
-                this.setContainerHeight();
-                this.setContainerMaxWidth();
-                this.setOverflowClass();
-            }.bind(this));
+            if (this.options.responsive === true) {
+                this.sandbox.on(RESIZE.call(this), function () {
+                    this.setContainerHeight();
+                    this.setContainerMaxWidth();
+                    this.setOverflowClass();
+                }.bind(this));
+            }
         },
 
         dropdownItemClicked: function(item) {
@@ -554,8 +624,35 @@ define([], function() {
                 if (!!item.callback) {
                     item.callback(item, this.selected[this.lastHoveredColumn]);
                 } else {
-                    this.sandbox.emit(SETTINGS, item, this.selected[this.lastHoveredColumn]);
+                    this.sandbox.emit(SETTINGS.call(this), item, this.selected[this.lastHoveredColumn]);
                 }
+            }
+        },
+
+        /**
+         * Unmarks a node for a given id
+         * @param id {Number|String} the id of the node to unmark
+         */
+        unmark: function(id) {
+            var $element = this.$find('li[data-id="'+ id +'"]');
+            if (!!$element.length) {
+                this.sandbox.dom.removeClass($element, this.options.markedClass);
+                this.marked.splice(this.marked.indexOf(id), 1);
+            }
+        },
+
+        /**
+         * Passes all selected nodes to a callback
+         * @param callback {Function} the callback to pass the selected nodes to
+         */
+        getSelected: function(callback) {
+            var $checkboxes = this.$find('input[type="checkbox"]:checked'),
+                checkedNodes = [],
+                $column, $node;
+            if ($checkboxes.length !== 0) {
+                this.sandbox.util.foreach($checkboxes, function($checkbox) {
+                    //TODO: foreach checkbox get the node object and create the checked Nodes array
+                }.bind(this));
             }
         },
 
@@ -668,7 +765,7 @@ define([], function() {
 
                 if (this.sandbox.dom.hasClass(this.$selectedElement, 'selected')) { // is element already selected
 
-                    this.sandbox.emit(SELECTED, selectedItem);
+                    this.sandbox.emit(SELECTED.call(this), selectedItem);
 
                 } else { // element not selected
 
@@ -687,7 +784,7 @@ define([], function() {
 
                         // add element to breadcrumb
                         this.selected[column] = selectedItem;
-                        this.sandbox.emit(SELECTED, selectedItem);
+                        this.sandbox.emit(SELECTED.call(this), selectedItem);
 
                         if (!!selectedItem[this.options.hasSubName]) {
                             this.load(selectedItem._links.children, column);
@@ -714,18 +811,20 @@ define([], function() {
          * Sets the width of the container equal to the width of its columns
          */
         alignWithColumnsWidth: function() {
-            var $columnNavi = this.sandbox.dom.find('.column-navigation', this.$el);
-            this.setContainerMaxWidth();
+            if (this.options.responsive === true) {
+                var $columnNavi = this.sandbox.dom.find('.column-navigation', this.$el);
+                this.setContainerMaxWidth();
 
-            this.sandbox.dom.width(this.$el, this.sandbox.dom.find('.column', $columnNavi).length * this.options.column.width);
+                this.sandbox.dom.width(this.$el, this.sandbox.dom.find('.column', $columnNavi).length * this.options.column.width);
+            }
         },
 
         /**
          * Sets the max width of the container
          */
         setContainerMaxWidth: function() {
-            var width = this.sandbox.dom.width(this.options.sizeRelativeTo),
-                left = (this.options.sizeRelativeTo === this.sandbox.dom.$window ? this.sandbox.dom.offset(this.$el).left : 0);
+            var width = this.sandbox.dom.width(this.sandbox.dom.$window),
+                left = (this.sandbox.dom.$window === this.sandbox.dom.$window ? this.sandbox.dom.offset(this.$el).left : 0);
 
 
             this.sandbox.dom.css(this.$el, {
@@ -763,7 +862,7 @@ define([], function() {
          * @param {Number} column
          */
         removeCurrentSelected: function(column) {
-            var $items = this.sandbox.dom.find('li', '#column-' + column);
+            var $items = this.sandbox.dom.find('li', '#column'+ this.options.instanceName +'-' + column);
 
             this.sandbox.util.each($items, function(index, $el) {
                 this.sandbox.dom.removeClass($el, 'selected');
@@ -777,7 +876,7 @@ define([], function() {
          */
         addNode: function() {
             var parent = this.selected[this.lastHoveredColumn - 1] || null;
-            this.sandbox.emit(ADD, parent);
+            this.sandbox.emit(ADD.call(this), parent);
         },
 
         /**
@@ -793,11 +892,17 @@ define([], function() {
                 $listItem = this.sandbox.dom.$(event.currentTarget);
             }
             column = this.sandbox.dom.index(this.sandbox.dom.parents(event.currentTarget, '.column'));
-            id = this.sandbox.dom.data($listItem, 'id');
+            id = this.sandbox.dom.attr($listItem, 'data-id');
             item = this.columns[column][id];
 
+            if (this.options.markable === true) {
+                this.sandbox.dom.addClass($listItem, this.options.markedClass);
+                this.marked.push(id);
+                this.setItemsTextWidth($listItem);
+            }
+
             this.sandbox.dom.stopPropagation(event);
-            this.sandbox.emit(EDIT, item);
+            this.sandbox.emit(EDIT.call(this), item);
         },
 
         /**
@@ -814,7 +919,7 @@ define([], function() {
             },
 
             column: function(columnNumber, width) {
-                return ['<div data-column="', columnNumber, '" class="column" id="column-', columnNumber, '" style="width: ', width, 'px"><ul></ul></div>'].join('');
+                return ['<div data-column="', columnNumber, '" class="column" id="column'+ this.options.instanceName +'-', columnNumber, '" style="width: ', width, 'px"><ul></ul></div>'].join('');
             },
 
             noPage: function(description) {
@@ -826,11 +931,15 @@ define([], function() {
 
             item: function(width, data) {
 
-                var item = ['<li data-id="', data[this.options.idName], '" class="pointer">'];
+                var isMarked = (this.marked.indexOf(data[this.options.idName]) !== -1),
+                    item = ['<li data-id="', data[this.options.idName], '" class="pointer'+ ((isMarked === true) ? ' ' + this.options.markedClass : '' )+'">'];
+
+                // icons left
+                item.push('<span class="icons-left">');
+
+                item.push('<span class="fa-check pull-left markedIcon"></span>');
 
                 if (!!this.options.showStatus) {
-                    // icons left
-                    item.push('<span class="icons-left">');
                     // link
                     if (!!data[this.options.linkedName]) {
                         if (data[this.options.linkedName] === 'internal') {
