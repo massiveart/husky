@@ -719,7 +719,7 @@ define([], function() {
             }.bind(this));
             this.updateDropdown(
                     this.options.data,
-                    []
+                    this.options.preSelectedElements
                     );
         },
 
