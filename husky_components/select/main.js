@@ -369,7 +369,7 @@ define([], function() {
          * @param updateLabel
          */
         addDropdownElement: function(id, value, disabled, callback, updateLabel, checkboxVisible) {
-            checkboxVisible = typeof checkboxVisible !== 'undefined' ? checkboxVisible : true;
+            checkboxVisible = checkboxVisible !== false;
             var $item,
                 idString = (id != null) ? id.toString() : this.sandbox.util.uniqueId();
 
