@@ -9736,21 +9736,21 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 600,
+            "line": 603,
             "description": "Opens the overlay for edditing.",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 630,
+            "line": 633,
             "description": "Callback for close of overlay with ok button",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 654,
+            "line": 657,
             "description": "Merges data",
             "params": [
                 {
@@ -9767,7 +9767,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 673,
+            "line": 676,
             "description": "Bind overlay specific events",
             "params": [
                 {
@@ -9780,7 +9780,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 688,
+            "line": 691,
             "description": "Adds new item to the list or removes existing",
             "params": [
                 {
@@ -9797,7 +9797,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 707,
+            "line": 710,
             "description": "delete elements",
             "params": [
                 {
@@ -9810,14 +9810,14 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 726,
+            "line": 729,
             "description": "Deletes removed items",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 748,
+            "line": 751,
             "description": "Extracts data from dom structure",
             "params": [
                 {
@@ -9834,42 +9834,42 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 787,
+            "line": 790,
             "description": "Compares original and new data",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 809,
+            "line": 812,
             "description": "Callback for close of overlay with cancel button",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 817,
+            "line": 820,
             "description": "Render content for the overlay",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 831,
+            "line": 834,
             "description": "Adds an element",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 846,
+            "line": 849,
             "description": "Marks an element for removal",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 860,
+            "line": 863,
             "description": "Marks a row as removed",
             "params": [
                 {
@@ -9882,7 +9882,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 998,
+            "line": 1001,
             "description": "Handles the click on the dropdown label",
             "class": "Select",
             "module": "husky/components/toolbar"
@@ -13707,63 +13707,63 @@
         },
         {
             "message": "Missing item type\nOpens the overlay for edditing.",
-            "line": " husky_components/select/main.js:600"
+            "line": " husky_components/select/main.js:603"
         },
         {
             "message": "Missing item type\nCallback for close of overlay with ok button",
-            "line": " husky_components/select/main.js:630"
+            "line": " husky_components/select/main.js:633"
         },
         {
             "message": "Missing item type\nMerges data",
-            "line": " husky_components/select/main.js:654"
+            "line": " husky_components/select/main.js:657"
         },
         {
             "message": "Missing item type\nBind overlay specific events",
-            "line": " husky_components/select/main.js:673"
+            "line": " husky_components/select/main.js:676"
         },
         {
             "message": "Missing item type\nAdds new item to the list or removes existing",
-            "line": " husky_components/select/main.js:688"
+            "line": " husky_components/select/main.js:691"
         },
         {
             "message": "Missing item type\ndelete elements",
-            "line": " husky_components/select/main.js:707"
+            "line": " husky_components/select/main.js:710"
         },
         {
             "message": "Missing item type\nDeletes removed items",
-            "line": " husky_components/select/main.js:726"
+            "line": " husky_components/select/main.js:729"
         },
         {
             "message": "Missing item type\nExtracts data from dom structure",
-            "line": " husky_components/select/main.js:748"
+            "line": " husky_components/select/main.js:751"
         },
         {
             "message": "Missing item type\nCompares original and new data",
-            "line": " husky_components/select/main.js:787"
+            "line": " husky_components/select/main.js:790"
         },
         {
             "message": "Missing item type\nCallback for close of overlay with cancel button",
-            "line": " husky_components/select/main.js:809"
+            "line": " husky_components/select/main.js:812"
         },
         {
             "message": "Missing item type\nRender content for the overlay",
-            "line": " husky_components/select/main.js:817"
+            "line": " husky_components/select/main.js:820"
         },
         {
             "message": "Missing item type\nAdds an element",
-            "line": " husky_components/select/main.js:831"
+            "line": " husky_components/select/main.js:834"
         },
         {
             "message": "Missing item type\nMarks an element for removal",
-            "line": " husky_components/select/main.js:846"
+            "line": " husky_components/select/main.js:849"
         },
         {
             "message": "Missing item type\nMarks a row as removed",
-            "line": " husky_components/select/main.js:860"
+            "line": " husky_components/select/main.js:863"
         },
         {
             "message": "Missing item type\nHandles the click on the dropdown label",
-            "line": " husky_components/select/main.js:998"
+            "line": " husky_components/select/main.js:1001"
         },
         {
             "message": "Missing item type",

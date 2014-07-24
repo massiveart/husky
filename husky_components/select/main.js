@@ -548,7 +548,10 @@ define([], function() {
                         data, this.parseDataFromDom(this.domData, true));
                 this.mergedData = data.slice(0);
             }
-            this.options.preSelectedElements = preselected.map(String);
+            if (preselected !== null) {
+                this.options.preSelectedElements = preselected.map(String);
+            }
+
             this.selectedElements = [];
             this.selectedElementsValues = [];
             this.sandbox.dom.empty(this.$list);
