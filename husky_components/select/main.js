@@ -335,7 +335,11 @@ define([], function() {
             if (this.options.editable === true) {
                 this.addDivider();
                 this.addDropdownElement(constants.editableFieldKey,
-                        this.sandbox.translate(translations.editEntries)
+                        this.sandbox.translate(translations.editEntries),
+                        false,
+                        null,
+                        null,
+                        false
                         );
             }
         },
@@ -364,12 +368,21 @@ define([], function() {
          * @param callback
          * @param updateLabel
          */
-        addDropdownElement: function(id, value, disabled, callback, updateLabel) {
+        addDropdownElement: function(id, value, disabled, callback, updateLabel, checkboxVisible) {
+            checkboxVisible = checkboxVisible !== false;
             var $item,
                 idString = (id != null) ? id.toString() : this.sandbox.util.uniqueId();
 
-            if (this.options.preSelectedElements.indexOf(idString) >= 0 || this.options.preSelectedElements.indexOf(value) >= 0) {
-                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, 'checked', updateLabel));
+            if (this.options.preSelectedElements.indexOf(idString) >= 0 ||
+                    this.options.preSelectedElements.indexOf(value) >= 0) {
+                $item = this.sandbox.dom.createElement(this.template.menuElement.call(
+                            this,
+                            idString,
+                            value,
+                            'checked',
+                            updateLabel,
+                            true));
+
                 this.selectedElements.push(idString);
                 this.selectedElementsValues.push(value);
                 if (this.options.emitValues === true) {
@@ -378,7 +391,14 @@ define([], function() {
                     this.triggerPreSelect(value);
                 }
             } else {
-                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, '', updateLabel));
+                $item = this.sandbox.dom.createElement(this.template.menuElement.call(
+                            this,
+                            idString,
+                            value,
+                            '',
+                            updateLabel,
+                            checkboxVisible)
+                        );
             }
 
             // store callback if callback is set
@@ -1073,11 +1093,11 @@ define([], function() {
                     '</div>'
                 ].join('');
             },
-            menuElement: function(index, value, checked, updateLabel) {
+            menuElement: function(index, value, checked, updateLabel, checkboxVisible) {
                 var hiddenClass = '',
                     update = 'true';
 
-                if (this.options.multipleSelect === false) {
+                if (this.options.multipleSelect === false || !checkboxVisible) {
                     hiddenClass = ' hidden';
                 }
 
