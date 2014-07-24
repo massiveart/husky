@@ -531,7 +531,7 @@ define([], function() {
         revert: function() {
             this.updateDropdown(
                     this.mergedData,
-                    this.options.preSelectedElements,
+                    this.selectedElements,
                     false
                     );
         },
@@ -646,7 +646,7 @@ define([], function() {
                 var mergeData = this.mergeDomAndRequestData(changedData,
                     this.parseDataFromDom(domData, true));
                 this.options.data = mergeData.slice(0);
-                this.updateDropdown(mergeData, this.options.preSelectedElements);
+                this.updateDropdown(mergeData, this.selectedElements);
                 this.sandbox.emit(EVENT_SAVED.call(this), changedData);
             }
         },
@@ -719,7 +719,7 @@ define([], function() {
             }.bind(this));
             this.updateDropdown(
                     this.options.data,
-                    this.options.preSelectedElements
+                    this.selectedElements
                     );
         },
 

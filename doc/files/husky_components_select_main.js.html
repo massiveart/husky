@@ -493,7 +493,11 @@ define([], function() {
             if (this.options.editable === true) {
                 this.addDivider();
                 this.addDropdownElement(constants.editableFieldKey,
-                        this.sandbox.translate(translations.editEntries)
+                        this.sandbox.translate(translations.editEntries),
+                        false,
+                        null,
+                        null,
+                        false
                         );
             }
         },
@@ -522,12 +526,21 @@ define([], function() {
          * @param callback
          * @param updateLabel
          */
-        addDropdownElement: function(id, value, disabled, callback, updateLabel) {
+        addDropdownElement: function(id, value, disabled, callback, updateLabel, checkboxVisible) {
+            checkboxVisible = checkboxVisible !== false;
             var $item,
                 idString = (id != null) ? id.toString() : this.sandbox.util.uniqueId();
 
-            if (this.options.preSelectedElements.indexOf(idString) &gt;= 0 || this.options.preSelectedElements.indexOf(value) &gt;= 0) {
-                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, &#x27;checked&#x27;, updateLabel));
+            if (this.options.preSelectedElements.indexOf(idString) &gt;= 0 ||
+                    this.options.preSelectedElements.indexOf(value) &gt;= 0) {
+                $item = this.sandbox.dom.createElement(this.template.menuElement.call(
+                            this,
+                            idString,
+                            value,
+                            &#x27;checked&#x27;,
+                            updateLabel,
+                            true));
+
                 this.selectedElements.push(idString);
                 this.selectedElementsValues.push(value);
                 if (this.options.emitValues === true) {
@@ -536,7 +549,14 @@ define([], function() {
                     this.triggerPreSelect(value);
                 }
             } else {
-                $item = this.sandbox.dom.createElement(this.template.menuElement.call(this, idString, value, &#x27;&#x27;, updateLabel));
+                $item = this.sandbox.dom.createElement(this.template.menuElement.call(
+                            this,
+                            idString,
+                            value,
+                            &#x27;&#x27;,
+                            updateLabel,
+                            checkboxVisible)
+                        );
             }
 
             // store callback if callback is set
@@ -669,7 +689,7 @@ define([], function() {
         revert: function() {
             this.updateDropdown(
                     this.mergedData,
-                    this.options.preSelectedElements,
+                    this.selectedElements,
                     false
                     );
         },
@@ -784,7 +804,7 @@ define([], function() {
                 var mergeData = this.mergeDomAndRequestData(changedData,
                     this.parseDataFromDom(domData, true));
                 this.options.data = mergeData.slice(0);
-                this.updateDropdown(mergeData, this.options.preSelectedElements);
+                this.updateDropdown(mergeData, this.selectedElements);
                 this.sandbox.emit(EVENT_SAVED.call(this), changedData);
             }
         },
@@ -857,7 +877,7 @@ define([], function() {
             }.bind(this));
             this.updateDropdown(
                     this.options.data,
-                    this.options.preSelectedElements
+                    this.selectedElements
                     );
         },
 
@@ -1231,11 +1251,11 @@ define([], function() {
                     &#x27;&lt;/div&gt;&#x27;
                 ].join(&#x27;&#x27;);
             },
-            menuElement: function(index, value, checked, updateLabel) {
+            menuElement: function(index, value, checked, updateLabel, checkboxVisible) {
                 var hiddenClass = &#x27;&#x27;,
                     update = &#x27;true&#x27;;
 
-                if (this.options.multipleSelect === false) {
+                if (this.options.multipleSelect === false || !checkboxVisible) {
                     hiddenClass = &#x27; hidden&#x27;;
                 }
 
