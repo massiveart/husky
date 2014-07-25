@@ -1,3 +1,4 @@
+
 /*
  * This file is part of the Husky Validation.
  *
@@ -640,14 +641,11 @@ define('form/validation',[
         // define validation interface
             result = {
                 validate: function(force) {
-                    var result = true, focus = false;
+                    var result = true;
                     // validate each element
                     $.each(form.elements, function(key, element) {
                         if (!element.validate(force)) {
-                            if (!focus) {
-                                element.$el.focus();
-                                focus = true;
-                            }
+                            // TODO: scroll to first invalid element you can't use $.focus because an element mustn't be an input
                             result = false;
                         }
                     });
@@ -2785,4 +2783,3 @@ define('validator/regex',[
     };
 
 });
-

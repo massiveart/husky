@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -16337,6 +16338,7 @@ define('aura/ext/components', [],function() {
   };
 });
 
+
 /*
  * This file is part of the Husky Validation.
  *
@@ -16979,14 +16981,11 @@ define('form/validation',[
         // define validation interface
             result = {
                 validate: function(force) {
-                    var result = true, focus = false;
+                    var result = true;
                     // validate each element
                     $.each(form.elements, function(key, element) {
                         if (!element.validate(force)) {
-                            if (!focus) {
-                                element.$el.focus();
-                                focus = true;
-                            }
+                            // TODO: scroll to first invalid element you can't use $.focus because an element mustn't be an input
                             result = false;
                         }
                     });
@@ -17196,10 +17195,10 @@ define('form/mapper',[
                         collection = this.templates[propertyName].collection;
 
                     if (collection.element.getType().canAdd(tpl.id)) {
-                        that.appendChildren.call(this, collection.$element, tpl).then(function() {
+                        that.appendChildren.call(this, collection.$element, tpl).then(function($newElement) {
                             // set counter
                             $('#current-counter-' + propertyName).text(collection.element.getType().getChildren(tpl.id).length);
-                            that.emitAddEvent(propertyName, null);
+                            that.emitAddEvent(propertyName, $newElement);
                         }.bind(this));
                     }
                     that.checkFullAndEmpty.call(this, propertyName);
@@ -19124,7 +19123,6 @@ define('validator/regex',[
     };
 
 });
-
 
 define("husky-validation", function(){});
 
@@ -47888,4 +47886,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-
