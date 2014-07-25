@@ -17195,10 +17195,10 @@ define('form/mapper',[
                         collection = this.templates[propertyName].collection;
 
                     if (collection.element.getType().canAdd(tpl.id)) {
-                        that.appendChildren.call(this, collection.$element, tpl).then(function($newElement) {
+                        that.appendChildren.call(this, collection.$element, tpl).then(function() {
                             // set counter
                             $('#current-counter-' + propertyName).text(collection.element.getType().getChildren(tpl.id).length);
-                            that.emitAddEvent(propertyName, $newElement);
+                            that.emitAddEvent(propertyName, null);
                         }.bind(this));
                     }
                     that.checkFullAndEmpty.call(this, propertyName);
