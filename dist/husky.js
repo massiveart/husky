@@ -31375,10 +31375,20 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * Preselects items because of passed options via javascript and the dom
              */
             preSelectItems: function() {
-                var dataSelected = this.sandbox.dom.data(this.$el, 'selected');
+                var dataSelected = this.sandbox.dom.data(this.$el, 'selected'),
+                    convertedArray = [];
                 if (!!dataSelected) {
                     this.options.preselected = this.sandbox.util.union(this.options.preselected, dataSelected);
                 }
+                // convert to an array which only contains ids as integers
+                this.sandbox.util.foreach(this.options.preselected, function(element) {
+                    if (typeof element === 'object') {
+                        convertedArray.push(element.id);
+                    } else {
+                        convertedArray.push(element);
+                    }
+                }.bind(this));
+                this.options.preselected = convertedArray;
                 this.setSelectedItems(this.options.preselected);
                 this.setSelectedItemsToData();
             },
