@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -28439,6 +28438,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             showHead: true,
             hideChildrenAtBeginning: true,
             openChildId: null,
+            highlightSelected: false,
             icons: []
         },
 
@@ -28471,6 +28471,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             childrenIndentClass: 'child-indent',
             childrenLoadedClass: 'children-loaded',
             noHeadClass: 'no-head',
+            selected: 'selected',
             childrenIndentPx: 25 //px
         },
 
@@ -28723,6 +28724,13 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 this.emitRowClickedEvent.bind(this), 'tbody tr'
             );
 
+            if(!!this.options.highlightSelected){
+                this.sandbox.dom.on(
+                    this.$tableContainer, 'click',
+                    this.highlightRow.bind(this), 'tbody tr'
+                );
+            }
+
             // calls the icon-callback on click on an icon
             this.sandbox.dom.on(
                 this.$tableContainer, 'click',
@@ -28769,6 +28777,21 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                     this.prepareChildrenLoad.bind(this), 'tbody tr'
                 );
             }
+        },
+
+        /**
+         * Highlights clicked row and removes highlight from other rows
+         * @param event
+         */
+        highlightRow: function(event){
+           var $row = event.currentTarget,
+            $rows = this.sandbox.dom.find('tbody tr',this.$el);
+
+            this.sandbox.util.each($rows, function(index,$el){
+                this.sandbox.dom.removeClass($el,constants.selected);
+            }.bind(this));
+
+            this.sandbox.dom.addClass($row,constants.selected);
         },
 
         /**
@@ -47886,3 +47909,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+

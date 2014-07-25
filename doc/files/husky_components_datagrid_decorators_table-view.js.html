@@ -215,6 +215,7 @@ define(function() {
             showHead: true,
             hideChildrenAtBeginning: true,
             openChildId: null,
+            highlightSelected: false,
             icons: []
         },
 
@@ -247,6 +248,7 @@ define(function() {
             childrenIndentClass: &#x27;child-indent&#x27;,
             childrenLoadedClass: &#x27;children-loaded&#x27;,
             noHeadClass: &#x27;no-head&#x27;,
+            selected: &#x27;selected&#x27;,
             childrenIndentPx: 25 //px
         },
 
@@ -499,6 +501,13 @@ define(function() {
                 this.emitRowClickedEvent.bind(this), &#x27;tbody tr&#x27;
             );
 
+            if(!!this.options.highlightSelected){
+                this.sandbox.dom.on(
+                    this.$tableContainer, &#x27;click&#x27;,
+                    this.highlightRow.bind(this), &#x27;tbody tr&#x27;
+                );
+            }
+
             // calls the icon-callback on click on an icon
             this.sandbox.dom.on(
                 this.$tableContainer, &#x27;click&#x27;,
@@ -545,6 +554,21 @@ define(function() {
                     this.prepareChildrenLoad.bind(this), &#x27;tbody tr&#x27;
                 );
             }
+        },
+
+        /**
+         * Highlights clicked row and removes highlight from other rows
+         * @param event
+         */
+        highlightRow: function(event){
+           var $row = event.currentTarget,
+            $rows = this.sandbox.dom.find(&#x27;tbody tr&#x27;,this.$el);
+
+            this.sandbox.util.each($rows, function(index,$el){
+                this.sandbox.dom.removeClass($el,constants.selected);
+            }.bind(this));
+
+            this.sandbox.dom.addClass($row,constants.selected);
         },
 
         /**
