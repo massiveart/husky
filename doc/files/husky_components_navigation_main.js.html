@@ -700,7 +700,11 @@ define(function() {
 
                 if (this.sandbox.dom.hasClass(match, &#x27;js-navigation-sub-item&#x27;)) {
                     parent = this.sandbox.dom.closest(match, &#x27;.navigation-items&#x27;);
-                    this.toggleItems(null, parent);
+
+                    // toggle parent only when it is not expaneded
+                    if(!this.sandbox.dom.hasClass(parent, &#x27;is-expanded&#x27;)){
+                        this.toggleItems(null, parent);
+                    }
                 }
                 this.selectSubItem(null, match, false);
                 this.checkBottomHit(null, match);

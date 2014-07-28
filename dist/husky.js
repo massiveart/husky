@@ -27592,7 +27592,11 @@ define('__component__$navigation@husky',[],function() {
 
                 if (this.sandbox.dom.hasClass(match, 'js-navigation-sub-item')) {
                     parent = this.sandbox.dom.closest(match, '.navigation-items');
-                    this.toggleItems(null, parent);
+
+                    // toggle parent only when it is not expaneded
+                    if(!this.sandbox.dom.hasClass(parent, 'is-expanded')){
+                        this.toggleItems(null, parent);
+                    }
                 }
                 this.selectSubItem(null, match, false);
                 this.checkBottomHit(null, match);
@@ -28720,7 +28724,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
             // emits an event when a table row gets clicked
             this.sandbox.dom.on(
-                this.$tableContainer, 'click',
+                this.$tableContainer, 'dblclick',
                 this.emitRowClickedEvent.bind(this), 'tbody tr'
             );
 

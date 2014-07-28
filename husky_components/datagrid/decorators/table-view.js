@@ -339,7 +339,7 @@ define(function() {
 
             // emits an event when a table row gets clicked
             this.sandbox.dom.on(
-                this.$tableContainer, 'click',
+                this.$tableContainer, 'dblclick',
                 this.emitRowClickedEvent.bind(this), 'tbody tr'
             );
 
