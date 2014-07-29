@@ -405,7 +405,6 @@ define(function() {
          * @param event
          */
         highlightRow: function(event) {
-
             var $row = event.currentTarget,
                 id = this.sandbox.dom.$(event.currentTarget).data('id'),
                 $selectedRow = this.sandbox.dom.find(
@@ -415,12 +414,6 @@ define(function() {
 
             this.sandbox.dom.removeClass($selectedRow, constants.selected);
             this.sandbox.dom.addClass($row, constants.selected);
-
-            if (!!id) {
-                this.datagrid.emitItemHighlightedEvent.call(this.datagrid, id);
-            } else {
-                this.datagrid.emitItemHighlightedEvent.call(this.datagrid, event);
-            }
         },
 
         /**

@@ -237,15 +237,6 @@
             },
 
             /**
-             * raised when item was highlighted
-             * @event husky.datagrid.item.highlighted
-             * @param {String} id of item that was highlighted
-             */
-            ITEM_HIGHLIGHTED = function() {
-                return this.createEventName('item.highlighted');
-            },
-
-            /**
              * raised when item is selected
              * @event husky.datagrid.item.select
              * @param {String} if of selected item
@@ -1148,14 +1139,6 @@
              */
             emitItemClickedEvent: function(id) {
                 this.sandbox.emit(ITEM_CLICK.call(this), id);
-            },
-
-            /**
-             * Emits the item highlighted event
-             * @param id {Number|String} id to emit with the event
-             */
-            emitItemHighlightedEvent: function(id) {
-                this.sandbox.emit(ITEM_HIGHLIGHTED.call(this), id);
             },
 
             /**
