@@ -31,6 +31,7 @@ require(['lib/husky'], function(Husky) {
                             selectItem: {
                                 type: 'checkbox'
                             },
+                            dblClick: true,
                             className: "myClass",
                             removeRow: true,
                             editable: true,
