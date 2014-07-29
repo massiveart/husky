@@ -344,13 +344,6 @@ define(function() {
                 this.emitRowClickedEvent.bind(this), 'tbody tr'
             );
 
-            if(!!this.options.highlightSelected){
-                this.sandbox.dom.on(
-                    this.$tableContainer, 'click',
-                    this.highlightRow.bind(this), 'tbody tr'
-                );
-            }
-
             // calls the icon-callback on click on an icon
             this.sandbox.dom.on(
                 this.$tableContainer, 'click',
@@ -406,7 +399,6 @@ define(function() {
          */
         highlightRow: function(event) {
             var $row = event.currentTarget,
-                id = this.sandbox.dom.$(event.currentTarget).data('id'),
                 $selectedRow = this.sandbox.dom.find(
                         'tbody tr.' + constants.selected,
                     this.$el
@@ -435,6 +427,11 @@ define(function() {
             if (!this.rowClicked) {
                 this.rowClicked = true;
                 var id = this.sandbox.dom.$(event.currentTarget).data('id');
+
+                if(!!this.options.highlightSelected){
+                    this.highlightRow(event);
+                }
+
                 if (!!id) {
                     this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
                 } else {

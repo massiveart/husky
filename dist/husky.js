@@ -28729,13 +28729,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 this.emitRowClickedEvent.bind(this), 'tbody tr'
             );
 
-            if(!!this.options.highlightSelected){
-                this.sandbox.dom.on(
-                    this.$tableContainer, 'click',
-                    this.highlightRow.bind(this), 'tbody tr'
-                );
-            }
-
             // calls the icon-callback on click on an icon
             this.sandbox.dom.on(
                 this.$tableContainer, 'click',
@@ -28790,9 +28783,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param event
          */
         highlightRow: function(event) {
-
             var $row = event.currentTarget,
-                id = this.sandbox.dom.$(event.currentTarget).data('id'),
                 $selectedRow = this.sandbox.dom.find(
                         'tbody tr.' + constants.selected,
                     this.$el
@@ -28800,12 +28791,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
             this.sandbox.dom.removeClass($selectedRow, constants.selected);
             this.sandbox.dom.addClass($row, constants.selected);
-
-            if (!!id) {
-                this.datagrid.emitItemHighlightedEvent.call(this.datagrid, id);
-            } else {
-                this.datagrid.emitItemHighlightedEvent.call(this.datagrid, event);
-            }
         },
 
         /**
@@ -28827,6 +28812,11 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (!this.rowClicked) {
                 this.rowClicked = true;
                 var id = this.sandbox.dom.$(event.currentTarget).data('id');
+
+                if(!!this.options.highlightSelected){
+                    this.highlightRow(event);
+                }
+
                 if (!!id) {
                     this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
                 } else {
@@ -31064,15 +31054,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             },
 
             /**
-             * raised when item was highlighted
-             * @event husky.datagrid.item.highlighted
-             * @param {String} id of item that was highlighted
-             */
-            ITEM_HIGHLIGHTED = function() {
-                return this.createEventName('item.highlighted');
-            },
-
-            /**
              * raised when item is selected
              * @event husky.datagrid.item.select
              * @param {String} if of selected item
@@ -31975,14 +31956,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              */
             emitItemClickedEvent: function(id) {
                 this.sandbox.emit(ITEM_CLICK.call(this), id);
-            },
-
-            /**
-             * Emits the item highlighted event
-             * @param id {Number|String} id to emit with the event
-             */
-            emitItemHighlightedEvent: function(id) {
-                this.sandbox.emit(ITEM_HIGHLIGHTED.call(this), id);
             },
 
             /**

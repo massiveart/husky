@@ -502,13 +502,6 @@ define(function() {
                 this.emitRowClickedEvent.bind(this), &#x27;tbody tr&#x27;
             );
 
-            if(!!this.options.highlightSelected){
-                this.sandbox.dom.on(
-                    this.$tableContainer, &#x27;click&#x27;,
-                    this.highlightRow.bind(this), &#x27;tbody tr&#x27;
-                );
-            }
-
             // calls the icon-callback on click on an icon
             this.sandbox.dom.on(
                 this.$tableContainer, &#x27;click&#x27;,
@@ -563,9 +556,7 @@ define(function() {
          * @param event
          */
         highlightRow: function(event) {
-
             var $row = event.currentTarget,
-                id = this.sandbox.dom.$(event.currentTarget).data(&#x27;id&#x27;),
                 $selectedRow = this.sandbox.dom.find(
                         &#x27;tbody tr.&#x27; + constants.selected,
                     this.$el
@@ -573,12 +564,6 @@ define(function() {
 
             this.sandbox.dom.removeClass($selectedRow, constants.selected);
             this.sandbox.dom.addClass($row, constants.selected);
-
-            if (!!id) {
-                this.datagrid.emitItemHighlightedEvent.call(this.datagrid, id);
-            } else {
-                this.datagrid.emitItemHighlightedEvent.call(this.datagrid, event);
-            }
         },
 
         /**
@@ -600,6 +585,11 @@ define(function() {
             if (!this.rowClicked) {
                 this.rowClicked = true;
                 var id = this.sandbox.dom.$(event.currentTarget).data(&#x27;id&#x27;);
+
+                if(!!this.options.highlightSelected){
+                    this.highlightRow(event);
+                }
+
                 if (!!id) {
                     this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
                 } else {
