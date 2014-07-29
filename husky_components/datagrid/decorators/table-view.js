@@ -428,7 +428,7 @@ define(function() {
                 this.rowClicked = true;
                 var id = this.sandbox.dom.$(event.currentTarget).data('id');
 
-                if(!!this.options.highlightSelected){
+                if (!!this.options.highlightSelected) {
                     this.highlightRow(event);
                 }
 
