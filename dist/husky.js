@@ -28411,7 +28411,6 @@ define('__component__$column-options@husky',[],function() {
  * @param {String|Number|Null} [options.openChildId] the id of the children to open all parents for. (only relevant in a child-list)
  * @param {String|Number|Null} [options.cssClass] css-class to give the the components element. (e.g. "white-box")
  * @param {Boolean} [options.highlightSelected] highlights the clicked row when selected
- * @param {Boolean} [options.dblClick] emits the clicked event only when a double click is registered
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -28445,7 +28444,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             hideChildrenAtBeginning: true,
             openChildId: null,
             highlightSelected: false,
-            dblClick: false,
             icons: []
         },
 
@@ -28726,17 +28724,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             }
 
             // emits an event when a table row gets clicked
-            if(this.options.dblClick){
-                this.sandbox.dom.on(
-                    this.$tableContainer, 'dblclick',
-                    this.emitRowClickedEvent.bind(this), 'tbody tr'
-                );
-            } else {
-                this.sandbox.dom.on(
-                    this.$tableContainer, 'click',
-                    this.emitRowClickedEvent.bind(this), 'tbody tr'
-                );
-            }
+            this.sandbox.dom.on(
+                this.$tableContainer, 'click',
+                this.emitRowClickedEvent.bind(this), 'tbody tr'
+            );
 
             if(!!this.options.highlightSelected){
                 this.sandbox.dom.on(
@@ -28799,7 +28790,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param event
          */
         highlightRow: function(event) {
+
             var $row = event.currentTarget,
+                id = this.sandbox.dom.$(event.currentTarget).data('id'),
                 $selectedRow = this.sandbox.dom.find(
                         'tbody tr.' + constants.selected,
                     this.$el
@@ -28807,6 +28800,12 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
             this.sandbox.dom.removeClass($selectedRow, constants.selected);
             this.sandbox.dom.addClass($row, constants.selected);
+
+            if (!!id) {
+                this.datagrid.emitItemHighlightedEvent.call(this.datagrid, id);
+            } else {
+                this.datagrid.emitItemHighlightedEvent.call(this.datagrid, event);
+            }
         },
 
         /**
@@ -28825,7 +28824,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * Emits the row-clicked event
          */
         emitRowClickedEvent: function(event) {
-
             if (!this.rowClicked) {
                 this.rowClicked = true;
                 var id = this.sandbox.dom.$(event.currentTarget).data('id');
@@ -28835,7 +28833,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                     this.datagrid.emitItemClickedEvent.call(this.datagrid, event);
                 }
 
-                // set row clicked back to prevent double click
+                // set row clicked back to prevent multiple emits on double click
                 setTimeout(function(){
                     this.rowClicked = false;
                 }.bind(this), 500);
@@ -29235,10 +29233,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * Adds configured icons to a cell
          * @param $container {Object} the dom-object to append the icons to
          * @param column {String} the identifier of the column
-         * @param row {Object} the row object
          * @
          */
-        addIconsToCell: function($container, column, row) {
+        addIconsToCell: function($container, column) {
             if (!!this.options.icons) {
                 var i, length, $icon;
 
@@ -29886,7 +29883,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         openAllParents: function(id) {
             var $child = this.sandbox.dom.find('tr[data-id="'+ id +'"]', this.$tableContainer),
                 parentId = this.sandbox.dom.data($child, 'parent'),
-                $parent = this.sandbox.dom.find('tr[data-id="'+ parentId +'"]', this.$tableContainer)
+                $parent = this.sandbox.dom.find('tr[data-id="'+ parentId +'"]', this.$tableContainer);
             if (!!parentId && !!$parent) {
                 if (!!this.sandbox.dom.data($parent, 'parent')) {
                     this.openAllParents(parentId);
@@ -31067,6 +31064,15 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             },
 
             /**
+             * raised when item was highlighted
+             * @event husky.datagrid.item.highlighted
+             * @param {String} id of item that was highlighted
+             */
+            ITEM_HIGHLIGHTED = function() {
+                return this.createEventName('item.highlighted');
+            },
+
+            /**
              * raised when item is selected
              * @event husky.datagrid.item.select
              * @param {String} if of selected item
@@ -31969,6 +31975,14 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              */
             emitItemClickedEvent: function(id) {
                 this.sandbox.emit(ITEM_CLICK.call(this), id);
+            },
+
+            /**
+             * Emits the item highlighted event
+             * @param id {Number|String} id to emit with the event
+             */
+            emitItemHighlightedEvent: function(id) {
+                this.sandbox.emit(ITEM_HIGHLIGHTED.call(this), id);
             },
 
             /**
