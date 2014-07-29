@@ -28410,6 +28410,8 @@ define('__component__$column-options@husky',[],function() {
  * @param {Boolean} [options.hideChildrenAtBeginning] if true children get hidden, if all children are loaded at the beginning
  * @param {String|Number|Null} [options.openChildId] the id of the children to open all parents for. (only relevant in a child-list)
  * @param {String|Number|Null} [options.cssClass] css-class to give the the components element. (e.g. "white-box")
+ * @param {Boolean} [options.highlightSelected] highlights the clicked row when selected
+ * @param {Boolean} [options.dblClick] emits the clicked event only when a double click is registered
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -28443,6 +28445,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             hideChildrenAtBeginning: true,
             openChildId: null,
             highlightSelected: false,
+            dblClick: false,
             icons: []
         },
 
@@ -28723,10 +28726,17 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             }
 
             // emits an event when a table row gets clicked
-            this.sandbox.dom.on(
-                this.$tableContainer, 'dblclick',
-                this.emitRowClickedEvent.bind(this), 'tbody tr'
-            );
+            if(this.options.dblClick){
+                this.sandbox.dom.on(
+                    this.$tableContainer, 'dblclick',
+                    this.emitRowClickedEvent.bind(this), 'tbody tr'
+                );
+            } else {
+                this.sandbox.dom.on(
+                    this.$tableContainer, 'click',
+                    this.emitRowClickedEvent.bind(this), 'tbody tr'
+                );
+            }
 
             if(!!this.options.highlightSelected){
                 this.sandbox.dom.on(
@@ -28784,18 +28794,18 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         },
 
         /**
-         * Highlights clicked row and removes highlight from other rows
+         * Highlights clicked row and removes highlighting from the previously
+         * highlighted
          * @param event
          */
         highlightRow: function(event) {
             var $row = event.currentTarget,
                 $selectedRow = this.sandbox.dom.find(
-                    'tbody tr.' + constants.selected,
+                        'tbody tr.' + constants.selected,
                     this.$el
                 );
 
-            this.sandbox.dom.removeClass($selectedRow, constants.
-                selected);
+            this.sandbox.dom.removeClass($selectedRow, constants.selected);
             this.sandbox.dom.addClass($row, constants.selected);
         },
 

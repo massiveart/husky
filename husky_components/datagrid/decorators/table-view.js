@@ -415,6 +415,7 @@ define(function() {
          */
         highlightRow: function(event) {
             var $row = event.currentTarget,
+                id = this.sandbox.dom.$(event.currentTarget).data('id'),
                 $selectedRow = this.sandbox.dom.find(
                         'tbody tr.' + constants.selected,
                     this.$el
@@ -422,6 +423,12 @@ define(function() {
 
             this.sandbox.dom.removeClass($selectedRow, constants.selected);
             this.sandbox.dom.addClass($row, constants.selected);
+
+            if (!!id) {
+                this.datagrid.emitItemHighlightedEvent.call(this.datagrid, id);
+            } else {
+                this.datagrid.emitItemHighlightedEvent.call(this.datagrid, event);
+            }
         },
 
         /**
@@ -450,7 +457,7 @@ define(function() {
                     this.datagrid.emitItemClickedEvent.call(this.datagrid, event);
                 }
 
-                // set row clicked back to prevent double click
+                // set row clicked back to prevent multiple emits on double click
                 setTimeout(function(){
                     this.rowClicked = false;
                 }.bind(this), 500);
