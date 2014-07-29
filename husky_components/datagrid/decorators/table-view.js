@@ -25,6 +25,7 @@
  * @param {Boolean} [options.hideChildrenAtBeginning] if true children get hidden, if all children are loaded at the beginning
  * @param {String|Number|Null} [options.openChildId] the id of the children to open all parents for. (only relevant in a child-list)
  * @param {String|Number|Null} [options.cssClass] css-class to give the the components element. (e.g. "white-box")
+ * @param {Boolean} [options.highlightSelected] highlights the clicked row when selected
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -57,6 +58,7 @@ define(function() {
             showHead: true,
             hideChildrenAtBeginning: true,
             openChildId: null,
+            highlightSelected: false,
             icons: []
         },
 
@@ -89,6 +91,7 @@ define(function() {
             childrenIndentClass: 'child-indent',
             childrenLoadedClass: 'children-loaded',
             noHeadClass: 'no-head',
+            selected: 'selected',
             childrenIndentPx: 25 //px
         },
 
@@ -390,6 +393,22 @@ define(function() {
         },
 
         /**
+         * Highlights clicked row and removes highlighting from the previously
+         * highlighted
+         * @param event
+         */
+        highlightRow: function(event) {
+            var $row = event.currentTarget,
+                $selectedRow = this.sandbox.dom.find(
+                        'tbody tr.' + constants.selected,
+                    this.$el
+                );
+
+            this.sandbox.dom.removeClass($selectedRow, constants.selected);
+            this.sandbox.dom.addClass($row, constants.selected);
+        },
+
+        /**
          * emits radio-clicked event and stops event propagation
          */
         radioClickedCallback: function(event) {
@@ -405,11 +424,24 @@ define(function() {
          * Emits the row-clicked event
          */
         emitRowClickedEvent: function(event) {
-            var id = this.sandbox.dom.$(event.currentTarget).data('id');
-            if (!!id) {
-                this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
-            } else {
-                this.datagrid.emitItemClickedEvent.call(this.datagrid, event);
+            if (!this.rowClicked) {
+                this.rowClicked = true;
+                var id = this.sandbox.dom.$(event.currentTarget).data('id');
+
+                if (!!this.options.highlightSelected) {
+                    this.highlightRow(event);
+                }
+
+                if (!!id) {
+                    this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+                } else {
+                    this.datagrid.emitItemClickedEvent.call(this.datagrid, event);
+                }
+
+                // set row clicked back to prevent multiple emits on double click
+                setTimeout(function(){
+                    this.rowClicked = false;
+                }.bind(this), 500);
             }
         },
 
@@ -429,6 +461,7 @@ define(function() {
             this.topTabIndex = this.options.startTabIndex || 50000;
             this.contentMarginRight = 0;
             this.contentPaddings = 0;
+            this.rowClicked = false;
         },
 
         /**
@@ -805,10 +838,9 @@ define(function() {
          * Adds configured icons to a cell
          * @param $container {Object} the dom-object to append the icons to
          * @param column {String} the identifier of the column
-         * @param row {Object} the row object
          * @
          */
-        addIconsToCell: function($container, column, row) {
+        addIconsToCell: function($container, column) {
             if (!!this.options.icons) {
                 var i, length, $icon;
 
@@ -1456,7 +1488,7 @@ define(function() {
         openAllParents: function(id) {
             var $child = this.sandbox.dom.find('tr[data-id="'+ id +'"]', this.$tableContainer),
                 parentId = this.sandbox.dom.data($child, 'parent'),
-                $parent = this.sandbox.dom.find('tr[data-id="'+ parentId +'"]', this.$tableContainer)
+                $parent = this.sandbox.dom.find('tr[data-id="'+ parentId +'"]', this.$tableContainer);
             if (!!parentId && !!$parent) {
                 if (!!this.sandbox.dom.data($parent, 'parent')) {
                     this.openAllParents(parentId);

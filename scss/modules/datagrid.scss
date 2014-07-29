@@ -80,6 +80,11 @@
           opacity: 1;
         }
       }
+
+      tr.selected{
+          background: $white;
+      }
+
       .grid-icon {
         width: 30px;
         height: 20px;
