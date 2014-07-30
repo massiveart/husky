@@ -797,7 +797,7 @@ define(function() {
                     if (!!row.parent) {
                         $parent = this.sandbox.dom.find(&#x27;tr[data-id=&quot;&#x27; + row.parent + &#x27;&quot;]&#x27;, $container);
                     }
-                    if (!!$parent.length) {
+                    if (!!$parent &amp;&amp; !!$parent.length) {
                         this.insertChild($row, $parent, row.parent, this.options.hideChildrenAtBeginning);
                     } else {
                         this.sandbox.dom.append($container, $row);
