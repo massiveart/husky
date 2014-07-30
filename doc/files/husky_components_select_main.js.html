@@ -193,6 +193,8 @@
  * @param {Boolean} [options.editable] If true the menu items are editable
  * @param {Object} [options.translations] translation keys for &#x27;addItem&#x27; and &#x27;editEntries&#x27;
  * @param {String} [options.direction] &#x27;bottom&#x27;, &#x27;top&#x27;, or &#x27;auto&#x27; pop up direction of the drop down.
+ * @param {String} [options.resultKey] key in result set - default is empty and the _embedded property of the result set will be taken
+ * @param {String} [options.url] url to load data from
  */
 
 define([], function() {
@@ -225,6 +227,7 @@ define([], function() {
             repeatSelect: false,
             editable: false,
             direction: &#x27;auto&#x27;,
+            resultKey: &#x27;&#x27;,
             translations: translations
         },
 
@@ -256,8 +259,8 @@ define([], function() {
                     &#x27;&lt;div class=&quot;grid-row type-row&quot; data-id=&quot;&#x27;, item.id ,&#x27;&quot;&gt;&#x27;,
                     &#x27;    &lt;div class=&quot;grid-col-8 pull-left&quot;&gt;&lt;input class=&quot;form-element&quot; type=&quot;text&quot; value=&quot;&#x27;, item[valueField],&#x27;&quot;/&gt;&lt;/div&gt;&#x27;,
                     &#x27;    &lt;div class=&quot;grid-col-2 pull-right&quot;&gt;&lt;div class=&quot;remove-row btn gray-dark fit only-icon pull-right&quot;&gt;&lt;div class=&quot;fa-minus-circle&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&#x27;,
-                    &#x27;&lt;/div&gt;&#x27;,
-                ].join(&#x27;&#x27;)
+                    &#x27;&lt;/div&gt;&#x27;
+                ].join(&#x27;&#x27;);
             },
             addOverlaySkeleton: function() {
                 return [
@@ -323,13 +326,7 @@ define([], function() {
             EVENT_DISABLE = function() {
             return getEventName.call(this, &#x27;disable&#x27;);
         },
-        /**
-         * used for making the menu items editable
-         * @event husky.select[.INSTANCE_NAME].edit
-         */
-            EVENT_EDIT = function() {
-            return getEventName.call(this, &#x27;edit&#x27;);
-        },
+
         /**
          * used for toggling enabled/disabled dropdown menu
          * @event husky.select[.INSTANCE_NAME].toggle
@@ -408,9 +405,6 @@ define([], function() {
             this.sandbox.logger.log(&#x27;initialize&#x27;, this);
             this.options = this.sandbox.util.extend({}, defaults, this.options);
 
-            // Used as a fallback to revert to the last committed data
-            this.mergedData = this.options.data.slice(0);
-
             // if deselectfield is set to true, set it to default value
             if (!!this.options.deselectField &amp;&amp; this.options.deselectField.toString() === &#x27;true&#x27;) {
                 this.options.deselectField = constants.deselectFieldDefaultValue;
@@ -420,6 +414,9 @@ define([], function() {
             this.selectedElements = [];
             this.selectedElementsValues = [];
             this.dropdownVisible = false;
+
+            // Used as a fallback to revert to the last committed data
+            this.mergedData = null;
 
             // when preselected elements is not set via options look in data-attribute
             if(!this.options.preSelectedElements || this.options.preSelectedElements.length === 0) {
@@ -434,8 +431,38 @@ define([], function() {
                 }
             }
 
-            this.render();
-            this.sandbox.emit(EVENT_INITIALIZED.call(this));
+            if (this.options.url) {
+                this.loadEntries(this.options.url);
+            } else if (!!this.options.data) {
+                this.mergedData = this.options.data.slice(0);
+                this.render();
+                this.sandbox.emit(EVENT_INITIALIZED.call(this));
+            } else {
+                this.sandbox.logger.warn(&#x27;Neither data nor url defined!&#x27;);
+            }
+        },
+
+        /**
+         * Loads entries from url
+         * @param url
+         */
+        loadEntries: function(url) {
+            this.sandbox.util.load(url)
+                .then(function(response) {
+
+                    if (!!this.options.resultKey) {
+                        this.options.data = response._embedded[this.options.resultKey];
+                    } else {
+                        this.options.data = response._embedded;
+                    }
+
+                    this.mergedData = this.options.data.slice(0);
+                    this.render();
+                    this.sandbox.emit(EVENT_INITIALIZED.call(this));
+                }.bind(this))
+                .fail(function(request, message, error) {
+                    this.sandbox.logger.warn(request, message, error);
+                }.bind(this));
         },
 
         render: function() {
@@ -778,7 +805,7 @@ define([], function() {
                     instanceName: &#x27;husky-select&#x27;,
                     title: this.sandbox.translate(&#x27;public.edit-entries&#x27;),
                     closeCallback: function() {
-                        this.onCloseWithCancel()
+                        this.onCloseWithCancel();
                     }.bind(this),
                     okCallback: function(data) {
                         this.onCloseWithOk(data);
@@ -799,12 +826,13 @@ define([], function() {
             }
         },
 
-        saveNewEditedItemsAndClose: function(domData, method) {
+        saveNewEditedItemsAndClose: function(domData) {
             var data = this.parseDataFromDom(domData),
+                mergeData,
                 changedData = this.getChangedData(data);
 
             if (changedData.length &gt; 0) {
-                var mergeData = this.mergeDomAndRequestData(changedData,
+                 mergeData = this.mergeDomAndRequestData(changedData,
                     this.parseDataFromDom(domData, true));
                 this.options.data = mergeData.slice(0);
                 this.updateDropdown(mergeData, this.selectedElements);
@@ -979,8 +1007,6 @@ define([], function() {
          * Render content for the overlay
          */
         renderOverlayContent: function() {
-            var data = [];
-
             return this.sandbox.dom.createElement(this.sandbox.util.template(
                     templates.addOverlaySkeleton.call(this),
                     {
@@ -992,7 +1018,7 @@ define([], function() {
         /**
          * Adds an element
          */
-        addElement: function(event) {
+        addElement: function() {
             var $row = this.sandbox.dom.createElement(
                         templates.addOverlayRow.call(
                             this,
@@ -1037,7 +1063,7 @@ define([], function() {
             updateLabel = this.sandbox.dom.attr(event.currentTarget, &#x27;data-update-label&#x27;);
 
             // Edit button was pressed
-            if (key == constants.editableFieldKey) {
+            if (key === constants.editableFieldKey) {
                 this.hideDropDown();
                 this.openEditDialog();
                 return;
