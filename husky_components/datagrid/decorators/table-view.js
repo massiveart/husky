@@ -639,7 +639,7 @@ define(function() {
                     if (!!row.parent) {
                         $parent = this.sandbox.dom.find('tr[data-id="' + row.parent + '"]', $container);
                     }
-                    if (!!$parent.length) {
+                    if (!!$parent && !!$parent.length) {
                         this.insertChild($row, $parent, row.parent, this.options.hideChildrenAtBeginning);
                     } else {
                         this.sandbox.dom.append($container, $row);
