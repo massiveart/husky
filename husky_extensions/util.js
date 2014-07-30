@@ -44,8 +44,6 @@ define(function() {
             app.core.util.load = function(url, data) {
                 var deferred = new app.sandbox.data.deferred();
 
-                app.logger.log('load', url);
-
                 app.sandbox.util.ajax({
                     url: url,
                     data: data || null,
@@ -67,8 +65,6 @@ define(function() {
 
             app.core.util.save = function(url, type, data) {
                 var deferred = new app.sandbox.data.deferred();
-
-                app.logger.log('save', url);
 
                 app.sandbox.util.ajax({
 

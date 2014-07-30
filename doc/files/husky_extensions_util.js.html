@@ -202,8 +202,6 @@ define(function() {
             app.core.util.load = function(url, data) {
                 var deferred = new app.sandbox.data.deferred();
 
-                app.logger.log(&#x27;load&#x27;, url);
-
                 app.sandbox.util.ajax({
                     url: url,
                     data: data || null,
@@ -225,8 +223,6 @@ define(function() {
 
             app.core.util.save = function(url, type, data) {
                 var deferred = new app.sandbox.data.deferred();
-
-                app.logger.log(&#x27;save&#x27;, url);
 
                 app.sandbox.util.ajax({
 
