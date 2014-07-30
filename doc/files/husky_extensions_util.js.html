@@ -209,7 +209,6 @@ define(function() {
                     data: data || null,
 
                     success: function(data, textStatus) {
-                        app.logger.log(&#x27;data loaded&#x27;, data, textStatus);
                         deferred.resolve(data, textStatus);
                     }.bind(this),
 
@@ -239,7 +238,6 @@ define(function() {
                     data: JSON.stringify(data),
 
                     success: function(data, textStatus) {
-                        app.logger.log(&#x27;data saved&#x27;, data, textStatus);
                         deferred.resolve(data, textStatus);
                     }.bind(this),
 

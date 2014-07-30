@@ -47830,7 +47830,6 @@ define('husky_extensions/util',[],function() {
                     data: data || null,
 
                     success: function(data, textStatus) {
-                        app.logger.log('data loaded', data, textStatus);
                         deferred.resolve(data, textStatus);
                     }.bind(this),
 
@@ -47860,7 +47859,6 @@ define('husky_extensions/util',[],function() {
                     data: JSON.stringify(data),
 
                     success: function(data, textStatus) {
-                        app.logger.log('data saved', data, textStatus);
                         deferred.resolve(data, textStatus);
                     }.bind(this),
 
