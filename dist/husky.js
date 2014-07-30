@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -29024,7 +29025,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                     if (!!row.parent) {
                         $parent = this.sandbox.dom.find('tr[data-id="' + row.parent + '"]', $container);
                     }
-                    if (!!$parent) {
+                    if (!!$parent.length) {
                         this.insertChild($row, $parent, row.parent, this.options.hideChildrenAtBeginning);
                     } else {
                         this.sandbox.dom.append($container, $row);
@@ -47931,4 +47932,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-
