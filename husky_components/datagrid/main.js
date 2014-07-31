@@ -4,6 +4,7 @@
  *
  * @param {Object} [options] Configuration object
  * @param {Object} [options.data] if no url is provided (some functionality like search & sort will not work)
+ * @param {String} [options.resultKey] the name of the data-array in the embedded in the response
  * @param {String} [options.defaultMeasureUnit=px] the unit that should be taken
  * @param {Boolean|String} [options.pagination=dropdown] name of the pagination to use. If false no pagination will be initialized
  * @param {String} [options.view='table'] name of the view to use
@@ -17,7 +18,8 @@
  * @param {Array} [options.preselected] preselected ids
  * @param {Boolean|String} [options.childrenPropertyName] name of the property which contains the number of children. False to indaticate that list is flat
  * @param {Boolean} [options.onlySelectLeaves] If true only the outermost children can be selected
- *
+ * @param {Boolean} [options.resizeListeners] If true a resize-listener will be instantiated, which is responsible for responsiveness
+ * @param {String|Function} [options.contentFilters] Used for filtering data at a specifig attribute / column. If defined as callback the rows value will be passed. If defined as a string, an existing filter template will be applied (see matching types)
  * @param {Array} [options.matchings] configuration array of columns if fieldsData isn't set
  * @param {String} [options.matchings.content] column title
  * @param {String} [options.matchings.width] width of column (used by the table view)
@@ -33,9 +35,8 @@
         'husky_components/datagrid/decorators/table-view',
         'husky_components/datagrid/decorators/thumbnail-view',
         'husky_components/datagrid/decorators/group-view',
-        'husky_components/datagrid/decorators/dropdown-pagination',
-        'husky_components/datagrid/decorators/showall-pagination'
-    ], function(decoratorTableView, thumbnailView, groupView, decoratorDropdownPagination, showallPagination) {
+        'husky_components/datagrid/decorators/dropdown-pagination'
+    ], function(decoratorTableView, thumbnailView, groupView, decoratorDropdownPagination) {
 
         /**
          *    Default values for options
@@ -50,17 +51,21 @@
                 paginationOptions: {
                     dropdown: {}
                 },
+                contentFilters: null,
                 sortable: true,
                 matchings: [],
                 url: null,
                 data: null,
                 instanceName: '',
                 searchInstanceName: null,
+                searchFields: [],
                 columnOptionsInstanceName: null,
                 defaultMeasureUnit: 'px',
                 preselected: [],
                 onlySelectLeaves: false,
-                childrenPropertyName: false
+                childrenPropertyName: false,
+                resizeListeners: true,
+                resultKey: 'items'
             },
 
             types = {
@@ -68,7 +73,9 @@
                 THUMBNAILS: 'thumbnails',
                 TITLE: 'title',
                 BYTES: 'bytes',
-                COUNT: 'count'
+                RADIO: 'radio',
+                COUNT: 'count',
+                TRANSLATION: 'translation'
             },
 
             decorators = {
@@ -78,9 +85,101 @@
                     group: groupView
                 },
                 paginations: {
-                    dropdown: decoratorDropdownPagination,
-                    showall: showallPagination
+                    dropdown: decoratorDropdownPagination
                 }
+            },
+
+            filters = {
+                /**
+                 * Takes bytes and returns a more readable string
+                 * @param bytes {Number}
+                 * @returns {string}
+                 */
+                bytes: function(bytes) {
+                    if (bytes === 0) {
+                        return '0 Byte';
+                    }
+                    var k = 1000,
+                        sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+                        i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
+                },
+
+                title: function(content) {
+                    return content;
+                },
+
+                /**
+                 * Brings a date into the right format
+                 * @param date {String} the date to parse
+                 * @returns {String}
+                 */
+                date: function(date) {
+                    var parsedDate = this.sandbox.date.format(date);
+                    if (parsedDate !== null) {
+                        return parsedDate;
+                    }
+                    return date;
+                },
+
+                /**
+                 * Translates a string
+                 * @param val {String} the string to translate
+                 * @returns {String}
+                 */
+                translation: function(val) {
+                   return this.sandbox.translate(val);
+                },
+
+
+                /**
+                 * Attaches a postfix to a number
+                 * @param number
+                 * @param postfix
+                 */
+                count: function(number, postfix) {
+                    return (!!postfix) ? number + ' ' + postfix : number;
+                },
+
+                /**
+                 * Takes an array of thumbnails and returns an object with url and and alt
+                 * @param thumbnails {Array} array of thumbnails
+                 * @param format {String} the format of the thumbnail
+                 * @returns {Object} with url and alt property
+                 */
+                thumbnails: function(thumbnails, format) {
+                    var thumbnail = {
+                        url: null,
+                        alt: null
+                    };
+                    if (!!thumbnails[format]) {
+                        if (typeof thumbnails[format] === 'object') {
+                            thumbnail.url = thumbnails[format].url;
+                            thumbnail.alt = thumbnails[format].alt;
+                        } else {
+                            thumbnail.url = thumbnails[format];
+                            thumbnail.alt = '';
+                        }
+                    }
+                    return thumbnail;
+                },
+
+                /**
+                 * checks for bool value and sets radio to true
+                 */
+                radio: function(content, index, columnName) {
+                    var checked = (!content) ? false : true;
+                    return this.sandbox.util.template(templates.radio, {checked: checked, radioId: index, columnName: columnName});
+                }
+            },
+
+            templates = {
+                radio: [
+                    '<div class="custom-radio custom-filter">',
+                    '   <input name="radio-<%= columnName %>-<%= radioId %>" class="" type="radio" class="form-element" <% if (checked) { print("checked")} %>/>',
+                    '   <span class="icon"></span>',
+                    '</div>'
+                ].join('')
             },
 
             namespace = 'husky.datagrid.',
@@ -88,10 +187,26 @@
         /* TRIGGERS EVENTS */
 
             /**
+             * raised after initialization has finished
+             * @event husky.datagrid.initialized
+             */
+                INITIALIZED = function() {
+                return this.createEventName('initialized');
+            },
+
+            /**
+             * raised after a view has been rendered
+             * @event husky.datagrid.initialized
+             */
+                VIEW_RENDERED = function() {
+                return this.createEventName('view.rendered');
+            },
+
+            /**
              * raised when the the current page changes
              * @event husky.datagrid.page.change
              */
-            PAGE_CHANGE = function() {
+                PAGE_CHANGE = function() {
                 return this.createEventName('page.change');
             },
 
@@ -99,7 +214,7 @@
              * raised when the data is updated
              * @event husky.datagrid.updated
              */
-            UPDATED = function() {
+                UPDATED = function() {
                 return this.createEventName('updated');
             },
 
@@ -108,7 +223,7 @@
              * @event husky.datagrid.item.deselect
              * @param {String} id of deselected item
              */
-            ITEM_DESELECT = function() {
+                ITEM_DESELECT = function() {
                 return this.createEventName('item.deselect');
             },
 
@@ -116,7 +231,7 @@
              * raised when selection of items changes
              * @event husky.datagrid.number.selections
              */
-            NUMBER_SELECTIONS = function() {
+                NUMBER_SELECTIONS = function() {
                 return this.createEventName('number.selections');
             },
 
@@ -125,7 +240,7 @@
              * @event husky.datagrid.item.click
              * @param {String} id of item that was clicked
              */
-            ITEM_CLICK = function() {
+                ITEM_CLICK = function() {
                 return this.createEventName('item.click');
             },
 
@@ -134,7 +249,7 @@
              * @event husky.datagrid.item.select
              * @param {String} if of selected item
              */
-            ITEM_SELECT = function() {
+                ITEM_SELECT = function() {
                 return this.createEventName('item.select');
             },
 
@@ -142,7 +257,7 @@
              * raised when all items get deselected via the header checkbox
              * @event husky.datagrid.all.deselect
              */
-            ALL_DESELECT = function() {
+                ALL_DESELECT = function() {
                 return this.createEventName('all.deselect');
             },
 
@@ -151,7 +266,7 @@
              * @event husky.datagrid.all.select
              * @param {Array} ids of all items that have been clicked
              */
-            ALL_SELECT = function() {
+                ALL_SELECT = function() {
                 return this.createEventName('all.select');
             },
 
@@ -160,7 +275,7 @@
              * @event husky.datagrid.data.saved
              * @param {Object} data returned
              */
-            DATA_SAVED = function() {
+                DATA_SAVED = function() {
                 return this.createEventName('updated');
             },
 
@@ -171,7 +286,7 @@
              * @param {String} error thrown
              *
              */
-            DATA_SAVE_FAILED = function() {
+                DATA_SAVE_FAILED = function() {
                 return this.createEventName('data.save.failed');
             },
 
@@ -179,10 +294,9 @@
              * raised when editable table is changed
              * @event husky.datagrid.data.save
              */
-            DATA_CHANGED = function() {
+                DATA_CHANGED = function() {
                 return this.createEventName('data.changed');
             },
-
 
         /* PROVIDED EVENTS */
 
@@ -190,7 +304,7 @@
              * raised when husky.datagrid.data.get is triggered
              * @event husky.datagrid.data.provide
              */
-            DATA_PROVIDE = function() {
+                DATA_PROVIDE = function() {
                 return this.createEventName('data.provide');
             },
 
@@ -200,7 +314,7 @@
              * @param {String} viewId The identifier of the view
              * @param {Object} Options to merge with the current view options
              */
-            CHANGE_VIEW = function() {
+                CHANGE_VIEW = function() {
                 return this.createEventName('view.change');
             },
 
@@ -209,7 +323,7 @@
              * @event husky.datagrid.pagination.change
              * @param {String} paginationId The identifier of the pagination
              */
-            CHANGE_PAGINATION = function() {
+                CHANGE_PAGINATION = function() {
                 return this.createEventName('pagination.change');
             },
 
@@ -218,7 +332,7 @@
              * @event husky.datagrid.record.add
              * @param {Object} the data of the new record
              */
-            RECORD_ADD = function() {
+                RECORD_ADD = function() {
                 return this.createEventName('record.add');
             },
 
@@ -228,7 +342,7 @@
              * @param {Object} the data of the new record
              * @param callback {Function} callback to execute after process has been finished
              */
-            RECORDS_ADD = function() {
+                RECORDS_ADD = function() {
                 return this.createEventName('records.add');
             },
 
@@ -237,7 +351,7 @@
              * @event husky.datagrid.record.remove
              * @param {String} id of the record to be removed
              */
-            RECORD_REMOVE = function() {
+                RECORD_REMOVE = function() {
                 return this.createEventName('record.remove');
             },
 
@@ -246,7 +360,7 @@
              * @event husky.datagrid.records.change
              * @param {Object|Array} the new data-record. Must at least contain an id-property. Can also be an array of data-records
              */
-            RECORDS_CHANGE = function() {
+                RECORDS_CHANGE = function() {
                 return this.createEventName('records.change');
             },
 
@@ -254,7 +368,7 @@
              * used to trigger an update of the data
              * @event husky.datagrid.update
              */
-            UPDATE = function() {
+                UPDATE = function() {
                 return this.createEventName('update');
             },
 
@@ -264,7 +378,7 @@
              * @param {String} searchField
              * @param {String} searchString
              */
-            DATA_SEARCH = function() {
+                DATA_SEARCH = function() {
                 return this.createEventName('data.search');
             },
 
@@ -272,7 +386,7 @@
              * raised when data is sorted
              * @event husky.datagrid.data.sort
              */
-            DATA_SORT = function() {
+                DATA_SORT = function() {
                 return this.createEventName('data.sort');
             },
 
@@ -281,7 +395,7 @@
              * @event husky.datagrid.url.update
              * @param {Object} url parameter : key
              */
-            URL_UPDATE = function() {
+                URL_UPDATE = function() {
                 return this.createEventName('url.update');
             },
 
@@ -289,7 +403,7 @@
              * triggers husky.datagrid.data.provide
              * @event husky.datagrid.data.get
              */
-            DATA_GET = function() {
+                DATA_GET = function() {
                 return this.createEventName('data.get');
             },
 
@@ -298,10 +412,9 @@
              * @event husky.datagrid.items.get-selected
              * @param  {Function} callback function receives array of selected items
              */
-            ITEMS_GET_SELECTED = function() {
+                ITEMS_GET_SELECTED = function() {
                 return this.createEventName('items.get-selected');
             },
-
 
         /**
          * Private Methods
@@ -316,7 +429,7 @@
              * @param {String|Null} paramValue Value of the parameter. If not set, parameter will be removed from url
              * @returns {String} updated url
              */
-            setGetParameter = function(url, paramName, paramValue) {
+                setGetParameter = function(url, paramName, paramValue) {
                 if (url.indexOf(paramName + "=") >= 0) {
                     var prefix = url.substring(0, url.indexOf(paramName + "=")),
                         suffix = url.substring(url.indexOf(paramName + "="));
@@ -341,66 +454,6 @@
                     }
                 }
                 return url;
-            },
-
-            /**
-             * Takes bytes and returns a more readable string
-             * @param bytes {Number}
-             * @returns {string}
-             */
-            parseBytes = function(bytes) {
-                if (bytes === 0) {
-                    return '0 Byte';
-                }
-                var k = 1000,
-                    sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-                    i = Math.floor(Math.log(bytes) / Math.log(k));
-                return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
-            },
-
-            /**
-             * Brings a date into the right format
-             * @param date {String} the date to parse
-             * @returns {String}
-             */
-            parseDate = function(date) {
-                var parsedDate = this.sandbox.date.format(date);
-                if (parsedDate !== null) {
-                    return parsedDate;
-                }
-                return date;
-            },
-
-            /**
-             * Attaches a postfix to a number
-             * @param number
-             * @param postfix
-             */
-            parseCount = function(number, postfix) {
-                return (!!postfix) ? number + ' ' + postfix : number;
-            },
-
-            /**
-             * Takes an array of thumbnails and returns an object with url and and alt
-             * @param thumbnails {Array} array of thumbnails
-             * @param format {String} the format of the thumbnail
-             * @returns {Object} with url and alt property
-             */
-            parseThumbnails = function(thumbnails, format) {
-                var thumbnail = {
-                    url: null,
-                    alt: null
-                };
-                if (!!thumbnails[format]) {
-                    if (typeof thumbnails[format] === 'object') {
-                    thumbnail.url = thumbnails[format].url;
-                    thumbnail.alt = thumbnails[format].alt;
-                    } else {
-                        thumbnail.url = thumbnails[format];
-                        thumbnail.alt = '';
-                    }
-                }
-                return thumbnail;
             };
 
         return {
@@ -439,6 +492,7 @@
                 this.paginationId = this.options.pagination;
 
                 this.$loader = null;
+                this.isLoading = false;
 
                 // append datagrid to html element
                 this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
@@ -454,6 +508,8 @@
 
                 // Should only be be called once
                 this.bindCustomEvents();
+
+                this.sandbox.emit(INITIALIZED.call(this));
             },
 
             /**
@@ -473,10 +529,7 @@
 
                     this.loading();
                     this.load({
-                        url: url,
-                        success: function() {
-                            this.stopLoading();
-                        }.bind(this)
+                        url: url
                     });
 
                 } else if (!!this.options.data.items) {
@@ -484,7 +537,7 @@
                     this.sandbox.logger.log('load data from array');
                     this.data = this.options.data;
 
-                    this.gridViews[this.viewId].render(this.data, this.$element);
+                    this.renderView();
                     if (!!this.paginations[this.paginationId]) {
                         this.paginations[this.paginationId].render(this.data, this.$element);
                     }
@@ -514,17 +567,17 @@
                         for (var key in matching) {
                             if (key === 'translation') {
                                 matchingObject.content = this.sandbox.translate(matching.translation);
-                            } else if (key === 'id') {
-                                matchingObject.attribute = matching.id;
+                            } else if (key === 'name') {
+                                matchingObject.attribute = matching.name;
                             } else {
                                 matchingObject[key] = matching[key];
                             }
                         }
                         // push the constructed matching to the global matchings array
                         this.matchings.push(matchingObject);
-                        this.requestFields.push(matching.id);
-                    } else if (matching.id === 'id') {
-                        this.requestFields.push(matching.id);
+                        this.requestFields.push(matching.name);
+                    } else if (matching.name === 'id') {
+                        this.requestFields.push(matching.name);
                     }
                     // always load the id (never ever even think about not loading the id)
                 }.bind(this));
@@ -534,13 +587,50 @@
              * Renders the data of the datagrid
              */
             render: function() {
-                var count = this.setSelectedItems(this.options.preselected);
-                this.sandbox.logger.log('Selected item:', count);
+                this.preSelectItems();
 
-                this.gridViews[this.viewId].render(this.data, this.$element);
+                this.renderView();
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].render(this.data, this.$element);
                 }
+            },
+
+            /**
+             * Renderes the current view
+             */
+            renderView: function() {
+                this.gridViews[this.viewId].render(this.data, this.$element);
+                this.sandbox.emit(VIEW_RENDERED.call(this));
+            },
+
+            /**
+             * Preselects items because of passed options via javascript and the dom
+             */
+            preSelectItems: function() {
+                var dataSelected = this.sandbox.dom.data(this.$el, 'selected'),
+                    convertedArray = [];
+                if (!!dataSelected) {
+                    this.options.preselected = this.sandbox.util.union(this.options.preselected, dataSelected);
+                }
+                // convert to an array which only contains ids as integers
+                this.sandbox.util.foreach(this.options.preselected, function(element) {
+                    if (typeof element === 'object') {
+                        convertedArray.push(element.id);
+                    } else {
+                        convertedArray.push(element);
+                    }
+                }.bind(this));
+                this.options.preselected = convertedArray;
+                this.setSelectedItems(this.options.preselected);
+                this.setSelectedItemsToData();
+            },
+
+            /**
+             * Sets the ids of slected records into the dom
+             */
+            setSelectedItemsToData: function() {
+                this.sandbox.dom.removeAttr(this.$el, 'data-selected');
+                this.sandbox.dom.data(this.$el, 'selected', this.getSelectedItemIds());
             },
 
             /**
@@ -560,7 +650,7 @@
              */
             rerenderView: function() {
                 this.gridViews[this.viewId].destroy();
-                this.gridViews[this.viewId].render(this.data, this.$element);
+                this.renderView();
             },
 
             /**
@@ -578,10 +668,13 @@
              * @param params url
              */
             load: function(params) {
-                this.currentUrl = params.url;
+                this.currentUrl = this.getUrl(params);
 
-                this.sandbox.util.load(this.getUrl(params), params.data)
+                this.sandbox.util.load(this.currentUrl, params.data)
                     .then(function(response) {
+                        if (this.isLoading === true) {
+                            this.stopLoading();
+                        }
                         this.destroy();
                         this.parseData(response);
                         this.render();
@@ -623,12 +716,14 @@
                 }
 
                 this.sandbox.dom.show(this.$loader);
+                this.isLoading = true;
             },
 
             /**
              * Hides the loading icon
              */
             stopLoading: function() {
+                this.isLoading = false;
                 this.sandbox.dom.hide(this.$loader);
                 this.sandbox.dom.removeClass(this.$element, 'loading');
 
@@ -653,13 +748,27 @@
              */
             parseData: function(data) {
                 this.data = {};
-                this.data.links = data._links;
-                this.data.embedded = data._embedded;
+                this.data.links = this.parseLinks(data._links);
+                this.data.embedded = data._embedded[this.options.resultKey];
                 this.data.total = data.total;
-                this.data.numberOfAll = data.numberOfAll;
                 this.data.page = data.page;
                 this.data.pages = data.pages;
-                this.data.pageSize = data.pageSize;
+                this.data.limit = data.limit;
+            },
+
+            /**
+             * Unescapes all passed links
+             * @param links {Object}
+             * @returns {Object}
+             */
+            parseLinks: function(links) {
+                var linksObj = {};
+                this.sandbox.util.each(links, function(index, link) {
+                    linksObj[index] = {
+                        href: decodeURI(link.href)
+                    };
+                }.bind(this));
+                return linksObj;
             },
 
             /**
@@ -768,7 +877,7 @@
                 var bool = true;
                 if (typeof pagination.initialize === 'undefined' ||
                     typeof pagination.render === 'undefined' ||
-                    typeof pagination.getPageSize === 'undefined' ||
+                    typeof pagination.getLimit === 'undefined' ||
                     typeof pagination.destroy === 'undefined') {
                     bool = false;
                 }
@@ -786,11 +895,11 @@
                 }
 
                 var delimiter = '?', url = params.url;
-                if (!!this.options.pagination && !!this.paginations[this.paginationId].getPageSize()) {
+                if (!!this.options.pagination && !!this.paginations[this.paginationId].getLimit()) {
                     if (params.url.indexOf('?') !== -1) {
                         delimiter = '&';
                     }
-                    url = params.url + delimiter + 'pageSize=' + this.paginations[this.paginationId].getPageSize();
+                    url = params.url + delimiter + 'limit=' + this.paginations[this.paginationId].getLimit();
                     if (params.page > 1) {
                         url += '&page=' + params.page;
                     }
@@ -819,17 +928,38 @@
              * @param content {String} the content of the cell
              * @param type {String} the columns type
              * @param argument {Number|String} argument to pass to the processor
+             * @param columnName {String} Name of the column
              * @returns {String} the manipulated content
              */
-            manipulateContent: function(content, type, argument) {
-                if (type === types.DATE) {
-                    content = parseDate.call(this, content, argument);
-                } else if (type === types.BYTES) {
-                    content = parseBytes.call(this, content, argument);
-                } else if (type === types.THUMBNAILS) {
-                    content = parseThumbnails.call(this, content, argument);
-                } else if (type === types.COUNT) {
-                    content = parseCount.call(this, content, argument);
+            manipulateContent: function(content, type, argument, columnName) {
+                if (filters.hasOwnProperty(type)) {
+                    return filters[type].call(this, content, argument, columnName);
+                }
+                return content;
+            },
+
+            /**
+             * Checks if a filter was set for specified column and processes it
+             * @param {String} attributeName name of processed attribute
+             * @param {String} content the content which is processed
+             * @param {String} [type] if no filter is set, the type is processed
+             * @param {Number|String} [argument] argument to pass to the processor
+             * @returns {String} the manipulated content
+             */
+            processContentFilter: function(attributeName, content, type, argument) {
+                // check if filter is set for current column
+                if (!!this.options.contentFilters && this.options.contentFilters.hasOwnProperty(attributeName)) {
+                    // check if filter is function or string and call filter
+                    if (typeof this.options.contentFilters[attributeName] === 'function') {
+                        return this.options.contentFilters[attributeName].call(this, content, argument);
+                    } else if (typeof this.options.contentFilters[attributeName] === 'string') {
+                        type = this.options.contentFilters[attributeName];
+                        return this.manipulateContent(content, type, argument, attributeName);
+                    }
+                }
+                // if no filter was set, check if type is set and call
+                else if (!!type) {
+                    return this.manipulateContent(content, type, argument);
                 }
                 return content;
             },
@@ -846,14 +976,18 @@
              * Binds Dom-related events
              */
             bindDOMEvents: function() {
-                this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.windowResizeListener.bind(this));
+                if (this.options.resizeListeners === true) {
+                    this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', this.windowResizeListener.bind(this));
+                }
             },
 
             /**
              * Bind custom-related events
              */
             bindCustomEvents: function() {
-                this.sandbox.on('husky.navigation.size.changed', this.windowResizeListener.bind(this));
+                if (this.options.resizeListeners === true) {
+                    this.sandbox.on('husky.navigation.size.changed', this.windowResizeListener.bind(this));
+                }
 
                 // listen for private events
                 this.sandbox.on(UPDATE.call(this), this.updateGrid.bind(this));
@@ -919,7 +1053,7 @@
              * Returns url without params
              */
             getUrlWithoutParams: function() {
-                var url = this.data.links.self;
+                var url = this.data.links.self.href;
 
                 if (url.indexOf('?') !== -1) {
                     return url.substring(0, url.indexOf('?'));
@@ -1041,6 +1175,7 @@
                 // emit events with selected data
                 this.sandbox.emit(ALL_DESELECT.call(this));
                 this.sandbox.emit(NUMBER_SELECTIONS.call(this), 0);
+                this.setSelectedItemsToData();
             },
 
             /**
@@ -1057,6 +1192,7 @@
                 // emit events with selected data
                 this.sandbox.emit(ALL_SELECT.call(this), ids);
                 this.sandbox.emit(NUMBER_SELECTIONS.call(this), ids.length);
+                this.setSelectedItemsToData();
             },
 
             /**
@@ -1117,6 +1253,7 @@
                     // emit events with selected data
                     this.sandbox.emit(ITEM_SELECT.call(this), id);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
+                    this.setSelectedItemsToData();
                     return true;
                 }
                 return false;
@@ -1134,6 +1271,7 @@
                     // emit events with selected data
                     this.sandbox.emit(ITEM_DESELECT.call(this), id);
                     this.sandbox.emit(NUMBER_SELECTIONS.call(this), this.getSelectedItemIds().length);
+                    this.setSelectedItemsToData();
                     return true;
                 }
                 return false;
@@ -1169,7 +1307,6 @@
                 this.load({
                     url: url,
                     success: function() {
-                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
@@ -1218,8 +1355,6 @@
                 for (var i = -1, length = this.data.embedded.length; ++i < length;) {
                     if (recordId === this.data.embedded[i].id) {
                         this.data.embedded.splice(i, 1);
-                        this.data.numberOfAll--;
-                        this.data.total--;
                         this.rerenderPagination();
                         return true;
                     }
@@ -1234,8 +1369,6 @@
             pushRecords: function(records) {
                 for (var i = -1, length = records.length; ++i < length;) {
                     this.data.embedded.push(records[i]);
-                    this.data.numberOfAll++;
-                    this.data.total++;
                 }
                 this.rerenderPagination();
             },
@@ -1247,8 +1380,6 @@
             unshiftRecords: function(records) {
                 for (var i = -1, length = records.length; ++i < length;) {
                     this.data.embedded.unshift(records[i]);
-                    this.data.numberOfAll++;
-                    this.data.total++;
                     this.rerenderPagination();
                 }
             },
@@ -1258,10 +1389,10 @@
              * Emits husky.datagrid.updated event on success
              * @param uri {String} Url to load the new data from
              * @param page {Number} the page to change to
-             * @param pageSize {Number} new page size. Has to be set if no Uri is passed
+             * @param limit {Number} new page size. Has to be set if no Uri is passed
              */
-            changePage: function(uri, page, pageSize) {
-                if (!!this.data.links.pagination) {
+            changePage: function(uri, page, limit) {
+                if (!!this.data.links.pagination || !!uri) {
                     var url, uriTemplate;
 
                     // if a url is passed load the data from this url
@@ -1275,14 +1406,14 @@
                             this.sandbox.logger.log("invalid page number or reached start/end!");
                             return;
                         }
-                        // if no pageSize is passed keep current pageSize
-                        if (!pageSize) {
-                            pageSize = this.data.pageSize;
+                        // if no limit is passed keep current limit
+                        if (!limit) {
+                            limit = this.data.limit;
                         }
 
                         // generate uri for loading
-                        uriTemplate = this.sandbox.uritemplate.parse(this.data.links.pagination);
-                        url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, pageSize: pageSize});
+                        uriTemplate = this.sandbox.uritemplate.parse(this.data.links.pagination.href);
+                        url = this.sandbox.uritemplate.expand(uriTemplate, {page: page, limit: limit});
                     }
 
                     this.sandbox.emit(PAGE_CHANGE.call(this), url);
@@ -1303,14 +1434,13 @@
                     this.resetSortingOptions();
 
                     this.load({
-                        url: this.data.links.self,
+                        url: this.data.links.self.href,
                         success: function() {
                             this.sandbox.emit(UPDATED.call(this));
                         }.bind(this)
                     });
                 }
             },
-
 
             /**
              * Filters fields out of the data passed to the view
@@ -1324,7 +1454,7 @@
 
                     this.filterMatchings(matchings);
 
-                    uriTemplate = this.sandbox.uritemplate.parse(this.data.links.filter);
+                    uriTemplate = this.sandbox.uritemplate.parse(this.data.links.filter.href);
                     url = this.sandbox.uritemplate.expand(uriTemplate, {fieldsList: this.requestFields.join(',')});
 
                     this.destroy();
@@ -1332,7 +1462,6 @@
                     this.load({
                         url: url,
                         success: function() {
-                            this.stopLoading();
                             this.sandbox.emit(UPDATED.call(this));
                         }.bind(this)
                     });
@@ -1345,17 +1474,17 @@
              * @param direction {String} the sort method to use 'asc' or 'desc'
              */
             sortGrid: function(attribute, direction) {
-                if (this.options.sortable === true && !!this.data.links.sortable[attribute]) {
+                if (this.options.sortable === true && !!this.data.links.sortable) {
                     var template, url;
 
                     // if passed attribute is sortable
-                    if (!!attribute && !!this.data.links.sortable[attribute]) {
+                    if (!!attribute) {
 
                         this.sort.attribute = attribute;
                         this.sort.direction = direction;
 
-                        template = this.sandbox.uritemplate.parse(this.data.links.sortable[attribute]);
-                        url = this.sandbox.uritemplate.expand(template, {sortOrder: direction});
+                        template = this.sandbox.uritemplate.parse(this.data.links.sortable.href);
+                        url = this.sandbox.uritemplate.expand(template, {sortBy: attribute, sortOrder: direction});
 
                         this.sandbox.emit(DATA_SORT.call(this));
 
@@ -1375,12 +1504,12 @@
              */
             loadChildren: function(recordId) {
                 if (!!this.data.links.children) {
-                    var template = this.sandbox.uritemplate.parse(this.data.links.children),
+                    var template = this.sandbox.uritemplate.parse(this.data.links.children.href),
                         url = this.sandbox.uritemplate.expand(template, {parentId: recordId});
 
                     this.sandbox.util.load(this.getUrl({url: url}))
                         .then(function(response) {
-                            this.addRecordsHandler(response['_embedded']);
+                            this.addRecordsHandler(response._embedded[this.options.resultKey]);
                         }.bind(this))
                         .fail(function(status, error) {
                             this.sandbox.logger.error(status, error);
@@ -1397,15 +1526,19 @@
                 if (!!this.data.links.find) {
                     var template, url;
 
-                    template = this.sandbox.uritemplate.parse(this.data.links.find);
-                    url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+                    template = this.sandbox.uritemplate.parse(this.data.links.find.href);
+
+                    if(!!searchFields) {
+                        url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: searchFields});
+                    } else {
+                        url = this.sandbox.uritemplate.expand(template, {searchString: searchString, searchFields: this.options.searchFields.join(',')});
+                    }
 
                     this.destroy();
                     this.loading();
                     this.load({
                         url: url,
                         success: function() {
-                            this.stopLoading();
                             this.sandbox.emit(UPDATED.call(this));
                         }.bind(this)
                     });

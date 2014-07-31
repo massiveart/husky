@@ -23,7 +23,7 @@ require(['lib/husky'], function(Husky) {
                     preselected: ["1", "2"],
                     paginationOptions: {
                         dropdown: {
-                            pageSize: 4
+                            limit: 4
                         }
                     },
                     viewOptions: {
@@ -38,21 +38,24 @@ require(['lib/husky'], function(Husky) {
                             addRowTop: true,
                             showHead: true, // false to hide table-head
                             //fullWidth: true, // uncomment for full-width mode
-                            contentContainer: '#content'
+                            contentContainer: '#content',
+                            highlightSelected: true
                         },
                         thumbnail: {
                         }
                     },
                     sortable: true,
                     searchInstanceName: 'test',
+                    searchFields: ['fullName'],
                     columnOptionsInstanceName: '',
                     el: '#datagrid',
                     matchings: [
                         {
                             content: 'Content 1',
                             width: "25%",
-                            id: "content1",
+                            name: "content1",
                             editable: true,
+                            sortable: true,
                             type: 'title',
                             validation: {
                                 required: true
@@ -61,8 +64,9 @@ require(['lib/husky'], function(Husky) {
                         {
                             content: 'Content 2',
                             width: "25%",
-                            id: "content2",
+                            name: "content2",
                             editable: false,
+                            sortable: true,
                             type: 'bytes',
                             validation: {
                                 required: true
@@ -71,13 +75,14 @@ require(['lib/husky'], function(Husky) {
                         {
                             content: 'Content 3',
                             width: "25%",
-                            id: "content3",
+                            name: "content3",
                             type: 'thumbnails'
                         },
                         {
                             content: 'Date',
                             width: "25%",
-                            id: 'date',
+                            sortable: true,
+                            name: 'date',
                             type: 'date'
                         }
                     ]
@@ -89,7 +94,7 @@ require(['lib/husky'], function(Husky) {
                     url: 'http://husky.lo:7878/admin/api/datagrid',
                     paginationOptions: {
                         dropdown: {
-                            pageSize: 4
+                            limit: 4
                         }
                     },
                     view: 'thumbnail',
@@ -107,8 +112,9 @@ require(['lib/husky'], function(Husky) {
                         {
                             content: 'Content 1',
                             width: "25%",
-                            id: "content1",
+                            name: "content1",
                             editable: true,
+                            sortable: true,
                             type: 'title',
                             validation: {
                                 required: true
@@ -117,8 +123,9 @@ require(['lib/husky'], function(Husky) {
                         {
                             content: 'Content 2',
                             width: "25%",
-                            id: "content2",
+                            name: "content2",
                             editable: false,
+                            sortable: true,
                             type: 'bytes',
                             validation: {
                                 required: true
@@ -127,13 +134,14 @@ require(['lib/husky'], function(Husky) {
                         {
                             content: 'Content 3',
                             width: "25%",
-                            id: "content3",
+                            name: "content3",
                             type: 'thumbnails'
                         },
                         {
                             content: 'Date',
                             width: "25%",
-                            id: 'date',
+                            sortable: true,
+                            name: 'date',
                             type: 'date'
                         }
                     ]
@@ -150,15 +158,15 @@ require(['lib/husky'], function(Husky) {
                     instanceName: 'grid-thumbnails',
                     matchings: [
                         {
-                            id: 'title',
+                            name: 'title',
                             type: 'title'
                         },
                         {
-                            id: 'mediaNumber',
+                            name: 'mediaNumber',
                             type: 'count'
                         },
                         {
-                            id: 'thumbnails',
+                            name: 'thumbnails',
                             type: 'thumbnails'
                         }
                     ]
@@ -173,6 +181,7 @@ require(['lib/husky'], function(Husky) {
                     sortable: true,
                     pagination: false,
                     childrenPropertyName: 'children',
+                    resultKey: 'categories',
                     viewOptions: {
                         table: {
                             icons: [
@@ -201,19 +210,20 @@ require(['lib/husky'], function(Husky) {
                     },
                     matchings: [
                         {
-                            id: 'name',
+                            name: 'name',
+                            sortable: true,
                             content: 'Name'
                         },
                         {
-                            id: 'id',
+                            name: 'id',
                             disabled: true
                         },
                         {
-                            id: 'children',
+                            name: 'children',
                             disabled: true
                         },
                         {
-                            id: 'parent',
+                            name: 'parent',
                             disabled: true
                         }
                     ]
@@ -229,6 +239,7 @@ require(['lib/husky'], function(Husky) {
                     pagination: false,
                     childrenPropertyName: 'children',
                     onlySelectLeaves: true,
+                    resultKey: 'categories',
                     viewOptions: {
                         table: {
                             icons: [
@@ -257,19 +268,20 @@ require(['lib/husky'], function(Husky) {
                     },
                     matchings: [
                         {
-                            id: 'name',
+                            name: 'name',
+                            sortable: true,
                             content: 'Name'
                         },
                         {
-                            id: 'id',
+                            name: 'id',
                             disabled: true
                         },
                         {
-                            id: 'children',
+                            name: 'children',
                             disabled: true
                         },
                         {
-                            id: 'parent',
+                            name: 'parent',
                             disabled: true
                         }
                     ]
@@ -284,8 +296,10 @@ require(['lib/husky'], function(Husky) {
                     sortable: true,
                     pagination: false,
                     childrenPropertyName: 'children',
+                    resultKey: 'categories',
                     viewOptions: {
                         table: {
+                            openChildId: 12,
                             hideChildrenAtBeginning: true,
                             icons: [
                                 {
@@ -313,19 +327,129 @@ require(['lib/husky'], function(Husky) {
                     },
                     matchings: [
                         {
-                            id: 'name',
+                            name: 'name',
+                            sortable: true,
                             content: 'Name'
                         },
                         {
-                            id: 'id',
+                            name: 'id',
                             disabled: true
                         },
                         {
-                            id: 'children',
+                            name: 'children',
                             disabled: true
                         },
                         {
-                            id: 'parent',
+                            name: 'parent',
+                            disabled: true
+                        }
+                    ]
+                }
+            },
+            {
+                name: 'datagrid@husky',
+                options: {
+                    url: 'http://husky.lo:7878/admin/api/datagrid/children/all',
+                    el: '#assignment-datagrid',
+                    instanceName: 'assignment-datagrid',
+                    pagination: false,
+                    childrenPropertyName: 'children',
+                    resultKey: 'categories',
+                    preselected: [1, {id: 22, name: 'Category 2.2'}, {id: 23, name: 'Category 2.2'}],
+                    viewOptions: {
+                        table: {
+                            showHead: false,
+                            cssClass: 'white-box',
+                            selectItem: {
+                                type: 'checkbox',
+                                inFirstCell: true
+                            }
+                        }
+                    },
+                    matchings: [
+                        {
+                            name: 'name',
+                            sortable: true,
+                            content: 'Name'
+                        },
+                        {
+                            name: 'id',
+                            disabled: true
+                        },
+                        {
+                            name: 'children',
+                            disabled: true
+                        },
+                        {
+                            name: 'parent',
+                            disabled: true
+                        }
+                    ]
+                }
+            },
+            {
+                name: 'datagrid@husky',
+                options: {
+                    url: 'http://husky.lo:7878/admin/api/datagrid/empty',
+                    el: '#empty-datagrid',
+                    instanceName: 'empty-datagrid',
+                    pagination: false,
+                    resultKey: 'items',
+                    viewOptions: {
+                        table: {
+                            showHead: false,
+                            cssClass: 'white-box',
+                            selectItem: {
+                                type: 'checkbox',
+                                inFirstCell: true
+                            }
+                        }
+                    },
+                    matchings: [
+                        {
+                            name: 'name',
+                            sortable: true,
+                            content: 'Name'
+                        },
+                        {
+                            name: 'id',
+                            disabled: true
+                        },
+                        {
+                            name: 'children',
+                            disabled: true
+                        },
+                        {
+                            name: 'parent',
+                            disabled: true
+                        }
+                    ]
+                }
+            },
+            {
+                name: 'datagrid@husky',
+                options: {
+                    url: 'http://husky.lo:7878/admin/api/datagrid/empty',
+                    el: '#empty-datagrid2',
+                    instanceName: 'empty-datagrid2',
+                    pagination: false,
+                    resultKey: 'items',
+                    matchings: [
+                        {
+                            name: 'name',
+                            sortable: true,
+                            content: 'Name'
+                        },
+                        {
+                            name: 'id',
+                            disabled: true
+                        },
+                        {
+                            name: 'children',
+                            disabled: true
+                        },
+                        {
+                            name: 'parent',
                             disabled: true
                         }
                     ]
@@ -420,8 +544,12 @@ require(['lib/husky'], function(Husky) {
             });
         });
 
+        $('#get-from-data').on('click', function () {
+            console.log('This ids were in the dom:', $('#assignment-datagrid').data('selected'));
+        });
+
         $('#open-category').on('click', function () {
-            app.sandbox.emit('husky.datagrid.children-grid-beginning.table.open-parents', 113)
+            app.sandbox.emit('husky.datagrid.children-grid-beginning.table.open-parents', 113);
         });
 
         $('#update-url').on('click', function() {

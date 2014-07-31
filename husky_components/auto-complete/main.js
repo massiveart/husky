@@ -19,7 +19,6 @@
  * @param {String} [options.remoteUrl] url to fetch data on input
  * @param {String} [options.getParameter] name for GET-parameter in remote query
  * @param {String} [options.valueKey] Name of value-property in suggestion
- * @param {String} [options.totalKey] Key for total-property in JSON-result
  * @param {String} [options.resultKey] Key for suggestions-array in JSON result
  * @param {object} [options.value] with name (value of the input box), id (data-id of the input box)
  * @param {String} [options.instanceName] name of the component instance
@@ -45,8 +44,7 @@ define([], function () {
             remoteUrl: '',
             getParameter: 'query',
             valueKey: 'name',
-            totalKey: 'total',
-            resultKey: '_embedded',
+            resultKey: 'countries',
             value: null,
             instanceName: 'undefined',
             noNewValues: false,
@@ -167,14 +165,13 @@ define([], function () {
 
             this._template = null;
             this.data = null;
-            this.total = 0;
             this.matched = true;
             this.matches = [];
             this.executeBlurHandler = true;
             this.excludes = this.parseExcludes(this.options.excludes);
             this.localData = {};
-            this.localData[this.options.resultKey] = this.options.localData;
-            this.localData[this.options.totalKey] = this.options.localData.length;
+            this.localData._embedded = {};
+            this.localData._embedded[this.options.resultKey] = this.options.localData;
 
             this.setTemplate();
 
@@ -194,10 +191,10 @@ define([], function () {
                 iconHTML = '<span class="fa-' + this.options.suggestionImg + ' icon"></span>';
             }
             this._template = this.sandbox.util.template('' +
-                '<div class="' + this.options.suggestionClass + '" data-id="<%= id %>">' +
+                '<div class="' + this.options.suggestionClass + '" data-id="<%= context[\'id \']%>">' +
                 '   <div class="border">' +
                 iconHTML +
-                '		<div class="text"><%= name %></div>' +
+                '		<div class="text"><%= context[this.options.valueKey] %></div>' +
                 '	</div>' +
                 '</div>');
         },
@@ -209,7 +206,7 @@ define([], function () {
         buildTemplate: function (context) {
             var domObj;
             if (this._template !== null) {
-                domObj = this.sandbox.dom.createElement(this._template(context));
+                domObj = this.sandbox.dom.createElement(this._template({context:context}));
                 if (this.isExcluded(context)) {
                     this.sandbox.dom.addClass(domObj, 'disabled');
                 }
@@ -552,14 +549,13 @@ define([], function () {
 
         /**
          * Assigns loaded data to properties
-         * @param data {object} with total and data array
+         * @param data {object} with data array
          */
         handleData: function (data) {
             if (typeof data === 'object') {
-                this.total = data[this.options.totalKey];
                 this.data = [];
 
-                this.sandbox.util.foreach(data[this.options.resultKey], function (key) {
+                this.sandbox.util.foreach(data._embedded[this.options.resultKey], function (key) {
                     if (this.isExcluded(key) === false) {
                         this.data.push(key);
                     }

@@ -39,7 +39,9 @@
  * @params {String} [options.presentAsParameter] parameter for the presentation-possibility id
  * @params {String} [options.limitResultParameter] parameter for the limit-result-value
  * @params {String} [options.idKey] key for the id in the returning JSON-result
- * @params {String} [options.resultKey] key for the data in the returning JSON-result
+ * @params {String} [options.resultKey] key for the data in the returning JSON-embedded-result
+ * @params {String} [options.tagsResultKey] key for the data in the returning JSON-embedded-result for the tags-component
+ * @params {String} [options.columnNavigationResultKey] key for the data in the returning JSON-embedded-result for the column-navigation component
  * @params {String} [options.titleKey] key for the title in the returning JSON-result
  * @params {String} [options.pathKey] key for the path in the returning JSON-result
  * @params {Boolean} [options.subFoldersDisabled] if true sub-folders overlay-item will be disabled
@@ -114,7 +116,9 @@ define([], function() {
             limitResultParameter: 'limitResult',
             limitResultDisabled: false,
             idKey: 'id',
-            resultKey: '_embedded',
+            resultKey: 'items',
+            tagsResultKey: 'tags',
+            columnNavigationResultKey: 'nodes',
             titleKey: 'title',
             pathKey: 'path',
             translations: {},
@@ -136,12 +140,12 @@ define([], function() {
 
         constants = {
             containerSelector: '.smart-content-container',
-            headerSelector: '.smart-header',
-            contentSelector: '.smart-content',
+            headerSelector: '.header',
+            contentSelector: '.content',
             sourceSelector: '.source',
-            footerClass: 'smart-footer',
+            footerClass: 'footer',
             viewTogglerClass: 'view-toggler',
-            buttonClass: 'fa-filter',
+            buttonIcon: 'fa-filter',
             includeSubSelector: '.includeSubCheck',
             categoryDDClass: 'category-dropdown',
             tagListClass: 'tag-list',
@@ -157,20 +161,22 @@ define([], function() {
         /** templates for component */
         templates = {
             skeleton: [
-                '<div class="smart-content-container form-element">',
-                '<div class="smart-header"></div>',
-                '<div class="smart-content"></div>',
+                '<div class="white-box smart-content-container form-element">',
+                '<div class="header"></div>',
+                '<div class="content"></div>',
                 '</div>'
             ].join(''),
             source: [
-                '<div class="source">',
+                '<span class="text">',
+                '<span class="source">',
                 '<span class="desc"><%= desc %></span>',
                 '<span class="val"><%= val %></span>',
-                '</div>'
+                '</span>',
+                '</span>'
             ].join(''),
             noContent: [
                 '<div class="no-content">',
-                '<span class="fa-file"></span>',
+                '<span class="fa-coffee icon"></span>',
                 '<div class="text"><%= noContentStr %></div>',
                 '</div>'
             ].join(''),
@@ -466,9 +472,9 @@ define([], function() {
         },
 
         /**
-         * Renders the source text and prepends it to the header
+         * Renders the source text and inserts it to the header
          */
-        prependSource: function() {
+        insertSource: function() {
             var desc, $element = this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent);
             this.sandbox.dom.text($element, this.sandbox.util.cropMiddle(this.overlayData.path, 30, '...'));
 
@@ -477,9 +483,9 @@ define([], function() {
                 if (this.overlayData.includeSubFolders !== false) {
                     desc += ' (' + this.sandbox.translate(this.translations.subFoldersInclusive) + '):';
                 } else {
-                    desc += ':';
+                    desc += ': ';
                 }
-                this.sandbox.dom.prepend(this.$header, _.template(templates.source)({
+                this.sandbox.dom.append(this.$header, this.sandbox.util.template(templates.source)({
                     desc: desc,
                     val: this.overlayData.title
                 }));
@@ -497,8 +503,8 @@ define([], function() {
          * Renders and appends the toggle-button
          */
         renderButton: function() {
-            this.$button = this.sandbox.dom.createElement('<a href="#"/>');
-            this.sandbox.dom.addClass(this.$button, constants.buttonClass);
+            this.$button = this.sandbox.dom.createElement('<span class="icon right border"/>');
+            this.sandbox.dom.prependClass(this.$button, constants.buttonIcon);
             this.sandbox.dom.append(this.$header, this.$button);
         },
 
@@ -611,7 +617,7 @@ define([], function() {
             this.sandbox.on(DATA_RETRIEVED.call(this), function() {
                 this.renderContent();
                 this.removeSource();
-                this.prependSource();
+                this.insertSource();
             }.bind(this));
 
             this.sandbox.on(INPUT_RETRIEVED.call(this), function() {
@@ -754,7 +760,7 @@ define([], function() {
             }.bind(this));
 
             // activate button OK when a page is selected
-            this.sandbox.on('husky.column-navigation.edit', function(item) {
+            this.sandbox.on('husky.column-navigation.smart-content'+ this.options.instanceName +'.edit', function(item) {
                 this.sandbox.emit('husky.overlay.smart-content.' + this.options.instanceName + '.slide-left');
 
                 var $element = this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent);
@@ -783,12 +789,12 @@ define([], function() {
                             el: '#column-navigation-' + this.options.instanceName + '',
                             url: url,
                             selected: this.overlayData.dataSource,
-                            noPageDescription: 'No Pages',
-                            sizeRelativeTo: '.smart-content-overlay .slide-1 .overlay-content',
-                            wrapper: {height: 100},
+                            instanceName: 'smart-content' + this.options.instanceName,
+                            responsive: false,
                             editIcon: 'fa-check',
                             showEdit: false,
-                            showStatus: false
+                            showStatus: false,
+                            resultKey: this.options.columnNavigationResultKey
                         }
                     }
                 ]
@@ -877,7 +883,8 @@ define([], function() {
                         remoteUrl: this.options.tagsAutoCompleteUrl,
                         autocomplete: (this.options.tagsAutoCompleteUrl !== ''),
                         getParameter: this.options.tagsGetParameter,
-                        noNewTags: true
+                        noNewTags: true,
+                        itemsKey: this.options.tagsResultKey
                     }
                 },
                 {
@@ -962,7 +969,7 @@ define([], function() {
                     success: function(data) {
                         this.overlayData.title = data[this.options.titleKey];
                         this.overlayData.path = data[this.options.pathKey];
-                        this.items = data[this.options.resultKey];
+                        this.items = data._embedded[this.options.resultKey];
                         this.sandbox.emit(DATA_RETRIEVED.call(this));
                     }.bind(this),
 
@@ -978,7 +985,7 @@ define([], function() {
          * event is emited on which the associeted component responses
          */
         getOverlayData: function() {
-            var categoryDef, tagsDef, sortByDef, sortMethodDef, presentAsDef;
+            var categoryDef, tagsDef, sortByDef, sortMethodDef, presentAsDef, temp;
             categoryDef = tagsDef = sortByDef = sortMethodDef = presentAsDef = this.sandbox.data.deferred();
 
             //include sub folders
@@ -992,7 +999,10 @@ define([], function() {
             );
 
             //data-source
-            this.overlayData.dataSource = this.sandbox.dom.data(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent), 'id');
+            temp = this.sandbox.dom.data(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent), 'id')
+            if (temp !== undefined) {
+                this.overlayData.dataSource = temp;
+            }
 
             //category
             this.sandbox.emit('husky.select.' + this.options.instanceName + constants.categoryDDClass + '.get-checked',

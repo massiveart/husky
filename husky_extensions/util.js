@@ -44,14 +44,11 @@ define(function() {
             app.core.util.load = function(url, data) {
                 var deferred = new app.sandbox.data.deferred();
 
-                app.logger.log('load', url);
-
                 app.sandbox.util.ajax({
                     url: url,
                     data: data || null,
 
                     success: function(data, textStatus) {
-                        app.logger.log('data loaded', data, textStatus);
                         deferred.resolve(data, textStatus);
                     }.bind(this),
 
@@ -68,8 +65,6 @@ define(function() {
             app.core.util.save = function(url, type, data) {
                 var deferred = new app.sandbox.data.deferred();
 
-                app.logger.log('save', url);
-
                 app.sandbox.util.ajax({
 
                     headers: {
@@ -81,7 +76,6 @@ define(function() {
                     data: JSON.stringify(data),
 
                     success: function(data, textStatus) {
-                        app.logger.log('data saved', data, textStatus);
                         deferred.resolve(data, textStatus);
                     }.bind(this),
 
@@ -142,6 +136,10 @@ define(function() {
 
             app.core.util.delay = function(delay, callback) {
                 return _.delay(delay, callback);
+            };
+
+            app.core.util.union = function() {
+                return _.union.apply(this, arguments);
             };
 
 			app.core.util.template = _.template;

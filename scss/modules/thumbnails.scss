@@ -44,8 +44,12 @@
         width: $imgSmallWidth;
         text-align: center;
         line-height: $thumbnailSmallHeight - 20px;
-        padding: 10px;
+        padding: 8px;
+        position: relative;
         img {
+            display: block;
+            position: relative;
+            z-index: 10;
             vertical-align: middle;
             max-width: 100%;
             max-height: 100%;
@@ -69,14 +73,25 @@
         bottom: 10px;
         display: none;
       }
+      .empty {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: $thumbnailSmallHeight;
+        line-height: $thumbnailSmallHeight;
+        z-index: 5;
+        font-size: 25px;
+        color: $grayLighter;
+      }
     }
 
     &.large {
+      border: 1px solid $grayLighter;
       width: $thumbnailLargeWidth - 3px;
       height: $thumbnailLargeHeight - 2px;
       margin-bottom: 40px;
       margin-right: 18px;
-      border: 1px solid $grayLighter;
       padding: 10px;
 
       .image {
@@ -85,7 +100,11 @@
         text-align: center;
         line-height: $imgLargeHeight;
         margin-bottom: 10px;
+        position: relative;
         img {
+          display: block;
+          position: relative;
+          z-index: 10;
           vertical-align: bottom;
           max-width: 100%;
           max-height: 100%;
@@ -105,20 +124,31 @@
         bottom: 10px;
         right: 10px;
       }
+      .empty {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 5;
+        height: $imgLargeHeight - 10px;
+        line-height: $imgLargeHeight - 10px;
+        font-size: 70px;
+        color: $grayLighter;
+      }
     }
 
     &:hover,
     &.is-selected {
       background: $white;
 
+      &.large {
+        border-color: $white;
+      }
       .checkbox {
         display: block;
       }
       .download {
         display: block;
-      }
-      &.large {
-        border-color: $white;
       }
     }
   }

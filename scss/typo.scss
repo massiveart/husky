@@ -30,7 +30,7 @@ h1 {
     margin: 10px 0 40px 0;
 
     &.bright {
-        color: $white;
+        color: $milkeyBlue;
         font-size: 24px;
         margin-bottom: 20px;
     }
@@ -108,6 +108,10 @@ h1, h2, h3, h4, h5 {
 
 .small-font {
     font-size: $smallFontSize;
+}
+
+.smaller-font {
+    font-size: $reallySmallFontSize;
 }
 
 .grey-font {

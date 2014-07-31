@@ -14,7 +14,6 @@
  * @param {Boolean} [options.addRowTop] adds row to the top of the table when add row is triggered
  * @param {Boolean} [options.startTabIndex] start index for tabindex
  * @param {String} [options.columnMinWidth] sets the minimal width of table columns
- * @param {String|Object} [options.contentContainer] the container which holds the datagrid; this options resizes the contentContainer for responsiveness
  * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
  * @param {Array} [options.excludeFields=['id']] array of fields to exclude by the view
  * @param {Boolean} [options.showHead] if TRUE head would be showed
@@ -23,7 +22,10 @@
  * @param {String} [options.icons[].column] the id of the column in which the icon should be displayed
  * @param {String} [options.icons[].align] the align of the icon. 'left' org 'right'
  * @param {Function} [options.icons.callback] a callback to execute if the icon got clicked. Gets the id of the data-record as first argument
- * @param {Function} [options.hideChildrenAtBeginning] if true children get hidden, if all children are loaded at the beginning
+ * @param {Boolean} [options.hideChildrenAtBeginning] if true children get hidden, if all children are loaded at the beginning
+ * @param {String|Number|Null} [options.openChildId] the id of the children to open all parents for. (only relevant in a child-list)
+ * @param {String|Number|Null} [options.cssClass] css-class to give the the components element. (e.g. "white-box")
+ * @param {Boolean} [options.highlightSelected] highlights the clicked row when selected
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -40,21 +42,24 @@ define(function() {
             editable: false,
             className: 'datagridcontainer',
             fullWidth: false,
-            contentContainer: null,
             removeRow: false,
             selectItem: {
                 type: 'checkbox',      // checkbox, radio button
                 inFirstCell: false
             },
+            noItemsText: 'This list is empty',
             validation: false, // TODO does not work for added rows
             validationDebug: false,
             addRowTop: true,
             startTabIndex: 99999,
             excludeFields: [''],
+            cssClass: null,
             columnMinWidth: '70px',
             thumbnailFormat: '50x50',
             showHead: true,
             hideChildrenAtBeginning: true,
+            openChildId: null,
+            highlightSelected: false,
             icons: []
         },
 
@@ -86,6 +91,8 @@ define(function() {
             noChildrenClass: 'no-children',
             childrenIndentClass: 'child-indent',
             childrenLoadedClass: 'children-loaded',
+            noHeadClass: 'no-head',
+            selected: 'selected',
             childrenIndentPx: 25 //px
         },
 
@@ -127,6 +134,13 @@ define(function() {
                 '<span class="icon"></span>',
                 '</div>',
                 '</td>'
+            ].join(''),
+
+            empty: [
+                '<div class="empty-list">',
+                '   <div class="fa-coffee icon"></div>',
+                '   <span><%= text %></span>',
+                '</div>'
             ].join('')
         },
 
@@ -145,6 +159,16 @@ define(function() {
          */
         OPEN_PARENTS = function() {
             return this.datagrid.createEventName.call(this.datagrid, 'table.open-parents');
+        },
+
+        /**
+         * triggered when a radio button inside the datagrid is clicked
+         * @event husky.datagrid.table.open-child
+         * @param {Number|String} id The id of the data-record to open the parents for
+         * @param {String} columnName column name
+         */
+        RADIO_SELECTED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, 'radio.selected');
         },
 
         /**
@@ -209,6 +233,7 @@ define(function() {
          * Method to render data in table view
          */
         render: function(data, $container) {
+            var selected = null;
             this.data = data;
             this.$el = $container;
 
@@ -221,8 +246,15 @@ define(function() {
                 this.sandbox.dom.addClass(this.$el, constants.fullWidthClass);
             }
 
+            // add custom-css class
+            if (!!this.options.cssClass) {
+                this.sandbox.dom.addClass(this.$el, this.options.cssClass);
+            }
+
             this.bindDomEvents();
-            this.onResize();
+            if (this.datagrid.options.resizeListeners === true) {
+                this.onResize();
+            }
 
             // initialize validation
             if (!!this.options.validation) {
@@ -230,6 +262,17 @@ define(function() {
             }
 
             this.setHeaderClasses();
+
+            // try to open all parents for a child if configured
+            if (!!this.options.openChildId) {
+                this.openAllParents(this.options.openChildId);
+                this.options.openChildId = null;
+            }
+            // try to open all parents for selected records
+            selected = this.datagrid.getSelectedItemIds.call(this.datagrid);
+            this.sandbox.util.foreach(selected, function(recordId) {
+                this.openAllParents(recordId);
+            }.bind(this));
 
             this.rendered = true;
         },
@@ -239,14 +282,18 @@ define(function() {
          */
         destroy: function() {
             this.unbindDomEvents();
-            this.sandbox.stop(this.sandbox.dom.find('*', this.$tableContainer));
+            //this.sandbox.stop(this.sandbox.dom.find('*', this.$tableContainer));
             // remove full-width class if configured
             if (this.options.fullWidth === true) {
                 this.sandbox.dom.removeClass(this.$el, constants.fullWidthClass);
             }
+            // remove configured css-class
+            if (!!this.options.cssClass) {
+                this.sandbox.dom.removeClass(this.options.cssClass);
+            }
             // remove inline-styles
             this.sandbox.dom.removeAttr(this.$el, 'style');
-            this.sandbox.dom.remove(this.$tableContainer);
+            this.sandbox.dom.empty(this.$el);
         },
 
         /**
@@ -311,6 +358,12 @@ define(function() {
                 this.callIconCallback.bind(this), 'tr .grid-icon'
             );
 
+            // calls the radio-clicked event and stops further event-propagation
+            this.sandbox.dom.on(
+                this.sandbox.dom.find('.custom-radio.custom-filter',this.$tableContainer), 'click',
+                this.radioClickedCallback.bind(this)
+            );
+
             this.sandbox.dom.on(this.$tableContainer, 'click', function(event) {
                 this.sandbox.dom.stopPropagation(event);
             }.bind(this));
@@ -348,14 +401,55 @@ define(function() {
         },
 
         /**
+         * Highlights clicked row and removes highlighting from the previously
+         * highlighted
+         * @param event
+         */
+        highlightRow: function(event) {
+            var $row = event.currentTarget,
+                $selectedRow = this.sandbox.dom.find(
+                        'tbody tr.' + constants.selected,
+                    this.$el
+                );
+
+            this.sandbox.dom.removeClass($selectedRow, constants.selected);
+            this.sandbox.dom.addClass($row, constants.selected);
+        },
+
+        /**
+         * emits radio-clicked event and stops event propagation
+         */
+        radioClickedCallback: function(event) {
+            var parentTr = this.sandbox.dom.closest(event.currentTarget, 'tr'),
+                parentTd = this.sandbox.dom.closest(event.currentTarget, 'td'),
+                id = this.sandbox.dom.data(parentTr, 'id'),
+                field = this.sandbox.dom.data(parentTd, 'field');
+            this.sandbox.emit(RADIO_SELECTED.call(this), id, field);
+            event.stopPropagation();
+        },
+
+        /**
          * Emits the row-clicked event
          */
         emitRowClickedEvent: function(event) {
-            var id = this.sandbox.dom.$(event.currentTarget).data('id');
-            if (!!id) {
-                this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
-            } else {
-                this.datagrid.emitItemClickedEvent.call(this.datagrid, event);
+            if (!this.rowClicked) {
+                this.rowClicked = true;
+                var id = this.sandbox.dom.$(event.currentTarget).data('id');
+
+                if (!!this.options.highlightSelected) {
+                    this.highlightRow(event);
+                }
+
+                if (!!id) {
+                    this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+                } else {
+                    this.datagrid.emitItemClickedEvent.call(this.datagrid, event);
+                }
+
+                // set row clicked back to prevent multiple emits on double click
+                setTimeout(function(){
+                    this.rowClicked = false;
+                }.bind(this), 500);
             }
         },
 
@@ -373,21 +467,9 @@ define(function() {
             this.errorInRow = [];
             this.bottomTabIndex = this.options.startTabIndex || 49999;
             this.topTabIndex = this.options.startTabIndex || 50000;
-
-            // initialize variables for needed for responsivness
-            if (!!this.options.contentContainer) {
-                if (this.sandbox.dom.css(this.options.contentContainer, 'max-width') === 'none') {
-                    this.originalMaxWidth = null;
-                } else {
-                    this.originalMaxWidth = this.datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'max-width')).number;
-                }
-                this.contentMarginRight = this.datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'margin-right')).number;
-                this.contentPaddings = this.datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-right')).number;
-                this.contentPaddings += this.datagrid.getNumberAndUnit(this.sandbox.dom.css(this.options.contentContainer, 'padding-left')).number;
-            } else {
-                this.contentMarginRight = 0;
-                this.contentPaddings = 0;
-            }
+            this.contentMarginRight = 0;
+            this.contentPaddings = 0;
+            this.rowClicked = false;
         },
 
         /**
@@ -421,9 +503,13 @@ define(function() {
             this.$table = $table = this.sandbox.dom.createElement('<table' + (!!this.options.validationDebug ? 'data-debug="true"' : '' ) + '/>');
 
             if (!!this.data.head || !!this.datagrid.matchings) {
-                $thead = this.sandbox.dom.createElement('<thead style="' + (!this.options.showHead ? 'display:none;' : '' ) + '"/>');
+                $thead = this.sandbox.dom.createElement('<thead/>');
                 this.sandbox.dom.append($thead, this.prepareTableHead());
                 this.sandbox.dom.append($table, $thead);
+            }
+
+            if (this.options.showHead === false) {
+                this.sandbox.dom.addClass(this.$tableContainer, constants.noHeadClass);
             }
 
             if (!!this.data.embedded) {
@@ -455,7 +541,7 @@ define(function() {
          */
 
         prepareTableHead: function() {
-            var tblColumns, tblCellClass, headData, widthValues, checkboxValues, dataAttribute, isSortable,
+            var tblColumns, tblCellClass, headData, widthValues, dataAttribute,
                 tblColumnStyle, minWidth, count = 0;
 
             tblColumns = [];
@@ -484,26 +570,16 @@ define(function() {
 
             this.sandbox.util.foreach(headData, function(column) {
                 if (this.options.excludeFields.indexOf(column.attribute) < 0) {
-                    isSortable = false;
-
-                    if (!!this.datagrid.data.links && !!this.data.links.sortable) {
-                        //is column sortable - check with received sort-links
-                        this.sandbox.util.each(this.data.links.sortable, function(index) {
-                            if (index === column.attribute) {
-                                isSortable = true;
-                                return false;
-                            }
-                        }.bind(this));
-                    }
 
                     // calculate width
                     tblColumnStyle = [];
+                    tblCellClass = '';
                     if (column.width) {
                         minWidth = column.width;
                     } else if (column.minWidth) {
                         minWidth = column.minWidth;
                     } else {
-                        minWidth = getTextWidth.call(this, column.content, [], isSortable);
+                        minWidth = getTextWidth.call(this, column.content, [], column.sortable);
                         minWidth = (minWidth > this.datagrid.getNumberAndUnit(this.options.columnMinWidth).number) ? minWidth + 'px' : this.options.columnMinWidth;
 
                     }
@@ -537,7 +613,7 @@ define(function() {
                     }
 
                     // add html to table header cell if sortable
-                    if (!!isSortable) {
+                    if (!!column.sortable) {
                         dataAttribute = ' data-attribute="' + column.attribute + '"';
                         tblCellClass += ((!!column.class) ? ' ' + column.class + ' ' + constants.sortableClass : ' ' + constants.sortableClass + '');
                         tblColumns.push('<th class="' + tblCellClass + '" style="' + tblColumnStyle.join(';') + '" ' + dataAttribute + '>' + column.content + '<span></span></th>');
@@ -564,19 +640,23 @@ define(function() {
         prepareTableRows: function($container) {
             var $row, $parent;
 
-            if (!!this.data.embedded) {
-                this.data.embedded.forEach(function(row) {
+            if (!!this.data.embedded && this.data.embedded.length > 0) {
+                this.sandbox.util.foreach(this.data.embedded, function(row) {
                     $parent = null;
                     $row = this.prepareTableRow(row, false);
                     if (!!row.parent) {
                         $parent = this.sandbox.dom.find('tr[data-id="' + row.parent + '"]', $container);
                     }
-                    if (!!$parent) {
+                    if (!!$parent && !!$parent.length) {
                         this.insertChild($row, $parent, row.parent, this.options.hideChildrenAtBeginning);
                     } else {
                         this.sandbox.dom.append($container, $row);
                     }
                 }.bind(this));
+            } else {
+                this.sandbox.dom.append(this.$el, this.sandbox.util.template(templates.empty)({
+                    text: this.sandbox.translate(this.options.noItemsText)
+                }));
             }
         },
 
@@ -706,13 +786,11 @@ define(function() {
                 tblCellStyle = 'style="max-width:' + this.datagrid.matchings[index].minWidth + '"';
 
                 // call the type manipulate to manipulate the content of the cell
-                if (!!type) {
-                    if (type === this.datagrid.types.THUMBNAILS) {
-                        tblCellContent = this.datagrid.manipulateContent(tblCellContent, type, this.options.thumbnailFormat);
-                        tblCellContent = '<img alt="' + tblCellContent[constants.thumbAltKey] + '" src="' + tblCellContent[constants.thumbSrcKey] + '"/>';
-                    } else {
-                        tblCellContent = this.datagrid.manipulateContent(tblCellContent, type);
-                    }
+                if (!!type && type === this.datagrid.types.THUMBNAILS) {
+                    tblCellContent = this.datagrid.manipulateContent(tblCellContent, type, this.options.thumbnailFormat);
+                    tblCellContent = '<img alt="' + tblCellContent[constants.thumbAltKey] + '" src="' + tblCellContent[constants.thumbSrcKey] + '"/>';
+                } else {
+                    tblCellContent = this.datagrid.processContentFilter(key, tblCellContent, type, index);
                 }
 
                 if (!!editable) {
@@ -772,10 +850,9 @@ define(function() {
          * Adds configured icons to a cell
          * @param $container {Object} the dom-object to append the icons to
          * @param column {String} the identifier of the column
-         * @param row {Object} the row object
          * @
          */
-        addIconsToCell: function($container, column, row) {
+        addIconsToCell: function($container, column) {
             if (!!this.options.icons) {
                 var i, length, $icon;
 
@@ -812,6 +889,7 @@ define(function() {
          */
         addRecord: function(row) {
             var $row, $firstInputField, $checkbox, $parent;
+            this.removeEmptyListElement();
             // check for other element types when implemented
             $row = this.sandbox.dom.$(this.prepareTableRow(row, true));
 
@@ -1202,7 +1280,6 @@ define(function() {
         onResize: function() {
             var finalWidth,
                 contentPaddings = 0,
-                content = !!this.options.contentContainer ? this.options.contentContainer : this.$el,
                 tableWidth = this.sandbox.dom.width(this.$table),
                 tableOffset = this.sandbox.dom.offset(this.$table),
                 contentWidth = this.sandbox.dom.width(content),
@@ -1211,13 +1288,6 @@ define(function() {
                 originalMaxWidth = contentWidth;
 
             tableOffset.right = tableOffset.left + tableWidth;
-
-
-            if (!!this.options.contentContainer && !!this.originalMaxWidth) {
-                // get original max-width and right margin
-                originalMaxWidth = this.originalMaxWidth;
-                contentPaddings = this.contentPaddings;
-            }
 
             // if table is greater than max content width
             if (tableWidth > originalMaxWidth - contentPaddings && contentWidth < windowWidth - tableOffset.left) {
@@ -1243,18 +1313,6 @@ define(function() {
             // width is not allowed to be smaller than the width of content
             if (finalWidth < contentWidth) {
                 finalWidth = contentWidth;
-            }
-
-            // if contentContainer is set, adapt maximum size
-            if (!!this.options.contentContainer) {
-                if (this.options.fullWidth === true) {
-                    this.sandbox.dom.css(this.options.contentContainer, 'max-width', finalWidth + contentPaddings);
-                }
-                finalWidth = this.sandbox.dom.width(this.options.contentContainer);
-                if (!overlaps) {
-                    // if table does not overlap border, set content to original width
-                    this.sandbox.dom.css(this.options.contentContainer, 'max-width', '');
-                }
             }
 
             // now set width
@@ -1443,7 +1501,7 @@ define(function() {
         openAllParents: function(id) {
             var $child = this.sandbox.dom.find('tr[data-id="'+ id +'"]', this.$tableContainer),
                 parentId = this.sandbox.dom.data($child, 'parent'),
-                $parent = this.sandbox.dom.find('tr[data-id="'+ parentId +'"]', this.$tableContainer)
+                $parent = this.sandbox.dom.find('tr[data-id="'+ parentId +'"]', this.$tableContainer);
             if (!!parentId && !!$parent) {
                 if (!!this.sandbox.dom.data($parent, 'parent')) {
                     this.openAllParents(parentId);
@@ -1517,6 +1575,13 @@ define(function() {
 
             // delegate sorting to datagrid
             this.datagrid.sortGrid.call(this.datagrid, attribute, direction);
-        }
+        },
+
+        /**
+         * Removes the dom-element which indicates the list as empty
+         */
+        removeEmptyListElement: function() {
+            this.sandbox.dom.remove(this.sandbox.dom.find('.empty-list', this.$el));
+        },
     };
 });

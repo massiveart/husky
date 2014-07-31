@@ -1,24 +1,27 @@
 {
     "_links": {
-        "self": "http://husky.lo:7878/admin/api/datagrid/actualchildren?parent=5"
-    },
-    "_embedded": [
-        {
-            "id": 51,
-            "name": "Category 5.1",
-            "children": 0,
-            "parent": 5
-        },
-        {
-            "id": 52,
-            "name": "Category 5.2",
-            "children": 0,
-            "parent": 5
+        "self": {
+            "href": "http://husky.lo:7878/admin/api/datagrid/actualchildren?parent=5"
         }
-    ],
+    },
+    "_embedded": {
+        "categories": [
+            {
+                "id": 51,
+                "name": "Category 5.1",
+                "children": 0,
+                "parent": 5
+            },
+            {
+                "id": 52,
+                "name": "Category 5.2",
+                "children": 0,
+                "parent": 5
+            }
+        ]
+    },
     "total": 2,
-    "numberOfAll": 2,
     "pages": 1,
     "page": 1,
-    "pageSize": 2
+    "limit": 2
 }

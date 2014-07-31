@@ -60,6 +60,7 @@ define([], function() {
             delete config.initializedCallback;
             delete config.baseUrl;
             delete config.el;
+            delete config.property;
             delete config.name;
             delete config.ref;
             delete config._ref;

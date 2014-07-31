@@ -1,53 +1,66 @@
 {
     "_links": {
-        "self": "http://husky.lo:7878/admin/api/datagrid?pageSize=4",
-        "first": "http://husky.lo:7878/admin/api/datagrid?page=1&pageSize=4",
-        "last": "http://husky.lo:7878/admin/api/datagrid?page=3&pageSize=4",
-        "next": "http://husky.lo:7878/admin/api/datagrid?page=2&pageSize=4",
-        "all": "http://husky.lo:7878/admin/api/datagrid/all",
-        "filter": "http://husky.lo:7878/admin/api/datagrid?fields={fieldsList}",
-        "pagination": "http://husky.lo:7878/admin/api/datagrid?page={page}&pageSize={pageSize}",
-        "find": "http://husky.lo:7878/admin/api/datagrid/search?pageSize=4&search={searchString}{&searchFields}",
+        "self": {
+            "href": "http://husky.lo:7878/admin/api/datagrid?pageSize=4"
+        },
+        "first": {
+            "href": "http://husky.lo:7878/admin/api/datagrid?page=1&pageSize=4"
+        },
+        "last": {
+            "href": "http://husky.lo:7878/admin/api/datagrid?page=3&pageSize=4"
+        },
+        "next": {
+            "href": "http://husky.lo:7878/admin/api/datagrid?page=2&pageSize=4"
+        },
+        "filter": {
+            "href": "http://husky.lo:7878/admin/api/datagrid?fields={fieldsList}"
+        },
+        "pagination": {
+            "href": "http://husky.lo:7878/admin/api/datagrid?page={page}&pageSize={pageSize}"
+        },
+        "find": {
+            "href": "http://husky.lo:7878/admin/api/datagrid/search?pageSize=4&search={searchString}{&searchFields}"
+        },
         "sortable": {
-            "content1": "http://husky.lo:7878/admin/api/datagrid/sort?page=1&pageSize=4&sortBy=content1&sortOrder={sortOrder}",
-            "content2": "http://husky.lo:7878/admin/api/datagrid/sort?page=1&pageSize=4&sortBy=content2&sortOrder={sortOrder}"
+            "href": "http://husky.lo:7878/admin/api/datagrid/sort?page=1&pageSize=4&sortBy={sortBy}&sortOrder={sortOrder}"
         }
     },
-    "_embedded": [
-        {
-            "id": "1",
-            "content1": "A This content is sorted",
-            "content2": "A This content is sorted",
-            "content3": {
-                "50x50": "http://placehold.it/50x50",
-                "170x170": "http://placehold.it/170x170"
+    "_embedded": {
+        "items": [
+            {
+                "id": "1",
+                "content1": "A This content is sorted",
+                "content2": "A This content is sorted",
+                "content3": {
+                    "50x50": "http://placehold.it/50x50",
+                    "170x170": "http://placehold.it/170x170"
+                },
+                "date": "1999-03-19T22:04:29+0100"
             },
-            "date": "1999-03-19T22:04:29+0100"
-        },
-        {
-            "id": "2",
-            "content1": "B This content is sorted",
-            "content2": "B This content is sorted",
-            "content3": {
-                "50x50": "http://placehold.it/50x50",
-                "170x170": "http://placehold.it/170x170"
+            {
+                "id": "2",
+                "content1": "B This content is sorted",
+                "content2": "B This content is sorted",
+                "content3": {
+                    "50x50": "http://placehold.it/50x50",
+                    "170x170": "http://placehold.it/170x170"
+                },
+                "date": "2014-02-19T22:04:40+0100"
             },
-            "date": "2014-02-19T22:04:40+0100"
-        },
-        {
-            "id": "3",
-            "content1": "C This content is sorted",
-            "content2": "C This content is sorted",
-            "content3": {
-                "50x50": "http://placehold.it/50x50",
-                "170x170": "http://placehold.it/170x170"
-            },
-            "date": "2003-03-19T22:01:29+0100"
-        }
-    ],
+            {
+                "id": "3",
+                "content1": "C This content is sorted",
+                "content2": "C This content is sorted",
+                "content3": {
+                    "50x50": "http://placehold.it/50x50",
+                    "170x170": "http://placehold.it/170x170"
+                },
+                "date": "2003-03-19T22:01:29+0100"
+            }
+        ]
+    },
     "total": 3,
-    "numberOfAll": 12,
     "pages": 4,
     "page": 1,
-    "pageSize": 4
+    "limit": 4
 }

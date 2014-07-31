@@ -1,46 +1,51 @@
 {
     "_links": {
-        "self": "http://husky.lo:7878/admin/api/datagrid/children?depth=0",
-        "children": "http://husky.lo:7878/admin/api/datagrid/actualchildren?parent={parentId}",
+        "self": {
+            "href": "http://husky.lo:7878/admin/api/datagrid/children?depth=0"
+        },
+        "children": {
+            "href": "http://husky.lo:7878/admin/api/datagrid/actualchildren?parent={parentId}"
+        },
         "sortable": {
-            "name": "http://husky.lo:7878/admin/api/datagrid/children/sorted"
+            "href": "http://husky.lo:7878/admin/api/datagrid/children/sorted"
         }
     },
-    "_embedded": [
-        {
-            "id": 1,
-            "name": "A Category 1",
-            "children": 2
-        },
-        {
-            "id": 2,
-            "name": "B Category 2",
-            "children": 3
-        },
-        {
-            "id": 3,
-            "name": "C Category 3",
-            "children": 0
-        },
-        {
-            "id": 4,
-            "name": "D Category 4",
-            "children": 0
-        },
-        {
-            "id": 5,
-            "name": "E Category 5",
-            "children": 2
-        },
-        {
-            "id": 6,
-            "name": "F Category 6",
-            "children": 0
-        }
-    ],
+    "_embedded": {
+        "categories": [
+            {
+                "id": 1,
+                "name": "A Category 1",
+                "children": 2
+            },
+            {
+                "id": 2,
+                "name": "B Category 2",
+                "children": 3
+            },
+            {
+                "id": 3,
+                "name": "C Category 3",
+                "children": 0
+            },
+            {
+                "id": 4,
+                "name": "D Category 4",
+                "children": 0
+            },
+            {
+                "id": 5,
+                "name": "E Category 5",
+                "children": 2
+            },
+            {
+                "id": 6,
+                "name": "F Category 6",
+                "children": 0
+            }
+        ]
+    },
     "total": 6,
-    "numberOfAll": 6,
     "pages": 1,
     "page": 1,
-    "pageSize": 6
+    "limit": 6
 }

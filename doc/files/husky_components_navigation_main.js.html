@@ -77,8 +77,6 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
-                <li><a href="../classes/ShowAllPagination (Datagrid Decorator).html">ShowAllPagination (Datagrid Decorator)</a></li>
-            
                 <li><a href="../classes/SmartContent.html">SmartContent</a></li>
             
                 <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
@@ -268,7 +266,7 @@ define(function() {
                 hide: &#x27;navigation.hide&#x27;,
                 show: &#x27;navigation.show&#x27;
             },
-            resizeWidth: 800,
+            resizeWidth: 1210,
             forceCollapse: false,
             systemName: &#x27;Sulu 2.0&#x27;,
             footer: true,
@@ -279,6 +277,7 @@ define(function() {
             }
         },
         CONSTANTS = {
+            COMPONENT_CLASS: &#x27;husky-navigation&#x27;,
             UNCOLLAPSED_WIDTH: 250, //px
             COLLAPSED_WIDTH: 50, //px
             ITEM_LABEL_HEIGHT: 50, //px
@@ -350,6 +349,12 @@ define(function() {
             VERSION_HISTORY_CLICKED = namespace + &#x27;version-history.clicked&#x27;,
 
         /**
+         * raised when the username gets clicked
+         * @event husky.navigation.username.clicked
+         */
+            USERNAME_CLICKED = namespace + &#x27;username.clicked&#x27;,
+
+        /**
          * show the navigation when it was hidden before
          * @event husky.navigation.show
          */
@@ -412,15 +417,15 @@ define(function() {
             this.items = [];
 
             // add container class to current div
-            this.sandbox.dom.addClass(this.$el, &#x27;navigation-container&#x27;);
+            this.sandbox.dom.addClass(this.$el, CONSTANTS.COMPONENT_CLASS);
 
             // render skeleton
             this.sandbox.dom.html(this.$el, this.sandbox.template.parse(templates.skeleton,
                 this.sandbox.util.extend(true, {}, this.options, {translate: this.sandbox.translate}))
             );
 
-            this.$navigation = this.$find(&#x27;.navigation&#x27;, this.$el);
-            this.$navigationContent = this.$find(&#x27;.navigation-content&#x27;, this.$navigation);
+            this.$navigation = this.$find(&#x27;.navigation&#x27;);
+            this.$navigationContent = this.$find(&#x27;.navigation-content&#x27;);
 
             // start search component
             this.sandbox.start([
@@ -598,6 +603,11 @@ define(function() {
             this.sandbox.dom.on(this.$el, &#x27;click&#x27;, function() {
                 this.sandbox.emit(VERSION_HISTORY_CLICKED);
             }.bind(this), &#x27;footer .version a&#x27;);
+
+            // user clicked
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, function() {
+                this.sandbox.emit(USERNAME_CLICKED);
+            }.bind(this), &#x27;footer .user&#x27;);
         },
 
         /**
@@ -690,7 +700,11 @@ define(function() {
 
                 if (this.sandbox.dom.hasClass(match, &#x27;js-navigation-sub-item&#x27;)) {
                     parent = this.sandbox.dom.closest(match, &#x27;.navigation-items&#x27;);
-                    this.toggleItems(null, parent);
+
+                    // toggle parent only when it is not expaneded
+                    if(!this.sandbox.dom.hasClass(parent, &#x27;is-expanded&#x27;)){
+                        this.toggleItems(null, parent);
+                    }
                 }
                 this.selectSubItem(null, match, false);
                 this.checkBottomHit(null, match);
@@ -911,6 +925,9 @@ define(function() {
 
         collapse: function() {
             if (this.hidden === false) {
+                this.sandbox.dom.one(this.$el, CONSTANTS.TRANSITIONEND_EVENT, function() {
+                    this.sandbox.dom.css(this.$el, {&#x27;width&#x27;: &#x27;&#x27;});
+                }.bind(this));
                 this.sandbox.dom.addClass(this.$navigation, &#x27;collapsed&#x27;);
                 this.sandbox.dom.removeClass(this.$navigation, &#x27;collapseIcon&#x27;);
                 this.removeHeightforExpanded();
@@ -925,12 +942,17 @@ define(function() {
 
         unCollapse: function(forced) {
             if ((this.stayCollapsed === false || forced === true) &amp;&amp; this.hidden === false) {
+                if (forced) {
+                    // freeze width of parent so that the navigation overlaps the content
+                    this.sandbox.dom.width(this.$el, this.sandbox.dom.width(this.$navigation));
+                    this.sandbox.dom.addClass(this.$navigation, &#x27;collapseIcon&#x27;);
+                } else {
+                    this.sandbox.dom.removeClass(this.$navigation, &#x27;collapseIcon&#x27;);
+                    this.sandbox.dom.css(this.$el, {&#x27;width&#x27;: &#x27;&#x27;});
+                }
                 this.sandbox.dom.removeClass(this.$navigation, &#x27;collapsed&#x27;);
                 this.hideToolTip();
                 this.setHeightForExpanded();
-                if (forced) {
-                    this.sandbox.dom.addClass(this.$navigation, &#x27;collapseIcon&#x27;);
-                }
                 if (this.collapsed) {
                     this.sandbox.emit(EVENT_UNCOLLAPSED, CONSTANTS.UNCOLLAPSED_WIDTH);
                     if (!forced) {

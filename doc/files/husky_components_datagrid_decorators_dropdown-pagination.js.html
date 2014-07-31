@@ -77,8 +77,6 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
-                <li><a href="../classes/ShowAllPagination (Datagrid Decorator).html">ShowAllPagination (Datagrid Decorator)</a></li>
-            
                 <li><a href="../classes/SmartContent.html">SmartContent</a></li>
             
                 <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
@@ -164,7 +162,7 @@
  *
  * @param {Object} [paginationOptions] Configuration object
  * @param {Array} [options.showElementsSteps] Array which contains the steps for the Show-Elements-dropdown as integers
- * @param {Number} [options.pageSize] Data records per page
+ * @param {Number} [options.limit] Data records per page
  *
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
@@ -176,7 +174,7 @@ define(function() {
 
      var defaults = {
             showElementsSteps: [10, 20, 50, 100, 500],
-            pageSize: 10
+            limit: 10
         },
 
         constants = {
@@ -221,7 +219,6 @@ define(function() {
          * Translation keys used by this class
          */
         translations = {
-            showAllElements: &#x27;pagination.show-all-elements&#x27;,
             show: &#x27;pagination.show&#x27;,
             elementsOf: &#x27;pagination.elements-of&#x27;,
             elementsPerPage: &#x27;pagination.elements-per-page&#x27;
@@ -267,10 +264,10 @@ define(function() {
 
         /**
          * Returns the pagination page size
-         * @returns {Number} current Page size
+         * @returns {Number} current limit
          */
-        getPageSize: function() {
-            return this.options.pageSize;
+        getLimit: function() {
+            return this.options.limit;
         },
 
         /**
@@ -303,17 +300,9 @@ define(function() {
 
             // show-elements dropdown item clicked
             this.sandbox.on(&#x27;husky.dropdown.&#x27; + this.datagrid.options.instanceName + &#x27;-pagination-dropdown-show.item.click&#x27;, function(item) {
-                if (this.data.pageSize !== item.id || this.data.total === this.data.numberOfAll) {
-                    // show all
-                    if (item.id === 0) {
-                        // only if not already all are shown
-                        if (this.data.total !== this.data.numberOfAll) {
-                            this.datagrid.changePage.call(this.datagrid, this.data.links.all);
-                        }
-                    } else {
-                        // always jump to the first page
-                        this.datagrid.changePage.call(this.datagrid, null, 1, item.id);
-                    }
+                if (this.data.limit !== item.id || this.data.embedded.length === this.data.total) {
+                    // always jump to the first page
+                    this.datagrid.changePage.call(this.datagrid, null, 1, item.id);
                 }
             }.bind(this));
         },
@@ -342,7 +331,7 @@ define(function() {
          */
         nextPage: function() {
             if (!!this.data.links.next) {
-                this.datagrid.changePage.call(this.datagrid, this.data.links.next);
+                this.datagrid.changePage.call(this.datagrid, this.data.links.next.href);
             }
         },
 
@@ -350,8 +339,8 @@ define(function() {
          * Triggers a page change to the previous page
          */
         prevPage: function() {
-            if (!!this.data.links.prev) {
-                this.datagrid.changePage.call(this.datagrid, this.data.links.prev);
+            if (!!this.data.links.previous) {
+                this.datagrid.changePage.call(this.datagrid, this.data.links.previous.href);
             }
         },
 
@@ -374,14 +363,10 @@ define(function() {
                 description;
 
             // if first defined step is bigger than the number of all elements don&#x27;t display show-elements dropdown
-            if (this.data.numberOfAll &gt; this.options.showElementsSteps[0]) {
-                if (this.data.total === this.data.numberOfAll) {
-                    description = this.sandbox.translate(translations.showAllElements);
-                } else {
-                    description = this.sandbox.translate(translations.show) +
-                        &#x27; &lt;strong&gt;&#x27; + this.data.total + &#x27;&lt;/strong&gt; &#x27; +
-                        this.sandbox.translate(translations.elementsOf) + &#x27; &#x27; + this.data.numberOfAll;
-                }
+            if (this.data.total &gt; this.options.showElementsSteps[0]) {
+                description = this.sandbox.translate(translations.show) +
+                    &#x27; &lt;strong&gt;&#x27; + this.data.embedded.length + &#x27;&lt;/strong&gt; &#x27; +
+                    this.sandbox.translate(translations.elementsOf) + &#x27; &#x27; + this.data.total;
                 $showElements = this.sandbox.dom.createElement(this.sandbox.util.template(templates.showElements)({
                     &#x27;desc&#x27;: description
                 }));
@@ -450,7 +435,7 @@ define(function() {
             var i, length, data = [];
 
             for (i = -1, length = this.options.showElementsSteps.length; ++i &lt; length;) {
-                if (this.options.showElementsSteps[i] &gt; this.data.numberOfAll) {
+                if (this.options.showElementsSteps[i] &gt; this.data.total) {
                     break;
                 }
                 data.push({
@@ -458,12 +443,6 @@ define(function() {
                     name: &#x27;&lt;strong&gt;&#x27; + this.options.showElementsSteps[i] + &#x27;&lt;/strong&gt; &#x27; + this.sandbox.translate(translations.elementsPerPage)
                 });
             }
-
-            data.push({divider: true});
-            data.push({
-                id: 0,
-                name: this.sandbox.translate(translations.showAllElements)
-            });
 
             this.sandbox.start([
                 {

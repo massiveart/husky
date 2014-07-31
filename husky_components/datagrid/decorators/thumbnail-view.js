@@ -43,20 +43,21 @@ define(function() {
 
         templates = {
             item: [
-                    '<div class="' + constants.itemClass + ' <%= styleClass %>">',
-                        '<div class="' + constants.imageClass + '">',
-                            '<img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
-                        '</div>',
-                        '<div class="' + constants.textClass + '">',
-                            '<span class="' + constants.titleClass + '"><%= title %></span><br />',
-                            '<span class="' + constants.descriptionClass + '"><%= description %></span>',
-                        '</div>',
-                        '<div class="' + constants.checkboxClass + ' custom-checkbox no-spacing">',
-                            '<input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
-                            '<span class="icon"></span>',
-                        '</div>',
-                        '<div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
-                    '</div>'
+                '<div class="' + constants.itemClass + ' <%= styleClass %>">',
+                '   <div class="' + constants.imageClass + '">',
+                '       <div class="fa-coffee empty"></div>',
+                '       <img src="<%= imgSrc %>" alt="<%= imgAlt %>"/>',
+                '   </div>',
+                '   <div class="' + constants.textClass + '">',
+                '       <span class="' + constants.titleClass + '"><%= title %></span><br />',
+                '       <span class="' + constants.descriptionClass + '"><%= description %></span>',
+                '   </div>',
+                '   <div class="' + constants.checkboxClass + ' custom-checkbox no-spacing">',
+                '       <input type="checkbox"<% if (!!checked) { %> checked<% } %>/>',
+                '       <span class="icon"></span>',
+                '   </div>',
+                '   <div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
+                '</div>'
             ].join('')
         };
 
@@ -110,7 +111,7 @@ define(function() {
             this.data = data;
 
             this.renderThumbnails(this.data.embedded);
-
+            this.sandbox.dom.on('body', 'click.grid-thumbnails.' + this.datagrid.options.instanceName, this.unselectAll.bind(this));
             this.rendered = true;
         },
 
@@ -130,23 +131,30 @@ define(function() {
 
                 // foreach matching configured get the corresponding datum from the record
                 this.sandbox.util.foreach(this.datagrid.matchings, function(matching) {
+                    var argument, result;
+
+                    // get argument
+                    if (matching.type === this.datagrid.types.THUMBNAILS) {
+                        argument = this.thumbnailFormat;
+                    }
+
+                    // process
+                    result = this.datagrid.processContentFilter.call(this.datagrid,
+                        matching.attribute,
+                        record[matching.attribute],
+                        matching.type,
+                        argument
+                    );
 
                     // get the thumbnail and the title data (to place it on top)
                     // with the rest generate a description string
                     if (matching.type === this.datagrid.types.THUMBNAILS) {
-                        thumbnail = this.datagrid.manipulateContent.call(this.datagrid,
-                            record[matching.attribute],
-                            this.datagrid.types.THUMBNAILS,
-                            this.thumbnailFormat
-                        );
-                        imgSrc = thumbnail[constants.thumbnailSrcProperty];
-                        imgAlt = thumbnail[constants.thumbnailAltProperty];
+                        imgSrc = result[constants.thumbnailSrcProperty];
+                        imgAlt = result[constants.thumbnailAltProperty];
                     } else if (matching.type === this.datagrid.types.TITLE) {
-                        title = record[matching.attribute];
+                        title = result;
                     } else if (matching.type === this.datagrid.types.BYTES) {
-                        description.push(
-                            this.datagrid.manipulateContent.call(this.datagrid, record[matching.attribute], this.datagrid.types.BYTES)
-                        );
+                        description.push(result);
                     }
                 }.bind(this));
 
@@ -193,7 +201,7 @@ define(function() {
          * Destroys the view
          */
         destroy: function() {
-            this.sandbox.dom.off('body', 'click.grid-thumbnails');
+            this.sandbox.dom.off('body', 'click.grid-thumbnails.' + this.datagrid.options.instanceName);
             this.sandbox.dom.remove(this.$el);
         },
 
@@ -216,8 +224,6 @@ define(function() {
                 this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
                 this.selectItem(id);
             }.bind(this));
-
-            this.sandbox.dom.on('body', 'click.grid-thumbnails', this.unselectAll.bind(this));
         },
 
         /**
@@ -226,9 +232,9 @@ define(function() {
          */
         toggleItemSelected: function(id) {
             if (this.datagrid.itemIsSelected.call(this.datagrid, id) === true) {
-                this.unselectItem(id);
+                this.unselectItem(id, false);
             } else {
-                this.selectItem(id);
+                this.selectItem(id, false);
             }
         },
 
@@ -250,13 +256,16 @@ define(function() {
         /**
          * Unselects an item with a given id
          * @param id {Number|String} the id of the item
+         * @param onlyView {Boolean} if true the selection only affects this view and not the data array
          */
-        unselectItem: function(id) {
+        unselectItem: function(id, onlyView) {
             this.sandbox.dom.removeClass(this.$thumbnails[id], constants.selectedClass);
             if (this.sandbox.dom.is(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), ':checked')) {
                 this.sandbox.dom.prop(this.sandbox.dom.find('input[type="checkbox"]', this.$thumbnails[id]), 'checked', false);
             }
-            this.datagrid.setItemUnselected.call(this.datagrid, id);
+            if (onlyView !== true) {
+                this.datagrid.setItemUnselected.call(this.datagrid, id);
+            }
         },
 
         /**
@@ -296,8 +305,9 @@ define(function() {
          */
         unselectAll: function() {
             this.sandbox.util.each(this.$thumbnails, function(id) {
-                this.unselectItem(id);
+                this.unselectItem(id, true);
             }.bind(this));
+            this.datagrid.deselectAllItems.call(this.datagrid);
         }
     };
 });

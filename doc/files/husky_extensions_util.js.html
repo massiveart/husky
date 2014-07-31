@@ -77,8 +77,6 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
-                <li><a href="../classes/ShowAllPagination (Datagrid Decorator).html">ShowAllPagination (Datagrid Decorator)</a></li>
-            
                 <li><a href="../classes/SmartContent.html">SmartContent</a></li>
             
                 <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
@@ -204,14 +202,11 @@ define(function() {
             app.core.util.load = function(url, data) {
                 var deferred = new app.sandbox.data.deferred();
 
-                app.logger.log(&#x27;load&#x27;, url);
-
                 app.sandbox.util.ajax({
                     url: url,
                     data: data || null,
 
                     success: function(data, textStatus) {
-                        app.logger.log(&#x27;data loaded&#x27;, data, textStatus);
                         deferred.resolve(data, textStatus);
                     }.bind(this),
 
@@ -228,8 +223,6 @@ define(function() {
             app.core.util.save = function(url, type, data) {
                 var deferred = new app.sandbox.data.deferred();
 
-                app.logger.log(&#x27;save&#x27;, url);
-
                 app.sandbox.util.ajax({
 
                     headers: {
@@ -241,7 +234,6 @@ define(function() {
                     data: JSON.stringify(data),
 
                     success: function(data, textStatus) {
-                        app.logger.log(&#x27;data saved&#x27;, data, textStatus);
                         deferred.resolve(data, textStatus);
                     }.bind(this),
 
@@ -302,6 +294,10 @@ define(function() {
 
             app.core.util.delay = function(delay, callback) {
                 return _.delay(delay, callback);
+            };
+
+            app.core.util.union = function() {
+                return _.union.apply(this, arguments);
             };
 
 			app.core.util.template = _.template;

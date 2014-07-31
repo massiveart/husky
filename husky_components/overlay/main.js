@@ -21,12 +21,15 @@
  * @params {Boolean} [options.openOnStart] if true overlay is opened after initialization
  * @params {Boolean} [options.removeOnClose] if overlay component gets removed on close
  * @params {Boolean} [options.backdrop] if true backdrop will be shown
- * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '' or 'wide'
+ * @params {String} [options.skin] set an overlay skin to manipulate overlay's appearance. Possible skins: '', 'wide' or 'medium'
  * @params {Boolean} [options.backdropClose] if true overlay closes with click on backdrop
  * @params {String} [options.backdropColor] Color of the backdrop
  * @params {Number} [options.backdropAlpha] Alpha-value of the backdrop
  * @params {String} [options.type] The type of the overlay ('normal', 'error' or 'warning')
  * @params {Array} [options.buttonsDefaultAlign] the align of the buttons in the footer ('center', 'left' or 'right'). Can be overriden by each button individually
+ * @params {Array} [options.supportKeyInput] if true pressing enter will submit the overlay and esc will close it
+ * @params {Array} [options.propagateEvents] If false click-events will be stoped at the components-element
+ * @params {Array} [options.verticalSpacing] defines the minimum spacing in pixel to the bottom and the top
  *
  * @params {Array} [options.slides] array of slide objects, will be rendered in a row and can slided with events
  * @params {String} [options.slides[].title] the title of the overlay
@@ -61,6 +64,7 @@ define([], function() {
     var defaults = {
             trigger: 'click',
             triggerEl: null,
+            verticalSpacing: 20, //px
             instanceName: 'undefined',
             draggable: true,
             openOnStart: false,
@@ -69,6 +73,8 @@ define([], function() {
             backdropClose: true,
             backdropColor: '#000000',
             skin: '',
+            supportKeyInput: true,
+            propagateEvents: true,
             type: 'normal',
             backdropAlpha: 0.5,
             cssClass: '',
@@ -521,24 +527,29 @@ define([], function() {
 
                     this.overlay.$content = this.sandbox.dom.find(constants.contentSelector, this.overlay.$el);
 
-                    if (this.slides.length > 1) {
-                        // set width to n-width
-                        this.overlay.width = this.sandbox.dom.outerWidth(this.sandbox.dom.find('.slide', this.overlay.$slides));
-                        this.sandbox.dom.css(this.overlay.$slides, 'width', (this.slides.length * this.overlay.width) + 'px');
-
-                        var maxHeight = -1;
-
-                        $(this.overlay.$content).each(function() {
-                            maxHeight = maxHeight > $(this).height() ? maxHeight : $(this).height();
-                        });
-
-                        this.sandbox.dom.css(this.overlay.$content, 'height', maxHeight + 'px');
-                    }
-
                     this.insertOverlay(true);
+                    this.setSlidesHeight();
                 } else {
                     this.insertOverlay(true);
                 }
+            }
+        },
+
+        /**
+         * Sets the height of all slides equal
+         */
+        setSlidesHeight: function() {
+            if (this.slides.length > 1) {
+                var maxHeight = -1;
+                // set width to n-width
+                this.overlay.width = this.sandbox.dom.outerWidth(this.sandbox.dom.find('.slide', this.overlay.$slides));
+                this.sandbox.dom.css(this.overlay.$slides, 'width', (this.slides.length * this.overlay.width) + 'px');
+
+                $(this.overlay.$content).each(function() {
+                    maxHeight = maxHeight > $(this).height() ? maxHeight : $(this).height();
+                });
+
+                this.sandbox.dom.css(this.overlay.$content, 'height', maxHeight + 'px');
             }
         },
 
@@ -634,8 +645,10 @@ define([], function() {
             }
 
             // listen on key-inputs
-            this.sandbox.dom.off('body', 'keydown.' + this.options.instanceName);
-            this.sandbox.dom.on('body', 'keydown.' + this.options.instanceName, this.keyHandler.bind(this));
+            if (this.options.supportKeyInput === true) {
+                this.sandbox.dom.off('body', 'keydown.' + this.options.instanceName);
+                this.sandbox.dom.on('body', 'keydown.' + this.options.instanceName, this.keyHandler.bind(this));
+            }
         },
 
         /**
@@ -850,9 +863,16 @@ define([], function() {
             }.bind(this));
 
             //stop propagation
-            this.sandbox.dom.on(this.overlay.$el, 'click', function(event) {
-                this.sandbox.dom.stopPropagation(event);
-            }.bind(this));
+            if (this.options.propagateEvents === false) {
+                this.sandbox.dom.on(this.overlay.$el, 'click', function(event) {
+                    this.sandbox.dom.stopPropagation(event);
+                }.bind(this));
+                if (this.options.backdrop === true) {
+                    this.sandbox.dom.on(this.$backdrop, 'click', function(event) {
+                        this.sandbox.dom.stopPropagation(event);
+                    }.bind(this));
+                }
+            }
 
             // close handler for close icon
             this.sandbox.dom.on(this.overlay.$el, 'click',
@@ -975,10 +995,11 @@ define([], function() {
          * to their initial state or re-initializes them
          */
         resetResizeVariables: function() {
-            this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
             this.overlay.collapsed = false;
             this.sandbox.dom.css(this.overlay.$content, {'overflow': 'visible'});
             this.sandbox.dom.height(this.overlay.$content, '');
+            this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
+            this.setSlidesHeight();
         },
 
         /**
@@ -987,15 +1008,15 @@ define([], function() {
          */
         resizeHandler: function() {
             //window is getting smaller - make overlay smaller
-            if (this.sandbox.dom.height(this.sandbox.dom.$window) < this.sandbox.dom.outerHeight(this.overlay.$el)) {
+            if (this.sandbox.dom.height(this.sandbox.dom.$window) < this.sandbox.dom.outerHeight(this.overlay.$el) + this.options.verticalSpacing*2) {
                 this.sandbox.dom.height(this.overlay.$content,
-                    (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content))
+                    (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing*2)
                 );
                 this.sandbox.dom.css(this.overlay.$content, {'overflow': 'scroll'});
                 this.overlay.collapsed = true;
 
                 //window is getting bigger - make the overlay bigger
-            } else if (this.sandbox.dom.height(this.sandbox.dom.$window) > this.sandbox.dom.outerHeight(this.overlay.$el) &&
+            } else if (this.sandbox.dom.height(this.sandbox.dom.$window) > this.sandbox.dom.outerHeight(this.overlay.$el) + this.options.verticalSpacing*2 &&
                 this.overlay.collapsed === true) {
 
                 //if overlay reached its beginning height - stop
@@ -1006,7 +1027,7 @@ define([], function() {
                     // else enlarge further
                 } else {
                     this.sandbox.dom.height(this.overlay.$content,
-                        (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content))
+                        (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing*2)
                     );
                 }
             }

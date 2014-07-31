@@ -1,100 +1,101 @@
 {
     "_links": {
-        "self": "http://husky.lo:7878/admin/api/datagrid/children/all",
+        "self": {
+            "href": "http://husky.lo:7878/admin/api/datagrid/children/all"
+        },
         "sortable": {
-            "name": "http://husky.lo:7878/admin/api/datagrid/children/sorted"
+            "href": "http://husky.lo:7878/admin/api/datagrid/children/sorted"
         }
     },
-    "_embedded": [
-        {
-            "id": 1,
-            "name": "Category 1",
-            "children": 2
-        },
-        {
-            "id": 2,
-            "name": "Category 2",
-            "children": 3
-        },
-        {
-            "id": 3,
-            "name": "Category 3",
-            "children": 0
-        },
-        {
-            "id": 4,
-            "name": "Category 4",
-            "children": 0
-        },
-        {
-            "id": 5,
-            "name": "Category 5",
-            "children": 0
-        },
-        {
-            "id": 6,
-            "name": "Category 6",
-            "children": 0
-        },
+    "_embedded": {
+        "categories": [
+            {
+                "id": 1,
+                "name": "Category 1",
+                "children": 2
+            },
+            {
+                "id": 2,
+                "name": "Category 2",
+                "children": 3
+            },
+            {
+                "id": 3,
+                "name": "Category 3",
+                "children": 0
+            },
+            {
+                "id": 4,
+                "name": "Category 4",
+                "children": 0
+            },
+            {
+                "id": 5,
+                "name": "Category 5",
+                "children": 0
+            },
+            {
+                "id": 6,
+                "name": "Category 6",
+                "children": 0
+            },
 
 
-
-        {
-            "id": 11,
-            "name": "Category 1.1",
-            "children": 3,
-            "parent": 1
-        },
-        {
-            "id": 12,
-            "name": "Category 1.2",
-            "children": 0,
-            "parent": 1
-        },
-        {
-            "id": 21,
-            "name": "Category 2.1",
-            "children": 0,
-            "parent": 2
-        },
-        {
-            "id": 22,
-            "name": "Category 2.2",
-            "children": 0,
-            "parent": 2
-        },
-        {
-            "id": 23,
-            "name": "Category 2.3",
-            "children": 0,
-            "parent": 2
-        },
-
+            {
+                "id": 11,
+                "name": "Category 1.1",
+                "children": 3,
+                "parent": 1
+            },
+            {
+                "id": 12,
+                "name": "Category 1.2",
+                "children": 0,
+                "parent": 1
+            },
+            {
+                "id": 21,
+                "name": "Category 2.1",
+                "children": 0,
+                "parent": 2
+            },
+            {
+                "id": 22,
+                "name": "Category 2.2",
+                "children": 0,
+                "parent": 2
+            },
+            {
+                "id": 23,
+                "name": "Category 2.3",
+                "children": 0,
+                "parent": 2
+            },
 
 
-        {
-            "id": 111,
-            "name": "Category 1.1.1",
-            "children": 0,
-            "parent": 11
-        },
-        {
-            "id": 112,
-            "name": "Category 1.1.2",
-            "children": 0,
-            "parent": 11
-        },
-        {
-            "id": 113,
-            "name": "Category 1.1.3",
-            "children": 0,
-            "parent": 11
-        }
+            {
+                "id": 111,
+                "name": "Category 1.1.1",
+                "children": 0,
+                "parent": 11
+            },
+            {
+                "id": 112,
+                "name": "Category 1.1.2",
+                "children": 0,
+                "parent": 11
+            },
+            {
+                "id": 113,
+                "name": "Category 1.1.3",
+                "children": 0,
+                "parent": 11
+            }
 
-    ],
+        ]
+    },
     "total": 14,
-    "numberOfAll": 14,
     "pages": 1,
     "page": 1,
-    "pageSize": 14
+    "limit": 14
 }

@@ -77,8 +77,6 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
-                <li><a href="../classes/ShowAllPagination (Datagrid Decorator).html">ShowAllPagination (Datagrid Decorator)</a></li>
-            
                 <li><a href="../classes/SmartContent.html">SmartContent</a></li>
             
                 <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
@@ -199,7 +197,9 @@
  * @params {String} [options.presentAsParameter] parameter for the presentation-possibility id
  * @params {String} [options.limitResultParameter] parameter for the limit-result-value
  * @params {String} [options.idKey] key for the id in the returning JSON-result
- * @params {String} [options.resultKey] key for the data in the returning JSON-result
+ * @params {String} [options.resultKey] key for the data in the returning JSON-embedded-result
+ * @params {String} [options.tagsResultKey] key for the data in the returning JSON-embedded-result for the tags-component
+ * @params {String} [options.columnNavigationResultKey] key for the data in the returning JSON-embedded-result for the column-navigation component
  * @params {String} [options.titleKey] key for the title in the returning JSON-result
  * @params {String} [options.pathKey] key for the path in the returning JSON-result
  * @params {Boolean} [options.subFoldersDisabled] if true sub-folders overlay-item will be disabled
@@ -274,7 +274,9 @@ define([], function() {
             limitResultParameter: &#x27;limitResult&#x27;,
             limitResultDisabled: false,
             idKey: &#x27;id&#x27;,
-            resultKey: &#x27;_embedded&#x27;,
+            resultKey: &#x27;items&#x27;,
+            tagsResultKey: &#x27;tags&#x27;,
+            columnNavigationResultKey: &#x27;nodes&#x27;,
             titleKey: &#x27;title&#x27;,
             pathKey: &#x27;path&#x27;,
             translations: {},
@@ -296,12 +298,12 @@ define([], function() {
 
         constants = {
             containerSelector: &#x27;.smart-content-container&#x27;,
-            headerSelector: &#x27;.smart-header&#x27;,
-            contentSelector: &#x27;.smart-content&#x27;,
+            headerSelector: &#x27;.header&#x27;,
+            contentSelector: &#x27;.content&#x27;,
             sourceSelector: &#x27;.source&#x27;,
-            footerClass: &#x27;smart-footer&#x27;,
+            footerClass: &#x27;footer&#x27;,
             viewTogglerClass: &#x27;view-toggler&#x27;,
-            buttonClass: &#x27;fa-filter&#x27;,
+            buttonIcon: &#x27;fa-filter&#x27;,
             includeSubSelector: &#x27;.includeSubCheck&#x27;,
             categoryDDClass: &#x27;category-dropdown&#x27;,
             tagListClass: &#x27;tag-list&#x27;,
@@ -317,20 +319,22 @@ define([], function() {
         /** templates for component */
         templates = {
             skeleton: [
-                &#x27;&lt;div class=&quot;smart-content-container form-element&quot;&gt;&#x27;,
-                &#x27;&lt;div class=&quot;smart-header&quot;&gt;&lt;/div&gt;&#x27;,
-                &#x27;&lt;div class=&quot;smart-content&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;&lt;div class=&quot;white-box smart-content-container form-element&quot;&gt;&#x27;,
+                &#x27;&lt;div class=&quot;header&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;&lt;div class=&quot;content&quot;&gt;&lt;/div&gt;&#x27;,
                 &#x27;&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;),
             source: [
-                &#x27;&lt;div class=&quot;source&quot;&gt;&#x27;,
+                &#x27;&lt;span class=&quot;text&quot;&gt;&#x27;,
+                &#x27;&lt;span class=&quot;source&quot;&gt;&#x27;,
                 &#x27;&lt;span class=&quot;desc&quot;&gt;&lt;%= desc %&gt;&lt;/span&gt;&#x27;,
                 &#x27;&lt;span class=&quot;val&quot;&gt;&lt;%= val %&gt;&lt;/span&gt;&#x27;,
-                &#x27;&lt;/div&gt;&#x27;
+                &#x27;&lt;/span&gt;&#x27;,
+                &#x27;&lt;/span&gt;&#x27;
             ].join(&#x27;&#x27;),
             noContent: [
                 &#x27;&lt;div class=&quot;no-content&quot;&gt;&#x27;,
-                &#x27;&lt;span class=&quot;fa-file&quot;&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;span class=&quot;fa-coffee icon&quot;&gt;&lt;/span&gt;&#x27;,
                 &#x27;&lt;div class=&quot;text&quot;&gt;&lt;%= noContentStr %&gt;&lt;/div&gt;&#x27;,
                 &#x27;&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;),
@@ -626,9 +630,9 @@ define([], function() {
         },
 
         /**
-         * Renders the source text and prepends it to the header
+         * Renders the source text and inserts it to the header
          */
-        prependSource: function() {
+        insertSource: function() {
             var desc, $element = this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent);
             this.sandbox.dom.text($element, this.sandbox.util.cropMiddle(this.overlayData.path, 30, &#x27;...&#x27;));
 
@@ -637,9 +641,9 @@ define([], function() {
                 if (this.overlayData.includeSubFolders !== false) {
                     desc += &#x27; (&#x27; + this.sandbox.translate(this.translations.subFoldersInclusive) + &#x27;):&#x27;;
                 } else {
-                    desc += &#x27;:&#x27;;
+                    desc += &#x27;: &#x27;;
                 }
-                this.sandbox.dom.prepend(this.$header, _.template(templates.source)({
+                this.sandbox.dom.append(this.$header, this.sandbox.util.template(templates.source)({
                     desc: desc,
                     val: this.overlayData.title
                 }));
@@ -657,8 +661,8 @@ define([], function() {
          * Renders and appends the toggle-button
          */
         renderButton: function() {
-            this.$button = this.sandbox.dom.createElement(&#x27;&lt;a href=&quot;#&quot;/&gt;&#x27;);
-            this.sandbox.dom.addClass(this.$button, constants.buttonClass);
+            this.$button = this.sandbox.dom.createElement(&#x27;&lt;span class=&quot;icon right border&quot;/&gt;&#x27;);
+            this.sandbox.dom.prependClass(this.$button, constants.buttonIcon);
             this.sandbox.dom.append(this.$header, this.$button);
         },
 
@@ -771,7 +775,7 @@ define([], function() {
             this.sandbox.on(DATA_RETRIEVED.call(this), function() {
                 this.renderContent();
                 this.removeSource();
-                this.prependSource();
+                this.insertSource();
             }.bind(this));
 
             this.sandbox.on(INPUT_RETRIEVED.call(this), function() {
@@ -914,7 +918,7 @@ define([], function() {
             }.bind(this));
 
             // activate button OK when a page is selected
-            this.sandbox.on(&#x27;husky.column-navigation.edit&#x27;, function(item) {
+            this.sandbox.on(&#x27;husky.column-navigation.smart-content&#x27;+ this.options.instanceName +&#x27;.edit&#x27;, function(item) {
                 this.sandbox.emit(&#x27;husky.overlay.smart-content.&#x27; + this.options.instanceName + &#x27;.slide-left&#x27;);
 
                 var $element = this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent);
@@ -943,12 +947,12 @@ define([], function() {
                             el: &#x27;#column-navigation-&#x27; + this.options.instanceName + &#x27;&#x27;,
                             url: url,
                             selected: this.overlayData.dataSource,
-                            noPageDescription: &#x27;No Pages&#x27;,
-                            sizeRelativeTo: &#x27;.smart-content-overlay .slide-1 .overlay-content&#x27;,
-                            wrapper: {height: 100},
+                            instanceName: &#x27;smart-content&#x27; + this.options.instanceName,
+                            responsive: false,
                             editIcon: &#x27;fa-check&#x27;,
                             showEdit: false,
-                            showStatus: false
+                            showStatus: false,
+                            resultKey: this.options.columnNavigationResultKey
                         }
                     }
                 ]
@@ -1037,7 +1041,8 @@ define([], function() {
                         remoteUrl: this.options.tagsAutoCompleteUrl,
                         autocomplete: (this.options.tagsAutoCompleteUrl !== &#x27;&#x27;),
                         getParameter: this.options.tagsGetParameter,
-                        noNewTags: true
+                        noNewTags: true,
+                        itemsKey: this.options.tagsResultKey
                     }
                 },
                 {
@@ -1122,7 +1127,7 @@ define([], function() {
                     success: function(data) {
                         this.overlayData.title = data[this.options.titleKey];
                         this.overlayData.path = data[this.options.pathKey];
-                        this.items = data[this.options.resultKey];
+                        this.items = data._embedded[this.options.resultKey];
                         this.sandbox.emit(DATA_RETRIEVED.call(this));
                     }.bind(this),
 
@@ -1138,7 +1143,7 @@ define([], function() {
          * event is emited on which the associeted component responses
          */
         getOverlayData: function() {
-            var categoryDef, tagsDef, sortByDef, sortMethodDef, presentAsDef;
+            var categoryDef, tagsDef, sortByDef, sortMethodDef, presentAsDef, temp;
             categoryDef = tagsDef = sortByDef = sortMethodDef = presentAsDef = this.sandbox.data.deferred();
 
             //include sub folders
@@ -1152,7 +1157,10 @@ define([], function() {
             );
 
             //data-source
-            this.overlayData.dataSource = this.sandbox.dom.data(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent), &#x27;id&#x27;);
+            temp = this.sandbox.dom.data(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent), &#x27;id&#x27;)
+            if (temp !== undefined) {
+                this.overlayData.dataSource = temp;
+            }
 
             //category
             this.sandbox.emit(&#x27;husky.select.&#x27; + this.options.instanceName + constants.categoryDDClass + &#x27;.get-checked&#x27;,
