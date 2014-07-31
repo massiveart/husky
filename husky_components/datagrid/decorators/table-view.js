@@ -47,6 +47,7 @@ define(function() {
                 type: 'checkbox',      // checkbox, radio button
                 inFirstCell: false
             },
+            noItemsText: 'This list is empty',
             validation: false, // TODO does not work for added rows
             validationDebug: false,
             addRowTop: true,
@@ -133,6 +134,13 @@ define(function() {
                 '<span class="icon"></span>',
                 '</div>',
                 '</td>'
+            ].join(''),
+
+            empty: [
+                '<div class="empty-list">',
+                '   <div class="fa-coffee icon"></div>',
+                '   <span><%= text %></span>',
+                '</div>'
             ].join('')
         },
 
@@ -632,8 +640,8 @@ define(function() {
         prepareTableRows: function($container) {
             var $row, $parent;
 
-            if (!!this.data.embedded) {
-                this.data.embedded.forEach(function(row) {
+            if (!!this.data.embedded && this.data.embedded.length > 0) {
+                this.sandbox.util.foreach(this.data.embedded, function(row) {
                     $parent = null;
                     $row = this.prepareTableRow(row, false);
                     if (!!row.parent) {
@@ -645,6 +653,10 @@ define(function() {
                         this.sandbox.dom.append($container, $row);
                     }
                 }.bind(this));
+            } else {
+                this.sandbox.dom.append(this.$el, this.sandbox.util.template(templates.empty)({
+                    text: this.options.noItemsText
+                }));
             }
         },
 

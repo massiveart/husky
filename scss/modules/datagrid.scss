@@ -146,6 +146,22 @@
         min-height: 150px;
     }
 
+    .empty-list {
+      text-align: center;
+      color: $grayLighter;
+      padding: 20px 0;
+      border-bottom: 2px solid $grayLighter;
+
+      .icon {
+        display: block;
+        font-size: 50px;
+        padding-bottom: 5px;
+      }
+      span {
+        display: block;
+      }
+    }
+
     /**
       * Special styles
     **/
@@ -181,6 +197,9 @@
           padding-left: 0;
           padding-right: 0;
         }
+      }
+      .empty-list {
+        border: none;
       }
   }
 

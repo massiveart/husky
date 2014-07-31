@@ -9172,51 +9172,72 @@ a.btn-black, a.btn-highlight {
 .husky-datagrid.loading {
   min-height: 150px;
 }
-/* line 154, ../scss/modules/datagrid.scss */
+/* line 149, ../scss/modules/datagrid.scss */
+.husky-datagrid .empty-list {
+  text-align: center;
+  color: #cccccc;
+  padding: 20px 0;
+  border-bottom: 2px solid #cccccc;
+}
+/* line 155, ../scss/modules/datagrid.scss */
+.husky-datagrid .empty-list .icon {
+  display: block;
+  font-size: 50px;
+  padding-bottom: 5px;
+}
+/* line 160, ../scss/modules/datagrid.scss */
+.husky-datagrid .empty-list span {
+  display: block;
+}
+/* line 170, ../scss/modules/datagrid.scss */
 .husky-datagrid.fullwidth th:first-child,
 .husky-datagrid.fullwidth td:first-child {
   padding-left: 50px;
 }
-/* line 158, ../scss/modules/datagrid.scss */
+/* line 174, ../scss/modules/datagrid.scss */
 .husky-datagrid.fullwidth .pagination-wrapper {
   padding-left: 40px;
   padding-right: 30px;
 }
-/* line 162, ../scss/modules/datagrid.scss */
+/* line 178, ../scss/modules/datagrid.scss */
 .husky-datagrid.fullwidth .overflow + .pagination-wrapper {
   padding-right: 0;
 }
-/* line 167, ../scss/modules/datagrid.scss */
+/* line 183, ../scss/modules/datagrid.scss */
 .husky-datagrid.white-box {
   padding: 0 20px;
   overflow: hidden;
 }
-/* line 170, ../scss/modules/datagrid.scss */
+/* line 186, ../scss/modules/datagrid.scss */
 .husky-datagrid.white-box .table-container {
   margin-bottom: -1px;
 }
-/* line 174, ../scss/modules/datagrid.scss */
+/* line 190, ../scss/modules/datagrid.scss */
 .husky-datagrid.white-box tbody tr:first-child {
   height: 49px;
 }
-/* line 177, ../scss/modules/datagrid.scss */
+/* line 193, ../scss/modules/datagrid.scss */
 .husky-datagrid.white-box tbody tr:last-child {
   border-bottom: none;
 }
-/* line 180, ../scss/modules/datagrid.scss */
+/* line 196, ../scss/modules/datagrid.scss */
 .husky-datagrid.white-box tbody td {
   padding-left: 0;
   padding-right: 0;
 }
-/* line 187, ../scss/modules/datagrid.scss */
+/* line 201, ../scss/modules/datagrid.scss */
+.husky-datagrid.white-box .empty-list {
+  border: none;
+}
+/* line 206, ../scss/modules/datagrid.scss */
 .husky-datagrid.minimal {
   padding: 0;
 }
-/* line 190, ../scss/modules/datagrid.scss */
+/* line 209, ../scss/modules/datagrid.scss */
 .husky-datagrid.minimal tbody td.thumb {
   width: 1px;
 }
-/* line 192, ../scss/modules/datagrid.scss */
+/* line 211, ../scss/modules/datagrid.scss */
 .husky-datagrid.minimal tbody td.thumb img {
   height: 30px;
 }
