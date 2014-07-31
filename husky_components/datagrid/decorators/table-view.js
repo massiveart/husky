@@ -889,6 +889,7 @@ define(function() {
          */
         addRecord: function(row) {
             var $row, $firstInputField, $checkbox, $parent;
+            this.removeEmptyListElement();
             // check for other element types when implemented
             $row = this.sandbox.dom.$(this.prepareTableRow(row, true));
 
@@ -1574,6 +1575,13 @@ define(function() {
 
             // delegate sorting to datagrid
             this.datagrid.sortGrid.call(this.datagrid, attribute, direction);
-        }
+        },
+
+        /**
+         * Removes the dom-element which indicates the list as empty
+         */
+        removeEmptyListElement: function() {
+            this.sandbox.dom.remove(this.sandbox.dom.find('.empty-list', this.$el));
+        },
     };
 });
