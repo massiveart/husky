@@ -183,6 +183,7 @@
  * @param {Boolean} [options.hideChildrenAtBeginning] if true children get hidden, if all children are loaded at the beginning
  * @param {String|Number|Null} [options.openChildId] the id of the children to open all parents for. (only relevant in a child-list)
  * @param {String|Number|Null} [options.cssClass] css-class to give the the components element. (e.g. &quot;white-box&quot;)
+ * @param {Boolean} [options.highlightSelected] highlights the clicked row when selected
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -204,6 +205,7 @@ define(function() {
                 type: &#x27;checkbox&#x27;,      // checkbox, radio button
                 inFirstCell: false
             },
+            noItemsText: &#x27;This list is empty&#x27;,
             validation: false, // TODO does not work for added rows
             validationDebug: false,
             addRowTop: true,
@@ -215,6 +217,7 @@ define(function() {
             showHead: true,
             hideChildrenAtBeginning: true,
             openChildId: null,
+            highlightSelected: false,
             icons: []
         },
 
@@ -247,6 +250,7 @@ define(function() {
             childrenIndentClass: &#x27;child-indent&#x27;,
             childrenLoadedClass: &#x27;children-loaded&#x27;,
             noHeadClass: &#x27;no-head&#x27;,
+            selected: &#x27;selected&#x27;,
             childrenIndentPx: 25 //px
         },
 
@@ -288,6 +292,13 @@ define(function() {
                 &#x27;&lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
                 &#x27;&lt;/div&gt;&#x27;,
                 &#x27;&lt;/td&gt;&#x27;
+            ].join(&#x27;&#x27;),
+
+            empty: [
+                &#x27;&lt;div class=&quot;empty-list&quot;&gt;&#x27;,
+                &#x27;   &lt;div class=&quot;fa-coffee icon&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;   &lt;span&gt;&lt;%= text %&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;)
         },
 
@@ -440,7 +451,7 @@ define(function() {
             }
             // remove inline-styles
             this.sandbox.dom.removeAttr(this.$el, &#x27;style&#x27;);
-            this.sandbox.dom.remove(this.$tableContainer);
+            this.sandbox.dom.empty(this.$el);
         },
 
         /**
@@ -548,6 +559,22 @@ define(function() {
         },
 
         /**
+         * Highlights clicked row and removes highlighting from the previously
+         * highlighted
+         * @param event
+         */
+        highlightRow: function(event) {
+            var $row = event.currentTarget,
+                $selectedRow = this.sandbox.dom.find(
+                        &#x27;tbody tr.&#x27; + constants.selected,
+                    this.$el
+                );
+
+            this.sandbox.dom.removeClass($selectedRow, constants.selected);
+            this.sandbox.dom.addClass($row, constants.selected);
+        },
+
+        /**
          * emits radio-clicked event and stops event propagation
          */
         radioClickedCallback: function(event) {
@@ -563,11 +590,24 @@ define(function() {
          * Emits the row-clicked event
          */
         emitRowClickedEvent: function(event) {
-            var id = this.sandbox.dom.$(event.currentTarget).data(&#x27;id&#x27;);
-            if (!!id) {
-                this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
-            } else {
-                this.datagrid.emitItemClickedEvent.call(this.datagrid, event);
+            if (!this.rowClicked) {
+                this.rowClicked = true;
+                var id = this.sandbox.dom.$(event.currentTarget).data(&#x27;id&#x27;);
+
+                if (!!this.options.highlightSelected) {
+                    this.highlightRow(event);
+                }
+
+                if (!!id) {
+                    this.datagrid.emitItemClickedEvent.call(this.datagrid, id);
+                } else {
+                    this.datagrid.emitItemClickedEvent.call(this.datagrid, event);
+                }
+
+                // set row clicked back to prevent multiple emits on double click
+                setTimeout(function(){
+                    this.rowClicked = false;
+                }.bind(this), 500);
             }
         },
 
@@ -587,6 +627,7 @@ define(function() {
             this.topTabIndex = this.options.startTabIndex || 50000;
             this.contentMarginRight = 0;
             this.contentPaddings = 0;
+            this.rowClicked = false;
         },
 
         /**
@@ -757,19 +798,23 @@ define(function() {
         prepareTableRows: function($container) {
             var $row, $parent;
 
-            if (!!this.data.embedded) {
-                this.data.embedded.forEach(function(row) {
+            if (!!this.data.embedded &amp;&amp; this.data.embedded.length &gt; 0) {
+                this.sandbox.util.foreach(this.data.embedded, function(row) {
                     $parent = null;
                     $row = this.prepareTableRow(row, false);
                     if (!!row.parent) {
                         $parent = this.sandbox.dom.find(&#x27;tr[data-id=&quot;&#x27; + row.parent + &#x27;&quot;]&#x27;, $container);
                     }
-                    if (!!$parent) {
+                    if (!!$parent &amp;&amp; !!$parent.length) {
                         this.insertChild($row, $parent, row.parent, this.options.hideChildrenAtBeginning);
                     } else {
                         this.sandbox.dom.append($container, $row);
                     }
                 }.bind(this));
+            } else {
+                this.sandbox.dom.append(this.$el, this.sandbox.util.template(templates.empty)({
+                    text: this.sandbox.translate(this.options.noItemsText)
+                }));
             }
         },
 
@@ -963,10 +1008,9 @@ define(function() {
          * Adds configured icons to a cell
          * @param $container {Object} the dom-object to append the icons to
          * @param column {String} the identifier of the column
-         * @param row {Object} the row object
          * @
          */
-        addIconsToCell: function($container, column, row) {
+        addIconsToCell: function($container, column) {
             if (!!this.options.icons) {
                 var i, length, $icon;
 
@@ -1003,6 +1047,7 @@ define(function() {
          */
         addRecord: function(row) {
             var $row, $firstInputField, $checkbox, $parent;
+            this.removeEmptyListElement();
             // check for other element types when implemented
             $row = this.sandbox.dom.$(this.prepareTableRow(row, true));
 
@@ -1614,7 +1659,7 @@ define(function() {
         openAllParents: function(id) {
             var $child = this.sandbox.dom.find(&#x27;tr[data-id=&quot;&#x27;+ id +&#x27;&quot;]&#x27;, this.$tableContainer),
                 parentId = this.sandbox.dom.data($child, &#x27;parent&#x27;),
-                $parent = this.sandbox.dom.find(&#x27;tr[data-id=&quot;&#x27;+ parentId +&#x27;&quot;]&#x27;, this.$tableContainer)
+                $parent = this.sandbox.dom.find(&#x27;tr[data-id=&quot;&#x27;+ parentId +&#x27;&quot;]&#x27;, this.$tableContainer);
             if (!!parentId &amp;&amp; !!$parent) {
                 if (!!this.sandbox.dom.data($parent, &#x27;parent&#x27;)) {
                     this.openAllParents(parentId);
@@ -1688,7 +1733,14 @@ define(function() {
 
             // delegate sorting to datagrid
             this.datagrid.sortGrid.call(this.datagrid, attribute, direction);
-        }
+        },
+
+        /**
+         * Removes the dom-element which indicates the list as empty
+         */
+        removeEmptyListElement: function() {
+            this.sandbox.dom.remove(this.sandbox.dom.find(&#x27;.empty-list&#x27;, this.$el));
+        },
     };
 });
 

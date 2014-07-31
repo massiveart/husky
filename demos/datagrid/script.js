@@ -38,7 +38,8 @@ require(['lib/husky'], function(Husky) {
                             addRowTop: true,
                             showHead: true, // false to hide table-head
                             //fullWidth: true, // uncomment for full-width mode
-                            contentContainer: '#content'
+                            contentContainer: '#content',
+                            highlightSelected: true
                         },
                         thumbnail: {
                         }
@@ -365,6 +366,74 @@ require(['lib/husky'], function(Husky) {
                             }
                         }
                     },
+                    matchings: [
+                        {
+                            name: 'name',
+                            sortable: true,
+                            content: 'Name'
+                        },
+                        {
+                            name: 'id',
+                            disabled: true
+                        },
+                        {
+                            name: 'children',
+                            disabled: true
+                        },
+                        {
+                            name: 'parent',
+                            disabled: true
+                        }
+                    ]
+                }
+            },
+            {
+                name: 'datagrid@husky',
+                options: {
+                    url: 'http://husky.lo:7878/admin/api/datagrid/empty',
+                    el: '#empty-datagrid',
+                    instanceName: 'empty-datagrid',
+                    pagination: false,
+                    resultKey: 'items',
+                    viewOptions: {
+                        table: {
+                            showHead: false,
+                            cssClass: 'white-box',
+                            selectItem: {
+                                type: 'checkbox',
+                                inFirstCell: true
+                            }
+                        }
+                    },
+                    matchings: [
+                        {
+                            name: 'name',
+                            sortable: true,
+                            content: 'Name'
+                        },
+                        {
+                            name: 'id',
+                            disabled: true
+                        },
+                        {
+                            name: 'children',
+                            disabled: true
+                        },
+                        {
+                            name: 'parent',
+                            disabled: true
+                        }
+                    ]
+                }
+            },
+            {
+                name: 'datagrid@husky',
+                options: {
+                    url: 'http://husky.lo:7878/admin/api/datagrid/empty',
+                    el: '#empty-datagrid2',
+                    instanceName: 'empty-datagrid2',
+                    pagination: false,
+                    resultKey: 'items',
                     matchings: [
                         {
                             name: 'name',

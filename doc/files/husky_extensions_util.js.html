@@ -202,14 +202,11 @@ define(function() {
             app.core.util.load = function(url, data) {
                 var deferred = new app.sandbox.data.deferred();
 
-                app.logger.log(&#x27;load&#x27;, url);
-
                 app.sandbox.util.ajax({
                     url: url,
                     data: data || null,
 
                     success: function(data, textStatus) {
-                        app.logger.log(&#x27;data loaded&#x27;, data, textStatus);
                         deferred.resolve(data, textStatus);
                     }.bind(this),
 
@@ -226,8 +223,6 @@ define(function() {
             app.core.util.save = function(url, type, data) {
                 var deferred = new app.sandbox.data.deferred();
 
-                app.logger.log(&#x27;save&#x27;, url);
-
                 app.sandbox.util.ajax({
 
                     headers: {
@@ -239,7 +234,6 @@ define(function() {
                     data: JSON.stringify(data),
 
                     success: function(data, textStatus) {
-                        app.logger.log(&#x27;data saved&#x27;, data, textStatus);
                         deferred.resolve(data, textStatus);
                     }.bind(this),
 

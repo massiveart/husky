@@ -9,7 +9,6 @@
     top: 0;
     left: 50%;
     background-color: $white;
-    border: 1px solid $grayLight;
     z-index: 1000;
     border-radius: $borderRadius;
     @include standard-box-shadow;
@@ -28,7 +27,7 @@
         width: $overlayContainerWidthWide;
 
         .slides .slide {
-            width: $overlayContainerWidthWide - 2;
+            width: $overlayContainerWidthWide;
         }
     }
 
@@ -36,7 +35,7 @@
         width: $overlayContainerMediumWidth;
 
         .slides .slide {
-            width: $overlayContainerMediumWidth - 2;
+            width: $overlayContainerMediumWidth;
         }
     }
 
@@ -86,7 +85,7 @@
 
         .slide {
             float: left;
-            width: $overlayContainerWidth - 2;
+            width: $overlayContainerWidth;
         }
     }
 }
