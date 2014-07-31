@@ -20,6 +20,7 @@
         padding-left: 0;
         padding-right: 0;
         text-align: center;
+        min-width: 40px;
     }
     &.action {
         background-color: $highlightColor;
