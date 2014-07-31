@@ -995,10 +995,10 @@ define([], function() {
          * to their initial state or re-initializes them
          */
         resetResizeVariables: function() {
-            this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
             this.overlay.collapsed = false;
             this.sandbox.dom.css(this.overlay.$content, {'overflow': 'visible'});
             this.sandbox.dom.height(this.overlay.$content, '');
+            this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
             this.setSlidesHeight();
         },
 
