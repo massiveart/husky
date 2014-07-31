@@ -40673,6 +40673,8 @@ define('__component__$overlay@husky',[], function() {
             this.overlay.collapsed = false;
             this.sandbox.dom.css(this.overlay.$content, {'overflow': 'visible'});
             this.sandbox.dom.height(this.overlay.$content, '');
+            this.sandbox.dom.css(this.overlay.$el, {'top': ''});
+            this.sandbox.dom.css(this.overlay.$el, {'left': ''});
             this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
             this.setSlidesHeight();
         },
