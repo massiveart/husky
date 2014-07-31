@@ -195,6 +195,14 @@
             },
 
             /**
+             * raised after a view has been rendered
+             * @event husky.datagrid.initialized
+             */
+                VIEW_RENDERED = function() {
+                return this.createEventName('view.rendered');
+            },
+
+            /**
              * raised when the the current page changes
              * @event husky.datagrid.page.change
              */
@@ -531,7 +539,7 @@
                     this.sandbox.logger.log('load data from array');
                     this.data = this.options.data;
 
-                    this.gridViews[this.viewId].render(this.data, this.$element);
+                    this.renderView();
                     if (!!this.paginations[this.paginationId]) {
                         this.paginations[this.paginationId].render(this.data, this.$element);
                     }
@@ -583,10 +591,18 @@
             render: function() {
                 this.preSelectItems();
 
-                this.gridViews[this.viewId].render(this.data, this.$element);
+                this.renderView();
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].render(this.data, this.$element);
                 }
+            },
+
+            /**
+             * Renderes the current view
+             */
+            renderView: function() {
+                this.gridViews[this.viewId].render(this.data, this.$element);
+                this.sandbox.emit(VIEW_RENDERED.call(this));
             },
 
             /**
@@ -636,7 +652,7 @@
              */
             rerenderView: function() {
                 this.gridViews[this.viewId].destroy();
-                this.gridViews[this.viewId].render(this.data, this.$element);
+                this.renderView();
             },
 
             /**
