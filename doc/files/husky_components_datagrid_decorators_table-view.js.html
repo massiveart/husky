@@ -517,9 +517,11 @@ define(function() {
             );
 
             // calls the radio-clicked event and stops further event-propagation
+            // needs tbody selector to be called before the general listener on
+            // on checkboxes and radio
             this.sandbox.dom.on(
-                this.sandbox.dom.find(&#x27;.custom-radio.custom-filter&#x27;,this.$tableContainer), &#x27;click&#x27;,
-                this.radioClickedCallback.bind(this)
+                this.sandbox.dom.find(&#x27;tbody&#x27;, this.$tableContainer), &#x27;click&#x27;,
+                this.radioClickedCallback.bind(this), &#x27;.custom-radio.custom-filter&#x27;
             );
 
             this.sandbox.dom.on(this.$tableContainer, &#x27;click&#x27;, function(event) {
