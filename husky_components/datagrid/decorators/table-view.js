@@ -352,8 +352,8 @@ define(function() {
 
             // calls the radio-clicked event and stops further event-propagation
             this.sandbox.dom.on(
-                this.sandbox.dom.find('.custom-radio.custom-filter',this.$tableContainer), 'click',
-                this.radioClickedCallback.bind(this)
+                this.$tableContainer, 'click',
+                this.radioClickedCallback.bind(this), '.custom-radio.custom-filter'
             );
 
             this.sandbox.dom.on(this.$tableContainer, 'click', function(event) {
