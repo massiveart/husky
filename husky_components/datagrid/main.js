@@ -492,6 +492,7 @@
                 this.paginationId = this.options.pagination;
 
                 this.$loader = null;
+                this.isLoading = false;
 
                 // append datagrid to html element
                 this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
@@ -528,10 +529,7 @@
 
                     this.loading();
                     this.load({
-                        url: url,
-                        success: function() {
-                            this.stopLoading();
-                        }.bind(this)
+                        url: url
                     });
 
                 } else if (!!this.options.data.items) {
@@ -674,6 +672,9 @@
 
                 this.sandbox.util.load(this.currentUrl, params.data)
                     .then(function(response) {
+                        if (this.isLoading === true) {
+                            this.stopLoading();
+                        }
                         this.destroy();
                         this.parseData(response);
                         this.render();
@@ -715,12 +716,14 @@
                 }
 
                 this.sandbox.dom.show(this.$loader);
+                this.isLoading = true;
             },
 
             /**
              * Hides the loading icon
              */
             stopLoading: function() {
+                this.isLoading = false;
                 this.sandbox.dom.hide(this.$loader);
                 this.sandbox.dom.removeClass(this.$element, 'loading');
 
@@ -1304,7 +1307,6 @@
                 this.load({
                     url: url,
                     success: function() {
-                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
@@ -1460,7 +1462,6 @@
                     this.load({
                         url: url,
                         success: function() {
-                            this.stopLoading();
                             this.sandbox.emit(UPDATED.call(this));
                         }.bind(this)
                     });
@@ -1538,7 +1539,6 @@
                     this.load({
                         url: url,
                         success: function() {
-                            this.stopLoading();
                             this.sandbox.emit(UPDATED.call(this));
                         }.bind(this)
                     });

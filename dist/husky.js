@@ -28744,9 +28744,11 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             );
 
             // calls the radio-clicked event and stops further event-propagation
+            // needs tbody selector to be called before the general listener on
+            // on checkboxes and radio
             this.sandbox.dom.on(
-                this.sandbox.dom.find('.custom-radio.custom-filter',this.$tableContainer), 'click',
-                this.radioClickedCallback.bind(this)
+                this.sandbox.dom.find('tbody', this.$tableContainer), 'click',
+                this.radioClickedCallback.bind(this), '.custom-radio.custom-filter'
             );
 
             this.sandbox.dom.on(this.$tableContainer, 'click', function(event) {
@@ -31329,6 +31331,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 this.paginationId = this.options.pagination;
 
                 this.$loader = null;
+                this.isLoading = false;
 
                 // append datagrid to html element
                 this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
@@ -31365,10 +31368,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
                     this.loading();
                     this.load({
-                        url: url,
-                        success: function() {
-                            this.stopLoading();
-                        }.bind(this)
+                        url: url
                     });
 
                 } else if (!!this.options.data.items) {
@@ -31511,6 +31511,9 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
                 this.sandbox.util.load(this.currentUrl, params.data)
                     .then(function(response) {
+                        if (this.isLoading === true) {
+                            this.stopLoading();
+                        }
                         this.destroy();
                         this.parseData(response);
                         this.render();
@@ -31552,12 +31555,14 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 }
 
                 this.sandbox.dom.show(this.$loader);
+                this.isLoading = true;
             },
 
             /**
              * Hides the loading icon
              */
             stopLoading: function() {
+                this.isLoading = false;
                 this.sandbox.dom.hide(this.$loader);
                 this.sandbox.dom.removeClass(this.$element, 'loading');
 
@@ -32141,7 +32146,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 this.load({
                     url: url,
                     success: function() {
-                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
@@ -32297,7 +32301,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                     this.load({
                         url: url,
                         success: function() {
-                            this.stopLoading();
                             this.sandbox.emit(UPDATED.call(this));
                         }.bind(this)
                     });
@@ -32375,7 +32378,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                     this.load({
                         url: url,
                         success: function() {
-                            this.stopLoading();
                             this.sandbox.emit(UPDATED.call(this));
                         }.bind(this)
                     });
