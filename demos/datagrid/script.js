@@ -29,7 +29,7 @@ require(['lib/husky'], function(Husky) {
                     viewOptions: {
                         table: {
                             selectItem: {
-                                type: 'radio'
+                                type: 'checkbox'
                             },
                             className: "myClass",
                             removeRow: true,
@@ -49,9 +49,6 @@ require(['lib/husky'], function(Husky) {
                     searchFields: ['fullName'],
                     columnOptionsInstanceName: '',
                     el: '#datagrid',
-                    contentFilters:{
-                      content2: 'radio'
-                    },
                     matchings: [
                         {
                             content: 'Content 1',
