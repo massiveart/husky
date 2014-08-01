@@ -195,6 +195,14 @@
             },
 
             /**
+             * raised after a view has been rendered
+             * @event husky.datagrid.initialized
+             */
+                VIEW_RENDERED = function() {
+                return this.createEventName('view.rendered');
+            },
+
+            /**
              * raised when the the current page changes
              * @event husky.datagrid.page.change
              */
@@ -484,6 +492,7 @@
                 this.paginationId = this.options.pagination;
 
                 this.$loader = null;
+                this.isLoading = false;
 
                 // append datagrid to html element
                 this.$element = this.sandbox.dom.$('<div class="husky-datagrid"/>');
@@ -520,10 +529,7 @@
 
                     this.loading();
                     this.load({
-                        url: url,
-                        success: function() {
-                            this.stopLoading();
-                        }.bind(this)
+                        url: url
                     });
 
                 } else if (!!this.options.data.items) {
@@ -531,7 +537,7 @@
                     this.sandbox.logger.log('load data from array');
                     this.data = this.options.data;
 
-                    this.gridViews[this.viewId].render(this.data, this.$element);
+                    this.renderView();
                     if (!!this.paginations[this.paginationId]) {
                         this.paginations[this.paginationId].render(this.data, this.$element);
                     }
@@ -583,10 +589,18 @@
             render: function() {
                 this.preSelectItems();
 
-                this.gridViews[this.viewId].render(this.data, this.$element);
+                this.renderView();
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].render(this.data, this.$element);
                 }
+            },
+
+            /**
+             * Renderes the current view
+             */
+            renderView: function() {
+                this.gridViews[this.viewId].render(this.data, this.$element);
+                this.sandbox.emit(VIEW_RENDERED.call(this));
             },
 
             /**
@@ -636,7 +650,7 @@
              */
             rerenderView: function() {
                 this.gridViews[this.viewId].destroy();
-                this.gridViews[this.viewId].render(this.data, this.$element);
+                this.renderView();
             },
 
             /**
@@ -658,6 +672,9 @@
 
                 this.sandbox.util.load(this.currentUrl, params.data)
                     .then(function(response) {
+                        if (this.isLoading === true) {
+                            this.stopLoading();
+                        }
                         this.destroy();
                         this.parseData(response);
                         this.render();
@@ -699,12 +716,14 @@
                 }
 
                 this.sandbox.dom.show(this.$loader);
+                this.isLoading = true;
             },
 
             /**
              * Hides the loading icon
              */
             stopLoading: function() {
+                this.isLoading = false;
                 this.sandbox.dom.hide(this.$loader);
                 this.sandbox.dom.removeClass(this.$element, 'loading');
 
@@ -1288,7 +1307,6 @@
                 this.load({
                     url: url,
                     success: function() {
-                        this.stopLoading();
                         this.sandbox.emit(UPDATED.call(this));
                     }.bind(this)
                 });
@@ -1444,7 +1462,6 @@
                     this.load({
                         url: url,
                         success: function() {
-                            this.stopLoading();
                             this.sandbox.emit(UPDATED.call(this));
                         }.bind(this)
                     });
@@ -1522,7 +1539,6 @@
                     this.load({
                         url: url,
                         success: function() {
-                            this.stopLoading();
                             this.sandbox.emit(UPDATED.call(this));
                         }.bind(this)
                     });

@@ -205,6 +205,7 @@ define(function() {
                 type: &#x27;checkbox&#x27;,      // checkbox, radio button
                 inFirstCell: false
             },
+            noItemsText: &#x27;This list is empty&#x27;,
             validation: false, // TODO does not work for added rows
             validationDebug: false,
             addRowTop: true,
@@ -291,6 +292,13 @@ define(function() {
                 &#x27;&lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
                 &#x27;&lt;/div&gt;&#x27;,
                 &#x27;&lt;/td&gt;&#x27;
+            ].join(&#x27;&#x27;),
+
+            empty: [
+                &#x27;&lt;div class=&quot;empty-list&quot;&gt;&#x27;,
+                &#x27;   &lt;div class=&quot;fa-coffee icon&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;   &lt;span&gt;&lt;%= text %&gt;&lt;/span&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;)
         },
 
@@ -443,7 +451,7 @@ define(function() {
             }
             // remove inline-styles
             this.sandbox.dom.removeAttr(this.$el, &#x27;style&#x27;);
-            this.sandbox.dom.remove(this.$tableContainer);
+            this.sandbox.dom.empty(this.$el);
         },
 
         /**
@@ -790,8 +798,8 @@ define(function() {
         prepareTableRows: function($container) {
             var $row, $parent;
 
-            if (!!this.data.embedded) {
-                this.data.embedded.forEach(function(row) {
+            if (!!this.data.embedded &amp;&amp; this.data.embedded.length &gt; 0) {
+                this.sandbox.util.foreach(this.data.embedded, function(row) {
                     $parent = null;
                     $row = this.prepareTableRow(row, false);
                     if (!!row.parent) {
@@ -803,6 +811,10 @@ define(function() {
                         this.sandbox.dom.append($container, $row);
                     }
                 }.bind(this));
+            } else {
+                this.sandbox.dom.append(this.$el, this.sandbox.util.template(templates.empty)({
+                    text: this.sandbox.translate(this.options.noItemsText)
+                }));
             }
         },
 
@@ -1035,6 +1047,7 @@ define(function() {
          */
         addRecord: function(row) {
             var $row, $firstInputField, $checkbox, $parent;
+            this.removeEmptyListElement();
             // check for other element types when implemented
             $row = this.sandbox.dom.$(this.prepareTableRow(row, true));
 
@@ -1720,7 +1733,14 @@ define(function() {
 
             // delegate sorting to datagrid
             this.datagrid.sortGrid.call(this.datagrid, attribute, direction);
-        }
+        },
+
+        /**
+         * Removes the dom-element which indicates the list as empty
+         */
+        removeEmptyListElement: function() {
+            this.sandbox.dom.remove(this.sandbox.dom.find(&#x27;.empty-list&#x27;, this.$el));
+        },
     };
 });
 

@@ -22,6 +22,10 @@
             "verbs": ["GET"],
             "mockFile": "datagrid/sort.json"
         },
+        "admin/api/datagrid/empty": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/empty.json"
+        },
         "admin/api/datagrid/search": {
             "verbs": ["GET"],
             "mockFile": "datagrid/search.json"
