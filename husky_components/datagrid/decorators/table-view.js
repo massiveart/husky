@@ -359,7 +359,7 @@ define(function() {
             );
 
             // calls the radio-clicked event and stops further event-propagation
-            // needs tr selector to be called before the general listener on
+            // needs tbody selector to be called before the general listener on
             // on checkboxes and radio
             this.sandbox.dom.on(
                 this.sandbox.dom.find('tbody', this.$tableContainer), 'click',
