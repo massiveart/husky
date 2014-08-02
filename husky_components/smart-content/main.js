@@ -999,7 +999,7 @@ define([], function() {
             );
 
             //data-source
-            temp = this.sandbox.dom.data(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent), 'id')
+            temp = this.sandbox.dom.data(this.sandbox.dom.find(constants.dataSourceSelector, this.$overlayContent), 'id');
             if (temp !== undefined) {
                 this.overlayData.dataSource = temp;
             }
