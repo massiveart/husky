@@ -37988,9 +37988,9 @@ define('__component__$column-navigation@husky',[], function() {
         dropdownItemClicked: function(item) {
             if (!!this.selected[this.lastHoveredColumn]) {
                 if (!!item.callback) {
-                    item.callback(item, this.selected[this.lastHoveredColumn]);
+                    item.callback(item, this.selected[this.lastHoveredColumn], this.columns[this.lastHoveredColumn]);
                 } else {
-                    this.sandbox.emit(SETTINGS.call(this), item, this.selected[this.lastHoveredColumn]);
+                    this.sandbox.emit(SETTINGS.call(this), item, this.selected[this.lastHoveredColumn], this.columns[this.lastHoveredColumn]);
                 }
             }
         },
