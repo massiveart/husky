@@ -227,7 +227,9 @@ define(function() {
 
         constants = {
             collapsedWidth: 50,
-            dropdownToggleWidth: 5 //px
+            dropdownToggleWidth: 5, //px
+            loaderWhiteColor: &#x27;white&#x27;,
+            loaderDarkColor: &#x27;#cccccc&#x27;
         },
 
         /** templates container */
@@ -520,7 +522,8 @@ define(function() {
             var item = this.items[id],
                 $item = this.sandbox.dom.find(&#x27;[data-id=&quot;&#x27; + id + &#x27;&quot;]&#x27;, this.$el),
                 $itemLink = this.sandbox.dom.find(&#x27;a&#x27;, $item),
-                $loader, size;
+                $loader, size,
+                color = constants.loaderWhiteColor;
 
             if (item.loading) {
                 return;
@@ -538,12 +541,16 @@ define(function() {
             $loader = this.sandbox.dom.createElement(&#x27;&lt;span class=&quot;item-loader&quot;&gt;&lt;/span&gt;&#x27;);
             this.sandbox.dom.append($item, $loader);
 
+            if (this.sandbox.dom.hasClass($item, &#x27;highlight-white&#x27;)) {
+                color = constants.loaderDarkColor;
+            }
+
             this.sandbox.start([{
                 name: &#x27;loader@husky&#x27;,
                 options: {
                     el: $loader,
                     size: size,
-                    color: &#x27;white&#x27;
+                    color: color
                 }
             }]);
         },

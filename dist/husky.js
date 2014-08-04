@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -33536,7 +33537,9 @@ define('__component__$toolbar@husky',[],function() {
 
         constants = {
             collapsedWidth: 50,
-            dropdownToggleWidth: 5 //px
+            dropdownToggleWidth: 5, //px
+            loaderWhiteColor: 'white',
+            loaderDarkColor: '#cccccc'
         },
 
         /** templates container */
@@ -33829,7 +33832,8 @@ define('__component__$toolbar@husky',[],function() {
             var item = this.items[id],
                 $item = this.sandbox.dom.find('[data-id="' + id + '"]', this.$el),
                 $itemLink = this.sandbox.dom.find('a', $item),
-                $loader, size;
+                $loader, size,
+                color = constants.loaderWhiteColor;
 
             if (item.loading) {
                 return;
@@ -33847,12 +33851,16 @@ define('__component__$toolbar@husky',[],function() {
             $loader = this.sandbox.dom.createElement('<span class="item-loader"></span>');
             this.sandbox.dom.append($item, $loader);
 
+            if (this.sandbox.dom.hasClass($item, 'highlight-white')) {
+                color = constants.loaderDarkColor;
+            }
+
             this.sandbox.start([{
                 name: 'loader@husky',
                 options: {
                     el: $loader,
                     size: size,
-                    color: 'white'
+                    color: color
                 }
             }]);
         },
@@ -47989,4 +47997,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-
