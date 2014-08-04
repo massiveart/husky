@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -36626,7 +36625,7 @@ define('__component__$select@husky',[], function() {
                 this.selectedElementsValues = selectedValues;
             }
 
-            this.sandbox.util.foreach(this.$list, function($el) {
+            this.sandbox.util.foreach(this.$list.children(), function($el) {
                 id = this.sandbox.dom.data($el, 'id') || '';
                 $checkbox = this.sandbox.dom.find('input[type=checkbox]', $el);
                 if (this.selectedElements.indexOf(id) > -1) {
@@ -48002,3 +48001,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
