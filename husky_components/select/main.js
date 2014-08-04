@@ -212,23 +212,23 @@ define([], function() {
             return 'data-changed';
         },
         /**
-         * Saved event
-         * @event husky.select.[instanceName].saved
+         * Save event for elements to save
+         * @event husky.select.[instanceName].save
          */
-            EVENT_SAVED = function() {
-            return getEventName.call(this, 'saved');
+            EVENT_SAVE = function() {
+            return getEventName.call(this, 'save');
         },
 
         /**
-         * Deleted event
-         * @event husky.select.[instanceName].deleted
+         * Deleted event for elements to delete
+         * @event husky.select.[instanceName].delete
          */
-            EVENT_DELETED = function() {
-            return getEventName.call(this, 'deleted');
+            EVENT_DELETE = function() {
+            return getEventName.call(this, 'delete');
         },
 
         /**
-         * Revert event
+         * Revert event for elements to be removed from the select
          * @event husky.select.[instanceName].revert
          */
             EVENT_REVERT = function() {
@@ -678,7 +678,7 @@ define([], function() {
                     this.parseDataFromDom(domData, true));
                 this.options.data = mergeData.slice(0);
                 this.updateDropdown(mergeData, this.selectedElements);
-                this.sandbox.emit(EVENT_SAVED.call(this), changedData);
+                this.sandbox.emit(EVENT_SAVE.call(this), changedData);
             }
         },
 
@@ -770,7 +770,7 @@ define([], function() {
                 this.sandbox.util.each(this.elementsToRemove, function(index, el) {
                     this.deleteItem(el);
                 }.bind(this));
-                this.sandbox.emit(EVENT_DELETED.call(this), this.elementsToRemove);
+                this.sandbox.emit(EVENT_DELETE.call(this), this.elementsToRemove);
                 this.elementsToRemove = [];
                 this.$elementsToRemove = [];
             }

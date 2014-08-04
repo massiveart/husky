@@ -9666,25 +9666,25 @@
         {
             "file": "husky_components/select/main.js",
             "line": 214,
-            "description": "Saved event",
+            "description": "Save event for elements to save",
             "itemtype": "event",
-            "name": "husky.select.[instanceName].saved",
+            "name": "husky.select.[instanceName].save",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
             "line": 222,
-            "description": "Deleted event",
+            "description": "Deleted event for elements to delete",
             "itemtype": "event",
-            "name": "husky.select.[instanceName].deleted",
+            "name": "husky.select.[instanceName].delete",
             "class": "Select",
             "module": "husky/components/toolbar"
         },
         {
             "file": "husky_components/select/main.js",
             "line": 230,
-            "description": "Revert event",
+            "description": "Revert event for elements to be removed from the select",
             "itemtype": "event",
             "name": "husky.select.[instanceName].revert",
             "class": "Select",
