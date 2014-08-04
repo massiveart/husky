@@ -680,7 +680,12 @@ define([], function() {
             this.overlay.slides[slide] = this.sandbox.util.extend({}, internalSlideDefaults);
 
             this.overlay.slides[slide].$el = this.sandbox.dom.createElement(
-                this.sandbox.util.template(templates.slideSkeleton, this.slides[slide])
+                this.sandbox.util.template(templates.slideSkeleton, {
+                    title: this.sandbox.util.cropMiddle(this.slides[slide].title, 38),
+                    closeIcon: this.slides[slide].closeIcon,
+                    index: this.slides[slide].index,
+                    cssClass: this.slides[slide].cssClass
+                })
             );
             this.overlay.slides[slide].$close = this.sandbox.dom.find(constants.closeSelector, this.overlay.slides[slide].$el);
             this.overlay.slides[slide].$footer = this.sandbox.dom.find(constants.footerSelector, this.overlay.slides[slide].$el);

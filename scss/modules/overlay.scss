@@ -101,7 +101,10 @@
         font-size: 23px;
         vertical-align: text-top;
         display: block;
-        padding: 15px 40px 10px 20px;
+        padding: 15px 0 10px 20px;
+        margin-right: 40px;
+        white-space: nowrap;
+        overflow: hidden;
     }
 
     .close-button {
