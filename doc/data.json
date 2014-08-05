@@ -1751,6 +1751,12 @@
                             "optional": true
                         },
                         {
+                            "name": "afterDropCallback",
+                            "description": "callback which gets called after a file got dropped. Has to return a promise. If the promise gets resolved the file gets uploaded",
+                            "type": "Function",
+                            "optional": true
+                        },
+                        {
                             "name": "pluginOptions",
                             "description": "Options to pass to the dropzone-plugin to completely override all options set by husky. Use with care.",
                             "type": "Object",
@@ -7651,13 +7657,13 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 71,
+            "line": 73,
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 100,
+            "line": 102,
             "description": "namespace for events",
             "type": "{string}",
             "class": "Dropzone",
@@ -7665,7 +7671,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 106,
+            "line": 108,
             "description": "raised after initialization process",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.initialize",
@@ -7674,7 +7680,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 114,
+            "line": 116,
             "description": "raised before sending a file",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.uploading",
@@ -7690,7 +7696,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 123,
+            "line": 125,
             "description": "raised after file got successfully uploaded",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.success",
@@ -7711,7 +7717,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 133,
+            "line": 135,
             "description": "listens on and opens the data-source folder-overlay",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.open-data-source",
@@ -7720,7 +7726,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 141,
+            "line": 143,
             "description": "listens on and prevents an overlay with the dropzone from poping up",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.open-data-source",
@@ -7729,7 +7735,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 149,
+            "line": 151,
             "description": "listens on and enables overlays with the dropzone to pop up",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.open-data-source",
@@ -7738,7 +7744,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 157,
+            "line": 159,
             "description": "raised after files got uploaded and faded out from the dropzone",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.files-added",
@@ -7754,7 +7760,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 166,
+            "line": 168,
             "description": "listens on and changes the url of the dropzone",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.change-url",
@@ -7770,69 +7776,69 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 175,
+            "line": 177,
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 182,
+            "line": 184,
             "description": "Initialize component",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 204,
+            "line": 206,
             "description": "Binds dom related events",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 221,
+            "line": 223,
             "description": "Binds custom-related events",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 246,
+            "line": 248,
             "description": "Opens the dropzone in an overlay",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 281,
+            "line": 283,
             "description": "Renders the component",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 297,
+            "line": 299,
             "description": "Starts the dropzone component",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 374,
+            "line": 383,
             "description": "Removes all files from the dropzone\nbut only if all dropped files got uploaded",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 398,
+            "line": 407,
             "description": "Function gets called after all dropped files\nhave faded out",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 411,
+            "line": 420,
             "description": "Returns an array with responses for a given array of files",
             "params": [
                 {
@@ -11467,8 +11473,12 @@
             "line": " husky_components/dropzone/main.js:12"
         },
         {
+            "message": "replacing incorrect tag: params with param",
+            "line": " husky_components/dropzone/main.js:12"
+        },
+        {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/dropzone/main.js:411"
+            "line": " husky_components/dropzone/main.js:420"
         },
         {
             "message": "replacing incorrect tag: params with param",
@@ -13184,51 +13194,51 @@
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/dropzone/main.js:71"
+            "line": " husky_components/dropzone/main.js:73"
         },
         {
             "message": "Missing item type\nnamespace for events",
-            "line": " husky_components/dropzone/main.js:100"
+            "line": " husky_components/dropzone/main.js:102"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/dropzone/main.js:175"
+            "line": " husky_components/dropzone/main.js:177"
         },
         {
             "message": "Missing item type\nInitialize component",
-            "line": " husky_components/dropzone/main.js:182"
+            "line": " husky_components/dropzone/main.js:184"
         },
         {
             "message": "Missing item type\nBinds dom related events",
-            "line": " husky_components/dropzone/main.js:204"
+            "line": " husky_components/dropzone/main.js:206"
         },
         {
             "message": "Missing item type\nBinds custom-related events",
-            "line": " husky_components/dropzone/main.js:221"
+            "line": " husky_components/dropzone/main.js:223"
         },
         {
             "message": "Missing item type\nOpens the dropzone in an overlay",
-            "line": " husky_components/dropzone/main.js:246"
+            "line": " husky_components/dropzone/main.js:248"
         },
         {
             "message": "Missing item type\nRenders the component",
-            "line": " husky_components/dropzone/main.js:281"
+            "line": " husky_components/dropzone/main.js:283"
         },
         {
             "message": "Missing item type\nStarts the dropzone component",
-            "line": " husky_components/dropzone/main.js:297"
+            "line": " husky_components/dropzone/main.js:299"
         },
         {
             "message": "Missing item type\nRemoves all files from the dropzone\nbut only if all dropped files got uploaded",
-            "line": " husky_components/dropzone/main.js:374"
+            "line": " husky_components/dropzone/main.js:383"
         },
         {
             "message": "Missing item type\nFunction gets called after all dropped files\nhave faded out",
-            "line": " husky_components/dropzone/main.js:398"
+            "line": " husky_components/dropzone/main.js:407"
         },
         {
             "message": "Missing item type\nReturns an array with responses for a given array of files",
-            "line": " husky_components/dropzone/main.js:411"
+            "line": " husky_components/dropzone/main.js:420"
         },
         {
             "message": "Missing item type\nnamespace for events",

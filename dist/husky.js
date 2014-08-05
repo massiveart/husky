@@ -42105,6 +42105,7 @@ define('__component__$toggler@husky',[], function() {
  * @params {Function} [options.successCallback] callback which gets called if a file got successfully uploaded. First parameter is the file, the second the response
  * @params {Function} [options.beforeSendingCallback] callback which gets called before a file gets uploaded. First parameter is the file.
  * @params {Function} [options.removeFileCallback] callback which gets called after a file got removed. First parameter is the file.
+ * @params {Function} [options.afterDropCallback] callback which gets called after a file got dropped. Has to return a promise. If the promise gets resolved the file gets uploaded
  * @params {Object} [options.pluginOptions] Options to pass to the dropzone-plugin to completely override all options set by husky. Use with care.
  * @params {Boolean} [options.showOverlay] if true the dropzone will be displayed in an overlay if its not visible any more or the passed scroll-top is reached
  * @params {String} [options.skin] skin class for the dropzone. currently available: 'small' or '' (default)
@@ -42130,6 +42131,7 @@ define('__component__$dropzone@husky',[], function () {
             successCallback: null,
             beforeSendingCallback: null,
             removeFileCallback: null,
+            afterDropCallback: null,
             pluginOptions: {},
             maxFiles: null,
             fadeOutDuration: 200, //ms
@@ -42384,6 +42386,7 @@ define('__component__$dropzone@husky',[], function () {
                     uploadMultiple: this.options.uploadMultiple,
                     maxFiles: this.options.maxFiles,
                     headers: this.options.headers,
+                    autoProcessQueue: !this.options.afterDropCallback,
                     previewTemplate: this.sandbox.util.template(templates.uploadItem)({
                         cancelIcon: this.options.cancelLoadingIcon
                     }),
@@ -42394,13 +42397,19 @@ define('__component__$dropzone@husky',[], function () {
 
                         // gets called if file gets added (drop or via the upload window)
                         this.on('addedfile', function (file) {
-                            this.sandbox.dom.addClass(this.$dropzone, constants.droppedClass);
+                            that.sandbox.dom.addClass(that.$dropzone, constants.droppedClass);
+
+                            if (typeof that.options.afterDropCallback === 'function') {
+                                that.options.afterDropCallback(file).then(function() {
+                                    this.processQueue();
+                                }.bind(this));
+                            }
 
                             // prevent the the upload window to open on click on the preview item
-                            this.sandbox.dom.on(file.previewElement, 'click', function (event) {
+                            that.sandbox.dom.on(file.previewElement, 'click', function (event) {
                                 this.sandbox.dom.stopPropagation(event);
-                            }.bind(this));
-                        }.bind(that));
+                            }.bind(that));
+                        });
 
                         // gets called before the file is sent
                         this.on('sending', function (file) {
