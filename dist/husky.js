@@ -42468,12 +42468,7 @@ define('__component__$dropzone@husky',[], function () {
                                 } else {
                                     this.sandbox.emit(SUCCESS.call(this), file, response);
                                 }
-                                if (this.options.keepFilesAfterSuccess === false) {
-                                    this.removeAllFiles();
-                                } else {
-                                    this.sandbox.emit(FILES_ADDED.call(this), this.getResponseArray(this.dropzone.files));
-                                    this.dropzone.files = [];
-                                }
+                                this.removeAllFiles(this.options.keepFilesAfterSuccess);
                             }
                         }.bind(that));
 
@@ -42486,7 +42481,9 @@ define('__component__$dropzone@husky',[], function () {
 
                         // gets called if all files are removed from the zone
                         this.on('reset', function () {
-                            this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
+                            if (this.options.keepFilesAfterSuccess === false) {
+                                this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
+                            }
                         }.bind(that));
 
                         // enables the to change the url dynamically
@@ -42504,11 +42501,15 @@ define('__component__$dropzone@husky',[], function () {
         /**
          * Removes all files from the dropzone
          * but only if all dropped files got uploaded
+         * @param keepDom {Boolean} true to keep the dom like it is
          */
-        removeAllFiles: function () {
+        removeAllFiles: function (keepDom) {
             // if all files got uploaded
             if (this.dropzone.getUploadingFiles.call(this.dropzone).length === 0) {
-                this.sandbox.util.delay(
+                if (keepDom === true) {
+                    this.afterFadeOut(true);
+                } else {
+                    this.sandbox.util.delay(
                     function () {
                         this.sandbox.dom.fadeOut(
                             this.sandbox.dom.find('.' + constants.uploadItemClass, this.$dropzone),
@@ -42522,20 +42523,26 @@ define('__component__$dropzone@husky',[], function () {
                     }.bind(this),
                     this.options.fadeOutDelay
                 );
+                }
             }
         },
 
         /**
          * Function gets called after all dropped files
          * have faded out
+         * @param keepDom {Boolean} true to keep the dom like it is
          */
-        afterFadeOut: function () {
+        afterFadeOut: function (keepDom) {
             if (this.overlayOpened === true) {
                 this.sandbox.emit('husky.overlay.dropzone-'+ this.options.instanceName +'.close');
             }
-            this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
             this.sandbox.emit(FILES_ADDED.call(this), this.getResponseArray(this.dropzone.files));
-            this.dropzone.removeAllFiles();
+            if (keepDom === true) {
+                this.dropzone.files = [];
+            } else {
+                this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
+                this.dropzone.removeAllFiles();
+            }
         },
 
         /**

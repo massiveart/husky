@@ -7839,21 +7839,35 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 390,
+            "line": 387,
             "description": "Removes all files from the dropzone\nbut only if all dropped files got uploaded",
+            "params": [
+                {
+                    "name": "keepDom",
+                    "description": "true to keep the dom like it is",
+                    "type": "Boolean"
+                }
+            ],
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 414,
+            "line": 416,
             "description": "Function gets called after all dropped files\nhave faded out",
+            "params": [
+                {
+                    "name": "keepDom",
+                    "description": "true to keep the dom like it is",
+                    "type": "Boolean"
+                }
+            ],
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 427,
+            "line": 434,
             "description": "Returns an array with responses for a given array of files",
             "params": [
                 {
@@ -11497,7 +11511,7 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/dropzone/main.js:427"
+            "line": " husky_components/dropzone/main.js:434"
         },
         {
             "message": "replacing incorrect tag: params with param",
@@ -13249,15 +13263,15 @@
         },
         {
             "message": "Missing item type\nRemoves all files from the dropzone\nbut only if all dropped files got uploaded",
-            "line": " husky_components/dropzone/main.js:390"
+            "line": " husky_components/dropzone/main.js:387"
         },
         {
             "message": "Missing item type\nFunction gets called after all dropped files\nhave faded out",
-            "line": " husky_components/dropzone/main.js:414"
+            "line": " husky_components/dropzone/main.js:416"
         },
         {
             "message": "Missing item type\nReturns an array with responses for a given array of files",
-            "line": " husky_components/dropzone/main.js:427"
+            "line": " husky_components/dropzone/main.js:434"
         },
         {
             "message": "Missing item type\nnamespace for events",
