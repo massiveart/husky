@@ -324,9 +324,11 @@ define([], function () {
                             that.sandbox.dom.addClass(that.$dropzone, constants.droppedClass);
 
                             if (typeof that.options.afterDropCallback === 'function') {
-                                that.options.afterDropCallback(file).then(function() {
-                                    that.sandbox.util.delay(this.processQueue.bind(this), 0);
-                                }.bind(this));
+                                if (file === this.files[this.files.length -1]) {
+                                    that.options.afterDropCallback(file).then(function() {
+                                        that.sandbox.util.delay(this.processFile.bind(this, file), 0);
+                                    }.bind(this));
+                                }
                             }
 
                             // prevent the the upload window to open on click on the preview item
