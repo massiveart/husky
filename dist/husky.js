@@ -42241,6 +42241,15 @@ define('__component__$dropzone@husky',[], function () {
             return createEventName.call(this, 'files-added');
         },
 
+        /**
+         * listens on and changes the url of the dropzone
+         * @event husky.dropzone.<instance-name>.change-url
+         * @param {String} the new url
+         */
+            CHANGE_URL = function () {
+            return createEventName.call(this, 'change-url');
+        },
+
         /** returns normalized event names */
             createEventName = function (postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
@@ -42261,6 +42270,7 @@ define('__component__$dropzone@husky',[], function () {
             this.lastUploadedFile = null;
             this.overlayOpened = false;
             this.lockPopUp = false;
+            this.url = this.options.url;
 
             this.bindCustomEvents();
             this.render();
@@ -42293,6 +42303,11 @@ define('__component__$dropzone@husky',[], function () {
             // opens the data-source folder-overlay
             this.sandbox.on(OPEN_DATA_SOURCE.call(this), function () {
                 this.sandbox.dom.trigger(this.$dropzone, 'click');
+            }.bind(this));
+
+            // change the url
+            this.sandbox.on(CHANGE_URL.call(this), function(url) {
+                this.url = url;
             }.bind(this));
 
             if (this.options.showOverlay) {
@@ -42421,6 +42436,11 @@ define('__component__$dropzone@husky',[], function () {
                         this.on('reset', function () {
                             this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
                         }.bind(that));
+
+                        // enables the to change the url dynamically
+                        this.on('processing', function () {
+                            this.options.url = that.url;
+                        });
                     }
                 };
 
