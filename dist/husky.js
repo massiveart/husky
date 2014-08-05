@@ -42470,6 +42470,9 @@ define('__component__$dropzone@husky',[], function () {
                                 }
                                 if (this.options.keepFilesAfterSuccess === false) {
                                     this.removeAllFiles();
+                                } else {
+                                    this.sandbox.emit(FILES_ADDED.call(this), this.getResponseArray(this.dropzone.files));
+                                    this.dropzone.files = [];
                                 }
                             }
                         }.bind(that));

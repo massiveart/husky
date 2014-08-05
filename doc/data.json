@@ -7839,21 +7839,21 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 387,
+            "line": 390,
             "description": "Removes all files from the dropzone\nbut only if all dropped files got uploaded",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 411,
+            "line": 414,
             "description": "Function gets called after all dropped files\nhave faded out",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 424,
+            "line": 427,
             "description": "Returns an array with responses for a given array of files",
             "params": [
                 {
@@ -11497,7 +11497,7 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/dropzone/main.js:424"
+            "line": " husky_components/dropzone/main.js:427"
         },
         {
             "message": "replacing incorrect tag: params with param",
@@ -13249,15 +13249,15 @@
         },
         {
             "message": "Missing item type\nRemoves all files from the dropzone\nbut only if all dropped files got uploaded",
-            "line": " husky_components/dropzone/main.js:387"
+            "line": " husky_components/dropzone/main.js:390"
         },
         {
             "message": "Missing item type\nFunction gets called after all dropped files\nhave faded out",
-            "line": " husky_components/dropzone/main.js:411"
+            "line": " husky_components/dropzone/main.js:414"
         },
         {
             "message": "Missing item type\nReturns an array with responses for a given array of files",
-            "line": " husky_components/dropzone/main.js:424"
+            "line": " husky_components/dropzone/main.js:427"
         },
         {
             "message": "Missing item type\nnamespace for events",
