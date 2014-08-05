@@ -7839,7 +7839,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 387,
+            "line": 389,
             "description": "Removes all files from the dropzone\nbut only if all dropped files got uploaded",
             "params": [
                 {
@@ -7853,7 +7853,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 416,
+            "line": 418,
             "description": "Function gets called after all dropped files\nhave faded out",
             "params": [
                 {
@@ -7867,7 +7867,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 434,
+            "line": 436,
             "description": "Returns an array with responses for a given array of files",
             "params": [
                 {
@@ -11511,7 +11511,7 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/dropzone/main.js:434"
+            "line": " husky_components/dropzone/main.js:436"
         },
         {
             "message": "replacing incorrect tag: params with param",
@@ -13263,15 +13263,15 @@
         },
         {
             "message": "Missing item type\nRemoves all files from the dropzone\nbut only if all dropped files got uploaded",
-            "line": " husky_components/dropzone/main.js:387"
+            "line": " husky_components/dropzone/main.js:389"
         },
         {
             "message": "Missing item type\nFunction gets called after all dropped files\nhave faded out",
-            "line": " husky_components/dropzone/main.js:416"
+            "line": " husky_components/dropzone/main.js:418"
         },
         {
             "message": "Missing item type\nReturns an array with responses for a given array of files",
-            "line": " husky_components/dropzone/main.js:434"
+            "line": " husky_components/dropzone/main.js:436"
         },
         {
             "message": "Missing item type\nnamespace for events",
