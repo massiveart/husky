@@ -59,7 +59,7 @@
 require.config({
     baseUrl: '../../'
 });
-
+var App;
 require(['lib/husky'], function(Husky) {
     'use strict';
 
@@ -67,6 +67,7 @@ require(['lib/husky'], function(Husky) {
             _ = app.sandbox.util._;
 
     app.start().then(function() {
+        App = app;
         app.logger.log('Aura started...');
     });
 
