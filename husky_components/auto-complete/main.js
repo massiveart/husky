@@ -31,7 +31,7 @@
  * @param {Array} [options.excludes] Array of suggestions to exclude from the suggestion dropdown
  */
 
-define([], function () {
+define([], function() {
 
     'use strict';
 
@@ -62,7 +62,7 @@ define([], function () {
          * raised after initialization
          * @event husky.auto-complete.initialized
          */
-            INITIALIZED = function () {
+        INITIALIZED = function() {
             return createEventName.call(this, 'initialized');
         },
 
@@ -70,7 +70,7 @@ define([], function () {
          * raised after prefetched data is retrieved
          * @event husky.auto-complete.prefetch-data
          */
-            PREFETCH_LOAD = function () {
+        PREFETCH_LOAD = function() {
             return createEventName.call(this, 'prefetch-data');
         },
 
@@ -78,7 +78,7 @@ define([], function () {
          * raised before remoted data is loaded
          * @event husky.auto-complete.remote-data-load
          */
-            REMOTE_LOAD = function () {
+        REMOTE_LOAD = function() {
             return createEventName.call(this, 'remote-data-load');
         },
 
@@ -86,7 +86,7 @@ define([], function () {
          * raised after remoted data is retrieved
          * @event husky.auto-complete.remote-data
          */
-            REMOTE_RETRIEVE = function () {
+        REMOTE_RETRIEVE = function() {
             return createEventName.call(this, 'remote-data');
         },
 
@@ -94,7 +94,7 @@ define([], function () {
          * raised before the component tries to request a match after blur
          * @event husky.auto-complete.request-match
          */
-            REQUEST_MATCH = function () {
+        REQUEST_MATCH = function() {
             return createEventName.call(this, 'request-match');
         },
 
@@ -103,8 +103,16 @@ define([], function () {
          * @event husky.auto-complete.select
          * @param {object} selected datum with id and name
          */
-            SELECT = function () {
+        SELECT = function() {
             return createEventName.call(this, 'select');
+        },
+
+        /**
+         * raised after selection has been removed
+         * @event husky.auto-complete.selection-removed
+         */
+        SELECTION_REMOVED = function() {
+            return createEventName.call(this, 'selection-removed');
         },
 
         /**
@@ -112,7 +120,7 @@ define([], function () {
          * @event husky.auto-complete.set-excludes
          * @param {array} array of objects to exclude from suggestions
          */
-            SET_EXCLUDES = function () {
+        SET_EXCLUDES = function() {
             return createEventName.call(this, 'set-excludes');
         },
 
@@ -121,12 +129,12 @@ define([], function () {
          * @event husky.auto-complete.is-matched
          * @param {Function} Callback which gets the booloan passed
          */
-            IS_MATCHED = function () {
+        IS_MATCHED = function() {
             return createEventName.call(this, 'is-matched');
         },
 
         /** returns normalized event names */
-            createEventName = function (postFix) {
+        createEventName = function(postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         };
 
@@ -136,7 +144,7 @@ define([], function () {
          * Returns the id of the options.value object
          * @returns {Integer|null}
          */
-        getValueID: function () {
+        getValueID: function() {
             if (!!this.options.value) {
                 return this.options.value.id;
             } else {
@@ -148,7 +156,7 @@ define([], function () {
          * Returns the value of the options.value object
          * @returns {String}
          */
-        getValueName: function () {
+        getValueName: function() {
             if (!!this.options.value) {
                 return this.options.value[this.options.valueKey];
             } else {
@@ -156,7 +164,7 @@ define([], function () {
             }
         },
 
-        initialize: function () {
+        initialize: function() {
             this.sandbox.logger.log('initialize', this);
             this.sandbox.logger.log(arguments);
 
@@ -185,7 +193,7 @@ define([], function () {
         /**
          * Initializes the template for a suggestion element
          */
-        setTemplate: function () {
+        setTemplate: function() {
             var iconHTML = '';
             if (this.options.suggestionImg !== '') {
                 iconHTML = '<span class="fa-' + this.options.suggestionImg + ' icon"></span>';
@@ -203,10 +211,10 @@ define([], function () {
          * @param context {object} context for template - id, name
          * @returns {String} html of suggestion element
          */
-        buildTemplate: function (context) {
+        buildTemplate: function(context) {
             var domObj;
             if (this._template !== null) {
-                domObj = this.sandbox.dom.createElement(this._template({context:context}));
+                domObj = this.sandbox.dom.createElement(this._template({context: context}));
                 if (this.isExcluded(context)) {
                     this.sandbox.dom.addClass(domObj, 'disabled');
                 }
@@ -217,7 +225,7 @@ define([], function () {
         /**
          * Initializes and appends the input, starts the typeahead-auto-complete plugin
          */
-        render: function () {
+        render: function() {
             this.sandbox.dom.addClass(this.$el, 'husky-auto-complete');
             this.initValueField();
             this.appendValueField();
@@ -228,7 +236,7 @@ define([], function () {
         /**
          * Assigns an input box to an object property
          */
-        initValueField: function () {
+        initValueField: function() {
             this.$valueField = this.sandbox.dom.createElement('<input id="' + this.options.instanceName + '" ' +
                 'class="husky-validate" ' +
                 'type="text" ' +
@@ -241,7 +249,7 @@ define([], function () {
         /**
          * Appends the input box to the component container
          */
-        appendValueField: function () {
+        appendValueField: function() {
             if (!!this.$valueField.length) {
                 this.sandbox.dom.append(this.$el, this.$valueField);
             }
@@ -250,13 +258,13 @@ define([], function () {
         /**
          * Starts the typeahead auto-complete plugin
          */
-        bindTypeahead: function () {
+        bindTypeahead: function() {
             var delimiter = (this.options.remoteUrl.indexOf('?') === -1) ? '?' : '&';
             this.sandbox.autocomplete.init(this.$valueField, {
                 name: this.options.instanceName,
                 local: this.handleData(this.localData),
                 valueKey: this.options.valueKey,
-                template: function (context) {
+                template: function(context) {
                     //saves the fact that the current input has matches
                     this.matches.push(context);
                     this.matched = true;
@@ -265,7 +273,7 @@ define([], function () {
                 prefetch: {
                     url: this.options.prefetchUrl,
                     ttl: 1,
-                    filter: function (data) {
+                    filter: function(data) {
                         this.sandbox.emit(PREFETCH_LOAD.call(this));
                         this.handleData(data);
                         return this.data;
@@ -273,10 +281,10 @@ define([], function () {
                 },
                 remote: {
                     url: this.options.remoteUrl + delimiter + this.options.getParameter + '=%QUERY',
-                    beforeSend: function () {
+                    beforeSend: function() {
                         this.sandbox.emit(REMOTE_LOAD.call(this));
                     }.bind(this),
-                    filter: function (data) {
+                    filter: function(data) {
                         this.sandbox.emit(REMOTE_RETRIEVE.call(this));
                         this.handleData(data);
                         return this.data;
@@ -300,7 +308,7 @@ define([], function () {
          * @param context {object} context with id and name
          * @returns {Boolean}
          */
-        isExcluded: function (context) {
+        isExcluded: function(context) {
             for (var i = -1, length = this.excludes.length; ++i < length;) {
                 if (context.id !== null && context.id === this.excludes[i].id) {
                     return true;
@@ -315,12 +323,12 @@ define([], function () {
         /**
          * Binds custom events
          */
-        setCustomEvents: function () {
-            this.sandbox.on(SET_EXCLUDES.call(this), function (excludes) {
+        setCustomEvents: function() {
+            this.sandbox.on(SET_EXCLUDES.call(this), function(excludes) {
                 this.excludes = this.parseExcludes(excludes);
             }.bind(this));
 
-            this.sandbox.on(IS_MATCHED.call(this), function (callback) {
+            this.sandbox.on(IS_MATCHED.call(this), function(callback) {
                 if (this.isMatchedExactly() === true && this.getClosestMatch() !== null) {
                     callback(true);
                 } else {
@@ -328,7 +336,7 @@ define([], function () {
                 }
             }.bind(this));
 
-            this.sandbox.on('husky.auto-complete.' + this.options.instanceName + '.select', function (data) {
+            this.sandbox.on('husky.auto-complete.' + this.options.instanceName + '.select', function(data) {
                 this.selectedElement = data;
             }.bind(this));
         },
@@ -337,11 +345,11 @@ define([], function () {
          * Brings an array of suggestions to exclude into the right format
          * @param excludes
          */
-        parseExcludes: function (excludes) {
+        parseExcludes: function(excludes) {
             var arrayReturn = [];
 
             if (!!excludes.length) {
-                this.sandbox.util.foreach(excludes, function (exclude) {
+                this.sandbox.util.foreach(excludes, function(exclude) {
                     if (typeof exclude !== 'object') {
                         arrayReturn.push({
                             id: null,
@@ -358,8 +366,8 @@ define([], function () {
         /**
          * sets several events
          */
-        bindDomEvents: function () {
-            this.sandbox.dom.on(this.$valueField, 'typeahead:selected', function (event, datum) {
+        bindDomEvents: function() {
+            this.sandbox.dom.on(this.$valueField, 'typeahead:selected', function(event, datum) {
                 if (this.isExcluded(datum)) {
                     this.sandbox.dom.stopPropagation(event);
                     this.clearValueFieldValue();
@@ -370,7 +378,7 @@ define([], function () {
             }.bind(this));
 
             //remove state and matches on new input
-            this.sandbox.dom.on(this.$valueField, 'keypress', function (event) {
+            this.sandbox.dom.on(this.$valueField, 'keypress', function(event) {
                 if (event.keyCode !== 13) {
                     this.matched = false;
                     this.matches = [];
@@ -378,15 +386,15 @@ define([], function () {
             }.bind(this));
 
             //ensures that the blur callback does not get called
-            this.sandbox.dom.on(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), 'mousedown', function () {
+            this.sandbox.dom.on(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), 'mousedown', function() {
                 this.executeBlurHandler = false;
             }.bind(this));
 
-            this.sandbox.dom.on(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), 'click', function () {
+            this.sandbox.dom.on(this.sandbox.dom.find('.tt-dropdown-menu', this.$el), 'click', function() {
                 return false;
             }.bind(this), '.disabled');
 
-            this.sandbox.dom.on(this.$valueField, 'blur', function () {
+            this.sandbox.dom.on(this.$valueField, 'blur', function() {
 
                 //don't do anything if the dropdown is clicked on
                 if (this.executeBlurHandler === true) {
@@ -402,10 +410,14 @@ define([], function () {
             }.bind(this));
 
             // clear data attribute when input is empty
-            this.sandbox.dom.on(this.$valueField, 'focusout', function () {
+            this.sandbox.dom.on(this.$valueField, 'focusout', function() {
                 if (this.sandbox.dom.val(this.$valueField) === '') {
-                    this.sandbox.dom.data(this.$valueField, 'id', 'null');
-                    this.sandbox.dom.removeAttr(this.$valueField, 'data-id');
+                    var dataId = this.sandbox.dom.attr(this.$valueField, 'data-id');
+                    if (dataId != null && dataId !== 'null') {
+                        this.sandbox.dom.removeAttr(this.$valueField, 'data-id');
+                        this.sandbox.dom.data(this.$valueField, 'data-id', 'null');
+                        this.sandbox.emit(SELECTION_REMOVED.call(this));
+                    }
                 }
             }.bind(this));
         },
@@ -413,7 +425,7 @@ define([], function () {
         /**
          * Gets called when the input box triggers the blur event
          */
-        handleBlur: function () {
+        handleBlur: function() {
 
             if (!!this.selectedElement) { // selected via dropdown
                 this.selectedElement = null;
@@ -426,7 +438,7 @@ define([], function () {
                 } else {
                     //request to check if a match exists
                     if (this.getValueFieldValue() !== '') {
-                        this.checkMatches(this.getValueFieldValue(), function (isMatched) {
+                        this.checkMatches(this.getValueFieldValue(), function(isMatched) {
                             if (isMatched === true) {
                                 this.setValueFieldValue(this.getClosestMatch().name);
                                 this.setValueFieldId(this.getClosestMatch().id);
@@ -452,13 +464,13 @@ define([], function () {
          * @param {Function} callback to pass a boolean to
          * @param {Boolean} exactly If true string must be have an identical match
          */
-        checkMatches: function (string, callback, exactly) {
+        checkMatches: function(string, callback, exactly) {
             var delimiter = (this.options.remoteUrl.indexOf('?') === -1) ? '?' : '&';
             this.sandbox.emit(REQUEST_MATCH.call(this));
             this.sandbox.util.ajax({
                 url: this.options.remoteUrl + delimiter + this.options.getParameter + '=' + string,
 
-                success: function (data) {
+                success: function(data) {
                     this.matches = this.handleData(data);
 
                     if (exactly !== true) {
@@ -476,7 +488,7 @@ define([], function () {
                     }
                 }.bind(this),
 
-                error: function (error) {
+                error: function(error) {
                     this.sandbox.logger.log('Error requesting auto-complete-matches', error);
                     callback(false);
                 }.bind(this)
@@ -487,7 +499,7 @@ define([], function () {
          * Returns the closest match for an input
          * @returns {object} closest match with id and name
          */
-        getClosestMatch: function () {
+        getClosestMatch: function() {
             if (!!this.matches.length && this.getValueFieldValue() !== '') {
                 return this.matches[0];
             }
@@ -498,7 +510,7 @@ define([], function () {
          * Returns the trimed value of the input field
          * @returns {String}
          */
-        getValueFieldValue: function () {
+        getValueFieldValue: function() {
             return this.sandbox.dom.val(this.$valueField);
         },
 
@@ -506,14 +518,14 @@ define([], function () {
          * Sets the input box value
          * @param value {String} new input value
          */
-        setValueFieldValue: function (value) {
+        setValueFieldValue: function(value) {
             this.sandbox.autocomplete.setValue(this.$valueField, value);
         },
 
         /**
          * Deletes the input box value
          */
-        clearValueFieldValue: function () {
+        clearValueFieldValue: function() {
             this.sandbox.autocomplete.setValue(this.$valueField, '');
         },
 
@@ -521,7 +533,7 @@ define([], function () {
          * Sets the data-id attribute on the input box
          * @param id {Integer} new data-id attribute value
          */
-        setValueFieldId: function (id) {
+        setValueFieldId: function(id) {
             this.sandbox.dom.attr(this.$valueField, {'data-id': id});
         },
 
@@ -529,7 +541,7 @@ define([], function () {
          * returns the matched property (true if auto-complete suggestion exist)
          * @returns {boolean}
          */
-        isMatched: function () {
+        isMatched: function() {
             return this.matched;
         },
 
@@ -538,7 +550,7 @@ define([], function () {
          * case-insensitive
          * @returns {boolean}
          */
-        isMatchedExactly: function () {
+        isMatchedExactly: function() {
             if (this.getClosestMatch() !== null) {
                 if (this.getValueFieldValue().toLowerCase() === this.getClosestMatch().name.toLowerCase()) {
                     return true;
@@ -551,11 +563,11 @@ define([], function () {
          * Assigns loaded data to properties
          * @param data {object} with data array
          */
-        handleData: function (data) {
+        handleData: function(data) {
             if (typeof data === 'object') {
                 this.data = [];
 
-                this.sandbox.util.foreach(data._embedded[this.options.resultKey], function (key) {
+                this.sandbox.util.foreach(data._embedded[this.options.resultKey], function(key) {
                     if (this.isExcluded(key) === false) {
                         this.data.push(key);
                     }
