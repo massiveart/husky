@@ -481,7 +481,7 @@ define([], function () {
 
                             if (typeof that.options.afterDropCallback === &#x27;function&#x27;) {
                                 that.options.afterDropCallback(file).then(function() {
-                                    this.processQueue();
+                                    this.processFile(file);
                                 }.bind(this));
                             }
 

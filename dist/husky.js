@@ -42421,7 +42421,7 @@ define('__component__$dropzone@husky',[], function () {
 
                             if (typeof that.options.afterDropCallback === 'function') {
                                 that.options.afterDropCallback(file).then(function() {
-                                    this.processQueue();
+                                    this.processFile(file);
                                 }.bind(this));
                             }
 
