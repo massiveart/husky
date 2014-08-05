@@ -1773,6 +1773,12 @@
                             "description": "skin class for the dropzone. currently available: 'small' or '' (default)",
                             "type": "String",
                             "optional": true
+                        },
+                        {
+                            "name": "keepFilesAfterSuccess",
+                            "description": "True to not slide the files away after uploading them successfully",
+                            "type": "Boolean",
+                            "optional": true
                         }
                     ]
                 }
@@ -3600,14 +3606,14 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 427,
+            "line": 425,
             "description": "Gets called when the input box triggers the blur event",
             "class": "AutoComplete",
             "module": "husky/components/auto-complete"
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 462,
+            "line": 460,
             "description": "Tries to request matches via the remoteUrl\nand emits an event if matches do exist",
             "params": [
                 {
@@ -3631,7 +3637,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 500,
+            "line": 498,
             "description": "Returns the closest match for an input",
             "return": {
                 "description": "closest match with id and name",
@@ -3642,7 +3648,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 511,
+            "line": 509,
             "description": "Returns the trimed value of the input field",
             "return": {
                 "description": "",
@@ -3653,7 +3659,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 519,
+            "line": 517,
             "description": "Sets the input box value",
             "params": [
                 {
@@ -3667,14 +3673,14 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 527,
+            "line": 525,
             "description": "Deletes the input box value",
             "class": "AutoComplete",
             "module": "husky/components/auto-complete"
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 534,
+            "line": 532,
             "description": "Sets the data-id attribute on the input box",
             "params": [
                 {
@@ -3688,7 +3694,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 542,
+            "line": 540,
             "description": "returns the matched property (true if auto-complete suggestion exist)",
             "return": {
                 "description": "",
@@ -3699,7 +3705,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 550,
+            "line": 548,
             "description": "Returns true if input matches an auto-complete suggestion exactly\ncase-insensitive",
             "return": {
                 "description": "",
@@ -3710,7 +3716,7 @@
         },
         {
             "file": "husky_components/auto-complete/main.js",
-            "line": 564,
+            "line": 562,
             "description": "Assigns loaded data to properties",
             "params": [
                 {
@@ -7666,13 +7672,13 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 73,
+            "line": 75,
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 102,
+            "line": 104,
             "description": "namespace for events",
             "type": "{string}",
             "class": "Dropzone",
@@ -7680,7 +7686,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 108,
+            "line": 110,
             "description": "raised after initialization process",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.initialize",
@@ -7689,7 +7695,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 116,
+            "line": 118,
             "description": "raised before sending a file",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.uploading",
@@ -7705,7 +7711,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 125,
+            "line": 127,
             "description": "raised after file got successfully uploaded",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.success",
@@ -7726,7 +7732,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 135,
+            "line": 137,
             "description": "listens on and opens the data-source folder-overlay",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.open-data-source",
@@ -7735,7 +7741,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 143,
+            "line": 145,
             "description": "listens on and prevents an overlay with the dropzone from poping up",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.open-data-source",
@@ -7744,7 +7750,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 151,
+            "line": 153,
             "description": "listens on and enables overlays with the dropzone to pop up",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.open-data-source",
@@ -7753,7 +7759,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 159,
+            "line": 161,
             "description": "raised after files got uploaded and faded out from the dropzone",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.files-added",
@@ -7769,7 +7775,7 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 168,
+            "line": 170,
             "description": "listens on and changes the url of the dropzone",
             "itemtype": "event",
             "name": "husky.dropzone.<instance-name>.change-url",
@@ -7785,69 +7791,69 @@
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 177,
+            "line": 179,
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 184,
+            "line": 186,
             "description": "Initialize component",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 206,
+            "line": 208,
             "description": "Binds dom related events",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 223,
+            "line": 225,
             "description": "Binds custom-related events",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 248,
+            "line": 250,
             "description": "Opens the dropzone in an overlay",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 283,
+            "line": 285,
             "description": "Renders the component",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 299,
+            "line": 301,
             "description": "Starts the dropzone component",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 383,
+            "line": 387,
             "description": "Removes all files from the dropzone\nbut only if all dropped files got uploaded",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 407,
+            "line": 411,
             "description": "Function gets called after all dropped files\nhave faded out",
             "class": "Dropzone",
             "module": "husky/components/dropzone"
         },
         {
             "file": "husky_components/dropzone/main.js",
-            "line": 420,
+            "line": 424,
             "description": "Returns an array with responses for a given array of files",
             "params": [
                 {
@@ -9277,14 +9283,14 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 945,
+            "line": 949,
             "description": "Hides all tab elements",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 954,
+            "line": 958,
             "description": "Handles the click on ok-buttons",
             "params": [
                 {
@@ -9297,7 +9303,7 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 970,
+            "line": 974,
             "description": "Handles the click on cancel-buttons and close-icon",
             "params": [
                 {
@@ -9310,7 +9316,7 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 984,
+            "line": 988,
             "description": "Handles the mousemove event for making the overlay draggable",
             "params": [
                 {
@@ -9329,28 +9335,28 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 998,
+            "line": 1002,
             "description": "Sets all properties and variables responsible for the correct resize experience back\nto their initial state or re-initializes them",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1010,
+            "line": 1014,
             "description": "Handles the shrinking and enlarging of the overlay\nif the window gets smaller",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1044,
+            "line": 1048,
             "description": "Positions the overlay in the middle of the screen",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1052,
+            "line": 1056,
             "description": "Updates the coordinates of the overlay",
             "params": [
                 {
@@ -9369,7 +9375,7 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1062,
+            "line": 1066,
             "description": "Executes a passed callback",
             "params": [
                 {
@@ -11163,19 +11169,19 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete/main.js:500"
+            "line": " husky_components/auto-complete/main.js:498"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete/main.js:511"
+            "line": " husky_components/auto-complete/main.js:509"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete/main.js:542"
+            "line": " husky_components/auto-complete/main.js:540"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/auto-complete/main.js:550"
+            "line": " husky_components/auto-complete/main.js:548"
         },
         {
             "message": "replacing incorrect tag: returns with return",
@@ -11486,8 +11492,12 @@
             "line": " husky_components/dropzone/main.js:12"
         },
         {
+            "message": "replacing incorrect tag: params with param",
+            "line": " husky_components/dropzone/main.js:12"
+        },
+        {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/dropzone/main.js:420"
+            "line": " husky_components/dropzone/main.js:424"
         },
         {
             "message": "replacing incorrect tag: params with param",
@@ -12151,43 +12161,43 @@
         },
         {
             "message": "Missing item type\nGets called when the input box triggers the blur event",
-            "line": " husky_components/auto-complete/main.js:427"
+            "line": " husky_components/auto-complete/main.js:425"
         },
         {
             "message": "Missing item type\nTries to request matches via the remoteUrl\nand emits an event if matches do exist",
-            "line": " husky_components/auto-complete/main.js:462"
+            "line": " husky_components/auto-complete/main.js:460"
         },
         {
             "message": "Missing item type\nReturns the closest match for an input",
-            "line": " husky_components/auto-complete/main.js:500"
+            "line": " husky_components/auto-complete/main.js:498"
         },
         {
             "message": "Missing item type\nReturns the trimed value of the input field",
-            "line": " husky_components/auto-complete/main.js:511"
+            "line": " husky_components/auto-complete/main.js:509"
         },
         {
             "message": "Missing item type\nSets the input box value",
-            "line": " husky_components/auto-complete/main.js:519"
+            "line": " husky_components/auto-complete/main.js:517"
         },
         {
             "message": "Missing item type\nDeletes the input box value",
-            "line": " husky_components/auto-complete/main.js:527"
+            "line": " husky_components/auto-complete/main.js:525"
         },
         {
             "message": "Missing item type\nSets the data-id attribute on the input box",
-            "line": " husky_components/auto-complete/main.js:534"
+            "line": " husky_components/auto-complete/main.js:532"
         },
         {
             "message": "Missing item type\nreturns the matched property (true if auto-complete suggestion exist)",
-            "line": " husky_components/auto-complete/main.js:542"
+            "line": " husky_components/auto-complete/main.js:540"
         },
         {
             "message": "Missing item type\nReturns true if input matches an auto-complete suggestion exactly\ncase-insensitive",
-            "line": " husky_components/auto-complete/main.js:550"
+            "line": " husky_components/auto-complete/main.js:548"
         },
         {
             "message": "Missing item type\nAssigns loaded data to properties",
-            "line": " husky_components/auto-complete/main.js:564"
+            "line": " husky_components/auto-complete/main.js:562"
         },
         {
             "message": "Missing item type\nDefault values for options",
@@ -13203,51 +13213,51 @@
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/dropzone/main.js:73"
+            "line": " husky_components/dropzone/main.js:75"
         },
         {
             "message": "Missing item type\nnamespace for events",
-            "line": " husky_components/dropzone/main.js:102"
+            "line": " husky_components/dropzone/main.js:104"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/dropzone/main.js:177"
+            "line": " husky_components/dropzone/main.js:179"
         },
         {
             "message": "Missing item type\nInitialize component",
-            "line": " husky_components/dropzone/main.js:184"
+            "line": " husky_components/dropzone/main.js:186"
         },
         {
             "message": "Missing item type\nBinds dom related events",
-            "line": " husky_components/dropzone/main.js:206"
+            "line": " husky_components/dropzone/main.js:208"
         },
         {
             "message": "Missing item type\nBinds custom-related events",
-            "line": " husky_components/dropzone/main.js:223"
+            "line": " husky_components/dropzone/main.js:225"
         },
         {
             "message": "Missing item type\nOpens the dropzone in an overlay",
-            "line": " husky_components/dropzone/main.js:248"
+            "line": " husky_components/dropzone/main.js:250"
         },
         {
             "message": "Missing item type\nRenders the component",
-            "line": " husky_components/dropzone/main.js:283"
+            "line": " husky_components/dropzone/main.js:285"
         },
         {
             "message": "Missing item type\nStarts the dropzone component",
-            "line": " husky_components/dropzone/main.js:299"
+            "line": " husky_components/dropzone/main.js:301"
         },
         {
             "message": "Missing item type\nRemoves all files from the dropzone\nbut only if all dropped files got uploaded",
-            "line": " husky_components/dropzone/main.js:383"
+            "line": " husky_components/dropzone/main.js:387"
         },
         {
             "message": "Missing item type\nFunction gets called after all dropped files\nhave faded out",
-            "line": " husky_components/dropzone/main.js:407"
+            "line": " husky_components/dropzone/main.js:411"
         },
         {
             "message": "Missing item type\nReturns an array with responses for a given array of files",
-            "line": " husky_components/dropzone/main.js:420"
+            "line": " husky_components/dropzone/main.js:424"
         },
         {
             "message": "Missing item type\nnamespace for events",
@@ -13699,39 +13709,39 @@
         },
         {
             "message": "Missing item type\nHides all tab elements",
-            "line": " husky_components/overlay/main.js:945"
+            "line": " husky_components/overlay/main.js:949"
         },
         {
             "message": "Missing item type\nHandles the click on ok-buttons",
-            "line": " husky_components/overlay/main.js:954"
+            "line": " husky_components/overlay/main.js:958"
         },
         {
             "message": "Missing item type\nHandles the click on cancel-buttons and close-icon",
-            "line": " husky_components/overlay/main.js:970"
+            "line": " husky_components/overlay/main.js:974"
         },
         {
             "message": "Missing item type\nHandles the mousemove event for making the overlay draggable",
-            "line": " husky_components/overlay/main.js:984"
+            "line": " husky_components/overlay/main.js:988"
         },
         {
             "message": "Missing item type\nSets all properties and variables responsible for the correct resize experience back\nto their initial state or re-initializes them",
-            "line": " husky_components/overlay/main.js:998"
+            "line": " husky_components/overlay/main.js:1002"
         },
         {
             "message": "Missing item type\nHandles the shrinking and enlarging of the overlay\nif the window gets smaller",
-            "line": " husky_components/overlay/main.js:1010"
+            "line": " husky_components/overlay/main.js:1014"
         },
         {
             "message": "Missing item type\nPositions the overlay in the middle of the screen",
-            "line": " husky_components/overlay/main.js:1044"
+            "line": " husky_components/overlay/main.js:1048"
         },
         {
             "message": "Missing item type\nUpdates the coordinates of the overlay",
-            "line": " husky_components/overlay/main.js:1052"
+            "line": " husky_components/overlay/main.js:1056"
         },
         {
             "message": "Missing item type\nExecutes a passed callback",
-            "line": " husky_components/overlay/main.js:1062"
+            "line": " husky_components/overlay/main.js:1066"
         },
         {
             "message": "Missing item type\nnamespace for events",
