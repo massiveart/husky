@@ -266,6 +266,14 @@ define([], function () {
         },
 
         /**
+         * raised after selection has been removed
+         * @event husky.auto-complete.selection-removed
+         */
+            SELECTION_REMOVED = function () {
+            return createEventName.call(this, &#x27;selection-removed&#x27;);
+        },
+
+        /**
          * raised after autocomplete suggestion is selected
          * @event husky.auto-complete.set-excludes
          * @param {array} array of objects to exclude from suggestions
@@ -562,8 +570,14 @@ define([], function () {
             // clear data attribute when input is empty
             this.sandbox.dom.on(this.$valueField, &#x27;focusout&#x27;, function () {
                 if (this.sandbox.dom.val(this.$valueField) === &#x27;&#x27;) {
-                    this.sandbox.dom.data(this.$valueField, &#x27;id&#x27;, &#x27;null&#x27;);
-                    this.sandbox.dom.removeAttr(this.$valueField, &#x27;data-id&#x27;);
+                    var dataId = this.sandbox.dom.attr(this.$valueField, &#x27;data-id&#x27;);
+                    if (dataId != null &amp;&amp; dataId !== &#x27;null&#x27;) {
+                        this.sandbox.dom.removeAttr(this.$valueField, &#x27;data-id&#x27;);
+                        this.sandbox.dom.data(this.$valueField, &#x27;data-id&#x27;, &#x27;null&#x27;);
+
+                        this.sandbox.emit(SELECTION_REMOVED.call(this));
+                    }
+
                 }
             }.bind(this));
         },
