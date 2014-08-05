@@ -47,6 +47,12 @@
                  data-aura-show-overlay="false"></div>
         </div>
     </div>
+    <div class="grid-row">
+        <h2>This dropzone has a callback which gets called and resolves a promise before uploading</h2>
+        <div class="grid-col-6">
+            <div id="manualProcessDropzone"></div>
+        </div>
+    </div>
 </div>
 <p>Note: Scroll a bit and drop a file to see the dropzone in an overlay</p>
 <div class="btn fit action" id="lock">Lock Popup</div>
@@ -68,6 +74,25 @@ require(['lib/husky'], function(Husky) {
 
     app.start().then(function() {
         App = app;
+        app.sandbox.start([{
+            name: 'dropzone@husky',
+            options: {
+                el: '#manualProcessDropzone',
+                titleKey: 'Drag and drop assets here to upload',
+                descriptionKey: 'Or click to add',
+                url: 'http://husky.lo:7878/admin/api/dropzone',
+                instanceName: 'manual',
+                showOverlay: false,
+                afterDropCallback: function() {
+                    var def = app.sandbox.data.deferred();
+                    console.log('lets wait a bit. Why the hurry?');
+                    setTimeout(function() {
+                        def.resolve();
+                    }, 5000);
+                    return def;
+                }
+            }
+        }]);
         app.logger.log('Aura started...');
     });
 
