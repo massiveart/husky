@@ -89,7 +89,7 @@ require(['lib/husky'], function(Husky) {
                     setTimeout(function() {
                         def.resolve();
                     }, 5000);
-                    return def;
+                    return def.promise();
                 }
             }
         }]);
