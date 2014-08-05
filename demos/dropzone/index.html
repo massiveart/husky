@@ -83,6 +83,7 @@ require(['lib/husky'], function(Husky) {
                 url: 'http://husky.lo:7878/admin/api/dropzone',
                 instanceName: 'manual',
                 showOverlay: false,
+                keepFilesAfterSuccess: true,
                 afterDropCallback: function() {
                     var def = app.sandbox.data.deferred();
                     console.log('lets wait a bit. Why the hurry?');

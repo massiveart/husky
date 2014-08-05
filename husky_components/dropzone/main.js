@@ -31,6 +31,7 @@
  * @params {Object} [options.pluginOptions] Options to pass to the dropzone-plugin to completely override all options set by husky. Use with care.
  * @params {Boolean} [options.showOverlay] if true the dropzone will be displayed in an overlay if its not visible any more or the passed scroll-top is reached
  * @params {String} [options.skin] skin class for the dropzone. currently available: 'small' or '' (default)
+ * @params {Boolean} [options.keepFilesAfterSuccess] True to not slide the files away after uploading them successfully
  */
 define([], function () {
 
@@ -59,6 +60,7 @@ define([], function () {
             fadeOutDuration: 200, //ms
             fadeOutDelay: 1500, //ms
             showOverlay: true,
+            keepFilesAfterSuccess: false,
             skin: ''
         },
 
@@ -323,7 +325,7 @@ define([], function () {
 
                             if (typeof that.options.afterDropCallback === 'function') {
                                 that.options.afterDropCallback(file).then(function() {
-                                    this.processFile(file);
+                                    that.sandbox.util.delay(this.processQueue.bind(this), 0);
                                 }.bind(this));
                             }
 
@@ -352,7 +354,9 @@ define([], function () {
                                 } else {
                                     this.sandbox.emit(SUCCESS.call(this), file, response);
                                 }
-                                this.removeAllFiles();
+                                if (this.options.keepFilesAfterSuccess === false) {
+                                    this.removeAllFiles();
+                                }
                             }
                         }.bind(that));
 
