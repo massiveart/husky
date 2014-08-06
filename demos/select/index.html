@@ -122,6 +122,14 @@
                         <button id="getDataDDMS5">get data ddms 5</button>
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <button id="emptyDataDDMS5">empty data ddms 5</button>
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
             </tbody>
         </table>
 
@@ -236,7 +244,7 @@
                                 {id: 3, category: 'Italienisch'},
                                 {divider: true},
                                 {
-                                    category: 'Add new',
+                                    category: 'i am a callback',
                                     updateLabel: false,
                                     callback: function(){
                                         console.log("called function");
@@ -338,9 +346,7 @@
                                 {id: 2, category: 'Spanish'},
                                 {id: 3, category: 'Italian'}
                                 ],
-                            editable: true,
-                            url: 'http://localhost:7878/admin/api/select'
-
+                            editable: true
                         }
                     },
                     {
@@ -493,11 +499,20 @@
                 });
             });
 
+            $('#emptyDataDDMS5').on('click', function() {
+                console.log('started emptying');
+
+                app.sandbox.emit('husky.select.ddms5.update', [], []);
+            });
+
 
             $('#getDataDDMS5').on('click', function() {
                 console.log(form.mapper.getData());
             });
 
+            $('#ddms5').on('changed', function() {
+                alert("i got changed");
+            });
         });
 
     });

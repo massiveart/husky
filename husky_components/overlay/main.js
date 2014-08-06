@@ -940,6 +940,10 @@ define([], function() {
             this.activeTab = tab;
             this.hideAllTabsElements(slide);
             this.sandbox.dom.show(tab.$el);
+            if (this.dragged === false) {
+                this.resetResizeVariables();
+                this.resizeHandler();
+            }
         },
 
         /**
