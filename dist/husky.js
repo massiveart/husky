@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -47702,6 +47701,10 @@ define("datepicker-zh-TW", function(){});
             };
 
             app.core.util.ajax = $.ajax;
+
+            app.core.util.when = function(deferreds){
+                return $.when(deferreds);
+            };
         }
     });
 })();
@@ -48090,6 +48093,8 @@ define('husky_extensions/util',[],function() {
             };
 
 			app.core.util.template = _.template;
+
         }
     };
 });
+
