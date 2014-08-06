@@ -9986,7 +9986,7 @@
         },
         {
             "file": "husky_components/select/main.js",
-            "line": 1047,
+            "line": 1048,
             "description": "Handles the click on the dropdown label",
             "class": "Select",
             "module": "husky/components/toolbar"
@@ -13891,7 +13891,7 @@
         },
         {
             "message": "Missing item type\nHandles the click on the dropdown label",
-            "line": " husky_components/select/main.js:1047"
+            "line": " husky_components/select/main.js:1048"
         },
         {
             "message": "Missing item type",

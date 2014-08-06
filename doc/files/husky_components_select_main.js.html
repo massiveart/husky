@@ -1153,6 +1153,7 @@ define([], function() {
             } else {
                 this.triggerSelect(key);
             }
+            this.sandbox.dom.trigger(&#x27;changed&#x27;);
         },
 
         // triggers select callback or emits event
