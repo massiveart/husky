@@ -995,6 +995,7 @@ define([], function() {
             } else {
                 this.triggerSelect(key);
             }
+            this.sandbox.dom.trigger('changed');
         },
 
         // triggers select callback or emits event
