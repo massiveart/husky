@@ -394,11 +394,12 @@ define([], function() {
          * @param disabled
          * @param callback
          * @param updateLabel
+         * @param checkboxVisible
          */
         addDropdownElement: function(id, value, disabled, callback, updateLabel, checkboxVisible) {
             checkboxVisible = checkboxVisible !== false;
             var $item,
-                idString = (id != null) ? id.toString() : this.sandbox.util.uniqueId();
+                idString = (id !== null) ? id.toString() : this.sandbox.util.uniqueId();
 
             if (this.options.preSelectedElements.indexOf(idString) >= 0 ||
                 this.options.preSelectedElements.indexOf(value) >= 0) {
@@ -726,12 +727,12 @@ define([], function() {
          */
         updateRemoveList: function(id, $row) {
             if (this.elementsToRemove.indexOf(id) === -1) {
-                if (id != null) {
+                if (id !== null) {
                     this.elementsToRemove.push(id);
                 }
                 this.$elementsToRemove.push($row);
             } else {
-                if (id != null) {
+                if (id !== null) {
                     this.elementsToRemove.splice(this.elementsToRemove.indexOf(id), 1);
                 }
                 this.$elementsToRemove.splice(this.elementsToRemove.indexOf($row), 1);
@@ -882,7 +883,7 @@ define([], function() {
             var $row = this.sandbox.dom.parent(this.sandbox.dom.parent(event.currentTarget)),
                 id = this.sandbox.dom.data($row, 'id');
 
-            if (id != null) {
+            if (id !== null) {
                 this.updateRemoveList(id, $row);
             }
 
