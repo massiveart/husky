@@ -35467,7 +35467,7 @@ define('__component__$auto-complete-list@husky',[], function() {
              * (autocomplete-component needs to be running to start tagmanager)
              */
             bindStartTmEvent: function() {
-                this.sandbox.on('husky.auto-complete.' + this.options.instanceName + '.initialized', function(data) {
+                this.sandbox.once('husky.auto-complete.' + this.options.instanceName + '.initialized', function(data) {
                     this.$input = data;
                     this.startTagmanager();
                     this.bindEvents();
