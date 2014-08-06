@@ -424,7 +424,8 @@ define([], function() {
                         value,
                         '',
                         updateLabel,
-                        checkboxVisible)
+                        checkboxVisible
+                    )
                 );
             }
 
