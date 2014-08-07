@@ -6004,7 +6004,23 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 66,
+            "line": 64,
+            "description": "triggered when a when the download icon gets clicked",
+            "itemtype": "event",
+            "name": "husky.datagrid.download-clicked",
+            "params": [
+                {
+                    "name": "the",
+                    "description": "id of the data-record",
+                    "type": "Number|String"
+                }
+            ],
+            "class": "ThumbnailView (Datagrid Decorator)",
+            "module": "husky/components/column-options"
+        },
+        {
+            "file": "husky_components/datagrid/decorators/thumbnail-view.js",
+            "line": 75,
             "description": "Initializes the view, gets called only once",
             "params": [
                 {
@@ -6023,7 +6039,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 84,
+            "line": 93,
             "description": "Takes an object with options and extends the current ones",
             "params": [
                 {
@@ -6037,21 +6053,21 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 92,
+            "line": 101,
             "description": "Sets the starting variables for the view",
             "class": "ThumbnailView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 105,
+            "line": 114,
             "description": "Method to render data in this view",
             "class": "ThumbnailView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 118,
+            "line": 127,
             "description": "Parses the data and passes it to a render function",
             "params": [
                 {
@@ -6065,7 +6081,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 169,
+            "line": 178,
             "description": "Renders the actual thumbnail element",
             "params": [
                 {
@@ -6104,14 +6120,14 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 200,
+            "line": 209,
             "description": "Destroys the view",
             "class": "ThumbnailView (Datagrid Decorator)",
             "module": "husky/components/column-options"
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 208,
+            "line": 217,
             "description": "Binds Dom-Events for a thumbnail",
             "params": [
                 {
@@ -6125,7 +6141,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 229,
+            "line": 238,
             "description": "Toggles an item with a given id selected or unselected",
             "params": [
                 {
@@ -6139,7 +6155,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 241,
+            "line": 250,
             "description": "Selects an item with a given id",
             "params": [
                 {
@@ -6158,7 +6174,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 256,
+            "line": 265,
             "description": "Unselects an item with a given id",
             "params": [
                 {
@@ -6177,7 +6193,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 271,
+            "line": 280,
             "description": "Adds a record to the view",
             "params": [
                 {
@@ -6192,7 +6208,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 280,
+            "line": 289,
             "description": "Handles the click onto the download button of an item",
             "params": [
                 {
@@ -6206,7 +6222,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 289,
+            "line": 297,
             "description": "Removes a data record from the view",
             "params": [
                 {
@@ -6224,7 +6240,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/thumbnail-view.js",
-            "line": 303,
+            "line": 311,
             "description": "Unselects all thumbnails",
             "class": "ThumbnailView (Datagrid Decorator)",
             "module": "husky/components/column-options"
@@ -11359,7 +11375,7 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:289"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:297"
         },
         {
             "message": "replacing incorrect tag: returns with return",
@@ -12871,63 +12887,63 @@
         },
         {
             "message": "Missing item type\nInitializes the view, gets called only once",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:66"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:75"
         },
         {
             "message": "Missing item type\nTakes an object with options and extends the current ones",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:84"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:93"
         },
         {
             "message": "Missing item type\nSets the starting variables for the view",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:92"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:101"
         },
         {
             "message": "Missing item type\nMethod to render data in this view",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:105"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:114"
         },
         {
             "message": "Missing item type\nParses the data and passes it to a render function",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:118"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:127"
         },
         {
             "message": "Missing item type\nRenders the actual thumbnail element",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:169"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:178"
         },
         {
             "message": "Missing item type\nDestroys the view",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:200"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:209"
         },
         {
             "message": "Missing item type\nBinds Dom-Events for a thumbnail",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:208"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:217"
         },
         {
             "message": "Missing item type\nToggles an item with a given id selected or unselected",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:229"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:238"
         },
         {
             "message": "Missing item type\nSelects an item with a given id",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:241"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:250"
         },
         {
             "message": "Missing item type\nUnselects an item with a given id",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:256"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:265"
         },
         {
             "message": "Missing item type\nAdds a record to the view",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:271"
-        },
-        {
-            "message": "Missing item type\nHandles the click onto the download button of an item",
             "line": " husky_components/datagrid/decorators/thumbnail-view.js:280"
         },
         {
-            "message": "Missing item type\nRemoves a data record from the view",
+            "message": "Missing item type\nHandles the click onto the download button of an item",
             "line": " husky_components/datagrid/decorators/thumbnail-view.js:289"
         },
         {
+            "message": "Missing item type\nRemoves a data record from the view",
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:297"
+        },
+        {
             "message": "Missing item type\nUnselects all thumbnails",
-            "line": " husky_components/datagrid/decorators/thumbnail-view.js:303"
+            "line": " husky_components/datagrid/decorators/thumbnail-view.js:311"
         },
         {
             "message": "Missing item type\nDefault values for options",

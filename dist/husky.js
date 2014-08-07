@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -30034,6 +30035,15 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
                 '   <div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
                 '</div>'
             ].join('')
+        },
+
+        /**
+         * triggered when a when the download icon gets clicked
+         * @event husky.datagrid.download-clicked
+         * @param {Number|String} the id of the data-record
+         */
+        DOWNLOAD_CLICKED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, 'download-clicked');
         };
 
     return {
@@ -30257,8 +30267,7 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
          * @param id {Number|String} the id of the item
          */
         downloadHandler: function(id) {
-            // not yet implemented
-            this.sandbox.logger.warn('Download handler not yet implemented!', id);
+            this.sandbox.emit(DOWNLOAD_CLICKED.call(this), id);
         },
 
         /**
@@ -48093,4 +48102,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-
