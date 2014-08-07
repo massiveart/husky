@@ -28557,6 +28557,22 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         },
 
         /**
+         * triggered when children were collapsed
+         * @event husky.datagrid.table.children.collapsed
+         */
+        CHILDREN_COLLAPSED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, 'children.collapsed');
+        },
+
+        /**
+         * triggered when children were expanded
+         * @event husky.datagrid.table.children.expanded
+         */
+        CHILDREN_EXPANDED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, 'children.expanded');
+        },
+
+        /**
          * calculates the width of a text by creating a tablehead element and measure its width
          * @param text
          * @param classArray
@@ -29876,8 +29892,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
             if (this.sandbox.dom.is($children, ':visible')) {
                 this.hideChildren($parent, parentId);
+                this.sandbox.emit(CHILDREN_COLLAPSED.call(this));
             } else {
                 this.showChildren($parent, parentId);
+                this.sandbox.emit(CHILDREN_EXPANDED.call(this));
             }
         },
 
