@@ -30,12 +30,6 @@
         min-height: 200px;
         max-height: 750px;
 
-        &.overflow {
-            .column:last-child {
-                border-right: none;
-            }
-        }
-
         .column-navigation-loader {
             position: absolute;
             left: 0;
