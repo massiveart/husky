@@ -754,6 +754,7 @@ define([], function () {
                         }
 
                         this.removeColumns(column + 1);
+                        this.setOverflowClass();
                     }
                 }
 
