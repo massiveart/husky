@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -36197,14 +36196,14 @@ define('__component__$select@husky',[], function() {
             row: function() {
                 return[
                     '<div class="grid-row type-row" data-id="">',
-                    '   <div class="grid-col-8 pull-left"><input class="form-element" type="text" value=""/></div>',
+                    '   <div class="grid-col-10 pull-left"><input class="form-element" type="text" value=""/></div>',
                     '   <div class="grid-col-2 pull-right"><div class="remove-row btn gray-dark fit only-icon pull-right"><div class="fa-minus-circle"></div></div></div>',
                     '</div>'].join('');
             },
             addOverlayRow: function(valueField, item) {
                 return [
                     '<div class="grid-row type-row" data-id="', item.id ,'">',
-                    '    <div class="grid-col-8 pull-left"><input class="form-element" type="text" value="', item[valueField],'"/></div>',
+                    '    <div class="grid-col-10 pull-left"><input class="form-element" type="text" value="', item[valueField],'"/></div>',
                     '    <div class="grid-col-2 pull-right"><div class="remove-row btn gray-dark fit only-icon pull-right"><div class="fa-minus-circle"></div></div></div>',
                     '</div>'
                 ].join('');
@@ -48094,3 +48093,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
