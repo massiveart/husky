@@ -357,20 +357,11 @@ define([], function() {
             var length = this.filledColumns + 1,
                 i, tmp;
 
-            for (i = length; i > newColumn; i--) {
+            for (i = length; i >= newColumn; i--) {
                 delete this.columns[i];
                 this.sandbox.dom.remove('#column'+ this.options.instanceName +'-' + i);
                 this.filledColumns--;
             }
-
-            // check if element in dom exists
-            tmp = this.sandbox.dom.find('#column'+ this.options.instanceName +'-' + newColumn);
-            if (tmp.length === 1) {
-                this.$addColumn = tmp[0];
-            }
-
-            this.sandbox.dom.remove('#column'+ this.options.instanceName +'-' + newColumn + ' li');
-
         },
 
         /**
@@ -487,18 +478,7 @@ define([], function() {
          * @returns {Object} DOM column
          */
         getDOMColumn: function(newColumn) {
-            var $column;
-
-            if (!!this.$addColumn) { // take existing add-column
-                $column = this.$addColumn;
-                this.sandbox.dom.data(this.$addColumn, 'id', newColumn);
-                this.sandbox.dom.attr(this.$addColumn, 'id', 'column' + this.options.instanceName + '-' + newColumn);
-                this.$addColumn = null;
-            } else { // create new column
-                $column = this.sandbox.dom.$(this.template.column.call(this, newColumn, this.options.column.width));
-            }
-
-            return $column;
+            return this.sandbox.dom.$(this.template.column.call(this, newColumn, this.options.column.width));
         },
 
         /**
