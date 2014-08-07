@@ -492,7 +492,7 @@ define([], function() {
             if (!!this.$addColumn) { // take existing add-column
                 $column = this.$addColumn;
                 this.sandbox.dom.data(this.$addColumn, 'id', newColumn);
-                this.sandbox.dom.attr(this.$addColumn, 'id', 'column-' + newColumn);
+                this.sandbox.dom.attr(this.$addColumn, 'id', 'column' + this.options.instanceName + '-' + newColumn);
                 this.$addColumn = null;
             } else { // create new column
                 $column = this.sandbox.dom.$(this.template.column.call(this, newColumn, this.options.column.width));
