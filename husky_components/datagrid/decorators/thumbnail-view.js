@@ -59,6 +59,15 @@ define(function() {
                 '   <div class="fa-' + constants.downloadIcon + ' ' + constants.downloadClass + '"></div>',
                 '</div>'
             ].join('')
+        },
+
+        /**
+         * triggered when a when the download icon gets clicked
+         * @event husky.datagrid.download-clicked
+         * @param {Number|String} the id of the data-record
+         */
+        DOWNLOAD_CLICKED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, 'download-clicked');
         };
 
     return {
@@ -282,8 +291,7 @@ define(function() {
          * @param id {Number|String} the id of the item
          */
         downloadHandler: function(id) {
-            // not yet implemented
-            this.sandbox.logger.warn('Download handler not yet implemented!', id);
+            this.sandbox.emit(DOWNLOAD_CLICKED.call(this), id);
         },
 
         /**
