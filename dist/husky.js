@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -38319,7 +38320,7 @@ define('__component__$column-navigation@husky',[], function () {
 
             noPage: function (description) {
                 return ['<div class="no-page">',
-                    '<span class="fa-file-o"></span>',
+                    '<span class="fa-coffee icon"></span>',
                     '<div class="text">', description , '</div>',
                     '</div>'].join('');
             },
@@ -48087,4 +48088,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-
