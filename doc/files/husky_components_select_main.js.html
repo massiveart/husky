@@ -705,7 +705,7 @@ define([], function() {
                 this.selectedElementsValues = selectedValues;
             }
 
-            this.sandbox.util.foreach(this.$list.children(), function($el) {
+            this.sandbox.util.foreach(this.sandbox.dom.children(this.$list), function($el) {
                 id = this.sandbox.dom.data($el, &#x27;id&#x27;) || &#x27;&#x27;;
                 $checkbox = this.sandbox.dom.find(&#x27;input[type=checkbox]&#x27;, $el);
                 if (this.selectedElements.indexOf(id) &gt; -1) {
