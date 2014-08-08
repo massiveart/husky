@@ -623,6 +623,7 @@ define([], function() {
             // in a clickhandler with openOnStart-option true
             //this.sandbox.stop();
 
+            this.sandbox.stop(&#x27;*&#x27;);
             this.sandbox.stopListening();
             this.sandbox.dom.remove(this.$el);
         },

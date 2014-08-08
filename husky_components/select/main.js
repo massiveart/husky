@@ -93,14 +93,14 @@ define([], function() {
             row: function() {
                 return[
                     '<div class="grid-row type-row" data-id="">',
-                    '   <div class="grid-col-8 pull-left"><input class="form-element" type="text" value=""/></div>',
+                    '   <div class="grid-col-10 pull-left"><input class="form-element" type="text" value=""/></div>',
                     '   <div class="grid-col-2 pull-right"><div class="remove-row btn gray-dark fit only-icon pull-right"><div class="fa-minus-circle"></div></div></div>',
                     '</div>'].join('');
             },
             addOverlayRow: function(valueField, item) {
                 return [
                     '<div class="grid-row type-row" data-id="', item.id ,'">',
-                    '    <div class="grid-col-8 pull-left"><input class="form-element" type="text" value="', item[valueField],'"/></div>',
+                    '    <div class="grid-col-10 pull-left"><input class="form-element" type="text" value="', item[valueField],'"/></div>',
                     '    <div class="grid-col-2 pull-right"><div class="remove-row btn gray-dark fit only-icon pull-right"><div class="fa-minus-circle"></div></div></div>',
                     '</div>'
                 ].join('');
