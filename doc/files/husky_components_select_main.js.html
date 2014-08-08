@@ -251,14 +251,14 @@ define([], function() {
             row: function() {
                 return[
                     &#x27;&lt;div class=&quot;grid-row type-row&quot; data-id=&quot;&quot;&gt;&#x27;,
-                    &#x27;   &lt;div class=&quot;grid-col-8 pull-left&quot;&gt;&lt;input class=&quot;form-element&quot; type=&quot;text&quot; value=&quot;&quot;/&gt;&lt;/div&gt;&#x27;,
+                    &#x27;   &lt;div class=&quot;grid-col-10 pull-left&quot;&gt;&lt;input class=&quot;form-element&quot; type=&quot;text&quot; value=&quot;&quot;/&gt;&lt;/div&gt;&#x27;,
                     &#x27;   &lt;div class=&quot;grid-col-2 pull-right&quot;&gt;&lt;div class=&quot;remove-row btn gray-dark fit only-icon pull-right&quot;&gt;&lt;div class=&quot;fa-minus-circle&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&#x27;,
                     &#x27;&lt;/div&gt;&#x27;].join(&#x27;&#x27;);
             },
             addOverlayRow: function(valueField, item) {
                 return [
-                    &#x27;&lt;div class=&quot;grid-row type-row&quot; data-id=&quot;&#x27;, item.id , &#x27;&quot;&gt;&#x27;,
-                    &#x27;    &lt;div class=&quot;grid-col-8 pull-left&quot;&gt;&lt;input class=&quot;form-element&quot; type=&quot;text&quot; value=&quot;&#x27;, item[valueField], &#x27;&quot;/&gt;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;div class=&quot;grid-row type-row&quot; data-id=&quot;&#x27;, item.id ,&#x27;&quot;&gt;&#x27;,
+                    &#x27;    &lt;div class=&quot;grid-col-10 pull-left&quot;&gt;&lt;input class=&quot;form-element&quot; type=&quot;text&quot; value=&quot;&#x27;, item[valueField],&#x27;&quot;/&gt;&lt;/div&gt;&#x27;,
                     &#x27;    &lt;div class=&quot;grid-col-2 pull-right&quot;&gt;&lt;div class=&quot;remove-row btn gray-dark fit only-icon pull-right&quot;&gt;&lt;div class=&quot;fa-minus-circle&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&#x27;,
                     &#x27;&lt;/div&gt;&#x27;
                 ].join(&#x27;&#x27;);

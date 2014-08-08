@@ -31,9 +31,9 @@
         max-height: 750px;
 
         &.overflow {
-            .column:last-child {
-                border-right: none;
-            }
+          .column:last-child {
+            border-right: none;
+          }
         }
 
         .column-navigation-loader {
@@ -65,7 +65,7 @@
                 height: 160px;
                 margin-top: -55px;
 
-                .fa-file-o {
+                .icon {
                   font-size: 72px;
                   line-height: 80px;
                 }
