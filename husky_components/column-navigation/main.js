@@ -887,7 +887,7 @@ define([], function () {
 
             noPage: function (description) {
                 return ['<div class="no-page">',
-                    '<span class="fa-file-o"></span>',
+                    '<span class="fa-coffee icon"></span>',
                     '<div class="text">', description , '</div>',
                     '</div>'].join('');
             },
