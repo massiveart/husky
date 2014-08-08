@@ -524,6 +524,10 @@
             };
 
             app.core.util.ajax = $.ajax;
+
+            app.core.util.when = function(deferreds){
+                return $.when(deferreds);
+            };
         }
     });
 })();
