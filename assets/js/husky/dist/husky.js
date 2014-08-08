@@ -37297,7 +37297,7 @@ define('__component__$column-navigation@husky',[], function() {
             if (!!nodeWithSubNodes) { // parse next column if data exists
                 this.parseData(nodeWithSubNodes, newColumn);
             } else if (!!lastSelected && !lastSelected[this.options.hasSubName]) { // append add column if no children
-                this.insertAddColumn(lastSelected, newColumn);
+                this.addColumn(lastSelected, newColumn);
             }
 
         },
@@ -37628,7 +37628,7 @@ define('__component__$column-navigation@husky',[], function() {
                     }
                 }
                 // insert add column when clicked element
-                this.insertAddColumn(selectedItem, column);
+                this.addColumn(selectedItem, column);
 
                 // scroll for add column
                 if (!selectedItem.hasSub) {
@@ -37671,7 +37671,7 @@ define('__component__$column-navigation@husky',[], function() {
             this.sandbox.dom.css(this.$el, {'min-width': '100%'});
         },
 
-        insertAddColumn: function(selectedItem, column) {
+        addColumn: function(selectedItem, column) {
             if (!this.$addColumn && !selectedItem[this.options.hasSubName]) {
                 // append empty column to add subpages
                 this.$addColumn = this.sandbox.dom.createElement(this.template.column.call(this, column + 1, this.options.column.width));
