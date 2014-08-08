@@ -29,6 +29,7 @@
  * @param {Boolean} [options.hint] if false typeahead hint-field will be removed
  * @param {Boolean} [options.emptyOnBlur] If true input field value gets deleted on blur
  * @param {Array} [options.excludes] Array of suggestions to exclude from the suggestion dropdown
+ * @param {Function} [options.selectCallback] function which will be called when element is selected
  */
 
 define([], function() {
@@ -53,7 +54,8 @@ define([], function() {
             stickToInput: false,
             hint: false,
             emptyOnBlur: false,
-            excludes: []
+            excludes: [],
+            selectCallback: null
         },
 
         eventNamespace = 'husky.auto-complete.',
@@ -374,6 +376,9 @@ define([], function() {
                 } else {
                     this.sandbox.emit(SELECT.call(this), datum);
                     this.setValueFieldId(datum.id);
+                    if (typeof this.options.selectCallback === 'function') {
+                        this.options.selectCallback.call(this, datum, event);
+                    }
                 }
             }.bind(this));
 
