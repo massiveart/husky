@@ -31,9 +31,9 @@
         max-height: 750px;
 
         &.overflow {
-            .column:last-child {
-                border-right: none;
-            }
+          .column:last-child {
+            border-right: none;
+          }
         }
 
         .column-navigation-loader {
