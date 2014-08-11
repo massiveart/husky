@@ -2888,7 +2888,7 @@
         },
         {
             "file": "husky_extensions/jquery.js",
-            "line": 454,
+            "line": 458,
             "description": "Awesome visible method. Returns false if any part of a given element is not visible\nMethod is copied and slightly adapted from https://github.com/teamdf/jquery-visible/",
             "params": [
                 {
@@ -10445,7 +10445,7 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " husky_extensions/jquery.js:454"
+            "line": " husky_extensions/jquery.js:458"
         },
         {
             "message": "replacing incorrect tag: returns with return",
@@ -11117,7 +11117,7 @@
         },
         {
             "message": "Missing item type\nAwesome visible method. Returns false if any part of a given element is not visible\nMethod is copied and slightly adapted from https://github.com/teamdf/jquery-visible/",
-            "line": " husky_extensions/jquery.js:454"
+            "line": " husky_extensions/jquery.js:458"
         },
         {
             "message": "Missing item type\ncool guy loop implementation of foreach: http://jsperf.com/loops3/2\nreturns -> callback(value, index)",

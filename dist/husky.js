@@ -46569,6 +46569,10 @@ define("datepicker-zh-TW", function(){});
               $(selector).empty();
             };
 
+            app.core.dom.replaceWith = function(selector, newContent) {
+              $(selector).replaceWith(newContent);
+            };
+
             /**
              * Awesome visible method. Returns false if any part of a given element is not visible
              * Method is copied and slightly adapted from https://github.com/teamdf/jquery-visible/
