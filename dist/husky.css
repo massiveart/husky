@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /* line 3, ../scss/abstract/abstract-validation.scss */
 .husky-auto-complete-error label, .husky-validate-error label,
 .husky-auto-complete-error .control-label,
@@ -5809,6 +5808,16 @@ fieldset[disabled] .datepicker table tr td span.active.disabled.active, fieldset
   background: #f2d212;
   font-size: medium !important;
   margin-bottom: -1px;
+}
+
+/* line 48, ../scss/modules/custom-icons.scss */
+.fa-shadow-node:before {
+  content: "\f064";
+}
+
+/* line 49, ../scss/modules/custom-icons.scss */
+.fa-internal-link:before {
+  content: "\f0c1";
 }
 
 /* line 8, ../scss/modules/core.scss */
