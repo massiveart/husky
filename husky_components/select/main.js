@@ -999,7 +999,7 @@ define([], function() {
             } else {
                 this.triggerSelect(key);
             }
-            this.sandbox.dom.trigger('changed');
+            this.sandbox.dom.trigger('change');
         },
 
         // triggers select callback or emits event
