@@ -1057,7 +1057,7 @@ define('form/mapper',[
                     if (!!data) {
                         dfd.then(function() {
                             that.setData.call(this, data, $newFields);
-                        });
+                        }.bind(this));
                     }
 
                     // push element to global array

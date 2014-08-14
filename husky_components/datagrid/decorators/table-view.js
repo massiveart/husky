@@ -172,6 +172,22 @@ define(function() {
         },
 
         /**
+         * triggered when children were collapsed
+         * @event husky.datagrid.table.children.collapsed
+         */
+        CHILDREN_COLLAPSED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, 'children.collapsed');
+        },
+
+        /**
+         * triggered when children were expanded
+         * @event husky.datagrid.table.children.expanded
+         */
+        CHILDREN_EXPANDED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, 'children.expanded');
+        },
+
+        /**
          * calculates the width of a text by creating a tablehead element and measure its width
          * @param text
          * @param classArray
@@ -359,9 +375,11 @@ define(function() {
             );
 
             // calls the radio-clicked event and stops further event-propagation
+            // needs tbody selector to be called before the general listener on
+            // on checkboxes and radio
             this.sandbox.dom.on(
-                this.sandbox.dom.find('.custom-radio.custom-filter',this.$tableContainer), 'click',
-                this.radioClickedCallback.bind(this)
+                this.sandbox.dom.find('tbody', this.$tableContainer), 'click',
+                this.radioClickedCallback.bind(this), '.custom-radio.custom-filter'
             );
 
             this.sandbox.dom.on(this.$tableContainer, 'click', function(event) {
@@ -1489,8 +1507,10 @@ define(function() {
 
             if (this.sandbox.dom.is($children, ':visible')) {
                 this.hideChildren($parent, parentId);
+                this.sandbox.emit(CHILDREN_COLLAPSED.call(this));
             } else {
                 this.showChildren($parent, parentId);
+                this.sandbox.emit(CHILDREN_EXPANDED.call(this));
             }
         },
 

@@ -77,8 +77,6 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
-                <li><a href="../classes/SmartContent.html">SmartContent</a></li>
-            
                 <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
             
                 <li><a href="../classes/Tabs.html">Tabs</a></li>
@@ -112,8 +110,6 @@
                 <li><a href="../modules/husky_components_overlay.html">husky/components/overlay</a></li>
             
                 <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
-            
-                <li><a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a></li>
             
                 <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
@@ -217,6 +213,15 @@ define(function() {
                 &#x27;   &lt;div class=&quot;fa-&#x27; + constants.downloadIcon + &#x27; &#x27; + constants.downloadClass + &#x27;&quot;&gt;&lt;/div&gt;&#x27;,
                 &#x27;&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;)
+        },
+
+        /**
+         * triggered when a when the download icon gets clicked
+         * @event husky.datagrid.download-clicked
+         * @param {Number|String} the id of the data-record
+         */
+        DOWNLOAD_CLICKED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, &#x27;download-clicked&#x27;);
         };
 
     return {
@@ -440,8 +445,7 @@ define(function() {
          * @param id {Number|String} the id of the item
          */
         downloadHandler: function(id) {
-            // not yet implemented
-            this.sandbox.logger.warn(&#x27;Download handler not yet implemented!&#x27;, id);
+            this.sandbox.emit(DOWNLOAD_CLICKED.call(this), id);
         },
 
         /**

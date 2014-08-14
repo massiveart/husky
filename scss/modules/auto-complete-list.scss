@@ -46,6 +46,8 @@
         border-radius: 0;
         position: static;
         margin: 0;
+        display: block;
+        margin-bottom: -5px;
 
         input[type="text"] {
             margin: 7px 10px 7px 0 !important;
@@ -56,6 +58,7 @@
             outline: 0;
             border-radius: 0;
             height: auto;
+            float: left;
         }
     }
 }
@@ -69,6 +72,7 @@
     color: #000;
     font-size: 12px;
     line-height: 20px;
+    float: left;
 
     .tm-tag-remove {
         @extend .fa;

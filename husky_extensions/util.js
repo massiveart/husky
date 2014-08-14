@@ -143,6 +143,7 @@ define(function() {
             };
 
 			app.core.util.template = _.template;
+
         }
     };
 });

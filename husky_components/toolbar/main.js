@@ -69,7 +69,9 @@ define(function() {
 
         constants = {
             collapsedWidth: 50,
-            dropdownToggleWidth: 5 //px
+            dropdownToggleWidth: 5, //px
+            loaderWhiteColor: 'white',
+            loaderDarkColor: '#cccccc'
         },
 
         /** templates container */
@@ -362,7 +364,8 @@ define(function() {
             var item = this.items[id],
                 $item = this.sandbox.dom.find('[data-id="' + id + '"]', this.$el),
                 $itemLink = this.sandbox.dom.find('a', $item),
-                $loader, size;
+                $loader, size,
+                color = constants.loaderWhiteColor;
 
             if (item.loading) {
                 return;
@@ -380,12 +383,16 @@ define(function() {
             $loader = this.sandbox.dom.createElement('<span class="item-loader"></span>');
             this.sandbox.dom.append($item, $loader);
 
+            if (this.sandbox.dom.hasClass($item, 'highlight-white')) {
+                color = constants.loaderDarkColor;
+            }
+
             this.sandbox.start([{
                 name: 'loader@husky',
                 options: {
                     el: $loader,
                     size: size,
-                    color: 'white'
+                    color: color
                 }
             }]);
         },

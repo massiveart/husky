@@ -19,7 +19,6 @@ YUI.add("yuidoc-meta", function(Y) {
         "Process",
         "Search",
         "Select",
-        "SmartContent",
         "TableView (Datagrid Decorator)",
         "Tabs",
         "ThumbnailView (Datagrid Decorator)",
@@ -37,7 +36,6 @@ YUI.add("yuidoc-meta", function(Y) {
         "husky_components_matcher",
         "husky_components_overlay",
         "husky_components_process",
-        "husky_components_smart-content",
         "husky_components_toolbar"
     ],
     "allModules": [
@@ -89,11 +87,6 @@ YUI.add("yuidoc-meta", function(Y) {
         {
             "displayName": "husky/components/process",
             "name": "husky_components_process",
-            "description": "This file is part of Husky frontend development framework.\n\n(c) MASSIVE ART WebServices GmbH\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE."
-        },
-        {
-            "displayName": "husky/components/smart-content",
-            "name": "husky_components_smart-content",
             "description": "This file is part of Husky frontend development framework.\n\n(c) MASSIVE ART WebServices GmbH\n\nThis source file is subject to the MIT license that is bundled\nwith this source code in the file LICENSE."
         },
         {

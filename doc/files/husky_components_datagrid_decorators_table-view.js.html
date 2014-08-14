@@ -77,8 +77,6 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
-                <li><a href="../classes/SmartContent.html">SmartContent</a></li>
-            
                 <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
             
                 <li><a href="../classes/Tabs.html">Tabs</a></li>
@@ -112,8 +110,6 @@
                 <li><a href="../modules/husky_components_overlay.html">husky/components/overlay</a></li>
             
                 <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
-            
-                <li><a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a></li>
             
                 <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
@@ -330,6 +326,22 @@ define(function() {
         },
 
         /**
+         * triggered when children were collapsed
+         * @event husky.datagrid.table.children.collapsed
+         */
+        CHILDREN_COLLAPSED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, &#x27;children.collapsed&#x27;);
+        },
+
+        /**
+         * triggered when children were expanded
+         * @event husky.datagrid.table.children.expanded
+         */
+        CHILDREN_EXPANDED = function() {
+            return this.datagrid.createEventName.call(this.datagrid, &#x27;children.expanded&#x27;);
+        },
+
+        /**
          * calculates the width of a text by creating a tablehead element and measure its width
          * @param text
          * @param classArray
@@ -517,9 +529,11 @@ define(function() {
             );
 
             // calls the radio-clicked event and stops further event-propagation
+            // needs tbody selector to be called before the general listener on
+            // on checkboxes and radio
             this.sandbox.dom.on(
-                this.sandbox.dom.find(&#x27;.custom-radio.custom-filter&#x27;,this.$tableContainer), &#x27;click&#x27;,
-                this.radioClickedCallback.bind(this)
+                this.sandbox.dom.find(&#x27;tbody&#x27;, this.$tableContainer), &#x27;click&#x27;,
+                this.radioClickedCallback.bind(this), &#x27;.custom-radio.custom-filter&#x27;
             );
 
             this.sandbox.dom.on(this.$tableContainer, &#x27;click&#x27;, function(event) {
@@ -1647,8 +1661,10 @@ define(function() {
 
             if (this.sandbox.dom.is($children, &#x27;:visible&#x27;)) {
                 this.hideChildren($parent, parentId);
+                this.sandbox.emit(CHILDREN_COLLAPSED.call(this));
             } else {
                 this.showChildren($parent, parentId);
+                this.sandbox.emit(CHILDREN_EXPANDED.call(this));
             }
         },
 

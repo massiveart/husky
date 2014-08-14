@@ -77,8 +77,6 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
-                <li><a href="../classes/SmartContent.html">SmartContent</a></li>
-            
                 <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
             
                 <li><a href="../classes/Tabs.html">Tabs</a></li>
@@ -112,8 +110,6 @@
                 <li><a href="../modules/husky_components_overlay.html">husky/components/overlay</a></li>
             
                 <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
-            
-                <li><a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a></li>
             
                 <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
@@ -458,6 +454,21 @@
                             
                             <li class="param">
                                 
+                                    <code class="param-name optional">[afterDropCallback]</code>
+                                    <span class="type">Function</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>callback which gets called after a file got dropped. Has to return a promise. If the promise gets resolved the file gets uploaded</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
                                     <code class="param-name optional">[pluginOptions]</code>
                                     <span class="type">Object</span>
                                     <span class="flag optional" title="This parameter is optional.">optional</span>
@@ -495,6 +506,21 @@
 
                                 <div class="param-description">
                                     <p>skin class for the dropzone. currently available: &#39;small&#39; or &#39;&#39; (default)</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[keepFilesAfterSuccess]</code>
+                                    <span class="type">Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>True to not slide the files away after uploading them successfully</p>
 
                                 </div>
 
@@ -544,6 +570,13 @@
                     <h3>Events</h3>
 
                     <ul class="index-list events">
+                        
+                            <li class="index-item event">
+                                <a href="#event_husky.dropzone.&lt;instance-name&gt;.change-url">husky.dropzone.&lt;instance-name&gt;.change-url</a>
+
+                                
+                                
+                            </li>
                         
                             <li class="index-item event">
                                 <a href="#event_husky.dropzone.&lt;instance-name&gt;.files-added">husky.dropzone.&lt;instance-name&gt;.files-added</a>
@@ -610,6 +643,74 @@
                 <h2 class="off-left">Events</h2>
 
                 
+                    <div id="event_husky.dropzone.&lt;instance-name&gt;.change-url" class="events item">
+    <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.change-url</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_dropzone_main.js.html#l170"><code>husky_components&#x2F;dropzone&#x2F;main.js:170</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>listens on and changes the url of the dropzone</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Event Payload:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">the</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>new url</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+
+    
+</div>
+
+                
                     <div id="event_husky.dropzone.&lt;instance-name&gt;.files-added" class="events item">
     <h3 class="name"><code>husky.dropzone.&lt;instance-name&gt;.files-added</code></h3>
     <span class="type"></span>
@@ -633,7 +734,7 @@
             
         
         
-        <a href="../files/husky_components_dropzone_main.js.html#l157"><code>husky_components&#x2F;dropzone&#x2F;main.js:157</code></a>
+        <a href="../files/husky_components_dropzone_main.js.html#l161"><code>husky_components&#x2F;dropzone&#x2F;main.js:161</code></a>
         
         </p>
 
@@ -701,7 +802,7 @@
             
         
         
-        <a href="../files/husky_components_dropzone_main.js.html#l106"><code>husky_components&#x2F;dropzone&#x2F;main.js:106</code></a>
+        <a href="../files/husky_components_dropzone_main.js.html#l110"><code>husky_components&#x2F;dropzone&#x2F;main.js:110</code></a>
         
         </p>
 
@@ -745,7 +846,7 @@
             
         
         
-        <a href="../files/husky_components_dropzone_main.js.html#l133"><code>husky_components&#x2F;dropzone&#x2F;main.js:133</code></a>
+        <a href="../files/husky_components_dropzone_main.js.html#l137"><code>husky_components&#x2F;dropzone&#x2F;main.js:137</code></a>
         
         </p>
 
@@ -789,7 +890,7 @@
             
         
         
-        <a href="../files/husky_components_dropzone_main.js.html#l141"><code>husky_components&#x2F;dropzone&#x2F;main.js:141</code></a>
+        <a href="../files/husky_components_dropzone_main.js.html#l145"><code>husky_components&#x2F;dropzone&#x2F;main.js:145</code></a>
         
         </p>
 
@@ -833,7 +934,7 @@
             
         
         
-        <a href="../files/husky_components_dropzone_main.js.html#l149"><code>husky_components&#x2F;dropzone&#x2F;main.js:149</code></a>
+        <a href="../files/husky_components_dropzone_main.js.html#l153"><code>husky_components&#x2F;dropzone&#x2F;main.js:153</code></a>
         
         </p>
 
@@ -877,7 +978,7 @@
             
         
         
-        <a href="../files/husky_components_dropzone_main.js.html#l123"><code>husky_components&#x2F;dropzone&#x2F;main.js:123</code></a>
+        <a href="../files/husky_components_dropzone_main.js.html#l127"><code>husky_components&#x2F;dropzone&#x2F;main.js:127</code></a>
         
         </p>
 
@@ -961,7 +1062,7 @@
             
         
         
-        <a href="../files/husky_components_dropzone_main.js.html#l114"><code>husky_components&#x2F;dropzone&#x2F;main.js:114</code></a>
+        <a href="../files/husky_components_dropzone_main.js.html#l118"><code>husky_components&#x2F;dropzone&#x2F;main.js:118</code></a>
         
         </p>
 

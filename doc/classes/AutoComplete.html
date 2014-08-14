@@ -77,8 +77,6 @@
             
                 <li><a href="../classes/Select.html">Select</a></li>
             
-                <li><a href="../classes/SmartContent.html">SmartContent</a></li>
-            
                 <li><a href="../classes/TableView (Datagrid Decorator).html">TableView (Datagrid Decorator)</a></li>
             
                 <li><a href="../classes/Tabs.html">Tabs</a></li>
@@ -112,8 +110,6 @@
                 <li><a href="../modules/husky_components_overlay.html">husky/components/overlay</a></li>
             
                 <li><a href="../modules/husky_components_process.html">husky/components/process</a></li>
-            
-                <li><a href="../modules/husky_components_smart-content.html">husky/components/smart-content</a></li>
             
                 <li><a href="../modules/husky_components_toolbar.html">husky/components/toolbar</a></li>
             
@@ -486,6 +482,21 @@
                                 
                             </li>
                             
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[selectCallback]</code>
+                                    <span class="type">Function</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>function which will be called when element is selected</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
                         </ul>
                     
                 </li>
@@ -580,6 +591,13 @@
                             </li>
                         
                             <li class="index-item event">
+                                <a href="#event_husky.auto-complete.selection-removed">husky.auto-complete.selection-removed</a>
+
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item event">
                                 <a href="#event_husky.auto-complete.set-excludes">husky.auto-complete.set-excludes</a>
 
                                 
@@ -625,7 +643,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete_main.js.html#l61"><code>husky_components&#x2F;auto-complete&#x2F;main.js:61</code></a>
+        <a href="../files/husky_components_auto-complete_main.js.html#l63"><code>husky_components&#x2F;auto-complete&#x2F;main.js:63</code></a>
         
         </p>
 
@@ -669,7 +687,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete_main.js.html#l119"><code>husky_components&#x2F;auto-complete&#x2F;main.js:119</code></a>
+        <a href="../files/husky_components_auto-complete_main.js.html#l129"><code>husky_components&#x2F;auto-complete&#x2F;main.js:129</code></a>
         
         </p>
 
@@ -737,7 +755,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete_main.js.html#l69"><code>husky_components&#x2F;auto-complete&#x2F;main.js:69</code></a>
+        <a href="../files/husky_components_auto-complete_main.js.html#l71"><code>husky_components&#x2F;auto-complete&#x2F;main.js:71</code></a>
         
         </p>
 
@@ -781,7 +799,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete_main.js.html#l85"><code>husky_components&#x2F;auto-complete&#x2F;main.js:85</code></a>
+        <a href="../files/husky_components_auto-complete_main.js.html#l87"><code>husky_components&#x2F;auto-complete&#x2F;main.js:87</code></a>
         
         </p>
 
@@ -825,7 +843,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete_main.js.html#l77"><code>husky_components&#x2F;auto-complete&#x2F;main.js:77</code></a>
+        <a href="../files/husky_components_auto-complete_main.js.html#l79"><code>husky_components&#x2F;auto-complete&#x2F;main.js:79</code></a>
         
         </p>
 
@@ -869,7 +887,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete_main.js.html#l93"><code>husky_components&#x2F;auto-complete&#x2F;main.js:93</code></a>
+        <a href="../files/husky_components_auto-complete_main.js.html#l95"><code>husky_components&#x2F;auto-complete&#x2F;main.js:95</code></a>
         
         </p>
 
@@ -913,7 +931,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete_main.js.html#l101"><code>husky_components&#x2F;auto-complete&#x2F;main.js:101</code></a>
+        <a href="../files/husky_components_auto-complete_main.js.html#l103"><code>husky_components&#x2F;auto-complete&#x2F;main.js:103</code></a>
         
         </p>
 
@@ -958,6 +976,50 @@
 </div>
 
                 
+                    <div id="event_husky.auto-complete.selection-removed" class="events item">
+    <h3 class="name"><code>husky.auto-complete.selection-removed</code></h3>
+    <span class="type"></span>
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/husky_components_auto-complete_main.js.html#l112"><code>husky_components&#x2F;auto-complete&#x2F;main.js:112</code></a>
+        
+        </p>
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>raised after selection has been removed</p>
+
+    </div>
+
+    
+
+
+    
+</div>
+
+                
                     <div id="event_husky.auto-complete.set-excludes" class="events item">
     <h3 class="name"><code>husky.auto-complete.set-excludes</code></h3>
     <span class="type"></span>
@@ -981,7 +1043,7 @@
             
         
         
-        <a href="../files/husky_components_auto-complete_main.js.html#l110"><code>husky_components&#x2F;auto-complete&#x2F;main.js:110</code></a>
+        <a href="../files/husky_components_auto-complete_main.js.html#l120"><code>husky_components&#x2F;auto-complete&#x2F;main.js:120</code></a>
         
         </p>
 

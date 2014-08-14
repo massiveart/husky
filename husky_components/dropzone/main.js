@@ -27,9 +27,11 @@
  * @params {Function} [options.successCallback] callback which gets called if a file got successfully uploaded. First parameter is the file, the second the response
  * @params {Function} [options.beforeSendingCallback] callback which gets called before a file gets uploaded. First parameter is the file.
  * @params {Function} [options.removeFileCallback] callback which gets called after a file got removed. First parameter is the file.
+ * @params {Function} [options.afterDropCallback] callback which gets called after a file got dropped. Has to return a promise. If the promise gets resolved the file gets uploaded
  * @params {Object} [options.pluginOptions] Options to pass to the dropzone-plugin to completely override all options set by husky. Use with care.
  * @params {Boolean} [options.showOverlay] if true the dropzone will be displayed in an overlay if its not visible any more or the passed scroll-top is reached
  * @params {String} [options.skin] skin class for the dropzone. currently available: 'small' or '' (default)
+ * @params {Boolean} [options.keepFilesAfterSuccess] True to not slide the files away after uploading them successfully
  */
 define([], function () {
 
@@ -52,11 +54,13 @@ define([], function () {
             successCallback: null,
             beforeSendingCallback: null,
             removeFileCallback: null,
+            afterDropCallback: null,
             pluginOptions: {},
             maxFiles: null,
             fadeOutDuration: 200, //ms
             fadeOutDelay: 1500, //ms
             showOverlay: true,
+            keepFilesAfterSuccess: false,
             skin: ''
         },
 
@@ -163,6 +167,15 @@ define([], function () {
             return createEventName.call(this, 'files-added');
         },
 
+        /**
+         * listens on and changes the url of the dropzone
+         * @event husky.dropzone.<instance-name>.change-url
+         * @param {String} the new url
+         */
+            CHANGE_URL = function () {
+            return createEventName.call(this, 'change-url');
+        },
+
         /** returns normalized event names */
             createEventName = function (postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
@@ -183,6 +196,8 @@ define([], function () {
             this.lastUploadedFile = null;
             this.overlayOpened = false;
             this.lockPopUp = false;
+            this.url = this.options.url;
+            this.filesDropped = 0;
 
             this.bindCustomEvents();
             this.render();
@@ -215,6 +230,11 @@ define([], function () {
             // opens the data-source folder-overlay
             this.sandbox.on(OPEN_DATA_SOURCE.call(this), function () {
                 this.sandbox.dom.trigger(this.$dropzone, 'click');
+            }.bind(this));
+
+            // change the url
+            this.sandbox.on(CHANGE_URL.call(this), function(url) {
+                this.url = url;
             }.bind(this));
 
             if (this.options.showOverlay) {
@@ -291,6 +311,7 @@ define([], function () {
                     uploadMultiple: this.options.uploadMultiple,
                     maxFiles: this.options.maxFiles,
                     headers: this.options.headers,
+                    autoProcessQueue: !this.options.afterDropCallback,
                     previewTemplate: this.sandbox.util.template(templates.uploadItem)({
                         cancelIcon: this.options.cancelLoadingIcon
                     }),
@@ -299,15 +320,30 @@ define([], function () {
                         // store dropzone context
                         that.dropzone = this;
 
+                        this.on('drop', function(event) {
+                            this.filesDropped = event.dataTransfer.files.length;
+                        }.bind(that));
+
                         // gets called if file gets added (drop or via the upload window)
                         this.on('addedfile', function (file) {
-                            this.sandbox.dom.addClass(this.$dropzone, constants.droppedClass);
+                            that.sandbox.dom.addClass(that.$dropzone, constants.droppedClass);
+
+                            // call the after-drop callback on the last file
+                            if (typeof that.options.afterDropCallback === 'function') {
+                                if (this.files.length === that.filesDropped) {
+                                    that.options.afterDropCallback(file).then(function() {
+                                        that.sandbox.util.foreach(this.files, function(file) {
+                                            that.sandbox.util.delay(this.processFile.bind(this, file), 0);
+                                        }.bind(this));
+                                    }.bind(this));
+                                }
+                            }
 
                             // prevent the the upload window to open on click on the preview item
-                            this.sandbox.dom.on(file.previewElement, 'click', function (event) {
+                            that.sandbox.dom.on(file.previewElement, 'click', function (event) {
                                 this.sandbox.dom.stopPropagation(event);
-                            }.bind(this));
-                        }.bind(that));
+                            }.bind(that));
+                        });
 
                         // gets called before the file is sent
                         this.on('sending', function (file) {
@@ -328,7 +364,7 @@ define([], function () {
                                 } else {
                                     this.sandbox.emit(SUCCESS.call(this), file, response);
                                 }
-                                this.removeAllFiles();
+                                this.removeAllFiles(this.options.keepFilesAfterSuccess);
                             }
                         }.bind(that));
 
@@ -341,8 +377,15 @@ define([], function () {
 
                         // gets called if all files are removed from the zone
                         this.on('reset', function () {
-                            this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
+                            if (this.options.keepFilesAfterSuccess === false) {
+                                this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
+                            }
                         }.bind(that));
+
+                        // enables the to change the url dynamically
+                        this.on('processing', function () {
+                            this.options.url = that.url;
+                        });
                     }
                 };
 
@@ -354,11 +397,15 @@ define([], function () {
         /**
          * Removes all files from the dropzone
          * but only if all dropped files got uploaded
+         * @param keepDom {Boolean} true to keep the dom like it is
          */
-        removeAllFiles: function () {
+        removeAllFiles: function (keepDom) {
             // if all files got uploaded
             if (this.dropzone.getUploadingFiles.call(this.dropzone).length === 0) {
-                this.sandbox.util.delay(
+                if (keepDom === true) {
+                    this.afterFadeOut(true);
+                } else {
+                    this.sandbox.util.delay(
                     function () {
                         this.sandbox.dom.fadeOut(
                             this.sandbox.dom.find('.' + constants.uploadItemClass, this.$dropzone),
@@ -372,20 +419,27 @@ define([], function () {
                     }.bind(this),
                     this.options.fadeOutDelay
                 );
+                }
             }
         },
 
         /**
          * Function gets called after all dropped files
          * have faded out
+         * @param keepDom {Boolean} true to keep the dom like it is
          */
-        afterFadeOut: function () {
+        afterFadeOut: function (keepDom) {
             if (this.overlayOpened === true) {
                 this.sandbox.emit('husky.overlay.dropzone-'+ this.options.instanceName +'.close');
             }
-            this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
             this.sandbox.emit(FILES_ADDED.call(this), this.getResponseArray(this.dropzone.files));
-            this.dropzone.removeAllFiles();
+            this.filesDropped = 0;
+            if (keepDom === true) {
+                this.dropzone.files = [];
+            } else {
+                this.sandbox.dom.removeClass(this.$dropzone, constants.droppedClass);
+                this.dropzone.removeAllFiles();
+            }
         },
 
         /**
