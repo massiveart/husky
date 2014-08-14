@@ -1,12 +1,12 @@
 {
   "name": "husky",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "main": "js/husky.js",
   "dependencies": {
     "backbone": "~1.0.0",
     "underscore": "~1.5.1",
     "aura": "latest",
-    "husky-validation": "#develop",
+    "husky-validation": "0.6.*",
     "globalize": "0.1.*",
     "massiveart-uritemplate": "0.3.*",
     "typeahead.js": "~0.9.3",
