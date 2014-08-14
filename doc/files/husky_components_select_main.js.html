@@ -228,6 +228,7 @@ define([], function() {
         },
 
         constants = {
+            selectClass: &#x27;husky-select&#x27;,
             labelClass: &#x27;husky-select-label&#x27;,
             listClass: &#x27;husky-select-list&#x27;,
             dropdownContainerClass: &#x27;husky-select-dropdown-container&#x27;,
@@ -473,6 +474,9 @@ define([], function() {
         },
 
         render: function() {
+
+            // add husky-select class to component
+            this.sandbox.dom.addClass(constants.selectClass);
 
             var $originalElement = this.sandbox.dom.$(this.options.el),
                 button = this.sandbox.dom.createElement(

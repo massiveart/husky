@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -36209,6 +36208,7 @@ define('__component__$select@husky',[], function() {
         },
 
         constants = {
+            selectClass: 'husky-select',
             labelClass: 'husky-select-label',
             listClass: 'husky-select-list',
             dropdownContainerClass: 'husky-select-dropdown-container',
@@ -36454,6 +36454,9 @@ define('__component__$select@husky',[], function() {
         },
 
         render: function() {
+
+            // add husky-select class to component
+            this.sandbox.dom.addClass(constants.selectClass);
 
             var $originalElement = this.sandbox.dom.$(this.options.el),
                 button = this.sandbox.dom.createElement(
@@ -47042,3 +47045,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
