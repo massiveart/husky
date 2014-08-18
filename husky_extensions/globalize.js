@@ -136,7 +136,7 @@
                  * @param types Possible types: n (number), d (decimal-digits), p (percentage), c (currency)
                  */
                 app.sandbox.numberFormat = function(number, types) {
-                    Globalize.format(number, types);
+                    return Globalize.format(number, types);
                 };
 
                 /**
