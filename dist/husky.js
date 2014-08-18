@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -45924,14 +45925,20 @@ define("datepicker-zh-TW", function(){});
                 };
 
                 /**
-                 * format a number; calls Globalize.format
+                 * formats a number; calls Globalize.format (see globalize documentation for any details)
+                 *  https://github.com/jquery/globalize/tree/v0.1.1#numbers
                  * @param number
-                 * @param types Possible types: n, d, p, c
+                 * @param types Possible types: n (number), d (decimal-digits), p (percentage), c (currency)
                  */
                 app.sandbox.numberFormat = function(number, types) {
-                    Globalize.format(number, types);
+                    return Globalize.format(number, types);
                 };
 
+                /**
+                 *
+                 * @param cultureName
+                 * @param messages
+                 */
                 app.setLanguage = function(cultureName, messages) {
                     var setLanguage = function() {
                         Globalize.culture(cultureName);
@@ -47054,4 +47061,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-

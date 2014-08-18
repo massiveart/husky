@@ -2883,7 +2883,7 @@
         {
             "file": "husky_extensions/globalize.js",
             "line": 132,
-            "description": "format a number; calls Globalize.format",
+            "description": "formats a number; calls Globalize.format (see globalize documentation for any details)\n https://github.com/jquery/globalize/tree/v0.1.1#numbers",
             "params": [
                 {
                     "name": "number",
@@ -2891,7 +2891,22 @@
                 },
                 {
                     "name": "types",
-                    "description": "Possible types: n, d, p, c"
+                    "description": "Possible types: n (number), d (decimal-digits), p (percentage), c (currency)"
+                }
+            ],
+            "class": "AutoComplete"
+        },
+        {
+            "file": "husky_extensions/globalize.js",
+            "line": 142,
+            "params": [
+                {
+                    "name": "cultureName",
+                    "description": ""
+                },
+                {
+                    "name": "messages",
+                    "description": ""
                 }
             ],
             "class": "AutoComplete"
@@ -11128,8 +11143,12 @@
             "line": " husky_extensions/globalize.js:119"
         },
         {
-            "message": "Missing item type\nformat a number; calls Globalize.format",
+            "message": "Missing item type\nformats a number; calls Globalize.format (see globalize documentation for any details)\n https://github.com/jquery/globalize/tree/v0.1.1#numbers",
             "line": " husky_extensions/globalize.js:132"
+        },
+        {
+            "message": "Missing item type",
+            "line": " husky_extensions/globalize.js:142"
         },
         {
             "message": "Missing item type\nsee https://github.com/farhadi/html5sortable for documentation",
