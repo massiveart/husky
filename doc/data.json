@@ -2881,6 +2881,22 @@
             "class": "AutoComplete"
         },
         {
+            "file": "husky_extensions/globalize.js",
+            "line": 132,
+            "description": "format a number; calls Globalize.format",
+            "params": [
+                {
+                    "name": "number",
+                    "description": ""
+                },
+                {
+                    "name": "types",
+                    "description": "Possible types: n, d, p, c"
+                }
+            ],
+            "class": "AutoComplete"
+        },
+        {
             "file": "husky_extensions/html5sortable.js",
             "line": 1,
             "description": "see https://github.com/farhadi/html5sortable for documentation",
@@ -11110,6 +11126,10 @@
         {
             "message": "Missing item type\nfunction calls this.sandbox.translate for an array of keys and returns an array of translations",
             "line": " husky_extensions/globalize.js:119"
+        },
+        {
+            "message": "Missing item type\nformat a number; calls Globalize.format",
+            "line": " husky_extensions/globalize.js:132"
         },
         {
             "message": "Missing item type\nsee https://github.com/farhadi/html5sortable for documentation",
