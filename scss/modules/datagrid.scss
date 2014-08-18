@@ -5,10 +5,84 @@
     position: relative;
     padding-top: 10px;
 
-    table {
-        td {
+  .husky-table {
+    &.overflow {
+      padding-right: $overflowIconSpacing;
+      & + .pagination-wrapper {
+        padding-right: $overflowIconSpacing;
+      }
+      td, th {
+        max-width: 500px;
+        overflow: hidden;
+      }
+    }
+    &.overflow:after {
+      @extend .fa;
+      display: block;
+      content: $fa-var-arrow-right;
+      color: $grayLight;
+      font-size: 16px;
+      position: absolute;
+      right: 5px;
+      margin-top: -28px;
+      top: 50%;
+    }
 
-            input{
+    &.fullwidth {
+      th:first-child,
+      td:first-child {
+        padding-left: $fullWidthPaddingLeft;
+      }
+
+      & + .pagination-wrapper {
+        padding-left: $fullWidthPaddingLeft - 10px;
+      }
+    }
+
+    &.white-box {
+      padding: 0 20px;
+      overflow: hidden;
+      .table-container {
+        margin-bottom: -1px;
+      }
+      tbody {
+        tr:first-child {
+          height: 49px;
+        }
+        tr:last-child {
+          border-bottom: none;
+        }
+        td {
+          padding-left: 0;
+          padding-right: 0;
+        }
+      }
+      .empty-list {
+        border: none;
+      }
+    }
+
+    &.minimal {
+      padding: 0;
+      tbody {
+        td.thumb {
+          width: 1px;
+          img {
+            height: 30px;
+          }
+        }
+      }
+    }
+  }
+
+  table {
+    white-space: nowrap;
+    .fit {
+      width: 1%; //table-cells with width 1% have the behaviour that they fit the content inside them
+    }
+    td {
+
+      input{
                 margin: 0 0 0 -2px;
                 border-color: $white;
             }
@@ -18,8 +92,6 @@
                 border-color: #AD0710 !important;
                 border-width: 2px !important;
             }
-
-            overflow: hidden;
             text-overflow: ellipsis;
         }
         .checkbox-cell {
@@ -104,17 +176,7 @@
     }
 
     .table-container {
-        overflow: auto;
-
-        &.overflow:after {
-            @extend .fa;
-            content: $fa-var-arrow-right;
-            color: $grayLighter;
-            font-size: 22px;
-            position: absolute;
-            right: -26px;
-            top: 40%;
-        }
+      overflow: auto;
 
       &.no-head {
         thead {
@@ -161,57 +223,4 @@
         display: block;
       }
     }
-
-    /**
-      * Special styles
-    **/
-    &.fullwidth {
-        th:first-child,
-        td:first-child {
-            padding-left: $fullWidthPaddingLeft;
-        }
-
-        .pagination-wrapper {
-            padding-left: $fullWidthPaddingLeft - 10px;
-            padding-right: $overflowIconSpacing;
-        }
-        .overflow + .pagination-wrapper {
-            padding-right: 0;
-        }
-    }
-
-  &.white-box {
-      padding: 0 20px;
-      overflow: hidden;
-      .table-container {
-        margin-bottom: -1px;
-      }
-      tbody {
-        tr:first-child {
-          height: 49px;
-        }
-        tr:last-child {
-          border-bottom: none;
-        }
-        td {
-          padding-left: 0;
-          padding-right: 0;
-        }
-      }
-      .empty-list {
-        border: none;
-      }
-  }
-
-  &.minimal {
-      padding: 0;
-      tbody {
-        td.thumb {
-          width: 1px;
-          img {
-            height: 30px;
-          }
-        }
-      }
-  }
 }
