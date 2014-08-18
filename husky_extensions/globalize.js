@@ -129,6 +129,15 @@
                     return translations;
                 };
 
+                /**
+                 * format a number; calls Globalize.format
+                 * @param number
+                 * @param types Possible types: n, d, p, c
+                 */
+                app.sandbox.numberFormat = function(number, types) {
+                    Globalize.format(number, types);
+                };
+
                 app.setLanguage = function(cultureName, messages) {
                     var setLanguage = function() {
                         Globalize.culture(cultureName);

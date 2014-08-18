@@ -174,6 +174,10 @@ define(function() {
             this.items = [];
             this.domItems = {};
 
+            bindDOMEvents.call(this);
+
+            bindCustomEvents.call(this);
+
             // load data and call render
             if (!!this.options.url) {
                 this.sandbox.util.load(this.options.url)
@@ -186,10 +190,6 @@ define(function() {
             } else {
                 this.sandbox.logger.log('no data provided for tabs!');
             }
-
-            bindDOMEvents.call(this);
-
-            bindCustomEvents.call(this);
         },
 
         createEventName: function(ending) {
@@ -251,7 +251,7 @@ define(function() {
             this.sandbox.dom.append($element, $list);
 
             this.items = [];
-            this.domItems = {}
+            this.domItems = {};
 
             this.sandbox.util.foreach(data.items, function(item, index) {
                 this.items[item.id] = item;
