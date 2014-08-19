@@ -73,6 +73,21 @@
         }
       }
     }
+
+    &.is-selectable {
+      .table {
+        tr {
+          cursor: pointer;
+          &:hover > td {
+            background-color: #fff;
+          }
+        }
+
+        thead tr {
+          cursor: auto;
+        }
+      }
+    }
   }
 
   table {
@@ -81,20 +96,29 @@
       width: 1%; //table-cells with width 1% have the behaviour that they fit the content inside them
     }
     td {
-
-      input{
-                margin: 0 0 0 -2px;
-                border-color: $white;
-            }
-
-            // Remove when validation type for serverside validation is implemented
-            .server-validation-error {
-                border-color: #AD0710 !important;
-                border-width: 2px !important;
-            }
-            text-overflow: ellipsis;
-        }
-        .checkbox-cell {
+      .input-wrapper {
+        position: relative;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        margin: 0 0 0 -4px;
+        height: $inputHeight;
+        display: none;
+      }
+      .editable-input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        padding: 0 7px;
+      }
+      // Remove when validation type for serverside validation is implemented
+      .server-validation-error {
+        border-color: #AD0710 !important;
+        border-width: 2px !important;
+      }
+      text-overflow: ellipsis;
+    }
+    .checkbox-cell {
           box-sizing: content-box;
           width: 15px;
         }
@@ -104,11 +128,14 @@
           height: 15px;
         }
     }
+  .row-remover {
+    cursor: pointer;
+  }
 
-    thead {
-        tr {
-            height: 30px;
-            padding-top: 10px;
+  thead {
+    tr {
+      height: 30px;
+      padding-top: 10px;
             border-color: $grayLighter;
         }
         th {
@@ -120,15 +147,30 @@
                 color: black;
                 cursor: pointer;
             }
-            &.is-selected {
-                font-weight: bold;
+          &.sorted-asc {
+            font-weight: bold;
+            &::after {
+              @extend .fa;
+              margin-left: 5px;
+              content: $fa-var-caret-up;
+              font-size: $smallFontSize;
             }
+          }
+          &.sorted-desc {
+            font-weight: bold;
+            &::after {
+              @extend .fa;
+              margin-left: 5px;
+              content: $fa-var-caret-down;
+              font-size: $smallFontSize;
+            }
+          }
         }
 
-        .sort-loader {
-          display: inline-block;
-          padding-left: 3px;
-        }
+    .header-loader {
+      display: inline-block;
+      padding-left: 3px;
+    }
 
         .table-container {
             width: 100%;

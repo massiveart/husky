@@ -39,7 +39,7 @@ require(['lib/husky'], function(Husky) {
                             showHead: true, // false to hide table-head
                             //fullWidth: true, // uncomment for full-width mode
                             contentContainer: '#content',
-                            highlightSelected: true
+                            highlightSelected: false
                         },
                         thumbnail: {
                         }
