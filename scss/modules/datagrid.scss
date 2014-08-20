@@ -101,7 +101,7 @@
         top: 0px;
         left: 0px;
         width: 100%;
-        margin: 0 0 0 -4px;
+        margin: -$inputHeight 0 0 -4px;
         height: $inputHeight;
         display: none;
       }
@@ -112,8 +112,8 @@
         padding: 0 7px;
       }
       // Remove when validation type for serverside validation is implemented
-      .server-validation-error {
-        border-color: #AD0710 !important;
+      .server-validation-error .editable-input {
+        border-color: $red !important;
         border-width: 2px !important;
       }
       text-overflow: ellipsis;

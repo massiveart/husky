@@ -152,7 +152,7 @@
                         url: null,
                         alt: null
                     };
-                    if (!!thumbnails[format]) {
+                    if (!!thumbnails && !!thumbnails[format]) {
                         if (typeof thumbnails[format] === 'object') {
                             thumbnail.url = thumbnails[format].url;
                             thumbnail.alt = thumbnails[format].alt;

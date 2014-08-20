@@ -46,8 +46,6 @@ define(function() {
                 inFirstCell: false
             },
             noItemsText: 'This list is empty',
-            /*validation: false, // TODO does not work for added rows
-            validationDebug: false,*/
             addRowTop: true,
             excludeFields: [''],
             cssClass: '',
@@ -83,7 +81,9 @@ define(function() {
             headerCellLoaderClass: 'header-loader',
             editableItemClass: 'editable',
             editableInputClass: 'editable-input',
-            inputWrapperClass: 'input-wrapper'
+            inputWrapperClass: 'input-wrapper',
+            editedErrorClass: 'server-validation-error',
+            newRecordId: 'newrecord'
         },
 
         selectItems = {
@@ -232,6 +232,9 @@ define(function() {
          */
         addRecord: function (record) {
             this.removeEmptyIndicator();
+            if (!record.id) {
+                record.id = constants.newRecordId;
+            }
             this.renderBodyRow(record, this.options.addRowTop);
         },
 
@@ -419,13 +422,14 @@ define(function() {
         },
 
         /**
-         * Renderes a single table row
+         * Renderes a single table row. If the row already exists it replaces the exiting one
          * @param record {Object} the record
          * @param prepend {Boolean} if true row gets prepended
          */
         renderBodyRow: function (record, prepend) {
             var $row = this.sandbox.dom.createElement(templates.row),
-                insertMethod = (prepend === true) ? this.sandbox.dom.prepend : this.sandbox.dom.append;
+                insertMethod = (prepend === true) ? this.sandbox.dom.prepend : this.sandbox.dom.append,
+                $oldElement = (!!this.table.rows[record.id]) ? this.table.rows[record.id].$el : null;
             this.sandbox.dom.data($row, 'id', record.id);
             this.table.rows[record.id] = {
                 $el: $row,
@@ -439,11 +443,21 @@ define(function() {
                 }
             }.bind(this));
             this.renderRowRemoveItem(record.id);
-            insertMethod(this.table.$body, this.table.rows[record.id].$el);
+            // if there already was a row with the same id, override it with the new one
+            if (!!$oldElement && !!$oldElement.length) {
+                this.sandbox.dom.after($oldElement, this.table.rows[record.id].$el);
+                this.sandbox.dom.remove($oldElement);
+            } else {
+                insertMethod(this.table.$body, this.table.rows[record.id].$el);
+            }
             if (record.selected === true) {
                 this.toggleSelectRecord(record.id, true);
             } else {
                 this.toggleSelectAllItem(false);
+            }
+            // select first input if record is new and editable is true
+            if (this.options.editable === true && record.id === constants.newRecordId) {
+                this.showInput(record.id);
             }
         },
 
@@ -473,7 +487,9 @@ define(function() {
             this.sandbox.dom.data($cell, 'attribute', column.attribute);
 
             this.table.rows[record.id].cells[column.attribute] = {
-                $el: $cell
+                $el: $cell,
+                originalData: record[column.attribute],
+                editable: !!column.editable
             };
             // append cell to corresponding row
             this.sandbox.dom.append(
@@ -565,6 +581,7 @@ define(function() {
             // click on editable item
             if (this.options.editable === true) {
                 this.sandbox.dom.on(this.table.$body, 'click', this.editableItemClickHandler.bind(this), '.' + constants.editableItemClass);
+                this.sandbox.dom.on(this.table.$body, 'focusout', this.editableInputFocusoutHandler.bind(this), '.' + constants.editableInputClass);
             }
         },
 
@@ -591,13 +608,106 @@ define(function() {
         editableItemClickHandler: function(event) {
             this.sandbox.dom.stopPropagation(event);
             var recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id'),
-                attribute = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, 'td'), 'attribute'),
-                $cell = this.table.rows[recordId].cells[attribute].$el;
-            // hide editable element
-            this.sandbox.dom.hide(this.sandbox.dom.find('.' + constants.editableItemClass, $cell));
-            // show input
+                attribute = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, 'td'), 'attribute');
+            this.showInput(recordId, attribute);
+        },
+
+        /**
+         * Shows a edit-input for a row and an attribute if no attribute passed shows the first input in row
+         * @param recordId {Number|String}
+         * @param attribute {String}
+         */
+        showInput: function(recordId, attribute) {
+            var $cell, $inputs;
+            if (!attribute) {
+                $inputs = this.sandbox.dom.find('.' + constants.editableInputClass, this.table.rows[recordId].$el);
+                attribute = this.sandbox.dom.data(this.sandbox.dom.parents($inputs[0], 'td'), 'attribute');
+            }
+            $cell = this.table.rows[recordId].cells[attribute].$el
             this.sandbox.dom.show(this.sandbox.dom.find('.' + constants.inputWrapperClass, $cell));
             this.sandbox.dom.select(this.sandbox.dom.find('.' + constants.editableInputClass, $cell));
+        },
+
+        /**
+         * Handles the focusout of an editable input
+         * @param event {Object} the event object
+         */
+        editableInputFocusoutHandler: function (event) {
+            this.sandbox.dom.stopPropagation(event);
+            var recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id'),
+                modifiedRecord = {};
+            // build new record object out of the inputs in the row
+            this.sandbox.util.each(this.table.rows[recordId].cells, function (attribute, cell) {
+                if (!!this.sandbox.dom.find('.' + constants.editableInputClass, cell.$el).length) {
+                    modifiedRecord[attribute] = this.sandbox.dom.val(
+                        this.sandbox.dom.find('.' + constants.editableInputClass, cell.$el)
+                    );
+                }
+            }.bind(this));
+            this.saveRow(recordId, modifiedRecord, this.editedSuccessCallback.bind(this), this.editedErrorCallback.bind(this, recordId));
+        },
+
+        /**
+         * Clears everything up after a row was edited. (hides the input and updates the values)
+         * @param record {Object} the changed data record
+         */
+        editedSuccessCallback: function (record) {
+            var $row;
+            if (!!record.id) {
+                $row = this.table.rows[record.id].$el
+            } else if (!!this.table.rows[constants.newRecordId]) {
+                $row = this.table.rows[constants.newRecordId].$el
+            }
+            if (!!$row && !!$row.length) {
+                this.sandbox.dom.hide(this.sandbox.dom.find('.' + constants.inputWrapperClass, $row));
+                // if a "new" row exists remove it
+                if (!!this.table.rows[constants.newRecordId]) {
+                    this.sandbox.dom.remove(this.table.rows[constants.newRecordId].$el);
+                }
+                this.renderBodyRow(record, this.options.addRowTop);
+            }
+        },
+
+        /**
+         * Adds a css class to all inputs in a row, if the editing request returned with an error
+         * @param recordId
+         */
+        editedErrorCallback: function (recordId) {
+            var $row = this.table.rows[recordId].$el;
+            this.sandbox.dom.addClass(
+                this.sandbox.dom.find('.' + constants.inputWrapperClass, $row),
+                constants.editedErrorClass
+            );
+        },
+
+        /**
+         * Replaces a record with an existing one and sends it to a server
+         * @param recordId {Number|String} the id of the record to override
+         * @param newRecordData {Object} the new record data
+         * @param successCallback {Function} gets executed after success
+         * @param errorCallback {Function} gets executed after error
+         */
+        saveRow: function (recordId, newRecordData, successCallback, errorCallback) {
+            var hasChanged = false,
+                record;
+            this.sandbox.util.each(this.table.rows[recordId].cells, function (attribute, cell) {
+                if (cell.editable === true && cell.originalData !== newRecordData[attribute]) {
+                    hasChanged = true;
+                }
+            }.bind(this));
+            // merge record data
+            record = this.sandbox.util.extend(true, {}, this.data.embedded[this.datagrid.getRecordIndexById(recordId)]);
+            if (recordId === constants.newRecordId) {
+                delete record.id;
+            }
+            if (hasChanged === true) {
+                // pass data to datagrid to save it
+                this.datagrid.saveGrid.call(this.datagrid,
+                    record, this.datagrid.getUrlWithoutParams.call(this.datagrid),
+                    successCallback, errorCallback, this.options.addRowTop);
+            } else {
+                typeof successCallback === 'function' && successCallback(record);
+            }
         },
 
         /**

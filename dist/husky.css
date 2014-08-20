@@ -652,9 +652,10 @@ table {
   overflow: hidden;
   width: 100%;
   white-space: nowrap;
+  cursor: pointer;
 }
 
-/* line 76, ../scss/utilities.scss */
+/* line 77, ../scss/utilities.scss */
 .editable:focus,
 .editable:active {
   background: white;
@@ -662,208 +663,208 @@ table {
   outline: 0;
 }
 
-/* line 82, ../scss/utilities.scss */
+/* line 83, ../scss/utilities.scss */
 .editable:hover {
   border: 1px solid #cccccc;
   outline: 0;
 }
 
-/* line 89, ../scss/utilities.scss */
+/* line 90, ../scss/utilities.scss */
 .clickable {
   color: black !important;
 }
 
-/* line 93, ../scss/utilities.scss */
+/* line 94, ../scss/utilities.scss */
 .faded {
   opacity: 0.3;
 }
 
-/* line 102, ../scss/utilities.scss */
+/* line 103, ../scss/utilities.scss */
 .m-top-0 {
   margin-top: 0px !important;
 }
 
-/* line 105, ../scss/utilities.scss */
+/* line 106, ../scss/utilities.scss */
 .p-top-0 {
   padding-top: 0px !important;
 }
 
-/* line 108, ../scss/utilities.scss */
+/* line 109, ../scss/utilities.scss */
 .m-bottom-0 {
   margin-bottom: 0px !important;
 }
 
-/* line 111, ../scss/utilities.scss */
+/* line 112, ../scss/utilities.scss */
 .p-bottom-0 {
   padding-bottom: 0px !important;
 }
 
-/* line 116, ../scss/utilities.scss */
+/* line 117, ../scss/utilities.scss */
 .m-top-5 {
   margin-top: 5px !important;
 }
 
-/* line 119, ../scss/utilities.scss */
+/* line 120, ../scss/utilities.scss */
 .p-top-5 {
   padding-top: 5px !important;
 }
 
-/* line 123, ../scss/utilities.scss */
+/* line 124, ../scss/utilities.scss */
 .m-bottom-5 {
   margin-bottom: 5px !important;
 }
 
-/* line 126, ../scss/utilities.scss */
+/* line 127, ../scss/utilities.scss */
 .p-bottom-5 {
   padding-bottom: 5px !important;
 }
 
-/* line 130, ../scss/utilities.scss */
+/* line 131, ../scss/utilities.scss */
 .m-right-5 {
   margin-right: 5px !important;
 }
 
-/* line 133, ../scss/utilities.scss */
+/* line 134, ../scss/utilities.scss */
 .p-right-5 {
   padding-right: 5px !important;
 }
 
-/* line 137, ../scss/utilities.scss */
+/* line 138, ../scss/utilities.scss */
 .m-left-5 {
   margin-left: 5px !important;
 }
 
-/* line 140, ../scss/utilities.scss */
+/* line 141, ../scss/utilities.scss */
 .p-left-5 {
   padding-left: 5px !important;
 }
 
-/* line 145, ../scss/utilities.scss */
+/* line 146, ../scss/utilities.scss */
 .m-top-10 {
   margin-top: 10px !important;
 }
 
-/* line 149, ../scss/utilities.scss */
+/* line 150, ../scss/utilities.scss */
 .m-bottom-10 {
   margin-bottom: 10px !important;
 }
 
-/* line 153, ../scss/utilities.scss */
+/* line 154, ../scss/utilities.scss */
 .m-right-10 {
   margin-right: 10px !important;
 }
 
-/* line 157, ../scss/utilities.scss */
+/* line 158, ../scss/utilities.scss */
 .m-left-10 {
   margin-left: 10px !important;
 }
 
-/* line 162, ../scss/utilities.scss */
+/* line 163, ../scss/utilities.scss */
 .p-top-10 {
   padding-top: 10px !important;
 }
 
-/* line 167, ../scss/utilities.scss */
+/* line 168, ../scss/utilities.scss */
 .m-top-15 {
   margin-top: 15px !important;
 }
 
-/* line 171, ../scss/utilities.scss */
+/* line 172, ../scss/utilities.scss */
 .m-bottom-15 {
   margin-bottom: 15px !important;
 }
 
-/* line 175, ../scss/utilities.scss */
+/* line 176, ../scss/utilities.scss */
 .m-right-15 {
   margin-right: 15px !important;
 }
 
-/* line 179, ../scss/utilities.scss */
+/* line 180, ../scss/utilities.scss */
 .m-left-15 {
   margin-left: 15px !important;
 }
 
-/* line 184, ../scss/utilities.scss */
+/* line 185, ../scss/utilities.scss */
 .m-top-20 {
   margin-top: 20px !important;
 }
 
-/* line 188, ../scss/utilities.scss */
+/* line 189, ../scss/utilities.scss */
 .m-bottom-20 {
   margin-bottom: 20px !important;
 }
 
-/* line 192, ../scss/utilities.scss */
+/* line 193, ../scss/utilities.scss */
 .m-right-20 {
   margin-right: 20px !important;
 }
 
-/* line 196, ../scss/utilities.scss */
+/* line 197, ../scss/utilities.scss */
 .m-left-20 {
   margin-left: 20px !important;
 }
 
-/* line 202, ../scss/utilities.scss */
+/* line 203, ../scss/utilities.scss */
 .m-top-25 {
   margin-top: 25px !important;
 }
 
-/* line 206, ../scss/utilities.scss */
+/* line 207, ../scss/utilities.scss */
 .m-bottom-25 {
   margin-bottom: 25px !important;
 }
 
-/* line 210, ../scss/utilities.scss */
+/* line 211, ../scss/utilities.scss */
 .m-right-25 {
   margin-right: 25px !important;
 }
 
-/* line 214, ../scss/utilities.scss */
+/* line 215, ../scss/utilities.scss */
 .m-left-25 {
   margin-left: 25px !important;
 }
 
-/* line 219, ../scss/utilities.scss */
+/* line 220, ../scss/utilities.scss */
 .m-top-30 {
   margin-top: 30px !important;
 }
 
-/* line 223, ../scss/utilities.scss */
+/* line 224, ../scss/utilities.scss */
 .m-bottom-30 {
   margin-bottom: 30px !important;
 }
 
-/* line 227, ../scss/utilities.scss */
+/* line 228, ../scss/utilities.scss */
 .m-right-30 {
   margin-right: 30px !important;
 }
 
-/* line 231, ../scss/utilities.scss */
+/* line 232, ../scss/utilities.scss */
 .m-left-30 {
   margin-left: 30px !important;
 }
 
-/* line 236, ../scss/utilities.scss */
+/* line 237, ../scss/utilities.scss */
 .m-top-40 {
   margin-top: 40px !important;
 }
 
-/* line 240, ../scss/utilities.scss */
+/* line 241, ../scss/utilities.scss */
 .m-bottom-40 {
   margin-bottom: 40px !important;
 }
 
-/* line 244, ../scss/utilities.scss */
+/* line 245, ../scss/utilities.scss */
 .m-right-40 {
   margin-right: 40px !important;
 }
 
-/* line 248, ../scss/utilities.scss */
+/* line 249, ../scss/utilities.scss */
 .m-left-40 {
   margin-left: 40px !important;
 }
 
-/* line 256, ../scss/utilities.scss */
+/* line 257, ../scss/utilities.scss */
 .m-height-25 {
   height: 25px !important;
 }
@@ -9029,7 +9030,7 @@ a.btn-black, a.btn-highlight {
   top: 0px;
   left: 0px;
   width: 100%;
-  margin: 0 0 0 -4px;
+  margin: -30px 0 0 -4px;
   height: 30px;
   display: none;
 }
@@ -9041,8 +9042,8 @@ a.btn-black, a.btn-highlight {
   padding: 0 7px;
 }
 /* line 115, ../scss/modules/datagrid.scss */
-.husky-datagrid table td .server-validation-error {
-  border-color: #AD0710 !important;
+.husky-datagrid table td .server-validation-error .editable-input {
+  border-color: #ea524e !important;
   border-width: 2px !important;
 }
 /* line 121, ../scss/modules/datagrid.scss */
