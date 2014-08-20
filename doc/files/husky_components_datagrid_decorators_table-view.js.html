@@ -233,11 +233,12 @@ define(function() {
             ascSortedClass: &#x27;sorted-asc&#x27;,
             descSortedClass: &#x27;sorted-desc&#x27;,
             headerCellLoaderClass: &#x27;header-loader&#x27;,
+            headerLoadingClass: &#x27;is-loading&#x27;,
             editableItemClass: &#x27;editable&#x27;,
             editableInputClass: &#x27;editable-input&#x27;,
             inputWrapperClass: &#x27;input-wrapper&#x27;,
             editedErrorClass: &#x27;server-validation-error&#x27;,
-            newRecordId: &#x27;newrecord&#x27;
+            newRecordId: &#x27;newrecord&#x27;,
         },
 
         selectItems = {
@@ -924,6 +925,7 @@ define(function() {
          */
         startHeaderCellLoader: function(column) {
             var $container = this.sandbox.dom.createElement(templates.headerCellLoader);
+            this.sandbox.dom.addClass(this.table.header.cells[column].$el, constants.headerLoadingClass);
             this.sandbox.dom.append(this.table.header.cells[column].$el, $container);
             this.sandbox.start([
                 {

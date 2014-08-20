@@ -28465,11 +28465,12 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             ascSortedClass: 'sorted-asc',
             descSortedClass: 'sorted-desc',
             headerCellLoaderClass: 'header-loader',
+            headerLoadingClass: 'is-loading',
             editableItemClass: 'editable',
             editableInputClass: 'editable-input',
             inputWrapperClass: 'input-wrapper',
             editedErrorClass: 'server-validation-error',
-            newRecordId: 'newrecord'
+            newRecordId: 'newrecord',
         },
 
         selectItems = {
@@ -29156,6 +29157,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         startHeaderCellLoader: function(column) {
             var $container = this.sandbox.dom.createElement(templates.headerCellLoader);
+            this.sandbox.dom.addClass(this.table.header.cells[column].$el, constants.headerLoadingClass);
             this.sandbox.dom.append(this.table.header.cells[column].$el, $container);
             this.sandbox.start([
                 {
