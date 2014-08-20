@@ -11,6 +11,9 @@
       & + .pagination-wrapper {
         padding-right: $overflowIconSpacing;
       }
+      &.fullwidth + .pagination-wrapper {
+        padding-right: $overflowIconSpacing + 20px;
+      }
       td, th {
         max-width: 500px;
         overflow: hidden;
@@ -36,6 +39,7 @@
 
       & + .pagination-wrapper {
         padding-left: $fullWidthPaddingLeft - 10px;
+        padding-right: 20px;
       }
     }
 
@@ -146,6 +150,10 @@
             &.is-sortable {
                 color: black;
                 cursor: pointer;
+                padding-right: 20px;
+                &.is-loading {
+                  padding-right: 10px;
+                }
             }
           &.sorted-asc {
             font-weight: bold;
@@ -169,6 +177,7 @@
 
     .header-loader {
       display: inline-block;
+      width: 10px;
       padding-left: 3px;
     }
 

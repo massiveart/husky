@@ -28618,9 +28618,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         addRecord: function (record) {
             this.removeEmptyIndicator();
-            if (!record.id) {
-                record.id = constants.newRecordId;
-            }
             this.renderBodyRow(record, this.options.addRowTop);
         },
 
@@ -28664,6 +28661,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.table = {};
             this.data = null;
             this.rowClicked = false;
+            this.keyHandlerExecuted = false;
         },
 
         /**
@@ -28813,22 +28811,22 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param prepend {Boolean} if true row gets prepended
          */
         renderBodyRow: function (record, prepend) {
+            this.removeNewRecordRow();
             var $row = this.sandbox.dom.createElement(templates.row),
                 insertMethod = (prepend === true) ? this.sandbox.dom.prepend : this.sandbox.dom.append,
                 $oldElement = (!!this.table.rows[record.id]) ? this.table.rows[record.id].$el : null;
+            record.id = (!!record.id) ? record.id : constants.newRecordId
+
             this.sandbox.dom.data($row, 'id', record.id);
             this.table.rows[record.id] = {
                 $el: $row,
                 cells: {}
             };
+
             this.renderRowSelectItem(record.id);
-            // foreach matching grab the corresponding data and render the cell with it
-            this.sandbox.util.foreach(this.datagrid.matchings, function(column) {
-                if (this.options.excludeFields.indexOf(column.attribute) === -1) {
-                    this.renderBodyCell(record, column);
-                }
-            }.bind(this));
+            this.renderBodyCellsForRow(record);
             this.renderRowRemoveItem(record.id);
+
             // if there already was a row with the same id, override it with the new one
             if (!!$oldElement && !!$oldElement.length) {
                 this.sandbox.dom.after($oldElement, this.table.rows[record.id].$el);
@@ -28836,6 +28834,15 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             } else {
                 insertMethod(this.table.$body, this.table.rows[record.id].$el);
             }
+
+            this.executeRowPostRenderActions(record);
+        },
+
+        /**
+         * Manipulates a row of a rendered after it has been rendered. For examples checks the checkbox or focuses an input
+         * @param record {Object} the data of the record
+         */
+        executeRowPostRenderActions: function(record) {
             if (record.selected === true) {
                 this.toggleSelectRecord(record.id, true);
             } else {
@@ -28845,6 +28852,19 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (this.options.editable === true && record.id === constants.newRecordId) {
                 this.showInput(record.id);
             }
+        },
+
+        /**
+         * Renderes the all the content cells in a body row
+         * @param record {Object} the data for the row
+         */
+        renderBodyCellsForRow: function(record) {
+            // foreach matching grab the corresponding data and render the cell with it
+            this.sandbox.util.foreach(this.datagrid.matchings, function(column) {
+                if (this.options.excludeFields.indexOf(column.attribute) === -1) {
+                    this.renderBodyCell(record, column);
+                }
+            }.bind(this));
         },
 
         /**
@@ -28934,6 +28954,16 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         },
 
         /**
+         * Removes the "new" record row
+         */
+        removeNewRecordRow: function() {
+            if (!!this.table.rows[constants.newRecordId]) {
+                this.sandbox.dom.remove(this.table.rows[constants.newRecordId].$el);
+                delete !!this.table.rows[constants.newRecordId];
+            }
+        },
+
+        /**
          * Render methods (end)
          * -------------------------------------------------------------------- */
 
@@ -28968,6 +28998,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (this.options.editable === true) {
                 this.sandbox.dom.on(this.table.$body, 'click', this.editableItemClickHandler.bind(this), '.' + constants.editableItemClass);
                 this.sandbox.dom.on(this.table.$body, 'focusout', this.editableInputFocusoutHandler.bind(this), '.' + constants.editableInputClass);
+                this.sandbox.dom.on(this.table.$body, 'keypress', this.editableInputKeyHandler.bind(this), '.' + constants.editableInputClass);
             }
         },
 
@@ -29015,13 +29046,38 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         },
 
         /**
+         * Handles keypress events of the editable inputs
+         * @param event {Object} the event object
+         */
+        editableInputKeyHandler: function(event) {
+            var recordId;
+            // on enter
+            if (event.keyCode === 13) {
+                this.sandbox.dom.stopPropagation(event);
+                recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
+                this.keyHandlerExecuted = true;
+                this.editRow(recordId);
+            }
+        },
+
+        /**
          * Handles the focusout of an editable input
          * @param event {Object} the event object
          */
         editableInputFocusoutHandler: function (event) {
-            this.sandbox.dom.stopPropagation(event);
-            var recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id'),
-                modifiedRecord = {};
+            if (this.keyHandlerExecuted === false) {
+                this.sandbox.dom.stopPropagation(event);
+                var recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
+                this.editRow(recordId);
+            }
+        },
+
+        /**
+         * Gets the data of all edit-inputs in a row and saves their values
+         * @param recordId {String|Number} the id of the row to edit
+         */
+        editRow: function(recordId) {
+            var modifiedRecord = {};
             // build new record object out of the inputs in the row
             this.sandbox.util.each(this.table.rows[recordId].cells, function (attribute, cell) {
                 if (!!this.sandbox.dom.find('.' + constants.editableInputClass, cell.$el).length) {
@@ -29039,17 +29095,13 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         editedSuccessCallback: function (record) {
             var $row;
-            if (!!record.id) {
+            if (!!record.id && !!this.table.rows[record.id]) {
                 $row = this.table.rows[record.id].$el
             } else if (!!this.table.rows[constants.newRecordId]) {
                 $row = this.table.rows[constants.newRecordId].$el
             }
             if (!!$row && !!$row.length) {
                 this.sandbox.dom.hide(this.sandbox.dom.find('.' + constants.inputWrapperClass, $row));
-                // if a "new" row exists remove it
-                if (!!this.table.rows[constants.newRecordId]) {
-                    this.sandbox.dom.remove(this.table.rows[constants.newRecordId].$el);
-                }
                 this.renderBodyRow(record, this.options.addRowTop);
             }
         },
@@ -29082,7 +29134,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 }
             }.bind(this));
             // merge record data
-            record = this.sandbox.util.extend(true, {}, this.data.embedded[this.datagrid.getRecordIndexById(recordId)]);
+            record = this.sandbox.util.extend(
+                true, {}, this.data.embedded[this.datagrid.getRecordIndexById(recordId)], newRecordData
+            );
             if (recordId === constants.newRecordId) {
                 delete record.id;
             }
@@ -30712,6 +30766,11 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                                 matchingObject.content = this.sandbox.translate(matching.translation);
                             } else if (key === 'name') {
                                 matchingObject.attribute = matching.name;
+                            } else if (key === 'sortable') {
+                                matchingObject.sortable = matching.sortable
+                                if (typeof matching.sortable === 'string') {
+                                    matchingObject.sortable = JSON.parse(matching.sortable);
+                                }
                             } else {
                                 matchingObject[key] = matching[key];
                             }

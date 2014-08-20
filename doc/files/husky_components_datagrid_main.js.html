@@ -723,6 +723,11 @@
                                 matchingObject.content = this.sandbox.translate(matching.translation);
                             } else if (key === &#x27;name&#x27;) {
                                 matchingObject.attribute = matching.name;
+                            } else if (key === &#x27;sortable&#x27;) {
+                                matchingObject.sortable = matching.sortable
+                                if (typeof matching.sortable === &#x27;string&#x27;) {
+                                    matchingObject.sortable = JSON.parse(matching.sortable);
+                                }
                             } else {
                                 matchingObject[key] = matching[key];
                             }

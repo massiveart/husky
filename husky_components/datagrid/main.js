@@ -569,6 +569,11 @@
                                 matchingObject.content = this.sandbox.translate(matching.translation);
                             } else if (key === 'name') {
                                 matchingObject.attribute = matching.name;
+                            } else if (key === 'sortable') {
+                                matchingObject.sortable = matching.sortable
+                                if (typeof matching.sortable === 'string') {
+                                    matchingObject.sortable = JSON.parse(matching.sortable);
+                                }
                             } else {
                                 matchingObject[key] = matching[key];
                             }
