@@ -671,7 +671,7 @@ define([], function () {
         },
 
         bindDOMEvents: function () {
-            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.itemSelected.bind(this), &#x27;li&#x27;);
+            this.sandbox.dom.on(this.$el, &#x27;click&#x27;, this.itemSelected.bind(this), &#x27;li:not(.selected)&#x27;);
 
             this.sandbox.dom.on(this.$el, &#x27;mouseenter&#x27;, this.itemMouseEnter.bind(this), &#x27;.column-navigation li&#x27;);
             this.sandbox.dom.on(this.$el, &#x27;mouseleave&#x27;, this.itemMouseLeave.bind(this), &#x27;.column-navigation li&#x27;);
