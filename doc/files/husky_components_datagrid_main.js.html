@@ -306,7 +306,7 @@
                         url: null,
                         alt: null
                     };
-                    if (!!thumbnails[format]) {
+                    if (!!thumbnails &amp;&amp; !!thumbnails[format]) {
                         if (typeof thumbnails[format] === &#x27;object&#x27;) {
                             thumbnail.url = thumbnails[format].url;
                             thumbnail.alt = thumbnails[format].alt;
