@@ -37917,7 +37917,8 @@ define('__component__$column-navigation@husky',[], function () {
             if (this.$loader === null) {
                 this.$loader = this.sandbox.dom.createElement('<div class="husky-column-navigation-loader"/>');
                 this.sandbox.dom.hide(this.$loader);
-
+            }
+            if (this.sandbox.dom.is(this.$loader, ':empty')) {
                 this.sandbox.start([
                     {
                         name: 'loader@husky',

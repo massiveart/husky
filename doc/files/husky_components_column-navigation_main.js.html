@@ -626,7 +626,8 @@ define([], function () {
             if (this.$loader === null) {
                 this.$loader = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;husky-column-navigation-loader&quot;/&gt;&#x27;);
                 this.sandbox.dom.hide(this.$loader);
-
+            }
+            if (this.sandbox.dom.is(this.$loader, &#x27;:empty&#x27;)) {
                 this.sandbox.start([
                     {
                         name: &#x27;loader@husky&#x27;,
