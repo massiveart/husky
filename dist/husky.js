@@ -28437,10 +28437,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             cssClass: '',
             thumbnailFormat: '50x50',
             showHead: true,
-            /*hideChildrenAtBeginning: true,*/
-            /*openChildId: null,*/
+            hideChildrenAtBeginning: true,
+            openChildId: null,
             highlightSelected: false,
-            /*icons: []*/
+            icons: []
         },
 
         constants = {
@@ -28471,6 +28471,15 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             inputWrapperClass: 'input-wrapper',
             editedErrorClass: 'server-validation-error',
             newRecordId: 'newrecord',
+            gridIconClass: 'grid-icon',
+            childWrapperClass: 'child-wrapper',
+            parentClass: 'children-toggler',
+            noChildrenClass: 'no-children',
+            toggleIconClass: 'toggle-icon',
+            collapsedIcon: 'fa-caret-right',
+            expandedIcon: 'fa-caret-down',
+            checkboxCellClass: 'checkbox-cell',
+            childIndent: 25 //px
         },
 
         selectItems = {
@@ -28502,6 +28511,13 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 '</div>'
             ].join(''),
             img: '<img alt="<%= alt %>" src="<%= src %>"/>',
+            childWrapper: '<div class="'+ constants.childWrapperClass +'"></div>',
+            toggleIcon: '<span class="'+ constants.toggleIconClass +'"></span>',
+            icon: [
+                '<span class="'+ constants.gridIconClass +' <%= align %>" data-icon-index="<%= index %>">',
+                '   <span class="fa-<%= icon %>"></span>',
+                '</span>'
+            ].join(''),
             checkbox: [
                 '<div class="custom-checkbox">',
                 '   <input class="' + constants.checkboxClass + '" type="checkbox" data-form="false"/>',
@@ -28586,7 +28602,24 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             // merge defaults with options
             this.options = this.sandbox.util.extend(true, {}, defaults, options);
 
+            this.bindCustomEvents();
             this.setVariables();
+        },
+
+        /**
+         * Binds custom related events
+         */
+        bindCustomEvents: function() {
+            this.sandbox.on(UPDATE_TABLE.call(this), this.onResize.bind(this));
+            this.sandbox.on(OPEN_PARENTS.call(this), this.openParents.bind(this));
+        },
+
+        /**
+         * Unbinds custom events
+         */
+        unbindCustomEvents: function() {
+            this.sandbox.off(UPDATE_TABLE.call(this), this.onResize.bind(this));
+            this.sandbox.off(OPEN_PARENTS.call(this), this.openParents.bind(this));
         },
 
         /**
@@ -28602,6 +28635,11 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (this.datagrid.options.resizeListeners === true) {
                 this.onResize();
             }
+            if (!!this.options.openChildId) {
+                this.openParents(this.options.openChildId);
+                this.options.openChildId = null;
+            }
+            this.renderChildrenHidden = false;
             this.rendered = true;
         },
 
@@ -28610,7 +28648,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         destroy: function() {
             this.sandbox.dom.remove(this.$el);
-            this.sandbox.stop('*');
+            this.sandbox.stop(this.sandbox.dom.find('*', this.$el));
         },
 
         /**
@@ -28662,7 +28700,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.table = {};
             this.data = null;
             this.rowClicked = false;
-            this.keyHandlerExecuted = false;
+            this.preventFocusoutHandler = false;
+            this.renderChildrenHidden = this.options.hideChildrenAtBeginning;
         },
 
         /**
@@ -28714,7 +28753,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         renderHeaderSelectItem: function() {
             if (!!this.options.selectItem && !!this.options.selectItem.type) {
                 var $cell = this.sandbox.dom.createElement(templates.headerCell);
-                this.sandbox.dom.addClass($cell, constants.cellFitClass);
+                this.sandbox.dom.addClass($cell, constants.checkboxCellClass);
                 if (this.options.selectItem.type === selectItems.CHECKBOX) {
                     this.sandbox.dom.html($cell, templates.checkbox);
                 }
@@ -28790,9 +28829,15 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         /**
          * Renders the checkbox or radio button for a row in the tbody
          * @param id {Number|String} the id of the row to add the select-item for
+         * @param norender {Boolean} if true the select-item doesn't get rendered as a cell but returned as string
+         * @returns {String} html if no render is set to true
          */
-        renderRowSelectItem: function(id) {
-            if (!!this.options.selectItem && !!this.options.selectItem.type && this.options.selectItem.inFirstCell === false) {
+        renderRowSelectItem: function(id, norender) {
+            if (this.datagrid.options.onlySelectLeaves === true && this.table.rows[id].numberChildren > 0) {
+                return '';
+            }
+            if (!!this.options.selectItem && !!this.options.selectItem.type &&
+                (this.options.selectItem.inFirstCell === false || norender === true)) {
                 var $cell = this.sandbox.dom.createElement(templates.cell);
                 this.sandbox.dom.addClass($cell, constants.cellFitClass);
                 if (this.options.selectItem.type === selectItems.CHECKBOX) {
@@ -28801,6 +28846,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                     this.sandbox.dom.html($cell, this.sandbox.util.template(templates.radio)({
                         name: 'datagrid-' + this.datagrid.options.instanceName
                     }));
+                }
+                if (norender === true) {
+                    return this.sandbox.dom.html($cell);
                 }
                 this.sandbox.dom.prepend(this.table.rows[id].$el, $cell);
             }
@@ -28814,29 +28862,57 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         renderBodyRow: function (record, prepend) {
             this.removeNewRecordRow();
             var $row = this.sandbox.dom.createElement(templates.row),
-                insertMethod = (prepend === true) ? this.sandbox.dom.prepend : this.sandbox.dom.append,
-                $oldElement = (!!this.table.rows[record.id]) ? this.table.rows[record.id].$el : null;
+                $overrideElement = (!!this.table.rows[record.id]) ? this.table.rows[record.id].$el : null;
             record.id = (!!record.id) ? record.id : constants.newRecordId
-
             this.sandbox.dom.data($row, 'id', record.id);
+
+            if (!!record.parent) {
+                this.table.rows[record.parent].childrenLoaded = true;
+            }
+
             this.table.rows[record.id] = {
                 $el: $row,
-                cells: {}
+                cells: {},
+                childrenLoaded: false,
+                childrenExpanded: false,
+                parent: !!(record.parent) ? record.parent : null,
+                numberChildren: (!!record[this.datagrid.options.childrenPropertyName]) ? record[this.datagrid.options.childrenPropertyName] : 0,
+                level: 1
             };
-
             this.renderRowSelectItem(record.id);
             this.renderBodyCellsForRow(record);
             this.renderRowRemoveItem(record.id);
+            this.insertBodyRow(record, $overrideElement, prepend);
+            this.executeRowPostRenderActions(record);
+        },
+
+        /**
+         * Inserts a body row into the dom. Looks if a row needs to be overriden, or if a parent exists etc.
+         * @param record {Object} the data object of the record
+         * @param prepend {Boolean} true to prepend
+         */
+        insertBodyRow: function(record, $overrideElement, prepend) {
+            var $parentElement = (!!this.table.rows[record.parent]) ? this.table.rows[record.parent].$el : null,
+                insertMethod = (prepend === true) ? this.sandbox.dom.prepend : this.sandbox.dom.append;
 
             // if there already was a row with the same id, override it with the new one
-            if (!!$oldElement && !!$oldElement.length) {
-                this.sandbox.dom.after($oldElement, this.table.rows[record.id].$el);
-                this.sandbox.dom.remove($oldElement);
+            if (!!$overrideElement && !!$overrideElement.length) {
+                this.sandbox.dom.after($overrideElement, this.table.rows[record.id].$el);
+                this.sandbox.dom.remove($overrideElement);
+                // if there is a parent insert it after the parent row
+            } else if (!!$parentElement && !!$parentElement.length) {
+                if (this.renderChildrenHidden === true) {
+                    this.sandbox.dom.hide(this.table.rows[record.id].$el);
+                    this.changeChildrenToggleIcon(record.parent, false);
+                } else {
+                    this.table.rows[record.parent].childrenExpanded = true;
+                    this.changeChildrenToggleIcon(record.parent, true);
+                }
+                this.sandbox.dom.after($parentElement, this.table.rows[record.id].$el);
+                // else just append or prepend it
             } else {
                 insertMethod(this.table.$body, this.table.rows[record.id].$el);
             }
-
-            this.executeRowPostRenderActions(record);
         },
 
         /**
@@ -28861,9 +28937,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         renderBodyCellsForRow: function(record) {
             // foreach matching grab the corresponding data and render the cell with it
-            this.sandbox.util.foreach(this.datagrid.matchings, function(column) {
+            this.sandbox.util.foreach(this.datagrid.matchings, function(column, index) {
                 if (this.options.excludeFields.indexOf(column.attribute) === -1) {
-                    this.renderBodyCell(record, column);
+                    this.renderBodyCell(record, column, index);
                 }
             }.bind(this));
         },
@@ -28885,11 +28961,24 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * Renders a single cell
          * @param record {Object} the record to render the cell for
          * @param column {Object} the column which should be rendered
+         * @param index {Number} the index of the cell in the row
          */
-        renderBodyCell: function(record, column) {
+        renderBodyCell: function(record, column, index) {
             var $cell = this.sandbox.dom.createElement(templates.cell),
-                content = this.getCellContent(record, column);
-
+                content = this.getCellContent(record, column),
+                selectItem;
+            if (!!this.datagrid.options.childrenPropertyName && index === 0) {
+                content = this.wrapChildrenCellContent(content, record);
+            }
+            if (!!this.options.selectItem && !!this.options.selectItem.inFirstCell === true) {
+                this.sandbox.dom.attr($cell, 'colspan', 2);
+                selectItem = this.renderRowSelectItem(record.id, true);
+                if (typeof content === 'string') {
+                    content = selectItem + content;
+                } else {
+                    this.sandbox.dom.prepend(content, selectItem);
+                }
+            }
             this.sandbox.dom.html($cell, content);
             this.sandbox.dom.data($cell, 'attribute', column.attribute);
 
@@ -28930,7 +29019,40 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (this.options.editable === true && column.editable === true) {
                 content = this.getEditableCellContent(content);
             }
+            if (!!this.options.icons) {
+                content = this.addIconsToCellContent(content, column);
+            }
             return content;
+        },
+
+        /**
+         * Wraps content into an additional container an indent and a toggler icon (for children and parents)
+         * @param content {String|Object} the content to wrap. html or dom object
+         * @param record {Object} the record data object
+         */
+        wrapChildrenCellContent: function(content, record) {
+            var $wrappedContent = this.sandbox.dom.createElement(templates.childWrapper),
+                $icon;
+            // if has children
+            if (!!record[this.datagrid.options.childrenPropertyName]
+                && record[this.datagrid.options.childrenPropertyName] > 0) {
+                this.sandbox.dom.addClass($wrappedContent, constants.parentClass);
+                $icon = this.sandbox.dom.createElement(templates.toggleIcon);
+                this.sandbox.dom.prependClass($icon, constants.collapsedIcon);
+                this.sandbox.dom.prepend($wrappedContent, $icon);
+            } else {
+                this.sandbox.dom.addClass($wrappedContent, constants.noChildrenClass);
+            }
+            // if has parent
+            if (!!record.parent) {
+                this.table.rows[record.id].level = this.table.rows[record.parent].level + 1;
+                // give that child an indent, children love indents
+                this.sandbox.dom.css($wrappedContent, {
+                    'padding-left': constants.childIndent * (this.table.rows[record.id].level - 1) + 'px'
+                });
+            }
+            this.sandbox.dom.append($wrappedContent, content);
+            return $wrappedContent;
         },
 
         /**
@@ -28943,6 +29065,31 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 value: content
             });
             return returnHTML;
+        },
+
+        /**
+         * Adds icons to a cell content
+         * @param content {String|Object} html or a dom object. If its a string icons get added to the string, if its an object it gets appended
+         * @param column {Object} the column data object
+         * @returns content {String|Object} html or a dom object
+         */
+        addIconsToCellContent: function(content, column) {
+            var iconStr;
+            this.sandbox.util.foreach(this.options.icons, function(icon, index) {
+                if (icon.column === column.attribute) {
+                    iconStr = this.sandbox.util.template(templates.icon)({
+                       icon: icon.icon,
+                       align: icon.align,
+                       index: index
+                    });
+                    if (typeof content === 'object') {
+                        this.sandbox.dom.append(content, iconStr);
+                    } else if (typeof content === 'string') {
+                        content += iconStr;
+                    }
+                }
+            }.bind(this));
+            return content;
         },
 
         /**
@@ -28959,8 +29106,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         removeNewRecordRow: function() {
             if (!!this.table.rows[constants.newRecordId]) {
+                this.preventFocusoutHandler = true;
                 this.sandbox.dom.remove(this.table.rows[constants.newRecordId].$el);
-                delete !!this.table.rows[constants.newRecordId];
+                delete this.table.rows[constants.newRecordId];
             }
         },
 
@@ -29000,6 +29148,33 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 this.sandbox.dom.on(this.table.$body, 'click', this.editableItemClickHandler.bind(this), '.' + constants.editableItemClass);
                 this.sandbox.dom.on(this.table.$body, 'focusout', this.editableInputFocusoutHandler.bind(this), '.' + constants.editableInputClass);
                 this.sandbox.dom.on(this.table.$body, 'keypress', this.editableInputKeyHandler.bind(this), '.' + constants.editableInputClass);
+            }
+            if (!!this.options.icons) {
+                this.sandbox.dom.on(this.table.$body, 'click', this.iconClickHandler.bind(this), '.' + constants.gridIconClass);
+            }
+            this.sandbox.dom.on(this.table.$body, 'click', this.radioButtonClickHandler.bind(this), 'input[type="radio"]');
+        },
+
+        /**
+         * Gets executed if a radio button in the table body gets clicked
+         * @param event
+         */
+        radioButtonClickHandler: function(event) {
+            this.sandbox.dom.stopPropagation(event);
+            var recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id'),
+                attribute = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, 'td'), 'attribute');
+            this.sandbox.emit(RADIO_SELECTED.call(this), recordId, attribute);
+        },
+
+        /**
+         * Handles the click on grid-icons
+         * @param event {Object} the event object
+         */
+        iconClickHandler: function(event) {
+            var icon = this.options.icons[this.sandbox.dom.data(event.currentTarget, 'icon-index')],
+                recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
+            if (typeof recordId !== 'undefined' && !!icon && typeof icon.callback === 'function') {
+                icon.callback(recordId);
             }
         },
 
@@ -29056,7 +29231,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (event.keyCode === 13) {
                 this.sandbox.dom.stopPropagation(event);
                 recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
-                this.keyHandlerExecuted = true;
+                this.preventFocusoutHandler = true;
                 this.editRow(recordId);
             }
         },
@@ -29066,7 +29241,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param event {Object} the event object
          */
         editableInputFocusoutHandler: function (event) {
-            if (this.keyHandlerExecuted === false) {
+            if (this.preventFocusoutHandler === false) {
                 this.sandbox.dom.stopPropagation(event);
                 var recordId = this.sandbox.dom.data(this.sandbox.dom.parents(event.currentTarget, '.' + constants.rowClass), 'id');
                 this.editRow(recordId);
@@ -29181,6 +29356,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.emitRowClickedEvent(event);
             if (this.options.highlightSelected === true) {
                 this.uniqueHighlightRecord(recordId);
+            }
+            if (!!this.table.rows[recordId].numberChildren > 0) {
+                this.toggleChildren(recordId);
             }
         },
 
@@ -29321,6 +29499,96 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         removeEmptyIndicator: function() {
             this.sandbox.dom.remove(this.sandbox.dom.find('.' + constants.emptyListElementClass, this.$el));
+        },
+
+        /**
+         * Changes the toggle-icon of a parent row
+         * @param recordId {String|Number} the id of the parent row
+         * @param isExpanded {Boolean} the state for which the icon should be set
+         */
+        changeChildrenToggleIcon: function(recordId, isExpanded) {
+            var $icon = this.sandbox.dom.find('.' + constants.toggleIconClass, this.table.rows[recordId].$el);
+            if (!!$icon && !!$icon.length) {
+                if (isExpanded === true) {
+                    this.sandbox.dom.removeClass($icon, constants.collapsedIcon);
+                    this.sandbox.dom.prependClass($icon, constants.expandedIcon);
+                } else {
+                    this.sandbox.dom.removeClass($icon, constants.expandedIcon);
+                    this.sandbox.dom.prependClass($icon, constants.collapsedIcon);
+                }
+            }
+        },
+
+        /**
+         * Toggles the children of a parent
+         * @param recordId {Number|String} the id of the parent to toggle the children for
+         */
+        toggleChildren: function(recordId) {
+            if (this.table.rows[recordId].childrenLoaded === true) {
+                if (this.table.rows[recordId].childrenExpanded === true) {
+                    this.hideChildren(recordId);
+                    this.sandbox.emit(CHILDREN_COLLAPSED.call(this));
+                } else {
+                    this.showChildren(recordId);
+                    this.sandbox.emit(CHILDREN_EXPANDED.call(this));
+                }
+            } else {
+                this.loadChildren(recordId);
+            }
+        },
+
+        /**
+         * Hides the children of a parent
+         * @param recordId {Number|String} the id of the parent to hide the children for
+         */
+        hideChildren: function(recordId) {
+            this.sandbox.util.each(this.table.rows, function(rowId, row) {
+                if (row.parent == recordId) {
+                    if (row.numberChildren > 0) {
+                        this.hideChildren(rowId);
+                    }
+                    this.sandbox.dom.hide(row.$el);
+                }
+            }.bind(this));
+            this.table.rows[recordId].childrenExpanded = false;
+            this.changeChildrenToggleIcon(recordId, false);
+        },
+
+        /**
+         * Shows the children of a parent
+         * @param recordId {Number|String} the id of the parent to show the children for
+         */
+        showChildren: function(recordId) {
+            this.sandbox.util.each(this.table.rows, function(rowId, row) {
+                if (row.parent == recordId) {
+                    this.sandbox.dom.show(row.$el);
+                }
+            }.bind(this));
+            this.table.rows[recordId].childrenExpanded = true;
+            this.changeChildrenToggleIcon(recordId, true);
+        },
+
+        /**
+         * Loads the children of a parent and displays them
+         * @param recordId {Number|String} the id of the parent to load the children for
+         */
+        loadChildren: function(recordId) {
+            this.datagrid.loadChildren.call(this.datagrid, recordId);
+            this.table.rows[recordId].childrenLoaded = true;
+        },
+
+        /**
+         * Opens all parents of a record
+         * @param id {Number|String} the id of the record
+         */
+        openParents: function(recordId) {
+            var parentId = this.table.rows[recordId].parent;
+            if (!!parentId) {
+                if (!!this.table.rows[parentId].parent) {
+                    this.openParents(parentId);
+                }
+                this.showChildren(parentId);
+            }
         }
      };
 });
