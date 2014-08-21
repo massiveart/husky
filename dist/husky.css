@@ -8419,12 +8419,13 @@ a.btn-black, a.btn-highlight {
   position: relative;
   top: 0px;
   left: 0px;
-  min-width: 100%;
+  width: 100%;
   height: 100%;
 }
 /* line 21, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation {
   height: 100%;
+  width: 100%;
   background-color: white;
   border-style: solid;
   border-color: #cccccc;
@@ -8435,11 +8436,11 @@ a.btn-black, a.btn-highlight {
   min-height: 200px;
   max-height: 750px;
 }
-/* line 34, ../scss/modules/column-navigation.scss */
+/* line 35, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation.overflow .column:last-child {
   border-right: none;
 }
-/* line 39, ../scss/modules/column-navigation.scss */
+/* line 40, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column-navigation-loader {
   position: absolute;
   left: 0;
@@ -8447,7 +8448,7 @@ a.btn-black, a.btn-highlight {
   margin-top: -70px;
   width: 100%;
 }
-/* line 47, ../scss/modules/column-navigation.scss */
+/* line 48, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column {
   border-right: 1px solid #cccccc;
   overflow-y: auto;
@@ -8459,7 +8460,7 @@ a.btn-black, a.btn-highlight {
   top: 0px;
   left: 0px;
 }
-/* line 58, ../scss/modules/column-navigation.scss */
+/* line 59, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column .no-page {
   position: absolute;
   top: 50%;
@@ -8470,25 +8471,25 @@ a.btn-black, a.btn-highlight {
   height: 160px;
   margin-top: -55px;
 }
-/* line 68, ../scss/modules/column-navigation.scss */
+/* line 69, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column .no-page .icon {
   font-size: 72px;
   line-height: 80px;
 }
-/* line 72, ../scss/modules/column-navigation.scss */
+/* line 73, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column .no-page .text {
   padding-top: 5px;
   font-size: 14px;
   font-weight: bold;
 }
-/* line 79, ../scss/modules/column-navigation.scss */
+/* line 80, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
   font-size: 14px;
 }
-/* line 85, ../scss/modules/column-navigation.scss */
+/* line 86, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul li {
   padding: 15px 11px 15px 15px;
   height: 50px;
@@ -8501,52 +8502,52 @@ a.btn-black, a.btn-highlight {
   -ms-user-select: none;
   -o-user-select: none;
 }
-/* line 94, ../scss/modules/column-navigation.scss */
+/* line 95, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul li:hover {
   background-color: #f1f1f1;
 }
-/* line 96, ../scss/modules/column-navigation.scss */
+/* line 97, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul li:hover .edit {
   display: block;
 }
-/* line 100, ../scss/modules/column-navigation.scss */
+/* line 101, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul li.selected {
   background-color: #f1f1f1;
 }
-/* line 103, ../scss/modules/column-navigation.scss */
+/* line 104, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul li.selected .item-text {
   font-weight: bold;
 }
-/* line 108, ../scss/modules/column-navigation.scss */
+/* line 109, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul li.marked .markedIcon {
   display: block;
 }
-/* line 111, ../scss/modules/column-navigation.scss */
+/* line 112, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul li.marked .edit {
   display: none;
 }
-/* line 116, ../scss/modules/column-navigation.scss */
+/* line 117, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul .inactive {
   color: #cccccc;
 }
-/* line 120, ../scss/modules/column-navigation.scss */
+/* line 121, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .column ul .not-published {
   color: #e8ce33;
   margin-top: 2px;
   font-size: 40px;
 }
-/* line 128, ../scss/modules/column-navigation.scss */
+/* line 129, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .item-text {
   padding-top: 2px;
   display: block;
   overflow: hidden;
   word-wrap: break-word;
 }
-/* line 135, ../scss/modules/column-navigation.scss */
+/* line 136, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .item-text.ghost {
   color: #999999;
 }
-/* line 139, ../scss/modules/column-navigation.scss */
+/* line 140, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .ghost {
   background: #52b6ca;
   padding: 0 2px;
@@ -8556,7 +8557,7 @@ a.btn-black, a.btn-highlight {
   border-radius: 3px;
   font-size: 10px;
 }
-/* line 148, ../scss/modules/column-navigation.scss */
+/* line 149, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .markedIcon {
   width: 14px;
   margin-right: 5px;
@@ -8564,39 +8565,39 @@ a.btn-black, a.btn-highlight {
   color: #999999;
   display: none;
 }
-/* line 155, ../scss/modules/column-navigation.scss */
+/* line 156, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .icons-right {
   position: absolute;
   right: 5px;
   top: 15px;
   height: 20px;
 }
-/* line 160, ../scss/modules/column-navigation.scss */
+/* line 161, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .icons-right * {
   line-height: 20px;
 }
-/* line 164, ../scss/modules/column-navigation.scss */
+/* line 165, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .icons-left {
   display: block;
   float: left;
   height: 20px;
   font-size: 14px;
 }
-/* line 169, ../scss/modules/column-navigation.scss */
+/* line 170, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .icons-left > * {
   line-height: 20px;
 }
-/* line 172, ../scss/modules/column-navigation.scss */
+/* line 173, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .icons-left .ghost {
   line-height: 15px;
 }
-/* line 175, ../scss/modules/column-navigation.scss */
+/* line 176, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .icons-left .custom-checkbox {
   line-height: 15px;
   margin-right: 8px;
   margin-top: 2px;
 }
-/* line 181, ../scss/modules/column-navigation.scss */
+/* line 182, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .edit {
   background-color: #52b6ca;
   padding: 0px 10px;
@@ -8606,14 +8607,14 @@ a.btn-black, a.btn-highlight {
   display: none;
   margin-right: 0;
 }
-/* line 190, ../scss/modules/column-navigation.scss */
+/* line 191, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .husky-column-navigation-loader {
   position: relative;
   top: 2px;
   left: -2px;
   padding-left: 2px;
 }
-/* line 197, ../scss/modules/column-navigation.scss */
+/* line 198, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .column-navigation .arrow {
   display: inline-block;
   width: 11px;
@@ -8623,7 +8624,7 @@ a.btn-black, a.btn-highlight {
   color: black;
   margin: 0;
 }
-/* line 208, ../scss/modules/column-navigation.scss */
+/* line 209, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .add {
   display: inline-block;
   width: 50%;
@@ -8635,7 +8636,7 @@ a.btn-black, a.btn-highlight {
   -moz-border-radius-bottomleft: 5px;
   font-size: 16px;
 }
-/* line 220, ../scss/modules/column-navigation.scss */
+/* line 221, ../scss/modules/column-navigation.scss */
 .column-navigation-wrapper .settings {
   display: inline-block;
   width: 50%;
