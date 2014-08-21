@@ -36457,7 +36457,7 @@ define('__component__$select@husky',[], function() {
         render: function() {
 
             // add husky-select class to component
-            this.sandbox.dom.addClass(constants.selectClass);
+            this.sandbox.dom.addClass(this.$el, constants.selectClass);
 
             var $originalElement = this.sandbox.dom.$(this.options.el),
                 button = this.sandbox.dom.createElement(
@@ -45889,14 +45889,20 @@ define("datepicker-zh-TW", function(){});
                 };
 
                 /**
-                 * format a number; calls Globalize.format
+                 * formats a number; calls Globalize.format (see globalize documentation for any details)
+                 *  https://github.com/jquery/globalize/tree/v0.1.1#numbers
                  * @param number
-                 * @param types Possible types: n, d, p, c
+                 * @param types Possible types: n (number), d (decimal-digits), p (percentage), c (currency)
                  */
                 app.sandbox.numberFormat = function(number, types) {
-                    Globalize.format(number, types);
+                    return Globalize.format(number, types);
                 };
 
+                /**
+                 *
+                 * @param cultureName
+                 * @param messages
+                 */
                 app.setLanguage = function(cultureName, messages) {
                     var setLanguage = function() {
                         Globalize.culture(cultureName);
