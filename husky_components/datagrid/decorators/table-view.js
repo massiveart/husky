@@ -21,8 +21,9 @@
  * @param {String|Number|Null} [options.openChildId] the id of the children to open all parents for. (only relevant in a child-list)
  * @param {String|Number} [options.cssClass] css-class to give the the components element. (e.g. "white-box")
  * @param {Boolean} [options.highlightSelected] highlights the clicked row when selected
- * @param {Boolean} [options.removeIcon] icon to use for the remove-row item
- * @param {Boolean} [options.croppedMaxLength] the length to which croppable cells will be cropped on overflow
+ * @param {String} [options.removeIcon] icon to use for the remove-row item
+ * @param {Number} [options.croppedMaxLength] the length to which croppable cells will be cropped on overflow
+ * @param {Boolean} [options.stickyHeader] true to make the table header sticky
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -52,6 +53,7 @@ define(function() {
             hideChildrenAtBeginning: true,
             openChildId: null,
             highlightSelected: false,
+            stickyHeader: true,
             icons: [],
             removeIcon: 'trash-o',
             croppedMaxLength: 35
@@ -59,6 +61,7 @@ define(function() {
 
         constants = {
             fullWidthClass: 'fullwidth',
+            stickyHeaderClass: 'sticky-header',
             selectedRowClass: 'selected',
             isSelectableClass: 'is-selectable',
             sortableClass: 'is-sortable',
@@ -94,6 +97,7 @@ define(function() {
             checkboxCellClass: 'checkbox-cell',
             textContainerClass: 'cell-content',
             renderingClass: 'rendering',
+            headerCloneClass: 'header-clone',
             childIndent: 25 //px
         },
 
@@ -328,6 +332,9 @@ define(function() {
         addViewClasses: function () {
             this.sandbox.dom.addClass(this.$el, this.options.cssClass);
             this.sandbox.dom.addClass(this.$el, constants.renderingClass);
+            if (this.options.stickyHeader === true) {
+                this.sandbox.dom.addClass(this.$el, constants.stickyHeaderClass);
+            }
             if (this.options.fullWidth === true) {
                 this.sandbox.dom.addClass(this.$el, constants.fullWidthClass);
             }
@@ -363,7 +370,19 @@ define(function() {
             this.renderHeaderSelectItem();
             this.renderHeaderCells();
             this.renderHeaderRemoveItem();
+            if (this.options.stickyHeader === true) {
+                this.cloneHeader();
+            }
             this.sandbox.dom.append(this.table.$el, this.table.header.$el);
+        },
+
+        /**
+         * Creates a clone for the actual header
+         */
+        cloneHeader: function() {
+            this.table.header.$clone = this.sandbox.dom.clone(this.table.header.$el);
+            this.sandbox.dom.addClass(this.table.header.$clone, constants.headerCloneClass);
+            this.sandbox.dom.append(this.table.$el, this.table.header.$clone);
         },
 
         /**

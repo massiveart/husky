@@ -6,6 +6,29 @@
     padding-top: 10px;
 
   .husky-table {
+    position: relative;
+    top: 0px;
+    left: 0px;
+
+    &.sticky-header {
+      table {
+        thead {
+          position: absolute;
+          top: 0px;
+          left: 0px;
+        }
+        .header-clone {
+          position: static;
+          top: auto;
+          left: auto;
+          visibility: hidden;
+        }
+      }
+      .table-container {
+        height: 200px; //remove later - set dynamically in js
+      }
+    }
+
     &.overflow {
       padding-right: $overflowIconSpacing;
       & + .pagination-wrapper {
@@ -200,8 +223,8 @@
       tr {
         opacity: 1;
         $transitonDuration: 300ms;
-        $transitionDelay: 100ms;
-        $transitonOffset: 80ms;
+        $transitionDelay: 80ms;
+        $transitonOffset: 50ms;
         @for $i from 1 through 20 {
           &:nth-child(#{$i}) {
             @include single-transition(opacity, $transitonDuration, ($transitionDelay + $i * $transitonOffset));
