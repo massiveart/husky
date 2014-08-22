@@ -8937,21 +8937,21 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1015,
+            "line": 1014,
             "description": "Handles the shrinking and enlarging of the overlay\nif the window gets smaller",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1049,
+            "line": 1046,
             "description": "Positions the overlay in the middle of the screen",
             "class": "Overlay",
             "module": "husky/components/overlay"
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1057,
+            "line": 1054,
             "description": "Updates the coordinates of the overlay",
             "params": [
                 {
@@ -8970,7 +8970,7 @@
         },
         {
             "file": "husky_components/overlay/main.js",
-            "line": 1067,
+            "line": 1064,
             "description": "Executes a passed callback",
             "params": [
                 {
@@ -12751,19 +12751,19 @@
         },
         {
             "message": "Missing item type\nHandles the shrinking and enlarging of the overlay\nif the window gets smaller",
-            "line": " husky_components/overlay/main.js:1015"
+            "line": " husky_components/overlay/main.js:1014"
         },
         {
             "message": "Missing item type\nPositions the overlay in the middle of the screen",
-            "line": " husky_components/overlay/main.js:1049"
+            "line": " husky_components/overlay/main.js:1046"
         },
         {
             "message": "Missing item type\nUpdates the coordinates of the overlay",
-            "line": " husky_components/overlay/main.js:1057"
+            "line": " husky_components/overlay/main.js:1054"
         },
         {
             "message": "Missing item type\nExecutes a passed callback",
-            "line": " husky_components/overlay/main.js:1067"
+            "line": " husky_components/overlay/main.js:1064"
         },
         {
             "message": "Missing item type\nnamespace for events",
