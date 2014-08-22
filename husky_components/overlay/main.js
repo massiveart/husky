@@ -545,6 +545,12 @@ define([], function() {
                 // set width to n-width
                 this.overlay.width = this.sandbox.dom.outerWidth(this.sandbox.dom.find('.slide', this.overlay.$slides));
                 this.sandbox.dom.css(this.overlay.$slides, 'width', (this.slides.length * this.overlay.width) + 'px');
+
+                $(this.overlay.$content).each(function() {
+                    maxHeight = maxHeight > $(this).height() ? maxHeight : $(this).height();
+                });
+
+                this.sandbox.dom.css(this.overlay.$content, 'height', this.sandbox.dom.height(this.sandbox.dom.get(this.overlay.$content, 0)) + 'px');
             }
         },
 
@@ -583,10 +589,6 @@ define([], function() {
          */
         slideTo: function(slide) {
             this.sandbox.dom.css(this.overlay.$slides, 'left', '-' + slide * this.overlay.width + 'px');
-            // set the max height of the overlay container to the height of the slide
-            this.activateSlide(slide);
-            this.resetResizeVariables();
-            this.resizeHandler();
         },
 
         /**
@@ -628,7 +630,7 @@ define([], function() {
          */
         insertOverlay: function(emitEvent) {
             this.sandbox.dom.append(this.$el, this.overlay.$el);
-            this.activateSlide(this.activeSlide);
+
             //ensures that the overlay box fits the window form the beginning
             this.resetResizeVariables();
             this.resizeHandler();
@@ -1004,24 +1006,9 @@ define([], function() {
          */
         resetResizeVariables: function() {
             this.overlay.collapsed = false;
-            this.sandbox.dom.css(this.overlay.$content, {'overflow': 'visible'});
             this.sandbox.dom.height(this.overlay.$content, '');
             this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
             this.setSlidesHeight();
-        },
-
-        /**
-         * Activates a given slide
-         * @param slideIndex {Number} the index of the slide
-         */
-        activateSlide: function(slideIndex) {
-            this.sandbox.util.foreach(this.overlay.slides, function(slide, index) {
-                if (slideIndex === index) {
-                    this.sandbox.dom.show(slide.$el);
-                } else {
-                    this.sandbox.dom.hide(slide.$el);
-                }
-            }.bind(this));
         },
 
         /**
@@ -1034,7 +1021,6 @@ define([], function() {
                 this.sandbox.dom.height(this.overlay.$content,
                     (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing*2)
                 );
-                this.sandbox.dom.css(this.overlay.$content, {'overflow': 'scroll'});
                 this.overlay.collapsed = true;
 
                 //window is getting bigger - make the overlay bigger
@@ -1043,7 +1029,6 @@ define([], function() {
 
                 //if overlay reached its beginning height - stop
                 if (this.sandbox.dom.height(this.overlay.$el) >= this.overlay.normalHeight) {
-                    this.sandbox.dom.css(this.overlay.$content, {'overflow': 'visible'});
                     this.overlay.collapsed = false;
 
                     // else enlarge further
