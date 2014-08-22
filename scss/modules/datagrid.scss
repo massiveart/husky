@@ -92,6 +92,16 @@
         }
       }
     }
+
+    /** After render effect (start) **/
+    &.rendering {
+      table {
+        tbody tr {
+          opacity: 0.3;
+        }
+      }
+    }
+    /** After render effect (end) **/
   }
 
   table {
@@ -120,7 +130,6 @@
         border-color: $red !important;
         border-width: 2px !important;
       }
-      text-overflow: ellipsis;
     }
     .checkbox-cell {
           width: 20px;
@@ -186,7 +195,25 @@
     }
 
     tbody {
-        tr:last-child {
+
+      /** after render effect (start) **/
+      tr {
+        opacity: 1;
+        $transitonDuration: 300ms;
+        $transitionDelay: 100ms;
+        $transitonOffset: 80ms;
+        @for $i from 1 through 20 {
+          &:nth-child(#{$i}) {
+            @include single-transition(opacity, $transitonDuration, ($transitionDelay + $i * $transitonOffset));
+          }
+        }
+        &:nth-child(n+20) {
+          @include single-transition(opacity, $transitonDuration, ($transitionDelay + 21 * $transitonOffset));
+        }
+      }
+      /** after render effect (end) **/
+
+      tr:last-child {
             border-width: 2px;
         }
       .child-wrapper {
