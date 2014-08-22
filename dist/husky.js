@@ -28394,11 +28394,7 @@ define('__component__$column-options@husky',[],function() {
  * @param {Object} [options.selectItem] Configuration object of select item (column)
  * @param {Boolean} [options.selectItem.inFirstCell] If true checkbox is in the first cell. If true checkbox gets its own cell
  * @param {String} [options.selectItem.type] Type of select [checkbox, radio]
- * @param {Boolean} [options.validation] enables validation for datagrid
- * @param {Boolean} [options.validationDebug] enables validation debug for datagrid
  * @param {Boolean} [options.addRowTop] adds row to the top of the table when add row is triggered
- * @param {Boolean} [options.startTabIndex] start index for tabindex
- * @param {String} [options.columnMinWidth] sets the minimal width of table columns
  * @param {String} [options.fullWidth] If true datagrid style will be full-width mode
  * @param {Array} [options.excludeFields=['id']] array of fields to exclude by the view
  * @param {Boolean} [options.showHead] if TRUE head would be showed
@@ -28411,6 +28407,8 @@ define('__component__$column-options@husky',[],function() {
  * @param {String|Number|Null} [options.openChildId] the id of the children to open all parents for. (only relevant in a child-list)
  * @param {String|Number} [options.cssClass] css-class to give the the components element. (e.g. "white-box")
  * @param {Boolean} [options.highlightSelected] highlights the clicked row when selected
+ * @param {Boolean} [options.removeIcon] icon to use for the remove-row item
+ * @param {Boolean} [options.croppedMaxLength] the length to which croppable cells will be cropped on overflow
  *
  * @param {Boolean} [rendered] property used by the datagrid-main class
  * @param {Function} [initialize] function which gets called once at the start of the view
@@ -28428,7 +28426,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             fullWidth: false,
             removeRow: false,
             selectItem: {
-                type: 'checkbox',      // checkbox, radio
+                type: 'checkbox',
                 inFirstCell: false
             },
             noItemsText: 'This list is empty',
@@ -28440,7 +28438,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             hideChildrenAtBeginning: true,
             openChildId: null,
             highlightSelected: false,
-            icons: []
+            icons: [],
+            removeIcon: 'trash-o',
+            croppedMaxLength: 35
         },
 
         constants = {
@@ -28460,7 +28460,6 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             rowClass: 'row',
             thumbSrcKey: 'url',
             thumbAltKey: 'alt',
-            removeIcon: 'trash-o',
             headerCellClass: 'header-cell',
             ascSortedClass: 'sorted-asc',
             descSortedClass: 'sorted-desc',
@@ -28479,6 +28478,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             collapsedIcon: 'fa-caret-right',
             expandedIcon: 'fa-caret-down',
             checkboxCellClass: 'checkbox-cell',
+            textContainerClass: 'cell-content',
+            renderingClass: 'rendering',
             childIndent: 25 //px
         },
 
@@ -28502,8 +28503,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             row: '<tr class="' + constants.rowClass + '"></tr>',
             headerCell: '<th class="'+ constants.headerCellClass +'"></th>',
             cell: '<td></td>',
+            textContainer: '<span class="'+ constants.textContainerClass +'"><%= content %></span>',
             headerCellLoader: '<div class="'+ constants.headerCellLoaderClass +'"></div>',
-            removeCellContent: '<span class="fa-' + constants.removeIcon + ' '+ constants.rowRemoverClass +'"></span>',
+            removeCellContent: '<span class="fa-<%= icon %> '+ constants.rowRemoverClass +'"></span>',
             editableCellContent: [
                 '<span class="'+ constants.editableItemClass +'"><%= value %></span>',
                 '<div class="'+ constants.inputWrapperClass +'">',
@@ -28640,6 +28642,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 this.options.openChildId = null;
             }
             this.renderChildrenHidden = false;
+            this.sandbox.dom.removeClass(this.$el, constants.renderingClass);
             this.rendered = true;
         },
 
@@ -28649,6 +28652,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         destroy: function() {
             this.sandbox.dom.remove(this.$el);
             this.sandbox.stop(this.sandbox.dom.find('*', this.$el));
+            this.setVariables();
         },
 
         /**
@@ -28678,12 +28682,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * Handles the responsiveness
          */
         onResize: function() {
-            var $container = this.sandbox.dom.find('.' + constants.containerClass, this.$el),
-                isOverflown = this.sandbox.dom.get($container, 0).scrollWidth > this.sandbox.dom.width($container);
-            if (isOverflown === true) {
-                this.sandbox.dom.addClass(this.$el, constants.overflowClass);
+            if (this.containerIsOverflown() === true) {
+                this.overflowHandler();
             } else {
-                this.sandbox.dom.removeClass(this.$el, constants.overflowClass);
+                this.underflowHandler();
             }
         },
 
@@ -28702,6 +28704,8 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.rowClicked = false;
             this.preventFocusoutHandler = false;
             this.renderChildrenHidden = this.options.hideChildrenAtBeginning;
+            this.tableCropped = false;
+            this.cropBreakPoint = null;
         },
 
         /**
@@ -28709,6 +28713,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         addViewClasses: function () {
             this.sandbox.dom.addClass(this.$el, this.options.cssClass);
+            this.sandbox.dom.addClass(this.$el, constants.renderingClass);
             if (this.options.fullWidth === true) {
                 this.sandbox.dom.addClass(this.$el, constants.fullWidthClass);
             }
@@ -28951,7 +28956,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         renderRowRemoveItem: function (id) {
             if (this.options.removeRow === true) {
                 var $cell = this.sandbox.dom.createElement(templates.cell);
-                this.sandbox.dom.html($cell, templates.removeCellContent);
+                this.sandbox.dom.html($cell, this.sandbox.util.template(templates.removeCellContent)({
+                    icon: this.options.removeIcon
+                }));
                 this.sandbox.dom.addClass($cell, constants.cellFitClass);
                 this.sandbox.dom.append(this.table.rows[id].$el, $cell);
             }
@@ -28966,7 +28973,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         renderBodyCell: function(record, column, index) {
             var $cell = this.sandbox.dom.createElement(templates.cell),
                 content = this.getCellContent(record, column),
-                selectItem;
+                selectItem, isCroppable = false;
             if (!!this.datagrid.options.childrenPropertyName && index === 0) {
                 content = this.wrapChildrenCellContent(content, record);
             }
@@ -28982,10 +28989,17 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             this.sandbox.dom.html($cell, content);
             this.sandbox.dom.data($cell, 'attribute', column.attribute);
 
+            if (!!this.sandbox.dom.find('.' + constants.textContainerClass, $cell).length &&
+                this.sandbox.dom.children(this.sandbox.dom.find('.' + constants.textContainerClass, $cell)).length === 0) {
+                isCroppable = true;
+            }
+
             this.table.rows[record.id].cells[column.attribute] = {
                 $el: $cell,
                 originalData: record[column.attribute],
-                editable: !!column.editable
+                originalContent: this.sandbox.dom.html(content),
+                editable: !!column.editable,
+                croppable: isCroppable
             };
             // append cell to corresponding row
             this.sandbox.dom.append(
@@ -29018,6 +29032,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             }
             if (this.options.editable === true && column.editable === true) {
                 content = this.getEditableCellContent(content);
+            } else {
+                content = this.sandbox.util.template(templates.textContainer)({
+                    content: content
+                });
             }
             if (!!this.options.icons) {
                 content = this.addIconsToCellContent(content, column);
@@ -29115,6 +29133,70 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         /**
          * Render methods (end)
          * -------------------------------------------------------------------- */
+
+        /**
+         * Returns true or false whether the container is overflown or not
+         * @returns {boolean}
+         */
+        containerIsOverflown: function() {
+            var $container = this.sandbox.dom.find('.' + constants.containerClass, this.$el);
+            return this.sandbox.dom.get($container, 0).scrollWidth > this.sandbox.dom.width($container);
+        },
+
+        /**
+         * Gets executed when the table width is bigger than its container width
+         */
+        overflowHandler: function() {
+            this.toggleCropTable(true);
+            // if still overflown add a css class
+            if (this.containerIsOverflown() === true) {
+                this.sandbox.dom.addClass(this.$el, constants.overflowClass);
+            }
+        },
+
+        /**
+         * Gets executed when the table width is not bigger than its container width
+         */
+        underflowHandler: function() {
+            if (this.tableCropped === true) {
+                if (this.sandbox.dom.width(this.sandbox.dom.find('.' + constants.containerClass, this.$el)) > this.cropBreakPoint) {
+                    this.toggleCropTable(false);
+                }
+                if (this.containerIsOverflown() === false) {
+                    this.sandbox.dom.removeClass(this.$el, constants.overflowClass);
+                }
+            }
+        },
+
+        /**
+         * Crops or uncropps all croppable cells in the table
+         */
+        toggleCropTable: function(crop) {
+            if (this.tableCropped !== crop) {
+                var $contentContainer,
+                    content;
+                this.sandbox.util.each(this.table.rows, function(rowId, row) {
+                    this.sandbox.util.each(row.cells, function(cellId, cell) {
+                        if (cell.croppable === true) {
+                            $contentContainer = this.sandbox.dom.find('.' + constants.textContainerClass, cell.$el);
+                            if (crop === true) {
+                                content = this.sandbox.util.cropMiddle(cell.originalContent, this.options.croppedMaxLength);
+                                this.sandbox.dom.attr($contentContainer, 'title', cell.originalContent);
+                                this.tableCropped = true;
+                                this.cropBreakPoint = this.sandbox.dom.width(
+                                    this.sandbox.dom.find('.' + constants.containerClass, this.$el)
+                                );
+                            } else {
+                                content = cell.originalContent;
+                                this.sandbox.dom.removeAttr($contentContainer, 'title');
+                                this.tableCropped = false;
+                            }
+                            this.sandbox.dom.html($contentContainer, content);
+                        }
+                    }.bind(this));
+                }.bind(this));
+            }
+        },
 
         /**
          * Bindes dom related events
