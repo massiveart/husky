@@ -163,6 +163,7 @@
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
  * @param {Function} [destroy] function to destroy the pagination and unbind events
+ * @param {Function} [getHeight] funciton which returns the height of the pagination
  */
 define(function() {
 
@@ -179,7 +180,8 @@ define(function() {
             prevClass: &#x27;previous&#x27;,
             nextClass: &#x27;next&#x27;,
             pageChangeClass: &#x27;page-change&#x27;,
-            sizeChangeClass: &#x27;size-change&#x27;
+            sizeChangeClass: &#x27;size-change&#x27;,
+            loaderClass: &#x27;pagination-loader&#x27;
         },
 
         /**
@@ -199,6 +201,10 @@ define(function() {
                     &#x27;&lt;span class=&quot;dropdown-toggle inline-block&quot;&gt;&lt;/span&gt;&#x27;,
                 &#x27;&lt;/div&gt;&#x27;,
                 &#x27;&lt;div class=&quot;&#x27; + constants.prevClass + &#x27; pagination-next pull-right pointer&quot;&gt;&lt;/div&gt;&#x27;
+            ].join(&#x27;&#x27;),
+
+            loader: [
+                &#x27;&lt;div class=&quot;&#x27;, constants.loaderClass ,&#x27;&quot;&gt;&lt;/div&gt;&#x27;
             ].join(&#x27;&#x27;),
 
             showElements: [
@@ -242,6 +248,14 @@ define(function() {
         },
 
         /**
+         * Returns the total height of the pagination
+         * @returns {number}
+         */
+        getHeight: function() {
+            return this.sandbox.dom.outerHeight(this.$paginationContainer, true);
+        },
+
+        /**
          * Renders the pagination
          */
         render: function(data, $container) {
@@ -280,8 +294,7 @@ define(function() {
          */
         destroy: function() {
             this.unbindDomEvents();
-            // uncommented just for testing purposes, if you see this uncomment it!!
-            //this.sandbox.stop(this.sandbox.dom.find(&#x27;*&#x27;, this.$paginationContainer));
+            this.sandbox.stop(this.sandbox.dom.find(&#x27;*&#x27;, this.$paginationContainer));
             this.sandbox.dom.remove(this.$paginationContainer);
         },
 
@@ -291,16 +304,36 @@ define(function() {
         bindCustomEvents: function() {
             // pagination dropdown item clicked
             this.sandbox.on(&#x27;husky.dropdown.&#x27; + this.datagrid.options.instanceName + &#x27;-pagination-dropdown.item.click&#x27;, function(item) {
+                this.startLoader();
                 this.datagrid.changePage.call(this.datagrid, null, item.id);
             }.bind(this));
 
             // show-elements dropdown item clicked
             this.sandbox.on(&#x27;husky.dropdown.&#x27; + this.datagrid.options.instanceName + &#x27;-pagination-dropdown-show.item.click&#x27;, function(item) {
                 if (this.data.limit !== item.id || this.data.embedded.length === this.data.total) {
+                    this.startLoader();
                     // always jump to the first page
                     this.datagrid.changePage.call(this.datagrid, null, 1, item.id);
                 }
             }.bind(this));
+        },
+
+        /**
+         * Starts a small loader
+         */
+        startLoader: function() {
+            var $container = this.sandbox.dom.createElement(templates.loader);
+            this.sandbox.dom.append(this.$paginationContainer, $container);
+            this.sandbox.start([
+                {
+                    name: &#x27;loader@husky&#x27;,
+                    options: {
+                        el: $container,
+                        size: &#x27;20px&#x27;,
+                        color: &#x27;#999999&#x27;
+                    }
+                }
+            ]);
         },
 
         /**
@@ -327,6 +360,7 @@ define(function() {
          */
         nextPage: function() {
             if (!!this.data.links.next) {
+                this.startLoader();
                 this.datagrid.changePage.call(this.datagrid, this.data.links.next.href);
             }
         },
@@ -336,6 +370,7 @@ define(function() {
          */
         prevPage: function() {
             if (!!this.data.links.previous) {
+                this.startLoader();
                 this.datagrid.changePage.call(this.datagrid, this.data.links.previous.href);
             }
         },

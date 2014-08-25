@@ -26,6 +26,9 @@ require(['lib/husky'], function(Husky) {
                             limit: 4
                         }
                     },
+                    contentFilters: {
+                        content2: 'radio'
+                    },
                     viewOptions: {
                         table: {
                             selectItem: {
@@ -39,8 +42,9 @@ require(['lib/husky'], function(Husky) {
                             showHead: true, // false to hide table-head
                             fullWidth: true, // uncomment for full-width mode
                             contentContainer: '#content',
-                            highlightSelected: false,
-                            croppedMaxLength: 5
+                            highlightSelected: true,
+                            croppedMaxLength: 5,
+                            stickyHeader: true
                         },
                         thumbnail: {
                         }

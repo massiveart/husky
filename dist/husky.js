@@ -28439,7 +28439,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             hideChildrenAtBeginning: true,
             openChildId: null,
             highlightSelected: false,
-            stickyHeader: true,
+            stickyHeader: false,
             icons: [],
             removeIcon: 'trash-o',
             croppedMaxLength: 35
@@ -28691,6 +28691,10 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             } else {
                 this.underflowHandler();
             }
+            if (this.options.stickyHeader === true) {
+                this.setHeaderCellWidthFromClone();
+                this.fixContainerMaxHeight();
+            }
         },
 
         /**
@@ -28724,7 +28728,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (this.options.fullWidth === true) {
                 this.sandbox.dom.addClass(this.$el, constants.fullWidthClass);
             }
-            if (this.options.highlightSelected === true) {
+            if ((this.options.highlightSelected === true || !!this.options.selectItem) && this.options.editable !== true) {
                 this.sandbox.dom.addClass(this.$el, constants.isSelectableClass);
             }
         },
@@ -28738,11 +28742,12 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         renderTable: function() {
             this.table.$el = this.sandbox.dom.createElement(templates.table);
+            this.table.$container = this.sandbox.dom.find('.' + constants.containerClass, this.$el);
             if (this.options.showHead === true) {
                 this.renderHeader();
             }
             this.renderBody();
-            this.sandbox.dom.append(this.sandbox.dom.find('.' + constants.containerClass, this.$el), this.table.$el);
+            this.sandbox.dom.append(this.table.$container, this.table.$el);
         },
 
         /**
@@ -28794,7 +28799,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
 
             this.sandbox.util.foreach(this.datagrid.matchings, function(column) {
                 $headerCell = this.sandbox.dom.createElement(templates.headerCell);
-                this.sandbox.dom.html($headerCell, this.sandbox.translate(column.content));
+                this.sandbox.dom.html($headerCell, this.sandbox.util.template(templates.textContainer)({
+                    content: this.sandbox.translate(column.content)
+                }));
                 this.sandbox.dom.data($headerCell, 'attribute', column.attribute);
                 this.table.header.cells[column.attribute] = {
                     $el: $headerCell,
@@ -29158,8 +29165,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @returns {boolean}
          */
         containerIsOverflown: function() {
-            var $container = this.sandbox.dom.find('.' + constants.containerClass, this.$el);
-            return this.sandbox.dom.get($container, 0).scrollWidth > this.sandbox.dom.width($container);
+            return this.sandbox.dom.get(this.table.$container, 0).scrollWidth > this.sandbox.dom.width(this.table.$container);
         },
 
         /**
@@ -29171,6 +29177,9 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (this.containerIsOverflown() === true) {
                 this.sandbox.dom.addClass(this.$el, constants.overflowClass);
             }
+            if (this.options.stickyHeader === true) {
+                this.sandbox.dom.width(this.table.header.$el, this.sandbox.dom.width(this.table.$container));
+            }
         },
 
         /**
@@ -29178,11 +29187,14 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          */
         underflowHandler: function() {
             if (this.tableCropped === true) {
-                if (this.sandbox.dom.width(this.sandbox.dom.find('.' + constants.containerClass, this.$el)) > this.cropBreakPoint) {
+                if (this.sandbox.dom.width(this.table.$container) > this.cropBreakPoint) {
                     this.toggleCropTable(false);
                 }
                 if (this.containerIsOverflown() === false) {
                     this.sandbox.dom.removeClass(this.$el, constants.overflowClass);
+                }
+                if (this.options.stickyHeader === true) {
+                    this.sandbox.dom.width(this.table.header.$el, '');
                 }
             }
         },
@@ -29202,9 +29214,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                                 content = this.sandbox.util.cropMiddle(cell.originalContent, this.options.croppedMaxLength);
                                 this.sandbox.dom.attr($contentContainer, 'title', cell.originalContent);
                                 this.tableCropped = true;
-                                this.cropBreakPoint = this.sandbox.dom.width(
-                                    this.sandbox.dom.find('.' + constants.containerClass, this.$el)
-                                );
+                                this.cropBreakPoint = this.sandbox.dom.width(this.table.$container);
                             } else {
                                 content = cell.originalContent;
                                 this.sandbox.dom.removeAttr($contentContainer, 'title');
@@ -29253,7 +29263,44 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (!!this.options.icons) {
                 this.sandbox.dom.on(this.table.$body, 'click', this.iconClickHandler.bind(this), '.' + constants.gridIconClass);
             }
+            this.sandbox.dom.on(this.table.$container, 'scroll', this.containerScrollHandler.bind(this));
             this.sandbox.dom.on(this.table.$body, 'click', this.radioButtonClickHandler.bind(this), 'input[type="radio"]');
+        },
+
+        /**
+         * Gets the width of the cells in the header clone and applies them to the actual header
+         */
+        setHeaderCellWidthFromClone: function() {
+            if (!!this.table.header && !!this.table.header.$clone.length) {
+                var cloneThs = this.sandbox.dom.find('th', this.table.header.$clone),
+                    originalThs = this.sandbox.dom.find('th', this.table.header.$el);
+                this.sandbox.dom.width(this.table.header.$row, this.sandbox.dom.width(
+                   this.sandbox.dom.find('tr', this.table.header.$clone)
+                ));
+                this.sandbox.util.foreach(cloneThs, function(cloneTh, index) {
+                    // min- and max-width because for table-cells normal width has no effect
+                    this.sandbox.dom.css(originalThs[index], {
+                        'min-width': this.sandbox.dom.outerWidth(cloneTh) + 'px',
+                        'max-width': this.sandbox.dom.outerWidth(cloneTh) + 'px'
+                    });
+                }.bind(this));
+            }
+        },
+
+        /**
+         * Sets the max-height of the container to the maximum available space
+         */
+        fixContainerMaxHeight: function() {
+            this.sandbox.dom.css(this.table.$container, 'max-height', this.datagrid.getRemainingViewHeight.call(this.datagrid));
+        },
+
+        /**
+         * Gets executed when the table-container gets scrolled
+         */
+        containerScrollHandler: function() {
+            if (this.options.stickyHeader === true) {
+                this.sandbox.dom.scrollLeft(this.table.header.$el, this.sandbox.dom.scrollLeft(this.table.$container));
+            }
         },
 
         /**
@@ -29319,6 +29366,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             }
             $cell = this.table.rows[recordId].cells[attribute].$el
             this.sandbox.dom.show(this.sandbox.dom.find('.' + constants.inputWrapperClass, $cell));
+            this.sandbox.dom.focus(this.sandbox.dom.find('.' + constants.editableInputClass, $cell));
             this.sandbox.dom.select(this.sandbox.dom.find('.' + constants.editableInputClass, $cell));
         },
 
@@ -29434,7 +29482,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         startHeaderCellLoader: function(column) {
             var $container = this.sandbox.dom.createElement(templates.headerCellLoader);
             this.sandbox.dom.addClass(this.table.header.cells[column].$el, constants.headerLoadingClass);
-            this.sandbox.dom.append(this.table.header.cells[column].$el, $container);
+            this.sandbox.dom.append(this.sandbox.dom.find('.' + constants.textContainerClass, this.table.header.cells[column].$el), $container);
             this.sandbox.start([
                 {
                     name: 'loader@husky',
@@ -29524,11 +29572,13 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param id {Number|String} the id of the record to highlight
          */
         uniqueHighlightRecord: function (id) {
-            this.sandbox.dom.removeClass(
-                this.sandbox.dom.find('.' + constants.rowClass + '.' + constants.selectedRowClass, this.table.$body),
-                constants.selectedRowClass
-            );
-            this.sandbox.dom.addClass(this.table.rows[id].$el, constants.selectedRowClass);
+            if (!!this.table.rows[id]) {
+                this.sandbox.dom.removeClass(
+                    this.sandbox.dom.find('.' + constants.rowClass + '.' + constants.selectedRowClass, this.table.$body),
+                    constants.selectedRowClass
+                );
+                this.sandbox.dom.addClass(this.table.rows[id].$el, constants.selectedRowClass);
+            }
         },
 
         /**
@@ -29683,12 +29733,14 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
          * @param id {Number|String} the id of the record
          */
         openParents: function(recordId) {
-            var parentId = this.table.rows[recordId].parent;
-            if (!!parentId) {
-                if (!!this.table.rows[parentId].parent) {
-                    this.openParents(parentId);
+            if (!!this.table.rows[recordId]) {
+                var parentId = this.table.rows[recordId].parent;
+                if (!!parentId) {
+                    if (!!this.table.rows[parentId].parent) {
+                        this.openParents(parentId);
+                    }
+                    this.showChildren(parentId);
                 }
-                this.showChildren(parentId);
             }
         }
      };
@@ -30273,6 +30325,7 @@ define('husky_components/datagrid/decorators/group-view',[],function () {
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
  * @param {Function} [destroy] function to destroy the pagination and unbind events
+ * @param {Function} [getHeight] funciton which returns the height of the pagination
  */
 define('husky_components/datagrid/decorators/dropdown-pagination',[],function() {
 
@@ -30289,7 +30342,8 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
             prevClass: 'previous',
             nextClass: 'next',
             pageChangeClass: 'page-change',
-            sizeChangeClass: 'size-change'
+            sizeChangeClass: 'size-change',
+            loaderClass: 'pagination-loader'
         },
 
         /**
@@ -30309,6 +30363,10 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                     '<span class="dropdown-toggle inline-block"></span>',
                 '</div>',
                 '<div class="' + constants.prevClass + ' pagination-next pull-right pointer"></div>'
+            ].join(''),
+
+            loader: [
+                '<div class="', constants.loaderClass ,'"></div>'
             ].join(''),
 
             showElements: [
@@ -30352,6 +30410,14 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
         },
 
         /**
+         * Returns the total height of the pagination
+         * @returns {number}
+         */
+        getHeight: function() {
+            return this.sandbox.dom.outerHeight(this.$paginationContainer, true);
+        },
+
+        /**
          * Renders the pagination
          */
         render: function(data, $container) {
@@ -30390,8 +30456,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
          */
         destroy: function() {
             this.unbindDomEvents();
-            // uncommented just for testing purposes, if you see this uncomment it!!
-            //this.sandbox.stop(this.sandbox.dom.find('*', this.$paginationContainer));
+            this.sandbox.stop(this.sandbox.dom.find('*', this.$paginationContainer));
             this.sandbox.dom.remove(this.$paginationContainer);
         },
 
@@ -30401,16 +30466,36 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
         bindCustomEvents: function() {
             // pagination dropdown item clicked
             this.sandbox.on('husky.dropdown.' + this.datagrid.options.instanceName + '-pagination-dropdown.item.click', function(item) {
+                this.startLoader();
                 this.datagrid.changePage.call(this.datagrid, null, item.id);
             }.bind(this));
 
             // show-elements dropdown item clicked
             this.sandbox.on('husky.dropdown.' + this.datagrid.options.instanceName + '-pagination-dropdown-show.item.click', function(item) {
                 if (this.data.limit !== item.id || this.data.embedded.length === this.data.total) {
+                    this.startLoader();
                     // always jump to the first page
                     this.datagrid.changePage.call(this.datagrid, null, 1, item.id);
                 }
             }.bind(this));
+        },
+
+        /**
+         * Starts a small loader
+         */
+        startLoader: function() {
+            var $container = this.sandbox.dom.createElement(templates.loader);
+            this.sandbox.dom.append(this.$paginationContainer, $container);
+            this.sandbox.start([
+                {
+                    name: 'loader@husky',
+                    options: {
+                        el: $container,
+                        size: '20px',
+                        color: '#999999'
+                    }
+                }
+            ]);
         },
 
         /**
@@ -30437,6 +30522,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
          */
         nextPage: function() {
             if (!!this.data.links.next) {
+                this.startLoader();
                 this.datagrid.changePage.call(this.datagrid, this.data.links.next.href);
             }
         },
@@ -30446,6 +30532,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
          */
         prevPage: function() {
             if (!!this.data.links.previous) {
+                this.startLoader();
                 this.datagrid.changePage.call(this.datagrid, this.data.links.previous.href);
             }
         },
@@ -30737,14 +30824,14 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                  */
                 radio: function(content, index, columnName) {
                     var checked = (!content) ? false : true;
-                    return this.sandbox.util.template(templates.radio, {checked: checked, radioId: index, columnName: columnName});
+                    return this.sandbox.util.template(templates.radio, {checked: checked, columnName: columnName});
                 }
             },
 
             templates = {
                 radio: [
                     '<div class="custom-radio custom-filter">',
-                    '   <input name="radio-<%= columnName %>-<%= radioId %>" class="" type="radio" class="form-element" <% if (checked) { print("checked")} %>/>',
+                    '   <input name="radio-<%= columnName %>" type="radio" class="form-element" <% if (checked) { print("checked")} %>/>',
                     '   <span class="icon"></span>',
                     '</div>'
                 ].join('')
@@ -31165,6 +31252,9 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 this.renderView();
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].render(this.data, this.$element);
+                }
+                if (this.options.resizeListeners === true) {
+                    this.windowResizeListener();
                 }
             },
 
@@ -31731,6 +31821,19 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              */
             emitItemClickedEvent: function(id) {
                 this.sandbox.emit(ITEM_CLICK.call(this), id);
+            },
+
+            /**
+             * Returns the maximum height for the view to fit on screen
+             * @returns {number}
+             */
+            getRemainingViewHeight: function() {
+                var height = this.sandbox.dom.height(this.sandbox.dom.window) - this.sandbox.dom.offset(this.$element).top;
+                if (!!this.paginations[this.paginationId] && !!this.paginations[this.paginationId].getHeight) {
+                    height -= this.paginations[this.paginationId].getHeight();
+                }
+                height -= 80;
+                return height;
             },
 
             /**

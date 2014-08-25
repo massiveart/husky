@@ -11,21 +11,43 @@
     left: 0px;
 
     &.sticky-header {
+      padding-top: 30px;
       table {
         thead {
           position: absolute;
           top: 0px;
           left: 0px;
+          overflow: hidden;
         }
         .header-clone {
           position: static;
           top: auto;
           left: auto;
           visibility: hidden;
+          .checkbox-cell * {
+            display: none;
+          }
+          .row-remover {
+            height: 0;
+          }
+          th {
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            & * {
+              height: 1px;
+            }
+          }
+          tr {
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            height: 1px;
+            border: none;
+          }
         }
-      }
-      .table-container {
-        height: 200px; //remove later - set dynamically in js
       }
     }
 
@@ -92,8 +114,7 @@
     &.minimal {
       padding: 0;
       tbody {
-        td.thumb {
-          width: 1px;
+        td {
           img {
             height: 30px;
           }
@@ -164,15 +185,21 @@
         }
     }
   .row-remover {
+    display: block;
     cursor: pointer;
   }
 
   thead {
+    .cell-content {
+      display: block;
+    }
+    .row-remover {
+      display: block;
+    }
     tr {
       height: 30px;
       padding-top: 10px;
-            border-color: $grayLighter;
-        }
+      border-color: $grayLighter;
         th {
             padding-top: 0;
             font-weight: normal;
@@ -188,7 +215,7 @@
             }
           &.sorted-asc {
             font-weight: bold;
-            &::after {
+            .cell-content::after {
               @extend .fa;
               margin-left: 5px;
               content: $fa-var-caret-up;
@@ -197,7 +224,7 @@
           }
           &.sorted-desc {
             font-weight: bold;
-            &::after {
+            .cell-content::after {
               @extend .fa;
               margin-left: 5px;
               content: $fa-var-caret-down;
@@ -205,7 +232,7 @@
             }
           }
         }
-
+    }
     .header-loader {
       display: inline-block;
       width: 10px;
@@ -222,9 +249,9 @@
       /** after render effect (start) **/
       tr {
         opacity: 1;
-        $transitonDuration: 300ms;
-        $transitionDelay: 80ms;
-        $transitonOffset: 50ms;
+        $transitonDuration: 250ms;
+        $transitionDelay: 60ms;
+        $transitonOffset: 40ms;
         @for $i from 1 through 20 {
           &:nth-child(#{$i}) {
             @include single-transition(opacity, $transitonDuration, ($transitionDelay + $i * $transitonOffset));

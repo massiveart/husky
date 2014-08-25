@@ -53,7 +53,7 @@ define(function() {
             hideChildrenAtBeginning: true,
             openChildId: null,
             highlightSelected: false,
-            stickyHeader: true,
+            stickyHeader: false,
             icons: [],
             removeIcon: 'trash-o',
             croppedMaxLength: 35
@@ -305,6 +305,10 @@ define(function() {
             } else {
                 this.underflowHandler();
             }
+            if (this.options.stickyHeader === true) {
+                this.setHeaderCellWidthFromClone();
+                this.fixContainerMaxHeight();
+            }
         },
 
         /**
@@ -338,7 +342,7 @@ define(function() {
             if (this.options.fullWidth === true) {
                 this.sandbox.dom.addClass(this.$el, constants.fullWidthClass);
             }
-            if (this.options.highlightSelected === true) {
+            if ((this.options.highlightSelected === true || !!this.options.selectItem) && this.options.editable !== true) {
                 this.sandbox.dom.addClass(this.$el, constants.isSelectableClass);
             }
         },
@@ -352,11 +356,12 @@ define(function() {
          */
         renderTable: function() {
             this.table.$el = this.sandbox.dom.createElement(templates.table);
+            this.table.$container = this.sandbox.dom.find('.' + constants.containerClass, this.$el);
             if (this.options.showHead === true) {
                 this.renderHeader();
             }
             this.renderBody();
-            this.sandbox.dom.append(this.sandbox.dom.find('.' + constants.containerClass, this.$el), this.table.$el);
+            this.sandbox.dom.append(this.table.$container, this.table.$el);
         },
 
         /**
@@ -408,7 +413,9 @@ define(function() {
 
             this.sandbox.util.foreach(this.datagrid.matchings, function(column) {
                 $headerCell = this.sandbox.dom.createElement(templates.headerCell);
-                this.sandbox.dom.html($headerCell, this.sandbox.translate(column.content));
+                this.sandbox.dom.html($headerCell, this.sandbox.util.template(templates.textContainer)({
+                    content: this.sandbox.translate(column.content)
+                }));
                 this.sandbox.dom.data($headerCell, 'attribute', column.attribute);
                 this.table.header.cells[column.attribute] = {
                     $el: $headerCell,
@@ -772,8 +779,7 @@ define(function() {
          * @returns {boolean}
          */
         containerIsOverflown: function() {
-            var $container = this.sandbox.dom.find('.' + constants.containerClass, this.$el);
-            return this.sandbox.dom.get($container, 0).scrollWidth > this.sandbox.dom.width($container);
+            return this.sandbox.dom.get(this.table.$container, 0).scrollWidth > this.sandbox.dom.width(this.table.$container);
         },
 
         /**
@@ -785,6 +791,9 @@ define(function() {
             if (this.containerIsOverflown() === true) {
                 this.sandbox.dom.addClass(this.$el, constants.overflowClass);
             }
+            if (this.options.stickyHeader === true) {
+                this.sandbox.dom.width(this.table.header.$el, this.sandbox.dom.width(this.table.$container));
+            }
         },
 
         /**
@@ -792,11 +801,14 @@ define(function() {
          */
         underflowHandler: function() {
             if (this.tableCropped === true) {
-                if (this.sandbox.dom.width(this.sandbox.dom.find('.' + constants.containerClass, this.$el)) > this.cropBreakPoint) {
+                if (this.sandbox.dom.width(this.table.$container) > this.cropBreakPoint) {
                     this.toggleCropTable(false);
                 }
                 if (this.containerIsOverflown() === false) {
                     this.sandbox.dom.removeClass(this.$el, constants.overflowClass);
+                }
+                if (this.options.stickyHeader === true) {
+                    this.sandbox.dom.width(this.table.header.$el, '');
                 }
             }
         },
@@ -816,9 +828,7 @@ define(function() {
                                 content = this.sandbox.util.cropMiddle(cell.originalContent, this.options.croppedMaxLength);
                                 this.sandbox.dom.attr($contentContainer, 'title', cell.originalContent);
                                 this.tableCropped = true;
-                                this.cropBreakPoint = this.sandbox.dom.width(
-                                    this.sandbox.dom.find('.' + constants.containerClass, this.$el)
-                                );
+                                this.cropBreakPoint = this.sandbox.dom.width(this.table.$container);
                             } else {
                                 content = cell.originalContent;
                                 this.sandbox.dom.removeAttr($contentContainer, 'title');
@@ -867,7 +877,44 @@ define(function() {
             if (!!this.options.icons) {
                 this.sandbox.dom.on(this.table.$body, 'click', this.iconClickHandler.bind(this), '.' + constants.gridIconClass);
             }
+            this.sandbox.dom.on(this.table.$container, 'scroll', this.containerScrollHandler.bind(this));
             this.sandbox.dom.on(this.table.$body, 'click', this.radioButtonClickHandler.bind(this), 'input[type="radio"]');
+        },
+
+        /**
+         * Gets the width of the cells in the header clone and applies them to the actual header
+         */
+        setHeaderCellWidthFromClone: function() {
+            if (!!this.table.header && !!this.table.header.$clone.length) {
+                var cloneThs = this.sandbox.dom.find('th', this.table.header.$clone),
+                    originalThs = this.sandbox.dom.find('th', this.table.header.$el);
+                this.sandbox.dom.width(this.table.header.$row, this.sandbox.dom.width(
+                   this.sandbox.dom.find('tr', this.table.header.$clone)
+                ));
+                this.sandbox.util.foreach(cloneThs, function(cloneTh, index) {
+                    // min- and max-width because for table-cells normal width has no effect
+                    this.sandbox.dom.css(originalThs[index], {
+                        'min-width': this.sandbox.dom.outerWidth(cloneTh) + 'px',
+                        'max-width': this.sandbox.dom.outerWidth(cloneTh) + 'px'
+                    });
+                }.bind(this));
+            }
+        },
+
+        /**
+         * Sets the max-height of the container to the maximum available space
+         */
+        fixContainerMaxHeight: function() {
+            this.sandbox.dom.css(this.table.$container, 'max-height', this.datagrid.getRemainingViewHeight.call(this.datagrid));
+        },
+
+        /**
+         * Gets executed when the table-container gets scrolled
+         */
+        containerScrollHandler: function() {
+            if (this.options.stickyHeader === true) {
+                this.sandbox.dom.scrollLeft(this.table.header.$el, this.sandbox.dom.scrollLeft(this.table.$container));
+            }
         },
 
         /**
@@ -933,6 +980,7 @@ define(function() {
             }
             $cell = this.table.rows[recordId].cells[attribute].$el
             this.sandbox.dom.show(this.sandbox.dom.find('.' + constants.inputWrapperClass, $cell));
+            this.sandbox.dom.focus(this.sandbox.dom.find('.' + constants.editableInputClass, $cell));
             this.sandbox.dom.select(this.sandbox.dom.find('.' + constants.editableInputClass, $cell));
         },
 
@@ -1048,7 +1096,7 @@ define(function() {
         startHeaderCellLoader: function(column) {
             var $container = this.sandbox.dom.createElement(templates.headerCellLoader);
             this.sandbox.dom.addClass(this.table.header.cells[column].$el, constants.headerLoadingClass);
-            this.sandbox.dom.append(this.table.header.cells[column].$el, $container);
+            this.sandbox.dom.append(this.sandbox.dom.find('.' + constants.textContainerClass, this.table.header.cells[column].$el), $container);
             this.sandbox.start([
                 {
                     name: 'loader@husky',
@@ -1069,11 +1117,13 @@ define(function() {
             this.sandbox.dom.stopPropagation(event);
             var recordId = this.sandbox.dom.data(event.currentTarget, 'id');
             this.emitRowClickedEvent(event);
-            if (this.options.highlightSelected === true) {
-                this.uniqueHighlightRecord(recordId);
-            }
-            if (!!this.table.rows[recordId].numberChildren > 0) {
-                this.toggleChildren(recordId);
+            if (!!this.table.rows[recordId]) {
+                if (this.options.highlightSelected === true) {
+                    this.uniqueHighlightRecord(recordId);
+                }
+                if (!!this.table.rows[recordId].numberChildren > 0) {
+                    this.toggleChildren(recordId);
+                }
             }
         },
 
@@ -1297,12 +1347,14 @@ define(function() {
          * @param id {Number|String} the id of the record
          */
         openParents: function(recordId) {
-            var parentId = this.table.rows[recordId].parent;
-            if (!!parentId) {
-                if (!!this.table.rows[parentId].parent) {
-                    this.openParents(parentId);
+            if (!!this.table.rows[recordId]) {
+                var parentId = this.table.rows[recordId].parent;
+                if (!!parentId) {
+                    if (!!this.table.rows[parentId].parent) {
+                        this.openParents(parentId);
+                    }
+                    this.showChildren(parentId);
                 }
-                this.showChildren(parentId);
             }
         }
      };
