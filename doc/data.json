@@ -5608,7 +5608,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1128,
+            "line": 1130,
             "description": "Emits the row clicked event",
             "params": [
                 {
@@ -5622,7 +5622,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1145,
+            "line": 1147,
             "description": "Handles the click on the remove item",
             "params": [
                 {
@@ -5636,7 +5636,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1155,
+            "line": 1157,
             "description": "Handles the change event of the select items",
             "params": [
                 {
@@ -5650,7 +5650,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1170,
+            "line": 1172,
             "description": "Handles the change event of a select item in the header",
             "params": [
                 {
@@ -5664,7 +5664,7 @@
         },
         {
             "file": "husky_components/datagrid/decorators/table-view.js",
-            "line": 1184,
+            "line": 1186,
             "description": "Highlights a record an unhighlights all other rows",
             "params": [
                 {
@@ -12208,23 +12208,23 @@
         },
         {
             "message": "Missing item type\nEmits the row clicked event",
-            "line": " husky_components/datagrid/decorators/table-view.js:1128"
+            "line": " husky_components/datagrid/decorators/table-view.js:1130"
         },
         {
             "message": "Missing item type\nHandles the click on the remove item",
-            "line": " husky_components/datagrid/decorators/table-view.js:1145"
+            "line": " husky_components/datagrid/decorators/table-view.js:1147"
         },
         {
             "message": "Missing item type\nHandles the change event of the select items",
-            "line": " husky_components/datagrid/decorators/table-view.js:1155"
+            "line": " husky_components/datagrid/decorators/table-view.js:1157"
         },
         {
             "message": "Missing item type\nHandles the change event of a select item in the header",
-            "line": " husky_components/datagrid/decorators/table-view.js:1170"
+            "line": " husky_components/datagrid/decorators/table-view.js:1172"
         },
         {
             "message": "Missing item type\nHighlights a record an unhighlights all other rows",
-            "line": " husky_components/datagrid/decorators/table-view.js:1184"
+            "line": " husky_components/datagrid/decorators/table-view.js:1186"
         },
         {
             "message": "Missing item type\nSelejcts all records",

@@ -1271,11 +1271,13 @@ define(function() {
             this.sandbox.dom.stopPropagation(event);
             var recordId = this.sandbox.dom.data(event.currentTarget, &#x27;id&#x27;);
             this.emitRowClickedEvent(event);
-            if (this.options.highlightSelected === true) {
-                this.uniqueHighlightRecord(recordId);
-            }
-            if (!!this.table.rows[recordId].numberChildren &gt; 0) {
-                this.toggleChildren(recordId);
+            if (!!this.table.rows[recordId]) {
+                if (this.options.highlightSelected === true) {
+                    this.uniqueHighlightRecord(recordId);
+                }
+                if (!!this.table.rows[recordId].numberChildren &gt; 0) {
+                    this.toggleChildren(recordId);
+                }
             }
         },
 
@@ -1340,13 +1342,11 @@ define(function() {
          * @param id {Number|String} the id of the record to highlight
          */
         uniqueHighlightRecord: function (id) {
-            if (!!this.table.rows[id]) {
-                this.sandbox.dom.removeClass(
-                    this.sandbox.dom.find(&#x27;.&#x27; + constants.rowClass + &#x27;.&#x27; + constants.selectedRowClass, this.table.$body),
-                    constants.selectedRowClass
-                );
-                this.sandbox.dom.addClass(this.table.rows[id].$el, constants.selectedRowClass);
-            }
+            this.sandbox.dom.removeClass(
+                this.sandbox.dom.find(&#x27;.&#x27; + constants.rowClass + &#x27;.&#x27; + constants.selectedRowClass, this.table.$body),
+                constants.selectedRowClass
+            );
+            this.sandbox.dom.addClass(this.table.rows[id].$el, constants.selectedRowClass);
         },
 
         /**
