@@ -26,9 +26,6 @@ require(['lib/husky'], function(Husky) {
                             limit: 4
                         }
                     },
-                    contentFilters: {
-                        content2: 'radio'
-                    },
                     viewOptions: {
                         table: {
                             selectItem: {
