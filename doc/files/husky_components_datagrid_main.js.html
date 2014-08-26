@@ -243,6 +243,10 @@
                 }
             },
 
+            constants = {
+                viewSpacingBottom: 80
+            },
+
             filters = {
                 /**
                  * Takes bytes and returns a more readable string
@@ -306,7 +310,7 @@
                         url: null,
                         alt: null
                     };
-                    if (!!thumbnails[format]) {
+                    if (!!thumbnails &amp;&amp; !!thumbnails[format]) {
                         if (typeof thumbnails[format] === &#x27;object&#x27;) {
                             thumbnail.url = thumbnails[format].url;
                             thumbnail.alt = thumbnails[format].alt;
@@ -323,14 +327,14 @@
                  */
                 radio: function(content, index, columnName) {
                     var checked = (!content) ? false : true;
-                    return this.sandbox.util.template(templates.radio, {checked: checked, radioId: index, columnName: columnName});
+                    return this.sandbox.util.template(templates.radio, {checked: checked, columnName: columnName});
                 }
             },
 
             templates = {
                 radio: [
                     &#x27;&lt;div class=&quot;custom-radio custom-filter&quot;&gt;&#x27;,
-                    &#x27;   &lt;input name=&quot;radio-&lt;%= columnName %&gt;-&lt;%= radioId %&gt;&quot; class=&quot;&quot; type=&quot;radio&quot; class=&quot;form-element&quot; &lt;% if (checked) { print(&quot;checked&quot;)} %&gt;/&gt;&#x27;,
+                    &#x27;   &lt;input name=&quot;radio-&lt;%= columnName %&gt;&quot; type=&quot;radio&quot; class=&quot;form-element&quot; &lt;% if (checked) { print(&quot;checked&quot;)} %&gt;/&gt;&#x27;,
                     &#x27;   &lt;span class=&quot;icon&quot;&gt;&lt;/span&gt;&#x27;,
                     &#x27;&lt;/div&gt;&#x27;
                 ].join(&#x27;&#x27;)
@@ -723,6 +727,11 @@
                                 matchingObject.content = this.sandbox.translate(matching.translation);
                             } else if (key === &#x27;name&#x27;) {
                                 matchingObject.attribute = matching.name;
+                            } else if (key === &#x27;sortable&#x27;) {
+                                matchingObject.sortable = matching.sortable
+                                if (typeof matching.sortable === &#x27;string&#x27;) {
+                                    matchingObject.sortable = JSON.parse(matching.sortable);
+                                }
                             } else {
                                 matchingObject[key] = matching[key];
                             }
@@ -746,6 +755,9 @@
                 this.renderView();
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].render(this.data, this.$element);
+                }
+                if (this.options.resizeListeners === true) {
+                    this.windowResizeListener();
                 }
             },
 
@@ -1312,6 +1324,19 @@
              */
             emitItemClickedEvent: function(id) {
                 this.sandbox.emit(ITEM_CLICK.call(this), id);
+            },
+
+            /**
+             * Returns the maximum height for the view to fit on screen
+             * @returns {number}
+             */
+            getRemainingViewHeight: function() {
+                var height = this.sandbox.dom.height(this.sandbox.dom.window) - this.sandbox.dom.offset(this.$element).top;
+                if (!!this.paginations[this.paginationId] &amp;&amp; !!this.paginations[this.paginationId].getHeight) {
+                    height -= this.paginations[this.paginationId].getHeight();
+                }
+                height -= constants.viewSpacingBottom;
+                return height;
             },
 
             /**

@@ -89,6 +89,10 @@
                 }
             },
 
+            constants = {
+                viewSpacingBottom: 80
+            },
+
             filters = {
                 /**
                  * Takes bytes and returns a more readable string
@@ -152,7 +156,7 @@
                         url: null,
                         alt: null
                     };
-                    if (!!thumbnails[format]) {
+                    if (!!thumbnails && !!thumbnails[format]) {
                         if (typeof thumbnails[format] === 'object') {
                             thumbnail.url = thumbnails[format].url;
                             thumbnail.alt = thumbnails[format].alt;
@@ -169,14 +173,14 @@
                  */
                 radio: function(content, index, columnName) {
                     var checked = (!content) ? false : true;
-                    return this.sandbox.util.template(templates.radio, {checked: checked, radioId: index, columnName: columnName});
+                    return this.sandbox.util.template(templates.radio, {checked: checked, columnName: columnName});
                 }
             },
 
             templates = {
                 radio: [
                     '<div class="custom-radio custom-filter">',
-                    '   <input name="radio-<%= columnName %>-<%= radioId %>" class="" type="radio" class="form-element" <% if (checked) { print("checked")} %>/>',
+                    '   <input name="radio-<%= columnName %>" type="radio" class="form-element" <% if (checked) { print("checked")} %>/>',
                     '   <span class="icon"></span>',
                     '</div>'
                 ].join('')
@@ -569,6 +573,11 @@
                                 matchingObject.content = this.sandbox.translate(matching.translation);
                             } else if (key === 'name') {
                                 matchingObject.attribute = matching.name;
+                            } else if (key === 'sortable') {
+                                matchingObject.sortable = matching.sortable
+                                if (typeof matching.sortable === 'string') {
+                                    matchingObject.sortable = JSON.parse(matching.sortable);
+                                }
                             } else {
                                 matchingObject[key] = matching[key];
                             }
@@ -592,6 +601,9 @@
                 this.renderView();
                 if (!!this.paginations[this.paginationId]) {
                     this.paginations[this.paginationId].render(this.data, this.$element);
+                }
+                if (this.options.resizeListeners === true) {
+                    this.windowResizeListener();
                 }
             },
 
@@ -1158,6 +1170,19 @@
              */
             emitItemClickedEvent: function(id) {
                 this.sandbox.emit(ITEM_CLICK.call(this), id);
+            },
+
+            /**
+             * Returns the maximum height for the view to fit on screen
+             * @returns {number}
+             */
+            getRemainingViewHeight: function() {
+                var height = this.sandbox.dom.height(this.sandbox.dom.window) - this.sandbox.dom.offset(this.$element).top;
+                if (!!this.paginations[this.paginationId] && !!this.paginations[this.paginationId].getHeight) {
+                    height -= this.paginations[this.paginationId].getHeight();
+                }
+                height -= constants.viewSpacingBottom;
+                return height;
             },
 
             /**
