@@ -89,6 +89,10 @@
                 }
             },
 
+            constants = {
+                viewSpacingBottom: 80
+            },
+
             filters = {
                 /**
                  * Takes bytes and returns a more readable string
@@ -1177,7 +1181,7 @@
                 if (!!this.paginations[this.paginationId] && !!this.paginations[this.paginationId].getHeight) {
                     height -= this.paginations[this.paginationId].getHeight();
                 }
-                height -= 80;
+                height -= constants.viewSpacingBottom;
                 return height;
             },
 

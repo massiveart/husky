@@ -9,7 +9,7 @@
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
  * @param {Function} [destroy] function to destroy the pagination and unbind events
- * @param {Function} [getHeight] funciton which returns the height of the pagination
+ * @param {Function} [getHeight] function which returns the height of the pagination
  */
 define(function() {
 
