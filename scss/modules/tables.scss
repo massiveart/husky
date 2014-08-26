@@ -60,27 +60,9 @@ table {
         }
     }
 
-    &.is-selectable {
-        tr {
-            cursor: pointer;
-            &:hover > td {
-                background-color: #fff;
-            }
-        }
-
-        thead tr {
-            cursor: auto;
-        }
-
-    }
-
     .thumb {
         img {
             vertical-align: middle;
         }
-    }
-
-    .remove-row {
-        text-align: center;
     }
 }
