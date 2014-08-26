@@ -184,6 +184,8 @@
  * @params {Array} [options.supportKeyInput] if true pressing enter will submit the overlay and esc will close it
  * @params {Array} [options.propagateEvents] If false click-events will be stoped at the components-element
  * @params {Array} [options.verticalSpacing] defines the minimum spacing in pixel to the bottom and the top
+ * @params {Null|Number} [options.left] to fix the left position of the overlay. (px)
+ * @params {Null|Number} [options.top] to fix the top position of the overlay. (px)
  *
  * @params {Array} [options.slides] array of slide objects, will be rendered in a row and can slided with events
  * @params {String} [options.slides[].title] the title of the overlay
@@ -232,7 +234,9 @@ define([], function() {
             type: &#x27;normal&#x27;,
             backdropAlpha: 0.5,
             cssClass: &#x27;&#x27;,
-            slides: []
+            slides: [],
+            top: null,
+            left: null
         },
 
         slideDefaults = {
@@ -1201,8 +1205,18 @@ define([], function() {
          * Positions the overlay in the middle of the screen
          */
         setCoordinates: function() {
-            this.updateCoordinates((this.sandbox.dom.$window.height() - this.overlay.$el.outerHeight()) / 2,
-                (this.sandbox.dom.$window.width() - this.overlay.$el.outerWidth()) / 2);
+            var top, left;
+            if (!!this.options.top) {
+                top = this.options.top;
+            } else {
+                top = (this.sandbox.dom.$window.height() - this.overlay.$el.outerHeight()) / 2;
+            }
+            if (!!this.options.left) {
+                left = this.options.left;
+            } else {
+                left = (this.sandbox.dom.$window.width() - this.overlay.$el.outerWidth()) / 2;
+            }
+            this.updateCoordinates(top, left);
         },
 
         /**
