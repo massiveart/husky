@@ -33379,7 +33379,8 @@ define('__component__$toolbar@husky',[],function() {
             collapsedWidth: 50,
             dropdownToggleWidth: 5, //px
             loaderWhiteColor: 'white',
-            loaderDarkColor: '#cccccc'
+            loaderDarkColor: '#cccccc',
+            markedClass: 'marked'
         },
 
         /** templates container */
@@ -33473,6 +33474,16 @@ define('__component__$toolbar@husky',[],function() {
          },
 
         /**
+         * event to mark a subitem
+         *
+         * @event husky.toolbar.[INSTANCE_NAME.]item.mark
+         * @param {string} button The id of the button
+         */
+         ITEM_MARK = function() {
+            return createEventName.call(this, 'item.mark');
+         },
+
+        /**
          * event to change a buttons default title and default icon
          *
          * @event husky.toolbar.[INSTANCE_NAME.]button.set
@@ -33558,6 +33569,8 @@ define('__component__$toolbar@husky',[],function() {
             this.sandbox.on(EXPAND.call(this), function() {
                 expandAll.call(this);
             }.bind(this));
+
+            this.sandbox.on(ITEM_MARK.call(this), uniqueMarkItem.bind(this));
 
             this.sandbox.on(ITEM_CHANGE.call(this), function(button, id, executeCallback) {
                 if (!!this.items[button]) {
@@ -33771,13 +33784,17 @@ define('__component__$toolbar@husky',[],function() {
             this.sandbox.dom.preventDefault(event);
 
             var item = this.items[this.sandbox.dom.data(event.currentTarget, 'id')],
-                $parent = this.sandbox.dom.parents(event.currentTarget, 'li').eq(0);
+                $parent = (!!this.items[item.parentId]) ? this.items[item.parentId].$el : null;
 
             // stop if item has subitems
             if ((item.items && item.items.length > 0) || item.loading) {
                 return;
             }
             hideDropdowns.call(this);
+            if (!!item.parentId && !!this.items[item.parentId].itemsOption
+                && this.items[item.parentId].itemsOption.markable === true) {
+                uniqueMarkItem.call(this, item.id);
+            }
             if (!item.disabled) {
                 triggerSelectEvent.call(this, item, $parent);
             } else {
@@ -33896,18 +33913,37 @@ define('__component__$toolbar@husky',[],function() {
                 item.parentId = parent.id;
                 // check id for uniqueness
                 checkItemId.call(this, item);
-                this.items[item.id] = item;
-
                 $item = this.sandbox.dom.createElement(
                     '<li data-id="' + item.id + '"><a href="#">' + item.title + '</a></li>'
                 );
+                item.$el = $item;
+                this.items[item.id] = item;
 
                 if (item.disabled === true) {
                     this.sandbox.dom.addClass($item, 'disabled');
                 }
-
+                if (item.marked === true) {
+                    uniqueMarkItem.call(this, item.id);
+                }
                 this.sandbox.dom.append($list, $item);
             }.bind(this));
+        },
+
+        /**
+         * Marks an item with a css class und unmarks all other items with the same parent
+         * @param itemId {Number|String} the id of the item
+         */
+        uniqueMarkItem = function(itemId) {
+            if (!!this.items[itemId] && !!this.items[itemId].parentId) {
+                // unmark all items with the same parent
+                this.sandbox.util.each(this.items, function(id, item) {
+                    if (item.parentId === this.items[itemId].parentId) {
+                        this.sandbox.dom.removeClass(item.$el, constants.markedClass);
+                    }
+                }.bind(this));
+                // mark passed element
+                this.sandbox.dom.addClass(this.items[itemId].$el, constants.markedClass);
+            }
         },
 
         /**
