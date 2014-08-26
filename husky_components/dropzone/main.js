@@ -220,8 +220,11 @@ define([], function () {
                 this.sandbox.dom.on(this.sandbox.dom.$document, 'dragenter', function () {
                     this.openOverlay();
                 }.bind(this));
+                this.sandbox.dom.on(this.sandbox.dom.$document, 'drop', function(event) {
+                    this.addFiles(event.originalEvent.dataTransfer.files);
+                }.bind(this));
             }
-            this.sandbox.dom.on(this.sandbox.dom.$document, 'drop', function(event) {
+            this.sandbox.dom.on(this.sandbox.dom.$document, 'dragover drop', function(event) {
                 this.sandbox.dom.preventDefault(event);
             }.bind(this));
         },
@@ -339,6 +342,7 @@ define([], function () {
                         that.dropzone = this;
 
                         this.on('drop', function(event) {
+                            this.sandbox.dom.stopPropagation(event);
                             this.filesDropped = event.dataTransfer.files.length;
                         }.bind(that));
 
@@ -416,6 +420,16 @@ define([], function () {
             // merge the default plugin options with with passed ones
             options = this.sandbox.util.extend(true, {}, options, this.options.pluginOptions);
             this.sandbox.dropzone.initialize(this.$dropzone, options);
+        },
+
+        /**
+         * Adds an array of files to the dropzone to upload them
+         * @param files {array} an array of files
+         */
+        addFiles: function(files) {
+            this.sandbox.util.each(files, function(index, file) {
+                this.dropzone.addFile(file);
+            }.bind(this));
         },
 
         /**
