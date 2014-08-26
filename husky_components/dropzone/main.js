@@ -221,6 +221,9 @@ define([], function () {
                     this.openOverlay();
                 }.bind(this));
             }
+            this.sandbox.dom.on(this.sandbox.dom.$document, 'drop', function(event) {
+                this.sandbox.dom.preventDefault(event);
+            }.bind(this));
         },
 
         /**
@@ -338,6 +341,12 @@ define([], function () {
                         this.on('drop', function(event) {
                             this.filesDropped = event.dataTransfer.files.length;
                         }.bind(that));
+
+                        if (that.options.showOverlay === true) {
+                            this.on('dragenter', function() {
+                                this.openOverlay();
+                            }.bind(that));
+                        }
 
                         // gets called if file gets added (drop or via the upload window)
                         this.on('addedfile', function (file) {
