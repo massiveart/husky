@@ -33,7 +33,7 @@
                 removeButtons: '',
                 removePlugins: 'elementspath,link,magicline',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify,button,listblock,panel,floatpanel,richcombo,format',
+                extraPlugins: 'justify,format,sourcearea',
                 resize_enabled: false,
                 uiColor: '#ffffff',
                 skin: 'husky'
