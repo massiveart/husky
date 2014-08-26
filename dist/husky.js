@@ -27159,7 +27159,7 @@ define('__component__$navigation@husky',[],function() {
                 hide: 'navigation.hide',
                 show: 'navigation.show'
             },
-            resizeWidth: 1300,
+            resizeWidth: 1210,
             forceCollapse: false,
             systemName: 'Sulu 2.0',
             footer: true,
