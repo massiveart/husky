@@ -18,22 +18,14 @@
 
         var getConfig = function() {
             return {
-                toolbar: [
-                    { name: 'semantics', items: ['Format']},
-                    { name: 'basicstyles', items: [ 'Superscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
-                    { name: 'blockstyles', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-                    { name: 'list', items: [ 'BulletedList'] },
-                    { name: 'code', items: [ 'Source'] }
-                ],
-
                 format_tags: 'p;h1;h2;h3;h4;h5;h6',
                 height: '300px',
                 width: '100%',
                 defaultLanguage: 'en',
                 removeButtons: '',
-                removePlugins: 'elementspath,link,magicline',
+                removePlugins: 'elementspath,magicline',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify,format,sourcearea',
+                extraPlugins: 'justify,format,sourcearea,link,table',
                 resize_enabled: false,
                 uiColor: '#ffffff',
                 skin: 'husky'
