@@ -37,9 +37,11 @@ require(['lib/husky'], function(Husky) {
                             validation: true,
                             addRowTop: true,
                             showHead: true, // false to hide table-head
-                            //fullWidth: true, // uncomment for full-width mode
+                            fullWidth: true, // uncomment for full-width mode
                             contentContainer: '#content',
-                            highlightSelected: true
+                            highlightSelected: true,
+                            croppedMaxLength: 5,
+                            stickyHeader: true
                         },
                         thumbnail: {
                         }

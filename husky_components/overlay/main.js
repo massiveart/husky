@@ -550,7 +550,7 @@ define([], function() {
                     maxHeight = maxHeight > $(this).height() ? maxHeight : $(this).height();
                 });
 
-                this.sandbox.dom.css(this.overlay.$content, 'height', maxHeight + 'px');
+                this.sandbox.dom.css(this.overlay.$content, 'height', this.sandbox.dom.height(this.sandbox.dom.get(this.overlay.$content, 0)) + 'px');
             }
         },
 
@@ -1006,7 +1006,6 @@ define([], function() {
          */
         resetResizeVariables: function() {
             this.overlay.collapsed = false;
-            this.sandbox.dom.css(this.overlay.$content, {'overflow': 'visible'});
             this.sandbox.dom.height(this.overlay.$content, '');
             this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
             this.setSlidesHeight();
@@ -1022,7 +1021,6 @@ define([], function() {
                 this.sandbox.dom.height(this.overlay.$content,
                     (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing*2)
                 );
-                this.sandbox.dom.css(this.overlay.$content, {'overflow': 'scroll'});
                 this.overlay.collapsed = true;
 
                 //window is getting bigger - make the overlay bigger
@@ -1031,7 +1029,6 @@ define([], function() {
 
                 //if overlay reached its beginning height - stop
                 if (this.sandbox.dom.height(this.overlay.$el) >= this.overlay.normalHeight) {
-                    this.sandbox.dom.css(this.overlay.$content, {'overflow': 'visible'});
                     this.overlay.collapsed = false;
 
                     // else enlarge further
