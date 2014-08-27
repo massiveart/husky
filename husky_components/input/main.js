@@ -20,7 +20,7 @@
  * @params {String} [options.value] value to set at the beginning
  * @params {String} [options.placeholder] html5-placholder to use
  * @params {String} [options.skin] name of the skin to use. Currently 'phone', 'password', 'url', 'email', 'date', 'time', 'color'. Each skin brings it's own default values. For example the password skin has automatically inputType: 'password'
- * @params {Object} [options.datepickerOptions] config-object to pass to the datepicker component
+ * @params {Object} [options.datepickerOptions] config-object to pass to the datepicker component - you can find possible values here http://bootstrap-datepicker.readthedocs.org/en/release/options.html
  * @params {Object} [options.colorPickerOptions] config-object to pass to the colorpicker component
  * @params {String} [options.frontIcon] name of icon to display in front
  * @params {String} [options.frontText] text to display in front
@@ -42,7 +42,11 @@ define([], function () {
             value: '',
             placeholder: '',
             skin: null,
-            datepickerOptions: {},
+            datepickerOptions: {
+                orientation: 'top',
+                startDate: -Infinity,
+                endDate: Infinity
+            },
             colorPickerOptions: {},
             frontIcon: null,
             frontText: null,
@@ -148,14 +152,14 @@ define([], function () {
          */
         initialize: function () {
             this.sandbox.logger.log('initialize', this);
-            var defaults = defaults;
+            var instanceDefaults = this.sandbox.util.extend(true, {}, defaults);
 
             // merge skin defaults with defaults
             if (!!this.options.skin && !!skins[this.options.skin]) {
-                defaults = this.sandbox.util.extend(true, {}, defaults, skins[this.options.skin]);
+                instanceDefaults = this.sandbox.util.extend(true, {}, defaults, skins[this.options.skin]);
             }
             // merge defaults, skin defaults and options
-            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+            this.options = this.sandbox.util.extend(true, {}, instanceDefaults, this.options);
 
             this.input = {
                 $front: null,
@@ -279,6 +283,15 @@ define([], function () {
         renderDatePicker: function() {
             this.sandbox.dom.addClass(this.$el, constants.datepickerClass);
             this.sandbox.dom.attr(this.input.$input, 'placeholder', this.sandbox.globalize.getDatePattern());
+
+            // parse stard and end date
+            if(!!this.options.datepickerOptions.startDate && typeof(this.options.datepickerOptions.startDate) === 'string') {
+                this.options.datepickerOptions.startDate = new Date(this.options.datepickerOptions.startDate);
+            }
+            if(!!this.options.datepickerOptions.endDate && typeof(this.options.datepickerOptions.endDate) === 'string') {
+                this.options.datepickerOptions.endDate = new Date(this.options.datepickerOptions.endDate);
+            }
+
             this.sandbox.datepicker.init(this.input.$input, this.options.datepickerOptions).on('changeDate', function(event) {
                 this.setDatepickerValueAttr(event.date);
             }.bind(this));

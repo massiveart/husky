@@ -135,7 +135,7 @@
                         language: app.sandbox.globalize.getLocale(),
                         autoclose: true
                     };
-                    settings = app.sandbox.util.extend(true, {}, settings, configs)
+                    settings = app.sandbox.util.extend(true, {}, settings, configs);
                     return app.core.dom.$(selector).datepicker(settings);
                 },
 
