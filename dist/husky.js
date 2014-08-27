@@ -41161,7 +41161,7 @@ define('__component__$input@husky',[], function () {
             placeholder: '',
             skin: null,
             datepickerOptions: {
-                orientation: 'top',
+                orientation: 'auto',
                 startDate: -Infinity,
                 endDate: Infinity
             },
