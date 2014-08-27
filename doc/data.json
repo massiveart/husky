@@ -1818,7 +1818,7 @@
                         },
                         {
                             "name": "datepickerOptions",
-                            "description": "config-object to pass to the datepicker component",
+                            "description": "config-object to pass to the datepicker component - you can find possible values here http://bootstrap-datepicker.readthedocs.org/en/release/options.html",
                             "type": "Object",
                             "optional": true
                         },
@@ -7743,7 +7743,7 @@
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 125,
+            "line": 129,
             "description": "namespace for events",
             "type": "{string}",
             "class": "Input",
@@ -7751,7 +7751,7 @@
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 131,
+            "line": 135,
             "description": "raised after initialization process",
             "itemtype": "event",
             "name": "husky.input.<instance-name>.initialize",
@@ -7760,69 +7760,69 @@
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 139,
+            "line": 143,
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 146,
+            "line": 150,
             "description": "Initialize component",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 173,
+            "line": 177,
             "description": "Renders the input component",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 192,
+            "line": 196,
             "description": "Binds Dom-related events",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 213,
+            "line": 217,
             "description": "Renders the front of the input",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 230,
+            "line": 234,
             "description": "Renders the actual html-input field\nwith validation constraints and so on",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 247,
+            "line": 251,
             "description": "renders the back of the input",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 264,
+            "line": 268,
             "description": "Starts the colorpicker",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 276,
+            "line": 280,
             "description": "Starts the datepicker",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 290,
+            "line": 303,
             "description": "Attaches an event-listner to the input which makes an a-tag with clickable",
             "params": [
                 {
@@ -7836,28 +7836,28 @@
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 300,
+            "line": 313,
             "description": "Changes the anchor-tag in the front-section",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 317,
+            "line": 330,
             "description": "Binds Dom-events for the datepicker",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 326,
+            "line": 339,
             "description": "Renders time specific things",
             "class": "Input",
             "module": "husky/components/input"
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 333,
+            "line": 346,
             "description": "Updates the square which shows the current color for the colorpicker",
             "params": [
                 {
@@ -7871,7 +7871,7 @@
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 343,
+            "line": 356,
             "description": "Sets the input value",
             "params": [
                 {
@@ -7885,7 +7885,7 @@
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 370,
+            "line": 383,
             "description": "Takes a iso date-time string and returns only the date part",
             "params": [
                 {
@@ -7899,7 +7899,7 @@
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 381,
+            "line": 394,
             "description": "Sets the value attribute for the datepicker",
             "params": [
                 {
@@ -7913,7 +7913,7 @@
         },
         {
             "file": "husky_components/input/main.js",
-            "line": 399,
+            "line": 412,
             "description": "Updates the value with what is in the\ndata attribute",
             "class": "Input",
             "module": "husky/components/input"
@@ -12684,79 +12684,79 @@
         },
         {
             "message": "Missing item type\nnamespace for events",
-            "line": " husky_components/input/main.js:125"
+            "line": " husky_components/input/main.js:129"
         },
         {
             "message": "Missing item type",
-            "line": " husky_components/input/main.js:139"
+            "line": " husky_components/input/main.js:143"
         },
         {
             "message": "Missing item type\nInitialize component",
-            "line": " husky_components/input/main.js:146"
+            "line": " husky_components/input/main.js:150"
         },
         {
             "message": "Missing item type\nRenders the input component",
-            "line": " husky_components/input/main.js:173"
+            "line": " husky_components/input/main.js:177"
         },
         {
             "message": "Missing item type\nBinds Dom-related events",
-            "line": " husky_components/input/main.js:192"
+            "line": " husky_components/input/main.js:196"
         },
         {
             "message": "Missing item type\nRenders the front of the input",
-            "line": " husky_components/input/main.js:213"
+            "line": " husky_components/input/main.js:217"
         },
         {
             "message": "Missing item type\nRenders the actual html-input field\nwith validation constraints and so on",
-            "line": " husky_components/input/main.js:230"
+            "line": " husky_components/input/main.js:234"
         },
         {
             "message": "Missing item type\nrenders the back of the input",
-            "line": " husky_components/input/main.js:247"
+            "line": " husky_components/input/main.js:251"
         },
         {
             "message": "Missing item type\nStarts the colorpicker",
-            "line": " husky_components/input/main.js:264"
+            "line": " husky_components/input/main.js:268"
         },
         {
             "message": "Missing item type\nStarts the datepicker",
-            "line": " husky_components/input/main.js:276"
+            "line": " husky_components/input/main.js:280"
         },
         {
             "message": "Missing item type\nAttaches an event-listner to the input which makes an a-tag with clickable",
-            "line": " husky_components/input/main.js:290"
+            "line": " husky_components/input/main.js:303"
         },
         {
             "message": "Missing item type\nChanges the anchor-tag in the front-section",
-            "line": " husky_components/input/main.js:300"
+            "line": " husky_components/input/main.js:313"
         },
         {
             "message": "Missing item type\nBinds Dom-events for the datepicker",
-            "line": " husky_components/input/main.js:317"
+            "line": " husky_components/input/main.js:330"
         },
         {
             "message": "Missing item type\nRenders time specific things",
-            "line": " husky_components/input/main.js:326"
+            "line": " husky_components/input/main.js:339"
         },
         {
             "message": "Missing item type\nUpdates the square which shows the current color for the colorpicker",
-            "line": " husky_components/input/main.js:333"
+            "line": " husky_components/input/main.js:346"
         },
         {
             "message": "Missing item type\nSets the input value",
-            "line": " husky_components/input/main.js:343"
+            "line": " husky_components/input/main.js:356"
         },
         {
             "message": "Missing item type\nTakes a iso date-time string and returns only the date part",
-            "line": " husky_components/input/main.js:370"
+            "line": " husky_components/input/main.js:383"
         },
         {
             "message": "Missing item type\nSets the value attribute for the datepicker",
-            "line": " husky_components/input/main.js:381"
+            "line": " husky_components/input/main.js:394"
         },
         {
             "message": "Missing item type\nUpdates the value with what is in the\ndata attribute",
-            "line": " husky_components/input/main.js:399"
+            "line": " husky_components/input/main.js:412"
         },
         {
             "message": "Missing item type\ndefault values for types",
