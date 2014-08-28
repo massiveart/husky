@@ -1,3 +1,4 @@
+
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -38160,7 +38161,8 @@ define('__component__$ckeditor@husky',[], function() {
             instanceName: null,
             godMode: false,
             tableEnabled: true,
-            linksEnabled: true
+            linksEnabled: true,
+            pasteFromWord: true
         },
 
         /**
@@ -38199,6 +38201,9 @@ define('__component__$ckeditor@husky',[], function() {
                 { name: 'list', items: [ 'BulletedList'] }
             ];
 
+            if (this.options.pasteFromWord === true) {
+                config.toolbar.push({ name: 'paste', items: [ 'PasteFromWord' ] });
+            }
             if (this.options.linksEnabled === true) {
                 config.toolbar.push({ name: 'links', items: [ 'Link', 'Unlink' ] });
                 config.linkShowTargetTab = false;
@@ -38240,7 +38245,6 @@ return {
         var config = getConfig.call(this);
         this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
         this.data = this.editor.getData();
-        this.$overlay = null;
 
         this.bindChangeEvents();
 
@@ -41691,7 +41695,7 @@ define('__component__$input@husky',[], function () {
                 removeButtons: '',
                 removePlugins: 'elementspath,magicline',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify,format,sourcearea,link,table',
+                extraPlugins: 'justify,format,sourcearea,link,table,pastefromword',
                 resize_enabled: false,
                 uiColor: '#ffffff',
                 skin: 'husky'
@@ -46687,4 +46691,3 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
-
