@@ -27,7 +27,8 @@ define([], function() {
             instanceName: null,
             godMode: false,
             tableEnabled: true,
-            linksEnabled: true
+            linksEnabled: true,
+            pasteFromWord: true
         },
 
         /**
@@ -66,6 +67,9 @@ define([], function() {
                 { name: 'list', items: [ 'BulletedList'] }
             ];
 
+            if (this.options.pasteFromWord === true) {
+                config.toolbar.push({ name: 'paste', items: [ 'PasteFromWord' ] });
+            }
             if (this.options.linksEnabled === true) {
                 config.toolbar.push({ name: 'links', items: [ 'Link', 'Unlink' ] });
                 config.linkShowTargetTab = false;
@@ -107,7 +111,6 @@ return {
         var config = getConfig.call(this);
         this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
         this.data = this.editor.getData();
-        this.$overlay = null;
 
         this.bindChangeEvents();
 

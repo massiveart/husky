@@ -25,7 +25,7 @@
                 removeButtons: '',
                 removePlugins: 'elementspath,magicline',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify,format,sourcearea,link,table',
+                extraPlugins: 'justify,format,sourcearea,link,table,pastefromword',
                 resize_enabled: false,
                 uiColor: '#ffffff',
                 skin: 'husky'
