@@ -27,7 +27,8 @@ define([], function() {
             instanceName: null,
             godMode: false,
             tableEnabled: true,
-            linksEnabled: true
+            linksEnabled: true,
+            pasteFromWord: true
         },
 
         /**
@@ -65,6 +66,10 @@ define([], function() {
                 { name: 'blockstyles', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
                 { name: 'list', items: [ 'BulletedList'] }
             ];
+
+            if (this.options.pasteFromWord === true) {
+                config.toolbar.push({ name: 'paste', items: [ 'PasteFromWord' ] });
+            }
 
             if (this.options.linksEnabled === true) {
                 config.toolbar.push({ name: 'links', items: [ 'Link', 'Unlink' ] });

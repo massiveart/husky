@@ -181,7 +181,8 @@ define([], function() {
             instanceName: null,
             godMode: false,
             tableEnabled: true,
-            linksEnabled: true
+            linksEnabled: true,
+            pasteFromWord: true
         },
 
         /**
@@ -219,6 +220,10 @@ define([], function() {
                 { name: &#x27;blockstyles&#x27;, items: [ &#x27;JustifyLeft&#x27;, &#x27;JustifyCenter&#x27;, &#x27;JustifyRight&#x27;, &#x27;JustifyBlock&#x27;] },
                 { name: &#x27;list&#x27;, items: [ &#x27;BulletedList&#x27;] }
             ];
+
+            if (this.options.pasteFromWord === true) {
+                config.toolbar.push({ name: &#x27;paste&#x27;, items: [ &#x27;PasteFromWord&#x27; ] });
+            }
 
             if (this.options.linksEnabled === true) {
                 config.toolbar.push({ name: &#x27;links&#x27;, items: [ &#x27;Link&#x27;, &#x27;Unlink&#x27; ] });
