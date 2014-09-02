@@ -25,7 +25,10 @@ define([], function() {
     var defaults = {
             initializedCallback: null,
             instanceName: null,
-            godMode: false
+            godMode: false,
+            tableEnabled: true,
+            linksEnabled: true,
+            pasteFromWord: true
         },
 
         /**
@@ -57,6 +60,26 @@ define([], function() {
             getConfig = function() {
             var config = this.sandbox.util.extend(false, {}, this.options);
 
+            config.toolbar = [
+                { name: 'semantics', items: ['Format']},
+                { name: 'basicstyles', items: [ 'Superscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
+                { name: 'blockstyles', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                { name: 'list', items: [ 'BulletedList'] }
+            ];
+
+            if (this.options.pasteFromWord === true) {
+                config.toolbar.push({ name: 'paste', items: [ 'PasteFromWord' ] });
+            }
+            if (this.options.linksEnabled === true) {
+                config.toolbar.push({ name: 'links', items: [ 'Link', 'Unlink' ] });
+                config.linkShowTargetTab = false;
+            }
+            if (this.options.tableEnabled === true) {
+                config.toolbar.push({ name: 'insert', items: [ 'Table' ] });
+            }
+
+            config.toolbar.push({ name: 'code', items: [ 'Source'] });
+
             delete config.initializedCallback;
             delete config.baseUrl;
             delete config.el;
@@ -67,6 +90,8 @@ define([], function() {
             delete config.require;
             delete config.element;
             delete config.godMode;
+            delete config.linksEnabled;
+            delete config.tableEnabled;
 
             // allow img tags to have any class (*) and any attribute [*]
             config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title]';
