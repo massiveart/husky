@@ -30998,54 +30998,54 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * Gets the data either via the url or the array
              */
             getData: function() {
-                this.evaluateMatchings(this.options.matchings, function finished() {
-                    var url;
-                    if (!!this.options.url) {
-                        url = this.options.url;
+                var url;
+                if (!!this.options.url) {
+                    url = this.options.url;
 
-                        this.sandbox.logger.log('load data from url');
-                        if (this.requestFields.length > 0) {
-                            url += (url.indexOf('?') === -1) ? '?' : '&';
-                            url += 'fields=' + this.requestFields.join(',');
-                        }
-
-                        this.loading();
-                        this.load({
-                            url: url
-                        });
-
-                    } else if (!!this.options.data.items) {
-
-                        this.sandbox.logger.log('load data from array');
-                        this.data = this.options.data;
-
-                        this.renderView();
-                        if (!!this.paginations[this.paginationId]) {
-                            this.paginations[this.paginationId].render(this.data, this.$element);
-                        }
+                    this.sandbox.logger.log('load data from url');
+                    if (this.requestFields.length > 0) {
+                        url += (url.indexOf('?') === -1) ? '?' : '&';
+                        url += 'fields=' + this.requestFields.join(',');
                     }
-                }.bind(this));
+
+                    this.loading();
+                    this.load({
+                        url: url
+                    });
+
+                } else if (!!this.options.data.items) {
+
+                    this.sandbox.logger.log('load data from array');
+                    this.data = this.options.data;
+
+                    this.renderView();
+                    if (!!this.paginations[this.paginationId]) {
+                        this.paginations[this.paginationId].render(this.data, this.$element);
+                    }
+                }
             },
 
             /**
-             * Checks if matchings are given as url or array.
+             * Checks if matchings/fields are given as url or array.
              * If a url is given the appropriate fields are fetched.
              *
              * @param {Array} matchings array with matchings
              */
-            evaluateMatchings: function(matchings, finished) {
+            evaluateMatchings: function() {
+                var matchings = this.options.matchings;
                 if (typeof(matchings) == 'string') {
                     // Load matchings/fields from url
+                    this.loading();
                     this.loadMatchings({
                         url: matchings,
                         success: function(response) {
                             this.filterMatchings(response);
-                            finished();
+                            this.getData();
                         }.bind(this)
                     });
                 } else {
                     this.filterMatchings(matchings);
-                    finished();
+                    this.getData();
                 }
             },
 
@@ -31272,7 +31272,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 this.bindDOMEvents();
                 this.getPaginationDecorator(this.paginationId);
                 this.getViewDecorator(this.viewId);
-                this.getData();
+                this.evaluateMatchings();
             },
 
             /**

@@ -6608,8 +6608,8 @@
         },
         {
             "file": "husky_components/datagrid/main.js",
-            "line": 551,
-            "description": "Checks if matchings are given as url or array.\nIf a url is given the appropriate fields are fetched.",
+            "line": 549,
+            "description": "Checks if matchings/fields are given as url or array.\nIf a url is given the appropriate fields are fetched.",
             "params": [
                 {
                     "name": "matchings",
@@ -12410,8 +12410,8 @@
             "line": " husky_components/datagrid/main.js:518"
         },
         {
-            "message": "Missing item type\nChecks if matchings are given as url or array.\nIf a url is given the appropriate fields are fetched.",
-            "line": " husky_components/datagrid/main.js:551"
+            "message": "Missing item type\nChecks if matchings/fields are given as url or array.\nIf a url is given the appropriate fields are fetched.",
+            "line": " husky_components/datagrid/main.js:549"
         },
         {
             "message": "Missing item type\nLoads matchings via ajax",
