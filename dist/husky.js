@@ -30960,7 +30960,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
                 this.matchings = [];
                 this.requestFields = [];
-                this.filterMatchings(this.options.matchings);
 
                 // make a copy of the decorators for each datagrid instance
                 // if you directly access the decorators variable the datagrid-context in the decorators will be overwritten
@@ -30999,32 +30998,75 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              * Gets the data either via the url or the array
              */
             getData: function() {
-                var url;
+                this.evaluateMatchings(this.options.matchings, function finished() {
+                    var url;
+                    if (!!this.options.url) {
+                        url = this.options.url;
 
-                if (!!this.options.url) {
-                    url = this.options.url;
+                        this.sandbox.logger.log('load data from url');
+                        if (this.requestFields.length > 0) {
+                            url += (url.indexOf('?') === -1) ? '?' : '&';
+                            url += 'fields=' + this.requestFields.join(',');
+                        }
 
-                    this.sandbox.logger.log('load data from url');
-                    if (this.requestFields.length > 0) {
-                        url += (url.indexOf('?') === -1) ? '?' : '&';
-                        url += 'fields=' + this.requestFields.join(',');
+                        this.loading();
+                        this.load({
+                            url: url
+                        });
+
+                    } else if (!!this.options.data.items) {
+
+                        this.sandbox.logger.log('load data from array');
+                        this.data = this.options.data;
+
+                        this.renderView();
+                        if (!!this.paginations[this.paginationId]) {
+                            this.paginations[this.paginationId].render(this.data, this.$element);
+                        }
                     }
+                }.bind(this));
+            },
 
-                    this.loading();
-                    this.load({
-                        url: url
+            /**
+             * Checks if matchings are given as url or array.
+             * If a url is given the appropriate fields are fetched.
+             *
+             * @param {Array} matchings array with matchings
+             */
+            evaluateMatchings: function(matchings, finished) {
+                if (typeof(matchings) == 'string') {
+                    // Load matchings/fields from url
+                    this.loadMatchings({
+                        url: matchings,
+                        success: function(response) {
+                            this.filterMatchings(response);
+                            finished();
+                        }.bind(this)
                     });
-
-                } else if (!!this.options.data.items) {
-
-                    this.sandbox.logger.log('load data from array');
-                    this.data = this.options.data;
-
-                    this.renderView();
-                    if (!!this.paginations[this.paginationId]) {
-                        this.paginations[this.paginationId].render(this.data, this.$element);
-                    }
+                } else {
+                    this.filterMatchings(matchings);
+                    finished();
                 }
+            },
+
+            /**
+             * Loads matchings via ajax
+             * @param params url
+             */
+            loadMatchings: function(params) {
+                this.sandbox.util.load(params.url)
+                    .then(function(response) {
+                        if (this.isLoading === true) {
+                            this.stopLoading();
+                        }
+                        this.destroy();
+                        if (!!params.success && typeof params.success === 'function') {
+                            params.success(response);
+                        }
+                    }.bind(this))
+                    .fail(function(status, error) {
+                        this.sandbox.logger.error(status, error);
+                    }.bind(this));
             },
 
             /**
