@@ -173,6 +173,7 @@
  * @params {String} [options.inputName] DOM-name to give the actual input-tag. Can be usefull in forms
  * @params {String} [options.value] value to set at the beginning
  * @params {String} [options.placeholder] html5-placholder to use
+ * @params {Boolean} [options.disabled] defines if input can be edited
  * @params {String} [options.skin] name of the skin to use. Currently &#x27;phone&#x27;, &#x27;password&#x27;, &#x27;url&#x27;, &#x27;email&#x27;, &#x27;date&#x27;, &#x27;time&#x27;, &#x27;color&#x27;. Each skin brings it&#x27;s own default values. For example the password skin has automatically inputType: &#x27;password&#x27;
  * @params {Object} [options.datepickerOptions] config-object to pass to the datepicker component - you can find possible values here http://bootstrap-datepicker.readthedocs.org/en/release/options.html
  * @params {Object} [options.colorPickerOptions] config-object to pass to the colorpicker component
@@ -185,7 +186,7 @@
  * @params {String} [options.renderMethod] name of a special render method to execute. Currently &#x27;colorpicker&#x27;, &#x27;datepicker&#x27;, &#x27;time&#x27;. For example &#x27;colorpicker&#x27; initializes a colorpicker and sets a css-class
  * @params {String} [options.inputType] the actual type of the input. e.g. &#x27;text&#x27; or &#x27;password&#x27;
  */
-define([], function () {
+define([], function() {
 
     &#x27;use strict&#x27;;
 
@@ -195,6 +196,7 @@ define([], function () {
             inputName: &#x27;&#x27;,
             value: &#x27;&#x27;,
             placeholder: &#x27;&#x27;,
+            disabled: false,
             skin: null,
             datepickerOptions: {
                 orientation: &#x27;auto&#x27;,
@@ -226,8 +228,8 @@ define([], function () {
         },
 
         templates = {
-            input: &#x27;&lt;input type=&quot;&lt;%= type %&gt;&quot; value=&quot;&lt;%= value %&gt;&quot; placeholder=&quot;&lt;%= placeholder %&gt;&quot; id=&quot;&lt;%= id %&gt;&quot; name=&quot;&lt;%= name %&gt;&quot; data-from=&quot;false&quot;/&gt;&#x27;,
-            colorPickerFront: &#x27;&lt;div class=&quot;&#x27;+ constants.colorFieldClass +&#x27;&quot;/&gt;&#x27;
+            input: &#x27;&lt;input type=&quot;&lt;%= type %&gt;&quot; value=&quot;&lt;%= value %&gt;&quot; placeholder=&quot;&lt;%= placeholder %&gt;&quot; id=&quot;&lt;%= id %&gt;&quot; name=&quot;&lt;%= name %&gt;&quot; data-from=&quot;false&quot; &lt;%= disabled %&gt;/&gt;&#x27;,
+            colorPickerFront: &#x27;&lt;div class=&quot;&#x27; + constants.colorFieldClass + &#x27;&quot;/&gt;&#x27;
         },
 
         renderMethods = {
@@ -240,10 +242,10 @@ define([], function () {
             time: function() {
                 this.renderTime();
             },
-            url: function () {
+            url: function() {
                 this.renderLink(&#x27;http://&#x27;);
             },
-            email: function () {
+            email: function() {
                 this.renderLink(&#x27;mailto:&#x27;);
             }
         },
@@ -284,18 +286,18 @@ define([], function () {
          * namespace for events
          * @type {string}
          */
-            eventNamespace = &#x27;husky.input.&#x27;,
+        eventNamespace = &#x27;husky.input.&#x27;,
 
         /**
          * raised after initialization process
          * @event husky.input.&lt;instance-name&gt;.initialize
          */
-            INITIALIZED = function () {
+        INITIALIZED = function() {
             return createEventName.call(this, &#x27;initialized&#x27;);
         },
 
         /** returns normalized event names */
-            createEventName = function (postFix) {
+        createEventName = function(postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + &#x27;.&#x27; : &#x27;&#x27;) + postFix;
         };
 
@@ -304,7 +306,7 @@ define([], function () {
         /**
          * Initialize component
          */
-        initialize: function () {
+        initialize: function() {
             this.sandbox.logger.log(&#x27;initialize&#x27;, this);
             var instanceDefaults = this.sandbox.util.extend(true, {}, defaults);
 
@@ -356,8 +358,8 @@ define([], function () {
             }.bind(this));
 
             // delegate labels on input
-            if(!!this.sandbox.dom.attr(this.$el, &#x27;id&#x27;)) {
-                this.sandbox.dom.on(&#x27;label[for=&quot;&#x27;+ this.sandbox.dom.attr(this.$el, &#x27;id&#x27;) +&#x27;&quot;]&#x27;, &#x27;click&#x27;, function() {
+            if (!!this.sandbox.dom.attr(this.$el, &#x27;id&#x27;)) {
+                this.sandbox.dom.on(&#x27;label[for=&quot;&#x27; + this.sandbox.dom.attr(this.$el, &#x27;id&#x27;) + &#x27;&quot;]&#x27;, &#x27;click&#x27;, function() {
                     this.sandbox.dom.focus(this.input.$input);
                 }.bind(this));
             }
@@ -373,7 +375,7 @@ define([], function () {
          */
         renderFront: function() {
             if (!!this.options.frontIcon || !!this.options.frontText || !!this.options.frontHtml) {
-                this.input.$front = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;&#x27;+ constants.frontClass +&#x27;&quot;/&gt;&#x27;);
+                this.input.$front = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;&#x27; + constants.frontClass + &#x27;&quot;/&gt;&#x27;);
                 if (!!this.options.frontIcon) {
                     this.sandbox.dom.html(this.input.$front, &#x27;&lt;a class=&quot;fa-&#x27; + this.options.frontIcon + &#x27;&quot;&gt;&lt;/a&gt;&#x27;);
                 } else if (!!this.options.frontText) {
@@ -390,13 +392,14 @@ define([], function () {
          * with validation constraints and so on
          */
         renderInput: function() {
-            var $container = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;&#x27;+ constants.inputClass +&#x27;&quot;/&gt;&#x27;);
+            var $container = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;&#x27; + constants.inputClass + &#x27;&quot;/&gt;&#x27;);
             this.input.$input = this.sandbox.dom.createElement(this.sandbox.util.template(templates.input)({
                 type: this.options.inputType,
                 name: (!!this.options.inputName) ? this.options.inputName : &#x27;husky-input-&#x27; + this.options.instanceName,
                 id: (!!this.options.inputId) ? this.options.inputId : &#x27;husky-input-&#x27; + this.options.instanceName,
                 value: this.options.value,
-                placeholder: this.options.placeholder
+                placeholder: this.options.placeholder,
+                disabled: (this.options.disabled === true) ? &#x27;disabled&#x27; : &#x27;&#x27;
             }));
             this.sandbox.dom.append($container, this.input.$input);
             this.sandbox.dom.append(this.$el, $container);
@@ -407,11 +410,11 @@ define([], function () {
          */
         renderBack: function() {
             if (!!this.options.backIcon || !!this.options.backText || !!this.options.backHtml) {
-                this.input.$back = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;&#x27;+ constants.backClass +&#x27;&quot;/&gt;&#x27;);
+                this.input.$back = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;&#x27; + constants.backClass + &#x27;&quot;/&gt;&#x27;);
                 if (!!this.options.backIcon) {
-                    this.sandbox.dom.html(this.input.$back, &#x27;&lt;span class=&quot;fa-&#x27;+ this.options.backIcon +&#x27;&quot;&gt;&lt;/span&gt;&#x27;);
+                    this.sandbox.dom.html(this.input.$back, &#x27;&lt;span class=&quot;fa-&#x27; + this.options.backIcon + &#x27;&quot;&gt;&lt;/span&gt;&#x27;);
                 } else if (!!this.options.backText) {
-                    this.sandbox.dom.html(this.input.$back, &#x27;&lt;span class=&quot;&#x27;+ constants.textClass +&#x27;&quot;&gt;&#x27;+ this.options.backText +&#x27;&lt;/span&gt;&#x27;);
+                    this.sandbox.dom.html(this.input.$back, &#x27;&lt;span class=&quot;&#x27; + constants.textClass + &#x27;&quot;&gt;&#x27; + this.options.backText + &#x27;&lt;/span&gt;&#x27;);
                 } else {
                     this.sandbox.dom.html(this.input.$back, this.options.backHtml);
                 }
@@ -439,10 +442,10 @@ define([], function () {
             this.sandbox.dom.attr(this.input.$input, &#x27;placeholder&#x27;, this.sandbox.globalize.getDatePattern());
 
             // parse stard and end date
-            if(!!this.options.datepickerOptions.startDate &amp;&amp; typeof(this.options.datepickerOptions.startDate) === &#x27;string&#x27;) {
+            if (!!this.options.datepickerOptions.startDate &amp;&amp; typeof(this.options.datepickerOptions.startDate) === &#x27;string&#x27;) {
                 this.options.datepickerOptions.startDate = new Date(this.options.datepickerOptions.startDate);
             }
-            if(!!this.options.datepickerOptions.endDate &amp;&amp; typeof(this.options.datepickerOptions.endDate) === &#x27;string&#x27;) {
+            if (!!this.options.datepickerOptions.endDate &amp;&amp; typeof(this.options.datepickerOptions.endDate) === &#x27;string&#x27;) {
                 this.options.datepickerOptions.endDate = new Date(this.options.datepickerOptions.endDate);
             }
 
@@ -458,7 +461,7 @@ define([], function () {
          * Attaches an event-listner to the input which makes an a-tag with clickable
          * @param protocol {String} a protocol to prepend to the input-value (e.g. &#x27;http://&#x27; or &#x27;mailto:&#x27;)
          */
-        renderLink: function (protocol) {
+        renderLink: function(protocol) {
             this.linkProtocol = protocol;
             this.sandbox.dom.on(this.input.$input, &#x27;keyup&#x27;, this.changeFrontLink.bind(this));
             this.changeFrontLink();
@@ -553,7 +556,7 @@ define([], function () {
             if (!!date) {
                 if (this.sandbox.dom.isNumeric(date.valueOf())) {
                     date = date.getFullYear() + &#x27;-&#x27; +
-                        (&#x27;0&#x27; + (date.getMonth()+1)).slice(-2) + &#x27;-&#x27; +
+                        (&#x27;0&#x27; + (date.getMonth() + 1)).slice(-2) + &#x27;-&#x27; +
                         (&#x27;0&#x27; + date.getDate()).slice(-2);
                 } else {
                     date = &#x27;&#x27;;
