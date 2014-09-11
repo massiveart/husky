@@ -240,7 +240,6 @@ define([], function () {
 
             if (this.options.responsive === true) {
                 this.setContainerHeight();
-                this.setContainerMinWidth();
             }
 
             //init dropdown for settings in options container
@@ -329,7 +328,6 @@ define([], function () {
                         this.columnLoadStarted = false;
                         this.parseData(response, columnNumber);
                         this.handleLastEmptyColumn();
-                        this.alignWithColumnsWidth();
                         this.scrollIfNeeded(this.filledColumns + 1);
                         this.setOverflowClass();
                         this.showOptionsAtLast();
@@ -474,7 +472,8 @@ define([], function () {
             if (this.$loader === null) {
                 this.$loader = this.sandbox.dom.createElement('<div class="husky-column-navigation-loader"/>');
                 this.sandbox.dom.hide(this.$loader);
-
+            }
+            if (this.sandbox.dom.is(this.$loader, ':empty')) {
                 this.sandbox.start([
                     {
                         name: 'loader@husky',
@@ -534,7 +533,6 @@ define([], function () {
             if (this.options.responsive === true) {
                 this.sandbox.dom.on(this.sandbox.dom.$window, 'resize', function () {
                     this.setContainerHeight();
-                    this.setContainerMaxWidth();
                     this.setOverflowClass();
                 }.bind(this));
             }
@@ -576,7 +574,6 @@ define([], function () {
             if (this.options.responsive === true) {
                 this.sandbox.on(RESIZE.call(this), function () {
                     this.setContainerHeight();
-                    this.setContainerMaxWidth();
                     this.setOverflowClass();
                 }.bind(this));
             }
@@ -762,43 +759,10 @@ define([], function () {
                 if (!selectedItem.hasSub) {
                     this.addColumn(selectedItem, column);
                     this.handleLastEmptyColumn();
-                    this.alignWithColumnsWidth();
                     this.scrollIfNeeded(column);
                     this.setOverflowClass();
                 }
             }
-        },
-
-        /**
-         * Sets the width of the container equal to the width of its columns
-         */
-        alignWithColumnsWidth: function () {
-            if (this.options.responsive === true) {
-                var $columnNavi = this.sandbox.dom.find('.column-navigation', this.$el);
-                this.setContainerMaxWidth();
-
-                this.sandbox.dom.width(this.$el, this.sandbox.dom.find('.column', $columnNavi).length * this.options.column.width);
-            }
-        },
-
-        /**
-         * Sets the max width of the container
-         */
-        setContainerMaxWidth: function () {
-            var width = this.sandbox.dom.width(this.sandbox.dom.$window),
-                left = (this.sandbox.dom.$window === this.sandbox.dom.$window ? this.sandbox.dom.offset(this.$el).left : 0);
-
-
-            this.sandbox.dom.css(this.$el, {
-                'max-width': width - left - this.options.paddingLeft + 'px'
-            });
-        },
-
-        /**
-         * Sets the min-width of the container
-         */
-        setContainerMinWidth: function () {
-            this.sandbox.dom.css(this.$el, {'min-width': '100%'});
         },
 
         addColumn: function (selectedItem, column) {

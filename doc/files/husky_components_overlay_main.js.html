@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.0</em>
+            <em>API Docs for: 0.7.0</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -704,7 +704,7 @@ define([], function() {
                     maxHeight = maxHeight &gt; $(this).height() ? maxHeight : $(this).height();
                 });
 
-                this.sandbox.dom.css(this.overlay.$content, &#x27;height&#x27;, maxHeight + &#x27;px&#x27;);
+                this.sandbox.dom.css(this.overlay.$content, &#x27;height&#x27;, this.sandbox.dom.height(this.sandbox.dom.get(this.overlay.$content, 0)) + &#x27;px&#x27;);
             }
         },
 
@@ -1160,7 +1160,6 @@ define([], function() {
          */
         resetResizeVariables: function() {
             this.overlay.collapsed = false;
-            this.sandbox.dom.css(this.overlay.$content, {&#x27;overflow&#x27;: &#x27;visible&#x27;});
             this.sandbox.dom.height(this.overlay.$content, &#x27;&#x27;);
             this.overlay.normalHeight = this.sandbox.dom.height(this.overlay.$el);
             this.setSlidesHeight();
@@ -1176,7 +1175,6 @@ define([], function() {
                 this.sandbox.dom.height(this.overlay.$content,
                     (this.sandbox.dom.height(this.sandbox.dom.$window) - this.sandbox.dom.height(this.overlay.$el) + this.sandbox.dom.height(this.overlay.$content) - this.options.verticalSpacing*2)
                 );
-                this.sandbox.dom.css(this.overlay.$content, {&#x27;overflow&#x27;: &#x27;scroll&#x27;});
                 this.overlay.collapsed = true;
 
                 //window is getting bigger - make the overlay bigger
@@ -1185,7 +1183,6 @@ define([], function() {
 
                 //if overlay reached its beginning height - stop
                 if (this.sandbox.dom.height(this.overlay.$el) &gt;= this.overlay.normalHeight) {
-                    this.sandbox.dom.css(this.overlay.$content, {&#x27;overflow&#x27;: &#x27;visible&#x27;});
                     this.overlay.collapsed = false;
 
                     // else enlarge further

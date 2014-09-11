@@ -9,6 +9,7 @@
  * @param {Function} [initialize] function which gets called once at the start of the view
  * @param {Function} [render] function to render data
  * @param {Function} [destroy] function to destroy the pagination and unbind events
+ * @param {Function} [getHeight] function which returns the height of the pagination
  */
 define(function() {
 
@@ -25,7 +26,8 @@ define(function() {
             prevClass: 'previous',
             nextClass: 'next',
             pageChangeClass: 'page-change',
-            sizeChangeClass: 'size-change'
+            sizeChangeClass: 'size-change',
+            loaderClass: 'pagination-loader'
         },
 
         /**
@@ -45,6 +47,10 @@ define(function() {
                     '<span class="dropdown-toggle inline-block"></span>',
                 '</div>',
                 '<div class="' + constants.prevClass + ' pagination-next pull-right pointer"></div>'
+            ].join(''),
+
+            loader: [
+                '<div class="', constants.loaderClass ,'"></div>'
             ].join(''),
 
             showElements: [
@@ -88,6 +94,14 @@ define(function() {
         },
 
         /**
+         * Returns the total height of the pagination
+         * @returns {number}
+         */
+        getHeight: function() {
+            return this.sandbox.dom.outerHeight(this.$paginationContainer, true);
+        },
+
+        /**
          * Renders the pagination
          */
         render: function(data, $container) {
@@ -126,8 +140,7 @@ define(function() {
          */
         destroy: function() {
             this.unbindDomEvents();
-            // uncommented just for testing purposes, if you see this uncomment it!!
-            //this.sandbox.stop(this.sandbox.dom.find('*', this.$paginationContainer));
+            this.sandbox.stop(this.sandbox.dom.find('*', this.$paginationContainer));
             this.sandbox.dom.remove(this.$paginationContainer);
         },
 
@@ -137,16 +150,36 @@ define(function() {
         bindCustomEvents: function() {
             // pagination dropdown item clicked
             this.sandbox.on('husky.dropdown.' + this.datagrid.options.instanceName + '-pagination-dropdown.item.click', function(item) {
+                this.startLoader();
                 this.datagrid.changePage.call(this.datagrid, null, item.id);
             }.bind(this));
 
             // show-elements dropdown item clicked
             this.sandbox.on('husky.dropdown.' + this.datagrid.options.instanceName + '-pagination-dropdown-show.item.click', function(item) {
                 if (this.data.limit !== item.id || this.data.embedded.length === this.data.total) {
+                    this.startLoader();
                     // always jump to the first page
                     this.datagrid.changePage.call(this.datagrid, null, 1, item.id);
                 }
             }.bind(this));
+        },
+
+        /**
+         * Starts a small loader
+         */
+        startLoader: function() {
+            var $container = this.sandbox.dom.createElement(templates.loader);
+            this.sandbox.dom.append(this.$paginationContainer, $container);
+            this.sandbox.start([
+                {
+                    name: 'loader@husky',
+                    options: {
+                        el: $container,
+                        size: '20px',
+                        color: '#999999'
+                    }
+                }
+            ]);
         },
 
         /**
@@ -173,6 +206,7 @@ define(function() {
          */
         nextPage: function() {
             if (!!this.data.links.next) {
+                this.startLoader();
                 this.datagrid.changePage.call(this.datagrid, this.data.links.next.href);
             }
         },
@@ -182,6 +216,7 @@ define(function() {
          */
         prevPage: function() {
             if (!!this.data.links.previous) {
+                this.startLoader();
                 this.datagrid.changePage.call(this.datagrid, this.data.links.previous.href);
             }
         },

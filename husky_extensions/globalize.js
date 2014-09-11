@@ -129,6 +129,21 @@
                     return translations;
                 };
 
+                /**
+                 * formats a number; calls Globalize.format (see globalize documentation for any details)
+                 *  https://github.com/jquery/globalize/tree/v0.1.1#numbers
+                 * @param number
+                 * @param types Possible types: n (number), d (decimal-digits), p (percentage), c (currency)
+                 */
+                app.sandbox.numberFormat = function(number, types) {
+                    return Globalize.format(number, types);
+                };
+
+                /**
+                 *
+                 * @param cultureName
+                 * @param messages
+                 */
                 app.setLanguage = function(cultureName, messages) {
                     var setLanguage = function() {
                         Globalize.culture(cultureName);

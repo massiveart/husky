@@ -70,6 +70,7 @@ define([], function() {
             if (this.options.pasteFromWord === true) {
                 config.toolbar.push({ name: 'paste', items: [ 'PasteFromWord' ] });
             }
+
             if (this.options.linksEnabled === true) {
                 config.toolbar.push({ name: 'links', items: [ 'Link', 'Unlink' ] });
                 config.linkShowTargetTab = false;
@@ -111,6 +112,7 @@ return {
         var config = getConfig.call(this);
         this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
         this.data = this.editor.getData();
+        this.$overlay = null;
 
         this.bindChangeEvents();
 

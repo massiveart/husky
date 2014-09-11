@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.0</em>
+            <em>API Docs for: 0.7.0</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -199,12 +199,6 @@
             
                 <li class="arg">
                     
-                        <code class="optional">[options.className]</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
                         <code class="optional">[options.removeRow]</code>
                     
                 </li>
@@ -229,31 +223,7 @@
             
                 <li class="arg">
                     
-                        <code class="optional">[options.validation]</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[options.validationDebug]</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
                         <code class="optional">[options.addRowTop]</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[options.startTabIndex]</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code class="optional">[options.columnMinWidth]</code>
                     
                 </li>
             
@@ -326,6 +296,24 @@
                 <li class="arg">
                     
                         <code class="optional">[options.highlightSelected]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[options.removeIcon]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[options.croppedMaxLength]</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[options.stickyHeader]</code>
                     
                 </li>
             
@@ -450,23 +438,6 @@
             
                 <li class="param">
                     
-                        <code class="param-name optional">[options.className]</code>
-                        <span class="type">String</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>additional classname for the wrapping div</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
                         <code class="param-name optional">[options.removeRow]</code>
                         <span class="type">Boolean</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
@@ -535,40 +506,6 @@
             
                 <li class="param">
                     
-                        <code class="param-name optional">[options.validation]</code>
-                        <span class="type">Boolean</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>enables validation for datagrid</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[options.validationDebug]</code>
-                        <span class="type">Boolean</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>enables validation debug for datagrid</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
                         <code class="param-name optional">[options.addRowTop]</code>
                         <span class="type">Boolean</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
@@ -578,40 +515,6 @@
 
                     <div class="param-description">
                         <p>adds row to the top of the table when add row is triggered</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[options.startTabIndex]</code>
-                        <span class="type">Boolean</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>start index for tabindex</p>
-
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name optional">[options.columnMinWidth]</code>
-                        <span class="type">String</span>
-                        <span class="flag optional" title="This parameter is optional.">optional</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>sets the minimal width of table columns</p>
 
                     </div>
 
@@ -791,7 +694,7 @@
                 <li class="param">
                     
                         <code class="param-name optional">[options.cssClass]</code>
-                        <span class="type">String | Number | Null</span>
+                        <span class="type">String | Number</span>
                         <span class="flag optional" title="This parameter is optional.">optional</span>
                     
 
@@ -816,6 +719,57 @@
 
                     <div class="param-description">
                         <p>highlights the clicked row when selected</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[options.removeIcon]</code>
+                        <span class="type">String</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>icon to use for the remove-row item</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[options.croppedMaxLength]</code>
+                        <span class="type">Number</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>the length to which croppable cells will be cropped on overflow</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[options.stickyHeader]</code>
+                        <span class="type">Boolean</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>true to make the table header sticky</p>
 
                     </div>
 
@@ -1038,7 +992,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l174"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:174</code></a>
+        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l188"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:188</code></a>
         
         </p>
 
@@ -1082,7 +1036,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l182"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:182</code></a>
+        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l196"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:196</code></a>
         
         </p>
 
@@ -1126,7 +1080,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l155"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:155</code></a>
+        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l169"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:169</code></a>
         
         </p>
 
@@ -1194,7 +1148,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l164"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:164</code></a>
+        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l178"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:178</code></a>
         
         </p>
 
@@ -1278,7 +1232,7 @@
             
         
         
-        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l147"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:147</code></a>
+        <a href="../files/husky_components_datagrid_decorators_table-view.js.html#l161"><code>husky_components&#x2F;datagrid&#x2F;decorators&#x2F;table-view.js:161</code></a>
         
         </p>
 

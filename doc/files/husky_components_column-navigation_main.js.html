@@ -19,7 +19,7 @@
             
         </div>
         <div class="yui3-u-1-4 version">
-            <em>API Docs for: 0.1.0</em>
+            <em>API Docs for: 0.7.0</em>
         </div>
     </div>
     <div id="bd" class="yui3-g">
@@ -394,7 +394,6 @@ define([], function () {
 
             if (this.options.responsive === true) {
                 this.setContainerHeight();
-                this.setContainerMinWidth();
             }
 
             //init dropdown for settings in options container
@@ -483,7 +482,6 @@ define([], function () {
                         this.columnLoadStarted = false;
                         this.parseData(response, columnNumber);
                         this.handleLastEmptyColumn();
-                        this.alignWithColumnsWidth();
                         this.scrollIfNeeded(this.filledColumns + 1);
                         this.setOverflowClass();
                         this.showOptionsAtLast();
@@ -628,7 +626,8 @@ define([], function () {
             if (this.$loader === null) {
                 this.$loader = this.sandbox.dom.createElement(&#x27;&lt;div class=&quot;husky-column-navigation-loader&quot;/&gt;&#x27;);
                 this.sandbox.dom.hide(this.$loader);
-
+            }
+            if (this.sandbox.dom.is(this.$loader, &#x27;:empty&#x27;)) {
                 this.sandbox.start([
                     {
                         name: &#x27;loader@husky&#x27;,
@@ -688,7 +687,6 @@ define([], function () {
             if (this.options.responsive === true) {
                 this.sandbox.dom.on(this.sandbox.dom.$window, &#x27;resize&#x27;, function () {
                     this.setContainerHeight();
-                    this.setContainerMaxWidth();
                     this.setOverflowClass();
                 }.bind(this));
             }
@@ -730,7 +728,6 @@ define([], function () {
             if (this.options.responsive === true) {
                 this.sandbox.on(RESIZE.call(this), function () {
                     this.setContainerHeight();
-                    this.setContainerMaxWidth();
                     this.setOverflowClass();
                 }.bind(this));
             }
@@ -916,43 +913,10 @@ define([], function () {
                 if (!selectedItem.hasSub) {
                     this.addColumn(selectedItem, column);
                     this.handleLastEmptyColumn();
-                    this.alignWithColumnsWidth();
                     this.scrollIfNeeded(column);
                     this.setOverflowClass();
                 }
             }
-        },
-
-        /**
-         * Sets the width of the container equal to the width of its columns
-         */
-        alignWithColumnsWidth: function () {
-            if (this.options.responsive === true) {
-                var $columnNavi = this.sandbox.dom.find(&#x27;.column-navigation&#x27;, this.$el);
-                this.setContainerMaxWidth();
-
-                this.sandbox.dom.width(this.$el, this.sandbox.dom.find(&#x27;.column&#x27;, $columnNavi).length * this.options.column.width);
-            }
-        },
-
-        /**
-         * Sets the max width of the container
-         */
-        setContainerMaxWidth: function () {
-            var width = this.sandbox.dom.width(this.sandbox.dom.$window),
-                left = (this.sandbox.dom.$window === this.sandbox.dom.$window ? this.sandbox.dom.offset(this.$el).left : 0);
-
-
-            this.sandbox.dom.css(this.$el, {
-                &#x27;max-width&#x27;: width - left - this.options.paddingLeft + &#x27;px&#x27;
-            });
-        },
-
-        /**
-         * Sets the min-width of the container
-         */
-        setContainerMinWidth: function () {
-            this.sandbox.dom.css(this.$el, {&#x27;min-width&#x27;: &#x27;100%&#x27;});
         },
 
         addColumn: function (selectedItem, column) {
