@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -36230,7 +36229,7 @@ define('__component__$select@husky',[], function() {
         addDropdownElement: function(id, value, disabled, callback, updateLabel, checkboxVisible) {
             checkboxVisible = checkboxVisible !== false;
             var $item,
-                idString = (id !== null) ? id.toString() : this.sandbox.util.uniqueId();
+                idString = (id !== null && typeof id !== 'undefined') ? id.toString() : this.sandbox.util.uniqueId();
 
             if (this.options.preSelectedElements.indexOf(idString) >= 0 ||
                 this.options.preSelectedElements.indexOf(value) >= 0) {
@@ -36819,7 +36818,7 @@ define('__component__$select@husky',[], function() {
             } else {
                 this.triggerSelect(key);
             }
-            this.sandbox.dom.trigger('change');
+            this.sandbox.dom.trigger(this.$el, 'change');
         },
 
         // triggers select callback or emits event
@@ -46738,3 +46737,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
