@@ -89,6 +89,11 @@
                 <div class="grid-col-1">&nbsp;</div>
                 <div class="btn pointer grid-col-3 align-center" id="muchContent">This is an overlay with lots of content</div>
             </div>
+            <div class="grid-row m-top-20">
+                <div class="grid-col-1">&nbsp;</div>
+                <div class="btn pointer grid-col-3 align-center" id="manualposition">Overlay with manual position set</div>
+                <div id="manualpositionoverlay"></div>
+            </div>
         </div>
         <div id="overlay1"></div>
         <div id="overlay2"></div>
@@ -285,8 +290,25 @@
                                 console.log('You clicked on ok');
                             }
                         }
+                    },
+                    {
+                        name: 'overlay@husky',
+                        options: {
+                            el: '#manualpositionoverlay',
+                            triggerEl: '#manualposition',
+                            title: 'This is the title of the overlay and it is too big',
+                            data: '<div style="min-height: 350px"></div>',
+                            instanceName: 'manualposition',
+                            top: 10,
+                            left: 10,
+                            closeCallback: function() {
+                                console.log('You clicked on close');
+                            },
+                            okCallback: function() {
+                                console.log('You clicked on ok');
+                            }
+                        }
                     }
-
                 ]).then(function() {
                     app.logger.log('Aura started...');
 
