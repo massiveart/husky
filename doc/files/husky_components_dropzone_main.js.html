@@ -374,7 +374,13 @@ define([], function () {
                 this.sandbox.dom.on(this.sandbox.dom.$document, &#x27;dragenter&#x27;, function () {
                     this.openOverlay();
                 }.bind(this));
+                this.sandbox.dom.on(this.sandbox.dom.$document, &#x27;drop&#x27;, function(event) {
+                    this.addFiles(event.originalEvent.dataTransfer.files);
+                }.bind(this));
             }
+            this.sandbox.dom.on(this.sandbox.dom.$document, &#x27;dragover drop&#x27;, function(event) {
+                this.sandbox.dom.preventDefault(event);
+            }.bind(this));
         },
 
         /**
@@ -408,10 +414,11 @@ define([], function () {
         openOverlay: function () {
             // open the overlay only if it&#x27;s not already opened and if the dropzone is not visible
             if (this.overlayOpened === false &amp;&amp; this.lockPopUp === false) {
-                // set height of components element to prevent the site from bumping
+                // set height of components element to prevent the site from jumping
                 this.sandbox.dom.height(this.$el, this.sandbox.dom.outerHeight(this.$el));
 
-                var $container = this.sandbox.dom.createElement(&#x27;&lt;div/&gt;&#x27;);
+                var $container = this.sandbox.dom.createElement(&#x27;&lt;div/&gt;&#x27;),
+                    coordinates = this.getOverlayCoordinates();
                 this.sandbox.dom.append(this.$el, $container);
                 this.sandbox.start([
                     {
@@ -425,6 +432,8 @@ define([], function () {
                             instanceName: &#x27;dropzone-&#x27; + this.options.instanceName,
                             skin: &#x27;dropzone&#x27;,
                             smallHeader: true,
+                            top: coordinates.top,
+                            left: coordinates.left,
                             closeCallback: function () {
                                 this.sandbox.dom.append(this.$el, this.$dropzone);
                                 this.sandbox.dom.height(this.$el, &#x27;&#x27;);
@@ -435,6 +444,18 @@ define([], function () {
                 ]);
                 this.overlayOpened = true;
             }
+        },
+
+        /**
+         * Returns the positon of the element relative to the browser window
+         * @returns {{top: Number|Null, left: Number|Null}}
+         */
+        getOverlayCoordinates: function() {
+            var orientation = this.sandbox.dom.get(this.$el, 0).getBoundingClientRect();
+            return {
+                top: (orientation.top &gt; 0) ? orientation.top : null,
+                left: (orientation.left &gt; 0) ? orientation.left : null
+            };
         },
 
         /**
@@ -475,8 +496,15 @@ define([], function () {
                         that.dropzone = this;
 
                         this.on(&#x27;drop&#x27;, function(event) {
+                            this.sandbox.dom.stopPropagation(event);
                             this.filesDropped = event.dataTransfer.files.length;
                         }.bind(that));
+
+                        if (that.options.showOverlay === true) {
+                            this.on(&#x27;dragenter&#x27;, function() {
+                                this.openOverlay();
+                            }.bind(that));
+                        }
 
                         // gets called if file gets added (drop or via the upload window)
                         this.on(&#x27;addedfile&#x27;, function (file) {
@@ -546,6 +574,16 @@ define([], function () {
             // merge the default plugin options with with passed ones
             options = this.sandbox.util.extend(true, {}, options, this.options.pluginOptions);
             this.sandbox.dropzone.initialize(this.$dropzone, options);
+        },
+
+        /**
+         * Adds an array of files to the dropzone to upload them
+         * @param files {array} an array of files
+         */
+        addFiles: function(files) {
+            this.sandbox.util.each(files, function(index, file) {
+                this.dropzone.addFile(file);
+            }.bind(this));
         },
 
         /**
