@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -36230,7 +36229,7 @@ define('__component__$select@husky',[], function() {
         addDropdownElement: function(id, value, disabled, callback, updateLabel, checkboxVisible) {
             checkboxVisible = checkboxVisible !== false;
             var $item,
-                idString = (id !== null) ? id.toString() : this.sandbox.util.uniqueId();
+                idString = (id !== null && typeof id !== 'undefined') ? id.toString() : this.sandbox.util.uniqueId();
 
             if (this.options.preSelectedElements.indexOf(idString) >= 0 ||
                 this.options.preSelectedElements.indexOf(value) >= 0) {
@@ -36819,7 +36818,7 @@ define('__component__$select@husky',[], function() {
             } else {
                 this.triggerSelect(key);
             }
-            this.sandbox.dom.trigger('change');
+            this.sandbox.dom.trigger(this.$el, 'change');
         },
 
         // triggers select callback or emits event
@@ -38211,13 +38210,13 @@ define('__component__$ckeditor@husky',[], function() {
          * namespace for events
          * @type {string}
          */
-            eventNamespace = 'husky.ckeditor.',
+        eventNamespace = 'husky.ckeditor.',
 
         /**
          * @event husky.ckeditor.changed
          * @description the component has loaded everything successfully and will be rendered
          */
-            CHANGED = function() {
+        CHANGED = function() {
             return eventNamespace + (this.options.instanceName !== null ? this.options.instanceName + '.' : '') + 'changed';
         },
 
@@ -38225,7 +38224,7 @@ define('__component__$ckeditor@husky',[], function() {
          * @event husky.ckeditor.focusout
          * @description triggered when focus of editor is lost
          */
-            FOCUSOUT = function() {
+        FOCUSOUT = function() {
             return eventNamespace + (this.options.instanceName !== null ? this.options.instanceName + '.' : '') + 'focusout';
         },
 
@@ -38233,7 +38232,7 @@ define('__component__$ckeditor@husky',[], function() {
          * Removes the not needed elements from the config object for the ckeditor
          * @returns {Object} configuration object for ckeditor
          */
-            getConfig = function() {
+        getConfig = function() {
             var config = this.sandbox.util.extend(false, {}, this.options);
 
             config.toolbar = [
@@ -38280,55 +38279,53 @@ define('__component__$ckeditor@husky',[], function() {
             return config;
         };
 
-return {
+    return {
 
-    initialize: function() {
-        this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+        initialize: function() {
+            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
-        var config = getConfig.call(this);
-        this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
-        this.data = this.editor.getData();
-        this.$overlay = null;
+            var config = getConfig.call(this);
+            this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
+            this.data = this.editor.getData();
 
-        this.bindChangeEvents();
+            this.bindChangeEvents();
 
-        this.editor.on('instanceReady', function() {
-            // bind class to editor
-            this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
-        }.bind(this));
+            this.editor.on('instanceReady', function() {
+                // bind class to editor
+                this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
+            }.bind(this));
 
-        this.editor.on('blur', function() {
-            this.sandbox.emit(FOCUSOUT.call(this), this.editor.getData(), this.$el);
-        }.bind(this));
-    },
+            this.editor.on('blur', function() {
+                this.sandbox.emit(FOCUSOUT.call(this), this.editor.getData(), this.$el);
+            }.bind(this));
+        },
 
-    /**
-     * Binds Events to emit a custom changed event
-     */
-    bindChangeEvents: function() {
-        this.editor.on('change', function() {
-            this.emitChangedEvent();
-        }.bind(this));
-
-        // check if the content of the editor has changed if the mode is switched (html/wisiwig)
-        this.editor.on('mode', function() {
-            if (this.data !== this.editor.getData()) {
+        /**
+         * Binds Events to emit a custom changed event
+         */
+        bindChangeEvents: function() {
+            this.editor.on('change', function() {
                 this.emitChangedEvent();
-            }
-        }.bind(this));
-    },
+            }.bind(this));
 
-    /**
-     * Emits the custom changed event
-     */
-    emitChangedEvent: function() {
-        this.data = this.editor.getData();
-        this.sandbox.emit(CHANGED.call(this), this.data, this.$el);
-    }
-};
+            // check if the content of the editor has changed if the mode is switched (html/wisiwig)
+            this.editor.on('mode', function() {
+                if (this.data !== this.editor.getData()) {
+                    this.emitChangedEvent();
+                }
+            }.bind(this));
+        },
 
-})
-;
+        /**
+         * Emits the custom changed event
+         */
+        emitChangedEvent: function() {
+            this.data = this.editor.getData();
+            this.sandbox.emit(CHANGED.call(this), this.data, this.$el);
+        }
+    };
+
+});
 
 /**
  * This file is part of Husky frontend development framework.
@@ -46738,3 +46735,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+
