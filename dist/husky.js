@@ -1,4 +1,3 @@
-
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.9 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -30961,7 +30960,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
 
                 this.matchings = [];
                 this.requestFields = [];
-                this.filterMatchings(this.options.matchings);
 
                 // make a copy of the decorators for each datagrid instance
                 // if you directly access the decorators variable the datagrid-context in the decorators will be overwritten
@@ -31001,7 +30999,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
              */
             getData: function() {
                 var url;
-
                 if (!!this.options.url) {
                     url = this.options.url;
 
@@ -31026,6 +31023,50 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                         this.paginations[this.paginationId].render(this.data, this.$element);
                     }
                 }
+            },
+
+            /**
+             * Checks if matchings/fields are given as url or array.
+             * If a url is given the appropriate fields are fetched.
+             *
+             * @param {Array} matchings array with matchings
+             */
+            evaluateMatchings: function() {
+                var matchings = this.options.matchings;
+                if (typeof(matchings) == 'string') {
+                    // Load matchings/fields from url
+                    this.loading();
+                    this.loadMatchings({
+                        url: matchings,
+                        success: function(response) {
+                            this.filterMatchings(response);
+                            this.getData();
+                        }.bind(this)
+                    });
+                } else {
+                    this.filterMatchings(matchings);
+                    this.getData();
+                }
+            },
+
+            /**
+             * Loads matchings via ajax
+             * @param params url
+             */
+            loadMatchings: function(params) {
+                this.sandbox.util.load(params.url)
+                    .then(function(response) {
+                        if (this.isLoading === true) {
+                            this.stopLoading();
+                        }
+                        this.destroy();
+                        if (!!params.success && typeof params.success === 'function') {
+                            params.success(response);
+                        }
+                    }.bind(this))
+                    .fail(function(status, error) {
+                        this.sandbox.logger.error(status, error);
+                    }.bind(this));
             },
 
             /**
@@ -31231,7 +31272,7 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 this.bindDOMEvents();
                 this.getPaginationDecorator(this.paginationId);
                 this.getViewDecorator(this.viewId);
-                this.getData();
+                this.evaluateMatchings();
             },
 
             /**
@@ -36224,7 +36265,7 @@ define('__component__$select@husky',[], function() {
         addDropdownElement: function(id, value, disabled, callback, updateLabel, checkboxVisible) {
             checkboxVisible = checkboxVisible !== false;
             var $item,
-                idString = (id !== null) ? id.toString() : this.sandbox.util.uniqueId();
+                idString = (id !== null && typeof id !== 'undefined') ? id.toString() : this.sandbox.util.uniqueId();
 
             if (this.options.preSelectedElements.indexOf(idString) >= 0 ||
                 this.options.preSelectedElements.indexOf(value) >= 0) {
@@ -36813,7 +36854,7 @@ define('__component__$select@husky',[], function() {
             } else {
                 this.triggerSelect(key);
             }
-            this.sandbox.dom.trigger('change');
+            this.sandbox.dom.trigger(this.$el, 'change');
         },
 
         // triggers select callback or emits event
@@ -38195,20 +38236,23 @@ define('__component__$ckeditor@husky',[], function() {
     var defaults = {
             initializedCallback: null,
             instanceName: null,
-            godMode: false
+            godMode: false,
+            tableEnabled: true,
+            linksEnabled: true,
+            pasteFromWord: true
         },
 
         /**
          * namespace for events
          * @type {string}
          */
-            eventNamespace = 'husky.ckeditor.',
+        eventNamespace = 'husky.ckeditor.',
 
         /**
          * @event husky.ckeditor.changed
          * @description the component has loaded everything successfully and will be rendered
          */
-            CHANGED = function() {
+        CHANGED = function() {
             return eventNamespace + (this.options.instanceName !== null ? this.options.instanceName + '.' : '') + 'changed';
         },
 
@@ -38216,7 +38260,7 @@ define('__component__$ckeditor@husky',[], function() {
          * @event husky.ckeditor.focusout
          * @description triggered when focus of editor is lost
          */
-            FOCUSOUT = function() {
+        FOCUSOUT = function() {
             return eventNamespace + (this.options.instanceName !== null ? this.options.instanceName + '.' : '') + 'focusout';
         },
 
@@ -38224,8 +38268,29 @@ define('__component__$ckeditor@husky',[], function() {
          * Removes the not needed elements from the config object for the ckeditor
          * @returns {Object} configuration object for ckeditor
          */
-            getConfig = function() {
+        getConfig = function() {
             var config = this.sandbox.util.extend(false, {}, this.options);
+
+            config.toolbar = [
+                { name: 'semantics', items: ['Format']},
+                { name: 'basicstyles', items: [ 'Superscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
+                { name: 'blockstyles', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                { name: 'list', items: [ 'BulletedList'] }
+            ];
+
+            if (this.options.pasteFromWord === true) {
+                config.toolbar.push({ name: 'paste', items: [ 'PasteFromWord' ] });
+            }
+
+            if (this.options.linksEnabled === true) {
+                config.toolbar.push({ name: 'links', items: [ 'Link', 'Unlink' ] });
+                config.linkShowTargetTab = false;
+            }
+            if (this.options.tableEnabled === true) {
+                config.toolbar.push({ name: 'insert', items: [ 'Table' ] });
+            }
+
+            config.toolbar.push({ name: 'code', items: [ 'Source'] });
 
             delete config.initializedCallback;
             delete config.baseUrl;
@@ -38237,6 +38302,8 @@ define('__component__$ckeditor@husky',[], function() {
             delete config.require;
             delete config.element;
             delete config.godMode;
+            delete config.linksEnabled;
+            delete config.tableEnabled;
 
             // allow img tags to have any class (*) and any attribute [*]
             config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title]';
@@ -38248,54 +38315,53 @@ define('__component__$ckeditor@husky',[], function() {
             return config;
         };
 
-return {
+    return {
 
-    initialize: function() {
-        this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+        initialize: function() {
+            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
 
-        var config = getConfig.call(this);
-        this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
-        this.data = this.editor.getData();
+            var config = getConfig.call(this);
+            this.editor = this.sandbox.ckeditor.init(this.$el, this.options.initializedCallback, config);
+            this.data = this.editor.getData();
 
-        this.bindChangeEvents();
+            this.bindChangeEvents();
 
-        this.editor.on('instanceReady', function() {
-            // bind class to editor
-            this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
-        }.bind(this));
+            this.editor.on('instanceReady', function() {
+                // bind class to editor
+                this.sandbox.dom.addClass(this.sandbox.dom.find('.cke', this.sandbox.dom.parent(this.$el)), 'form-element');
+            }.bind(this));
 
-        this.editor.on('blur', function() {
-            this.sandbox.emit(FOCUSOUT.call(this), this.editor.getData(), this.$el);
-        }.bind(this));
-    },
+            this.editor.on('blur', function() {
+                this.sandbox.emit(FOCUSOUT.call(this), this.editor.getData(), this.$el);
+            }.bind(this));
+        },
 
-    /**
-     * Binds Events to emit a custom changed event
-     */
-    bindChangeEvents: function() {
-        this.editor.on('change', function() {
-            this.emitChangedEvent();
-        }.bind(this));
-
-        // check if the content of the editor has changed if the mode is switched (html/wisiwig)
-        this.editor.on('mode', function() {
-            if (this.data !== this.editor.getData()) {
+        /**
+         * Binds Events to emit a custom changed event
+         */
+        bindChangeEvents: function() {
+            this.editor.on('change', function() {
                 this.emitChangedEvent();
-            }
-        }.bind(this));
-    },
+            }.bind(this));
 
-    /**
-     * Emits the custom changed event
-     */
-    emitChangedEvent: function() {
-        this.data = this.editor.getData();
-        this.sandbox.emit(CHANGED.call(this), this.data, this.$el);
-    }
-};
+            // check if the content of the editor has changed if the mode is switched (html/wisiwig)
+            this.editor.on('mode', function() {
+                if (this.data !== this.editor.getData()) {
+                    this.emitChangedEvent();
+                }
+            }.bind(this));
+        },
 
-})
-;
+        /**
+         * Emits the custom changed event
+         */
+        emitChangedEvent: function() {
+            this.data = this.editor.getData();
+            this.sandbox.emit(CHANGED.call(this), this.data, this.$el);
+        }
+    };
+
+});
 
 /**
  * This file is part of Husky frontend development framework.
@@ -41174,8 +41240,9 @@ define('__component__$dropzone@husky',[], function () {
  * @params {String} [options.inputName] DOM-name to give the actual input-tag. Can be usefull in forms
  * @params {String} [options.value] value to set at the beginning
  * @params {String} [options.placeholder] html5-placholder to use
+ * @params {Boolean} [options.disabled] defines if input can be edited
  * @params {String} [options.skin] name of the skin to use. Currently 'phone', 'password', 'url', 'email', 'date', 'time', 'color'. Each skin brings it's own default values. For example the password skin has automatically inputType: 'password'
- * @params {Object} [options.datepickerOptions] config-object to pass to the datepicker component
+ * @params {Object} [options.datepickerOptions] config-object to pass to the datepicker component - you can find possible values here http://bootstrap-datepicker.readthedocs.org/en/release/options.html
  * @params {Object} [options.colorPickerOptions] config-object to pass to the colorpicker component
  * @params {String} [options.frontIcon] name of icon to display in front
  * @params {String} [options.frontText] text to display in front
@@ -41186,7 +41253,7 @@ define('__component__$dropzone@husky',[], function () {
  * @params {String} [options.renderMethod] name of a special render method to execute. Currently 'colorpicker', 'datepicker', 'time'. For example 'colorpicker' initializes a colorpicker and sets a css-class
  * @params {String} [options.inputType] the actual type of the input. e.g. 'text' or 'password'
  */
-define('__component__$input@husky',[], function () {
+define('__component__$input@husky',[], function() {
 
     
 
@@ -41196,8 +41263,13 @@ define('__component__$input@husky',[], function () {
             inputName: '',
             value: '',
             placeholder: '',
+            disabled: false,
             skin: null,
-            datepickerOptions: {},
+            datepickerOptions: {
+                orientation: 'auto',
+                startDate: -Infinity,
+                endDate: Infinity
+            },
             colorPickerOptions: {},
             frontIcon: null,
             frontText: null,
@@ -41223,8 +41295,8 @@ define('__component__$input@husky',[], function () {
         },
 
         templates = {
-            input: '<input type="<%= type %>" value="<%= value %>" placeholder="<%= placeholder %>" id="<%= id %>" name="<%= name %>" data-from="false"/>',
-            colorPickerFront: '<div class="'+ constants.colorFieldClass +'"/>'
+            input: '<input type="<%= type %>" value="<%= value %>" placeholder="<%= placeholder %>" id="<%= id %>" name="<%= name %>" data-from="false" <%= disabled %>/>',
+            colorPickerFront: '<div class="' + constants.colorFieldClass + '"/>'
         },
 
         renderMethods = {
@@ -41237,10 +41309,10 @@ define('__component__$input@husky',[], function () {
             time: function() {
                 this.renderTime();
             },
-            url: function () {
+            url: function() {
                 this.renderLink('http://');
             },
-            email: function () {
+            email: function() {
                 this.renderLink('mailto:');
             }
         },
@@ -41281,18 +41353,18 @@ define('__component__$input@husky',[], function () {
          * namespace for events
          * @type {string}
          */
-            eventNamespace = 'husky.input.',
+        eventNamespace = 'husky.input.',
 
         /**
          * raised after initialization process
          * @event husky.input.<instance-name>.initialize
          */
-            INITIALIZED = function () {
+        INITIALIZED = function() {
             return createEventName.call(this, 'initialized');
         },
 
         /** returns normalized event names */
-            createEventName = function (postFix) {
+        createEventName = function(postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         };
 
@@ -41301,16 +41373,16 @@ define('__component__$input@husky',[], function () {
         /**
          * Initialize component
          */
-        initialize: function () {
+        initialize: function() {
             this.sandbox.logger.log('initialize', this);
-            var defaults = defaults;
+            var instanceDefaults = this.sandbox.util.extend(true, {}, defaults);
 
             // merge skin defaults with defaults
             if (!!this.options.skin && !!skins[this.options.skin]) {
-                defaults = this.sandbox.util.extend(true, {}, defaults, skins[this.options.skin]);
+                instanceDefaults = this.sandbox.util.extend(true, {}, defaults, skins[this.options.skin]);
             }
             // merge defaults, skin defaults and options
-            this.options = this.sandbox.util.extend(true, {}, defaults, this.options);
+            this.options = this.sandbox.util.extend(true, {}, instanceDefaults, this.options);
 
             this.input = {
                 $front: null,
@@ -41353,8 +41425,8 @@ define('__component__$input@husky',[], function () {
             }.bind(this));
 
             // delegate labels on input
-            if(!!this.sandbox.dom.attr(this.$el, 'id')) {
-                this.sandbox.dom.on('label[for="'+ this.sandbox.dom.attr(this.$el, 'id') +'"]', 'click', function() {
+            if (!!this.sandbox.dom.attr(this.$el, 'id')) {
+                this.sandbox.dom.on('label[for="' + this.sandbox.dom.attr(this.$el, 'id') + '"]', 'click', function() {
                     this.sandbox.dom.focus(this.input.$input);
                 }.bind(this));
             }
@@ -41370,7 +41442,7 @@ define('__component__$input@husky',[], function () {
          */
         renderFront: function() {
             if (!!this.options.frontIcon || !!this.options.frontText || !!this.options.frontHtml) {
-                this.input.$front = this.sandbox.dom.createElement('<div class="'+ constants.frontClass +'"/>');
+                this.input.$front = this.sandbox.dom.createElement('<div class="' + constants.frontClass + '"/>');
                 if (!!this.options.frontIcon) {
                     this.sandbox.dom.html(this.input.$front, '<a class="fa-' + this.options.frontIcon + '"></a>');
                 } else if (!!this.options.frontText) {
@@ -41387,13 +41459,14 @@ define('__component__$input@husky',[], function () {
          * with validation constraints and so on
          */
         renderInput: function() {
-            var $container = this.sandbox.dom.createElement('<div class="'+ constants.inputClass +'"/>');
+            var $container = this.sandbox.dom.createElement('<div class="' + constants.inputClass + '"/>');
             this.input.$input = this.sandbox.dom.createElement(this.sandbox.util.template(templates.input)({
                 type: this.options.inputType,
                 name: (!!this.options.inputName) ? this.options.inputName : 'husky-input-' + this.options.instanceName,
                 id: (!!this.options.inputId) ? this.options.inputId : 'husky-input-' + this.options.instanceName,
                 value: this.options.value,
-                placeholder: this.options.placeholder
+                placeholder: this.options.placeholder,
+                disabled: (this.options.disabled === true) ? 'disabled' : ''
             }));
             this.sandbox.dom.append($container, this.input.$input);
             this.sandbox.dom.append(this.$el, $container);
@@ -41404,11 +41477,11 @@ define('__component__$input@husky',[], function () {
          */
         renderBack: function() {
             if (!!this.options.backIcon || !!this.options.backText || !!this.options.backHtml) {
-                this.input.$back = this.sandbox.dom.createElement('<div class="'+ constants.backClass +'"/>');
+                this.input.$back = this.sandbox.dom.createElement('<div class="' + constants.backClass + '"/>');
                 if (!!this.options.backIcon) {
-                    this.sandbox.dom.html(this.input.$back, '<span class="fa-'+ this.options.backIcon +'"></span>');
+                    this.sandbox.dom.html(this.input.$back, '<span class="fa-' + this.options.backIcon + '"></span>');
                 } else if (!!this.options.backText) {
-                    this.sandbox.dom.html(this.input.$back, '<span class="'+ constants.textClass +'">'+ this.options.backText +'</span>');
+                    this.sandbox.dom.html(this.input.$back, '<span class="' + constants.textClass + '">' + this.options.backText + '</span>');
                 } else {
                     this.sandbox.dom.html(this.input.$back, this.options.backHtml);
                 }
@@ -41434,6 +41507,15 @@ define('__component__$input@husky',[], function () {
         renderDatePicker: function() {
             this.sandbox.dom.addClass(this.$el, constants.datepickerClass);
             this.sandbox.dom.attr(this.input.$input, 'placeholder', this.sandbox.globalize.getDatePattern());
+
+            // parse stard and end date
+            if (!!this.options.datepickerOptions.startDate && typeof(this.options.datepickerOptions.startDate) === 'string') {
+                this.options.datepickerOptions.startDate = new Date(this.options.datepickerOptions.startDate);
+            }
+            if (!!this.options.datepickerOptions.endDate && typeof(this.options.datepickerOptions.endDate) === 'string') {
+                this.options.datepickerOptions.endDate = new Date(this.options.datepickerOptions.endDate);
+            }
+
             this.sandbox.datepicker.init(this.input.$input, this.options.datepickerOptions).on('changeDate', function(event) {
                 this.setDatepickerValueAttr(event.date);
             }.bind(this));
@@ -41446,7 +41528,7 @@ define('__component__$input@husky',[], function () {
          * Attaches an event-listner to the input which makes an a-tag with clickable
          * @param protocol {String} a protocol to prepend to the input-value (e.g. 'http://' or 'mailto:')
          */
-        renderLink: function (protocol) {
+        renderLink: function(protocol) {
             this.linkProtocol = protocol;
             this.sandbox.dom.on(this.input.$input, 'keyup', this.changeFrontLink.bind(this));
             this.changeFrontLink();
@@ -41541,7 +41623,7 @@ define('__component__$input@husky',[], function () {
             if (!!date) {
                 if (this.sandbox.dom.isNumeric(date.valueOf())) {
                     date = date.getFullYear() + '-' +
-                        ('0' + (date.getMonth()+1)).slice(-2) + '-' +
+                        ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
                         ('0' + date.getDate()).slice(-2);
                 } else {
                     date = '';
@@ -41686,22 +41768,14 @@ define('__component__$input@husky',[], function () {
 
         var getConfig = function() {
             return {
-                toolbar: [
-                    { name: 'semantics', items: ['Format']},
-                    { name: 'basicstyles', items: [ 'Superscript', 'Italic', 'Bold', 'Underline', 'Strike'] },
-                    { name: 'blockstyles', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-                    { name: 'list', items: [ 'BulletedList'] },
-                    { name: 'code', items: [ 'Source'] }
-                ],
-
                 format_tags: 'p;h1;h2;h3;h4;h5;h6',
                 height: '300px',
                 width: '100%',
                 defaultLanguage: 'en',
                 removeButtons: '',
-                removePlugins: 'elementspath,link,magicline',
+                removePlugins: 'elementspath,magicline',
                 removeDialogTabs: 'image:advanced;link:advanced',
-                extraPlugins: 'justify,format,sourcearea',
+                extraPlugins: 'justify,format,sourcearea,link,table,pastefromword',
                 resize_enabled: false,
                 uiColor: '#ffffff',
                 skin: 'husky'
@@ -45373,7 +45447,7 @@ define("datepicker-zh-TW", function(){});
                         language: app.sandbox.globalize.getLocale(),
                         autoclose: true
                     };
-                    settings = app.sandbox.util.extend(true, {}, settings, configs)
+                    settings = app.sandbox.util.extend(true, {}, settings, configs);
                     return app.core.dom.$(selector).datepicker(settings);
                 },
 
@@ -46697,3 +46771,4 @@ define('husky_extensions/util',[],function() {
         }
     };
 });
+

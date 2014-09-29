@@ -51,43 +51,7 @@ require(['lib/husky'], function(Husky) {
                     searchFields: ['fullName'],
                     columnOptionsInstanceName: '',
                     el: '#datagrid',
-                    matchings: [
-                        {
-                            content: 'Content 1',
-                            width: "25%",
-                            name: "content1",
-                            editable: true,
-                            sortable: true,
-                            type: 'title',
-                            validation: {
-                                required: true
-                            }
-                        },
-                        {
-                            content: 'Content 2',
-                            width: "25%",
-                            name: "content2",
-                            editable: false,
-                            sortable: true,
-                            type: 'bytes',
-                            validation: {
-                                required: true
-                            }
-                        },
-                        {
-                            content: 'Content 3',
-                            width: "25%",
-                            name: "content3",
-                            type: 'thumbnails'
-                        },
-                        {
-                            content: 'Date',
-                            width: "25%",
-                            sortable: true,
-                            name: 'date',
-                            type: 'date'
-                        }
-                    ]
+                    matchings: 'http://husky.lo:7878/admin/api/datagrid/fields'
                 }
             },
             {

@@ -1,0 +1,55 @@
+[{
+    "name":"id",
+    "translation":"public.id",
+    "disabled":true,
+    "default":false,
+    "sortable":true,
+    "type":"",
+    "width":"",
+    "minWidth":"",
+    "editable":false
+},
+{
+    "name":"content1",
+    "translation":"Content 1",
+    "disabled":false,
+    "default":false,
+    "sortable":true,
+    "type":"title",
+    "width":"25%",
+    "minWidth":"",
+    "editable":false
+},
+{
+    "name":"content2",
+    "translation":"Content 2",
+    "disabled":false,
+    "default":false,
+    "sortable":true,
+    "type":"title",
+    "width":"25%",
+    "minWidth":"",
+    "editable":false
+},
+{
+    "name":"content3",
+    "translation":"Content 3",
+    "disabled":false,
+    "default":false,
+    "sortable":true,
+    "type":"bytes",
+    "width":"25%",
+    "minWidth":"",
+    "editable":false
+},
+{
+    "name":"date",
+    "translation":"Date",
+    "disabled":false,
+    "default":false,
+    "sortable":true,
+    "type":"",
+    "width":"25%",
+    "minWidth":"",
+    "editable":false
+}]
