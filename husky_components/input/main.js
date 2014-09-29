@@ -19,6 +19,7 @@
  * @params {String} [options.inputName] DOM-name to give the actual input-tag. Can be usefull in forms
  * @params {String} [options.value] value to set at the beginning
  * @params {String} [options.placeholder] html5-placholder to use
+ * @params {Boolean} [options.disabled] defines if input can be edited
  * @params {String} [options.skin] name of the skin to use. Currently 'phone', 'password', 'url', 'email', 'date', 'time', 'color'. Each skin brings it's own default values. For example the password skin has automatically inputType: 'password'
  * @params {Object} [options.datepickerOptions] config-object to pass to the datepicker component - you can find possible values here http://bootstrap-datepicker.readthedocs.org/en/release/options.html
  * @params {Object} [options.colorPickerOptions] config-object to pass to the colorpicker component
@@ -31,7 +32,7 @@
  * @params {String} [options.renderMethod] name of a special render method to execute. Currently 'colorpicker', 'datepicker', 'time'. For example 'colorpicker' initializes a colorpicker and sets a css-class
  * @params {String} [options.inputType] the actual type of the input. e.g. 'text' or 'password'
  */
-define([], function () {
+define([], function() {
 
     'use strict';
 
@@ -41,6 +42,7 @@ define([], function () {
             inputName: '',
             value: '',
             placeholder: '',
+            disabled: false,
             skin: null,
             datepickerOptions: {
                 orientation: 'auto',
@@ -72,8 +74,8 @@ define([], function () {
         },
 
         templates = {
-            input: '<input type="<%= type %>" value="<%= value %>" placeholder="<%= placeholder %>" id="<%= id %>" name="<%= name %>" data-from="false"/>',
-            colorPickerFront: '<div class="'+ constants.colorFieldClass +'"/>'
+            input: '<input type="<%= type %>" value="<%= value %>" placeholder="<%= placeholder %>" id="<%= id %>" name="<%= name %>" data-from="false" <%= disabled %>/>',
+            colorPickerFront: '<div class="' + constants.colorFieldClass + '"/>'
         },
 
         renderMethods = {
@@ -86,10 +88,10 @@ define([], function () {
             time: function() {
                 this.renderTime();
             },
-            url: function () {
+            url: function() {
                 this.renderLink('http://');
             },
-            email: function () {
+            email: function() {
                 this.renderLink('mailto:');
             }
         },
@@ -130,18 +132,18 @@ define([], function () {
          * namespace for events
          * @type {string}
          */
-            eventNamespace = 'husky.input.',
+        eventNamespace = 'husky.input.',
 
         /**
          * raised after initialization process
          * @event husky.input.<instance-name>.initialize
          */
-            INITIALIZED = function () {
+        INITIALIZED = function() {
             return createEventName.call(this, 'initialized');
         },
 
         /** returns normalized event names */
-            createEventName = function (postFix) {
+        createEventName = function(postFix) {
             return eventNamespace + (this.options.instanceName ? this.options.instanceName + '.' : '') + postFix;
         };
 
@@ -150,7 +152,7 @@ define([], function () {
         /**
          * Initialize component
          */
-        initialize: function () {
+        initialize: function() {
             this.sandbox.logger.log('initialize', this);
             var instanceDefaults = this.sandbox.util.extend(true, {}, defaults);
 
@@ -202,8 +204,8 @@ define([], function () {
             }.bind(this));
 
             // delegate labels on input
-            if(!!this.sandbox.dom.attr(this.$el, 'id')) {
-                this.sandbox.dom.on('label[for="'+ this.sandbox.dom.attr(this.$el, 'id') +'"]', 'click', function() {
+            if (!!this.sandbox.dom.attr(this.$el, 'id')) {
+                this.sandbox.dom.on('label[for="' + this.sandbox.dom.attr(this.$el, 'id') + '"]', 'click', function() {
                     this.sandbox.dom.focus(this.input.$input);
                 }.bind(this));
             }
@@ -219,7 +221,7 @@ define([], function () {
          */
         renderFront: function() {
             if (!!this.options.frontIcon || !!this.options.frontText || !!this.options.frontHtml) {
-                this.input.$front = this.sandbox.dom.createElement('<div class="'+ constants.frontClass +'"/>');
+                this.input.$front = this.sandbox.dom.createElement('<div class="' + constants.frontClass + '"/>');
                 if (!!this.options.frontIcon) {
                     this.sandbox.dom.html(this.input.$front, '<a class="fa-' + this.options.frontIcon + '"></a>');
                 } else if (!!this.options.frontText) {
@@ -236,13 +238,14 @@ define([], function () {
          * with validation constraints and so on
          */
         renderInput: function() {
-            var $container = this.sandbox.dom.createElement('<div class="'+ constants.inputClass +'"/>');
+            var $container = this.sandbox.dom.createElement('<div class="' + constants.inputClass + '"/>');
             this.input.$input = this.sandbox.dom.createElement(this.sandbox.util.template(templates.input)({
                 type: this.options.inputType,
                 name: (!!this.options.inputName) ? this.options.inputName : 'husky-input-' + this.options.instanceName,
                 id: (!!this.options.inputId) ? this.options.inputId : 'husky-input-' + this.options.instanceName,
                 value: this.options.value,
-                placeholder: this.options.placeholder
+                placeholder: this.options.placeholder,
+                disabled: (this.options.disabled === true) ? 'disabled' : ''
             }));
             this.sandbox.dom.append($container, this.input.$input);
             this.sandbox.dom.append(this.$el, $container);
@@ -253,11 +256,11 @@ define([], function () {
          */
         renderBack: function() {
             if (!!this.options.backIcon || !!this.options.backText || !!this.options.backHtml) {
-                this.input.$back = this.sandbox.dom.createElement('<div class="'+ constants.backClass +'"/>');
+                this.input.$back = this.sandbox.dom.createElement('<div class="' + constants.backClass + '"/>');
                 if (!!this.options.backIcon) {
-                    this.sandbox.dom.html(this.input.$back, '<span class="fa-'+ this.options.backIcon +'"></span>');
+                    this.sandbox.dom.html(this.input.$back, '<span class="fa-' + this.options.backIcon + '"></span>');
                 } else if (!!this.options.backText) {
-                    this.sandbox.dom.html(this.input.$back, '<span class="'+ constants.textClass +'">'+ this.options.backText +'</span>');
+                    this.sandbox.dom.html(this.input.$back, '<span class="' + constants.textClass + '">' + this.options.backText + '</span>');
                 } else {
                     this.sandbox.dom.html(this.input.$back, this.options.backHtml);
                 }
@@ -285,10 +288,10 @@ define([], function () {
             this.sandbox.dom.attr(this.input.$input, 'placeholder', this.sandbox.globalize.getDatePattern());
 
             // parse stard and end date
-            if(!!this.options.datepickerOptions.startDate && typeof(this.options.datepickerOptions.startDate) === 'string') {
+            if (!!this.options.datepickerOptions.startDate && typeof(this.options.datepickerOptions.startDate) === 'string') {
                 this.options.datepickerOptions.startDate = new Date(this.options.datepickerOptions.startDate);
             }
-            if(!!this.options.datepickerOptions.endDate && typeof(this.options.datepickerOptions.endDate) === 'string') {
+            if (!!this.options.datepickerOptions.endDate && typeof(this.options.datepickerOptions.endDate) === 'string') {
                 this.options.datepickerOptions.endDate = new Date(this.options.datepickerOptions.endDate);
             }
 
@@ -304,7 +307,7 @@ define([], function () {
          * Attaches an event-listner to the input which makes an a-tag with clickable
          * @param protocol {String} a protocol to prepend to the input-value (e.g. 'http://' or 'mailto:')
          */
-        renderLink: function (protocol) {
+        renderLink: function(protocol) {
             this.linkProtocol = protocol;
             this.sandbox.dom.on(this.input.$input, 'keyup', this.changeFrontLink.bind(this));
             this.changeFrontLink();
@@ -399,7 +402,7 @@ define([], function () {
             if (!!date) {
                 if (this.sandbox.dom.isNumeric(date.valueOf())) {
                     date = date.getFullYear() + '-' +
-                        ('0' + (date.getMonth()+1)).slice(-2) + '-' +
+                        ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
                         ('0' + date.getDate()).slice(-2);
                 } else {
                     date = '';
