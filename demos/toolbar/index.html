@@ -77,7 +77,7 @@
     require.config({
         baseUrl: '../../'
     });
-
+    var App;
     require(['lib/husky'], function(Husky) {
         'use strict';
 
@@ -183,6 +183,37 @@
                         id: 'search',
                         hasSearch: true,
                         'group': 3
+                    },
+                    {
+                        id: 'marked',
+                        icon: 'th-large',
+                        itemsOption: {
+                            markable: true
+                        },
+                        items: [
+                            {
+                                id: 'small-thumbnails',
+                                title: 'small thumbnails',
+                                callback: function () {
+                                    console.log('You clicked small thumbnails');
+                                }.bind(this)
+                            },
+                            {
+                                id: 'big-thumbnails',
+                                title: 'big thumbnails',
+                                callback: function () {
+                                    console.log('big thumbnails');
+                                }.bind(this)
+                            },
+                            {
+                                id: 'table',
+                                title: 'table',
+                                marked: true,
+                                callback: function () {
+                                    console.log('table');
+                                }.bind(this)
+                            }
+                        ]
                     }
                 ],
 
@@ -214,8 +245,7 @@
             ],
 
         collapsed = false;
-
-
+        App = app;
         app.start().then(function() {
             app.logger.log('Aura started...');
 
