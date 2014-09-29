@@ -253,11 +253,13 @@ $toolbarSmallHeight: 20px;
   li {
     display: list-item;
     float: none;
-    line-height: 1;
     height: 30px;
     line-height: 30px;
     white-space: nowrap;
     cursor: pointer;
+    position: relative;
+    top: 0;
+    left: 0;
 
     padding: 0 20px;
 
@@ -270,8 +272,21 @@ $toolbarSmallHeight: 20px;
     &.is-selected,
     &:hover {
       background-color: $highlightColor;
+      color: $white;
       a {
-        color: white;
+        color: $white;
+      }
+    }
+
+    &.marked {
+      &::before {
+        @extend .fa;
+        content: $fa-var-caret-right;
+        display: block;
+        position: absolute;
+        top: 9px;
+        left: 7px;
+        font-size: 12px;
       }
     }
 

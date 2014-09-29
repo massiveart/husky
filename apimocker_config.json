@@ -61,6 +61,10 @@
             "verbs": ["GET"],
             "mockFile": "datagrid/children/sorted.json"
         },
+        "admin/api/datagrid/fields": {
+            "verbs": ["GET"],
+            "mockFile": "datagrid/fields.json"
+        },
 
         "admin/api/autocomplete": {
             "verbs": ["GET"],

@@ -414,7 +414,7 @@ define([], function() {
         addDropdownElement: function(id, value, disabled, callback, updateLabel, checkboxVisible) {
             checkboxVisible = checkboxVisible !== false;
             var $item,
-                idString = (id !== null) ? id.toString() : this.sandbox.util.uniqueId();
+                idString = (id !== null && typeof id !== 'undefined') ? id.toString() : this.sandbox.util.uniqueId();
 
             if (this.options.preSelectedElements.indexOf(idString) >= 0 ||
                 this.options.preSelectedElements.indexOf(value) >= 0) {
@@ -1003,7 +1003,7 @@ define([], function() {
             } else {
                 this.triggerSelect(key);
             }
-            this.sandbox.dom.trigger('change');
+            this.sandbox.dom.trigger(this.$el, 'change');
         },
 
         // triggers select callback or emits event
