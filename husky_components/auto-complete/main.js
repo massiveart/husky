@@ -24,10 +24,12 @@
  * @param {String} [options.instanceName] name of the component instance
  * @param {Boolean} [options.noNewValues] if true input value must have been suggested by auto-complete
  * @param {String} [options.suggestionClass] CSS-class for auto-complete suggestions
- * @param {String} [options.suggestionImg] Icon Class - Image gets rendered before every suggestion
+ * @param {String} [options.suggestionIcon] Icon Class - Image gets rendered before every suggestion
+ * @param {String} [options.autoCompleteIcon] Icon Class - Icon in auto complete input
  * @param {Boolean} [options.stickToInput] If true suggestions are always under the input field
  * @param {Boolean} [options.hint] if false typeahead hint-field will be removed
  * @param {Boolean} [options.emptyOnBlur] If true input field value gets deleted on blur
+ * @param {Boolean} [options.active] If true input field value gets deleted on blur
  * @param {Array} [options.excludes] Array of suggestions to exclude from the suggestion dropdown
  * @param {Function} [options.selectCallback] function which will be called when element is selected
  */
@@ -50,12 +52,26 @@ define([], function() {
             instanceName: 'undefined',
             noNewValues: false,
             suggestionClass: 'suggestion',
-            suggestionImg: '',
+            suggestionIcon: '',
+            autoCompleteIcon: '',
             stickToInput: false,
             hint: false,
             emptyOnBlur: false,
             excludes: [],
             selectCallback: null
+        },
+
+        templates = {
+            main: [
+                '<div class="husky-auto-complete">',
+                    '<% if (!!autoCompleteIcon) { %>',
+                    '<div class="front">',
+                        '<a class="fa-<%= autoCompleteIcon %>"></a>',
+                    '</div>',
+                    '<% } %>',
+                    '<div class="input"></div>',
+                '</div>'
+            ].join('')
         },
 
         eventNamespace = 'husky.auto-complete.',
@@ -197,8 +213,8 @@ define([], function() {
          */
         setTemplate: function() {
             var iconHTML = '';
-            if (this.options.suggestionImg !== '') {
-                iconHTML = '<span class="fa-' + this.options.suggestionImg + ' icon"></span>';
+            if (this.options.suggestionIcon !== '') {
+                iconHTML = '<span class="fa-' + this.options.suggestionIcon + ' icon"></span>';
             }
             this._template = this.sandbox.util.template('' +
                 '<div class="' + this.options.suggestionClass + '" data-id="<%= context[\'id \']%>">' +
@@ -225,10 +241,19 @@ define([], function() {
         },
 
         /**
+         * the main-template gets rendered and displayed
+         */
+        renderMain: function() {
+            this.sandbox.dom.html(this.$el, _.template(templates.main)({
+                autoCompleteIcon: this.options.autoCompleteIcon
+            }));
+        },
+
+        /**
          * Initializes and appends the input, starts the typeahead-auto-complete plugin
          */
         render: function() {
-            this.sandbox.dom.addClass(this.$el, 'husky-auto-complete');
+            this.renderMain();
             this.initValueField();
             this.appendValueField();
 
@@ -253,7 +278,7 @@ define([], function() {
          */
         appendValueField: function() {
             if (!!this.$valueField.length) {
-                this.sandbox.dom.append(this.$el, this.$valueField);
+                this.sandbox.dom.append(this.$el.find('.input'), this.$valueField);
             }
         },
 

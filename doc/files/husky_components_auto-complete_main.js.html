@@ -178,10 +178,12 @@
  * @param {String} [options.instanceName] name of the component instance
  * @param {Boolean} [options.noNewValues] if true input value must have been suggested by auto-complete
  * @param {String} [options.suggestionClass] CSS-class for auto-complete suggestions
- * @param {String} [options.suggestionImg] Icon Class - Image gets rendered before every suggestion
+ * @param {String} [options.suggestionIcon] Icon Class - Image gets rendered before every suggestion
+ * @param {String} [options.autoCompleteIcon] Icon Class - Icon in auto complete input
  * @param {Boolean} [options.stickToInput] If true suggestions are always under the input field
  * @param {Boolean} [options.hint] if false typeahead hint-field will be removed
  * @param {Boolean} [options.emptyOnBlur] If true input field value gets deleted on blur
+ * @param {Boolean} [options.active] If true input field value gets deleted on blur
  * @param {Array} [options.excludes] Array of suggestions to exclude from the suggestion dropdown
  * @param {Function} [options.selectCallback] function which will be called when element is selected
  */
@@ -204,12 +206,26 @@ define([], function() {
             instanceName: &#x27;undefined&#x27;,
             noNewValues: false,
             suggestionClass: &#x27;suggestion&#x27;,
-            suggestionImg: &#x27;&#x27;,
+            suggestionIcon: &#x27;&#x27;,
+            autoCompleteIcon: &#x27;&#x27;,
             stickToInput: false,
             hint: false,
             emptyOnBlur: false,
             excludes: [],
             selectCallback: null
+        },
+
+        templates = {
+            main: [
+                &#x27;&lt;div class=&quot;husky-auto-complete&quot;&gt;&#x27;,
+                    &#x27;&lt;% if (!!autoCompleteIcon) { %&gt;&#x27;,
+                    &#x27;&lt;div class=&quot;front&quot;&gt;&#x27;,
+                        &#x27;&lt;a class=&quot;fa-&lt;%= autoCompleteIcon %&gt;&quot;&gt;&lt;/a&gt;&#x27;,
+                    &#x27;&lt;/div&gt;&#x27;,
+                    &#x27;&lt;% } %&gt;&#x27;,
+                    &#x27;&lt;div class=&quot;input&quot;&gt;&lt;/div&gt;&#x27;,
+                &#x27;&lt;/div&gt;&#x27;
+            ].join(&#x27;&#x27;)
         },
 
         eventNamespace = &#x27;husky.auto-complete.&#x27;,
@@ -351,8 +367,8 @@ define([], function() {
          */
         setTemplate: function() {
             var iconHTML = &#x27;&#x27;;
-            if (this.options.suggestionImg !== &#x27;&#x27;) {
-                iconHTML = &#x27;&lt;span class=&quot;fa-&#x27; + this.options.suggestionImg + &#x27; icon&quot;&gt;&lt;/span&gt;&#x27;;
+            if (this.options.suggestionIcon !== &#x27;&#x27;) {
+                iconHTML = &#x27;&lt;span class=&quot;fa-&#x27; + this.options.suggestionIcon + &#x27; icon&quot;&gt;&lt;/span&gt;&#x27;;
             }
             this._template = this.sandbox.util.template(&#x27;&#x27; +
                 &#x27;&lt;div class=&quot;&#x27; + this.options.suggestionClass + &#x27;&quot; data-id=&quot;&lt;%= context[\&#x27;id \&#x27;]%&gt;&quot;&gt;&#x27; +
@@ -379,10 +395,19 @@ define([], function() {
         },
 
         /**
+         * the main-template gets rendered and displayed
+         */
+        renderMain: function() {
+            this.sandbox.dom.html(this.$el, _.template(templates.main)({
+                autoCompleteIcon: this.options.autoCompleteIcon
+            }));
+        },
+
+        /**
          * Initializes and appends the input, starts the typeahead-auto-complete plugin
          */
         render: function() {
-            this.sandbox.dom.addClass(this.$el, &#x27;husky-auto-complete&#x27;);
+            this.renderMain();
             this.initValueField();
             this.appendValueField();
 
@@ -407,7 +432,7 @@ define([], function() {
          */
         appendValueField: function() {
             if (!!this.$valueField.length) {
-                this.sandbox.dom.append(this.$el, this.$valueField);
+                this.sandbox.dom.append(this.$el.find(&#x27;.input&#x27;), this.$valueField);
             }
         },
 
