@@ -5,6 +5,12 @@ CHANGELOGS:
 Unmerged
 ========
 
+ - removed jekyll files
+
+ - removed compass scss dependency
+
+ - removed old unused images
+
 2014/10/06
 ==========
 
