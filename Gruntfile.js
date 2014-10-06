@@ -100,7 +100,6 @@ module.exports = function(grunt) {
                     sassDir: 'scss/',
                     specify: 'scss/husky.scss',
                     cssDir: '.tmp/',
-                    require: ['animation'],
                     relativeAssets: false
                 }
             }
