@@ -12,7 +12,7 @@ Unmerged
 
  - fixed autocomplete rendering on multiline text (show ellipsis)
 
- - fixed code indentation
+ - fixed autocomplete and autocomplete-list code indentation
 
  - added icon for auto complete input field
 
