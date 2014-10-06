@@ -34607,7 +34607,7 @@ define('__component__$auto-complete@husky',[], function() {
          */
         appendValueField: function() {
             if (!!this.$valueField.length) {
-                this.sandbox.dom.append(this.$el.find('.input'), this.$valueField);
+                this.sandbox.dom.append(this.sandbox.dom.find('.input', this.$el), this.$valueField);
             }
         },
 

@@ -431,7 +431,7 @@ define([], function() {
          */
         appendValueField: function() {
             if (!!this.$valueField.length) {
-                this.sandbox.dom.append(this.$el.find(&#x27;.input&#x27;), this.$valueField);
+                this.sandbox.dom.append(this.sandbox.dom.find(&#x27;.input&#x27;, this.$el), this.$valueField);
             }
         },
 
