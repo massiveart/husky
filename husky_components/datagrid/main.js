@@ -1350,7 +1350,7 @@
              */
             selectingAllowed: function(id) {
                 var itemIndex = this.getRecordIndexById(id);
-                if (this.options.onlySelectLeaves === true && this.data.embedded[itemIndex][this.options.childrenPropertyName] > 0) {
+                if (this.options.onlySelectLeaves === true && this.data.embedded[itemIndex][this.options.childrenPropertyName]) {
                     return false;
                 }
                 return true;

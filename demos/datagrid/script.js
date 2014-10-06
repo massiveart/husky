@@ -146,7 +146,7 @@ require(['lib/husky'], function(Husky) {
                     instanceName: 'children-grid',
                     sortable: true,
                     pagination: false,
-                    childrenPropertyName: 'children',
+                    childrenPropertyName: 'hasChildren',
                     resultKey: 'categories',
                     viewOptions: {
                         table: {
@@ -203,7 +203,7 @@ require(['lib/husky'], function(Husky) {
                     instanceName: 'children-grid-only-leaves',
                     sortable: true,
                     pagination: false,
-                    childrenPropertyName: 'children',
+                    childrenPropertyName: 'hasChildren',
                     onlySelectLeaves: true,
                     resultKey: 'categories',
                     viewOptions: {
@@ -261,7 +261,7 @@ require(['lib/husky'], function(Husky) {
                     instanceName: 'children-grid-beginning',
                     sortable: true,
                     pagination: false,
-                    childrenPropertyName: 'children',
+                    childrenPropertyName: 'hasChildren',
                     resultKey: 'categories',
                     viewOptions: {
                         table: {
@@ -321,7 +321,7 @@ require(['lib/husky'], function(Husky) {
                     pagination: false,
                     childrenPropertyName: 'children',
                     resultKey: 'categories',
-                    preselected: [1, {id: 22, name: 'Category 2.2'}, {id: 23, name: 'Category 2.2'}],
+                    preselected: [1, {id: 5, name: 'Category 2.2'}, {id: 8, name: 'Category 2.2'}],
                     viewOptions: {
                         table: {
                             showHead: false,

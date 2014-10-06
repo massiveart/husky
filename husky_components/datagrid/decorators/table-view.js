@@ -478,7 +478,7 @@ define(function() {
          * @returns {String} html if no render is set to true
          */
         renderRowSelectItem: function(id, norender) {
-            if (this.datagrid.options.onlySelectLeaves === true && this.table.rows[id].numberChildren > 0) {
+            if (this.datagrid.options.onlySelectLeaves === true && this.table.rows[id].hasChildren > 0) {
                 return '';
             }
             if (!!this.options.selectItem && !!this.options.selectItem.type &&
@@ -521,7 +521,7 @@ define(function() {
                 childrenLoaded: false,
                 childrenExpanded: false,
                 parent: !!(record.parent) ? record.parent : null,
-                numberChildren: (!!record[this.datagrid.options.childrenPropertyName]) ? record[this.datagrid.options.childrenPropertyName] : 0,
+                hasChildren: (!!record[this.datagrid.options.childrenPropertyName]) ? record[this.datagrid.options.childrenPropertyName] : false,
                 level: 1
             };
             this.renderRowSelectItem(record.id);
@@ -692,8 +692,7 @@ define(function() {
             var $wrappedContent = this.sandbox.dom.createElement(templates.childWrapper),
                 $icon;
             // if has children
-            if (!!record[this.datagrid.options.childrenPropertyName]
-                && record[this.datagrid.options.childrenPropertyName] > 0) {
+            if (!!record[this.datagrid.options.childrenPropertyName]) {
                 this.sandbox.dom.addClass($wrappedContent, constants.parentClass);
                 $icon = this.sandbox.dom.createElement(templates.toggleIcon);
                 this.sandbox.dom.prependClass($icon, constants.collapsedIcon);
@@ -1121,7 +1120,7 @@ define(function() {
                 if (this.options.highlightSelected === true) {
                     this.uniqueHighlightRecord(recordId);
                 }
-                if (!!this.table.rows[recordId].numberChildren > 0) {
+                if (!!this.table.rows[recordId].hasChildren) {
                     this.toggleChildren(recordId);
                 }
             }
@@ -1309,7 +1308,7 @@ define(function() {
         hideChildren: function(recordId) {
             this.sandbox.util.each(this.table.rows, function(rowId, row) {
                 if (row.parent == recordId) {
-                    if (row.numberChildren > 0) {
+                    if (row.hasChildren > 0) {
                         this.hideChildren(rowId);
                     }
                     this.sandbox.dom.hide(row.$el);
