@@ -1,12 +1,16 @@
+===========
 CHANGELOGS:
 ===========
 
 Unmerged
---------
+========
+
+2014/10/06
+==========
 
  - autocomplete-list api change: 
-      'autoCompleteIcon' is the input icon
-      'suggestionIcon' is the icon inside the typeahead suggestion dropdown
+   'autoCompleteIcon' is the input icon
+   'suggestionIcon' is the icon inside the typeahead suggestion dropdown
 
  - using template method through sandbox
 
