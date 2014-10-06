@@ -35,7 +35,6 @@
 }
 
 .auto-complete-list {
-    padding: 1px 8px;
     border-radius: $borderRadius;
     background-color: #fff;
     margin: 0;
@@ -48,6 +47,7 @@
         margin: 0;
         display: block;
         margin-bottom: -5px;
+        border: 0;
 
         input[type="text"] {
             margin: 7px 10px 7px 0 !important;
